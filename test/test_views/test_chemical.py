@@ -16,50 +16,55 @@ class ChemicalTest(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-
+    @mock.patch('src.views.extract_id_request', return_value="CHEBI:16240")
     @mock.patch('src.models.DBSession.query')
-    def test_should_return_valid_chemical(self, mock_search):
+    def test_should_return_valid_chemical(self, mock_search, mock_redis):
         mock_search.side_effect = chemical_side_effect
 
         chem = factory.ChebiFactory()
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        request.matchdict['format_name'] = "CHEBI:16240"
+        #request.matchdict['format_name'] = "CHEBI:16240"
+        format_name = mock_redis.extract_id_request(request, 'chemical', param_name='format_name')
 
         response = chemical(request)
         self.assertEqual(response, chem.to_dict())
 
+    @mock.patch('src.views.extract_id_request', return_value="184870")
     @mock.patch('src.models.DBSession.query')
-    def test_should_return_valid_chemical_phenotype_details(self, mock_search):
+    def test_should_return_valid_chemical_phenotype_details(self, mock_search, mock_redis):
         mock_search.side_effect = chemical_side_effect
 
         chem = factory.ChebiFactory()
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        request.matchdict['id'] = "184870"
+        #request.matchdict['id'] = "184870"
+        id = mock_redis.extract_id_request(request, 'chemical', param_name='id')
 
         response = chemical_phenotype_details(request)
         self.assertEqual(response, chem.phenotype_to_dict())
 
-
+    @mock.patch('src.views.extract_id_request', return_value="nonexistent_id")
     @mock.patch('src.models.DBSession.query')
-    def test_should_return_non_existent_chemical(self, mock_search):
+    def test_should_return_non_existent_chemical(self, mock_search, mock_redis):
         mock_search.return_value = MockQuery(None)
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        request.matchdict['format_name'] = 'nonexistent_id'
+        #request.matchdict['format_name'] = 'nonexistent_id'
+        id = mock_redis.extract_id_request(request, 'chemical', param_name='format_name')
         response = chemical(request)
         self.assertEqual(response.status_code, 404)
 
-
+    @mock.patch('src.views.extract_id_request', return_value="nonexistent_id")
     @mock.patch('src.models.DBSession.query')
-    def test_should_return_non_existent_chemical_phenotype_details(self, mock_search):
+    def test_should_return_non_existent_chemical_phenotype_details(self, mock_search, mock_redis):
         mock_search.return_value = MockQuery(None)
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        request.matchdict['id'] = 'nonexistent_id'
+        #request.matchdict['id'] = 'nonexistent_id'
+        id = mock_redis.extract_id_request(request, 'chemical', param_name='id')
         response = chemical_phenotype_details(request)
         self.assertEqual(response.status_code, 404)
 

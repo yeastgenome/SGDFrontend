@@ -5,10 +5,11 @@ import mock
 import json
 import test.fixtures as factory
 from test.mock_helpers import MockQuery
-from src.views import reserved_name
+from test.mock_helpers import side_effect
+from src.views import ecnumber, ecnumber_locus_details, locus_ecnumber_details
 
 
-class ReservedNameTest(unittest.TestCase):    
+class EcTest(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
 
@@ -17,26 +18,29 @@ class ReservedNameTest(unittest.TestCase):
 
     @mock.patch('src.views.extract_id_request', return_value="S000203483")
     @mock.patch('src.models.DBSession.query')
-    def test_should_return_valid_reserved_name(self, mock_search, mock_redis):
-        r_name = factory.ReservedNameFactory()
-        mock_search.return_value = MockQuery(r_name)
-        
+    def test_should_return_valid_ec_number(self, mock_search, mock_redis):
+        mock_search.side_effect = side_effect
+
+        ec = factory.EcFactory()
+
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        #request.matchdict['id'] = r_name.format_name
-        id = mock_redis.extract_id_request(request, 'reservedname', param_name='id')
-        response = reserved_name(request)
-        
-        self.assertEqual(response, r_name.to_dict())
+        #request.matchdict['id'] = "S000203483"
+        id = mock_redis.extract_id_request(request, 'ecnumber', param_name='id')
+
+        response = ecnumber(request)
+
+        self.assertEqual(response, ec.to_dict())
 
     @mock.patch('src.views.extract_id_request', return_value="nonexistent_id")
     @mock.patch('src.models.DBSession.query')
-    def test_should_return_non_existent_reserved_name(self, mock_search, mock_redis):
+    def test_should_return_non_existent_ec_number(self, mock_search, mock_redis):
         mock_search.return_value = MockQuery(None)
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
         #request.matchdict['id'] = 'nonexistent_id'
-        id = mock_redis.extract_id_request(request, 'reservedname', param_name='id')
-        response = reserved_name(request)
+        id = mock_redis.extract_id_request(request, 'ecnumber', param_name='id')
+
+        response = ecnumber(request)
         self.assertEqual(response.status_code, 404)

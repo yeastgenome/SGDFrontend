@@ -17,28 +17,34 @@ class DatasetTest(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-
+    @mock.patch('src.views.extract_id_request', return_value="S000203483")
     @mock.patch('src.models.DBSession.query')
-    def test_should_return_valid_dataset(self, mock_search):
+    def test_should_return_valid_dataset(self, mock_search, mock_redis):
             mock_search.side_effect = dataset_side_effect
 
             dset = factory.DatasetFactory()
 
             request = testing.DummyRequest()
             request.context = testing.DummyResource()
-            request.matchdict['id'] = "S000203483"
+            #request.matchdict['id'] = "S000203483"
+            id = mock_redis.extract_id_request(request, 'dataset', param_name='id')
+
             response = dataset(request)
             self.assertEqual(json.dumps(response, sort_keys=True), json.dumps(dset.to_dict(add_conditions=True, add_resources=True), sort_keys=True))
 
+
+    @mock.patch('src.views.extract_id_request', return_value="S000203483")
     @mock.patch('src.models.DBSession.query')
-    def test_should_return_valid_keyword(self, mock_search):
+    def test_should_return_valid_keyword(self, mock_search, mock_redis):
         mock_search.side_effect = dataset_side_effect
 
         kw = factory.KeywordFactory()
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        request.matchdict['id'] = "S000203483"
+        #request.matchdict['id'] = "S000203483"
+        id = mock_redis.extract_id_request(request, 'dataset', param_name='id')
+
         response = keyword(request)
 
         self.assertEqual(response, kw.to_dict())
@@ -56,24 +62,29 @@ class DatasetTest(unittest.TestCase):
     #
     #     self.assertEqual(response, [kw.to_simple_dict()])
 
-
+    @mock.patch('src.views.extract_id_request', return_value="nonexistent_id")
     @mock.patch('src.models.DBSession.query')
-    def test_should_return_non_existent_dataset(self, mock_search):
+    def test_should_return_non_existent_dataset(self, mock_search, mock_redis):
         mock_search.return_value = MockQuery(None)
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        request.matchdict['id'] = 'nonexistent_id'
+        #request.matchdict['id'] = 'nonexistent_id'
+        id = mock_redis.extract_id_request(request, 'dataset', param_name='id')
+
         response = dataset(request)
         self.assertEqual(response.status_code, 404)
 
+    @mock.patch('src.views.extract_id_request', return_value="nonexistent_id")
     @mock.patch('src.models.DBSession.query')
-    def test_should_return_non_existent_kw(self, mock_search):
+    def test_should_return_non_existent_kw(self, mock_search, mock_redis):
         mock_search.return_value = MockQuery(None)
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        request.matchdict['id'] = 'nonexistent_id'
+        #request.matchdict['id'] = 'nonexistent_id'
+        id = mock_redis.extract_id_request(request, 'dataset', param_name='id')
+
         response = keyword(request)
         self.assertEqual(response.status_code, 404)
 
