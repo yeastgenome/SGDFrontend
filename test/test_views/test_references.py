@@ -88,7 +88,7 @@ class ReferencesTest(unittest.TestCase):
     #
     #     self.assertTrue(mock_search.return_value._full_params[0].compare(Referencedocument.reference_id.in_([refdoc.reference_id, refdoc_2.reference_id])))
     #     self.assertTrue(mock_search.return_value._full_params[1].compare(Referencedocument.document_type == 'Medline'))
-
+    @mock.patch('src.views.extract_id_request', return_value="S000114259")
     @mock.patch('src.models.DBSession.query')
     def test_should_return_valid_reference(self, mock_search):
 
@@ -102,7 +102,8 @@ class ReferencesTest(unittest.TestCase):
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        request.matchdict['id'] = "S000114259"
+        #request.matchdict['id'] = "S000114259"
+        id = mock_redis.extract_id_request(request, 'reference', param_name='id')
         response = reference(request)
 
         self.assertEqual(response, r_name.to_dict())
@@ -206,12 +207,14 @@ class ReferencesTest(unittest.TestCase):
     #     self.assertEqual(response, refdb.phenotype_to_dict())
     #
     #
+    @mock.patch('src.views.extract_id_request', return_value="nonexistent_id")
     @mock.patch('src.models.DBSession.query')
     def test_should_return_non_existent_reference(self, mock_search):
         mock_search.return_value = MockQuery(None)
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        request.matchdict['id'] = 'nonexistent_id'
+        #request.matchdict['id'] = 'nonexistent_id'
+        id = mock_redis.extract_id_request(request, 'reference', param_name='id')
         response = reference(request)
         self.assertEqual(response.status_code, 404)

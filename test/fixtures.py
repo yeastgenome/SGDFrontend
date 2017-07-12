@@ -7,8 +7,8 @@ from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRela
     Physinteractionannotation, Geninteractionannotation, Goannotation, Regulationannotation, Literatureannotation, Contig, EcoAlias, EcoUrl, Goextension, \
     Gosupportingevidence, Eco, Ro, Go, GoRelation, GoUrl, GoAlias, ApoRelation, Referencetriage, Proteinsequenceannotation, ProteinsequenceDetail, \
     Goslimannotation, Goslim, Expressionannotation, Datasetsample, DatasetUrl, DatasetFile, ReferenceAlias, Dnasequenceannotation, Dnasubsequence,\
-    So, ContigUrl, LocusAlias, LocusAliasReferences, LocusReferences, LocussummaryReference, LocusUrl, Locusnoteannotation, Posttranslationannotation,\
-    Psimod, Proteinexptannotation, Proteindomainannotation, Proteindomain, ProteindomainUrl
+    So, ContigUrl, LocusAlias, LocusAliasReferences, LocusReferences, LocussummaryReference, LocusUrl, Posttranslationannotation,\
+    Psimod, Proteinexptannotation, Proteindomainannotation, Proteindomain, ProteindomainUrl, Ec, EcAlias, EcUrl
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -1066,6 +1066,48 @@ class LiteratureannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
+class EcFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Ec
+        sqlalchemy_session = DBSession
+
+    ec_id = 1
+    format_name = "format name"
+    display_name = "display name"
+    obj_url = "/obj_url"
+    source_id = 1
+    ecid = 1
+    description = "description"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class EcAliasFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = EcAlias
+        sqlalchemy_session = DBSession
+
+    alias_id = 1
+    display_name = "display name"
+    source_id = 1
+    ec_id = 1
+    alias_type = "alias_type"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class EcUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = EcUrl
+        sqlalchemy_session = DBSession
+
+    url_id = 1
+    display_name = "display name"
+    obj_url = "/obj_url"
+    source_id = 1
+    ec_id = 1
+    url_type = "url type"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
 
 class EcoFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
@@ -1423,22 +1465,22 @@ class ProteinexptannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
     created_by = "TOTO"
 
 
-class LocusnoteannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
-    class Meta:
-        model = Locusnoteannotation
-        sqlalchemy_session = DBSession
-
-    annotation_id = 1
-    dbentity_id = 1
-    source_id = 1
-    taxonomy_id = 1
-    reference_id = 1
-    bud_id = 1
-    note_type = "note_type"
-    display_name = "display_name"
-    note = "note"
-    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
-    created_by = "TOTO"
+# class LocusnoteannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
+#     class Meta:
+#         model = Locusnoteannotation
+#         sqlalchemy_session = DBSession
+#
+#     annotation_id = 1
+#     dbentity_id = 1
+#     source_id = 1
+#     taxonomy_id = 1
+#     reference_id = 1
+#     bud_id = 1
+#     note_type = "note_type"
+#     display_name = "display_name"
+#     note = "note"
+#     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+#     created_by = "TOTO"
 
 class DnasequenceannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:

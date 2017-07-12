@@ -19,230 +19,259 @@ class LocusTest(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-
+    @mock.patch('src.views.extract_id_request', return_value="S000114259")
     @mock.patch('src.models.DBSession.query')
-    def test_should_return_valid_locus(self, mock_search):
+    def test_should_return_valid_locus(self, mock_search, mock_redis):
         mock_search.side_effect = locus_side_effect
 
         loc = factory.LocusdbentityFactory()
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        request.matchdict['sgdid'] = "S000114259"
+        #request.matchdict['sgdid'] = "S000114259"
+        id = mock_redis.extract_id_request(request, 'locus', param_name='id')
         response = locus(request)
         self.assertEqual(response, loc.to_dict())
 
+    @mock.patch('src.views.extract_id_request', return_value="S000114259")
     @mock.patch('src.models.DBSession.query')
-    def test_should_return_non_existent_locus(self, mock_search):
-        mock_search.return_value = MockQuery(None)
-
-        request = testing.DummyRequest()
-        request.context = testing.DummyResource()
-        request.matchdict['sgdid'] = 'nonexistent_id'
-        response = locus(request)
-        self.assertEqual(response.status_code, 404)
-
-
-    @mock.patch('src.models.DBSession.query')
-    def test_should_return_valid_locus_go_details(self, mock_search):
+    def test_should_return_valid_locus_go_details(self, mock_search, mock_redis):
         mock_search.side_effect = go_side_effect
 
         locus = factory.LocusdbentityFactory()
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        request.matchdict['id'] = "S000114259"
+        #request.matchdict['id'] = "S000114259"
+        id = mock_redis.extract_id_request(request, 'locus', param_name='id')
         response = locus_go_details(request)
         self.assertEqual(response, locus.go_to_dict())
 
+    @mock.patch('src.views.extract_id_request', return_value="S000114259")
     @mock.patch('src.models.DBSession.query')
-    def test_should_return_non_existent_locus_go_details(self, mock_search):
-        mock_search.return_value = MockQuery(None)
-
-        request = testing.DummyRequest()
-        request.context = testing.DummyResource()
-        request.matchdict['id'] = 'nonexistent_id'
-        response = locus_go_details(request)
-        self.assertEqual(response.status_code, 404)
-
-
-    @mock.patch('src.models.DBSession.query')
-    def test_should_return_valid_locus_interaction_details(self, mock_search):
+    def test_should_return_valid_locus_interaction_details(self, mock_search, mock_redis):
         mock_search.side_effect = reference_side_effect
 
         locus = factory.LocusdbentityFactory()
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        request.matchdict['id'] = "S000114259"
+        #request.matchdict['id'] = "S000114259"
+        id = mock_redis.extract_id_request(request, 'locus', param_name='id')
         response = locus_interaction_details(request)
         self.assertEqual(response, locus.interactions_to_dict())
 
+    @mock.patch('src.views.extract_id_request', return_value="S000114259")
     @mock.patch('src.models.DBSession.query')
-    def test_should_return_non_existent_locus_interaction_details(self, mock_search):
-        mock_search.return_value = MockQuery(None)
-
-        request = testing.DummyRequest()
-        request.context = testing.DummyResource()
-        request.matchdict['id'] = 'nonexistent_id'
-        response = locus_interaction_details(request)
-        self.assertEqual(response.status_code, 404)
-
-
-
-    @mock.patch('src.models.DBSession.query')
-    def test_should_return_valid_locus_phenotype_details(self, mock_search):
+    def test_should_return_valid_locus_phenotype_details(self, mock_search, mock_redis):
         mock_search.side_effect = locus_side_effect
 
         locus = factory.LocusdbentityFactory(format_name='format_1')
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        request.matchdict['id'] = "S000114259"
+        #request.matchdict['id'] = "S000114259"
+        id = mock_redis.extract_id_request(request, 'locus', param_name='id')
         response = locus_phenotype_details(request)
         self.assertEqual(response, locus.phenotype_to_dict())
 
+    @mock.patch('src.views.extract_id_request', return_value="S000114259")
     @mock.patch('src.models.DBSession.query')
-    def test_should_return_non_existent_locus_phenotype_details(self, mock_search):
-        mock_search.return_value = MockQuery(None)
-
-        request = testing.DummyRequest()
-        request.context = testing.DummyResource()
-        request.matchdict['id'] = 'nonexistent_id'
-        response = locus_phenotype_details(request)
-        self.assertEqual(response.status_code, 404)
-
-
-    @mock.patch('src.models.DBSession.query')
-    def test_should_return_valid_locus_literature_details(self, mock_search):
+    def test_should_return_valid_locus_literature_details(self, mock_search, mock_redis):
         mock_search.side_effect = locus_reference_side_effect
 
         locus = factory.LocusdbentityFactory()
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        request.matchdict['id'] = "S000114259"
+        #request.matchdict['id'] = "S000114259"
+        id = mock_redis.extract_id_request(request, 'locus', param_name='id')
         response = locus_literature_details(request)
         self.assertEqual(response, locus.literature_to_dict())
 
+    @mock.patch('src.views.extract_id_request', return_value="S000114259")
     @mock.patch('src.models.DBSession.query')
-    def test_should_return_non_existent_locus_literature_details(self, mock_search):
-        mock_search.return_value = MockQuery(None)
-
-        request = testing.DummyRequest()
-        request.context = testing.DummyResource()
-        request.matchdict['id'] = 'nonexistent_id'
-        response = locus_literature_details(request)
-        self.assertEqual(response.status_code, 404)
-
-    @mock.patch('src.models.DBSession.query')
-    def test_should_return_valid_locus_expression_details(self, mock_search):
+    def test_should_return_valid_locus_expression_details(self, mock_search, mock_redis):
         mock_search.side_effect = locus_expression_side_effect
 
         locus = factory.LocusdbentityFactory()
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        request.matchdict['id'] = "S000114259"
+        #request.matchdict['id'] = "S000114259"
+        id = mock_redis.extract_id_request(request, 'locus', param_name='id')
         response = locus_expression_details(request)
         self.assertEqual(response, locus.expression_to_dict())
 
-
-    @mock.patch('src.models.DBSession.query')
-    def test_should_return_non_existent_locus_expression_details(self, mock_search):
-         mock_search.return_value = MockQuery(None)
-
-         request = testing.DummyRequest()
-         request.context = testing.DummyResource()
-         request.matchdict['id'] = 'nonexistent_id'
-         response = locus_expression_details(request)
-         self.assertEqual(response.status_code, 404)
-
-
-
     @mock.patch('src.models.DBSession.execute')
     @mock.patch('src.models.DBSession.query')
-    def test_should_return_valid_locus_sequence_details(self, mock_search, mock_execute):
+    def test_should_return_valid_locus_sequence_details(self, mock_search, mock_execute, mock_redis):
         mock_search.side_effect = sequence_side_effect
 
         locus = factory.LocusdbentityFactory()
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        request.matchdict['id'] = "S000114259"
+        #request.matchdict['id'] = "S000114259"
+        id = mock_redis.extract_id_request(request, 'locus', param_name='id')
         response = locus_sequence_details(request)
         self.assertEqual(response, locus.sequence_details())
 
-
+    @mock.patch('src.views.extract_id_request', return_value="S000114259")
     @mock.patch('src.models.DBSession.query')
-    def test_should_return_non_existent_locus_sequence_details(self, mock_search):
-         mock_search.return_value = MockQuery(None)
-
-         request = testing.DummyRequest()
-         request.context = testing.DummyResource()
-         request.matchdict['id'] = 'nonexistent_id'
-         response = locus_sequence_details(request)
-         self.assertEqual(response.status_code, 404)
-
-
-    @mock.patch('src.models.DBSession.query')
-    def test_should_return_valid_locus_posttranslational_details(self, mock_search):
+    def test_should_return_valid_locus_protein_experiment_details(self, mock_search, mock_redis):
         mock_search.side_effect = locus_side_effect
 
         locus = factory.LocusdbentityFactory()
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        request.matchdict['id'] = "S000114259"
+        #request.matchdict['id'] = "S000114259"
+        id = mock_redis.extract_id_request(request, 'locus', param_name='id')
+        response = locus_protein_experiment_details(request)
+        self.assertEqual(response, locus.protein_experiment_details())
+
+    @mock.patch('src.views.extract_id_request', return_value="S000114259")
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_valid_locus_protein_domain_details(self, mock_search, mock_redis):
+        mock_search.side_effect = locus_side_effect
+
+        locus = factory.LocusdbentityFactory()
+
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+        #request.matchdict['id'] = "S000114259"
+        id = mock_redis.extract_id_request(request, 'locus', param_name='id')
+        response = locus_protein_domain_details(request)
+        self.assertEqual(response, locus.protein_domain_details())
+
+    @mock.patch('src.views.extract_id_request', return_value="S000114259")
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_valid_locus_protein_domain_graph(self, mock_search, mock_redis):
+        mock_search.side_effect = locus_side_effect
+
+        locus = factory.LocusdbentityFactory()
+
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+        #request.matchdict['id'] = "S000114259"
+        id = mock_redis.extract_id_request(request, 'locus', param_name='id')
+        response = locus_protein_domain_graph(request)
+        self.assertEqual(response, locus.protein_domain_graph())
+
+    @mock.patch('src.views.extract_id_request', return_value="S000114259")
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_valid_locus_posttranslational_details(self, mock_search, mock_redis):
+        mock_search.side_effect = locus_side_effect
+
+        locus = factory.LocusdbentityFactory()
+
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+        #request.matchdict['id'] = "S000114259"
+        id = mock_redis.extract_id_request(request, 'locus', param_name='id')
         response = locus_posttranslational_details(request)
         self.assertEqual(response, locus.posttranslational_details())
 
-
+    @mock.patch('src.views.extract_id_request', return_value="S000114259")
     @mock.patch('src.models.DBSession.query')
-    def test_should_return_valid_locus_ecnumber_details(self, mock_search):
+    def test_should_return_valid_locus_ecnumber_details(self, mock_search, mock_redis):
         mock_search.side_effect = locus_side_effect
 
         locus = factory.LocusdbentityFactory()
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        request.matchdict['id'] = "S000114259"
+        #request.matchdict['id'] = "S000114259"
+        id = mock_redis.extract_id_request(request, 'locus', param_name='id')
         response = locus_ecnumber_details(request)
         self.assertEqual(response, locus.ecnumber_details())
 
 
 
+    @mock.patch('src.views.extract_id_request', return_value="nonexistent_id")
     @mock.patch('src.models.DBSession.query')
-    def test_should_return_valid_locus_protein_experiment_details(self, mock_search):
-        mock_search.side_effect = locus_side_effect
-
-        locus = factory.LocusdbentityFactory()
+    def test_should_return_non_existent_locus(self, mock_search, mock_redis):
+        mock_search.return_value = MockQuery(None)
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        request.matchdict['id'] = "S000114259"
-        response = locus_protein_experiment_details(request)
-        self.assertEqual(response, locus.protein_experiment_details())
+        #request.matchdict['sgdid'] = 'nonexistent_id'
+        id = mock_redis.extract_id_request(request, 'locus', param_name='id')
+        response = locus(request)
+        self.assertEqual(response.status_code, 404)
 
-
+    @mock.patch('src.views.extract_id_request', return_value="nonexistent_id")
     @mock.patch('src.models.DBSession.query')
-    def test_should_return_valid_locus_protein_domain_details(self, mock_search):
-        mock_search.side_effect = locus_side_effect
-
-        locus = factory.LocusdbentityFactory()
+    def test_should_return_non_existent_locus_go_details(self, mock_search, mock_redis):
+        mock_search.return_value = MockQuery(None)
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        request.matchdict['id'] = "S000114259"
-        response = locus_protein_domain_details(request)
-        self.assertEqual(response, locus.protein_domain_details())
+        #request.matchdict['id'] = 'nonexistent_id'
+        id = mock_redis.extract_id_request(request, 'locus', param_name='id')
+        response = locus_go_details(request)
+        self.assertEqual(response.status_code, 404)
 
+    @mock.patch('src.views.extract_id_request', return_value="nonexistent_id")
     @mock.patch('src.models.DBSession.query')
-    def test_should_return_valid_locus_protein_domain_graph(self, mock_search):
-        mock_search.side_effect = locus_side_effect
-
-        locus = factory.LocusdbentityFactory()
+    def test_should_return_non_existent_locus_interaction_details(self, mock_search, mock_redis):
+        mock_search.return_value = MockQuery(None)
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        request.matchdict['id'] = "S000114259"
-        response = locus_protein_domain_graph(request)
-        self.assertEqual(response, locus.protein_domain_graph())
+        #request.matchdict['id'] = 'nonexistent_id'
+        id = mock_redis.extract_id_request(request, 'locus', param_name='id')
+        response = locus_interaction_details(request)
+        self.assertEqual(response.status_code, 404)
+
+    @mock.patch('src.views.extract_id_request', return_value="nonexistent_id")
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_non_existent_locus_phenotype_details(self, mock_search, mock_redis):
+        mock_search.return_value = MockQuery(None)
+
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+        #request.matchdict['id'] = 'nonexistent_id'
+        id = mock_redis.extract_id_request(request, 'locus', param_name='id')
+        response = locus_phenotype_details(request)
+        self.assertEqual(response.status_code, 404)
+
+    @mock.patch('src.views.extract_id_request', return_value="nonexistent_id")
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_non_existent_locus_literature_details(self, mock_search, mock_redis):
+        mock_search.return_value = MockQuery(None)
+
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+        #request.matchdict['id'] = 'nonexistent_id'
+        id = mock_redis.extract_id_request(request, 'locus', param_name='id')
+        response = locus_literature_details(request)
+        self.assertEqual(response.status_code, 404)
+
+    @mock.patch('src.views.extract_id_request', return_value="nonexistent_id")
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_non_existent_locus_expression_details(self, mock_search, mock_redis):
+         mock_search.return_value = MockQuery(None)
+
+         request = testing.DummyRequest()
+         request.context = testing.DummyResource()
+         #request.matchdict['id'] = 'nonexistent_id'
+         id = mock_redis.extract_id_request(request, 'locus', param_name='id')
+         response = locus_expression_details(request)
+         self.assertEqual(response.status_code, 404)
+
+    @mock.patch('src.views.extract_id_request', return_value="nonexistent_id")
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_non_existent_locus_sequence_details(self, mock_search, mock_redis):
+         mock_search.return_value = MockQuery(None)
+
+         request = testing.DummyRequest()
+         request.context = testing.DummyResource()
+         #request.matchdict['id'] = 'nonexistent_id'
+         id = mock_redis.extract_id_request(request, 'locus', param_name='id')
+         response = locus_sequence_details(request)
+         self.assertEqual(response.status_code, 404)
+
+
+
+
+
