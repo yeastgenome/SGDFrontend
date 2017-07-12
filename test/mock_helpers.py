@@ -52,9 +52,6 @@ class MockQuery(object):
     def all(self):
         return self._query_result
 
-    # def distinct(self):
-    #     return self._query_result
-
     def distinct(self, query_params):
         return self
 
@@ -701,6 +698,8 @@ def side_effect(*args, **kwargs):
         c_name = factory.ContigFactory()
         return MockQuery((c_name.format_name, c_name.obj_url))
 
+# def mock_extract_id_request(request, classname):
+#      return 'S000203483'
 
 def locus_reference_side_effect(*args, **kwargs):
     if len(args) == 1 and str(args[0]) == "<class 'src.models.Locusdbentity'>":
