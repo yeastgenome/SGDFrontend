@@ -2724,20 +2724,15 @@ class Locusdbentity(Dbentity):
             datasetsample_ids.append(a.datasetsample_id)
             datasetsample_to_exp_value[a.datasetsample_id] = a.normalized_expression_value
 
-        same_datasetsamples = DBSession.query(Expressionannotation.dbentity_id, Expressionannotation.datasetsample_id, Expressionannotation.normalized_expression_value).filter(and_(Expressionannotation.datasetsample_id.in_(datasetsample_ids), Expressionannotation.dbentity_id != self.dbentity_id)).all()
+        genes_in_same_datasetsamples = DBSession.query(Expressionannotation.dbentity_id, Expressionannotation.datasetsample_id, Expressionannotation.normalized_expression_value).filter(and_(Expressionannotation.datasetsample_id.in_(datasetsample_ids), Expressionannotation.dbentity_id != self.dbentity_id)).all()
 
-        gene_datasetsamples = {}
-        gene_d = []
 
-        for d in same_datasetsamples:
-            gene_d.append((d.dbentity_id, d.datasetsample_id, d.normalized_expression_value * datasetsample_to_exp_value[d.datasetsample_id]))
+        genes_data = []
+        
+        for g in genes_in_same_datasetsamples:
+            genes_data.append((g.dbentity_id, g.datasetsample_id, g.normalized_expression_value * datasetsample_to_exp_value[g.datasetsample_id]))
 
-            if d.datasetsample_id in gene_datasetsamples:
-                gene_datasetsamples[d.datasetsample_id].append((d.dbentity_id, d.normalized_expression_value * datasetsample_to_exp_value[d.datasetsample_id]))
-            else:
-                gene_datasetsamples[d.datasetsample_id] = [(d.dbentity_id, d.normalized_expression_value * datasetsample_to_exp_value[d.datasetsample_id])]
-
-        list_genes_to_datasetsamples = sorted(gene_d, key=lambda x: x[2], reverse=True)
+        list_genes = sorted(genes_data, key=lambda x: x[2], reverse=True)
 
         edges = []
         nodes = {}
@@ -2754,13 +2749,16 @@ class Locusdbentity(Dbentity):
             }
         }
 
+        min_coeff = 9999999999
+        max_coeff = 0
+
         i = 0
-        while i < len(list_genes_to_datasetsamples) and len(nodes) <= 20 and len(edges) <= 50:
-            gene = list_genes_to_datasetsamples[i][0]
+        while i < len(list_genes) and len(nodes) <= 20 and len(edges) <= 50:
+            gene = list_genes[i][0]
 
             if gene not in nodes:
                 dbentity = DBSession.query(Dbentity.display_name, Dbentity.format_name, Dbentity.obj_url).filter_by(dbentity_id=gene).one_or_none()
-
+                
                 nodes[gene] = {
                     "data": {
                         "name": dbentity[0],
@@ -2771,12 +2769,17 @@ class Locusdbentity(Dbentity):
                     }
                 }
 
+                score = list_genes[i][2] / list_genes[0][2] / 10, # normalizing
+                
+                max_coeff = max(max_coeff, score)
+                min_coeff = min(min_coeff, score)
+
                 if (dbentity[1] + " " + self.format_name) not in edges_added:
                     edges.append({
                         "data": {
                             "source": dbentity[1],
                             "target": self.format_name,
-                            "score": list_genes_to_datasetsamples[i][2] / list_genes_to_datasetsamples[0][2] / 10, # normalizing
+                            "score": score,
                             "class_type": "EXPRESSION",
                             "direction": "positive"
                         }
@@ -2784,11 +2787,10 @@ class Locusdbentity(Dbentity):
 
             i += 1
 
-
-
+            
         return {
-            "min_coeff": 14,
-            "max_coeff": 16,
+            "min_coeff": min_coeff,
+            "max_coeff": max_coeff,
             "nodes": [nodes[n] for n in nodes],
             "edges": edges
         }
@@ -2988,8 +2990,8 @@ class Locusdbentity(Dbentity):
             else:
                 summary_types[s[4]] = [s]
 
-        summary_gene = sorted(summary_types.get("Gene", []), key=lambda s: s.summary_order)
-        summary_regulation = sorted(summary_types.get("Regulation", []), key=lambda s: s.summary_order)
+        summary_gene = sorted(summary_types.get("Gene", []), key=lambda s: s[3])
+        summary_regulation = sorted(summary_types.get("Regulation", []), key=lambda s: s[3])
 
         obj["regulation_overview"] = self.regulation_overview_to_dict(summary_regulation)
 
@@ -6809,10 +6811,12 @@ class Regulationannotation(Base):
             "annotation_type": self.annotation_type,
             "regulation_type": self.regulation_type,
             "regulator_type": self.regulator_type,
-            "properties": [],
+            # these are still here because of the old format. We should remove them after changes in the FE
+            "properties":[],
             "assay": "",
             "construct": ""
         }
+
 
 class Reporter(Base):
     __tablename__ = 'reporter'
