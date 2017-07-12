@@ -188,13 +188,6 @@ REVOKE ALL ON nex.contig FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.contig TO curator;
 GRANT SELECT ON nex.contig TO PUBLIC;
 
--- Set privilege on TABLE CONTIGNOTEANNOTATION
-ALTER TABLE nex.contignoteannotation OWNER TO nex;
-GRANT ALL ON nex.contignoteannotation TO nex;
-REVOKE ALL ON nex.contignoteannotation FROM PUBLIC;
-GRANT SELECT,INSERT,UPDATE,DELETE ON nex.contignoteannotation TO curator;
-GRANT SELECT ON nex.contignoteannotation TO PUBLIC;
-
 -- Set privilege on TABLE CONTIGNOTE
 ALTER TABLE nex.contignote OWNER TO nex;
 GRANT ALL ON nex.contignote TO nex;
@@ -607,13 +600,6 @@ GRANT ALL ON nex.locus_reference TO nex;
 REVOKE ALL ON nex.locus_reference FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.locus_reference TO curator;
 GRANT SELECT ON nex.locus_reference TO PUBLIC;
-
--- Set privilege on TABLE LOCUSNOTEANNOTATION
-ALTER TABLE nex.locusnoteannotation OWNER TO nex;
-GRANT ALL ON nex.locusnoteannotation TO nex;
-REVOKE ALL ON nex.locusnoteannotation FROM PUBLIC;
-GRANT SELECT,INSERT,UPDATE,DELETE ON nex.locusnoteannotation TO curator;
-GRANT SELECT ON nex.locusnoteannotation TO PUBLIC;
 
 -- Set privilege on TABLE LOCUSNOTE
 ALTER TABLE nex.locusnote OWNER TO nex;

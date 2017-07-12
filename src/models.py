@@ -800,13 +800,24 @@ class Colleague(Base):
 
     source = relationship(u'Source')
 
-    def _include_keywords_to_dict(self, colleague_dict):
+    def to_dict(self):
+        _dict = {
+            "colleague_id": self.colleague_id,
+            "orcid": self.orcid,
+            "first_name": self.first_name,
+            "middle_name": self.middle_name,
+            "last_name": self.last_name,
+            "suffix": self.suffix,
+            "institution": self.institution,
+            "email": self.email,
+            "link": self.obj_url
+        }
         keyword_ids = DBSession.query(ColleagueKeyword.keyword_id).filter(ColleagueKeyword.colleague_id == self.colleague_id).all()
         if len(keyword_ids) > 0:
             ids_query = [k[0] for k in keyword_ids]
             keywords = DBSession.query(Keyword).filter(Keyword.keyword_id.in_(ids_query)).all()
-            colleague_dict['keywords'] = [{'id': k.keyword_id, 'name': k.display_name} for k in keywords]
-    
+            _dict['keywords'] = [{'id': k.keyword_id, 'name': k.display_name} for k in keywords]
+        return _dict    
 
 class ColleagueKeyword(Base):
     __tablename__ = 'colleague_keyword'
@@ -914,7 +925,7 @@ class Colleaguetriage(Base):
     curation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.curation_seq'::regclass)"))
     triage_type = Column(String(10), nullable=False)
     colleague_id = Column(BigInteger)
-    colleague_data = Column(Text, nullable=False)
+    json = Column(Text, nullable=False)
     curator_comment = Column(String(500))
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
@@ -1040,8 +1051,13 @@ class Contig(Base):
     def sequence_details(self):
         dnas = DBSession.query(Dnasequenceannotation).filter(and_(Dnasequenceannotation.contig_id==self.contig_id, Dnasequenceannotation.dna_type=="GENOMIC")).all()
 
+        active_genomic_dna = []
+        for dna in dnas:
+            if dna.dbentity.dbentity_status == "Active":
+                active_genomic_dna.append(dna.to_dict())
+        
         return {
-            "genomic_dna": [dna.to_dict() for dna in dnas]
+            "genomic_dna": active_genomic_dna
         }
 
 
@@ -1545,7 +1561,7 @@ class Referencedbentity(Dbentity):
                 ("SO", "SGD")
         ]
 
-        authors = DBSession.query(Referenceauthor.display_name).filter_by(reference_id=self.dbentity_id).all()
+        authors = DBSession.query(Referenceauthor.display_name).filter_by(reference_id=self.dbentity_id).order_by(Referenceauthor.author_order).all()
         for author in authors:
             data.append(("AU", author[0]))
 
@@ -1713,6 +1729,17 @@ class Referencedbentity(Dbentity):
         
         return obj
 
+    def annotations_summary_to_dict(self):
+        preview_url = '/reference/' + self.sgdid
+        return {
+            'category': 'reference',
+            'created_by' : self.created_by,
+            'href': preview_url, 
+            'date_created': self.date_created.strftime("%Y-%m-%d"),
+            'name': self.citation, 
+            'type': 'added'
+        }
+
     def interactions_to_dict(self):
         obj = []
 
@@ -1725,8 +1752,10 @@ class Referencedbentity(Dbentity):
 
         gos = DBSession.query(Goannotation).filter_by(reference_id=self.dbentity_id).all()
 
-        for go in gos:
-            obj += go.to_dict()
+        for go_annotation in gos:
+            for annotation in go_annotation.to_dict():
+                if annotation not in obj:
+                    obj.append(annotation)
             
         return obj
 
@@ -1801,6 +1830,7 @@ class Locusdbentity(Dbentity):
     has_regulation = Column(Boolean, nullable=False)
     has_protein = Column(Boolean, nullable=False)
     has_sequence_section = Column(Boolean, nullable=False)
+    not_in_s288c = Column(Boolean, nullable=False)
 
     def regulation_target_enrichment(self):
         target_ids = DBSession.query(Regulationannotation.target_id).filter_by(regulator_id=self.dbentity_id).all()
@@ -1834,7 +1864,7 @@ class Locusdbentity(Dbentity):
     
     def regulation_details(self):
         annotations = DBSession.query(Regulationannotation).filter(or_(Regulationannotation.target_id==self.dbentity_id, Regulationannotation.regulator_id==self.dbentity_id)).all()
-        
+
         return [a.to_dict() for a in annotations]
 
     def binding_site_details(self):
@@ -2084,12 +2114,6 @@ class Locusdbentity(Dbentity):
             reference_ids[dataset.dataset_id] = annotation.reference_id
 
             value = annotation.log_ratio_value
-            if value is None:
-                value = annotation.normalized_expression_value
-                if value < 0:
-                    value = 0
-                else:
-                    value = log(value, 2)
 
             rounded = floor(float(value))
             if value - rounded >= .5:
@@ -2399,6 +2423,7 @@ class Locusdbentity(Dbentity):
                         "data": {
                             "name": go.display_name,
                             "id": go.format_name,
+                            "link": go.obj_url,
                             "type": "GO",
                             "gene_count": len(go_ids)
                         }
@@ -2600,18 +2625,10 @@ class Locusdbentity(Dbentity):
         }        
 
     def regulation_graph(self):
-        main_gene_annotations = DBSession.query(Regulationannotation).filter(and_((Regulationannotation.direction != None), or_(Regulationannotation.target_id == self.dbentity_id, Regulationannotation.regulator_id == self.dbentity_id))).all()
-
-        regulations = {}
-        
-        for annotation in main_gene_annotations:
-            key = (annotation.target_id, annotation.regulator_id, annotation.direction)
-            if pair in regulations:
-                regulations[pair].append(annotation.reference_id)
-            else:
-                regulations[pair] = [reference_id]
+        main_gene_annotations = DBSession.query(Regulationannotation).filter(or_(Regulationannotation.target_id == self.dbentity_id, Regulationannotation.regulator_id == self.dbentity_id)).all()
 
         genes_to_regulations = {}
+        
         for annotation in main_gene_annotations:
             if annotation.target_id == self.dbentity_id:
                 add = annotation.regulator_id
@@ -2622,6 +2639,7 @@ class Locusdbentity(Dbentity):
                 genes_to_regulations[add].append(annotation)
             else:
                 genes_to_regulations[add] = [annotation]
+        
 
         list_genes_to_regulations = sorted([(g, genes_to_regulations[g]) for g in genes_to_regulations], key=lambda x: len(x[1]), reverse=True)
 
@@ -2669,15 +2687,16 @@ class Locusdbentity(Dbentity):
                         "id": dbentity.format_name,
                         "link": dbentity.obj_url,
                         "type": "BIOENTITY",
-                        "sub_type": sub_type,
-                        "evidence": len(evidences)
+                        "sub_type": sub_type
                     }
                 }
 
-                action = "expression repressed"
+                action = "expression null"
                 if list_genes_to_regulations[i][1][0].direction == "positive":
                     action = "expression activated"
-                
+                elif list_genes_to_regulations[i][1][0].direction == "negative":
+                    action = "expression repressed"
+
                 edges.append({
                     "data": {
                         "action": action,
@@ -2690,38 +2709,6 @@ class Locusdbentity(Dbentity):
 
             i += 1
 
-        reference_ids = set([a.reference_id for a in main_gene_annotations])
-        other_regulations = DBSession.query(Regulationannotation).filter(and_(Regulationannotation.reference_id.in_(reference_ids), and_(Regulationannotation.target_id != self.dbentity_id, Regulationannotation.regulator_id != self.dbentity_id))).all()
-
-        other_valid_regulations = []
-        for regulation in other_regulations:
-            if regulation.target_id in nodes and regulation.regulator_id in nodes:
-                other_valid_regulations.append(regulation)
-
-        i = 0
-        while i < len(other_valid_regulations) and len(edges) <= 50:
-            source = nodes[other_valid_regulations[i].regulator_id]["data"]["id"]
-            target = nodes[other_valid_regulations[i].target_id]["data"]["id"]
-            evidence = nodes[other_valid_regulations[i].target_id]["data"]["evidence"]
-            if nodes[other_valid_regulations[i].regulator_id]["data"]["evidence"] > evidence:
-                evidence = nodes[other_valid_regulations[i].regulator_id]["data"]["evidence"]
-                
-            if (source + " " + target) not in edges_added and (target + " " + source) not in edges_added:
-                action = "expression repressed"
-                if other_valid_regulations[i].direction == "positive":
-                    action = "expression activated"
-                
-                edges.append({
-                    "data": {
-                        "action": action,
-                        "source": source,
-                        "target": target,
-                        "evidence": evidence
-                    }
-                })
-                edges_added.add(source + " " + target)
-            i += 1
-
         return {
             "nodes": [nodes[n] for n in nodes],
             "edges": edges,
@@ -2729,32 +2716,35 @@ class Locusdbentity(Dbentity):
         }
 
     def expression_graph(self):
-        main_gene_expression_annotations = DBSession.query(Expressionannotation).filter_by(dbentity_id=self.dbentity_id).all()
-        main_gene_datasetsample_ids = [a.datasetsample_id for a in main_gene_expression_annotations]
-        main_genes_dataset_ids = DBSession.query(Datasetsample.datset_id).filter(Datasetsample.datasetsample_id.in_(main_gene_datasetsample_ids)).all()
-
-        # QUESTION: genes sharing datasets via same datasetsample or any datasetsample within the same dataset is valid?
-
-        ##########################################
+        annotations = DBSession.query(Expressionannotation).filter_by(dbentity_id=self.dbentity_id).all()
         
-        genes_sharing_datasets = DBSession.query(Goannotation).filter((Goannotation.go_id.in_(main_gene_go_ids)) & (Goannotation.dbentity_id != self.dbentity_id)).all()
-        genes_to_go = {}
-        for annotation in genes_sharing_go:
-            gene = annotation.dbentity_id
-            go = annotation.go_id
-            if gene in genes_to_go:
-                genes_to_go[gene].add(go)
+        datasetsample_to_exp_value = {}
+        datasetsample_ids = []
+        for a in annotations:
+            datasetsample_ids.append(a.datasetsample_id)
+            datasetsample_to_exp_value[a.datasetsample_id] = a.normalized_expression_value
+
+        same_datasetsamples = DBSession.query(Expressionannotation.dbentity_id, Expressionannotation.datasetsample_id, Expressionannotation.normalized_expression_value).filter(and_(Expressionannotation.datasetsample_id.in_(datasetsample_ids), Expressionannotation.dbentity_id != self.dbentity_id)).all()
+
+        gene_datasetsamples = {}
+        gene_d = []
+        
+        for d in same_datasetsamples:
+            gene_d.append((d.dbentity_id, d.datasetsample_id, d.normalized_expression_value * datasetsample_to_exp_value[d.datasetsample_id]))
+            
+            if d.datasetsample_id in gene_datasetsamples:
+                gene_datasetsamples[d.datasetsample_id].append((d.dbentity_id, d.normalized_expression_value * datasetsample_to_exp_value[d.datasetsample_id]))
             else:
-                genes_to_go[gene] = set([go])
-        
-        list_genes_to_go = sorted([(g, genes_to_go[g]) for g in genes_to_go], key=lambda x: len(x[1]), reverse=True)
+                gene_datasetsamples[d.datasetsample_id] = [(d.dbentity_id, d.normalized_expression_value * datasetsample_to_exp_value[d.datasetsample_id])]
+
+        list_genes_to_datasetsamples = sorted(gene_d, key=lambda x: x[2], reverse=True)
         
         edges = []
         nodes = {}
 
         edges_added = set([])
 
-        nodes[self.format_name] = {
+        nodes[self.dbentity_id] = {
             "data": {
                 "name": self.display_name,
                 "id": self.format_name,
@@ -2764,73 +2754,41 @@ class Locusdbentity(Dbentity):
             }
         }
         
-        min_cutoff = 99999999
-        max_cutoff = 0
-        
         i = 0
-        while i < len(list_genes_to_go) and len(nodes) <= 20 and len(edges) <= 50:
-            dbentity = DBSession.query(Dbentity.display_name, Dbentity.format_name, Dbentity.obj_url).filter_by(dbentity_id=list_genes_to_go[i][0]).one_or_none()
+        while i < len(list_genes_to_datasetsamples) and len(nodes) <= 20 and len(edges) <= 50:
+            gene = list_genes_to_datasetsamples[i][0]
 
-            go_ids = list_genes_to_go[i][1]
+            if gene not in nodes:
+                dbentity = DBSession.query(Dbentity.display_name, Dbentity.format_name, Dbentity.obj_url).filter_by(dbentity_id=gene).one_or_none()
 
-            if len(go_ids) > max_cutoff:
-                max_cutoff = len(go_ids)
-
-            if len(go_ids) < min_cutoff:
-                min_cutoff = len(go_ids)
-            
-            if dbentity[1] not in nodes:
-                nodes[dbentity[1]] = {
+                nodes[gene] = {
                     "data": {
                         "name": dbentity[0],
                         "id": dbentity[1],
                         "link": dbentity[2],
                         "type": "BIOENTITY",
-                        "gene_count": len(go_ids)
+                        "sub_type": None
                     }
-                }                    
-                
-            for go_id in go_ids:
-                go = DBSession.query(Go).filter_by(go_id=go_id).one_or_none()
+                }
 
-                if go.format_name not in nodes:
-                    nodes[go.format_name] = {
-                        "data": {
-                            "name": go.display_name,
-                            "id": go.format_name,
-                            "type": "GO",
-                            "gene_count": len(go_ids)
-                        }
-                    }
-                
-                if (go.format_name + " " + dbentity[1]) not in edges_added:
+                if (dbentity[1] + " " + self.format_name) not in edges_added:
                     edges.append({
                         "data": {
-                            "source": go.format_name,
-                            "target": dbentity[1]
+                            "source": dbentity[1],
+                            "target": self.format_name,
+                            "score": list_genes_to_datasetsamples[i][2] / list_genes_to_datasetsamples[0][2] / 10, # normalizing
+                            "class_type": "EXPRESSION",
+                            "direction": "positive"
                         }
                     })
-                    edges_added.add(go.format_name + " " + dbentity[1])
-
-                if (go.format_name + " " + self.format_name) not in edges_added:
-                    edges.append({
-                        "data": {
-                            "source": go.format_name,
-                            "target": self.format_name
-                        }
-                    })
-                    edges_added.add(go.format_name + " " + self.format_name)
 
             i += 1
 
-        nodes[self.format_name]["data"]["gene_count"] = max_cutoff
-
-        if len(list_genes_to_go) == 0:
-            min_cutoff = max_cutoff
+        
             
         return {
-            "min_cutoff": min_cutoff,
-            "max_cutoff": max_cutoff,
+            "min_coeff": 14,
+            "max_coeff": 16,
             "nodes": [nodes[n] for n in nodes],
             "edges": edges
         }
@@ -3388,7 +3346,7 @@ class Locusdbentity(Dbentity):
             go_slim_dict = go_slim.to_dict()
             if go_slim_dict:
                 obj["go_slim"].append(go_slim_dict)
-        
+
         go = {
             "cellular component": {},
             "molecular function": {},
@@ -3914,7 +3872,8 @@ class Dnasequenceannotation(Base):
             },
             "locus": locus.to_dict_sequence_widget(),
             "strand": self.strand,
-            "dna_type": self.dna_type
+            "dna_type": self.dna_type,
+            "feature_status": locus.dbentity_status
         }
 
 class Dnasubsequence(Base):
@@ -5143,11 +5102,14 @@ class Literatureannotation(Base):
     taxonomy = relationship(u'Taxonomy')
 
     acceptable_tags = {
+        'classical_phenotype': 'Primary Literature',
+        'go': 'Primary Literature',
+        'headline_information': 'Primary Literature',
+        'other_primary': 'Primary Literature',
+        'additional_literature': 'Additional Literature',
         'htp_phenotype': 'Omics',
         'non_phenotype_htp': 'Omics',
-        'other_primary': 'Primary Literature',
-        'Reviews': 'Reviews',
-        'additional_literature': 'Additional Literature'
+        'Reviews': 'Reviews'
     }
 
     @staticmethod
@@ -5367,6 +5329,20 @@ class Locussummary(Base):
     locus = relationship(u'Locusdbentity')
     source = relationship(u'Source')
 
+    def to_dict(self):
+        summary_type_url_segment = self.summary_type.lower()
+        if summary_type_url_segment not in ['phenotype', 'regulation']:
+            summary_type_url_segment = ''
+        preview_url = '/locus/' + self.locus.sgdid + '/' + summary_type_url_segment
+        return {
+            'category': 'locus',
+            'created_by' : self.created_by,
+            'href': preview_url, 
+            'date_created': self.date_created.strftime("%Y-%m-%d"),
+            'name': self.locus.display_name, 
+            'type': self.summary_type + ' summary', 
+            'value': self.html 
+        }
 
 class LocussummaryReference(Base):
     __tablename__ = 'locussummary_reference'
@@ -5732,7 +5708,8 @@ class Phenotypeannotation(Base):
 
             if number_conditions.get(annotation.annotation_id, 0) > 1:
                 add = number_conditions.get(annotation.annotation_id, 0)
-                
+
+            ### TODO: CDC25 breaks here because annotation.experiment.namespace_group is null
             mt[annotation.mutant.display_name][annotation.experiment.namespace_group] += add
                 
         experiment_categories = []
@@ -6791,7 +6768,8 @@ class Regulationannotation(Base):
         experiment = None
         if self.eco:
             experiment = {
-                "display_name": self.eco.display_name
+                "display_name": self.eco.display_name,
+                "link": None
             }
 
         strain = Straindbentity.get_strains_by_taxon_id(self.taxonomy_id)
@@ -6810,17 +6788,17 @@ class Regulationannotation(Base):
         
         return {
             "id": self.annotation_id,
-            "target": {
-                "display_name": self.target.display_name,
-                "link": self.target.obj_url,
-                "id": self.target.dbentity_id,
-                "format_name": self.target.format_name                
-            },
-            "direction": {
+            "locus1": {
                 "display_name": self.regulator.display_name,
                 "link": self.regulator.obj_url,
                 "id": self.regulator.dbentity_id,
                 "format_name": self.regulator.format_name
+            },
+            "locus2": {
+                "display_name": self.target.display_name,
+                "link": self.target.obj_url,
+                "id": self.target.dbentity_id,
+                "format_name": self.target.format_name                
             },
             "evidence": experiment,
             "regulation_of": self.regulation_type,
@@ -6828,7 +6806,12 @@ class Regulationannotation(Base):
             "reference": reference.to_dict_citation(),
             "strain": strain_obj,
             "experiment": experiment,
-            "annotation_type": self.annotation_type
+            "annotation_type": self.annotation_type,
+            "regulation_type": self.regulation_type,
+            "regulator_type": self.regulator_type,
+            "properties":[],
+            "assay": "",
+            "construct": ""
         }
 
 class Reporter(Base):
