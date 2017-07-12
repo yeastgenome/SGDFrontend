@@ -50,14 +50,15 @@ class ReferenceTriage(unittest.TestCase):
     #     response = reference_triage_id_update(request)
     #
     #     self.assertEqual(response, rtriage.to_dict())
-
+    @mock.patch('src.views.extract_id_request', return_value="nonexistent_id")
     @mock.patch('src.models.DBSession.query')
     def test_should_return_non_existent_reference_triage_id(self, mock_search):
         mock_search.return_value = MockQuery(None)
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        request.matchdict['id'] = 'nonexistent_id'
+        #request.matchdict['id'] = 'nonexistent_id'
+        id = mock_redis.extract_id_request(request, 'referencetriage', param_name='id')
         response = reference_triage_id(request)
         self.assertEqual(response.status_code, 404)
 
