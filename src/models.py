@@ -2864,6 +2864,7 @@ class Locusdbentity(Dbentity):
                         "data": {
                             "name": observable.display_name,
                             "id": observable.format_name,
+                            "link": observable.obj_url,
                             "type": "OBSERVABLE",
                             "gene_count": len(observable_ids)
                         }
