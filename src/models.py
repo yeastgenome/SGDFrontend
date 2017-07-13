@@ -6214,6 +6214,7 @@ class Proteindomainannotation(Base):
         return {
             "id": self.annotation_id,
             "domain": {
+                "id": proteindomain.proteindomain_id,
                 "link": proteindomain.obj_url,
                 "display_name": proteindomain.display_name,
                 "count": count,
