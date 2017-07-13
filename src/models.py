@@ -2287,36 +2287,40 @@ class Locusdbentity(Dbentity):
             'htp': []
         }
 
-        lit_ids = DBSession.query(Literatureannotation.reference_id, Literatureannotation.topic).filter(Literatureannotation.dbentity_id == self.dbentity_id).all()
+        literature_annotations = DBSession.query(Literatureannotation.reference_id, Literatureannotation.topic).filter(Literatureannotation.dbentity_id == self.dbentity_id).all()
+        primary_ids = set([])
+        additional_ids = set([])
+        reviews_ids = set([])
 
-        reference_ids = list(set([l[0] for l in lit_ids]))
-        references = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(reference_ids)).all()
+        for annotation in literature_annotations:
+            if annotation[1] == "Primary Literature":
+                primary_ids.add(annotation[0])
+            elif annotation[1] == "Additional Literature":
+                additional_ids.add(annotation[0])
+            elif annotation[1] == "Reviews":
+                reviews_ids.add(annotation[0])
 
-        references_dict = {}
-        for r in references:
-            references_dict[r.dbentity_id] = r
-        
-        topic = {}
-        for lit in lit_ids:
-            if lit[1] in topic:
-                topic[lit[1]].append(references_dict[lit[0]])
-            else:
-                topic[lit[1]] = [references_dict[lit[0]]]
+        all_references = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(list(primary_ids | additional_ids | reviews_ids))).all()
+        primary = []
+        additional = []
+        reviews = []
+        for reference in all_references:
+            if reference.dbentity_id in primary_ids:
+                primary.append(reference)
+            if reference.dbentity_id in additional_ids:
+                additional.append(reference)
+            if reference.dbentity_id in reviews_ids:
+                reviews.append(reference)
 
-        primary_ids = DBSession.query(Literatureannotation.reference_id).filter((Literatureannotation.dbentity_id == self.dbentity_id) & (Literatureannotation.topic == "Primary Literature")).all()
-        primary_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(primary_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.display_name.asc()).all()
+        primary_lit = sorted(sorted(primary, key=lambda p: p.display_name), key=lambda p: p.year, reverse=True)
+        additional_lit = sorted(sorted(additional, key=lambda p: p.display_name), key=lambda p: p.year, reverse=True)
+        reviews_lit = sorted(sorted(reviews, key=lambda p: p.display_name), key=lambda p: p.year, reverse=True)
 
         for lit in primary_lit:
             obj["primary"].append(lit.to_dict_citation())
 
-        additional_ids = DBSession.query(Literatureannotation.reference_id).filter((Literatureannotation.dbentity_id == self.dbentity_id) & (Literatureannotation.topic == "Additional Literature")).all()
-        additional_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(additional_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.display_name.asc()).all()
-        
         for lit in additional_lit:
             obj["additional"].append(lit.to_dict_citation())
-
-        reviews_ids = DBSession.query(Literatureannotation.reference_id).filter((Literatureannotation.dbentity_id == self.dbentity_id) & (Literatureannotation.topic == "Reviews")).all()
-        reviews_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(reviews_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.display_name.asc()).all()
 
         for lit in reviews_lit:
             obj["review"].append(lit.to_dict_citation())
