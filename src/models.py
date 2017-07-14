@@ -3048,8 +3048,8 @@ class Locusdbentity(Dbentity):
             for r in references_alias:
                 reference_dict = r.reference.to_dict_citation()
                 reference_alias_dict.append(reference_dict)
-
-                obj["references"].append(reference_dict)
+                if(reference_dict not in obj["references"]):
+                    obj["references"].append(reference_dict)
 
                 order = len(obj["reference_mapping"].keys())
                 if r.reference_id not in obj["reference_mapping"]:
@@ -3163,7 +3163,9 @@ class Locusdbentity(Dbentity):
                 continue
 
             if ref.reference_id not in reference_ids:
-                obj["references"].append(ref_dict)
+                if(ref_dict not in obj["references"]):
+                    obj["references"].append(ref_dict)
+
                 obj["sgdid_ref"][ref.reference.sgdid] = ref.reference
 
             reference_ids.add(ref.reference_id)
@@ -3171,7 +3173,10 @@ class Locusdbentity(Dbentity):
         summary_references = DBSession.query(LocussummaryReference).filter(and_(LocussummaryReference.summary_id.in_(summary_ids), ~LocussummaryReference.reference_id.in_(blacklist))).order_by(LocussummaryReference.reference_order).all()
         for s in summary_references:
             if s.reference_id not in reference_ids:
-                obj["references"].append(s.reference.to_dict_citation())
+                temp_ref = s.reference.to_dict_citation()
+                if(temp_ref not in obj["references"]):
+                    obj["references"].append(temp_ref)
+
                 obj["sgdid_ref"][s.reference.sgdid] = s.reference
                 reference_ids.add(s.reference_id)
 
