@@ -192,7 +192,9 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 		var contigString = "";
 		if (contigData.isChromosome) {
 			var num = contigData.formatName.match(/Mito/) ? "mt" :contigData.formatName.split("_")[1];
-			contigString = `chr${num}:`;
+			contigString = `chr${num}`;
+		} else if (contigData.formatName === '2-micron_plasmid') {
+			contigString = 'chr2-micron';
 		}
 
 		var _headers = [
@@ -205,7 +207,7 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 
 		var _rows = _.map(subFeatures, d => {
 			var _relativeCoord = `${d.relative_start}..${d.relative_end}`;
-			var _coordNode = { html: `<span><a href=${contigData.href}>${contigString}</a>${d.chromosomal_start}..${d.chromosomal_end}</span>` };
+			var _coordNode = { html: `<span><a href=${contigData.href}>${contigString}</a>:${d.chromosomal_start}..${d.chromosomal_end}</span>` };
 			return [d.format_name, _relativeCoord, _coordNode, d.coord_version, d.seq_version];
 		});
 
@@ -266,7 +268,11 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 		var _strain = _.filter(response.genomic_dna, s => { return s.strain.display_name === strainDisplayName; })[0];
 		var _headers = ["Evidence ID", "Analyze ID", "Feature", "Feature Systematic Name", "Feature Type", "Relative Coordinates", "Coordinates", "Strand", "Coord. Version", "Seq. Version"];
 		var _contigSeg = _strain.contig.format_name.split('_')[1];
-		if (_contigSeg === 'Mito') _contigSeg = 'mt';
+		if (_contigSeg === 'Mito') {
+			_contigSeg = 'mt';
+		} else if (_contigSeg === 'plasmid') {
+			_contigSeg = '2-micron';
+		}
 		var _data = _.map(_strain.tags, t => {
 			var _relativeCoordinates = `${t.relative_start}..${t.relative_end}`;
 			var _coordinates = `chr${_contigSeg}:${t.chromosomal_start}..${t.chromosomal_end}`;
