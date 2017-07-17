@@ -20,4 +20,4 @@
 # For more information see the manual pages of crontab(5) and cron(8)
 # 
 # m h  dom mon dow   command
-0 * * * * /bin/bash /data/www/SGDBackend-NEX2/current/system_config/restart.sh
+0 * * * * /bin/bash /data/www/SGDBackend-NEX2/current/system_config/cron/restart.sh
