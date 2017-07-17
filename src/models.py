@@ -1,4 +1,4 @@
-from sqlalchemy import Column, BigInteger, UniqueConstraint, Float, Boolean, SmallInteger, Integer, DateTime, ForeignKey, Index, Numeric, String, Text, text, FetchedValue, func, or_, and_, distinct, desc
+from sqlalchemy import Column, BigInteger, UniqueConstraint, Float, Boolean, SmallInteger, Integer, DateTime, ForeignKey, Index, Numeric, String, Text, text, FetchedValue, func, or_, and_, distinct
 from sqlalchemy.orm import scoped_session, sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
 from zope.sqlalchemy import ZopeTransactionExtension
@@ -9,7 +9,7 @@ import json
 import copy
 import requests
 import re
-import pdb
+
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
@@ -3004,7 +3004,6 @@ class Locusdbentity(Dbentity):
         obj["regulation_overview"] = self.regulation_overview_to_dict(summary_regulation)
 
         if len(summary_gene) > 0:
-            pdb.set_trace()
             text = ""
             for s in summary_gene:
                 text += s[1]
