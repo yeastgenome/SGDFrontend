@@ -13,7 +13,6 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 	constructor (options) {
 		options = options || {};
 		options.url = `/backend/locus/${options.id}/sequence_details`;
-		// TEMP
 		super(options);
 		this.baseAttributes = options;
 		
