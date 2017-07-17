@@ -10,6 +10,7 @@ import copy
 import requests
 import re
 
+
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
 
@@ -1593,6 +1594,8 @@ class Referencedbentity(Dbentity):
         }
 
     def to_dict_citation(self):
+        if(self.pmid == 23241746):
+            print 'found pmid'
         obj = {
             "id": self.dbentity_id,
             "display_name": self.display_name,
@@ -2732,7 +2735,7 @@ class Locusdbentity(Dbentity):
 
 
         genes_data = []
-        
+
         for g in genes_in_same_datasetsamples:
             genes_data.append((g.dbentity_id, g.datasetsample_id, g.normalized_expression_value * datasetsample_to_exp_value[g.datasetsample_id]))
 
@@ -2762,7 +2765,7 @@ class Locusdbentity(Dbentity):
 
             if gene not in nodes:
                 dbentity = DBSession.query(Dbentity.display_name, Dbentity.format_name, Dbentity.obj_url).filter_by(dbentity_id=gene).one_or_none()
-                
+
                 nodes[gene] = {
                     "data": {
                         "name": dbentity[0],
@@ -2774,7 +2777,7 @@ class Locusdbentity(Dbentity):
                 }
 
                 score = list_genes[i][2] / list_genes[0][2] / 10, # normalizing
-                
+
                 max_coeff = max(max_coeff, score)
                 min_coeff = min(min_coeff, score)
 
@@ -2791,7 +2794,7 @@ class Locusdbentity(Dbentity):
 
             i += 1
 
-            
+
         return {
             "min_coeff": min_coeff,
             "max_coeff": max_coeff,
@@ -2987,7 +2990,7 @@ class Locusdbentity(Dbentity):
         if self.genetic_position:
             obj["genetic_position"] = self.genetic_position
 
-        summaries = DBSession.query(Locussummary.summary_id, Locussummary.html, Locussummary.date_created, Locussummary.summary_order, Locussummary.summary_type).filter_by(locus_id=self.dbentity_id).all()
+        summaries = DBSession.query(Locussummary.summary_id, Locussummary.html, Locussummary.date_created,Locussummary.summary_order,Locussummary.summary_type).filter_by(locus_id=self.dbentity_id).all()
         summary_types = {}
         for s in summaries:
             if s[4] in summary_types:
@@ -3004,9 +3007,10 @@ class Locusdbentity(Dbentity):
             text = ""
             for s in summary_gene:
                 text += s[1]
+            modify_summary_gene = sorted(summary_gene,key=lambda s: s[2])
             obj["paragraph"] = {
                 "text": text,
-                "date_edited": summary_gene[-1][2].strftime("%Y-%m-%d")
+                "date_edited": modify_summary_gene[-1][2].strftime("%Y-%m-%d")
             }
         else:
             obj["paragraph"] = None
@@ -3041,8 +3045,8 @@ class Locusdbentity(Dbentity):
             for r in references_alias:
                 reference_dict = r.reference.to_dict_citation()
                 reference_alias_dict.append(reference_dict)
-
-                obj["references"].append(reference_dict)
+                if(reference_dict not in obj["references"]):
+                    obj["references"].append(reference_dict)
 
                 order = len(obj["reference_mapping"].keys())
                 if r.reference_id not in obj["reference_mapping"]:
@@ -3110,7 +3114,6 @@ class Locusdbentity(Dbentity):
 
     def references_overview_to_dict(self, summary_ids):
         blacklist = (551590,)
-
         references = DBSession.query(LocusReferences).filter(and_(LocusReferences.locus_id==self.dbentity_id, ~LocusReferences.reference_id.in_(blacklist))).all()
 
         obj = {}
@@ -3129,6 +3132,9 @@ class Locusdbentity(Dbentity):
                 "references": []
             },
             "name_description": {
+                "references": []
+            },
+            "id": {
                 "references": []
             }
         }
@@ -3152,11 +3158,15 @@ class Locusdbentity(Dbentity):
                 obj["qualities"]["qualifier"]["references"].append(ref_dict)
             elif ref.reference_class == "feature_type":
                 obj["qualities"]["feature_type"]["references"].append(ref_dict)
+            elif ref.reference_class == "systematic_name":
+                obj["qualities"]["id"]["references"].append(ref_dict)
             else:
                 continue
 
             if ref.reference_id not in reference_ids:
-                obj["references"].append(ref_dict)
+                if(ref_dict not in obj["references"]):
+                    obj["references"].append(ref_dict)
+
                 obj["sgdid_ref"][ref.reference.sgdid] = ref.reference
 
             reference_ids.add(ref.reference_id)
@@ -3164,7 +3174,10 @@ class Locusdbentity(Dbentity):
         summary_references = DBSession.query(LocussummaryReference).filter(and_(LocussummaryReference.summary_id.in_(summary_ids), ~LocussummaryReference.reference_id.in_(blacklist))).order_by(LocussummaryReference.reference_order).all()
         for s in summary_references:
             if s.reference_id not in reference_ids:
-                obj["references"].append(s.reference.to_dict_citation())
+                temp_ref = s.reference.to_dict_citation()
+                if(temp_ref not in obj["references"]):
+                    obj["references"].append(temp_ref)
+
                 obj["sgdid_ref"][s.reference.sgdid] = s.reference
                 reference_ids.add(s.reference_id)
 
@@ -6811,7 +6824,7 @@ class Regulationannotation(Base):
             "regulation_type": self.regulation_type,
             "regulator_type": self.regulator_type,
             # these are still here because of the old format. We should remove them after changes in the FE
-            "properties":[],
+            "properties": [],
             "assay": "",
             "construct": ""
         }

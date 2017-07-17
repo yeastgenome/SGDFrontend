@@ -383,14 +383,12 @@ def strain(request):
 @view_config(route_name='reference', renderer='json', request_method='GET')
 def reference(request):
     id = extract_id_request(request, 'reference', 'id', True)
-
     # allow reference to be accessed by sgdid even if not in disambig table
     if id:
         reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=id).one_or_none()
     else:
         reference = DBSession.query(Referencedbentity).filter_by(sgdid=request.matchdict['id']).one_or_none()
 
-    
     if reference:
         return reference.to_dict()
     else:
@@ -398,9 +396,12 @@ def reference(request):
 
 @view_config(route_name='reference_literature_details', renderer='json', request_method='GET')
 def reference_literature_details(request):
-    id = extract_id_request(request, 'reference')
-
-    reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=id).one_or_none()
+    id = extract_id_request(request, 'reference', 'id', True)
+    # allow reference to be accessed by sgdid even if not in disambig table
+    if id:
+        reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=id).one_or_none()
+    else:
+        reference = DBSession.query(Referencedbentity).filter_by(sgdid=request.matchdict['id']).one_or_none()
 
     if reference:
         return reference.annotations_to_dict()
@@ -467,6 +468,7 @@ def reference_triage_id(request):
         return HTTPNotFound()
 
 @view_config(route_name='reference_triage_id_update', renderer='json', request_method='PUT')
+@authenticate
 def reference_triage_id_update(request):
     id = request.matchdict['id'].upper()
 
@@ -474,11 +476,10 @@ def reference_triage_id_update(request):
     if triage:
         try:
             triage.update_from_json(request.json)
-        except ValueError:
-            return HTTPBadRequest(body=json.dumps({'error': 'Invalid JSON format in body request'}))
-        try:
             transaction.commit()
         except:
+            traceback.print_exc()
+            DBSession.rollback()
             return HTTPBadRequest(body=json.dumps({'error': 'DB failure. Verify if pmid is valid and not already present.'}))
         pusher = get_pusher_client()
         pusher.trigger('sgd', 'triageUpdate', {})
@@ -521,22 +522,39 @@ def reference_triage_promote(request):
             return HTTPBadRequest(body=json.dumps({'error': 'Error importing PMID into the database'}))
 
         try:
+            DBSession.delete(triage)
             transaction.commit()
         except:
-            return HTTPBadRequest(body=json.dumps({'error': 'DB failure. Verify that PMID is valid and not already present in SGD.'}))
-        
-        DBSession.delete(triage)
+            DBSession.rollback()
+            traceback.print_exc()
+            return HTTPBadRequest(body=json.dumps({'error': 'DB failure. Verify that PMID is valid and not already present in SGD.'}))  
 
+        # HANDLE TAGS
+        # track which loci have primary annotations for this reference to only have one primary per reference
+        primary_obj = {}
         for i in xrange(len(tags)):
-            curation_ref = CurationReference.factory(reference_id, tags[i][0], tags[i][1], tags[i][2], request.json['data']['assignee'])
+            tag_slug = tags[i][0]
+            comment = tags[i][1]
+            locus_dbentity_id = tags[i][2]
+            curation_ref = CurationReference.factory(reference_id, tag_slug, comment, locus_dbentity_id, request.json['data']['assignee'])
             if curation_ref:
                 DBSession.add(curation_ref)
-            lit_annotation = Literatureannotation.factory(reference_id, tags[i][0], tags[i][2], request.json['data']['assignee'])
+            lit_annotation = Literatureannotation.factory(reference_id, tag_slug, locus_dbentity_id, request.json['data']['assignee'])
             if lit_annotation:
+                # prevent multiple primary lit tags
+                if lit_annotation.topic == 'Primary Literature':
+                    if locus_dbentity_id in primary_obj.keys():
+                        continue
+                    else:
+                        primary_obj[locus_dbentity_id] = True
                 DBSession.add(lit_annotation)
-                
-        DBSession.flush()                
-        transaction.commit()
+
+        try:
+            DBSession.flush()
+            transaction.commit()
+        except:
+            traceback.print_exc()
+            DBSession.rollback()
         
         pusher = get_pusher_client()
         pusher.trigger('sgd', 'triageUpdate', {})
@@ -563,6 +581,7 @@ def reference_triage_id_delete(request):
             pusher.trigger('sgd', 'triageUpdate', {})
             return HTTPOk()
         except:
+            traceback.print_exc()
             DBSession.rollback()
             return HTTPBadRequest(body=json.dumps({'error': 'DB failure. Verify that PMID is valid and not already present in SGD.'}))
     else:
