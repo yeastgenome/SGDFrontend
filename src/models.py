@@ -1,4 +1,4 @@
-from sqlalchemy import Column, BigInteger, UniqueConstraint, Float, Boolean, SmallInteger, Integer, DateTime, ForeignKey, Index, Numeric, String, Text, text, FetchedValue, func, or_, and_, distinct
+from sqlalchemy import Column, BigInteger, UniqueConstraint, Float, Boolean, SmallInteger, Integer, DateTime, ForeignKey, Index, Numeric, String, Text, text, FetchedValue, func, or_, and_, distinct, desc
 from sqlalchemy.orm import scoped_session, sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
 from zope.sqlalchemy import ZopeTransactionExtension
@@ -9,6 +9,7 @@ import json
 import copy
 import requests
 import re
+import pdb
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
@@ -2989,7 +2990,7 @@ class Locusdbentity(Dbentity):
         if self.genetic_position:
             obj["genetic_position"] = self.genetic_position
 
-        summaries = DBSession.query(Locussummary.summary_id, Locussummary.html, Locussummary.date_created, Locussummary.summary_order, Locussummary.summary_type).filter_by(locus_id=self.dbentity_id).all()
+        summaries = DBSession.query(Locussummary.summary_id, Locussummary.html, Locussummary.date_created,Locussummary.summary_order,Locussummary.summary_type).filter_by(locus_id=self.dbentity_id).all()
         summary_types = {}
         for s in summaries:
             if s[4] in summary_types:
@@ -3003,12 +3004,14 @@ class Locusdbentity(Dbentity):
         obj["regulation_overview"] = self.regulation_overview_to_dict(summary_regulation)
 
         if len(summary_gene) > 0:
+            pdb.set_trace()
             text = ""
             for s in summary_gene:
                 text += s[1]
+            modify_summary_gene = sorted(summary_gene,key=lambda s: s[2])
             obj["paragraph"] = {
                 "text": text,
-                "date_edited": summary_gene[-1][2].strftime("%Y-%m-%d")
+                "date_edited": modify_summary_gene[-1][2].strftime("%Y-%m-%d")
             }
         else:
             obj["paragraph"] = None
