@@ -22,3 +22,4 @@
 # m h  dom mon dow   command
 0 * * * * /bin/bash /data/www/SGDBackend-NEX2/current/system_config/cron/restart.sh
 0 0 * * * /bin/bash /data/www/SGDBackend-NEX2/current/system_config/cron/index_disambiguation.sh
+0 15 * * * /bin/bash /data/www/SGDBackend-NEX2/current/system_config/cron/refresh_cache.sh
