@@ -1593,6 +1593,8 @@ class Referencedbentity(Dbentity):
         }
 
     def to_dict_citation(self):
+        if(self.pmid == 23241746):
+            print 'found pmid'
         obj = {
             "id": self.dbentity_id,
             "display_name": self.display_name,
@@ -2732,7 +2734,7 @@ class Locusdbentity(Dbentity):
 
 
         genes_data = []
-        
+
         for g in genes_in_same_datasetsamples:
             genes_data.append((g.dbentity_id, g.datasetsample_id, g.normalized_expression_value * datasetsample_to_exp_value[g.datasetsample_id]))
 
@@ -2762,7 +2764,7 @@ class Locusdbentity(Dbentity):
 
             if gene not in nodes:
                 dbentity = DBSession.query(Dbentity.display_name, Dbentity.format_name, Dbentity.obj_url).filter_by(dbentity_id=gene).one_or_none()
-                
+
                 nodes[gene] = {
                     "data": {
                         "name": dbentity[0],
@@ -2774,7 +2776,7 @@ class Locusdbentity(Dbentity):
                 }
 
                 score = list_genes[i][2] / list_genes[0][2] / 10, # normalizing
-                
+
                 max_coeff = max(max_coeff, score)
                 min_coeff = min(min_coeff, score)
 
@@ -2791,7 +2793,7 @@ class Locusdbentity(Dbentity):
 
             i += 1
 
-            
+
         return {
             "min_coeff": min_coeff,
             "max_coeff": max_coeff,
@@ -3117,7 +3119,6 @@ class Locusdbentity(Dbentity):
 
     def references_overview_to_dict(self, summary_ids):
         blacklist = (551590,)
-
         references = DBSession.query(LocusReferences).filter(and_(LocusReferences.locus_id==self.dbentity_id, ~LocusReferences.reference_id.in_(blacklist))).all()
 
         obj = {}
@@ -3136,6 +3137,9 @@ class Locusdbentity(Dbentity):
                 "references": []
             },
             "name_description": {
+                "references": []
+            },
+            "id": {
                 "references": []
             }
         }
@@ -3159,6 +3163,8 @@ class Locusdbentity(Dbentity):
                 obj["qualities"]["qualifier"]["references"].append(ref_dict)
             elif ref.reference_class == "feature_type":
                 obj["qualities"]["feature_type"]["references"].append(ref_dict)
+            elif ref.reference_class == "systematic_name":
+                obj["qualities"]["id"]["references"].append(ref_dict)
             else:
                 continue
 
@@ -6823,7 +6829,7 @@ class Regulationannotation(Base):
             "regulation_type": self.regulation_type,
             "regulator_type": self.regulator_type,
             # these are still here because of the old format. We should remove them after changes in the FE
-            "properties":[],
+            "properties": [],
             "assay": "",
             "construct": ""
         }
