@@ -63,7 +63,4 @@ index-es:
 	source dev_variables.sh && python scripts/search/index_elastic_search.py
 
 index-redis:
-	source dev_variables.sh && python scripts/disambiguation/create_disambiguation.py
-
-create-disambiguation:
-	source dev_variables.sh && python scripts/disambiguation/create_disambiguation.py
+	source dev_variables.sh && python scripts/disambiguation/index_disambiguation.py
