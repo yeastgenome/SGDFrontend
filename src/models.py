@@ -3022,17 +3022,10 @@ class Locusdbentity(Dbentity):
         aliases = DBSession.query(LocusAlias).filter(and_(LocusAlias.locus_id==self.dbentity_id, ~LocusAlias.alias_type.in_(['Pathway ID', 'Retired name', 'SGDID Secondary']))).all()
         for alias in aliases:
             if alias.alias_type == "EC number":
-                ecnumber = {
+                obj["ecnumber"] = {
                     "display_name": alias.display_name,
-                    "obj_url": alias.obj_url
+                    "link": alias.obj_url
                 }
-
-                if "ecnumbers" in obj:
-                    obj["ecnumbers"].append(ecnumber)
-                else:
-                    obj["ecnumbers"] = [ecnumber]
-
-                continue
 
             category = ""
             if alias.alias_type == "Uniform" or alias.alias_type == "Non-uniform":
