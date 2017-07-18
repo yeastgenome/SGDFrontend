@@ -1,10 +1,10 @@
-from src.models import DBSession, Base, Colleague, ColleagueLocus, Locusdbentity, LocusAlias, Locusnote, LocusnoteReference, Dbentity, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias
+from src.models import DBSession, Base, Colleague, ColleagueLocus, Locusdbentity, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, Locusnoteannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi
 from sqlalchemy import create_engine, and_
 from elasticsearch import Elasticsearch
 from mapping import mapping
 import os
 import requests
-import pdb
+
 from threading import Thread
 
 engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
@@ -180,10 +180,6 @@ def index_genes():
         so_ids.add(gis[1])
         dbentity_ids_to_so[gis[0]] = gis[1]
 
-    not_s288c = DBSession.query(Locusdbentity.dbentity_id).filter(Locusdbentity.not_in_s288c==True).all()
-    for id in not_s288c:
-        dbentity_ids.add(id[0])
-
     all_genes = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(list(dbentity_ids)), Locusdbentity.dbentity_status == 'Active').all()
 
     feature_types_db = DBSession.query(So.so_id, So.display_name).filter(So.so_id.in_(list(so_ids))).all()
@@ -208,8 +204,8 @@ def index_genes():
             ec_numbers[ec.locus_id] = [ec.display_name]
 
     secondary_db = DBSession.query(LocusAlias).filter_by(alias_type="SGDID Secondary").all()
-
     secondary_sgdids = {}
+
     for sid in secondary_db:
         if sid.locus_id in secondary_sgdids:
             secondary_sgdids[sid.locus_id].append(sid.display_name)
@@ -219,7 +215,6 @@ def index_genes():
     bulk_data = []
 
     print 'Indexing ' + str(len(all_genes)) + ' genes'
-
     for gene in all_genes:
         if gene.gene_name:
             _name = gene.gene_name
@@ -233,11 +228,16 @@ def index_genes():
         if protein:
             protein = protein[0]
 
-        sequence_history = DBSession.query(Locusnote.note).filter_by(locus_id=gene.dbentity_id, note_type="Sequence").all()
-        gene_history = DBSession.query(Locusnote.note).filter_by(
-            locus_id=gene.dbentity_id, note_type="Locus").all()
+        sequence_history = DBSession.query(Locusnoteannotation.note).filter_by(dbentity_id=gene.dbentity_id, note_type="Sequence").all()
+        gene_history = DBSession.query(Locusnoteannotation.note).filter_by(dbentity_id=gene.dbentity_id, note_type="Locus").all()
+
+        aliases_data = DBSession.query(LocusAlias.display_name).filter(LocusAlias.locus_id == gene.dbentity_id, ((LocusAlias.alias_type == "Uniform") | (LocusAlias.alias_type == "Non-uniform"))).all()
+        aliases = []
+        if(len(aliases_data) > 0):
+            aliases = aliases + [' '.join(item) for item in aliases_data]
 
         phenotype_ids = DBSession.query(Phenotypeannotation.phenotype_id).filter_by(dbentity_id=gene.dbentity_id).all()
+
         if phenotype_ids:
             phenotype_ids = [p[0] for p in phenotype_ids]
             phenotypes = DBSession.query(Phenotype.display_name).filter(Phenotype.phenotype_id.in_(phenotype_ids)).all()
@@ -288,6 +288,8 @@ def index_genes():
             'summary': [s[0] for s in summary],
 
             'phenotypes': [p[0] for p in phenotypes],
+
+            'aliases': aliases,
 
             'cellular_component': list(go_annotations["cellular component"] - set(["cellular component", "cellular component (direct)", "cellular_component", "cellular_component (direct)"])),
             'biological_process': list(go_annotations["biological process"] - set(["biological process (direct)", "biological process", "biological_process (direct)", "biological_process"])),
@@ -546,11 +548,10 @@ def index_references():
 
         authors = DBSession.query(Referenceauthor.display_name).filter_by(reference_id=reference.dbentity_id).all()
 
-        reference_loci_db = DBSession.query(LocusnoteReference).filter_by(reference_id=reference.dbentity_id).all()
+        reference_loci_db = DBSession.query(Locusnoteannotation).filter_by(reference_id=reference.dbentity_id).all()
 
         reference_loci = []
         if len(reference_loci_db) > 0:
-
             reference_loci = [r.dbentity.display_name for r in reference_loci_db]
 
         sec_sgdid = DBSession.query(ReferenceAlias.display_name).filter_by(reference_id=reference.dbentity_id, alias_type="Secondary SGDID").one_or_none()
@@ -583,7 +584,6 @@ def index_references():
             'keys': list(keys)
         }
 
-
         bulk_data.append({
             'index': {
                 '_index': INDEX_NAME,
@@ -601,30 +601,65 @@ def index_references():
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
-#delete_mapping()
-#put_mapping()
-# index_observables()
-# index_references()
-#index_genes()
-# index_not_in_S288C()
 
-# def index_part_1():
-#    pass
-#    index_strains()
+def index_chemicals():
+    all_chebi_data = DBSession.query(Chebi).all()
+    print "Indexing " + str(len(all_chebi_data)) + " chemicals"
+    bulk_data = []
 
-#    index_colleagues()
-#    index_phenotypes()
+    for chemical in all_chebi_data:
+        obj = {
+            "name": chemical.display_name,
+            "href": chemical.obj_url,
+            "description": chemical.description,
+            "category": "chemical",
+            "keys": []
+        }
 
-# def index_part_2():
-#    index_go_terms()
-#  pass
+        bulk_data.append({
+            'index': {
+                '_index': INDEX_NAME,
+                '_type': DOC_TYPE,
+                '_id': 'chemical_' + str(chemical.chebi_id)
+            }
+        })
+
+        bulk_data.append(obj)
+
+        if len(bulk_data) == 300:
+            es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
+            bulk_data = []
+
+    if len(bulk_data) > 0:
+
+        es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
+
+    # delete_mapping()
+    # put_mapping()
+
+    #index_chemicals()
+
+    # def index_part_1():
+    #    pass
+    #    index_strains()
+    #    index_genes()
+    #    index_colleagues()
+    #    index_phenotypes()
+
+
+def index_part_2():
+    pass
 #    index_reserved_names()
 #    index_toolbar_links()
 #    index_observables()
+#    index_go_terms()
 #    index_references()
 
 # t1 = Thread(target=index_part_1)
 # t2 = Thread(target=index_part_2)
-
 # t1.start()
 # t2.start()
+''' delete_mapping()
+put_mapping()
+index_observables()
+index_genes() '''
