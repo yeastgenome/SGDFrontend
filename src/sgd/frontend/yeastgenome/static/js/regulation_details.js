@@ -168,11 +168,13 @@ function create_target_table(data) {
         manualOptions["bPaginate"] = true;
         manualOptions["aaSorting"] = [[4, "asc"]];
         manualOptions["aoColumns"] = targetTableColOptions;
+        manualOptions["oLanguage"] = {"sEmptyTable": "No manual targets for " + locus['display_name']};
         manualOptions["aaData"] = manualDatatable;
         var htpOptions = {};
         htpOptions["bPaginate"] = true;
         htpOptions["aaSorting"] = [[4, "asc"]];
         htpOptions["aoColumns"] = targetTableColOptions;
+        htpOptions["oLanguage"] = {"sEmptyTable": "No HTP targets for " + locus['display_name']};
         htpOptions["aaData"] = htpDatatable;
     }
     create_table("manual_target_table", manualOptions);
@@ -207,17 +209,17 @@ function create_regulator_table(data) {
     manualOptions["bPaginate"] = true;
 	manualOptions["aaSorting"] = [[2, "asc"]];
 	manualOptions["aoColumns"] = regulatorTableColOptions;
-	manualOptions["oLanguage"] = {"sEmptyTable": "No regulation data for " + locus['display_name']};
+	manualOptions["oLanguage"] = {"sEmptyTable": "No manual regulators for " + locus['display_name']};
 	manualOptions["aaData"] = manualDatatable;
     var htpOptions = {};
     htpOptions["bPaginate"] = true;
     htpOptions["aaSorting"] = [[2, "asc"]];
     htpOptions["aoColumns"] = regulatorTableColOptions;
-    htpOptions["oLanguage"] = {"sEmptyTable": "No regulation data for " + locus['display_name']};
+    htpOptions["oLanguage"] = {"sEmptyTable": "No HTP regulators for " + locus['display_name']};
     htpOptions["aaData"] = htpDatatable;
 
     create_table("manual_regulator_table", manualOptions);
-    return create_table("htp_regulator_table", htpDatatable);
+    return create_table("htp_regulator_table", htpOptions);
 }
 
 var graph_style = cytoscape.stylesheet()
