@@ -2042,7 +2042,7 @@ class Locusdbentity(Dbentity):
 
         inactive_loci = DBSession.query(Dbentity.dbentity_id).filter(and_(Dbentity.dbentity_status != 'Active', Dbentity.subclass == 'LOCUS')).all()
         inactive_loci = [i[0] for i in inactive_loci]
-        
+
         neighbors_list = {}
 
         for dna in dnas:
@@ -3071,11 +3071,15 @@ class Locusdbentity(Dbentity):
 
             obj["aliases"].append(alias_obj)
 
-        sos = DBSession.query(Dnasequenceannotation.so_id).filter_by(dbentity_id=self.dbentity_id).group_by(Dnasequenceannotation.so_id).all()
+        sos = DBSession.query(Dnasequenceannotation.so_id).filter(
+            Dnasequenceannotation.dbentity_id == self.dbentity_id).filter(
+                Dnasequenceannotation.taxonomy_id == 274901).group_by(
+                    Dnasequenceannotation.so_id).all()
         locus_type = DBSession.query(So.display_name).filter(So.so_id.in_([so[0] for so in sos])).all()
         obj["locus_type"] = ",".join([l[0] for l in locus_type])
 
         urls = DBSession.query(LocusUrl).filter_by(locus_id=self.dbentity_id).all()
+
         obj["urls"] = [u.to_dict() for u in urls]
 
         obj["urls"].append({
@@ -4437,6 +4441,7 @@ class Go(Base):
         }
 
         urls = DBSession.query(GoUrl).filter_by(go_id=self.go_id).all()
+
         for url in urls:
             obj["urls"].append({
                 "display_name": url.display_name,
