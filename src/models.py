@@ -2040,6 +2040,9 @@ class Locusdbentity(Dbentity):
         locus_ids = set([dna.dbentity_id for dna in dnas])
         neighbors_annotation_ids = []
 
+        inactive_loci = DBSession.query(Dbentity.dbentity_id).filter(and_(Dbentity.dbentity_status != 'Active', Dbentity.subclass == 'LOCUS')).all()
+        inactive_loci = [i[0] for i in inactive_loci]
+        
         neighbors_list = {}
 
         for dna in dnas:
@@ -2055,7 +2058,7 @@ class Locusdbentity(Dbentity):
             start = max(1, midpoint - 5000)
             end = min(len(dna.contig.residues), start + 10000)
 
-            neighbors = DBSession.query(Dnasequenceannotation).filter(and_(Dnasequenceannotation.dna_type == 'GENOMIC', Dnasequenceannotation.contig_id == dna.contig_id, Dnasequenceannotation.end_index >= start, Dnasequenceannotation.start_index <= end)).all()
+            neighbors = DBSession.query(Dnasequenceannotation).filter(and_(Dnasequenceannotation.dna_type == 'GENOMIC', Dnasequenceannotation.contig_id == dna.contig_id, Dnasequenceannotation.end_index >= start, Dnasequenceannotation.start_index <= end, ~Dnasequenceannotation.dbentity_id.in_(inactive_loci))).all()
 
             for neighbor in neighbors:
                 locus_ids.add(neighbor.dbentity_id)
@@ -3861,7 +3864,6 @@ class Dnasequenceannotation(Base):
             locus = loci[self.dbentity_id]
         else:
             locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=self.dbentity_id).one_or_none()
-
         if dnasubsequences:
             tags = dnasubsequences[self.annotation_id]
         else:
