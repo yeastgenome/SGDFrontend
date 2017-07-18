@@ -11,7 +11,7 @@ engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
 DBSession.configure(bind=engine)
 Base.metadata.bind = engine
 
-INDEX_NAME = 'searchable_items_aws'
+INDEX_NAME = os.environ.get('ES_INDEX_NAME', 'searchable_items_aws')
 DOC_TYPE = 'searchable_item'
 es = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
 
@@ -639,6 +639,9 @@ def cleanup()
     put_mapping()
 
 def setup()
+    # see if index exists, if not create it
+    indices=es.indices.get_aliases().keys()
+    print indices
     put_mapping()
 
 def index_part_1():
@@ -656,7 +659,8 @@ def index_part_2():
     index_references()
 
 if __name__ == '__main__':
-    t1 = Thread(target=index_part_1)
-    t2 = Thread(target=index_part_2)
-    t1.start()
-    t2.start()
+    setup()
+    # t1 = Thread(target=index_part_1)
+    # t2 = Thread(target=index_part_2)
+    # t1.start()
+    # t2.start()
