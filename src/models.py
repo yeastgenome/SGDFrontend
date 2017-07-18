@@ -2391,7 +2391,7 @@ class Locusdbentity(Dbentity):
 
         nodes[self.format_name] = {
             "data": {
-                "name": self.display_name,
+                "name": self.display_name.replace("_", " "),
                 "id": self.format_name,
                 "link": self.obj_url,
                 "type": "BIOENTITY",
@@ -2431,7 +2431,7 @@ class Locusdbentity(Dbentity):
                 if go.format_name not in nodes:
                     nodes[go.format_name] = {
                         "data": {
-                            "name": go.display_name,
+                            "name": go.display_name.replace("_", " "),
                             "id": go.format_name,
                             "link": go.obj_url,
                             "type": "GO",
@@ -4937,7 +4937,7 @@ class Goslim(Base):
         if self.slim_name == "Yeast GO-Slim":
             return {
                 "link": self.obj_url,
-                "display_name": self.display_name
+                "display_name": self.display_name.replace("_", " ")
             }
         else:
             return None
