@@ -93,5 +93,6 @@ def crawl():
     yield runner.crawl(GenesSpider)
     reactor.stop()
 
-crawl()
-reactor.run()
+if __name__ == '__main__':
+    crawl()
+    reactor.run()
