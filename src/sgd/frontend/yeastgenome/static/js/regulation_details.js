@@ -148,15 +148,15 @@ function create_target_table(data) {
         var htpGenes = {};
         var target_entry_count = 0;
         for (var i=0; i < data.length; i++) {
-            if(data[i]["locus1"]["id"] == locus['id']) {
-                // TODO, identify if manual or HTP
-                var isManual = true;
+            var d = data[i];
+            if(d["locus1"]["id"] == locus['id']) {
+                var isManual = (d.annotation_type !== 'high-throughput');
                 if (isManual) {
-                    manualDatatable.push(regulation_data_to_table(data[i], false));
-                    manualGenes[data[i]["locus2"]["id"]] = true;
+                    manualDatatable.push(regulation_data_to_table(d, false));
+                    manualGenes[d["locus2"]["id"]] = true;
                 } else {
-                    htpDatatable.push(regulation_data_to_table(data[i], false));
-                    htpGenes[data[i]["locus2"]["id"]] = true;
+                    htpDatatable.push(regulation_data_to_table(d, false));
+                    htpGenes[d["locus2"]["id"]] = true;
                 }
                 target_entry_count = target_entry_count + 1;
             }
@@ -187,15 +187,15 @@ function create_regulator_table(data) {
     var htpGenes = {};
     var regulation_entry_count = 0;
 	for (var i=0; i < data.length; i++) {
-	    if(data[i]["locus2"]["id"] == locus['id']) {
-            // TODO, identify if manual or HTP
-            var isManual = true;
+        var d = data[i];
+	    if(d["locus2"]["id"] == locus['id']) {
+           var isManual = (d.annotation_type !== 'high-throughput');
             if (isManual) {
-                manualDatatable.push(regulation_data_to_table(data[i], false));
-                manualGenes[data[i]["locus1"]["id"]] = true;
+                manualDatatable.push(regulation_data_to_table(d, false));
+                manualGenes[d["locus1"]["id"]] = true;
             } else {
-                htpDatatable.push(regulation_data_to_table(data[i], false));
-                htpGenes[data[i]["locus1"]["id"]] = true;
+                htpDatatable.push(regulation_data_to_table(d, false));
+                htpGenes[d["locus1"]["id"]] = true;
             }
             regulation_entry_count = regulation_entry_count+1;
 		}
