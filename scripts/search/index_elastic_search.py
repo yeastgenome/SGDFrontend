@@ -634,32 +634,29 @@ def index_chemicals():
 
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
-    # delete_mapping()
-    # put_mapping()
+def cleanup()
+    delete_mapping()
+    put_mapping()
 
-    #index_chemicals()
+def setup()
+    put_mapping()
 
-    # def index_part_1():
-    #    pass
-    #    index_strains()
-    #    index_genes()
-    #    index_colleagues()
-    #    index_phenotypes()
-
+def index_part_1():
+    index_genes()
+    index_strains()
+    index_colleagues()
+    index_phenotypes()
+    index_chemicals()
 
 def index_part_2():
-    pass
-#    index_reserved_names()
-#    index_toolbar_links()
-#    index_observables()
-#    index_go_terms()
-#    index_references()
+    index_reserved_names()
+    index_toolbar_links()
+    index_observables()
+    index_go_terms()
+    index_references()
 
-# t1 = Thread(target=index_part_1)
-# t2 = Thread(target=index_part_2)
-# t1.start()
-# t2.start()
-''' delete_mapping()
-put_mapping()
-index_observables()
-index_genes() '''
+if __name__ == '__main__':
+    t1 = Thread(target=index_part_1)
+    t2 = Thread(target=index_part_2)
+    t1.start()
+    t2.start()
