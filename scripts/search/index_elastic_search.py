@@ -1,4 +1,4 @@
-from src.models import DBSession, Base, Colleague, ColleagueLocus, Locusdbentity, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, Locusnoteannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi
+from src.models import DBSession, Base, Colleague, ColleagueLocus, Locusdbentity, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi
 from sqlalchemy import create_engine, and_
 from elasticsearch import Elasticsearch
 from mapping import mapping
@@ -17,21 +17,21 @@ es = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
 
 
 def delete_mapping():
-    print "Deleting mapping..."
+    print("Deleting mapping...")
     response = requests.delete(os.environ['ES_URI'] + INDEX_NAME + "/")
     if response.status_code != 200:
-        print "ERROR: " + str(response.json())
+        print("ERROR: " + str(response.json()))
     else:
-        print "SUCCESS"
+        print("SUCCESS")
 
 
 def put_mapping():
-    print "Putting mapping... "
+    print("Putting mapping... ")
     response = requests.put(os.environ['ES_URI'] + INDEX_NAME + "/", json=mapping)
     if response.status_code != 200:
-        print "ERROR: " + str(response.json())
+        print("ERROR: " + str(response.json()))
     else:
-        print "SUCCESS"
+        print("SUCCESS")
 
 
 def index_toolbar_links():
@@ -88,7 +88,7 @@ def index_toolbar_links():
              ("Wiki", "http://wiki.yeastgenome.org/index.php/Main_Page",  'wiki'),
              ("Resources", "http://wiki.yeastgenome.org/index.php/External_Links",  [])]
 
-    print 'Indexing ' + str(len(links)) + ' toolbar links'
+    print('Indexing ' + str(len(links)) + ' toolbar links')
 
     for l in links:
         obj = {
@@ -104,7 +104,7 @@ def index_toolbar_links():
 def index_colleagues():
     colleagues = DBSession.query(Colleague).all()
 
-    print "Indexing " + str(len(colleagues)) + " colleagues"
+    print("Indexing " + str(len(colleagues)) + " colleagues")
 
     bulk_data = []
     for c in colleagues:
@@ -180,6 +180,10 @@ def index_genes():
         so_ids.add(gis[1])
         dbentity_ids_to_so[gis[0]] = gis[1]
 
+    not_s288c = DBSession.query(Locusdbentity.dbentity_id).filter(Locusdbentity.not_in_s288c==True).all()
+    for id in not_s288c:
+        dbentity_ids.add(id[0])
+
     all_genes = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(list(dbentity_ids)), Locusdbentity.dbentity_status == 'Active').all()
 
     feature_types_db = DBSession.query(So.so_id, So.display_name).filter(So.so_id.in_(list(so_ids))).all()
@@ -214,7 +218,7 @@ def index_genes():
 
     bulk_data = []
 
-    print 'Indexing ' + str(len(all_genes)) + ' genes'
+    print('Indexing ' + str(len(all_genes)) + ' genes')
     for gene in all_genes:
         if gene.gene_name:
             _name = gene.gene_name
@@ -228,8 +232,9 @@ def index_genes():
         if protein:
             protein = protein[0]
 
-        sequence_history = DBSession.query(Locusnoteannotation.note).filter_by(dbentity_id=gene.dbentity_id, note_type="Sequence").all()
-        gene_history = DBSession.query(Locusnoteannotation.note).filter_by(dbentity_id=gene.dbentity_id, note_type="Locus").all()
+        # TEMP don't index due to schema schange
+        # sequence_history = DBSession.query(Locusnoteannotation.note).filter_by(dbentity_id=gene.dbentity_id, note_type="Sequence").all()
+        # gene_history = DBSession.query(Locusnoteannotation.note).filter_by(dbentity_id=gene.dbentity_id, note_type="Locus").all()
 
         aliases_data = DBSession.query(LocusAlias.display_name).filter(LocusAlias.locus_id == gene.dbentity_id, ((LocusAlias.alias_type == "Uniform") | (LocusAlias.alias_type == "Non-uniform"))).all()
         aliases = []
@@ -300,8 +305,9 @@ def index_genes():
             'tc_number': tc_numbers.get(gene.dbentity_id),
             'secondary_sgdid': secondary_sgdids.get(gene.dbentity_id),
 
-            'sequence_history': [s[0] for s in sequence_history],
-            'gene_history': [g[0] for g in gene_history],
+            # TEMP don't index due to schema change
+            # 'sequence_history': [s[0] for s in sequence_history],
+            # 'gene_history': [g[0] for g in gene_history],
 
             'bioentity_id': gene.dbentity_id,
 
@@ -331,7 +337,7 @@ def index_phenotypes():
 
     bulk_data = []
 
-    print "Indexing " + str(len(phenotypes)) + " phenotypes"
+    print("Indexing " + str(len(phenotypes)) + " phenotypes")
 
     for phenotype in phenotypes:
         annotations = DBSession.query(Phenotypeannotation).filter_by(phenotype_id=phenotype.phenotype_id).all()
@@ -392,7 +398,7 @@ def index_phenotypes():
 def index_observables():
     observables = DBSession.query(Apo).filter_by(apo_namespace="observable").all()
 
-    print "Indexing " + str(len(observables)) + " observables"
+    print("Indexing " + str(len(observables)) + " observables")
     bulk_data = []
 
     for observable in observables:
@@ -425,7 +431,7 @@ def index_observables():
 def index_strains():
     strains = DBSession.query(Straindbentity).all()
 
-    print "Indexing " + str(len(strains)) + " strains"
+    print("Indexing " + str(len(strains)) + " strains")
     for strain in strains:
         key_values = [strain.display_name, strain.format_name, strain.genbank_id]
 
@@ -453,7 +459,7 @@ def index_strains():
 def index_reserved_names():
     reserved_names = DBSession.query(Reservedname).all()
 
-    print "Indexing " + str(len(reserved_names)) + " reserved names"
+    print("Indexing " + str(len(reserved_names)) + " reserved names")
     for reserved_name in reserved_names:
         obj = {
             "name": reserved_name.display_name,
@@ -477,7 +483,7 @@ def index_go_terms():
 
     gos = DBSession.query(Go).all()
 
-    print "Indexing " + str(len(gos) - len(go_id_blacklist)) + " GO terms"
+    print("Indexing " + str(len(gos) - len(go_id_blacklist)) + " GO terms")
 
     bulk_data = []
     for go in gos:
@@ -540,7 +546,7 @@ def index_references():
     references = DBSession.query(Referencedbentity).all()
 
     bulk_data = []
-    print 'Indexing ' + str(len(references)) + ' references'
+    print('Indexing ' + str(len(references)) + ' references')
     for reference in references:
         abstract = DBSession.query(Referencedocument.text).filter_by(reference_id=reference.dbentity_id, document_type="Abstract").one_or_none()
         if abstract:
@@ -548,11 +554,11 @@ def index_references():
 
         authors = DBSession.query(Referenceauthor.display_name).filter_by(reference_id=reference.dbentity_id).all()
 
-        reference_loci_db = DBSession.query(Locusnoteannotation).filter_by(reference_id=reference.dbentity_id).all()
+        # reference_loci_db = DBSession.query(Locusnoteannotation).filter_by(reference_id=reference.dbentity_id).all()
 
-        reference_loci = []
-        if len(reference_loci_db) > 0:
-            reference_loci = [r.dbentity.display_name for r in reference_loci_db]
+        # reference_loci = []
+        # if len(reference_loci_db) > 0:
+        #     reference_loci = [r.dbentity.display_name for r in reference_loci_db]
 
         sec_sgdid = DBSession.query(ReferenceAlias.display_name).filter_by(reference_id=reference.dbentity_id, alias_type="Secondary SGDID").one_or_none()
         if sec_sgdid:
@@ -577,7 +583,8 @@ def index_references():
             'author': [a[0] for a in authors],
             'journal': journal,
             'year': reference.year,
-            'reference_loci': reference_loci,
+            # TEMP don't index
+            # 'reference_loci': reference_loci,
             'secondary_sgdid': sec_sgdid,
 
             'category': 'reference',
@@ -604,7 +611,7 @@ def index_references():
 
 def index_chemicals():
     all_chebi_data = DBSession.query(Chebi).all()
-    print "Indexing " + str(len(all_chebi_data)) + " chemicals"
+    print("Indexing " + str(len(all_chebi_data)) + " chemicals")
     bulk_data = []
 
     for chemical in all_chebi_data:
@@ -634,15 +641,16 @@ def index_chemicals():
 
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
-def cleanup()
+def cleanup():
     delete_mapping()
     put_mapping()
 
-def setup()
+def setup():
     # see if index exists, if not create it
     indices=es.indices.get_aliases().keys()
-    print indices
-    put_mapping()
+    index_exists = INDEX_NAME in indices
+    if not index_exists:
+        put_mapping()
 
 def index_part_1():
     index_genes()
@@ -660,7 +668,7 @@ def index_part_2():
 
 if __name__ == '__main__':
     setup()
-    # t1 = Thread(target=index_part_1)
-    # t2 = Thread(target=index_part_2)
-    # t1.start()
-    # t2.start()
+    t1 = Thread(target=index_part_1)
+    t2 = Thread(target=index_part_2)
+    t1.start()
+    t2.start()
