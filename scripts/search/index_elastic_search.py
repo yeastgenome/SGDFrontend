@@ -564,6 +564,7 @@ def index_references():
         #     reference_loci = [r.dbentity.display_name for r in reference_loci_db]
 
         sec_sgdids = DBSession.query(ReferenceAlias.display_name).filter_by(reference_id=reference.dbentity_id, alias_type="Secondary SGDID").all()
+        sec_sgdid = None
         if len(sec_sgdids):
             sec_sgdid = sec_sgdids[0][0]
 
