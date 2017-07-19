@@ -13,12 +13,13 @@ Base.metadata.bind = engine
 
 INDEX_NAME = os.environ.get('ES_INDEX_NAME', 'searchable_items_aws')
 DOC_TYPE = 'searchable_item'
-es = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
+ES_URI = os.environ['WRITE_ES_URI']
+es = Elasticsearch(ES_URI, retry_on_timeout=True)
 
 
 def delete_mapping():
     print("Deleting mapping...")
-    response = requests.delete(os.environ['ES_URI'] + INDEX_NAME + "/")
+    response = requests.delete(ES_URI + INDEX_NAME + "/")
     if response.status_code != 200:
         print("ERROR: " + str(response.json()))
     else:
@@ -27,7 +28,7 @@ def delete_mapping():
 
 def put_mapping():
     print("Putting mapping... ")
-    response = requests.put(os.environ['ES_URI'] + INDEX_NAME + "/", json=mapping)
+    response = requests.put(ES_URI + INDEX_NAME + "/", json=mapping)
     if response.status_code != 200:
         print("ERROR: " + str(response.json()))
     else:
