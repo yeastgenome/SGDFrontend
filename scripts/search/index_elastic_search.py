@@ -144,7 +144,7 @@ def index_colleagues():
             'colleague_loci': sorted(list(locus))
         }
 
-        c._include_keywords_to_dict(obj) # adds 'keywords' to obj
+        c.to_dict() # adds 'keywords' to obj
 
         bulk_data.append({
             'index': {
@@ -562,9 +562,9 @@ def index_references():
         # if len(reference_loci_db) > 0:
         #     reference_loci = [r.dbentity.display_name for r in reference_loci_db]
 
-        sec_sgdid = DBSession.query(ReferenceAlias.display_name).filter_by(reference_id=reference.dbentity_id, alias_type="Secondary SGDID").one_or_none()
-        if sec_sgdid:
-            sec_sgdid = sec_sgdid[0]
+        sec_sgdids = DBSession.query(ReferenceAlias.display_name).filter_by(reference_id=reference.dbentity_id, alias_type="Secondary SGDID").all()
+        if len(sec_sgdids):
+            sec_sgdid = sec_sgdids[0][0]
 
         journal = reference.journal
         if journal:
