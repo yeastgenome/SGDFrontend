@@ -15,12 +15,7 @@ ignoring = []
 def table_set(key, value, prefix):
     key = str("/" + prefix + "/" + str(key)).upper()
 
-    redis_value = disambiguation.get(key)
-    
-    if redis_value and redis_value != str(value):
-        ignoring.append(key)
-    else:
-        disambiguation.set(key, value)
+    disambiguation.set(key, value)
 
 def load_locus():
     print("Loading genes into Redis...")
@@ -34,24 +29,25 @@ def load_locus():
             ids_to_aliases[alias.locus_id].append(alias.display_name)
         else:
             ids_to_aliases[alias.locus_id] = [alias.display_name]
-
-    # table_set will ignore in case of collisions
-    # so by indexing each field separately guarantees priority
+        
+    # in case of collisions, the table_set will overwrite the value
+    # indexing each name separately assures priority
+            
     for gene in genes:
-        table_set(str(gene.dbentity_id), gene.dbentity_id, "locus")
-
-    for gene in genes:
-        table_set(str(gene.display_name.upper()), gene.dbentity_id, "locus")
-
-    for gene in genes:
-        table_set(str(gene.systematic_name.upper()), gene.dbentity_id, "locus")
+        for alias in ids_to_aliases.get(gene.dbentity_id, []):
+            table_set(str(alias).upper(), gene.dbentity_id, "locus")
 
     for gene in genes:
         table_set(str(gene.sgdid.upper()), gene.dbentity_id, "locus")
 
     for gene in genes:
-        for alias in ids_to_aliases.get(gene.dbentity_id, []):
-            table_set(str(alias).upper(), gene.dbentity_id, "locus")
+        table_set(str(gene.systematic_name.upper()), gene.dbentity_id, "locus")
+
+    for gene in genes:
+        table_set(str(gene.display_name.upper()), gene.dbentity_id, "locus")
+            
+    for gene in genes:
+        table_set(str(gene.dbentity_id), gene.dbentity_id, "locus")
 
 def load_reserved_names():
     print("Loading reserve names into Redis...")
