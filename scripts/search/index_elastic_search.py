@@ -183,6 +183,8 @@ def index_genes():
     not_s288c = DBSession.query(Locusdbentity.dbentity_id).filter(Locusdbentity.not_in_s288c==True).all()
     for id in not_s288c:
         dbentity_ids.add(id[0])
+        # assume non S288C features to be ORFs
+        dbentity_ids_to_so[id[0]] = 263757
 
     all_genes = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(list(dbentity_ids)), Locusdbentity.dbentity_status == 'Active').all()
 
