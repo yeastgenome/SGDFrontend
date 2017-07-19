@@ -30,6 +30,8 @@ log = logging.getLogger(__name__)
 import redis
 disambiguation_table = redis.Redis()
 
+ES_INDEX_NAME = os.environ.get('ES_INDEX_NAME', 'searchable_items_aws')
+
 # safe return returns None if not found instead of 404 exception
 def extract_id_request(request, prefix, param_name='id', safe_return=False):
     id = str(request.matchdict[param_name])
@@ -172,7 +174,7 @@ def search_autocomplete(request):
         }
 
     autocomplete_results = ESearch.search(
-        index=request.registry.settings['elasticsearch.index'],
+        index=ES_INDEX_NAME,
         body=build_autocomplete_search_body_request(query, category, field)
     )
 
@@ -219,7 +221,7 @@ def search(request):
                                                sort_by)
 
     search_results = ESearch.search(
-        index=request.registry.settings['elasticsearch.index'],
+        index=ES_INDEX_NAME,
         body=search_body,
         size=limit,
         from_=offset,
@@ -240,7 +242,7 @@ def search(request):
     )
 
     aggregation_results = ESearch.search(
-        index=request.registry.settings['elasticsearch.index'],
+        index=ES_INDEX_NAME,
         body=aggregation_body,
         preference='p_'+query
     )
