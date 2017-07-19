@@ -1867,7 +1867,6 @@ class Locusdbentity(Dbentity):
 
     def regulation_details(self):
         annotations = DBSession.query(Regulationannotation).filter(or_(Regulationannotation.target_id==self.dbentity_id, Regulationannotation.regulator_id==self.dbentity_id)).all()
-
         return [a.to_dict() for a in annotations]
 
     def binding_site_details(self):
@@ -6782,6 +6781,14 @@ class Regulationannotation(Base):
     target = relationship(u'Dbentity', primaryjoin='Regulationannotation.target_id == Dbentity.dbentity_id')
     taxonomy = relationship(u'Taxonomy')
 
+    def get_happens_during(self):
+        item = DBSession.query(Go).filter(Go.go_id == self.happens_during).first()
+        if(item != None):
+            return item.display_name
+        return None
+
+
+
     def to_dict(self, reference=None):
         if reference is None:
             reference = self.reference
@@ -6823,7 +6830,8 @@ class Regulationannotation(Base):
             },
             "evidence": experiment,
             "regulation_of": self.regulation_type,
-            "happens_during": self.happens_during,
+            "happens_during":self.get_happens_during(),
+            "direction": self.direction,
             "reference": reference.to_dict_citation(),
             "strain": strain_obj,
             "experiment": experiment,
