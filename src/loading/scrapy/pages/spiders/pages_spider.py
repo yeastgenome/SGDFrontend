@@ -43,8 +43,8 @@ class BaseSpider(scrapy.Spider):
 
     def parse(self, response):
         url = response.request.url
-        latency = response.request.meta['download_latency']
-        self.log(url + ': ' + str(latency) + 'sec')
+        # # to debug latency
+        # latency = response.request.meta['download_latency']
         if response.status != 200:
             self.log('error on ' + response.url)
 
