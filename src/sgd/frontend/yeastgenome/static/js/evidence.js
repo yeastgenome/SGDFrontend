@@ -174,10 +174,6 @@ function regulation_data_to_table(evidence, is_regulator) {
 	if(evidence['strain'] != null) {
 	    strain = create_link(evidence['strain']['display_name'], evidence['strain']['link']);
 	}
-	var conditions = '';
-	if(evidence['properties'].length> 0) {
-	    conditions = evidence['properties'][0]['note'];
-	}
 	var reference = '';
 	if(evidence['reference'] != null) {
 	    reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
@@ -195,7 +191,14 @@ function regulation_data_to_table(evidence, is_regulator) {
 	else {
 	    analyze_value = evidence['locus2']['id'];
 	}
-  	return [evidence['id'], analyze_value, bioent1, evidence['locus1']['format_name'], bioent2, evidence['locus2']['format_name'], experiment, evidence['assay'], evidence['construct'], conditions, strain, reference];
+    var direction = evidence['direction'] || '';
+    var regulation_type = evidence['regulation_type'] || '';
+    var regulator_type= evidence['regulator_type'] || '';
+    var happens_during = evidence['happens_during'] || '';
+    var evidence_name = evidence['experiment']['display_name'] || '';
+    // Evidence ID, Analyze ID, Regulator, Regulator Systematic Name, Target, Target Systematic Name, Direction, Regulation of, Happens During, Regulator type, direction, regulation of, happens during,  Evidence, Strain Background, Reference
+    return [evidence['id'], analyze_value, bioent1, evidence['locus1']['format_name'], bioent2, evidence['locus2']['format_name'], direction, regulation_type, happens_during, regulator_type, direction, regulation_type, happens_during, evidence_name, strain, reference];
+  	
 }
 
 function interaction_data_to_table(evidence, index) {

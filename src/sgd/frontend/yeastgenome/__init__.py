@@ -13,7 +13,7 @@ import re
 from pyramid.config import Configurator
 from pyramid.renderers import JSONP, render
 from pyramid.response import Response
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
 from src.sgd.frontend.yeastgenome.views.misc_views import not_found
 from src.sgd.frontend.frontend_interface import FrontendInterface
@@ -46,7 +46,7 @@ class YeastgenomeFrontend(FrontendInterface):
                 if data is not None:
                     return data
                 else:
-                    return not_found(request)
+                    return HTTPNotFound()
         return f
 
     def check_date(self):
@@ -63,16 +63,19 @@ class YeastgenomeFrontend(FrontendInterface):
         if obj_url is None:
             obj_url = self.backend_url + '/' + obj_type + '/' + obj_repr
 
-        obj = get_json(obj_url)
+        try:
+            obj = get_json(obj_url)
+        except:
+            return HTTPNotFound()
 
         if obj is None:
             return None
 
+        # basic info
         return {
-                    #Basic info
-                    obj_type: obj,
-                    obj_type + '_js': json.dumps(obj)
-                    }
+            obj_type: obj,
+            obj_type + '_js': json.dumps(obj)
+        }
 
     def strain(self, strain_repr):
         obj = self.get_obj('strain', strain_repr)

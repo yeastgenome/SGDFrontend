@@ -18,7 +18,6 @@ regulationView.render = function(){
         _elements.push({"name":"Shared GO Processes Among Targets", "target":"enrichment"});
         _elements.push({"name":"Regulators", "target":"regulators"});
     }
-    _elements.push({"name":"Regulators", "target":"regulators"});
     if(locus['regulation_overview']['target_count'] + locus['regulation_overview']['regulator_count'] > 0){
        _elements.push({"name":"Regulation Network", "target":"network"}); 
     }

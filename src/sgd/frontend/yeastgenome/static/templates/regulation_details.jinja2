@@ -76,7 +76,7 @@
             <span id="domain_table_header" class="round secondary label"></span>
         </h2>
         <hr />
-        <div class="panel">
+        <div>
             <!-- Includes domain_table into template -->
             {% set table_id = "domain_table" %}
             {% include "domain_table.jinja2" %}
@@ -115,14 +115,24 @@
                 the experiment and assay type, constructs, conditions, and strains, as well as a reference,
                 are provided for each Regulator annotation.
             </p>
-            <span id="target_table_header" class="round secondary label"></span>
+            
         </h2>
         <hr />
-
-        <div class="panel">
-            <!-- Includes regulation_table into template -->
-            {% set table_id = "target_table" %}
-            {% include "regulation_table.jinja2" %}
+        <div>
+            <h3>Manually Curated <span id="manual_target_table_header" class="round secondary label"></span></h3>
+            {% set table_id = "manual_target_table" %}
+            {% include "regulation_target_table.jinja2" %}
+        </div>
+        <p>&nbsp;</p>
+        <div>
+            <h3>High-throughput  <span id="htp_target_table_header" class="round secondary label"></span></h3>
+            {% set table_id = "htp_target_table" %}
+            {% include "regulation_target_table.jinja2" %}
+        </div>
+        {# invisible table with all to allow analyze HTP and manual #}
+        <div class="hide">
+            {% set table_id = "all_target_table" %}
+            {% include "regulation_target_table.jinja2" %}
         </div>
     </section>
 
@@ -163,13 +173,24 @@
                 information about the experiment and assay type, constructs, conditions, and strains, as
                 well as a reference, are provided for each Regulator annotation.
             </p>
-            <span id="regulator_table_header" class="round secondary label"></span>
         </h2>
         <hr />
-        <div class="">
-            <!-- Includes regulation_table into template -->
-            {% set table_id = "regulator_table" %}
-            {% include "regulation_table.jinja2" %}
+
+        <div>
+            <h3>Manually Curated <span id="manual_regulator_table_header" class="round secondary label"></span></h3>
+            {% set table_id = "manual_regulator_table" %}
+            {% include "regulation_regulator_table.jinja2" %}
+        </div>
+        <p>&nbsp;</p>
+        <div>
+            <h3>High-throughput <span id="htp_regulator_table_header" class="round secondary label"></span></h3>
+            {% set table_id = "htp_regulator_table" %}
+            {% include "regulation_regulator_table.jinja2" %}
+        </div>
+        {# invisible table with all to allow analyze HTP and manual #}
+        <div class="hide">
+            {% set table_id = "all_regulator_table" %}
+            {% include "regulation_regulator_table.jinja2" %}
         </div>
     </section>
 
