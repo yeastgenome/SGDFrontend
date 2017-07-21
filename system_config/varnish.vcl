@@ -18,7 +18,7 @@ sub vcl_recv {
       if (!client.ip ~ purgers) {
         return (synth(405));
       }
-      return (purge)
+      return (purge);
     }
 
     if (vsthrottle.is_denied(client.identity, 100, 10s)) {
