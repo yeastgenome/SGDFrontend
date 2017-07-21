@@ -11,7 +11,7 @@ from src.models import Apo, DBSession, Dnasequenceannotation, Go, Locusdbentity,
 
 HEADER_OBJ = { 'X-Forwarded-Proto': 'https' }
 
-engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
+engine = create_engine(os.environ['NEX2_URI'], pool_recycle=500)
 DBSession.configure(bind=engine)
 
 if 'WORKER_LOG_FILE' in os.environ.keys():
