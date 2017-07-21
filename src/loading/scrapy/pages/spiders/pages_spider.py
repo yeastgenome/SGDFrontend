@@ -68,19 +68,34 @@ class GoSpider(BaseSpider):
     name = 'go'
     def get_entities(self):
         self.log('getting gos')
-        return DBSession.query(Go).all()
+        try:
+            return DBSession.query(Go).all()
+        except:
+            traceback.print_exc()
+            DBSession.rollback()
+            return []
 
 class ObservableSpider(BaseSpider):
     name = 'observable'
     def get_entities(self):
         self.log('getting observables')
-        return DBSession.query(Apo).filter_by(apo_namespace="observable").all()
+        try:
+            return DBSession.query(Apo).filter_by(apo_namespace="observable").all()
+        except:
+            traceback.print_exc()
+            DBSession.rollback()
+            return []
 
 class PhenotypeSpider(BaseSpider):
     name = 'phenotype'
     def get_entities(self):
         self.log('getting phenotypes')
-        return DBSession.query(Phenotype).all()
+        try:
+            return DBSession.query(Phenotype).all()
+        except:
+            traceback.print_exc()
+            DBSession.rollback()
+            return []
 
 configure_logging()
 runner = CrawlerRunner()
