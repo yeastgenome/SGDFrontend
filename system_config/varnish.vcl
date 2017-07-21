@@ -9,7 +9,7 @@ acl purgers {
 backend default {
     .host = "127.0.0.1";
     .port = "8080";
-    .connect_timeout = 30s;
+    .connect_timeout = 300s;
     .first_byte_timeout = 300s;
 }
 
@@ -29,7 +29,7 @@ sub vcl_recv {
 }
 
 sub vcl_backend_response {
-    if (beresp.status == 404 || beresp.status == 301 || beresp.status == 500) {
+    if (beresp.status != 200) {
       set beresp.ttl = 15s;
       return (deliver);
     }
