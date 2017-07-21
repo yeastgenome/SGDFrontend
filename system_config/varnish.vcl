@@ -35,8 +35,8 @@ sub vcl_recv {
 
 sub vcl_backend_response {
     if (beresp.status != 200) {
-      set beresp.ttl = 15s;
-      return (deliver);
+        set beresp.ttl = 15s;
+        return (deliver);
     }
 
     set beresp.ttl = 23.75h;
