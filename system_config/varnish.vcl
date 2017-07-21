@@ -3,7 +3,7 @@ vcl 4.0;
 import vsthrottle;
 
 acl purgers {
-     "127.0.0.1";
+    "127.0.0.1";
 }
 
 backend default {
@@ -15,17 +15,22 @@ backend default {
 
 sub vcl_recv {
     if (req.method == "PURGE") {
-      if (!client.ip ~ purgers) {
-        return (synth(405));
-      }
-      return (purge);
+        if (!client.ip ~ purgers) {
+            return (synth(405));
+        }
+        return (purge);
     }
 
     if (vsthrottle.is_denied(client.identity, 100, 10s)) {
-       return (synth(429, "Too Many Requests"));
+        return (synth(429, "Too Many Requests"));
     }
     unset req.http.Cookie;
     set req.http.host = "www.yeastgenome.org";
+
+    # force HTTPS
+    if (req.http.X-Forwarded-Proto !~ "(?i)https") {
+        return (synth(750, ""));
+    }
 }
 
 sub vcl_backend_response {
@@ -50,4 +55,12 @@ sub vcl_deliver {
 sub vcl_purge {
     set req.method = "GET";
     return (restart);
+}
+
+sub vcl_synth {
+    if (resp.status == 750) {
+        set resp.http.Location = "https://www.yeastgenome.org" + req.url;
+        set resp.status = 301;
+        return (deliver);
+    }
 }
