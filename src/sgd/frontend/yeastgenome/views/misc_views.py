@@ -148,7 +148,7 @@ def search(request):
             temp_parsed_results = json.loads(temp_json_results)['results']
             redirect_url = get_redirect_url_from_results(temp_parsed_results)
             if redirect_url:
-                protein_url = redirect_url.replace('overview', 'protein')
+                protein_url = redirect_url = redirect_url + '/protein'
                 return HTTPFound(get_https_url(protein_url, request))
         # no protein search or no protein page redirect applicable
         redirect_url  = get_redirect_url_from_results(parsed_results)

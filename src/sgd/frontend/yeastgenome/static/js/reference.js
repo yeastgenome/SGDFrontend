@@ -247,6 +247,8 @@ function create_regulation_table(data) {
         options["aaData"] = [];
     }
     else {
+        var not = {"bSearchable":false, "bVisible":false};
+        var tableOptions = [not, not, null, not, null, not, not, not, not, not, null, null, null, null, null, not, not];
         var datatable = [];
         var genes = {};
         for (var i=0; i < data.length; i++) {
@@ -260,7 +262,7 @@ function create_regulation_table(data) {
         var options = {};
         options["bPaginate"] = true;
         options["aaSorting"] = [[3, "asc"]];
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"bSearchable":false, "bVisible":false}]
+        options["aoColumns"] = tableOptions;
         options["oLanguage"] = {"sEmptyTable": "No regulation data for " + reference['display_name']};
         options["aaData"] = datatable;
     }

@@ -196,8 +196,8 @@ function regulation_data_to_table(evidence, is_regulator) {
     var regulator_type= evidence['regulator_type'] || '';
     var happens_during = evidence['happens_during'] || '';
     var evidence_name = evidence['experiment']['display_name'] || '';
-    // Evidence ID, Analyze ID, Regulator, Regulator Systematic Name, Target, Target Systematic Name, Direction, Regulation of, Happens During, Regulator type, direction, regulation of, happens during,  Evidence, Strain Background, Reference
-    return [evidence['id'], analyze_value, bioent1, evidence['locus1']['format_name'], bioent2, evidence['locus2']['format_name'], direction, regulation_type, happens_during, regulator_type, direction, regulation_type, happens_during, evidence_name, strain, reference];
+    // Evidence ID, Analyze ID, Regulator, Regulator Systematic Name, Target, Target Systematic Name, Direction, Regulation of, Happens During, Regulator type, direction, regulation of, happens during, annotation_type (method),  Evidence, Strain Background, Reference
+    return [evidence['id'], analyze_value, bioent1, evidence['locus1']['format_name'], bioent2, evidence['locus2']['format_name'], direction, regulation_type, happens_during, regulator_type, direction, regulation_type, happens_during, evidence['annotation_type'], evidence_name, strain, reference];
   	
 }
 

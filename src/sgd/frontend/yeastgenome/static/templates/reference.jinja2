@@ -110,7 +110,7 @@
             <section id="related" data-magellan-destination="related">
                 <h2>Related References</h2>
                 <hr />
-                <div class="">
+                <div>
                     <ul class="unstyled">
                         {% for relref in reference.related_references %}
                             <li>
@@ -157,7 +157,7 @@
         <section id="go" data-magellan-destination="go">
             <h2>Gene Ontology Annotations <span id="go_table_header" class="round secondary label"></span></h2>
             <hr />
-            <div class="">
+            <div>
                 <!-- Includes go_table into template -->
                 {% set table_id = "go_table" %}
                 {% include "go_table.jinja2" %}
@@ -179,10 +179,10 @@
         <section id="regulation" data-magellan-destination="regulation">
             <h2>Regulation Annotations <span id="regulation_target_table_header" class="round secondary label"></span></h2>
             <hr />
-            <div class="">
+            <div>
                 <!-- Includes regulation_target_table into template -->
-                {% set table_id = "regulation_target_table" %}
-                {% include "regulation_target_table.jinja2" %}
+                {% set table_id = "regulation_table" %}
+                {% include "regulation_combined_table.jinja2" %}
             </div>
         </section>
 
@@ -192,7 +192,7 @@
             <div class="page-header">
                 <h2>Expression Datasets <span id="expression_table_header" class="round secondary label"></span></h2>
                 <hr />
-                <div class="panel">
+                <div>
                     <!-- Includes regulation_table into template -->
                     {% set table_id = "expression_table" %}
                     {% include "dataset_table.jinja2" %}
