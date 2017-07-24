@@ -6,6 +6,7 @@ from twisted.internet import reactor, defer
 from sqlalchemy import create_engine, and_
 import os
 import logging
+import traceback
 
 from src.models import Apo, DBSession, Dnasequenceannotation, Go, Locusdbentity, Phenotype, Referencedbentity, Straindbentity
 
@@ -52,50 +53,71 @@ class GenesSpider(BaseSpider):
     name = 'genes'
     def get_entities(self):
         self.log('getting genes')
-        # get S288C genes
-        gene_ids_so = DBSession.query(Dnasequenceannotation.dbentity_id, Dnasequenceannotation.so_id).filter(Dnasequenceannotation.taxonomy_id == 274901).all()
-        dbentity_ids_to_so = {}
-        dbentity_ids = set([])
-        so_ids = set([])
-        for gis in gene_ids_so:
-            dbentity_ids.add(gis[0])
-            so_ids.add(gis[1])
-            dbentity_ids_to_so[gis[0]] = gis[1]
-        all_genes = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(list(dbentity_ids)), Locusdbentity.dbentity_status == 'Active').all()
+        attempts = 0
+        while attempts < 3:
+            try:
+                # get S288C genes
+                gene_ids_so = DBSession.query(Dnasequenceannotation.dbentity_id, Dnasequenceannotation.so_id).filter(Dnasequenceannotation.taxonomy_id == 274901).all()
+                dbentity_ids_to_so = {}
+                dbentity_ids = set([])
+                so_ids = set([])
+                for gis in gene_ids_so:
+                    dbentity_ids.add(gis[0])
+                    so_ids.add(gis[1])
+                    dbentity_ids_to_so[gis[0]] = gis[1]
+                all_genes = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(list(dbentity_ids)), Locusdbentity.dbentity_status == 'Active').all()
+                break
+            except StatementError:
+                traceback.print_exc()
+                log.info('DB error corrected. Rollingback previous error in db connection')
+                DBSession.rollback()
+                attempts += 1
         return all_genes
 
 class GoSpider(BaseSpider):
     name = 'go'
     def get_entities(self):
         self.log('getting gos')
-        try:
-            return DBSession.query(Go).all()
-        except:
-            traceback.print_exc()
-            DBSession.rollback()
-            return []
+        attempts = 0
+        while attempts < 3:
+            try:
+                gos = DBSession.query(Go).all()
+                break
+            except:
+                traceback.print_exc()
+                DBSession.rollback()
+                attempts += 1
+        return gos
 
 class ObservableSpider(BaseSpider):
     name = 'observable'
     def get_entities(self):
         self.log('getting observables')
-        try:
-            return DBSession.query(Apo).filter_by(apo_namespace="observable").all()
-        except:
-            traceback.print_exc()
-            DBSession.rollback()
-            return []
+        attempts = 0
+        while attempts < 3:
+            try:
+                observables = DBSession.query(Apo).filter_by(apo_namespace="observable").all()
+                break
+            except:
+                traceback.print_exc()
+                DBSession.rollback()
+                attempts += 1
+        return observables
 
 class PhenotypeSpider(BaseSpider):
     name = 'phenotype'
     def get_entities(self):
         self.log('getting phenotypes')
-        try:
-            return DBSession.query(Phenotype).all()
-        except:
-            traceback.print_exc()
-            DBSession.rollback()
-            return []
+        attempts = 0
+        while attempts < 3:
+            try:
+                phenotypes = DBSession.query(Phenotype).all()
+                break
+            except:
+                traceback.print_exc()
+                DBSession.rollback()
+                attempts += 1
+        return phenotypes
 
 configure_logging()
 runner = CrawlerRunner()
