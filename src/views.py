@@ -12,7 +12,7 @@ import os
 
 from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Dataset, DatasetKeyword, Contig, Proteindomain, Ec, Locussummary
 
-from .helpers import allowed_file, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath, get_pusher_client, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS
+from .helpers import allowed_file, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath, get_pusher_client, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id
 
 from .search_helpers import build_autocomplete_search_body_request, format_autocomplete_results, build_search_query, build_es_search_body_request, build_es_aggregation_body_request, format_search_results, format_aggregation_results, build_sequence_objects_search_query
 from .tsv_parser import parse_tsv_annotations
@@ -752,7 +752,7 @@ def go_locus_details_all(request):
 def locus(request):
     id = extract_id_request(request, 'locus', param_name="sgdid")
 
-    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    locus = get_locus_by_id(id)
     if locus:
         return locus.to_dict()
     else:
@@ -762,7 +762,7 @@ def locus(request):
 def locus_tabs(request):
     id = extract_id_request(request, 'locus')
 
-    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    locus = get_locus_by_id(id)
     if locus:
         return locus.tabs()
     else:
@@ -772,7 +772,7 @@ def locus_tabs(request):
 def locus_phenotype_details(request):
     id = extract_id_request(request, 'locus')
 
-    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    locus = get_locus_by_id(id)
     if locus:
         return locus.phenotype_to_dict()
     else:
@@ -782,7 +782,7 @@ def locus_phenotype_details(request):
 def locus_phenotype_graph(request):
     id = extract_id_request(request, 'locus')
 
-    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    locus = get_locus_by_id(id)
     if locus:
         return locus.phenotype_graph()
     else:
@@ -792,7 +792,7 @@ def locus_phenotype_graph(request):
 def locus_go_graph(request):
     id = extract_id_request(request, 'locus')
 
-    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    locus = get_locus_by_id(id)
     if locus:
         return locus.go_graph()
     else:
@@ -802,7 +802,7 @@ def locus_go_graph(request):
 def locus_expression_graph(request):
     id = extract_id_request(request, 'locus')
 
-    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    locus = get_locus_by_id(id)
     if locus:
         return locus.expression_graph()
     else:
@@ -812,7 +812,7 @@ def locus_expression_graph(request):
 def locus_literature_details(request):
     id = extract_id_request(request, 'locus')
 
-    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    locus = get_locus_by_id(id)
     if locus:
         return locus.literature_to_dict()
     else:
@@ -822,7 +822,7 @@ def locus_literature_details(request):
 def locus_literature_graph(request):
     id = extract_id_request(request, 'locus')
 
-    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    locus = get_locus_by_id(id)
     if locus:
         return locus.literature_graph()
     else:
@@ -832,7 +832,7 @@ def locus_literature_graph(request):
 def locus_interaction_graph(request):
     id = extract_id_request(request, 'locus')
 
-    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    locus = get_locus_by_id(id)
     if locus:
         return locus.interaction_graph()
     else:
@@ -842,7 +842,8 @@ def locus_interaction_graph(request):
 def locus_regulation_graph(request):
     id = extract_id_request(request, 'locus')
 
-    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    locus = get_locus_by_id(id)
+
     if locus:
         return locus.regulation_graph()
     else:
@@ -852,7 +853,7 @@ def locus_regulation_graph(request):
 def locus_go_details(request):
     id = extract_id_request(request, 'locus')
 
-    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    locus = get_locus_by_id(id)
     if locus:
         return locus.go_to_dict()
     else:
@@ -862,7 +863,7 @@ def locus_go_details(request):
 def locus_interaction_details(request):
     id = extract_id_request(request, 'locus')
 
-    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    locus = get_locus_by_id(id)
     if locus:
         return locus.interactions_to_dict()
     else:
@@ -872,7 +873,7 @@ def locus_interaction_details(request):
 def locus_expression_details(request):
     id = extract_id_request(request, 'locus')
 
-    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    locus = get_locus_by_id(id)
     if locus:
         return locus.expression_to_dict()
     else:
@@ -882,7 +883,7 @@ def locus_expression_details(request):
 def locus_neighbor_sequence_details(request):
     id = extract_id_request(request, 'locus')
 
-    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    locus = get_locus_by_id(id)
     if locus:
         return locus.neighbor_sequence_details()
     else:
@@ -892,7 +893,7 @@ def locus_neighbor_sequence_details(request):
 def locus_sequence_details(request):
     id = extract_id_request(request, 'locus')
 
-    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    locus = get_locus_by_id(id)
     if locus:
         return locus.sequence_details()
     else:
@@ -966,7 +967,7 @@ def contig_sequence_details(request):
 def locus_posttranslational_details(request):
     id = extract_id_request(request, 'locus')
 
-    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    locus = get_locus_by_id(id)
     if locus:
         return locus.posttranslational_details()
     else:
@@ -976,7 +977,7 @@ def locus_posttranslational_details(request):
 def locus_ecnumber_details(request):
     id = extract_id_request(request, 'locus')
 
-    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    locus = get_locus_by_id(id)
     if locus:
         return locus.ecnumber_details()
     else:
@@ -986,7 +987,7 @@ def locus_ecnumber_details(request):
 def locus_protein_experiment_details(request):
     id = extract_id_request(request, 'locus')
 
-    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    locus = get_locus_by_id(id)
     if locus:
         return locus.protein_experiment_details()
     else:
@@ -996,7 +997,7 @@ def locus_protein_experiment_details(request):
 def locus_protein_domain_details(request):
     id = extract_id_request(request, 'locus')
 
-    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    locus = get_locus_by_id(id)
     if locus:
         return locus.protein_domain_details()
     else:
@@ -1006,7 +1007,7 @@ def locus_protein_domain_details(request):
 def locus_binding_site_details(request):
     id = extract_id_request(request, 'locus')
 
-    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    locus = get_locus_by_id(id)
     if locus:
         return locus.binding_site_details()
     else:
@@ -1015,7 +1016,7 @@ def locus_binding_site_details(request):
 @view_config(route_name='locus_regulation_details', renderer='json', request_method='GET')
 def locus_regulation_details(request):
     id = extract_id_request(request, 'locus')
-    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    locus = get_locus_by_id(id)
 
     if locus:
         return locus.regulation_details()
@@ -1028,7 +1029,7 @@ def locus_regulation_target_enrichment(request):
     return HTTPNotFound()
     id = extract_id_request(request, 'locus')
 
-    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    locus = get_locus_by_id(id)
     if locus:
         return locus.regulation_target_enrichment()
     else:
@@ -1038,7 +1039,7 @@ def locus_regulation_target_enrichment(request):
 def locus_protein_domain_graph(request):
     id = extract_id_request(request, 'locus')
 
-    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+    locus = get_locus_by_id(id)
     if locus:
         return locus.protein_domain_graph()
     else:
@@ -1095,3 +1096,9 @@ def ecnumber_locus_details(request):
         return ec.locus_details()
     else:
         return HTTPNotFound()
+
+# check for basic rad54 response
+@view_config(route_name='healthcheck', renderer='json', request_method='GET')
+def healthcheck(request):
+    locus = get_locus_by_id(1268789)
+    return locus.to_dict()
