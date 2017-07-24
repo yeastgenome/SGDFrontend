@@ -1,7 +1,5 @@
 vcl 4.0;
 
-import vsthrottle;
-
 acl purgers {
     "127.0.0.1";
 }
@@ -21,9 +19,6 @@ sub vcl_recv {
         return (purge);
     }
 
-    if (vsthrottle.is_denied(client.identity, 100, 10s)) {
-        return (synth(429, "Too Many Requests"));
-    }
     unset req.http.Cookie;
     set req.http.host = "www.yeastgenome.org";
 
