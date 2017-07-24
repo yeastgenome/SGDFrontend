@@ -11,8 +11,9 @@ import string
 import tempfile
 import transaction
 from pyramid.httpexceptions import HTTPForbidden, HTTPBadRequest
+from sqlalchemy.exc import IntegrityError, InternalError, StatementError
 
-from .models import DBSession, Dbuser, Referencedbentity, Keyword, Filepath, Edam, Filedbentity, FileKeyword, ReferenceFile
+from .models import DBSession, Dbuser, Referencedbentity, Keyword, Locusdbentity, Filepath, Edam, Filedbentity, FileKeyword, ReferenceFile
 
 import logging
 log = logging.getLogger(__name__)
@@ -21,6 +22,28 @@ FILE_EXTENSIONS = ['bed', 'bedgraph', 'bw', 'cdt', 'chain', 'cod', 'csv', 'cusp'
 S3_ACCESS_KEY = os.environ['S3_ACCESS_KEY']
 S3_SECRET_KEY = os.environ['S3_SECRET_KEY']
 S3_BUCKET = os.environ['S3_BUCKET']
+
+# try 3 times and fix basic problems
+def get_locus_by_id(id):
+    attempts = 0
+    locus = None
+    while attempts < 3:
+        try:
+            locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+            break
+        # close connection that has idle-in-transaction
+        except InternalError:
+            traceback.print_exc()
+            log.info('DB error corrected. Closing idle-in-transaction DB connection.')
+            DBSession.close()
+            attempts += 1
+        # rollback a connection blocked by previous invalid transaction
+        except StatementError:
+            traceback.print_exc()
+            log.info('DB error corrected. Rollingback previous error in db connection')
+            DBSession.rollback()
+            attempts += 1
+    return locus
 
 def md5(fname):
     hash = hashlib.md5()

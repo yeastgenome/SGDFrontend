@@ -119,6 +119,8 @@ def main(global_config, **settings):
     config.add_route('sign_in', '/signin')
     config.add_route('sign_out', '/signout')
 
+    config.add_route('healthcheck', '/healthcheck')
+
     config.scan()
     config.add_static_view(name='assets', path='./build')
     

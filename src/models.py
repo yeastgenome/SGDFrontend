@@ -63,7 +63,7 @@ class CacheBase(object):
                 if (response.status_code != 200):
                     raise('Error fetching ')
             except Exception, e:
-                print 'error fetching ' + self.display_name
+                print('error fetching ' + self.display_name)
 
 Base = declarative_base(cls=CacheBase)
 
@@ -2717,6 +2717,7 @@ class Locusdbentity(Dbentity):
                 edges_added.add(self.format_name + " " + dbentity.format_name)
 
             i += 1
+        DBSession.close()
 
         return {
             "nodes": [nodes[n] for n in nodes],
