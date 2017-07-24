@@ -293,6 +293,7 @@ function create_slider_ticks(slider_tick_id, min, max, stop) {
 }
 
 function create_discrete_filter(radio_id, graph, slider, target_filter, max_value) {
+	debugger
     var radio = $("#" + radio_id);
     radio.click(function() {
         if(slider != null) {
