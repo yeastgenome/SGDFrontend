@@ -11,7 +11,6 @@ regulationView.render = function(){
     var _tabModel = new TabsModel();
     let _elements = [];
     _elements.push({"name":"Regulation Overview", "target":"overview"});
-    let reg_counter = locus["regulation_overview"]["target_count"];
     if(locus['regulation_overview']['target_count'] > 0){
         _elements.push({"name":"Domains and Classification", "target":"domain"});
         _elements.push({"name":"DNA Binding Site Motifs", "target":"binding"});
