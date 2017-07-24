@@ -12,6 +12,7 @@ import tempfile
 import transaction
 from pyramid.httpexceptions import HTTPForbidden, HTTPBadRequest
 from sqlalchemy.exc import IntegrityError, InternalError, StatementError
+import traceback
 
 from .models import DBSession, Dbuser, Referencedbentity, Keyword, Locusdbentity, Filepath, Edam, Filedbentity, FileKeyword, ReferenceFile
 
