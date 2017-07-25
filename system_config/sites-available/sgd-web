@@ -11,16 +11,6 @@ server {
 
     server_name _;
 
-    location /elb-status {
-        access_log off;
-        return 200 'OK';
-        # because default content-type is application/octet-stream,
-        # browser will offer to "save the file"...
-        # the next line allows you to see it in the browser
-        # so you can test
-        add_header Content-Type text/plain;
-    }
-
     location /healthcheck {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
