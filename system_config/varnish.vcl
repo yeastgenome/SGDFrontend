@@ -23,11 +23,11 @@ sub vcl_recv {
     set req.http.host = "www.yeastgenome.org";
 
     # force HTTPS
-    if (req.http.X-Forwarded-Proto !~ "(?i)https" && req.url !~ "\healthcheck$") {
+    if (req.http.X-Forwarded-Proto !~ "(?i)https" && req.url !~ "healthcheck$") {
         return (synth(750, ""));
     }
     # don't cache healthcheck
-    if (req.url ~ "\healthcheck$") {
+    if (req.url ~ "healthcheck$") {
         return (pass);
     }
 }
