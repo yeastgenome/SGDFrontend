@@ -25,7 +25,9 @@ import traceback
 import datetime
 import logging
 import json
-log = logging.getLogger(__name__)
+
+logging.basicConfig()
+logging.getLogger('sqlalchemy.engine').setLevel(logging.ERROR)
 
 import redis
 disambiguation_table = redis.Redis()
