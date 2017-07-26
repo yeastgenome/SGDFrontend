@@ -10,7 +10,6 @@ import copy
 import requests
 import re
 
-
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
 
