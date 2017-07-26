@@ -1027,8 +1027,6 @@ def locus_regulation_details(request):
 
 @view_config(route_name='locus_regulation_target_enrichment', renderer='json', request_method='GET')
 def locus_regulation_target_enrichment(request):
-    # TEMP disable endpoint
-    return HTTPNotFound()
     id = extract_id_request(request, 'locus')
 
     locus = get_locus_by_id(id)
