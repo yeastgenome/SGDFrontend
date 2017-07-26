@@ -65,7 +65,8 @@ module.exports = class TabsModel {
 			(this.attributes.rawTabsData.literature_tab ? { name: "Literature", target: "literature" } : null),
 			(this.attributes.hasHistory ?  { name: "History", target: "history" } : null),
 			(this.attributes.hasReferences ?  { name: "References", target: "reference" } : null),
-			(this.attributes.hasResources ? { name: "Resources", target: "resources" } : null)
+			// always have resources on LSP
+			({ name: "Resources", target: "resources" })
 		];
 	}
 };
