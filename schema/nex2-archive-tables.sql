@@ -256,8 +256,9 @@ CREATE TABLE nex.arch_locuschange (
 	change_type varchar(100) NOT NULL,
 	old_value varchar(40),
 	new_value varchar(40),
-	date_changed timestamp NOT NULL,
-	changed_by varchar(12) NOT NULL,
+	date_added_to_database timestamp NOT NULL,
+	added_by varchar(12) NOT NULL,
+    date_name_standardized timestamp,
 	date_archived timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	CONSTRAINT arch_locuschange_pk PRIMARY KEY (archive_id)
 ) ;
@@ -268,11 +269,12 @@ COMMENT ON COLUMN nex.arch_locuschange.archive_id IS 'Unique identifier (serial 
 COMMENT ON COLUMN nex.arch_locuschange.new_value IS 'New value after change.';
 COMMENT ON COLUMN nex.arch_locuschange.date_archived IS 'Date the record was archived.';
 COMMENT ON COLUMN nex.arch_locuschange.bud_id IS 'From BUD.ARCHIVE.ARCHIVE_NO.';
-COMMENT ON COLUMN nex.arch_locuschange.date_changed IS 'Date the change was made.';
+COMMENT ON COLUMN nex.arch_locuschange.date_added_to_database IS 'Date the name or value was added to the database.';
 COMMENT ON COLUMN nex.arch_locuschange.old_value IS 'Previous value before change.';
-COMMENT ON COLUMN nex.arch_locuschange.changed_by IS 'Username of the person who made the change.';
+COMMENT ON COLUMN nex.arch_locuschange.added_by IS 'Username of the person who added the name or made the change.';
+COMMENT ON COLUMN nex.arch_locuschange.date_name_standardized IS 'Date the name was standardized via the gene registration system.'; 
 COMMENT ON COLUMN nex.arch_locuschange.dbentity_id IS 'From DBENTITY.DBENTITY_ID.';
-ALTER TABLE nex.arch_locuschange ADD CONSTRAINT arch_locuschange_uk UNIQUE (dbentity_id,change_type,old_value,new_value,date_changed);
+ALTER TABLE nex.arch_locuschange ADD CONSTRAINT arch_locuschange_uk UNIQUE (dbentity_id,change_type,old_value,new_value,date_added_to_database);
 ALTER TABLE nex.arch_locuschange ADD CONSTRAINT archlocuschange_type_ck CHECK (CHANGE_TYPE IN ('Status', 'Qualifier', 'Gene name'));
 
 DROP TABLE IF EXISTS nex.arch_proteinsequenceannotation CASCADE; 

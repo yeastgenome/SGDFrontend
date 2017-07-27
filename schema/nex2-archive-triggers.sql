@@ -48,8 +48,8 @@ CREATE OR REPLACE FUNCTION trigger_fct_archlocuschange_bir() RETURNS trigger AS 
 BEGIN
   IF (TG_OP = 'INSERT') THEN
 
-       NEW.changed_by := upper(NEW.changed_by);
-       PERFORM nex.checkuser(NEW.changed_by);
+       NEW.added_by := upper(NEW.added_by);
+       PERFORM nex.checkuser(NEW.added_by);
 
        RETURN NEW;
   END IF;
