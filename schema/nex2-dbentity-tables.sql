@@ -294,7 +294,7 @@ COMMENT ON COLUMN nex.locusnote.note_class IS 'The class of the note (Locus, Seq
 COMMENT ON COLUMN nex.locusnote.note IS 'Note or comment.';
 ALTER TABLE nex.locusnote ADD CONSTRAINT locusnote_uk UNIQUE (locus_id,note_class, note_type, note);
 ALTER TABLE nex.locusnote ADD CONSTRAINT locusnote_noteclass_ck CHECK (NOTE_CLASS IN ('Locus','Sequence'));
-ALTER TABLE nex.locusnote ADD CONSTRAINT locusnote_type_ck CHECK (NOTE_TYPE IN ('Nomenclature history','Nomenclature conflict','Locus history','Alternative processing','Annotation change','Mapping','Proposed annotation change','Proposed sequence change','Sequence change'));
+ALTER TABLE nex.locusnote ADD CONSTRAINT locusnote_type_ck CHECK (NOTE_TYPE IN ('Nomenclature history','Nomenclature conflict','Locus history','Name','Alternative processing','Annotation change','Mapping','Proposed annotation change','Proposed sequence change','Sequence change'));
 CREATE INDEX locusnote_source_fk_index ON nex.locusnote (source_id);
 
 DROP TABLE IF EXISTS nex.locusnote_reference CASCADE;
