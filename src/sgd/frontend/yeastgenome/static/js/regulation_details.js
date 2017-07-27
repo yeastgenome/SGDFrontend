@@ -213,13 +213,13 @@ function create_regulator_table(data) {
         if(d["locus2"]["id"] == locus['id']) {
            var isManual = (d.annotation_type !== 'high-throughput');
             if (isManual) {
-                manualDatatable.push(regulation_data_to_table(d, false));
+                manualDatatable.push(regulation_data_to_table(d, true));
                 manualGenes[d["locus1"]["id"]] = true;
             } else {
-                htpDatatable.push(regulation_data_to_table(d, false));
+                htpDatatable.push(regulation_data_to_table(d, true));
                 htpGenes[d["locus1"]["id"]] = true;
             }
-            allDatatable.push(regulation_data_to_table(d, false));
+            allDatatable.push(regulation_data_to_table(d, true));
             regulation_entry_count = regulation_entry_count+1;
         }
     }
