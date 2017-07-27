@@ -14,23 +14,32 @@ from pyramid.httpexceptions import HTTPForbidden, HTTPBadRequest
 from sqlalchemy.exc import IntegrityError, InternalError, StatementError
 import traceback
 
-from .models import DBSession, Dbuser, Referencedbentity, Keyword, Locusdbentity, Filepath, Edam, Filedbentity, FileKeyword, ReferenceFile
+from .models import DBSession, Dbuser, Go, Referencedbentity, Keyword, Locusdbentity, Filepath, Edam, Filedbentity, FileKeyword, ReferenceFile
 
 import logging
 log = logging.getLogger(__name__)
 
 FILE_EXTENSIONS = ['bed', 'bedgraph', 'bw', 'cdt', 'chain', 'cod', 'csv', 'cusp', 'doc', 'docx', 'fsa', 'gb', 'gcg', 'gff', 'gif', 'gz', 'html', 'jpg', 'pcl', 'pdf', 'pl', 'png', 'pptx', 'README', 'sql', 'sqn', 'tgz', 'txt', 'vcf', 'wig', 'wrl', 'xls', 'xlsx', 'xml', 'sql', 'txt', 'html', 'gz', 'tsv']
+MAX_QUERY_ATTEMPTS = 3
+S3_BUCKET = os.environ['S3_BUCKET']
 S3_ACCESS_KEY = os.environ['S3_ACCESS_KEY']
 S3_SECRET_KEY = os.environ['S3_SECRET_KEY']
-S3_BUCKET = os.environ['S3_BUCKET']
 
-# try 3 times and fix basic problems
 def get_locus_by_id(id):
+    query = DBSession.query(Locusdbentity).filter_by(dbentity_id=id)
+    return dbentity_safe_query(query)
+
+def get_go_by_id(id):
+    query = DBSession.query(Go).filter_by(dbentity_id=id)
+    return dbentity_safe_query(query)
+
+# try a query 3 times, fix basic DB connection problems
+def dbentity_safe_query(query):
     attempts = 0
-    locus = None
-    while attempts < 3:
+    dbentity = None
+    while attempts < MAX_QUERY_ATTEMPTS:
         try:
-            locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+            dbentity = query.one_or_none()
             break
         # close connection that has idle-in-transaction
         except InternalError:
@@ -44,7 +53,7 @@ def get_locus_by_id(id):
             log.info('DB error corrected. Rollingback previous error in db connection')
             DBSession.rollback()
             attempts += 1
-    return locus
+    return dbentity
 
 def md5(fname):
     hash = hashlib.md5()
