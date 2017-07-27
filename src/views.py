@@ -12,7 +12,7 @@ import os
 
 from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Dataset, DatasetKeyword, Contig, Proteindomain, Ec, Locussummary
 
-from .helpers import allowed_file, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath, get_pusher_client, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id
+from .helpers import allowed_file, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath, get_pusher_client, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id
 
 from .search_helpers import build_autocomplete_search_body_request, format_autocomplete_results, build_search_query, build_es_search_body_request, build_es_aggregation_body_request, format_search_results, format_aggregation_results, build_sequence_objects_search_query
 from .tsv_parser import parse_tsv_annotations
@@ -713,8 +713,7 @@ def observable_locus_details_all(request):
 @view_config(route_name='go', renderer='json', request_method='GET')
 def go(request):
     id = extract_id_request(request, 'go', param_name="format_name")
-
-    go = DBSession.query(Go).filter_by(go_id=id).one_or_none()
+    get_go_by_id(id)
     if go:
         return go.to_dict()
     else:
@@ -753,7 +752,6 @@ def go_locus_details_all(request):
 @view_config(route_name='locus', renderer='json', request_method='GET')
 def locus(request):
     id = extract_id_request(request, 'locus', param_name="sgdid")
-
     locus = get_locus_by_id(id)
     if locus:
         return locus.to_dict()
@@ -763,7 +761,6 @@ def locus(request):
 @view_config(route_name='locus_tabs', renderer='json', request_method='GET')
 def locus_tabs(request):
     id = extract_id_request(request, 'locus')
-
     locus = get_locus_by_id(id)
     if locus:
         return locus.tabs()
@@ -773,7 +770,6 @@ def locus_tabs(request):
 @view_config(route_name='locus_phenotype_details', renderer='json', request_method='GET')
 def locus_phenotype_details(request):
     id = extract_id_request(request, 'locus')
-
     locus = get_locus_by_id(id)
     if locus:
         return locus.phenotype_to_dict()
@@ -783,7 +779,6 @@ def locus_phenotype_details(request):
 @view_config(route_name='locus_phenotype_graph', renderer='json', request_method='GET')
 def locus_phenotype_graph(request):
     id = extract_id_request(request, 'locus')
-
     locus = get_locus_by_id(id)
     if locus:
         return locus.phenotype_graph()
@@ -793,7 +788,6 @@ def locus_phenotype_graph(request):
 @view_config(route_name='locus_go_graph', renderer='json', request_method='GET')
 def locus_go_graph(request):
     id = extract_id_request(request, 'locus')
-
     locus = get_locus_by_id(id)
     if locus:
         return locus.go_graph()
@@ -803,7 +797,6 @@ def locus_go_graph(request):
 @view_config(route_name='locus_expression_graph', renderer='json', request_method='GET')
 def locus_expression_graph(request):
     id = extract_id_request(request, 'locus')
-
     locus = get_locus_by_id(id)
     if locus:
         return locus.expression_graph()
@@ -813,7 +806,6 @@ def locus_expression_graph(request):
 @view_config(route_name='locus_literature_details', renderer='json', request_method='GET')
 def locus_literature_details(request):
     id = extract_id_request(request, 'locus')
-
     locus = get_locus_by_id(id)
     if locus:
         return locus.literature_to_dict()
@@ -823,7 +815,6 @@ def locus_literature_details(request):
 @view_config(route_name='locus_literature_graph', renderer='json', request_method='GET')
 def locus_literature_graph(request):
     id = extract_id_request(request, 'locus')
-
     locus = get_locus_by_id(id)
     if locus:
         return locus.literature_graph()
@@ -833,7 +824,6 @@ def locus_literature_graph(request):
 @view_config(route_name='locus_interaction_graph', renderer='json', request_method='GET')
 def locus_interaction_graph(request):
     id = extract_id_request(request, 'locus')
-
     locus = get_locus_by_id(id)
     if locus:
         return locus.interaction_graph()
@@ -843,7 +833,6 @@ def locus_interaction_graph(request):
 @view_config(route_name='locus_regulation_graph', renderer='json', request_method='GET')
 def locus_regulation_graph(request):
     id = extract_id_request(request, 'locus')
-
     locus = get_locus_by_id(id)
 
     if locus:
@@ -854,7 +843,6 @@ def locus_regulation_graph(request):
 @view_config(route_name='locus_go_details', renderer='json', request_method='GET')
 def locus_go_details(request):
     id = extract_id_request(request, 'locus')
-
     locus = get_locus_by_id(id)
     if locus:
         return locus.go_to_dict()
@@ -864,7 +852,6 @@ def locus_go_details(request):
 @view_config(route_name='locus_interaction_details', renderer='json', request_method='GET')
 def locus_interaction_details(request):
     id = extract_id_request(request, 'locus')
-
     locus = get_locus_by_id(id)
     if locus:
         return locus.interactions_to_dict()
@@ -874,7 +861,6 @@ def locus_interaction_details(request):
 @view_config(route_name='locus_expression_details', renderer='json', request_method='GET')
 def locus_expression_details(request):
     id = extract_id_request(request, 'locus')
-
     locus = get_locus_by_id(id)
     if locus:
         return locus.expression_to_dict()
@@ -884,7 +870,6 @@ def locus_expression_details(request):
 @view_config(route_name='locus_neighbor_sequence_details', renderer='json', request_method='GET')
 def locus_neighbor_sequence_details(request):
     id = extract_id_request(request, 'locus')
-
     locus = get_locus_by_id(id)
     if locus:
         return locus.neighbor_sequence_details()
@@ -894,7 +879,6 @@ def locus_neighbor_sequence_details(request):
 @view_config(route_name='locus_sequence_details', renderer='json', request_method='GET')
 def locus_sequence_details(request):
     id = extract_id_request(request, 'locus')
-
     locus = get_locus_by_id(id)
     if locus:
         return locus.sequence_details()
@@ -968,7 +952,6 @@ def contig_sequence_details(request):
 @view_config(route_name='locus_posttranslational_details', renderer='json', request_method='GET')
 def locus_posttranslational_details(request):
     id = extract_id_request(request, 'locus')
-
     locus = get_locus_by_id(id)
     if locus:
         return locus.posttranslational_details()
@@ -978,7 +961,6 @@ def locus_posttranslational_details(request):
 @view_config(route_name='locus_ecnumber_details', renderer='json', request_method='GET')
 def locus_ecnumber_details(request):
     id = extract_id_request(request, 'locus')
-
     locus = get_locus_by_id(id)
     if locus:
         return locus.ecnumber_details()
@@ -988,7 +970,6 @@ def locus_ecnumber_details(request):
 @view_config(route_name='locus_protein_experiment_details', renderer='json', request_method='GET')
 def locus_protein_experiment_details(request):
     id = extract_id_request(request, 'locus')
-
     locus = get_locus_by_id(id)
     if locus:
         return locus.protein_experiment_details()
@@ -998,7 +979,6 @@ def locus_protein_experiment_details(request):
 @view_config(route_name='locus_protein_domain_details', renderer='json', request_method='GET')
 def locus_protein_domain_details(request):
     id = extract_id_request(request, 'locus')
-
     locus = get_locus_by_id(id)
     if locus:
         return locus.protein_domain_details()
@@ -1008,7 +988,6 @@ def locus_protein_domain_details(request):
 @view_config(route_name='locus_binding_site_details', renderer='json', request_method='GET')
 def locus_binding_site_details(request):
     id = extract_id_request(request, 'locus')
-
     locus = get_locus_by_id(id)
     if locus:
         return locus.binding_site_details()
@@ -1017,7 +996,7 @@ def locus_binding_site_details(request):
 
 @view_config(route_name='locus_regulation_details', renderer='json', request_method='GET')
 def locus_regulation_details(request):
-    id = extract_id_request(request, 'locus')
+id = extract_id_request(request, 'locus')
     locus = get_locus_by_id(id)
 
     if locus:
@@ -1030,7 +1009,6 @@ def locus_regulation_target_enrichment(request):
     # TEMP disable endpoint
     return HTTPNotFound()
     id = extract_id_request(request, 'locus')
-
     locus = get_locus_by_id(id)
     if locus:
         return locus.regulation_target_enrichment()
@@ -1040,7 +1018,6 @@ def locus_regulation_target_enrichment(request):
 @view_config(route_name='locus_protein_domain_graph', renderer='json', request_method='GET')
 def locus_protein_domain_graph(request):
     id = extract_id_request(request, 'locus')
-
     locus = get_locus_by_id(id)
     if locus:
         return locus.protein_domain_graph()
