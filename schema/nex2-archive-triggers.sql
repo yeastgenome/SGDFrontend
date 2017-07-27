@@ -22,7 +22,7 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER archcontigchange_bir
-BEFORE INSERT OR UPDATE OR DELETE ON nex.arch_contigchange FOR EACH ROW
+BEFORE INSERT ON nex.arch_contigchange FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_archcontigchange_bir();
 
 DROP TRIGGER IF EXISTS archliteratureannotation_bir ON nex.arch_literatureannotation CASCADE;
@@ -40,7 +40,7 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER archliteratureannotation_bir
-BEFORE INSERT OR UPDATE OR DELETE ON nex.arch_literatureannotation FOR EACH ROW
+BEFORE INSERT ON nex.arch_literatureannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_archliteratureannotation_bir();
 
 DROP TRIGGER IF EXISTS archlocuschange_bir ON nex.arch_locuschange CASCADE;
@@ -58,5 +58,5 @@ END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER archlocuschange_bir
-BEFORE INSERT OR UPDATE OR DELETE ON nex.arch_locuschange FOR EACH ROW
+BEFORE INSERT ON nex.arch_locuschange FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_archlocuschange_bir();
