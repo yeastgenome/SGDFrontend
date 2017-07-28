@@ -415,7 +415,6 @@ def reference_literature_details(request):
 @view_config(route_name='reference_interaction_details', renderer='json', request_method='GET')
 def reference_interaction_details(request):
     id = extract_id_request(request, 'reference')
-
     reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=id).one_or_none()
 
     if reference:
@@ -426,7 +425,6 @@ def reference_interaction_details(request):
 @view_config(route_name='reference_go_details', renderer='json', request_method='GET')
 def reference_go_details(request):
     id = extract_id_request(request, 'reference')
-
     reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=id).one_or_none()
     
     if reference:
@@ -437,7 +435,6 @@ def reference_go_details(request):
 @view_config(route_name='reference_phenotype_details', renderer='json', request_method='GET')
 def reference_phenotype_details(request):
     id = extract_id_request(request, 'reference')
-
     reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=id).one_or_none()
 
     if reference:
@@ -448,7 +445,6 @@ def reference_phenotype_details(request):
 @view_config(route_name='reference_regulation_details', renderer='json', request_method='GET')
 def reference_regulation_details(request):
     id = extract_id_request(request, 'reference')
-
     reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=id).one_or_none()
 
     if reference:
@@ -464,7 +460,6 @@ def reference_triage(request):
 @view_config(route_name='reference_triage_id', renderer='json', request_method='GET')
 def reference_triage_id(request):
     id = request.matchdict['id'].upper()
-    
     triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
     if triage:
         return triage.to_dict()
@@ -475,7 +470,6 @@ def reference_triage_id(request):
 @authenticate
 def reference_triage_id_update(request):
     id = request.matchdict['id'].upper()
-
     triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
     if triage:
         try:
@@ -495,7 +489,6 @@ def reference_triage_id_update(request):
 @authenticate
 def reference_triage_promote(request):
     id = request.matchdict['id'].upper()
-    
     triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
     if triage:
 
@@ -594,9 +587,7 @@ def reference_triage_id_delete(request):
 @view_config(route_name='reference_triage_tags', renderer='json', request_method='GET')
 def reference_triage_tags(request):
     sgdid = request.matchdict['id'].upper()
-
     dbentity_id = DBSession.query(Dbentity.dbentity_id).filter_by(sgdid=sgdid).one_or_none()
-
     if dbentity_id is None:
         return HTTPNotFound()
     
@@ -629,7 +620,6 @@ def author(request):
 @view_config(route_name='chemical', renderer='json', request_method='GET')
 def chemical(request):
     id = extract_id_request(request, 'chebi', param_name="format_name")
-    
     chebi = DBSession.query(Chebi).filter_by(chebi_id=id).one_or_none()
     if chebi:
         return chebi.to_dict()
@@ -649,7 +639,6 @@ def chemical_phenotype_details(request):
 @view_config(route_name='phenotype', renderer='json', request_method='GET')
 def phenotype(request):
     id = extract_id_request(request, 'phenotype', param_name="format_name")
-
     phenotype = DBSession.query(Phenotype).filter_by(phenotype_id=id).one_or_none()
     if phenotype:
         return phenotype.to_dict()
@@ -659,7 +648,6 @@ def phenotype(request):
 @view_config(route_name='phenotype_locus_details', renderer='json', request_method='GET')
 def phenotype_locus_details(request):
     id = extract_id_request(request, 'phenotype')
-
     phenotype = DBSession.query(Phenotype).filter_by(phenotype_id=id).one_or_none()
     if phenotype:
         return phenotype.annotations_to_dict()
@@ -672,7 +660,6 @@ def observable(request):
         return Apo.root_to_dict()
 
     id = extract_id_request(request, 'apo', param_name="format_name")
-
     observable = DBSession.query(Apo).filter_by(apo_id=id).one_or_none()
     if observable:
         return observable.to_dict()
@@ -682,9 +669,7 @@ def observable(request):
 @view_config(route_name='observable_locus_details', renderer='json', request_method='GET')
 def observable_locus_details(request):
     id = extract_id_request(request, 'apo')
-
     observable = DBSession.query(Apo).filter_by(apo_id=id).one_or_none()
-
     if observable:
         return observable.annotations_to_dict()
     else:
@@ -693,7 +678,6 @@ def observable_locus_details(request):
 @view_config(route_name='observable_ontology_graph', renderer='json', request_method='GET')
 def observable_ontology_graph(request):
     id = extract_id_request(request, 'apo')
-
     observable = DBSession.query(Apo).filter_by(apo_id=id).one_or_none()
     if observable:
         return observable.ontology_graph()
@@ -703,7 +687,6 @@ def observable_ontology_graph(request):
 @view_config(route_name='observable_locus_details_all', renderer='json', request_method='GET')
 def observable_locus_details_all(request):
     id = extract_id_request(request, 'apo')
-
     observable = DBSession.query(Apo).filter_by(apo_id=id).one_or_none()
     if observable:
         return observable.annotations_and_children_to_dict()
@@ -713,7 +696,7 @@ def observable_locus_details_all(request):
 @view_config(route_name='go', renderer='json', request_method='GET')
 def go(request):
     id = extract_id_request(request, 'go', param_name="format_name")
-    get_go_by_id(id)
+    go = get_go_by_id(id)
     if go:
         return go.to_dict()
     else:
@@ -722,8 +705,7 @@ def go(request):
 @view_config(route_name='go_ontology_graph', renderer='json', request_method='GET')
 def go_ontology_graph(request):
     id = extract_id_request(request, 'go')
-        
-    go = DBSession.query(Go).filter_by(go_id=id).one_or_none()
+    go = get_go_by_id(id)
     if go:
         return go.ontology_graph()
     else:
@@ -732,8 +714,7 @@ def go_ontology_graph(request):
 @view_config(route_name='go_locus_details', renderer='json', request_method='GET')
 def go_locus_details(request):
     id = extract_id_request(request, 'go')
-        
-    go = DBSession.query(Go).filter_by(go_id=id).one_or_none()
+    go = get_go_by_id(id)
     if go:
         return go.annotations_to_dict()
     else:
@@ -742,8 +723,7 @@ def go_locus_details(request):
 @view_config(route_name='go_locus_details_all', renderer='json', request_method='GET')
 def go_locus_details_all(request):
     id = extract_id_request(request, 'go')
-        
-    go = DBSession.query(Go).filter_by(go_id=id).one_or_none()
+    go = get_go_by_id(id)
     if go:
         return go.annotations_and_children_to_dict()
     else:
