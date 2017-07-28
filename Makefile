@@ -39,7 +39,7 @@ staging-deploy:
 	source prod_variables.sh && cap staging deploy
 
 curate-staging-deploy:
-	npm run build && source prod_variables.sh && NEX2_URI=$$CURATE_NEX2_URI && cap curate_staging deploy
+	npm run build && source prod_variables.sh && NEX2_URI=$$CURATE_NEX2_URI && CACHE_URLS=$$STAGING_CACHE_URLS && cap curate_staging deploy
 
 curate-prod-deploy:
 	npm run build && source prod_variables.sh && NEX2_URI=$$CURATE_NEX2_URI && cap curate_prod deploy
