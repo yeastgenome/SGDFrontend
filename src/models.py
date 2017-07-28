@@ -22,6 +22,7 @@ if 'CACHE_URLS' in os.environ.keys():
 else:
     cache_urls = ['http://localhost:6545']
 
+
 class CacheBase(object):
     def get_base_url(self):
         url_segment = '/locus/'
@@ -2341,7 +2342,15 @@ class Locusdbentity(Dbentity):
         for lit in regulation_lit:
             obj["regulation"].append(lit.to_dict_citation())
 
+        regulation_ids_htp = DBSession.query(Regulationannotation.reference_id).filter(or_(Regulationannotation.target_id == self.dbentity_id, Regulationannotation.regulator_id == self.dbentity_id),Regulationannotation.annotation_type == "high-throughput").all()
+        regulation_lit_htp = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(regulation_ids_htp)).order_by(Referencedbentity.year.desc(), Referencedbentity.display_name.asc()).all()
+
+        for lit in regulation_lit_htp:
+            obj["htp"].append(lit.to_dict_citation())
+
         apo_ids = DBSession.query(Apo.apo_id).filter_by(namespace_group="classical genetics").all()
+        apo_ids_large_scale = DBSession.query(Apo.apo_id).filter_by(
+            namespace_group="large-scale survey").all()
 
         phenotype_ids = DBSession.query(Phenotypeannotation.reference_id, Phenotypeannotation.experiment_id).filter(Phenotypeannotation.dbentity_id == self.dbentity_id).all()
 
@@ -2352,10 +2361,18 @@ class Locusdbentity(Dbentity):
             if (phenotype_id_experiment[0],) in primary_ids or phenotype_id_experiment[1] in apo_ids:
                 valid_phenotype_ids.append(phenotype_id_experiment[0])
 
+        valid_phenotype_ids_lsc = []
+        for phenotype_id_experiment in phenotype_ids:
+            if (phenotype_id_experiment[0],) in primary_ids or phenotype_id_experiment[1] in  apo_ids_large_scale:
+                valid_phenotype_ids_lsc.append(phenotype_id_experiment[0])
         phenotype_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(valid_phenotype_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.display_name.asc()).all()
 
         for lit in phenotype_lit:
             obj["phenotype"].append(lit.to_dict_citation())
+
+        phenotype_lit_lsc = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(valid_phenotype_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.display_name.asc()).all()
+        for lit in phenotype_lit_lsc:
+            obj["htp"].append(lit.to_dict_citation())
 
         go_ids = DBSession.query(Goannotation.reference_id).filter(and_(Goannotation.dbentity_id == self.dbentity_id, Goannotation.annotation_type != "high-throughput")).all()
         go_ids = set(go_ids) - set(Referencedbentity.get_go_blacklist_ids())
@@ -2363,6 +2380,17 @@ class Locusdbentity(Dbentity):
 
         for lit in go_lit:
             obj["go"].append(lit.to_dict_citation())
+
+
+        go_ids_htp = DBSession.query(Goannotation.reference_id).filter(and_(Goannotation.dbentity_id == self.dbentity_id, Goannotation.annotation_type == "high-throughput")).all()
+        go_ids_htp = set(go_ids_htp) - set(Referencedbentity.get_go_blacklist_ids())
+        go_lit_htp = DBSession.query(Referencedbentity).filter(
+            Referencedbentity.dbentity_id.in_(go_ids_htp)).order_by(
+                Referencedbentity.year.desc(),
+                Referencedbentity.display_name.asc()).all()
+
+        for lit in go_lit_htp:
+            obj["htp"].append(lit.to_dict_citation())
 
         return obj
 
@@ -2950,10 +2978,10 @@ class Locusdbentity(Dbentity):
 
         # TODO: convert this query into a sqlalchemy format. I tried but it was still going to the DB twice.
         query = "SELECT display_name FROM nex.so where so_id IN (SELECT so_id FROM nex.dnasequenceannotation WHERE dbentity_id = " + str(self.dbentity_id) + " GROUP BY so_id)"
-
+        
         locus_type = []
-
         so_display_names = DBSession.execute(query)
+      
         for so_display_name in so_display_names:
             locus_type.append(so_display_name[0])
 
@@ -3071,10 +3099,10 @@ class Locusdbentity(Dbentity):
             obj["aliases"].append(alias_obj)
 
         sos = DBSession.query(Dnasequenceannotation.so_id).filter(
-            Dnasequenceannotation.dbentity_id == self.dbentity_id).filter(
-                Dnasequenceannotation.taxonomy_id == 274901).group_by(
+            Dnasequenceannotation.dbentity_id == self.dbentity_id,Dnasequenceannotation.taxonomy_id == 274901).group_by(
                     Dnasequenceannotation.so_id).all()
         locus_type = DBSession.query(So.display_name).filter(So.so_id.in_([so[0] for so in sos])).all()
+
         obj["locus_type"] = ",".join([l[0] for l in locus_type])
 
         urls = DBSession.query(LocusUrl).filter_by(locus_id=self.dbentity_id).all()
@@ -6830,7 +6858,7 @@ class Regulationannotation(Base):
             },
             "evidence": experiment,
             "regulation_of": self.regulation_type,
-            "happens_during":self.get_happens_during(),
+            "happens_during": self.get_happens_during(),
             "direction": self.direction,
             "reference": reference.to_dict_citation(),
             "strain": strain_obj,
