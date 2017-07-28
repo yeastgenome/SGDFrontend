@@ -3198,10 +3198,9 @@ class Locusdbentity(Dbentity):
 
     def regulation_overview_to_dict(self, summary_regulation):
         blacklist = (551590,)
-
         obj = {
-            "regulator_count": DBSession.query(Regulationannotation).filter_by(target_id=self.dbentity_id).count(),
-            "target_count": DBSession.query(Regulationannotation).filter_by(regulator_id=self.dbentity_id).count()
+            "regulator_count": DBSession.query(Regulationannotation).filter_by(target_id=self.dbentity_id).distinct(Regulationannotation.regulator_id).count(),
+            "target_count": DBSession.query(Regulationannotation).filter_by(regulator_id=self.dbentity_id).distinct(Regulationannotation.target_id).count()
         }
 
         if len(summary_regulation) > 0:
