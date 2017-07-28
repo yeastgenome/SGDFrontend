@@ -12,6 +12,10 @@ backend default {
 }
 
 sub vcl_recv {
+    # pass POSTs so varnish doesn't transform into GET
+    if (req.method == "POST") {
+        return (pass);
+    }
     if (req.method == "PURGE") {
         if (!client.ip ~ purgers) {
             return (synth(405));
