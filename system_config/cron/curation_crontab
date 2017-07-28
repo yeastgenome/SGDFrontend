@@ -23,4 +23,4 @@
 0 * * * * /bin/bash /data/www/SGDBackend-NEX2/current/system_config/cron/restart.sh
 0 0 * * * /bin/bash /data/www/SGDBackend-NEX2/current/system_config/cron/index_disambiguation.sh
 0 1 * * * /bin/bash /data/www/SGDBackend-NEX2/current/system_config/cron/index_elasticsearch.sh
-0 16 * * * /bin/bash /data/www/SGDBackend-NEX2/current/system_config/cron/refresh_cache.sh
+30 17 * * * /bin/bash /data/www/SGDBackend-NEX2/current/system_config/cron/refresh_cache.sh
