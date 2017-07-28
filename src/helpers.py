@@ -26,20 +26,21 @@ S3_ACCESS_KEY = os.environ['S3_ACCESS_KEY']
 S3_SECRET_KEY = os.environ['S3_SECRET_KEY']
 
 def get_locus_by_id(id):
-    query = DBSession.query(Locusdbentity).filter_by(dbentity_id=id)
-    return dbentity_safe_query(query)
+    return dbentity_safe_query(id, Locusdbentity)
 
 def get_go_by_id(id):
-    query = DBSession.query(Go).filter_by(dbentity_id=id)
-    return dbentity_safe_query(query)
+    return dbentity_safe_query(id, Go)
 
 # try a query 3 times, fix basic DB connection problems
-def dbentity_safe_query(query):
+def dbentity_safe_query(id, entity_class):
     attempts = 0
     dbentity = None
     while attempts < MAX_QUERY_ATTEMPTS:
         try:
-            dbentity = query.one_or_none()
+            if entity_class is Locusdbentity:
+                dbentity = DBSession.query(Locusdbentity).filter_by(dbentity_id=id).one_or_none()
+            elif entity_class is Go:
+                dbentity = DBSession.query(Go).filter_by(go_id=id).one_or_none()
             break
         # close connection that has idle-in-transaction
         except InternalError:
