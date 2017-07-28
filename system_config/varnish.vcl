@@ -2,6 +2,7 @@ vcl 4.0;
 
 acl purgers {
     "127.0.0.1";
+    "172.16.0.0/12";
 }
 
 backend default {
