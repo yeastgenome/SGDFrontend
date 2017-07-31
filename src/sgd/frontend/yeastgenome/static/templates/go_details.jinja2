@@ -139,7 +139,7 @@
          <p id="htp_message" style="display:none">There are no high-throughput annotations
         for {{ locus.display_name }}.</p>
 
-        <div id="htp_bp_go" class="panel">
+        <div id="htp_bp_go">
             <h3>Biological Process <span id="htp_bp_go_table_header" class="round secondary label"></span></h3>
 
             <!-- Includes go_table into template -->
@@ -147,7 +147,7 @@
             {% include "go_table.jinja2" %}
         </div>
 
-        <div id="htp_mf_go" class="panel">
+        <div id="htp_mf_go">
             <h3>Molecular Function <span id="htp_mf_go_table_header" class="round secondary label"></span></h3>
 
             <!-- Includes go_table into template -->
@@ -155,7 +155,7 @@
             {% include "go_table.jinja2" %}
         </div>
 
-        <div id="htp_cc_go" class="panel">
+        <div id="htp_cc_go">
             <h3>Cellular Component <span id="htp_cc_go_table_header" class="round secondary label"></span></h3>
 
             <!-- Includes go_table into template -->
