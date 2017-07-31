@@ -5764,7 +5764,7 @@ class Phenotypeannotation(Base):
             if number_conditions.get(annotation.annotation_id, 0) > 1:
                 add = number_conditions.get(annotation.annotation_id, 0)
 
-            ### TODO: CDC25 breaks here because annotation.experiment.namespace_group is null
+        
             mt[annotation.mutant.display_name][annotation.experiment.namespace_group] += add
 
         experiment_categories = []
