@@ -13,27 +13,17 @@ beta-deploy:
 staging-deploy:
 	. prod_deploy_variables.sh && cap staging deploy
 
-# to deploy to both production instances at once, remember Uncle Ben ...
-#prod-deploy:
-#	. prod_deploy_variables.sh && cap prod deploy
-
-aws-dev-deploy:
-	. dev_deploy_variables.sh && cap aws_dev deploy
+prod-deploy:
+	. prod_deploy_variables.sh && cap prod deploy
 
 preview-deploy:
 	. dev_deploy_variables.sh && cap preview deploy
 
 run-prod:
-	pserve sgdfrontend_aws.ini --daemon --pid-file=/var/run/pyramid/frontend.pid
+	pserve sgdfrontend_production.ini --daemon --pid-file=/var/run/pyramid/frontend.pid
 
 stop-prod:
-	pserve sgdfrontend_aws.ini --stop-daemon --pid-file=/var/run/pyramid/frontend.pid
-
-prod1-deploy:
-	. prod_deploy_variables.sh && cap prod1 deploy
-
-prod2-deploy:
-	. prod_deploy_variables.sh && cap prod2 deploy
+	pserve sgdfrontend_production.ini --stop-daemon --pid-file=/var/run/pyramid/frontend.pid
 
 build: dependencies grunt
 	pip install -r requirements.txt

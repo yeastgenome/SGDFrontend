@@ -1,23 +1,4 @@
-set :stage, :prod
+set :stage, :dev
 
-server ENV['SERVER_1'],
-user: fetch(:user),
-roles: %w{web app},
-ssh_options: {
-	user: fetch(:user), # overrides user setting above
-	keys: %w(~/.ssh/id_rsa),
-	forward_agent: true,
-	auth_methods: %w(publickey password)
-	# password: 'please use keys'
-}
-
-server ENV['SERVER_2'],
-user: fetch(:user),
-roles: %w{web app},
-ssh_options: {
-	user: fetch(:user), # overrides user setting above
-	keys: %w(~/.ssh/id_rsa),
-	forward_agent: true,
-	auth_methods: %w(publickey password)
-	# password: 'please use keys'
-}
+server ENV['PROD_SERVER_A'], user: fetch(:user), port: 22, roles: %w{app}
+server ENV['PROD_SERVER_B'], user: fetch(:user), port: 22, roles: %w{app}
