@@ -9,6 +9,7 @@ import json
 import copy
 import requests
 import re
+import pdb
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
@@ -2976,12 +2977,12 @@ class Locusdbentity(Dbentity):
             "link": self.obj_url
         }
 
-        # TODO: convert this query into a sqlalchemy format. I tried but it was still going to the DB twice.
+
         query = "SELECT display_name FROM nex.so where so_id IN (SELECT so_id FROM nex.dnasequenceannotation WHERE dbentity_id = " + str(self.dbentity_id) + " GROUP BY so_id)"
-        
+
         locus_type = []
         so_display_names = DBSession.execute(query)
-      
+
         for so_display_name in so_display_names:
             locus_type.append(so_display_name[0])
 
@@ -3418,13 +3419,15 @@ class Locusdbentity(Dbentity):
 
         for namespace in go.keys():
             terms = sorted(go[namespace].keys(), key=lambda k : k.lower())
-
             if namespace == "cellular component":
-                obj["manual_cellular_component_terms"] = [go[namespace][term] for term in terms]
+                for term in terms:
+                    obj["manual_cellular_component_terms"].append(self.modify_go_display_name(go[namespace][term]))
             elif namespace == "molecular function":
-                obj["manual_molecular_function_terms"] = [go[namespace][term] for term in terms]
+                for term in terms:
+                    obj["manual_molecular_function_terms"].append(self.modify_go_display_name(go[namespace][term]))
             elif namespace == "biological process":
-                obj["manual_biological_process_terms"] = [go[namespace][term] for term in terms]
+                for term in terms:
+                    obj["manual_biological_process_terms"].append(self.modify_go_display_name(go[namespace][term]))
 
         obj["computational_annotation_count"] = DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id, annotation_type="computational").count()
 
@@ -3463,6 +3466,13 @@ class Locusdbentity(Dbentity):
             obj["paragraph"] = go_summary[0]
 
         return obj
+
+
+    def modify_go_display_name(self,item):
+        item["term"]["display_name"] = item["term"]["display_name"].replace(
+            "_", " ")
+        return item
+
 
     def get_go_count(self):
         return DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id).count()
