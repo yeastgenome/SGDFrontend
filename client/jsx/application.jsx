@@ -21,8 +21,8 @@ var views = {
   regulation: require('./views/regulation_view.jsx'),
   summary: require('./views/summary_view.jsx'),
   variantViewer: require('./views/variant_viewer_view.jsx'),
+  literature: require('./views/literature_view.jsx'),
   router: require('./react_router_render.jsx')
-
 };
 
 // call setup script

@@ -9,16 +9,21 @@ $(document).ready(function() {
   		set_up_reference_list("phenotype", "phenotype_list", "phenotype_list_empty_message", "phenotype_list_wrapper", "phenotype_list_download", locus['display_name'] + "_phenotype_citations", data['phenotype']);
   		set_up_reference_list("interaction", "interaction_list", "interaction_list_empty_message", "interaction_list_wrapper", "interaction_list_download", locus['display_name'] + "_interaction_citations", data['interaction']);
   		set_up_reference_list("regulation", "regulation_list", "regulation_list_empty_message", "regulation_list_wrapper", "regulation_list_download", locus['display_name'] + "_regulation_citations", data['regulation']);
+  		set_up_reference_list("htp", "htp_list", "htp_list_empty_message", "htp_list_wrapper", "htp_list_download", locus['display_name'] + "_htp_citations", data['htp']);
     });
 
   	$.getJSON('/backend/locus/' + locus['id'] + '/literature_graph', function(data) {
+  		var hasNetwork = false;
   		if(data['nodes'].length > 1) {
+  			hasNetwork = true;
   			var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, false, "literature");
             create_cy_download_button(graph, "cy_download", locus['display_name'] + '_literature_graph')
   		}
 		else {
 			hide_section("network");
 		}
+		// render react menu
+		views.literature.render(hasNetwork);
 	});
 
 });
