@@ -2977,12 +2977,12 @@ class Locusdbentity(Dbentity):
             "link": self.obj_url
         }
 
-        # TODO: convert this query into a sqlalchemy format. I tried but it was still going to the DB twice.
+
         query = "SELECT display_name FROM nex.so where so_id IN (SELECT so_id FROM nex.dnasequenceannotation WHERE dbentity_id = " + str(self.dbentity_id) + " GROUP BY so_id)"
-        
+
         locus_type = []
         so_display_names = DBSession.execute(query)
-      
+
         for so_display_name in so_display_names:
             locus_type.append(so_display_name[0])
 
@@ -3419,13 +3419,15 @@ class Locusdbentity(Dbentity):
 
         for namespace in go.keys():
             terms = sorted(go[namespace].keys(), key=lambda k : k.lower())
-
             if namespace == "cellular component":
-                obj["manual_cellular_component_terms"] = [go[namespace][term] for term in terms]
+                for term in terms:
+                    obj["manual_cellular_component_terms"].append(self.modify_go_display_name(go[namespace][term]))
             elif namespace == "molecular function":
-                obj["manual_molecular_function_terms"] = [go[namespace][term] for term in terms]
+                for term in terms:
+                    obj["manual_molecular_function_terms"].append(self.modify_go_display_name(go[namespace][term]))
             elif namespace == "biological process":
-                obj["manual_biological_process_terms"] = [go[namespace][term] for term in terms]
+                for term in terms:
+                    obj["manual_biological_process_terms"].append(self.modify_go_display_name(go[namespace][term]))
 
         obj["computational_annotation_count"] = DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id, annotation_type="computational").count()
 
@@ -3464,6 +3466,13 @@ class Locusdbentity(Dbentity):
             obj["paragraph"] = go_summary[0]
 
         return obj
+
+
+    def modify_go_display_name(self,item):
+        item["term"]["display_name"] = item["term"]["display_name"].replace(
+            "_", " ")
+        return item
+
 
     def get_go_count(self):
         return DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id).count()
@@ -4784,13 +4793,13 @@ class Goannotation(Base):
                 experiment_url = url.obj_url
                 break
         if experiment_url == None and len(alias_url) > 0:
-            experiment_url = alias_url[0].obj_url
+            experiment_url = alias_url[1].obj_url
 
         obj["evidence_codes"] = [{
             "display_name": experiment_name,
             "link": experiment_url
         }]
-
+     
         return obj
 
     # a Go annotation can be duplicated based on the Gosupportingevidence group id
@@ -5772,7 +5781,7 @@ class Phenotypeannotation(Base):
             if number_conditions.get(annotation.annotation_id, 0) > 1:
                 add = number_conditions.get(annotation.annotation_id, 0)
 
-            ### TODO: CDC25 breaks here because annotation.experiment.namespace_group is null
+        
             mt[annotation.mutant.display_name][annotation.experiment.namespace_group] += add
 
         experiment_categories = []
