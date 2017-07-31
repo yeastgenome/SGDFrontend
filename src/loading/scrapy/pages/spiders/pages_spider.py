@@ -12,7 +12,7 @@ from src.models import Apo, DBSession, Dnasequenceannotation, Go, Locusdbentity,
 
 HEADER_OBJ = { 'X-Forwarded-Proto': 'https' }
 
-engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
+engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600, pool_size=2)
 DBSession.configure(bind=engine)
 
 if 'WORKER_LOG_FILE' in os.environ.keys():
@@ -24,7 +24,7 @@ logger.setLevel(level=logging.INFO)
 # init spiders
 class BaseSpider(scrapy.Spider):
     custom_settings = {
-        'CONCURRENT_REQUESTS_PER_DOMAIN': 3,
+        'CONCURRENT_REQUESTS_PER_DOMAIN': 2,
         'CONCURRENT_REQUESTS': 16
     }
     

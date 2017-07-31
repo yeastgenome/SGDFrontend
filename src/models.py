@@ -4621,6 +4621,22 @@ class Go(Base):
     def get_secondary_base_url(self):
         return '/webservice/go/' + str(self.go_id)
 
+    def get_all_cache_urls(self, is_quick=False):
+        if is_quick and self.can_skip_cache():
+            return []
+        base_target_url = self.get_base_url()
+        target_urls = [base_target_url]
+        if is_quick:
+            target_urls = []
+        details_urls = self.get_secondary_cache_urls(is_quick)
+        target_urls = target_urls + details_urls
+        urls = []
+        for relative_url in target_urls:
+            for base_url in cache_urls:
+                url = base_url + relative_url
+                urls.append(url)
+        return urls
+
 class GoAlias(Base):
     __tablename__ = 'go_alias'
     __table_args__ = (
