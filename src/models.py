@@ -2243,6 +2243,7 @@ class Locusdbentity(Dbentity):
                         "data": {
                             "name": reference.display_name,
                             "id": reference.format_name,
+                            "link": reference.obj_url,
                             "type": "REFERENCE",
                             "gene_count": len(reference_ids)
                         }
