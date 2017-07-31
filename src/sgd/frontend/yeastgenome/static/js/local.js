@@ -21,24 +21,24 @@ function post_to_url(path, params) {
 }
 
 function post_json_to_url(link, data, onSuccess, onFailure) {
-	$.ajax({url: link,
-  		type: 'post',
-  		data: JSON.stringify(data),
-  		contentType: 'application/json',
-  		processData: false,
-  		dataType: "json",
-  		success: onSuccess
- 	}).fail(onFailure);
+    $.ajax({url: link,
+        type: 'post',
+        data: JSON.stringify(data),
+        contentType: 'application/json',
+        processData: false,
+        dataType: "json",
+        success: onSuccess
+    }).fail(onFailure);
 }
 
 function download_citations(citation_div, list_name) {
-	var reference_ids = [];
-	var entries = document.getElementById(citation_div).children;
-	for(var i=0,len=entries.length; i<len; i++) {
-		reference_ids.push(entries[i].id)
-	}
+    var reference_ids = [];
+    var entries = document.getElementById(citation_div).children;
+    for(var i=0,len=entries.length; i<len; i++) {
+        reference_ids.push(entries[i].id)
+    }
 
-	post_to_url('/download_citations', {"display_name":list_name, "reference_ids": reference_ids});
+    post_to_url('/download_citations', {"display_name":list_name, "reference_ids": reference_ids});
 }
 
 // TEMP added to fix protein tab, should be removed again
@@ -53,59 +53,59 @@ function download_sequence(sequence, list_name, contig_name) {
 }
 
 function set_up_references(references, ref_list_id) {
-  	//Set up references
-	var ref_list = document.getElementById(ref_list_id);
-	for (var i=0; i < references.length; i++) {
-		var reference = references[i];
+    //Set up references
+    var ref_list = document.getElementById(ref_list_id);
+    for (var i=0; i < references.length; i++) {
+        var reference = references[i];
 
-		var li = document.createElement('li');
-		li.id = references[i]['id']
-		
-		var a = document.createElement('a');
-		var linkText = document.createTextNode(reference['display_name']);
-		a.appendChild(linkText);
-		a.href = reference['link'];
-		li.appendChild(a);
-		
-		var span = document.createElement('span');
-		var citation = reference['citation'];
-		span.innerHTML = citation.substring(citation.indexOf(')')+1, citation.length) + ' ';
-		li.appendChild(span);
+        var li = document.createElement('li');
+        li.id = references[i]['id']
+        
+        var a = document.createElement('a');
+        var linkText = document.createTextNode(reference['display_name']);
+        a.appendChild(linkText);
+        a.href = reference['link'];
+        li.appendChild(a);
+        
+        var span = document.createElement('span');
+        var citation = reference['citation'];
+        span.innerHTML = citation.substring(citation.indexOf(')')+1, citation.length) + ' ';
+        li.appendChild(span);
 
         if(reference['pubmed_id'] != null) {
-		    var pmid = document.createElement('small');
-		    pmid.innerHTML = 'PMID:' + reference['pubmed_id'];
-		    li.appendChild(pmid);
+            var pmid = document.createElement('small');
+            pmid.innerHTML = 'PMID:' + reference['pubmed_id'];
+            li.appendChild(pmid);
         }
-		
-		var refLinks = document.createElement("ul");
-		refLinks.className = "ref-links";
-		
-		var reflink_li = document.createElement('li');
-		var a = document.createElement('a');
-		var linkText = document.createTextNode('SGD Paper');
-		a.appendChild(linkText);
-		a.href = reference['link'];
-		reflink_li.appendChild(a);
-		refLinks.appendChild(reflink_li);
+        
+        var refLinks = document.createElement("ul");
+        refLinks.className = "ref-links";
+        
+        var reflink_li = document.createElement('li');
+        var a = document.createElement('a');
+        var linkText = document.createTextNode('SGD Paper');
+        a.appendChild(linkText);
+        a.href = reference['link'];
+        reflink_li.appendChild(a);
+        refLinks.appendChild(reflink_li);
 
         var urls = reference['urls'].sort(function(a, b) {return a['display_name'] < b['display_name']});
-		for (var j=0; j < urls.length; j++) {
-			var url = urls[j];
-			var reflink_li = document.createElement('li');
-			var a = document.createElement('a');
-			var linkText = document.createTextNode(url['display_name']);
-			a.appendChild(linkText);
-			a.href = url['link'];
-			a.target = '_blank';
-			reflink_li.appendChild(a);
-			refLinks.appendChild(reflink_li);
-		}
+        for (var j=0; j < urls.length; j++) {
+            var url = urls[j];
+            var reflink_li = document.createElement('li');
+            var a = document.createElement('a');
+            var linkText = document.createTextNode(url['display_name']);
+            a.appendChild(linkText);
+            a.href = url['link'];
+            a.target = '_blank';
+            reflink_li.appendChild(a);
+            refLinks.appendChild(reflink_li);
+        }
 
-		li.appendChild(refLinks);
-		
-		ref_list.appendChild(li);
-	}
+        li.appendChild(refLinks);
+        
+        ref_list.appendChild(li);
+    }
 }
 
 String.prototype.chunk = function(n) {
@@ -120,23 +120,23 @@ function create_link(display_name, link, new_window) {
     if(link == null) {
         return display_name
     }
-	if(new_window) {
-		return '<a href="' + link + '" target="_blank">' + display_name + '</a>'
-	}
-	else {
-		return '<a href="' + link + '">' + display_name + '</a>'
-	}
+    if(new_window) {
+        return '<a href="' + link + '" target="_blank">' + display_name + '</a>'
+    }
+    else {
+        return '<a href="' + link + '">' + display_name + '</a>'
+    }
 }
 
 function create_note_icon(drop_id_num, text) {
-	var icon;
-	if(text != null && text != '') {
-		icon = "<a href='#' data-dropdown='drop" + drop_id_num + "'><i class='fa fa-info-circle'></i></a><div id='drop" + drop_id_num + "' class='f-dropdown content medium' data-dropdown-content><p>" + text + "</p></div>"
-	}
-	else {
-		icon = '';
-	}
-	return icon;
+    var icon;
+    if(text != null && text != '') {
+        icon = "<a href='#' data-dropdown='drop" + drop_id_num + "'><i class='fa fa-info-circle'></i></a><div id='drop" + drop_id_num + "' class='f-dropdown content medium' data-dropdown-content><p>" + text + "</p></div>"
+    }
+    else {
+        icon = '';
+    }
+    return icon;
 }
 
 function hide_section(section_id) {
@@ -147,7 +147,7 @@ function hide_section(section_id) {
 
 //http://datatables.net/forums/discussion/2123/filter-post-processing-and-highlighting/p1
 function setup_datatable_highlight() {
-	// HIGHLIGHT FCT
+    // HIGHLIGHT FCT
 jQuery.fn.dataTableExt.oApi.fnSearchHighlighting = function(oSettings) {
     // Initialize regex cache
     oSettings.oPreviousSearch.oSearchCaches = {};
@@ -214,66 +214,66 @@ jQuery.fn.dataTableExt.oApi.fnSearchHighlighting = function(oSettings) {
 }
 
 function set_up_scientific_notation_sorting() {
-	/* new sorting functions */
-	jQuery.fn.dataTableExt.oSort['scinote-asc']  = function(a,b) {
+    /* new sorting functions */
+    jQuery.fn.dataTableExt.oSort['scinote-asc']  = function(a,b) {
           var x = parseFloat(a);
           var y = parseFloat(b);
           return ((x < y) ? -1 : ((x > y) ?  1 : 0));
         };
  
-	jQuery.fn.dataTableExt.oSort['scinote-desc']  = function(a,b) {
+    jQuery.fn.dataTableExt.oSort['scinote-desc']  = function(a,b) {
           var x = parseFloat(a);
           var y = parseFloat(b);
           return ((x < y) ? 1 : ((x > y) ?  -1 : 0));
         };
  
-	/* pick the column to give the datatype 'allnumeric' too */
-	$('#example').dataTable({
+    /* pick the column to give the datatype 'allnumeric' too */
+    $('#example').dataTable({
           "aoColumnDefs": [{ "sType": "scinote", "aTargets": [ 3 ] } ]
-	} );
+    } );
 }
 
 function set_up_range_sort() {
-	jQuery.fn.dataTableExt.oSort['range-desc'] = function(x,y) {
-		x = x.split("..");
-		y = y.split("..");
+    jQuery.fn.dataTableExt.oSort['range-desc'] = function(x,y) {
+        x = x.split("..");
+        y = y.split("..");
 
-		x0 = parseInt(x[0]);
-		y0 = parseInt(y[0]);
+        x0 = parseInt(x[0]);
+        y0 = parseInt(y[0]);
 
-		return (x0 > y0) ? -1 : ((x0 < y0) ? 1 : 0);
+        return (x0 > y0) ? -1 : ((x0 < y0) ? 1 : 0);
 
-	};
+    };
 
-	jQuery.fn.dataTableExt.oSort['range-asc'] = function(x,y) {
+    jQuery.fn.dataTableExt.oSort['range-asc'] = function(x,y) {
 
-		x = x.split("..");
-		y = y.split("..");
+        x = x.split("..");
+        y = y.split("..");
 
-		x0 = parseInt(x[0]);
-		y0 = parseInt(y[0]);
+        x0 = parseInt(x[0]);
+        y0 = parseInt(y[0]);
 
-		return (x0 < y0) ? -1 : ((x0 > y0) ? 1 : 0);
+        return (x0 < y0) ? -1 : ((x0 > y0) ? 1 : 0);
 
-	};
+    };
 }
 
 function set_up_phospho_sort() {
-	jQuery.fn.dataTableExt.oSort['phospho-desc'] = function(x,y) {
-		x0 = parseInt(x.slice(1,x.length));
-		y0 = parseInt(y.slice(1,y.length));
+    jQuery.fn.dataTableExt.oSort['phospho-desc'] = function(x,y) {
+        x0 = parseInt(x.slice(1,x.length));
+        y0 = parseInt(y.slice(1,y.length));
 
-		return (x0 > y0) ? -1 : ((x0 < y0) ? 1 : 0);
+        return (x0 > y0) ? -1 : ((x0 < y0) ? 1 : 0);
 
-	};
+    };
 
-	jQuery.fn.dataTableExt.oSort['phospho-asc'] = function(x,y) {
-		x0 = parseInt(x.slice(1,x.length));
-		y0 = parseInt(y.slice(1,y.length));
+    jQuery.fn.dataTableExt.oSort['phospho-asc'] = function(x,y) {
+        x0 = parseInt(x.slice(1,x.length));
+        y0 = parseInt(y.slice(1,y.length));
 
-		return (x0 < y0) ? -1 : ((x0 > y0) ? 1 : 0);
+        return (x0 < y0) ? -1 : ((x0 > y0) ? 1 : 0);
 
-	};
+    };
 }
 
 function create_show_child_button(child_button_id, table, data, details_all_link, data_to_table, set_up_table_f) {
@@ -284,10 +284,10 @@ function create_show_child_button(child_button_id, table, data, details_all_link
         direct_data.push(data_to_table(data[i], i));
     }
 
-	var child_button = $("#" + child_button_id);
+    var child_button = $("#" + child_button_id);
 
-	child_button.click(function() {
-	  	child_button.attr('disabled', true);
+    child_button.click(function() {
+        child_button.attr('disabled', true);
 
 
         if(child_button.html() == 'Hide Annotations to Child Terms') {
@@ -363,15 +363,16 @@ function create_table(table_id, options) {
     }
     options["bAutoWidth"] = false;
     setup_datatable_highlight();
-  	table = $('#' + table_id).dataTable(options);
-  	setup_datatable_highlight();
-  	table.fnSearchHighlighting();
-  	$('.dataTables_filter input').attr("placeholder", "Filter table");
+    table = $('#' + table_id).dataTable(options);
+    setup_datatable_highlight();
+    table.fnSearchHighlighting();
+    $('#' + table_id + '_loader').remove();
+    $('.dataTables_filter input').attr("placeholder", "Filter table");
     $(document).foundation();
 
     //$('#' + table_id).prev().children().first().append('<div class="right"><a href="#" data-dropdown="' + table_id + '_help"><i class="fa fa-question-circle"></i></a></div>');
 
-  	return table;
+    return table;
 }
 
 function create_analyze_button_with_list(analyze_button_id, bioent_ids, filename) {
@@ -428,27 +429,27 @@ function create_analyze_button(analyze_button_id, table, name, apply_filter) {
     //When the associated table is filtered so that no genes are being displayed, disable button.
     if(apply_filter) {
         table.bind('filter', function() {
-  	        var data = table._('tr', {"filter": "applied"});
-  	        if(data.length == 0) {
-  	            analyze_button.attr('disabled', true);
-  	            analyze_button.click(function(){});
-  	        }
-  	        else {
-  	            analyze_button.attr('disabled', false);
-  	            analyze_button.click(analyze_function);
-  	        }
-  	    });
+            var data = table._('tr', {"filter": "applied"});
+            if(data.length == 0) {
+                analyze_button.attr('disabled', true);
+                analyze_button.click(function(){});
+            }
+            else {
+                analyze_button.attr('disabled', false);
+                analyze_button.click(analyze_function);
+            }
+        });
     }
 
     var data = table._('tr', {"filter": "applied"});
-  	if(data.length == 0) {
-  	    analyze_button.attr('disabled', true);
-  	    analyze_button.click(function(){});
-  	}
-  	else {
-  	    analyze_button.attr('disabled', false);
-  	    analyze_button.click(analyze_function);
-  	}
+    if(data.length == 0) {
+        analyze_button.attr('disabled', true);
+        analyze_button.click(function(){});
+    }
+    else {
+        analyze_button.attr('disabled', false);
+        analyze_button.click(analyze_function);
+    }
 }
 
 function create_download_button(download_button_id, table, name) {
@@ -475,26 +476,26 @@ function create_download_button(download_button_id, table, name) {
 
     //When the associated table is filtered so that no genes are being displayed, disable button.
     table.bind('filter', function() {
-  	    var data = table._('tr', {"filter": "applied"});
-  	    if(data.length == 0) {
-  	        download_button.attr('disabled', true);
-  	        download_button.off('click');
-  	    }
-  	    else {
-  	        download_button.removeAttr('disabled');
-  	        download_button.click(download_function);
-  	    }
-  	});
+        var data = table._('tr', {"filter": "applied"});
+        if(data.length == 0) {
+            download_button.attr('disabled', true);
+            download_button.off('click');
+        }
+        else {
+            download_button.removeAttr('disabled');
+            download_button.click(download_function);
+        }
+    });
 
     var data = table._('tr', {"filter": "applied"});
-  	if(data.length == 0) {
-  	    download_button.attr('disabled', true);
-  	    download_button.off('click');
-  	}
-  	else {
-  	    download_button.removeAttr('disabled');
-  	    download_button.click(download_function);
-  	}
+    if(data.length == 0) {
+        download_button.attr('disabled', true);
+        download_button.off('click');
+    }
+    else {
+        download_button.removeAttr('disabled');
+        download_button.click(download_function);
+    }
     download_button.removeAttr('disabled');
 }
 
@@ -510,19 +511,19 @@ function set_up_enrichment_table(data, gene_count) {
     var options = {"bPaginate": true, "bDestroy": true, "oLanguage": {'sEmptyTable': 'Error calculating shared GO processes.'}, "aaData": []};
 
     if(data != null) {
-	    var datatable = [];
-	    for (var i=0; i < data.length; i++) {
-		    var evidence = data[i];
-		    var go = '';
-		    if(evidence['go'] != null) {
-			    go = create_link(evidence['go']['display_name'], evidence['go']['link']);
-		    }
-  		    datatable.push([evidence['go']['id'], go, evidence['match_count'].toString(), evidence['pvalue']])
-    	}
+        var datatable = [];
+        for (var i=0; i < data.length; i++) {
+            var evidence = data[i];
+            var go = '';
+            if(evidence['go'] != null) {
+                go = create_link(evidence['go']['display_name'], evidence['go']['link']);
+            }
+            datatable.push([evidence['go']['id'], go, evidence['match_count'].toString(), evidence['pvalue']])
+        }
 
-  	    set_up_header('enrichment_table', datatable.length, 'entry', 'entries', gene_count, 'gene', 'genes');
+        set_up_header('enrichment_table', datatable.length, 'entry', 'entries', gene_count, 'gene', 'genes');
 
-	    set_up_scientific_notation_sorting();
+        set_up_scientific_notation_sorting();
 
         options["aaSorting"] = [[3, "asc"]];
         options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, null, {'sWidth': '100px'}, { "sType": "scinote", 'sWidth': '100px'}]
@@ -540,17 +541,17 @@ function create_enrichment_table(table_id, target_table, init_data) {
 
     var get_filter_bioent_ids = function() {
         var bioent_ids = [];
-		var already_used = {};
-		//Get bioent_ids
-		var data = target_table._('tr', {"filter": "applied"});
-		for (var i=0,len=data.length; i<len; i++) {
-			var bioent_id = data[i][1];
-			if(!already_used[bioent_id]) {
-				bioent_ids.push(bioent_id)
-				already_used[bioent_id] = true;
-			}
-		}
-		return bioent_ids;
+        var already_used = {};
+        //Get bioent_ids
+        var data = target_table._('tr', {"filter": "applied"});
+        for (var i=0,len=data.length; i<len; i++) {
+            var bioent_id = data[i][1];
+            if(!already_used[bioent_id]) {
+                bioent_ids.push(bioent_id)
+                already_used[bioent_id] = true;
+            }
+        }
+        return bioent_ids;
     };
 
     var update_enrichment = function() {
@@ -562,28 +563,28 @@ function create_enrichment_table(table_id, target_table, init_data) {
         var bioent_ids = get_filter_bioent_ids();
 
         set_up_header('enrichment_table', '_', 'entry', 'entries', bioent_ids.length, 'gene', 'genes');
-		post_json_to_url('/enrichment', {'bioent_ids': bioent_ids},
-		    function(data) {
-  			    set_up_enrichment_table(data, bioent_ids.length)
-  			    filter_used = target_table.fnSettings().oPreviousSearch.sSearch;
-  			    enrichment_recalc.attr('disabled', false);
-  			    enrichment_recalc.hide();
-  		    }
-  		);
+        post_json_to_url('/enrichment', {'bioent_ids': bioent_ids},
+            function(data) {
+                set_up_enrichment_table(data, bioent_ids.length)
+                filter_used = target_table.fnSettings().oPreviousSearch.sSearch;
+                enrichment_recalc.attr('disabled', false);
+                enrichment_recalc.hide();
+            }
+        );
     };
 
     target_table.bind("filter", function() {
-	    var search = target_table.fnSettings().oPreviousSearch.sSearch;
-	    var data = target_table._('tr', {"filter": "applied"});
-		if(search != filter_used && data.length > 0) {
-		    enrichment_recalc.show();
-		}
-		else {
-		    enrichment_recalc.hide();
-		}
-	});
+        var search = target_table.fnSettings().oPreviousSearch.sSearch;
+        var data = target_table._('tr', {"filter": "applied"});
+        if(search != filter_used && data.length > 0) {
+            enrichment_recalc.show();
+        }
+        else {
+            enrichment_recalc.hide();
+        }
+    });
 
-	enrichment_recalc.click(update_enrichment);
+    enrichment_recalc.click(update_enrichment);
 
     if(init_data != null) {
         var gene_count = get_filter_bioent_ids().length;
