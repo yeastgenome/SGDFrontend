@@ -9,7 +9,6 @@ import json
 import copy
 import requests
 import re
-import pdb
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
@@ -4777,13 +4776,13 @@ class Goannotation(Base):
                 experiment_url = url.obj_url
                 break
         if experiment_url == None and len(alias_url) > 0:
-            experiment_url = alias_url[0].obj_url
+            experiment_url = alias_url[1].obj_url
 
         obj["evidence_codes"] = [{
             "display_name": experiment_name,
             "link": experiment_url
         }]
-
+     
         return obj
 
     # a Go annotation can be duplicated based on the Gosupportingevidence group id
