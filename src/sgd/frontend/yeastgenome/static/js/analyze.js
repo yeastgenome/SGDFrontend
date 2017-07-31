@@ -35,7 +35,7 @@ function post_to_yeastmine(bioent_ids) {
     // It can be made less wordy if you use one.
     var form = document.createElement("form");
     form.setAttribute("method", "post");
-    form.setAttribute("action", "http://yeastmine.yeastgenome.org/yeastmine/portal.do");
+    form.setAttribute("action", "http://yeastmine-test-aws.yeastgenome.org/yeastmine-dev/portal.do?goToListUpload=true");
     
     var cinp = document.createElement("input");
     cinp.setAttribute("type", "hidden");
@@ -53,7 +53,7 @@ function post_to_yeastmine(bioent_ids) {
     hiddenField.setAttribute("type", "hidden");
     hiddenField.setAttribute("name", "externalids");
     hiddenField.setAttribute("value", bioent_ids);
-        hiddenField.id = "data";
+    hiddenField.id = "data";
     form.appendChild(hiddenField);
 
     document.body.appendChild(form);
