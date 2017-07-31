@@ -4764,7 +4764,7 @@ class Goannotation(Base):
             "qualifiers": [self.go_qualifier.replace("_", " ")],
             "term": {
                 "link": self.go.obj_url,
-                "display_name": self.go.display_name
+                "display_name": self.go.display_name.replace("_", " ")
             },
             "evidence_codes": []
         }
