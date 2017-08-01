@@ -196,7 +196,7 @@ CREATE TABLE nex.locusrelation_reference (
     source_id bigint NOT NULL,
     date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
     created_by varchar(12) NOT NULL,
-    CONSTRAINT locusalias_reference_pk PRIMARY KEY (locusrelation_reference_id)
+    CONSTRAINT locusrelation_reference_pk PRIMARY KEY (locusrelation_reference_id)
 ) ;
 COMMENT ON TABLE nex.locusrelation_reference IS 'References associated with a locus relation.';
 COMMENT ON COLUMN nex.locusrelation_reference.date_created IS 'Date the record was entered into the database.';
