@@ -636,6 +636,13 @@ REVOKE ALL ON nex.locus_relation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.locus_relation TO curator;
 GRANT SELECT ON nex.locus_relation TO PUBLIC;
 
+-- Set privilege on TABLE LOCUSRELATION_REFERENCE
+ALTER TABLE nex.locusrelation_reference OWNER TO nex;
+GRANT ALL ON nex.locusrelation_reference TO nex;
+REVOKE ALL ON nex.locusrelation_reference FROM PUBLIC;
+GRANT SELECT,INSERT,UPDATE,DELETE ON nex.locusrelation_reference TO curator;
+GRANT SELECT ON nex.locusrelation_reference TO PUBLIC;
+
 -- Set privilege on TABLE LOCUSSUMMARY
 ALTER TABLE nex.locussummary OWNER TO nex;
 GRANT ALL ON nex.locussummary TO nex;
