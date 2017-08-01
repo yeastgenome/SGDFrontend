@@ -3005,7 +3005,7 @@ class Locusdbentity(Dbentity):
             "bioent_status": self.dbentity_status,
             "description": self.description,
             "name_description": self.name_description,
-            "paralogs": [],
+            "paralogs": self.paralogs_to_dict(),
             "urls": [],
             "protein_overview": self.protein_overview_to_dict(),
             "go_overview": self.go_overview_to_dict(),
@@ -3248,6 +3248,11 @@ class Locusdbentity(Dbentity):
             }
 
         return obj
+
+    def paralogs_to_dict(self):
+        PARALOG_RO_ID = 169738
+        paralog_relations = DBSession.query(LocusRelation).filter(and_(LocusRelation.ro_id == PARALOG_RO_ID, or_(LocusRelation.parent_id == self.dbentity_id, LocusRelation.child_id == self.dbentity_id))).all()
+        return [a.to_dict() for a in paralog_relations]
 
     def protein_overview_to_dict(self):
         obj = {
@@ -5296,6 +5301,16 @@ class LocusRelation(Base):
     ro = relationship(u'Ro')
     source = relationship(u'Source')
 
+    def to_dict(self):
+        return {
+            'id': self.relation_id,
+            'parent': self.parent.to_dict_analyze(),
+            'child': self.child.to_dict_analyze(),
+            'date_created': self.date_created.strftime("%Y-%m-%d"),
+            'relation_type': self.ro.display_name,
+            'references': [],#TEMP
+            'source': self.source.to_dict()
+        }
 
 class LocusUrl(Base):
     __tablename__ = 'locus_url'
@@ -7126,6 +7141,14 @@ class Source(Base):
     description = Column(String(500))
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
+
+    def to_dict(self):
+        return {
+            'id': self.source_id,
+            'display_name': self.display_name,
+            'format_name': self.format_name,
+            'link': None
+        }
 
 
 class StrainUrl(Base):
