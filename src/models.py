@@ -3252,7 +3252,7 @@ class Locusdbentity(Dbentity):
     def paralogs_to_dict(self):
         PARALOG_RO_ID = 169738
         paralog_relations = DBSession.query(LocusRelation).filter(and_(LocusRelation.ro_id == PARALOG_RO_ID, or_(LocusRelation.parent_id == self.dbentity_id, LocusRelation.child_id == self.dbentity_id))).all()
-        return [a.to_dict() for a in paralog_relations]
+        return [a.to_dict(self.dbentity_id) for a in paralog_relations]
 
     def protein_overview_to_dict(self):
         obj = {
@@ -5301,11 +5301,17 @@ class LocusRelation(Base):
     ro = relationship(u'Ro')
     source = relationship(u'Source')
 
-    def to_dict(self):
+    def to_dict(self, real_parent_id):
+        # the parent should be the gene in the real_parent_id parameter, not parent_id column bc relatinships are only represented once
+        parent = self.parent
+        child = self.child
+        if self.child_id == real_parent_id:
+            parent = self.child
+            child = self.parent
         return {
             'id': self.relation_id,
-            'parent': self.parent.to_dict_analyze(),
-            'child': self.child.to_dict_analyze(),
+            'parent': parent.to_dict_analyze(),
+            'child': child.to_dict_analyze(),
             'date_created': self.date_created.strftime("%Y-%m-%d"),
             'relation_type': self.ro.display_name,
             'references': [],#TEMP
