@@ -5308,13 +5308,15 @@ class LocusRelation(Base):
         if self.child_id == real_parent_id:
             parent = self.child
             child = self.parent
+        locusrelation_refs = DBSession.query(LocusRelationReference).filter_by(relation_id=self.relation_id).all()
+        refs = [a.to_dict() for a in locusrelation_refs]
         return {
             'id': self.relation_id,
             'parent': parent.to_dict_analyze(),
             'child': child.to_dict_analyze(),
             'date_created': self.date_created.strftime("%Y-%m-%d"),
             'relation_type': self.ro.display_name,
-            'references': [],#TEMP
+            'references': refs,
             'source': self.source.to_dict()
         }
 
@@ -5456,6 +5458,34 @@ class LocussummaryReference(Base):
     source = relationship(u'Source')
     summary = relationship(u'Locussummary')
 
+class LocusRelationReference(Base):
+    __tablename__ = 'locusrelation_reference'
+    __table_args__ = (
+        UniqueConstraint('relation_id', 'reference_id'),
+        {u'schema': 'nex'}
+    )
+
+    locusrelation_reference_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.link_seq'::regclass)"))
+    relation_id = Column(ForeignKey(u'nex.locus_relation.relation_id', ondelete=u'CASCADE'), nullable=False)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    reference = relationship(u'Referencedbentity')
+    source = relationship(u'Source')
+    relation = relationship(u'LocusRelation')
+
+    def to_dict(self):
+        ref = self.reference
+        return {
+            'display_name': ref.display_name,
+            'format_name': ref.format_name,
+            'link': ref.obj_url,
+            'pubmed_id': ref.pmid,
+            'year': ref.year,
+            'id': ref.dbentity_id
+        }
 
 class Obi(Base):
     __tablename__ = 'obi'
