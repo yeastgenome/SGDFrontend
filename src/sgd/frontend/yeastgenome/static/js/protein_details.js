@@ -222,9 +222,9 @@ function set_up_properties(data) {
     download_data.push(['', locus['display_name'], locus['format_name'], 'Aromaticity Score', data['aromaticity_score']]);
 
     update_property('all_cys_ext_coeff', data['all_cys_ext_coeff']);
-    download_data.push(['', locus['display_name'], locus['format_name'], 'Extincation Coefficients at 280nm ALL Cys residues appear as half cystines', data['all_cys_ext_coeff']]);
+    download_data.push(['', locus['display_name'], locus['format_name'], 'Extinction Coefficients at 280nm ALL Cys residues appear as half cystines', data['all_cys_ext_coeff']]);
     update_property('no_cys_ext_coeff', data['no_cys_ext_coeff']);
-    download_data.push(['', locus['display_name'], locus['format_name'], 'Extincation Coefficients at 280nm NO Cys residues appear as half cystines', data['no_cys_ext_coeff']]);
+    download_data.push(['', locus['display_name'], locus['format_name'], 'Extinction Coefficients at 280nm NO Cys residues appear as half cystines', data['no_cys_ext_coeff']]);
 
     var options = {};
     options["bPaginate"] = false;
