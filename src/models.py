@@ -1929,6 +1929,7 @@ class Locusdbentity(Dbentity):
                         "data": {
                             "name": proteindomain.display_name,
                             "id": proteindomain.format_name,
+                            "link": proteindomain.obj_url,
                             "type": "DOMAIN",
                             "source": proteindomain.source.display_name
                         }
