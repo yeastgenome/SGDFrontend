@@ -3022,6 +3022,7 @@ class Locusdbentity(Dbentity):
         if self.genetic_position:
             obj["genetic_position"] = self.genetic_position
 
+        # summaries and paragraphs
         summaries = DBSession.query(Locussummary.summary_id, Locussummary.html, Locussummary.date_created,Locussummary.summary_order,Locussummary.summary_type).filter_by(locus_id=self.dbentity_id).all()
         summary_types = {}
         for s in summaries:
@@ -3029,12 +3030,9 @@ class Locusdbentity(Dbentity):
                 summary_types[s[4]].append(s)
             else:
                 summary_types[s[4]] = [s]
-
         summary_gene = sorted(summary_types.get("Gene", []), key=lambda s: s[3])
         summary_regulation = sorted(summary_types.get("Regulation", []), key=lambda s: s[3])
-
         obj["regulation_overview"] = self.regulation_overview_to_dict(summary_regulation)
-
         if len(summary_gene) > 0:
             text = ""
             for s in summary_gene:
@@ -3046,7 +3044,6 @@ class Locusdbentity(Dbentity):
             }
         else:
             obj["paragraph"] = None
-
         references_obj = self.references_overview_to_dict([s[0] for s in summary_gene])
         obj["qualities"] = references_obj["qualities"]
         obj["references"] = references_obj["references"]
@@ -3055,6 +3052,7 @@ class Locusdbentity(Dbentity):
         if obj["paragraph"] is not None:
             obj["paragraph"]["text"] = self.format_paragraph(obj["paragraph"]["text"], references_obj)
 
+        # aliases/external IDs
         aliases = DBSession.query(LocusAlias).filter(and_(LocusAlias.locus_id==self.dbentity_id, ~LocusAlias.alias_type.in_(['Pathway ID', 'Retired name', 'SGDID Secondary']))).all()
         for alias in aliases:
             if alias.alias_type == "EC number":
@@ -3101,37 +3099,35 @@ class Locusdbentity(Dbentity):
 
             obj["aliases"].append(alias_obj)
 
+        # URLs (resources)
         sos = DBSession.query(Dnasequenceannotation.so_id).filter(
             Dnasequenceannotation.dbentity_id == self.dbentity_id,Dnasequenceannotation.taxonomy_id == 274901).group_by(
                     Dnasequenceannotation.so_id).all()
         locus_type = DBSession.query(So.display_name).filter(So.so_id.in_([so[0] for so in sos])).all()
-
         obj["locus_type"] = ",".join([l[0] for l in locus_type])
-
         urls = DBSession.query(LocusUrl).filter_by(locus_id=self.dbentity_id).all()
-
         obj["urls"] = [u.to_dict() for u in urls]
-
         obj["urls"].append({
             "category": "LOCUS_SEQUENCE",
             "link": "/cgi-bin/seqTools?back=1&seqname=" + self.systematic_name,
             "display_name": "Gene/Sequence Resources"
         })
-
         obj["urls"].append({
             "category": "LOCUS_SEQUENCE",
             "link": "/browse/?loc=" + self.systematic_name,
             "display_name": "JBrowse"
         })
-
         obj["urls"].append({
             "category": "LOCUS_SEQUENCE",
             "link": "/cgi-bin/ORFMAP/ORFmap?dbid=" + self.sgdid,
             "display_name": "ORF Map"
         })
-
         locus_notes = DBSession.query(Locusnote).filter_by(locus_id=self.dbentity_id).all()
         obj["history"] = [h.to_dict() for h in locus_notes]
+
+        # pathways
+        pathwayannotations = DBSession.query(Pathwayannotation).filter_by(dbentity_id=self.dbentity_id).distinct(Pathwayannotation.pathway_id).all()
+        obj["pathways"] = [a.to_dict() for a in pathwayannotations]
 
         return obj
 
@@ -5547,7 +5543,7 @@ class ObiUrl(Base):
     source = relationship(u'Source')
 
 
-class PathwayAlia(Base):
+class PathwayAlias(Base):
     __tablename__ = 'pathway_alias'
     __table_args__ = (
         UniqueConstraint('pathway_id', 'display_name', 'alias_type'),
@@ -5609,6 +5605,21 @@ class Pathwayannotation(Base):
     reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
+
+    def to_dict(self):
+        url = DBSession.query(PathwayUrl.obj_url).filter(and_(PathwayUrl.pathway_id == self.pathway_id, PathwayUrl.url_type == 'YeastPathways')).one_or_none()
+        # not sure how to choose the best name so just get the first
+        name = DBSession.query(PathwayAlias.display_name).filter(PathwayAlias.pathway_id == self.pathway_id).first()
+        if name is None:
+            name = self.pathway.biocyc_id
+        else:
+            name = name[0]
+        return {
+            'pathway': {
+                'display_name': name,
+                'link': url[0]
+            }
+        }
 
 
 class Pathwaysummary(Base):
