@@ -135,7 +135,6 @@ def upload_file(request):
         is_in_spell=request.POST.get('for_spell', 0),
         is_in_browser=request.POST.get('for_browser', 0),
         filepath_id=filepath.filepath_id,
-        # TODO: missing readme_file_id
         file_extension=request.POST.get('extension'),        
 
         # DBentity params
@@ -204,11 +203,12 @@ def search(request):
         "colleague": [("last_name", "last_name"), ("position", "position"), ("institution", "institution"), ("country", "country"), ("keywords", "keywords"), ("colleague_loci", "colleague_loci")]
     }
 
-    search_fields = ["name", "description", "first_name", "last_name", "institution", "colleague_loci", "feature_type", "name_description", "summary", "phenotypes", "cellular_component", "biological_process", "molecular_function", "ec_number", "protein", "tc_number", "secondary_sgdid", "sequence_history", "gene_history", "observable", "qualifier", "references", "phenotype_loci", "chemical", "mutant_type", "synonyms", "go_id", "go_loci", "author", "journal", "reference_loci"] # year not inserted, have to change to str in mapping
+    search_fields = ["name", "description", "first_name", "last_name", "institution", "colleague_loci", "feature_type", "name_description", "summary", "phenotypes", "cellular_component", "biological_process", "molecular_function", "ec_number", "protein", "tc_number", "secondary_sgdid", "sequence_history", "gene_history", "observable", "qualifier", "references", "phenotype_loci", "chemical", "mutant_type", "synonyms", "go_id", "go_loci", "author", "journal", "reference_loci","aliases"] # year not inserted, have to change to str in mapping
 
-    json_response_fields = ['name', 'href', 'description', 'category', 'bioentity_id', 'phenotype_loci', 'go_loci', 'reference_loci']
+    json_response_fields = ['name', 'href', 'description', 'category', 'bioentity_id', 'phenotype_loci', 'go_loci', 'reference_loci','aliases']
 
     args = {}
+    
     for key in request.params.keys():
         args[key] = request.params.getall(key)
 
@@ -221,7 +221,7 @@ def search(request):
                                                json_response_fields,
                                                search_fields,
                                                sort_by)
-
+ 
     search_results = ESearch.search(
         index=ES_INDEX_NAME,
         body=search_body,
@@ -248,7 +248,6 @@ def search(request):
         body=aggregation_body,
         preference='p_'+query
     )
-    
     return {
         'total': search_results['hits']['total'],
         'results': format_search_results(search_results, json_response_fields, query),

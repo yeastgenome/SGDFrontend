@@ -618,7 +618,7 @@ def author_side_effect(*args, **kwargs):
         return MockQuery((reftype.display_name))
 
 def keywords_side_effect(*args, **kwargs):
-    #import pdb; pdb.set_trace();
+    
     if len(args) == 1 and str(args[0]) == 'DISTINCT nex.dataset_keyword.keyword_id':
         dskw = factory.DatasetKeywordFactory()
         kw = factory.KeywordFactory()
@@ -967,7 +967,7 @@ def reference_side_effect(*args, **kwargs):
 
 
 def reference_phenotype_side_effect(*args, **kwargs):
-    #import pdb; pdb.set_trace();
+    
     if len(args) == 1 and str(args[0]) == "<class 'src.models.Referencedbentity'>":
         source = factory.SourceFactory()
         journal = factory.JournalFactory()

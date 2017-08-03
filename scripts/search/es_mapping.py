@@ -242,6 +242,12 @@ es_mapping = {
                     "fields": {
                         "raw": {"type": "string", "index": "not_analyzed"}
                     }
+                },
+                "aliases": {
+                   "type": "string",
+                   "fields": {
+                            "raw": {"type": "string", "index": "not_analyzed"}
+                      }
                 }
             }
         }
