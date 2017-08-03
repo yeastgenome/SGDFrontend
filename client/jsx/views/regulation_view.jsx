@@ -17,11 +17,11 @@ regulationView.render = function(){
         _elements.push({"name":"Targets", "target":"targets"});
         _elements.push({"name":"Shared GO Processes Among Targets", "target":"enrichment"});
     }
-    if(locus['regulation_overview']['target_count'] + locus['regulation_overview']['regulator_count'] > 0){
-       _elements.push({"name":"Regulation Network", "target":"network"}); 
-    }
     if (locus["regulation_overview"]["regulator_count"] > 0) {
       _elements.push({ name: "Regulators", target: "regulators" });
+    }
+    if(locus['regulation_overview']['target_count'] + locus['regulation_overview']['regulator_count'] > 0){
+       _elements.push({"name":"Regulation Network", "target":"network"}); 
     }
     var _navTitleText =  _tabModel.getNavTitle(locus.display_name,locus.format_name);
     ReactDOM.render(<NavBar title={_navTitleText} elements={_elements} />, document.getElementById("navbar-container"));

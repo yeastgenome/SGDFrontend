@@ -101,7 +101,7 @@ function create_domain_table(data) {
         set_up_range_sort();
 
         var options = {};
-        options["bPaginate"] = false;
+        options["bPaginate"] = true;
         options["aaSorting"] = [[4, "asc"]];
         options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, { "sType": "range" }, { "sType": "html" }, null, null, null]
         options["aaData"] = datatable;
