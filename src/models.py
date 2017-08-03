@@ -3094,8 +3094,7 @@ class Locusdbentity(Dbentity):
                     "display_name": alias.source.display_name
                 }
             }
-            SGD_SOURCE_ID = 834
-            if (not alias.alias_type in ("Uniform", "Non-uniform", "NCBI protein name") and alias.source_id != SGD_SOURCE_ID):
+            if alias.has_external_id_section:
                 alias_obj["protein"] = True
 
             obj["aliases"].append(alias_obj)
