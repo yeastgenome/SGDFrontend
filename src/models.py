@@ -4827,8 +4827,8 @@ class Goannotation(Base):
             if url.display_name == "OntoBee":
                 experiment_url = url.obj_url
                 break
-        if experiment_url == None and len(alias_url) > 0:
-            experiment_url = alias_url[0].obj_url
+        if experiment_url == None and len(alias_url) > 1:
+            experiment_url = alias_url[1].obj_url
 
         go_obj = {
             "id": self.annotation_id,
