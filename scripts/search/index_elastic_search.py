@@ -304,13 +304,12 @@ def index_genes():
         uniprotid = [u[0] for u in uniprotids]
 
         key_values = [gene.gene_name, gene.systematic_name, gene.sgdid] + uniprotid
-        
+
         aliases = []
         aliases_item = get_aliases_object(gene.dbentity_id)
         if (bool(aliases_item)):
             aliases.append(aliases_item)
             key_values.append(aliases_item["display_name"])
-            
         keys = set([])
         for k in key_values:
             if k:
@@ -674,7 +673,6 @@ def index_chemicals():
             bulk_data = []
 
     if len(bulk_data) > 0:
-
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
 def cleanup():

@@ -378,16 +378,20 @@ mapping = {
                 },
                 "aliases": {
                         "type": "string",
-                        "analyzer": "symbols",
                         "fields": {
                             "raw": {
                                 "type": "string",
                                 "index": "not_analyzed"
-                                }
-                        }
-                },
+                            },
+                            "symbol": {
+                                "type": "string",
+                                "analyzer": "symbols"
+                            }
 
+                        }
+                   },
+
+                }
             }
         }
-    }
 }
