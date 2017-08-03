@@ -4090,7 +4090,7 @@ class EcUrl(Base):
     def to_dict(self):
         return {
             "display_name": self.display_name,
-            "url": self.obj_url
+            "link": self.obj_url
         }
 
 
