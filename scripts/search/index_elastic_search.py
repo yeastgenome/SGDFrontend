@@ -163,7 +163,37 @@ def index_colleagues():
 
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
-
+def get_aliases_object(db_id):
+    obj = {
+        'category': 'Alias',
+        'display_name': '',
+        'class_type': '',
+        'bioidentity_id': '',
+        'format_name': '',
+        'source': {},
+        'link': '',
+        'references': [],
+        'protein': '',
+        'id': '',
+        'created_by': '',
+        'date_created': '',
+        'is_external_id': '',
+        'link': ''
+    }
+    aliases_data = DBSession.query(LocusAlias).filter(
+        LocusAlias.locus_id == db_id,
+        ((LocusAlias.alias_type == "Uniform") |
+         (LocusAlias.alias_type == "Non-uniform"))).all()
+    if(len(aliases_data) > 0):
+        item = aliases_data[0]
+        obj['display_name'] = item.display_name
+        obj['date_created'] = item.date_created
+        obj['link'] = item.obj_url
+        obj['created_by'] = item.created_by
+        obj['is_external_id'] = 1 if item.has_external_id_section else 0
+        obj['id'] = item.alias_id
+        return obj
+    return {}
 
 def index_genes():
     # Indexing just the S228C genes
@@ -239,11 +269,6 @@ def index_genes():
         # sequence_history = DBSession.query(Locusnoteannotation.note).filter_by(dbentity_id=gene.dbentity_id, note_type="Sequence").all()
         # gene_history = DBSession.query(Locusnoteannotation.note).filter_by(dbentity_id=gene.dbentity_id, note_type="Locus").all()
 
-        aliases_data = DBSession.query(LocusAlias.display_name).filter(LocusAlias.locus_id == gene.dbentity_id, ((LocusAlias.alias_type == "Uniform") | (LocusAlias.alias_type == "Non-uniform"))).all()
-        aliases = []
-        if(len(aliases_data) > 0):
-            aliases = aliases + [' '.join(item) for item in aliases_data]
-
         phenotype_ids = DBSession.query(Phenotypeannotation.phenotype_id).filter_by(dbentity_id=gene.dbentity_id).all()
 
         if phenotype_ids:
@@ -279,6 +304,12 @@ def index_genes():
         uniprotid = [u[0] for u in uniprotids]
 
         key_values = [gene.gene_name, gene.systematic_name, gene.sgdid] + uniprotid
+
+        aliases = []
+        aliases_item = get_aliases_object(gene.dbentity_id)
+        if (bool(aliases_item)):
+            aliases.append(aliases_item)
+            key_values.append(aliases_item["display_name"])
         keys = set([])
         for k in key_values:
             if k:
@@ -642,7 +673,6 @@ def index_chemicals():
             bulk_data = []
 
     if len(bulk_data) > 0:
-
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
 def cleanup():

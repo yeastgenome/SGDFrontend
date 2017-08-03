@@ -124,7 +124,7 @@ def format_aggregation_results(aggregation_results, category, category_filters):
 
             if subcategory[1] in aggregation_results['aggregations']:
                 for agg in aggregation_results['aggregations'][subcategory[1]]['buckets']:
-                    
+
                     agg_obj['values'].append({
                         'key': agg['key'],
                         'total': agg['doc_count']
@@ -153,6 +153,7 @@ def build_es_search_body_request(query, category, es_query, json_response_fields
             }
         }
     else:
+
         es_search_body["query"] = es_query
 
     for field in search_fields:
@@ -196,7 +197,7 @@ def build_search_query(query, search_fields, category, category_filters, args):
                             (item[1] + ".raw"): param
                         }
                     })
-                    
+
     return query
 
 
@@ -260,18 +261,19 @@ def format_search_results(search_results, json_response_fields, query):
 
     for r in search_results['hits']['hits']:
         raw_obj = r.get('_source')
-
         obj = {}
         for field in json_response_fields:
             obj[field] = raw_obj.get(field)
 
         obj['highlights'] = filter_highlighting(r.get('highlight'))
         obj['id'] = r.get('_id')
-
         if raw_obj.get('keys'): # colleagues don't have keys
+            item = raw_obj.get('aliases')
             if query.replace('"','').lower().strip() in raw_obj.get('keys'):
                 obj['is_quick'] = True
-
+            if bool(item):
+                if len(item) > 0:
+                    obj['is_quick'] = True
         formatted_results.append(obj)
 
     return formatted_results
@@ -297,7 +299,6 @@ def build_sequence_objects_search_query(query):
         }
     else:
         query_type = 'wildcard' if '*' in query else 'match_phrase'
-        
         search_body = {
             'query': {
                 query_type: {
@@ -309,4 +310,3 @@ def build_sequence_objects_search_query(query):
     search_body['_source'] = ['sgdid', 'name', 'href', 'absolute_genetic_start', 'format_name', 'dna_scores', 'protein_scores', 'snp_seqs']
 
     return search_body
-    
