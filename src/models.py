@@ -3058,9 +3058,11 @@ class Locusdbentity(Dbentity):
         aliases = DBSession.query(LocusAlias).filter(and_(LocusAlias.locus_id==self.dbentity_id, ~LocusAlias.alias_type.in_(['Pathway ID', 'Retired name', 'SGDID Secondary']))).all()
         for alias in aliases:
             if alias.alias_type == "EC number":
+                # generate URL to internal page, not expasy
+                internal_url = "/ecnumber/EC:" + alias.display_name
                 obj["ecnumber"] = {
                     "display_name": alias.display_name,
-                    "link": alias.obj_url
+                    "link": internal_url
                 }
 
             category = ""
