@@ -52,7 +52,7 @@
     {% if locus['phenotype_overview']['paragraph'] %}
         <dl class="key-value">
             <dt>Summary</dt>
-            <dd>{{ locus['phenotype_overview']['paragraph'] }}</dd>
+            <dd>{{ locus['phenotype_overview']['paragraph']|safe }}</dd>
         </dl>
     {% endif %}
 
