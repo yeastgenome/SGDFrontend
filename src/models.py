@@ -6243,6 +6243,8 @@ class Proteindomain(Base):
 
         if self.description and len(self.description) > 0:
             obj["description"] = self.description
+        else:
+            obj["description"] = 'family not named'
 
         return obj
 
