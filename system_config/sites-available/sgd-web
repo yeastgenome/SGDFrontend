@@ -48,7 +48,7 @@ server {
 
         # remove trailing slashes
         rewrite ^/(.*)/$ https://$host/$1 permanent;
-        
+
         gzip            on;
     }
 
@@ -83,6 +83,8 @@ server {
 
         # remove trailing slashes
         rewrite ^/(.*)/$ https://$host/$1 permanent;
+
+        gzip            on;
     }
 }
                  
