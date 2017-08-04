@@ -2880,7 +2880,15 @@ class Locusdbentity(Dbentity):
         }
 
     def regulation_graph(self):
-        main_gene_annotations = DBSession.query(Regulationannotation).filter(or_(Regulationannotation.target_id == self.dbentity_id, Regulationannotation.regulator_id == self.dbentity_id)).all()
+        # get annotations to and from gene, or among regulators/targets
+        direct_relations = DBSession.query(Regulationannotation.target_id, Regulationannotation.regulator_id).filter(or_(Regulationannotation.target_id == self.dbentity_id, Regulationannotation.regulator_id == self.dbentity_id)).all()
+        ids = []
+        for d in direct_relations:
+            ids.append(d[0])
+            ids.append(d[1])
+        ids = list(set(ids))
+        print(ids)
+        main_gene_annotations = DBSession.query(Regulationannotation).filter(and_(Regulationannotation.target_id.in_(ids), Regulationannotation.regulator_id.in_(ids))).all()
 
         genes_to_regulations = {}
 
@@ -2921,7 +2929,7 @@ class Locusdbentity(Dbentity):
             genes_cache[gene.dbentity_id] = gene
 
         i = 0
-        while i < len(list_genes_to_regulations) and len(nodes) <= 20 and len(edges) <= 50:
+        while i < len(list_genes_to_regulations) and len(nodes) <= 100 and len(edges) <= 100:
             dbentity_id = list_genes_to_regulations[i][0]
             dbentity = genes_cache[dbentity_id]
 
