@@ -28,6 +28,7 @@ import json
 
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.ERROR)
+log = logging.getLogger()
 
 import redis
 disambiguation_table = redis.Redis()
