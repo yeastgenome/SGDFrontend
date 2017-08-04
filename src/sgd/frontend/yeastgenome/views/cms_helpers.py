@@ -67,7 +67,7 @@ def get_archive_years():
     now = datetime.now()
     this_year = now.year
     archive_years = []
-    for i in range(5):
+    for i in range(7):
         archive_years.append(this_year - i)
     return archive_years
 
