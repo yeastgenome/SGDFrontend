@@ -1487,8 +1487,13 @@ DECLARE
 BEGIN
   IF (TG_OP = 'UPDATE') THEN
 
-    IF (((OLD.biocyc_id IS NULL) AND (NEW.biocyc_id IS NOT NULL)) OR ((OLD.biocyc_id IS NOT NULL) AND (NEW.biocyc_id IS NULL)) OR (OLD.biocyc_id != NEW.biocyc_id)) THEN
+    IF (OLD.biocyc_id != NEW.biocyc_id) THEN
         PERFORM nex.insertupdatelog('PATHWAYDBENTITY'::text, 'BIOCYC_ID'::text, OLD.dbentity_id, OLD.biocyc_id, NEW.biocyc_id, USER);
+    END IF;
+
+
+    IF (((OLD.display_name IS NULL) AND (NEW.display_name IS NOT NULL)) OR ((OLD.display_name IS NOT NULL) AND (NEW.display_name IS NULL)) OR (OLD.display_name != NEW.display_name)) THEN
+        PERFORM nex.insertupdatelog('PATHWAYDBENTITY'::text, 'DISPLAY_NAME'::text, OLD.dbentity_id, OLD.display_name, NEW.display_name, USER);
     END IF;
 
     RETURN NEW;
@@ -1502,7 +1507,8 @@ BEGIN
         UPDATE nex.sgdid SET sgdid_status = 'Deleted'
 	    WHERE display_name = v_sgdid;
 	       
-        v_row := OLD.dbentity_id || '[:]' || coalesce(OLD.biocyc_id,'');
+        v_row := OLD.dbentity_id || '[:]' ||  OLD.biocyc_id  || '[:]' ||
+                 coalesce(OLD.display_name,'');
 
         PERFORM nex.insertdeletelog('PATHWAYDBENTITY'::text, OLD.dbentity_id, v_row, USER);
 

@@ -448,12 +448,15 @@ CREATE INDEX strainsummaryreference_source_fk_index ON nex.strainsummary_referen
 DROP TABLE IF EXISTS nex.pathwaydbentity CASCADE; 
 CREATE TABLE nex.pathwaydbentity (
 	dbentity_id bigint NOT NULL DEFAULT nextval('object_seq'),
-	biocyc_id varchar(40),
+	biocyc_id varchar(40) NOT NULL,
+    display_name varchar(500) NOT NULL,
 	CONSTRAINT pathwaydbentity_pk PRIMARY KEY (dbentity_id)
 ) ;
 COMMENT ON TABLE nex.pathwaydbentity IS 'A biochemical pathway. Inherits from DBENTITY';
 COMMENT ON COLUMN nex.pathwaydbentity.dbentity_id IS 'Unique identifier (serial number).';
 COMMENT ON COLUMN nex.pathwaydbentity.biocyc_id IS 'Unique identifier for the pathway from BioCyc.';
+COMMENT ON COLUMN nex.pathwaydbentity.display_name IS 'Common name of the pathway.';
+alter table nex.pathwaydbentity add constraint pathwaydbentity_uk UNIQUE (biocyc_id);
 
 DROP TABLE IF EXISTS nex.pathway_alias CASCADE; 
 CREATE TABLE nex.pathway_alias (
