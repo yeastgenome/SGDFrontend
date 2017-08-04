@@ -76,7 +76,7 @@ def load_author():
     ignoring = []
     
     for author in authors:
-        format_name = author.obj_url.split("/")[2]
+        format_name = author.obj_url.encode('utf-8').strip().split("/")[2]
 
         try:
             table_set(format_name.upper(), format_name, "author")
