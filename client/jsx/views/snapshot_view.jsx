@@ -15,7 +15,7 @@ snapshotView.render = function () {
 	// render date
 	// var currentDate = new Date()
 	// $(".date-container").text(` (as of ${currentDate.getMonth()+1}/${currentDate.getDate()}/${currentDate.getFullYear()})`);
-	$(".date-container").text(' (as of 8/2/2017)');
+	$(".date-container").text(' (as of 1/18/2017)');
 
 	// render nav bar
 	var navElements = [
