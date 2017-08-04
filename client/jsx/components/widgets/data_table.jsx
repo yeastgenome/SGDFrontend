@@ -157,10 +157,10 @@ const DataTable = React.createClass({
 			if (this.props.usePlugin) evenKlass = "";
 
 			return (
-				<tr key={"row" + i} className={evenKlass} >
-					{r.map( (d, i) => {
+				<tr key={"bodyRow" + i} className={evenKlass} >
+					{r.map( (d, _i) => {
 						{/* if data is obj with href and value, make a link, otherwise just plain text if just a string */}
-						return this._formatCell(d, i);
+						return this._formatCell(d, i, _i);
 					})}
 				</tr>
 			);
@@ -182,7 +182,7 @@ const DataTable = React.createClass({
 
 				{/* if data is obj with href and value, make a link, otherwise just plain text if just a string */}
 				var textNode = (d.href && d.value) ? <a href={d.href}>{d.value}</a> : d;
-				return <td key={"cell" + _i} colSpan={_colSpan}>{textNode}</td>;
+				return <td key={`cell${i}.${_i}`} colSpan={_colSpan}>{textNode}</td>;
 			});
 			return <tr key={"headerRow" + i}>{cells}</tr>;
 		});
@@ -190,14 +190,14 @@ const DataTable = React.createClass({
 		return headerRows;
 	},
 
-	_formatCell: function (d, i) {
+	_formatCell: function (d, i, _i) {
 		// allow raw HTML cell
 		if (d.html) {
-			return <td key={"cell" + i} dangerouslySetInnerHTML={{ __html: d.html }} />;
+			return <td key={`cell${i}.${_i}`} dangerouslySetInnerHTML={{ __html: d.html }} />;
 		}
 		// otherwise format plain text or whole link
 		var textNode = (d.href && d.value) ? <a href={d.href}>{d.value}</a> : d;
-		return <td key={"cell" + i}>{textNode}</td>;
+		return <td key={`cell${i}.${_i}`}>{textNode}</td>;
 	},
 
 	_getTableOptions: function () {

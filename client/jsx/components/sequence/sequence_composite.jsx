@@ -75,6 +75,11 @@ const SequenceComposite = React.createClass({
       var _onChange = (key) => {
         this.setState({ activeStrainKey: key });
       };
+      _elements.sort( (a, b) => {
+        if(a.name < b.name) return -1;
+        if(a.name > b.name) return 1;
+        return 0;
+      });
       node = <DropdownSelector elements={_elements} onChange={_onChange} />;        
     }
 
