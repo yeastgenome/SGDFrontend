@@ -6490,11 +6490,15 @@ class ProteinsequenceDetail(Base):
 
     annotation = relationship(u'Proteinsequenceannotation', uselist=False)
 
+    def float_safe(self, attrname):
+        val = getattr(self, attrname)
+        return float(val) if val else None
+
     def to_dict_lsp(self):
         return {
             "length": int(self.protein_length),
             "molecular_weight": float(self.molecular_weight),
-            "pi": float(self.pi)
+            "pi": self.float_safe('pi')
         }
 
     def to_dict(self): # I followed the NEX endpoint to convert floats to strings
@@ -6503,14 +6507,14 @@ class ProteinsequenceDetail(Base):
             "protein_length": self.protein_length,
             "n_term_seq": self.n_term_seq,
             "c_term_seq": self.c_term_seq,
-            "pi": str(float(self.pi)),
-            "cai": str(float(self.cai)),
-            "codon_bias": str(float(self.codon_bias)),
-            "fop_score": str(float(self.fop_score)),
-            "gravy_score": str(float(self.gravy_score)),
-            "aromaticity_score": str(float(self.aromaticity_score)),
-            "aliphatic_index": str(float(self.aliphatic_index)),
-            "instability_index": str(float(self.instability_index)),
+            "pi": str(self.float_safe('pi')),
+            "cai": str(self.float_safe('cai')),
+            "codon_bias": str(self.float_safe('codon_bias')),
+            "fop_score": str(self.float_safe('fop_score')),
+            "gravy_score": str(self.float_safe('gravy_score')),
+            "aromaticity_score": str(self.float_safe('aromaticity_score')),
+            "aliphatic_index": str(self.float_safe('aliphatic_index')),
+            "instability_index": str(self.float_safe('instability_index')),
             "ala": self.ala,
             "arg": self.arg,
             "asn": self.asn,
@@ -6536,8 +6540,8 @@ class ProteinsequenceDetail(Base):
             "nitrogen": self.nitrogen,
             "oxygen": self.oxygen,
             "carbon": self.carbon,
-            "no_cys_ext_coeff": str(float(self.no_cys_ext_coeff)),
-            "all_cys_ext_coeff": str(float(self.all_cys_ext_coeff))
+            "no_cys_ext_coeff": str(self.float_safe('no_cys_ext_coeff')),
+            "all_cys_ext_coeff": str(self.float_safe('all_cys_ext_coeff'))
         }
 
 class Proteinsequenceannotation(Base):
