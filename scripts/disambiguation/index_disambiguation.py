@@ -76,7 +76,7 @@ def load_author():
     ignoring = []
     
     for author in authors:
-        format_name = author.obj_url.encode('utf-8').strip().split("/")[2]
+        format_name = author.obj_url.encode("utf-8").strip().split("/")[2]
 
         try:
             table_set(format_name.upper(), format_name, "author")
@@ -95,8 +95,8 @@ def load_chemical():
     
     for chemical in chemicals:
         try:
-            table_set(str(chemical.display_name.replace(" ", "_")).upper(), chemical.chebi_id, "chebi")
-            table_set(chemical.format_name.upper(), chemical.chebi_id, "chebi")
+            table_set(str(chemical.display_name.encode("utf-8").strip().replace(" ", "_")).upper(), chemical.chebi_id, "chebi")
+            table_set(chemical.format_name.encode("utf-8").strip().upper(), chemical.chebi_id, "chebi")
             table_set(chemical.chebi_id, chemical.chebi_id, "chebi")
         except UnicodeEncodeError:
             ignoring.append(chemical.display_name)
