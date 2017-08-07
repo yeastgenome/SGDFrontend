@@ -52,7 +52,7 @@ server {
         rewrite ^/(.*)/$ https://$host/$1 permanent;
 
         gzip            on;
-        gzip_types    text/plain application/javascript application/x-javascript text/javascript text/xml text/css application/json;
+        gzip_types    text/html text/plain application/javascript application/x-javascript text/javascript text/xml text/css application/json;
     }
 
     location /webservice/ {
@@ -88,7 +88,7 @@ server {
         rewrite ^/(.*)/$ https://$host/$1 permanent;
 
         gzip            on;
-        gzip_types    text/plain application/javascript application/x-javascript text/javascript text/xml text/css application/json;
+        gzip_types    text/html text/plain application/javascript application/x-javascript text/javascript text/xml text/css application/json;
     }
 }
                  
