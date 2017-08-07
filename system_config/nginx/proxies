@@ -1,1 +1,87 @@
+location /cache/chromosomes.shtml {
+    proxy_pass http://heritage.yeastgenome.org/cache/chromosomes.shtml;
+}
 
+location /cache/geneSummarytable.html {
+    proxy_pass http://heritage.yeastgenome.org/cache/geneSummarytable.html;
+}
+
+location /cache/yeastLabs.html {
+    proxy_pass http://heritage.yeastgenome.org/cache/yeastLabs.html;
+}
+
+location /cgi-bin/chromosomeHistory.pl {
+    proxy_pass http://heritage.yeastgenome.org/cgi-bin/chromosomeHistory.pl;
+}
+
+location /cgi-bin/colleague/colleagueInfoSearch {
+    proxy_pass http://heritage.yeastgenome.org/cgi-bin/colleague/colleagueInfoSearch;
+}
+
+location /cgi-bin/colleague/colleagueSearch {
+    proxy_pass http://heritage.yeastgenome.org/cgi-bin/colleague/colleagueSearch;
+}
+
+location /cgi-bin/FUNGI/alignment.pl {
+    proxy_pass http://heritage.yeastgenome.org/cgi-bin/FUNGI/alignment.pl;
+}
+
+location /cgi-bin/FUNGI/FungiMap {
+    proxy_pass http://heritage.yeastgenome.org/cgi-bin/FUNGI/FungiMap;
+}
+
+location /cgi-bin/FUNGI/showAlign {
+    proxy_pass http://heritage.yeastgenome.org/cgi-bin/FUNGI/showAlign;
+}
+
+location /cgi-bin/geneHunter {
+    proxy_pass http://heritage.yeastgenome.org/cgi-bin/geneHunter;
+}
+
+location /cgi-bin/GO/goSlimMapper.pl {
+    proxy_pass http://heritage.yeastgenome.org/cgi-bin/GO/goSlimMapper.pl;
+}
+
+location /cgi-bin/GO/goTermFinder.pl {
+    proxy_pass http://heritage.yeastgenome.org/cgi-bin/GO/goTermFinder.pl;
+}
+
+location /cgi-bin/PATMATCH/nph-patmatch {
+    proxy_pass http://heritage.yeastgenome.org/cgi-bin/PATMATCH/nph-patmatch;
+}
+
+location /cgi-bin/PATMATCH/RestrictionMapper {
+    proxy_pass http://heritage.yeastgenome.org/cgi-bin/PATMATCH/RestrictionMapper;
+}
+
+location /cgi-bin/protein/get3d {
+    proxy_pass http://heritage.yeastgenome.org/cgi-bin/protein/get3d;
+}
+
+location /cgi-bin/registry/geneRegistry {
+    proxy_pass http://heritage.yeastgenome.org/cgi-bin/registry/geneRegistry;
+}
+
+location /cgi-bin/seqTools {
+    proxy_pass http://heritage.yeastgenome.org/cgi-bin/seqTools;
+}
+
+location /cgi-bin/submitData.pl {
+    proxy_pass http://heritage.yeastgenome.org/cgi-bin/submitData.pl;
+}
+
+location /cgi-bin/web-primer {
+    proxy_pass http://heritage.yeastgenome.org/cgi-bin/web-primer;
+}
+
+location /css/ {
+    proxy_pass http://heritage.yeastgenome.org/css/;
+}
+
+location /javascript/ {
+    proxy_pass http://heritage.yeastgenome.org/javascript/;
+}
+
+location /wp-content/ {
+    proxy_pass http://heritage.yeastgenome.org/wp-content/;
+}
