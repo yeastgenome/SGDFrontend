@@ -5608,16 +5608,13 @@ class Pathwayannotation(Base):
 
     def to_dict(self):
         url = DBSession.query(PathwayUrl.obj_url).filter(and_(PathwayUrl.pathway_id == self.pathway_id, PathwayUrl.url_type == 'YeastPathways')).one_or_none()
-        # not sure how to choose the best name so just get the first
-        name = DBSession.query(PathwayAlias.display_name).filter(PathwayAlias.pathway_id == self.pathway_id).first()
-        if name is None:
-            name = self.pathway.biocyc_id
-        else:
-            name = name[0]
+        url = url[0] if url else ''
+        display_name = DBSession.query(Dbentity.display_name).filter_by(dbentity_id=self.pathway.dbentity_id).one_or_none()
+        display_name = display_name[0] if display_name else ''
         return {
             'pathway': {
-                'display_name': name,
-                'link': url[0]
+                'display_name': display_name,
+                'link': url
             }
         }
 
