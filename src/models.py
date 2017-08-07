@@ -2880,7 +2880,7 @@ class Locusdbentity(Dbentity):
         }
 
     def regulation_graph(self):
-        MAX_EDGES = 25
+        MAX_EDGES = 50
         # get annotations to and from gene, or among regulators/targets
         direct_relations = DBSession.query(Regulationannotation.target_id, Regulationannotation.regulator_id).filter(or_(Regulationannotation.target_id == self.dbentity_id, Regulationannotation.regulator_id == self.dbentity_id)).all()
         target_ids = []
@@ -2900,7 +2900,12 @@ class Locusdbentity(Dbentity):
                 genes_to_regulations[id_str].append(d)
             else:
                 genes_to_regulations[id_str] = [d]
-        sorted_ids_keys = sorted(genes_to_regulations.keys(), key=lambda x: len(genes_to_regulations[x]), reverse=True)
+        def sortfn(x):
+            str_ids = x.split('_')
+            if str(self.dbentity_id) in str_ids:
+                return 999
+            return len(genes_to_regulations[x])
+        sorted_ids_keys = sorted(genes_to_regulations.keys(), key=lambda x: sortfn(x), reverse=True)
         sorted_ids_keys = sorted_ids_keys[:MAX_EDGES]
         ids_from_keys = []
         for k in sorted_ids_keys:
@@ -2914,13 +2919,21 @@ class Locusdbentity(Dbentity):
         gene_ids_info = {}
         for d in all_gene_info:
             gene_ids_info[str(d[0])] = d
+            d_id = d[0]
+            sub_type = None
+            if d_id == self.dbentity_id:
+                sub_type = "FOCUS"
+            elif d_id in target_ids:
+                sub_type = "TARGET"
+            elif d_id in regulator_ids:
+                sub_type = "REGULATOR"
             nodes.append({
                 "data": {
                     "name": d[1],
                     "id": d[2],
                     "link": d[3],
                     "type": "BIOENTITY",
-                    "sub_type": "FOCUS"  
+                    "sub_type": sub_type
                 } 
             })
         # format edges
