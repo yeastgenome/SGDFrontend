@@ -2880,29 +2880,69 @@ class Locusdbentity(Dbentity):
         }
 
     def regulation_graph(self):
+        MAX_EDGES = 25
         # get annotations to and from gene, or among regulators/targets
         direct_relations = DBSession.query(Regulationannotation.target_id, Regulationannotation.regulator_id).filter(or_(Regulationannotation.target_id == self.dbentity_id, Regulationannotation.regulator_id == self.dbentity_id)).all()
-        ids = []
+        target_ids = []
+        regulator_ids = []
         for d in direct_relations:
-            ids.append(d[0])
-            ids.append(d[1])
-        ids = list(set(ids))
-        print(ids)
+            target_ids.append(d[0])
+            regulator_ids.append(d[1])
+        target_ids = list(set(target_ids))
+        regulator_ids = list(set(regulator_ids))
+        ids = list(set(target_ids + regulator_ids))
         main_gene_annotations = DBSession.query(Regulationannotation).filter(and_(Regulationannotation.target_id.in_(ids), Regulationannotation.regulator_id.in_(ids))).all()
-
         genes_to_regulations = {}
-
-        for annotation in main_gene_annotations:
-            if annotation.target_id == self.dbentity_id:
-                add = annotation.regulator_id
+        # get unique relations and append annotations so key = {regulator_id}_{target_id}
+        for d in main_gene_annotations:
+            id_str = str(d.regulator_id) + '_' + str(d.target_id)
+            if id_str in genes_to_regulations:
+                genes_to_regulations[id_str].append(d)
             else:
-                add = annotation.target_id
-
-            if add in genes_to_regulations:
-                genes_to_regulations[add].append(annotation)
-            else:
-                genes_to_regulations[add] = [annotation]
-
+                genes_to_regulations[id_str] = [d]
+        sorted_ids_keys = sorted(genes_to_regulations.keys(), key=lambda x: len(genes_to_regulations[x]), reverse=True)
+        sorted_ids_keys = sorted_ids_keys[:MAX_EDGES]
+        ids_from_keys = []
+        for k in sorted_ids_keys:
+            str_ids = k.split('_')
+            for d in str_ids:
+                ids_from_keys.append(int(d))
+        ids_from_keys = list(set(ids_from_keys))
+        # format nodes
+        nodes = []
+        all_gene_info = DBSession.query(Dbentity.dbentity_id, Dbentity.display_name, Dbentity.format_name, Dbentity.obj_url).filter(Dbentity.dbentity_id.in_(ids_from_keys)).all()
+        gene_ids_info = {}
+        for d in all_gene_info:
+            gene_ids_info[str(d[0])] = d
+            nodes.append({
+                "data": {
+                    "name": d[1],
+                    "id": d[2],
+                    "link": d[3],
+                    "type": "BIOENTITY",
+                    "sub_type": "FOCUS"  
+                } 
+            })
+        # format edges
+        edges = []
+        for d in sorted_ids_keys:
+            regulator = gene_ids_info[d.split('_')[0]]
+            target = gene_ids_info[d.split('_')[1]]
+            regulator_format_name = regulator[2]
+            target_format_name = target[2]
+            edges.append({
+                "data": {
+                    "action": "expression null",
+                    "source": regulator_format_name,
+                    "target": target_format_name,
+                    "evidence": len(genes_to_regulations[d])
+                } 
+            })
+        return {
+            "nodes": nodes,
+            "edges": edges,
+            "min_evidence_count": 1
+        }
 
         list_genes_to_regulations = sorted([(g, genes_to_regulations[g]) for g in genes_to_regulations], key=lambda x: len(x[1]), reverse=True)
 
