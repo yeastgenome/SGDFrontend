@@ -1018,18 +1018,15 @@ class Contig(Base):
         return obj
 
     def to_dict(self):
+        TAXON_ID = 274901
         strains = Straindbentity.get_strains_by_taxon_id(self.taxonomy_id)
-
         urls = DBSession.query(ContigUrl).filter_by(contig_id=self.contig_id).all()
-
-        overview = DBSession.query(Dnasequenceannotation.so_id, func.count(Dnasequenceannotation.annotation_id)).filter(and_(Dnasequenceannotation.contig_id==self.contig_id, Dnasequenceannotation.dna_type=="GENOMIC")).group_by(Dnasequenceannotation.so_id).all()
-
+        overview = DBSession.query(Dnasequenceannotation.so_id, func.count(Dnasequenceannotation.annotation_id)).filter(and_(Dnasequenceannotation.contig_id==self.contig_id, Dnasequenceannotation.dna_type=="GENOMIC", Dnasequenceannotation.taxonomy_id == TAXON_ID)).group_by(Dnasequenceannotation.so_id).all()
         so_ids = set([ov[0] for ov in overview])
         so = DBSession.query(So).filter(So.so_id.in_(list(so_ids))).all()
         sos = {}
         for s in so:
             sos[s.so_id] = s.display_name
-
         obj = {
             "display_name": self.display_name,
             "strain": {
@@ -1043,10 +1040,8 @@ class Contig(Base):
             "id": self.contig_id,
             "overview": [["Feature Type", "Count"]] + [(sos[ov[0]], ov[1]) for ov in sorted(overview, key=lambda k: k[1], reverse=True)]
         }
-
         if self.download_filename:
             obj["filename"] = self.download_filename
-
         return obj
 
     def sequence_details(self):
