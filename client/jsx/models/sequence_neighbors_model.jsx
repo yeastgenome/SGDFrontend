@@ -32,18 +32,22 @@ module.exports = class SequenceNeighborsModel extends BaseModel {
 
 	_formatStrainName (strainDisplayName, strainData) {
 		var _contigData = LocusFormatHelper.formatContigData(strainData.neighbors[0].contig);
-		var _locci = this._assignTracksToLocci(strainData.neighbors);
-		var _trackDomain = LocusFormatHelper.getTrackDomain(_locci);
+		var _loci = this._assignTracksToLocci(strainData.neighbors);
+		var _trackDomain = LocusFormatHelper.getTrackDomain(_loci);
 
-		var _start = _.min(_locci, (d) => { return d.start; }).start;
-		var _end = _.max(_locci, (d) => { return d.end; }).end;
+		var _start = _.min(_loci, (d) => { return d.start; }).start;
+		var _end = _.max(_loci, (d) => { return d.end; }).end;
 
-		var _focusLocus = _.filter(_locci, l => {
+		var _focusLocus = _.filter(_loci, l => {
 			return l.locus.id === this.id;
 		})[0];
-		var _focusLocusDomain = [_focusLocus.start, _focusLocus.end];
+		if (_focusLocus) {
+			var _focusLocusDomain = [_focusLocus.start, _focusLocus.end];
+		} else {
+			var _focusLocusDomain = [_start, _end];
+		}
 		return {
-			data: { locci: _locci },
+			data: { locci: _loci },
 			domainBounds: [_start, _end],
 			contigData: _contigData,
 			focusLocusDomain: _focusLocusDomain,
