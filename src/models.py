@@ -1021,8 +1021,14 @@ class Contig(Base):
         TAXON_ID = 274901
         strains = Straindbentity.get_strains_by_taxon_id(self.taxonomy_id)
         urls = DBSession.query(ContigUrl).filter_by(contig_id=self.contig_id).all()
-        overview = DBSession.query(Dnasequenceannotation.so_id, func.count(Dnasequenceannotation.annotation_id)).filter(and_(Dnasequenceannotation.contig_id==self.contig_id, Dnasequenceannotation.dna_type=="GENOMIC", Dnasequenceannotation.taxonomy_id == TAXON_ID)).group_by(Dnasequenceannotation.so_id).all()
-        so_ids = set([ov[0] for ov in overview])
+        # get sequences and group by feature type, exclude inactive and non S288c features
+        inactive_ids_raw = DBSession.query(Locusdbentity.dbentity_id).filter(Locusdbentity.dbentity_status != 'Active')
+        inactive_ids = [d[0]for d in inactive_ids_raw]
+        sequences = DBSession.\
+            query(Dnasequenceannotation.so_id, func.count(Dnasequenceannotation.annotation_id)).\
+            filter(and_(Dnasequenceannotation.contig_id==self.contig_id, Dnasequenceannotation.dna_type=="GENOMIC", Dnasequenceannotation.taxonomy_id == TAXON_ID, ~Dnasequenceannotation.dbentity_id.in_(inactive_ids))).\
+            group_by(Dnasequenceannotation.so_id).all()
+        so_ids = set([ov[0] for ov in sequences])
         so = DBSession.query(So).filter(So.so_id.in_(list(so_ids))).all()
         sos = {}
         for s in so:
@@ -1038,7 +1044,7 @@ class Contig(Base):
             "header": self.file_header,
             "genbank_accession": self.genbank_accession,
             "id": self.contig_id,
-            "overview": [["Feature Type", "Count"]] + [(sos[ov[0]], ov[1]) for ov in sorted(overview, key=lambda k: k[1], reverse=True)]
+            "overview": [["Feature Type", "Count"]] + [(sos[ov[0]], ov[1]) for ov in sorted(sequences, key=lambda k: k[1], reverse=True)]
         }
         if self.download_filename:
             obj["filename"] = self.download_filename
