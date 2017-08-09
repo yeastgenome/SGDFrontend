@@ -3130,6 +3130,14 @@ class Locusdbentity(Dbentity):
         pathwayannotations = DBSession.query(Pathwayannotation).filter_by(dbentity_id=self.dbentity_id).distinct(Pathwayannotation.pathway_id).all()
         obj["pathways"] = [a.to_dict() for a in pathwayannotations]
 
+        # reserved name
+        reservedname = DBSession.query(Reservedname).filter_by(locus_id=self.dbentity_id).one_or_none()
+        if reservedname:
+            r_obj = reservedname.to_dict()
+            r_obj["link"] = reservedname.obj_url
+            r_obj["class_type"] = "RESERVEDNAME"
+            obj["reserved_name"] = r_obj
+
         return obj
 
     def format_paragraph(self, text, references_obj):
