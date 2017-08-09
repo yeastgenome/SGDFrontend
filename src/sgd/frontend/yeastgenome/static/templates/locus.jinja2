@@ -73,19 +73,21 @@
                     {% if not loop.last %},{% else %}</dd>{% endif %}
                 {% endfor %}
 
-                <dt>Feature Type</dt>
-                <dd>{{ locus.locus_type }}
-                    {%- if 'feature_type' in locus.qualities -%}
-                        {% set references = locus.qualities.feature_type.references %}
-                        {% include "biblio_references.jinja2" %}
-                    {% endif %}
-                    {%- if locus.qualifier != None -%}, {{ locus.qualifier }}{% endif %}
-                    {%- if 'qualifier' in locus.qualities -%}
-                        {% set references = locus.qualities.qualifier.references %}
-                        {% include "biblio_references.jinja2" %}
-                    {% endif %}
-                    {%- if locus.bioent_status != 'Active' -%}, {{ locus.bioent_status }}{% endif %}
-                </dd>
+                {%- if (locus.locus_type != "") -%}
+                    <dt>Feature Type</dt>
+                    <dd>{{ locus.locus_type }}
+                        {%- if 'feature_type' in locus.qualities -%}
+                            {% set references = locus.qualities.feature_type.references %}
+                            {% include "biblio_references.jinja2" %}
+                        {% endif %}
+                        {%- if locus.qualifier != None -%}, {{ locus.qualifier }}{% endif %}
+                        {%- if 'qualifier' in locus.qualities -%}
+                            {% set references = locus.qualities.qualifier.references %}
+                            {% include "biblio_references.jinja2" %}
+                        {% endif %}
+                        {%- if locus.bioent_status != 'Active' -%}, {{ locus.bioent_status }}{% endif %}
+                    </dd>
+                {% endif %}
 
                 <dt>Description</dt>
                 <dd>
