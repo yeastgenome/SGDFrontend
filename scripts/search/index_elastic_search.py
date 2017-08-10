@@ -268,11 +268,10 @@ def index_genes():
         alias_quick_direct_keys = []
         aliases = []
         for d in aliases_raw:
-            alias_quick_direct_keys.append(d[0])
+            alias_quick_direct_keys.append(d[0].lower())
             if d[1] != "UniProtKB ID":
                 aliases.append(d[0])
         keys = [gene.gene_name, gene.systematic_name, gene.sgdid] + alias_quick_direct_keys
-        keys = [d.lower() for d in keys]
 
         obj = {
             'name': _name,
