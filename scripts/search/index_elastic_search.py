@@ -270,7 +270,6 @@ def index_genes():
         # gene_history = DBSession.query(Locusnoteannotation.note).filter_by(dbentity_id=gene.dbentity_id, note_type="Locus").all()
 
         phenotype_ids = DBSession.query(Phenotypeannotation.phenotype_id).filter_by(dbentity_id=gene.dbentity_id).all()
-
         if phenotype_ids:
             phenotype_ids = [p[0] for p in phenotype_ids]
             phenotypes = DBSession.query(Phenotype.display_name).filter(Phenotype.phenotype_id.in_(phenotype_ids)).all()
@@ -278,33 +277,27 @@ def index_genes():
             phenotypes = []
 
         go_ids = DBSession.query(Goannotation.go_id).filter(and_(Goannotation.go_qualifier != 'NOT', Goannotation.dbentity_id == gene.dbentity_id)).all()
-
         go_annotations = {'cellular component': set([]), 'molecular function': set([]), 'biological process': set([])}
         if len(go_ids) > 0:
             go_ids = [g[0] for g in go_ids]
             go = DBSession.query(Go.display_name, Go.go_namespace).filter(Go.go_id.in_(go_ids)).all()
             for g in go:
                 go_annotations[g[1]].add(g[0] + ' (direct)')
-
         go_slim_ids = DBSession.query(Goslimannotation.goslim_id).filter(Goslimannotation.dbentity_id == gene.dbentity_id).all()
         if len(go_slim_ids) > 0:
             go_slim_ids = [g[0] for g in go_slim_ids]
             go_slim = DBSession.query(Goslim.go_id, Goslim.display_name).filter(Goslim.goslim_id.in_(go_slim_ids)).all()
-
             go_ids = [g[0] for g in go_slim]
             go = DBSession.query(Go.go_id, Go.go_namespace).filter(Go.go_id.in_(go_ids)).all()
-
             for g in go:
                 for gs in go_slim:
                     if (gs[0] == g[0]):
                         go_annotations[g[1]].add(gs[1])
 
-        uniprotids = DBSession.query(LocusAlias.display_name).filter_by(locus_id=gene.dbentity_id, alias_type="UniProtKB ID").all()
-
-        uniprotid = [u[0] for u in uniprotids]
-
-        key_values = [gene.gene_name, gene.systematic_name, gene.sgdid] + uniprotid
-
+        # add "quick direct" keys such as aliases, SGD, UniProt ID, etc...
+        other_aliases_r = DBSession.query(LocusAlias.display_name).filter(and_(LocusAlias.locus_id==gene.dbentity_id, LocusAlias.alias_type.in_(["UniProtKB ID", "Retired name"]))).all()
+        other_aliases = [d[0] for d in other_aliases_r]
+        key_values = [gene.gene_name, gene.systematic_name, gene.sgdid] + other_aliases
         aliases = []
         aliases_item = get_aliases_object(gene.dbentity_id)
         if (bool(aliases_item)):
@@ -320,31 +313,22 @@ def index_genes():
             'href': gene.obj_url,
             'description': gene.description,
             'category': 'locus',
-
             'feature_type': feature_types[dbentity_ids_to_so[gene.dbentity_id]],
-
             'name_description': gene.name_description,
             'summary': [s[0] for s in summary],
-
             'phenotypes': [p[0] for p in phenotypes],
-
             'aliases': aliases,
-
             'cellular_component': list(go_annotations["cellular component"] - set(["cellular component", "cellular component (direct)", "cellular_component", "cellular_component (direct)"])),
             'biological_process': list(go_annotations["biological process"] - set(["biological process (direct)", "biological process", "biological_process (direct)", "biological_process"])),
             'molecular_function': list(go_annotations["molecular function"] - set(["molecular function (direct)", "molecular function", "molecular_function (direct)", "molecular_function"])),
-
             'ec_number': ec_numbers.get(gene.dbentity_id),
             'protein': protein,
             'tc_number': tc_numbers.get(gene.dbentity_id),
             'secondary_sgdid': secondary_sgdids.get(gene.dbentity_id),
-
             # TEMP don't index due to schema change
             # 'sequence_history': [s[0] for s in sequence_history],
             # 'gene_history': [g[0] for g in gene_history],
-
             'bioentity_id': gene.dbentity_id,
-
             'keys': list(keys)
         }
 
