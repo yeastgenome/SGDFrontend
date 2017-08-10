@@ -163,37 +163,6 @@ def index_colleagues():
 
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
-def get_aliases_object(db_id):
-    obj = {
-        'category': 'Alias',
-        'display_name': '',
-        'class_type': '',
-        'bioidentity_id': '',
-        'format_name': '',
-        'source': {},
-        'link': '',
-        'references': [],
-        'protein': '',
-        'id': '',
-        'created_by': '',
-        'date_created': '',
-        'is_external_id': '',
-        'link': ''
-    }
-    aliases_data = DBSession.query(LocusAlias).filter(
-        LocusAlias.locus_id == db_id,
-        ((LocusAlias.alias_type == "Uniform") |
-         (LocusAlias.alias_type == "Non-uniform"))).all()
-    if(len(aliases_data) > 0):
-        item = aliases_data[0]
-        obj['display_name'] = item.display_name
-        obj['date_created'] = item.date_created
-        obj['link'] = item.obj_url
-        obj['created_by'] = item.created_by
-        obj['is_external_id'] = 1 if item.has_external_id_section else 0
-        obj['id'] = item.alias_id
-        return obj
-    return {}
 
 def index_genes():
     # Indexing just the S228C genes
@@ -294,19 +263,15 @@ def index_genes():
                     if (gs[0] == g[0]):
                         go_annotations[g[1]].add(gs[1])
 
-        # add "quick direct" keys such as aliases, SGD, UniProt ID, etc...
-        other_aliases_r = DBSession.query(LocusAlias.display_name).filter(and_(LocusAlias.locus_id==gene.dbentity_id, LocusAlias.alias_type.in_(["UniProtKB ID", "Retired name"]))).all()
-        other_aliases = [d[0] for d in other_aliases_r]
-        key_values = [gene.gene_name, gene.systematic_name, gene.sgdid] + other_aliases
+        # add "quick direct" keys such as aliases, SGD, UniProt ID and format aliases
+        aliases_raw = DBSession.query(LocusAlias.display_name, LocusAlias.alias_type).filter(and_(LocusAlias.locus_id==gene.dbentity_id, LocusAlias.alias_type.in_(["Uniform", "Non-uniform", "Retired name", "UniProtKB ID"]))).all()
+        alias_quick_direct_keys = []
         aliases = []
-        aliases_item = get_aliases_object(gene.dbentity_id)
-        if (bool(aliases_item)):
-            aliases.append(aliases_item)
-            key_values.append(aliases_item["display_name"])
-        keys = set([])
-        for k in key_values:
-            if k:
-                keys.add(k.lower())
+        for d in aliases_raw:
+            alias_quick_direct_keys.append(d[0])
+            if d[1] != "UniProtKB ID":
+                aliases.append(d[0])
+        keys = [gene.gene_name, gene.systematic_name, gene.sgdid] + alias_quick_direct_keys
 
         obj = {
             'name': _name,
