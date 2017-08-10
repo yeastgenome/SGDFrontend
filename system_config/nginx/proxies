@@ -38,6 +38,10 @@ location /cgi-bin/geneHunter {
     proxy_pass http://heritage.yeastgenome.org/cgi-bin/geneHunter;
 }
 
+location /cgi-bin/getSeq {
+    proxy_pass http://heritage.yeastgenome.org/cgi-bin/getSeq$is_args$args;
+} 
+
 location /cgi-bin/GO/goSlimMapper.pl {
     proxy_pass http://heritage.yeastgenome.org/cgi-bin/GO/goSlimMapper.pl;
 }
