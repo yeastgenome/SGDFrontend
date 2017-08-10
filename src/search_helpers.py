@@ -271,9 +271,6 @@ def format_search_results(search_results, json_response_fields, query):
             item = raw_obj.get('aliases')
             if query.replace('"','').lower().strip() in raw_obj.get('keys'):
                 obj['is_quick'] = True
-            if bool(item):
-                if len(item) > 0:
-                    obj['is_quick'] = True
         formatted_results.append(obj)
 
     return formatted_results
