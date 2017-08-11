@@ -242,6 +242,10 @@ mapping = {
                     "type": "string",
                     "analyzer": "symbols"
                 },
+                "status": {
+                    "type": "string",
+                    "analyzer": "symbols"
+                },
                 "observable": {
                     "type": "string",
                     "fields": {
