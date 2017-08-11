@@ -281,6 +281,7 @@ def index_genes():
             if k:
                 keys.append(k.lower())
 
+
         obj = {
             'name': _name,
             'href': gene.obj_url,
@@ -305,7 +306,6 @@ def index_genes():
             'bioentity_id': gene.dbentity_id,
             'keys': list(keys)
         }
-
         bulk_data.append({
             'index': {
                 '_index': INDEX_NAME,

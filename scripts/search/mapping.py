@@ -244,7 +244,13 @@ mapping = {
                 },
                 "status": {
                     "type": "string",
-                    "analyzer": "symbols"
+                    "analyzer": "symbols",
+                    "fields": {
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
+                    }
                 },
                 "observable": {
                     "type": "string",
