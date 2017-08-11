@@ -14,12 +14,9 @@ server {
     include /etc/nginx/conf.d/proxies;
 
     location /healthcheck {
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header Host $http_host;
         proxy_redirect off;
         proxy_next_upstream error;
-        proxy_pass http://frontend/backend/healthcheck;
+        proxy_pass http://backend/healthcheck;
         break;
     }
     
