@@ -85,12 +85,12 @@ $(document).ready(function() {
                 var colorScale = function (sourceName) {
                     return source_to_color[sourceName];
                 };
-
-                views.protein.render(protein_domain_data, length, colorScale);
             }
             else {
                 $("#domain_locations").hide();
             }
+            views.protein.render(protein_domain_data, length, colorScale);
+
 
             $.getJSON('/backend/locus/' + locus['id'] + '/protein_domain_graph', function(protein_domain_graph_data) {
                 if(protein_domain_graph_data['nodes'].length > 1) {

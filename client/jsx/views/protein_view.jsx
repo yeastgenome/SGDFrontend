@@ -9,7 +9,7 @@ const TabsModel = require("../models/tabs_model.jsx");
 
 var proteinView = {};
 proteinView.render = function(rawDomainData, locusLength, colorScale) {
-  var rawLocusData = rawDomainData[0].locus;
+  
   var _tabModel = new TabsModel();
 
   let _elements = [
@@ -29,6 +29,8 @@ proteinView.render = function(rawDomainData, locusLength, colorScale) {
     document.getElementById("navbar-container")
   );
 
+  if (rawDomainData.length == 0) return;
+  var rawLocusData = rawDomainData[0].locus;
   var locusData = _.extend(rawLocusData, {
     name: rawLocusData.display_name,
     href: rawDomainData.link,
