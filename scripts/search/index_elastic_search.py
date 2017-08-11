@@ -269,10 +269,11 @@ def index_genes():
         alias_quick_direct_keys = []
         aliases = []
         for d in aliases_raw:
-            if d not in merged_deleted:
-                alias_quick_direct_keys.append(d[0])
+            name = d[0]
+            if name not in merged_deleted:
+                alias_quick_direct_keys.append(name)
             if d[1] != "UniProtKB ID":
-                aliases.append(d[0])
+                aliases.append(name)
         # make everything in keys lowercase to ignore case
         keys = []
         _keys = [gene.gene_name, gene.systematic_name, gene.sgdid] + alias_quick_direct_keys
