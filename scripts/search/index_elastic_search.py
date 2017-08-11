@@ -1,4 +1,4 @@
-from src.models import DBSession, Base, Colleague, ColleagueLocus, Locusdbentity, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi
+from src.models import DBSession, Base, Colleague, ColleagueLocus, Dbentity, Locusdbentity, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi
 from sqlalchemy import create_engine, and_
 from elasticsearch import Elasticsearch
 from mapping import mapping
@@ -169,9 +169,7 @@ def index_genes():
     # dbentity: 1364643 (id) -> straindbentity -> 274901 (taxonomy_id)
     # list of dbentities comes from table DNASequenceAnnotation with taxonomy_id 274901
     # feature_type comes from DNASequenceAnnotation as well
-
     gene_ids_so = DBSession.query(Dnasequenceannotation.dbentity_id, Dnasequenceannotation.so_id).filter(Dnasequenceannotation.taxonomy_id == 274901).all()
-
     dbentity_ids_to_so = {}
     dbentity_ids = set([])
     so_ids = set([])
@@ -179,14 +177,17 @@ def index_genes():
         dbentity_ids.add(gis[0])
         so_ids.add(gis[1])
         dbentity_ids_to_so[gis[0]] = gis[1]
-
+    # add some non S288C genes
     not_s288c = DBSession.query(Locusdbentity.dbentity_id).filter(Locusdbentity.not_in_s288c==True).all()
     for id in not_s288c:
         dbentity_ids.add(id[0])
         # assume non S288C features to be ORFs
         dbentity_ids_to_so[id[0]] = 263757
-
     all_genes = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(list(dbentity_ids)), Locusdbentity.dbentity_status == 'Active').all()
+
+    # make list of merged/deleted genes so they don't redirect when they show up as an alias
+    merged_deleted_r = DBSession.query(Locusdbentity.format_name).filter(Locusdbentity.dbentity_status.in_(['Merged', 'Deleted'])).all()
+    merged_deleted = [d[0] for d in merged_deleted_r]
 
     feature_types_db = DBSession.query(So.so_id, So.display_name).filter(So.so_id.in_(list(so_ids))).all()
     feature_types = {}
@@ -268,7 +269,8 @@ def index_genes():
         alias_quick_direct_keys = []
         aliases = []
         for d in aliases_raw:
-            alias_quick_direct_keys.append(d[0])
+            if d not in merged_deleted:
+                alias_quick_direct_keys.append(d[0])
             if d[1] != "UniProtKB ID":
                 aliases.append(d[0])
         # make everything in keys lowercase to ignore case
@@ -295,6 +297,7 @@ def index_genes():
             'protein': protein,
             'tc_number': tc_numbers.get(gene.dbentity_id),
             'secondary_sgdid': secondary_sgdids.get(gene.dbentity_id),
+            'status': gene.dbentity_status,
             # TEMP don't index due to schema change
             # 'sequence_history': [s[0] for s in sequence_history],
             # 'gene_history': [g[0] for g in gene_history],

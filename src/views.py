@@ -194,7 +194,7 @@ def search(request):
 
     # subcategory filters. Map: (request GET param name from frontend, ElasticSearch field name)
     category_filters = {
-        "locus": [('feature type', 'feature_type'), ('molecular function', 'molecular_function'), ('phenotype', 'phenotypes'), ('cellular component', 'cellular_component'), ('biological process', 'biological_process')],
+        "locus": [('feature type', 'feature_type'), ('molecular function', 'molecular_function'), ('phenotype', 'phenotypes'), ('cellular component', 'cellular_component'), ('biological process', 'biological_process'), ('status', 'status')],
         "phenotype": [("observable", "observable"), ("qualifier", "qualifier"), ("references", "references"), ("phenotype_locus", "phenotype_loci"), ("chemical", "chemical"), ("mutant_type", "mutant_type")],
         "biological_process": [("go_locus", "go_loci")],
         "cellular_component": [("go_locus", "go_loci")],
