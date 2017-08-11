@@ -183,7 +183,7 @@ def index_genes():
         dbentity_ids.add(id[0])
         # assume non S288C features to be ORFs
         dbentity_ids_to_so[id[0]] = 263757
-    all_genes = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(list(dbentity_ids)), Locusdbentity.dbentity_status == 'Active').all()
+    all_genes = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(list(dbentity_ids))).all()
 
     # make list of merged/deleted genes so they don't redirect when they show up as an alias
     merged_deleted_r = DBSession.query(Locusdbentity.format_name).filter(Locusdbentity.dbentity_status.in_(['Merged', 'Deleted'])).all()
