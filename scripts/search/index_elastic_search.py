@@ -608,6 +608,11 @@ def index_chemicals():
     bulk_data = []
 
     for chemical in all_chebi_data:
+        # count annotations and ignore if none
+        conditions = DBSession.query(PhenotypeannotationCond.annotation_id).filter_by(condition_name=chemical.display_name).all()
+        phenotype_annotations_count = DBSession.query(Phenotypeannotation).filter(Phenotypeannotation.annotation_id.in_(conditions)).count()
+        if phenotype_annotations_count == 0:
+            continue
         obj = {
             "name": chemical.display_name,
             "href": chemical.obj_url,
