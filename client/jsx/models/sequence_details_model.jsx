@@ -36,6 +36,11 @@ module.exports = class SequenceDetailsModel extends BaseModel {
         var _altMeta = _.map(_altStrainsRaw, s => {
             return this._formatAltStrainMetaData(s.display_name, response, s.key);
         });
+        _altMeta.sort( (a, b) => {
+            if(a.name.toLowerCase() < b.name.toLowerCase()) return -1;
+            if(a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+            return 0;
+        });
         // 288C data
         var _mainStrain = this._formatStrainData(MAIN_STRAIN_NAME, response, MAIN_STRAIN_NAME);
         // other strains
@@ -135,7 +140,8 @@ module.exports = class SequenceDetailsModel extends BaseModel {
             sequences: _sequences,
             strainKey: strainKey,
             trackDomain: _trackDomain,
-            tableData: _tableData
+            tableData: _tableData,
+            displayName: strainDisplayName
         };
 
         return _response;
