@@ -776,6 +776,11 @@ def locus_go_graph(request):
 
 @view_config(route_name='locus_expression_graph', renderer='json', request_method='GET')
 def locus_expression_graph(request):
+    # TEMP disable
+    return {
+        'nodes': [],
+        'edges': []
+    }
     id = extract_id_request(request, 'locus')
     locus = get_locus_by_id(id)
     if locus:
