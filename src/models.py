@@ -2335,7 +2335,9 @@ class Locusdbentity(Dbentity):
         for lit in interaction_lit:
             obj["interaction"].append(lit.to_dict_citation())
 
-        regulation_ids = DBSession.query(Regulationannotation.reference_id).filter(or_(Regulationannotation.target_id == self.dbentity_id, Regulationannotation.regulator_id == self.dbentity_id)).all()
+        regulation_ids = DBSession.query(Regulationannotation.reference_id).\
+            filter(Regulationannotation.annotation_type == "manually curated", or_(Regulationannotation.target_id == self.dbentity_id, Regulationannotation.regulator_id == self.dbentity_id)).\
+            all()
         regulation_lit = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(regulation_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.display_name.asc()).all()
 
         for lit in regulation_lit:
@@ -2347,9 +2349,11 @@ class Locusdbentity(Dbentity):
         for lit in regulation_lit_htp:
             obj["htp"].append(lit.to_dict_citation())
 
-        apo_ids = DBSession.query(Apo.apo_id).filter_by(namespace_group="classical genetics").all()
-        apo_ids_large_scale = DBSession.query(Apo.apo_id).filter_by(
+        apo_ids_r = DBSession.query(Apo.apo_id).filter_by(namespace_group="classical genetics").all()
+        apo_ids = [d[0] for d in apo_ids_r]
+        apo_ids_large_scale_r = DBSession.query(Apo.apo_id).filter_by(
             namespace_group="large-scale survey").all()
+         apo_ids_large_scale = [d[0] for d in apo_ids_large_scale_r]
 
         phenotype_ids = DBSession.query(Phenotypeannotation.reference_id, Phenotypeannotation.experiment_id).filter(Phenotypeannotation.dbentity_id == self.dbentity_id).all()
 
