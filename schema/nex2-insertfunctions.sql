@@ -53,7 +53,7 @@ CREATE OR REPLACE FUNCTION insertlocuschange (p_dbentityId bigint, p_sourceName 
 DECLARE
 
    v_source_id   nex.arch_locuschange.source_id%TYPE;
-   v_change_date nex.arch_locuschange.date_changed%TYPE;
+   v_added_date nex.arch_locuschange.date_added_to_database%TYPE;
 
 BEGIN
 
@@ -61,12 +61,12 @@ BEGIN
     FROM nex.source
     WHERE display_name = p_sourceName;
 
-    SELECT LOCALTIMESTAMP INTO v_change_date;
+    SELECT LOCALTIMESTAMP INTO v_added_date;
     
     INSERT INTO nex.arch_locuschange
-        (dbentity_id, source_id, change_type, old_value, new_value, date_changed, changed_by)
+        (dbentity_id, source_id, change_type, old_value, new_value, date_added_to_database, added_by)
     VALUES
-        (p_dbentityID, v_source_id, p_changeType, p_old, p_new, v_change_date, upper(p_user));
+        (p_dbentityID, v_source_id, p_changeType, p_old, p_new, v_added_date, upper(p_user));
 
 END;
 
