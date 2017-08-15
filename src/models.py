@@ -1279,25 +1279,21 @@ class Dataset(Base):
             }
         else:
             references = DBSession.query(DatasetReference).filter_by(dataset_id=self.dataset_id).all()
-
-            if len(references) < 1:
-                obj["reference"] = {}
-
-            else:
-                reference = references[0].reference
-
-                obj["reference"] = {
+            formatted_refs = []
+            for datasetreference in references:
+                reference = datasetreference.reference
+                abstract = DBSession.query(Referencedocument.html).filter_by(reference_id=reference.dbentity_id, document_type="Abstract").one_or_none()
+                ref_obj =  {
                     "display_name": reference.display_name,
                     "link": reference.obj_url,
                     "pubmed_id": reference.pmid,
-                    "id": reference.dbentity_id
-                }
-
-                abstract = DBSession.query(Referencedocument.html).filter_by(reference_id=reference.dbentity_id, document_type="Abstract").one_or_none()
-                if abstract:
-                    obj["reference"]["abstract"] = {
+                    "id": reference.dbentity_id,
+                    "abstract": {
                         "text": abstract[0]
                     }
+                }
+                formatted_refs.append(ref_obj)
+            obj["references"] = formatted_refs
 
         if add_conditions:
             conditions = DBSession.query(Datasetsample).filter_by(dataset_id=self.dataset_id).all()
