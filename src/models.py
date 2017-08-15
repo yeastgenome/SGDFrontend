@@ -2372,7 +2372,7 @@ class Locusdbentity(Dbentity):
         for lit in phenotype_lit:
             obj["phenotype"].append(lit.to_dict_citation())
 
-        phenotype_lit_lsc = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(valid_phenotype_ids)).order_by(Referencedbentity.year.desc(), Referencedbentity.display_name.asc()).all()
+        phenotype_lit_lsc = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(valid_phenotype_ids_lsc)).order_by(Referencedbentity.year.desc(), Referencedbentity.display_name.asc()).all()
         for lit in phenotype_lit_lsc:
             obj["htp"].append(lit.to_dict_citation())
 
