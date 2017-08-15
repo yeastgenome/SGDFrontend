@@ -2351,9 +2351,8 @@ class Locusdbentity(Dbentity):
 
         apo_ids_r = DBSession.query(Apo.apo_id).filter_by(namespace_group="classical genetics").all()
         apo_ids = [d[0] for d in apo_ids_r]
-        apo_ids_large_scale_r = DBSession.query(Apo.apo_id).filter_by(
-            namespace_group="large-scale survey").all()
-         apo_ids_large_scale = [d[0] for d in apo_ids_large_scale_r]
+        apo_ids_large_scale_r = DBSession.query(Apo.apo_id).filter_by(namespace_group="large-scale survey").all()
+        apo_ids_large_scale = [d[0] for d in apo_ids_large_scale_r]
 
         phenotype_ids = DBSession.query(Phenotypeannotation.reference_id, Phenotypeannotation.experiment_id).filter(Phenotypeannotation.dbentity_id == self.dbentity_id).all()
 
