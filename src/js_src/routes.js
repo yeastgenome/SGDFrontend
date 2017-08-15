@@ -16,6 +16,7 @@ import Search from './containers/search';
 import LocusShow from './containers/locus/show';
 import TriageIndex from './containers/triage';
 import SpreadsheetUpload from './containers/spreadsheetUpload/index';
+import Settings from './containers/settings/index';
 // curate lit biz
 import Blank from './components/blank';
 import CurateLit from './containers/curateLit/layout';
@@ -40,6 +41,7 @@ export default (
         <IndexRoute component={requireAuthentication(CurateHome)} />
         <Route component={requireAuthentication(TriageIndex)} path='triage' />
         <Route component={requireAuthentication(SpreadsheetUpload)} path='spreadsheet_upload' />
+        <Route component={requireAuthentication(Settings)} path='settings' />
       </Route>
       <Route component={requireAuthentication(LocusShow)} path='curate/locus/:id' />
       <Route component={requireAuthentication(CurateLit)} path='curate/reference/:id'>

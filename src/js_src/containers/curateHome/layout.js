@@ -18,6 +18,7 @@ class CurateLayout extends Component {
             <li><Link className={style.disabledLink}><span><i className='fa fa-users' /> Colleague Updates</span></Link></li>
             <li><Link className={style.disabledLink}><span><i className='fa fa-sticky-note' /> Gene Name Registrations</span></Link></li>
             <li><Link className={(location === '/curate/spreadsheet_upload') ? style.activeLink : null} to='curate/spreadsheet_upload'><span><i className='fa fa-upload' /> Spreadsheet Upload</span></Link></li>
+            <li><Link className={(location === '/curate/settings') ? style.activeLink : null} to='curate/settings'><span><i className='fa fa-cog' /> Settings</span></Link></li>
           </ul>
         </div>
         <div className={LARGE_COL_CLASS}>
