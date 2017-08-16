@@ -3553,7 +3553,7 @@ class Locusdbentity(Dbentity):
             'summary_tab': ['expression_details'],
             'go_tab': ['go_details', 'go_graph'],
             'sequence_section': ['neighbor_sequence_details', 'sequence_details'],
-            'expression_tab': ['expression_details', 'expression_graph'],
+            'expression_tab': [],
             'phenotype_tab': phenotype_items,
             'literature_tab': ['literature_details', 'literature_graph'],
             'regulation_tab': ['regulation_details', 'regulation_graph'],
