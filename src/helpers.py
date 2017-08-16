@@ -13,6 +13,7 @@ import transaction
 from pyramid.httpexceptions import HTTPForbidden, HTTPBadRequest
 from sqlalchemy.exc import IntegrityError, InternalError, StatementError
 import traceback
+import requests
 
 from .models import DBSession, Dbuser, Go, Referencedbentity, Keyword, Locusdbentity, Filepath, Edam, Filedbentity, FileKeyword, ReferenceFile
 
@@ -24,6 +25,13 @@ MAX_QUERY_ATTEMPTS = 3
 S3_BUCKET = os.environ['S3_BUCKET']
 S3_ACCESS_KEY = os.environ['S3_ACCESS_KEY']
 S3_SECRET_KEY = os.environ['S3_SECRET_KEY']
+
+# get list of URLs to visit from comma-separated ENV variable cache_urls 'url1, url2'
+cache_urls = None
+if 'CACHE_URLS' in os.environ.keys():
+    cache_urls = os.environ['CACHE_URLS'].split(',')
+else:
+    cache_urls = ['http://localhost:6545']
 
 def get_locus_by_id(id):
     return dbentity_safe_query(id, Locusdbentity)
@@ -295,3 +303,7 @@ def link_gene_names(raw, locus_names_ids):
             new_str = '<a href="' + url + '">' + wupper + '</a>'
             processed = processed.replace(original_word, new_str)
     return processed
+
+def refresh_homepage_cache():
+    for url in cache_urls:
+        requests.request('PURGE', url)

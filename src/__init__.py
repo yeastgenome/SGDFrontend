@@ -109,6 +109,7 @@ def main(global_config, **settings):
     config.add_route('colleague_create', '/colleagues', request_method='POST')
     config.add_route('colleague_update', '/colleagues/{format_name}', request_method='PUT')
     config.add_route('colleague_get', '/colleagues/{format_name}', request_method='GET')
+    config.add_route('refresh_homepage_cache', '/refresh_homepage_cache', request_method='POST')
     
     config.add_route('formats', '/formats')
     config.add_route('topics', '/topics')
