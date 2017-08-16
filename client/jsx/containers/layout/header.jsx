@@ -16,9 +16,9 @@ const Header = React.createClass({
             <div className="site-links">
               <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/about" className="hide-external-link-icon">About</a>
               <a href="/blog">Blog</a>
-              <a href="/download-data">Download</a>
+              <a href="https://downloads.yeastgenome.org">Download</a>
               <a className="hide-external-link-icon" target="_blank" href="https://sites.google.com/view/yeastgenome-help/">Help</a>
-              <a href="http://yeastmine.yeastgenome.org/yeastmine/begin.do">YeastMine</a>
+              <a href="https://yeastmine.yeastgenome.org/yeastmine/begin.do">YeastMine</a>
               <div className="social-media-links">
                 <a href="/suggestion" target="_blank" id="email-header" className="webicon mail small">Email Us</a>
                 <a href="http://twitter.com/#!/yeastgenome" target="_blank" id="twitter" className="webicon twitter small">Twitter</a>
@@ -75,7 +75,7 @@ const Header = React.createClass({
           <ul className="left">
             <li className="has-dropdown"><a href="#">Analyze</a>
               <ul className="dropdown">
-                <li><a className="disabled-header-a" href="http://yeastmine.yeastgenome.org/yeastmine/bag.do">Gene Lists</a></li>
+                <li><a className="disabled-header-a" href="https://yeastmine.yeastgenome.org/yeastmine/bag.do">Gene Lists</a></li>
                 <li><a className="disabled-header-a" href="/blast-sgd">BLAST</a></li>
                 <li><a className="disabled-header-a" href="/blast-fungal">Fungal BLAST</a></li>
                 <li><a className="disabled-header-a" href="/cgi-bin/GO/goTermFinder.pl">GO Term Finder</a></li>
@@ -87,25 +87,25 @@ const Header = React.createClass({
             </li>
             <li className="has-dropdown"><a href="#">Sequence</a>
               <ul className="dropdown">
-                <li><a className="disabled-header-a" href="/download-data/sequence">Download</a></li>
-                <li><a className="disabled-header-a" href="/browse">Genome Browser</a></li>
+                <li><a className="disabled-header-a" href="https://downloads.yeastgenome.org/sequence">Download</a></li>
+                <li><a className="disabled-header-a" href="https://browse.yeastgenome.org">Genome Browser</a></li>
                 <li><a className="disabled-header-a" href="/blast-sgd">BLAST</a></li>
                 <li><a className="disabled-header-a" href="/blast-fungal">Fungal BLAST</a></li>
                 <li><a className="disabled-header-a" href="/cgi-bin/seqTools">Gene/Sequence Resources</a></li>
                 <li className="has-dropdown">
                   <a href="#">Reference Genome</a>
                   <ul className="dropdown">
-                    <li><a className="disabled-header-a" href="http://downloads.yeastgenome.org/sequence/S288C_reference/genome_releases/">Download Genome</a></li>
+                    <li><a className="disabled-header-a" href="https://downloads.yeastgenome.org/sequence/S288C_reference/genome_releases/">Download Genome</a></li>
                     <li><a className="disabled-header-a" href="/genomesnapshot">Genome Snapshot</a></li>
                     <li><a className="disabled-header-a" href="/cgi-bin/chromosomeHistory.pl">Chromosome History</a></li>
-                    <li><a className="disabled-header-a" href="/cache/chromosomes.shtml">Systematic Sequencing Table</a></li>
+                    <li><a className="disabled-header-a" href="http://wiki.yeastgenome.org/index.php/Systematic_Sequencing_Table">Systematic Sequencing Table</a></li>
                     <li><a className="disabled-header-a" href="http://wiki.yeastgenome.org/index.php/Original_Sequence_Papers">Original Sequence Papers</a></li>
                   </ul>
                 </li>
                 <li className="has-dropdown">
                   <a href="#">Strains and Species</a>
                   <ul className="dropdown">
-                    <li><a className="disabled-header-a" href="/variant-viewer">Variant Viewer</a></li>
+                    <li><a className="disabled-header-a" href="/variant-viewer#/?_k=3yu0l3">Variant Viewer</a></li>
                     <li><a className="disabled-header-a" href="/cgi-bin/FUNGI/alignment.pl">Align Strain Sequences</a></li>
                     <li><a className="disabled-header-a" href="/cgi-bin/FUNGI/FungiMap">Synteny Viewer</a></li>
                   </ul>
@@ -135,19 +135,19 @@ const Header = React.createClass({
                   <ul className="dropdown">
                     <li><a className="disabled-header-a" href="/cgi-bin/GO/goTermFinder.pl">GO Term Finder</a></li>
                     <li><a className="disabled-header-a" href="/cgi-bin/GO/goSlimMapper.pl">GO Slim Mapper</a></li>
-                    <li><a className="disabled-header-a" href="http://downloads.yeastgenome.org/curation/literature/go_slim_mapping.tab">GO Slim Mapping File</a></li>
+                    <li><a className="disabled-header-a" href="https://downloads.yeastgenome.org/curation/literature/go_slim_mapping.tab">GO Slim Mapping File</a></li>
                   </ul>
                 </li>
-                <li><a className="disabled-header-a" href="http://spell.yeastgenome.org/">Expression</a></li>
+                <li><a className="disabled-header-a" href="https://spell.yeastgenome.org/">Expression</a></li>
                 <li><a className="disabled-header-a" href="http://pathway.yeastgenome.org">Biochemical Pathways</a></li>
                 <li className="has-dropdown">
                   <a href="#">Phenotypes</a>
                   <ul className="dropdown">
-                    <li><a className="disabled-header-a" href="/ontology/phenotype/ypo/overview">Browse All Phenotypes</a></li>
+                    <li><a className="disabled-header-a" href="/ontology/phenotype/ypo">Browse All Phenotypes</a></li>
                   </ul>
                 </li>
                 <li><a className="disabled-header-a" href="/interaction-search">Interactions</a></li>
-                <li><a className="disabled-header-a" href="http://yeastgfp.yeastgenome.org/">YeastGFP</a></li>
+                <li><a className="disabled-header-a" href="https://yeastgfp.yeastgenome.org/">YeastGFP</a></li>
                 <li className="has-dropdown">
                   <a href="#">Resources</a>
                   <ul className="dropdown">
@@ -159,10 +159,10 @@ const Header = React.createClass({
             </li>
             <li className="has-dropdown"><a href="">Literature</a>
               <ul className="dropdown">
-                <li><a className="disabled-header-a" href="http://textpresso.yeastgenome.org/">Full-text Search</a></li>
-                <li><a className="disabled-header-a" href="/reference/recent">New Yeast Papers</a></li>
+                <li><a className="disabled-header-a" href="https://textpresso.yeastgenome.org/">Full-text Search</a></li>
+                <li><a className="s-disabled" href="/reference/recent">New Yeast Papers</a></li>
                 <li><a className="disabled-header-a" href="http://www.genetics.org/content/yeastbook">YeastBook</a></li>
-                <li><a className="disabled-header-a" href="http://yeastmine.yeastgenome.org/yeastmine/loadTemplate.do?name=GenomeWide_Papers&scope=all&method=results&format=tab">Genome-wide Analysis Papers</a></li>
+                <li><a className="disabled-header-a" href="https://yeastmine.yeastgenome.org/yeastmine/loadTemplate.do?name=GenomeWide_Papers&scope=all&method=results&format=tab">Genome-wide Analysis Papers</a></li>
                 <li className="has-dropdown">
                   <a href="#">Resources</a>
                   <ul className="dropdown">
@@ -178,9 +178,9 @@ const Header = React.createClass({
                 <li className="has-dropdown">
                   <a href="#">Colleague Information</a>
                   <ul className="dropdown">
-                    <li><a className="disabled-header-a" href="/cgi-bin/colleague/colleagueInfoSearch">Find a Colleague</a></li>
-                    <li><a className="disabled-header-a" href="/cgi-bin/colleague/colleagueSearch">Add or Update Info</a></li>
-                    <li><a className="disabled-header-a" href="/cache/yeastLabs.html">Find a Yeast Lab</a></li>
+                    <li><a className="disabled-header-a" href=" https://www.yeastgenome.org/search?category=colleague&page=0">Find a Colleague</a></li>
+                    <li><a className="s-disabled" href="/cgi-bin/colleague/colleagueSearch">Add or Update Info</a></li>
+                    <li><a className="disabled-header-a" href=" https://www.yeastgenome.org/search?category=colleague&page=0">Find a Yeast Lab</a></li>
                   </ul>
                 </li>
                 <li><a className="disabled-header-a" href="http://wiki.yeastgenome.org/index.php/Career_Resources">Career Resources</a></li>
@@ -194,7 +194,7 @@ const Header = React.createClass({
                 <li className="has-dropdown">
                   <a href="#">Nomenclature</a>
                   <ul className="dropdown">
-                    <li><a className="disabled-header-a" href="/cgi-bin/registry/geneRegistry">Submit a Gene Registration</a></li>
+                    <li><a className="s-disabled" href="/cgi-bin/registry/geneRegistry">Submit a Gene Registration</a></li>
                     <li><a className="disabled-header-a"target="_blank" href="https://sites.google.com/view/yeastgenome-help/community-help/gene-registry">Gene Registry</a></li>
                     <li><a className="disabled-header-a"target="_blank" href="https://sites.google.com/view/yeastgenome-help/community-help/nomenclature-conventions">Nomenclature Conventions</a></li>
                     <li><a className="disabled-header-a" href="/cgi-bin/geneHunter">Global Gene Hunter</a></li>
@@ -214,7 +214,7 @@ const Header = React.createClass({
                     <li><a className="disabled-header-a" href="http://wiki.yeastgenome.org/index.php/Combined_Physical_and_Genetic_Maps_of_S._cerevisiae">Physical &amp; Genetic Maps</a></li>
                     <li><a className="disabled-header-a" href="http://wiki.yeastgenome.org/index.php/Yeast_Mortimer_Maps_-_Edition_12">Genetic Maps</a></li>
                     <li><a className="disabled-header-a" href="http://wiki.yeastgenome.org/index.php/Historical_Systematic_Sequence_Information">Sequence</a></li>
-                    <li><a className="disabled-header-a" href="/cache/geneSummarytable.html">Gene Summary Paragraphs</a></li>
+                    <li><a className="disabled-header-a" href=" http://wiki.yeastgenome.org/index.php/Table_of_Gene_Summary_Paragraphs">Gene Summary Paragraphs</a></li>
                   </ul>
                 </li>
                 <li><a className="disabled-header-a" href="http://wiki.yeastgenome.org/index.php/Main_Page">Wiki</a></li>
@@ -226,7 +226,7 @@ const Header = React.createClass({
               <ul className="dropdown">
                 <li><a className="disabled-header-a" href="https://sites.google.com/view/yeastgenome-help/about">About</a></li>
                 <li><a className="disabled-header-a" href="/blog">Blog</a></li>
-                <li><a className="disabled-header-a" href="/download-data">Downloads</a></li>
+                <li><a className="disabled-header-a" href="https://downloads.yeastgenome.org">Downloads</a></li>
                 <li><a className="disabled-header-a" href="/site-map">Site Map</a></li>
                 <li><a className="disabled-header-a" href="https://sites.google.com/view/yeastgenome-help/">Help</a></li>
               </ul>
