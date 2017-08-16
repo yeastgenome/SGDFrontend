@@ -23,9 +23,7 @@
         <script>
             add_navbar_title('Dataset: <span class="gene_name">{{ dataset.display_name }}</span>');
             add_navbar_element('Overview', 'overview');
-            {%  if dataset.reference.abstract != none %}
-                add_navbar_element('Summary', 'summary');
-            {%  endif %}
+            add_navbar_element('Summary', 'summary');
             add_navbar_element('Conditions', 'conditions');
             {% if dataset.urls|length > 0 %}
                 add_navbar_element('Resources', 'resources');
@@ -52,7 +50,12 @@
                         {% endif %}
 
                         <dt>Reference</dt>
-                        <dd><a href="{{ dataset.reference.link }}">{{ dataset.reference.display_name }}</a></dd>
+                        <dd>
+                            {% for reference in dataset.references %}
+                                <a href="{{ reference.link }}">{{ reference.display_name }}</a>
+                                {% if not loop.last %},{% endif %}
+                            {% endfor %}
+                        </dd>
 
                         <dt>Channels</dt>
                         <dd>{{ dataset.channel_count }}</dd>
@@ -74,25 +77,25 @@
             </div>
         </section>
 
-            <!-- Abstract
+            <!-- Abstract(s)
 ================================================== -->
-        {%  if dataset.reference.abstract != none %}
-            <section id="summary" data-magellan-destination="summary">
-                <div class="page-header">
-                    <h2>Summary</h2>
-                    <div class="panel">
-                        <p>{{ dataset.reference.abstract.text|safe}}</p>
-                    </div>
-                </div>
-            </section>
-        {%  endif %}
+        <section id="summary" data-magellan-destination="summary">
+            <div class="page-header">
+                <h2>Summary</h2>
+            </div>
+            {% for reference in dataset.references %}
+                {%  if reference.abstract != none %}
+                    <p>{{ reference.abstract.text|safe}}</p>
+                {%  endif %}
+            {% endfor %}
+        </section>
 
             <!-- Conditions
 ================================================== -->
         <section id="conditions" data-magellan-destination="conditions">
             <div class="page-header">
                 <h2>Conditions</h2>
-                <div class="panel">
+                <div>
                     <table class="table table-striped table-bordered table-condensed" width="100%">
                         <thead>
                              <tr>

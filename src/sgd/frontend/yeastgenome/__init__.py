@@ -92,8 +92,6 @@ class YeastgenomeFrontend(FrontendInterface):
 
     def dataset(self, bioitem_repr):
         dataset = self.get_obj('dataset', bioitem_repr)
-        if dataset is not None and len(dataset['dataset']['reference'].keys()) == 0:
-            dataset['dataset']['reference']['abstract'] = None
         return dataset
 
     def keyword(self, keyword_repr):
