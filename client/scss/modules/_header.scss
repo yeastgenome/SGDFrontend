@@ -206,3 +206,9 @@ $top-header-font-color: #CCC;
 	color: #ccc;
 	text-decoration: underline;
 }
+
+.s-disabled {
+	cursor: pointer !important;
+	pointer-events: none !important;
+	color: #c2c2c2 !important;
+}
