@@ -819,6 +819,11 @@ def locus_interaction_graph(request):
 def locus_regulation_graph(request):
     id = extract_id_request(request, 'locus')
     locus = get_locus_by_id(id)
+    # TEMP disable
+    return {
+        'nodes': [],
+        'edges': []
+    }
 
     if locus:
         return locus.regulation_graph()
