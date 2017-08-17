@@ -30,7 +30,7 @@ sub vcl_recv {
     }
 
     # force HTTPS
-    if (req.http.X-Forwarded-Proto !~ "(?i)https" && req.url !~ "healthcheck$" && !client.ip ~ purgers) {
+    if (req.http.X-Forwarded-Proto !~ "(?i)https" && req.url !~ "healthcheck$" && client.ip != "127.0.0.1") {
         return (synth(750, ""));
     }
 
