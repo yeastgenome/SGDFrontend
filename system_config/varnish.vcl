@@ -24,13 +24,19 @@ sub vcl_recv {
         return (purge);
     }
 
+    # redirect @ -> www
+    if (req.http.host == "yeastgenome.org") {
+        return (synth(750, ""));
+    }
+
+    # force HTTPS
+    if (req.http.X-Forwarded-Proto !~ "(?i)https" && req.url !~ "healthcheck$" && !client.ip ~ purgers) {
+        return (synth(750, ""));
+    }
+
     unset req.http.Cookie;
     set req.http.host = "www.yeastgenome.org";
 
-    # force HTTPS
-    if (req.http.X-Forwarded-Proto !~ "(?i)https" && req.url !~ "healthcheck$") {
-        return (synth(750, ""));
-    }
     # don't cache healthcheck
     if (req.url ~ "healthcheck$") {
         return (pass);
