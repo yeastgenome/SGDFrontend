@@ -70,7 +70,7 @@ sub vcl_purge {
 sub vcl_synth {
     if (resp.status == 750) {
         set resp.http.Location = "https://www.yeastgenome.org" + req.url;
-        set resp.status = 301;
+        set resp.status = 302;
         return (deliver);
     }
 }
