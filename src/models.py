@@ -1282,15 +1282,11 @@ class Dataset(Base):
             formatted_refs = []
             for datasetreference in references:
                 reference = datasetreference.reference
-                abstract = DBSession.query(Referencedocument.html).filter_by(reference_id=reference.dbentity_id, document_type="Abstract").one_or_none()
                 ref_obj =  {
                     "display_name": reference.display_name,
                     "link": reference.obj_url,
                     "pubmed_id": reference.pmid,
-                    "id": reference.dbentity_id,
-                    "abstract": {
-                        "text": abstract[0]
-                    }
+                    "id": reference.dbentity_id
                 }
                 formatted_refs.append(ref_obj)
             obj["references"] = formatted_refs
