@@ -218,7 +218,7 @@ BEGIN
     END IF;
 
     IF (OLD.display_email != NEW.display_email) THEN
-       PERFORM nex.insertupdatelog('COLLEAGUE'::text, 'DISPLAY_EMAIL'::text, OLD.colleague_id, OLD.display_email, NEW.display_email, USER);
+       PERFORM nex.insertupdatelog('COLLEAGUE'::text, 'DISPLAY_EMAIL'::text, OLD.colleague_id, OLD.display_email::text, NEW.display_email::text, USER);
     END IF;
 
     IF (OLD.date_last_modified != NEW.date_last_modified) THEN
