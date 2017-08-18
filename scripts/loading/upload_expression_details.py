@@ -24,7 +24,7 @@ logging.basicConfig()
 log = logging.getLogger()
 log.setLevel(logging.INFO)
 
-DEBUG_SIZE = 10
+DEBUG_SIZE = 20
 FILE_DIR = '.tmp/'
 S3_BUCKET = os.environ['EXPRESSION_S3_BUCKET']
 S3_ACCESS_KEY = os.environ['S3_ACCESS_KEY']
@@ -78,7 +78,7 @@ def upload_gene_list(genes, list_name):
         success = upload_gene(gene)
         if success:
             temp_success_list.append(gene.sgdid)
-        if i % DEBUG_SIZE == 0:
+        if i > 0 and i % DEBUG_SIZE == 0:
             end = time.time()
             elapsed = round(end - start)
             list_elapsed_hours = round(end - list_start) / 3600
@@ -89,16 +89,16 @@ def upload_gene_list(genes, list_name):
 
 # methods for 4 gene subsets to allow 4 threads
 def upload_genes_a():
-    genes = get_all_genes(12, 0)
+    genes = get_all_genes(2000, 0)
     upload_gene_list(genes, 'a')
 def upload_genes_b():
-    genes = get_all_genes(12, 2000)
+    genes = get_all_genes(2000, 2000)
     upload_gene_list(genes, 'b')
 def upload_genes_c():
-    genes = get_all_genes(12, 4000)
+    genes = get_all_genes(2000, 4000)
     upload_gene_list(genes, 'c')
 def upload_genes_d():
-    genes = get_all_genes(12, 6000)
+    genes = get_all_genes(3000, 6000)
     upload_gene_list(genes, 'd' )
     
 if __name__ == '__main__':
