@@ -23,7 +23,7 @@ logging.basicConfig()
 log = logging.getLogger()
 log.setLevel(logging.INFO)
 
-DEBUG_SIZE = 5
+DEBUG_SIZE = 10
 FILE_DIR = '.tmp/'
 S3_BUCKET = os.environ['EXPRESSION_S3_BUCKET']
 S3_ACCESS_KEY = os.environ['S3_ACCESS_KEY']
@@ -69,6 +69,7 @@ def upload_test_gene():
     log.info('RAD54 done in ' + str(elapsed) + ' seconds')
 
 def upload_gene_list(genes):
+    list_start = time.time()
     start = time.time()
     temp_success_list = []
     # every DEBUG_SIZE genes print some debug
@@ -79,7 +80,8 @@ def upload_gene_list(genes):
         if i % DEBUG_SIZE == 0:
             end = time.time()
             elapsed = round(end - start)
-            log.info(str(temp_success_list) + ' done in ' + str(elapsed) + ' seconds. ' + str(i) + '/' + str(len(genes)) + ' complete')
+            list_elapsed_hours = round(end - list_start) / 3600
+            log.info(str(temp_success_list) + ' done in ' + str(elapsed) + ' seconds. ' + str(i) + '/' + str(len(genes)) + ' of total list in ' + str(list_elapsed_hours) + ' hours.')
             start = time.time()
             temp_success_list = []
 
