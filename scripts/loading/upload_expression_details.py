@@ -79,7 +79,7 @@ def upload_gene_list(genes):
         if i % DEBUG_SIZE == 0:
             end = time.time()
             elapsed = round(end - start)
-            log.info(str(temp_success_list) + ' done in ' + str(elapsed) + ' seconds. ' + str(i) + '/' str(len(genes)) + ' complete')
+            log.info(str(temp_success_list) + ' done in ' + str(elapsed) + ' seconds. ' + str(i) + '/' + str(len(genes)) + ' complete')
             start = time.time()
             temp_success_list = []
 
