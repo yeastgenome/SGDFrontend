@@ -848,14 +848,15 @@ def locus_interaction_details(request):
     else:
         return HTTPNotFound()
 
-@view_config(route_name='locus_expression_details', renderer='json', request_method='GET')
-def locus_expression_details(request):
-    id = extract_id_request(request, 'locus')
-    locus = get_locus_by_id(id)
-    if locus:
-        return locus.expression_to_dict()
-    else:
-        return HTTPNotFound()
+# TEMP disable
+# @view_config(route_name='locus_expression_details', renderer='json', request_method='GET')
+# def locus_expression_details(request):
+#     id = extract_id_request(request, 'locus')
+#     locus = get_locus_by_id(id)
+#     if locus:
+#         return locus.expression_to_dict()
+#     else:
+#         return HTTPNotFound()
 
 @view_config(route_name='locus_neighbor_sequence_details', renderer='json', request_method='GET')
 def locus_neighbor_sequence_details(request):
