@@ -87,7 +87,7 @@ def upload_gene_list(genes):
 
 # methods for 4 gene subsets to allow 4 threads
 def upload_genes_a():
-    genes = get_all_genes(10, 0)
+    genes = get_all_genes(12, 0)
     upload_gene_list(genes)
 def upload_genes_b():
     genes = get_all_genes(2000, 2000)
