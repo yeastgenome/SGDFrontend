@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+from threading import Thread
 import time
 import traceback
 
@@ -68,7 +69,7 @@ def upload_test_gene():
     elapsed = end - start
     log.info('RAD54 done in ' + str(elapsed) + ' seconds')
 
-def upload_gene_list(genes):
+def upload_gene_list(genes, list_name):
     list_start = time.time()
     start = time.time()
     temp_success_list = []
@@ -81,23 +82,32 @@ def upload_gene_list(genes):
             end = time.time()
             elapsed = round(end - start)
             list_elapsed_hours = round(end - list_start) / 3600
-            log.info(str(temp_success_list) + ' done in ' + str(elapsed) + ' seconds. ' + str(i) + '/' + str(len(genes)) + ' of total list in ' + str(list_elapsed_hours) + ' hours.')
+            log.info(str(temp_success_list) + ' done in ' + str(elapsed) + ' seconds. ' + str(i) + '/' + str(len(genes)) + ' of total list in ' + str(list_elapsed_hours) + ' hours. List ' + list_name)
             start = time.time()
             temp_success_list = []
+    log.info('Finished with list ' + list_name)
 
 # methods for 4 gene subsets to allow 4 threads
 def upload_genes_a():
-    genes = get_all_genes(12, 0)
+    genes = get_all_genes(12, 0, 'a')
     upload_gene_list(genes)
 def upload_genes_b():
-    genes = get_all_genes(2000, 2000)
+    genes = get_all_genes(12, 2000, 'b')
     upload_gene_list(genes)
 def upload_genes_c():
-    genes = get_all_genes(2000, 4000)
+    genes = get_all_genes(12, 4000, 'c')
     upload_gene_list(genes)
 def upload_genes_d():
-    genes = get_all_genes(4000, 6000)
+    genes = get_all_genes(12, 6000, 'd')
     upload_gene_list(genes)    
     
 if __name__ == '__main__':
-    upload_genes_a()
+    
+    t1 = Thread(target=upload_genes_a)
+    t2 = Thread(target=upload_genes_b)
+    t3 = Thread(target=upload_genes_c)
+    t4 = Thread(target=upload_genes_d)
+    t1.start()
+    t2.start()
+    t3.start()
+    t4.start()
