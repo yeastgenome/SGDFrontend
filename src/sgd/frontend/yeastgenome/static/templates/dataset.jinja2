@@ -76,20 +76,7 @@
                 </div>
             </div>
         </section>
-
-            <!-- Abstract(s)
-================================================== -->
-        <section id="summary" data-magellan-destination="summary">
-            <div class="page-header">
-                <h2>Summary</h2>
-            </div>
-            {% for reference in dataset.references %}
-                {%  if reference.abstract != none %}
-                    <p>{{ reference.abstract.text|safe}}</p>
-                {%  endif %}
-            {% endfor %}
-        </section>
-
+        
             <!-- Conditions
 ================================================== -->
         <section id="conditions" data-magellan-destination="conditions">

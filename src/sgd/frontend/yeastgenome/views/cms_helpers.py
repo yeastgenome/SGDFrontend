@@ -6,7 +6,7 @@ import os
 from dateutil import parser
 from src.sgd.frontend import config
 
-BLOG_BASE_URL = 'https://public-api.wordpress.com/rest/v1.1/sites/sgdblogtest.wordpress.com/posts'
+BLOG_BASE_URL = 'https://public-api.wordpress.com/rest/v1.1/sites/yeastgenomeblog.wordpress.com/posts'
 BLOG_PAGE_SIZE = 10
 HOMEPAGE_REQUEST_TIMEOUT = 2
 URL_REGEX = 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
