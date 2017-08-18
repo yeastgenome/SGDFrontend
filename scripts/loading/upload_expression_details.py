@@ -89,16 +89,16 @@ def upload_gene_list(genes, list_name):
 
 # methods for 4 gene subsets to allow 4 threads
 def upload_genes_a():
-    genes = get_all_genes(3, 0)
+    genes = get_all_genes(12, 0)
     upload_gene_list(genes, 'a')
 def upload_genes_b():
-    genes = get_all_genes(3, 2000)
+    genes = get_all_genes(12, 2000)
     upload_gene_list(genes, 'b')
 def upload_genes_c():
-    genes = get_all_genes(3, 4000)
+    genes = get_all_genes(12, 4000)
     upload_gene_list(genes, 'c')
 def upload_genes_d():
-    genes = get_all_genes(3, 6000)
+    genes = get_all_genes(12, 6000)
     upload_gene_list(genes, 'd' )
     
 if __name__ == '__main__':
