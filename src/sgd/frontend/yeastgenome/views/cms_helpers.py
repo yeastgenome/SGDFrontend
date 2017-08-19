@@ -106,7 +106,7 @@ def get_meetings():
             end_date = datetime.strptime(meeting['end']['date'], '%Y-%m-%d') - timedelta(days=1)
             meeting['start_date'] = start_date
             days_delta = (end_date - start_date).days
-            if (days_delta > 1):
+            if (days_delta >= 1):
                 start_desc = start_date.strftime('%B %d')
                 end_desc = end_date.strftime('%B %d, %Y')
                 date_description = start_desc + ' to ' + end_desc
