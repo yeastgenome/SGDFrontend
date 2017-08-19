@@ -41,18 +41,15 @@ def get_all_genes(limit, offset):
         so_ids.add(gis[1])
         dbentity_ids_to_so[gis[0]] = gis[1]
     # return the query
-    return DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(list(dbentity_ids)), Locusdbentity.dbentity_status == 'Active').limit(limit).offset(offset).all()
+    return DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(list(dbentity_ids)), Locusdbentity.dbentity_status == 'Active', Locusdbentity.has_expression == True).limit(limit).offset(offset).all()
 
 def upload_gene(gene):
-    # skip if no expression tab
-    if not gene.has_expression:
-        return True
     try:
         expression_details_json = json.dumps(gene.expression_to_dict())
         conn = boto.connect_s3(S3_ACCESS_KEY, S3_SECRET_KEY, host=S3_HOST)
         bucket = conn.get_bucket(S3_BUCKET)
         k = Key(bucket)
-        k.key = global_file_name
+        k.key = gene.sgdid + '.json'
         k.set_contents_from_string(expression_details_json)
         k.make_public()
         return True
@@ -87,7 +84,7 @@ def upload_gene_list(genes, list_name):
             temp_success_list = []
     log.info('Finished with list ' + list_name)
 
-CHUNK_SIZE = 1300
+CHUNK_SIZE = 1000
 FINAL_EXTRA_CHUNK_SIZE = 2000
 # methods for 6 gene subsets to allow 6 threads
 def upload_genes_a():
