@@ -24,8 +24,7 @@ logging.basicConfig()
 log = logging.getLogger()
 log.setLevel(logging.INFO)
 
-DEBUG_SIZE = 20
-FILE_DIR = '.tmp/'
+DEBUG_SIZE = 5
 S3_BUCKET = os.environ['EXPRESSION_S3_BUCKET']
 S3_ACCESS_KEY = os.environ['S3_ACCESS_KEY']
 S3_SECRET_KEY = os.environ['S3_SECRET_KEY']
@@ -45,10 +44,11 @@ def get_all_genes(limit, offset):
     return DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(list(dbentity_ids)), Locusdbentity.dbentity_status == 'Active').limit(limit).offset(offset).all()
 
 def upload_gene(gene):
+    # skip if no expression tab
+    if not gene.has_expression:
+        return True
     try:
         expression_details_json = json.dumps(gene.expression_to_dict())
-        global_file_name = gene.sgdid + '.json'
-        local_file_name = FILE_DIR + global_file_name
         conn = boto.connect_s3(S3_ACCESS_KEY, S3_SECRET_KEY, host=S3_HOST)
         bucket = conn.get_bucket(S3_BUCKET)
         k = Key(bucket)
@@ -87,26 +87,38 @@ def upload_gene_list(genes, list_name):
             temp_success_list = []
     log.info('Finished with list ' + list_name)
 
-# methods for 4 gene subsets to allow 4 threads
+CHUNK_SIZE = 1300
+FINAL_EXTRA_CHUNK_SIZE = 2000
+# methods for 6 gene subsets to allow 6 threads
 def upload_genes_a():
-    genes = get_all_genes(2000, 0)
+    genes = get_all_genes(CHUNK_SIZE, 0 * CHUNK_SIZE)
     upload_gene_list(genes, 'a')
 def upload_genes_b():
-    genes = get_all_genes(2000, 2000)
+    genes = get_all_genes(CHUNK_SIZE, 1 * CHUNK_SIZE)
     upload_gene_list(genes, 'b')
 def upload_genes_c():
-    genes = get_all_genes(2000, 4000)
+    genes = get_all_genes(CHUNK_SIZE, 2 * CHUNK_SIZE)
     upload_gene_list(genes, 'c')
 def upload_genes_d():
-    genes = get_all_genes(3000, 6000)
+    genes = get_all_genes(CHUNK_SIZE, 3 * CHUNK_SIZE)
     upload_gene_list(genes, 'd' )
+def upload_genes_e():
+    genes = get_all_genes(CHUNK_SIZE, 4 * CHUNK_SIZE)
+    upload_gene_list(genes, 'e' )
+def upload_genes_f():
+    genes = get_all_genes(CHUNK_SIZE + FINAL_EXTRA_CHUNK_SIZE, 5 * CHUNK_SIZE)
+    upload_gene_list(genes, 'f' )
     
 if __name__ == '__main__':
     t1 = Thread(target=upload_genes_a)
     t2 = Thread(target=upload_genes_b)
     t3 = Thread(target=upload_genes_c)
     t4 = Thread(target=upload_genes_d)
+    t5 = Thread(target=upload_genes_e)
+    t6 = Thread(target=upload_genes_f)
     t1.start()
     t2.start()
     t3.start()
     t4.start()
+    t5.start()
+    t6.start()
