@@ -31,17 +31,7 @@ S3_SECRET_KEY = os.environ['S3_SECRET_KEY']
 S3_HOST = 's3-us-west-2.amazonaws.com'
 
 def get_all_genes(limit, offset):
-    # get S288C genes
-    gene_ids_so = DBSession.query(Dnasequenceannotation.dbentity_id, Dnasequenceannotation.so_id).filter(Dnasequenceannotation.taxonomy_id == 274901).all()
-    dbentity_ids_to_so = {}
-    dbentity_ids = set([])
-    so_ids = set([])
-    for gis in gene_ids_so:
-        dbentity_ids.add(gis[0])
-        so_ids.add(gis[1])
-        dbentity_ids_to_so[gis[0]] = gis[1]
-    # return the query
-    return DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(list(dbentity_ids)), Locusdbentity.dbentity_status == 'Active', Locusdbentity.has_expression == True).limit(limit).offset(offset).all()
+    return DBSession.query(Locusdbentity).filter(Locusdbentity.has_expression == True).limit(limit).offset(offset).all()
 
 def upload_gene(gene):
     try:
