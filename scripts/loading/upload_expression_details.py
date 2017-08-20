@@ -97,6 +97,7 @@ def upload_genes_f():
     upload_gene_list(genes, 'f' )
     
 if __name__ == '__main__':
+    log.info('Starting expression upload.')
     t1 = Thread(target=upload_genes_a)
     t2 = Thread(target=upload_genes_b)
     t3 = Thread(target=upload_genes_c)
