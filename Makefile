@@ -64,3 +64,6 @@ index-es:
 
 index-redis:
 	source dev_variables.sh && python scripts/disambiguation/index_disambiguation.py
+
+upload-expression-details:
+	source dev_variables.sh && python scripts/loading/upload_expression_details.py
