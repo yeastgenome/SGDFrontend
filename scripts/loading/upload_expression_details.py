@@ -16,7 +16,7 @@ __author__ = 'tshepp'
     For a set of loci, get expression details, make a JSON string and upload to sgd-prod-expression-details bucket with name [SGDID].json.
 '''
 
-engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
+engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600, pool_size=20)
 DBSession.configure(bind=engine)
 Base.metadata.bind = engine
 
