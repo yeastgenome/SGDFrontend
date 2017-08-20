@@ -36,7 +36,9 @@ summaryView.render = function () {
   );
 
 	var fetchAndRenderHistory = () => {
-		$.getJSON('/backend/locus/' + bootstrappedData.locusId + '/expression_details', function(data) {
+    let sgdid = bootstrappedData.locusData.sgdid;
+    let expUrl = `https://s3-us-west-2.amazonaws.com/sgd-prod-expression-details/${sgdid}.json`;
+		$.getJSON(expUrl, function(data) {
 			if (data.datasets.length) {
 				var _onExpressionClick = () => {
 					window.location.href = "/locus/" + bootstrappedData.locusId + "/expression";
