@@ -3,18 +3,16 @@ from sqlalchemy import create_engine, and_
 import os
 import json
 import re
-import pdb
+import time
 import sys
-
 
 engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
 DBSession.configure(bind=engine)
 Base.metadata.bind = engine
 
+# populate text file with sgdis to be used to retrieve panther data
 def get_sgdids_for_panther():
-    #submitted_data = DBSession.query(Locusdbentity).filter(Locusdbentity.sgdid.in_(ids_arr), Locusdbentity.not_in_s288c == False).all()
     new_data = Locusdbentity.get_s288c_genes()
-    #result_diff = list(set(new_data) - set(submitted_data))
     temp = []
     for loc in new_data:
         temp.append(loc.sgdid)
@@ -25,40 +23,28 @@ def get_sgdids_for_panther():
             result.replace('"', '').replace('[', '').replace(']', ''))
 
 
+# pair pantherIds with corresponding sgdids
 def get_panther_sgdids():
-    data_container = []
     data_dict = {}
     with open('./scripts/bgi_json/data_dump/panther/panther_search_results.json') as json_data_file:
         json_data = json.load(json_data_file)
         for item in json_data:
-
-            obj = {
-                "sgd_id": "",
-                "panther_id": ""
-            }
             temp_str = ','.join(map(str, item))
             reg_pattern = r'(SGD=S\d+)|(PTHR\d+)'
-            reg_result = sorted(list(set(re.findall(reg_pattern,temp_str))))
+            reg_result = sorted(list(set(re.findall(reg_pattern, temp_str))))
             if(len(reg_result) > 1):
                 item_str1 = ''.join(reg_result[0])
                 item_str2 = ''.join(reg_result[1]).split("=")
-                obj["panther_id"] = item_str1
-                obj["sgd_id"] = item_str2[1]
                 data_dict[item_str2[1]] = item_str1
-                data_container.append(obj)
             elif(len(reg_result) == 1):
                 item_str1 = ''.join(reg_result[0]).split("=")
-                obj["sgd_id"] = item[1]
-                obj["panther_id"] = None
                 data_dict[item[1]] = None
-
-                data_container.append(obj)
             else:
                 continue
 
         return data_dict
 
-
+# pupulate json file with basic gene infromation(bgi) 
 def get_bgi_data():
     combined_list = combine_panther_locus_list(get_panther_sgdids(), Locusdbentity.get_s288c_genes())
     result = []
@@ -153,31 +139,16 @@ def get_bgi_data():
                     obj["geneSynopsis"] = item.description
                     obj["geneLiteratureUrl"] = "http://www.yeastgenome.org/locus/" + item.sgdid + "/literature"
                     obj["symbol"] = item.systematic_name
-                  
                     result.append(obj)
-            if(len(result) == 5):
-                pdb.set_trace()
-                f = 'felix'
+        if(len(result) > 0):
+            output_obj = {
+                "data": result
+            }
+            with open('./scripts/bgi_json/data_dump/SGD.1.0.1_basicGeneInformation.json','w+') as res_file:
+                    res_file.write(json.dumps(output_obj))
 
 
-
-
-    '''{"
-            crossReferenceIds": ["UniProtKB:A0A023PXG3"], 
-            "primaryId": "SGD:S000028797", 
-            "symbol": "YIL156W-A", 
-            "genomeLocations": [{"startPosition": 47292,
-            "chromosome": "IX", 
-            "assembly": "R64-2-1", 
-            "endPosition": 47693, "strand": "+"}], 
-            "soTermId": "SO:0000236", 
-            "taxonId": "NCBITaxon:559292", 
-            "synonyms": ["YIL156W-A"], 
-            "geneLiteratureUrl": "http://www.yeastgenome.org/locus/S000028797/literature", 
-            "geneSynopsis": "Dubious open reading frame; unlikely to encode a functional protein, based on available experimental and comparative sequence data; overlaps ORF COA1/YIL157C"}'''
-
-
-
+# create single gene list containing genes with pantherids and genes without pantherids
 def combine_panther_locus_list(panther_list, locus_list):
     combined_list = {}
     if(len(panther_list) > 0 and len(locus_list) > 0):
@@ -196,6 +167,8 @@ def combine_panther_locus_list(panther_list, locus_list):
                 combined_list[item.dbentity_id] = obj
     return combined_list
 
+
+# helper method to get locus_alias data
 def get_locus_alias_data(locus_alias_list, id):
     data_container = {}
     aliases = []
@@ -224,60 +197,10 @@ def get_locus_alias_data(locus_alias_list, id):
     data_container["aliases"] = aliases
     return data_container
 
-#get_sgdids_for_panther()
-get_bgi_data()
-# TODO:delete section below later
-################################# test functions ##############################################
-
-'''def get_systematic_names():
-    obj = {"data": ""}
-    _data = DBSession.query(Locusdbentity.systematic_name).filter(
-        Locusdbentity.not_in_s288c == False).all()
-
-    if(len(_data) > 0):
-        temp_data = ["%s" % x for x in _data]
-        temp_arr = json.dumps(temp_data, ensure_ascii=False)
-        obj["data"] = temp_arr
-
-        with open('./scripts/bgi_json/data_dump/systematic_names.txt', 'w+') as outfile:
-            outfile.write(
-                temp_arr.replace('"', '').replace('[', '').replace(']', ''))
-
-
-def get_SGDIDs_from_file():
-    primary_ids = []
-    with open('./scripts/bgi_json/data_dump/dump.json') as data_file:
-        data = json.load(data_file)
-        for item in data["data"]:
-            primary_ids.append(str(item["primaryId"]).split(':')[1])
-
-    diff_arrays(primary_ids)
-    _data = DBSession.query(Locusdbentity).filter(Locusdbentity.description != None, Locusdbentity.not_in_s288c == False).all()
-    test = []
-    for loc in _data:
-        test_obj = {
-            "sys_name": loc.systematic_name,
-            "gene_name": loc.gene_name,
-
-        }
-        test.append(test_obj)
-    temp1 = json.dumps(test, ensure_ascii=False)
-    with open('./scripts/bgi_json/data_dump/gene_with_names.txt', 'w+') as outfile:
-        outfile.write(temp1.replace('"', '').replace('[', '').replace(']', ''))
-    temp = json.dumps(primary_ids, ensure_ascii=False)
-    with open('./scripts/bgi_json/data_dump/primaryIds.txt', 'w+') as outfile:
-        pdb.set_trace()
-        outfile.write(temp.replace('"', '').replace('[', '').replace(']', ''))
-
-
-def diff_arrays(ids_arr):
-    #submitted_data = DBSession.query(Locusdbentity).filter(Locusdbentity.sgdid.in_(ids_arr), Locusdbentity.not_in_s288c == False).all()
-    new_data = DBSession.query(Locusdbentity).filter(Locusdbentity.not_in_s288c == False, Locusdbentity.description != None).all()
-    #result_diff = list(set(new_data) - set(submitted_data))
-    temp = []
-    for loc in new_data:
-        temp.append(loc.sgdid)
-    result = json.dumps(temp, ensure_ascii=False)
-    with open('./scripts/bgi_json/data_dump/sgd_ids_for_panther.txt',
-              'w+') as res_file:
-        res_file.write(result.replace('"', '').replace('[', '').replace(']', ''))'''
+# entry point
+if __name__ == '__main__':
+    start_time = time.time()
+    get_bgi_data()
+    with open('./scripts/bgi_json/data_dump/log_time.txt', 'w+') as res_file:
+        time_taken = "time taken: " + ("--- %s seconds ---" % (time.time() - start_time))
+        res_file.write(time_taken)
