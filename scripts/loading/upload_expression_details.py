@@ -74,7 +74,7 @@ def upload_gene_list(genes, list_name):
             temp_success_list = []
     log.info('Finished with list ' + list_name)
 
-CHUNK_SIZE = 1000
+CHUNK_SIZE = 1100
 FINAL_EXTRA_CHUNK_SIZE = 2000
 # methods for 6 gene subsets to allow 6 threads
 def upload_genes_a():
