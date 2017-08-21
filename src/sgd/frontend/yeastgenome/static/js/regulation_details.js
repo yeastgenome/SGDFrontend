@@ -65,20 +65,23 @@ $(document).ready(function() {
 
     $.getJSON('/backend/locus/' + locus['id'] + '/regulation_graph', function(data) {
         if(data != null && data["nodes"].length > 1) {
-            var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true, "regulation");
-            create_cy_download_button(graph, "cy_download", locus['display_name'] + '_regulation_graph')
-            var message = 'Showing regulatory relationships supported by at least <strong>' + data['min_evidence_count'] + '</strong> experiment';
-            if(data['min_evidence_count'] == 1) {
-                message = message + '.';
-            }
-            else {
-                message = message + 's.';
-            }
-            $("#legend").html(message);
 
-            create_discrete_filter("all_radio", graph, null, function(){return "node, edge"}, 1);
-            create_discrete_filter("positive_radio", graph, null, function(){return "node, edge[action = 'expression activated']"}, 1);
-            create_discrete_filter("negative_radio", graph, null, function(){return "node, edge[action = 'expression repressed']"}, 1);
+            views.network.render(data);
+
+            // var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true, "regulation");
+            // create_cy_download_button(graph, "cy_download", locus['display_name'] + '_regulation_graph')
+            // var message = 'Showing regulatory relationships supported by at least <strong>' + data['min_evidence_count'] + '</strong> experiment';
+            // if(data['min_evidence_count'] == 1) {
+            //     message = message + '.';
+            // }
+            // else {
+            //     message = message + 's.';
+            // }
+            // $("#legend").html(message);
+
+            // create_discrete_filter("all_radio", graph, null, function(){return "node, edge"}, 1);
+            // create_discrete_filter("positive_radio", graph, null, function(){return "node, edge[action = 'expression activated']"}, 1);
+            // create_discrete_filter("negative_radio", graph, null, function(){return "node, edge[action = 'expression repressed']"}, 1);
         }
         else {
             hide_section("network");
