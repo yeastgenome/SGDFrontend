@@ -2880,7 +2880,7 @@ class Locusdbentity(Dbentity):
         }
 
     def regulation_graph(self):
-        MAX_EDGES = 50
+        MAX_EDGES = 100
         # get annotations to and from gene, or among regulators/targets
         direct_relations = DBSession.query(Regulationannotation.target_id, Regulationannotation.regulator_id).filter(or_(Regulationannotation.target_id == self.dbentity_id, Regulationannotation.regulator_id == self.dbentity_id)).all()
         target_ids = []
@@ -2901,10 +2901,13 @@ class Locusdbentity(Dbentity):
             else:
                 genes_to_regulations[id_str] = [d]
         def sortfn(x):
+            BOOST = 1.25
+            score = len(genes_to_regulations[x])
+            # boost score if has focus locus
             str_ids = x.split('_')
             if str(self.dbentity_id) in str_ids:
-                return 999
-            return len(genes_to_regulations[x])
+                score = score * BOOST
+            return score
         sorted_ids_keys = sorted(genes_to_regulations.keys(), key=lambda x: sortfn(x), reverse=True)
         sorted_ids_keys = sorted_ids_keys[:MAX_EDGES]
         ids_from_keys = []
@@ -2928,13 +2931,11 @@ class Locusdbentity(Dbentity):
             elif d_id in regulator_ids:
                 sub_type = "REGULATOR"
             nodes.append({
-                "data": {
-                    "name": d[1],
-                    "id": d[2],
-                    "link": d[3],
-                    "type": "BIOENTITY",
-                    "sub_type": sub_type
-                } 
+                "name": d[1],
+                "id": d[2],
+                "link": d[3],
+                "type": "BIOENTITY",
+                "sub_type": sub_type
             })
         # format edges
         edges = []
@@ -2944,12 +2945,10 @@ class Locusdbentity(Dbentity):
             regulator_format_name = regulator[2]
             target_format_name = target[2]
             edges.append({
-                "data": {
-                    "action": "expression null",
-                    "source": regulator_format_name,
-                    "target": target_format_name,
-                    "evidence": len(genes_to_regulations[d])
-                } 
+                "action": "expression null",
+                "source": regulator_format_name,
+                "target": target_format_name,
+                "evidence": len(genes_to_regulations[d])
             })
         return {
             "nodes": nodes,
@@ -2982,7 +2981,7 @@ class Locusdbentity(Dbentity):
             genes_cache[gene.dbentity_id] = gene
 
         i = 0
-        while i < len(list_genes_to_regulations) and len(nodes) <= 100 and len(edges) <= 100:
+        while i < len(list_genes_to_regulations) and len(nodes) <= MAX_EDGES and len(edges) <= MAX_EDGES:
             dbentity_id = list_genes_to_regulations[i][0]
             dbentity = genes_cache[dbentity_id]
 
