@@ -1,0 +1,26 @@
+{% extends "lite_layout.jinja2" %}
+
+{% block title %}Downloads{% endblock %}
+
+{% block body %}
+
+ <div class="row">
+	<div className="columns small-12">
+		<h1>Downloads</h1>
+		<p>Data at SGD can be downloaded in multiple ways:</p>
+		<ul>
+			<li>From <a title="YeastMine" href="https://yeastmine.yeastgenome.org/yeastmine/begin.do">YeastMine</a>, a powerful search and retrieval tool that allows for sophisticated queries and download in customizable user-defined formats.</li>
+			<li>From individual pages. For example, via the 'Download Data' link on the phenotypes or interactions pages.</li>
+			<li>In pre-defined formats available from our Downloads server:</li>
+		</ul>
+		<p><a title="Curation" href="https://downloads.yeastgenome.org/curation">Curated Data</a> - genes, proteins, identifiers, functional annotations, interactions, phenotypes, etc.</p>
+		<p><strong><a href="https://downloads.yeastgenome.org/sequence">Sequence</a></strong> - <em>S. cerevisiae</em> reference genome and strains, liftOver files, <em>Saccharomyces sensu stricto</em> species</p>
+		<p><strong><a href="https://downloads.yeastgenome.org/genomics">Genomics</a></strong> - comparative analysis results</p>
+		<p><strong><a href="https://downloads.yeastgenome.org/expression/">Expression</a></strong> - data files from SGD's expression analysis tool SPELL (Serial Pattern of Expression Levels Locator)</p>
+		<p><a title="Published Datasets Directory" href="https://downloads.yeastgenome.org/published_datasets/">Published Datasets</a> - datasets and supplemental data files curated at SGD, including high-throughput data</p>
+		<p><strong><a href="https://downloads.yeastgenome.org/unpublished_data/">Unpublished Data</a></strong> - historical data from retired yeast tools and unpublished analyses</p>
+		<p><a title="Reference Library" href="https://downloads.yeastgenome.org/reference_library/">Reference Library</a> - miscellaneous historical reference data</p>
+	</div>
+</div>
+
+{% endblock body %}
