@@ -43,8 +43,10 @@ function create_expression_table(data) {
         var datatable = [];
         var reference_ids = {};
         for (var i=0; i < data.length; i++) {
-            if (Object.keys(data[i].reference).length === 0) {
+            if (data[i].references.length === 0) {
                 data[i].reference = null;
+            } else {
+                data[i].reference = data[i].references[0];
             }
             datatable.push(dataset_datat_to_table(data[i], i));
 
