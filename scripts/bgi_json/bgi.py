@@ -44,7 +44,7 @@ def get_panther_sgdids():
 
         return data_dict
 
-# pupulate json file with basic gene infromation(bgi) 
+# pupulate json file with basic gene infromation(bgi)
 def get_bgi_data():
     combined_list = combine_panther_locus_list(get_panther_sgdids(), Locusdbentity.get_s288c_genes())
     result = []
@@ -93,7 +93,7 @@ def get_bgi_data():
                     obj["genomeLocations"][0]["endPosition"] = dna_seq_annotation_obj[0].end_index
                     obj["genomeLocations"][0]["strand"] = dna_seq_annotation_obj[0].strand
                     obj["genomeLocations"][0]["startPosition"] = dna_seq_annotation_obj[0].start_index
-                    obj["genomeLocations"][0]["chromosome"] = chromosome[1]
+                    obj["genomeLocations"][0]["chromosome"] = "chr"+chromosome[1]
                     obj["soTermId"] = dna_seq_annotation_obj[0].so.soid
                 mod_locus_alias_data = get_locus_alias_data(locus_alias_data, item.dbentity_id)
 
@@ -145,7 +145,7 @@ def get_bgi_data():
                 "data": result
             }
             with open('./scripts/bgi_json/data_dump/SGD.1.0.1_basicGeneInformation.json','w+') as res_file:
-                    res_file.write(json.dumps(output_obj))
+                res_file.write(json.dumps(output_obj))
 
 
 # create single gene list containing genes with pantherids and genes without pantherids
@@ -183,16 +183,16 @@ def get_locus_alias_data(locus_alias_list, id):
                 "locus_id": id
             }
             obj["secondaryIds"].append(item.source.format_name+":" + item.display_name)
-
             data_container[item.alias_id] = obj
         else:
-            obj = {
-                "crossReferenceIds": [],
-                "locus_id": id
-            }
-            obj["crossReferenceIds"].append(item.source.format_name + ":" + item.display_name)
-
-            data_container[item.alias_id] = obj
+            if (item.alias_type == "UniProtKB ID"):
+                obj = {"crossReferenceIds": [], "locus_id": id}
+                obj["crossReferenceIds"].append("UniProtKB:" + item.display_name)
+                data_container[item.alias_id] = obj
+            if (item.alias_type == "NCBI protein name"):
+                obj = {"crossReferenceIds": [], "locus_id": id}
+                obj["crossReferenceIds"].append("NCBI_Gene:" + item.display_name)
+                data_container[item.alias_id] = obj
 
     data_container["aliases"] = aliases
     return data_container
@@ -200,7 +200,9 @@ def get_locus_alias_data(locus_alias_list, id):
 # entry point
 if __name__ == '__main__':
     start_time = time.time()
+    print "--------------start loading genes--------------"
     get_bgi_data()
+    print "--------------done loading genes--------------"
     with open('./scripts/bgi_json/data_dump/log_time.txt', 'w+') as res_file:
         time_taken = "time taken: " + ("--- %s seconds ---" % (time.time() - start_time))
         res_file.write(time_taken)
