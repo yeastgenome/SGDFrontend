@@ -2880,7 +2880,7 @@ class Locusdbentity(Dbentity):
         }
 
     def regulation_graph(self):
-        MAX_EDGES = 100
+        MAX_NODES = 150
         # get annotations to and from gene, or among regulators/targets
         direct_relations = DBSession.query(Regulationannotation.target_id, Regulationannotation.regulator_id).filter(or_(Regulationannotation.target_id == self.dbentity_id, Regulationannotation.regulator_id == self.dbentity_id)).all()
         target_ids = []
@@ -2908,8 +2908,9 @@ class Locusdbentity(Dbentity):
             if str(self.dbentity_id) in str_ids:
                 score = score * BOOST
             return score
-        sorted_ids_keys = sorted(genes_to_regulations.keys(), key=lambda x: sortfn(x), reverse=True)
-        sorted_ids_keys = sorted_ids_keys[:MAX_EDGES]
+        all_keys = genes_to_regulations.keys()
+        sorted_ids_keys = sorted(all_keys, key=lambda x: sortfn(x), reverse=True)
+        sorted_ids_keys = sorted_ids_keys[:MAX_NODES]
         ids_from_keys = []
         for k in sorted_ids_keys:
             str_ids = k.split('_')
@@ -2939,7 +2940,15 @@ class Locusdbentity(Dbentity):
             })
         # format edges
         edges = []
-        for d in sorted_ids_keys:
+        included_genes = gene_ids_info.keys()
+        # get all edges for included nodes
+        selected_edge_keys = []
+        for d in all_keys:
+            reg_id = d.split('_')[0]
+            target_id = d.split('_')[1]
+            if reg_id in included_genes and target_id in included_genes:
+                selected_edge_keys.append(d)
+        for d in selected_edge_keys:
             regulator = gene_ids_info[d.split('_')[0]]
             target = gene_ids_info[d.split('_')[1]]
             regulator_format_name = regulator[2]
@@ -2981,7 +2990,7 @@ class Locusdbentity(Dbentity):
             genes_cache[gene.dbentity_id] = gene
 
         i = 0
-        while i < len(list_genes_to_regulations) and len(nodes) <= MAX_EDGES and len(edges) <= MAX_EDGES:
+        while i < len(list_genes_to_regulations) and len(nodes) <= MAX_NODES:
             dbentity_id = list_genes_to_regulations[i][0]
             dbentity = genes_cache[dbentity_id]
 
