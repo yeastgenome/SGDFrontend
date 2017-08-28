@@ -109,11 +109,14 @@ def get_bgi_data():
                     else:
                         if (mod_value.get("secondaryIds") is not None):
                             temp_sec_item = mod_value.get("secondaryIds")
-                            obj["name"] = item.name_description
-                            if(len(temp_sec_item) > 1):
-                                obj["secondaryIds"] = [','.join([str(x) for x in temp_sec_item])]
-                            else:
-                                obj["secondaryIds"] = [str(temp_sec_item[0])]
+                            if(len(temp_sec_item) > 0):
+                                if(item.name_description is not None):
+                                    obj["name"] = item.name_description
+                                if(len(temp_sec_item) > 1):
+                                    obj["secondaryIds"] = [','.join([str(x) for x in temp_sec_item])]
+                                else:
+                                    if(len(temp_sec_item) == 1):
+                                        obj["secondaryIds"] = [str(temp_sec_item[0])]
                         if (mod_value.get("crossReferenceIds") is not None):
                             temp_cross_item = mod_value.get("crossReferenceIds")
                             if(len(temp_cross_item) > 1):
@@ -121,11 +124,10 @@ def get_bgi_data():
                                     ','.join([str(x) for x in temp_cross_item])
                                 ]
                             else:
-                                obj["crossReferenceIds"] = [str(temp_cross_item[0])]
-
-
+                                if(len(temp_cross_item) == 1):
+                                    obj["crossReferenceIds"] = [str(temp_cross_item[0])]
                 if(item_panther is not None):
-                    obj["crossReferenceIds"].append("PantherId:" + item_panther)
+                    obj["crossReferenceIds"].append("PANTHER:" + item_panther)
                     obj["primaryId"] = "SGD:" + item.sgdid
                     item = combined_list[item_key]["locus_obj"]
                     obj["geneSynopsis"] = item.description
@@ -144,7 +146,7 @@ def get_bgi_data():
             output_obj = {
                 "data": result
             }
-            with open('./scripts/bgi_json/data_dump/SGD.1.0.1_basicGeneInformation.json','w+') as res_file:
+            with open('./scripts/bgi_json/data_dump/SGD.1.0.1_basicGeneInformation_new.json','w+') as res_file:
                 res_file.write(json.dumps(output_obj))
 
 
@@ -173,36 +175,40 @@ def get_locus_alias_data(locus_alias_list, id):
     data_container = {}
     aliases = []
     aliases_types = ["Uniform", "Non-uniform"]
+    aliases_types_other = ["SGDID Secondary", "UniProtKB ID", "Gene ID"]
+    obj = {
+        "secondaryIds": [],
+         "crossReferenceIds": []
+        }
+    flag = False
     for item in locus_alias_list:
+
         if(item.alias_type in aliases_types):
             aliases.append(item.display_name)
-
         if(item.alias_type == "SGDID Secondary"):
-            obj = {
-                "secondaryIds": [],
-                "locus_id": id
-            }
-            obj["secondaryIds"].append(item.source.format_name+":" + item.display_name)
-            data_container[item.alias_id] = obj
-        else:
-            if (item.alias_type == "UniProtKB ID"):
-                obj = {"crossReferenceIds": [], "locus_id": id}
-                obj["crossReferenceIds"].append("UniProtKB:" + item.display_name)
-                data_container[item.alias_id] = obj
-            if (item.alias_type == "NCBI protein name"):
-                obj = {"crossReferenceIds": [], "locus_id": id}
-                obj["crossReferenceIds"].append("NCBI_Gene:" + item.display_name)
-                data_container[item.alias_id] = obj
+            obj["secondaryIds"].append(item.source.display_name+":" + item.display_name)
+            flag = True
+        if (item.alias_type == "UniProtKB ID"):
+            obj["crossReferenceIds"].append("UniProtKB:" + item.display_name)
+            flag = True
+        if (item.alias_type == "Gene ID" and item.source.display_name == 'NCBI'):
+            obj["crossReferenceIds"].append("NCBI_Gene:" + item.display_name)
+            flag = True
 
+    if(flag):
+        data_container[id] = obj
     data_container["aliases"] = aliases
     return data_container
+
 
 # entry point
 if __name__ == '__main__':
     start_time = time.time()
     print "--------------start loading genes--------------"
-    get_bgi_data()
-    print "--------------done loading genes--------------"
+    with PyCallGraph(output=GraphvizOutput()):
+        get_bgi_data()
+
     with open('./scripts/bgi_json/data_dump/log_time.txt', 'w+') as res_file:
         time_taken = "time taken: " + ("--- %s seconds ---" % (time.time() - start_time))
         res_file.write(time_taken)
+    print "--------------done loading genes--------------"'''
