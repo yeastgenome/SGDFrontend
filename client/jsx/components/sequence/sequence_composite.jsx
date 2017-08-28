@@ -93,15 +93,14 @@ const SequenceComposite = React.createClass({
       </div>);
     } else {
       var helpNode = <HelpIcon text={"<span>The <i>S. cerevisiae</i> reference genome sequence is derived from laboratory strain S288C.</span>"} isInfo={true} />;
-      var _jbHref = "/browse/?loc=" + this.props.focusLocusFormatName;
-      var _mapHref = "/cgi-bin/ORFMAP/ORFmap?dbid=" + this.props.focusLocusFormatName;
+      var _jbHref = "https://browse.yeastgenome.org/?loc=" + this.props.focusLocusFormatName;
       node = (<div>
         <div className="row title-right-text">
           <div className="columns small-6">
             {this.props.isSimplified ? this._getSimplifiedSequenceNode() : <h2>Reference Strain: S288C {helpNode}</h2>}
           </div>
           <div className="columns small-6">
-            <p className="text-right locus-external-links">View in: <a href={_jbHref}>JBrowse</a> | <a href={_mapHref}>ORF Map</a></p>
+            <p className="text-right locus-external-links">View in: <a href={_jbHref}>JBrowse</a></p>
           </div>
         </div>
         {this.props.isSimplified ? null : <hr />}
