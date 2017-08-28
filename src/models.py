@@ -3110,13 +3110,8 @@ class Locusdbentity(Dbentity):
         })
         obj["urls"].append({
             "category": "LOCUS_SEQUENCE",
-            "link": "/browse/?loc=" + self.systematic_name,
+            "link": "https://browse.yeastgenome.org/?loc=" + self.systematic_name,
             "display_name": "JBrowse"
-        })
-        obj["urls"].append({
-            "category": "LOCUS_SEQUENCE",
-            "link": "/cgi-bin/ORFMAP/ORFmap?dbid=" + self.sgdid,
-            "display_name": "ORF Map"
         })
         locus_notes = DBSession.query(Locusnote).filter_by(locus_id=self.dbentity_id).all()
         obj["history"] = [h.to_dict() for h in locus_notes]
