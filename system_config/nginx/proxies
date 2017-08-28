@@ -30,6 +30,10 @@ location /cgi-bin/FUNGI/FungiMap {
     proxy_pass http://heritage.yeastgenome.org/cgi-bin/FUNGI/FungiMap;
 }
 
+location /cgi-bin/FUNGI/getSeq.pl {
+    proxy_pass http://heritage.yeastgenome.org/cgi-bin/FUNGI/getSeq.pl;
+}
+
 location /cgi-bin/FUNGI/showAlign {
     proxy_pass http://heritage.yeastgenome.org/cgi-bin/FUNGI/showAlign;
 }
@@ -48,6 +52,10 @@ location /cgi-bin/GO/goSlimMapper.pl {
 
 location /cgi-bin/GO/goTermFinder.pl {
     proxy_pass http://heritage.yeastgenome.org/cgi-bin/GO/goTermFinder.pl;
+}
+
+location /cgi-bin/locus.fpl {
+    rewrite ^ $scheme://www.yeastgenome.org/locus/${arg_locus}? redirect;
 }
 
 location /cgi-bin/PATMATCH/nph-patmatch {
