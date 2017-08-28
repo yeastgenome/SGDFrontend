@@ -10,6 +10,7 @@ import copy
 import requests
 import re
 
+
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
 
@@ -1835,8 +1836,12 @@ class Locusdbentity(Dbentity):
     @classmethod
     def get_s288c_genes(Locusdbentity):
         # get all dbentity_ids from dnasequenceannotation model
-        all_dbentity_ids = DBSession.query(Dnasequenceannotation.dbentity_id).filter(Dnasequenceannotation.taxonomy_id == 274901,Dnasequenceannotation.source_id == 834,Dnasequenceannotation.dna_type == 'GENOMIC').all()
-        locus_data = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(all_dbentity_ids),Locusdbentity.not_in_s288c == False).all()
+        all_dbentity_ids = DBSession.query(
+            Dnasequenceannotation).filter(
+                Dnasequenceannotation.taxonomy_id == 274901,
+                Dnasequenceannotation.dna_type == 'GENOMIC').all()
+        comp = [x.dbentity_id for x in all_dbentity_ids if x.dbentity.dbentity_status == 'Active' ]
+        locus_data = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(comp),Locusdbentity.not_in_s288c == False).all()
         return locus_data
 
     def regulation_target_enrichment(self):
