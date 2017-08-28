@@ -2,6 +2,10 @@ location /cache/chromosomes.shtml {
     proxy_pass http://heritage.yeastgenome.org/cache/chromosomes.shtml;
 }
 
+location /cache/fungi/ {
+    proxy_pass http://heritage.yeastgenome.org/cache/fungi/;
+}
+
 location /cache/geneSummarytable.html {
     proxy_pass http://heritage.yeastgenome.org/cache/geneSummarytable.html;
 }
@@ -92,6 +96,10 @@ location /css/ {
 
 location /javascript/ {
     proxy_pass http://heritage.yeastgenome.org/javascript/;
+}
+
+location /tmp/ {
+    proxy_pass http://heritage.yeastgenome.org/tmp/;
 }
 
 location /wp-content/ {
