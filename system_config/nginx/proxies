@@ -50,6 +50,10 @@ location /cgi-bin/GO/goTermFinder.pl {
     proxy_pass http://heritage.yeastgenome.org/cgi-bin/GO/goTermFinder.pl;
 }
 
+location /cgi-bin/ORFMAP {
+    proxy_pass http://heritage.yeastgenome.org/cgi-bin/ORFMAP;
+}
+
 location /cgi-bin/PATMATCH/nph-patmatch {
     proxy_pass http://heritage.yeastgenome.org/cgi-bin/PATMATCH/nph-patmatch;
 }
