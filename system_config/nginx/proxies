@@ -62,6 +62,10 @@ location /cgi-bin/locus.fpl {
     rewrite ^ $scheme://www.yeastgenome.org/locus/${arg_locus}? redirect;
 }
 
+location /cgi-bin/PATMATCH/getSequence {
+    proxy_pass http://heritage.yeastgenome.org/cgi-bin/PATMATCH/getSequence;
+}
+
 location /cgi-bin/PATMATCH/nph-patmatch {
     proxy_pass http://heritage.yeastgenome.org/cgi-bin/PATMATCH/nph-patmatch;
 }
