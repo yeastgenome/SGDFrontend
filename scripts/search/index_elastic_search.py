@@ -36,8 +36,8 @@ def put_mapping():
 
 
 def index_toolbar_links():
-    links = [("Gene List", "http://yeastmine.yeastgenome.org/yeastmine/bag.do",  []),
-             ("Yeastmine", "http://yeastmine.yeastgenome.org",  'yeastmine'),
+    links = [("Gene List", "https://yeastmine.yeastgenome.org/yeastmine/bag.do",  []),
+             ("Yeastmine", "https://yeastmine.yeastgenome.org",  'yeastmine'),
              ("Submit Data", "/cgi-bin/submitData.pl",  []),
              ("SPELL", "http://spell.yeastgenome.org",  'spell'),
              ("BLAST", "/blast-sgd",  'blast'),
@@ -48,7 +48,7 @@ def index_toolbar_links():
              ("Download", "/download-data/sequence",  'download'),
              ("Genome Browser", "/browse",  []),
              ("Gene/Sequence Resources", "/cgi-bin/seqTools",  []),
-             ("Download Genome", "http://downloads.yeastgenome.org/sequence/S288C_reference/genome_releases/",  'download'),
+             ("Download Genome", "https://downloads.yeastgenome.org/sequence/S288C_reference/genome_releases/",  'download'),
              ("Genome Snapshot", "/genomesnapshot",  []),
              ("Chromosome History", "/cgi-bin/chromosomeHistory.pl",  []),
              ("Systematic Sequencing Table", "/cache/chromosomes.shtml",  []),
@@ -60,12 +60,12 @@ def index_toolbar_links():
              ("PDB Search", "/cgi-bin/protein/get3d",  'pdb'),
              ("GO Term Finder", "/cgi-bin/GO/goTermFinder.pl",  'go'),
              ("GO Slim Mapper", "/cgi-bin/GO/goSlimMapper.pl",  'go'),
-             ("GO Slim Mapping File", "http://downloads.yeastgenome.org/curation/literature/go_slim_mapping.tab",  'go'),
+             ("GO Slim Mapping File", "https://downloads.yeastgenome.org/curation/literature/go_slim_mapping.tab",  'go'),
              ("Expression", "http://spell.yeastgenome.org/#",  []),
              ("Biochemical Pathways", "http://pathway.yeastgenome.org/",  []),
-             ("Browse All Phenotypes", "/ontology/phenotype/ypo/overview",  []),
+             ("Browse All Phenotypes", "/ontology/phenotype/ypo",  []),
              ("Interactions", "/interaction_search",  []),
-             ("YeastGFP", "http://yeastgfp.yeastgenome.org/",  'yeastgfp'),
+             ("YeastGFP", "https://yeastgfp.yeastgenome.org/",  'yeastgfp'),
              ("Full-text Search", "http://textpresso.yeastgenome.org/",  'texxtpresso'),
              ("New Yeast Papers", "/reference/recent",  []),
              ("Genome-wide Analysis Papers", "/cache/genome-wide-analysis.html",  []),
@@ -85,7 +85,6 @@ def index_toolbar_links():
              ("Physical & Genetic Maps", "http://wiki.yeastgenome.org/index.php/Combined_Physical_and_Genetic_Maps_of_S._cerevisiae",  []),
              ("Genetic Maps", "http://wiki.yeastgenome.org/index.php/Yeast_Mortimer_Maps_-_Edition_12",  []),
              ("Sequence", "http://wiki.yeastgenome.org/index.php/Historical_Systematic_Sequence_Information",  []),
-             ("Gene Summary Paragraphs", "/cache/geneSummarytable.html",  []),
              ("Wiki", "http://wiki.yeastgenome.org/index.php/Main_Page",  'wiki'),
              ("Resources", "http://wiki.yeastgenome.org/index.php/External_Links",  [])]
 

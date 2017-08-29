@@ -1283,15 +1283,11 @@ class Dataset(Base):
             formatted_refs = []
             for datasetreference in references:
                 reference = datasetreference.reference
-                abstract = DBSession.query(Referencedocument.html).filter_by(reference_id=reference.dbentity_id, document_type="Abstract").one_or_none()
                 ref_obj =  {
                     "display_name": reference.display_name,
                     "link": reference.obj_url,
                     "pubmed_id": reference.pmid,
-                    "id": reference.dbentity_id,
-                    "abstract": {
-                        "text": abstract[0]
-                    }
+                    "id": reference.dbentity_id
                 }
                 formatted_refs.append(ref_obj)
             obj["references"] = formatted_refs
@@ -3126,13 +3122,8 @@ class Locusdbentity(Dbentity):
         })
         obj["urls"].append({
             "category": "LOCUS_SEQUENCE",
-            "link": "/browse/?loc=" + self.systematic_name,
+            "link": "https://browse.yeastgenome.org/?loc=" + self.systematic_name,
             "display_name": "JBrowse"
-        })
-        obj["urls"].append({
-            "category": "LOCUS_SEQUENCE",
-            "link": "/cgi-bin/ORFMAP/ORFmap?dbid=" + self.sgdid,
-            "display_name": "ORF Map"
         })
         locus_notes = DBSession.query(Locusnote).filter_by(locus_id=self.dbentity_id).all()
         obj["history"] = [h.to_dict() for h in locus_notes]
