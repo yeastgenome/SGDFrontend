@@ -88,3 +88,5 @@ dump.rdb
 # vscode editor stuff
 .idea/*
 .vscode/*
+
+scripts/bgi_json/data_dump
