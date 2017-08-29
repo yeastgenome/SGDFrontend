@@ -2,6 +2,10 @@ location /cache/chromosomes.shtml {
     proxy_pass http://heritage.yeastgenome.org/cache/chromosomes.shtml;
 }
 
+location /cache/fungi/ {
+    proxy_pass http://heritage.yeastgenome.org/cache/fungi/;
+}
+
 location /cache/geneSummarytable.html {
     proxy_pass http://heritage.yeastgenome.org/cache/geneSummarytable.html;
 }
@@ -30,6 +34,10 @@ location /cgi-bin/FUNGI/FungiMap {
     proxy_pass http://heritage.yeastgenome.org/cgi-bin/FUNGI/FungiMap;
 }
 
+location /cgi-bin/FUNGI/getSeq.pl {
+    proxy_pass http://heritage.yeastgenome.org/cgi-bin/FUNGI/getSeq.pl;
+}
+
 location /cgi-bin/FUNGI/showAlign {
     proxy_pass http://heritage.yeastgenome.org/cgi-bin/FUNGI/showAlign;
 }
@@ -48,6 +56,14 @@ location /cgi-bin/GO/goSlimMapper.pl {
 
 location /cgi-bin/GO/goTermFinder.pl {
     proxy_pass http://heritage.yeastgenome.org/cgi-bin/GO/goTermFinder.pl;
+}
+
+location /cgi-bin/locus.fpl {
+    rewrite ^ $scheme://www.yeastgenome.org/locus/${arg_locus}? redirect;
+}
+
+location /cgi-bin/PATMATCH/getSequence {
+    proxy_pass http://heritage.yeastgenome.org/cgi-bin/PATMATCH/getSequence;
 }
 
 location /cgi-bin/PATMATCH/nph-patmatch {
@@ -84,6 +100,10 @@ location /css/ {
 
 location /javascript/ {
     proxy_pass http://heritage.yeastgenome.org/javascript/;
+}
+
+location /tmp/ {
+    proxy_pass http://heritage.yeastgenome.org/tmp/;
 }
 
 location /wp-content/ {

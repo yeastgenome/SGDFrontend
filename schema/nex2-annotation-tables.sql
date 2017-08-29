@@ -264,7 +264,7 @@ CREATE INDEX enzymeanno_tax_fk_index ON nex.enzymeannotation (taxonomy_id);
 
 DROP TABLE IF EXISTS nex.expressionannotation CASCADE;
 CREATE TABLE nex.expressionannotation (
-	annotation_id bigint NOT NULL DEFAULT nextval('annotation_seq'),
+	annotation_id bigint NOT NULL DEFAULT nextval('expression_seq'),
 	dbentity_id bigint NOT NULL,
 	source_id bigint NOT NULL,
 	taxonomy_id bigint NOT NULL,
