@@ -10,6 +10,7 @@ import copy
 import requests
 import re
 
+
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
 
@@ -1827,6 +1828,17 @@ class Locusdbentity(Dbentity):
     has_protein = Column(Boolean, nullable=False)
     has_sequence_section = Column(Boolean, nullable=False)
     not_in_s288c = Column(Boolean, nullable=False)
+
+    @classmethod
+    def get_s288c_genes(Locusdbentity):
+        # get all dbentity_ids from dnasequenceannotation model
+        all_dbentity_ids = DBSession.query(
+            Dnasequenceannotation).filter(
+                Dnasequenceannotation.taxonomy_id == 274901,
+                Dnasequenceannotation.dna_type == 'GENOMIC').all()
+        comp = [x.dbentity_id for x in all_dbentity_ids if x.dbentity.dbentity_status == 'Active' ]
+        locus_data = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(comp),Locusdbentity.not_in_s288c == False).all()
+        return locus_data
 
     def regulation_target_enrichment(self):
         target_ids = DBSession.query(Regulationannotation.target_id).filter_by(regulator_id=self.dbentity_id).all()
@@ -4801,7 +4813,7 @@ class Goannotation(Base):
             "display_name": experiment_name,
             "link": experiment_url
         }]
-     
+
         return obj
 
     # a Go annotation can be duplicated based on the Gosupportingevidence group id
@@ -5841,7 +5853,7 @@ class Phenotypeannotation(Base):
             if number_conditions.get(annotation.annotation_id, 0) > 1:
                 add = number_conditions.get(annotation.annotation_id, 0)
 
-        
+
             mt[annotation.mutant.display_name][annotation.experiment.namespace_group] += add
 
         experiment_categories = []

@@ -89,4 +89,5 @@ dump.rdb
 .idea/*
 .vscode/*
 
+#data files
 scripts/bgi_json/data_dump
