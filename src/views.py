@@ -1074,6 +1074,6 @@ def healthcheck(request):
 
 @view_config(route_name='refresh_homepage_cache', request_method='POST', renderer='json')
 @authenticate
-def upload_spreadsheet(request):
+def refresh_homepage_cache(request):
     refresh_homepage_cache()
     return True

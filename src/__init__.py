@@ -116,7 +116,7 @@ def main(global_config, **settings):
     config.add_route('topics', '/topics')
     config.add_route('extensions', '/extensions')
     config.add_route('upload', '/upload')
-    config.add_route('upload_spreadsheet', '/upload_spreadsheet')
+    config.add_route('upload_spreadsheet', '/upload_spreadsheet', request_method='POST')
     
     config.add_route('sign_in', '/signin')
     config.add_route('sign_out', '/signout')
