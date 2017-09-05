@@ -51,10 +51,16 @@ location /cgi-bin/getSeq {
 } 
 
 location /cgi-bin/GO/goSlimMapper.pl {
+    proxy_connect_timeout   300s;
+    proxy_send_timeout      300s;
+    proxy_read_timeout      300s;
     proxy_pass http://heritage.yeastgenome.org/cgi-bin/GO/goSlimMapper.pl;
 }
 
 location /cgi-bin/GO/goTermFinder.pl {
+    proxy_connect_timeout   300s;
+    proxy_send_timeout      300s;
+    proxy_read_timeout      300s;
     proxy_pass http://heritage.yeastgenome.org/cgi-bin/GO/goTermFinder.pl;
 }
 
