@@ -9,13 +9,15 @@
 {% block legend %}
 
     <div id="discrete_filter">
-        <label class="network-label"><strong>Filter Regulatory Relationships by Action</strong></label>
-        <input type="radio" name="group1" id="all_radio" checked><label for="all_radio">All</label>
-        <input type="radio" name="group1" id="positive_radio"><label for="positive_radio">Positive Regulation</label>
-        <input type="radio" name="group1" id="negative_radio"><label for="negative_radio">Negative Regulation</label>
+        <div id="regulation_network_radio_group">
+            <label class="network-label"><strong>Filter Regulatory Relationships by Action</strong></label>
+            <input type="radio" name="group1" id="all_radio" checked><label for="all_radio">All</label>
+            <input type="radio" name="group1" id="positive_radio"><label for="positive_radio">Positive Regulation</label>
+            <input type="radio" name="group1" id="negative_radio"><label for="negative_radio">Negative Regulation</label>
+            </div>
     </div>
 
-    <p id="legend"></p>
+    <p id="legend" style="margin:50px 0px 0px 0px"></p>
 
 {% endblock %}
 

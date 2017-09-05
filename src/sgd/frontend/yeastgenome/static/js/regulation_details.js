@@ -75,7 +75,21 @@ $(document).ready(function() {
                 message = message + 's.';
             }
             $("#legend").html(message);
-
+            /**
+             * temp fix for regulation network filter radio buttons
+             * start
+             */
+            var is_edge_null = false;
+            for(var x=0; x < data.edges.length;x++){
+                if(data.edges[x].data.action == "expression null"){
+                    is_edge_null = true;
+                    break;
+                }
+            }
+            if(is_edge_null){
+                document.getElementById("regulation_network_radio_group").style.display = "none";
+            }
+            /** end temp fix */
             create_discrete_filter("all_radio", graph, null, function(){return "node, edge"}, 1);
             create_discrete_filter("positive_radio", graph, null, function(){return "node, edge[action = 'expression activated']"}, 1);
             create_discrete_filter("negative_radio", graph, null, function(){return "node, edge[action = 'expression repressed']"}, 1);
