@@ -174,7 +174,7 @@ function create_target_table(data) {
         manualOptions["bPaginate"] = true;
         manualOptions["aaSorting"] = [[4, "asc"]];
         manualOptions["aoColumns"] = targetTableColOptions;
-        manualOptions["oLanguage"] = {"sEmptyTable": "No manual targets for " + locus['display_name']};
+        manualOptions["oLanguage"] = {"sEmptyTable": "No manually curated targets " + locus['display_name']};
         manualOptions["aaData"] = manualDatatable;
         var htpOptions = {};
         htpOptions["bPaginate"] = true;
@@ -230,7 +230,7 @@ function create_regulator_table(data) {
     manualOptions["bPaginate"] = true;
     manualOptions["aaSorting"] = [[2, "asc"]];
     manualOptions["aoColumns"] = regulatorTableColOptions;
-    manualOptions["oLanguage"] = {"sEmptyTable": "No manual regulators for " + locus['display_name']};
+    manualOptions["oLanguage"] = {"sEmptyTable": "No manually curated regulators for " + locus['display_name']};
     manualOptions["aaData"] = manualDatatable;
     var htpOptions = {};
     htpOptions["bPaginate"] = true;

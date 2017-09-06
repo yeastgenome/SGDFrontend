@@ -302,8 +302,15 @@ function phenotype_data_to_table(evidence, index) {
             var chemical_icon = create_note_icon('chemical_icon' + index, evidence['properties'][j]['note']);
             if(chemical_icon != '') {
                 newChemical = newChemical + ' ' + chemical_icon;
-            }
-            chemical = chemical + newChemical;
+            } 
+            if (j == evidence["properties"].length - 1 || evidence["properties"].length == 1) {
+                chemical = chemical + newChemical;
+                
+              } else {
+                chemical = chemical + newChemical + ",";
+              }
+           
+            
         }
         else if(evidence['properties'][j]['role'] == 'Allele') {
             allele = '<br><strong>Allele: </strong>' + evidence['properties'][j]['bioitem']['display_name'];
@@ -324,6 +331,9 @@ function phenotype_data_to_table(evidence, index) {
 	    var label = classType.charAt(0).toUpperCase() + classType.slice(1) + ": ";
 	    note = note + '<strong>' + label + '</strong>' + evidence['properties'][j]['note'] + '<br>';
         }
+    }
+    if(chemical.charAt(chemical.length-1) == ','){
+        chemical = chemical.slice(0,-1);
     }
     if(evidence['note'] != null) {
         note = note + '<strong>Details: </strong>' + evidence['note'] + '<br>';
