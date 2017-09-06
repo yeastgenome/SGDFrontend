@@ -48,7 +48,7 @@
                 {% endif %}
 
                 {% if locus.format_name != locus.display_name %}
-                    {%if locus.locus_type != 'ORF' and 'reserved_name' in locus %}
+                    {%if locus.locus_type != 'ORF' and ('reserved_name' in locus or 'reserved_name' not in locus )%}
                         <dt>Standard Name</dt>
                         <dd>{{ locus.display_name }}
                             {% if 'gene_name' in locus.qualities %}
@@ -57,15 +57,7 @@
                             {% endif %} testing
                         </dd>
                     {% endif %}
-                    {% if locus.locus_type != 'ORF' and 'reserved_name' not in locus %}
-                        <dt>Standard Name</dt>
-                        <dd>{{ locus.display_name }}
-                            {% if 'gene_name' in locus.qualities %}
-                                {% set references = locus.qualities.gene_name.references %}
-                                {% include "biblio_references.jinja2" %}
-                            {% endif %} testing
-                        </dd>
-                    {% endif %}
+                   
                 {% endif %}
 
                 <dt>Systematic Name</dt>
