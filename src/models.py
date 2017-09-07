@@ -187,7 +187,7 @@ class Apo(Base):
         phenotypes = DBSession.query(Phenotype).filter_by(observable_id=self.apo_id).all()
 
         annotations = DBSession.query(Phenotypeannotation.dbentity_id, func.count(Phenotypeannotation.dbentity_id)).filter(Phenotypeannotation.phenotype_id.in_([p.phenotype_id for p in phenotypes])).group_by(Phenotypeannotation.dbentity_id).count()
-        
+
         if self.apo_id == Apo.ROOT_ID:
             nodes = [{
                 "data": {
@@ -3024,7 +3024,8 @@ class Locusdbentity(Dbentity):
             "paragraph": {
                 "date_edited": None
             },
-            "literature_overview": self.literature_overview_to_dict()
+            "literature_overview": self.literature_overview_to_dict(),
+            "ecnumbers": []
         }
 
         if self.genetic_position:
@@ -3066,10 +3067,10 @@ class Locusdbentity(Dbentity):
             if alias.alias_type == "EC number":
                 # generate URL to internal page, not expasy
                 internal_url = "/ecnumber/EC:" + alias.display_name
-                obj["ecnumber"] = {
+                obj["ecnumbers"].append({
                     "display_name": alias.display_name,
                     "link": internal_url
-                }
+                })
 
             category = ""
             if alias.alias_type == "Uniform" or alias.alias_type == "Non-uniform":
