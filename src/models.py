@@ -187,7 +187,7 @@ class Apo(Base):
         phenotypes = DBSession.query(Phenotype).filter_by(observable_id=self.apo_id).all()
 
         annotations = DBSession.query(Phenotypeannotation.dbentity_id, func.count(Phenotypeannotation.dbentity_id)).filter(Phenotypeannotation.phenotype_id.in_([p.phenotype_id for p in phenotypes])).group_by(Phenotypeannotation.dbentity_id).count()
-
+        
         if self.apo_id == Apo.ROOT_ID:
             nodes = [{
                 "data": {
@@ -202,7 +202,7 @@ class Apo(Base):
                 "data": {
                     "link": self.obj_url,
                     "sub_type": "FOCUS",
-                    "name": self.display_name + " (" + str(annotations) + ")",
+                    "name": self.display_name.replace("_"," ") + " (" + str(annotations) + ")",
                     "id": str(self.apo_id)
                 }
             }]
@@ -4477,7 +4477,7 @@ class Go(Base):
             children_annotations = 0
 
         obj = {
-            "display_name": self.display_name,
+            "display_name": self.display_name.replace("_"," "),
             "urls": [],
             "go_id": self.goid,
             "go_aspect": self.go_namespace,
@@ -4514,7 +4514,7 @@ class Go(Base):
             "data": {
                 "link": self.obj_url,
                 "sub_type": "FOCUS",
-                "name": self.display_name + " (" + str(annotations) + ")",
+                "name": self.display_name.replace("_"," ") + " (" + str(annotations) + ")",
                 "id": str(self.go_id)
             }
         }]
