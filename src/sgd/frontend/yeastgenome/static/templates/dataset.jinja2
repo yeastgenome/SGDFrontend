@@ -48,15 +48,16 @@
                                 {% endif %}
                             </dd>
                         {% endif %}
-
-                        <dt>Reference</dt>
-                        <dd>
+                        {% if dataset.references|length > 0 %}
+                            <dt>Reference</dt>
+                            <dd>
                             {% for reference in dataset.references %}
                                 <a href="{{ reference.link }}">{{ reference.display_name }}</a>
                                 {% if not loop.last %},{% endif %}
                             {% endfor %}
-                        </dd>
-
+                            </dd>
+                        {% endif%}
+            
                         <dt>Channels</dt>
                         <dd>{{ dataset.channel_count }}</dd>
 
