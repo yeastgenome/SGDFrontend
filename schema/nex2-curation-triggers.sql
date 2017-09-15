@@ -247,7 +247,7 @@ BEGIN
     v_row := OLD.curation_id || '[:]' || OLD.locus_id || '[:]' ||
              OLD.source_id || '[:]' || OLD.curation_tag || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by  || '[:]' ||
-             OLD.curator_comment || '[:]' || OLD.json;
+             coalesce(OLD.curator_comment,'') || '[:]' || coalesce(OLD.json,'');
 
           PERFORM nex.insertdeletelog('CURATION_LOCUS'::text, OLD.curation_id, v_row, USER);
 
@@ -335,8 +335,8 @@ BEGIN
     v_row := OLD.curation_id || '[:]' || OLD.reference_id || '[:]' ||
              OLD.source_id || '[:]' || OLD.locus_id || '[:]' ||
              OLD.curation_tag || '[:]' || OLD.date_created || '[:]' || 
-             OLD.created_by  || '[:]' || OLD.curator_comment || '[:]' ||
-             OLD.json;
+             OLD.created_by  || '[:]' || coalesce(OLD.curator_comment,'') || '[:]' ||
+             coalesce(OLD.json,'');
 
           PERFORM nex.insertdeletelog('CURATION_REFERENCE'::text, OLD.curation_id, v_row, USER);
 
