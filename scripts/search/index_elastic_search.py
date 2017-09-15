@@ -6,8 +6,12 @@ import os
 import requests
 from pycallgraph import PyCallGraph
 from pycallgraph.output import GraphvizOutput
+<<<<<<< HEAD
 from pympler import summary, muppy
 import psutil
+=======
+
+>>>>>>> minor changes
 
 from threading import Thread
 
@@ -704,11 +708,19 @@ def run_metrics():
             Referencedbentity.pmid, Referencedbentity.year).all()'''
 
 if __name__ == '__main__':
+<<<<<<< HEAD
     run_metrics()
+=======
+>>>>>>> minor changes
     '''setup()
     t1 = Thread(target=index_part_1)
     t2 = Thread(target=index_part_2)
     t1.start()
+<<<<<<< HEAD
     t2.start()
     with PyCallGraph(output=GraphvizOutput()):
         index_references()'''
+=======
+    t2.start()'''
+    index_references()
+>>>>>>> minor changes
