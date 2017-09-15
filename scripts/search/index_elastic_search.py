@@ -4,6 +4,9 @@ from elasticsearch import Elasticsearch
 from mapping import mapping
 import os
 import requests
+from pycallgraph import PyCallGraph
+from pycallgraph.output import GraphvizOutput
+
 
 from threading import Thread
 
@@ -663,8 +666,9 @@ def index_part_2():
     index_references()
 
 if __name__ == '__main__':
-    setup()
+    '''setup()
     t1 = Thread(target=index_part_1)
     t2 = Thread(target=index_part_2)
     t1.start()
-    t2.start()
+    t2.start()'''
+    index_references()
