@@ -307,7 +307,7 @@ function phenotype_data_to_table(evidence, index) {
                 chemical = chemical + newChemical;
                 
               } else {
-                chemical = chemical + newChemical + ",";
+                chemical = chemical + newChemical + ", ";
               }
            
             
