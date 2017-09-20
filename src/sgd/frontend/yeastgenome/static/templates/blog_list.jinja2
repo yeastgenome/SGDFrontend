@@ -5,7 +5,7 @@
 {% block body %}
 
 <div class="row">
-	<div class="columns small-2">
+	<div class="columns medium-2 hide-for-small-only">
 		<div class="simple-list">
 			<p>Categories</p>
 			<ul>
@@ -21,7 +21,7 @@
 			</ul>
 		</div>
 	</div>
-	<div class="columns small-10">
+	<div class="columns small-12 medium-10">
 		<h1>New & Noteworthy</h1>
 		{% for post in posts %}
 			<h2><a href="/blog/{{ post['slug'] }}">{{ post['title'] }}</a></h2>
