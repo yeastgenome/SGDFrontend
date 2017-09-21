@@ -306,9 +306,11 @@ function phenotype_data_to_table(evidence, index) {
             if (j == evidence["properties"].length - 1 || evidence["properties"].length == 1) {
                 chemical = chemical + newChemical;
                 
-              } else {
+              }
+             else {
                 chemical = chemical + newChemical + ", ";
               }
+    
            
             
         }
@@ -332,9 +334,8 @@ function phenotype_data_to_table(evidence, index) {
 	    note = note + '<strong>' + label + '</strong>' + evidence['properties'][j]['note'] + '<br>';
         }
     }
-    if(chemical.charAt(chemical.length-1) == ','){
-        chemical = chemical.slice(0,-1);
-    }
+    chemical = chemical.replace(/,\s$/,'');
+
     if(evidence['note'] != null) {
         note = note + '<strong>Details: </strong>' + evidence['note'] + '<br>';
     }
