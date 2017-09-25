@@ -13,8 +13,6 @@ def parse_tsv_annotations(db_session, tsv_file, filename, template_type, usernam
         tsv_file.seek(0)
     except:
         raise ValueError('File format not accepted. Please upload a valid TSV file.')
-    raw_file_content = csv.reader(tsv_file.getvalue().splitlines(True), delimiter='\t', dialect=csv.excel_tab)
-    annotations = load_summaries(db_session, raw_file_content, username)
     try:
 	    upload_file(
             username, tsv_file,
@@ -25,10 +23,12 @@ def parse_tsv_annotations(db_session, tsv_file, filename, template_type, usernam
             format_id=248824,
             format_name='TSV',
             file_extension='tsv',
-            json=json.dumps(annotations),
             topic_id=250482
         )
     except IntegrityError:
         db_session.rollback()
     	raise ValueError('That file has already been uploaded and cannot be reused. Please change the file contents and try again.')
+    tsv_file.seek(0)
+    raw_file_content = csv.reader(tsv_file.getvalue().splitlines(True), delimiter='\t', dialect=csv.excel_tab)
+    annotations = load_summaries(db_session, raw_file_content, username)
     return annotations
