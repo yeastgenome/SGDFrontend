@@ -46,7 +46,10 @@ def validate_file_content_and_process(file_content, nex_session, username):
                 if not is_header_match:
                     raise ValueError('File header does not match expected format. Please make your file match the template file linked below.') 
             else:
-                file_gene_ids.append(val[0])
+                gene_id = val[0]
+                if gene_id in file_gene_ids:
+                    raise ValueError('The same gene cannot be referred to more than once: ' + str(gene_id))
+                file_gene_ids.append(gene_id)
                 # match summary types
                 if val[1] not in accepted_summary_types:
                     raise ValueError('Unaccepted summary type. Must be one of ' + ', '.join(accepted_summary_types))
@@ -142,7 +145,7 @@ def validate_file_content_and_process(file_content, nex_session, username):
                 'type': file_summary_type, 
                 'value': file_summary_val 
             })
-            transaction.commit()
+    transaction.commit()
     return {
         'inserts': inserts,
         'updates': updates,
