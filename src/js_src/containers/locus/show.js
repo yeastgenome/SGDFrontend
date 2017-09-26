@@ -28,6 +28,7 @@ class LocusShow extends Component {
   fetchData() {
     let id = this.props.params.id;
     let url = `/locus/${id}/curate`;
+    this.props.dispatch(updateData(null));
     fetchData(url).then( (data) => {
       updateTitle(data.name);
       this.props.dispatch(updateData(data));
