@@ -91,4 +91,4 @@ dump.rdb
 
 #data files
 scripts/bgi_json/data_dump
-callgraphs
+pycall_graph_images*

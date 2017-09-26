@@ -6,7 +6,8 @@ import os
 import requests
 from pycallgraph import PyCallGraph
 from pycallgraph.output import GraphvizOutput
-
+from pympler import summary, muppy
+import psutil
 
 from threading import Thread
 
@@ -542,10 +543,11 @@ def index_references():
     bulk_data = []
     print('Indexing ' + str(len(references)) + ' references')
     for reference in references:
+        #TODO: query one
         abstract = DBSession.query(Referencedocument.text).filter_by(reference_id=reference.dbentity_id, document_type="Abstract").one_or_none()
         if abstract:
             abstract = abstract[0]
-
+        #TODO: query two
         authors = DBSession.query(Referenceauthor.display_name).filter_by(reference_id=reference.dbentity_id).all()
 
         # reference_loci_db = DBSession.query(Locusnoteannotation).filter_by(reference_id=reference.dbentity_id).all()
@@ -554,6 +556,7 @@ def index_references():
         # if len(reference_loci_db) > 0:
         #     reference_loci = [r.dbentity.display_name for r in reference_loci_db]
 
+        #TODO: query three
         sec_sgdids = DBSession.query(ReferenceAlias.display_name).filter_by(reference_id=reference.dbentity_id, alias_type="Secondary SGDID").all()
         sec_sgdid = None
         if len(sec_sgdids):
@@ -665,10 +668,47 @@ def index_part_2():
     index_go_terms()
     index_references()
 
+
+def memory_usage(where):
+    mem_summary = summary.summarize(muppy.get_objects())
+    print "Memory summary:", where
+    summary.print_(mem_summary, limit=2)
+    print "VM: %.2fMb" % (get_virtual_memory_usage_kb() / 1024.0)
+
+
+def get_virtual_memory_usage_kb():
+    return float(psutil.Process().memory_info_ex().vms) / 1024.0
+
+
+def run_metrics():
+
+    memory_usage("1 - before query")
+    references = DBSession.query(Referencedbentity).yield_per(5).all()
+    memory_usage("2 - after query")
+    print len(references)
+
+    '''graphviz = GraphvizOutput()
+    graphviz.output_file = './pycall_graph_images/output.png'
+    graphviz.output_type = 'png'
+    with PyCallGraph(output=graphviz):
+        memory_usage("1 - before query")
+        references = DBSession.query(Referencedbentity).yield_per(100).all()
+        memory_usage("2 - after query")
+        print len(references)
+        memory_usage("3 - after length call")
+
+        references = DBSession.query(
+            Referencedbentity.journal, Referencedbentity.dbentity_id,
+            Referencedbentity.sgdid, Referencedbentity.pmcid,
+            Referencedbentity.citation, Referencedbentity.obj_url,
+            Referencedbentity.pmid, Referencedbentity.year).all()'''
+
 if __name__ == '__main__':
+    run_metrics()
     '''setup()
     t1 = Thread(target=index_part_1)
     t2 = Thread(target=index_part_2)
     t1.start()
-    t2.start()'''
-    index_references()
+    t2.start()
+    with PyCallGraph(output=GraphvizOutput()):
+        index_references()'''
