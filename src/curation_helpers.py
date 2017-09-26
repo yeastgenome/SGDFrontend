@@ -1,3 +1,5 @@
+import string
+
 def link_gene_names(raw, locus_names_ids):
     # first create an object with display_name as key and sgdid as value
     locus_names_object = {}
@@ -8,7 +10,7 @@ def link_gene_names(raw, locus_names_ids):
     processed = raw
     words = raw.split(' ')
     for p_original_word in words:
-        original_word = p_original_word.translate(None, string.punctuation)
+        original_word = p_original_word#.translate(string.punctuation)
         wupper = original_word.upper()
         if wupper in locus_names_object.keys() and len(wupper) > 3:
             sgdid = locus_names_object[wupper]
