@@ -10,11 +10,13 @@ import copy
 import requests
 import re
 
+from src.helpers import link_gene_names
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
 
 QUERY_LIMIT = 25000
+SGD_SOURCE_ID = 834
 
 # get list of URLs to visit from comma-separated ENV variable cache_urls 'url1, url2'
 cache_urls = None
@@ -3606,6 +3608,64 @@ class Locusdbentity(Dbentity):
 
     def get_secondary_base_url(self):
         return '/webservice/locus/' + str(self.dbentity_id)
+
+    def update_summary(summary_type, username, text, pmid_list=[]):
+        # set to local username to track changes
+        DBSession.execute('SET LOCAL ROLE ' + username)
+        locus_names_ids = DBSession.query(Locusdbentity.display_name, Locusdbentity.sgdid).all()
+        summary = DBSession.query(Locussummary.summary_type, Locussummary.summary_id, Locussummary.html, Locussummary.date_created).filter_by(locus_id=self.dbentity_id, summary_type=summary_type).one_or_none()
+        summary_html = link_gene_names(text, locus_names_ids)
+        # update
+        if summary:
+            DBSession.query(Locussummary).filter_by(summary_id=summary.summary_id).update({ 'text': text, 'html': summary_html })
+        else:
+            new_summary = Locussummary(
+                locus_id = self.dbentity_id, 
+                summary_type = summary_type, 
+                text = text, 
+                html = summary_html, 
+                created_by = username,
+                source_id = SGD_SOURCE_ID
+            )
+            DBSession.add(new_summary)
+        summary = DBSession.query(Locussummary.summary_type, Locussummary.summary_id, Locussummary.html, Locussummary.date_created).filter_by(locus_id=self.dbentity_id, summary_type=file_summary_type).one_or_none()
+        # add LocussummaryReference(s)
+        if len(pmid_list):
+            matching_refs = DBSession.query(Referencedbentity).filter(Referencedbentity.pmid.in_(pmid_list)).all()
+            pmids = pmid_list
+            for _i, p in enumerate(pmids):
+                matching_ref = [x for x in matching_refs if x.pmid == int(p)][0]
+                summary_id = summary.summary_id
+                reference_id = matching_ref.dbentity_id
+                order = _i + 1
+                # look for matching LocussummaryReference
+                matching_locussummary_refs = DBSession.query(LocussummaryReference).filter_by(summary_id=summary_id, reference_id=reference_id).all()
+                if len(matching_locussummary_refs):
+                    DBSession.query(LocussummaryReference).filter_by(summary_id=summary_id,reference_id=reference_id).update({ 'reference_order': order })
+                else:
+                    new_locussummaryref = LocussummaryReference(
+                        summary_id = summary_id, 
+                        reference_id = reference_id, 
+                        reference_order = order, 
+                        source_id = SGD_SOURCE_ID, 
+                        created_by = username
+                    )
+                    DBSession.add(new_locussummaryref)          
+        # add receipt
+        summary_type_url_segment = summary_type.lower()
+        if summary_type_url_segment not in ['phenotype', 'regulation']:
+            summary_type_url_segment = ''
+        preview_url = '/locus/' + self.sgdid + '/' + summary_type_url_segment
+        # commit and close session to keep user session out of connection pool
+        transaction.commit()
+        DBSession.close()
+        return [{
+            'category': 'locus', 
+            'href': preview_url, 
+            'name': self.display_name, 
+            'type': summary_type, 
+            'value': text
+        }]
 
 class Straindbentity(Dbentity):
     __tablename__ = 'straindbentity'
