@@ -1066,14 +1066,40 @@ def ecnumber_locus_details(request):
     else:
         return HTTPNotFound()
 
+@view_config(route_name='refresh_homepage_cache', request_method='POST', renderer='json')
+@authenticate
+def refresh_homepage_cache(request):
+    refresh_homepage_cache()
+    return True
+
 # check for basic rad54 response
 @view_config(route_name='healthcheck', renderer='json', request_method='GET')
 def healthcheck(request):
     locus = get_locus_by_id(1268789)
     return locus.to_dict()
 
-@view_config(route_name='refresh_homepage_cache', request_method='POST', renderer='json')
+@view_config(route_name='get_locus_curate', request_method='GET', renderer='json')
 @authenticate
-def refresh_homepage_cache(request):
-    refresh_homepage_cache()
-    return True
+def get_locus_curate(request):
+    id = extract_id_request(request, 'locus', param_name="sgdid")
+    locus = get_locus_by_id(id)
+    return {
+        'name': locus.display_name,
+        'paragraphs': {
+            'phenotype': 'Lorem ipsum',
+            'regulation': 'Lorem ipsum'
+        }
+    }
+
+@view_config(route_name='locus_curate_update', request_method='PUT', renderer='json')
+@authenticate
+def locus_curate_update(request):
+    id = extract_id_request(request, 'locus', param_name="sgdid")
+    locus = get_locus_by_id(id)
+    return {
+        'name': locus.display_name,
+        'paragraphs': {
+            'phenotype': 'Lorem ipsum',
+            'regulation': 'Lorem ipsum'
+        }
+    }
