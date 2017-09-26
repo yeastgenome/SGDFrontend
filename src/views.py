@@ -1083,23 +1083,18 @@ def healthcheck(request):
 def get_locus_curate(request):
     id = extract_id_request(request, 'locus', param_name="sgdid")
     locus = get_locus_by_id(id)
-    return {
-        'name': locus.display_name,
-        'paragraphs': {
-            'phenotype': 'Lorem ipsum',
-            'regulation': 'Lorem ipsum'
-        }
-    }
+    return locus.get_summary_dict()
 
 @view_config(route_name='locus_curate_update', request_method='PUT', renderer='json')
 @authenticate
 def locus_curate_update(request):
-    id = extract_id_request(request, 'locus', param_name="sgdid")
-    locus = get_locus_by_id(id)
-    return {
-        'name': locus.display_name,
-        'paragraphs': {
-            'phenotype': 'Lorem ipsum',
-            'regulation': 'Lorem ipsum'
-        }
-    }
+    try:
+        print(request.params.get('phenotype_summary'))
+        id = extract_id_request(request, 'locus', param_name="sgdid")
+        locus = get_locus_by_id(id)
+        # TEMP just update pheno
+        new_phenotype_summary = locus.update_summary('Phenotype', request.session['username'], request.params.get('phenotype_summary'))
+        locus = get_locus_by_id(id)
+        return locus.get_summary_dict()
+    except ValueError as e:
+        return HTTPBadRequest(body=json.dumps({ 'error': str(e) }), content_type='text/json')

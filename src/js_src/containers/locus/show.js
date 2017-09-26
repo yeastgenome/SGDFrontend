@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import t from 'tcomb-form';
 
 import fetchData from '../../lib/fetchData';
-import LoadingPage from '../../components/loadingPage';
+import Loader from '../../components/loader';
 import updateTitle from '../../lib/updateTitle';
 import { updateData } from './locusActions';
 
@@ -16,7 +16,12 @@ class LocusShow extends Component {
     e.preventDefault();
     let value = this.formInput.getValue();
     if (value) {
-      console.log(value);
+      let id = this.props.params.id;
+      let url = `/locus/${id}/curate`;
+      this.props.dispatch(updateData(null));
+      fetchData(url, { type: 'PUT', data: value }).then( (data) => {
+        this.props.dispatch(updateData(data));
+      });
     }
   }
 
@@ -32,12 +37,13 @@ class LocusShow extends Component {
   renderForms() {
     let FormSchema = t.struct({
       phenotype_summary: t.maybe(t.String),
-      pmids: t.maybe(t.String),
+      phenotype_summary_pmids: t.maybe(t.String)
     });
+    let data = this.props.data.paragraphs;
     return (
       <div className='sgd-curate-form'>
         <form onSubmit={this.handleSubmit.bind(this)}>
-          <t.form.Form ref={input => this.formInput = input} type={FormSchema} />
+          <t.form.Form ref={input => this.formInput = input} type={FormSchema} value={data} />
           <div className='form-group'>
             <button type='submit' className='button'>Save</button>
           </div>
@@ -48,7 +54,7 @@ class LocusShow extends Component {
 
   render() {
     let data = this.props.data;
-    if (!data) return <LoadingPage />;
+    if (!data) return <Loader />;
     return (
       <div>
         <h1>{data.name}</h1>
