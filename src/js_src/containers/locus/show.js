@@ -38,17 +38,31 @@ class LocusShow extends Component {
   renderForms() {
     let FormSchema = t.struct({
       phenotype_summary: t.maybe(t.String),
-      phenotype_summary_pmids: t.maybe(t.String)
+      phenotype_summary_pmids: t.maybe(t.String),
+      regulation_summary: t.maybe(t.String),
+      regulation_summary_pmids: t.maybe(t.String)
     });
+    let options = {
+      fields: {
+        phenotype_summary: {
+          type: 'textarea'
+        },
+        regulation_summary: {
+          type: 'textarea'
+        },
+      }
+    };
     let data = this.props.data.paragraphs;
     return (
-      <div className='sgd-curate-form'>
-        <form onSubmit={this.handleSubmit.bind(this)}>
-          <t.form.Form ref={input => this.formInput = input} type={FormSchema} value={data} />
-          <div className='form-group'>
-            <button type='submit' className='button'>Save</button>
-          </div>
+      <div className='sgd-curate-form row'>
+        <div className='columns small-12 medium-6'>
+          <form onSubmit={this.handleSubmit.bind(this)}>
+            <t.form.Form options={options} ref={input => this.formInput = input} type={FormSchema} value={data} />
+            <div className='form-group'>
+              <button type='submit' className='button'>Save</button>
+            </div>
         </form>
+        </div>
       </div>
     );
   }
