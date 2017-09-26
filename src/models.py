@@ -10,7 +10,7 @@ import copy
 import requests
 import re
 
-from src.helpers import link_gene_names
+from src.curation_helpers import link_gene_names
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
