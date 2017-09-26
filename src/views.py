@@ -9,6 +9,7 @@ from sqlalchemy.exc import IntegrityError
 
 from oauth2client import client, crypt
 import os
+import re
 
 from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Dataset, DatasetKeyword, Contig, Proteindomain, Ec, Locussummary
 
@@ -1089,11 +1090,14 @@ def get_locus_curate(request):
 @authenticate
 def locus_curate_update(request):
     try:
-        print(request.params.get('phenotype_summary'))
         id = extract_id_request(request, 'locus', param_name="sgdid")
         locus = get_locus_by_id(id)
-        # TEMP just update pheno
-        new_phenotype_summary = locus.update_summary('Phenotype', request.session['username'], request.params.get('phenotype_summary'))
+        new_phenotype_summary = request.params.get('phenotype_summary')
+        new_phenotype_pmids = re.split('\||,', request.params.get('phenotype_summary_pmids'))
+        new_regalation_summary = request.params.get('regulation_summary')
+        locus.update_summary('Phenotype', request.session['username'], new_phenotype_summary, new_phenotype_pmids)
+        locus = get_locus_by_id(id)
+        locus.update_summary('Regulation', request.session['username'], new_regalation_summary)
         locus = get_locus_by_id(id)
         return locus.get_summary_dict()
     except ValueError as e:

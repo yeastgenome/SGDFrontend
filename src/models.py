@@ -9,6 +9,7 @@ import json
 import copy
 import requests
 import re
+import traceback
 import transaction
 
 from src.curation_helpers import link_gene_names
@@ -3611,23 +3612,43 @@ class Locusdbentity(Dbentity):
         return '/webservice/locus/' + str(self.dbentity_id)
 
     def get_summary_dict(self):
-        phenotype_summary = DBSession.query(Locussummary.text).filter_by(locus_id=self.dbentity_id, summary_type='Phenotype').one_or_none()
-        regulation_summary = DBSession.query(Locussummary.text).filter_by(locus_id=self.dbentity_id, summary_type='Regulation').one_or_none()
+        phenotype_summary = DBSession.query(Locussummary).filter_by(locus_id=self.dbentity_id, summary_type='Phenotype').one_or_none()
+        regulation_summary = DBSession.query(Locussummary).filter_by(locus_id=self.dbentity_id, summary_type='Regulation').one_or_none()
         if not phenotype_summary:
-            phenotype_summary = ['']
+            phenotype_summary = ''
+            phenotype_summary_pmids = ''
+        else:
+            summary_ref_ids = DBSession.query(LocussummaryReference.reference_id).filter_by(summary_id=phenotype_summary.summary_id).all()
+            pmids = DBSession.query(Referencedbentity.pmid).filter(Referencedbentity.dbentity_id.in_(summary_ref_ids)).all()
+            pmids = [str(x[0]) for x in pmids]
+            phenotype_summary_pmids = '|'.join(pmids)
+            phenotype_summary = phenotype_summary.text
         if not regulation_summary:
-            regulation_summary = ['']
+            regulation_summary = ''
+            regulation_summary_pmids = ''
+        else:
+            summary_ref_ids = DBSession.query(LocussummaryReference.reference_id).filter_by(summary_id=regulation_summary.summary_id).all()
+            pmids = DBSession.query(Referencedbentity.pmid).filter(Referencedbentity.dbentity_id.in_(summary_ref_ids)).all()
+            pmids = [str(x[0]) for x in pmids]
+            regulation_summary_pmids = '|'.join(pmids)
+            regulation_summary = regulation_summary.text
         return {
             'name': self.display_name,
             'paragraphs': {
-                'phenotype_summary': phenotype_summary[0],
-                'regulation_summary': regulation_summary[0]
+                'phenotype_summary': phenotype_summary,
+                'phenotype_summary_pmids': phenotype_summary_pmids,
+                'regulation_summary': regulation_summary,
+                'regulation_summary_pmids': regulation_summary_pmids
             }
         }
 
     def update_summary(self, summary_type, username, text, pmid_list=[]):
         try:
-            summary_type = summary_type.capitalize()
+            summary_type = summary_type.lower().capitalize()
+            try:
+                pmid_list = [int(x) for x in pmid_list]
+            except ValueError, e:
+                raise ValueError('PMIDs must be a pipe-separated list of valid PMIDs.')
             # set to local username to track changes
             DBSession.execute('SET LOCAL ROLE ' + username)
             locus_names_ids = DBSession.query(Locusdbentity.display_name, Locusdbentity.sgdid).all()
@@ -3670,18 +3691,15 @@ class Locusdbentity(Dbentity):
                             created_by = username
                         )
                         DBSession.add(new_locussummaryref)          
-            # add receipt
-            summary_type_url_segment = summary_type.lower()
-            if summary_type_url_segment not in ['phenotype', 'regulation']:
-                summary_type_url_segment = ''
-            preview_url = '/locus/' + self.sgdid + '/' + summary_type_url_segment
             # commit and close session to keep user session out of connection pool
             transaction.commit()
             DBSession.close()
             return text
         except:
+            traceback.print_exc()
             DBSession.rollback()
             DBSession.close()
+            raise ValueError('Unable to update summaries.')
 
 class Straindbentity(Dbentity):
     __tablename__ = 'straindbentity'
