@@ -92,6 +92,7 @@ class LocusShow extends Component {
 LocusShow.propTypes = {
   data: React.PropTypes.object,
   dispatch: React.PropTypes.func,
+  isPending: React.PropTypes.bool,
   params: React.PropTypes.object
 };
 
