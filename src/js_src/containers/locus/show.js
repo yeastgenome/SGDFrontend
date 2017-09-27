@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import t from 'tcomb-form';
 
+import CategoryLabel from '../../components/categoryLabel';
 import fetchData from '../../lib/fetchData';
 import Loader from '../../components/loader';
 import updateTitle from '../../lib/updateTitle';
@@ -72,7 +73,7 @@ class LocusShow extends Component {
     if (!data) return <Loader />;
     return (
       <div>
-        <h1>{data.name}</h1>
+        <h3><CategoryLabel category='locus' hideLabel /> {data.name}</h3>
         {this.renderForms()}
       </div>
     );
