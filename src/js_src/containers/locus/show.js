@@ -6,7 +6,8 @@ import CategoryLabel from '../../components/categoryLabel';
 import fetchData from '../../lib/fetchData';
 import Loader from '../../components/loader';
 import updateTitle from '../../lib/updateTitle';
-import { updateData } from './locusActions';
+import { updateData, setPending, clearPending} from './locusActions';
+import { setMessage, setError, clearError } from '../../actions/metaActions';
 
 class LocusShow extends Component {
   componentDidMount() {
@@ -19,9 +20,16 @@ class LocusShow extends Component {
     if (value) {
       let id = this.props.params.id;
       let url = `/locus/${id}/curate`;
-      this.props.dispatch(updateData(null));
+      this.props.dispatch(setPending());
       fetchData(url, { type: 'PUT', data: value }).then( (data) => {
         this.props.dispatch(updateData(data));
+        this.props.dispatch(setMessage('Locus was updated successfully.'));
+        this.props.dispatch(clearError());
+        this.props.dispatch(clearPending());
+      }).catch( (data) => {
+        let errorMessage = data ? data.error : 'There was an updating the locus.';
+        this.props.dispatch(setError(errorMessage));
+        this.props.dispatch(clearPending());
       });
     }
   }
@@ -32,6 +40,7 @@ class LocusShow extends Component {
     this.props.dispatch(updateData(null));
     fetchData(url).then( (data) => {
       updateTitle(data.name);
+      this.props.dispatch(clearPending());
       this.props.dispatch(updateData(data));
     }); 
   }
@@ -70,7 +79,7 @@ class LocusShow extends Component {
 
   render() {
     let data = this.props.data;
-    if (!data) return <Loader />;
+    if (!data || this.props.isPending) return <Loader />;
     return (
       <div>
         <h3><CategoryLabel category='locus' hideLabel /> {data.name}</h3>
@@ -89,7 +98,8 @@ LocusShow.propTypes = {
 function mapStateToProps(state) {
   let _data = state.locus.get('data') ? state.locus.get('data').toJS() : null;
   return {
-    data: _data
+    data: _data,
+    isPending: state.locus.get('isPending')
   };
 }
 

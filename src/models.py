@@ -3646,10 +3646,6 @@ class Locusdbentity(Dbentity):
     def update_summary(self, summary_type, username, text, pmid_list=[]):
         try:
             summary_type = summary_type.lower().capitalize()
-            try:
-                pmid_list = [int(x) for x in pmid_list]
-            except ValueError, e:
-                raise ValueError('PMIDs must be a pipe-separated list of valid PMIDs.')
             # set to local username to track changes
             DBSession.execute('SET LOCAL ROLE ' + username)
             locus_names_ids = DBSession.query(Locusdbentity.display_name, Locusdbentity.sgdid).all()
@@ -3673,6 +3669,8 @@ class Locusdbentity(Dbentity):
             # add LocussummaryReference(s)
             if len(pmid_list):
                 matching_refs = DBSession.query(Referencedbentity).filter(Referencedbentity.pmid.in_(pmid_list)).all()
+                if len(matching_refs) != len(pmid_list):
+                    raise ValueError('PMID is not currently in SGD.')
                 pmids = pmid_list
                 for _i, p in enumerate(pmids):
                     matching_ref = [x for x in matching_refs if x.pmid == int(p)][0]
@@ -3696,11 +3694,11 @@ class Locusdbentity(Dbentity):
             transaction.commit()
             DBSession.close()
             return text
-        except:
+        except Exception as e:
             traceback.print_exc()
             DBSession.rollback()
             DBSession.close()
-            raise ValueError('Unable to update summaries.')
+            raise
 
 class Straindbentity(Dbentity):
     __tablename__ = 'straindbentity'
@@ -5562,7 +5560,7 @@ class Locussummary(Base):
             'date_created': self.date_created.strftime("%Y-%m-%d"),
             'name': self.locus.display_name,
             'type': self.summary_type + ' summary',
-            'value': self.html
+            'value': self.text
         }
 
 class LocussummaryReference(Base):
