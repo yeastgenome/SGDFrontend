@@ -15,13 +15,7 @@ import { setNotReady, finishPending } from '../../actions/metaActions';
 
 const BASE_CURATE_URL = '/curate/reference';
 const SECTIONS = [
-  'basic',
-  'protein',
-  'phenotypes',
-  'go',
-  'datasets',
-  'regulation',
-  'interaction',
+  'tags',
 ];
 
 class CurateLitLayout extends Component {
@@ -54,7 +48,7 @@ class CurateLitLayout extends Component {
     let current = this.props.pathname.replace(baseUrl, '');
     return SECTIONS.map( (d) => {
       let relative;
-      if (d === 'basic') {
+      if (d === 'tags') {
         relative = '';
       } else {
         relative = `/${d}`;
