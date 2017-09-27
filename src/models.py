@@ -11,6 +11,7 @@ import requests
 import re
 import traceback
 import transaction
+from datetime import datetime
 
 from src.curation_helpers import link_gene_names
 
