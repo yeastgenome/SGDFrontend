@@ -14,6 +14,7 @@ import re
 from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Dataset, DatasetKeyword, Contig, Proteindomain, Ec, Locussummary
 
 from .helpers import allowed_file, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath, get_pusher_client, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id, refresh_homepage_cache
+from .curation_helpers import process_pmid_list
 
 from .search_helpers import build_autocomplete_search_body_request, format_autocomplete_results, build_search_query, build_es_search_body_request, build_es_aggregation_body_request, format_search_results, format_aggregation_results, build_sequence_objects_search_query
 from .tsv_parser import parse_tsv_annotations
@@ -1093,13 +1094,14 @@ def locus_curate_update(request):
         id = extract_id_request(request, 'locus', param_name="sgdid")
         locus = get_locus_by_id(id)
         new_phenotype_summary = request.params.get('phenotype_summary')
-        new_phenotype_pmids = re.split('\||,', request.params.get('phenotype_summary_pmids'))
-        new_regalation_summary = request.params.get('regulation_summary')
+        new_phenotype_pmids = process_pmid_list(request.params.get('phenotype_summary_pmids'))
+        new_regulation_summary = request.params.get('regulation_summary')
+        new_regulation_pmids = process_pmid_list(request.params.get('regulation_summary_pmids'))
         if len(new_phenotype_summary):
-            locus.update_summary('Phenotype', request.session['username'], new_phenotype_summary)
+            locus.update_summary('Phenotype', request.session['username'], new_phenotype_summary, new_phenotype_pmids)
         locus = get_locus_by_id(id)
-        if len(new_phenotype_summary):
-            locus.update_summary('Regulation', request.session['username'], new_regalation_summary)
+        if len(new_regulation_summary):
+            locus.update_summary('Regulation', request.session['username'], new_regulation_summary, new_regulation_pmids)
         locus = get_locus_by_id(id)
         return locus.get_summary_dict()
     except ValueError as e:

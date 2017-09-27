@@ -1,4 +1,5 @@
 import string
+import re
 
 def link_gene_names(raw, locus_names_ids):
     # first create an object with display_name as key and sgdid as value
@@ -18,3 +19,14 @@ def link_gene_names(raw, locus_names_ids):
             new_str = '<a href="' + url + '">' + wupper + '</a>'
             processed = processed.replace(original_word, new_str)
     return processed
+
+# take pipe separated list and return list of integers
+def process_pmid_list(raw):
+    raw = raw.strip()
+    if len(raw) == 0:
+        return []
+    p_list = re.split('\||,', raw)
+    try:
+        return [int(x) for x in p_list]
+    except ValueError, e:
+        raise ValueError('PMIDs must be a pipe-separated list of valid PMIDs.')
