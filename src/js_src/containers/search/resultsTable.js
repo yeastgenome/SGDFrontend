@@ -61,11 +61,9 @@ class ResultsTable extends Component {
         switch(field) {
         case 'display_name':
         case 'symbol':
-          return <td key={_key}><CategoryLabel category={d.category} hideLabel /> <a href={href} target='_new'>{d[field]}</a></td>;
+          return <td key={_key}><CategoryLabel category={d.category} hideLabel /> <a dangerouslySetInnerHTML={{ __html: d[field] }} href={href} target='_new' /></td>;
         case MATCH_LABEL:
           return <td key={_key}>{this.renderHighlight(d.highlight, d.homologs)}</td>;
-        case 'species':
-          return <td key={_key}><i dangerouslySetInnerHTML={{ __html: d.species }} /></td>;
         case 'actions':
           return <td key={_key}>{this.renderActions(d)}</td>;
         default:
