@@ -48,7 +48,7 @@ class ResultsTable extends Component {
   }
 
   renderActions(d) {
-    return <ActionList href={d.href} id={d.id} />;
+    return <ActionList category={d.category} href={d.href} id={d.id} />;
   }
 
   renderRows() {

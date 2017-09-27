@@ -25,8 +25,8 @@ class AnnotationSummary extends Component {
     let nodes = this.props.annotations.map( (d, i) => {
       let previewUrl = `${PREVIEW_URL}${d.href}`;
       let curateNode = null;
-      if (d.category === 'reference') {
-        let curateUrl = `/curate${d.href}`;
+      if (d.category === 'reference' || d.category === 'locus') {
+        let curateUrl = `/curate${d.href}`.replace(/regulation|phenotype/, '');
         curateNode = <Link to={curateUrl}><i className='fa fa-edit' /> Curate</Link>;
       }
       return (
