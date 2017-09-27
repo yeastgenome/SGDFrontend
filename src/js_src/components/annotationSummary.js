@@ -15,9 +15,7 @@ class AnnotationSummary extends Component {
   renderBlock(d) {
     if (d.value) {
       return (
-        <blockquote>
-          {d.value}
-        </blockquote>
+        <blockquote dangerouslySetInnerHTML={{ __html: d.value}} />
       );
     }
     return null;
