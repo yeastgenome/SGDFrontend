@@ -8,6 +8,7 @@ from helpers import upload_file
 
 # takes a TSV file and returns an array of annotations
 def parse_tsv_annotations(db_session, tsv_file, filename, template_type, username):
+    db_session.execute('SET LOCAL ROLE ' + username)
     try:
         dialect = csv.Sniffer().sniff(tsv_file.read(1024), delimiters='\t')
         tsv_file.seek(0)
@@ -27,8 +28,10 @@ def parse_tsv_annotations(db_session, tsv_file, filename, template_type, usernam
         )
     except IntegrityError:
         db_session.rollback()
+        db_session.close()
     	raise ValueError('That file has already been uploaded and cannot be reused. Please change the file contents and try again.')
     tsv_file.seek(0)
     raw_file_content = csv.reader(tsv_file.getvalue().splitlines(True), delimiter='\t', dialect=csv.excel_tab)
     annotations = load_summaries(db_session, raw_file_content, username)
+    db_session.close()
     return annotations
