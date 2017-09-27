@@ -1,5 +1,5 @@
 /*eslint-disable no-undef */
-const DEFAULT_TIMEOUT = 5000;
+const DEFAULT_TIMEOUT = 10000;
 
 export default function fetchData(_url, options={}) {
   let _type = options.type || 'GET';

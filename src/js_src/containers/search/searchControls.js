@@ -19,8 +19,8 @@ class SearchControlsComponent extends Component {
       <div className={style.control}>
         <label className={style.searchLabel}>View As</label>
         <div className='button-group' role='group'>
-          <Link className={`button ${!this.props.isTable ? '': 'hollow'}`} to={listHref}><i className='fa fa-list' /> List</Link>
-          <Link className={`button ${this.props.isTable ? '': 'hollow'}`} to={tableHref}><i className='fa fa-table' /> Table</Link>
+          <Link className={`button ${this.props.isList ? '': 'hollow'}`} to={listHref}><i className='fa fa-list' /> List</Link>
+          <Link className={`button ${!this.props.isList ? '': 'hollow'}`} to={tableHref}><i className='fa fa-table' /> Table</Link>
         </div>
       </div>
     );
@@ -68,17 +68,17 @@ class SearchControlsComponent extends Component {
 
 SearchControlsComponent.propTypes = {
   currentPage: React.PropTypes.number,
-  isTable: React.PropTypes.bool,
+  isList: React.PropTypes.bool,
   queryParams: React.PropTypes.object,
   totalPages: React.PropTypes.number
 };
 
 function mapStateToProps(state) {
   let _queryParams = selectQueryParams(state);
-  let _isTable = (_queryParams.mode === 'table');
+  let _isList = (_queryParams.mode === 'list');
   return {
     currentPage: parseInt(_queryParams.page) || 1,
-    isTable: _isTable,
+    isList: _isList,
     queryParams: _queryParams,
     totalPages: selectTotalPages(state)
   };
