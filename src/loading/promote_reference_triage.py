@@ -192,7 +192,7 @@ def insert_referencedbentity(pmid, source_id, record, created_by):
                           date_published = pubdate,
                           date_revised = date_revised,
                           issue = issue,
-                          page = year,
+                          page = pages,
                           volume = volume,
                           title = title,
                           doi = doi,
