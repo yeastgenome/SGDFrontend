@@ -1,6 +1,7 @@
 import string
 import re
 import os
+import pusher
 from zope.sqlalchemy import ZopeTransactionExtension
 
 from sqlalchemy import create_engine
@@ -42,3 +43,13 @@ def get_curator_session(username):
     curator_session = Session()
     curator_session.execute('SET LOCAL ROLE ' + username)
     return curator_session
+
+
+def get_pusher_client():
+    pusher_client = pusher.Pusher(
+        app_id=os.environ['PUSHER_APP_ID'],
+        key=os.environ['PUSHER_KEY'],
+        secret=os.environ['PUSHER_SECRET'],
+        ssl=True
+    )
+    return pusher_client

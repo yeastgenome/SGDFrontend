@@ -13,7 +13,7 @@ class CurateLitBasic extends Component {
       <div>
         <div>
           <div>
-            <p>{_abstract}</p>
+            <p dangerouslySetInnerHTML={{ __html: _abstract }} />
           </div>
         </div>
         <Tags id={d.sgdid} />
