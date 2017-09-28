@@ -10,7 +10,7 @@ server {
        listen 80;
 
        server_name _;
-       access_log /var/log/sgd-backend.log;
+       access_log /var/log/nginx/sgd-backend.log;
        location / {
                 proxy_pass http://localhost:6543/;
                 proxy_set_header X-Real-IP $remote_addr;
