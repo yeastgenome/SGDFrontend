@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import _ from 'underscore';
 
 import style from './style.css';
 import fetchData from '../../lib/fetchData';
@@ -57,43 +56,17 @@ class TriageControls extends Component {
       this.props.dispatch(removeEntry(id));
     });
   }
-
-  getDataFromTagInputs(tagClassName) {
-    let geneListEls = this.refs.tagList.getElementsByClassName(tagClassName);
-    let tagData = [];
-    for (var i = geneListEls.length - 1; i >= 0; i--) {
-      let el = geneListEls[i];
-      let geneTagType = el.dataset.type;
-      let simpleValue = el.value || '';
-      tagData.push({
-        value: simpleValue,
-        type: geneTagType
-      });
-    }
-    return tagData;
-  }
-
+  
   handlePromoteEntry(e) {
     e.preventDefault();
-    // generate tag data from DOM
-    let tagGeneData = this.getDataFromTagInputs('sgd-geneList');
-    let tagCommentData = this.getDataFromTagInputs('sgd-comment');
-    let tempEntry = this.props.entry;
-    let tags = tempEntry.data.tags || [];
-    tags.forEach( (d) => {
-      let thisGenes = _.findWhere(tagGeneData, { type: d.name });
-      if (thisGenes) d.genes = thisGenes.value;
-      let thisComments = _.findWhere(tagCommentData, { type: d.name });
-      if (thisComments) d.comment = thisComments.value;
-    });
-    tempEntry.data.tags = tags;
+    let entry = this.props.entry;
     // promotion request
     this.setState({ isPending: true });
     let id = this.props.entry.curation_id;
     let url = `${TRIAGE_URL}/${id}/${PROMOTE_URL_SUFFIX}`;
     let fetchOptions = {
       type: 'PUT',
-      data: JSON.stringify(tempEntry),
+      data: JSON.stringify(entry),
       timeout: 20000,
       contentType: 'application/json',
       headers: {
@@ -101,9 +74,9 @@ class TriageControls extends Component {
       }
     };
     fetchData(url, fetchOptions).then( (data) => {
-      tempEntry.sgdid = data.sgdid;
+      entry.sgdid = data.sgdid;
       this.props.dispatch(removeEntry(id));
-      this.props.dispatch(updateActiveTags(tempEntry));
+      this.props.dispatch(updateActiveTags(entry));
       this.props.dispatch(clearError());
       // scroll to top of page
       window.scrollTo(0, 0);

@@ -11,6 +11,20 @@ class TagList extends Component {
     this.props.onUpdate(newEntry, true);
   }
 
+  handleCommentChange(_name, _comment) {
+    let tagData = this.getTagData();
+    let activeEntry = _.findWhere(tagData, { name: _name });
+    activeEntry.comment = _comment;
+    this.updateTags(tagData);
+  }
+
+  handleGeneChange(_name, _genes) {
+    let tagData = this.getTagData();
+    let activeEntry = _.findWhere(tagData, { name: _name });
+    activeEntry.genes = _genes;
+    this.updateTags(tagData);
+  }
+
   getTagData() {
     return this.props.entry.data.tags || [];
   }
@@ -52,10 +66,11 @@ class TagList extends Component {
     if (this.props.isReadOnly) {
       return <span>{value}</span>;
     } else {
+      let _handleChange = e => { this.handleGeneChange(name, e.target.value); };
       return (
         <div>
           <label>Genes (comma-separated)</label>
-          <input className='sgd-geneList' data-type={name} type='text' defaultValue={value} />
+          <input className='sgd-geneList' data-type={name} onChange={_handleChange} type='text' defaultValue={value} />
         </div>
       );
     }
@@ -65,10 +80,11 @@ class TagList extends Component {
     if (this.props.isReadOnly) {
       return <span>{value}</span>;
     } else {
+      let _handleChange = e => { this.handleCommentChange(name, e.target.value); };
       return (
         <div>
            <label>Comment</label>
-          <input className='sgd-comment' data-type={name} type='text' defaultValue={value} />
+          <input className='sgd-comment' data-type={name} onChange={_handleChange} type='text' defaultValue={value} />
         </div>
       );
     }
