@@ -80,7 +80,7 @@ class SearchComponent extends Component {
 
   renderResultsNode() {
     if (this.props.isPending) {
-      return <Loader />;
+      return <div style={{ minHeight: '40rem' }}><Loader /></div>;
     }
     if (this.props.isList) {
       return <ResultsList entries={this.props.results} />;

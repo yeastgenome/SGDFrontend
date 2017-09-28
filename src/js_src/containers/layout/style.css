@@ -56,9 +56,10 @@
 }
 .errorContainer {
   position: fixed;
-  top: 0;
+  top: 1rem;
+  right: 1rem;
   z-index: 5;
-  width: 100%;
+  width: 30rem;
 }
 .closeIcon {
   float: right;
