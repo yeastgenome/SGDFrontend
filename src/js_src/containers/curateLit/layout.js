@@ -22,15 +22,22 @@ class CurateLitLayout extends Component {
   componentDidMount() {
     this.props.dispatch(setNotReady());
     this.fetchData();
+    this._isMounted = true;
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   fetchData() {
     let id = this.props.params.id;
     let url = `/reference/${id}`;
     fetchData(url).then( (data) => {
-      updateTitle(data.citation);
-      this.props.dispatch(updateActiveEntry(data));
-      this.props.dispatch(finishPending());
+      if (this._isMounted) {
+        updateTitle(data.citation);
+        this.props.dispatch(updateActiveEntry(data));
+        this.props.dispatch(finishPending());
+      }
     });
   }
 
