@@ -1,5 +1,10 @@
 import string
 import re
+import os
+from zope.sqlalchemy import ZopeTransactionExtension
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 def link_gene_names(raw, locus_names_ids):
     # first create an object with display_name as key and sgdid as value
@@ -30,3 +35,10 @@ def process_pmid_list(raw):
         return [int(x) for x in p_list]
     except ValueError, e:
         raise ValueError('PMIDs must be a pipe-separated list of valid PMIDs.')
+
+def get_curator_session(username):
+    engine = create_engine(os.environ['NEX2_URI'])
+    Session = sessionmaker(bind=engine, extension=ZopeTransactionExtension())
+    curator_session = Session()
+    curator_session.execute('SET LOCAL ROLE ' + username)
+    return curator_session

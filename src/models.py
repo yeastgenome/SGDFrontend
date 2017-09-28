@@ -13,7 +13,7 @@ import traceback
 import transaction
 from datetime import datetime
 
-from src.curation_helpers import link_gene_names
+from src.curation_helpers import link_gene_names, get_curator_session
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
@@ -3646,14 +3646,14 @@ class Locusdbentity(Dbentity):
     def update_summary(self, summary_type, username, text, pmid_list=[]):
         try:
             summary_type = summary_type.lower().capitalize()
-            # set to local username to track changes
-            DBSession.execute('SET LOCAL ROLE ' + username)
-            locus_names_ids = DBSession.query(Locusdbentity.display_name, Locusdbentity.sgdid).all()
-            summary = DBSession.query(Locussummary.summary_type, Locussummary.summary_id, Locussummary.html, Locussummary.date_created).filter_by(locus_id=self.dbentity_id, summary_type=summary_type).one_or_none()
+            # get a special session we can close
+            curator_session = get_curator_session(username)
+            locus_names_ids = curator_session.query(Locusdbentity.display_name, Locusdbentity.sgdid).all()
+            summary = curator_session.query(Locussummary.summary_type, Locussummary.summary_id, Locussummary.html, Locussummary.date_created).filter_by(locus_id=self.dbentity_id, summary_type=summary_type).one_or_none()
             summary_html = link_gene_names(text, locus_names_ids)
             # update
             if summary:
-                DBSession.query(Locussummary).filter_by(summary_id=summary.summary_id).update({ 'text': text, 'html': summary_html })
+                curator_session.query(Locussummary).filter_by(summary_id=summary.summary_id).update({ 'text': text, 'html': summary_html })
             else:
                 new_summary = Locussummary(
                     locus_id = self.dbentity_id, 
@@ -3663,12 +3663,12 @@ class Locusdbentity(Dbentity):
                     created_by = username,
                     source_id = SGD_SOURCE_ID
                 )
-                DBSession.add(new_summary)
+                curator_session.add(new_summary)
                 summary = new_summary
-            summary = DBSession.query(Locussummary.summary_type, Locussummary.summary_id, Locussummary.html, Locussummary.date_created).filter_by(locus_id=self.dbentity_id, summary_type=summary_type).one_or_none()
+            summary = curator_session.query(Locussummary.summary_type, Locussummary.summary_id, Locussummary.html, Locussummary.date_created).filter_by(locus_id=self.dbentity_id, summary_type=summary_type).one_or_none()
             # add LocussummaryReference(s)
             if len(pmid_list):
-                matching_refs = DBSession.query(Referencedbentity).filter(Referencedbentity.pmid.in_(pmid_list)).all()
+                matching_refs = curator_session.query(Referencedbentity).filter(Referencedbentity.pmid.in_(pmid_list)).all()
                 if len(matching_refs) != len(pmid_list):
                     raise ValueError('PMID is not currently in SGD.')
                 pmids = pmid_list
@@ -3678,9 +3678,9 @@ class Locusdbentity(Dbentity):
                     reference_id = matching_ref.dbentity_id
                     order = _i + 1
                     # look for matching LocussummaryReference
-                    matching_locussummary_refs = DBSession.query(LocussummaryReference).filter_by(summary_id=summary_id, reference_id=reference_id).all()
+                    matching_locussummary_refs = curator_session.query(LocussummaryReference).filter_by(summary_id=summary_id, reference_id=reference_id).all()
                     if len(matching_locussummary_refs):
-                        DBSession.query(LocussummaryReference).filter_by(summary_id=summary_id,reference_id=reference_id).update({ 'reference_order': order })
+                        curator_session.query(LocussummaryReference).filter_by(summary_id=summary_id,reference_id=reference_id).update({ 'reference_order': order })
                     else:
                         new_locussummaryref = LocussummaryReference(
                             summary_id = summary_id, 
@@ -3689,16 +3689,16 @@ class Locusdbentity(Dbentity):
                             source_id = SGD_SOURCE_ID, 
                             created_by = username
                         )
-                        DBSession.add(new_locussummaryref)          
+                        curator_session.add(new_locussummaryref)          
             # commit and close session to keep user session out of connection pool
             transaction.commit()
-            DBSession.close()
             return text
         except Exception as e:
             traceback.print_exc()
-            DBSession.rollback()
-            DBSession.close()
+            curator_session.rollback()
             raise
+        finally:
+            curator_session.close()
 
 class Straindbentity(Dbentity):
     __tablename__ = 'straindbentity'
