@@ -5,7 +5,6 @@ import datetime
 import hashlib
 import werkzeug
 import os
-import pusher
 import shutil
 import string
 import tempfile
@@ -157,15 +156,6 @@ def file_already_uploaded(request):
         log.info('Upload error: File ' + request.POST.get("display_name") + ' already exists.')
         return True
     return False
-
-def get_pusher_client():
-    pusher_client = pusher.Pusher(
-        app_id=os.environ['PUSHER_APP_ID'],
-        key=os.environ['PUSHER_KEY'],
-        secret=os.environ['PUSHER_SECRET'],
-        ssl=True
-    )
-    return pusher_client
 
 def link_references_to_file(references, fdb_dbentity_id):
     for reference_id in references:

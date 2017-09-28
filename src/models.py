@@ -13,7 +13,7 @@ import traceback
 import transaction
 from datetime import datetime
 
-from src.curation_helpers import link_gene_names, get_curator_session
+from src.curation_helpers import link_gene_names, get_curator_session, get_pusher_client
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
@@ -3692,6 +3692,8 @@ class Locusdbentity(Dbentity):
                         curator_session.add(new_locussummaryref)          
             # commit and close session to keep user session out of connection pool
             transaction.commit()
+            pusher = get_pusher_client()
+            pusher.trigger('sgd', 'curateHomeUpdate', {})
             return text
         except Exception as e:
             traceback.print_exc()
