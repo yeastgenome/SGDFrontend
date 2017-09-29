@@ -1801,6 +1801,44 @@ class Referencedbentity(Dbentity):
         url1 = base_url + '/literature_details'
         return [url1]
 
+    def update_tags(self, tags, username):
+        try:
+            validate_tags(tags)
+            curator_session = get_curator_session(username)
+            # TODO delete old tags
+            # track which loci have primary annotations for this reference to only have one primary per reference
+            primary_gene_ids = []
+            for tag in tags:
+                name = tags['name']
+                comment = tags['comment']
+                raw_genes = tag['genes'].strip()
+                gene_ids = []
+                # add tags by gene
+                if len(raw_genes):
+                    gene_ids = raw_genes.split('|')
+                    for g_id in gene_ids:
+                        gene_dbentity_id = curator_session.query(Locusdbentity.dbentity_id).filter(or_(Locusdbentity.display_name == g_id, Locusdbentity.format_name == g_id)).one_or_none()[0]
+                        curation_ref = CurationReference.factory(self.reference_id, name, comment, gene_dbentity_id, username)
+                        DBSession.add(curation_ref)
+                        # add primary lit annotation
+                        lit_annotation = Literatureannotation.factory(self.reference_id, name, gene_dbentity_id, username)
+                        if lit_annotation.topic == 'Primary Literature':
+                            if gene_dbentity_id in primary_gene_ids:
+                                continue
+                            else:
+                                primary_gene_ids.append(gene_dbentity_id)
+                        curator_session.add(lit_annotation)
+                # add a tag with no gene
+                else:
+                    curation_ref = CurationReference.factory(self.reference_id, name, comment, None, username)
+                    DBSession.add(curation_ref)
+            transaction.commit()
+        except Exception, e:
+            curator_session.rollback()
+            raise e
+        finally:
+            curator_session.close()
+
 class Filedbentity(Dbentity):
     __tablename__ = 'filedbentity'
     __table_args__ = {u'schema': 'nex'}
