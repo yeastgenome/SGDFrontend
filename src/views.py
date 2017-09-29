@@ -2,9 +2,7 @@ from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPOk, HTTPNo
 from pyramid.response import Response, FileResponse
 from pyramid.view import view_config
 from pyramid.compat import escape
-
 from sqlalchemy import func, distinct, and_, or_
-
 import os
 import re
 import transaction
