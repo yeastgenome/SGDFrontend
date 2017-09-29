@@ -12,7 +12,7 @@ import json
 from .helpers import allowed_file, extract_id_request, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id, refresh_homepage_cache
 from .curation_helpers import process_pmid_list, get_pusher_client
 from .loading.promote_reference_triage import add_paper
-from .models import DBSession, Referencedbentity, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags
+from .models import DBSession, Dbentity, Referencedbentity, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags
 from .tsv_parser import parse_tsv_annotations
 
 logging.basicConfig()

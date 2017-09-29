@@ -7488,7 +7488,6 @@ class Updatelog(Base):
 
 # should be valid genes (by standard name or systematic name) and should not be primary, additional, or review for same gene
 def validate_tags(tags):
-    print(tags)
     primary_obj = {}
     additional_obj = {}
     review_obj = {}
@@ -7507,8 +7506,20 @@ def validate_tags(tags):
                 if is_additional:
                     additional_obj[g] = True
                 if is_reviews:
-                    reviews_obj[g] = True
+                    review_obj[g] = True
             gene_ids = gene_ids + t_gene_ids
         elif is_primary:
             raise ValueError('Primary tags must have genes.')
+    # make sure no genes are repeated or shared among primary, additional, and review
+    p_keys = primary_obj.keys()
+    a_keys = additional_obj.keys()
+    r_keys = review_obj.keys()
+    unique_keys = set(p_keys + a_keys + r_keys)
+    if len(unique_keys) != (len(p_keys) + len(a_keys) + len(r_keys)):
+        raise ValueError('The same gene can only be used as a primary tag, additional tag, or review.')
+    # validate that all genes are proper identifiers
+    num_valid_genes = DBSession.query(Locusdbentity).filter(or_(Locusdbentity.display_name.in_(unique_keys), (Locusdbentity.format_name.in_(unique_keys)))).count()
+    print(num_valid_genes)
+    if num_valid_genes != len(unique_keys):
+        raise ValueError('Genes must be a pipe-separated list of valid genes by standard name of systematic name.')
     return True
