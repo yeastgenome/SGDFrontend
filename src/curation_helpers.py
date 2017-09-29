@@ -2,10 +2,9 @@ import string
 import re
 import os
 import pusher
-from zope.sqlalchemy import ZopeTransactionExtension
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from zope.sqlalchemy import ZopeTransactionExtension
 
 def link_gene_names(raw, locus_names_ids):
     # first create an object with display_name as key and sgdid as value
@@ -43,7 +42,6 @@ def get_curator_session(username):
     curator_session = Session()
     curator_session.execute('SET LOCAL ROLE ' + username)
     return curator_session
-
 
 def get_pusher_client():
     pusher_client = pusher.Pusher(

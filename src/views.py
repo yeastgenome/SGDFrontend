@@ -11,7 +11,7 @@ from oauth2client import client, crypt
 import os
 import re
 
-from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Dataset, DatasetKeyword, Contig, Proteindomain, Ec, Locussummary
+from .models import DBSession, ESearch, Colleague, Colleaguetriage, Filedbentity, Filepath, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Dataset, DatasetKeyword, Contig, Proteindomain, Ec, Locussummary, validate_tags
 
 from .helpers import allowed_file, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id, refresh_homepage_cache
 from .curation_helpers import process_pmid_list, get_pusher_client
@@ -491,6 +491,18 @@ def reference_triage_id_update(request):
 @view_config(route_name='reference_triage_promote', renderer='json', request_method='PUT')
 @authenticate
 def reference_triage_promote(request):
+    # TEMP debug
+    try:
+        validate_tags(request.json['data']['tags'])
+        return {
+            'sgdid': '122345'
+        }
+    except Exception, e:
+        return HTTPBadRequest(body=json.dumps({'error': str(e) }))
+    return {
+        'sgdid': '122345'
+    }
+
     id = request.matchdict['id'].upper()
     triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
     if triage:
@@ -1103,6 +1115,8 @@ def locus_curate_update(request):
         if len(new_regulation_summary):
             locus.update_summary('Regulation', request.session['username'], new_regulation_summary, new_regulation_pmids)
         locus = get_locus_by_id(id)
+        pusher = get_pusher_client()
+        pusher.trigger('sgd', 'curateHomeUpdate', {})
         return locus.get_summary_dict()
     except ValueError as e:
         return HTTPBadRequest(body=json.dumps({ 'error': str(e) }), content_type='text/json')

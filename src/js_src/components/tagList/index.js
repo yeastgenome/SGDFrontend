@@ -69,7 +69,7 @@ class TagList extends Component {
       let _handleChange = e => { this.handleGeneChange(name, e.target.value); };
       return (
         <div>
-          <label>Genes (comma-separated)</label>
+          <label>Genes (pipe-separated)</label>
           <input className='sgd-geneList' data-type={name} onChange={_handleChange} type='text' defaultValue={value} />
         </div>
       );

@@ -56,7 +56,7 @@ class TriageControls extends Component {
       this.props.dispatch(removeEntry(id));
     });
   }
-  
+
   handlePromoteEntry(e) {
     e.preventDefault();
     let entry = this.props.entry;
@@ -64,6 +64,7 @@ class TriageControls extends Component {
     this.setState({ isPending: true });
     let id = this.props.entry.curation_id;
     let url = `${TRIAGE_URL}/${id}/${PROMOTE_URL_SUFFIX}`;
+    entry.data.tags = entry.data.tags || [];
     let fetchOptions = {
       type: 'PUT',
       data: JSON.stringify(entry),
