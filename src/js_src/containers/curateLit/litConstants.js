@@ -54,7 +54,7 @@ export const allTags = [
     inTriage: true
   },
   {
-    name: 'Reviews',
+    name: 'reviews',
     label: 'Reviews',
     hasGenes: true,
     inTriage: true

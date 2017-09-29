@@ -13,7 +13,7 @@ import traceback
 import transaction
 from datetime import datetime
 
-from src.curation_helpers import link_gene_names, get_curator_session, get_pusher_client
+from src.curation_helpers import link_gene_names, get_curator_session
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
@@ -27,7 +27,6 @@ if 'CACHE_URLS' in os.environ.keys():
     cache_urls = os.environ['CACHE_URLS'].split(',')
 else:
     cache_urls = ['http://localhost:6545']
-
 
 class CacheBase(object):
     def get_base_url(self):
@@ -3692,8 +3691,6 @@ class Locusdbentity(Dbentity):
                         curator_session.add(new_locussummaryref)          
             # commit and close session to keep user session out of connection pool
             transaction.commit()
-            pusher = get_pusher_client()
-            pusher.trigger('sgd', 'curateHomeUpdate', {})
             return text
         except Exception as e:
             traceback.print_exc()
@@ -5312,8 +5309,14 @@ class Literatureannotation(Base):
         'additional_literature': 'Additional Literature',
         'htp_phenotype': 'Omics',
         'non_phenotype_htp': 'Omics',
-        'Reviews': 'Reviews'
+        'reviews': 'Reviews'
     }
+
+    @staticmethod
+    def is_primary_tag(tag):
+        if tag not in Literatureannotation.acceptable_tags:
+            return False
+        return 'Primary' in Literatureannotation.acceptable_tags[tag]
 
     @staticmethod
     def factory(reference_id, tag, dbentity_id, created_by, source_id=824, taxonomy_id=274803):
@@ -7482,3 +7485,30 @@ class Updatelog(Base):
     created_by = Column(String(12), nullable=False)
     old_value = Column(Text)
     new_value = Column(Text)
+
+# should be valid genes (by standard name or systematic name) and should not be primary, additional, or review for same gene
+def validate_tags(tags):
+    print(tags)
+    primary_obj = {}
+    additional_obj = {}
+    review_obj = {}
+    gene_ids = []
+    for tag in tags:
+        name = tag['name']
+        is_primary = Literatureannotation.is_primary_tag(name)
+        is_additional = (name == 'additional_literature')
+        is_reviews = (name == 'reviews')
+        genes = tag['genes'].upper().strip()
+        if len(genes):
+            t_gene_ids = genes.split('|')
+            for g in t_gene_ids:
+                if is_primary:
+                    primary_obj[g] = True
+                if is_additional:
+                    additional_obj[g] = True
+                if is_reviews:
+                    reviews_obj[g] = True
+            gene_ids = gene_ids + t_gene_ids
+        elif is_primary:
+            raise ValueError('Primary tags must have genes.')
+    return True
