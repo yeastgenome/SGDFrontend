@@ -101,82 +101,67 @@ def reference_triage_id_update(request):
 @view_config(route_name='reference_triage_promote', renderer='json', request_method='PUT')
 @authenticate
 def reference_triage_promote(request):
-    # TEMP debug
+    tags = request.json['data']['tags']
+    # validate tags before doing anything else
     try:
-        validate_tags(request.json['data']['tags'])
-        return {
-            'sgdid': '122345'
-        }
+        validate_tags(tags)
     except Exception, e:
         return HTTPBadRequest(body=json.dumps({'error': str(e) }))
-    return {
-        'sgdid': '122345'
-    }
 
     id = request.matchdict['id'].upper()
     triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
     if triage:
-
-        tags = []
-        for tag in request.json['data']['tags']:
-            if tag.get('genes'):
-                genes = tag.get('genes').split(',')
-                for g in genes:
-                    uppername = g.upper().strip()
-                    locus = DBSession.query(Locusdbentity).filter(or_(Locusdbentity.display_name==uppername, Locusdbentity.format_name==uppername)).one_or_none()
-                    if locus is None:
-                        return HTTPBadRequest(body=json.dumps({'error': 'Invalid gene name ' + g}))
-                    tags.append((tag['name'], tag['comment'], locus.dbentity_id))
-            else:
-                tags.append((tag['name'], tag['comment'], None))
+        # tags = []
+        # for tag in request.json['data']['tags']:
+        #     if tag.get('genes'):
+        #         genes = tag.get('genes').split(',')
+        #         for g in genes:
+        #             uppername = g.upper().strip()
+        #             locus = DBSession.query(Locusdbentity).filter(or_(Locusdbentity.display_name==uppername, Locusdbentity.format_name==uppername)).one_or_none()
+        #             if locus is None:
+        #                 return HTTPBadRequest(body=json.dumps({'error': 'Invalid gene name ' + g}))
+        #             tags.append((tag['name'], tag['comment'], locus.dbentity_id))
+        #     else:
+        #         tags.append((tag['name'], tag['comment'], None))
 
         try:
-            reference_id, sgdid = add_paper(triage.pmid, request.json['data']['assignee'])
+            new_reference = add_paper(triage.pmid, request.json['data']['assignee'])
+            DBSession.delete(triage)
+            transaction.commit()
         except IntegrityError as e:
             traceback.print_exc()
             DBSession.rollback()
             return HTTPBadRequest(body=json.dumps({'error': str(e) }))
         except:
             traceback.print_exc()
-            return HTTPBadRequest(body=json.dumps({'error': 'Error importing PMID into the database'}))
+            return HTTPBadRequest(body=json.dumps({'error': 'Error importing PMID into the database. Verify that PMID is valid and not already present in SGD.'}))
+        
+        # # HANDLE TAGS
+        # # track which loci have primary annotations for this reference to only have one primary per reference
+        # primary_obj = {}
+        # for i in xrange(len(tags)):
+        #     tag_slug = tags[i][0]
+        #     comment = tags[i][1]
+        #     locus_dbentity_id = tags[i][2]
+        #     curation_ref = CurationReference.factory(reference_id, tag_slug, comment, locus_dbentity_id, request.json['data']['assignee'])
+        #     if curation_ref:
+        #         DBSession.add(curation_ref)
+        #     lit_annotation = Literatureannotation.factory(reference_id, tag_slug, locus_dbentity_id, request.json['data']['assignee'])
+        #     if lit_annotation:
+        #         # prevent multiple primary lit tags
+        #         if lit_annotation.topic == 'Primary Literature':
+        #             if locus_dbentity_id in primary_obj.keys():
+        #                 continue
+        #             else:
+        #                 primary_obj[locus_dbentity_id] = True
+        #         DBSession.add(lit_annotation)
 
-        if sgdid is None:
-            return HTTPBadRequest(body=json.dumps({'error': 'Error importing PMID into the database'}))
-
-        try:
-            DBSession.delete(triage)
-            transaction.commit()
-        except:
-            DBSession.rollback()
-            traceback.print_exc()
-            return HTTPBadRequest(body=json.dumps({'error': 'DB failure. Verify that PMID is valid and not already present in SGD.'}))  
-
-        # HANDLE TAGS
-        # track which loci have primary annotations for this reference to only have one primary per reference
-        primary_obj = {}
-        for i in xrange(len(tags)):
-            tag_slug = tags[i][0]
-            comment = tags[i][1]
-            locus_dbentity_id = tags[i][2]
-            curation_ref = CurationReference.factory(reference_id, tag_slug, comment, locus_dbentity_id, request.json['data']['assignee'])
-            if curation_ref:
-                DBSession.add(curation_ref)
-            lit_annotation = Literatureannotation.factory(reference_id, tag_slug, locus_dbentity_id, request.json['data']['assignee'])
-            if lit_annotation:
-                # prevent multiple primary lit tags
-                if lit_annotation.topic == 'Primary Literature':
-                    if locus_dbentity_id in primary_obj.keys():
-                        continue
-                    else:
-                        primary_obj[locus_dbentity_id] = True
-                DBSession.add(lit_annotation)
-
-        try:
-            DBSession.flush()
-            transaction.commit()
-        except:
-            traceback.print_exc()
-            DBSession.rollback()
+        # try:
+        #     DBSession.flush()
+        #     transaction.commit()
+        # except:
+        #     traceback.print_exc()
+        #     DBSession.rollback()
         
         pusher = get_pusher_client()
         pusher.trigger('sgd', 'triageUpdate', {})
