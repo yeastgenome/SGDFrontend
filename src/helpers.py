@@ -9,7 +9,7 @@ import shutil
 import string
 import tempfile
 import transaction
-from pyramid.httpexceptions import HTTPForbidden, HTTPBadRequest
+from pyramid.httpexceptions import HTTPForbidden, HTTPBadRequest, HTTPNotFound
 from sqlalchemy.exc import IntegrityError, InternalError, StatementError
 import traceback
 import requests
@@ -25,12 +25,31 @@ S3_BUCKET = os.environ['S3_BUCKET']
 S3_ACCESS_KEY = os.environ['S3_ACCESS_KEY']
 S3_SECRET_KEY = os.environ['S3_SECRET_KEY']
 
+import redis
+disambiguation_table = redis.Redis()
+
 # get list of URLs to visit from comma-separated ENV variable cache_urls 'url1, url2'
 cache_urls = None
 if 'CACHE_URLS' in os.environ.keys():
     cache_urls = os.environ['CACHE_URLS'].split(',')
 else:
     cache_urls = ['http://localhost:6545']
+
+# safe return returns None if not found instead of 404 exception
+def extract_id_request(request, prefix, param_name='id', safe_return=False):
+    id = str(request.matchdict[param_name])
+
+    db_id = disambiguation_table.get(("/" + prefix + "/" + id).upper())
+    
+    if db_id is None and safe_return:
+        return None
+    elif db_id is None:
+        raise HTTPNotFound()
+    else:
+        if prefix == 'author':
+            return db_id
+        else:
+            return int(db_id)
 
 def get_locus_by_id(id):
     return dbentity_safe_query(id, Locusdbentity)
