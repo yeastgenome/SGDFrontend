@@ -102,6 +102,7 @@ def reference_triage_id_update(request):
 @authenticate
 def reference_triage_promote(request):
     tags = request.json['data']['tags']
+    username = request.session['username']
     # validate tags before doing anything else
     try:
         validate_tags(tags)
@@ -162,14 +163,11 @@ def reference_triage_promote(request):
         # except:
         #     traceback.print_exc()
         #     DBSession.rollback()
-        
+        new_reference.update_tags(tags, username)
         pusher = get_pusher_client()
         pusher.trigger('sgd', 'triageUpdate', {})
         pusher.trigger('sgd', 'curateHomeUpdate', {})
-        
-        return {
-            "sgdid": sgdid
-        }
+        return True
     else:
         return HTTPNotFound()
 
