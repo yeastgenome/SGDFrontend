@@ -163,6 +163,7 @@ def reference_triage_promote(request):
         # except:
         #     traceback.print_exc()
         #     DBSession.rollback()
+        DBSession.refresh(new_reference)
         new_reference.update_tags(tags, username)
         pusher = get_pusher_client()
         pusher.trigger('sgd', 'triageUpdate', {})
