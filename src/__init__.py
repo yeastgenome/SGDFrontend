@@ -105,7 +105,7 @@ def main(global_config, **settings):
     config.add_route('colleague_get', '/colleagues/{format_name}', request_method='GET')
     config.add_route('refresh_homepage_cache', '/refresh_homepage_cache', request_method='POST')
 
-    config.add_route('reference_triage', '/reference/triage', request_method='GET')
+    config.add_route('reference_triage_index', '/reference_triage', request_method='GET')
     config.add_route('reference_triage_promote', '/reference/triage/{id}/promote', request_method='PUT')
     config.add_route('reference_triage_id', '/reference/triage/{id}', request_method='GET')
     config.add_route('reference_triage_id_update', '/reference/triage/{id}', request_method='PUT')

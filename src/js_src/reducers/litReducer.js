@@ -7,6 +7,7 @@ const DEFAULT_STATE = fromJS({
   activeTags: [],
   isTagVisible: false,
   triageEntries: [],
+  lastPromoted: null
 });
 
 export default function litReducer(state = DEFAULT_STATE, action) {
@@ -35,6 +36,10 @@ export default function litReducer(state = DEFAULT_STATE, action) {
     triageEntries = state.get('triageEntries').toJS();
     let newTriageEntries = replaceTriage(triageEntries, action.payload.entries, action.payload.username);
     return state.set('triageEntries', fromJS(newTriageEntries));
+  case 'UPDATE_LAST_PROMOTED':
+    return state.set('lastPromoted', fromJS(action.payload));
+  case 'CLEAR_LAST_PROMOTED':
+    return state.set('lastPromoted', fromJS(null));
   default:
     return state;
   }
