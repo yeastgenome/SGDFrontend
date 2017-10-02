@@ -12,6 +12,7 @@ import re
 import traceback
 import transaction
 from datetime import datetime
+from itertools import groupby
 
 from src.curation_helpers import link_gene_names, get_curator_session
 
@@ -1207,6 +1208,7 @@ class CurationReference(Base):
     source = relationship(u'Source')
 
     acceptable_tags = {
+        'additional_literature': 'Additional Literature',
         'high_priority': 'High Priority',
         'delay': 'Delay',
         'homology_disease': 'Homology/Disease',
@@ -1215,12 +1217,16 @@ class CurationReference(Base):
         'headline_information': 'Headline information',
         'gene_model': 'Gene model',
         'headline_needs_review': 'Headline needs review',
+        'htp_phenotype': 'HTP Phenotype',
         'not_yet_curated': 'Not yet curated',
+        'non_phenotype_htp': 'Non Phenotype HTP',
+        'other_primary': 'Other Primary',
         'paragraph_needs_review': 'Paragraph needs review',
         'pathways': 'Pathways',
         'phenotype_needs_review': 'Phenotype needs review',
         'ptm': 'Post-translational modifications',
         'regulation_information': 'Regulation information',
+        'reviews': 'Reviews',
         'fast_track': 'Fast Track'
     }
 
@@ -1239,20 +1245,12 @@ class CurationReference(Base):
             json=json
         )
 
-    def to_dict(self):
-        obj = {
-            "tag": self.curation_tag,
-            "locus": None,
-            "comment": self.curator_comment
-        }
-
-        if self.locus:
-            obj['locus'] = {
-                "display_name": self.locus.display_name,
-                "link": self.locus.obj_url
-            }
-
-        return obj
+    def get_name(self):
+        c_name = self.curation_tag
+        for key, value in CurationReference.acceptable_tags.iteritems():
+            if value == c_name:
+                return key
+        return None
 
 class Dataset(Base):
     __tablename__ = 'dataset'
@@ -1801,11 +1799,35 @@ class Referencedbentity(Dbentity):
         url1 = base_url + '/literature_details'
         return [url1]
 
+    def get_tags(self):
+        tags = DBSession.query(CurationReference).filter_by(reference_id=self.dbentity_id).all()
+        tag_list = []
+        for k, g in groupby(tags, lambda x: x.curation_tag):
+            g_tags = list(g)
+            name = g_tags[0].get_name()
+            comment = g_tags[0].curator_comment
+            gene_names = []
+            for x in g_tags:
+                if x.locus_id:
+                    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=x.locus_id).one_or_none()
+                    g_name = locus.get_name()
+                    gene_names.append(g_name)
+            gene_str = '|'.join(gene_names)
+            tag_list.append({
+                'name': name,
+                'genes': gene_str,
+                'comment': comment
+            })
+        return tag_list
+
     def update_tags(self, tags, username):
         # try:
         validate_tags(tags)
         curator_session = get_curator_session(username)
-        # TODO delete old tags
+        # delete old tags
+        curator_session.query(CurationReference).filter_by(reference_id=self.dbentity_id).delete(synchronize_session=False)
+        curator_session.query(Literatureannotation).filter_by(reference_id=self.dbentity_id).delete(synchronize_session=False)
+        transaction.commit()
         # track which loci have primary annotations for this reference to only have one primary per reference
         primary_gene_ids = []
         for tag in tags:
@@ -3738,6 +3760,12 @@ class Locusdbentity(Dbentity):
             raise
         finally:
             curator_session.close()
+
+    def get_name(self):
+        if self.gene_name:
+            return self.gene_name
+        else:
+            return self.systematic_name
 
 class Straindbentity(Dbentity):
     __tablename__ = 'straindbentity'
@@ -7559,7 +7587,6 @@ def validate_tags(tags):
         raise ValueError('The same gene can only be used as a primary tag, additional tag, or review.')
     # validate that all genes are proper identifiers
     num_valid_genes = DBSession.query(Locusdbentity).filter(or_(Locusdbentity.display_name.in_(unique_keys), (Locusdbentity.format_name.in_(unique_keys)))).count()
-    print(num_valid_genes)
     if num_valid_genes != len(unique_keys):
         raise ValueError('Genes must be a pipe-separated list of valid genes by standard name of systematic name.')
     return True

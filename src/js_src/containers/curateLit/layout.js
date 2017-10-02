@@ -91,7 +91,6 @@ class CurateLitLayout extends Component {
 
 CurateLitLayout.propTypes = {
   activeEntry: React.PropTypes.object,
-  activeTagData: React.PropTypes.object,
   children: React.PropTypes.node,
   dispatch: React.PropTypes.func,
   params: React.PropTypes.object,
@@ -102,7 +101,6 @@ CurateLitLayout.propTypes = {
 function mapStateToProps(state) {
   return {
     activeEntry: selectActiveLitEntry(state),
-    activeTagData: state.lit.get('activeTagData').toJS(),
     pathname: state.routing.locationBeforeTransitions.pathname,
     isReady: state.meta.get('isReady')
   };

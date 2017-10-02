@@ -1,6 +1,7 @@
 from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPOk, HTTPNotFound
 from pyramid.view import view_config
 from pyramid.session import check_csrf_token
+from sqlalchemy.orm.session import make_transient
 from sqlalchemy.exc import IntegrityError
 from oauth2client import client, crypt
 import logging
@@ -163,7 +164,6 @@ def reference_triage_promote(request):
         # except:
         #     traceback.print_exc()
         #     DBSession.rollback()
-        DBSession.refresh(new_reference)
         new_reference.update_tags(tags, username)
         pusher = get_pusher_client()
         pusher.trigger('sgd', 'triageUpdate', {})
@@ -227,19 +227,29 @@ def sign_out(request):
     request.session.invalidate()
     return HTTPOk()
 
-
-@view_config(route_name='reference_triage_tags', renderer='json', request_method='GET')
+@view_config(route_name='reference_tags', renderer='json', request_method='GET')
 @authenticate
-def reference_triage_tags(request):
-    sgdid = request.matchdict['id'].upper()
-    dbentity_id = DBSession.query(Dbentity.dbentity_id).filter_by(sgdid=sgdid).one_or_none()
-    if dbentity_id is None:
-        return HTTPNotFound()
-    obj = []
-    tags = DBSession.query(CurationReference).filter_by(reference_id=dbentity_id[0]).all()
-    for tag in tags:
-        obj.append(tag.to_dict())
-    return obj
+def reference_tags(request):
+    id = extract_id_request(request, 'reference', 'id', True)
+    if id:
+        reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=id).one_or_none()
+    else:
+        reference = DBSession.query(Referencedbentity).filter_by(sgdid=request.matchdict['id']).one_or_none()
+    return reference.get_tags()
+
+@view_config(route_name='update_reference_tags', renderer='json', request_method='PUT')
+@authenticate
+def update_reference_tags(request):
+    id = extract_id_request(request, 'reference', 'id', True)
+    tags = request.json['tags']
+    username = request.session['username']
+    if id:
+        reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=id).one_or_none()
+    else:
+        reference = DBSession.query(Referencedbentity).filter_by(sgdid=request.matchdict['id']).one_or_none()
+    make_transient(reference)
+    reference.update_tags(tags, username)
+    return reference.get_tags()
 
 @view_config(route_name='get_recent_annotations', request_method='GET', renderer='json')
 @authenticate

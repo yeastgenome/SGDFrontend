@@ -4,9 +4,7 @@ import _ from 'underscore';
 
 const DEFAULT_STATE = fromJS({
   activeLitEntry: {},
-  activeTagData: {
-    data: { tags: [] }
-  },
+  activeTags: [],
   isTagVisible: false,
   triageEntries: [],
 });
@@ -19,7 +17,7 @@ export default function litReducer(state = DEFAULT_STATE, action) {
   case 'UPDATE_ACTIVE_TAGS':
     return state
       .set('isTagVisible', fromJS(true))
-      .set('activeTagData', fromJS(action.payload));
+      .set('activeTags', fromJS(action.payload));
   case 'CLEAR_ACTIVE_TAGS':
     return state.set('isTagVisible', fromJS(false));
   case 'UPDATE_TRIAGE_ENTRY':
