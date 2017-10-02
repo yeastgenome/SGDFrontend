@@ -10,7 +10,7 @@ import string
 import tempfile
 import transaction
 from pyramid.httpexceptions import HTTPForbidden, HTTPBadRequest, HTTPNotFound
-from sqlalchemy.exc import IntegrityError, InternalError, StatementError
+from sqlalchemy.exc import IntegrityError, InternalError, StatementError, DetachedInstanceError
 import traceback
 import requests
 
