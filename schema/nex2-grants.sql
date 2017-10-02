@@ -12,6 +12,7 @@ GRANT ALL ON nex.allele TO nex;
 REVOKE ALL ON nex.allele FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.allele TO curator;
 GRANT SELECT ON nex.allele TO PUBLIC;
+GRANT SELECT ON nex.allele TO DBSELECT;
 
 -- Set privilege on TABLE APO
 ALTER TABLE nex.apo OWNER TO nex;
@@ -19,6 +20,7 @@ GRANT ALL ON nex.apo TO nex;
 REVOKE ALL ON nex.apo FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.apo TO curator;
 GRANT SELECT ON nex.apo TO PUBLIC;
+GRANT SELECT ON nex.apo TO DBSELECT;
 
 -- Set privilege on TABLE APO_ALIAS
 ALTER TABLE nex.apo_alias OWNER TO nex;
@@ -26,6 +28,7 @@ GRANT ALL ON nex.apo_alias TO nex;
 REVOKE ALL ON nex.apo_alias FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.apo_alias TO curator;
 GRANT SELECT ON nex.apo_alias TO PUBLIC;
+GRANT SELECT ON nex.apo_alias TO DBSELECT;
 
 -- Set privilege on TABLE APO_RELATION
 ALTER TABLE nex.apo_relation OWNER TO nex;
@@ -33,6 +36,7 @@ GRANT ALL ON nex.apo_relation TO nex;
 REVOKE ALL ON nex.apo_relation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.apo_relation TO curator;
 GRANT SELECT ON nex.apo_relation TO PUBLIC;
+GRANT SELECT ON nex.apo_relation TO DBSELECT;
 
 -- Set privilege on TABLE APO_URL
 ALTER TABLE nex.apo_url OWNER TO nex;
@@ -40,6 +44,7 @@ GRANT ALL ON nex.apo_url TO nex;
 REVOKE ALL ON nex.apo_url FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.apo_url TO curator;
 GRANT SELECT ON nex.apo_url TO PUBLIC;
+GRANT SELECT ON nex.apo_url TO DBSELECT;
 
 -- Set privilege on TABLE ARCH_CONTIG
 ALTER TABLE nex.arch_contig OWNER TO nex;
@@ -47,6 +52,7 @@ GRANT ALL ON nex.arch_contig TO nex;
 REVOKE ALL ON nex.arch_contig FROM PUBLIC;
 GRANT SELECT,INSERT ON nex.arch_contig TO curator;
 GRANT SELECT ON nex.arch_contig TO PUBLIC;
+GRANT SELECT ON nex.arch_contig TO DBSELECT;
 
 -- Set privilege on TABLE ARCH_CONTIGCHANGE
 ALTER TABLE nex.arch_contigchange OWNER TO nex;
@@ -54,6 +60,7 @@ GRANT ALL ON nex.arch_contigchange TO nex;
 REVOKE ALL ON nex.arch_contigchange FROM PUBLIC;
 GRANT SELECT,INSERT ON nex.arch_contigchange TO curator;
 GRANT SELECT ON nex.arch_contigchange TO PUBLIC;
+GRANT SELECT ON nex.arch_contigchange TO DBSELECT;
 
 -- Set privilege on TABLE ARCH_DNASEQUENCEANNOTATION
 ALTER TABLE nex.arch_dnasequenceannotation OWNER TO nex;
@@ -61,6 +68,7 @@ GRANT ALL ON nex.arch_dnasequenceannotation TO nex;
 REVOKE ALL ON nex.arch_dnasequenceannotation FROM PUBLIC;
 GRANT SELECT,INSERT ON nex.arch_dnasequenceannotation TO curator;
 GRANT SELECT ON nex.arch_dnasequenceannotation TO PUBLIC;
+GRANT SELECT ON nex.arch_dnasequenceannotation TO DBSELECT;
 
 -- Set privilege on TABLE ARCH_DNASUBSEQUENCE
 ALTER TABLE nex.arch_dnasubsequence OWNER TO nex;
@@ -68,6 +76,7 @@ GRANT ALL ON nex.arch_dnasubsequence TO nex;
 REVOKE ALL ON nex.arch_dnasubsequence FROM PUBLIC;
 GRANT SELECT,INSERT ON nex.arch_dnasubsequence TO curator;
 GRANT SELECT ON nex.arch_dnasubsequence TO PUBLIC;
+GRANT SELECT ON nex.arch_dnasubsequence TO DBSELECT;
 
 -- Set privilege on TABLE ARCH_LITERATUREANNOTATION
 ALTER TABLE nex.arch_literatureannotation OWNER TO nex;
@@ -75,6 +84,7 @@ GRANT ALL ON nex.arch_literatureannotation TO nex;
 REVOKE ALL ON nex.arch_literatureannotation FROM PUBLIC;
 GRANT SELECT,INSERT ON nex.arch_literatureannotation TO curator;
 GRANT SELECT ON nex.arch_literatureannotation TO PUBLIC;
+GRANT SELECT ON nex.arch_literatureannotation TO DBSELECT;
 
 -- Set privilege on TABLE ARCH_LOCUSCHANGE
 ALTER TABLE nex.arch_locuschange OWNER TO nex;
@@ -82,6 +92,7 @@ GRANT ALL ON nex.arch_locuschange TO nex;
 REVOKE ALL ON nex.arch_locuschange FROM PUBLIC;
 GRANT SELECT,INSERT ON nex.arch_locuschange TO curator;
 GRANT SELECT ON nex.arch_locuschange TO PUBLIC;
+GRANT SELECT ON nex.arch_locuschange TO DBSELECT;
 
 -- Set privilege on TABLE ARCH_PROTEINSEQUENCEANNOTATION
 ALTER TABLE nex.arch_proteinsequenceannotation OWNER TO nex;
@@ -89,6 +100,7 @@ GRANT ALL ON nex.arch_proteinsequenceannotation TO nex;
 REVOKE ALL ON nex.arch_proteinsequenceannotation FROM PUBLIC;
 GRANT SELECT,INSERT ON nex.arch_proteinsequenceannotation TO curator;
 GRANT SELECT ON nex.arch_proteinsequenceannotation TO PUBLIC;
+GRANT SELECT ON nex.arch_proteinsequenceannotation TO DBSELECT;
 
 -- Set privilege on TABLE AUTHORRESPONSE
 ALTER TABLE nex.authorresponse OWNER TO nex;
@@ -96,6 +108,7 @@ GRANT ALL ON nex.authorresponse TO nex;
 REVOKE ALL ON nex.authorresponse FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.authorresponse TO curator;
 GRANT SELECT ON nex.authorresponse TO PUBLIC;
+GRANT SELECT ON nex.authorresponse TO DBSELECT;
 
 -- Set privilege on TABLE BINDINGMOTIFANNOTATION
 ALTER TABLE nex.bindingmotifannotation OWNER TO nex;
@@ -103,6 +116,7 @@ GRANT ALL ON nex.bindingmotifannotation TO nex;
 REVOKE ALL ON nex.bindingmotifannotation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.bindingmotifannotation TO curator;
 GRANT SELECT ON nex.bindingmotifannotation TO PUBLIC;
+GRANT SELECT ON nex.bindingmotifannotation TO DBSELECT;
 
 -- Set privilege on TABLE BOOK
 ALTER TABLE nex.book OWNER TO nex;
@@ -110,6 +124,7 @@ GRANT ALL ON nex.book TO nex;
 REVOKE ALL ON nex.book FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.book TO curator;
 GRANT SELECT ON nex.book TO PUBLIC;
+GRANT SELECT ON nex.book TO DBSELECT;
 
 -- Set privilege on TABLE CHEBI
 ALTER TABLE nex.chebi OWNER TO nex;
@@ -117,6 +132,7 @@ GRANT ALL ON nex.chebi TO nex;
 REVOKE ALL ON nex.chebi FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.chebi TO curator;
 GRANT SELECT ON nex.chebi TO PUBLIC;
+GRANT SELECT ON nex.chebi TO DBSELECT;
 
 -- Set privilege on TABLE CHEBI_ALIAS
 ALTER TABLE nex.chebi_alias OWNER TO nex;
@@ -124,6 +140,7 @@ GRANT ALL ON nex.chebi_alias TO nex;
 REVOKE ALL ON nex.chebi_alias FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.chebi_alias TO curator;
 GRANT SELECT ON nex.chebi_alias TO PUBLIC;
+GRANT SELECT ON nex.chebi_alias TO DBSELECT;
 
 -- Set privilege on TABLE CHEBI_URL
 ALTER TABLE nex.chebi_url OWNER TO nex;
@@ -131,6 +148,7 @@ GRANT ALL ON nex.chebi_url TO nex;
 REVOKE ALL ON nex.chebi_url FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.chebi_url TO curator;
 GRANT SELECT ON nex.chebi_url TO PUBLIC;
+GRANT SELECT ON nex.chebi_url TO DBSELECT;
 
 -- Set privilege on TABLE COLLEAGUE
 ALTER TABLE nex.colleague OWNER TO nex;
@@ -138,6 +156,7 @@ GRANT ALL ON nex.colleague TO nex;
 REVOKE ALL ON nex.colleague FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.colleague TO curator;
 GRANT SELECT ON nex.colleague TO PUBLIC;
+GRANT SELECT ON nex.colleague TO DBSELECT;
 
 -- Set privilege on TABLE COLLEAGUETRIAGE
 ALTER TABLE nex.colleaguetriage OWNER TO nex;
@@ -145,6 +164,7 @@ GRANT ALL ON nex.colleaguetriage TO nex;
 REVOKE ALL ON nex.colleaguetriage FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.colleaguetriage TO curator;
 GRANT SELECT ON nex.colleaguetriage TO PUBLIC;
+GRANT SELECT ON nex.colleaguetriage TO DBSELECT;
 
 -- Set privilege on TABLE COLLEAGUE_RELATION
 ALTER TABLE nex.colleague_relation OWNER TO nex;
@@ -152,6 +172,7 @@ GRANT ALL ON nex.colleague_relation TO nex;
 REVOKE ALL ON nex.colleague_relation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.colleague_relation TO curator;
 GRANT SELECT ON nex.colleague_relation TO PUBLIC;
+GRANT SELECT ON nex.colleague_relation TO DBSELECT;
 
 -- Set privilege on TABLE COLLEAGUE_KEYWORD
 ALTER TABLE nex.colleague_keyword OWNER TO nex;
@@ -159,6 +180,7 @@ GRANT ALL ON nex.colleague_keyword TO nex;
 REVOKE ALL ON nex.colleague_keyword FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.colleague_keyword TO curator;
 GRANT SELECT ON nex.colleague_keyword TO PUBLIC;
+GRANT SELECT ON nex.colleague_keyword TO DBSELECT;
 
 -- Set privilege on TABLE COLLEAGUE_LOCUS
 ALTER TABLE nex.colleague_locus OWNER TO nex;
@@ -166,6 +188,7 @@ GRANT ALL ON nex.colleague_locus TO nex;
 REVOKE ALL ON nex.colleague_locus FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.colleague_locus TO curator;
 GRANT SELECT ON nex.colleague_locus TO PUBLIC;
+GRANT SELECT ON nex.colleague_locus TO DBSELECT;
 
 -- Set privilege on TABLE COLLEAGUE_REFERENCE
 ALTER TABLE nex.colleague_reference OWNER TO nex;
@@ -173,6 +196,7 @@ GRANT ALL ON nex.colleague_reference TO nex;
 REVOKE ALL ON nex.colleague_reference FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.colleague_reference TO curator;
 GRANT SELECT ON nex.colleague_reference TO PUBLIC;
+GRANT SELECT ON nex.colleague_reference TO DBSELECT;
 
 -- Set privilege on TABLE COLLEAGUE_URL
 ALTER TABLE nex.colleague_url OWNER TO nex;
@@ -180,6 +204,7 @@ GRANT ALL ON nex.colleague_url TO nex;
 REVOKE ALL ON nex.colleague_url FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.colleague_url TO curator;
 GRANT SELECT ON nex.colleague_url TO PUBLIC;
+GRANT SELECT ON nex.colleague_url TO DBSELECT;
 
 -- Set privilege on TABLE CONTIG
 ALTER TABLE nex.contig OWNER TO nex;
@@ -187,6 +212,7 @@ GRANT ALL ON nex.contig TO nex;
 REVOKE ALL ON nex.contig FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.contig TO curator;
 GRANT SELECT ON nex.contig TO PUBLIC;
+GRANT SELECT ON nex.contig TO DBSELECT;
 
 -- Set privilege on TABLE CONTIGNOTE
 ALTER TABLE nex.contignote OWNER TO nex;
@@ -194,6 +220,7 @@ GRANT ALL ON nex.contignote TO nex;
 REVOKE ALL ON nex.contignote FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.contignote TO curator;
 GRANT SELECT ON nex.contignote TO PUBLIC;
+GRANT SELECT ON nex.contignote TO DBSELECT;
 
 -- Set privilege on TABLE CONTIGNOTE_REFERENCE
 ALTER TABLE nex.contignote_reference OWNER TO nex;
@@ -201,6 +228,7 @@ GRANT ALL ON nex.contignote_reference TO nex;
 REVOKE ALL ON nex.contignote_reference FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.contignote_reference TO curator;
 GRANT SELECT ON nex.contignote_reference TO PUBLIC;
+GRANT SELECT ON nex.contignote_reference TO DBSELECT;
 
 -- Set privilege on TABLE CONTIG_URL
 ALTER TABLE nex.contig_url OWNER TO nex;
@@ -208,6 +236,7 @@ GRANT ALL ON nex.contig_url TO nex;
 REVOKE ALL ON nex.contig_url FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.contig_url TO curator;
 GRANT SELECT ON nex.contig_url TO PUBLIC;
+GRANT SELECT ON nex.contig_url TO DBSELECT;
 
 -- Set privilege on TABLE CURATION_LOCUS
 ALTER TABLE nex.curation_locus OWNER TO nex;
@@ -215,6 +244,7 @@ GRANT ALL ON nex.curation_locus TO nex;
 REVOKE ALL ON nex.curation_locus FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.curation_locus TO curator;
 GRANT SELECT ON nex.curation_locus TO PUBLIC;
+GRANT SELECT ON nex.curation_locus TO DBSELECT;
 
 -- Set privilege on TABLE CURATION_REFERENCE
 ALTER TABLE nex.curation_reference OWNER TO nex;
@@ -222,6 +252,7 @@ GRANT ALL ON nex.curation_reference TO nex;
 REVOKE ALL ON nex.curation_reference FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.curation_reference TO curator;
 GRANT SELECT ON nex.curation_reference TO PUBLIC;
+GRANT SELECT ON nex.curation_reference TO DBSELECT;
 
 -- Set privilege on TABLE DATASET
 ALTER TABLE nex.dataset OWNER TO nex;
@@ -229,6 +260,7 @@ GRANT ALL ON nex.dataset TO nex;
 REVOKE ALL ON nex.dataset FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.dataset TO curator;
 GRANT SELECT ON nex.dataset TO PUBLIC;
+GRANT SELECT ON nex.dataset TO DBSELECT;
 
 -- Set privilege on TABLE DATASETLAB
 ALTER TABLE nex.datasetlab OWNER TO nex;
@@ -236,6 +268,7 @@ GRANT ALL ON nex.datasetlab TO nex;
 REVOKE ALL ON nex.datasetlab FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.datasetlab TO curator;
 GRANT SELECT ON nex.datasetlab TO PUBLIC;
+GRANT SELECT ON nex.datasetlab TO DBSELECT;
 
 -- Set privilege on TABLE DATASETSAMPLE
 ALTER TABLE nex.datasetsample OWNER TO nex;
@@ -243,6 +276,7 @@ GRANT ALL ON nex.datasetsample TO nex;
 REVOKE ALL ON nex.datasetsample FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.datasetsample TO curator;
 GRANT SELECT ON nex.datasetsample TO PUBLIC;
+GRANT SELECT ON nex.datasetsample TO DBSELECT;
 
 -- Set privilege on TABLE DATASETTRACK
 ALTER TABLE nex.datasettrack OWNER TO nex;
@@ -250,6 +284,7 @@ GRANT ALL ON nex.datasettrack TO nex;
 REVOKE ALL ON nex.datasettrack FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.datasettrack TO curator;
 GRANT SELECT ON nex.datasettrack TO PUBLIC;
+GRANT SELECT ON nex.datasettrack TO DBSELECT;
 
 -- Set privilege on TABLE DATASET_FILE
 ALTER TABLE nex.dataset_file OWNER TO nex;
@@ -257,6 +292,7 @@ GRANT ALL ON nex.dataset_file TO nex;
 REVOKE ALL ON nex.dataset_file FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.dataset_file TO curator;
 GRANT SELECT ON nex.dataset_file TO PUBLIC;
+GRANT SELECT ON nex.dataset_file TO DBSELECT;
 
 -- Set privilege on TABLE DATASET_KEYWORD
 ALTER TABLE nex.dataset_keyword OWNER TO nex;
@@ -264,6 +300,7 @@ GRANT ALL ON nex.dataset_keyword TO nex;
 REVOKE ALL ON nex.dataset_keyword FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.dataset_keyword TO curator;
 GRANT SELECT ON nex.dataset_keyword TO PUBLIC;
+GRANT SELECT ON nex.dataset_keyword TO DBSELECT;
 
 -- Set privilege on TABLE DATASET_REFERENCE
 ALTER TABLE nex.dataset_reference OWNER TO nex;
@@ -271,6 +308,7 @@ GRANT ALL ON nex.dataset_reference TO nex;
 REVOKE ALL ON nex.dataset_reference FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.dataset_reference TO curator;
 GRANT SELECT ON nex.dataset_reference TO PUBLIC;
+GRANT SELECT ON nex.dataset_reference TO DBSELECT;
 
 -- Set privilege on TABLE DATASET_URL
 ALTER TABLE nex.dataset_url OWNER TO nex;
@@ -278,6 +316,7 @@ GRANT ALL ON nex.dataset_url TO nex;
 REVOKE ALL ON nex.dataset_url FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.dataset_url TO curator;
 GRANT SELECT ON nex.dataset_url TO PUBLIC;
+GRANT SELECT ON nex.dataset_url TO DBSELECT;
 
 -- Set privilege on TABLE DBENTITY
 ALTER TABLE nex.dbentity OWNER TO nex;
@@ -285,6 +324,7 @@ GRANT ALL ON nex.dbentity TO nex;
 REVOKE ALL ON nex.dbentity FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.dbentity TO curator;
 GRANT SELECT ON nex.dbentity TO PUBLIC;
+GRANT SELECT ON nex.dbentity TO DBSELECT;
 
 -- Set privilege on TABLE DBUSER
 ALTER TABLE nex.dbuser OWNER TO nex;
@@ -292,6 +332,7 @@ GRANT ALL ON nex.dbuser TO nex;
 REVOKE ALL ON nex.dbuser FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE ON nex.dbuser TO curator;
 GRANT SELECT ON nex.dbuser TO PUBLIC;
+GRANT SELECT ON nex.dbuser TO DBSELECT;
 
 -- Set privilege on TABLE DELETELOG
 ALTER TABLE nex.deletelog OWNER TO nex;
@@ -299,6 +340,7 @@ GRANT ALL ON nex.deletelog TO nex;
 REVOKE ALL ON nex.deletelog FROM PUBLIC;
 GRANT SELECT,INSERT ON nex.deletelog TO curator;
 GRANT SELECT ON nex.deletelog TO PUBLIC;
+GRANT SELECT ON nex.deletelog TO DBSELECT;
 
 -- Set privilege on TABLE DNASEQUENCEANNOTATION
 ALTER TABLE nex.dnasequenceannotation OWNER TO nex;
@@ -306,6 +348,7 @@ GRANT ALL ON nex.dnasequenceannotation TO nex;
 REVOKE ALL ON nex.dnasequenceannotation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.dnasequenceannotation TO curator;
 GRANT SELECT ON nex.dnasequenceannotation TO PUBLIC;
+GRANT SELECT ON nex.dnasequenceannotation TO DBSELECT;
 
 -- Set privilege on TABLE DNASUBSEQUENCE
 ALTER TABLE nex.dnasubsequence OWNER TO nex;
@@ -313,6 +356,7 @@ GRANT ALL ON nex.dnasubsequence TO nex;
 REVOKE ALL ON nex.dnasubsequence FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.dnasubsequence TO curator;
 GRANT SELECT ON nex.dnasubsequence TO PUBLIC;
+GRANT SELECT ON nex.dnasubsequence TO DBSELECT;
 
 -- Set privilege on TABLE DISEASE
 ALTER TABLE nex.disease OWNER TO nex;
@@ -320,6 +364,7 @@ GRANT ALL ON nex.disease TO nex;
 REVOKE ALL ON nex.disease FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.disease TO curator;
 GRANT SELECT ON nex.disease TO PUBLIC;
+GRANT SELECT ON nex.disease TO DBSELECT;
 
 -- Set privilege on TABLE DISEASEANNOTATION
 ALTER TAble diseaseannotation OWNER TO nex;
@@ -327,6 +372,7 @@ GRANT ALL ON nex.diseaseannotation TO nex;
 REVOKE ALL ON nex.diseaseannotation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.diseaseannotation TO curator;
 GRANT SELECT ON nex.diseaseannotation TO PUBLIC;
+GRANT SELECT ON nex.diseaseannotation TO DBSELECT;
 
 -- Set privilege on TABLE DISEASESUBSET
 ALTER TABLE nex.diseasesubset OWNER TO nex;
@@ -334,6 +380,7 @@ GRANT ALL ON nex.diseasesubset TO nex;
 REVOKE ALL ON nex.diseasesubset FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.diseasesubset TO curator;
 GRANT SELECT ON nex.diseasesubset TO PUBLIC;
+GRANT SELECT ON nex.diseasesubset TO DBSELECT;
 
 -- Set privilege on TABLE DISEASESUBSETANNOTATION
 ALTER TABLE nex.diseasesubsetannotation OWNER TO nex;
@@ -341,6 +388,7 @@ GRANT ALL ON nex.diseasesubsetannotation TO nex;
 REVOKE ALL ON nex.diseasesubsetannotation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.diseasesubsetannotation TO curator;
 GRANT SELECT ON nex.diseasesubsetannotation TO PUBLIC;
+GRANT SELECT ON nex.diseasesubsetannotation TO DBSELECT;
 
 -- Set privilege on TABLE DISEASESUPPORTINGEVIDENCE
 ALTER TABLE nex.diseasesupportingevidence OWNER TO nex;
@@ -348,6 +396,7 @@ GRANT ALL ON nex.diseasesupportingevidence TO nex;
 REVOKE ALL ON nex.diseasesupportingevidence FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.diseasesupportingevidence TO curator;
 GRANT SELECT ON nex.diseasesupportingevidence TO PUBLIC;
+GRANT SELECT ON nex.diseasesupportingevidence TO DBSELECT;
 
 -- Set privilege on TABLE DISEASE_ALIAS
 ALTER TABLE nex.disease_alias OWNER TO nex;
@@ -355,6 +404,7 @@ GRANT ALL ON nex.disease_alias TO nex;
 REVOKE ALL ON nex.disease_alias FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.disease_alias TO curator;
 GRANT SELECT ON nex.disease_alias TO PUBLIC;
+GRANT SELECT ON nex.disease_alias TO DBSELECT;
 
 -- Set privilege on TABLE DISEASE_RELATION
 ALTER TABLE nex.disease_relation OWNER TO nex;
@@ -362,6 +412,7 @@ GRANT ALL ON nex.disease_relation TO nex;
 REVOKE ALL ON nex.disease_relation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.disease_relation TO curator;
 GRANT SELECT ON nex.disease_relation TO PUBLIC;
+GRANT SELECT ON nex.disease_relation TO DBSELECT;
 
 -- Set privilege on TABLE DISEASE_URL
 ALTER TABLE nex.disease_url OWNER TO nex;
@@ -369,6 +420,7 @@ GRANT ALL ON nex.disease_url TO nex;
 REVOKE ALL ON nex.disease_url FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.disease_url TO curator;
 GRANT SELECT ON nex.disease_url TO PUBLIC;
+GRANT SELECT ON nex.disease_url TO DBSELECT;
 
 -- Set privilege on TABLE EC
 ALTER TABLE nex.ec OWNER TO nex;
@@ -376,6 +428,7 @@ GRANT ALL ON nex.ec TO nex;
 REVOKE ALL ON nex.ec FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.ec TO curator;
 GRANT SELECT ON nex.ec TO PUBLIC;
+GRANT SELECT ON nex.ec TO DBSELECT;
 
 -- Set privilege on TABLE ECO
 ALTER TABLE nex.eco OWNER TO nex;
@@ -383,6 +436,7 @@ GRANT ALL ON nex.eco TO nex;
 REVOKE ALL ON nex.eco FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.eco TO curator;
 GRANT SELECT ON nex.eco TO PUBLIC;
+GRANT SELECT ON nex.eco TO DBSELECT;
 
 -- Set privilege on TABLE ECO_ALIAS
 ALTER TABLE nex.eco_alias OWNER TO nex;
@@ -390,6 +444,7 @@ GRANT ALL ON nex.eco_alias TO nex;
 REVOKE ALL ON nex.eco_alias FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.eco_alias TO curator;
 GRANT SELECT ON nex.eco_alias TO PUBLIC;
+GRANT SELECT ON nex.eco_alias TO DBSELECT;
 
 -- Set privilege on TABLE ECO_RELATION
 ALTER TABLE nex.eco_relation OWNER TO nex;
@@ -397,6 +452,7 @@ GRANT ALL ON nex.eco_relation TO nex;
 REVOKE ALL ON nex.eco_relation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.eco_relation TO curator;
 GRANT SELECT ON nex.eco_relation TO PUBLIC;
+GRANT SELECT ON nex.eco_relation TO DBSELECT;
 
 -- Set privilege on TABLE ECO_URL
 ALTER TABLE nex.eco_url OWNER TO nex;
@@ -404,6 +460,7 @@ GRANT ALL ON nex.eco_url TO nex;
 REVOKE ALL ON nex.eco_url FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.eco_url TO curator;
 GRANT SELECT ON nex.eco_url TO PUBLIC;
+GRANT SELECT ON nex.eco_url TO DBSELECT;
 
 -- Set privilege on TABLE EC_ALIAS
 ALTER TABLE nex.ec_alias OWNER TO nex;
@@ -411,6 +468,7 @@ GRANT ALL ON nex.ec_alias TO nex;
 REVOKE ALL ON nex.ec_alias FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.ec_alias TO curator;
 GRANT SELECT ON nex.ec_alias TO PUBLIC;
+GRANT SELECT ON nex.ec_alias TO DBSELECT;
 
 -- Set privilege on TABLE EC_URL
 ALTER TABLE nex.ec_url OWNER TO nex;
@@ -418,6 +476,7 @@ GRANT ALL ON nex.ec_url TO nex;
 REVOKE ALL ON nex.ec_url FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.ec_url TO curator;
 GRANT SELECT ON nex.ec_url TO PUBLIC;
+GRANT SELECT ON nex.ec_url TO DBSELECT;
 
 -- Set privilege on TABLE EDAM
 ALTER TABLE nex.edam OWNER TO nex;
@@ -425,6 +484,7 @@ GRANT ALL ON nex.edam TO nex;
 REVOKE ALL ON nex.edam FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.edam TO curator;
 GRANT SELECT ON nex.edam TO PUBLIC;
+GRANT SELECT ON nex.edam TO DBSELECT;
 
 -- Set privilege on TABLE EDAM_ALIAS
 ALTER TABLE nex.edam_alias OWNER TO nex;
@@ -432,6 +492,7 @@ GRANT ALL ON nex.edam_alias TO nex;
 REVOKE ALL ON nex.edam_alias FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.edam_alias TO curator;
 GRANT SELECT ON nex.edam_alias TO PUBLIC;
+GRANT SELECT ON nex.edam_alias TO DBSELECT;
 
 -- Set privilege on TABLE EDAM_RELATION
 ALTER TABLE nex.edam_relation OWNER TO nex;
@@ -439,6 +500,7 @@ GRANT ALL ON nex.edam_relation TO nex;
 REVOKE ALL ON nex.edam_relation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.edam_relation TO curator;
 GRANT SELECT ON nex.edam_relation TO PUBLIC;
+GRANT SELECT ON nex.edam_relation TO DBSELECT;
 
 -- Set privilege on TABLE EDAM_URL
 ALTER TABLE nex.edam_url OWNER TO nex;
@@ -446,6 +508,7 @@ GRANT ALL ON nex.edam_url TO nex;
 REVOKE ALL ON nex.edam_url FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.edam_url TO curator;
 GRANT SELECT ON nex.edam_url TO PUBLIC;
+GRANT SELECT ON nex.edam_url TO DBSELECT;
 
 -- Set privilege on TABLE ENZYMEANNOTATION
 ALTER TABLE nex.enzymeannotation OWNER TO nex;
@@ -453,6 +516,7 @@ GRANT ALL ON nex.enzymeannotation TO nex;
 REVOKE ALL ON nex.enzymeannotation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.enzymeannotation TO curator;
 GRANT SELECT ON nex.enzymeannotation TO PUBLIC;
+GRANT SELECT ON nex.enzymeannotation TO DBSELECT;
 
 -- Set privilege on TABLE EXPRESSIONANNOTATION
 ALTER TABLE nex.expressionannotation OWNER TO nex;
@@ -460,6 +524,7 @@ GRANT ALL ON nex.expressionannotation TO nex;
 REVOKE ALL ON nex.expressionannotation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.expressionannotation TO curator;
 GRANT SELECT ON nex.expressionannotation TO PUBLIC;
+GRANT SELECT ON nex.expressionannotation TO DBSELECT;
 
 -- Set privilege on TABLE FILEDBENTITY
 ALTER TABLE nex.filedbentity OWNER TO nex;
@@ -467,6 +532,7 @@ GRANT ALL ON nex.filedbentity TO nex;
 REVOKE ALL ON nex.filedbentity FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.filedbentity TO curator;
 GRANT SELECT ON nex.filedbentity TO PUBLIC;
+GRANT SELECT ON nex.filedbentity TO DBSELECT;
 
 -- Set privilege on TABLE PATH
 ALTER TABLE nex.path OWNER TO nex;
@@ -474,6 +540,7 @@ GRANT ALL ON nex.path TO nex;
 REVOKE ALL ON nex.path FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.path TO curator;
 GRANT SELECT ON nex.path TO PUBLIC;
+GRANT SELECT ON nex.path TO DBSELECT;
 
 -- Set privilege on TABLE FILE_PATH
 ALTER TABLE nex.file_path OWNER TO nex;
@@ -481,6 +548,7 @@ GRANT ALL ON nex.file_path TO nex;
 REVOKE ALL ON nex.file_path FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.file_path TO curator;
 GRANT SELECT ON nex.file_path TO PUBLIC;
+GRANT SELECT ON nex.file_path TO DBSELECT;
 
 -- Set privilege on TABLE FILE_KEYWORD
 ALTER TABLE nex.file_keyword OWNER TO nex;
@@ -488,6 +556,7 @@ GRANT ALL ON nex.file_keyword TO nex;
 REVOKE ALL ON nex.file_keyword FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.file_keyword TO curator;
 GRANT SELECT ON nex.file_keyword TO PUBLIC;
+GRANT SELECT ON nex.file_keyword TO DBSELECT;
 
 -- Set privilege on TABLE GENINTERACTIONANNOTATION
 ALTER TABLE nex.geninteractionannotation OWNER TO nex;
@@ -495,6 +564,7 @@ GRANT ALL ON nex.geninteractionannotation TO nex;
 REVOKE ALL ON nex.geninteractionannotation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.geninteractionannotation TO curator;
 GRANT SELECT ON nex.geninteractionannotation TO PUBLIC;
+GRANT SELECT ON nex.geninteractionannotation TO DBSELECT;
 
 -- Set privilege on TABLE GENOMERELEASE
 ALTER TABLE nex.genomerelease OWNER TO nex;
@@ -502,6 +572,7 @@ GRANT ALL ON nex.genomerelease TO nex;
 REVOKE ALL ON nex.genomerelease FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.genomerelease TO curator;
 GRANT SELECT ON nex.genomerelease TO PUBLIC;
+GRANT SELECT ON nex.genomerelease TO DBSELECT;
 
 -- Set privilege on TABLE GO
 ALTER TABLE nex.go OWNER TO nex;
@@ -509,6 +580,7 @@ GRANT ALL ON nex.go TO nex;
 REVOKE ALL ON nex.go FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.go TO curator;
 GRANT SELECT ON nex.go TO PUBLIC;
+GRANT SELECT ON nex.go TO DBSELECT;
 
 -- Set privilege on TABLE GOANNOTATION
 ALTER TABLE nex.goannotation OWNER TO nex;
@@ -516,6 +588,7 @@ GRANT ALL ON nex.goannotation TO nex;
 REVOKE ALL ON nex.goannotation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.goannotation TO curator;
 GRANT SELECT ON nex.goannotation TO PUBLIC;
+GRANT SELECT ON nex.goannotation TO DBSELECT;
 
 -- Set privilege on TABLE GOEXTENSION
 ALTER TABLE nex.goextension OWNER TO nex;
@@ -523,6 +596,7 @@ GRANT ALL ON nex.goextension TO nex;
 REVOKE ALL ON nex.goextension FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.goextension TO curator;
 GRANT SELECT ON nex.goextension TO PUBLIC;
+GRANT SELECT ON nex.goextension TO DBSELECT;
 
 -- Set privilege on TABLE GOSLIM
 ALTER TABLE nex.goslim OWNER TO nex;
@@ -530,6 +604,7 @@ GRANT ALL ON nex.goslim TO nex;
 REVOKE ALL ON nex.goslim FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.goslim TO curator;
 GRANT SELECT ON nex.goslim TO PUBLIC;
+GRANT SELECT ON nex.goslim TO DBSELECT;
 
 -- Set privilege on TABLE GOSLIMANNOTATION
 ALTER TABLE nex.goslimannotation OWNER TO nex;
@@ -537,6 +612,7 @@ GRANT ALL ON nex.goslimannotation TO nex;
 REVOKE ALL ON nex.goslimannotation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.goslimannotation TO curator;
 GRANT SELECT ON nex.goslimannotation TO PUBLIC;
+GRANT SELECT ON nex.goslimannotation TO DBSELECT;
 
 -- Set privilege on TABLE GOSUPPORTINGEVIDENCE
 ALTER TABLE nex.gosupportingevidence OWNER TO nex;
@@ -544,6 +620,7 @@ GRANT ALL ON nex.gosupportingevidence TO nex;
 REVOKE ALL ON nex.gosupportingevidence FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.gosupportingevidence TO curator;
 GRANT SELECT ON nex.gosupportingevidence TO PUBLIC;
+GRANT SELECT ON nex.gosupportingevidence TO DBSELECT;
 
 -- Set privilege on TABLE GO_ALIAS
 ALTER TABLE nex.go_alias OWNER TO nex;
@@ -551,6 +628,7 @@ GRANT ALL ON nex.go_alias TO nex;
 REVOKE ALL ON nex.go_alias FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.go_alias TO curator;
 GRANT SELECT ON nex.go_alias TO PUBLIC;
+GRANT SELECT ON nex.go_alias TO DBSELECT;
 
 -- Set privilege on TABLE GO_RELATION
 ALTER TABLE nex.go_relation OWNER TO nex;
@@ -558,6 +636,7 @@ GRANT ALL ON nex.go_relation TO nex;
 REVOKE ALL ON nex.go_relation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.go_relation TO curator;
 GRANT SELECT ON nex.go_relation TO PUBLIC;
+GRANT SELECT ON nex.go_relation TO DBSELECT;
 
 -- Set privilege on TABLE GO_URL
 ALTER TABLE nex.go_url OWNER TO nex;
@@ -565,6 +644,7 @@ GRANT ALL ON nex.go_url TO nex;
 REVOKE ALL ON nex.go_url FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.go_url TO curator;
 GRANT SELECT ON nex.go_url TO PUBLIC;
+GRANT SELECT ON nex.go_url TO DBSELECT;
 
 -- Set privilege on TABLE JOURNAL
 ALTER TABLE nex.journal OWNER TO nex;
@@ -572,6 +652,7 @@ GRANT ALL ON nex.journal TO nex;
 REVOKE ALL ON nex.journal FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.journal TO curator;
 GRANT SELECT ON nex.journal TO PUBLIC;
+GRANT SELECT ON nex.journal TO DBSELECT;
 
 -- Set privilege on TABLE KEYWORD
 ALTER TABLE nex.keyword OWNER TO nex;
@@ -579,6 +660,7 @@ GRANT ALL ON nex.keyword TO nex;
 REVOKE ALL ON nex.keyword FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.keyword TO curator;
 GRANT SELECT ON nex.keyword TO PUBLIC;
+GRANT SELECT ON nex.keyword TO DBSELECT;
 
 -- Set privilege on TABLE LITERATUREANNOTATION
 ALTER TABLE nex.literatureannotation OWNER TO nex;
@@ -586,6 +668,7 @@ GRANT ALL ON nex.literatureannotation TO nex;
 REVOKE ALL ON nex.literatureannotation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.literatureannotation TO curator;
 GRANT SELECT ON nex.literatureannotation TO PUBLIC;
+GRANT SELECT ON nex.literatureannotation TO DBSELECT;
 
 -- Set privilege on TABLE LOCUSDBENTITY
 ALTER TABLE nex.locusdbentity OWNER TO nex;
@@ -593,6 +676,7 @@ GRANT ALL ON nex.locusdbentity TO nex;
 REVOKE ALL ON nex.locusdbentity FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.locusdbentity TO curator;
 GRANT SELECT ON nex.locusdbentity TO PUBLIC;
+GRANT SELECT ON nex.locusdbentity TO DBSELECT;
 
 -- Set privilege on TABLE LOCUS_REFERENCE
 ALTER TABLE nex.locus_reference OWNER TO nex;
@@ -600,6 +684,7 @@ GRANT ALL ON nex.locus_reference TO nex;
 REVOKE ALL ON nex.locus_reference FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.locus_reference TO curator;
 GRANT SELECT ON nex.locus_reference TO PUBLIC;
+GRANT SELECT ON nex.locus_reference TO DBSELECT;
 
 -- Set privilege on TABLE LOCUSNOTE
 ALTER TABLE nex.locusnote OWNER TO nex;
@@ -607,6 +692,7 @@ GRANT ALL ON nex.locusnote TO nex;
 REVOKE ALL ON nex.locusnote FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.locusnote TO curator;
 GRANT SELECT ON nex.locusnote TO PUBLIC;
+GRANT SELECT ON nex.locusnote TO DBSELECT;
 
 -- Set privilege on TABLE LOCUSNOTE_REFERENCE
 ALTER TABLE nex.locusnote_reference OWNER TO nex;
@@ -614,6 +700,7 @@ GRANT ALL ON nex.locusnote_reference TO nex;
 REVOKE ALL ON nex.locusnote_reference FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.locusnote_reference TO curator;
 GRANT SELECT ON nex.locusnote_reference TO PUBLIC;
+GRANT SELECT ON nex.locusnote_reference TO DBSELECT;
 
 -- Set privilege on TABLE LOCUS_ALIAS
 ALTER TABLE nex.locus_alias OWNER TO nex;
@@ -621,6 +708,7 @@ GRANT ALL ON nex.locus_alias TO nex;
 REVOKE ALL ON nex.locus_alias FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.locus_alias TO curator;
 GRANT SELECT ON nex.locus_alias TO PUBLIC;
+GRANT SELECT ON nex.locus_alias TO DBSELECT;
 
 -- Set privilege on TABLE LOCUSALIAS_REFERENCE
  ALTER TABLE nex.locusalias_reference OWNER TO nex;
@@ -628,6 +716,7 @@ GRANT ALL ON nex.locusalias_reference TO nex;
 REVOKE ALL ON nex.locusalias_reference FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.locusalias_reference TO curator;
 GRANT SELECT ON nex.locusalias_reference TO PUBLIC;
+GRANT SELECT ON nex.locusalias_reference TO DBSELECT;
 
 -- Set privilege on TABLE LOCUS_RELATION
 ALTER TABLE nex.locus_relation OWNER TO nex;
@@ -635,6 +724,7 @@ GRANT ALL ON nex.locus_relation TO nex;
 REVOKE ALL ON nex.locus_relation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.locus_relation TO curator;
 GRANT SELECT ON nex.locus_relation TO PUBLIC;
+GRANT SELECT ON nex.locus_relation TO DBSELECT;
 
 -- Set privilege on TABLE LOCUSRELATION_REFERENCE
 ALTER TABLE nex.locusrelation_reference OWNER TO nex;
@@ -642,6 +732,7 @@ GRANT ALL ON nex.locusrelation_reference TO nex;
 REVOKE ALL ON nex.locusrelation_reference FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.locusrelation_reference TO curator;
 GRANT SELECT ON nex.locusrelation_reference TO PUBLIC;
+GRANT SELECT ON nex.locusrelation_reference TO DBSELECT;
 
 -- Set privilege on TABLE LOCUSSUMMARY
 ALTER TABLE nex.locussummary OWNER TO nex;
@@ -649,6 +740,7 @@ GRANT ALL ON nex.locussummary TO nex;
 REVOKE ALL ON nex.locussummary FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.locussummary TO curator;
 GRANT SELECT ON nex.locussummary TO PUBLIC;
+GRANT SELECT ON nex.locussummary TO DBSELECT;
 
 -- Set privilege on TABLE LOCUSSUMMARY_REFERENCE
 ALTER TABLE nex.locussummary_reference OWNER TO nex;
@@ -656,6 +748,7 @@ GRANT ALL ON nex.locussummary_reference TO nex;
 REVOKE ALL ON nex.locussummary_reference FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.locussummary_reference TO curator;
 GRANT SELECT ON nex.locussummary_reference TO PUBLIC;
+GRANT SELECT ON nex.locussummary_reference TO DBSELECT;
 
 -- Set privilege on TABLE LOCUS_URL
 ALTER TABLE nex.locus_url OWNER TO nex;
@@ -663,6 +756,7 @@ GRANT ALL ON nex.locus_url TO nex;
 REVOKE ALL ON nex.locus_url FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.locus_url TO curator;
 GRANT SELECT ON nex.locus_url TO PUBLIC;
+GRANT SELECT ON nex.locus_url TO DBSELECT;
 
 -- Set privilege on TABLE OBI
 ALTER TABLE nex.obi OWNER TO nex;
@@ -670,6 +764,7 @@ GRANT ALL ON nex.obi TO nex;
 REVOKE ALL ON nex.obi FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.obi TO curator;
 GRANT SELECT ON nex.obi TO PUBLIC;
+GRANT SELECT ON nex.obi TO DBSELECT;
 
 -- Set privilege on TABLE OBI_RELATION
 ALTER TABLE nex.obi_relation OWNER TO nex;
@@ -677,6 +772,7 @@ GRANT ALL ON nex.obi_relation TO nex;
 REVOKE ALL ON nex.obi_relation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.obi_relation TO curator;
 GRANT SELECT ON nex.obi_relation TO PUBLIC;
+GRANT SELECT ON nex.obi_relation TO DBSELECT;
 
 -- Set privilege on TABLE OBI_URL
 ALTER TABLE nex.obi_url OWNER TO nex;
@@ -684,6 +780,7 @@ GRANT ALL ON nex.obi_url TO nex;
 REVOKE ALL ON nex.obi_url FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.obi_url TO curator;
 GRANT SELECT ON nex.obi_url TO PUBLIC;
+GRANT SELECT ON nex.obi_url TO DBSELECT;
 
 -- Set privilege on TABLE PATHWAYANNOTATION
 ALTER TABLE nex.pathwayannotation OWNER TO nex;
@@ -691,6 +788,7 @@ GRANT ALL ON nex.pathwayannotation TO nex;
 REVOKE ALL ON nex.pathwayannotation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.pathwayannotation TO curator;
 GRANT SELECT ON nex.pathwayannotation TO PUBLIC;
+GRANT SELECT ON nex.pathwayannotation TO DBSELECT;
 
 -- Set privilege on TABLE PATHWAYDBENTITY
 ALTER TABLE nex.pathwaydbentity OWNER TO nex;
@@ -698,6 +796,7 @@ GRANT ALL ON nex.pathwaydbentity TO nex;
 REVOKE ALL ON nex.pathwaydbentity FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.pathwaydbentity TO curator;
 GRANT SELECT ON nex.pathwaydbentity TO PUBLIC;
+GRANT SELECT ON nex.pathwaydbentity TO DBSELECT;
 
 -- Set privilege on TABLE PATHWAY_ALIAS
 ALTER TABLE nex.pathway_alias OWNER TO nex;
@@ -705,6 +804,7 @@ GRANT ALL ON nex.pathway_alias TO nex;
 REVOKE ALL ON nex.pathway_alias FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.pathway_alias TO curator;
 GRANT SELECT ON nex.pathway_alias TO PUBLIC;
+GRANT SELECT ON nex.pathway_alias TO DBSELECT;
 
 -- Set privilege on TABLE PATHWAYSUMMARY
 ALTER TABLE nex.pathwaysummary OWNER TO nex;
@@ -712,6 +812,7 @@ GRANT ALL ON nex.pathwaysummary TO nex;
 REVOKE ALL ON nex.pathwaysummary FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.pathwaysummary TO curator;
 GRANT SELECT ON nex.pathwaysummary TO PUBLIC;
+GRANT SELECT ON nex.pathwaysummary TO DBSELECT;
 
 -- Set privilege on TABLE PATHWAYSUMMARY_REFERENCE
 ALTER TABLE nex.pathwaysummary_reference OWNER TO nex;
@@ -719,6 +820,7 @@ GRANT ALL ON nex.pathwaysummary_reference TO nex;
 REVOKE ALL ON nex.pathwaysummary_reference FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.pathwaysummary_reference TO curator;
 GRANT SELECT ON nex.pathwaysummary_reference TO PUBLIC;
+GRANT SELECT ON nex.pathwaysummary_reference TO DBSELECT;
 
 -- Set privilege on TABLE PATHWAY_URL
 ALTER TABLE nex.pathway_url OWNER TO nex;
@@ -726,6 +828,7 @@ GRANT ALL ON nex.pathway_url TO nex;
 REVOKE ALL ON nex.pathway_url FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.pathway_url TO curator;
 GRANT SELECT ON nex.pathway_url TO PUBLIC;
+GRANT SELECT ON nex.pathway_url TO DBSELECT;
 
 -- Set privilege on TABLE PHENOTYPE
 ALTER TABLE nex.phenotype OWNER TO nex;
@@ -733,6 +836,7 @@ GRANT ALL ON nex.phenotype TO nex;
 REVOKE ALL ON nex.phenotype FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.phenotype TO curator;
 GRANT SELECT ON nex.phenotype TO PUBLIC;
+GRANT SELECT ON nex.phenotype TO DBSELECT;
 
 -- Set privilege on TABLE PHENOTYPEANNOTATION
 ALTER TABLE nex.phenotypeannotation OWNER TO nex;
@@ -740,6 +844,7 @@ GRANT ALL ON nex.phenotypeannotation TO nex;
 REVOKE ALL ON nex.phenotypeannotation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.phenotypeannotation TO curator;
 GRANT SELECT ON nex.phenotypeannotation TO PUBLIC;
+GRANT SELECT ON nex.phenotypeannotation TO DBSELECT;
 
 -- Set privilege on TABLE PHENOTYPEANNOTATION_COND
 ALTER TABLE nex.phenotypeannotation_cond OWNER TO nex;
@@ -747,6 +852,7 @@ GRANT ALL ON nex.phenotypeannotation_cond TO nex;
 REVOKE ALL ON nex.phenotypeannotation_cond FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.phenotypeannotation_cond TO curator;
 GRANT SELECT ON nex.phenotypeannotation_cond TO PUBLIC;
+GRANT SELECT ON nex.phenotypeannotation_cond TO DBSELECT;
 
 -- Set privilege on TABLE PHYSINTERACTIONANNOTATION
 ALTER TABLE nex.physinteractionannotation OWNER TO nex;
@@ -754,6 +860,7 @@ GRANT ALL ON nex.physinteractionannotation TO nex;
 REVOKE ALL ON nex.physinteractionannotation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.physinteractionannotation TO curator;
 GRANT SELECT ON nex.physinteractionannotation TO PUBLIC;
+GRANT SELECT ON nex.physinteractionannotation TO DBSELECT;
 
 -- Set privilege on TABLE POSTTRANSLATIONANNOTATION
 ALTER TABLE nex.posttranslationannotation OWNER TO nex;
@@ -761,6 +868,7 @@ GRANT ALL ON nex.posttranslationannotation TO nex;
 REVOKE ALL ON nex.posttranslationannotation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.posttranslationannotation TO curator;
 GRANT SELECT ON nex.posttranslationannotation TO PUBLIC;
+GRANT SELECT ON nex.posttranslationannotation TO DBSELECT;
 
 -- Set privilege on TABLE PROTEINDOMAIN
 ALTER TABLE nex.proteindomain OWNER TO nex;
@@ -768,6 +876,7 @@ GRANT ALL ON nex.proteindomain TO nex;
 REVOKE ALL ON nex.proteindomain FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.proteindomain TO curator;
 GRANT SELECT ON nex.proteindomain TO PUBLIC;
+GRANT SELECT ON nex.proteindomain TO DBSELECT;
 
 -- Set privilege on TABLE PROTEINDOMAINANNOTATION
 ALTER TABLE nex.proteindomainannotation OWNER TO nex;
@@ -775,6 +884,7 @@ GRANT ALL ON nex.proteindomainannotation TO nex;
 REVOKE ALL ON nex.proteindomainannotation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.proteindomainannotation TO curator;
 GRANT SELECT ON nex.proteindomainannotation TO PUBLIC;
+GRANT SELECT ON nex.proteindomainannotation TO DBSELECT;
 
 -- Set privilege on TABLE PROTEINDOMAIN_URL
 ALTER TABLE nex.proteindomain_url OWNER TO nex;
@@ -782,6 +892,7 @@ GRANT ALL ON nex.proteindomain_url TO nex;
 REVOKE ALL ON nex.proteindomain_url FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.proteindomain_url TO curator;
 GRANT SELECT ON nex.proteindomain_url TO PUBLIC;
+GRANT SELECT ON nex.proteindomain_url TO DBSELECT;
 
 -- Set privilege on TABLE PROTEINEXPTANNOTATION
 ALTER TABLE nex.proteinexptannotation OWNER TO nex;
@@ -789,6 +900,7 @@ GRANT ALL ON nex.proteinexptannotation TO nex;
 REVOKE ALL ON nex.proteinexptannotation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.proteinexptannotation TO curator;
 GRANT SELECT ON nex.proteinexptannotation TO PUBLIC;
+GRANT SELECT ON nex.proteinexptannotation TO DBSELECT;
 
 -- Set privilege on TABLE PROTEINEXPTANNOTATION_COND
 ALTER TABLE nex.proteinexptannotation_cond OWNER TO nex;
@@ -796,6 +908,7 @@ GRANT ALL ON nex.proteinexptannotation_cond TO nex;
 REVOKE ALL ON nex.proteinexptannotation_cond FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.proteinexptannotation_cond TO curator;
 GRANT SELECT ON nex.proteinexptannotation_cond TO PUBLIC;
+GRANT SELECT ON nex.proteinexptannotation_cond TO DBSELECT;
 
 -- Set privilege on TABLE PROTEINSEQUENCEANNOTATION
 ALTER TABLE nex.proteinsequenceannotation OWNER TO nex;
@@ -803,6 +916,7 @@ GRANT ALL ON nex.proteinsequenceannotation TO nex;
 REVOKE ALL ON nex.proteinsequenceannotation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.proteinsequenceannotation TO curator;
 GRANT SELECT ON nex.proteinsequenceannotation TO PUBLIC;
+GRANT SELECT ON nex.proteinsequenceannotation TO DBSELECT;
 
 -- Set privilege on TABLE PROTEINSEQUENCE_DETAIL
 ALTER TABLE nex.proteinsequence_detail OWNER TO nex;
@@ -810,6 +924,7 @@ GRANT ALL ON nex.proteinsequence_detail TO nex;
 REVOKE ALL ON nex.proteinsequence_detail FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.proteinsequence_detail TO curator;
 GRANT SELECT ON nex.proteinsequence_detail TO PUBLIC;
+GRANT SELECT ON nex.proteinsequence_detail TO DBSELECT;
 
 -- Set privilege on TABLE PSIMOD
 ALTER TABLE nex.psimod OWNER TO nex;
@@ -817,6 +932,7 @@ GRANT ALL ON nex.psimod TO nex;
 REVOKE ALL ON nex.psimod FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.psimod TO curator;
 GRANT SELECT ON nex.psimod TO PUBLIC;
+GRANT SELECT ON nex.psimod TO DBSELECT;
 
 -- Set privilege on TABLE PSIMOD_RELATION
 ALTER TABLE nex.psimod_relation OWNER TO nex;
@@ -824,6 +940,7 @@ GRANT ALL ON nex.psimod_relation TO nex;
 REVOKE ALL ON nex.psimod_relation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.psimod_relation TO curator;
 GRANT SELECT ON nex.psimod_relation TO PUBLIC;
+GRANT SELECT ON nex.psimod_relation TO DBSELECT;
 
 -- Set privilege on TABLE PSIMOD_URL
 ALTER TABLE nex.psimod_url OWNER TO nex;
@@ -831,6 +948,7 @@ GRANT ALL ON nex.psimod_url TO nex;
 REVOKE ALL ON nex.psimod_url FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.psimod_url TO curator;
 GRANT SELECT ON nex.psimod_url TO PUBLIC;
+GRANT SELECT ON nex.psimod_url TO DBSELECT;
 
 -- Set privilege on TABLE REFERENCEDBENTITY
 ALTER TABLE nex.referencedbentity OWNER TO nex;
@@ -838,6 +956,7 @@ GRANT ALL ON nex.referencedbentity TO nex;
 REVOKE ALL ON nex.referencedbentity FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.referencedbentity TO curator;
 GRANT SELECT ON nex.referencedbentity TO PUBLIC;
+GRANT SELECT ON nex.referencedbentity TO DBSELECT;
 
 -- Set privilege on TABLE REFERENCETRIAGE
 ALTER TABLE nex.referencetriage OWNER TO nex;
@@ -845,6 +964,7 @@ GRANT ALL ON nex.referencetriage TO nex;
 REVOKE ALL ON nex.referencetriage FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.referencetriage TO curator;
 GRANT SELECT ON nex.referencetriage TO PUBLIC;
+GRANT SELECT ON nex.referencetriage TO DBSELECT;
 
 -- Set privilege on TABLE REFERENCE_ALIAS
 ALTER TABLE nex.reference_alias OWNER TO nex;
@@ -852,6 +972,7 @@ GRANT ALL ON nex.reference_alias TO nex;
 REVOKE ALL ON nex.reference_alias FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.reference_alias TO curator;
 GRANT SELECT ON nex.reference_alias TO PUBLIC;
+GRANT SELECT ON nex.reference_alias TO DBSELECT;
 
 -- Set privilege on TABLE REFERENCEAUTHOR
 ALTER TABLE nex.referenceauthor OWNER TO nex;
@@ -859,6 +980,7 @@ GRANT ALL ON nex.referenceauthor TO nex;
 REVOKE ALL ON nex.referenceauthor FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.referenceauthor TO curator;
 GRANT SELECT ON nex.referenceauthor TO PUBLIC;
+GRANT SELECT ON nex.referenceauthor TO DBSELECT;
 
 -- Set privilege on TABLE REFERENCE_RELATION
 ALTER TABLE nex.reference_relation OWNER TO nex;
@@ -866,6 +988,7 @@ GRANT ALL ON nex.reference_relation TO nex;
 REVOKE ALL ON nex.reference_relation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.reference_relation TO curator;
 GRANT SELECT ON nex.reference_relation TO PUBLIC;
+GRANT SELECT ON nex.reference_relation TO DBSELECT;
 
 -- Set privilege on TABLE REFERENCEDELETED
 ALTER TABLE nex.referencedeleted OWNER TO nex;
@@ -873,6 +996,7 @@ GRANT ALL ON nex.referencedeleted TO nex;
 REVOKE ALL ON nex.referencedeleted FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.referencedeleted TO curator;
 GRANT SELECT ON nex.referencedeleted TO PUBLIC;
+GRANT SELECT ON nex.referencedeleted TO DBSELECT;
 
 -- Set privilege on TABLE REFERENCEDOCUMENT
 ALTER TABLE nex.referencedocument OWNER TO nex;
@@ -880,6 +1004,7 @@ GRANT ALL ON nex.referencedocument TO nex;
 REVOKE ALL ON nex.referencedocument FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.referencedocument TO curator;
 GRANT SELECT ON nex.referencedocument TO PUBLIC;
+GRANT SELECT ON nex.referencedocument TO DBSELECT;
 
 -- Set privilege on TABLE REFERENCE_FILE
 ALTER TABLE nex.reference_file OWNER TO nex;
@@ -887,6 +1012,7 @@ GRANT ALL ON nex.reference_file TO nex;
 REVOKE ALL ON nex.reference_file FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.reference_file TO curator;
 GRANT SELECT ON nex.reference_file TO PUBLIC;
+GRANT SELECT ON nex.reference_file TO DBSELECT;
 
 -- Set privilege on TABLE REFERENCETYPE
 ALTER TABLE nex.referencetype OWNER TO nex;
@@ -894,6 +1020,7 @@ GRANT ALL ON nex.referencetype TO nex;
 REVOKE ALL ON nex.referencetype FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.referencetype TO curator;
 GRANT SELECT ON nex.referencetype TO PUBLIC;
+GRANT SELECT ON nex.referencetype TO DBSELECT;
 
 -- Set privilege on TABLE REFERENCEUNLINK
 ALTER TABLE nex.referenceunlink OWNER TO nex;
@@ -901,6 +1028,7 @@ GRANT ALL ON nex.referenceunlink TO nex;
 REVOKE ALL ON nex.referenceunlink FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.referenceunlink TO curator;
 GRANT SELECT ON nex.referenceunlink TO PUBLIC;
+GRANT SELECT ON nex.referenceunlink TO DBSELECT;
 
 -- Set privilege on TABLE REFERENCE_URL
 ALTER TABLE nex.reference_url OWNER TO nex;
@@ -908,6 +1036,7 @@ GRANT ALL ON nex.reference_url TO nex;
 REVOKE ALL ON nex.reference_url FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.reference_url TO curator;
 GRANT SELECT ON nex.reference_url TO PUBLIC;
+GRANT SELECT ON nex.reference_url TO DBSELECT;
 
 -- Set privilege on TABLE REGULATIONANNOTATION  
 ALTER TABLE nex.regulationannotation OWNER TO nex;
@@ -915,6 +1044,7 @@ GRANT ALL ON nex.regulationannotation TO nex;
 REVOKE ALL ON nex.regulationannotation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.regulationannotation TO curator;
 GRANT SELECT ON nex.regulationannotation TO PUBLIC;
+GRANT SELECT ON nex.regulationannotation TO DBSELECT;
 
 -- Set privilege on TABLE REPORTER
 ALTER TABLE nex.reporter OWNER TO nex;
@@ -922,6 +1052,7 @@ GRANT ALL ON nex.reporter TO nex;
 REVOKE ALL ON nex.reporter FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.reporter TO curator;
 GRANT SELECT ON nex.reporter TO PUBLIC;
+GRANT SELECT ON nex.reporter TO DBSELECT;
 
 -- Set privilege on TABLE RESERVEDNAME
 ALTER TABLE nex.reservedname OWNER TO nex;
@@ -929,6 +1060,7 @@ GRANT ALL ON nex.reservedname TO nex;
 REVOKE ALL ON nex.reservedname FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.reservedname TO curator;
 GRANT SELECT ON nex.reservedname TO PUBLIC;
+GRANT SELECT ON nex.reservedname TO DBSELECT;
 
 -- Set privilege on TABLE RO
 ALTER TABLE nex.ro OWNER TO nex;
@@ -936,6 +1068,7 @@ GRANT ALL ON nex.ro TO nex;
 REVOKE ALL ON nex.ro FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.ro TO curator;
 GRANT SELECT ON nex.ro TO PUBLIC;
+GRANT SELECT ON nex.ro TO DBSELECT;
 
 -- Set privilege on TABLE RO_URL
 ALTER TABLE nex.ro_url OWNER TO nex;
@@ -943,6 +1076,7 @@ GRANT ALL ON nex.ro_url TO nex;
 REVOKE ALL ON nex.ro_url FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.ro_url TO curator;
 GRANT SELECT ON nex.ro_url TO PUBLIC;
+GRANT SELECT ON nex.ro_url TO DBSELECT;
 
 -- Set privilege on TABLE SGDID
 ALTER TABLE nex.sgdid OWNER TO nex;
@@ -950,6 +1084,7 @@ GRANT ALL ON nex.sgdid TO nex;
 REVOKE ALL ON nex.sgdid FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE ON nex.sgdid TO curator;
 GRANT SELECT ON nex.sgdid TO PUBLIC;
+GRANT SELECT ON nex.sgdid TO DBSELECT;
 
 -- Set privilege on TABLE SO
 ALTER TABLE nex.so OWNER TO nex;
@@ -957,6 +1092,7 @@ GRANT ALL ON nex.so TO nex;
 REVOKE ALL ON nex.so FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.so TO curator;
 GRANT SELECT ON nex.so TO PUBLIC;
+GRANT SELECT ON nex.so TO DBSELECT;
 
 -- Set privilege on TABLE SOURCE
 ALTER TABLE nex.source OWNER TO nex;
@@ -964,6 +1100,7 @@ GRANT ALL ON nex.source TO nex;
 REVOKE ALL ON nex.source FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.source TO curator;
 GRANT SELECT ON nex.source TO PUBLIC;
+GRANT SELECT ON nex.source TO DBSELECT;
 
 -- Set privilege on TABLE SO_ALIAS
 ALTER TABLE nex.so_alias OWNER TO nex;
@@ -971,6 +1108,7 @@ GRANT ALL ON nex.so_alias TO nex;
 REVOKE ALL ON nex.so_alias FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.so_alias TO curator;
 GRANT SELECT ON nex.so_alias TO PUBLIC;
+GRANT SELECT ON nex.so_alias TO DBSELECT;
 
 -- Set privilege on TABLE SO_RELATION
 ALTER TABLE nex.so_relation OWNER TO nex;
@@ -978,6 +1116,7 @@ GRANT ALL ON nex.so_relation TO nex;
 REVOKE ALL ON nex.so_relation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.so_relation TO curator;
 GRANT SELECT ON nex.so_relation TO PUBLIC;
+GRANT SELECT ON nex.so_relation TO DBSELECT;
 
 -- Set privilege on TABLE SO_URL
 ALTER TABLE nex.so_url OWNER TO nex;
@@ -985,6 +1124,7 @@ GRANT ALL ON nex.so_url TO nex;
 REVOKE ALL ON nex.so_url FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.so_url TO curator;
 GRANT SELECT ON nex.so_url TO PUBLIC;
+GRANT SELECT ON nex.so_url TO DBSELECT;
 
 -- Set privilege on TABLE STRAINDBENTITY
 ALTER TABLE nex.straindbentity OWNER TO nex;
@@ -992,6 +1132,7 @@ GRANT ALL ON nex.straindbentity TO nex;
 REVOKE ALL ON nex.straindbentity FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.straindbentity TO curator;
 GRANT SELECT ON nex.straindbentity TO PUBLIC;
+GRANT SELECT ON nex.straindbentity TO DBSELECT;
 
 -- Set privilege on TABLE STRAINSUMMARY
 ALTER TABLE nex.strainsummary OWNER TO nex;
@@ -999,6 +1140,7 @@ GRANT ALL ON nex.strainsummary TO nex;
 REVOKE ALL ON nex.strainsummary FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.strainsummary TO curator;
 GRANT SELECT ON nex.strainsummary TO PUBLIC;
+GRANT SELECT ON nex.strainsummary TO DBSELECT;
 
 -- Set privilege on TABLE STRAINSUMMARY_REFERENCE
 ALTER TABLE nex.strainsummary_reference OWNER TO nex;
@@ -1006,6 +1148,7 @@ GRANT ALL ON nex.strainsummary_reference TO nex;
 REVOKE ALL ON nex.strainsummary_reference FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.strainsummary_reference TO curator;
 GRANT SELECT ON nex.strainsummary_reference TO PUBLIC;
+GRANT SELECT ON nex.strainsummary_reference TO DBSELECT;
 
 -- Set privilege on TABLE STRAIN_URL
 ALTER TABLE nex.strain_url OWNER TO nex;
@@ -1013,6 +1156,7 @@ GRANT ALL ON nex.strain_url TO nex;
 REVOKE ALL ON nex.strain_url FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.strain_url TO curator;
 GRANT SELECT ON nex.strain_url TO PUBLIC;
+GRANT SELECT ON nex.strain_url TO DBSELECT;
 
 -- Set privilege on TABLE TAXONOMY
 ALTER TABLE nex.taxonomy OWNER TO nex;
@@ -1020,6 +1164,7 @@ GRANT ALL ON nex.taxonomy TO nex;
 REVOKE ALL ON nex.taxonomy FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.taxonomy TO curator;
 GRANT SELECT ON nex.taxonomy TO PUBLIC;
+GRANT SELECT ON nex.taxonomy TO DBSELECT;
 
 -- Set privilege on TABLE TAXONOMY_ALIAS
 ALTER TABLE nex.taxonomy_alias OWNER TO nex;
@@ -1027,6 +1172,7 @@ GRANT ALL ON nex.taxonomy_alias TO nex;
 REVOKE ALL ON nex.taxonomy_alias FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.taxonomy_alias TO curator;
 GRANT SELECT ON nex.taxonomy_alias TO PUBLIC;
+GRANT SELECT ON nex.taxonomy_alias TO DBSELECT;
 
 -- Set privilege on TABLE TAXONOMY_RELATION
 ALTER TABLE nex.taxonomy_relation OWNER TO nex;
@@ -1034,6 +1180,7 @@ GRANT ALL ON nex.taxonomy_relation TO nex;
 REVOKE ALL ON nex.taxonomy_relation FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.taxonomy_relation TO curator;
 GRANT SELECT ON nex.taxonomy_relation TO PUBLIC;
+GRANT SELECT ON nex.taxonomy_relation TO DBSELECT;
 
 -- Set privilege on TABLE TAXONOMY_URL
 ALTER TABLE nex.taxonomy_url OWNER TO nex;
@@ -1041,6 +1188,7 @@ GRANT ALL ON nex.taxonomy_url TO nex;
 REVOKE ALL ON nex.taxonomy_url FROM PUBLIC;
 GRANT SELECT,INSERT,UPDATE,DELETE ON nex.taxonomy_url TO curator;
 GRANT SELECT ON nex.taxonomy_url TO PUBLIC;
+GRANT SELECT ON nex.taxonomy_url TO DBSELECT;
 
 -- Set privilege on TABLE UPDATELOG
 ALTER TABLE nex.updatelog OWNER TO nex;
@@ -1048,6 +1196,7 @@ GRANT ALL ON nex.updatelog TO nex;
 REVOKE ALL ON nex.updatelog FROM PUBLIC;
 GRANT SELECT,INSERT ON nex.updatelog TO curator;
 GRANT SELECT ON nex.updatelog TO PUBLIC;
+GRANT SELECT ON nex.updatelog TO DBSELECT;
 
 -- Set privilege on SEQUENCES
 grant select on all sequences in schema nex to curator;
