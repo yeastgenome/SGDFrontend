@@ -107,7 +107,6 @@ class LitTriageIndex extends Component {
         <div className={style.litTableContainer}>
           {this.renderMessage()}
           {this.renderEntries()}
-          }
         </div>
       </div>
     );
