@@ -23,12 +23,6 @@ export const allTags = [
     hasGenes: false,
     inTriage: true
   },
-  // {
-  //   name: 'homology_disease',
-  //   label: 'Homology/Disease',
-  //   hasGenes: true,
-  //   inTriage: false
-  // },
   {
     name: 'go',
     label: 'GO information (Primary Literature)',
@@ -65,6 +59,12 @@ export const allTags = [
     hasGenes: true,
     inTriage: true
   },
+  // {
+  //   name: 'homology_disease',
+  //   label: 'Homology/Disease',
+  //   hasGenes: true,
+  //   inTriage: false
+  // },
   // {
   //   name: 'go_needs_review',
   //   label: 'GO needs review',

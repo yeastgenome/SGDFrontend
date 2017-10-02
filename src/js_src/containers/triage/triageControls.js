@@ -1,9 +1,11 @@
+/*eslint-disable no-unreachable */
+
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import style from './style.css';
 import fetchData from '../../lib/fetchData';
-import { updateTriageEntry, updateActiveTags, removeEntry } from './triageActions';
+import { updateTriageEntry, updateLastPromoted, removeEntry } from './triageActions';
 import { setMessage, setError, clearError } from '../../actions/metaActions';
 import TagList from '../../components/tagList';
 import Loader from '../../components/loader';
@@ -64,7 +66,7 @@ class TriageControls extends Component {
     this.setState({ isPending: true });
     let id = this.props.entry.curation_id;
     let url = `${TRIAGE_URL}/${id}/${PROMOTE_URL_SUFFIX}`;
-    entry.data.tags = entry.data.tags || [];
+    entry.tags = entry.tags || [];
     let fetchOptions = {
       type: 'PUT',
       data: JSON.stringify(entry),
@@ -75,9 +77,8 @@ class TriageControls extends Component {
       }
     };
     fetchData(url, fetchOptions).then( (data) => {
-      entry.sgdid = data.sgdid;
       this.props.dispatch(removeEntry(id));
-      this.props.dispatch(updateActiveTags(entry));
+      this.props.dispatch(updateLastPromoted(data));
       this.props.dispatch(clearError());
       // scroll to top of page
       window.scrollTo(0, 0);
@@ -104,9 +105,14 @@ class TriageControls extends Component {
   }
 
   renderTags() {
+    let handleTagUpdate = (newTags) => {
+      let newEntry = this.props.entry;
+      newEntry.tags = newTags;
+      this.saveUpdatedEntry(newEntry, true);
+    };
     return (
       <div ref='tagList'>
-        <TagList entry={this.props.entry} onUpdate={this.saveUpdatedEntry.bind(this)} isTriage />
+        <TagList tags={this.props.entry.tags} onUpdate={handleTagUpdate.bind(this)} isTriage />
       </div>
     );
   }

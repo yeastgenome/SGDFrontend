@@ -73,6 +73,7 @@ def reference_triage_id_delete(request):
 @view_config(route_name='reference_triage_id', renderer='json', request_method='GET')
 @authenticate
 def reference_triage_id(request):
+    print('LOOKING FOR YOU')
     id = request.matchdict['id'].upper()
     triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
     if triage:
@@ -102,7 +103,8 @@ def reference_triage_id_update(request):
 @view_config(route_name='reference_triage_promote', renderer='json', request_method='PUT')
 @authenticate
 def reference_triage_promote(request):
-    tags = request.json['data']['tags']
+    tags = request.json['tags']
+    print(tags)
     username = request.session['username']
     # validate tags before doing anything else
     try:
@@ -112,22 +114,11 @@ def reference_triage_promote(request):
 
     id = request.matchdict['id'].upper()
     triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
+    new_reference_id = None
     if triage:
-        # tags = []
-        # for tag in request.json['data']['tags']:
-        #     if tag.get('genes'):
-        #         genes = tag.get('genes').split(',')
-        #         for g in genes:
-        #             uppername = g.upper().strip()
-        #             locus = DBSession.query(Locusdbentity).filter(or_(Locusdbentity.display_name==uppername, Locusdbentity.format_name==uppername)).one_or_none()
-        #             if locus is None:
-        #                 return HTTPBadRequest(body=json.dumps({'error': 'Invalid gene name ' + g}))
-        #             tags.append((tag['name'], tag['comment'], locus.dbentity_id))
-        #     else:
-        #         tags.append((tag['name'], tag['comment'], None))
-
         try:
             new_reference = add_paper(triage.pmid, request.json['data']['assignee'])
+            new_reference_id = new_reference.dbentity_id
             DBSession.delete(triage)
             transaction.commit()
         except IntegrityError as e:
@@ -164,17 +155,19 @@ def reference_triage_promote(request):
         # except:
         #     traceback.print_exc()
         #     DBSession.rollback()
+        new_reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=new_reference_id).one_or_none()
+        make_transient(new_reference)
         new_reference.update_tags(tags, username)
         pusher = get_pusher_client()
         pusher.trigger('sgd', 'triageUpdate', {})
         pusher.trigger('sgd', 'curateHomeUpdate', {})
-        return True
+        return new_reference.annotations_summary_to_dict()
     else:
         return HTTPNotFound()
 
-@view_config(route_name='reference_triage', renderer='json', request_method='GET')
+@view_config(route_name='reference_triage_index', renderer='json', request_method='GET')
 @authenticate
-def reference_triage(request):
+def reference_triage_index(request):
     triages = DBSession.query(Referencetriage).order_by(Referencetriage.date_created.asc()).all()
     return {'entries': [t.to_dict() for t in triages]}
 
@@ -240,16 +233,20 @@ def reference_tags(request):
 @view_config(route_name='update_reference_tags', renderer='json', request_method='PUT')
 @authenticate
 def update_reference_tags(request):
-    id = extract_id_request(request, 'reference', 'id', True)
-    tags = request.json['tags']
-    username = request.session['username']
-    if id:
-        reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=id).one_or_none()
-    else:
-        reference = DBSession.query(Referencedbentity).filter_by(sgdid=request.matchdict['id']).one_or_none()
-    make_transient(reference)
-    reference.update_tags(tags, username)
-    return reference.get_tags()
+    try:
+        id = extract_id_request(request, 'reference', 'id', True)
+        tags = request.json['tags']
+        username = request.session['username']
+        if id:
+            reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=id).one_or_none()
+        else:
+            reference = DBSession.query(Referencedbentity).filter_by(sgdid=request.matchdict['id']).one_or_none()
+        make_transient(reference)
+        reference.update_tags(tags, username)
+        return reference.get_tags()
+    except Exception, e:
+        traceback.print_exc()
+        return HTTPBadRequest(body=json.dumps({ 'error': str(e) }), content_type='text/json')
 
 @view_config(route_name='get_recent_annotations', request_method='GET', renderer='json')
 @authenticate
@@ -257,7 +254,7 @@ def get_recent_annotations(request):
     limit = 25
     annotations = []
     recent_summaries = DBSession.query(Locussummary).order_by(Locussummary.date_created.desc()).limit(limit).all()
-    recent_literature = DBSession.query(Referencedbentity).order_by(Referencedbentity.dbentity_id.desc()).limit(limit * 2).all()
+    recent_literature = DBSession.query(Referencedbentity).order_by(Referencedbentity.dbentity_id.desc()).limit(limit).all()
     for d in recent_literature:
         annotations.append(d.annotations_summary_to_dict())
     for d in recent_summaries:
