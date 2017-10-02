@@ -1838,7 +1838,7 @@ class Referencedbentity(Dbentity):
                 gene_ids = []
                 # add tags by gene
                 if len(raw_genes):
-                    gene_ids = raw_genes.split('|')
+                    gene_ids = raw_genes.strip().split('|')
                     for g_id in gene_ids:
                         g_id = g_id.upper()
                         gene_dbentity_id = curator_session.query(Locusdbentity.dbentity_id).filter(or_(Locusdbentity.display_name == g_id, Locusdbentity.format_name == g_id)).one_or_none()[0]
