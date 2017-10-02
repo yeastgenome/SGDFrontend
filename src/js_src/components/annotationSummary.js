@@ -4,6 +4,8 @@ import { Link } from 'react-router';
 
 const PREVIEW_URL = 'https://preview.qa.yeastgenome.org';
 
+import TagList from './tagList';
+
 class AnnotationSummary extends Component {
   renderUpdatedBy(d) {
     if (d.date_created && d.created_by) {
@@ -21,6 +23,11 @@ class AnnotationSummary extends Component {
     return null;
   }
 
+  renderTags(d) {
+    if (!d.tags) return null;
+    return <TagList tags={d.tags} isReadOnly />;
+  }
+
   renderAnnotations() {
     let nodes = this.props.annotations.map( (d, i) => {
       let previewUrl = `${PREVIEW_URL}${d.href}`;
@@ -35,6 +42,7 @@ class AnnotationSummary extends Component {
             <CategoryLabel category={d.category} hideLabel /> <a href={previewUrl} target='_new'>{d.name}</a> {d.type} {this.renderUpdatedBy(d)} {curateNode}
           </p>
           {this.renderBlock(d)}
+          {this.renderTags(d)}
         </div>
       );
     });
@@ -43,7 +51,7 @@ class AnnotationSummary extends Component {
 
   renderMessage() {
     if (this.props.hideMessage) return null;
-    let message = this.props.message || 'annotations successfully uploaded.';
+    let message = this.props.message || 'annotations successfully uploaded';
     return <p>{this.props.annotations.length.toLocaleString()} {message}</p>;
   }
 

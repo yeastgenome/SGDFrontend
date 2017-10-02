@@ -88,6 +88,23 @@ class TagList extends Component {
     }
   }
 
+  renderReadNode(d) {
+    let comment = d.comment || '';
+    let commentNode = comment.length ? <span>comment: {comment}</span> : null;
+    let genes = d.genes.split('|').join(' ');
+    return (
+      <div key={`sRTag${d.name}`} style={{ marginLeft: '3rem' }}>
+        <div>
+          <a className={`button small ${style.tagButton}`}>
+            {d.label}
+          </a>
+          {genes}
+        </div>
+        {commentNode}
+      </div>
+    );
+  }
+
   renderTags() {
     let entryTags = this.getData();
     let nodes = entryTags.map( (d, i) => {
@@ -99,6 +116,7 @@ class TagList extends Component {
         e.preventDefault();
         this.toggleSelected(d.name);
       };
+      if (this.props.isReadOnly) return this.renderReadNode(d);
       return (
         <div key={`sTag${i}`}>
           <a className={`button small ${style.tagButton} ${classSuffix}`} onClick={_onClick}>
@@ -125,7 +143,7 @@ class TagList extends Component {
 
   render() {
     return (
-      <div>
+      <div style={{ marginBottom: '1rem' }}>
         {this.renderTags()}
       </div>
     );
