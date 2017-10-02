@@ -104,18 +104,17 @@ def reference_triage_id_update(request):
 @authenticate
 def reference_triage_promote(request):
     tags = request.json['tags']
-    print(tags)
     username = request.session['username']
     # validate tags before doing anything else
     try:
         validate_tags(tags)
     except Exception, e:
         return HTTPBadRequest(body=json.dumps({'error': str(e) }))
-
     id = request.matchdict['id'].upper()
     triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
     new_reference_id = None
     if triage:
+        # promote
         try:
             new_reference = add_paper(triage.pmid, request.json['data']['assignee'])
             new_reference_id = new_reference.dbentity_id
@@ -128,33 +127,7 @@ def reference_triage_promote(request):
         except:
             traceback.print_exc()
             return HTTPBadRequest(body=json.dumps({'error': 'Error importing PMID into the database. Verify that PMID is valid and not already present in SGD.'}))
-        
-        # # HANDLE TAGS
-        # # track which loci have primary annotations for this reference to only have one primary per reference
-        # primary_obj = {}
-        # for i in xrange(len(tags)):
-        #     tag_slug = tags[i][0]
-        #     comment = tags[i][1]
-        #     locus_dbentity_id = tags[i][2]
-        #     curation_ref = CurationReference.factory(reference_id, tag_slug, comment, locus_dbentity_id, request.json['data']['assignee'])
-        #     if curation_ref:
-        #         DBSession.add(curation_ref)
-        #     lit_annotation = Literatureannotation.factory(reference_id, tag_slug, locus_dbentity_id, request.json['data']['assignee'])
-        #     if lit_annotation:
-        #         # prevent multiple primary lit tags
-        #         if lit_annotation.topic == 'Primary Literature':
-        #             if locus_dbentity_id in primary_obj.keys():
-        #                 continue
-        #             else:
-        #                 primary_obj[locus_dbentity_id] = True
-        #         DBSession.add(lit_annotation)
-
-        # try:
-        #     DBSession.flush()
-        #     transaction.commit()
-        # except:
-        #     traceback.print_exc()
-        #     DBSession.rollback()
+        # update tags
         new_reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=new_reference_id).one_or_none()
         make_transient(new_reference)
         new_reference.update_tags(tags, username)
