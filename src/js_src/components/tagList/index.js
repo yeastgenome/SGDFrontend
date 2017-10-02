@@ -6,9 +6,7 @@ import { allTags } from '../../containers/curateLit/litConstants';
 
 class TagList extends Component {
   updateTags(newTags) {
-    let newEntry = this.props.entry;
-    newEntry.data.tags = newTags;
-    this.props.onUpdate(newEntry, true);
+    this.props.onUpdate(newTags, true);
   }
 
   handleCommentChange(_name, _comment) {
@@ -26,7 +24,7 @@ class TagList extends Component {
   }
 
   getTagData() {
-    return this.props.entry.data.tags || [];
+    return this.props.tags || [];
   }
 
   getData() {
@@ -135,7 +133,7 @@ class TagList extends Component {
 }
 
 TagList.propTypes = {
-  entry: React.PropTypes.object,
+  tags: React.PropTypes.array,
   onUpdate: React.PropTypes.func,
   isReadOnly: React.PropTypes.bool,
   isTriage: React.PropTypes.bool
