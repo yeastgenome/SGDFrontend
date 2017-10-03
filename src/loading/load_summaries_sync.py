@@ -66,6 +66,7 @@ def validate_file_content_and_process(file_content, nex_session, username):
             copied.append(val)
     except IndexError:
         raise ValueError('The file is not a valid TSV with the correct number of columns. Check the file and try again.')
+    nex_session.execute('SET LOCAL ROLE ' + username)
     # check that gene names are valid
     valid_genes = nex_session.query(Locusdbentity.format_name).filter(Locusdbentity.format_name.in_(file_gene_ids)).all()
     valid_genes = [ str(d[0]) for d in valid_genes ]
@@ -146,6 +147,7 @@ def validate_file_content_and_process(file_content, nex_session, username):
                 'value': file_summary_val 
             })
     transaction.commit()
+    nex_session.close()
     return {
         'inserts': inserts,
         'updates': updates,
