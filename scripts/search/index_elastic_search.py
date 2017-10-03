@@ -712,3 +712,5 @@ if __name__ == '__main__':
     t2.start()
     with PyCallGraph(output=GraphvizOutput()):
         index_references()'''
+    t2.start()'''
+    index_references()
