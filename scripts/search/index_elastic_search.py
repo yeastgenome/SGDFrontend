@@ -711,19 +711,14 @@ def run_metrics():
             Referencedbentity.pmid, Referencedbentity.year).all()'''
 
 if __name__ == '__main__':
-<<<<<<< HEAD
     index_references()
-=======
-    run_metrics()
->>>>>>> 560a0166cc740e217da9d78bd09f7fa9a5adf1bb
     '''setup()
     t1 = Thread(target=index_part_1)
     t2 = Thread(target=index_part_2)
     t1.start()
-<<<<<<< HEAD
     t2.start()'''
-=======
-    t2.start()
+
+    '''t2.start()
     with PyCallGraph(output=GraphvizOutput()):
         index_references()'''
->>>>>>> 560a0166cc740e217da9d78bd09f7fa9a5adf1bb
+
