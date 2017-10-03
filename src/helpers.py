@@ -246,7 +246,7 @@ def upload_file(username, file, **kwargs):
     status = kwargs.get('status', 'Active')
     description = kwargs.get('description', None)
 
-    md5sum = hashlib.md5(file.getvalue()).hexdigest()
+    md5sum = hashlib.md5(file.read()).hexdigest()
     fdb = Filedbentity(
         md5sum=md5sum,
         previous_file_name=filename,

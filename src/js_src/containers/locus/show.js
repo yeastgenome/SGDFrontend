@@ -27,7 +27,7 @@ class LocusShow extends Component {
         this.props.dispatch(clearError());
         this.props.dispatch(clearPending());
       }).catch( (data) => {
-        let errorMessage = data ? data.error : 'There was an updating the locus.';
+        let errorMessage = data ? data.error : 'There was an error updating the locus.';
         this.props.dispatch(setError(errorMessage));
         this.props.dispatch(clearPending());
       });

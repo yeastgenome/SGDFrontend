@@ -33,7 +33,7 @@ logger.setLevel(level=logging.INFO)
 # has correct columns in header
 # checks IDs to make sure real IDs
 def validate_file_content_and_process(file_content, nex_session, username):
-    header_literal = ['# Feature', 'Summary Type (phenotype, regulation, protein, or sequence)', 'Summary', 'PMIDs']
+    header_literal = ['# Feature', 'Summary Type (phenotype, regulation)', 'Summary', 'PMIDs']
     accepted_summary_types = ['Gene', 'Phenotype', 'Regulation']
     file_gene_ids = []
     file_pmids = []

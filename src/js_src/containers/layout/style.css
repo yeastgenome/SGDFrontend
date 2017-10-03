@@ -56,8 +56,8 @@
 }
 .errorContainer {
   position: fixed;
-  top: 1rem;
-  right: 1rem;
+  top: 4rem;
+  right: 0.75rem;
   z-index: 5;
   width: 30rem;
 }
