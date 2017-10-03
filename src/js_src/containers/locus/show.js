@@ -60,6 +60,12 @@ class LocusShow extends Component {
         regulation_summary: {
           type: 'textarea'
         },
+        phenotype_summary_pmids: {
+          label: 'Phenotype summary PMIDs (pipe-separated) (optional)'
+        },
+        regulation_summary_pmids: {
+          label: 'Regulation summary PMIDs (pipe-separated) (optional)'
+        }
       }
     };
     let data = this.props.data.paragraphs;
