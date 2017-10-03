@@ -61,7 +61,6 @@ class AnnotationSummary extends Component {
       <div>
         {this.renderMessage()}
         {this.renderAnnotations()}
-        }
       </div>
     );
   }
