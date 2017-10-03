@@ -8,6 +8,7 @@ import Loader from '../../components/loader';
 import updateTitle from '../../lib/updateTitle';
 import { updateData, setPending, clearPending} from './locusActions';
 import { setMessage, setError, clearError } from '../../actions/metaActions';
+import { PREVIEW_URL } from '../../constants.js';
 
 class LocusShow extends Component {
   componentDidMount() {
@@ -86,9 +87,12 @@ class LocusShow extends Component {
   render() {
     let data = this.props.data;
     if (!data || this.props.isPending) return <Loader />;
+    let previewUrl = `${PREVIEW_URL}/locus/${this.props.params.id}`;
     return (
       <div>
-        <h3><CategoryLabel category='locus' hideLabel /> {data.name}</h3>
+        <h3 style={{ display: 'inline-block', marginRight: '0.5rem' }}><CategoryLabel category='locus' hideLabel isPageTitle /> {data.name}</h3>
+        <span><a href={previewUrl} target='_nwe'><i className='fa fa-file-image-o' aria-hidden='true'></i> preview</a></span>
+        <hr style={{ margin: 0 }} />
         {this.renderForms()}
       </div>
     );

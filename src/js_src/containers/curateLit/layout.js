@@ -12,6 +12,7 @@ import updateTitle from '../../lib/updateTitle';
 import { selectActiveLitEntry } from '../../selectors/litSelectors';
 import { updateActiveEntry } from './litActions';
 import { setNotReady, finishPending } from '../../actions/metaActions';
+import { PREVIEW_URL } from '../../constants.js';
 
 const BASE_CURATE_URL = '/curate/reference';
 const SECTIONS = [
@@ -43,9 +44,12 @@ class CurateLitLayout extends Component {
 
   renderHeader() {
     let d = this.props.activeEntry;
+    let previewUrl = `${PREVIEW_URL}/reference/${this.props.params.id}`;
     return (
       <div>
-        <h3><CategoryLabel category='reference' hideLabel /> {d.citation}</h3>
+        <h3 style={{ display: 'inline-block', marginRight: '0.5rem' }}><CategoryLabel category='reference' hideLabel isPageTitle /> {d.citation}</h3>
+        <span style={{ display: 'inline-block' }}><a href={previewUrl} target='_nwe'><i className='fa fa-file-image-o' aria-hidden='true'></i> preview</a></span>
+        <hr style={{ margin: '1rem 0' }} />
       </div>
     );
   }
