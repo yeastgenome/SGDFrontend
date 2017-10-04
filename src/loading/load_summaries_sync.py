@@ -34,10 +34,11 @@ logger.setLevel(level=logging.INFO)
 # checks IDs to make sure real IDs
 def validate_file_content_and_process(file_content, nex_session, username):
     header_literal = ['# Feature', 'Summary Type (phenotype, regulation)', 'Summary', 'PMIDs']
-    accepted_summary_types = ['Gene', 'Phenotype', 'Regulation']
+    accepted_summary_types = ['Phenotype', 'Regulation']
     file_gene_ids = []
     file_pmids = []
     copied = []
+    already_used_genes = []
     try:
         for i, val in enumerate(file_content):
             # match header
@@ -47,9 +48,10 @@ def validate_file_content_and_process(file_content, nex_session, username):
                     raise ValueError('File header does not match expected format. Please make your file match the template file linked below.') 
             else:
                 gene_id = val[0]
-                if gene_id in file_gene_ids:
-                    raise ValueError('The same gene cannot be referred to more than once: ' + str(gene_id))
-                file_gene_ids.append(gene_id)
+                gene_id_with_summary = gene_id + val[1]
+                if gene_id_with_summary in already_used_genes:
+                    raise ValueError('The same gene summary cannot be updated twice in the same file: ' + str(gene_id))
+                already_used_genes.append(gene_id_with_summary)
                 # match summary types
                 if val[1] not in accepted_summary_types:
                     raise ValueError('Unaccepted summary type. Must be one of ' + ', '.join(accepted_summary_types))
