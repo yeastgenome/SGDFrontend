@@ -110,14 +110,6 @@ def secure_save_file(file, filename):
 def curator_or_none(email):
     return DBSession.query(Dbuser).filter((Dbuser.email == email) & (Dbuser.status == 'Current')).one_or_none()
 
-def authenticate(view_callable):
-    def inner(context, request):
-        if 'email' not in request.session or 'username' not in request.session:
-            return HTTPForbidden()
-        else:
-            return view_callable(request)
-    return inner
-
 def extract_references(request):
     references = []
     if request.POST.get("pmids") != '':

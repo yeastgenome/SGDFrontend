@@ -96,12 +96,12 @@ def main(global_config, **settings):
     
     # curator interfaces
     config.add_route('colleague_triage_all', '/colleagues/triage', request_method='GET')
-    config.add_route('colleague_triage_accept', '/colleagues/triage/{id}', request_method='POST')
-    config.add_route('colleague_triage_update', '/colleagues/triage/{id}', request_method='PUT')
-    config.add_route('colleague_triage_delete', '/colleagues/triage/{id}', request_method='DELETE')
+    # config.add_route('colleague_triage_accept', '/colleagues/triage/{id}', request_method='POST')
+    # config.add_route('colleague_triage_update', '/colleagues/triage/{id}', request_method='PUT')
+    # config.add_route('colleague_triage_delete', '/colleagues/triage/{id}', request_method='DELETE')
     
-    config.add_route('colleague_create', '/colleagues', request_method='POST')
-    config.add_route('colleague_update', '/colleagues/{format_name}', request_method='PUT')
+    # config.add_route('colleague_create', '/colleagues', request_method='POST')
+    # config.add_route('colleague_update', '/colleagues/{format_name}', request_method='PUT')
     config.add_route('colleague_get', '/colleagues/{format_name}', request_method='GET')
     config.add_route('refresh_homepage_cache', '/refresh_homepage_cache', request_method='POST')
 

@@ -5,6 +5,7 @@ import fetchData from '../../lib/fetchData';
 import getPusherClient from '../../lib/getPusherClient';
 import AnnotationSummary from '../../components/annotationSummary';
 import Loader from '../../components/loader';
+import CurateLayout from './layout';
 
 const ANNOTATION_URL = '/annotations';
 const CHANNEL = 'sgd';
@@ -44,13 +45,17 @@ class CurateHome extends Component {
     });
   }
 
-  render() {
+  renderContent() {
     if (this.state.isPending) return <Loader />;
     return (
-      <div className={style.annotationContainer}>
-        <AnnotationSummary annotations={this.state.annotationData} message='recent annotations.' />
-      </div>
+        <div className={style.annotationContainer}>
+          <AnnotationSummary annotations={this.state.annotationData} message='recent annotations.' />
+        </div>
     );
+  }
+
+  render() {
+    return <CurateLayout>{this.renderContent()}</CurateLayout>;
   }
 }
 

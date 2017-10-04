@@ -11,11 +11,11 @@ import { setError } from '../../actions/metaActions';
 
 const AUTH_URL = '/signin';
 const GOOGLE_PLATFORM_URL = 'https://apis.google.com/js/platform.js';
-const DEFAULT_AUTH_LANDING = '/curate';
+const DEFAULT_AUTH_LANDING = '/';
 
 let _this;
 
-class Login extends Component {
+class GoogleLogin extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -81,7 +81,7 @@ class Login extends Component {
   }
 }
 
-Login.propTypes = {
+GoogleLogin.propTypes = {
   dispatch: React.PropTypes.func,
   queryParams: React.PropTypes.object
 };
@@ -92,4 +92,4 @@ function mapStateToProps(_state) {
   };
 }
 
-export default connect(mapStateToProps)(Login);
+export default connect(mapStateToProps)(GoogleLogin);

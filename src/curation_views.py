@@ -10,7 +10,7 @@ import traceback
 import transaction
 import json
 
-from .helpers import allowed_file, extract_id_request, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id, refresh_homepage_cache
+from .helpers import allowed_file, extract_id_request, secure_save_file, curator_or_none, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id, refresh_homepage_cache
 from .curation_helpers import process_pmid_list, get_pusher_client
 from .loading.promote_reference_triage import add_paper
 from .models import DBSession, Dbentity, Referencedbentity, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags
@@ -19,6 +19,14 @@ from .tsv_parser import parse_tsv_annotations
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.ERROR)
 log = logging.getLogger()
+
+def authenticate(view_callable):
+    def inner(context, request):
+        if 'email' not in request.session or 'username' not in request.session:
+            return HTTPForbidden()
+        else:
+            return view_callable(request)
+    return inner
 
 @view_config(route_name='get_locus_curate', request_method='GET', renderer='json')
 @authenticate
@@ -188,7 +196,7 @@ def sign_in(request):
     except crypt.AppIdentityError:
         return HTTPForbidden(body=json.dumps({'error': 'Authentication token is invalid'}))
 
-@view_config(route_name='sign_out', request_method='DELETE')
+@view_config(route_name='sign_out', request_method='GET')
 def sign_out(request):
     request.session.invalidate()
     return HTTPOk()
