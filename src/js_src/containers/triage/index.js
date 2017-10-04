@@ -10,6 +10,7 @@ import LitBasicInfo from '../../components/litBasicInfo';
 import { updateTriageEntries, clearLastPromoted } from './triageActions';
 import { setPending, finishPending } from '../../actions/metaActions';
 import TriageControls from './triageControls';
+import CurateLayout from '../curateHome/layout';
 
 // const REF_BASE_URL = '/curate/reference';
 const TRIAGE_URL = '/reference_triage';
@@ -103,12 +104,14 @@ class LitTriageIndex extends Component {
 
   render() {
     return (
-      <div>
-        <div className={style.litTableContainer}>
-          {this.renderMessage()}
-          {this.renderEntries()}
+      <CurateLayout>
+        <div>
+          <div className={style.litTableContainer}>
+            {this.renderMessage()}
+            {this.renderEntries()}
+          </div>
         </div>
-      </div>
+      </CurateLayout>
     );
   }
 }

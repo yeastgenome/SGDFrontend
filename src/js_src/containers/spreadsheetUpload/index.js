@@ -9,6 +9,7 @@ import fetchData from '../../lib/fetchData';
 import AnnotationSummary from '../../components/annotationSummary';
 import Loader from '../../components/loader';
 import { clearError, setError } from '../../actions/metaActions';
+import CurateLayout from '../curateHome/layout';
 
 const UPLOAD_URL = '/upload_spreadsheet';
 const UPLOAD_TIMEOUT = 120000;
@@ -138,10 +139,12 @@ class SpreadsheetUpload extends Component {
       node = this.renderForm();
     }
     return (
-      <div>
-        <h1>Spreadsheet Upload</h1>
-        {node}
-      </div>
+      <CurateLayout>
+        <div>
+          <h1>Spreadsheet Upload</h1>
+          {node}
+        </div>
+      </CurateLayout>
     );
   }
 }

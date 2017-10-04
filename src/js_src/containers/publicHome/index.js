@@ -8,7 +8,7 @@ class Home extends Component {
     return (
       <div className={`callout ${style.loginContainer}`}>
         <p>Sign into Google using your Stanford email address, or logout of other Google accounts.</p>
-        <Link className={`${style.beginLoginButton} button`} to='/login'>Login</Link>
+        <Link className={`${style.beginLoginButton} button`} to='/google_login'>Login</Link>
       </div>
     );
   }
