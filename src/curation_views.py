@@ -235,7 +235,7 @@ def sign_in(request):
 @view_config(route_name='sign_out', request_method='GET')
 def sign_out(request):
     request.session.invalidate()
-    return HTTPFound('/')
+    return HTTPOk()
 
 @view_config(route_name='reference_tags', renderer='json', request_method='GET')
 @authenticate
