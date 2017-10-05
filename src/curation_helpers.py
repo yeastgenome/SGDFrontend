@@ -2,6 +2,7 @@ import string
 import re
 import os
 import pusher
+import re
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from zope.sqlalchemy import ZopeTransactionExtension
@@ -14,13 +15,18 @@ def link_gene_names(raw, locus_names_ids):
         sgdid = d[1]
         locus_names_object[display_name] = sgdid
     processed = raw
-    words = raw.split(' ')
+    words = re.split('(\s|,)', raw)
     for p_original_word in words:
         original_word = p_original_word#.translate(string.punctuation)
         wupper = original_word.upper()
+        has_p = wupper.endswith('P')
+        if has_p:
+            wupper = wupper[:-1]
         if wupper in locus_names_object.keys() and len(wupper) > 3:
             sgdid = locus_names_object[wupper]
             url = '/locus/'  + sgdid
+            if has_p:
+                wupper = wupper + 'p'
             new_str = '<a href="' + url + '">' + wupper + '</a>'
             processed = processed.replace(original_word, new_str)
     return processed

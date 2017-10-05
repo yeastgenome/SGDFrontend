@@ -2,24 +2,12 @@ export const allTags = [
   {
     name: 'high_priority',
     label: 'High Priority',
-    hasGenes: false,
+    hasGenes: true,
     inTriage: true
   },
   {
     name: 'delay',
     label: 'Delay',
-    hasGenes: false,
-    inTriage: true
-  },
-  {
-    name: 'htp_phenotype',
-    label: 'HTP phenotype Data (Omics)',
-    hasGenes: false,
-    inTriage: true
-  },
-  {
-    name: 'non_phenotype_htp',
-    label: 'Other HTP Data (Omics)',
     hasGenes: false,
     inTriage: true
   },
@@ -59,12 +47,36 @@ export const allTags = [
     hasGenes: true,
     inTriage: true
   },
-  // {
-  //   name: 'homology_disease',
-  //   label: 'Homology/Disease',
-  //   hasGenes: true,
-  //   inTriage: false
-  // },
+  {
+    name: 'htp_phenotype',
+    label: 'HTP phenotype Data (Omics)',
+    hasGenes: false,
+    inTriage: true
+  },
+  {
+    name: 'non_phenotype_htp',
+    label: 'Other HTP Data (Omics)',
+    hasGenes: false,
+    inTriage: true
+  },
+  {
+    name: 'homology_disease',
+    label: 'Homology/Disease',
+    hasGenes: true,
+    inTriage: true
+  },
+  {
+    name: 'ptm',
+    label: 'Post-translational modifications',
+    hasGenes: true,
+    inTriage: true
+  },
+  {
+    name: 'regulation_information',
+    label: 'Regulation information',
+    hasGenes: true,
+    inTriage: true
+  }
   // {
   //   name: 'go_needs_review',
   //   label: 'GO needs review',
@@ -128,12 +140,6 @@ export const allTags = [
   // {
   //   name: 'ptm',
   //   label: 'Post-translational modifications',
-  //   hasGenes: false,
-  //   inTriage: false
-  // },
-  // {
-  //   name: 'regulation_information',
-  //   label: 'Regulation information',
   //   hasGenes: false,
   //   inTriage: false
   // },

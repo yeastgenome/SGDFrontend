@@ -1824,7 +1824,7 @@ class Referencedbentity(Dbentity):
     def update_tags(self, tags, username):
         try:
             curator_session = get_curator_session(username)
-            validate_tags(tags)
+            tags = validate_tags(tags)
             # delete old tags
             curator_session.query(CurationReference).filter_by(reference_id=self.dbentity_id).delete(synchronize_session=False)
             curator_session.query(Literatureannotation).filter_by(reference_id=self.dbentity_id).delete(synchronize_session=False)
@@ -7588,5 +7588,6 @@ def validate_tags(tags):
     # validate that all genes are proper identifiers
     num_valid_genes = DBSession.query(Locusdbentity).filter(or_(Locusdbentity.display_name.in_(unique_keys), (Locusdbentity.format_name.in_(unique_keys)))).count()
     if num_valid_genes != len(unique_keys):
-        raise ValueError('Genes must be a pipe-separated list of valid genes by standard name of systematic name.')
-    return True
+        raise ValueError('Genes must be a pipe-separated list of valid genes by standard name or systematic name.')
+    # maybe modify tags: if homology/disease, PTM, or regulation for a gene and no public top for that gene, then add to additional information
+    return tags

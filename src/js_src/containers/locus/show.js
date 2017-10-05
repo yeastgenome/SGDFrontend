@@ -49,7 +49,6 @@ class LocusShow extends Component {
   renderForms() {
     let FormSchema = t.struct({
       phenotype_summary: t.maybe(t.String),
-      phenotype_summary_pmids: t.maybe(t.String),
       regulation_summary: t.maybe(t.String),
       regulation_summary_pmids: t.maybe(t.String)
     });
@@ -60,9 +59,6 @@ class LocusShow extends Component {
         },
         regulation_summary: {
           type: 'textarea'
-        },
-        phenotype_summary_pmids: {
-          label: 'Phenotype summary PMIDs (pipe-separated) (optional)'
         },
         regulation_summary_pmids: {
           label: 'Regulation summary PMIDs (pipe-separated) (optional)'

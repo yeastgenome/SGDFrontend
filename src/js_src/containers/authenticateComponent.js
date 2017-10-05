@@ -36,7 +36,6 @@ export function requireAuthentication(Component) {
           }
         </div>
       );
-
     }
   }
 
