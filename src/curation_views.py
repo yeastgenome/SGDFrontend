@@ -1,8 +1,10 @@
-from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPOk, HTTPNotFound
+from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPOk, HTTPNotFound, HTTPFound
 from pyramid.view import view_config
 from pyramid.session import check_csrf_token
+from sqlalchemy import create_engine
 from sqlalchemy.orm.session import make_transient
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import scoped_session, sessionmaker
 from oauth2client import client, crypt
 import logging
 import os
@@ -13,7 +15,7 @@ import json
 from .helpers import allowed_file, extract_id_request, secure_save_file, curator_or_none, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id, refresh_homepage_cache
 from .curation_helpers import process_pmid_list, get_pusher_client
 from .loading.promote_reference_triage import add_paper
-from .models import DBSession, Dbentity, Referencedbentity, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags
+from .models import DBSession, Dbentity, Dbuser, Referencedbentity, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags
 from .tsv_parser import parse_tsv_annotations
 
 logging.basicConfig()
@@ -27,6 +29,11 @@ def authenticate(view_callable):
         else:
             return view_callable(request)
     return inner
+
+@view_config(route_name='account', request_method='GET', renderer='json')
+@authenticate
+def account(request):
+    return { 'username': request.session['username'] }
 
 @view_config(route_name='get_locus_curate', request_method='GET', renderer='json')
 @authenticate
@@ -81,7 +88,6 @@ def reference_triage_id_delete(request):
 @view_config(route_name='reference_triage_id', renderer='json', request_method='GET')
 @authenticate
 def reference_triage_id(request):
-    print('LOOKING FOR YOU')
     id = request.matchdict['id'].upper()
     triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
     if triage:
@@ -158,6 +164,37 @@ def refresh_homepage_cache(request):
     refresh_homepage_cache()
     return True
 
+@view_config(route_name='db_sign_in', request_method='POST', renderer='json')
+def db_sign_in(request):
+    if not check_csrf_token(request, raises=False):
+        return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
+    try:
+        username = request.params.get('username').lower()
+        password = request.params.get('password')
+        # create custom DB URI, replacing with username and password
+        default_db_uri = os.environ['NEX2_URI']
+        user_str = username + ':' + password + '@'
+        user_db_uri = 'postgresql://' + user_str + default_db_uri.split('@')[1]
+        temp_engine = create_engine(user_db_uri)
+        session_factory = sessionmaker(bind=temp_engine)
+        Temp_session = scoped_session(session_factory)
+        user = Temp_session.query(Dbuser).filter_by(username=username.upper()).one_or_none()
+        print(user.email)
+        if user is None:
+            Temp_session.close()
+            raise ValueError('Invalid login')
+        curator = curator_or_none(user.email)
+        if curator is None:
+            return HTTPForbidden(body=json.dumps({'error': 'User is not authorized on SGD'}))
+        session = request.session
+        session['email'] = curator.email
+        session['username'] = curator.username
+        log.info('User ' + curator.email + ' was successfuly authenticated.')
+        return { 'username': curator.username }
+    except:
+        traceback.print_exc()
+        return HTTPForbidden(body=json.dumps({'error': 'Incorrect login details.'}))
+
 @view_config(route_name='sign_in', request_method='POST', renderer='json')
 def sign_in(request):
     if not check_csrf_token(request, raises=False):
@@ -199,7 +236,7 @@ def sign_in(request):
 @view_config(route_name='sign_out', request_method='GET')
 def sign_out(request):
     request.session.invalidate()
-    return HTTPOk()
+    return HTTPFound('/')
 
 @view_config(route_name='reference_tags', renderer='json', request_method='GET')
 @authenticate
