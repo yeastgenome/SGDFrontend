@@ -2,6 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
+import fetchData from '../lib/fetchData';
+import { authenticateUser } from '../actions/authActions';
+
 export function requireAuthentication(Component) {
   class AuthenticatedComponent extends React.Component {
     componentWillMount () {
@@ -14,9 +17,13 @@ export function requireAuthentication(Component) {
 
     checkAuth () {
       if (!this.props.isAuthenticated) {
-        let redirectAfterLogin = this.props.location.pathname;
-        this.props
-          .dispatch(push(`/login?next=${redirectAfterLogin}`));
+        fetchData('/account').then( (d) => {
+          this.props.dispatch(authenticateUser(d.username));
+        }).catch( () => {
+          let redirectAfterLogin = this.props.location.pathname;
+          this.props
+            .dispatch(push(`/login?next=${redirectAfterLogin}`));
+        });
       }
     }
 
