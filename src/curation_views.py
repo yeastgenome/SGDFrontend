@@ -179,7 +179,6 @@ def db_sign_in(request):
         session_factory = sessionmaker(bind=temp_engine)
         Temp_session = scoped_session(session_factory)
         user = Temp_session.query(Dbuser).filter_by(username=username.upper()).one_or_none()
-        print(user.email)
         if user is None:
             Temp_session.close()
             raise ValueError('Invalid login')
