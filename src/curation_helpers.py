@@ -26,7 +26,7 @@ def link_gene_names(raw, locus_names_ids):
             sgdid = locus_names_object[wupper]
             url = '/locus/'  + sgdid
             if has_p:
-                wupper = wupper + 'p'
+                wupper = wupper.capitalize() + 'p'
             new_str = '<a href="' + url + '">' + wupper + '</a>'
             processed = processed.replace(original_word, new_str)
     return processed
