@@ -95,6 +95,10 @@ def main(global_config, **settings):
     config.add_route('ecnumber_locus_details', '/ecnumber/{id}/locus_details', request_method='GET')
     
     # curator interfaces
+    config.add_route('account', '/account')
+    config.add_route('sign_in', '/signin')
+    config.add_route('db_sign_in', '/db_sign_in')
+    config.add_route('sign_out', '/signout')
     config.add_route('colleague_triage_all', '/colleagues/triage', request_method='GET')
     # config.add_route('colleague_triage_accept', '/colleagues/triage/{id}', request_method='POST')
     # config.add_route('colleague_triage_update', '/colleagues/triage/{id}', request_method='PUT')
@@ -121,9 +125,6 @@ def main(global_config, **settings):
     config.add_route('extensions', '/extensions')
     config.add_route('upload', '/upload')
     config.add_route('upload_spreadsheet', '/upload_spreadsheet', request_method='POST')
-    
-    config.add_route('sign_in', '/signin')
-    config.add_route('sign_out', '/signout')
 
     config.add_route('healthcheck', '/healthcheck')
 
