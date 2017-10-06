@@ -36,7 +36,7 @@ const Footer = React.createClass({
             <ul className="logo-list">
               <li>
                 <a href="http://www.alliancegenome.org">
-                  <img width="230" src={`${assetRoot}/img/agr_logo.png`} id="agr-logo" />
+                  <img width="180" src={`${assetRoot}/img/agr_logo.png`} id="agr-logo" />
                 </a>
               </li>
               <li>
