@@ -15,9 +15,9 @@ def link_gene_names(raw, locus_names_ids):
         sgdid = d[1]
         locus_names_object[display_name] = sgdid
     processed = raw
-    words = re.split('(\s|,)', raw)
+    words = list(set(re.split('(\s|,|-)', raw)))
     for p_original_word in words:
-        original_word = p_original_word#.translate(string.punctuation)
+        original_word = p_original_word
         wupper = original_word.upper()
         has_p = wupper.endswith('P')
         if has_p:
@@ -28,7 +28,12 @@ def link_gene_names(raw, locus_names_ids):
             if has_p:
                 wupper = wupper.capitalize() + 'p'
             new_str = '<a href="' + url + '">' + wupper + '</a>'
-            processed = processed.replace(original_word, new_str)
+            # implant_re = re.compile(re.escape(wupper), re.IGNORECASE)
+            target_regex = r'' + re.escape(original_word) + ''
+            # ingore if original word not all uppercase and doesn't end with p
+            if not has_p and (original_word != wupper):
+                continue
+            processed = re.sub(target_regex, new_str, processed)
     return processed
 
 # take pipe separated list and return list of integers
