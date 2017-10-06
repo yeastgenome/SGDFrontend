@@ -19,11 +19,11 @@ def link_gene_names(raw, locus_names_ids, ignore_str=''):
     for p_original_word in words:
         original_word = p_original_word
         wupper = original_word.upper()
-        if wupper == ignore_str.upper():
-            continue
         has_p = wupper.endswith('P')
         if has_p:
             wupper = wupper[:-1]
+        if wupper == ignore_str.upper():
+            continue
         if wupper in locus_names_object.keys() and len(wupper) > 3:
             sgdid = locus_names_object[wupper]
             url = '/locus/'  + sgdid
