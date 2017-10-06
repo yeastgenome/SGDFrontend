@@ -1208,7 +1208,6 @@ class CurationReference(Base):
     source = relationship(u'Source')
 
     acceptable_tags = {
-        'additional_literature': 'Additional Literature',
         'high_priority': 'High Priority',
         'delay': 'Delay',
         'homology_disease': 'Homology/Disease',
@@ -1220,13 +1219,11 @@ class CurationReference(Base):
         'htp_phenotype': 'HTP phenotype',
         'not_yet_curated': 'Not yet curated',
         'non_phenotype_htp': 'Non-phenotype HTP',
-        'other_primary': 'Other Primary',
         'paragraph_needs_review': 'Paragraph needs review',
         'pathways': 'Pathways',
         'phenotype_needs_review': 'Phenotype needs review',
         'ptm': 'Post-translational modifications',
         'regulation_information': 'Regulation information',
-        'reviews': 'Reviews',
         'fast_track': 'Fast Track'
     }
 
@@ -1801,18 +1798,33 @@ class Referencedbentity(Dbentity):
         return [url1]
 
     def get_tags(self):
-        tags = DBSession.query(CurationReference).filter_by(reference_id=self.dbentity_id).all()
+        tags = []
+        curation_refs = DBSession.query(CurationReference).filter_by(reference_id=self.dbentity_id).all()
+        for x in curation_refs:
+            tags.append({
+                'name': x.get_name(),
+                'locus_id': x.locus_id,
+                'comment': x.curator_comment
+            })
+        lit_annotations = DBSession.query(Literatureannotation).filter_by(reference_id=self.dbentity_id).all()
+        for x in lit_annotations:
+            tags.append({
+                'name': x.get_name(),
+                'locus_id': x.dbentity_id,
+                'comment': None
+            })
         tag_list = []
-        for k, g in groupby(tags, lambda x: x.curation_tag):
+        for k, g in groupby(tags, lambda x: x['name']):
             g_tags = list(g)
-            name = g_tags[0].get_name()
-            comment = g_tags[0].curator_comment
+            name = g_tags[0]['name']
+            comment = g_tags[0]['comment']
             gene_names = []
             for x in g_tags:
-                if x.locus_id:
-                    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=x.locus_id).one_or_none()
+                if x['locus_id']:
+                    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=x['locus_id']).one_or_none()
                     g_name = locus.get_name()
                     gene_names.append(g_name)
+            gene_names = list(set(gene_names))
             gene_str = '|'.join(gene_names)
             tag_list.append({
                 'name': name,
@@ -1843,19 +1855,22 @@ class Referencedbentity(Dbentity):
                         g_id = g_id.upper()
                         gene_dbentity_id = curator_session.query(Locusdbentity.dbentity_id).filter(or_(Locusdbentity.display_name == g_id, Locusdbentity.format_name == g_id)).one_or_none()[0]
                         curation_ref = CurationReference.factory(self.dbentity_id, name, comment, gene_dbentity_id, username)
-                        DBSession.add(curation_ref)
+                        if curation_ref:
+                            DBSession.add(curation_ref)
                         # add primary lit annotation
                         lit_annotation = Literatureannotation.factory(self.dbentity_id, name, gene_dbentity_id, username)
-                        if lit_annotation.topic == 'Primary Literature':
-                            if gene_dbentity_id in primary_gene_ids:
-                                continue
-                            else:
-                                primary_gene_ids.append(gene_dbentity_id)
-                        curator_session.add(lit_annotation)
+                        if lit_annotation:
+                            if lit_annotation.topic == 'Primary Literature':
+                                if gene_dbentity_id in primary_gene_ids:
+                                    continue
+                                else:
+                                    primary_gene_ids.append(gene_dbentity_id)
+                            curator_session.add(lit_annotation)
                 # add a tag with no gene
                 else:
                     curation_ref = CurationReference.factory(self.dbentity_id, name, comment, None, username)
-                    DBSession.add(curation_ref)
+                    if curation_ref:
+                        DBSession.add(curation_ref)
             transaction.commit()
         except Exception, e:
             curator_session.rollback()
@@ -5415,6 +5430,13 @@ class Literatureannotation(Base):
             }
 
         return obj
+
+    def get_name(self):
+        c_name = self.topic
+        for key, value in Literatureannotation.acceptable_tags.iteritems():
+            if value == c_name:
+                return key
+        return None
 
 class LocusAlias(Base):
     __tablename__ = 'locus_alias'

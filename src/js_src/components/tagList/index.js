@@ -74,7 +74,8 @@ class TagList extends Component {
     }
   }
 
-  renderComments(name, value) {
+  renderComments(name, value, ignoreComment) {
+    if (ignoreComment) return null;
     if (this.props.isReadOnly) {
       return <span>{value}</span>;
     } else {
@@ -111,7 +112,7 @@ class TagList extends Component {
       let classSuffix = d.isSelected ? '' : style.inactive;
       let suffixNode = (d.isSelected && !this.props.isReadOnly) ? <span> <i className='fa fa-close' /></span> : null;
       let geneSuffixNode = (d.isSelected && d.hasGenes) ? this.renderGenes(d.name, d.genes) : null;
-      let commentSuffixNode = d.isSelected ? this.renderComments(d.name, d.comment) : null;
+      let commentSuffixNode = d.isSelected ? this.renderComments(d.name, d.comment, d.noComments) : null;
       let _onClick = (e) => {
         e.preventDefault();
         this.toggleSelected(d.name);
