@@ -183,7 +183,6 @@ def db_sign_in(request):
         Temp_session = scoped_session(session_factory)
         user = Temp_session.query(Dbuser).filter_by(username=username.upper()).one_or_none()
         if user is None:
-            Temp_session.close()
             raise ValueError('Invalid login')
         curator = curator_or_none(user.email)
         if curator is None:
@@ -192,10 +191,13 @@ def db_sign_in(request):
         session['email'] = curator.email
         session['username'] = curator.username
         log.info('User ' + curator.email + ' was successfuly authenticated.')
-        return { 'username': curator.username }
+        return { 'username': session['username'] }
     except:
         traceback.print_exc()
         return HTTPForbidden(body=json.dumps({'error': 'Incorrect login details.'}))
+    finally:
+        if Temp_session:
+            Temp_session.close()
 
 @view_config(route_name='sign_in', request_method='POST', renderer='json')
 def sign_in(request):
