@@ -15,7 +15,7 @@ const Layout = React.createClass({
             </div>
           </div>
         </div>
-        <Footer />
+        <Footer assetRoot={window.ASSET_ROOT}/>
       </div>
     );
   }

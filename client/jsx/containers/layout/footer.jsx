@@ -12,7 +12,7 @@ const Footer = React.createClass({
     return (
       <footer id="layout-document-footer" className="page-footer">
         <div className="row">
-          <div className="small-6 columns">
+          <div className="small-6 large-4 columns">
             <ul id="footer-links">
               <li className="sgd-link"><a href="http://www.yeastgenome.org">SGD</a></li>
               <li><a target="_blank" className="hide-external-link-icon" href="https://sites.google.com/view/yeastgenome-help/about"><span>About</span></a></li>
@@ -32,15 +32,28 @@ const Footer = React.createClass({
             </ul>
             <div id="copyright">&copy; Stanford University, Stanford, CA 94305.</div>
           </div>
-          <div className="small-6 columns">
+          <div className="small-6 large-8 columns">
             <ul className="logo-list">
-              <li><a href="http://genetics.stanford.edu">
-                <img height="45" width="102" src={`${assetRoot}/img/genetics-logo@2x.png`} id="genetics-logo" />
-              </a></li>
-              <li><a href="http://med.stanford.edu">
-                <img height="45" width="39" src={`${assetRoot}/img/som-logo@2x.png`} id="som-logo" />
-              </a></li>
-              <li><a href="http://www.stanford.edu"><img height="49" width="105" src={`${assetRoot}/img/footer-stanford-logo@2x.png`} id="stanford-logo" /></a></li>
+              <li>
+                <a href="http://www.alliancegenome.org">
+                  <img width="230" src={`${assetRoot}/img/agr_logo.png`} id="agr-logo" />
+                </a>
+              </li>
+              <li>
+                <a href="http://genetics.stanford.edu">
+                  <img height="45" width="102" src={`${assetRoot}/img/genetics-logo@2x.png`} id="genetics-logo" />
+                </a>
+              </li>
+              <li>
+                <a href="http://med.stanford.edu">
+                  <img height="45" width="39" src={`${assetRoot}/img/som-logo@2x.png`} id="som-logo" />
+                </a>
+              </li>
+              <li>
+                <a href="http://www.stanford.edu">
+                  <img height="49" width="105" src={`${assetRoot}/img/footer-stanford-logo@2x.png`} id="stanford-logo" />
+                </a>
+              </li>
             </ul>
           </div>
         </div>
