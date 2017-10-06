@@ -182,7 +182,7 @@ class IndexESHelper:
             if item[0].colleague_id not in obj:
                 obj[item[0].colleague_id] = []
             obj[item[0].colleague_id].append(item[1])
-       
+
         return obj
 
     @classmethod
@@ -192,7 +192,7 @@ class IndexESHelper:
             :param:cls: not required
         """
         obj = {}
-        
+
         _colleague_locus = DBSession.query(
             Locusdbentity, ColleagueLocus).join(ColleagueLocus).filter(
                 Locusdbentity.dbentity_id ==
@@ -201,7 +201,7 @@ class IndexESHelper:
             if item[0].dbentity_id not in obj:
                 obj[item[0].dbentity_id] = []
             obj[item[0].dbentity_id].append(item[0])
-        
+
 
         return obj
 
@@ -302,6 +302,30 @@ class IndexESHelper:
                 list(locus)) if len(locus) > 0 else []
             _dict_obj[item.colleague_id] = obj_temp
         return _dict_obj
+
+    @classmethod
+    def get_phenotypes_condition(cls, condition_str="chemical"):
+        """
+        Get join between phenotypeannotation and phenotype condition
+            :param cls: not required
+        """
+        obj = {}
+        _phenotypes_condition = DBSession.query(
+            Phenotypeannotation, PhenotypeannotationCond).filter(
+                Phenotypeannotation.annotation_id ==
+                PhenotypeannotationCond.annotation_id,
+                PhenotypeannotationCond.condition_class == condition_str).all()
+        for item in _phenotypes_condition:
+            if item[0].phenotype_id not in obj:
+                obj[item[0].phenotype_id] = []
+            obj[item[0].phenotype_id].append(item)
+        pdb.set_trace()
+        return obj
+    
+    @classmethod
+    def get_combined_phenotypes(cls, phenos, phenos_annotation, phenos_annotation_cond):
+        obj = {}
+
 
     @classmethod
     def flattern_list(cls, lst):

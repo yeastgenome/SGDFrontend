@@ -122,7 +122,6 @@ def index_colleagues():
     print("Indexing " + str(len(colleagues)) + " colleagues")
     bulk_data = []
     for item_k, item_v in _combined_list.items():
-
         bulk_data.append({
             'index': {
                 '_index': INDEX_NAME,
@@ -330,12 +329,16 @@ def index_genes():
 
 def index_phenotypes():
     phenotypes = DBSession.query(Phenotype).all()
+    _phenos_annotation = IndexESHelper.get_phenotypes_phenotypeannotation()
+    _annotation_cond = IndexESHelper.get_phenotypes_condition()
+    _result = IndexESHelper.get_combined_phenotypes(phenotypes, _phenos_annotation,_annotation_cond)
 
     bulk_data = []
 
     print("Indexing " + str(len(phenotypes)) + " phenotypes")
-
+    start_time = time.time()
     for phenotype in phenotypes:
+
         annotations = DBSession.query(Phenotypeannotation).filter_by(phenotype_id=phenotype.phenotype_id).all()
 
         references = set([])
@@ -708,14 +711,15 @@ def index_part_2():
 
 
 if __name__ == '__main__':
-    gp_output = GraphvizOutput(output_file='index_colleagues.png')
+    index_phenotypes()
+    '''gp_output = GraphvizOutput(output_file='index_colleagues.png')
 
     with PyCallGraph(output=gp_output):
         index_colleagues()
     gp_output = GraphvizOutput(output_file='index_references.png')
     with PyCallGraph(output=gp_output):
         index_references()
-        '''cleanup()
+        cleanup()
         setup()
         index_part_1()
         index_part_2()
