@@ -802,6 +802,26 @@ class Colleague(Base):
 
     source = relationship(u'Source')
 
+    def get_keywords(self):
+        import pdb
+        lst = DBSession.query(Colleague,ColleagueKeyword).join(ColleagueKeyword).filter(ColleagueKeyword.colleague_id == Colleague.colleague_id).all()
+        obj = {}
+        keyword_ids = []
+        for item in lst:
+            if item[1]:
+                keyword_ids.append(item[1].keyword_id)
+            if item[1].keyword_id not in obj:
+                obj[item[1].keyword_id] = []
+            obj[item[1].keyword_id].append(item)
+        keywords = []
+        if len(keyword_ids) > 0:
+            keywords = DBSession.query(Keyword).filter(
+                Keyword.keyword_id.in_(keyword_ids)).all()
+        for k in keywords:
+            obj[k.keyword_id].append({'id': k.keyword_id, 'name': k.display_name})
+        return obj
+
+
     def to_dict(self):
         _dict = {
             "colleague_id": self.colleague_id,
@@ -814,11 +834,17 @@ class Colleague(Base):
             "email": self.email,
             "link": self.obj_url
         }
+
         keyword_ids = DBSession.query(ColleagueKeyword.keyword_id).filter(ColleagueKeyword.colleague_id == self.colleague_id).all()
+        #print("----- %s key word query time taken---->" % (time.time() - start_time))
+
         if len(keyword_ids) > 0:
             ids_query = [k[0] for k in keyword_ids]
+            # start_time = time.time()
             keywords = DBSession.query(Keyword).filter(Keyword.keyword_id.in_(ids_query)).all()
+            #print("----- %s key word 2nd query time taken---->" % (time.time() - start_time))
             _dict['keywords'] = [{'id': k.keyword_id, 'name': k.display_name} for k in keywords]
+        #pdb.set_trace()
         return _dict
 
 class ColleagueKeyword(Base):
