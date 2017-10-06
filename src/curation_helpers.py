@@ -15,7 +15,7 @@ def link_gene_names(raw, locus_names_ids):
         sgdid = d[1]
         locus_names_object[display_name] = sgdid
     processed = raw
-    words = list(set(re.split('(\s|,|-)', raw)))
+    words = list(set(re.split('\W+', raw)))
     for p_original_word in words:
         original_word = p_original_word
         wupper = original_word.upper()
