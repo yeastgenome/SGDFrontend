@@ -33,19 +33,22 @@ export const allTags = [
     name: 'other_primary',
     label: 'Other Primary Information (Primary Literature)',
     hasGenes: true,
-    inTriage: true
+    inTriage: true,
+    noComments: true
   },
   {
     name: 'reviews',
     label: 'Reviews',
     hasGenes: true,
-    inTriage: true
+    inTriage: true,
+    noComments: true
   },
   {
     name: 'additional_literature',
     label: 'Additional Literature (Additional Literature)',
     hasGenes: true,
-    inTriage: true
+    inTriage: true,
+    noComments: true
   },
   {
     name: 'htp_phenotype',
