@@ -301,7 +301,9 @@ def get_strain_taxid_mapping():
              "BC187":           "NTR:113",
              "UWOPSS":          "NTR:114",
              "CENPK":           "NTR:115",
-             'Other':           "TAX:4932" }
+             "CEN.PK":          "NTR:115",
+             'Other':           "TAX:4932",
+             'other':           "TAX:4932" }
 
 def read_gpad_file(filename, nex_session, uniprot_to_date_assigned, uniprot_to_sgdid_list, get_extension=None, get_support=None, new_pmids=None, dbentity_with_new_pmid=None, dbentity_with_uniprot=None, bad_ref=None):
 
@@ -345,10 +347,10 @@ def read_gpad_file(filename, nex_session, uniprot_to_date_assigned, uniprot_to_s
 
         ## uniprot ID & SGDIDs                                                                              
         uniprotID = field[1]
-        sgdid_list = uniprot_to_sgdid_list.get(uniprotID)
-        if sgdid_list is None:
-            print "The UniProt ID = ", uniprotID, " is not mapped to any SGDID."
-            continue
+        # sgdid_list = uniprot_to_sgdid_list.get(uniprotID)
+        # if sgdid_list is None:
+        #    print "The UniProt ID = ", uniprotID, " is not mapped to any SGDID."
+        #    continue
 
         ## go_qualifier                                                                                     
         go_qualifier = field[2]
@@ -440,22 +442,8 @@ def read_gpad_file(filename, nex_session, uniprot_to_date_assigned, uniprot_to_s
         else:
             date_assigned = date_created
             annotation_type = 'computational'
-        
-        # sgdid_list = uniprot_to_sgdid_list.get(uniprotID)
-        # if sgdid_list is None:
-        #    print "UniProt ID ", uniprotID, " is not in GPI file."
-        #    continue
-
-        # for sgdid in sgdid_list:
-        #    if sgdid == '':
-        #        continue
-        #    locus_id = sgdid_to_locus_id.get(sgdid)
-        #    if locus_id is None:
-        #        print "The sgdid = ", sgdid, " is not in LOCUSDBENTITY table."
-        #        continue
-    
-        for locus_id in dbentity_ids:
-
+            
+        for locus_id in dbentity_ids: 
             entry = { 'source': source,
                       'dbentity_id': locus_id,
                       'reference_id': reference_id,
@@ -506,7 +494,8 @@ def read_gpi_file(filename):
         sgdidlist = field[8].replace('SGD:', '')
         sgdid_list = [] if uniprot_to_sgdid_list.get(uniprotID) is None else uniprot_to_sgdid_list.get(uniprotID)
         for sgdid in sgdidlist.split('|'):
-            sgdid_list.append(sgdid)
+            if sgdid not in sgdid_list:
+                sgdid_list.append(sgdid)
         uniprot_to_sgdid_list[uniprotID] = sgdid_list
 
         for pair in field[9].split('|'):
