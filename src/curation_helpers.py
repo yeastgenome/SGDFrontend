@@ -7,7 +7,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from zope.sqlalchemy import ZopeTransactionExtension
 
-def link_gene_names(raw, locus_names_ids):
+def link_gene_names(raw, locus_names_ids, ignore_str=''):
     # first create an object with display_name as key and sgdid as value
     locus_names_object = {}
     for d in locus_names_ids:
@@ -19,6 +19,8 @@ def link_gene_names(raw, locus_names_ids):
     for p_original_word in words:
         original_word = p_original_word
         wupper = original_word.upper()
+        if wupper == ignore_str.upper():
+            continue
         has_p = wupper.endswith('P')
         if has_p:
             wupper = wupper[:-1]
@@ -27,12 +29,9 @@ def link_gene_names(raw, locus_names_ids):
             url = '/locus/'  + sgdid
             if has_p:
                 wupper = wupper.capitalize() + 'p'
-            new_str = '<a href="' + url + '">' + wupper + '</a>'
-            # implant_re = re.compile(re.escape(wupper), re.IGNORECASE)
-            target_regex = r'' + re.escape(original_word) + ''
+            new_str = '<a href="' + url + '">' + original_word + '</a>'
+            target_regex = r'\b' + re.escape(original_word) + r'\b'
             # ingore if original word not all uppercase and doesn't end with p
-            if not has_p and (original_word != wupper):
-                continue
             processed = re.sub(target_regex, new_str, processed)
     return processed
 

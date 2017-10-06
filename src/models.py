@@ -3726,7 +3726,7 @@ class Locusdbentity(Dbentity):
             curator_session = get_curator_session(username)
             locus_names_ids = curator_session.query(Locusdbentity.display_name, Locusdbentity.sgdid).all()
             summary = curator_session.query(Locussummary.summary_type, Locussummary.summary_id, Locussummary.html, Locussummary.date_created).filter_by(locus_id=self.dbentity_id, summary_type=summary_type).one_or_none()
-            summary_html = link_gene_names(text, locus_names_ids)
+            summary_html = link_gene_names(text, locus_names_ids, self.gene_name)
             # update
             if summary:
                 curator_session.query(Locussummary).filter_by(summary_id=summary.summary_id).update({ 'text': text, 'html': summary_html })
