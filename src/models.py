@@ -7578,9 +7578,11 @@ class Updatelog(Base):
 
 # should be valid genes (by standard name or systematic name) and should not be primary, additional, or review for same gene
 def validate_tags(tags):
+    extra_tag_list = ['regulation_information', 'ptm', 'homology_disease']
     primary_obj = {}
     additional_obj = {}
     review_obj = {}
+    extra_obj = {} # tracks if in extra topics and might add additional tag for that gene
     gene_ids = []
     for tag in tags:
         name = tag['name']
@@ -7597,6 +7599,8 @@ def validate_tags(tags):
                     additional_obj[g] = True
                 if is_reviews:
                     review_obj[g] = True
+                if name in extra_tag_list:
+                    extra_obj[g] = True
             gene_ids = gene_ids + t_gene_ids
         elif is_primary:
             raise ValueError('Primary tags must have genes.')
@@ -7605,11 +7609,31 @@ def validate_tags(tags):
     a_keys = additional_obj.keys()
     r_keys = review_obj.keys()
     unique_keys = set(p_keys + a_keys + r_keys)
+    extra_keys = set(extra_obj.keys())
     if len(unique_keys) != (len(p_keys) + len(a_keys) + len(r_keys)):
         raise ValueError('The same gene can only be used as a primary tag, additional tag, or review.')
     # validate that all genes are proper identifiers
     num_valid_genes = DBSession.query(Locusdbentity).filter(or_(Locusdbentity.display_name.in_(unique_keys), (Locusdbentity.format_name.in_(unique_keys)))).count()
     if num_valid_genes != len(unique_keys):
         raise ValueError('Genes must be a pipe-separated list of valid genes by standard name or systematic name.')
-    # maybe modify tags: if homology/disease, PTM, or regulation for a gene and no public top for that gene, then add to additional information
+    # maybe modify "extra" tags: if homology/disease, PTM, or regulation for a gene and no public top for that gene, then add to additional information
+    new_additional_genes = []
+    for x in extra_keys:
+        if x not in unique_keys:
+            new_additional_genes.append(x)
+    if len(new_additional_genes):
+        new_additional_str = '|'.join(new_additional_genes)
+        # see if additional tag exists, if not create it
+        is_added_to_existing = False
+        for x in tags:
+            if x['name'] == 'additional_literature':
+                x['genes'] = x['genes'] + '|' + new_additional_str
+                is_added_to_existing = True
+        if not is_added_to_existing:
+            new_tag = {
+                'name': 'additional_literature',
+                'genes': new_additional_str,
+                'comment': None
+            }
+            tags.append(new_tag)
     return tags
