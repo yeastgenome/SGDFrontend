@@ -8,7 +8,10 @@ import requests
 from threading import Thread
 import pdb
 import time
+<<<<<<< HEAD
 from multiprocess import Pool
+=======
+>>>>>>> fe161e361fce89a5cc3b74fe046f60a3cd85d549
 
 
 engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
@@ -32,7 +35,7 @@ class IndexESHelper:
     def get_ref_abstracts(cls):
         """
         Get join between Referencedbentity and Referencedocument
-            :param cls: not required
+            :param cls: 
         """
         obj = {}
         _abstracts = DBSession.query(Referencedbentity, Referencedocument).join(
