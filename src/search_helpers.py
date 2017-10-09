@@ -272,10 +272,15 @@ def format_search_results(search_results, json_response_fields, query):
             item = raw_obj.get('aliases')
 
             if query.replace('"','').lower().strip() in raw_obj.get('keys'):
+<<<<<<< HEAD
                 if obj["category"] == "resource":
                     obj['is_quick'] = False
                 else:
                     obj['is_quick'] = True
+=======
+                import pdb ; pdb.set_trace()
+                obj['is_quick'] = True
+>>>>>>> 124404cf27e0c94a585017bbba8ecf502389ddda
         formatted_results.append(obj)
 
     return formatted_results
