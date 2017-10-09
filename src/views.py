@@ -25,6 +25,7 @@ import traceback
 import datetime
 import logging
 import json
+import pdb
 
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.ERROR)
@@ -40,7 +41,7 @@ def extract_id_request(request, prefix, param_name='id', safe_return=False):
     id = str(request.matchdict[param_name])
 
     db_id = disambiguation_table.get(("/" + prefix + "/" + id).upper())
-    
+
     if db_id is None and safe_return:
         return None
     elif db_id is None:
@@ -57,7 +58,7 @@ def home_view(request):
         'google_client_id': os.environ['GOOGLE_CLIENT_ID'],
         'pusher_key': os.environ['PUSHER_KEY']
     }
-   
+
 @view_config(route_name='get_recent_annotations', request_method='GET', renderer='json')
 @authenticate
 def get_recent_annotations(request):
@@ -97,7 +98,7 @@ def upload_spreadsheet(request):
 def upload_file(request):
     keys = ['file', 'old_filepath', 'new_filepath', 'previous_file_name', 'display_name', 'status', 'topic_id', 'format_id', 'extension', 'file_date', 'readme_name', 'pmids', 'keyword_ids']
     optional_keys = ['is_public', 'for_spell', 'for_browser']
-    
+
     for k in keys:
         if request.POST.get(k) is None:
             return HTTPBadRequest(body=json.dumps({'error': 'Field \'' + k + '\' is missing'}))
@@ -112,7 +113,7 @@ def upload_file(request):
     if not allowed_file(filename):
         log.info('Upload error: File ' + request.POST.get('display_name') + ' has an invalid extension.')
         return HTTPBadRequest(body=json.dumps({'error': 'File extension is invalid'}))
-    
+
     try:
         references = extract_references(request)
         keywords = extract_keywords(request)
@@ -136,7 +137,7 @@ def upload_file(request):
         is_in_spell=request.POST.get('for_spell', 0),
         is_in_browser=request.POST.get('for_browser', 0),
         filepath_id=filepath.filepath_id,
-        file_extension=request.POST.get('extension'),        
+        file_extension=request.POST.get('extension'),
 
         # DBentity params
         format_name=request.POST.get('display_name'),
@@ -152,18 +153,18 @@ def upload_file(request):
 
     link_references_to_file(references, fdb.dbentity_id)
     link_keywords_to_file(keywords, fdb.dbentity_id)
-    
+
     # fdb object gets expired after transaction commit
     fdb_sgdid = fdb.sgdid
     fdb_file_extension = fdb.file_extension
-    
+
     transaction.commit() # this commit must be synchronous because the upload_to_s3 task expects the row in the DB
 
     # NO s3 upload, removed with celery
 
     log.info('File ' + request.POST.get('display_name') + ' was successfully uploaded.')
     return Response({'success': True})
-    
+
 @view_config(route_name='autocomplete_results', renderer='json', request_method='GET')
 def search_autocomplete(request):
     query = request.params.get('q', '')
@@ -186,6 +187,7 @@ def search_autocomplete(request):
 
 @view_config(route_name='search', renderer='json', request_method='GET')
 def search(request):
+
     query = request.params.get('q', '')
     limit = int(request.params.get('limit', 10))
     offset = int(request.params.get('offset', 0))
@@ -209,7 +211,7 @@ def search(request):
     json_response_fields = ['name', 'href', 'description', 'category', 'bioentity_id', 'phenotype_loci', 'go_loci', 'reference_loci','aliases']
 
     args = {}
-    
+
     for key in request.params.keys():
         args[key] = request.params.getall(key)
 
@@ -222,7 +224,7 @@ def search(request):
                                                json_response_fields,
                                                search_fields,
                                                sort_by)
- 
+
     search_results = ESearch.search(
         index=ES_INDEX_NAME,
         body=search_body,
@@ -249,6 +251,7 @@ def search(request):
         body=aggregation_body,
         preference='p_'+query
     )
+   
     return {
         'total': search_results['hits']['total'],
         'results': format_search_results(search_results, json_response_fields, query),
@@ -276,7 +279,7 @@ def extensions(request):
 @view_config(route_name='reference_list', renderer='json', request_method='POST')
 def reference_list(request):
     reference_ids = request.POST.get('reference_ids', request.json_body.get('reference_ids', None))
-    
+
     if reference_ids is None or len(reference_ids) == 0:
         return HTTPBadRequest(body=json.dumps({'error': "No reference_ids sent. JSON object expected: {\"reference_ids\": [\"id_1\", \"id_2\", ...]}"}))
     else:
@@ -286,7 +289,7 @@ def reference_list(request):
 
             if len(references) == 0:
                 return HTTPNotFound(body=json.dumps({'error': "Reference_ids do not exist."}))
-            
+
             return [r.to_bibentry() for r in references]
         except ValueError:
             return HTTPBadRequest(body=json.dumps({'error': "IDs must be string format of integers. Example JSON object expected: {\"reference_ids\": [\"1\", \"2\"]}"}))
@@ -294,17 +297,17 @@ def reference_list(request):
 @view_config(route_name='sign_in', request_method='POST', renderer='json')
 def sign_in(request):
     if not check_csrf_token(request, raises=False):
-        return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
+        return HTTPBadRequest(body=json.dumps({'error': 'Bad CSRF Token'}))
 
     if request.json_body['google_token'] is None:
         return HTTPForbidden(body=json.dumps({'error': 'Expected authentication token not found'}))
-    
+
     try:
         idinfo = client.verify_id_token(request.json_body['google_token'], os.environ['GOOGLE_CLIENT_ID'])
 
         if idinfo.get('iss') not in ['accounts.google.com', 'https://accounts.google.com']:
             return HTTPForbidden(body=json.dumps({'error': 'Authentication token has an invalid ISS'}))
-        
+
         if idinfo.get('email') is None:
             return HTTPForbidden(body=json.dumps({'error': 'Authentication token has no email'}))
 
@@ -312,9 +315,9 @@ def sign_in(request):
 
         curator = curator_or_none(idinfo['email'])
 
-	if curator is None:
+        if curator is None:
             return HTTPForbidden(body=json.dumps({'error': 'User ' + idinfo['email'] + ' is not authorized on SGD'}))
-        
+
         session = request.session
 
         if 'email' not in session:
@@ -353,7 +356,7 @@ def search_sequence_objects(request):
         'total': res['hits']['total'],
         'offset': offset
     }
-    
+
     return Response(body=json.dumps(formatted_response), content_type='application/json')
 
 @view_config(route_name='get_sequence_object', renderer='json', request_method='GET')
@@ -367,7 +370,7 @@ def reserved_name(request):
     id = extract_id_request(request, "reservedname")
 
     reserved_name = DBSession.query(Reservedname).filter_by(reservedname_id=id).one_or_none()
-    
+
     if reserved_name:
         return reserved_name.to_dict()
     else:
@@ -378,7 +381,7 @@ def strain(request):
     id = extract_id_request(request, 'strain')
 
     strain = DBSession.query(Straindbentity).filter_by(dbentity_id=id).one_or_none()
-    
+
     if strain:
         return strain.to_dict()
     else:
@@ -426,7 +429,7 @@ def reference_interaction_details(request):
 def reference_go_details(request):
     id = extract_id_request(request, 'reference')
     reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=id).one_or_none()
-    
+
     if reference:
         return reference.go_to_dict()
     else:
@@ -524,7 +527,7 @@ def reference_triage_promote(request):
         except:
             DBSession.rollback()
             traceback.print_exc()
-            return HTTPBadRequest(body=json.dumps({'error': 'DB failure. Verify that PMID is valid and not already present in SGD.'}))  
+            return HTTPBadRequest(body=json.dumps({'error': 'DB failure. Verify that PMID is valid and not already present in SGD.'}))
 
         # HANDLE TAGS
         # track which loci have primary annotations for this reference to only have one primary per reference
@@ -552,17 +555,17 @@ def reference_triage_promote(request):
         except:
             traceback.print_exc()
             DBSession.rollback()
-        
+
         pusher = get_pusher_client()
         pusher.trigger('sgd', 'triageUpdate', {})
         pusher.trigger('sgd', 'curateHomeUpdate', {})
-        
+
         return {
             "sgdid": sgdid
         }
     else:
         return HTTPNotFound()
-    
+
 @view_config(route_name='reference_triage_id_delete', renderer='json', request_method='DELETE')
 @authenticate
 def reference_triage_id_delete(request):
@@ -572,7 +575,7 @@ def reference_triage_id_delete(request):
         try:
             reference_deleted = Referencedeleted(pmid=triage.pmid, sgdid=None, reason_deleted='This paper was deleted because the content is not relevant to S. cerevisiae.', created_by=request.session['username'])
             DBSession.add(reference_deleted)
-            DBSession.delete(triage)        
+            DBSession.delete(triage)
             transaction.commit()
             pusher = get_pusher_client()
             pusher.trigger('sgd', 'triageUpdate', {})
@@ -590,7 +593,7 @@ def reference_triage_tags(request):
     dbentity_id = DBSession.query(Dbentity.dbentity_id).filter_by(sgdid=sgdid).one_or_none()
     if dbentity_id is None:
         return HTTPNotFound()
-    
+
     obj = []
 
     tags = DBSession.query(CurationReference).filter_by(reference_id=dbentity_id[0]).all()
@@ -598,17 +601,17 @@ def reference_triage_tags(request):
         obj.append(tag.to_dict())
 
     return obj
-    
+
 @view_config(route_name='author', renderer='json', request_method='GET')
 def author(request):
     format_name = extract_id_request(request, 'author', param_name="format_name")
 
     key = "/author/" + format_name
-    
+
     authors_ref = DBSession.query(Referenceauthor).filter_by(obj_url=key).all()
 
     references_dict = sorted([author_ref.reference.to_dict_reference_related() for author_ref in authors_ref], key=lambda r: r["display_name"])
-    
+
     if len(authors_ref) > 0:
         return {
             "display_name": authors_ref[0].display_name,
@@ -629,7 +632,7 @@ def chemical(request):
 @view_config(route_name='chemical_phenotype_details', renderer='json', request_method='GET')
 def chemical_phenotype_details(request):
     id = extract_id_request(request, 'chebi')
-    
+
     chebi = DBSession.query(Chebi).filter_by(chebi_id=id).one_or_none()
     if chebi:
         return chebi.phenotype_to_dict()
@@ -787,7 +790,7 @@ def locus_expression_graph(request):
         return locus.expression_graph()
     else:
         return HTTPNotFound()
-    
+
 @view_config(route_name='locus_literature_details', renderer='json', request_method='GET')
 def locus_literature_details(request):
     id = extract_id_request(request, 'locus')
@@ -829,7 +832,7 @@ def locus_regulation_graph(request):
         return locus.regulation_graph()
     else:
         return HTTPNotFound()
-    
+
 @view_config(route_name='locus_go_details', renderer='json', request_method='GET')
 def locus_go_details(request):
     id = extract_id_request(request, 'locus')
@@ -838,7 +841,7 @@ def locus_go_details(request):
         return locus.go_to_dict()
     else:
         return HTTPNotFound()
-    
+
 @view_config(route_name='locus_interaction_details', renderer='json', request_method='GET')
 def locus_interaction_details(request):
     id = extract_id_request(request, 'locus')
@@ -875,25 +878,25 @@ def locus_sequence_details(request):
         return locus.sequence_details()
     else:
         return HTTPNotFound()
-    
+
 @view_config(route_name='bioentity_list', renderer='json', request_method='POST')
 def analyze(request):
     try:
         data = request.json
     except ValueError:
         return HTTPBadRequest(body=json.dumps({'error': 'Invalid JSON format in body request'}))
-        
+
     if "bioent_ids" not in data:
         return HTTPBadRequest(body=json.dumps({'error': 'Key \"bioent_ids\" missing'}))
 
     loci = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(data['bioent_ids'])).all()
-    
+
     return [locus.to_dict_analyze() for locus in loci]
 
 @view_config(route_name='dataset', renderer='json', request_method='GET')
 def dataset(request):
     id = extract_id_request(request, 'dataset')
-    
+
     dataset = DBSession.query(Dataset).filter_by(dataset_id=id).one_or_none()
     if dataset:
         return dataset.to_dict(add_conditions=True, add_resources=True)
@@ -903,7 +906,7 @@ def dataset(request):
 @view_config(route_name='keyword', renderer='json', request_method='GET')
 def keyword(request):
     id = extract_id_request(request, 'keyword')
-    
+
     keyword = DBSession.query(Keyword).filter_by(keyword_id=id).one_or_none()
     if keyword:
         return keyword.to_dict()
@@ -913,7 +916,7 @@ def keyword(request):
 @view_config(route_name='keywords', renderer='json', request_method='GET')
 def keywords(request):
     keyword_ids = DBSession.query(distinct(DatasetKeyword.keyword_id)).all()
-    
+
     keywords = DBSession.query(Keyword).filter(Keyword.keyword_id.in_(keyword_ids)).all()
     simple_keywords = [k.to_simple_dict() for k in keywords]
     for k in simple_keywords:
@@ -1036,7 +1039,7 @@ def domain_locus_details(request):
 @view_config(route_name='domain_enrichment', renderer='json', request_method='GET')
 def domain_enrichment(request):
     id = extract_id_request(request, 'proteindomain')
-        
+
     proteindomain = DBSession.query(Proteindomain).filter_by(proteindomain_id=id).one_or_none()
     if proteindomain:
         return proteindomain.enrichment()

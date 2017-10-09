@@ -110,63 +110,24 @@ def index_toolbar_links():
 
 def index_colleagues():
     colleagues = DBSession.query(Colleague).all()
-
+    _locus_ids = IndexESHelper.get_colleague_locus()
+    _locus_names = IndexESHelper.get_colleague_locusdbentity()
+    _combined_list = IndexESHelper.combine_locusdbentity_colleague(colleagues, _locus_names, _locus_ids)
     print("Indexing " + str(len(colleagues)) + " colleagues")
-
     bulk_data = []
-    for c in colleagues:
-        description_fields = []
-        for field in [c.institution, c.country]:
-            if field:
-                description_fields.append(field)
-        description = ", ".join(description_fields)
-
-        position = "Lab Member"
-        if c.is_pi == 1:
-            position = "Head of Lab"
-
-        locus = set()
-        locus_ids = DBSession.query(ColleagueLocus.locus_id).filter(ColleagueLocus.colleague_id == c.colleague_id).all()
-        if len(locus_ids) > 0:
-            ids_query = [k[0] for k in locus_ids]
-            locus_names = DBSession.query(Locusdbentity.gene_name, Locusdbentity.systematic_name).filter(Locusdbentity.dbentity_id.in_(ids_query)).all()
-            for l in locus_names:
-                if l[0]:
-                    locus.add(l[0])
-                if l[1]:
-                    locus.add(l[1])
-
-        obj = {
-            'name': c.last_name + ", " + c.first_name,
-            'category': 'colleague',
-            'href': '/colleague/' + c.format_name,
-            'description': description,
-
-            'first_name': c.first_name,
-            'last_name': c.last_name,
-            'institution': c.institution,
-            'position': position,
-            'country': c.country,
-            'state': c.state,
-            'colleague_loci': sorted(list(locus))
-        }
-
-        c.to_dict() # adds 'keywords' to obj
-
+    for item_k, item_v in _combined_list.items():
         bulk_data.append({
             'index': {
                 '_index': INDEX_NAME,
                 '_type': DOC_TYPE,
-                '_id': c.format_name
+                '_id': item_v["format_name"]
             }
         })
 
-        bulk_data.append(obj)
-
+        bulk_data.append(item_v)
         if len(bulk_data) == 1000:
             es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
             bulk_data = []
-
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
@@ -228,6 +189,15 @@ def index_genes():
     bulk_data = []
 
     print('Indexing ' + str(len(all_genes)) + ' genes')
+    ##### test newer methods ##########
+    _summary = IndexESHelper.get_locus_dbentity_summary()
+    _protein = IndexESHelper.get_locus_dbentity_alias(["NCBI protein name"])
+    _phenos = IndexESHelper.get_locus_phenotypeannotation()
+    _goids = IndexESHelper.get_locus_go_annotation()
+    _aliases_raw = IndexESHelper.get_locus_dbentity_alias(
+        ["Uniform", "Non-uniform", "Retired name", "UniProtKB ID"])
+
+    ###################################
     for gene in all_genes:
         if gene.gene_name:
             _name = gene.gene_name
@@ -236,26 +206,38 @@ def index_genes():
         else:
             _name = gene.systematic_name
 
-        summary = DBSession.query(Locussummary.text).filter_by(locus_id=gene.dbentity_id).all()
-        protein = DBSession.query(LocusAlias.display_name).filter_by(locus_id=gene.dbentity_id, alias_type="NCBI protein name").one_or_none()
-        if protein:
-            protein = protein[0]
+        #summary = DBSession.query(Locussummary.text).filter_by(locus_id=gene.dbentity_id).all()
+        summary = []
+        if(_summary is not None):
+            summary = _summary.get(gene.dbentity_id)
+        #protein = DBSession.query(LocusAlias.display_name).filter_by(locus_id=gene.dbentity_id, alias_type="NCBI protein name").one_or_none()
+        protein = _protein.get(gene.dbentity_id)
+        if protein is not None:
+            protein = protein[0].display_name
 
         # TEMP don't index due to schema schange
         # sequence_history = DBSession.query(Locusnoteannotation.note).filter_by(dbentity_id=gene.dbentity_id, note_type="Sequence").all()
         # gene_history = DBSession.query(Locusnoteannotation.note).filter_by(dbentity_id=gene.dbentity_id, note_type="Locus").all()
 
-        phenotype_ids = DBSession.query(Phenotypeannotation.phenotype_id).filter_by(dbentity_id=gene.dbentity_id).all()
-        if phenotype_ids:
-            phenotype_ids = [p[0] for p in phenotype_ids]
+        #phenotype_ids = DBSession.query(Phenotypeannotation.phenotype_id).filter_by(dbentity_id=gene.dbentity_id).all()
+        phenotype_ids = []
+        if _phenos is not None:
+            temp = _phenos.get(gene.dbentity_id)
+            if temp is not None:
+                phenotype_ids = [x.phenotype_id for x in temp]
+        if len(phenotype_ids) > 0:
             phenotypes = DBSession.query(Phenotype.display_name).filter(Phenotype.phenotype_id.in_(phenotype_ids)).all()
         else:
             phenotypes = []
-
-        go_ids = DBSession.query(Goannotation.go_id).filter(and_(Goannotation.go_qualifier != 'NOT', Goannotation.dbentity_id == gene.dbentity_id)).all()
+        #go_ids = DBSession.query(Goannotation.go_id).filter(and_(Goannotation.go_qualifier != 'NOT', Goannotation.dbentity_id == gene.dbentity_id)).all()
+        go_ids = _goids.get(gene.dbentity_id)
+        if go_ids is not None:
+            go_ids = [x.go_id for x in go_ids]
+        else:
+            go_ids = []
         go_annotations = {'cellular component': set([]), 'molecular function': set([]), 'biological process': set([])}
         if len(go_ids) > 0:
-            go_ids = [g[0] for g in go_ids]
+            #go_ids = [g[0] for g in go_ids]
             go = DBSession.query(Go.display_name, Go.go_namespace).filter(Go.go_id.in_(go_ids)).all()
             for g in go:
                 go_annotations[g[1]].add(g[0] + ' (direct)')
@@ -271,21 +253,34 @@ def index_genes():
                         go_annotations[g[1]].add(gs[1])
 
         # add "quick direct" keys such as aliases, SGD, UniProt ID and format aliases
-        aliases_raw = DBSession.query(LocusAlias.display_name, LocusAlias.alias_type).filter(and_(LocusAlias.locus_id==gene.dbentity_id, LocusAlias.alias_type.in_(["Uniform", "Non-uniform", "Retired name", "UniProtKB ID"]))).all()
+        #aliases_raw = DBSession.query(LocusAlias.display_name, LocusAlias.alias_type).filter(and_(LocusAlias.locus_id==gene.dbentity_id, LocusAlias.alias_type.in_())).all()
+        aliases_raw = _aliases_raw.get(gene.dbentity_id)
         alias_quick_direct_keys = []
         aliases = []
-        for d in aliases_raw:
+        if aliases_raw is not None:
+            for alias_item in aliases_raw:
+                name = alias_item.display_name
+                if name not in merged_deleted:
+                    alias_quick_direct_keys.append(name)
+                if alias_item.alias_type != "UniProtKB ID":
+                    aliases.append(name)
+
+        '''for d in aliases_raw:
             name = d[0]
             if name not in merged_deleted:
                 alias_quick_direct_keys.append(name)
             if d[1] != "UniProtKB ID":
-                aliases.append(name)
+                aliases.append(name)'''
         # make everything in keys lowercase to ignore case
         keys = []
         _keys = [gene.gene_name, gene.systematic_name, gene.sgdid] + alias_quick_direct_keys
         for k in _keys:
             if k:
                 keys.append(k.lower())
+<<<<<<< HEAD
+=======
+
+>>>>>>> 124404cf27e0c94a585017bbba8ecf502389ddda
         obj = {
             'name': _name,
             'href': gene.obj_url,
@@ -293,7 +288,7 @@ def index_genes():
             'category': 'locus',
             'feature_type': feature_types[dbentity_ids_to_so[gene.dbentity_id]],
             'name_description': gene.name_description,
-            'summary': [s[0] for s in summary],
+            'summary': summary,
             'phenotypes': [p[0] for p in phenotypes],
             'aliases': aliases,
             'cellular_component': list(go_annotations["cellular component"] - set(["cellular component", "cellular component (direct)", "cellular_component", "cellular_component (direct)"])),
@@ -310,6 +305,7 @@ def index_genes():
             'bioentity_id': gene.dbentity_id,
             'keys': list(keys)
         }
+
         bulk_data.append({
             'index': {
                 '_index': INDEX_NAME,
@@ -330,66 +326,25 @@ def index_genes():
 
 def index_phenotypes():
     phenotypes = DBSession.query(Phenotype).all()
-
+    _phenos_annotation = IndexESHelper.get_phenotypes_phenotypeannotation()
+    _annotation_cond = IndexESHelper.get_phenotypes_condition("chemical")
+    _result = IndexESHelper.get_combined_phenotypes(phenotypes, _phenos_annotation, _annotation_cond)
     bulk_data = []
-
     print("Indexing " + str(len(phenotypes)) + " phenotypes")
-
-    for phenotype in phenotypes:
-        annotations = DBSession.query(Phenotypeannotation).filter_by(phenotype_id=phenotype.phenotype_id).all()
-
-        references = set([])
-        loci = set([])
-        chemicals = set([])
-        mutant = set([])
-        for annotation in annotations:
-            references.add(annotation.reference.display_name)
-            loci.add(annotation.dbentity.display_name)
-            mutant.add(annotation.mutant.display_name)
-
-            annotation_conds = DBSession.query(PhenotypeannotationCond).filter_by(annotation_id=annotation.annotation_id, condition_class="chemical").all()
-            for annotation_cond in annotation_conds:
-                chemicals.add(annotation_cond.condition_name)
-
-        qualifier = None
-        if phenotype.qualifier:
-            qualifier = phenotype.qualifier.display_name
-
-        obj = {
-            'name': phenotype.display_name,
-            'href': phenotype.obj_url,
-            'description': phenotype.description,
-
-            'observable': phenotype.observable.display_name,
-            'qualifier': qualifier,
-
-            'references': list(references),
-            'phenotype_loci': list(loci),
-            'number_annotations': len(list(loci)),
-            'chemical': list(chemicals),
-            'mutant_type': list(mutant),
-
-            'category': 'phenotype',
-            'keys': []
-        }
-
+    for obj_k, obj_v in _result.items():
         bulk_data.append({
             'index': {
                 '_index': INDEX_NAME,
                 '_type': DOC_TYPE,
-                '_id': phenotype.format_name
+                '_id': obj_v["format_name"]
             }
         })
-
-        bulk_data.append(obj)
-
+        bulk_data.append(obj_v)
         if len(bulk_data) == 500:
             es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
             bulk_data = []
-
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
-
 
 def index_observables():
     observables = DBSession.query(Apo).filter_by(apo_namespace="observable").all()
@@ -607,6 +562,7 @@ def index_references():
 
         # reference_loci_db = DBSession.query(Locusnoteannotation).filter_by(reference_id=reference.dbentity_id).all()
 
+    for reference in _references:
         # reference_loci = []
         # if len(reference_loci_db) > 0:
         #     reference_loci = [r.dbentity.display_name for r in reference_loci_db]
@@ -614,32 +570,36 @@ def index_references():
         #TODO: query three
         sec_sgdids = DBSession.query(ReferenceAlias.display_name).filter_by(reference_id=reference.dbentity_id, alias_type="Secondary SGDID").all()
         sec_sgdid = None
-        if len(sec_sgdids):
-            sec_sgdid = sec_sgdids[0][0]
+        authors = _authors.get(reference.dbentity_id)
+        if sec_sgdids is not None:
+            sec_sgdid = sec_sgdids[0]
+
+        if authors is None:
+            authors = []
 
         journal = reference.journal
         if journal:
             journal = journal.display_name
-
-        key_values = [reference.pmcid, reference.pmid, "pmid: " + str(reference.pmid), "pmid:" + str(reference.pmid), "pmid " + str(reference.pmid), reference.sgdid]
+        key_values = [
+            reference.pmcid, reference.pmid, "pmid: " + str(reference.pmid),
+            "pmid:" + str(reference.pmid), "pmid " + str(reference.pmid),
+            reference.sgdid
+        ]
 
         keys = set([])
         for k in key_values:
             if k is not None:
                 keys.add(str(k).lower())
-
         obj = {
             'name': reference.citation,
             'href': reference.obj_url,
             'description': abstract,
-
-            'author': [a[0] for a in authors],
+            'author': authors,
             'journal': journal,
             'year': reference.year,
             # TEMP don't index
             # 'reference_loci': reference_loci,
             'secondary_sgdid': sec_sgdid,
-
             'category': 'reference',
             'keys': list(keys)
         }
@@ -651,9 +611,7 @@ def index_references():
                 '_id': reference.sgdid
             }
         })
-
         bulk_data.append(obj)
-
         if len(bulk_data) == 600:
             es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
             bulk_data = []'''
@@ -666,12 +624,42 @@ def index_references():
 
 def index_chemicals():
     all_chebi_data = DBSession.query(Chebi).all()
-    print("Indexing " + str(len(all_chebi_data)) + " chemicals")
+    _result = IndexESHelper.get_chebi_annotations(all_chebi_data)
     bulk_data = []
+    print("Indexing " + str(len(all_chebi_data)) + " chemicals")
+    for item_key, item_v in _result.items():
+        if item_v is not None:
+            obj = {
+                "name": item_v.display_name,
+                "href": item_v.obj_url,
+                "description": item_v.description,
+                "category": "chemical",
+                "keys": []
+            }
+            bulk_data.append({
+                'index': {
+                    '_index': INDEX_NAME,
+                    '_type': DOC_TYPE,
+                    '_id': 'chemical_' + str(item_key)
+                }
+            })
+
+            bulk_data.append(obj)
+            if len(bulk_data) == 300:
+                es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
+                bulk_data = []
+    if len(bulk_data) > 0:
+        es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
+
+    '''bulk_data = []
+    chebi_names = list(set([x.display_name for x in chebi_data]))
+    condition_ids = DBSession.query(
+        PhenotypeannotationCond.annotation_id).filter(
+            PhenotypeannotationCond.condition_name.in_(chebi_names)).all()
 
     for chemical in all_chebi_data:
         # count annotations and ignore if none
-        conditions = DBSession.query(PhenotypeannotationCond.annotation_id).filter_by(condition_name=chemical.display_name).all()
+        #conditions = DBSession.query(PhenotypeannotationCond.annotation_id).filter_by(condition_name=chemical.display_name).all()
         phenotype_annotations_count = DBSession.query(Phenotypeannotation).filter(Phenotypeannotation.annotation_id.in_(conditions)).count()
         if phenotype_annotations_count == 0:
             continue
@@ -698,32 +686,105 @@ def index_chemicals():
             bulk_data = []
 
     if len(bulk_data) > 0:
-        es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
+        es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)'''
+
 
 def cleanup():
     delete_mapping()
     put_mapping()
 
+
 def setup():
     # see if index exists, if not create it
-    indices=es.indices.get_aliases().keys()
+    indices = es.indices.get_aliases().keys()
     index_exists = INDEX_NAME in indices
     if not index_exists:
         put_mapping()
 
+
 def index_part_1():
-    index_genes()
-    index_strains()
-    index_colleagues()
-    index_phenotypes()
-    index_chemicals()
+    graphviz = GraphvizOutput(output_file='index_genes.png')
+    with PyCallGraph(output=graphviz):
+        index_genes()
+
+    graphviz.output_file = 'index_strains.png'
+    with PyCallGraph(output=graphviz):
+        index_strains()
+
+    graphviz.output_file = 'index_colleagues.png'
+    with PyCallGraph(output=graphviz):
+        index_colleagues()
+
+    graphviz = GraphvizOutput(
+        output_file='index_phenotypes.png')
+    with PyCallGraph(output=graphviz):
+        index_phenotypes()
+
+    graphviz = GraphvizOutput(
+        output_file='index_chemicals.png')
+    with PyCallGraph(output=graphviz):
+        index_chemicals()
+
 
 def index_part_2():
-    index_reserved_names()
-    index_toolbar_links()
-    index_observables()
-    index_go_terms()
-    index_references()
+    graphviz = GraphvizOutput(
+        output_file='index_reserved_names.png')
+    with PyCallGraph(output=graphviz):
+        index_reserved_names()
+
+    graphviz = GraphvizOutput(
+        output_file='index_toolbar_links.png')
+    with PyCallGraph(output=graphviz):
+        index_toolbar_links()
+
+    graphviz.output_file = 'index_observables.png'
+    with PyCallGraph(output=graphviz):
+        index_observables()
+
+    graphviz = GraphvizOutput(
+        output_file='index_go_terms.png')
+    with PyCallGraph(output=graphviz):
+        index_go_terms()
+
+    graphviz = GraphvizOutput(output_file='index_references.png')
+    with PyCallGraph(output=graphviz):
+        index_references()
+
+
+
+def memory_usage(where):
+    mem_summary = summary.summarize(muppy.get_objects())
+    print "Memory summary:", where
+    summary.print_(mem_summary, limit=2)
+    print "VM: %.2fMb" % (get_virtual_memory_usage_kb() / 1024.0)
+
+
+def get_virtual_memory_usage_kb():
+    return float(psutil.Process().memory_info_ex().vms) / 1024.0
+
+
+def run_metrics():
+
+    memory_usage("1 - before query")
+    references = DBSession.query(Referencedbentity).yield_per(5).all()
+    memory_usage("2 - after query")
+    print len(references)
+
+    '''graphviz = GraphvizOutput()
+    graphviz.output_file = './pycall_graph_images/output.png'
+    graphviz.output_type = 'png'
+    with PyCallGraph(output=graphviz):
+        memory_usage("1 - before query")
+        references = DBSession.query(Referencedbentity).yield_per(100).all()
+        memory_usage("2 - after query")
+        print len(references)
+        memory_usage("3 - after length call")
+
+        references = DBSession.query(
+            Referencedbentity.journal, Referencedbentity.dbentity_id,
+            Referencedbentity.sgdid, Referencedbentity.pmcid,
+            Referencedbentity.citation, Referencedbentity.obj_url,
+            Referencedbentity.pmid, Referencedbentity.year).all()'''
 
 
 def memory_usage(where):
@@ -810,6 +871,7 @@ def get_reference_alias(id, lst):
 if __name__ == '__main__':
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     run_metrics()
 =======
 >>>>>>> minor changes
@@ -829,3 +891,16 @@ if __name__ == '__main__':
     t2.start()'''
     index_references()
 >>>>>>> minor changes
+=======
+    
+    gp_output = GraphvizOutput(output_file='index_time.png')
+    with PyCallGraph(output=gp_output):
+        cleanup()
+        setup()
+        index_part_1()
+        index_part_2()
+        t1 = Thread(target=index_part_1)
+        t2 = Thread(target=index_part_2)
+        t1.start()
+        t2.start()
+>>>>>>> 124404cf27e0c94a585017bbba8ecf502389ddda
