@@ -330,69 +330,24 @@ def index_genes():
 def index_phenotypes():
     phenotypes = DBSession.query(Phenotype).all()
     _phenos_annotation = IndexESHelper.get_phenotypes_phenotypeannotation()
-    _annotation_cond = IndexESHelper.get_phenotypes_condition()
-    _result = IndexESHelper.get_combined_phenotypes(phenotypes, _phenos_annotation,_annotation_cond)
-
+    _annotation_cond = IndexESHelper.get_phenotypes_condition("chemical")
+    _result = IndexESHelper.get_combined_phenotypes(phenotypes, _phenos_annotation, _annotation_cond)
     bulk_data = []
-
     print("Indexing " + str(len(phenotypes)) + " phenotypes")
-    start_time = time.time()
-    for phenotype in phenotypes:
-
-        annotations = DBSession.query(Phenotypeannotation).filter_by(phenotype_id=phenotype.phenotype_id).all()
-
-        references = set([])
-        loci = set([])
-        chemicals = set([])
-        mutant = set([])
-        for annotation in annotations:
-            references.add(annotation.reference.display_name)
-            loci.add(annotation.dbentity.display_name)
-            mutant.add(annotation.mutant.display_name)
-
-            annotation_conds = DBSession.query(PhenotypeannotationCond).filter_by(annotation_id=annotation.annotation_id, condition_class="chemical").all()
-            for annotation_cond in annotation_conds:
-                chemicals.add(annotation_cond.condition_name)
-
-        qualifier = None
-        if phenotype.qualifier:
-            qualifier = phenotype.qualifier.display_name
-
-        obj = {
-            'name': phenotype.display_name,
-            'href': phenotype.obj_url,
-            'description': phenotype.description,
-
-            'observable': phenotype.observable.display_name,
-            'qualifier': qualifier,
-
-            'references': list(references),
-            'phenotype_loci': list(loci),
-            'number_annotations': len(list(loci)),
-            'chemical': list(chemicals),
-            'mutant_type': list(mutant),
-
-            'category': 'phenotype',
-            'keys': []
-        }
-
+    for obj_k, obj_v in _result.items():
         bulk_data.append({
             'index': {
                 '_index': INDEX_NAME,
                 '_type': DOC_TYPE,
-                '_id': phenotype.format_name
+                '_id': obj_v["format_name"]
             }
         })
-
-        bulk_data.append(obj)
-
+        bulk_data.append(obj_v)
         if len(bulk_data) == 500:
             es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
             bulk_data = []
-
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
-
 
 def index_observables():
     observables = DBSession.query(Apo).filter_by(apo_namespace="observable").all()
@@ -608,16 +563,44 @@ def index_references():
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
 
-
-
 def index_chemicals():
     all_chebi_data = DBSession.query(Chebi).all()
-    print("Indexing " + str(len(all_chebi_data)) + " chemicals")
+    _result = IndexESHelper.get_chebi_annotations(all_chebi_data)
     bulk_data = []
+    print("Indexing " + str(len(all_chebi_data)) + " chemicals")
+    for item_key, item_v in _result.items():
+        if item_v is not None:
+            obj = {
+                "name": item_v.display_name,
+                "href": item_v.obj_url,
+                "description": item_v.description,
+                "category": "chemical",
+                "keys": []
+            }
+            bulk_data.append({
+                'index': {
+                    '_index': INDEX_NAME,
+                    '_type': DOC_TYPE,
+                    '_id': 'chemical_' + str(item_key)
+                }
+            })
+
+            bulk_data.append(obj)
+            if len(bulk_data) == 300:
+                es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
+                bulk_data = []
+    if len(bulk_data) > 0:
+        es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
+
+    '''bulk_data = []
+    chebi_names = list(set([x.display_name for x in chebi_data]))
+    condition_ids = DBSession.query(
+        PhenotypeannotationCond.annotation_id).filter(
+            PhenotypeannotationCond.condition_name.in_(chebi_names)).all()
 
     for chemical in all_chebi_data:
         # count annotations and ignore if none
-        conditions = DBSession.query(PhenotypeannotationCond.annotation_id).filter_by(condition_name=chemical.display_name).all()
+        #conditions = DBSession.query(PhenotypeannotationCond.annotation_id).filter_by(condition_name=chemical.display_name).all()
         phenotype_annotations_count = DBSession.query(Phenotypeannotation).filter(Phenotypeannotation.annotation_id.in_(conditions)).count()
         if phenotype_annotations_count == 0:
             continue
@@ -644,7 +627,7 @@ def index_chemicals():
             bulk_data = []
 
     if len(bulk_data) > 0:
-        es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
+        es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)'''
 
 
 def cleanup():
@@ -745,14 +728,9 @@ def run_metrics():
             Referencedbentity.pmid, Referencedbentity.year).all()'''
 
 if __name__ == '__main__':
-    index_phenotypes()
-    '''gp_output = GraphvizOutput(output_file='index_colleagues.png')
-
+    
+    gp_output = GraphvizOutput(output_file='index_time.png')
     with PyCallGraph(output=gp_output):
-        index_colleagues()
-    gp_output = GraphvizOutput(output_file='index_references.png')
-    with PyCallGraph(output=gp_output):
-        index_references()
         cleanup()
         setup()
         index_part_1()
@@ -760,4 +738,4 @@ if __name__ == '__main__':
         t1 = Thread(target=index_part_1)
         t2 = Thread(target=index_part_2)
         t1.start()
-        t2.start()'''
+        t2.start()

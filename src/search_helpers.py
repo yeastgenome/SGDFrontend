@@ -270,6 +270,7 @@ def format_search_results(search_results, json_response_fields, query):
         if raw_obj.get('keys'): # colleagues don't have keys
             item = raw_obj.get('aliases')
             if query.replace('"','').lower().strip() in raw_obj.get('keys'):
+                import pdb ; pdb.set_trace()
                 obj['is_quick'] = True
         formatted_results.append(obj)
 
