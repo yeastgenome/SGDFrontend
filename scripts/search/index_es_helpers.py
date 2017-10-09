@@ -8,10 +8,7 @@ import requests
 from threading import Thread
 import pdb
 import time
-<<<<<<< HEAD
 from multiprocess import Pool
-=======
->>>>>>> fe161e361fce89a5cc3b74fe046f60a3cd85d549
 
 
 engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
@@ -307,27 +304,109 @@ class IndexESHelper:
         return _dict_obj
 
     @classmethod
-    def get_phenotypes_condition(cls, condition_str="chemical"):
+    def get_phenotypes_condition(cls, condition_str=None):
         """
         Get join between phenotypeannotation and phenotype condition
             :param cls: not required
         """
         obj = {}
-        _phenotypes_condition = DBSession.query(
-            Phenotypeannotation, PhenotypeannotationCond).filter(
-                Phenotypeannotation.annotation_id ==
-                PhenotypeannotationCond.annotation_id,
-                PhenotypeannotationCond.condition_class == condition_str).all()
-        for item in _phenotypes_condition:
-            if item[0].phenotype_id not in obj:
-                obj[item[0].phenotype_id] = []
-            obj[item[0].phenotype_id].append(item)
-        pdb.set_trace()
+        if condition_str is not None:
+            _phenotypes_condition = DBSession.query(
+                Phenotypeannotation, PhenotypeannotationCond).filter(
+                    Phenotypeannotation.annotation_id ==
+                    PhenotypeannotationCond.annotation_id,
+                    PhenotypeannotationCond.condition_class == condition_str).all()
+            for item in _phenotypes_condition:
+                if item[0].phenotype_id not in obj:
+                    obj[item[0].phenotype_id] = []
+                obj[item[0].phenotype_id].append(item)
+        else:
+            _phenotypes_condition = DBSession.query(
+                Phenotypeannotation, PhenotypeannotationCond).filter(
+                    Phenotypeannotation.annotation_id ==
+                    PhenotypeannotationCond.annotation_id).all()
+            for item in _phenotypes_condition:
+                if item[0].phenotype_id not in obj:
+                    obj[item[0].phenotype_id] = []
+                obj[item[0].phenotype_id].append(item)
+
         return obj
-    
+
     @classmethod
     def get_combined_phenotypes(cls, phenos, phenos_annotation, phenos_annotation_cond):
-        obj = {}
+        """
+        get composed dictionary from the params
+            :param cls: not required
+            :param phenos: from phenotypes table
+            :param phenos_annotation: join between phenotype and phenotypeanootation tables
+            :param phenos_annotation_cond: join between phenotypeannotation and phenotypeannotation_cond tables
+        """
+
+        _dict_pheno_cond = {}
+        #pdb.set_trace()
+        if phenos_annotation is not None:
+
+            for item_key, item_v in phenos_annotation.items():
+                if phenos_annotation_cond is not None:
+                    temp_cond = phenos_annotation_cond.get(item_key)
+                    if temp_cond is not None:
+                        phenos_annotation[item_key].append(
+                            [x[1] for x in temp_cond])
+                    else:
+                        phenos_annotation[item_key].append([])
+
+        _dict_obj = dict.fromkeys([p.phenotype_id for p in phenos])
+
+
+        for item in phenos:
+            references = set([])
+            loci = set([])
+            chemicals = set([])
+            mutant = set([])
+
+            temp_annotations = []
+            _annotations = phenos_annotation.get(item.phenotype_id)
+            if _annotations is not None:
+                _annotations_mod = filter(lambda lst_item: type(lst_item) is not list, _annotations)
+                _annot_conds = filter(lambda lst_item: type(lst_item) is list, _annotations)
+
+                for item_mod in _annotations_mod:
+                    references.add(item_mod.reference.display_name)
+                    loci.add(item_mod.dbentity.display_name)
+                    mutant.add(item_mod.mutant.display_name)
+                if len(_annot_conds) > 0:
+                    conds_mod = [
+                        item_chemical
+                        for sublist in _annot_conds for item_chemical in sublist
+                    ]
+                    if len(conds_mod) > 0:
+                        temp_cm = [chemical.condition_name for chemical in conds_mod]
+                        if len(temp_cm) > 0:
+                            for cm in temp_cm:
+                                chemicals.add(cm)
+            qualifier = None
+
+            if item.qualifier:
+                qualifier = item.qualifier.display_name
+            obj = {
+                'name': item.display_name,
+                'href': item.obj_url,
+                'description': item.description,
+                'observable': item.observable.display_name,
+                'qualifier': qualifier,
+                'references': list(references),
+                'phenotype_loci': list(loci),
+                'number_annotations': len(list(loci)),
+                'chemical': list(chemicals),
+                'mutant_type': list(mutant),
+                'category': 'phenotype',
+                'keys': [],
+                'format_name': item.format_name
+            }
+            _dict_obj[item.phenotype_id] = obj
+
+        return _dict_obj
+
 
 
     @classmethod
@@ -349,3 +428,31 @@ class IndexESHelper:
         if item.systematic_name:
             tap.append(item.get_name)
         return tap
+
+    @classmethod
+    def get_chebi_annotations(cls, chebi_data):
+        """
+        Get a join between chebi and phenotypeannotationcondition
+        """
+        obj = {}
+        _dict_chebi = {}
+        chebi_names = list(set([x.display_name for x in chebi_data]))
+
+        for chebi_item in chebi_data:
+            if chebi_item.display_name not in _dict_chebi:
+                _dict_chebi[chebi_item.display_name] = []
+            _dict_chebi[chebi_item.display_name].append(chebi_item)
+
+        if len(chebi_names) > 0:
+            _conditions = DBSession.query(
+                Phenotypeannotation, PhenotypeannotationCond).join(
+                    PhenotypeannotationCond, Phenotypeannotation.annotation_id == PhenotypeannotationCond.annotation_id).filter(
+                        PhenotypeannotationCond.condition_name.in_(
+                            chebi_names)).all()
+            for item_cond in _conditions:
+                temp = _dict_chebi.get(item_cond[1].condition_name)
+                if temp is not None:
+                    for item in temp:
+                        if len(temp) > 0:
+                            obj[item.chebi_id] = item
+        return obj
