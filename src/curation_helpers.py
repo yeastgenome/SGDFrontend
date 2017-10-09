@@ -27,8 +27,6 @@ def link_gene_names(raw, locus_names_ids, ignore_str=''):
         if wupper in locus_names_object.keys() and len(wupper) > 3:
             sgdid = locus_names_object[wupper]
             url = '/locus/'  + sgdid
-            if has_p:
-                wupper = wupper.capitalize() + 'p'
             new_str = '<a href="' + url + '">' + original_word + '</a>'
             target_regex = r'\b' + re.escape(original_word) + r'\b'
             # ingore if original word not all uppercase and doesn't end with p
