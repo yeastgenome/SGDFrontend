@@ -29,6 +29,14 @@ class Graph extends Component {
     }
   }
 
+  // redirect to 'link' property of node data
+  handleNodeClick(e) {
+    let newUrl = e.data.node.link;
+    if (newUrl && window) {
+      window.location.href = newUrl;
+    }
+  }
+
   didDataChange(prevData, newData) {
     let areNodesEqual = (prevData.nodes.length !== newData.nodes.length);
     let areEdgesEqual = (prevData.edges.length !== newData.edges.length);
@@ -68,7 +76,7 @@ class Graph extends Component {
     let defaultColorScale = d3.scale.category10();
     let colorScale = this.props.colorScale || defaultColorScale;
     return this.props.data.nodes.map( (d) => {
-      d.color = colorScale(d);
+      d.color = colorScale(d.sub_type);
       d.label = d.name;
       d.size = d.direct ? 1 : 0.5;
       return d;
@@ -132,7 +140,8 @@ class Graph extends Component {
         labelThreshold: 100,
         minNodeSize: 5,
         maxNodeSize: 5,
-        labelThreshold: 0
+        labelThreshold: 0,
+        zoomingRatio: 1
       }
     });
     sigma.plugins.animate(
@@ -141,6 +150,25 @@ class Graph extends Component {
       {
         duration: TRANSITION_DURATION
       }
+    );
+    this.s.bind('clickNode', (e) => {
+      this.handleNodeClick(e);
+    });
+  }
+
+  renderHeader() {
+    const NODE_SIZE = '0.6rem';
+    let cScale = this.props.colorScale;
+    let nodes = cScale.domain().map( (d, i) => {
+      let thisBg = cScale(d);
+      return (
+        <span key={`hl${i}`} style={{ fontSize: '0.8rem', marginRight: '1rem' }}><span style={{ background: thisBg, borderRadius: '0.5rem', display: 'inline-block', height: NODE_SIZE, position: 'relative', top: '0.15rem', width: NODE_SIZE }}></span> {d}</span>
+      );
+    });
+    return (
+      <div>
+        {nodes}
+      </div>
     );
   }
 
@@ -160,7 +188,8 @@ class Graph extends Component {
 
   render() {
     return (
-      <div ref='container' style={{ padding: '1rem' }}>
+      <div ref='container'>
+        {this.renderHeader()}
         <div id={TARGET_ID} style={{ height: this.getHeight() }} />
         {this.renderFooter()}
       </div>
