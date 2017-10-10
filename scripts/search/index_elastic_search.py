@@ -8,17 +8,11 @@ from pycallgraph import PyCallGraph
 from pycallgraph.output import GraphvizOutput
 from pympler import summary, muppy
 import psutil
-from multiprocessing.dummy import Pool as ThreadPool
 
 from threading import Thread
 import pdb
-import time
-import json
-import collections
-from index_es_helpers import IndexESHelper
-from operator import itemgetter
-from multiprocess import Pool
-import itertools
+from progressbar import ProgressBar
+pbar = ProgressBar()
 
 engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
 DBSession.configure(bind=engine)
@@ -283,7 +277,6 @@ def index_genes():
         for k in _keys:
             if k:
                 keys.append(k.lower())
-
         obj = {
             'name': _name,
             'href': gene.obj_url,
@@ -504,15 +497,63 @@ def index_references():
     _aliases = IndexESHelper.get_ref_aliases()
     bulk_data = []
     print('Indexing ' + str(len(_references)) + ' references')
+    count = 0
+    for reference in pbar(_references):
+        count += 1
+        print count
+        abstract = get_reference_document(reference.dbentity_id, _abstracts) #loop --> n^4
+
+        if abstract:
+            abstract = abstract[0]
+        authors = get_reference_author(reference.dbentity_id, _authors) #loop
+        sec_sgdids = get_reference_alias(reference.dbentity_id, _aliases) #loop
+        sec_sgdid = None
+        if len(sec_sgdids):
+            sec_sgdid = sec_sgdids[0][0]
+
+        journal = reference.journal
+        if journal:
+            journal = journal.display_name
+        key_values = [reference.pmcid, reference.pmid, "pmid: " + str(reference.pmid), "pmid:" + str(reference.pmid), "pmid " + str(reference.pmid), reference.sgdid]
+
+        keys = set([])
+        for k in key_values:
+            if k is not None:
+                keys.add(str(k).lower())
+
+        obj = {
+            'name': reference.citation,
+            'href': reference.obj_url,
+            'description': abstract,
+
+            'author': [a[0] for a in authors],
+            'journal': journal,
+            'year': reference.year,
+            # TEMP don't index
+            # 'reference_loci': reference_loci,
+            'secondary_sgdid': sec_sgdid,
+
+            'category': 'reference',
+            'keys': list(keys)
+        }
+        bulk_data.append(obj)
+    '''for reference in references:
+        #TODO: query one
+        abstract = DBSession.query(Referencedocument.text).filter_by(reference_id=reference.dbentity_id, document_type="Abstract").one_or_none()
+        if abstract:
+            abstract = abstract[0]
+        #TODO: query two
+        authors = DBSession.query(Referenceauthor.display_name).filter_by(reference_id=reference.dbentity_id).all()
+
+        # reference_loci_db = DBSession.query(Locusnoteannotation).filter_by(reference_id=reference.dbentity_id).all()
 
     for reference in _references:
         # reference_loci = []
         # if len(reference_loci_db) > 0:
         #     reference_loci = [r.dbentity.display_name for r in reference_loci_db]
-        abstract = _abstracts.get(reference.dbentity_id)
-        if abstract is not None:
-            abstract = abstract[0]
-        sec_sgdids = _aliases.get(reference.dbentity_id)
+
+        #TODO: query three
+        sec_sgdids = DBSession.query(ReferenceAlias.display_name).filter_by(reference_id=reference.dbentity_id, alias_type="Secondary SGDID").all()
         sec_sgdid = None
         authors = _authors.get(reference.dbentity_id)
         if sec_sgdids is not None:
@@ -558,7 +599,7 @@ def index_references():
         bulk_data.append(obj)
         if len(bulk_data) == 600:
             es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
-            bulk_data = []
+            bulk_data = []'''
 
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
@@ -729,6 +770,88 @@ def run_metrics():
             Referencedbentity.citation, Referencedbentity.obj_url,
             Referencedbentity.pmid, Referencedbentity.year).all()'''
 
+
+def memory_usage(where):
+    mem_summary = summary.summarize(muppy.get_objects())
+    print "Memory summary:", where
+    summary.print_(mem_summary, limit=2)
+    print "VM: %.2fMb" % (get_virtual_memory_usage_kb() / 1024.0)
+
+
+def get_virtual_memory_usage_kb():
+    return float(psutil.Process().memory_info_ex().vms) / 1024.0
+
+
+
+def run_metrics():
+    graphviz = GraphvizOutput()
+    graphviz.output_file = './pycall_graph_images/refs.png'
+    graphviz.output_type = 'png'
+    with PyCallGraph(output=graphviz):
+        get_refs()
+
+    graphviz.output_file = './pycall_graph_images/authors.png'
+    with PyCallGraph(output=graphviz):
+        get_authors()
+
+    graphviz.output_file = './pycall_graph_images/abstracts.png'
+    with PyCallGraph(output=graphviz):
+        get_abstracts()
+
+    graphviz.output_file = './pycall_graph_images/aliases.png'
+    with PyCallGraph(output=graphviz):
+        get_refs_aliases()
+
+
+def run_metrics_memory_profile():
+
+    memory_usage("1 - before query")
+    references = DBSession.query(Referencedbentity).yield_per(5).all()
+    memory_usage("2 - after query")
+    DBSession.query(Referencedocument.text)
+
+    '''graphviz = GraphvizOutput()
+    graphviz.output_file = './pycall_graph_images/output.png'
+    graphviz.output_type = 'png'
+    with PyCallGraph(output=graphviz):
+        memory_usage("1 - before query")
+        references = DBSession.query(Referencedbentity).yield_per(100).all()
+        memory_usage("2 - after query")
+        print len(references)
+        memory_usage("3 - after length call")
+
+        references = DBSession.query(
+            Referencedbentity.journal, Referencedbentity.dbentity_id,
+            Referencedbentity.sgdid, Referencedbentity.pmcid,
+            Referencedbentity.citation, Referencedbentity.obj_url,
+            Referencedbentity.pmid, Referencedbentity.year).all()'''
+
+
+def get_reference_dbentity():
+    references = set(DBSession.query(Referencedbentity).all())
+    # items = dict([(x.dbentity_id, x) for x in references])
+    return references
+
+
+def get_reference_document(id, lst):
+    # items = dict([(x.reference_id, x) for x in abtracts])
+    temp = [x.text for x in lst if x.reference_id == id]
+    return temp
+
+
+def get_reference_author(id, lst):
+    items = [x.display_name for x in lst if x.reference_id == id]
+    return items
+
+
+def get_reference_alias(id, lst):
+    # items = dict([(x.reference_id, x) for x in aliases])
+    temp = [x.display_name for x in lst if x.reference_id == id]
+    return temp
+
+
+
+
 if __name__ == '__main__':
     gp_output = GraphvizOutput(output_file='index_time.png')
     with PyCallGraph(output=gp_output):
@@ -740,3 +863,4 @@ if __name__ == '__main__':
         t2 = Thread(target=index_part_2)
         t1.start()
         t2.start()
+

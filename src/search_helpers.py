@@ -266,11 +266,16 @@ def format_search_results(search_results, json_response_fields, query):
 
         obj['highlights'] = filter_highlighting(r.get('highlight'))
         obj['id'] = r.get('_id')
+        
         if raw_obj.get('keys'): # colleagues don't have keys
             item = raw_obj.get('aliases')
+
             if query.replace('"','').lower().strip() in raw_obj.get('keys'):
-                
-                obj['is_quick'] = True
+                if obj["category"] == "resource":
+                    obj['is_quick'] = False
+                else:
+                    obj['is_quick'] = True
+
         formatted_results.append(obj)
 
     return formatted_results
