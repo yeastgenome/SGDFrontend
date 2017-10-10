@@ -162,7 +162,7 @@ class Graph extends Component {
     let nodes = cScale.domain().map( (d, i) => {
       let thisBg = cScale(d);
       return (
-        <span key={`hl${i}`} style={{ fontSize: '0.8rem', marginRight: '1rem' }}><span style={{ background: thisBg, borderRadius: '0.5rem', display: 'inline-block', height: NODE_SIZE, position: 'relative', top: '0.15rem', width: NODE_SIZE }}></span> {d}</span>
+        <span key={`hl${i}`} style={{ fontSize: '0.8rem', marginRight: '1rem' }}><span style={{ background: thisBg, borderRadius: '0.5rem', display: 'inline-block', height: NODE_SIZE, position: 'relative', top: '0.1rem', width: NODE_SIZE }}></span> {d}</span>
       );
     });
     return (
