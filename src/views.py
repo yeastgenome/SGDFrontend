@@ -208,7 +208,7 @@ def search(request):
 
     search_fields = ["name", "description", "first_name", "last_name", "institution", "colleague_loci", "feature_type", "name_description", "summary", "phenotypes", "cellular_component", "biological_process", "molecular_function", "ec_number", "protein", "tc_number", "secondary_sgdid", "sequence_history", "gene_history", "observable", "qualifier", "references", "phenotype_loci", "chemical", "mutant_type", "synonyms", "go_id", "go_loci", "author", "journal", "reference_loci","aliases", "status"] # year not inserted, have to change to str in mapping
 
-    json_response_fields = ['name', 'href', 'description', 'category', 'bioentity_id', 'phenotype_loci', 'go_loci', 'reference_loci','aliases']
+    json_response_fields = ['name', 'href', 'description', 'category', 'bioentity_id', 'phenotype_loci', 'go_loci', 'reference_loci','aliases','year']
 
     args = {}
 
@@ -224,7 +224,6 @@ def search(request):
                                                json_response_fields,
                                                search_fields,
                                                sort_by)
-
     search_results = ESearch.search(
         index=ES_INDEX_NAME,
         body=search_body,

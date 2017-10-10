@@ -497,6 +497,7 @@ def index_go_terms():
 
 
 def index_references():
+    start_time = time.time()
     _references = DBSession.query(Referencedbentity).all()
     _abstracts = IndexESHelper.get_ref_abstracts()
     _authors = IndexESHelper.get_ref_authors()
@@ -519,7 +520,7 @@ def index_references():
 
         if authors is None:
             authors = []
-
+        
         journal = reference.journal
         if journal:
             journal = journal.display_name
@@ -539,7 +540,7 @@ def index_references():
             'description': abstract,
             'author': authors,
             'journal': journal,
-            'year': reference.year,
+            'year': str(reference.year),
             # TEMP don't index
             # 'reference_loci': reference_loci,
             'secondary_sgdid': sec_sgdid,
@@ -561,6 +562,7 @@ def index_references():
 
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
+    print("---- %s seconds  ---> time taken " % (time.time() - start_time))
 
 
 def index_chemicals():
@@ -648,9 +650,9 @@ def index_part_1():
     with PyCallGraph(output=graphviz):
         index_genes()
 
-    graphviz.output_file = 'index_strains.png'
+    '''graphviz.output_file = 'index_strains.png'
     with PyCallGraph(output=graphviz):
-        index_strains()
+        index_strains()'''
 
     graphviz.output_file = 'index_colleagues.png'
     with PyCallGraph(output=graphviz):
@@ -682,10 +684,10 @@ def index_part_2():
     with PyCallGraph(output=graphviz):
         index_observables()
 
-    graphviz = GraphvizOutput(
+    '''graphviz = GraphvizOutput(
         output_file='index_go_terms.png')
     with PyCallGraph(output=graphviz):
-        index_go_terms()
+        index_go_terms()'''
 
     graphviz = GraphvizOutput(output_file='index_references.png')
     with PyCallGraph(output=graphviz):
@@ -728,7 +730,6 @@ def run_metrics():
             Referencedbentity.pmid, Referencedbentity.year).all()'''
 
 if __name__ == '__main__':
-    
     gp_output = GraphvizOutput(output_file='index_time.png')
     with PyCallGraph(output=gp_output):
         cleanup()

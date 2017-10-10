@@ -48,7 +48,6 @@ def build_autocomplete_search_body_request(query, category='locus', field='name'
 
 def format_autocomplete_results(es_response, field='name'):
     formatted_results = []
-
     if field != 'name':
         results = es_response['aggregations'][field]['buckets']
         for r in results:
@@ -100,12 +99,13 @@ def build_es_aggregation_body_request(es_query, category, category_filters):
 
 
 def format_aggregation_results(aggregation_results, category, category_filters):
+    import pdb
     if category == '':
         category_obj = {
             'values': [],
             'key': 'category'
         }
-
+        
         for bucket in aggregation_results['aggregations']['categories']['buckets']:
             category_obj['values'].append({
                 'key': bucket['key'],
@@ -121,7 +121,6 @@ def format_aggregation_results(aggregation_results, category, category_filters):
                 'key': subcategory[1],
                 'values': []
             }
-
             if subcategory[1] in aggregation_results['aggregations']:
                 for agg in aggregation_results['aggregations'][subcategory[1]]['buckets']:
 
@@ -270,7 +269,7 @@ def format_search_results(search_results, json_response_fields, query):
         if raw_obj.get('keys'): # colleagues don't have keys
             item = raw_obj.get('aliases')
             if query.replace('"','').lower().strip() in raw_obj.get('keys'):
-                import pdb ; pdb.set_trace()
+                
                 obj['is_quick'] = True
         formatted_results.append(obj)
 
