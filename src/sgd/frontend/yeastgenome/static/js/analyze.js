@@ -35,7 +35,7 @@ function post_to_yeastmine(bioent_ids) {
     // It can be made less wordy if you use one.
     var form = document.createElement("form");
     form.setAttribute("method", "post");
-    form.setAttribute("action", "https://yeastmine.yeastgenome.org/yeastmine-dev/portal.do?goToListUpload=true");
+    form.setAttribute("action", "https://yeastmine.yeastgenome.org/portal.do?goToListUpload=true");
     
     var cinp = document.createElement("input");
     cinp.setAttribute("type", "hidden");
