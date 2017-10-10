@@ -20,7 +20,12 @@ curator_id = {'Rama Balakrishnan'   : 'RAMA',
               'Midori Harris'       : 'MIDORI',
               'Eurie Hong'          : 'EURIE',
               'Cynthia Krieger'     : 'CINDY',
-              'Rose Oughtred'       : 'ROSE'}
+              'Rose Oughtred'       : 'ROSE',
+              'Terry Jackson'       : 'TLJ',
+              'Sage Hellerstedt'    : 'SAGEH',
+              'Kevin MacPherson'    : 'KMACPHER',
+              'Olivia Lang'         : 'OWLANG',
+              'Emily Heald'         : 'EMILYJC' }
 
 computational_created_by = 'OTTO'
 email_receiver = ['sweng@stanford.edu']
@@ -65,7 +70,9 @@ go_ref_mapping = {
     'GO_REF:0000038' : 'S000148670',
     'GO_REF:0000039' : 'S000148671',
     'GO_REF:0000040' : 'S000148672',
-    'GO_REF:0000041' : 'S000150560'
+    'GO_REF:0000041' : 'S000150560',
+    'GO_REF:0000107' : 'S000204514',
+    'GO_REF:0000108' : 'S000204515'
 }
 
 current_go_qualifier = ['NOT', 'colocalizes_with', 'contributes_to']

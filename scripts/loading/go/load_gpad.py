@@ -1,33 +1,35 @@
-from src.sgd.convert.util import get_relation_to_ro_id, read_gpi_file, \
-     read_gpad_file, get_go_extension_link, sendmail
-from src.sgd.convert.gpad_config import email_receiver, email_subject
 from datetime import datetime
 import sys
+reload(sys)  # Reload does the trick!
+sys.path.insert(0, '../../../src/')
+from models import Go, Taxonomy, Source, Goannotation, Gosupportingevidence, \
+                   Goextension, EcoAlias
+sys.path.insert(0, '../')
+from config import CREATED_BY
+from database_session import get_nex_session as get_session
+from util import get_relation_to_ro_id, read_gpi_file, \
+                 read_gpad_file, get_go_extension_link
 
 __author__ = 'sweng66'
 
-## Created on June, 2016
+## Created on April 2017
 ## This script is used to load the go annotation (gpad) file into NEX2.
 
 TAXON_ID = 'TAX:4932'
-GPI_FILE = 'src/sgd/convert/data/gp_information.559292_sgd'
-GPAD_FILE = 'src/sgd/convert/data/gp_association.559292_sgd'
+GPI_FILE = 'data/gp_information.559292_sgd'
+GPAD_FILE = 'data/gp_association.559292_sgd'
 
 def load_go_annotations(annotation_type, log_file):
 
-    nex_session = get_nex_session()
+    nex_session = get_session()
 
-    from src.sgd.model.nex.source import Source
-    from src.sgd.model.nex.taxonomy import Taxonomy
-    from src.sgd.model.nex.go import Go
-
-    source_to_id = dict([(x.display_name, x.id) for x in nex_session.query(Source).all()])
-    go_id_to_aspect =  dict([(x.id, x.go_namespace) for x in nex_session.query(Go).all()])
+    source_to_id = dict([(x.display_name, x.source_id) for x in nex_session.query(Source).all()])
+    go_id_to_aspect =  dict([(x.go_id, x.go_namespace) for x in nex_session.query(Go).all()])
 
     fw = open(log_file, "w")
     
     fw.write(str(datetime.now()) + "\n")
-    taxid_to_taxonomy_id =  dict([(x.taxid, x.id) for x in nex_session.query(Taxonomy).all()])
+    taxid_to_taxonomy_id =  dict([(x.taxid, x.taxonomy_id) for x in nex_session.query(Taxonomy).all()])
     taxonomy_id = taxid_to_taxonomy_id.get(TAXON_ID)
     if taxonomy_id is None:
         fw.write("The Taxon_id = " + TAXON_ID + " is not in the database\n")
@@ -48,7 +50,7 @@ def load_go_annotations(annotation_type, log_file):
     fw.write(str(datetime.now()) + "\n")
     fw.write("reading gpi file...\n")
     [uniprot_to_date_assigned, uniprot_to_sgdid_list] = read_gpi_file(GPI_FILE)
-
+    
     fw.write(str(datetime.now()) + "\n")
     fw.write("reading gpad file...\n")
     yes_goextension = 1
@@ -94,8 +96,6 @@ def load_go_annotations(annotation_type, log_file):
 
 def load_new_data(data, source_to_id, annotation_type, key_to_annotation, annotation_id_to_extensions, annotation_id_to_support_evidences, taxonomy_id, go_id_to_aspect, fw):
 
-    from src.sgd.model.nex.goannotation2 import Goannotation
-
     annotation_update_log = {}
     for count_name in ['annotation_updated', 'annotation_added', 'annotation_deleted',
                        'extension_added', 'extension_deleted', 'supportevidence_added',
@@ -104,6 +104,10 @@ def load_new_data(data, source_to_id, annotation_type, key_to_annotation, annota
         annotation_update_log[('computational', count_name)] = 0
                         
     hasGoodAnnot = {}
+
+    nex_session = get_session()
+
+    i = 0
 
     seen = {}
     key_to_annotation_id = {}
@@ -117,8 +121,14 @@ def load_new_data(data, source_to_id, annotation_type, key_to_annotation, annota
             print "The source: ", x['source'], " is not in the SOURCE table."
             continue
 
+        i = i + 1
+        if i > 1000:
+            nex_session.close()
+            nex_session = get_session()
+            i = 0
+
         try:
-            nex_session = get_nex_session()
+            # nex_session = get_session()
 
             dbentity_id = x['dbentity_id']
             go_id = x['go_id']
@@ -157,17 +167,19 @@ def load_new_data(data, source_to_id, annotation_type, key_to_annotation, annota
                 # remove the new key from the dictionary
                 # and the rest can be deleted later
                 thisAnnot = key_to_annotation.pop(key)
-                annotation_id = thisAnnot.id
+                annotation_id = thisAnnot.annotation_id
                 ## this annotation is in the database, so update  
                 ## the date_assigned if it is changed
                 ## but no need to update created_by and date_created
                 #####  date_assigned_in_db = str(getattr(thisAnnot, 'date_assigned'))
                 date_assigned_in_db = thisAnnot.date_assigned
-                if str(date_assigned_in_db) != str(x['date_assigned']):
-                    fw.write("UPDATE GOANNOTATION: key=" + str(key) + " OLD date_assignedd=" + str(date_assigned_in_db) + ", NEW date_assigned=" + str(x['date_assigned']) + "\n")
-                    nex_session.query(Goannotation).filter_by(id=thisAnnot.id).update({"date_assigned": x['date_assigned']})
-                    # thisAnnot.date_assigned = x['date_assigned']
-                    # nex_session.flush()
+                date_assigned_db = str(date_assigned_in_db).split(" ")[0]
+                if date_assigned_db != str(x['date_assigned']):
+                    fw.write("UPDATE GOANNOTATION: key=" + str(key) + " OLD date_assigned=" + date_assigned_db + ", NEW date_assigned=" + str(x['date_assigned']) + "\n")
+                    # nex_session.query(Goannotation).filter_by(id=thisAnnot.annotation_id).update({"date_assigned": x['date_assigned']})
+                    thisAnnot.date_assigned = x['date_assigned']
+                    nex_session.add(thisAnnot)
+                    nex_session.flush()
                     count_key = (x['annotation_type'], 'annotation_updated')
                     annotation_update_log[count_key] = annotation_update_log[count_key] + 1
             else:
@@ -175,64 +187,80 @@ def load_new_data(data, source_to_id, annotation_type, key_to_annotation, annota
                 print "KEY=", str(key), " is a NEW ENTRY"
 
                 fw.write("NEW GOANNOTATION: key=" + str(key) + "\n")
-                thisAnnot = Goannotation(dbentity_id, 
-                                         source_id, 
-                                         taxonomy_id, 
-                                         x['reference_id'], 
-                                         go_id, 
-                                         x['eco_id'], 
-                                         x['annotation_type'], 
-                                         x['go_qualifier'], 
-                                         x['date_assigned'], 
-                                         x['date_created'], 
-                                         x['created_by'])
+
+                created_by = x['created_by']
+                if created_by == '<NULL>' or created_by is None:
+                    created_by = CREATED_BY
+
+                thisAnnot = Goannotation(dbentity_id = dbentity_id, 
+                                         source_id = source_id, 
+                                         taxonomy_id = taxonomy_id, 
+                                         reference_id = x['reference_id'], 
+                                         go_id = go_id, 
+                                         eco_id = x['eco_id'], 
+                                         annotation_type = x['annotation_type'], 
+                                         go_qualifier = x['go_qualifier'], 
+                                         date_assigned = x['date_assigned'], 
+                                         date_created = x['date_created'], 
+                                         created_by = created_by)
                 nex_session.add(thisAnnot)
                 nex_session.flush()
-                annotation_id = thisAnnot.id
+                # nex_session.refresh(x)
+                nex_session.commit()
+                annotation_id = thisAnnot.annotation_id
                 count_key= (x['annotation_type'], 'annotation_added')
                 annotation_update_log[count_key] = annotation_update_log[count_key] + 1
 
             nex_session.commit()
-
+            
+            created_by = x['created_by']
+            if created_by == '<NULL>' or created_by is None:
+                created_by = CREATED_BY
+            
             key_to_annotation_id[key] = annotation_id
             if x.get('goextension') is not None:
-                annotation_id_to_extension[annotation_id] = (x['goextension'], x['date_created'], x['created_by'], x['annotation_type'])
+                annotation_id_to_extension[annotation_id] = (x['goextension'], x['date_created'], created_by, x['annotation_type'])
             if x.get('gosupport') is not None:
-                annotation_id_to_support[annotation_id] = (x['gosupport'], x['date_created'], x['created_by'], x['annotation_type'])
+                annotation_id_to_support[annotation_id] = (x['gosupport'], x['date_created'], created_by, x['annotation_type'])
 
             hasGoodAnnot[(dbentity_id, go_id_to_aspect[go_id])] = 1
         
         finally:
-            nex_session.close()
+            nex_session.commit()
 
+    nex_session.close()
     ## update goextension table
 
     print "Upadting GO extension data..."
 
+    nex_session = get_session()
+
     for annotation_id in annotation_id_to_extension:
         (goextension, date_created, created_by, annotation_type) = annotation_id_to_extension[annotation_id]
-        update_goextension(annotation_id, goextension, annotation_id_to_extensions, 
+        update_goextension(nex_session, annotation_id, goextension, annotation_id_to_extensions, 
                            date_created, created_by, annotation_type, 
                            annotation_update_log, fw)
+
+    nex_session.close()
 
     ## update gosupportingevidence table
 
     print "Updating GO supporting evidence data..."
-    
+
+    nex_session = get_session()
+
     for annotation_id in annotation_id_to_support:
         (gosupport, date_created, created_by, annotation_type) = annotation_id_to_support[annotation_id]
-        update_gosupportevidence(annotation_id, gosupport, annotation_id_to_support_evidences, 
+        update_gosupportevidence(nex_session, annotation_id, gosupport, annotation_id_to_support_evidences, 
                                  date_created, created_by, annotation_type, 
                                  annotation_update_log, fw)
+
+    nex_session.close()
 
     return [hasGoodAnnot, annotation_update_log]
 
 
-def update_goextension(annotation_id, goextension, annotation_id_to_extensions, date_created, created_by, annotation_type, annotation_update_log, fw):
-
-    from src.sgd.model.nex.goextension2 import Goextension
-
-    nex_session = get_nex_session()
+def update_goextension(nex_session, annotation_id, goextension, annotation_id_to_extensions, date_created, created_by, annotation_type, annotation_update_log, fw):
 
     key_to_extension = {}
     if annotation_id in annotation_id_to_extensions:
@@ -263,7 +291,7 @@ def update_goextension(annotation_id, goextension, annotation_id_to_extensions, 
             if link.startswith('Unknown'):
                 print "unknown ID: ", dbxref_id
                 continue
-            key = (group_id, role, dbxref_id)
+            key = (group_id, ro_id, dbxref_id)
             if key in key_to_extension:
                 
                 print "GO extension ", key, " is in the database."
@@ -273,13 +301,13 @@ def update_goextension(annotation_id, goextension, annotation_id_to_extensions, 
 
                 print "NEW GO extension ", key
                 
-                thisExtension = Goextension(annotation_id,
-                                            group_id,
-                                            dbxref_id,
-                                            link,
-                                            ro_id,
-                                            date_created,
-                                            created_by)
+                thisExtension = Goextension(annotation_id = annotation_id,
+                                            group_id = group_id,
+                                            dbxref_id = dbxref_id,
+                                            obj_url = link,
+                                            ro_id = ro_id,
+                                            date_created = date_created,
+                                            created_by = created_by)
                 fw.write("NEW GOEXTENSION: key=" + str(key) + "\n")
                 nex_session.add(thisExtension)
                 key= (annotation_type, 'extension_added')
@@ -295,14 +323,8 @@ def update_goextension(annotation_id, goextension, annotation_id_to_extensions, 
         key= (annotation_type, 'extension_deleted')
         annotation_update_log[key] = annotation_update_log[key] + 1
     nex_session.commit()    
-    nex_session.close()
-
-
-def update_gosupportevidence(annotation_id, gosupport, annotation_id_to_support_evidences, date_created, created_by, annotation_type, annotation_update_log, fw):
-
-    from src.sgd.model.nex.gosupportingevidence2 import Gosupportingevidence
-
-    nex_session = get_nex_session()
+    
+def update_gosupportevidence(nex_session, annotation_id, gosupport, annotation_id_to_support_evidences, date_created, created_by, annotation_type, annotation_update_log, fw):
 
     key_to_support = {}
     if annotation_id in annotation_id_to_support_evidences:
@@ -343,13 +365,13 @@ def update_gosupportevidence(annotation_id, gosupport, annotation_id_to_support_
 
                 print "NEW GO supporting evidence ", key
 
-                thisSupport = Gosupportingevidence(annotation_id,
-                                                   group_id,
-                                                   dbxref_id,
-                                                   link,
-                                                   evidence_type,
-                                                   date_created,
-                                                   created_by)
+                thisSupport = Gosupportingevidence(annotation_id = annotation_id,
+                                                   group_id = group_id,
+                                                   dbxref_id = dbxref_id,
+                                                   obj_url = link,
+                                                   evidence_type = evidence_type,
+                                                   date_created = date_created,
+                                                   created_by = created_by)
 
                 fw.write("NEW GOSUPPORTINGEVIDENCE: key=" + str(key) + "\n")
                 nex_session.add(thisSupport)
@@ -367,19 +389,16 @@ def update_gosupportevidence(annotation_id, gosupport, annotation_id_to_support_
         key= (annotation_type, 'supportevidence_deleted')
         annotation_update_log[key] = annotation_update_log[key] + 1
     nex_session.commit()
-    nex_session.close()
 
 def all_go_extensions(nex_session):
     
-    from src.sgd.model.nex.goextension2 import Goextension
-
     annotation_id_to_extensions = {}
 
     for x in nex_session.query(Goextension).all():
         key_to_extension = {}
         if x.annotation_id in annotation_id_to_extensions:
             key_to_extension = annotation_id_to_extensions[x.annotation_id]
-        key = (x.group_id, x.role, x.dbxref_id) 
+        key = (x.group_id, x.ro_id, x.dbxref_id) 
         key_to_extension[key] = x
         annotation_id_to_extensions[x.annotation_id] = key_to_extension
         
@@ -387,8 +406,6 @@ def all_go_extensions(nex_session):
 
 
 def all_go_support_evidences(nex_session):
-
-    from src.sgd.model.nex.gosupportingevidence2 import Gosupportingevidence
 
     annotation_id_to_support_evidences = {}
 
@@ -404,9 +421,7 @@ def all_go_support_evidences(nex_session):
 
 
 def all_go_annotations(nex_session, annotation_type):
-    
-    from src.sgd.model.nex.goannotation2 import Goannotation
-    
+        
     key_to_annotation = {}
     for x in nex_session.query(Goannotation).all():
         if (x.source.display_name == 'SGD' and x.annotation_type == 'manually curated' and annotation_type == 'manually curated') or (annotation_type == 'computational' and x.annotation_type=='computational'):
@@ -418,9 +433,7 @@ def all_go_annotations(nex_session, annotation_type):
 
 def delete_obsolete_annotations(key_to_annotation, hasGoodAnnot, go_id_to_aspect, annotation_update_log, source_to_id, dbentity_id_with_new_pmid, dbentity_id_with_uniprot, fw):
 
-    nex_session = get_nex_session()
-
-    from src.sgd.model.nex.eco import EcoAlias
+    nex_session = get_session()
     
     evidence_to_eco_id = dict([(x.display_name, x.eco_id) for x in nex_session.query(EcoAlias).all()])
 
@@ -431,8 +444,6 @@ def delete_obsolete_annotations(key_to_annotation, hasGoodAnnot, go_id_to_aspect
     try:
 
         ## add check to see if there are any valid htp annotations..                                         
-
-        from src.sgd.model.nex.goannotation2 import Goannotation
 
         for x in nex_session.query(Goannotation).filter_by(source_id=src_id).filter_by(annotation_type='high-throughput').all():
             hasGoodAnnot[(x.dbentity_id, go_id_to_aspect[x.go_id])] = 1
@@ -456,6 +467,9 @@ def delete_obsolete_annotations(key_to_annotation, hasGoodAnnot, go_id_to_aspect
                 continue
             elif dbentity_id_with_uniprot.get(x.dbentity_id):
                 ## don't want to delete the annotations that are not in GPAD file yet
+                ## delete goextension and gosupportingevidence first
+                nex_session.query(Goextension).filter_by(annotation_id=x.annotation_id).delete()
+                nex_session.query(Gosupportingevidence).filter_by(annotation_id=x.annotation_id).delete()
                 nex_session.delete(x)
                 nex_session.commit()
                 fw.write("DELETE GOANNOTATION: row=" + str(x) + "\n")
@@ -463,28 +477,14 @@ def delete_obsolete_annotations(key_to_annotation, hasGoodAnnot, go_id_to_aspect
                 annotation_update_log[key] = annotation_update_log[key] + 1
     finally:
         nex_session.close()
-
-
-
-def get_nex_session():
-
-    from src.sgd.convert.util import prepare_schema_connection
-    from src.sgd.convert import config
-    from src.sgd.model import nex
-
-    nex_session_maker = prepare_schema_connection(nex, config.NEX_DBTYPE, config.NEX_HOST, config.NEX_DBNAME, config.NEX_SCHEMA, config.NEX_DBUSER, config.NEX_DBPASS)
-
-    return nex_session_maker()
-                                             
-
+    
+                                         
 def write_summary_and_send_email(annotation_update_log, new_pmids, bad_ref, fw):
-
-## WORK FROM HERE
 
     summary = ''
     
     if len(new_pmids) > 0:
-        summary = "The following Pubmed ID(s) are not in the oracle database. Please add them into the database so the missing annotations can be added @next run." + "\n" + ", ".join(new_pmids) + "\n\n"
+        summary = "The following Pubmed ID(s) are not in the database. Please add them into the database so the missing annotations can be added @next run." + "\n" + ", ".join(new_pmids) + "\n\n"
 
     if len(bad_ref) > 0:
         summary = summary + "The following new GO_Reference(s) don't have a corresponding SGDID yet." + "\n" + ', '.join(bad_ref) + "\n"
@@ -519,18 +519,17 @@ def write_summary_and_send_email(annotation_update_log, new_pmids, bad_ref, fw):
 
 
 if __name__ == "__main__":
-    
-    log_file = "src/sgd/convert/logs/GPAD_loading.log"
-    
+        
     if len(sys.argv) >= 2:
         annotation_type = sys.argv[1]
     else:
-        annotation_type = "manually curated"
-
-    # if annotation_type == "manually curated":
-    #    source = 'SGD'
-    # else:
-    #    source = None
+        # annotation_type = "manually curated"
+        print "Usage:         python load_gpad.py annotation_type[manually curated|computational]"
+        print "Usage example: python load_gpad.py 'manually curated'"
+        print "Usage example: python load_gpad.py computational"
+        exit()
+    
+    log_file = "logs/GPAD_loading_" + annotation_type.replace(" ", "-") + ".log"
 
     load_go_annotations(annotation_type, log_file)
 
