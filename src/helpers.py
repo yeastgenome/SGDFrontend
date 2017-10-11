@@ -11,7 +11,6 @@ import tempfile
 import transaction
 from pyramid.httpexceptions import HTTPForbidden, HTTPBadRequest, HTTPNotFound
 from sqlalchemy.exc import IntegrityError, InternalError, StatementError
-from sqlalchemy.orm.exc import DetachedInstanceError
 import traceback
 import requests
 
@@ -80,11 +79,6 @@ def dbentity_safe_query(id, entity_class):
             traceback.print_exc()
             log.info('DB error corrected. Rollingback previous error in db connection')
             DBSession.rollback()
-            attempts += 1
-        except DetachedInstanceError:
-            traceback.print_exc()
-            log.info('DB session closed from detached instance state.')
-            DBSession.expunge_all()
             attempts += 1
     return dbentity
 

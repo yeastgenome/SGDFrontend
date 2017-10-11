@@ -3,6 +3,7 @@ from pyramid.response import Response, FileResponse
 from pyramid.view import view_config
 from pyramid.compat import escape
 from sqlalchemy import func, distinct, and_, or_
+from sqlalchemy.orm.exc import DetachedInstanceError
 import os
 import re
 import transaction
@@ -741,5 +742,16 @@ def ecnumber_locus_details(request):
 # check for basic rad54 response
 @view_config(route_name='healthcheck', renderer='json', request_method='GET')
 def healthcheck(request):
-    locus = get_locus_by_id(1268789)
-    return locus.to_dict()
+    MAX_QUERY_ATTEMPTS = 3
+    attempts = 0
+    ldict = None
+    while attempts < MAX_QUERY_ATTEMPTS:
+        try:
+            ldict = get_locus_by_id(1268789).to_dict()
+            break
+        except DetachedInstanceError:
+            traceback.print_exc()
+            log.info('DB session closed from detached instance state.')
+            DBSession.expunge_all()
+            attempts += 1
+    return ldict
