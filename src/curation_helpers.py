@@ -4,7 +4,7 @@ import os
 import pusher
 import re
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 from zope.sqlalchemy import ZopeTransactionExtension
 
 def link_gene_names(raw, locus_names_ids, ignore_str=''):
@@ -46,8 +46,8 @@ def process_pmid_list(raw):
 
 def get_curator_session(username):
     engine = create_engine(os.environ['NEX2_URI'])
-    Session = sessionmaker(bind=engine, extension=ZopeTransactionExtension())
-    curator_session = Session()
+    session_factory = sessionmaker(bind=engine, extension=ZopeTransactionExtension())
+    curator_session = scoped_session(session_factory)
     curator_session.execute('SET LOCAL ROLE ' + username)
     return curator_session
 
