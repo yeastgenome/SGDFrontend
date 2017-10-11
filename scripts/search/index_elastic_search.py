@@ -11,14 +11,11 @@ import psutil
 from multiprocessing.dummy import Pool as ThreadPool
 
 from threading import Thread
-import pdb
-import time
 import json
 import collections
 from index_es_helpers import IndexESHelper
 from operator import itemgetter
 from multiprocess import Pool
-import itertools
 
 engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
 DBSession.configure(bind=engine)
@@ -27,7 +24,7 @@ Base.metadata.bind = engine
 INDEX_NAME = os.environ.get('ES_INDEX_NAME', 'searchable_items_aws')
 DOC_TYPE = 'searchable_item'
 ES_URI = os.environ['WRITE_ES_URI']
-es = Elasticsearch(ES_URI)
+es = Elasticsearch(ES_URI, retry_on_timeout=True)
 
 
 def delete_mapping():
@@ -601,8 +598,7 @@ def index_references():
             temp_loci = _ref_loci.get(reference.dbentity_id)
             if temp_loci is not None:
                 reference_loci = list(set([x.display_name for x in IndexESHelper.flattern_list(temp_loci)]))
-                
-                #pdb.set_trace()
+
         abstract = _abstracts.get(reference.dbentity_id)
         if abstract is not None:
             abstract = abstract[0]
@@ -685,42 +681,6 @@ def index_chemicals():
                 bulk_data = []
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
-    '''bulk_data = []
-    chebi_names = list(set([x.display_name for x in chebi_data]))
-    condition_ids = DBSession.query(
-        PhenotypeannotationCond.annotation_id).filter(
-            PhenotypeannotationCond.condition_name.in_(chebi_names)).all()
-
-    for chemical in all_chebi_data:
-        # count annotations and ignore if none
-        #conditions = DBSession.query(PhenotypeannotationCond.annotation_id).filter_by(condition_name=chemical.display_name).all()
-        phenotype_annotations_count = DBSession.query(Phenotypeannotation).filter(Phenotypeannotation.annotation_id.in_(conditions)).count()
-        if phenotype_annotations_count == 0:
-            continue
-        obj = {
-            "name": chemical.display_name,
-            "href": chemical.obj_url,
-            "description": chemical.description,
-            "category": "chemical",
-            "keys": []
-        }
-
-        bulk_data.append({
-            'index': {
-                '_index': INDEX_NAME,
-                '_type': DOC_TYPE,
-                '_id': 'chemical_' + str(chemical.chebi_id)
-            }
-        })
-
-        bulk_data.append(obj)
-
-        if len(bulk_data) == 300:
-            es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
-            bulk_data = []
-
-    if len(bulk_data) > 0:
-        es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)'''
 
 
 def cleanup():
@@ -741,9 +701,9 @@ def index_part_1():
     with PyCallGraph(output=graphviz):
         index_genes()
 
-    '''graphviz.output_file = 'index_strains.png'
+    graphviz.output_file = 'index_strains.png'
     with PyCallGraph(output=graphviz):
-        index_strains()'''
+        index_strains()
 
     graphviz.output_file = 'index_colleagues.png'
     with PyCallGraph(output=graphviz):
@@ -771,52 +731,17 @@ def index_part_2():
     with PyCallGraph(output=graphviz):
         index_observables()
 
-    '''graphviz = GraphvizOutput(output_file='index_go_terms.png')
+    graphviz = GraphvizOutput(output_file='index_go_terms.png')
     with PyCallGraph(output=graphviz):
-        index_go_terms()'''
+        index_go_terms()
 
     graphviz = GraphvizOutput(output_file='index_references.png')
     with PyCallGraph(output=graphviz):
-        index_references()
-
-
-def memory_usage(where):
-    mem_summary = summary.summarize(muppy.get_objects())
-    print "Memory summary:", where
-    summary.print_(mem_summary, limit=2)
-    print "VM: %.2fMb" % (get_virtual_memory_usage_kb() / 1024.0)
-
-
-def get_virtual_memory_usage_kb():
-    return float(psutil.Process().memory_info_ex().vms) / 1024.0
-
-
-def run_metrics():
-
-    memory_usage("1 - before query")
-    references = DBSession.query(Referencedbentity).yield_per(5).all()
-    memory_usage("2 - after query")
-    print len(references)
-    '''graphviz = GraphvizOutput()
-    graphviz.output_file = './pycall_graph_images/output.png'
-    graphviz.output_type = 'png'
-    with PyCallGraph(output=graphviz):
-        memory_usage("1 - before query")
-        references = DBSession.query(Referencedbentity).yield_per(100).all()
-        memory_usage("2 - after query")
-        print len(references)
-        memory_usage("3 - after length call")
-
-        references = DBSession.query(
-            Referencedbentity.journal, Referencedbentity.dbentity_id,
-            Referencedbentity.sgdid, Referencedbentity.pmcid,
-            Referencedbentity.citation, Referencedbentity.obj_url,
-            Referencedbentity.pmid, Referencedbentity.year).all()'''
-
+        index_references() 
 
 if __name__ == '__main__':
-    #index_references()
-    gp_output = GraphvizOutput(output_file='index_time.png')
+    index_toolbar_links()
+    '''gp_output = GraphvizOutput(output_file='index_time.png')
     with PyCallGraph(output=gp_output):
         cleanup()
         setup()
@@ -825,4 +750,4 @@ if __name__ == '__main__':
         t1 = Thread(target=index_part_1)
         t2 = Thread(target=index_part_2)
         t1.start()
-        t2.start()
+        t2.start()'''
