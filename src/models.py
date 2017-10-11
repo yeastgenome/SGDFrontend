@@ -1801,15 +1801,16 @@ class Referencedbentity(Dbentity):
         return [url1]
 
     def get_tags(self):
+        TAG_LIMIT = 50
         tags = []
-        curation_refs = DBSession.query(CurationReference).filter_by(reference_id=self.dbentity_id).all()
+        curation_refs = DBSession.query(CurationReference).filter_by(reference_id=self.dbentity_id).limit(TAG_LIMIT).all()
         for x in curation_refs:
             tags.append({
                 'name': x.get_name(),
                 'locus_id': x.locus_id,
                 'comment': x.curator_comment
             })
-        lit_annotations = DBSession.query(Literatureannotation).filter_by(reference_id=self.dbentity_id).all()
+        lit_annotations = DBSession.query(Literatureannotation).filter_by(reference_id=self.dbentity_id).limit(TAG_LIMIT).all()
         for x in lit_annotations:
             tags.append({
                 'name': x.get_name(),
