@@ -740,8 +740,7 @@ def index_part_2():
         index_references() 
 
 if __name__ == '__main__':
-    index_toolbar_links()
-    '''gp_output = GraphvizOutput(output_file='index_time.png')
+    gp_output = GraphvizOutput(output_file='index_time.png')
     with PyCallGraph(output=gp_output):
         cleanup()
         setup()
@@ -750,4 +749,4 @@ if __name__ == '__main__':
         t1 = Thread(target=index_part_1)
         t2 = Thread(target=index_part_2)
         t1.start()
-        t2.start()'''
+        t2.start()
