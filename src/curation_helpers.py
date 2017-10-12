@@ -8,6 +8,8 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 from zope.sqlalchemy import ZopeTransactionExtension
 
 def link_gene_names(raw, locus_names_ids, ignore_str=''):
+    if ignore_str is None:
+        ignore_str = ''
     # first create an object with display_name as key and sgdid as value
     locus_names_object = {}
     for d in locus_names_ids:
