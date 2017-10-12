@@ -4,8 +4,6 @@ from elasticsearch import Elasticsearch
 from mapping import mapping
 import os
 import requests
-from pycallgraph import PyCallGraph
-from pycallgraph.output import GraphvizOutput
 from pympler import summary, muppy
 from multiprocessing.dummy import Pool as ThreadPool
 
@@ -696,56 +694,26 @@ def setup():
 
 
 def index_part_1():
-    graphviz = GraphvizOutput(output_file='index_genes.png')
-    with PyCallGraph(output=graphviz):
-        index_genes()
-
-    graphviz.output_file = 'index_strains.png'
-    with PyCallGraph(output=graphviz):
-        index_strains()
-
-    graphviz.output_file = 'index_colleagues.png'
-    with PyCallGraph(output=graphviz):
-        index_colleagues()
-
-    graphviz = GraphvizOutput(output_file='index_phenotypes.png')
-    with PyCallGraph(output=graphviz):
-        index_phenotypes()
-
-    graphviz = GraphvizOutput(output_file='index_chemicals.png')
-    with PyCallGraph(output=graphviz):
-        index_chemicals()
+    index_genes()
+    index_strains()
+    index_colleagues()
+    index_phenotypes()
+    index_chemicals()
 
 
 def index_part_2():
-    graphviz = GraphvizOutput(output_file='index_reserved_names.png')
-    with PyCallGraph(output=graphviz):
-        index_reserved_names()
-
-    graphviz = GraphvizOutput(output_file='index_toolbar_links.png')
-    with PyCallGraph(output=graphviz):
-        index_toolbar_links()
-
-    graphviz.output_file = 'index_observables.png'
-    with PyCallGraph(output=graphviz):
-        index_observables()
-
-    graphviz = GraphvizOutput(output_file='index_go_terms.png')
-    with PyCallGraph(output=graphviz):
-        index_go_terms()
-
-    graphviz = GraphvizOutput(output_file='index_references.png')
-    with PyCallGraph(output=graphviz):
-        index_references() 
+    index_reserved_names()
+    index_toolbar_links()
+    index_observables()
+    index_go_terms()
+    index_references() 
 
 if __name__ == '__main__':
-    gp_output = GraphvizOutput(output_file='index_time.png')
-    with PyCallGraph(output=gp_output):
-        cleanup()
-        setup()
-        index_part_1()
-        index_part_2()
-        t1 = Thread(target=index_part_1)
-        t2 = Thread(target=index_part_2)
-        t1.start()
-        t2.start()
+    cleanup()
+    setup()
+    index_part_1()
+    index_part_2()
+    t1 = Thread(target=index_part_1)
+    t2 = Thread(target=index_part_2)
+    t1.start()
+    t2.start()
