@@ -14,7 +14,7 @@ from threading import Thread
 import json
 import collections
 from index_es_helpers import IndexESHelper
-from operator import itemgetter
+
 from multiprocess import Pool
 
 engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
