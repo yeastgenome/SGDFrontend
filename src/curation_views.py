@@ -281,7 +281,7 @@ def get_recent_annotations(request):
         annotations.append(d.annotations_summary_to_dict())
     for d in recent_summaries:
         annotations.append(d.to_dict())
-    annotations = sorted(annotations, key=lambda r: r['date_created'], reverse=True)
+    annotations = sorted(annotations, key=lambda r: r['time_created'], reverse=True)
     return annotations
 
 @view_config(route_name='upload_spreadsheet', request_method='POST', renderer='json')

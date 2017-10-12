@@ -1756,6 +1756,7 @@ class Referencedbentity(Dbentity):
             'created_by' : self.created_by,
             'href': preview_url,
             'date_created': self.date_created.strftime("%Y-%m-%d"),
+            'time_created': self.date_created.isoformat(),
             'name': self.citation,
             'type': 'added',
             'tags': self.get_tags()
@@ -5662,6 +5663,7 @@ class Locussummary(Base):
             'created_by' : self.created_by,
             'href': preview_url,
             'date_created': self.date_created.strftime("%Y-%m-%d"),
+            'time_created': self.date_created.isoformat(),
             'name': self.locus.display_name,
             'type': self.summary_type + ' summary',
             'value': self.text
