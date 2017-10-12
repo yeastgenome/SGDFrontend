@@ -70,3 +70,4 @@ elasticsearch==2.3.0
 biopython==1.68
 multiprocess==0.70.5
 pycallgraph==1.0.1
+pympler 
