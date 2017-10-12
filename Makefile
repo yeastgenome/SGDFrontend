@@ -72,3 +72,5 @@ bgi-json:
 upload-expression-details:
 	source dev_variables.sh && python scripts/loading/upload_expression_details.py
 
+load-triage:
+	source dev_variables.sh && python scripts/loading/load_reference_triage.py
