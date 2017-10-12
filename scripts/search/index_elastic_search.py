@@ -7,7 +7,6 @@ import requests
 from pycallgraph import PyCallGraph
 from pycallgraph.output import GraphvizOutput
 from pympler import summary, muppy
-import psutil
 from multiprocessing.dummy import Pool as ThreadPool
 
 from threading import Thread
