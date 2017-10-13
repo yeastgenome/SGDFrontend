@@ -165,7 +165,7 @@ def index_not_mapped_genes():
     bulk_data = []
     with open('./scripts/search/not_mapped.json', "r") as json_data:
         _data = json.load(json_data)
-        print('indexing' + str(len(_data)) + 'not physically mapped genes')
+        print('indexing ' + str(len(_data)) + ' not physically mapped genes')
         for item in _data:
             if len(item["FEATURE_NAME"]) > 0:
                 obj = {
@@ -736,21 +736,23 @@ def index_part_1():
     index_not_mapped_genes()
     index_strains()
     index_colleagues()
-    #index_phenotypes()
-    #index_chemicals()
+    index_phenotypes()
+    index_chemicals()
 
 
 def index_part_2():
     index_reserved_names()
     index_toolbar_links()
     index_observables()
-    #index_go_terms()
+    index_go_terms()
     index_references()
 
 if __name__ == '__main__':
     cleanup()
     setup()
-    t1 = Thread(target=index_part_1)
+    index_part_1()
+    index_part_2()
+    '''t1 = Thread(target=index_part_1)
     t2 = Thread(target=index_part_2)
     t1.start()
-    t2.start()
+    t2.start()'''
