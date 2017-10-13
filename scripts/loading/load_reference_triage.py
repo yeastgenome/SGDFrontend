@@ -127,7 +127,6 @@ def insert_reference(db_session, pmid, citation, doi_url, abstract, gene_list):
                             abstract_genes = gene_list,
                             created_by = CREATED_BY)
     db_session.add(x)
-    # db_session.commit()
     transaction.commit()
     log.info("Insert new reference: " + citation)
 
