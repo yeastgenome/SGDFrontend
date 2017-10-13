@@ -12,6 +12,7 @@ import json
 import collections
 from index_es_helpers import IndexESHelper
 
+
 from multiprocess import Pool
 
 engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
@@ -164,11 +165,9 @@ def index_not_mapped_genes():
     bulk_data = []
     with open('./scripts/search/not_mapped.json', "r") as json_data:
         _data = json.load(json_data)
+        print('indexing' + str(len(_data)) + 'not physically mapped genes')
         for item in _data:
-            aliases = []
-            features = []
             if len(item["FEATURE_NAME"]) > 0:
-
                 obj = {
                     'name':
                         item["FEATURE_NAME"],
@@ -190,8 +189,7 @@ def index_not_mapped_genes():
                     }
                 })
                 bulk_data.append(obj)
-                if len(bulk_data) == 100:
-
+                if len(bulk_data) == 300:
                     es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
                     bulk_data = []
 
@@ -738,15 +736,15 @@ def index_part_1():
     index_not_mapped_genes()
     index_strains()
     index_colleagues()
-    index_phenotypes()
-    index_chemicals()
+    #index_phenotypes()
+    #index_chemicals()
 
 
 def index_part_2():
     index_reserved_names()
     index_toolbar_links()
     index_observables()
-    index_go_terms()
+    #index_go_terms()
     index_references()
 
 if __name__ == '__main__':
