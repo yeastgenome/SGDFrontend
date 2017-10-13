@@ -21,7 +21,7 @@ Base.metadata.bind = engine
 INDEX_NAME = os.environ.get('ES_INDEX_NAME', 'searchable_items_aws')
 DOC_TYPE = 'searchable_item'
 ES_URI = os.environ['WRITE_ES_URI']
-es = Elasticsearch(ES_URI)
+es = Elasticsearch(ES_URI, retry_on_timeout=True)
 
 
 def delete_mapping():
@@ -756,4 +756,3 @@ if __name__ == '__main__':
     t2 = Thread(target=index_part_2)
     t1.start()
     t2.start()
-    
