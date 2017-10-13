@@ -22,7 +22,7 @@ class Abstract extends Component {
     let gl = this.props.geneList;
     if (gl.length === 0) return [];
     return gl
-      .split(',')
+      .split('|')
       .filter( d => d.indexOf(ALIAS_CHAR) === -1 )
       .map( d => d.replace(' ', '') );
   }
@@ -31,7 +31,7 @@ class Abstract extends Component {
     let gl = this.props.geneList;
     if (gl.length === 0) return [];
     gl = gl
-      .split(',')
+      .split('|')
       .filter( d => d.indexOf(ALIAS_CHAR) > -1 )
       .map( (d) => {
         return d.split(ALIAS_CHAR)[0];
