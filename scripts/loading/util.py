@@ -2,9 +2,9 @@ from sqlalchemy.engine import create_engine
 from sqlalchemy.ext.declarative.api import declarative_base
 from sqlalchemy.orm.session import sessionmaker
 from sqlalchemy import not_
-from go.gpad_config import curator_id, computational_created_by,  \
-    go_db_code_mapping, go_ref_mapping, current_go_qualifier, email_receiver, \
-    email_subject
+# from go.gpad_config import curator_id, computational_created_by,  \
+#     go_db_code_mapping, go_ref_mapping, current_go_qualifier, email_receiver, \
+#     email_subject
 
 import sys
 sys.path.insert(0, '../../src/')
