@@ -31,14 +31,14 @@ NEX2_URI = os.environ['NEX2_URI']
 CREATED_BY = os.environ['DEFAULT_USER']
 
 def load_references():
- 
+    # create session
     engine = create_engine(os.environ['NEX2_URI'])
     session_factory = sessionmaker(bind=engine, extension=ZopeTransactionExtension())
     db_session = scoped_session(session_factory)
-
-    pmid_to_reference_id =  dict([(x.pmid, x.dbentity_id) for x in db_session.query(Referencedbentity).all()])
-    pmid_to_curation_id =  dict([(x.pmid, x.curation_id) for x in db_session.query(Referencetriage).all()])
-    
+    # some preparation
+    pmid_to_reference_id = dict([(x.pmid, x.dbentity_id) for x in db_session.query(Referencedbentity).all()])
+    pmid_to_curation_id = dict([(x.pmid, x.curation_id) for x in db_session.query(Referencetriage).all()])
+    # get gene names to highlight
     gene_list = []
     all_loci = db_session.query(Locusdbentity).all()
     for x in all_loci:
@@ -47,7 +47,6 @@ def load_references():
         gene_list.append(str(x.systematic_name.upper()))
         if x.gene_name and x.gene_name != x.systematic_name:
             gene_list.append(str(x.gene_name.upper()))
-    
     alias_to_name = {}
     for x in db_session.query(LocusAlias).all():
         if x.alias_type not in ['Uniform', 'Non-uniform']:
@@ -56,10 +55,9 @@ def load_references():
             continue
         name = x.locus.gene_name if x.locus.gene_name else x.locus.systematic_name 
         alias_to_name[x.display_name] = name
-        
+    # get new PMIDs
     log.info(str(datetime.now()))
     log.info("Getting PMID list...")
-    
     pmid_list = get_pmid_list(TERMS, RETMAX, DAY)
     pmids = []
     for pmid in pmid_list:
@@ -71,14 +69,12 @@ def load_references():
     if len(pmids) == 0:
         log.info("No new papers")
         return
-
+    # get data for each PMID entry
     log.info(str(datetime.now()))
     log.info("Getting Pubmed records...")
     records = get_pubmed_record(','.join(pmids))
     i = 1
     for record in records:
-        # rec_file = StringIO(rec)
-        # record = Medline.read(rec_file)
         pmid = int(record.get('Id'))
         pubmed_url = 'https://www.ncbi.nlm.nih.gov/pubmed/' + str(pmid)
         doi_url = ""
@@ -93,10 +89,10 @@ def load_references():
         volume = record.get('Volume', '')
         issue = record.get('Issue', '')
         pages = record.get('Pages', '')
-                
         citation = set_cite(title, authors, year, journal, volume, issue, pages)  
         abstract = get_abstract(pmid)
         gene_names = extract_gene_names(abstract, gene_list, alias_to_name)
+        # insert formatted data to DB
         insert_reference(db_session, pmid, citation, doi_url, abstract, "| ".join(gene_names))
     log.info("Done!")
 
