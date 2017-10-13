@@ -21,7 +21,7 @@ Base.metadata.bind = engine
 INDEX_NAME = os.environ.get('ES_INDEX_NAME', 'searchable_items_aws')
 DOC_TYPE = 'searchable_item'
 ES_URI = os.environ['WRITE_ES_URI']
-es = Elasticsearch(ES_URI, retry_on_timeout=True)
+es = Elasticsearch(ES_URI)
 
 
 def delete_mapping():
@@ -158,6 +158,45 @@ def index_colleagues():
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
+
+def index_not_mapped_genes():
+    url = "https://downloads.yeastgenome.org/curation/literature/genetic_loci.tab"
+    bulk_data = []
+    with open('./scripts/search/not_mapped.json', "r") as json_data:
+        _data = json.load(json_data)
+        for item in _data:
+            aliases = []
+            features = []
+            if len(item["FEATURE_NAME"]) > 0:
+
+                obj = {
+                    'name':
+                        item["FEATURE_NAME"],
+                    'href':
+                        url,
+                    'category':
+                        'locus',
+                    'feature_type':
+                        ["Not Physically Mapped Genes"],
+                    'aliases': [item["ALIASES"]]
+
+
+                }
+                bulk_data.append({
+                    'index': {
+                        '_index': INDEX_NAME,
+                        '_type': DOC_TYPE,
+                        '_id': "locus_" + item["FEATURE_NAME"]
+                    }
+                })
+                bulk_data.append(obj)
+                if len(bulk_data) == 100:
+
+                    es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
+                    bulk_data = []
+
+    if len(bulk_data) > 0:
+        es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
 def index_genes():
     # Indexing just the S228C genes
@@ -586,6 +625,7 @@ def index_references():
     _abstracts = IndexESHelper.get_ref_abstracts()
     _authors = IndexESHelper.get_ref_authors()
     _aliases = IndexESHelper.get_ref_aliases()
+
     bulk_data = []
     print('Indexing ' + str(len(_references)) + ' references')
 
@@ -695,6 +735,7 @@ def setup():
 
 def index_part_1():
     index_genes()
+    index_not_mapped_genes()
     index_strains()
     index_colleagues()
     index_phenotypes()
@@ -706,14 +747,13 @@ def index_part_2():
     index_toolbar_links()
     index_observables()
     index_go_terms()
-    index_references() 
+    index_references()
 
 if __name__ == '__main__':
     cleanup()
     setup()
-    #index_part_1()
-    #index_part_2()
     t1 = Thread(target=index_part_1)
     t2 = Thread(target=index_part_2)
     t1.start()
     t2.start()
+    
