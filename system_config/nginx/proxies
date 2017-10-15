@@ -65,7 +65,7 @@ location /cgi-bin/GO/goTermFinder.pl {
 }
 
 location /cgi-bin/locus.fpl {
-    rewrite ^ $scheme://www.yeastgenome.org/locus/${arg_dbid}? redirect;
+    rewrite ^ $scheme://$host/locus/${arg_dbid}? redirect;
 }
 
 location /cgi-bin/PATMATCH/getSequence {
