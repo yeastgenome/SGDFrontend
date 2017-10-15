@@ -10,6 +10,8 @@ server {
 	listen 80;
 
 	server_name _;
+	
+	include /etc/nginx/conf.d/proxies;
 
 	location / {
 		access_log /var/log/nginx/sgd-frontend-access.log;
