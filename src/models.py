@@ -819,8 +819,9 @@ class Colleague(Base):
             "position": self.job_title,
             "postal_code": self.postal_code,
             "city": self.city,
-            "research_interests": self.research_interest
-            
+            "research_interests": self.research_interest,
+            "work_phone": self.work_phone,
+            "other_phone": self.other_phone
         }
         coll_url = self.get_collegue_url()
         if coll_url is not None:
@@ -831,12 +832,12 @@ class Colleague(Base):
             keywords = DBSession.query(Keyword).filter(Keyword.keyword_id.in_(ids_query)).all()
             _dict['keywords'] = [{'id': k.keyword_id, 'name': k.display_name} for k in keywords]
         return _dict
-    
+
     def get_collegue_url(self):
         item = DBSession.query(ColleagueUrl).filter(
-            ColleagueUrl.colleague_id == self.colleague_id).one_or_none()
+            ColleagueUrl.colleague_id == self.colleague_id).first()
         return item
-     
+
 
 class ColleagueKeyword(Base):
     __tablename__ = 'colleague_keyword'
