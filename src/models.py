@@ -814,21 +814,29 @@ class Colleague(Base):
             "email": self.email,
             "link": self.obj_url,
             "profession": self.profession,
-            "state":self.state,
+            "state": self.state,
             "country": self.country,
             "position": self.job_title,
             "postal_code": self.postal_code,
             "city": self.city,
-
-
-
+            "research_interest": self.research_interest
+            
         }
+        coll_url = self.get_collegue_url()
+        if coll_url is not None:
+            _dict["lab_page"] = coll_url.obj_url
         keyword_ids = DBSession.query(ColleagueKeyword.keyword_id).filter(ColleagueKeyword.colleague_id == self.colleague_id).all()
         if len(keyword_ids) > 0:
             ids_query = [k[0] for k in keyword_ids]
             keywords = DBSession.query(Keyword).filter(Keyword.keyword_id.in_(ids_query)).all()
             _dict['keywords'] = [{'id': k.keyword_id, 'name': k.display_name} for k in keywords]
         return _dict
+    
+    def get_collegue_url(self):
+        item = DBSession.query(ColleagueUrl).filter(
+            ColleagueUrl.colleague_id == self.colleague_id).one_or_none()
+        return item
+     
 
 class ColleagueKeyword(Base):
     __tablename__ = 'colleague_keyword'
