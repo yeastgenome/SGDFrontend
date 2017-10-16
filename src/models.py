@@ -1802,22 +1802,31 @@ class Referencedbentity(Dbentity):
         return [url1]
 
     def get_tags(self):
-        TAG_LIMIT = 50
         tags = []
-        curation_refs = DBSession.query(CurationReference).filter_by(reference_id=self.dbentity_id).limit(TAG_LIMIT).all()
-        for x in curation_refs:
-            tags.append({
-                'name': x.get_name(),
-                'locus_id': x.locus_id,
-                'comment': x.curator_comment
-            })
-        lit_annotations = DBSession.query(Literatureannotation).filter_by(reference_id=self.dbentity_id).limit(TAG_LIMIT).all()
-        for x in lit_annotations:
-            tags.append({
-                'name': x.get_name(),
-                'locus_id': x.dbentity_id,
+        test_curation_refs = DBSession.query(CurationReference, Locusdbentity).filter_by(reference_id=self.dbentity_id).outerjoin(Locusdbentity).all()
+        for x in test_curation_refs:
+            locus_name = None
+            locus = x.Locusdbentity
+            if locus:
+                locus_name = locus.get_name()
+            obj = {
+                'name': x.CurationReference.get_name(),
+                'locus_name': locus_name,
                 'comment': None
-            })
+            }
+            tags.append(obj)
+        test_lit_annotations = DBSession.query(Literatureannotation, Locusdbentity).filter_by(reference_id=self.dbentity_id).outerjoin(Locusdbentity).all()
+        for x in test_lit_annotations:
+            locus_name = None
+            locus = x.Locusdbentity
+            if locus:
+                locus_name = locus.get_name()
+            obj = {
+                'name': x.Literatureannotation.get_name(),
+                'locus_name': locus_name,
+                'comment': None
+            }
+            tags.append(obj)
         tag_list = []
         for k, g in groupby(tags, lambda x: x['name']):
             g_tags = list(g)
@@ -1825,10 +1834,8 @@ class Referencedbentity(Dbentity):
             comment = g_tags[0]['comment']
             gene_names = []
             for x in g_tags:
-                if x['locus_id']:
-                    locus = DBSession.query(Locusdbentity).filter_by(dbentity_id=x['locus_id']).one_or_none()
-                    g_name = locus.get_name()
-                    gene_names.append(g_name)
+                if x['locus_name']:
+                    gene_names.append(x['locus_name'])
             gene_names = list(set(gene_names))
             gene_str = '|'.join(gene_names)
             tag_list.append({
@@ -7614,6 +7621,9 @@ def validate_tags(tags):
         if len(genes):
             t_gene_ids = genes.split('|')
             for g in t_gene_ids:
+                # try to uppercase gene names
+                if len(g) <= 5:
+                    g = g.upper()
                 if is_primary:
                     primary_obj[g] = True
                 if is_additional:
@@ -7636,6 +7646,7 @@ def validate_tags(tags):
     if len(unique_keys) != (len(p_keys) + len(a_keys) + len(r_keys)):
         raise ValueError('The same gene can only be used as a primary tag, additional tag, or review.')
     # validate that all genes are proper identifiers
+    print(all_keys)
     num_valid_genes = DBSession.query(Locusdbentity).filter(or_(Locusdbentity.display_name.in_(upper_all_keys), (Locusdbentity.format_name.in_(all_keys)))).count()
     if num_valid_genes != len(all_keys):
         raise ValueError('Genes must be a pipe-separated list of valid genes by standard name or systematic name.')
