@@ -812,7 +812,16 @@ class Colleague(Base):
             "suffix": self.suffix,
             "institution": self.institution,
             "email": self.email,
-            "link": self.obj_url
+            "link": self.obj_url,
+            "profession": self.profession,
+            "state":self.state,
+            "country": self.country,
+            "position": self.job_title,
+            "postal_code": self.postal_code,
+            "city": self.city,
+
+
+
         }
         keyword_ids = DBSession.query(ColleagueKeyword.keyword_id).filter(ColleagueKeyword.colleague_id == self.colleague_id).all()
         if len(keyword_ids) > 0:
