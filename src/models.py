@@ -1859,8 +1859,8 @@ class Referencedbentity(Dbentity):
                 if len(raw_genes):
                     gene_ids = raw_genes.strip().split('|')
                     for g_id in gene_ids:
-                        g_id = g_id.upper()
-                        gene_dbentity_id = curator_session.query(Locusdbentity.dbentity_id).filter(or_(Locusdbentity.display_name == g_id, Locusdbentity.format_name == g_id)).one_or_none()[0]
+                        upper_g_id = g_id.upper()
+                        gene_dbentity_id = curator_session.query(Locusdbentity.dbentity_id).filter(or_(Locusdbentity.display_name == upper_g_id, Locusdbentity.format_name == g_id)).one_or_none()[0]
                         curation_ref = CurationReference.factory(self.dbentity_id, name, comment, gene_dbentity_id, username)
                         if curation_ref:
                             curator_session.add(curation_ref)
@@ -7610,7 +7610,7 @@ def validate_tags(tags):
         is_primary = Literatureannotation.is_primary_tag(name)
         is_additional = (name == 'additional_literature')
         is_reviews = (name == 'reviews')
-        genes = tag['genes'].upper().strip()
+        genes = tag['genes'].strip()
         if len(genes):
             t_gene_ids = genes.split('|')
             for g in t_gene_ids:
@@ -7624,18 +7624,19 @@ def validate_tags(tags):
                     extra_obj[g] = True
             gene_ids = gene_ids + t_gene_ids
         elif is_primary or is_additional:
-            raise ValueError('Primary tags must have genes.')
+            raise ValueError('Primary and additional tags must have genes.')
     # make sure no genes are repeated or shared among primary, additional, and review
     p_keys = primary_obj.keys()
     a_keys = additional_obj.keys()
     r_keys = review_obj.keys()
     unique_keys = set(p_keys + a_keys + r_keys)
     extra_keys = set(extra_obj.keys())
-    all_keys = set(unique_keys + extra_keys)
+    all_keys = set(list(unique_keys) + list(extra_keys))
+    upper_all_keys = [x.upper() for x in all_keys]
     if len(unique_keys) != (len(p_keys) + len(a_keys) + len(r_keys)):
         raise ValueError('The same gene can only be used as a primary tag, additional tag, or review.')
     # validate that all genes are proper identifiers
-    num_valid_genes = DBSession.query(Locusdbentity).filter(or_(Locusdbentity.display_name.in_(all_keys), (Locusdbentity.format_name.in_(all_keys)))).count()
+    num_valid_genes = DBSession.query(Locusdbentity).filter(or_(Locusdbentity.display_name.in_(upper_all_keys), (Locusdbentity.format_name.in_(all_keys)))).count()
     if num_valid_genes != len(all_keys):
         raise ValueError('Genes must be a pipe-separated list of valid genes by standard name or systematic name.')
     # maybe modify "extra" tags: if homology/disease, PTM, or regulation for a gene and no public top for that gene, then add to additional information
