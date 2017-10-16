@@ -819,7 +819,7 @@ class Colleague(Base):
             "position": self.job_title,
             "postal_code": self.postal_code,
             "city": self.city,
-            "research_interest": self.research_interest
+            "research_interests": self.research_interest
             
         }
         coll_url = self.get_collegue_url()
