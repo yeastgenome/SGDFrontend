@@ -4,7 +4,6 @@ from elasticsearch import Elasticsearch
 from mapping import mapping
 import os
 import requests
-from pympler import summary, muppy
 from multiprocessing.dummy import Pool as ThreadPool
 
 from threading import Thread
@@ -167,25 +166,20 @@ def index_not_mapped_genes():
         _data = json.load(json_data)
         print('indexing ' + str(len(_data)) + ' not physically mapped genes')
         for item in _data:
+            temp_aliases = []
             if len(item["FEATURE_NAME"]) > 0:
                 obj = {
-                    'name':
-                        item["FEATURE_NAME"],
-                    'href':
-                        url,
-                    'category':
-                        'locus',
-                    'feature_type':
-                        ["Not Physically Mapped Genes"],
-                    'aliases': [item["ALIASES"]]
-
-
+                    'name': item["FEATURE_NAME"],
+                    'href': url,
+                    'category': 'locus',
+                    'feature_type': ["Not Physically Mapped Genes"],
+                    'aliases': item["ALIASES"].split('|')
                 }
                 bulk_data.append({
                     'index': {
                         '_index': INDEX_NAME,
                         '_type': DOC_TYPE,
-                        '_id': "locus_" + item["FEATURE_NAME"]
+                        '_id': item["FEATURE_NAME"]
                     }
                 })
                 bulk_data.append(obj)
