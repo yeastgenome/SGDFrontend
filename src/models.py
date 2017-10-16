@@ -838,7 +838,7 @@ class Colleague(Base):
             "position": self.job_title,
             "postal_code": self.postal_code,
             "city": self.city,
-            "research_interest": self.research_interest
+            "research_interests": self.research_interest
             
         }
         keyword_ids = DBSession.query(ColleagueKeyword.keyword_id).filter(ColleagueKeyword.colleague_id == self.colleague_id).all()
