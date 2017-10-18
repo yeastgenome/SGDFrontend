@@ -109,8 +109,8 @@ es_mapping = {
                 "year": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"}
-                    }
+                            "raw": {"type": "string", "index": "not_analyzed"}
+                      }
                 },
                 "first_name": {
                     "type": "string",
