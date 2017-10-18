@@ -25,7 +25,6 @@ import traceback
 import datetime
 import logging
 import json
-import pdb
 
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.ERROR)
