@@ -57,7 +57,11 @@ export function getFacetName (key) {
       return 'Genes of Interest';
       break;
     case 'go_locus':
+      return "Associated Genes";
     case 'reference_locus':
+      return "Associated Genes";
+    case 'reference_loci':
+      return 'Associated Genes'
     case 'phenotype_locus': 
       return 'Associated Genes';
       break;
