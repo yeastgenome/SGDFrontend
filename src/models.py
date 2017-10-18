@@ -803,7 +803,6 @@ class Colleague(Base):
     source = relationship(u'Source')
 
     def get_keywords(self):
-        import pdb
         lst = DBSession.query(Colleague,ColleagueKeyword).join(ColleagueKeyword).filter(ColleagueKeyword.colleague_id == Colleague.colleague_id).all()
         obj = {}
         keyword_ids = []
@@ -844,7 +843,6 @@ class Colleague(Base):
             keywords = DBSession.query(Keyword).filter(Keyword.keyword_id.in_(ids_query)).all()
             #print("----- %s key word 2nd query time taken---->" % (time.time() - start_time))
             _dict['keywords'] = [{'id': k.keyword_id, 'name': k.display_name} for k in keywords]
-        #pdb.set_trace()
         return _dict
 
 class ColleagueKeyword(Base):
