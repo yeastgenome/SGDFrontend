@@ -693,7 +693,6 @@ def setup():
 
 def index_part_1():
     index_genes()
-    index_not_mapped_genes()
     index_strains()
     index_colleagues()
     index_phenotypes()
