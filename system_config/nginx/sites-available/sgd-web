@@ -20,6 +20,10 @@ server {
         break;
     }
     
+    location /robots.txt {
+        alias /var/www/html/robots.txt;
+    }
+
     location / {
         access_log /var/log/nginx/sgd-frontend-access.log;
         error_log /var/log/nginx/sgd-frontend-error.log;

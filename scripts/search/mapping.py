@@ -370,20 +370,23 @@ mapping = {
                     }
                 },
                 "year": {
-                    "type": "integer"
-                },
-                "reference_loci": {
                     "type": "string",
+                    "analyzer": "symbols",
                     "fields": {
                         "raw": {
                             "type": "string",
                             "index": "not_analyzed"
-                        },
-                        "symbol": {
-                            "type": "string",
-                            "analyzer": "symbols"
                         }
-
+                    }
+                },
+                "reference_loci": {
+                    "type": "string",
+                    "analyzer": "symbols",
+                    "fields": {
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
                     }
                 },
                 "aliases": {
