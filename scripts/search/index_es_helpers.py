@@ -4,10 +4,6 @@ from elasticsearch import Elasticsearch
 from mapping import mapping
 import os
 import requests
-
-from threading import Thread
-import pdb
-import time
 from multiprocess import Pool
 
 engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
@@ -357,9 +353,7 @@ class IndexESHelper:
             :param phenos_annotation: join between phenotype and phenotypeanootation tables
             :param phenos_annotation_cond: join between phenotypeannotation and phenotypeannotation_cond tables
         """
-
         _dict_pheno_cond = {}
-        #pdb.set_trace()
         if phenos_annotation is not None:
 
             for item_key, item_v in phenos_annotation.items():

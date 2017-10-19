@@ -99,7 +99,6 @@ def build_es_aggregation_body_request(es_query, category, category_filters):
 
 
 def format_aggregation_results(aggregation_results, category, category_filters):
-    import pdb
     if category == '':
         category_obj = {
             'values': [],
