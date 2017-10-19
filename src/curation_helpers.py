@@ -26,7 +26,7 @@ def link_gene_names(raw, locus_names_ids, ignore_str=''):
             wupper = wupper[:-1]
         if wupper == ignore_str.upper():
             continue
-        if wupper in locus_names_object.keys() and len(wupper) > 3:
+        if wupper in locus_names_object.keys() and len(wupper) >= 2:
             sgdid = locus_names_object[wupper]
             url = '/locus/'  + sgdid
             new_str = '<a href="' + url + '">' + original_word + '</a>'
