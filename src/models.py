@@ -842,6 +842,9 @@ class Colleague(Base):
             "work_phone": self.work_phone,
             "other_phone": self.other_phone
         }
+        coll_url = self.get_collegue_url()
+        if coll_url is not None:
+            _dict["lab_page"] = coll_url.obj_url
         keyword_ids = DBSession.query(ColleagueKeyword.keyword_id).filter(ColleagueKeyword.colleague_id == self.colleague_id).all()
 
         if len(keyword_ids) > 0:
