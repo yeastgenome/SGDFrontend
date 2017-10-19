@@ -35,6 +35,7 @@
 	<!-- load jquery from google, with fallback to local copy -->
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script>window.jQuery || document.write('<script src="{{asset_root}}/js/build/jquery.min.js"><\/script>')</script>
+	<script>window.ASSET_ROOT = "{{asset_root}}";</script>
 	<script src="{{asset_root}}/js/application.js"></script>
 
 <script>

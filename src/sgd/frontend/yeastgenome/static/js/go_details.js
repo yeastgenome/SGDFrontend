@@ -81,8 +81,8 @@ function create_go_table(prefix, message, filter, data) {
             {"bSearchable":false, "bVisible":false}, //gene ontology term id
             null, //qualifier
             {"bSearchable":false, "bVisible":false}, //aspect
-            {"bSearchable":false, "bVisible":false}, //method
             null, //evidence
+            {"bSearchable":false, "bVisible":false}, //method
             null, //source
             null, //assigned on
             null, //annotation_extension
