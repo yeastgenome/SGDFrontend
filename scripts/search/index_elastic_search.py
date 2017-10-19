@@ -4,15 +4,10 @@ from elasticsearch import Elasticsearch
 from mapping import mapping
 import os
 import requests
-from multiprocessing.dummy import Pool as ThreadPool
-
 from threading import Thread
 import json
 import collections
 from index_es_helpers import IndexESHelper
-
-
-from multiprocess import Pool
 
 engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
 DBSession.configure(bind=engine)
@@ -159,36 +154,7 @@ def index_colleagues():
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
 
-def index_not_mapped_genes():
-    url = "https://downloads.yeastgenome.org/curation/literature/genetic_loci.tab"
-    bulk_data = []
-    with open('./scripts/search/not_mapped.json', "r") as json_data:
-        _data = json.load(json_data)
-        print('indexing ' + str(len(_data)) + ' not physically mapped genes')
-        for item in _data:
-            temp_aliases = []
-            if len(item["FEATURE_NAME"]) > 0:
-                obj = {
-                    'name': item["FEATURE_NAME"],
-                    'href': url,
-                    'category': 'locus',
-                    'feature_type': ["Not Physically Mapped Genes"],
-                    'aliases': item["ALIASES"].split('|')
-                }
-                bulk_data.append({
-                    'index': {
-                        '_index': INDEX_NAME,
-                        '_type': DOC_TYPE,
-                        '_id': item["FEATURE_NAME"]
-                    }
-                })
-                bulk_data.append(obj)
-                if len(bulk_data) == 300:
-                    es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
-                    bulk_data = []
 
-    if len(bulk_data) > 0:
-        es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
 def index_genes():
     # Indexing just the S228C genes
@@ -744,9 +710,7 @@ def index_part_2():
 if __name__ == '__main__':
     cleanup()
     setup()
-    index_part_1()
-    index_part_2()
-    '''t1 = Thread(target=index_part_1)
+    t1 = Thread(target=index_part_1)
     t2 = Thread(target=index_part_2)
     t1.start()
-    t2.start()'''
+    t2.start()
