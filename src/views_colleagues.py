@@ -99,12 +99,9 @@ def colleague_triage_delete(request):
 
 @view_config(route_name='colleague_get', renderer='json', request_method='GET')
 def colleague_by_format_name(request):
-    models_helper.get_colleague_associated_data()
     format_name = request.matchdict['format_name']
-
     colleague = DBSession.query(Colleague).filter(Colleague.format_name == format_name).one_or_none()
-
-    if colleague:
-        return colleague.to_dict()
+    if colleague is not None:
+        return models_helper.get_colleague_data(colleague, models_helper.get_colleague_associated_data())
     else:
         return HTTPNotFound(body=json.dumps({'error': 'Colleague not found'}))
