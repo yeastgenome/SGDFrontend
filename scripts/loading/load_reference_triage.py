@@ -11,7 +11,6 @@ import sys
 reload(sys)  # reload to set encoding
 sys.setdefaultencoding('UTF8')
 from src.models import Referencedbentity, Referencetriage, Locusdbentity, LocusAlias
-from database_session import get_dev_session
 from scripts.loading.pubmed import get_pmid_list, get_pubmed_record, set_cite, get_abstract
 from scripts.loading.util import extract_gene_names
 
