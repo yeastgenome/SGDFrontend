@@ -13,6 +13,7 @@ import traceback
 import transaction
 from datetime import datetime
 from itertools import groupby
+from varnish import VarnishManager
 
 from src.curation_helpers import link_gene_names, get_curator_session
 
@@ -70,6 +71,19 @@ class CacheBase(object):
                     raise('Error fetching ')
             except Exception, e:
                 print('error fetching ' + self.display_name)
+
+    def ban_from_cache(self):
+        try:
+            varnish_targets = ()
+            for url in cache_urls:
+                varnish_targets += (url.replace('http://', '') + ':6082',)
+            manager = VarnishManager(varnish_targets)
+            target = '^/' + self.sgdid + '$'
+            manager.run('ban.url', target)
+            manager.close()
+        except Exception, e:
+            traceback.print_exc()
+            print('Error banning cache ' + self.sgdid)
 
 Base = declarative_base(cls=CacheBase)
 

@@ -57,6 +57,7 @@ def locus_curate_update(request):
         if len(new_regulation_summary):
             locus.update_summary('Regulation', request.session['username'], new_regulation_summary, new_regulation_pmids)
         locus = get_locus_by_id(id)
+        # locus.ban_from_cache()
         pusher = get_pusher_client()
         pusher.trigger('sgd', 'curateHomeUpdate', {})
         return locus.get_summary_dict()
