@@ -92,14 +92,14 @@ class TagList extends Component {
   renderReadNode(d) {
     let comment = d.comment || '';
     let commentNode = comment.length ? <span>comment: {comment}</span> : null;
-    let genes = d.genes.split('|').join(' ');
+    let genes = d.genes.split('|').join(' | ');
     return (
       <div key={`sRTag${d.name}`} style={{ marginLeft: '3rem' }}>
         <div>
           <a className={`button small ${style.tagButton}`}>
             {d.label}
           </a>
-          {genes}
+          <span style={{ marginLeft: '0.5rem' }}>{genes}</span>
         </div>
         {commentNode}
       </div>
