@@ -111,34 +111,44 @@ class ModelsHelper(object):
                 if len(_colleague["colleagues"]) > 0:
                     temp_coll = _colleague["colleagues"][0]
                     if temp_coll:
-                        _dict["colleague_id"] = temp_coll.colleague_id
-                        _dict["orcid"] = temp_coll.orcid
-                        _dict["first_name"] = temp_coll.first_name
-                        _dict["middle_name"] = temp_coll.middle_name
-                        _dict["last_name"] = temp_coll.last_name
-                        _dict["suffix"] = temp_coll.suffix
-                        _dict["institution"] = temp_coll.institution
-                        _dict["email"] = temp_coll.email
-                        _dict["obj_url"] = temp_coll.obj_url
-                        _dict["profession"] = temp_coll.profession
-                        _dict["state"] = temp_coll.state
-                        _dict["country"] = temp_coll.country
-                        _dict["job_title"] = temp_coll.job_title
-                        _dict["postal_code"] = temp_coll.postal_code
-                        _dict["city"] = temp_coll.city
-                        _dict["research_interest"] = temp_coll.research_interest
-                        _dict["work_phone"] = temp_coll.work_phone
-                        _dict["other_phone"] = temp_coll.other_phone
+                        temp_coll = temp_coll.to_dict()
+                        _dict["colleague_id"] = temp_coll["colleague_id"]
+                        _dict["orcid"] = temp_coll["orcid"]
+                        _dict["first_name"] = temp_coll["first_name"]
+                        _dict["middle_name"] = temp_coll["middle_name"]
+                        _dict["last_name"] = temp_coll["last_name"]
+                        _dict["suffix"] = temp_coll["suffix"]
+                        _dict["institution"] = temp_coll["institution"]
+                        _dict["email"] = temp_coll["email"]
+                        _dict["lab_page"] = temp_coll["lab_page"]
+                        _dict["research_page"] = temp_coll["research_page"]
+                        _dict["profession"] = temp_coll["profession"]
+                        _dict["state"] = temp_coll["state"]
+                        _dict["country"] = temp_coll["country"]
+                        _dict["position"] = temp_coll["position"]
+                        _dict["postal_code"] = temp_coll["postal_code"]
+                        _dict["city"] = temp_coll["city"]
+                        _dict["research_interests"] = temp_coll[
+                            "research_interests"]
+                        _dict["work_phone"] = temp_coll["work_phone"]
+                        _dict["other_phone"] = temp_coll["other_phone"]
+                        _dict["keywords"] = temp_coll["keywords"]
+                        _dict["format_name"] = temp_coll["format_name"]
+                        _dict["name"] = temp_coll["name"]
                 if len(temp_loci) > 0:
                     genes = [x.locus.display_name for x in temp_loci]
+                    if len(genes) > 0:
+                        _dict["associated_genes"] = genes
                 associates = self.get_associates_helper(temp_relations)
                 if associates:
                     _dict["supervisors"] = associates["supervisors"]
                     _dict["lab_members"] = associates["members"]
             return _dict
 
-
     def get_associates_helper(self, relations_list):
+        """
+        Get associates data
+        """
         if len(relations_list) > 0:
             temp = filter(lambda item: item.association_type == "Associate",
                           relations_list)
@@ -148,5 +158,12 @@ class ModelsHelper(object):
                 lambda item: item.association_type == "Head of Lab",
                 relations_list)
             if temp:
-                return {"members": [x.associate.display_name for x in members], "supervisors": [x.associate.display_name for x in supervisors]}
+                return {
+                    "members": [
+                        x.associate.to_dict_basic_data() for x in members
+                    ],
+                    "supervisors": [
+                        x.associate.to_dict_basic_data() for x in supervisors
+                    ]
+                }
             return None
