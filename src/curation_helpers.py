@@ -76,7 +76,7 @@ def ban_from_cache(targets, is_exact=False):
         command_exp = '~'
     command = 'ban req.url ' + command_exp + ' '
     for server in cache_urls:
-        tn = Telnet(server, '6082')
+        tn = Telnet(server.replace('http://', ''), '6082')
         for x in targets:
             tn.write(command + x + '\n')
         tn.close()
