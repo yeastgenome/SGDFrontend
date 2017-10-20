@@ -1812,7 +1812,7 @@ class Referencedbentity(Dbentity):
             obj = {
                 'name': x.CurationReference.get_name(),
                 'locus_name': locus_name,
-                'comment': None
+                'comment': x.CurationReference.curator_comment
             }
             tags.append(obj)
         lit_annotations = DBSession.query(Literatureannotation, Locusdbentity).filter_by(reference_id=self.dbentity_id).outerjoin(Locusdbentity).all()
