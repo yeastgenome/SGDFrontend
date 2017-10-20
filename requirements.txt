@@ -40,7 +40,7 @@ pyramid==1.7.3
 python-dateutil==2.4.0
 pyramid-jinja2==2.5
 pyramid-redis-sessions==1.0.1
-python-varnish==0.1.2
+python-varnish==0.2.1
 pyramid-webpack==0.1.1
 pytz==2015.7
 redis==2.10.5
