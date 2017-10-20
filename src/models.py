@@ -1803,8 +1803,8 @@ class Referencedbentity(Dbentity):
 
     def get_tags(self):
         tags = []
-        test_curation_refs = DBSession.query(CurationReference, Locusdbentity).filter_by(reference_id=self.dbentity_id).outerjoin(Locusdbentity).all()
-        for x in test_curation_refs:
+        curation_refs = DBSession.query(CurationReference, Locusdbentity).filter_by(reference_id=self.dbentity_id).outerjoin(Locusdbentity).all()
+        for x in curation_refs:
             locus_name = None
             locus = x.Locusdbentity
             if locus:
@@ -1815,8 +1815,8 @@ class Referencedbentity(Dbentity):
                 'comment': None
             }
             tags.append(obj)
-        test_lit_annotations = DBSession.query(Literatureannotation, Locusdbentity).filter_by(reference_id=self.dbentity_id).outerjoin(Locusdbentity).all()
-        for x in test_lit_annotations:
+        lit_annotations = DBSession.query(Literatureannotation, Locusdbentity).filter_by(reference_id=self.dbentity_id).outerjoin(Locusdbentity).all()
+        for x in lit_annotations:
             locus_name = None
             locus = x.Locusdbentity
             if locus:
@@ -1826,7 +1826,15 @@ class Referencedbentity(Dbentity):
                 'locus_name': locus_name,
                 'comment': None
             }
-            tags.append(obj)
+            # Don't append to tags if primary and already in tags.
+            gene_is_tagged_primary_internal = False
+            for tag in tags:
+                is_primary = tag['name'] in ['go', 'classical_phenotype', 'headline_information']
+                if tag['locus_name'] == locus_name and is_primary:
+                    gene_is_tagged_primary_internal = True
+                    break
+            if not gene_is_tagged_primary_internal:
+                tags.append(obj)
         tag_list = []
         for k, g in groupby(tags, lambda x: x['name']):
             g_tags = list(g)
@@ -5410,8 +5418,8 @@ class Literatureannotation(Base):
     acceptable_tags = {
         'classical_phenotype': 'Primary Literature',
         'go': 'Primary Literature',
-        'headline_information': 'Primary Literature',
         'other_primary': 'Primary Literature',
+        'headline_information': 'Primary Literature',
         'additional_literature': 'Additional Literature',
         'htp_phenotype': 'Omics',
         'non_phenotype_htp': 'Omics',
