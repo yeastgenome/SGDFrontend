@@ -12,8 +12,8 @@ import traceback
 import transaction
 import json
 
-from .helpers import allowed_file, extract_id_request, secure_save_file, curator_or_none, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id, refresh_homepage_cache
-from .curation_helpers import process_pmid_list, get_curator_session, get_pusher_client
+from .helpers import allowed_file, extract_id_request, secure_save_file, curator_or_none, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id
+from .curation_helpers import ban_from_cache, process_pmid_list, get_curator_session, get_pusher_client
 from .loading.promote_reference_triage import add_paper
 from .models import DBSession, Dbentity, Dbuser, Referencedbentity, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags
 from .tsv_parser import parse_tsv_annotations
@@ -57,7 +57,7 @@ def locus_curate_update(request):
         if len(new_regulation_summary):
             locus.update_summary('Regulation', request.session['username'], new_regulation_summary, new_regulation_pmids)
         locus = get_locus_by_id(id)
-        # locus.ban_from_cache()
+        locus.ban_from_cache()
         pusher = get_pusher_client()
         pusher.trigger('sgd', 'curateHomeUpdate', {})
         return locus.get_summary_dict()
@@ -165,7 +165,7 @@ def reference_triage_index(request):
 @view_config(route_name='refresh_homepage_cache', request_method='POST', renderer='json')
 @authenticate
 def refresh_homepage_cache(request):
-    refresh_homepage_cache()
+    ban_from_cache(['/'], True)
     return True
 
 @view_config(route_name='db_sign_in', request_method='POST', renderer='json')

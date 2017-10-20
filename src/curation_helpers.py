@@ -5,7 +5,14 @@ import pusher
 import re
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
+from telnetlib import Telnet
 from zope.sqlalchemy import ZopeTransactionExtension
+
+cache_urls = None
+if 'CACHE_URLS' in os.environ.keys():
+    cache_urls = os.environ['CACHE_URLS'].split(',')
+else:
+    cache_urls = ['http://localhost:6545']
 
 def link_gene_names(raw, locus_names_ids, ignore_str=''):
     if ignore_str is None:
@@ -61,3 +68,15 @@ def get_pusher_client():
         ssl=True
     )
     return pusher_client
+
+def ban_from_cache(targets, is_exact=False):
+    if is_exact:
+        command_exp = '=='
+    else:
+        command_exp = '~'
+    command = 'ban req.url ' + command_exp + ' '
+    for server in cache_urls:
+        tn = Telnet(server, '6082')
+        for x in targets:
+            tn.write(command + x + '\n')
+        tn.close()

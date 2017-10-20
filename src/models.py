@@ -13,9 +13,8 @@ import traceback
 import transaction
 from datetime import datetime
 from itertools import groupby
-from varnish import VarnishManager
 
-from src.curation_helpers import link_gene_names, get_curator_session
+from src.curation_helpers import ban_from_cache, link_gene_names, get_curator_session
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
@@ -74,13 +73,8 @@ class CacheBase(object):
 
     def ban_from_cache(self):
         try:
-            varnish_targets = ()
-            for url in cache_urls:
-                varnish_targets += (url.replace('http://', '') + ':6082',)
-            manager = VarnishManager(varnish_targets)
-            target = '^/' + self.sgdid + '$'
-            manager.run('ban.url', target)
-            manager.close()
+            targets = [str(self.sgdid), str(self.dbentity_id)]
+            ban_from_cache(targets)
         except Exception, e:
             traceback.print_exc()
             print('Error banning cache ' + self.sgdid)

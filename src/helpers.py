@@ -304,7 +304,3 @@ def link_gene_names(raw, locus_names_ids):
             new_str = '<a href="' + url + '">' + wupper + '</a>'
             processed = processed.replace(original_word, new_str)
     return processed
-
-def refresh_homepage_cache():
-    for url in cache_urls:
-        requests.request('PURGE', url)
