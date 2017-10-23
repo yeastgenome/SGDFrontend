@@ -4,6 +4,7 @@ from pyramid.view import view_config
 from pyramid.compat import escape
 from sqlalchemy import func, distinct, and_, or_
 from sqlalchemy.orm.exc import DetachedInstanceError
+from sqlalchemy.exc import IntegrityError
 import os
 import re
 import transaction
@@ -747,11 +748,18 @@ def healthcheck(request):
     ldict = None
     while attempts < MAX_QUERY_ATTEMPTS:
         try:
-            ldict = get_locus_by_id(1268789).to_dict()
+            locus = get_locus_by_id(1268789)
+            ldict = locus.to_dict()
             break
         except DetachedInstanceError:
             traceback.print_exc()
             log.info('DB session closed from detached instance state.')
-            DBSession.expunge_all()
+            DBSession.remove()
+            attempts += 1
+        except IntegrityError:
+            traceback.print_exc()
+            log.info('DB rolled back from integrity error.')
+            DBSession.rollback()
+            DBSession.remove()
             attempts += 1
     return ldict

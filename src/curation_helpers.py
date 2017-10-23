@@ -54,8 +54,8 @@ def process_pmid_list(raw):
         raise ValueError('PMIDs must be a pipe-separated list of valid PMIDs.')
 
 def get_curator_session(username):
-    engine = create_engine(os.environ['NEX2_URI'])
-    session_factory = sessionmaker(bind=engine, extension=ZopeTransactionExtension())
+    curator_engine = create_engine(os.environ['NEX2_URI'])
+    session_factory = sessionmaker(bind=curator_engine, extension=ZopeTransactionExtension(), expire_on_commit=False)
     curator_session = scoped_session(session_factory)
     curator_session.execute('SET LOCAL ROLE ' + username)
     return curator_session

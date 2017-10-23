@@ -2,7 +2,6 @@ from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPOk, HTTPNo
 from pyramid.view import view_config
 from pyramid.session import check_csrf_token
 from sqlalchemy import create_engine
-from sqlalchemy.orm.session import make_transient
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import scoped_session, sessionmaker
 from oauth2client import client, crypt
@@ -85,7 +84,7 @@ def reference_triage_id_delete(request):
             curator_session.rollback()
             return HTTPBadRequest(body=json.dumps({'error': 'DB failure. Verify that PMID is valid and not already present in SGD.'}))
         finally:
-            curator_session.close()
+            curator_session.remove()
     else:
         return HTTPNotFound()
 
@@ -146,9 +145,15 @@ def reference_triage_promote(request):
             traceback.print_exc()
             return HTTPBadRequest(body=json.dumps({'error': 'Error importing PMID into the database. Verify that PMID is valid and not already present in SGD.'}))
         # update tags
-        new_reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=new_reference_id).one_or_none()
-        make_transient(new_reference)
-        new_reference.update_tags(tags, username)
+        try:
+            curator_session = get_curator_session(request.session['username'])
+            new_reference = curator_session.query(Referencedbentity).filter_by(dbentity_id=new_reference_id).one_or_none()
+            new_reference.update_tags(tags, username)
+        except IntegrityError as e:
+            traceback.print_exc()
+            curator_session.rollback()
+        finally:
+            curator_session.remove()
         pusher = get_pusher_client()
         pusher.trigger('sgd', 'triageUpdate', {})
         pusher.trigger('sgd', 'curateHomeUpdate', {})
@@ -256,17 +261,20 @@ def reference_tags(request):
 @view_config(route_name='update_reference_tags', renderer='json', request_method='PUT')
 @authenticate
 def update_reference_tags(request):
+    curator_session = None
     try:
         id = extract_id_request(request, 'reference', 'id', True)
         tags = request.json['tags']
         username = request.session['username']
+        curator_session = get_curator_session(username)
         if id:
-            reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=id).one_or_none()
+            reference = curator_session.query(Referencedbentity).filter_by(dbentity_id=id).one_or_none()
         else:
-            reference = DBSession.query(Referencedbentity).filter_by(sgdid=request.matchdict['id']).one_or_none()
-        make_transient(reference)
+            reference = curator_session.query(Referencedbentity).filter_by(sgdid=request.matchdict['id']).one_or_none()
         reference.update_tags(tags, username)
-        return reference.get_tags()
+        processed_tags = reference.get_tags()
+        curator_session.remove()
+        return processed_tags
     except Exception, e:
         traceback.print_exc()
         return HTTPBadRequest(body=json.dumps({ 'error': str(e) }), content_type='text/json')

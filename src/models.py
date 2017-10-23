@@ -1862,6 +1862,7 @@ class Referencedbentity(Dbentity):
         return tag_list
 
     def update_tags(self, tags, username):
+        curator_session = None
         try:
             curator_session = get_curator_session(username)
             tags = validate_tags(tags)
@@ -1905,12 +1906,15 @@ class Referencedbentity(Dbentity):
                     lit_annotation = Literatureannotation.factory(self.dbentity_id, name, None, username)
                     if lit_annotation:
                         curator_session.add(lit_annotation)
+            curator_session.flush()
             transaction.commit()
         except Exception, e:
             traceback.print_exc()
             curator_session.rollback()
+            raise(e)
         finally:
-            curator_session.close()
+            if curator_session:
+                curator_session.remove()
 
 class Filedbentity(Dbentity):
     __tablename__ = 'filedbentity'
@@ -3808,7 +3812,7 @@ class Locusdbentity(Dbentity):
             curator_session.rollback()
             raise
         finally:
-            curator_session.close()
+            curator_session.remove()
 
     def get_name(self):
         if self.gene_name:

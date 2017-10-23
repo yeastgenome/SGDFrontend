@@ -75,7 +75,7 @@ def dbentity_safe_query(id, entity_class):
             DBSession.close()
             attempts += 1
         # rollback a connection blocked by previous invalid transaction
-        except StatementError:
+        except (StatementError, IntegrityError):
             traceback.print_exc()
             log.info('DB error corrected. Rollingback previous error in db connection')
             DBSession.rollback()
