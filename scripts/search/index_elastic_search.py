@@ -740,7 +740,7 @@ def index_part_2():
     index_references()
 
 if __name__ == '__main__':
-    cleanup()
+    # cleanup()
     setup()
     t1 = Thread(target=index_part_1)
     t2 = Thread(target=index_part_2)
