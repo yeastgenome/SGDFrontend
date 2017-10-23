@@ -238,6 +238,12 @@ const style = {
 
 function mapStateToProps(_state) {
   let state = _state.searchResults;
+  state.aggregations.map( item => {
+    if (item.key == "year"){
+      item["values"].sortOnYear("key", "desc");
+      return
+    }
+  });
   return {
     aggregations: state.aggregations,
     query: state.query,
@@ -245,6 +251,29 @@ function mapStateToProps(_state) {
     activeCategory: state.activeCategory,
     isAggPending: state.isAggPending
   };
+};
+
+Array.prototype.sortOnYear = function(key, order = "asc") {
+  this.sort((a, b) => {
+    if (order == "asc") {
+      if (a[key] < b[key]) {
+        return -1;
+      } else if (a[key] > b[key]) {
+        return 1;
+      } else {
+        return 0;
+      }
+    }
+    if (order == "desc") {
+      if (a[key] > b[key]) {
+        return -1;
+      } else if (a[key] < b[key]) {
+        return 1;
+      } else {
+        return 0;
+      }
+    }
+  });
 };
 
 module.exports = connect(mapStateToProps)(Radium(FacetSelector));
