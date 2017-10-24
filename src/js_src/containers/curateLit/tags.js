@@ -5,7 +5,7 @@ import TagList from '../../components/tagList';
 import Loader from '../../components/loader';
 import fetchData from '../../lib/fetchData';
 import { clearTags, updateTags } from './litActions';
-import { setError, clearError, setPending, finishPending} from '../../actions/metaActions';
+import { setError, setMessage, clearError, setPending, finishPending} from '../../actions/metaActions';
 
 class Tags extends Component {
   componentDidMount() {
@@ -25,8 +25,9 @@ class Tags extends Component {
       this.props.dispatch(updateTags(data));
       this.props.dispatch(clearError());
       this.props.dispatch(finishPending());
+      this.props.dispatch(setMessage('Tags updated successfully.'));
     }).catch( (data) => {
-      let errorMessage = data ? data.error : 'There was an updating tags.';
+      let errorMessage = data ? data.error : 'There was an error updating tags.';
       this.props.dispatch(setError(errorMessage));
       this.props.dispatch(finishPending());
     });
