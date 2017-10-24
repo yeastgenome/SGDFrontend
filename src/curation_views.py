@@ -272,6 +272,7 @@ def update_reference_tags(request):
         else:
             reference = curator_session.query(Referencedbentity).filter_by(sgdid=request.matchdict['id']).one_or_none()
         reference.update_tags(tags, username)
+        reference.ban_from_cache()
         processed_tags = reference.get_tags()
         curator_session.remove()
         return processed_tags
