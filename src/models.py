@@ -1834,6 +1834,9 @@ class Referencedbentity(Dbentity):
                 'locus_name': locus_name,
                 'comment': None
             }
+            # ignore omics tags bc already have internal
+            if obj['name'] in ['non_phenotype_htp', 'htp_phenotype']:
+                continue
             # Don't append to tags if primary and already in tags.
             gene_is_tagged_primary_internal = False
             for tag in tags:
@@ -1870,8 +1873,10 @@ class Referencedbentity(Dbentity):
             curator_session.query(CurationReference).filter_by(reference_id=self.dbentity_id).delete(synchronize_session=False)
             curator_session.query(Literatureannotation).filter_by(reference_id=self.dbentity_id).delete(synchronize_session=False)
             transaction.commit()
+            curator_session.flush()
             # track which loci have primary annotations for this reference to only have one primary per reference
             primary_gene_ids = []
+            has_omics = False
             for tag in tags:
                 name = tag['name']
                 comment = tag['comment']
@@ -1892,6 +1897,7 @@ class Referencedbentity(Dbentity):
                         # add primary lit annotation
                         lit_annotation = Literatureannotation.factory(self.dbentity_id, name, gene_dbentity_id, username)
                         if lit_annotation:
+                            # only make a single primary tag
                             if lit_annotation.topic == 'Primary Literature':
                                 if gene_dbentity_id in primary_gene_ids:
                                     continue
@@ -1905,7 +1911,14 @@ class Referencedbentity(Dbentity):
                         curator_session.add(curation_ref)
                     lit_annotation = Literatureannotation.factory(self.dbentity_id, name, None, username)
                     if lit_annotation:
+                        # only make a single omics tag
+                        if lit_annotation.topic == 'Omics':
+                            if has_omics:
+                                continue
+                            else:
+                                has_omics = True
                         curator_session.add(lit_annotation)
+
             curator_session.flush()
             transaction.commit()
         except Exception, e:
