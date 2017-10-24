@@ -7674,6 +7674,8 @@ def validate_tags(tags):
     p_keys = primary_obj.keys()
     a_keys = additional_obj.keys()
     r_keys = review_obj.keys()
+    if (len(r_keys) > 0 and (len(p_keys) + len(a_keys)) > 0):
+        raise ValueError('Review tags are mutually exclusive with primary and additional tags.')
     unique_keys = set(p_keys + a_keys + r_keys)
     extra_keys = set(extra_obj.keys())
     all_keys = list(set(list(unique_keys) + list(extra_keys)))
