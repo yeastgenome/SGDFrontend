@@ -50,11 +50,9 @@ def locus_curate_update(request):
         new_phenotype_summary = request.params.get('phenotype_summary')
         new_regulation_summary = request.params.get('regulation_summary')
         new_regulation_pmids = process_pmid_list(request.params.get('regulation_summary_pmids'))
-        if len(new_phenotype_summary):
-            locus.update_summary('Phenotype', request.session['username'], new_phenotype_summary)
+        locus.update_summary('Phenotype', request.session['username'], new_phenotype_summary)
         locus = get_locus_by_id(id)
-        if len(new_regulation_summary):
-            locus.update_summary('Regulation', request.session['username'], new_regulation_summary, new_regulation_pmids)
+        locus.update_summary('Regulation', request.session['username'], new_regulation_summary, new_regulation_pmids)
         locus = get_locus_by_id(id)
         locus.ban_from_cache()
         pusher = get_pusher_client()

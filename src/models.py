@@ -3771,12 +3771,28 @@ class Locusdbentity(Dbentity):
         }
 
     def update_summary(self, summary_type, username, text, pmid_list=[]):
+        curator_session = None
         try:
             summary_type = summary_type.lower().capitalize()
+            if summary_type == 'Regulation' and len(text) and len(pmid_list) == 0:
+                raise ValueError('Regulation summaries require PMIDs.')
             # get a special session we can close
             curator_session = get_curator_session(username)
+            summary = curator_session.query(Locussummary.summary_type, Locussummary.summary_id, Locussummary.html, Locussummary.date_created, Locussummary.text).filter_by(locus_id=self.dbentity_id, summary_type=summary_type).one_or_none()
+            # ignore if same as old summary
+            if summary and summary.text == text:
+                return
+            # ignore if blank and no summary
+            if summary is None and len(text) == 0:
+                return
+            # if old summary exists and new value is blank, delete summary and locus summary references
+            if summary and len(text) == 0:
+                curator_session.query(LocussummaryReference).filter_by(summary_id=summary.summary_id).delete(synchronize_session=False)
+                curator_session.query(Locussummary).filter_by(locus_id=self.dbentity_id, summary_type=summary_type).delete(synchronize_session=False)
+                transaction.commit()
+                curator_session.flush()
+                return
             locus_names_ids = curator_session.query(Locusdbentity.display_name, Locusdbentity.sgdid).all()
-            summary = curator_session.query(Locussummary.summary_type, Locussummary.summary_id, Locussummary.html, Locussummary.date_created).filter_by(locus_id=self.dbentity_id, summary_type=summary_type).one_or_none()
             summary_html = link_gene_names(text, locus_names_ids, self.gene_name)
             # update
             if summary:
@@ -3822,10 +3838,12 @@ class Locusdbentity(Dbentity):
             return text
         except Exception as e:
             traceback.print_exc()
-            curator_session.rollback()
+            if curator_session:
+                curator_session.rollback()
             raise
         finally:
-            curator_session.remove()
+            if curator_session:
+                curator_session.remove()
 
     def get_name(self):
         if self.gene_name:
