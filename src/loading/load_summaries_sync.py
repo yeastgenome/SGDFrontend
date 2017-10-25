@@ -48,6 +48,7 @@ def validate_file_content_and_process(file_content, nex_session, username):
                     raise ValueError('File header does not match expected format. Please make your file match the template file linked below.') 
             else:
                 gene_id = val[0]
+                file_gene_ids.append(gene_id.strip())
                 gene_id_with_summary = gene_id + val[1]
                 if gene_id_with_summary in already_used_genes:
                     raise ValueError('The same gene summary cannot be updated twice in the same file: ' + str(gene_id))
