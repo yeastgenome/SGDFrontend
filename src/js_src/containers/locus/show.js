@@ -61,7 +61,7 @@ class LocusShow extends Component {
           type: 'textarea'
         },
         regulation_summary_pmids: {
-          label: 'Regulation summary PMIDs (pipe-separated) (optional)'
+          label: 'Regulation summary PMIDs (pipe-separated)'
         }
       }
     };
@@ -87,7 +87,7 @@ class LocusShow extends Component {
     return (
       <div>
         <h3 style={{ display: 'inline-block', marginRight: '0.5rem' }}><CategoryLabel category='locus' hideLabel isPageTitle /> {data.name}</h3>
-        <span><a href={previewUrl} target='_nwe'><i className='fa fa-file-image-o' aria-hidden='true'></i> preview</a></span>
+        <span><a href={previewUrl} target='_new'><i className='fa fa-file-image-o' aria-hidden='true'></i> preview</a></span>
         <hr style={{ margin: 0 }} />
         {this.renderForms()}
       </div>
