@@ -16,7 +16,7 @@ import { PREVIEW_URL } from '../../constants.js';
 
 const BASE_CURATE_URL = '/curate/reference';
 const SECTIONS = [
-  'tags',
+  'tags'
 ];
 
 class CurateLitLayout extends Component {
@@ -45,10 +45,20 @@ class CurateLitLayout extends Component {
   renderHeader() {
     let d = this.props.activeEntry;
     let previewUrl = `${PREVIEW_URL}/reference/${this.props.params.id}`;
+    let urls = d.urls || [];
+    let linkNodes = urls.map( (d, i) => {
+      return <span key={`refL${i}`} style={{ marginRight: '1rem' }}><a href={d.link} target='_new'>{d.display_name}</a> </span>;
+    });
+    if (d.pubmed_id) {
+      linkNodes.unshift(<span key='refLp' style={{ marginRight: '1rem' }}>PMID: {d.pubmed_id} </span>);
+    }
     return (
       <div>
         <h3 style={{ display: 'inline-block', marginRight: '0.5rem' }}><CategoryLabel category='reference' hideLabel isPageTitle /> {d.citation}</h3>
-        <span style={{ display: 'inline-block' }}><a href={previewUrl} target='_nwe'><i className='fa fa-file-image-o' aria-hidden='true'></i> preview</a></span>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <span style={{ display: 'inline-block' }}><a href={previewUrl} target='_new'><i className='fa fa-file-image-o' aria-hidden='true'></i> preview</a></span>
+          <span>{linkNodes}</span>
+        </div>
         <hr style={{ margin: '1rem 0' }} />
       </div>
     );
