@@ -92,7 +92,7 @@ def load_references():
         abstract = get_abstract(pmid)
         gene_names = extract_gene_names(abstract, gene_list, alias_to_name)
         # insert formatted data to DB
-        insert_reference(db_session, pmid, citation, doi_url, abstract, "| ".join(gene_names))
+        insert_reference(db_session, pmid, citation, doi_url, abstract, " ".join(gene_names))
     log.info("Done!")
 
 def insert_reference(db_session, pmid, citation, doi_url, abstract, gene_list):

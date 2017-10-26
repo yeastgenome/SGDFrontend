@@ -67,7 +67,7 @@ class TagList extends Component {
       let _handleChange = e => { this.handleGeneChange(name, e.target.value); };
       return (
         <div>
-          <label>Genes (pipe-separated)</label>
+          <label>Genes (space-separated)</label>
           <input className='sgd-geneList' data-type={name} onChange={_handleChange} type='text' defaultValue={value} />
         </div>
       );
@@ -92,14 +92,13 @@ class TagList extends Component {
   renderReadNode(d) {
     let comment = d.comment || '';
     let commentNode = comment.length ? <span>comment: {comment}</span> : null;
-    let genes = d.genes.split('|').join(' | ');
     return (
       <div key={`sRTag${d.name}`} style={{ marginLeft: '3rem' }}>
         <div>
           <a className={`button small ${style.tagButton}`}>
             {d.label}
           </a>
-          <span style={{ marginLeft: '0.5rem' }}>{genes}</span>
+          <span style={{ marginLeft: '0.5rem' }}>{d.genes}</span>
         </div>
         {commentNode}
       </div>

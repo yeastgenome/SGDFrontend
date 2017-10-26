@@ -5,6 +5,7 @@ import style from './style.css';
 const GENE_COLOR = '#1f77b4';
 const ALIAS_COLOR = '#d62728';
 const ALIAS_CHAR = '=';
+const SEPARATOR = ' ';
 
 class Abstract extends Component {
   constructor(props) {
@@ -22,21 +23,21 @@ class Abstract extends Component {
     let gl = this.props.geneList;
     if (gl.length === 0) return [];
     return gl
-      .split('|')
+      .split(SEPARATOR)
       .filter( d => d.indexOf(ALIAS_CHAR) === -1 )
-      .map( d => d.replace(' ', '') );
+      .map( d => d.replace('|', '') );
   }
 
   getAliasGenesAsArray() {
     let gl = this.props.geneList;
     if (gl.length === 0) return [];
     gl = gl
-      .split('|')
+      .split(SEPARATOR)
       .filter( d => d.indexOf(ALIAS_CHAR) > -1 )
       .map( (d) => {
         return d.split(ALIAS_CHAR)[0];
       })
-      .map( d => d.replace(' ', '') );
+      .map( d => d.replace('|', '') );
     return gl;
   }
 

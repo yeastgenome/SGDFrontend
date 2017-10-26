@@ -21,6 +21,7 @@ ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
 
 QUERY_LIMIT = 25000
 SGD_SOURCE_ID = 834
+SEPARATOR = ' '
 
 # get list of URLs to visit from comma-separated ENV variable cache_urls 'url1, url2'
 cache_urls = None
@@ -1856,7 +1857,7 @@ class Referencedbentity(Dbentity):
                 if x['locus_name']:
                     gene_names.append(x['locus_name'])
             gene_names = list(set(gene_names))
-            gene_str = '|'.join(gene_names)
+            gene_str = SEPARATOR.join(gene_names)
             tag_list.append({
                 'name': name,
                 'genes': gene_str,
@@ -1886,9 +1887,11 @@ class Referencedbentity(Dbentity):
                 gene_ids = []
                 # add tags by gene
                 if len(raw_genes):
-                    gene_ids = raw_genes.strip().split('|')
+                    gene_ids = raw_genes.strip().split(SEPARATOR)
                     for g_id in gene_ids:
                         g_id = g_id.strip()
+                        if g_id == '':
+                            continue
                         upper_g_id = g_id.upper()
                         gene_dbentity_id = curator_session.query(Locusdbentity.dbentity_id).filter(or_(Locusdbentity.display_name == upper_g_id, Locusdbentity.format_name == g_id)).one_or_none()[0]
                         curation_ref = CurationReference.factory(self.dbentity_id, name, comment, gene_dbentity_id, username)
@@ -7671,10 +7674,12 @@ def validate_tags(tags):
         is_reviews = (name == 'reviews')
         genes = tag['genes'].strip()
         if len(genes):
-            t_gene_ids = genes.split('|')
+            t_gene_ids = genes.split(SEPARATOR)
             for g in t_gene_ids:
                 # try to uppercase gene names
                 g = g.strip()
+                if g == '':
+                    continue
                 if len(g) <= 6:
                     g = g.upper()
                 if is_primary:
@@ -7704,19 +7709,19 @@ def validate_tags(tags):
     valid_genes = DBSession.query(Locusdbentity).filter(or_(Locusdbentity.display_name.in_(all_keys), (Locusdbentity.format_name.in_(all_keys)))).all()
     num_valid_genes = len(valid_genes)
     if num_valid_genes != len(all_keys):
-        raise ValueError('Genes must be a pipe-separated list of valid genes by standard name or systematic name.')
+        raise ValueError('Genes must be a space-separated list of valid genes by standard name or systematic name.')
     # maybe modify "extra" tags: if homology/disease, PTM, or regulation for a gene and no public top for that gene, then add to additional information
     new_additional_genes = []
     for x in extra_keys:
         if x not in unique_keys:
             new_additional_genes.append(x)
     if len(new_additional_genes) and (len(r_keys) == 0):
-        new_additional_str = '|'.join(new_additional_genes)
+        new_additional_str = SEPARATOR.join(new_additional_genes)
         # see if additional tag exists, if not create it
         is_added_to_existing = False
         for x in tags:
             if x['name'] == 'additional_literature':
-                x['genes'] = x['genes'] + '|' + new_additional_str
+                x['genes'] = x['genes'] + SEPARATOR + new_additional_str
                 is_added_to_existing = True
         if not is_added_to_existing:
             new_tag = {
