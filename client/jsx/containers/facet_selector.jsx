@@ -240,7 +240,7 @@ function mapStateToProps(_state) {
   let state = _state.searchResults;
   state.aggregations.map( item => {
     if (item.key == "year"){
-      item["values"].sortOnYear("key", "desc");
+      item["values"].sortOnYear("key", true);
       return
     }
   });
@@ -253,18 +253,9 @@ function mapStateToProps(_state) {
   };
 };
 
-Array.prototype.sortOnYear = function(key, order = "asc") {
+Array.prototype.sortOnYear = function(key, order) {
   this.sort((a, b) => {
-    if (order == "asc") {
-      if (a[key] < b[key]) {
-        return -1;
-      } else if (a[key] > b[key]) {
-        return 1;
-      } else {
-        return 0;
-      }
-    }
-    if (order == "desc") {
+    if (order) {
       if (a[key] > b[key]) {
         return -1;
       } else if (a[key] < b[key]) {
@@ -273,6 +264,16 @@ Array.prototype.sortOnYear = function(key, order = "asc") {
         return 0;
       }
     }
+    else{
+      if (a[key] < b[key]) {
+        return -1;
+      } else if (a[key] > b[key]) {
+        return 1;
+      } else {
+        return 0;
+      }
+    }
+    
   });
 };
 
