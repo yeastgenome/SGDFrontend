@@ -47,11 +47,11 @@ def process_pmid_list(raw):
     raw = raw.strip()
     if len(raw) == 0:
         return []
-    p_list = re.split('\||,', raw)
+    p_list = raw.split()
     try:
         return [int(x) for x in p_list]
     except ValueError, e:
-        raise ValueError('PMIDs must be a pipe-separated list of valid PMIDs.')
+        raise ValueError('PMIDs must be a space-separated list of valid PMIDs.')
 
 def get_curator_session(username):
     curator_engine = create_engine(os.environ['NEX2_URI'])

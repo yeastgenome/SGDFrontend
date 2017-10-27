@@ -31,6 +31,9 @@ class LocusShow extends Component {
         let errorMessage = data ? data.error : 'There was an error updating the locus.';
         this.props.dispatch(setError(errorMessage));
         this.props.dispatch(clearPending());
+        let errorData = this.props.data;
+        errorData.paragraphs = value;
+        this.props.dispatch(updateData(errorData));
       });
     }
   }
@@ -61,7 +64,7 @@ class LocusShow extends Component {
           type: 'textarea'
         },
         regulation_summary_pmids: {
-          label: 'Regulation summary PMIDs (pipe-separated)'
+          label: 'Regulation summary PMIDs (space-separated)'
         }
       }
     };
