@@ -68,7 +68,6 @@ class Graph extends Component {
     return rawEdges.map( (d, i) => {
       d.id = `e${i}`;
       d.color = EDGE_COLOR;
-      d.type = 'arrow';
       d.size = 2;
       return d;
     });
@@ -144,7 +143,7 @@ class Graph extends Component {
         maxNodeSize: 5,
         minEdgeSize: 2,
         maxEdgeSize: 2,
-        minArrowSize: 5,
+        minArrowSize: 15,
         labelThreshold: 0,
         zoomingRatio: 1
       }
