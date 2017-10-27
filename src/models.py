@@ -1887,7 +1887,7 @@ class Referencedbentity(Dbentity):
                 gene_ids = []
                 # add tags by gene
                 if len(raw_genes):
-                    gene_ids = raw_genes.strip().split(SEPARATOR)
+                    gene_ids = raw_genes.strip().split()
                     for g_id in gene_ids:
                         g_id = g_id.strip()
                         if g_id == '':
@@ -3752,7 +3752,7 @@ class Locusdbentity(Dbentity):
             summary_ref_ids = DBSession.query(LocussummaryReference.reference_id).filter_by(summary_id=phenotype_summary.summary_id).all()
             pmids = DBSession.query(Referencedbentity.pmid).filter(Referencedbentity.dbentity_id.in_(summary_ref_ids)).all()
             pmids = [str(x[0]) for x in pmids]
-            phenotype_summary_pmids = '|'.join(pmids)
+            phenotype_summary_pmids = SEPARATOR.join(pmids)
             phenotype_summary = phenotype_summary.text
         if not regulation_summary:
             regulation_summary = ''
@@ -3761,7 +3761,7 @@ class Locusdbentity(Dbentity):
             summary_ref_ids = DBSession.query(LocussummaryReference.reference_id).filter_by(summary_id=regulation_summary.summary_id).all()
             pmids = DBSession.query(Referencedbentity.pmid).filter(Referencedbentity.dbentity_id.in_(summary_ref_ids)).all()
             pmids = [str(x[0]) for x in pmids]
-            regulation_summary_pmids = '|'.join(pmids)
+            regulation_summary_pmids = SEPARATOR.join(pmids)
             regulation_summary = regulation_summary.text
         return {
             'name': self.display_name,
@@ -3782,8 +3782,11 @@ class Locusdbentity(Dbentity):
             # get a special session we can close
             curator_session = get_curator_session(username)
             summary = curator_session.query(Locussummary.summary_type, Locussummary.summary_id, Locussummary.html, Locussummary.date_created, Locussummary.text).filter_by(locus_id=self.dbentity_id, summary_type=summary_type).one_or_none()
+            num_summary_refs = 0
+            if summary and len(pmid_list):
+                num_summary_refs = curator_session.query(LocussummaryReference).filter_by(summary_id=summary.summary_id).count()
             # ignore if same as old summary
-            if summary and summary.text == text:
+            if summary and summary.text == text and num_summary_refs == len(pmid_list):
                 return
             # ignore if blank and no summary
             if summary is None and len(text) == 0:
@@ -7674,7 +7677,7 @@ def validate_tags(tags):
         is_reviews = (name == 'reviews')
         genes = tag['genes'].strip()
         if len(genes):
-            t_gene_ids = genes.split(SEPARATOR)
+            t_gene_ids = genes.split()
             for g in t_gene_ids:
                 # try to uppercase gene names
                 g = g.strip()
