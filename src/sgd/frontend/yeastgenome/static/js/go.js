@@ -1,8 +1,6 @@
 $(document).ready(function() {
 	$.getJSON('/backend/go/' + go_term['id'] + '/locus_details', function(data) {
-	  	var go_table = create_go_table(data);
-	  	create_analyze_button("go_table_analyze", go_table, "<a href='" + go_term['link'] + "' class='gene_name'>" + go_term['display_name'] + "</a> genes", true);
-  	    create_download_button("go_table_download", go_table, go_term['display_name'] + "_annotations");
+	  	create_go_table(data);
 
         if(go_term['descendant_locus_count'] > go_term['locus_count']) {
             create_show_child_button("go_table_show_children", go_table, data, '/backend/go/' + go_term['id'] + '/locus_details_all', go_data_to_table, function(table_data) {
@@ -59,38 +57,62 @@ $(document).ready(function() {
 });
 
 function create_go_table(data) {
-	var datatable = [];
-	var genes = {};
+	var manualDatatable = [];
+	var manualGenes = {};
+    var htpDatatable = [];
+    var htpGenes = {};
+    var computationalDatatable = [];
+    var computationalGenes = {};
 	for (var i=0; i < data.length; i++) {
-        datatable.push(go_data_to_table(data[i], i));
-		genes[data[i]["locus"]["id"]] = true;
+        var type = data[i].annotation_type;
+        if (type === 'manually curated') {
+            manualDatatable.push(go_data_to_table(data[i], i));
+            manualGenes[data[i]["locus"]["id"]] = true;
+        } else if (type === 'high-throughput') {
+            htpDatatable.push(go_data_to_table(data[i], i));
+            htpGenes[data[i]["locus"]["id"]] = true;
+        } else if (type === 'computational') {
+            computationalDatatable.push(go_data_to_table(data[i], i));
+            computationalGenes[data[i]["locus"]["id"]] = true;
+        }
 	}
-    set_up_header('go_table', datatable.length, 'entry', 'entries', Object.keys(genes).length, 'gene', 'genes');
+    set_up_header('manual_go_table', manualDatatable.length, 'entry', 'entries', Object.keys(manualGenes).length, 'gene', 'genes');
+    set_up_header('htp_go_table', htpDatatable.length, 'entry', 'entries', Object.keys(htpGenes).length, 'gene', 'genes');
+    set_up_header('computational_go_table', computationalDatatable.length, 'entry', 'entries', Object.keys(computationalGenes).length, 'gene', 'genes');
 
 	var options = {};
 	options["bPaginate"] = true;
 	options["aaSorting"] = [[3, "asc"]];
 	options["bDestroy"] = true;
-	options["oLanguage"] = {"sEmptyTable": "No genes annotated directly to " + go_term['display_name']};
+	// options["oLanguage"] = {"sEmptyTable": "No genes annotated directly to " + go_term['display_name']};
     options["aoColumns"] = [
-            {"bSearchable":false, "bVisible":false}, //evidence_id
-            {"bSearchable":false, "bVisible":false}, //analyze_id
-            null, //gene
-            {"bSearchable":false, "bVisible":false}, //gene systematic name
-            null, //gene ontology term
-            {"bSearchable":false, "bVisible":false}, //gene ontology term id
-            null, //qualifier
-            {"bSearchable":false, "bVisible":false}, //aspect
-            null, //evidence
-            null, //method
-            null, //source
-            null, //assigned on
-            null, //annotation_extension
-            null // reference
-            ];
-    options["aaData"] = datatable;
-
-    return create_table("go_table", options);
+        {"bSearchable":false, "bVisible":false}, //evidence_id
+        {"bSearchable":false, "bVisible":false}, //analyze_id
+        null, //gene
+        {"bSearchable":false, "bVisible":false}, //gene systematic name
+        null, //gene ontology term
+        {"bSearchable":false, "bVisible":false}, //gene ontology term id
+        null, //qualifier
+        {"bSearchable":false, "bVisible":false}, //aspect
+        null, //evidence
+        {"bSearchable":false, "bVisible":false}, //method
+        null, //source
+        null, //assigned on
+        null, //annotation_extension
+        null // reference
+    ];
+    var manualOptions = $.extend({ aaData: manualDatatable, oLanguage: { sEmptyTable: 'No genes manually annotated directly to ' + go_term['display_name'] } }, options);
+    var htpOptions = $.extend({ aaData: htpDatatable, oLanguage: { sEmptyTable: 'No high-throughput gene annotations for ' + go_term['display_name'] } }, options);
+    var computationalOptions = $.extend({ aaData: computationalDatatable, oLanguage: { sEmptyTable: 'No genes computationally annotated directly to ' + go_term['display_name'] } }, options);
+    var manualTable = create_table("manual_go_table", manualOptions);
+    create_analyze_button("manual_go_table_analyze", manualTable, "<a href='" + go_term['link'] + "' class='gene_name'>" + go_term['display_name'] + "</a> genes", true);
+    create_download_button("manual_go_table_download", manualTable, go_term['display_name'] + "_annotations");
+    var htpTable = create_table("htp_go_table", htpOptions);
+    create_analyze_button("htp_go_table_analyze", htpTable, "<a href='" + go_term['link'] + "' class='gene_name'>" + go_term['display_name'] + "</a> genes", true);
+    create_download_button("htp_go_table_download", htpTable, go_term['display_name'] + "_annotations");
+    var computationalTable = create_table("computational_go_table", computationalOptions);
+    create_analyze_button("computational_go_table_analyze", computationalTable, "<a href='" + go_term['link'] + "' class='gene_name'>" + go_term['display_name'] + "</a> genes", true);
+    create_download_button("computational_go_table_download", computationalTable, go_term['display_name'] + "_annotations");
 }
 
 var graph_style = cytoscape.stylesheet()
