@@ -52,6 +52,7 @@ class ModelsHelper(object):
         """
         Get all colleague associated data(joins)
         """
+        
         colleagues = self.get_all_colleague_data()
         loci = self.get_all_collegue_locus()
         relations = self.get_all_colleague_relation()
@@ -65,6 +66,7 @@ class ModelsHelper(object):
         """
         Create colleague object from given lists
         """
+       
         if len(colleagues) > 0:
             relation_obj = self.list_to_dict_colleague(relations)
             loci_obj = self.list_to_dict_colleague(loci)

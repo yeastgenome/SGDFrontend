@@ -856,9 +856,10 @@ class Colleague(Base):
             "name": self.display_name
         }
         coll_url = self.get_collegue_url()
+        _dict["lab_page"] = ''
+        _dict["research_page"] = ''
         if coll_url is not None:
-            _dict["lab_page"] = ''
-            _dict["research_page"] = ''
+            
             if coll_url.url_type == "Research summary":
                 _dict["research_page"] = coll_url.obj_url
             if coll_url.url_type == "Lab":
