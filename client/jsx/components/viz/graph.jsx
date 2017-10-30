@@ -139,12 +139,13 @@ class Graph extends Component {
       settings: {
         animationsTime: TRANSITION_DURATION,
         labelThreshold: 100,
-        minNodeSize: 5,
-        maxNodeSize: 5,
+        minNodeSize: 7,
+        maxNodeSize: 7,
         minEdgeSize: 2,
         maxEdgeSize: 2,
         minArrowSize: 15,
         labelThreshold: 0,
+        sideMargin: 4,
         zoomingRatio: 1
       }
     });
@@ -161,12 +162,12 @@ class Graph extends Component {
   }
 
   renderHeader() {
-    const NODE_SIZE = '0.6rem';
+    const NODE_SIZE = '0.8rem';
     let cScale = this.props.colorScale;
     let nodes = cScale.domain().map( (d, i) => {
       let thisBg = cScale(d);
       return (
-        <span key={`hl${i}`} style={{ fontSize: '0.8rem', marginRight: '1rem' }}><span style={{ background: thisBg, borderRadius: '0.5rem', display: 'inline-block', height: NODE_SIZE, position: 'relative', top: '0.1rem', width: NODE_SIZE }}></span> {d}</span>
+        <span key={`hl${i}`} style={{ fontSize: '0.9rem', marginRight: '1rem' }}><span style={{ background: thisBg, borderRadius: '0.5rem', display: 'inline-block', height: NODE_SIZE, position: 'relative', top: '0.1rem', width: NODE_SIZE }}></span> {d}</span>
       );
     });
     return (
