@@ -1,5 +1,4 @@
 from src.models import DBSession, Base, Colleague, ColleagueLocus, ColleagueRelation, ColleagueReference, ColleagueUrl, Colleaguetriage, Dbentity, Locusdbentity, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi
-from sqlalchemy import create_engine, and_
 import os
 import requests
 
@@ -52,21 +51,16 @@ class ModelsHelper(object):
         """
         Get all colleague associated data(joins)
         """
-        
         colleagues = self.get_all_colleague_data()
         loci = self.get_all_collegue_locus()
         relations = self.get_all_colleague_relation()
         result = self.association_helper(colleagues, loci, relations)
         return result
 
-
-
-
     def association_helper(self, colleagues, loci, relations):
         """
         Create colleague object from given lists
         """
-       
         if len(colleagues) > 0:
             relation_obj = self.list_to_dict_colleague(relations)
             loci_obj = self.list_to_dict_colleague(loci)
@@ -83,7 +77,6 @@ class ModelsHelper(object):
                     colleague_obj[item.colleague_id]["relations"] = temp_relation
 
             return colleague_obj
-
 
     def list_to_dict_colleague(self, lst):
         """
