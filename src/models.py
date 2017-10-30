@@ -864,7 +864,6 @@ class Colleague(Base):
                 _dict["research_page"] = coll_url.obj_url
             if coll_url.url_type == "Lab":
                 _dict["lab_page"] = coll_url.obj_url
-        
            
         keyword_ids = DBSession.query(ColleagueKeyword.keyword_id).filter(ColleagueKeyword.colleague_id == self.colleague_id).all()
         if len(keyword_ids) > 0:
@@ -879,7 +878,6 @@ class Colleague(Base):
         item = DBSession.query(ColleagueUrl).filter(
             ColleagueUrl.colleague_id == self.colleague_id).first()
         return item
-
 
 
 class ColleagueKeyword(Base):
