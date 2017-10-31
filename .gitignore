@@ -31,3 +31,4 @@ asset_version.json
 .idea/
 *.rdb
 .vscode/settings.json
+.cache/
