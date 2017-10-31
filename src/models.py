@@ -95,7 +95,7 @@ class Allele(Base):
     description = Column(String(500))
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
-
+    
     source = relationship(u'Source')
 
 
@@ -115,6 +115,7 @@ class Apo(Base):
     is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
+    is_obsolete = Column(Boolean, nullable=False)
 
     source = relationship(u'Source')
 
@@ -560,7 +561,7 @@ class ArchLiteratureannotation(Base):
 class ArchLocuschange(Base):
     __tablename__ = 'arch_locuschange'
     __table_args__ = (
-        UniqueConstraint('dbentity_id', 'change_type', 'old_value', 'new_value', 'date_changed'),
+        UniqueConstraint('dbentity_id', 'change_type', 'old_value', 'new_value', 'date_added_to_database'),
         {u'schema': 'nex'}
     )
 
@@ -571,9 +572,10 @@ class ArchLocuschange(Base):
     change_type = Column(String(100), nullable=False)
     old_value = Column(String(40))
     new_value = Column(String(40))
-    date_changed = Column(DateTime, nullable=False)
-    changed_by = Column(String(12), nullable=False)
+    date_added_to_database = Column(DateTime, nullable=False)
+    added_by = Column(String(12), nullable=False)
     date_archived = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    date_name_standardized = Column(DateTime, nullable=False)
 
     def to_dict(self):
         return {
@@ -707,6 +709,7 @@ class Chebi(Base):
     is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
+    is_obsolete = Column(Boolean, nullable=False)
 
     source = relationship(u'Source')
 
@@ -1571,6 +1574,33 @@ class Dbentity(Base):
     sgdid = Column(String(20), nullable=False, unique=True)
     subclass = Column(String(40), nullable=False)
     dbentity_status = Column(String(40), nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    source = relationship(u'Source')
+
+
+class Path(Base):
+    __tablename__ = 'path'
+    __table_args__ = {u'schema': 'nex'}
+
+    path_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    path = Column(String(500), nullable=False, unique=True)
+    description = Column(String(1000))
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    source = relationship(u'Source')
+
+class FilePath(Base):
+    __tablename__ = 'file_path'
+    __table_args__ = {u'schema': 'nex'}
+
+    file_path_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    path_id = Column(ForeignKey(u'nex.path.path_id', ondelete=u'CASCADE'), nullable=False)
+    file_id = Column(ForeignKey(u'nex.filedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
 
@@ -4043,6 +4073,7 @@ class Disease(Base):
     is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
+    is_obsolete = Column(Boolean, nullable=False)
 
     source = relationship(u'Source')
 
@@ -4348,6 +4379,7 @@ class Ec(Base):
     description = Column(String(1000))
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
+    is_obsolete = Column(Boolean, nullable=False)
 
     source = relationship(u'Source')
 
@@ -4398,6 +4430,7 @@ class EcAlias(Base):
     alias_type = Column(String(40), nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
+    is_obsolete = Column(Boolean, nullable=False)
 
     ec = relationship(u'Ec')
     source = relationship(u'Source')
@@ -4443,6 +4476,7 @@ class Eco(Base):
     is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
+    is_obsolete = Column(Boolean, nullable=False)
 
     source = relationship(u'Source')
 
@@ -4522,6 +4556,7 @@ class Edam(Base):
     is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
+    is_obsolete = Column(Boolean, nullable=False)
 
     source = relationship(u'Source')
 
@@ -4661,20 +4696,6 @@ class FileKeyword(Base):
     keyword = relationship(u'Keyword')
     source = relationship(u'Source')
 
-
-class Filepath(Base):
-    __tablename__ = 'filepath'
-    __table_args__ = {u'schema': 'nex'}
-
-    filepath_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
-    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
-    filepath = Column(String(500), nullable=False, unique=True)
-    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
-    created_by = Column(String(12), nullable=False)
-
-    source = relationship(u'Source')
-
-
 class Geninteractionannotation(Base):
     __tablename__ = 'geninteractionannotation'
     __table_args__ = (
@@ -4791,6 +4812,7 @@ class Go(Base):
     is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
+    is_obsolete = Column(Boolean, nullable=False)
 
     source = relationship(u'Source')
 
@@ -5739,6 +5761,30 @@ class Locusnote(Base):
             "references": [ref.reference.to_dict_citation() for ref in references]
         }
 
+class Locusnoteannotation(Base):
+    __tablename__ = 'locusnoteannotation'
+    __table_args__ = (
+        UniqueConstraint('dbentity_id', 'note_type', 'display_name', 'note'),
+        {u'schema': 'nex'}
+    )
+
+    annotation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.annotation_seq'::regclass)"))
+    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
+    bud_id = Column(Integer)
+    note_type = Column(String(40), nullable=False)
+    display_name = Column(String(500), nullable=False)
+    note = Column(String(2000), nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    dbentity = relationship(u'Dbentity')
+    reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
+    source = relationship(u'Source')
+    taxonomy = relationship(u'Taxonomy')
+
 
 class LocusnoteReference(Base):
     __tablename__ = 'locusnote_reference'
@@ -5855,6 +5901,7 @@ class Obi(Base):
     is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
+    is_obsolete = Column(Boolean, nullable=False)
 
     source = relationship(u'Source')
 
@@ -6973,6 +7020,7 @@ class Psimod(Base):
     is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
+    is_obsolete = Column(Boolean, nullable=False)
 
     source = relationship(u'Source')
 
@@ -7405,6 +7453,7 @@ class Ro(Base):
     is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
+    is_obsolete = Column(Boolean, nullable=False)
 
     source = relationship(u'Source')
 
@@ -7482,6 +7531,7 @@ class So(Base):
     is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
+    is_obsolete = Column(Boolean, nullable=False)
 
     source = relationship(u'Source')
 
@@ -7642,6 +7692,7 @@ class Taxonomy(Base):
     is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
+    is_obsolete = Column(Boolean, nullable=False)
 
     source = relationship(u'Source')
 

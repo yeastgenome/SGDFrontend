@@ -1,27 +1,35 @@
+import urllib
+import logging
+import os
 from datetime import datetime
 import sys
 reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('utf-8')
-sys.path.insert(0, '../../../src/')
-from models import Source, Go, GoUrl, GoAlias, GoRelation, Ro
-sys.path.insert(0, '../')
-from config import CREATED_BY
-from database_session import get_nex_session as get_session
-from ontology import read_owl  
+from src.models import Source, Go, GoUrl, GoAlias, GoRelation, Ro
+from scripts.loading.database_session import get_session
+from scripts.loading.ontology import read_owl  
                  
 __author__ = 'sweng66'
 
 ## Created on May 2017
 ## This script is used to update GO ontology in NEX2.
 
-ontology_file = 'data/go.owl'
-log_file = 'logs/go.log'
+log_file = 'scripts/loading/ontology/logs/go.log'
 ontology = 'GO'
 src = 'GOC'
+CREATED_BY = os.environ['DEFAULT_USER']
 
-def load_ontology():
+logging.basicConfig()
+log = logging.getLogger()
+log.setLevel(logging.INFO)
+
+log.info("GO Ontology Loading Report:\n")
+
+def load_ontology(ontology_file):
 
     nex_session = get_session()
+
+    log.info("Getting data from database...")
 
     source_to_id = dict([(x.display_name, x.source_id) for x in nex_session.query(Source).all()])
     goid_to_go =  dict([(x.goid, x) for x in nex_session.query(Go).all()])
@@ -48,9 +56,12 @@ def load_ontology():
     ####################################
     fw = open(log_file, "w")
     
+    log.info("Reading data from ontology file...")
 
     data = read_owl(ontology_file, ontology)
-    
+
+    log.info("Updating go ontology data in the database...")
+
     [update_log, to_delete_list] = load_new_data(nex_session, data, 
                                                  source_to_id, 
                                                  goid_to_go, 
@@ -60,11 +71,15 @@ def load_ontology():
                                                  go_id_to_parent,
                                                  fw)
     
+    log.info("Writing loading summary...")
+
     write_summary_and_send_email(fw, update_log, to_delete_list)
     
     nex_session.close()
 
     fw.close()
+
+    log.info("Done!\n\n")
 
 
 def load_new_data(nex_session, data, source_to_id, goid_to_go, ro_id, roid_to_ro_id, go_id_to_alias, go_id_to_parent, fw):
@@ -97,7 +112,7 @@ def load_new_data(nex_session, data, source_to_id, goid_to_go, ro_id, roid_to_ro
                 # nex_session.add(y)
                 # nex_session.flush()
                 update_log['updated'] = update_log['updated'] + 1
-                print "UPDATED: ", y.goid, ":"+y.display_name+ ":" + ":"+x['term']+":"
+                # print "UPDATED: ", y.goid, ":"+y.display_name+ ":" + ":"+x['term']+":"
             # else:
             #    print "SAME: ", y.goid, y.display_name, x['definition'], x['aliases'], x['parents'], x['other_parents']
             active_goid.append(x['id'])
@@ -116,7 +131,7 @@ def load_new_data(nex_session, data, source_to_id, goid_to_go, ro_id, roid_to_ro
             nex_session.flush()
             go_id = this_x.go_id
             update_log['added'] = update_log['added'] + 1
-            print "NEW: ", x['id'], x['term'], x['definition']
+            # print "NEW: ", x['id'], x['term'], x['definition']
 
             ## add three URLs
             insert_url(nex_session, source_to_id['GOC'], x['id'], go_id, 
@@ -143,7 +158,7 @@ def load_new_data(nex_session, data, source_to_id, goid_to_go, ro_id, roid_to_ro
                     child_id = go_id
                     this_ro_id = roid_to_ro_id.get(roid)
                     if this_ro_id is None:
-                        print "The ROID:", roid, " is not found in the database"
+                        log.info("The ROID:" + str(roid) + " is not found in the database")
                         continue
                     insert_relation(nex_session, source_to_id[src], parent_id,
                                     child_id, this_ro_id, relation_just_added, fw)
@@ -218,7 +233,7 @@ def update_aliases(nex_session, go_id, curr_aliases, new_aliases, source_id, goi
 
 def update_relations(nex_session, child_id, curr_parent_ids, new_parents, other_parents, roid_to_ro_id, source_id, goid_to_go, ro_id, relation_just_added, fw):
 
-    print "RELATION: ", curr_parent_ids, new_parents, other_parents
+    # print "RELATION: ", curr_parent_ids, new_parents, other_parents
     # return 
     
     new_parent_ids = []
@@ -237,7 +252,7 @@ def update_relations(nex_session, child_id, curr_parent_ids, new_parents, other_
             parent_id = parent.go_id
             this_ro_id = roid_to_ro_id.get(roid)
             if this_ro_id is None:
-                print "The ROID:", roid, " is not found in the database"
+                log.info("The ROID:" + str(roid) + " is not found in the database")
                 continue
             new_parent_ids.append((parent_id, this_ro_id))
             if (parent_id, this_ro_id) not in curr_parent_ids:
@@ -314,18 +329,23 @@ def write_summary_and_send_email(fw, update_log, to_delete_list):
 
     summary = "Updated: " + str(update_log['updated'])+ "\n"
     summary = summary + "Added: " + str(update_log['added']) + "\n"
+    summary_4_email = summary
     if len(to_delete_list) > 0:
         summary = summary + "The following GO terms are not in the current release:\n"
         for (goid, term) in to_delete_list:
             summary = summary + "\t" + goid + " " + term + "\n"
                                           
     fw.write(summary)
-    print summary
+    log.info(summary_4_email)
 
 
 if __name__ == "__main__":
         
-    load_ontology()
+    url_path = 'http://purl.obolibrary.org/obo/'
+    go_owl_file = 'go.owl'
+    urllib.urlretrieve(url_path + go_owl_file, go_owl_file)
+    
+    load_ontology(go_owl_file)
 
 
     
