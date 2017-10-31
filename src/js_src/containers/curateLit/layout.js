@@ -28,6 +28,7 @@ class CurateLitLayout extends Component {
 
   componentWillUnmount() {
     this._isMounted = false;
+    updateTitle('');
   }
 
   fetchData() {
