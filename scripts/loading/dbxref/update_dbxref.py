@@ -1,13 +1,20 @@
+import urllib
 import sys
+import os
+import gzip
+import logging
 reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
-sys.path.insert(0, '../../../src/')
-from models import Dbentity, LocusAlias, Source
-sys.path.insert(0, '../')
-from config import CREATED_BY
-from database_session import get_nex_session as get_session
+from src.models import Dbentity, LocusAlias, Source
+from scripts.loading.database_session import get_session
 
 __author__ = 'sweng66'
+
+logging.basicConfig()
+log = logging.getLogger()
+log.setLevel(logging.INFO)
+
+CREATED_BY = os.environ['DEFAULT_USER']
 
 alias_type_src_list = [("UniProtKB ID", "UniProtKB"),
                        ("UniParc ID", "UniParc"),
@@ -32,10 +39,13 @@ ID_type_mapping = {"UniParc":         ("UniParc ID", "UniParc"),
                    "DIP":             ("Gene ID", "DIP"),
                    "GeneID":          ("Gene ID", "NCBI") }
 
-log_file = "logs/update_dbxref.log"
-infile = "data/YEAST_559292_idmapping.dat"
+log_file = "scripts/loading/dbxref/logs/update_dbxref.log"
 
-def update_data():
+ADDED = 0
+DELETED = 0
+UPDATED = 0
+
+def update_data(infile):
 
     nex_session = get_session()
 
@@ -43,6 +53,8 @@ def update_data():
 
     id_to_source = {}
     source_to_id = {}
+
+    log.info("Getting data from the database...")
 
     for x in nex_session.query(Source).all():
         id_to_source[x.source_id] = x.display_name
@@ -55,7 +67,9 @@ def update_data():
         locus_id_to_sgdid[x.dbentity_id] = x.sgdid
         sgdid_to_locus_id[x.sgdid] = x.dbentity_id
     
-    [sgdid_to_uniprot_id, uniprot_id_to_sgdid, key_to_ids] = read_uniprot_file(source_to_id)
+    log.info("Reading data from uniprot data file...")
+
+    [sgdid_to_uniprot_id, uniprot_id_to_sgdid, key_to_ids] = read_uniprot_file(infile, source_to_id)
 
     all_aliases = nex_session.query(LocusAlias).all()
 
@@ -64,6 +78,8 @@ def update_data():
 
     key_to_ids_DB = {}
     
+    log.info("Updating the data in the database...")
+
     for x in all_aliases:
 
         this_key = (x.alias_type, id_to_source[x.source_id])
@@ -107,24 +123,30 @@ def update_data():
     # nex_session.rollback()
     nex_session.commit()
 
+    log.info("Loading summary:")
+    log.info("\tAdded: " + str(ADDED))
+    log.info("\tUpdated: " + str(UPDATED))
+    log.info("\tDeleted: " + str(DELETED))
+    log.info("Done!")
+
 def get_locus_id(uniprot_id, uniprot_id_to_sgdid, sgdid_to_locus_id):
 
     sgdid = uniprot_id_to_sgdid.get(uniprot_id)
 
     if sgdid is None:
-        print "The uniprot ID: ", uniprot_id, " is not mapped to a sgdid."
+        # print "The uniprot ID: ", uniprot_id, " is not mapped to a sgdid."
         return None
 
     locus_id = sgdid_to_locus_id.get(sgdid)
     if locus_id is None:
-        print "The SGDID: ", sgdid, " is not in the database."
+        log.info("The SGDID: " + sgdid + " is not in the database.")
         return None
 
     return locus_id
 
 def delete_aliases(nex_session, fw, key, uniprot_id_to_sgdid, sgdid_to_locus_id):
 
-    print "Delete aliases for key: ", key
+    # print "Delete aliases for key: ", key
 
     (uniprot_id, alias_type, source_id) = key
 
@@ -133,7 +155,9 @@ def delete_aliases(nex_session, fw, key, uniprot_id_to_sgdid, sgdid_to_locus_id)
         return
 
     nex_session.query(LocusAlias).filter_by(locus_id=locus_id, alias_type=alias_type, source_id=source_id).delete()
-    
+    global DELETED
+    DELETED = DELETED + 1
+
 def insert_aliases(nex_session, fw, key, ids, uniprot_id_to_sgdid, sgdid_to_locus_id, id_to_source):
     
     (uniprot_id, alias_type, source_id) = key
@@ -144,6 +168,8 @@ def insert_aliases(nex_session, fw, key, ids, uniprot_id_to_sgdid, sgdid_to_locu
 
     for ID in ids:
         insert_alias(nex_session, fw, locus_id, alias_type, id_to_source[source_id], source_id, ID)
+        global ADDED
+        ADDED = ADDED + 1
 
 
 def update_aliases(nex_session, fw, key, ids, ids_DB, uniprot_id_to_sgdid, sgdid_to_locus_id, id_to_source):
@@ -162,13 +188,17 @@ def update_aliases(nex_session, fw, key, ids, ids_DB, uniprot_id_to_sgdid, sgdid
             continue
         insert_alias(nex_session, fw, locus_id, alias_type, 
                      id_to_source[source_id], source_id, ID)
-        
+        global ADDED
+        ADDED = ADDED + 1
+
     for ID in ids_DB:
         delete_alias(nex_session, fw, locus_id, alias_type, ID)
+        global DELETED
+        DELETED = DELETED + 1
 
 def delete_alias(nex_session, fw, locus_id, alias_type, ID):
     
-    print "DELETE ",   locus_id, alias_type, ID
+    # print "DELETE ",   locus_id, alias_type, ID
 
     nex_session.query(LocusAlias).filter_by(locus_id=locus_id, alias_type=alias_type, display_name=ID).delete()
     
@@ -176,7 +206,7 @@ def delete_alias(nex_session, fw, locus_id, alias_type, ID):
     
 def insert_alias(nex_session, fw, locus_id, alias_type, source, source_id, ID):
     
-    print "INSERT ", locus_id, alias_type, source, ID
+    # print "INSERT ", locus_id, alias_type, source, ID
 
     obj_url = get_url(alias_type, ID, source)
 
@@ -193,11 +223,13 @@ def insert_alias(nex_session, fw, locus_id, alias_type, source, source_id, ID):
     
 def update_uniprot_id(nex_session, fw, locus_id, alias_type, ID):
 
-    print locus_id, alias_type, ID
+    # print locus_id, alias_type, ID
         
     nex_session.query(LocusAlias).filter_by(locus_id=locus_id, alias_type=alias_type).update({"display_name": ID, "obj_url": "http://www.uniprot.org/uniprot/"+ID})
         
     fw.write("Update "+alias_type+" to "+ID+" for locus_id="+str(locus_id)+"\n")
+    global UPDATED
+    UPDATED = UPDATED + 1
 
 def get_url(alias_type, ID, source):
     
@@ -226,9 +258,9 @@ def get_url(alias_type, ID, source):
     return ""
 
 
-def read_uniprot_file(source_to_id):
+def read_uniprot_file(infile, source_to_id):
 
-    f = open(infile)    
+    f = gzip.open(infile)    
     sgdid_to_uniprot_id = {}
     uniprot_id_to_sgdid = {}
     key_to_ids = {}
@@ -268,7 +300,11 @@ def read_uniprot_file(source_to_id):
 
 if __name__ == '__main__':
 
-    update_data()
+    url_path = 'ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/'
+    uniprot_file = 'YEAST_559292_idmapping.dat.gz'
+    urllib.urlretrieve(url_path + uniprot_file, uniprot_file)
+
+    update_data(uniprot_file)
 
 
 

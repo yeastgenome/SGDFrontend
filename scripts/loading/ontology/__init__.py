@@ -1,6 +1,5 @@
 __author__ = 'sweng66'
 
-
 def read_obo(filename):
 
     f = open(filename, 'r')
@@ -13,13 +12,13 @@ def read_obo(filename):
     id = None
     # namespace = None
     definition = None
-    is_obsolete_id = 0
+    is_obsolete = 0
     
     for line in f:
         line = line.strip()
         if line == '[Term]' or line == '[Typedef]':
-            if term is not None and id not None and is_obsolete == 0:
-                data.append({ 'term': term,
+            if term is not None and id is not None and is_obsolete == 0:
+                data.append({ 'term': term.replace("&apos;", "'"),
                               'id': id,
                               'aliases': aliases,
                               'parents': parents,
@@ -29,6 +28,7 @@ def read_obo(filename):
             aliases = []
             parents = []
             definition = None
+            is_obsolete = 0
             continue
         if line.startswith('is_obsolete: true'):
             is_obsolete = 1
@@ -42,7 +42,7 @@ def read_obo(filename):
                 term = pieces[1].strip()
             elif pieces[0] == 'synonym':
                 synonym_items = pieces[1].split('"')
-                alias = synonym_items[1]
+                alias = synonym_items[1].replace("&apos;", "'")
                 alias_type = synonym_items[2].strip().split(' ')[0]
                 aliases.append((alias, alias_type))
             elif pieces[0] == 'def':
@@ -54,13 +54,12 @@ def read_obo(filename):
                 definition = quotation_split[0][1:]
                 definition = definition.replace("\\", "")
             elif pieces[0] == 'is_a':
-                parent = pieces[1].split(' | ')[0]
+                parent = pieces[1].split(' ! ')[0]
                 parents.append(parent)
 
     f.close()
 
     return data
-
 
 def read_data_file(filename):
     

@@ -1,14 +1,16 @@
+import urllib
+import gzip
+import shutil
+import logging
+import os
 from datetime import datetime
 import sys
 reload(sys)  # Reload does the trick!
-sys.path.insert(0, '../../../src/')
-from models import Go, Taxonomy, Source, Goannotation, Gosupportingevidence, \
-                   Goextension, EcoAlias
-sys.path.insert(0, '../')
-from config import CREATED_BY
-from database_session import get_nex_session as get_session
-from util import get_relation_to_ro_id, read_gpi_file, \
-                 read_gpad_file, get_go_extension_link
+from src.models import Go, Taxonomy, Source, Goannotation, Gosupportingevidence, \
+                       Goextension, EcoAlias
+from scripts.loading.database_session import get_session
+from scripts.loading.util import get_relation_to_ro_id, read_gpi_file, \
+                                read_gpad_file, get_go_extension_link
 
 __author__ = 'sweng66'
 
@@ -16,15 +18,23 @@ __author__ = 'sweng66'
 ## This script is used to load the go annotation (gpad) file into NEX2.
 
 TAXON_ID = 'TAX:4932'
-GPI_FILE = 'data/gp_information.559292_sgd'
-GPAD_FILE = 'data/gp_association.559292_sgd'
 
-def load_go_annotations(annotation_type, log_file):
+logging.basicConfig()
+log = logging.getLogger()
+log.setLevel(logging.INFO)
+
+# NEX2_URI = os.environ['NEX2_URI']
+CREATED_BY = os.environ['DEFAULT_USER']
+
+def load_go_annotations(gpad_file, gpi_file, annotation_type, log_file):
 
     nex_session = get_session()
 
     source_to_id = dict([(x.display_name, x.source_id) for x in nex_session.query(Source).all()])
     go_id_to_aspect =  dict([(x.go_id, x.go_namespace) for x in nex_session.query(Go).all()])
+
+    log.info("GPAD Loading Report for "+ annotation_type + " annotations\n") 
+    
 
     fw = open(log_file, "w")
     
@@ -34,23 +44,38 @@ def load_go_annotations(annotation_type, log_file):
     if taxonomy_id is None:
         fw.write("The Taxon_id = " + TAXON_ID + " is not in the database\n")
         return
+
+    log.info(str(datetime.now()))
+    log.info("Getting Go annotations from database...")
     
     fw.write(str(datetime.now()) + "\n")
     fw.write("getting old annotations from database...\n")
     key_to_annotation = all_go_annotations(nex_session, annotation_type)
 
+    log.info(str(datetime.now()))
+    log.info("Getting Go extensions from database...")
+
     fw.write(str(datetime.now()) + "\n")
     fw.write("getting old go extensions from database...\n")
     annotation_id_to_extensions = all_go_extensions(nex_session)
+
+    log.info(str(datetime.now()))
+    log.info("Getting Go supporting evidences from database...")
 
     fw.write(str(datetime.now()) + "\n")
     fw.write("getting old go supporting evidences from database...\n")
     annotation_id_to_support_evidences = all_go_support_evidences(nex_session)
 
+    log.info(str(datetime.now()))
+    log.info("Reading GPI file...")
+
     fw.write(str(datetime.now()) + "\n")
     fw.write("reading gpi file...\n")
-    [uniprot_to_date_assigned, uniprot_to_sgdid_list] = read_gpi_file(GPI_FILE)
-    
+    [uniprot_to_date_assigned, uniprot_to_sgdid_list] = read_gpi_file(gpi_file)
+
+    log.info(str(datetime.now()))
+    log.info("Reading GPAD file...")
+
     fw.write(str(datetime.now()) + "\n")
     fw.write("reading gpad file...\n")
     yes_goextension = 1
@@ -59,12 +84,15 @@ def load_go_annotations(annotation_type, log_file):
     dbentity_id_with_new_pmid = {}
     dbentity_id_with_uniprot = {}
     bad_ref = []
-    data = read_gpad_file(GPAD_FILE, nex_session, uniprot_to_date_assigned, 
+    data = read_gpad_file(gpad_file, nex_session, uniprot_to_date_assigned, 
     	   	          uniprot_to_sgdid_list, yes_goextension, yes_gosupport, 
 			  new_pmids, dbentity_id_with_new_pmid, 
                           dbentity_id_with_uniprot, bad_ref)
     
     nex_session.close()
+
+    log.info(str(datetime.now()))
+    log.info("Loading the new data into database...")
 
     # load the new data into the database
     fw.write(str(datetime.now()) + "\n")
@@ -75,6 +103,9 @@ def load_go_annotations(annotation_type, log_file):
                                                           annotation_id_to_support_evidences, 
                                                           taxonomy_id, go_id_to_aspect, fw)
     
+    log.info(str(datetime.now()))
+    log.info("Deleting obsolete Go annotation entries...")
+
     ## uncomment out the following when it is ready
     fw.write(str(datetime.now()) + "\n")
     fw.write("deleting obsolete go_annotation entries...\n") 
@@ -86,12 +117,17 @@ def load_go_annotations(annotation_type, log_file):
                                 dbentity_id_with_new_pmid,
                                 dbentity_id_with_uniprot,
                                 fw)
-    
+
+    log.info(str(datetime.now()))
+    log.info("Writing summary...")
+
     fw.write(str(datetime.now()) + "\n") 
     fw.write("writing summary and sending an email to curator about new pmids...\n")
-    write_summary_and_send_email(annotation_update_log, new_pmids, bad_ref, fw)
+    write_summary_and_send_email(annotation_update_log, new_pmids, bad_ref, fw, annotation_type)
     
     fw.close()
+
+    log.info("Done!\n\n")
 
 
 def load_new_data(data, source_to_id, annotation_type, key_to_annotation, annotation_id_to_extensions, annotation_id_to_support_evidences, taxonomy_id, go_id_to_aspect, fw):
@@ -117,6 +153,8 @@ def load_new_data(data, source_to_id, annotation_type, key_to_annotation, annota
         if x['annotation_type'] != annotation_type:
             continue
         source_id = source_to_id.get(x['source'])
+        if x['source'] == 'EnsemblPlants':
+            continue
         if source_id is None:
             print "The source: ", x['source'], " is not in the SOURCE table."
             continue
@@ -162,7 +200,7 @@ def load_new_data(data, source_to_id, annotation_type, key_to_annotation, annota
     
             if key in key_to_annotation:
                 
-                print "KEY=", str(key), " is in the database"
+                # print "KEY=", str(key), " is in the database"
  
                 # remove the new key from the dictionary
                 # and the rest can be deleted later
@@ -184,7 +222,7 @@ def load_new_data(data, source_to_id, annotation_type, key_to_annotation, annota
                     annotation_update_log[count_key] = annotation_update_log[count_key] + 1
             else:
                 
-                print "KEY=", str(key), " is a NEW ENTRY"
+                # print "KEY=", str(key), " is a NEW ENTRY"
 
                 fw.write("NEW GOANNOTATION: key=" + str(key) + "\n")
 
@@ -229,7 +267,7 @@ def load_new_data(data, source_to_id, annotation_type, key_to_annotation, annota
     nex_session.close()
     ## update goextension table
 
-    print "Upadting GO extension data..."
+    # print "Upadting GO extension data..."
 
     nex_session = get_session()
 
@@ -243,7 +281,7 @@ def load_new_data(data, source_to_id, annotation_type, key_to_annotation, annota
 
     ## update gosupportingevidence table
 
-    print "Updating GO supporting evidence data..."
+    # print "Updating GO supporting evidence data..."
 
     nex_session = get_session()
 
@@ -287,17 +325,21 @@ def update_goextension(nex_session, annotation_id, goextension, annotation_id_to
             dbxref_id = pieces[1][:-1]
             link = get_go_extension_link(dbxref_id)
             if link.startswith('Unknown'):
-                print "unknown ID: ", dbxref_id
-                continue
+                if dbxref_id.startswith('IntAct:'):
+                    continue
+                else:
+                    print "Unknown ID: ", dbxref_id
+                    continue
+
             key = (group_id, ro_id, dbxref_id)
             if key in key_to_extension:
                 
-                print "GO extension ", key, " is in the database."
+                # print "GO extension ", key, " is in the database."
 
                 key_to_extension.pop(key)
             else:
 
-                print "NEW GO extension ", key
+                # print "NEW GO extension ", key
                 
                 thisExtension = Goextension(annotation_id = annotation_id,
                                             group_id = group_id,
@@ -314,7 +356,7 @@ def update_goextension(nex_session, annotation_id, goextension, annotation_id_to
     
     for row in to_be_deleted:
 
-        print "DELETE GO extension: ", row.annotation_id, row.group_id, row.ro_id, row.dbxref_id  
+        # print "DELETE GO extension: ", row.annotation_id, row.group_id, row.ro_id, row.dbxref_id  
 
         fw.write("DELETE GOEXTENSION: row=" + str(row) + "\n")
         nex_session.delete(row)
@@ -356,12 +398,12 @@ def update_gosupportevidence(nex_session, annotation_id, gosupport, annotation_i
     
             if key in key_to_support:
                 
-                print "GO supporting evidence ", key, " is in the database"
+                # print "GO supporting evidence ", key, " is in the database"
 
                 key_to_support.pop(key)
             else:
 
-                print "NEW GO supporting evidence ", key
+                # print "NEW GO supporting evidence ", key
 
                 thisSupport = Gosupportingevidence(annotation_id = annotation_id,
                                                    group_id = group_id,
@@ -380,7 +422,7 @@ def update_gosupportevidence(nex_session, annotation_id, gosupport, annotation_i
 
     for row in to_be_deleted:
 
-        print "DELETE GO supporting evidence ", row.annotation_id, row.group_id, row.evidence_type, row.dbxref_id
+        # print "DELETE GO supporting evidence ", row.annotation_id, row.group_id, row.evidence_type, row.dbxref_id
 
         fw.write("DELETE GOSUPPORTINGEVIDENCE: row=" + str(row) +"\n")
         nex_session.delete(row)
@@ -476,7 +518,7 @@ def delete_obsolete_annotations(key_to_annotation, hasGoodAnnot, go_id_to_aspect
 
 ### WORK FROM HERE
                                          
-def write_summary_and_send_email(annotation_update_log, new_pmids, bad_ref, fw):
+def write_summary_and_send_email(annotation_update_log, new_pmids, bad_ref, fw, annot_type):
 
     summary = ''
     
@@ -489,6 +531,8 @@ def write_summary_and_send_email(annotation_update_log, new_pmids, bad_ref, fw):
     count_names = ['annotation_added', 'annotation_updated', 'annotation_deleted', 'extension_added', 'extension_deleted', 'supportevidence_added', 'supportevidence_deleted']
 
     for annotation_type in ['manually curated', 'computational']:
+        if annotation_type != annot_type:
+            continue
         header = annotation_type.title()
         summary = summary + "\n" + header + " annotations: \n\n"
         for count_name in count_names:
@@ -499,24 +543,23 @@ def write_summary_and_send_email(annotation_update_log, new_pmids, bad_ref, fw):
                 else:
                     words = count_name.replace('_', ' entries ')
                 summary = summary + "In total " + str(annotation_update_log[key]) + " " + words + "\n"
-    
-    # summary = summary + "GO Annotation Summary updated this week:\n\n"
-
-    # summary = summary + "Added: " + str(added) + "\n"
-    # summary = summary + "Edited: " + str(edited) + "\n"
-    # summary = summary + "Removed: " + str(deleted) + "\n"
-        
+            
     fw.write(summary)
 
-    ## send email here
-    
-    # sendmail(email_subject, summary, email_receiver)
-
-    print summary
+    log.info(summary)
 
 
 if __name__ == "__main__":
         
+    # ftp://ftp.ebi.ac.uk/pub/contrib/goa/gp_association.559292_sgd.gz
+    # ftp://ftp.ebi.ac.uk/pub/contrib/goa/gp_information.559292_sgd.gz
+
+    url_path = 'ftp://ftp.ebi.ac.uk/pub/contrib/goa/'
+    gpad_file = 'gp_association.559292_sgd.gz'
+    gpi_file = 'gp_information.559292_sgd.gz'
+    urllib.urlretrieve(url_path + gpad_file, gpad_file)
+    urllib.urlretrieve(url_path + gpi_file, gpi_file)
+
     if len(sys.argv) >= 2:
         annotation_type = sys.argv[1]
     else:
@@ -526,9 +569,9 @@ if __name__ == "__main__":
         print "Usage example: python load_gpad.py computational"
         exit()
     
-    log_file = "logs/GPAD_loading_" + annotation_type.replace(" ", "-") + ".log"
+    log_file = "scripts/loading/go/logs/GPAD_loading_" + annotation_type.replace(" ", "-") + ".log"
 
-    load_go_annotations(annotation_type, log_file)
+    load_go_annotations(gpad_file, gpi_file, annotation_type, log_file)
 
 
     
