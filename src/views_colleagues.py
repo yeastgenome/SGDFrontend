@@ -4,12 +4,14 @@ from pyramid.view import view_config
 
 from .models import DBSession, Colleague, Colleaguetriage
 from .helpers import authenticate
+from .models_helpers import ModelsHelper
 
 import transaction
 
 import logging
 import json
 log = logging.getLogger(__name__)
+models_helper = ModelsHelper()
 
 @view_config(route_name='colleague_create', renderer='json', request_method='POST')
 def colleague_triage_new_colleague(request):
@@ -98,11 +100,10 @@ def colleague_triage_delete(request):
 @view_config(route_name='colleague_get', renderer='json', request_method='GET')
 def colleague_by_format_name(request):
     format_name = request.matchdict['format_name']
-
     colleague = DBSession.query(Colleague).filter(Colleague.format_name == format_name).one_or_none()
-    
-    if colleague:
-        return colleague.to_dict()
+    if colleague is not None:
+        associated_data = models_helper.get_colleague_associated_data()
+        result = models_helper.get_colleague_data(colleague, associated_data)
+        return result
     else:
         return HTTPNotFound(body=json.dumps({'error': 'Colleague not found'}))
-
