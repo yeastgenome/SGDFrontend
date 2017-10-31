@@ -68,7 +68,7 @@ class TagList extends Component {
       return (
         <div>
           <label>Genes (space-separated)</label>
-          <input className='sgd-geneList' data-type={name} onChange={_handleChange} type='text' defaultValue={value} />
+          <textArea className='sgd-geneList' data-type={name} onChange={_handleChange} style={{ minHeight: '1rem' }} type='text' defaultValue={value} />
         </div>
       );
     }
@@ -82,8 +82,8 @@ class TagList extends Component {
       let _handleChange = e => { this.handleCommentChange(name, e.target.value); };
       return (
         <div>
-           <label>Comment</label>
-          <input className='sgd-comment' data-type={name} onChange={_handleChange} type='text' defaultValue={value} />
+          <label>Comment</label>
+          <textArea className='sgd-comment' data-type={name} onChange={_handleChange} style={{ minHeight: '1rem' }} type='text' defaultValue={value} />
         </div>
       );
     }
