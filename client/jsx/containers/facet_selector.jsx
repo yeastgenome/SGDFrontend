@@ -241,7 +241,7 @@ function mapStateToProps(_state) {
   state.aggregations.map( item => {
     if (item.key == "year"){
       item["values"].sortOnYear("key", true);
-      return
+      return;
     }
   });
   return {
