@@ -1,0 +1,63 @@
+2017-10-30 14:09:51.814263
+2017-10-30 14:09:51.953771
+getting old annotations from database...
+2017-10-30 14:09:58.278854
+getting old go extensions from database...
+2017-10-30 14:09:58.479091
+getting old go supporting evidences from database...
+2017-10-30 14:10:01.731289
+reading gpi file...
+2017-10-30 14:10:01.808549
+reading gpad file...
+2017-10-30 14:10:17.770332
+loading the new data into the database...
+NEW GOANNOTATION: key=(1268504L, 297755L, 236241L, 355151L, 'manually curated', 'SGD', 'involved in', 274803L)
+NEW GOANNOTATION: key=(1285218L, 331497L, 236296L, 647824L, 'manually curated', 'SGD', 'involved in', 274803L)
+NEW GOANNOTATION: key=(1285218L, 324797L, 236241L, 647824L, 'manually curated', 'SGD', 'part of', 274803L)
+NEW GOANNOTATION: key=(1285218L, 337659L, 236241L, 647824L, 'manually curated', 'SGD', 'part of', 274803L)
+NEW GOANNOTATION: key=(1269220L, 285194L, 236296L, 647824L, 'manually curated', 'SGD', 'involved in', 274803L)
+NEW GOANNOTATION: key=(1269220L, 347588L, 236296L, 647824L, 'manually curated', 'SGD', 'involved in', 274803L)
+NEW GOANNOTATION: key=(1269220L, 324797L, 236241L, 647824L, 'manually curated', 'SGD', 'part of', 274803L)
+NEW GOANNOTATION: key=(1269220L, 338229L, 236241L, 647824L, 'manually curated', 'SGD', 'part of', 274803L)
+NEW GOANNOTATION: key=(1283398L, 324163L, 236241L, 518271L, 'manually curated', 'SGD', 'enables', 274803L)
+NEW GOANNOTATION: key=(1283398L, 297477L, 236296L, 644724L, 'manually curated', 'SGD', 'involved in', 274803L)
+NEW GOANNOTATION: key=(1283398L, 350211L, 236296L, 627956L, 'manually curated', 'SGD', 'involved in', 274803L)
+NEW GOANNOTATION: key=(1269462L, 285296L, 236296L, 516263L, 'manually curated', 'SGD', 'involved in', 274803L)
+NEW GOANNOTATION: key=(1267038L, 297755L, 236241L, 355151L, 'manually curated', 'SGD', 'involved in', 274803L)
+NEW GOANNOTATION: key=(1268463L, 342758L, 236241L, 550725L, 'manually curated', 'SGD', 'involved in', 274803L)
+NEW GOANNOTATION: key=(1268463L, 342758L, 236296L, 550725L, 'manually curated', 'SGD', 'involved in', 274803L)
+NEW GOANNOTATION: key=(1269378L, 297755L, 236241L, 355151L, 'manually curated', 'SGD', 'involved in', 274803L)
+NEW GOANNOTATION: key=(1284184L, 324915L, 236296L, 602653L, 'manually curated', 'SGD', 'involved in', 274803L)
+NEW GOEXTENSION: key=(1, 169351L, 'UniProtKB:P38881')
+NEW GOEXTENSION: key=(1, 169299L, 'GO:0031965')
+NEW GOSUPPORTINGEVIDENCE: key=(1, 'with', 'UniProtKB:P53261')
+NEW GOSUPPORTINGEVIDENCE: key=(1, 'with', 'SGD:S000001735')
+NEW GOSUPPORTINGEVIDENCE: key=(2, 'with', 'SGD:S000003635')
+2017-10-30 14:10:28.300507
+deleting obsolete go_annotation entries...
+DELETE GOANNOTATION: row=<src.models.Goannotation object at 0x1173ec7d0>
+DELETE GOANNOTATION: row=<src.models.Goannotation object at 0x117d2bad0>
+DELETE GOANNOTATION: row=<src.models.Goannotation object at 0x1173ec890>
+DELETE GOANNOTATION: row=<src.models.Goannotation object at 0x1171bd650>
+DELETE GOANNOTATION: row=<src.models.Goannotation object at 0x117d7ef50>
+DELETE GOANNOTATION: row=<src.models.Goannotation object at 0x11759c7d0>
+DELETE GOANNOTATION: row=<src.models.Goannotation object at 0x117d2ba10>
+DELETE GOANNOTATION: row=<src.models.Goannotation object at 0x117c92350>
+DELETE GOANNOTATION: row=<src.models.Goannotation object at 0x11759c890>
+DELETE GOANNOTATION: row=<src.models.Goannotation object at 0x1171ea650>
+DELETE GOANNOTATION: row=<src.models.Goannotation object at 0x11899b590>
+DELETE GOANNOTATION: row=<src.models.Goannotation object at 0x11759ca10>
+2017-10-30 14:10:30.659326
+writing summary and sending an email to curator about new pmids...
+The following new GO_Reference(s) don't have a corresponding SGDID yet.
+DOI:10.11844/cjcb.2013.11.0208
+
+Manually Curated annotations: 
+
+In total 17 annotation entries added
+In total 0 annotation entries with date_assigned updated
+In total 12 annotation entries deleted
+In total 2 extension entries added
+In total 0 extension entries deleted
+In total 3 supportevidence entries added
+In total 0 supportevidence entries deleted
