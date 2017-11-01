@@ -4,11 +4,11 @@ import sys
 reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
 sys.path.insert(0, '../')
-from config import EMAIL
+# from config import EMAIL
 
 __author__ = 'sweng66'
 
-Entrez.email = EMAIL
+Entrez.email = 'sgd-programmers@lists.stanford.edu'
     
 def get_abstract(pmid):
 

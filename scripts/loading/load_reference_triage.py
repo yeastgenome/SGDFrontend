@@ -11,7 +11,7 @@ import sys
 reload(sys)  # reload to set encoding
 sys.setdefaultencoding('UTF8')
 from src.models import Referencedbentity, Referencetriage, Locusdbentity, LocusAlias
-from scripts.loading.pubmed import get_pmid_list, get_pubmed_record, set_cite, get_abstract
+from scripts.loading.reference.pubmed import get_pmid_list, get_pubmed_record, set_cite, get_abstract
 from scripts.loading.util import extract_gene_names
 
 __author__ = 'sweng66'
@@ -78,24 +78,51 @@ def load_references():
     log.info("Getting Pubmed records...")
     records = get_pubmed_record(','.join(pmids))
     i = 1
-    for record in records:
-        pmid = int(record.get('Id'))
-        pubmed_url = 'https://www.ncbi.nlm.nih.gov/pubmed/' + str(pmid)
+    for rec in records:
+        rec_file = StringIO(rec)
+        record = Medline.read(rec_file)
+        pmid = record.get('PMID')
+        pubmed_url = 'http://www.ncbi.nlm.nih.gov/pubmed/' + str(pmid)
         doi_url = ""
-        if record.get('DOI'):
-            doi = record.get('DOI')
-            doi_url = "/".join(['http://dx.doi.org', doi])
-        title = record.get('Title', '')
-        authors = record.get('AuthorList', [])
-        pubdate = record.get('PubDate', '')  # 'PubDate': '2012 Mar 20'  
+        if record.get('AID'):
+            # ['S0167-7012(17)30042-8 [pii]', '10.1016/j.mimet.2017.02.002 [doi]']
+            doi = None
+            for id in record['AID']:
+                if id.endswith('[doi]'):
+                    doi = id.replace(' [doi]', '')
+                    break
+            if doi:
+                doi_url = "/".join(['http://dx.doi.org', doi])
+        title = record.get('TI', '')
+        authors = record.get('AU', [])
+        pubdate = record.get('DP', '')  # 'PubDate': '2012 Mar 20'  
         year = pubdate.split(' ')[0]
-        journal = record.get('FullJournalName', '')
-        volume = record.get('Volume', '')
-        issue = record.get('Issue', '')
-        pages = record.get('Pages', '')
+        journal = record.get('TA', '')
+        volume = record.get('VI', '')
+        issue = record.get('IP', '')
+        pages = record.get('PG', '')
         citation = set_cite(title, authors, year, journal, volume, issue, pages)  
-        abstract = get_abstract(pmid)
+        abstract = record.get('AB', '')
         gene_names = extract_gene_names(abstract, gene_list, alias_to_name)
+
+        # pmid = int(record.get('Id'))
+        # pubmed_url = 'https://www.ncbi.nlm.nih.gov/pubmed/' + str(pmid)
+        # doi_url = ""
+        # if record.get('DOI'):
+        #     doi = record.get('DOI')
+        #     doi_url = "/".join(['http://dx.doi.org', doi])
+        # title = record.get('Title', '')
+        # authors = record.get('AuthorList', [])
+        # pubdate = record.get('PubDate', '')  # 'PubDate': '2012 Mar 20'  
+        # year = pubdate.split(' ')[0]
+        # journal = record.get('FullJournalName', '')
+        # volume = record.get('Volume', '')
+        # issue = record.get('Issue', '')
+        # pages = record.get('Pages', '')
+        # citation = set_cite(title, authors, year, journal, volume, issue, pages)  
+        # abstract = get_abstract(pmid)
+        # gene_names = extract_gene_names(abstract, gene_list, alias_to_name)
+
         # insert formatted data to DB
         insert_reference(db_session, pmid, citation, doi_url, abstract, " ".join(gene_names))
     log.info("Done!")
