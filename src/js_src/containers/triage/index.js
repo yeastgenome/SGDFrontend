@@ -44,7 +44,7 @@ class LitTriageIndex extends Component {
   fetchData() {
     fetchData(TRIAGE_URL).then( (data) => {
       if (this._isMounted) {
-        this.props.dispatch(updateTriageEntries(data.entries, this.props.username));
+        this.props.dispatch(updateTriageEntries(data.entries, this.props.username, data.total));
         this.props.dispatch(finishPending());
       }
     });
@@ -65,8 +65,8 @@ class LitTriageIndex extends Component {
   renderEntries() {
     let all = this.props.triageEntries;
     let triageEntries = all.slice(0, MAX_TRIAGE_NODES);
-    let topMsgNode = (triageEntries.length) ? <p>{all.length.toLocaleString()} triage entries</p> : null;
-    let msgNode = (triageEntries.length) ? <p>Showing {MAX_TRIAGE_NODES} of {all.length}. To show more, remove some items from above.</p> : null;
+    let topMsgNode = (triageEntries.length) ? <p>{this.props.triageTotal.toLocaleString()} triage entries</p> : null;
+    let msgNode = (triageEntries.length) ? <p>Showing {MAX_TRIAGE_NODES} of {this.props.triageTotal.toLocaleString()}. To show more, remove some items from above.</p> : null;
     let nodes = triageEntries.map( (d) => {
       return (
         <div className={`callout ${style.triageEntryContiner}`} key={'te' + d.curation_id}>
@@ -119,6 +119,7 @@ class LitTriageIndex extends Component {
 LitTriageIndex.propTypes = {
   dispatch: React.PropTypes.func,
   triageEntries: React.PropTypes.array,
+  triageTotal: React.PropTypes.number,
   username: React.PropTypes.string,
   isTagVisible: React.PropTypes.bool,
   lastPromoted: React.PropTypes.object
@@ -128,6 +129,7 @@ function mapStateToProps(state) {
   let _lastPromoted =  state.lit.get('lastPromoted') ? state.lit.get('lastPromoted').toJS() : null;
   return {
     triageEntries: selectTriageEntries(state),
+    triageTotal: state.lit.get('triageTotal'),
     username: state.auth.get('username'),
     lastPromoted: _lastPromoted,
     isTagVisible: state.lit.get('isTagVisible')

@@ -9,12 +9,13 @@ export function removeEntry (id) {
   return { type: 'REMOVE_TRIAGE', payload: id };
 }
 
-export function updateTriageEntries (newEntries, username) {
+export function updateTriageEntries (newEntries, username, total) {
   return {
     type: 'UPDATE_TRIAGE_ENTRIES',
     payload: {
       entries: newEntries,
-      username: username
+      username: username,
+      total: total
     }
   };
 }

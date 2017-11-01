@@ -162,8 +162,9 @@ def reference_triage_promote(request):
 @view_config(route_name='reference_triage_index', renderer='json', request_method='GET')
 @authenticate
 def reference_triage_index(request):
-    triages = DBSession.query(Referencetriage).order_by(Referencetriage.date_created.asc()).all()
-    return {'entries': [t.to_dict() for t in triages]}
+    total = DBSession.query(Referencetriage).count()
+    triages = DBSession.query(Referencetriage).order_by(Referencetriage.date_created.asc()).limit(150).all()
+    return { 'entries': [t.to_dict() for t in triages], 'total': total }
 
 @view_config(route_name='refresh_homepage_cache', request_method='POST', renderer='json')
 @authenticate
