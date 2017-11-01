@@ -35,10 +35,6 @@ def load_references():
     engine = create_engine(os.environ['NEX2_URI'])
     session_factory = sessionmaker(bind=engine, extension=ZopeTransactionExtension())
     db_session = scoped_session(session_factory)
-    # TEMP delete old entries
-    db_session.query(Referencetriage).delete(synchronize_session=False)
-    transaction.commit()
-
     # some preparation
     pmid_to_reference_id = dict([(x.pmid, x.dbentity_id) for x in db_session.query(Referencedbentity).all()])
     pmid_to_curation_id = dict([(x.pmid, x.curation_id) for x in db_session.query(Referencetriage).all()])
