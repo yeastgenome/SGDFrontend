@@ -6079,7 +6079,7 @@ class Phenotypeannotation(Base):
                 if condition.condition_value:
                     note += ", " + condition.condition_value
                     if condition.condition_unit:
-                        note += " " + condition_unit
+                        note += " " + condition.condition_unit
 
                 if condition.group_id not in groups:
                     groups[condition.group_id] = []
