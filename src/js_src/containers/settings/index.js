@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import fetchData from '../../lib/fetchData';
 import Loader from '../../components/loader';
 import { clearError, setError } from '../../actions/metaActions';
+import CurateLayout from '../curateHome/layout';
 
 const REFRESH_URL = '/refresh_homepage_cache';
 const UPLOAD_TIMEOUT = 10000;
@@ -59,15 +60,17 @@ class Settings extends Component {
       node = this.renderForm();
     }
     return (
-      <div>
-        <h2>Settings</h2>
-        <hr />
+      <CurateLayout>
         <div>
-          <p>Click to clear the cache on the homepage so new blog posts and events will be visible.  It will automatically clear after 24 hours.</p>
-          {node}
+          <h2>Settings</h2>
+          <hr />
+          <div>
+            <p>Click to clear the cache on the homepage so new blog posts and events will be visible.  It will automatically clear after 24 hours.</p>
+            {node}
+          </div>
+          <hr />
         </div>
-        <hr />
-      </div>
+      </CurateLayout>
     );
   }
 }

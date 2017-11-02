@@ -1,10 +1,11 @@
+/*eslint-disable no-unreachable */
+
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import _ from 'underscore';
 
 import style from './style.css';
 import fetchData from '../../lib/fetchData';
-import { updateTriageEntry, updateActiveTags, removeEntry } from './triageActions';
+import { updateTriageEntry, updateLastPromoted, removeEntry } from './triageActions';
 import { setMessage, setError, clearError } from '../../actions/metaActions';
 import TagList from '../../components/tagList';
 import Loader from '../../components/loader';
@@ -58,52 +59,26 @@ class TriageControls extends Component {
     });
   }
 
-  getDataFromTagInputs(tagClassName) {
-    let geneListEls = this.refs.tagList.getElementsByClassName(tagClassName);
-    let tagData = [];
-    for (var i = geneListEls.length - 1; i >= 0; i--) {
-      let el = geneListEls[i];
-      let geneTagType = el.dataset.type;
-      let simpleValue = el.value || '';
-      tagData.push({
-        value: simpleValue,
-        type: geneTagType
-      });
-    }
-    return tagData;
-  }
-
   handlePromoteEntry(e) {
     e.preventDefault();
-    // generate tag data from DOM
-    let tagGeneData = this.getDataFromTagInputs('sgd-geneList');
-    let tagCommentData = this.getDataFromTagInputs('sgd-comment');
-    let tempEntry = this.props.entry;
-    let tags = tempEntry.data.tags || [];
-    tags.forEach( (d) => {
-      let thisGenes = _.findWhere(tagGeneData, { type: d.name });
-      if (thisGenes) d.genes = thisGenes.value;
-      let thisComments = _.findWhere(tagCommentData, { type: d.name });
-      if (thisComments) d.comment = thisComments.value;
-    });
-    tempEntry.data.tags = tags;
+    let entry = this.props.entry;
     // promotion request
     this.setState({ isPending: true });
     let id = this.props.entry.curation_id;
     let url = `${TRIAGE_URL}/${id}/${PROMOTE_URL_SUFFIX}`;
+    entry.tags = entry.tags || [];
     let fetchOptions = {
       type: 'PUT',
-      data: JSON.stringify(tempEntry),
-      timeout: 20000,
+      data: JSON.stringify(entry),
+      timeout: 60000,
       contentType: 'application/json',
       headers: {
         'X-CSRF-Token': window.CSRF_TOKEN,        
       }
     };
     fetchData(url, fetchOptions).then( (data) => {
-      tempEntry.sgdid = data.sgdid;
       this.props.dispatch(removeEntry(id));
-      this.props.dispatch(updateActiveTags(tempEntry));
+      this.props.dispatch(updateLastPromoted(data));
       this.props.dispatch(clearError());
       // scroll to top of page
       window.scrollTo(0, 0);
@@ -130,9 +105,14 @@ class TriageControls extends Component {
   }
 
   renderTags() {
+    let handleTagUpdate = (newTags) => {
+      let newEntry = this.props.entry;
+      newEntry.tags = newTags;
+      this.saveUpdatedEntry(newEntry, true);
+    };
     return (
       <div ref='tagList'>
-        <TagList entry={this.props.entry} onUpdate={this.saveUpdatedEntry.bind(this)} isTriage />
+        <TagList tags={this.props.entry.tags} onUpdate={handleTagUpdate.bind(this)} isTriage />
       </div>
     );
   }

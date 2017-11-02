@@ -8,17 +8,18 @@ import { SMALL_COL_CLASS, LARGE_COL_CLASS } from '../../constants';
 class CurateLayout extends Component {
   render() {
     let location = this.props.location ? this.props.location.pathname : '';
+    // console.log(this.props.location);
     return (
       <div className='row'>
         <div className={SMALL_COL_CLASS}>
           <ul className='vertical menu'>
             {/* spans added of Link to address https://stackoverflow.com/questions/38796376/cannot-read-property-gethostnode-of-null */}
-            <li><Link className={(location === '/curate') ? style.activeLink : null} to='curate'><span><i className='fa fa-home' /> Home</span></Link></li>
-            <li><Link className={(location === '/curate/triage') ? style.activeLink : null} to='curate/triage'><span><i className='fa fa-book' /> Lit Triage</span></Link></li>
+            <li><Link className={(location === '/') ? style.activeLink : null} to=''><span><i className='fa fa-home' /> Home</span></Link></li>
+            <li><Link className={(location === '/triage') ? style.activeLink : null} to='/triage'><span><i className='fa fa-book' /> Lit Triage</span></Link></li>
             <li><Link className={style.disabledLink}><span><i className='fa fa-users' /> Colleague Updates</span></Link></li>
             <li><Link className={style.disabledLink}><span><i className='fa fa-sticky-note' /> Gene Name Registrations</span></Link></li>
-            <li><Link className={(location === '/curate/spreadsheet_upload') ? style.activeLink : null} to='curate/spreadsheet_upload'><span><i className='fa fa-upload' /> Spreadsheet Upload</span></Link></li>
-            <li><Link className={(location === '/curate/settings') ? style.activeLink : null} to='curate/settings'><span><i className='fa fa-cog' /> Settings</span></Link></li>
+            <li><Link className={(location === '/spreadsheet_upload') ? style.activeLink : null} to='/spreadsheet_upload'><span><i className='fa fa-upload' /> Spreadsheet Upload</span></Link></li>
+            <li><Link className={(location === '/settings') ? style.activeLink : null} to='/settings'><span><i className='fa fa-cog' /> Settings</span></Link></li>
           </ul>
         </div>
         <div className={LARGE_COL_CLASS}>
@@ -34,13 +35,11 @@ class CurateLayout extends Component {
 CurateLayout.propTypes = {
   children: React.PropTypes.object,
   location: React.PropTypes.object,
-  numColleagues: React.PropTypes.number,
-  numGeneReg: React.PropTypes.number,
-  numLit: React.PropTypes.number
 };
 
-function mapStateToProps() {
+function mapStateToProps(state) {
   return {
+    location: state.routing.locationBeforeTransitions
   };
 }
 

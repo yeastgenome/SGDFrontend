@@ -7,10 +7,10 @@ import PublicHome from './containers/publicHome';
 // import ColleaguesIndex from './containers/colleagues/index';
 // import ColleaguesShow from './containers/colleagues/show';
 import Help from './containers/help';
-import Login from './containers/login';
+import GoogleLogin from './containers/googleLogin';
 // authenticated curate inputs
 import { requireAuthentication } from './containers/authenticateComponent';
-import CurateLayout from './containers/curateHome/layout';
+// import CurateLayout from './containers/curateHome/layout';
 import CurateHome from './containers/curateHome';
 import Search from './containers/search';
 import LocusShow from './containers/locus/show';
@@ -30,19 +30,18 @@ import NewColleague from './containers/colleagues/new';
 import EditColleague from './containers/colleagues/edit';
 
 // <Route component={requireAuthentication(SpreadsheetUpload)} path='spreadsheet_upload' />
+// <IndexRoute component={requireAuthentication(CurateHome)} />
 export default (
   <Route>
     <Route component={Layout} path='/'>
-      <IndexRoute component={PublicHome} />
+      <IndexRoute component={requireAuthentication(CurateHome)} />
+      <Route component={requireAuthentication(TriageIndex)} path='triage' />
+      <Route component={requireAuthentication(SpreadsheetUpload)} path='spreadsheet_upload' />
+      <Route component={requireAuthentication(Settings)} path='settings' />
       <Route component={Help} path='help' />
       <Route component={requireAuthentication(Search)} path='search' />
-      <Route component={Login} path='login' />
-      <Route component={CurateLayout} path='curate'>
-        <IndexRoute component={requireAuthentication(CurateHome)} />
-        <Route component={requireAuthentication(TriageIndex)} path='triage' />
-        <Route component={requireAuthentication(SpreadsheetUpload)} path='spreadsheet_upload' />
-        <Route component={requireAuthentication(Settings)} path='settings' />
-      </Route>
+      <Route component={PublicHome} path='login' />
+      <Route component={GoogleLogin} path='google_login' />
       <Route component={requireAuthentication(LocusShow)} path='curate/locus/:id' />
       <Route component={requireAuthentication(CurateLit)} path='curate/reference/:id'>
         <IndexRoute component={requireAuthentication(CurateLitBasic)} />

@@ -27,7 +27,7 @@ class LayoutComponent extends Component {
     return (
       <ul className={`menu ${style.topMenu}`}>
         <li>
-          <Link className={style.indexLink} to='curate'>
+          <Link className={style.indexLink} to='/'>
             <img className={style.imgLogo} src={curateLogo} />
           </Link>
         </li>
@@ -44,12 +44,12 @@ class LayoutComponent extends Component {
     return (
       <ul className={`menu ${style.topMenu}`}>
         <li>
-          <Link className={style.indexLink} to='curate'>
+          <Link className={style.indexLink} to='/'>
             <img className={style.imgLogo} src={curateLogo} />
           </Link>
         </li>
         <li>
-          <Link to='curate'>
+          <Link to='/'>
             <span><i className='fa fa-home' /> Curation Home</span>
           </Link>
         </li>
@@ -59,7 +59,7 @@ class LayoutComponent extends Component {
           </Link>
         </li>
         <li>
-          <a className={style.navLink} href='/'><i className='fa fa-sign-out' /> Logout</a>
+          <a className={style.navLink} href='/signout'><i className='fa fa-sign-out' /> Logout</a>
         </li>
       </ul>
     );

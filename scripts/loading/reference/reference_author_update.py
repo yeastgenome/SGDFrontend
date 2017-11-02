@@ -1,5 +1,7 @@
 from datetime import datetime
 import time
+from StringIO import StringIO
+from Bio import Entrez, Medline
 import sys
 reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
@@ -8,12 +10,11 @@ from models import Referencedbentity, Referenceauthor, Source
 sys.path.insert(0, '../')
 from config import CREATED_BY
 from database_session import get_nex_session as get_session
-from pubmed import get_pubmed_record_from_xml
+from pubmed import get_pubmed_record
 
 __author__ = 'sweng66'
 
 MAX = 50
-MAX_4_CONNECTION = 10000
 SLEEP_TIME = 2
 AUTHOR_TYPE = 'Author'
 SRC = 'NCBI'
@@ -51,7 +52,6 @@ def update_all_authors(log_file):
 
     source_id = source_to_id[SRC]
 
-    j = 0
     pmids = []
     for pmid in pmid_to_reference:
 
@@ -59,15 +59,8 @@ def update_all_authors(log_file):
 
         if pmid is None or pmid in [26842620, 27823544, 11483584]:
             continue
-
-        j = j + 1
-        if j > MAX_4_CONNECTION:
-            nex_session.close()
-            nex_session = get_session()
-            j = 0
-
         if len(pmids) >= MAX:
-            records = get_pubmed_record_from_xml(','.join(pmids))
+            records = get_pubmed_record(','.join(pmids))
             update_database_batch(nex_session, fw, records, pmid_to_reference, 
                                   reference_id_to_authors, source_id)
             pmids = []
@@ -75,7 +68,7 @@ def update_all_authors(log_file):
         pmids.append(str(pmid))
 
     if len(pmids) > 0:
-        records = get_pubmed_record_from_xml(','.join(pmids))
+        records = get_pubmed_record(','.join(pmids))
         update_database_batch(nex_session, fw, records, pmid_to_reference, 
                               reference_id_to_authors, source_id)
 
@@ -87,10 +80,11 @@ def update_all_authors(log_file):
 
 def update_database_batch(nex_session, fw, records, pmid_to_reference, reference_id_to_authors, source_id):
 
-    for record in records:
+    for rec in records:
+        rec_file = StringIO(rec)
+        record = Medline.read(rec_file)
 
-        pmid = record.get('pmid')
-
+        pmid = record.get('PMID')
         if pmid is None:
             continue
 
@@ -99,7 +93,7 @@ def update_database_batch(nex_session, fw, records, pmid_to_reference, reference
         if x is None:
             continue
 
-        authors = record.get('authors', '')
+        authors = record.get('AU', '')
         update_authors(nex_session, fw, pmid, x.dbentity_id, authors, reference_id_to_authors.get(x.dbentity_id), source_id)
 
 
@@ -109,7 +103,6 @@ def update_authors(nex_session, fw, pmid, reference_id, authors, authors_in_db, 
         authors_in_db = []
 
     if ", ".join(authors) == ", ".join(authors_in_db):
-        print pmid, "no change"
         return
 
     ## NEED to IMPROVE THE FOLLOWING CODE
