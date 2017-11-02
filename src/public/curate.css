@@ -387,3 +387,12 @@ body {
     -webkit-transform: rotate(1turn);
   }
 }
+
+.sgd-curate-form fieldset {
+  border: none !important;
+  padding: 0 !important;
+}
+
+.sgd-curate-form textarea {
+  min-height: 7rem;
+}

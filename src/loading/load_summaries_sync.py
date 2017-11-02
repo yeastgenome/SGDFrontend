@@ -33,11 +33,12 @@ logger.setLevel(level=logging.INFO)
 # has correct columns in header
 # checks IDs to make sure real IDs
 def validate_file_content_and_process(file_content, nex_session, username):
-    header_literal = ['# Feature', 'Summary Type (phenotype, regulation, protein, or sequence)', 'Summary', 'PMIDs']
-    accepted_summary_types = ['Gene', 'Phenotype', 'Regulation']
+    header_literal = ['# Feature', 'Summary Type (phenotype, regulation)', 'Summary', 'PMIDs']
+    accepted_summary_types = ['Phenotype', 'Regulation']
     file_gene_ids = []
     file_pmids = []
     copied = []
+    already_used_genes = []
     try:
         for i, val in enumerate(file_content):
             # match header
@@ -46,7 +47,12 @@ def validate_file_content_and_process(file_content, nex_session, username):
                 if not is_header_match:
                     raise ValueError('File header does not match expected format. Please make your file match the template file linked below.') 
             else:
-                file_gene_ids.append(val[0])
+                gene_id = val[0]
+                file_gene_ids.append(gene_id.strip())
+                gene_id_with_summary = gene_id + val[1]
+                if gene_id_with_summary in already_used_genes:
+                    raise ValueError('The same gene summary cannot be updated twice in the same file: ' + str(gene_id))
+                already_used_genes.append(gene_id_with_summary)
                 # match summary types
                 if val[1] not in accepted_summary_types:
                     raise ValueError('Unaccepted summary type. Must be one of ' + ', '.join(accepted_summary_types))
@@ -63,6 +69,7 @@ def validate_file_content_and_process(file_content, nex_session, username):
             copied.append(val)
     except IndexError:
         raise ValueError('The file is not a valid TSV with the correct number of columns. Check the file and try again.')
+    nex_session.execute('SET LOCAL ROLE ' + username)
     # check that gene names are valid
     valid_genes = nex_session.query(Locusdbentity.format_name).filter(Locusdbentity.format_name.in_(file_gene_ids)).all()
     valid_genes = [ str(d[0]) for d in valid_genes ]
@@ -142,7 +149,8 @@ def validate_file_content_and_process(file_content, nex_session, username):
                 'type': file_summary_type, 
                 'value': file_summary_val 
             })
-            transaction.commit()
+    transaction.commit()
+    nex_session.close()
     return {
         'inserts': inserts,
         'updates': updates,

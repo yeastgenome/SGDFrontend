@@ -1,5 +1,7 @@
 from datetime import datetime
 import time
+from StringIO import StringIO
+from Bio import Entrez, Medline
 import sys
 reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
@@ -8,7 +10,8 @@ from models import Referencedbentity, Source, Journal
 sys.path.insert(0, '../')
 from config import CREATED_BY
 from database_session import get_nex_session as get_session
-from pubmed import get_pubmed_record_from_xml, set_cite
+from pubmed import get_pubmed_record, set_cite
+from add_reference import get_pubstatus_date_revised, get_doi
 
 __author__ = 'sweng66'
 
@@ -57,9 +60,9 @@ def update_reference_table(log_file):
             nex_session.close()
             nex_session = get_session()
             j = 0
-        
+
         if len(pmids) >= MAX:
-            records = get_pubmed_record_from_xml(','.join(pmids))
+            records = get_pubmed_record(','.join(pmids))
             update_database_batch(nex_session, fw, records, pmid_to_reference, 
                                   journal_id_to_abbrev, source_id)
 
@@ -68,7 +71,7 @@ def update_reference_table(log_file):
         pmids.append(str(pmid))
 
     if len(pmids) > 0:
-        records = get_pubmed_record_from_xml(','.join(pmids))
+        records = get_pubmed_record(','.join(pmids))
         update_database_batch(nex_session, fw, records, pmid_to_reference, 
                               journal_id_to_abbrev, source_id)
 
@@ -80,30 +83,29 @@ def update_reference_table(log_file):
 
 def update_database_batch(nex_session, fw, records, pmid_to_reference, journal_id_to_abbrev, source_id):
 
-    for record in records:            
-        pmid = record.get('pmid')
+    for rec in records:
+        rec_file = StringIO(rec)
+        record = Medline.read(rec_file)
+    
+        pmid = record.get('PMID')
         if pmid is None:
             continue
 
-        x = pmid_to_reference.get(pmid)
+        x = pmid_to_reference.get(int(pmid))
         
         if x is None:
             continue
 
-        update_database(nex_session, fw, record, pmid, pmid_to_reference, 
+        update_database(nex_session, fw, record, int(pmid), pmid_to_reference, 
                         journal_id_to_abbrev, source_id)
         
 
 def update_database(nex_session, fw, record, pmid, pmid_to_reference, journal_id_to_abbrev, source_id):
 
-    pubstatus = record.get('publication_status')
-    date_revised = record.get('date_revised')
+    pubstatus, date_revised = get_pubstatus_date_revised(record)
     
     x = pmid_to_reference.get(pmid)
-
-    date_revised_db = None
-    if x.date_revised:
-        date_revised_db = str(x.date_revised).split(' ')[0]
+    date_revised_db = str(x.date_revised).split(' ')[0]
 
     if x.publication_status == EPUB_STATUS and pubstatus == PUBLISH:
 
@@ -125,77 +127,57 @@ def update_database(nex_session, fw, record, pmid, pmid_to_reference, journal_id
     else:
         fw.write("PMID:" + str(pmid) + " no change" + "\n")
 
-                            
+
 def update_reference(nex_session, fw, pmid, record, x, journal_id_to_abbrev, source_id, date_revised, published_status):
 
     journal = journal_id_to_abbrev[x.journal_id]
-    authors = record.get('authors', [])
-    title = record.get('title', '')
-    year = record.get('year')
+    authors = record.get('AU', [])
+    title = record.get('TI', '')
+    pubdate = record.get('DP', '')  # 'PubDate': '2012 Mar 20'  
+    year = int(pubdate.split(' ')[0])
     if year is None:
         year = x.year
-    else:
-        year = int(year)
-    volume = record.get('volume', '')
-    issue = record.get('issue', '')
-    page = record.get('page', '')
+    volume = record.get('VI', '')
+    issue = record.get('IP', '')
+    page = record.get('PG', '')
     citation = set_cite(title, authors, year, journal, volume, issue, page)    
-    doi = record.get('doi', '')
-    pmcid = record.get('pmc', '')
+    doi, doi_url = get_doi(record)
+    pmcid = record.get('PMC', '')
 
     update_str = ""
     ### update reference table
-    has_update = 0
     if published_status:
         x.publication_status = published_status
         print "UPDATE:", pmid, "publication_status=", published_status
-        has_update = 1
     if citation != x.citation:
         x.citation = citation
         print "UPDATE:", pmid, "citation=", citation
-        has_update = 1
     if title != x.title:
         x.title = title
         print "UPDATE:", pmid, "title=", title
-        has_update = 1
     if year != x.year:
         x.year = year
         print "UPDATE:", pmid, "year=", year
-        has_update = 1
     if volume != x.volume:
         x.volume = volume
         print "UPDATE:", pmid, "volume=", volume
-        has_update = 1
-    if issue != x.issue:
+    if issue != issue:
         x.issue = issue
         print "UPDATE:", pmid, "issue=", issue
-        has_update = 1
-    if page != x.page:
+    if page != page:
         x.page = page
         print "UPDATE:", pmid, "page=", page
-        has_update = 1
     if doi and doi != x.doi:
         x.doi = doi
         print "UPDATE:", pmid, "doi=", doi
-        has_update = 1
     if pmcid and pmcid != x.pmcid and pmcid != "PMC4502675":
         x.pmcid = pmcid
         print "UPDATE:", pmid, "pmcid=", pmcid
-        has_update = 1
     if date_revised:
-        date_revised_db = None
-        if x.date_revised:
-            date_revised_db = str(x.date_revised).split(' ')[0]
-        if date_revised_db is None or date_revised != date_revised_db:
-            x.date_revised = date_revised
-            print "UPDATE:", pmid, "date_revised=", date_revised
-            has_update = 1
-
-    if has_update == 1:
-        nex_session.add(x)
-        nex_session.commit()
-    else:
-        print pmid, "No change"
+        x.date_revised = date_revised
+        print "UPDATE:", pmid, "date_revised=", date_revised
+    nex_session.add(x)
+    nex_session.commit()
 
 
 if __name__ == '__main__':

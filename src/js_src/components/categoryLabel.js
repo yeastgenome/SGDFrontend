@@ -6,7 +6,8 @@ import { makeFieldDisplayName } from '../lib/searchHelpers';
 class CategoryLabel extends Component {
   renderIcon() {
     let color = CAT_COLORS[this.props.category];
-    return <span className={style.catIcon} style={{ backgroundColor: color }} />;
+    let classSuffix = this.props.isPageTitle ? style.titleCatIcon : '';
+    return <span className={`${style.catIcon} ${classSuffix}`} style={{ backgroundColor: color }} />;
   }
 
   render() {
@@ -18,7 +19,8 @@ class CategoryLabel extends Component {
 
 CategoryLabel.propTypes = {
   category: React.PropTypes.string,
-  hideLabel: React.PropTypes.bool
+  hideLabel: React.PropTypes.bool,
+  isPageTitle: React.PropTypes.bool
 };
 
 export default CategoryLabel;

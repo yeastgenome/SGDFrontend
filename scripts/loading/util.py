@@ -2,9 +2,9 @@ from sqlalchemy.engine import create_engine
 from sqlalchemy.ext.declarative.api import declarative_base
 from sqlalchemy.orm.session import sessionmaker
 from sqlalchemy import not_
-from go.gpad_config import curator_id, computational_created_by,  \
-    go_db_code_mapping, go_ref_mapping, current_go_qualifier, email_receiver, \
-    email_subject
+# from go.gpad_config import curator_id, computational_created_by,  \
+#     go_db_code_mapping, go_ref_mapping, current_go_qualifier, email_receiver, \
+#     email_subject
 
 import sys
 sys.path.insert(0, '../../src/')
@@ -257,7 +257,6 @@ def get_strain_taxid_mapping():
              "W303":            "TAX:580240",
              "Y55":             "TAX:580230",
              "Sigma1278b":      "TAX:658763",
-             "sigma1278b":      "TAX:658763",
              "AWRI1631":        "TAX:545124",
              "AWRI796":         "TAX:764097",
              "BY4741":          "TAX:1247190",

@@ -3,13 +3,13 @@ export function updateActiveEntry (newEntry) {
   return { type: 'UPDATE_ACTIVE_ENTRY', payload: newEntry };
 }
 
-export function clearActiveTags () {
+export function clearTags () {
   return {
     type: 'CLEAR_ACTIVE_TAGS'
   };
 }
 
-export function updateActiveTags (updatedEntry) {
+export function updateTags (updatedEntry) {
   return {
     type: 'UPDATE_ACTIVE_TAGS',
     payload: updatedEntry

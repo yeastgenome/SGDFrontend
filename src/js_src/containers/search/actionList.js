@@ -5,7 +5,7 @@ class ActionList extends Component {
   render() {
     if (this.props.category === 'locus' || this.props.category === 'reference') {
       let href = `curate${this.props.href}`;
-      return <Link to={href}><i className='fa fa-edit' /> Curate</Link>;
+      return <Link style={{ display: 'inline-block', minWidth: '6rem' }} to={href}><i className='fa fa-edit' /> Curate</Link>;
     }
     return null;
   }
