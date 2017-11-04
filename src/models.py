@@ -13,6 +13,9 @@ import traceback
 import transaction
 from datetime import datetime
 from itertools import groupby
+import boto
+from boto.s3.key import Key
+import hashlib
 
 from src.curation_helpers import ban_from_cache, link_gene_names, get_curator_session
 
@@ -22,6 +25,10 @@ ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
 QUERY_LIMIT = 25000
 SGD_SOURCE_ID = 834
 SEPARATOR = ' '
+
+S3_BUCKET = os.environ['S3_BUCKET']
+S3_ACCESS_KEY = os.environ['S3_ACCESS_KEY']
+S3_SECRET_KEY = os.environ['S3_SECRET_KEY']
 
 # get list of URLs to visit from comma-separated ENV variable cache_urls 'url1, url2'
 cache_urls = None
@@ -2015,6 +2022,41 @@ class Referencedbentity(Dbentity):
             if curator_session:
                 curator_session.close()
 
+class Filepath(Base):
+    __tablename__ = 'file_path'
+    __table_args__ = {u'schema': 'nex'}
+
+    file_path_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
+    file_id = Column(ForeignKey(u'nex.filedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    path_id = Column(ForeignKey(u'nex.path.path_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    filepath = Column(String(500), nullable=False, unique=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    source = relationship(u'Source')
+    filedbentity = relationship(u'Filedbentity', foreign_keys=[file_id])
+    path = relationship(u'Path', foreign_keys=[path_id])
+
+class Path(Base):
+    __tablename__ = 'path'
+    __table_args__ = (
+        UniqueConstraint('path_id', 'path'),
+        {u'schema': 'nex'}
+    )
+
+    path_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.url_seq'::regclass)"))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    path = Column(String(500), nullable=False)
+    description = Column(String(1000), nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    source = relationship(u'Source')
+    file_path = relationship(u'Filepath')
+    filedbentities = relationship(u'Filedbentity', secondary='file_path', backref='path')
+
+
 class Filedbentity(Dbentity):
     __tablename__ = 'filedbentity'
     __table_args__ = {u'schema': 'nex'}
@@ -2040,6 +2082,29 @@ class Filedbentity(Dbentity):
     format = relationship(u'Edam', primaryjoin='Filedbentity.format_id == Edam.edam_id')
     readme_file = relationship(u'Filedbentity', foreign_keys=[dbentity_id])
     topic = relationship(u'Edam', primaryjoin='Filedbentity.topic_id == Edam.edam_id')
+
+    path = relationship(u'Path', secondary='file_path', backref='filedbentities')
+
+
+    def upload_file_to_s3(self, file, filename):
+        # get s3_url and upload
+        s3_path = self.sgdid + '/' + filename
+        conn = boto.connect_s3(S3_ACCESS_KEY, S3_SECRET_KEY)
+        bucket = conn.get_bucket(S3_BUCKET)
+        k = Key(bucket)
+        k.key = s3_path
+        k.set_contents_from_file(file, rewind=True)
+        k.make_public()
+        file_s3 = bucket.get_key(k.key)
+        etag_md5_s3 = file_s3.etag.strip('"').strip("'")
+        # if md5 checksum matches, save s3 URL to db
+        if (self.md5sum == etag_md5_s3):
+            self.s3_url = file_s3.generate_url(expires_in=0, query_auth=False)
+            DBSession.flush()
+            transaction.commit()
+        else:
+            DBSession.rollback()
+            raise Exception('MD5sum check failed.')
 
 
 class Locusdbentity(Dbentity):
