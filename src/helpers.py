@@ -1,6 +1,4 @@
 from math import pi, sqrt, acos
-import boto
-from boto.s3.key import Key
 import datetime
 import hashlib
 import werkzeug
@@ -21,9 +19,6 @@ log = logging.getLogger(__name__)
 
 FILE_EXTENSIONS = ['bed', 'bedgraph', 'bw', 'cdt', 'chain', 'cod', 'csv', 'cusp', 'doc', 'docx', 'fsa', 'gb', 'gcg', 'gff', 'gif', 'gz', 'html', 'jpg', 'pcl', 'pdf', 'pl', 'png', 'pptx', 'README', 'sql', 'sqn', 'tgz', 'txt', 'vcf', 'wig', 'wrl', 'xls', 'xlsx', 'xml', 'sql', 'txt', 'html', 'gz', 'tsv']
 MAX_QUERY_ATTEMPTS = 3
-S3_BUCKET = os.environ['S3_BUCKET']
-S3_ACCESS_KEY = os.environ['S3_ACCESS_KEY']
-S3_SECRET_KEY = os.environ['S3_SECRET_KEY']
 
 import redis
 disambiguation_table = redis.Redis()
@@ -260,23 +255,7 @@ def upload_file(username, file, **kwargs):
     DBSession.add(fdb)
     DBSession.flush()
     DBSession.refresh(fdb)
-    # get s3_url and upload
-    s3_path = fdb.sgdid + '/' + filename
-    conn = boto.connect_s3(S3_ACCESS_KEY, S3_SECRET_KEY)
-    bucket = conn.get_bucket(S3_BUCKET)
-    k = Key(bucket)
-    k.key = s3_path
-    k.set_contents_from_file(file, rewind=True)
-    k.make_public()
-    file_s3 = bucket.get_key(k.key)
-    etag_md5_s3 = file_s3.etag.strip('"').strip("'")
-    # if md5 checksum matches, save s3 URL to db
-    if (md5sum == etag_md5_s3):
-        fdb.s3_url = file_s3.generate_url(expires_in=0, query_auth=False)
-        DBSession.flush()
-        transaction.commit()
-    else:
-        raise Exception('MD5sum check failed.')
+    fdb.upload_file_to_s3(file, filename)
 
 def area_of_intersection(r, s, x):
     if x <= abs(r-s):
