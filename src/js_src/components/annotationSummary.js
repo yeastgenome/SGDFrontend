@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import CategoryLabel from './categoryLabel';
 import { Link } from 'react-router';
 
-const PREVIEW_URL = 'https://preview.qa.yeastgenome.org';
+import { PREVIEW_URL } from '../constants';
 
 import TagList from './tagList';
 
