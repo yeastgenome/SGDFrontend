@@ -6,8 +6,6 @@ import BundleTracker from 'webpack-bundle-tracker';
 
 let isProduction = process.env.NODE_ENV === 'production';
 
-const PREVIEW_URL = process.env.PREVIEW_URL;
-
 // Development asset host, asset location and build output path.
 const publicHost = isProduction ? '': 'http://localhost:2992/';
 const rootAssetPath = './assets';
@@ -73,8 +71,7 @@ if (isProduction) {
   config.plugins = [
     new webpack.DefinePlugin({
       'process.env': {
-        'NODE_ENV': JSON.stringify('production'),
-        'PREVIEW_URL': PREVIEW_URL
+        'NODE_ENV': JSON.stringify('production')
       }
     }),
     new ExtractTextPlugin('[name].[chunkhash].css'),
