@@ -27,7 +27,7 @@ qa-restart:
 	source dev_variables.sh && NEX2_URI=$$QA_NEX2_URI && cap qa deploy:restart
 
 curate-deploy:
-	source dev_variables.sh && npm run build && NEX2_URI=$$CURATE_NEX2_URI && cap curate_dev deploy
+	npm run build --env.PREVIEW_URL=http://preview.qa.yeastgenome.org && source dev_variables.sh && NEX2_URI=$$CURATE_NEX2_URI && cap curate_dev deploy
 
 preview-deploy:
 	source dev_variables.sh && NEX2_URI=$$CURATE_NEX2_URI && cap preview deploy
