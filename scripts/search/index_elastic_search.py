@@ -724,6 +724,7 @@ def index_not_mapped_genes():
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
+
 def index_part_1():
     index_not_mapped_genes()
     index_genes()
