@@ -9,6 +9,7 @@ const DEFAULT_X = 0;
 const DEFAULT_Y = 0;
 const N_TICKS = 100;
 const EDGE_COLOR = '#e2e2e2';
+const HIGHLIGHTED_EDGE_COLOR = '#808080';
 
 class Graph extends Component {
   constructor(props) {
@@ -35,6 +36,13 @@ class Graph extends Component {
     if (newUrl && window) {
       window.location.href = newUrl;
     }
+  }
+
+  handleDownload(e) {
+    var canvasHref = document.querySelector('canvas.sigma-scene').toDataURL();
+    var el = e.target;
+    el.href = canvasHref;
+    el.download = 'network.png';
   }
 
   didDataChange(prevData, newData) {
@@ -68,7 +76,7 @@ class Graph extends Component {
     return rawEdges.map( (d, i) => {
       d.id = `e${i}`;
       d.color = EDGE_COLOR;
-      d.size = 2;
+      d.size = d.evidence;
       return d;
     });
   }
@@ -133,6 +141,14 @@ class Graph extends Component {
       nodes: _nodes,
       edges: _edges
     };
+    sigma.classes.graph.addMethod('neighbors', function(nodeId) {
+      var k,
+          neighbors = {},
+          index = this.allNeighborsIndex[nodeId] || {};
+      for (k in index)
+        neighbors[k] = this.nodesIndex[k];
+      return neighbors;
+    });
     this.s = new sigma({
       graph: _graph,
       container: TARGET_ID,
@@ -141,9 +157,8 @@ class Graph extends Component {
         labelThreshold: 100,
         minNodeSize: 7,
         maxNodeSize: 7,
-        minEdgeSize: 2,
-        maxEdgeSize: 2,
-        minArrowSize: 15,
+        minEdgeSize: 1,
+        maxEdgeSize: 5,
         labelThreshold: 0,
         sideMargin: 4,
         zoomingRatio: 1
@@ -158,6 +173,18 @@ class Graph extends Component {
     );
     this.s.bind('clickNode', (e) => {
       this.handleNodeClick(e);
+    });
+    this.s.bind('overNode', (e) => {
+      var nodeId = e.data.node.id;
+      var toKeep = this.s.graph.neighbors(nodeId);
+      toKeep[nodeId] = e.data.node;
+      this.s.graph.edges().forEach(function(e) {
+        if (toKeep[e.source] && toKeep[e.target])
+          e.color = HIGHLIGHTED_EDGE_COLOR;
+        else
+          e.color = EDGE_COLOR;;
+      });
+      this.s.refresh();
     });
   }
 
@@ -181,10 +208,15 @@ class Graph extends Component {
     let footerText = this.props.footerText;
     if (typeof footerText === 'string') {
       return (
-        <div style={{ textAlign: 'right' }}>
-          <span>
-            {footerText}
-          </span>
+        <div>
+          <div style={{ textAlign: 'right' }}>
+            <span>
+              {footerText}
+            </span>
+          </div>
+          <div>
+            <a className='button small secondary' onClick={this.handleDownload}><i className='fa fa-download' /> Download (.png)</a>
+          </div>
         </div>
       );
     }
