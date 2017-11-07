@@ -16,7 +16,7 @@ class CurateLitBasic extends Component {
             <p dangerouslySetInnerHTML={{ __html: _abstract }} />
           </div>
         </div>
-        <Tags id={d.sgdid} />
+        <Tags id={this.props.params.id} />
       </div>
     );
   }
@@ -24,7 +24,8 @@ class CurateLitBasic extends Component {
 
 CurateLitBasic.propTypes = {
   data: React.PropTypes.object,
-  hasData: React.PropTypes.bool
+  hasData: React.PropTypes.bool,
+  params: React.PropTypes.object
 };
 
 function mapStateToProps(state) {
