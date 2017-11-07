@@ -7736,7 +7736,7 @@ def validate_tags(tags):
     for x in extra_keys:
         if x not in unique_keys:
             new_additional_genes.append(x)
-    if len(new_additional_genes) and (len(r_keys) == 0):
+    if len(new_additional_genes) and not has_reviews:
         new_additional_str = SEPARATOR.join(new_additional_genes)
         # see if additional tag exists, if not create it
         is_added_to_existing = False
