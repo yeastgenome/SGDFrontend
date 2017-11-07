@@ -70,16 +70,21 @@ const SearchResult = React.createClass({
 
   _getBasicResultNode () {
     let name = this.props.name || '(no name available)';
+    let downloadButtonNode = null;
+    let nameNode = <a href={this.props.href}>{name}</a>;
+    if (this.props.category === 'download') {
+      downloadButtonNode = <a className='button secondary small' download href={this.props.href} style={{ marginTop: '0.6rem' }}><i className='fa fa-download' /> Download</a>;
+      nameNode = <span href={this.props.href}>{name}</span>;
+    }
     return (
       <div>
         <div className='search-result-title-container' style={[style.titleContainer]}>
-          <h2 style={[style.title]}>
-            <a href={this.props.href}>{name}</a>
-          </h2>
+          <h2 style={[style.title]}>{nameNode}</h2>
           <span><span className={`search-cat ${this.props.category}`}/> {this.props.categoryName}</span>
         </div>
         {this._renderHighlightsNode()}
         {this._renderDisplayedLoci()}
+        {downloadButtonNode}
       </div>
     );
   },
