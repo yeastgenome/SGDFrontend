@@ -2030,13 +2030,10 @@ class Filepath(Base):
     file_id = Column(ForeignKey(u'nex.filedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
     path_id = Column(ForeignKey(u'nex.path.path_id', ondelete=u'CASCADE'), nullable=False, index=True)
     source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
-    filepath = Column(String(500), nullable=False, unique=True)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
 
     source = relationship(u'Source')
-    filedbentity = relationship(u'Filedbentity', foreign_keys=[file_id])
-    path = relationship(u'Path', foreign_keys=[path_id])
 
 class Path(Base):
     __tablename__ = 'path'
@@ -2053,9 +2050,6 @@ class Path(Base):
     created_by = Column(String(12), nullable=False)
 
     source = relationship(u'Source')
-    file_path = relationship(u'Filepath')
-    filedbentities = relationship(u'Filedbentity', secondary='file_path', backref='path')
-
 
 class Filedbentity(Dbentity):
     __tablename__ = 'filedbentity'
@@ -2083,9 +2077,6 @@ class Filedbentity(Dbentity):
     readme_file = relationship(u'Filedbentity', foreign_keys=[dbentity_id])
     topic = relationship(u'Edam', primaryjoin='Filedbentity.topic_id == Edam.edam_id')
 
-    path = relationship(u'Path', secondary='file_path', backref='filedbentities')
-
-
     def upload_file_to_s3(self, file, filename):
         # get s3_url and upload
         s3_path = self.sgdid + '/' + filename
@@ -2105,6 +2096,13 @@ class Filedbentity(Dbentity):
         else:
             DBSession.rollback()
             raise Exception('MD5sum check failed.')
+
+    def get_path(self):
+        path_res = DBSession.query(Filepath, Path).filter(Filepath.file_id==self.dbentity_id).outerjoin(Path).all()
+        if len(path_res) == 0:
+            return None
+        base = path_res[0][1].path
+        return base + '/' + self.display_name
 
 
 class Locusdbentity(Dbentity):
