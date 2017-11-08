@@ -7707,12 +7707,17 @@ def validate_tags(tags):
     additional_obj = {}
     review_obj = {}
     extra_obj = {} # tracks if in extra topics and might add additional tag for that gene
+    high_priority_obj = {}
     gene_ids = []
+    has_reviews = False
     for tag in tags:
         name = tag['name']
         is_primary = Literatureannotation.is_primary_tag(name)
         is_additional = (name == 'additional_literature')
         is_reviews = (name == 'reviews')
+        if is_reviews:
+            has_reviews = True
+        is_high_priority = (name == 'high_priority')
         genes = tag['genes'].strip()
         if len(genes):
             t_gene_ids = genes.split()
@@ -7731,6 +7736,8 @@ def validate_tags(tags):
                     review_obj[g] = True
                 if name in extra_tag_list:
                     extra_obj[g] = True
+                if is_high_priority:
+                    high_priority_obj[g] = True
             gene_ids = gene_ids + t_gene_ids
         elif is_primary or is_additional:
             raise ValueError('Primary and additional tags must have genes.')
@@ -7738,11 +7745,12 @@ def validate_tags(tags):
     p_keys = primary_obj.keys()
     a_keys = additional_obj.keys()
     r_keys = review_obj.keys()
-    if (len(r_keys) > 0 and (len(p_keys) + len(a_keys)) > 0):
+    if (has_reviews > 0 and (len(p_keys) + len(a_keys)) > 0):
         raise ValueError('Review tags are mutually exclusive with primary and additional tags.')
     unique_keys = set(p_keys + a_keys + r_keys)
     extra_keys = set(extra_obj.keys())
-    all_keys = list(set(list(unique_keys) + list(extra_keys)))
+    high_priority_keys = set(high_priority_obj.keys())
+    all_keys = list(set(list(unique_keys) + list(extra_keys) + list(high_priority_keys)))
     # upper_all_keys = [x.upper() for x in all_keys]
     if len(unique_keys) != (len(p_keys) + len(a_keys) + len(r_keys)):
         raise ValueError('The same gene can only be used as a primary tag, additional tag, or review.')
@@ -7766,7 +7774,7 @@ def validate_tags(tags):
     for x in extra_keys:
         if x not in unique_keys:
             new_additional_genes.append(x)
-    if len(new_additional_genes) and (len(r_keys) == 0):
+    if len(new_additional_genes) and not has_reviews:
         new_additional_str = SEPARATOR.join(new_additional_genes)
         # see if additional tag exists, if not create it
         is_added_to_existing = False
