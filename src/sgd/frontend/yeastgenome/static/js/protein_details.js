@@ -31,7 +31,6 @@ $(document).ready(function() {
   $.getJSON("/backend/locus/" + locus["id"] + "/sequence_details", function(sequence_data) {
     var protein_data = sequence_data["protein"];
     var alt_strain_protein_data = [];
-
     var length = null;
     if (protein_data.length > 0) {
       var strain_selection = $("#strain_selection");
@@ -97,14 +96,13 @@ $(document).ready(function() {
           var colorScale = function(sourceName) {
             return source_to_color[sourceName];
           };
-        } else {
+        } 
+        else {
           $("#domain_locations").hide();
         }
         views.protein.render(protein_domain_data, length, colorScale);
 
-        $.getJSON(
-          "/backend/locus/" + locus["id"] + "/protein_domain_graph",
-          function(protein_domain_graph_data) {
+        $.getJSON("/backend/locus/" + locus["id"] + "/protein_domain_graph", function(protein_domain_graph_data) {
             if (protein_domain_graph_data["nodes"].length > 1) {
               var graph_style = prep_style();
               var graph = create_cytoscape_vis(
@@ -125,29 +123,14 @@ $(document).ready(function() {
               var download_headers = ["", "Gene", "Domain"];
               var download_data = [];
               var id_to_name = {};
-              for (
-                var i = 0;
-                i < protein_domain_graph_data["nodes"].length;
-                i++
-              ) {
-                id_to_name[
-                  protein_domain_graph_data["nodes"][i]["data"]["id"]
-                ] =
-                  protein_domain_graph_data["nodes"][i]["data"]["name"];
+              for (var i = 0; i < protein_domain_graph_data["nodes"].length; i++) {
+                id_to_name[protein_domain_graph_data["nodes"][i]["data"]["id"]] = protein_domain_graph_data["nodes"][i]["data"]["name"];
               }
-              for (
-                var i = 0;
-                i < protein_domain_graph_data["edges"].length;
-                i++
-              ) {
+              for (var i = 0;i < protein_domain_graph_data["edges"].length;i++) {
                 download_data.push([
                   "",
-                  id_to_name[
-                    protein_domain_graph_data["edges"][i]["data"]["target"]
-                  ],
-                  id_to_name[
-                    protein_domain_graph_data["edges"][i]["data"]["source"]
-                  ]
+                  id_to_name[protein_domain_graph_data["edges"][i]["data"]["target"]],
+                  id_to_name[protein_domain_graph_data["edges"][i]["data"]["source"]]
                 ]);
               }
               create_download_button_no_table(
@@ -156,7 +139,8 @@ $(document).ready(function() {
                 download_data,
                 locus["display_name"] + "_domain_network"
               );
-            } else {
+            } 
+            else {
               $("#shared_domains").hide();
             }
           }
@@ -165,31 +149,21 @@ $(document).ready(function() {
     );
   });
 
-  $.getJSON(
-    "/backend/locus/" + locus["id"] + "/posttranslational_details",
-    function(data) {
+  $.getJSON("/backend/locus/" + locus["id"] + "/posttranslational_details", function(data) {
       phosphodata = data;
       allPtmData = data;
       create_phosphorylation_table(data);
       draw_phosphodata();
-    }
-  );
+    });
 
-  $.getJSON("/backend/locus/" + locus["id"] + "/ecnumber_details", function(
-    data
-  ) {
+  $.getJSON("/backend/locus/" + locus["id"] + "/ecnumber_details", function(data) {
     if (data.length > 0) {
       $("#protein_overview").append("<dt>EC Number</dt>");
 
       var ec_number_html = "";
       for (var i = 0; i < data.length; i++) {
-        ec_number_html =
-          ec_number_html +
-          "<a href='" +
-          data[i]["ecnumber"]["link"] +
-          "'>" +
-          data[i]["ecnumber"]["display_name"] +
-          "</a>";
+        ec_number_html = ec_number_html + "<a href='" + data[i]["ecnumber"]["link"] + "'>" +
+          data[i]["ecnumber"]["display_name"] + "</a>";
         if (i != data.length - 1) {
           ec_number_html = ec_number_html + ", ";
         }
@@ -206,18 +180,15 @@ $(document).ready(function() {
           protein_experiment_table,
           locus["display_name"] + "_experimental_data"
         );
-      } else {
+      } 
+      else {
         hide_section("experiment");
       }
     }
   );
 
   var alias_table = create_alias_table(locus["aliases"]);
-  create_download_button(
-    "alias_table_download",
-    alias_table,
-    locus["display_name"] + "_external_ids"
-  );
+  create_download_button("alias_table_download", alias_table, locus["display_name"] + "_external_ids");
 });
 
 function pad_number(number, num_digits) {
@@ -238,19 +209,10 @@ function prep_sequence(residues) {
   var new_sequence = pad_number(1, num_digits) + " " + chunks[0];
   for (var i = 1; i < chunks.length; i++) {
     if (i == chunks.length - 1) {
-      new_sequence =
-        new_sequence +
-        "<br>" +
-        pad_number(i * 60 + 1, num_digits) +
-        " " +
-        chunks[i];
-    } else {
-      new_sequence =
-        new_sequence +
-        "<br>" +
-        pad_number(i * 60 + 1, num_digits) +
-        " " +
-        chunks[i];
+      new_sequence = new_sequence + "<br>" + pad_number(i * 60 + 1, num_digits) + " " + chunks[i];
+    } 
+    else {
+      new_sequence = new_sequence + "<br>" + pad_number(i * 60 + 1, num_digits) + " " + chunks[i];
     }
   }
   return new_sequence;
@@ -259,7 +221,8 @@ function prep_sequence(residues) {
 function update_property(prop_id, prop_value) {
   if (prop_value != null && prop_value != "None") {
     $("#" + prop_id).html(prop_value);
-  } else {
+  } 
+  else {
     $("#" + prop_id).html("-");
   }
 }
@@ -383,7 +346,6 @@ function set_up_properties(data) {
       "Aromaticity Score",
       data["aromaticity_score"]
     ]);
-
     update_property("all_cys_ext_coeff", data["all_cys_ext_coeff"]);
     download_data.push([
       "",
@@ -592,16 +554,9 @@ function set_up_properties(data) {
       data["val"]
     ]);
     
-    var isValid = isDataValid(options);
-    var test = modifyData(options);
-    
+    modifyData(options);
     create_table("amino_acid_table", options);
-    /* if (!isDataValid(options)) {
-      create_table("amino_acid_table", options);
-      $("#physicochemical_props").show();
-    } else {
-      $("#physicochemical_props").hide();
-    }*/
+   
 
     options = {};
     options["bPaginate"] = false;
@@ -689,11 +644,7 @@ function set_up_properties(data) {
 
 function draw_phosphodata() {
   var data = [];
-  if (
-    phosphodata != null &&
-    phosphodata.length > 0 &&
-    current_residues != null
-  ) {
+  if (phosphodata != null && phosphodata.length > 0 && current_residues != null) {
     var num_digits = ("" + current_residues.length).length;
     var residues = $("#sequence_residues");
     var old_residues = residues.html();
@@ -703,41 +654,21 @@ function draw_phosphodata() {
     var uniq_indexes = {};
     for (var i = 0; i < phosphodata.length; i++) {
       var _index = phosphodata[i].site_index;
-      var index = relative_to_html(
-        phosphodata[i]["site_index"] - 1,
-        num_digits
-      );
-      if (
-        old_residues.substring(index, index + 1) ==
-        phosphodata[i]["site_residue"]
-      ) {
+      var index = relative_to_html(phosphodata[i]["site_index"] - 1, num_digits);
+      if (old_residues.substring(index, index + 1) == phosphodata[i]["site_residue"]) {
         data.push(phosphodata[i]);
       }
       if (uniq_indexes[_index]) continue;
       uniq_indexes[_index] = phosphodata[i];
-      if (
-        old_residues.substring(index, index + 1) ==
-        phosphodata[i]["site_residue"]
-      ) {
-        new_residues =
-          new_residues +
-          old_residues.substring(start, index) +
-          "<span style='color:blue;font-weight:bolder'>" +
-          old_residues.substring(index, index + 1) +
-          "</span>";
+      if (old_residues.substring(index, index + 1) == phosphodata[i]["site_residue"]) {
+        new_residues =new_residues + old_residues.substring(start, index) + "<span style='color:blue;font-weight:bolder'>" + old_residues.substring(index, index + 1) + "</span>";
         start = index + 1;
       }
     }
-    new_residues =
-      new_residues + old_residues.substring(start, old_residues.length);
+    new_residues = new_residues + old_residues.substring(start, old_residues.length);
     residues.html(new_residues);
     var phospho_table = create_phosphorylation_table(data);
-    create_download_button(
-      "phosphorylation_table_download",
-      phospho_table,
-      locus["display_name"] + "_phosphorylation"
-    );
-
+    create_download_button("phosphorylation_table_download", phospho_table, locus["display_name"] + "_phosphorylation");
     $("#phosphorylation_sites_wrapper").show();
   } else {
     $("#phosphorylation_sites_wrapper").hide();
@@ -747,13 +678,7 @@ function draw_phosphodata() {
 function relative_to_html(index, num_digits) {
   var row = Math.floor(1.0 * index / 60);
   var column = index - row * 60;
-  return (
-    row * (71 + num_digits) +
-    1 +
-    num_digits +
-    column +
-    Math.floor(1.0 * column / 10)
-  );
+  return (row * (71 + num_digits) + 1 + num_digits + column + Math.floor(1.0 * column / 10));
 }
 
 function create_phosphorylation_table(data) {
@@ -764,15 +689,7 @@ function create_phosphorylation_table(data) {
     datatable.push(phosphorylation_data_to_table(data[i]));
     sites[data[i]["site_residue"] + data[i]["site_index"]] = true;
   }
-  set_up_header(
-    "phosphorylation_table",
-    datatable.length,
-    "entry",
-    "entries",
-    Object.keys(sites).length,
-    "site",
-    "sites"
-  );
+  set_up_header("phosphorylation_table", datatable.length, "entry", "entries", Object.keys(sites).length, "site", "sites");
 
   set_up_phospho_sort();
 
@@ -806,11 +723,13 @@ function isDataValid(options) {
   if (options.aaData) {
     if (flag == false) {
       items = options.aaData.filter(function(temp_arr) {
-        if (temp_arr[1] == undefined) {
+        if (temp_arr[1] == undefined || temp_arr[2] == 'NaN') {
           flag = true;
         }
       });
-    } else {
+    } 
+    else 
+    {
       return flag;
     }
   }
@@ -831,7 +750,6 @@ function modifyData(options){
 
 function create_protein_experiment_table(data) {
   var datatable = [];
-
   var experiment_types = {};
   for (var i = 0; i < data.length; i++) {
     datatable.push(protein_experiment_data_to_table(data[i]));
