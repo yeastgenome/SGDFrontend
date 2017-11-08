@@ -37,8 +37,10 @@ class Tags extends Component {
     let id = this.props.id;
     let url = `/reference/${id}/tags`;
     this.props.dispatch(clearTags());
+    this.props.dispatch(setPending());
     fetchData(url).then( data => {
       this.props.dispatch(updateTags(data));
+      this.props.dispatch(finishPending());
     });
   }
 
