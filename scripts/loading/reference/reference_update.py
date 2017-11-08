@@ -110,6 +110,7 @@ def update_reference_data(log_file):
     pmids = []
     j = 0
     i = 0
+    updated_pmids = []
     for pmid in pmids_all:
         
         if pmid is None or pmid in [26842620, 27823544, 11483584]:
@@ -141,7 +142,8 @@ def update_reference_data(log_file):
                                   reference_id_to_pubtypes,
                                   key_to_type,
                                   source_to_id,
-                                  update_log)
+                                  update_log,
+                                  updated_pmids)
 
             pmids = []
             time.sleep(SLEEP_TIME)
@@ -160,7 +162,8 @@ def update_reference_data(log_file):
                               reference_id_to_pubtypes,
                               key_to_type,
                               source_to_id,
-                              update_log)
+                              update_log,
+                              updated_pmids)
         
     nex_session.commit()
 
@@ -186,13 +189,14 @@ def update_reference_data(log_file):
     log.info("Writing Summary...")
     for field_name in field_names:
         log.info("Paper(s) with " + field_name + " updated:" + str(update_log[field_name]))
-        
+
+    log.info("PMIDs that have some of their info updated: " + ", ".join(str(v) for v in updated_pmids)) 
     log.info("Done!")
 
     fw.close()
 
 
-def update_database_batch(nex_session, fw, records, pmid_to_reference, journal_id_to_abbrev, reference_id_to_authors, abstracts, reference_id_to_abstract, reference_id_to_urls, reference_id_to_pubtypes, key_to_type, source_to_id, update_log):
+def update_database_batch(nex_session, fw, records, pmid_to_reference, journal_id_to_abbrev, reference_id_to_authors, abstracts, reference_id_to_abstract, reference_id_to_urls, reference_id_to_pubtypes, key_to_type, source_to_id, update_log, updated_pmids):
 
     source_id = source_to_id[SRC]
 
@@ -222,18 +226,18 @@ def update_database_batch(nex_session, fw, records, pmid_to_reference, journal_i
         update_authors(nex_session, fw, pmid, 
                        dbentity_id, authors, 
                        reference_id_to_authors.get(dbentity_id), 
-                       source_id, update_log)
+                       source_id, update_log, updated_pmids)
 
         ### UPDATE REFERENCEDBENTITY TABLE
         update_database(nex_session, fw, record, pmid, x, 
                         journal_id_to_abbrev, source_id, 
-                        update_log)
+                        update_log, updated_pmids)
         
         ### UPDATE ABSTRACTS
         abstract_db = reference_id_to_abstract.get(dbentity_id)
         abstract = pmid_to_abstract.get(pmid)
         update_abstract(nex_session, fw, pmid, dbentity_id, abstract, 
-                        abstract_db, source_id, update_log)
+                        abstract_db, source_id, update_log, updated_pmids)
 
         ### UPDATE URLS
         doi = record.get('doi', '')
@@ -248,21 +252,22 @@ def update_database_batch(nex_session, fw, records, pmid_to_reference, journal_i
             pmc_url = PMC_ROOT + pmc + '/'
 
         update_urls(nex_session, fw, pmid, dbentity_id, pmc_url, doi_url,
-                    reference_id_to_urls[dbentity_id], source_id, update_log)
+                    reference_id_to_urls[dbentity_id], source_id, update_log, 
+                    updated_pmids)
 
         ### UPDATE PUB TYPES
         pubtypes = record.get('pubtypes', [])
         update_reftypes(nex_session, fw, pmid, dbentity_id, pubtypes, 
                         reference_id_to_pubtypes.get(dbentity_id), 
-                        source_id, update_log)
+                        source_id, update_log, updated_pmids)
         
         ### UPDATE REFERENCE RELATION
         update_comment_erratum(nex_session, fw, record, int(pmid), 
                                pmid_to_reference, key_to_type, 
-                               source_to_id['SGD'], update_log)
+                               source_to_id['SGD'], update_log, updated_pmids)
 
 
-def update_abstract(nex_session, fw, pmid, reference_id, abstract, abstract_db, source_id, update_log):
+def update_abstract(nex_session, fw, pmid, reference_id, abstract, abstract_db, source_id, update_log, updated_pmids):
 
     if abstract is None or abstract == "" or len(abstract) < 10:
         return
@@ -270,6 +275,9 @@ def update_abstract(nex_session, fw, pmid, reference_id, abstract, abstract_db, 
         return
 
     update_log['abstract'] = update_log['abstract'] + 1
+
+    if pmid not in updated_pmids:
+        updated_pmids.append(pmid)
 
     if abstract_db is None:
         x = Referencedocument(document_type = 'Abstract',
@@ -280,16 +288,15 @@ def update_abstract(nex_session, fw, pmid, reference_id, abstract, abstract_db, 
                               created_by = CREATED_BY)
         nex_session.add(x)
         nex_session.commit()
-        fw.write("PMID:" + str(pmid) + ": new abstract added.\nNew abstract: " + abstract + "\n")
-
+        fw.write("PMID:" + str(pmid) + ": new abstract added.\nNew abstract: " + abstract + "\n")        
     else:
         nex_session.query(Referencedocument).filter_by(reference_id=reference_id).update({'text': abstract,
                                                                                           'html': link_gene_names(abstract, {}, nex_session)})
         nex_session.commit()
         fw.write("PMID=" + str(pmid) + ": the abstract is updated.\nNew abstract: " + abstract + "\nOld abstract: " + abstract_db + "\n\n")
+        
 
-
-def update_comment_erratum(nex_session, fw, record, pmid, pmid_to_reference, key_to_type, source_id, update_log):
+def update_comment_erratum(nex_session, fw, record, pmid, pmid_to_reference, key_to_type, source_id, update_log, updated_pmids):
 
     tag_to_type = tag_to_type_mapping()
 
@@ -342,6 +349,8 @@ def update_comment_erratum(nex_session, fw, record, pmid, pmid_to_reference, key
             updated = 1
     if updated == 1:
         update_log['comment_erratum'] = update_log['comment_erratum']+ 1
+        if pmid not in updated_pmids:
+            updated_pmids.append(pmid)
 
 def update_relation(nex_session, fw, pmid, type, source_id, parent_reference_id, child_reference_id, key_to_type):
 
@@ -364,7 +373,7 @@ def update_relation(nex_session, fw, pmid, type, source_id, parent_reference_id,
         key_to_type[(parent_reference_id, child_reference_id)] = type
 
 
-def update_reftypes(nex_session, fw, pmid, reference_id, pubtypes, pubtypes_in_db, source_id, update_log):
+def update_reftypes(nex_session, fw, pmid, reference_id, pubtypes, pubtypes_in_db, source_id, update_log, updated_pmids):
 
     if pubtypes_in_db is None:
         pubtypes_in_db = []
@@ -397,7 +406,7 @@ def update_reftypes(nex_session, fw, pmid, reference_id, pubtypes, pubtypes_in_d
         update_log['pub_type'] = update_log['pub_type'] + 1
 
 
-def update_urls(nex_session, fw, pmid, reference_id, pmc_url, doi_url, urls_in_db, source_id, update_log):
+def update_urls(nex_session, fw, pmid, reference_id, pmc_url, doi_url, urls_in_db, source_id, update_log, updated_pmids):
 
     if doi_url == '':
         doi_url = None
@@ -454,13 +463,15 @@ def update_urls(nex_session, fw, pmid, reference_id, pmc_url, doi_url, urls_in_d
     if pmc_url_changed == 1:
         fw.write("PMID=" + str(pmid) + ": the PMC URL is updated.\nNew URL: " + str(pmc_url) + "\nOld URL: " + str(pmc_url_db) + "\n\n")
         update_log['pmc_url'] = update_log['pmc_url'] + 1
-
+        if pmid not in updated_pmids:
+            updated_pmids.append(pmid)
     if doi_url_changed == 1:
         fw.write("PMID=" + str(pmid) + ": the DOI URL is updated.\nNew URL: " + str(doi_url) + "\nOld URL: " + str(doi_url_db) + "\n\n")
         update_log['doi_url'] =update_log['doi_url'] +1
+        if pmid not in updated_pmids:
+            updated_pmids.append(pmid)
 
-
-def update_authors(nex_session, fw, pmid, reference_id, authors, authors_in_db, source_id, update_log):
+def update_authors(nex_session, fw, pmid, reference_id, authors, authors_in_db, source_id, update_log, updated_pmids):
 
     if authors_in_db is None:
         authors_in_db = []
@@ -473,6 +484,9 @@ def update_authors(nex_session, fw, pmid, reference_id, authors, authors_in_db, 
     # delete old ones                                                         
                         
     update_log['author_name'] = update_log['author_name'] + 1
+
+    if pmid not in updated_pmids:
+        updated_pmids.append(pmid)
 
     for ra in nex_session.query(Referenceauthor).filter_by(reference_id=reference_id).all():
         nex_session.delete(ra)
@@ -495,7 +509,7 @@ def update_authors(nex_session, fw, pmid, reference_id, authors, authors_in_db, 
     fw.write("PMID=" + str(pmid) + ": the author list is updated.\nNew authors: " + ", ".join(authors) + "\nOld authors: " + ", ".join(authors_in_db) + "\n\n")
 
 
-def update_database(nex_session, fw, record, pmid, x, journal_id_to_abbrev, source_id, update_log):
+def update_database(nex_session, fw, record, pmid, x, journal_id_to_abbrev, source_id, update_log, updated_pmids):
 
     pubstatus = record.get('publication_status')
     date_revised = record.get('date_revised')
@@ -507,7 +521,7 @@ def update_database(nex_session, fw, record, pmid, x, journal_id_to_abbrev, sour
     if x['publication_status'] == EPUB_STATUS and pubstatus == PUBLISH:
 
         update_reference(nex_session, fw, pmid, record, journal_id_to_abbrev, source_id, 
-                         update_log, date_revised, PUBLISHED_STATUS)
+                         update_log, updated_pmids, date_revised, PUBLISHED_STATUS)
 
         fw.write("EPUB: get published for pmid=" + str(pmid) + "\n")
 
@@ -515,7 +529,7 @@ def update_database(nex_session, fw, record, pmid, x, journal_id_to_abbrev, sour
         if date_revised_db is None or date_revised != date_revised_db:
 
             update_reference(nex_session, fw, pmid, record, journal_id_to_abbrev, source_id,
-                             update_log, date_revised, None)
+                             update_log, updated_pmids, date_revised, None)
                             
             fw.write("DATE_REVISED: date_revised changed for pmid=" + str(pmid) + " from " + str(date_revised_db) + " to " + date_revised + "\n")
 
@@ -525,7 +539,7 @@ def update_database(nex_session, fw, record, pmid, x, journal_id_to_abbrev, sour
         fw.write("PMID:" + str(pmid) + " no change" + "\n")
 
                             
-def update_reference(nex_session, fw, pmid, record, journal_id_to_abbrev, source_id, update_log, date_revised, published_status):
+def update_reference(nex_session, fw, pmid, record, journal_id_to_abbrev, source_id, update_log, updated_pmids, date_revised, published_status):
 
     x = nex_session.query(Referencedbentity).filter_by(pmid=pmid).one_or_none()
 
@@ -598,6 +612,8 @@ def update_reference(nex_session, fw, pmid, record, journal_id_to_abbrev, source
     if has_update == 1:
         nex_session.add(x)
         nex_session.commit()
+        if pmid not in updated_pmids:
+            updated_pmids.append(pmid)
     # else:
     #    print pmid, "No change"
 
