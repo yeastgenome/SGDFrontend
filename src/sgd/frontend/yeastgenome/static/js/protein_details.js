@@ -20,7 +20,7 @@ var source_to_color = {
 };
 
 $(document).ready(function() {
-  $("#domain_table_analyze").himak();
+  $("#domain_table_analyze").hide();
   $("#alias_table_analyze").hide();
   $("#phosphorylation_table_analyze").hide();
   $("#amino_acid_table_analyze").hide();
