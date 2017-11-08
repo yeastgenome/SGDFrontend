@@ -875,12 +875,12 @@ class Colleague(Base):
         _dict["lab_page"] = ''
         _dict["research_page"] = ''
         if coll_url is not None:
-            
+
             if coll_url.url_type == "Research summary":
                 _dict["research_page"] = coll_url.obj_url
             if coll_url.url_type == "Lab":
                 _dict["lab_page"] = coll_url.obj_url
-           
+
         keyword_ids = DBSession.query(ColleagueKeyword.keyword_id).filter(ColleagueKeyword.colleague_id == self.colleague_id).all()
         if len(keyword_ids) > 0:
             ids_query = [k[0] for k in keyword_ids]
@@ -6317,46 +6317,49 @@ class Phenotypeannotation(Base):
 
         groups = {}
 
-        for condition in conditions:
-            if condition.condition_class == "chemical":
-                if chemical is not None and (chemical.display_name == condition.condition_name):
+        for condition_item in conditions:
+            if condition_item.condition_class == "chemical":
+                if chemical is not None and (chemical.display_name == condition_item.condition_name):
                     chebi_url = chemical.obj_url
                 else:
                     if chebi_urls == None:
-                        chebi_url = DBSession.query(Chebi.obj_url).filter_by(display_name=condition.condition_name).one_or_none()
+                        chebi_url = DBSession.query(Chebi.obj_url).filter_by(display_name=condition_item.condition_name).one_or_none()
                     else:
-                        chebi_url = chebi_urls.get(condition.condition_name)
+                        chebi_url = chebi_urls.get(
+                            condition_item.condition_name)
 
                 link = None
                 if chebi_url:
                     link = chebi_url
 
-                if condition.group_id not in groups:
-                    groups[condition.group_id] = []
+                if condition_item.group_id not in groups:
+                    groups[condition_item.group_id] = []
 
-                groups[condition.group_id].append({
+                groups[condition_item.group_id].append({
                     "class_type": "CHEMICAL",
-                    "concentration": condition.condition_value,
+                    "concentration": condition_item.condition_value,
                     "bioitem": {
                         "link": link,
-                        "display_name": condition.condition_name
+                        "display_name": condition_item.condition_name
                     },
                     "note": None,
-                    "role": "CHEMICAL"
+                    "role": "CHEMICAL",
+                    "unit": condition_item.condition_unit
                 })
             else:
-                note = condition.condition_name
-                if condition.condition_value:
-                    note += ", " + condition.condition_value
-                    if condition.condition_unit:
-                        note += " " + condition_unit
+                note = condition_item.condition_name
+                if condition_item.condition_value:
+                    note += ", " + condition_item.condition_value
+                    if condition_item.condition_unit:
+                        note += " " + condition_item.condition_unit
 
-                if condition.group_id not in groups:
-                    groups[condition.group_id] = []
+                if condition_item.group_id not in groups:
+                    groups[condition_item.group_id] = []
 
-                groups[condition.group_id].append({
-                    "class_type": condition.condition_class,
-                    "note": note
+                groups[condition_item.group_id].append({
+                    "class_type": condition_item.condition_class,
+                    "note": note,
+                    "unit": condition_item.condition_unit
                 })
 
         if chemical:
