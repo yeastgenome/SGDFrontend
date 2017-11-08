@@ -53,18 +53,11 @@ $(document).ready(function() {
       }
 
       function on_change(index) {
-        $("#sequence_residues").html(
-          prep_sequence(alt_strain_protein_data[index]["residues"])
-        );
-        $("#strain_description").html(
-          alt_strain_protein_data[index]["strain"]["description"]
-        );
-        $("#phosphorylation_strain").html(
-          alt_strain_protein_data[index]["strain"]["display_name"]
-        );
-        $("#properties_strain").html(
-          alt_strain_protein_data[index]["strain"]["display_name"]
-        );
+        $("#sequence_residues").html(prep_sequence(alt_strain_protein_data[index]["residues"]));
+        $("#strain_description").html(alt_strain_protein_data[index]["strain"]["description"]);
+        $("#phosphorylation_strain").html(alt_strain_protein_data[index]["strain"]["display_name"]);
+        $("#properties_strain").html(alt_strain_protein_data[index]["strain"]["display_name"]);
+        $("#no_data_msg").html(alt_strain_protein_data[index]["strain"]["display_name"]);
         set_up_properties(alt_strain_protein_data[index]);
         current_residues = alt_strain_protein_data[index]["residues"];
         current_strain =
