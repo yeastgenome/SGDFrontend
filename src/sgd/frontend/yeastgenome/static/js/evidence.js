@@ -294,7 +294,8 @@ function phenotype_data_to_table(evidence, index) {
         if(evidence['properties'][j]['class_type'] == 'CHEMICAL') {
             var newChemical = '';
             if(evidence['properties'][j]['concentration'] != null) {
-                temp_unit = evidence["properties"][j]["unit"] ? evidence["properties"][j]["unit"] : "";
+                var temp_unit = evidence["properties"][j]["unit"] ? evidence["properties"][j]["unit"] : "";
+                temp_unit = temp_unit.match(/%/) ? temp_unit : ' '+ temp_unit;
                 newChemical = evidence['properties'][j]['concentration'] + temp_unit +' ' + create_link(evidence['properties'][j]['bioitem']['display_name'], evidence['properties'][j]['bioitem']['link']);
             }
             else {
