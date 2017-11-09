@@ -218,7 +218,9 @@ def upload_file(username, file, **kwargs):
     is_public = kwargs.get('is_public', False)
     is_in_spell = kwargs.get('is_in_spell', False)
     is_in_browser = kwargs.get('is_in_browser', False)
-    file_date = kwargs.get('file_date', datetime.datetime.now())
+    file_date = kwargs.get('file_date')
+    if file_date is None:
+        file_date = datetime.datetime.now()
     json = kwargs.get('json', None)
     year = kwargs.get('year', file_date.year)
     file_extension = kwargs.get('file_extension')
@@ -227,36 +229,44 @@ def upload_file(username, file, **kwargs):
     source_id = kwargs.get('source_id', 834)
     status = kwargs.get('status', 'Active')
     description = kwargs.get('description', None)
+    readme_file_id = kwargs.get('readme_file_id', None)
 
-    md5sum = hashlib.md5(file.read()).hexdigest()
-    fdb = Filedbentity(
-        md5sum=md5sum,
-        previous_file_name=filename,
-        data_id=data_id,
-        topic_id=topic_id,
-        format_id=format_id,
-        file_date=file_date,
-        json=json,
-        year=year,
-        is_public=is_public,
-        is_in_spell=is_in_spell,
-        is_in_browser=is_in_browser,
-        source_id=source_id,
-        file_extension=file_extension,
-        format_name=format_name,
-        display_name=display_name,
-        s3_url=None,
-        dbentity_status=status,
-        description=description,
-        subclass='FILE',
-        created_by=username
-    )
-    DBSession.add(fdb)
-    DBSession.flush()
-    did = fdb.dbentity_id
-    transaction.commit()
-    fdb = DBSession.query(Filedbentity).filter(Filedbentity.dbentity_id == did).one_or_none()
-    fdb.upload_file_to_s3(file, filename)
+    try:
+        md5sum = hashlib.md5(file.read()).hexdigest()
+        fdb = Filedbentity(
+            md5sum=md5sum,
+            previous_file_name=filename,
+            data_id=data_id,
+            topic_id=topic_id,
+            format_id=format_id,
+            file_date=file_date,
+            json=json,
+            year=year,
+            is_public=is_public,
+            is_in_spell=is_in_spell,
+            is_in_browser=is_in_browser,
+            source_id=source_id,
+            file_extension=file_extension,
+            format_name=format_name,
+            display_name=display_name,
+            s3_url=None,
+            dbentity_status=status,
+            description=description,
+            readme_file_id=readme_file_id,
+            subclass='FILE',
+            created_by=username
+        )
+        DBSession.add(fdb)
+        DBSession.flush()
+        did = fdb.dbentity_id
+        transaction.commit()
+        DBSession.flush()
+        fdb = DBSession.query(Filedbentity).filter(Filedbentity.dbentity_id == did).one_or_none()
+        fdb.upload_file_to_s3(file, filename)
+    except Exception as e:
+        DBSession.rollback()
+        DBSession.remove()
+        raise(e)
 
 def area_of_intersection(r, s, x):
     if x <= abs(r-s):
