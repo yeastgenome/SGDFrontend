@@ -144,7 +144,10 @@ const ColleaguesFormShow = React.createClass({
         <StringField isReadOnly={this.props.isReadOnly} displayName='City' paramName='city' defaultValue={data.city} key='address0' />,
         <StringField isReadOnly={this.props.isReadOnly} displayName='State / Region' paramName='state' defaultValue={data.state} key='address1' />,
         <StringField isReadOnly={this.props.isReadOnly} displayName='Postal Code' paramName='postal_code' defaultValue={data.postal_code} key='address2' />,
-        <StringField isReadOnly={this.props.isReadOnly} displayName='Country' paramName='country' defaultValue={data.country} key='address3' />
+        <StringField isReadOnly={this.props.isReadOnly} displayName='Country' paramName='country' defaultValue={data.country} key='address3' />,
+        <StringField isReadOnly={this.props.isReadOnly} displayName='Address' paramName='address1' defaultValue={data.address1} key='ad1' />,
+        <StringField isReadOnly={this.props.isReadOnly} displayName='Address' paramName='address2' defaultValue={data.address2} key='ad2' />,
+        <StringField isReadOnly={this.props.isReadOnly} displayName='Address' paramName='address3' defaultValue={data.address3} key='ad3' />
       ];
     }
     return (
