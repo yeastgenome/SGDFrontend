@@ -2091,7 +2091,6 @@ class Filedbentity(Dbentity):
         # if md5 checksum matches, save s3 URL to db
         if (self.md5sum == etag_md5_s3):
             self.s3_url = file_s3.generate_url(expires_in=0, query_auth=False)
-            DBSession.flush()
             transaction.commit()
         else:
             DBSession.rollback()

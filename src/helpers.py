@@ -242,7 +242,6 @@ def upload_file(username, file, **kwargs):
         is_in_spell=is_in_spell,
         is_in_browser=is_in_browser,
         source_id=source_id,
-        # filepath_id=filepath.filepath_id,
         file_extension=file_extension,
         format_name=format_name,
         display_name=display_name,
@@ -254,7 +253,9 @@ def upload_file(username, file, **kwargs):
     )
     DBSession.add(fdb)
     DBSession.flush()
-    DBSession.refresh(fdb)
+    did = fdb.dbentity_id
+    transaction.commit()
+    fdb = DBSession.query(Filedbentity).filter(Filedbentity.dbentity_id == did).one_or_none()
     fdb.upload_file_to_s3(file, filename)
 
 def area_of_intersection(r, s, x):
