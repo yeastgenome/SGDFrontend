@@ -853,6 +853,7 @@ class Colleague(Base):
         }
         return _dict
     def to_dict(self):
+       
         _dict = {
             "colleague_id": self.colleague_id,
             "orcid": self.orcid,
@@ -3850,10 +3851,10 @@ class Locusdbentity(Dbentity):
                 curator_session.query(Locussummary).filter_by(summary_id=summary.summary_id).update({ 'text': text, 'html': summary_html })
             else:
                 new_summary = Locussummary(
-                    locus_id = self.dbentity_id, 
-                    summary_type = summary_type, 
-                    text = text, 
-                    html = summary_html, 
+                    locus_id = self.dbentity_id,
+                    summary_type = summary_type,
+                    text = text,
+                    html = summary_html,
                     created_by = username,
                     source_id = SGD_SOURCE_ID
                 )
@@ -3877,13 +3878,13 @@ class Locusdbentity(Dbentity):
                         curator_session.query(LocussummaryReference).filter_by(summary_id=summary_id,reference_id=reference_id).update({ 'reference_order': order })
                     else:
                         new_locussummaryref = LocussummaryReference(
-                            summary_id = summary_id, 
-                            reference_id = reference_id, 
-                            reference_order = order, 
-                            source_id = SGD_SOURCE_ID, 
+                            summary_id = summary_id,
+                            reference_id = reference_id,
+                            reference_order = order,
+                            source_id = SGD_SOURCE_ID,
                             created_by = username
                         )
-                        curator_session.add(new_locussummaryref)          
+                        curator_session.add(new_locussummaryref)
             # commit and close session to keep user session out of connection pool
             transaction.commit()
             return text

@@ -130,6 +130,9 @@ class ModelsHelper(object):
                         _dict["keywords"] = temp_coll["keywords"]
                         _dict["format_name"] = temp_coll["format_name"]
                         _dict["name"] = temp_coll["name"]
+                        _dict["address1"] = temp_coll["address1"]
+                        _dict["address2"] = temp_coll["address2"]
+                        _dict["address3"] = temp_coll["address3"]
                 if len(temp_loci) > 0:
                     genes = [x.locus.display_name for x in temp_loci]
                     if len(genes) > 0:
