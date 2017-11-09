@@ -845,7 +845,11 @@ class Colleague(Base):
             "link": self.obj_url,
             "institution": self.institution,
             "state": self.state,
+            "city": self.city,
             "country": self.country,
+            "address1": self.address1,
+            "address2": self.address2,
+            "address3": self.address3
         }
         return _dict
     def to_dict(self):
@@ -869,7 +873,10 @@ class Colleague(Base):
             "work_phone": self.work_phone,
             "other_phone": self.other_phone,
             "format_name": self.format_name,
-            "name": self.display_name
+            "name": self.display_name,
+            "address1": self.address1,
+            "address2": self.address2,
+            "address3": self.address3
         }
         coll_url = self.get_collegue_url()
         _dict["lab_page"] = ''
