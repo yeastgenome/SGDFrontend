@@ -31,7 +31,7 @@ def create_and_upload_file(obj, row_num):
         # find on local system
         local_file_path = LOCAL_FILE_DIRECTORY + '/' + obj['bun_path']
         # special transformations
-        local_file_path = local_file_path.replace('feature', 'features')
+        local_file_path = local_file_path.replace('feature/', 'features/')
         local_file = open(local_file_path)
     except IOError:
         logging.error('error opening file ' + str(row_num))
