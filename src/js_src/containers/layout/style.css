@@ -75,3 +75,10 @@
 .topMenu a {
   color: white;
 }
+
+.demoWarning {
+  position: fixed;
+  padding: 0.5rem;
+  border-top: none;
+  border-left: none;
+}
