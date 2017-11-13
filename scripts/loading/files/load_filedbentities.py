@@ -3,7 +3,7 @@ import os
 import logging
 from datetime import datetime
 from src.helpers import upload_file
-from src.models import DBSession, Edam, Filedbentity, Filepath, Path, Referencedbentity, ReferenceFile, Source
+from src.models import DBSession, Edam, Filedbentity, FilePath, Path, Referencedbentity, ReferenceFile, Source
 from sqlalchemy import create_engine, and_
 from sqlalchemy.orm import sessionmaker, scoped_session
 from zope.sqlalchemy import ZopeTransactionExtension
@@ -104,9 +104,9 @@ def create_and_upload_file(obj, row_num):
         if path is None:
             logging.warning('Could not find path ' + obj['new_path'] + ' in row ' + str(row_num))
             return
-        existing_filepath = db_session.query(Filepath).filter(and_(Filepath.file_id==existing.dbentity_id, Filepath.path_id==path.path_id)).one_or_none()
+        existing_filepath = db_session.query(FilePath).filter(and_(FilePath.file_id==existing.dbentity_id, FilePath.path_id==path.path_id)).one_or_none()
         if not existing_filepath:
-            new_filepath = Filepath(file_id=existing.dbentity_id, path_id=path.path_id, source_id=SGD_SOURCE_ID, created_by=CREATED_BY)
+            new_filepath = FilePath(file_id=existing.dbentity_id, path_id=path.path_id, source_id=SGD_SOURCE_ID, created_by=CREATED_BY)
             db_session.add(new_filepath)
             transaction.commit()
             db_session.flush()
