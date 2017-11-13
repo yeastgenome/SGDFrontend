@@ -2022,7 +2022,7 @@ class Referencedbentity(Dbentity):
             if curator_session:
                 curator_session.close()
 
-class Filepath(Base):
+class FilePath(Base):
     __tablename__ = 'file_path'
     __table_args__ = {u'schema': 'nex'}
 
@@ -2098,7 +2098,7 @@ class Filedbentity(Dbentity):
             raise Exception('MD5sum check failed.')
 
     def get_path(self):
-        path_res = DBSession.query(Filepath, Path).filter(Filepath.file_id==self.dbentity_id).outerjoin(Path).all()
+        path_res = DBSession.query(FilePath, Path).filter(FilePath.file_id==self.dbentity_id).outerjoin(Path).all()
         if len(path_res) == 0:
             return None
         base = path_res[0][1].path
