@@ -59,7 +59,7 @@ def create_and_upload_file(obj, row_num):
                 format_id = db_session.query(Edam.edam_id).filter(Edam.edamid==obj['format_edam_id']).one_or_none()[0]
                 topic_id = db_session.query(Edam.edam_id).filter(Edam.edamid==obj['topic_edam_id']).one_or_none()[0]
             except TypeError:
-                logging.error('invalid EDAM id or source in row ' + str(row_num))
+                logging.error('invalid EDAM id or source in row ' + str(row_num) + ' val in ' + obj['data_edam_id'] + ', ' + obj['format_edam_id'] + ', ' + obj['topic_edam_id'])
                 return
             upload_file(CREATED_BY, local_file,
                 filename=obj['display_name'],
