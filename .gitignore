@@ -74,6 +74,8 @@ zz_*
 tmo_*
 tmp_*
 template*
+*.log
+*.log-*
 
 Gemfile.lock
 
