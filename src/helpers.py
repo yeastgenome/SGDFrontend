@@ -12,7 +12,7 @@ from sqlalchemy.exc import IntegrityError, InternalError, StatementError
 import traceback
 import requests
 
-from .models import DBSession, Dbuser, Go, Referencedbentity, Keyword, Locusdbentity, Filepath, Edam, Filedbentity, FileKeyword, ReferenceFile
+from .models import DBSession, Dbuser, Go, Referencedbentity, Keyword, Locusdbentity, FilePath, Edam, Filedbentity, FileKeyword, ReferenceFile
 
 import logging
 log = logging.getLogger(__name__)
@@ -133,10 +133,10 @@ def extract_keywords(request):
     return keywords
 
 def get_or_create_filepath(request):
-    filepath = DBSession.query(Filepath).filter(Filepath.filepath == request.POST.get("new_filepath")).one_or_none()
+    filepath = DBSession.query(FilePath).filter(FilePath.filepath == request.POST.get("new_filepath")).one_or_none()
 
     if filepath is None:
-        filepath = Filepath(filepath=request.POST.get("new_filepath"), source_id=339)
+        filepath = FilePath(filepath=request.POST.get("new_filepath"), source_id=339)
         DBSession.add(filepath)
         DBSession.flush()
         DBSession.refresh(filepath)
