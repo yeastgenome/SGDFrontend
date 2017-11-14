@@ -5,7 +5,8 @@ from datetime import datetime
 import sys
 reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('utf-8')
-from src.models import Source, Go, GoUrl, GoAlias, GoRelation, Ro
+from src.models import Source, Go, GoUrl, GoAlias, GoRelation, Ro, Edam
+from src.helpers import upload_file
 from scripts.loading.database_session import get_session
 from scripts.loading.ontology import read_owl  
                  
@@ -35,6 +36,14 @@ def load_ontology(ontology_file):
     goid_to_go =  dict([(x.goid, x) for x in nex_session.query(Go).all()])
     term_to_ro_id = dict([(x.display_name, x.ro_id) for x in nex_session.query(Ro).all()])
     roid_to_ro_id = dict([(x.roid, x.ro_id) for x in nex_session.query(Ro).all()])
+    edam_to_id = dict([(x.format_name, x.edam_id) for x in nex_session.query(Edam).all()])
+
+
+
+    upload_file_to_s3(ontology_file, source_to_id, edam_to_id)
+
+    return
+
 
     go_id_to_alias = {}
     for x in nex_session.query(GoAlias).all():
@@ -71,6 +80,11 @@ def load_ontology(ontology_file):
                                                  go_id_to_parent,
                                                  fw)
     
+
+    log.info("Uploading file to S3...")
+
+    upload_file_to_s3(ontology_file, source_to_id, edam_to_id)
+
     log.info("Writing loading summary...")
 
     write_summary_and_send_email(fw, update_log, to_delete_list)
@@ -324,6 +338,33 @@ def insert_relation(nex_session, source_id, parent_id, child_id, ro_id, relation
     nex_session.flush()
     fw.write("Added new PARENT: parent_id = " + str(parent_id) + " for go_id = " + str(child_id) + "\n")
     
+
+def upload_file_to_s3(ontology_file, source_to_id, edam_to_id):
+    
+    data_id = edam_to_id.get('EDAM:2353')   ## data:2353 Ontology data
+    topic_id = edam_to_id.get('EDAM:0089')  ## topic:0089 Ontology and terminology
+    format_id = edam_to_id.get('EDAM:3262') ## format:3262 OWL/XML
+    current_date = str(datetime.now()).split(' ')[0]
+
+    print data_id, topic_id, format_id, current_date
+    return
+
+    upload_file(CREATED_BY, ontology_file,
+                filename=ontology_file,
+                file_extension='owl',
+                description='Core Gene Ontology in OWL RDF/XML format',
+                display_name=ontology_file,
+                data_id=data_id,
+                format_id=format_id,
+                topic_id=topic_id,
+                status='Active',          
+                is_public='1',
+                is_in_spell='0',
+                is_in_browser='0',
+                file_date=current_date,
+                source_id=source_to_id['SGD']
+            )
+
 
 def write_summary_and_send_email(fw, update_log, to_delete_list):
 
