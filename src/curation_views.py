@@ -66,6 +66,7 @@ def locus_curate_update(request):
 def reference_triage_id_delete(request):
     id = request.matchdict['id'].upper()
     triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
+    curator_session = None
     if triage:
         try:
             curator_session = get_curator_session(request.session['username'])
@@ -79,10 +80,12 @@ def reference_triage_id_delete(request):
             return HTTPOk()
         except:
             traceback.print_exc()
-            curator_session.rollback()
+            if curator_session:
+                curator_session.rollback()
             return HTTPBadRequest(body=json.dumps({'error': 'DB failure. Verify that PMID is valid and not already present in SGD.'}))
         finally:
-            curator_session.remove()
+            if curator_session:
+                curator_session.remove()
     else:
         return HTTPNotFound()
 
