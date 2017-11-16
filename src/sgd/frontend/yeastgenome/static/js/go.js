@@ -1,16 +1,6 @@
 $(document).ready(function() {
 	$.getJSON('/backend/go/' + go_term['id'] + '/locus_details', function(data) {
 	  	create_go_table(data);
-
-        if(go_term['descendant_locus_count'] > go_term['locus_count']) {
-            create_show_child_button("go_table_show_children", go_table, data, '/backend/go/' + go_term['id'] + '/locus_details_all', go_data_to_table, function(table_data) {
-                var genes = {};
-                for (var i=0; i < table_data.length; i++) {
-                    genes[table_data[i][1]] = true;
-                }
-                set_up_header('go_table', table_data.length, 'entry', 'entries', Object.keys(genes).length, 'gene', 'genes');
-            });
-        }
 	});
 
 	$.getJSON('/backend/go/' + go_term['id'] + '/ontology_graph', function(data) {
@@ -101,21 +91,32 @@ function create_go_table(data) {
         null, //annotation_extension
         null // reference
     ];
-    create_or_hide_table(manualDatatable, options, "manual_go_table", go_term["display_name"], go_term["link"], "manually");
-    create_or_hide_table(htpDatatable, options, "htp_go_table", go_term["display_name"], go_term["link"], "high-throughput");
-    create_or_hide_table(computationalDatatable, options, "computational_go_table", go_term["display_name"], go_term["link"], "computational");
+    create_or_hide_table(manualDatatable, options, "manual_go_table", go_term["display_name"], go_term["link"], go_term["id"], "manually curated", data);
+    create_or_hide_table(htpDatatable, options, "htp_go_table", go_term["display_name"], go_term["link"], go_term["id"], "high-throughput", data);
+    create_or_hide_table(computationalDatatable, options, "computational_go_table", go_term["display_name"], go_term["link"], go_term["id"], "computational", data);
 }
 
-function create_or_hide_table(tableData, options, tableIdentifier, goName, goLink, emptyLabelSeg) {
+function create_or_hide_table(tableData, options, tableIdentifier, goName, goLink, goId, annotationType, originalData) {
     if (tableData.length) {
         var localOptions =  $.extend({ aaData: tableData, oLanguage: { sEmptyTable: 'No genes annotated directly to ' + goName } }, options);
         var table = create_table(tableIdentifier, localOptions);
         create_analyze_button(tableIdentifier + "_analyze", table, "<a href='" + goLink + "' class='gene_name'>" + goName + "</a> genes", true);
         create_download_button(tableIdentifier + "_download", table, goName + "_annotations");
+        
+        if(go_term['descendant_locus_count'] > go_term['locus_count']) {
+            create_show_child_button(tableIdentifier + "_show_children", table, originalData, "/backend/go/" + goId + "/locus_details_all", go_data_to_table, function(table_data) {
+                var genes = {};
+                for (var i=0; i < table_data.length; i++) {
+                    genes[table_data[i][1]] = true;
+                }
+                set_up_header(tableIdentifier, table_data.length, 'entry', 'entries', Object.keys(genes).length, 'gene', 'genes');
+            }, annotationType);
+        }
+        return table;
     } else {
         $("#" + tableIdentifier + "_header").remove();
         var $parent = $("#" + tableIdentifier).parent();
-        var emptyMessage = "There are no " + emptyLabelSeg + " annotations for " + goName + ".";
+        var emptyMessage = "There are no " + annotationType + " annotations for " + goName + ".";
         $parent.html(emptyMessage);
     }
 };
