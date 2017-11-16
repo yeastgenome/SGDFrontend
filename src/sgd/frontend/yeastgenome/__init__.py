@@ -402,6 +402,8 @@ def clean_cell(cell):
     else:
         if isinstance(cell, int):
             cell = str(cell)
+        if isinstance(cell, float):
+            cell = str(cell)
         cell = cell.replace('<br>', ' ')
         result = remove_html(cell)
         while result is not None:
