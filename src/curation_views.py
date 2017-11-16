@@ -66,6 +66,7 @@ def locus_curate_update(request):
 def reference_triage_id_delete(request):
     id = request.matchdict['id'].upper()
     triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
+    curator_session = None
     if triage:
         try:
             curator_session = get_curator_session(request.session['username'])
@@ -77,12 +78,14 @@ def reference_triage_id_delete(request):
             pusher = get_pusher_client()
             pusher.trigger('sgd', 'triageUpdate', {})
             return HTTPOk()
-        except:
-            traceback.print_exc()
-            curator_session.rollback()
+        except Exception as e:
+            if curator_session:
+                curator_session.rollback()
+            log.error(e)
             return HTTPBadRequest(body=json.dumps({'error': 'DB failure. Verify that PMID is valid and not already present in SGD.'}))
         finally:
-            curator_session.remove()
+            if curator_session:
+                curator_session.remove()
     else:
         return HTTPNotFound()
 
@@ -136,11 +139,11 @@ def reference_triage_promote(request):
             DBSession.delete(triage)
             transaction.commit()
         except IntegrityError as e:
-            traceback.print_exc()
+            log.error(e)
             DBSession.rollback()
             return HTTPBadRequest(body=json.dumps({'error': str(e) }))
-        except:
-            traceback.print_exc()
+        except Exception as e:
+            log.error(e)
             return HTTPBadRequest(body=json.dumps({'error': 'Error importing PMID into the database. Verify that PMID is valid and not already present in SGD.'}))
         # update tags
         try:
@@ -148,7 +151,7 @@ def reference_triage_promote(request):
             new_reference = curator_session.query(Referencedbentity).filter_by(dbentity_id=new_reference_id).one_or_none()
             new_reference.update_tags(tags, username)
         except IntegrityError as e:
-            traceback.print_exc()
+            log.error(e)
             curator_session.rollback()
         finally:
             curator_session.remove()

@@ -19,8 +19,7 @@ __author__ = 'sweng66'
 
 TERMS = ['yeast', 'cerevisiae']
 URL = 'http://www.ncbi.nlm.nih.gov/pubmed/'
-# TEMP get backlog of triage
-DAY = 85#14 
+DAY = 16 
 RETMAX = 10000
 
 logging.basicConfig()
