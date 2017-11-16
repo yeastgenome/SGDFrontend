@@ -101,19 +101,24 @@ function create_go_table(data) {
         null, //annotation_extension
         null // reference
     ];
-    var manualOptions = $.extend({ aaData: manualDatatable, oLanguage: { sEmptyTable: 'No genes manually annotated directly to ' + go_term['display_name'] } }, options);
-    var htpOptions = $.extend({ aaData: htpDatatable, oLanguage: { sEmptyTable: 'No high-throughput gene annotations for ' + go_term['display_name'] } }, options);
-    var computationalOptions = $.extend({ aaData: computationalDatatable, oLanguage: { sEmptyTable: 'No genes computationally annotated directly to ' + go_term['display_name'] } }, options);
-    var manualTable = create_table("manual_go_table", manualOptions);
-    create_analyze_button("manual_go_table_analyze", manualTable, "<a href='" + go_term['link'] + "' class='gene_name'>" + go_term['display_name'] + "</a> genes", true);
-    create_download_button("manual_go_table_download", manualTable, go_term['display_name'] + "_annotations");
-    var htpTable = create_table("htp_go_table", htpOptions);
-    create_analyze_button("htp_go_table_analyze", htpTable, "<a href='" + go_term['link'] + "' class='gene_name'>" + go_term['display_name'] + "</a> genes", true);
-    create_download_button("htp_go_table_download", htpTable, go_term['display_name'] + "_annotations");
-    var computationalTable = create_table("computational_go_table", computationalOptions);
-    create_analyze_button("computational_go_table_analyze", computationalTable, "<a href='" + go_term['link'] + "' class='gene_name'>" + go_term['display_name'] + "</a> genes", true);
-    create_download_button("computational_go_table_download", computationalTable, go_term['display_name'] + "_annotations");
+    create_or_hide_table(manualDatatable, options, "manual_go_table", go_term["display_name"], go_term["link"], "manually");
+    create_or_hide_table(htpDatatable, options, "htp_go_table", go_term["display_name"], go_term["link"], "high-throughput");
+    create_or_hide_table(computationalDatatable, options, "computational_go_table", go_term["display_name"], go_term["link"], "computational");
 }
+
+function create_or_hide_table(tableData, options, tableIdentifier, goName, goLink, emptyLabelSeg) {
+    if (tableData.length) {
+        var localOptions =  $.extend({ aaData: tableData, oLanguage: { sEmptyTable: 'No genes annotated directly to ' + goName } }, options);
+        var table = create_table(tableIdentifier, localOptions);
+        create_analyze_button(tableIdentifier + "_analyze", table, "<a href='" + goLink + "' class='gene_name'>" + goName + "</a> genes", true);
+        create_download_button(tableIdentifier + "_download", table, goName + "_annotations");
+    } else {
+        $("#" + tableIdentifier + "_header").remove();
+        var $parent = $("#" + tableIdentifier).parent();
+        var emptyMessage = "There are no " + emptyLabelSeg + " annotations for " + goName + ".";
+        $parent.html(emptyMessage);
+    }
+};
 
 var graph_style = cytoscape.stylesheet()
 	.selector('node')
