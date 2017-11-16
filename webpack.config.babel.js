@@ -70,6 +70,7 @@ if (isProduction) {
   config.plugins = [
     new webpack.DefinePlugin({
       'process.env': {
+        'DEMO_ENV': JSON.stringify(process.env.DEMO_ENV),
         'NODE_ENV': JSON.stringify('production'),
         'PREVIEW_URL': JSON.stringify(process.env.PREVIEW_URL || 'https://www.yeastgenome.org')
       }

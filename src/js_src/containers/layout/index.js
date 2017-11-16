@@ -100,10 +100,15 @@ class LayoutComponent extends Component {
   render() {
     // init auth nodes, either login or logout links
     let menuNode = this.props.isAuthenticated ? this.renderAuthedMenu() : this.renderPublicMenu();
+    let devNoticeNode = null;
+    if (process.env.DEMO_ENV === 'development') {
+      devNoticeNode = <div className={`warning callout ${style.demoWarning}`}><i className='fa fa-exclamation-circle' /> Demo</div>;
+    }
     return (
       <div>
         {this.renderMessage()}
         {this.renderError()}
+        {devNoticeNode}
         <nav className={`top-bar ${style.navWrapper}`}>
           <div className='top-bar-left'>
             {menuNode}
