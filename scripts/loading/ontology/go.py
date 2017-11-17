@@ -5,7 +5,7 @@ from datetime import datetime
 import sys
 reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('utf-8')
-from src.models import Source, Go, GoUrl, GoAlias, GoRelation, Ro, Edam
+from src.models import Source, Go, GoUrl, GoAlias, GoRelation, Ro, Edam, Dbentity, Filedbentity
 from src.helpers import upload_file
 from scripts.loading.database_session import get_session
 from scripts.loading.ontology import read_owl  
@@ -29,7 +29,7 @@ log.info("GO Ontology Loading Report:\n")
 def load_ontology(ontology_file):
 
     nex_session = get_session()
-
+    
     log.info("Getting data from database...")
 
     source_to_id = dict([(x.display_name, x.source_id) for x in nex_session.query(Source).all()])
@@ -37,13 +37,6 @@ def load_ontology(ontology_file):
     term_to_ro_id = dict([(x.display_name, x.ro_id) for x in nex_session.query(Ro).all()])
     roid_to_ro_id = dict([(x.roid, x.ro_id) for x in nex_session.query(Ro).all()])
     edam_to_id = dict([(x.format_name, x.edam_id) for x in nex_session.query(Edam).all()])
-
-
-
-    upload_file_to_s3(ontology_file, source_to_id, edam_to_id)
-
-    return
-
 
     go_id_to_alias = {}
     for x in nex_session.query(GoAlias).all():
@@ -83,7 +76,7 @@ def load_ontology(ontology_file):
 
     log.info("Uploading file to S3...")
 
-    upload_file_to_s3(ontology_file, source_to_id, edam_to_id)
+    update_database_load_file_to_s3(nex_session, ontology_file, source_to_id, edam_to_id)
 
     log.info("Writing loading summary...")
 
@@ -339,31 +332,49 @@ def insert_relation(nex_session, source_id, parent_id, child_id, ro_id, relation
     fw.write("Added new PARENT: parent_id = " + str(parent_id) + " for go_id = " + str(child_id) + "\n")
     
 
-def upload_file_to_s3(ontology_file, source_to_id, edam_to_id):
+def update_database_load_file_to_s3(nex_session, ontology_file, source_to_id, edam_to_id):
+
+    gzip_file = ontology_file + ".gz"
+    import gzip
+    import shutil
+    with open(ontology_file, 'rb') as f_in, gzip.open(gzip_file, 'wb') as f_out:
+        shutil.copyfileobj(f_in, f_out)
+
+    local_file = open(gzip_file)
+
+    import hashlib
+    go_md5sum = hashlib.md5(local_file.read()).hexdigest()
+    go_row = nex_session.query(Filedbentity).filter_by(md5sum = go_md5sum).one_or_none()
+
+    if go_row is not None:
+        return
+
+    nex_session.query(Dbentity).filter_by(display_name=gzip_file, dbentity_status='Active').update({"dbentity_status": 'Archived'})
+    nex_session.commit()
     
     data_id = edam_to_id.get('EDAM:2353')   ## data:2353 Ontology data
     topic_id = edam_to_id.get('EDAM:0089')  ## topic:0089 Ontology and terminology
     format_id = edam_to_id.get('EDAM:3262') ## format:3262 OWL/XML
-    current_date = str(datetime.now()).split(' ')[0]
 
-    print data_id, topic_id, format_id, current_date
-    return
+    from sqlalchemy import create_engine
+    from src.models import DBSession
+    engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
+    DBSession.configure(bind=engine)
 
-    upload_file(CREATED_BY, ontology_file,
-                filename=ontology_file,
-                file_extension='owl',
+    upload_file(CREATED_BY, local_file,
+                filename=gzip_file,
+                file_extension='gz',
                 description='Core Gene Ontology in OWL RDF/XML format',
-                display_name=ontology_file,
+                display_name=gzip_file,
                 data_id=data_id,
                 format_id=format_id,
                 topic_id=topic_id,
                 status='Active',          
-                is_public='1',
+                is_public='0',
                 is_in_spell='0',
                 is_in_browser='0',
-                file_date=current_date,
-                source_id=source_to_id['SGD']
-            )
+                file_date=datetime.now(),
+                source_id=source_to_id['SGD'])
 
 
 def write_summary_and_send_email(fw, update_log, to_delete_list):
