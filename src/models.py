@@ -839,7 +839,7 @@ class Colleague(Base):
     def to_dict_basic_data(self):
         _dict = {
             "colleague_id": self.colleague_id,
-            "email": self.email,
+            "email": self.email if self.display_email else None,
             "format_name": self.format_name,
             "name": self.display_name,
             "link": self.obj_url,
@@ -853,7 +853,6 @@ class Colleague(Base):
         }
         return _dict
     def to_dict(self):
-       
         _dict = {
             "colleague_id": self.colleague_id,
             "orcid": self.orcid,
@@ -862,7 +861,7 @@ class Colleague(Base):
             "last_name": self.last_name,
             "suffix": self.suffix,
             "institution": self.institution,
-            "email": self.email,
+            "email": self.email if self.display_email else None,
             "link": self.obj_url,
             "profession": self.profession,
             "state": self.state,
@@ -877,7 +876,8 @@ class Colleague(Base):
             "name": self.display_name,
             "address1": self.address1,
             "address2": self.address2,
-            "address3": self.address3
+            "address3": self.address3,
+            "colleague_note": self.colleague_note
         }
         coll_url = self.get_collegue_url()
         _dict["lab_page"] = ''
