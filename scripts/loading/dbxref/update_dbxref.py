@@ -2,10 +2,12 @@ import urllib
 import sys
 import os
 import gzip
+from datetime import datetime
 import logging
 reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
-from src.models import Dbentity, LocusAlias, Source
+from src.models import Dbentity, LocusAlias, Source, Filedbentity, Edam
+from src.helpers import upload_file
 from scripts.loading.database_session import get_session
 
 __author__ = 'sweng66'
@@ -51,6 +53,8 @@ def update_data(infile):
 
     fw = open(log_file,"w")
 
+    edam_to_id = dict([(x.format_name, x.edam_id) for x in nex_session.query(Edam).all()])
+    
     id_to_source = {}
     source_to_id = {}
 
@@ -122,6 +126,8 @@ def update_data(infile):
     
     # nex_session.rollback()
     nex_session.commit()
+
+    update_database_load_file_to_s3(nex_session, infile, source_to_id, edam_to_id)
 
     log.info("Loading summary:")
     log.info("\tAdded: " + str(ADDED))
@@ -258,6 +264,47 @@ def get_url(alias_type, ID, source):
     return ""
 
 
+def update_database_load_file_to_s3(nex_session, data_file, source_to_id, edam_to_id):
+
+    local_file = open(data_file)
+
+    import hashlib
+    dx_md5sum = hashlib.md5(local_file.read()).hexdigest()
+    dx_row = nex_session.query(Filedbentity).filter_by(md5sum = dx_md5sum).one_or_none()
+
+    if dx_row is not None:
+        return
+
+    log.info("Uploading the file to S3...")
+
+    nex_session.query(Dbentity).filter_by(display_name=data_file, dbentity_status='Active').update({"dbentity_status": 'Archived'})
+    nex_session.commit()
+
+    data_id = edam_to_id.get('EDAM:2872')   ## data:2872 ID list 
+    topic_id = edam_to_id.get('EDAM:3345')  ## topic:3345 Data identity and mapping
+    format_id = edam_to_id.get('EDAM:3475') ## format:3475 TSV
+
+    from sqlalchemy import create_engine
+    from src.models import DBSession
+    engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
+    DBSession.configure(bind=engine)
+
+    upload_file(CREATED_BY, local_file,
+                filename=data_file,
+                file_extension='gz',
+                description='UniProt ID mapping file',
+                display_name=data_file,
+                data_id=data_id,
+                format_id=format_id,
+                topic_id=topic_id,
+                status='Active',
+                is_public='0',
+                is_in_spell='0',
+                is_in_browser='0',
+                file_date=datetime.now(),
+                source_id=source_to_id['SGD'])
+
+    
 def read_uniprot_file(infile, source_to_id):
 
     f = gzip.open(infile)    

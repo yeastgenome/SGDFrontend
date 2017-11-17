@@ -7,8 +7,9 @@ from datetime import datetime
 import sys
 reload(sys)  # Reload does the trick!
 from src.models import Go, Taxonomy, Source, Goannotation, Gosupportingevidence, \
-                       Goextension, EcoAlias
+                       Goextension, EcoAlias, Edam, Dbentity, Filedbentity
 from scripts.loading.database_session import get_session
+from src.helpers import upload_file
 from scripts.loading.util import get_relation_to_ro_id, read_gpi_file, \
                                 read_gpad_file, get_go_extension_link
 
@@ -23,7 +24,6 @@ logging.basicConfig()
 log = logging.getLogger()
 log.setLevel(logging.INFO)
 
-# NEX2_URI = os.environ['NEX2_URI']
 CREATED_BY = os.environ['DEFAULT_USER']
 
 def load_go_annotations(gpad_file, gpi_file, annotation_type, log_file):
@@ -31,11 +31,11 @@ def load_go_annotations(gpad_file, gpi_file, annotation_type, log_file):
     nex_session = get_session()
 
     source_to_id = dict([(x.display_name, x.source_id) for x in nex_session.query(Source).all()])
+    edam_to_id = dict([(x.format_name, x.edam_id) for x in nex_session.query(Edam).all()])
     go_id_to_aspect =  dict([(x.go_id, x.go_namespace) for x in nex_session.query(Go).all()])
 
     log.info("GPAD Loading Report for "+ annotation_type + " annotations\n") 
     
-
     fw = open(log_file, "w")
     
     fw.write(str(datetime.now()) + "\n")
@@ -117,6 +117,12 @@ def load_go_annotations(gpad_file, gpi_file, annotation_type, log_file):
                                 dbentity_id_with_new_pmid,
                                 dbentity_id_with_uniprot,
                                 fw)
+
+    if annotation_type == 'manually curated':
+        log.info(str(datetime.now()))
+        log.info("Uploading GPAD/GPI files to AWS...")
+        update_database_load_file_to_s3(nex_session, gpad_file, gpi_file, 
+                                        source_to_id, edam_to_id)
 
     log.info(str(datetime.now()))
     log.info("Writing summary...")
@@ -507,6 +513,7 @@ def delete_obsolete_annotations(key_to_annotation, hasGoodAnnot, go_id_to_aspect
                 continue
             elif dbentity_id_with_uniprot.get(x.dbentity_id):
                 ## don't want to delete the annotations that are not in GPAD file yet
+                delete_extensions_evidences(nex_session, x.annotation_id)
                 nex_session.delete(x)
                 nex_session.commit()
                 fw.write("DELETE GOANNOTATION: row=" + str(x) + "\n")
@@ -515,9 +522,81 @@ def delete_obsolete_annotations(key_to_annotation, hasGoodAnnot, go_id_to_aspect
     finally:
         nex_session.close()
     
+def delete_extensions_evidences(nex_session, annotation_id):
 
-### WORK FROM HERE
-                                         
+    to_delete_list = nex_session.query(Goextension).filter_by(annotation_id=annotation_id).all()
+    for x in to_delete_list:
+        nex_session.delete(x)
+        
+    to_delete_list = nex_session.query(Gosupportingevidence).filter_by(annotation_id=annotation_id).all()
+    for x in to_delete_list:
+        nex_session.delete(x)
+
+
+def update_database_load_file_to_s3(nex_session, gpad_file, gpi_file, source_to_id, edam_to_id):
+
+    import hashlib
+    
+    gpad_local_file = open(gpad_file)
+    gpi_local_file = open(gpi_file)
+    gpad_md5sum = hashlib.md5(gpad_local_file.read()).hexdigest()
+    gpi_md5sum = hashlib.md5(gpi_local_file.read()).hexdigest()
+
+    gpad_row = nex_session.query(Filedbentity).filter_by(md5sum = gpad_md5sum).one_or_none()
+    gpi_row = nex_session.query(Filedbentity).filter_by(md5sum = gpi_md5sum).one_or_none()
+  
+    if gpad_row is not None and gpi_row is not None:
+        return
+
+    if gpad_row is None:
+        nex_session.query(Dbentity).filter_by(display_name=gpad_file, dbentity_status='Active').update({"dbentity_status": 'Archived'})
+        nex_session.commit()
+    if gpi_row is None:
+        nex_session.query(Dbentity).filter_by(display_name=gpi_file, dbentity_status='Active').update({"dbentity_status": 'Archived'})
+        nex_session.commit()
+
+    data_id = edam_to_id.get('EDAM:2353')   ## data:2353 Ontology data
+    topic_id = edam_to_id.get('EDAM:0089')  ## topic:0089 Ontology and terminology
+    format_id = edam_to_id.get('EDAM:3475') ## format:3475 TSV
+
+    from sqlalchemy import create_engine
+    from src.models import DBSession
+    engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
+    DBSession.configure(bind=engine)
+
+    if gpad_row is None:
+        upload_file(CREATED_BY, gpad_local_file,
+                    filename=gpad_file,
+                    file_extension='.gz',
+                    description='Gene Product Association Data (GPAD)',
+                    display_name=gpad_file,
+                    data_id=data_id,
+                    format_id=format_id,
+                    topic_id=topic_id,
+                    status='Active',
+                    is_public='0',
+                    is_in_spell='0',
+                    is_in_browser='0',
+                    file_date=datetime.now(),
+                    source_id=source_to_id['SGD'])
+                    
+    if gpi_row is None:
+        upload_file(CREATED_BY, gpi_local_file,
+                    filename=gpi_file,
+                    file_extension='gz',
+                    description='Gene Product Information (GPI)',
+                    display_name=gpi_file,
+                    data_id=data_id,
+                    format_id=format_id,
+                    topic_id=topic_id,
+                    status='Active',
+                    is_public='0',
+                    is_in_spell='0',
+                    is_in_browser='0',
+                    file_date=datetime.now(),
+                    source_id=source_to_id['SGD'])
+
+
 def write_summary_and_send_email(annotation_update_log, new_pmids, bad_ref, fw, annot_type):
 
     summary = ''
