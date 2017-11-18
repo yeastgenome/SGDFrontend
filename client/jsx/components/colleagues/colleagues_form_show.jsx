@@ -76,16 +76,9 @@ const ColleaguesFormShow = React.createClass({
   },
   _colleague_contact_dets(data){
     let temp = []
-     
-    if (data.address1) {
-        temp.push(<StringField isReadOnly={this.props.isReadOnly} displayName="Address" paramName="address1" defaultValue={data.address1} key="ad1" />);
+    if (data.full_address) {
+        temp.push(<StringField isReadOnly={this.props.isReadOnly} displayName="Address(s)" paramName="full_address" defaultValue={data.full_address} key="fullAd" />);
       }
-    if (data.address2) {
-      temp.push(<StringField isReadOnly={this.props.isReadOnly} displayName="Address" paramName="address2" defaultValue={data.address2} key="ad2" />);
-    }
-    if (data.address3) {
-      temp.push(<StringField isReadOnly={this.props.isReadOnly} displayName="Address" paramName="address3" defaultValue={data.address3} key="ad3" />);
-    }
     if (data.city) {
       temp.push(<StringField isReadOnly={this.props.isReadOnly} displayName="City" paramName="city" defaultValue={data.city} key="address0" />);
     }
@@ -199,22 +192,33 @@ const ColleaguesFormShow = React.createClass({
     if (this.props.isReadOnly) {
       return this._colleague_contact_dets(data);
     }
-    return (
-      <div className='row'>
-        <div className='column small-3'>
-          <StringField isReadOnly={this.props.isReadOnly} displayName='City' paramName='city' defaultValue={data.city} />
+    return <div>
+        <div className="row">
+          <div className="column small-3">
+            <StringField isReadOnly={this.props.isReadOnly} displayName="Address" paramName="address1" defaultValue={data.address1} key="ad1" />
+          </div>
+          <div className="column small-3">
+            <StringField isReadOnly={this.props.isReadOnly} displayName="Address" paramName="address2" defaultValue={data.address2} key="ad2" />
+          </div>
+          <div className="column small-3">
+            <StringField isReadOnly={this.props.isReadOnly} displayName="Address" paramName="address3" defaultValue={data.address3} key="ad3" />
+          </div>
         </div>
-        <div className='column small-3'>
-          <StringField isReadOnly={this.props.isReadOnly} displayName='State / Region' paramName='state' defaultValue={data.state} />
+        <div className="row">
+          <div className="column small-3">
+            <StringField isReadOnly={this.props.isReadOnly} displayName="City" paramName="city" defaultValue={data.city} />
+          </div>
+          <div className="column small-3">
+            <StringField isReadOnly={this.props.isReadOnly} displayName="State / Region" paramName="state" defaultValue={data.state} />
+          </div>
+          <div className="column small-3">
+            <StringField isReadOnly={this.props.isReadOnly} displayName="Postal Code" paramName="postal_code" defaultValue={data.postal_code} />
+          </div>
+          <div className="column small-3">
+            <StringField isReadOnly={this.props.isReadOnly} displayName="Country" paramName="country" defaultValue={data.country} />
+          </div>
         </div>
-        <div className='column small-3'>
-          <StringField isReadOnly={this.props.isReadOnly} displayName='Postal Code' paramName='postal_code' defaultValue={data.postal_code} />
-        </div>
-        <div className='column small-3'>
-          <StringField isReadOnly={this.props.isReadOnly} displayName='Country' paramName='country' defaultValue={data.country} />
-        </div>
-      </div>
-    );
+      </div>;
   },
 
   _renderAssociates () {
