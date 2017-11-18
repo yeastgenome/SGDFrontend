@@ -1972,6 +1972,7 @@ class Referencedbentity(Dbentity):
             transaction.commit()
         except Exception, e:
             traceback.print_exc()
+            transaction.abort()
             curator_session.rollback()
             raise(e)
         finally:
