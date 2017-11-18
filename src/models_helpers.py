@@ -107,8 +107,16 @@ class ModelsHelper(object):
                 if len(_colleague["colleagues"]) > 0:
                     temp_coll = _colleague["colleagues"][0]
                     if temp_coll:
-                        
                         temp_coll = temp_coll.to_dict()
+                        phones = None
+                        if temp_coll["work_phone"]:
+                            phones = str(temp_coll["work_phone"])
+                        if temp_coll["other_phone"]:
+                            if phones:
+                                if temp_coll["work_phone"] is not temp_coll["other_phone"]:
+                                    phones = phones + ', ' + str(temp_coll["other_phone"])   
+                            else:
+                                phones = str(temp_coll["other_phone"])
                         sfx = temp_coll["suffix"] if temp_coll["suffix"] is not None else ''
                         fname = temp_coll["first_name"] if temp_coll["first_name"] is not None else ''
                         mname = temp_coll["middle_name"] if temp_coll["middle_name"] is not None else ''
@@ -141,6 +149,7 @@ class ModelsHelper(object):
                         _dict["address1"] = temp_coll["address1"]
                         _dict["address2"] = temp_coll["address2"]
                         _dict["address3"] = temp_coll["address3"]
+                        _dict["phones"] = phones if phones else None
                 if len(temp_loci) > 0:
                     genes = [x.locus.display_name for x in temp_loci]
                     if len(genes) > 0:
