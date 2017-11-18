@@ -1934,6 +1934,8 @@ class Referencedbentity(Dbentity):
                 # add tags by gene
                 if len(raw_genes):
                     gene_ids = raw_genes.strip().split()
+                    # ignore duplicates
+                    # gene_ids = list(set(gene_ids))
                     for g_id in gene_ids:
                         g_id = g_id.strip()
                         if g_id == '':
@@ -1967,8 +1969,6 @@ class Referencedbentity(Dbentity):
                             else:
                                 has_omics = True
                         curator_session.add(lit_annotation)
-
-            curator_session.flush()
             transaction.commit()
         except Exception, e:
             traceback.print_exc()
@@ -1976,7 +1976,7 @@ class Referencedbentity(Dbentity):
             raise(e)
         finally:
             if curator_session:
-                curator_session.remove()
+                curator_session.close()
 
 class Filedbentity(Dbentity):
     __tablename__ = 'filedbentity'

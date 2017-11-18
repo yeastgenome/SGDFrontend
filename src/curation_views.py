@@ -279,7 +279,7 @@ def update_reference_tags(request):
         curator_session.remove()
         return processed_tags
     except Exception, e:
-        traceback.print_exc()
+        log.error(e)
         return HTTPBadRequest(body=json.dumps({ 'error': str(e) }), content_type='text/json')
 
 @view_config(route_name='get_recent_annotations', request_method='GET', renderer='json')
