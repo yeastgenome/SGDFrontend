@@ -109,6 +109,19 @@ class ModelsHelper(object):
                     if temp_coll:
                         temp_coll = temp_coll.to_dict()
                         phones = None
+                        full_address = None
+                        if temp_coll["address1"]:
+                            full_address = temp_coll["address1"]
+                        if temp_coll["address2"]:
+                            if full_address:
+                                full_address = full_address + ', ' +temp_coll["address2"]
+                            else:
+                                full_address = temp_coll["address2"]
+                        if temp_coll["address3"]:
+                            if full_address:
+                                full_address = full_address + ', ' +temp_coll["address3"]
+                            else:
+                                full_address = temp_coll["address3"] 
                         if temp_coll["work_phone"]:
                             phones = str(temp_coll["work_phone"])
                         if temp_coll["other_phone"]:
@@ -150,6 +163,7 @@ class ModelsHelper(object):
                         _dict["address2"] = temp_coll["address2"]
                         _dict["address3"] = temp_coll["address3"]
                         _dict["phones"] = phones if phones else None
+                        _dict["full_address"] = full_address
                 if len(temp_loci) > 0:
                     genes = [x.locus.display_name for x in temp_loci]
                     if len(genes) > 0:
