@@ -38,15 +38,17 @@ class TriageControls extends Component {
         'X-CSRF-Token': window.CSRF_TOKEN,        
       }
     };
-    fetchData(url, fetchOptions);
+    fetchData(url, fetchOptions).catch( (data) => {
+      let errorMessage = data ? data.error : 'There was an updating entry.';
+      this.props.dispatch(setError(errorMessage));
+      this.setState({ isPending: false });
+    });
   }
 
   handleDiscardEntry(e) {
     e.preventDefault();
     let id = this.props.entry.curation_id;
-    this.props.dispatch(removeEntry(id));
     let message = `${this.props.entry.basic.citation} discarded.`;
-    this.props.dispatch(setMessage(message));
     let url = `${TRIAGE_URL}/${id}`;
     let fetchOptions = {
       type: 'DELETE',
@@ -56,6 +58,11 @@ class TriageControls extends Component {
     };
     fetchData(url, fetchOptions).then( () => {
       this.props.dispatch(removeEntry(id));
+      this.props.dispatch(setMessage(message));
+    }).catch( (data) => {
+      let errorMessage = data ? data.error : 'There was an error deleting the reference.';
+      this.props.dispatch(setError(errorMessage));
+      this.setState({ isPending: false });
     });
   }
 
