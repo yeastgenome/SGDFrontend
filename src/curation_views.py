@@ -71,8 +71,13 @@ def reference_triage_id_delete(request):
         try:
             curator_session = get_curator_session(request.session['username'])
             triage = curator_session.query(Referencetriage).filter_by(curation_id=id).one_or_none()
-            reference_deleted = Referencedeleted(pmid=triage.pmid, sgdid=None, reason_deleted='This paper was discarded during literature triage.', created_by=request.session['username'])
-            curator_session.add(reference_deleted)
+            # only add referencedeleted if reference not in referencedbentity (allow curators to delete a reference that was added to DB but failed to removed from referencetriage)
+            existing_ref = curator_session.query(Referencedbentity).filter_by(pmid=triage.pmid).one_or_none()
+            if not existing_ref:
+                reference_deleted = Referencedeleted(pmid=triage.pmid, sgdid=None, reason_deleted='This paper was discarded during literature triage.', created_by=request.session['username'])
+                curator_session.add(reference_deleted)
+            else:
+                log.warning(str(triage.pmid) + ' was removed from Referencedbentity but no Referencedeleted was added.')
             curator_session.delete(triage)        
             transaction.commit()
             pusher = get_pusher_client()
