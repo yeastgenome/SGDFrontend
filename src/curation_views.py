@@ -136,10 +136,9 @@ def reference_triage_promote(request):
     id = request.matchdict['id'].upper()
     triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
     new_reference_id = None
-    existing_ref = curator_session.query(Referencedbentity).filter_by(pmid=triage.pmid).one_or_none()
+    existing_ref = DBSession.query(Referencedbentity).filter_by(pmid=triage.pmid).one_or_none()
     if existing_ref:
         return HTTPBadRequest(body=json.dumps({'error': 'The reference already exists in the database. You may need to discard from triage after verifying.' }))
-
     if triage:
         # promote
         try:
