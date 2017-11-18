@@ -1935,7 +1935,7 @@ class Referencedbentity(Dbentity):
                 if len(raw_genes):
                     gene_ids = raw_genes.strip().split()
                     # ignore duplicates
-                    # gene_ids = list(set(gene_ids))
+                    gene_ids = list(set(gene_ids))
                     for g_id in gene_ids:
                         g_id = g_id.strip()
                         if g_id == '':
