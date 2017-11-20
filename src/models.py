@@ -1931,17 +1931,23 @@ class Referencedbentity(Dbentity):
                     comment = None
                 raw_genes = tag['genes'].strip()
                 gene_ids = []
+                
                 # add tags by gene
                 if len(raw_genes):
                     gene_ids = raw_genes.strip().split()
                     # ignore duplicates
                     gene_ids = list(set(gene_ids))
+                    tag_dbentity_ids = []
                     for g_id in gene_ids:
                         g_id = g_id.strip()
                         if g_id == '':
                             continue
                         upper_g_id = g_id.upper()
                         gene_dbentity_id = curator_session.query(Locusdbentity.dbentity_id).filter(or_(Locusdbentity.display_name == upper_g_id, Locusdbentity.format_name == g_id)).one_or_none()[0]
+                        # ignore duplicates
+                        if gene_dbentity_id in tag_dbentity_ids:
+                            continue
+                        tag_dbentity_ids.append(gene_dbentity_id)
                         curation_ref = CurationReference.factory(self.dbentity_id, name, comment, gene_dbentity_id, username)
                         if curation_ref:
                             curator_session.add(curation_ref)
