@@ -98,6 +98,7 @@ class ModelsHelper(object):
         """
         _dict = {}
         _colleague = dict_data.get(colleague.colleague_id)
+        
         if _colleague is not None:
             temp_relations = _colleague["relations"]
             temp_loci = _colleague["loci"]
@@ -107,12 +108,40 @@ class ModelsHelper(object):
                     temp_coll = _colleague["colleagues"][0]
                     if temp_coll:
                         temp_coll = temp_coll.to_dict()
+                        phones = None
+                        full_address = None
+                        if temp_coll["address1"]:
+                            full_address = temp_coll["address1"]
+                        if temp_coll["address2"]:
+                            if full_address:
+                                full_address = full_address + ', ' +temp_coll["address2"]
+                            else:
+                                full_address = temp_coll["address2"]
+                        if temp_coll["address3"]:
+                            if full_address:
+                                full_address = full_address + ', ' +temp_coll["address3"]
+                            else:
+                                full_address = temp_coll["address3"] 
+                        if temp_coll["work_phone"]:
+                            phones = str(temp_coll["work_phone"])
+                        if temp_coll["other_phone"]:
+                            if phones:
+                                if temp_coll["work_phone"] is not temp_coll["other_phone"]:
+                                    phones = phones + ', ' + str(temp_coll["other_phone"])   
+                            else:
+                                phones = str(temp_coll["other_phone"])
+                        sfx = temp_coll["suffix"] if temp_coll["suffix"] is not None else ''
+                        fname = temp_coll["first_name"] if temp_coll["first_name"] is not None else ''
+                        mname = temp_coll["middle_name"] if temp_coll["middle_name"] is not None else ''
+                        lname = temp_coll["last_name"] if temp_coll["last_name"] is not None else ''
+                        fullname = self.modifyName(sfx, fname, mname,lname).strip()
                         _dict["colleague_id"] = temp_coll["colleague_id"]
                         _dict["orcid"] = temp_coll["orcid"]
                         _dict["first_name"] = temp_coll["first_name"]
                         _dict["middle_name"] = temp_coll["middle_name"]
                         _dict["last_name"] = temp_coll["last_name"]
                         _dict["suffix"] = temp_coll["suffix"]
+                        _dict["fullname"] = fullname
                         _dict["institution"] = temp_coll["institution"]
                         _dict["email"] = temp_coll["email"]
                         _dict["lab_page"] = temp_coll["lab_page"]
@@ -133,15 +162,37 @@ class ModelsHelper(object):
                         _dict["address1"] = temp_coll["address1"]
                         _dict["address2"] = temp_coll["address2"]
                         _dict["address3"] = temp_coll["address3"]
+                        _dict["phones"] = phones if phones else None
+                        _dict["full_address"] = full_address
                 if len(temp_loci) > 0:
                     genes = [x.locus.display_name for x in temp_loci]
                     if len(genes) > 0:
                         _dict["associated_genes"] = genes
                 associates = self.get_associates_helper(temp_relations)
+                locus_items = self.get_all_collegue_locus_by_id(colleague.colleague_id)
+                temp_locus_str = []
+                if(len(locus_items) > 0):
+                    temp_locus_str = [lcs.locus.display_name for lcs in locus_items]
                 if associates:
                     _dict["supervisors"] = associates["supervisors"]
                     _dict["lab_members"] = associates["members"]
+                if temp_locus_str:
+                    _dict["associated_gene_ids"] = temp_locus_str
+                
             return _dict
+
+    def modifyName(self, sfx,fname, mname, lname):
+        temp = ''
+        if len(sfx) > 0:
+            temp = temp + sfx + ' '
+        if len(fname) > 0:
+            temp = temp + fname + ' '
+        if len(mname) > 0:
+            temp = temp + mname + ' '
+        if len(lname) > 0:
+            temp = temp + lname
+
+        return temp
 
     def get_associates_helper(self, relations_list):
         """
