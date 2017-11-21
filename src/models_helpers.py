@@ -98,7 +98,7 @@ class ModelsHelper(object):
         """
         _dict = {}
         _colleague = dict_data.get(colleague.colleague_id)
-        
+
         if _colleague is not None:
             temp_relations = _colleague["relations"]
             temp_loci = _colleague["loci"]
@@ -114,20 +114,20 @@ class ModelsHelper(object):
                             full_address = temp_coll["address1"]
                         if temp_coll["address2"]:
                             if full_address:
-                                full_address = full_address + ', ' +temp_coll["address2"]
+                                full_address = full_address + ', ' + temp_coll["address2"]
                             else:
                                 full_address = temp_coll["address2"]
                         if temp_coll["address3"]:
                             if full_address:
-                                full_address = full_address + ', ' +temp_coll["address3"]
+                                full_address = full_address + ', ' + temp_coll["address3"]
                             else:
-                                full_address = temp_coll["address3"] 
+                                full_address = temp_coll["address3"]
                         if temp_coll["work_phone"]:
                             phones = str(temp_coll["work_phone"])
                         if temp_coll["other_phone"]:
                             if phones:
                                 if temp_coll["work_phone"] is not temp_coll["other_phone"]:
-                                    phones = phones + ', ' + str(temp_coll["other_phone"])   
+                                    phones = phones + ', ' + str(temp_coll["other_phone"])
                             else:
                                 phones = str(temp_coll["other_phone"])
                         sfx = temp_coll["suffix"] if temp_coll["suffix"] is not None else ''
@@ -164,6 +164,7 @@ class ModelsHelper(object):
                         _dict["address3"] = temp_coll["address3"]
                         _dict["phones"] = phones if phones else None
                         _dict["full_address"] = full_address
+                        _dict["colleague_note"] = temp_coll["colleague_note"]
                 if len(temp_loci) > 0:
                     genes = [x.locus.display_name for x in temp_loci]
                     if len(genes) > 0:
@@ -178,7 +179,7 @@ class ModelsHelper(object):
                     _dict["lab_members"] = associates["members"]
                 if temp_locus_str:
                     _dict["associated_gene_ids"] = temp_locus_str
-                
+
             return _dict
 
     def modifyName(self, sfx,fname, mname, lname):
