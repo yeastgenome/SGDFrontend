@@ -48,14 +48,33 @@ export const StringField = React.createClass({
   },
 
   _renderReadOnly () {
-    return (
-      <div className='form-read-field'>
-        <dl className='key-value'>
-          <dt>{this._renderIcon()}{this.props.displayName}</dt>
-          <dd>{this.props.defaultValue}</dd>
-        </dl>
-      </div>
-    );
+    if (this.props.paramName == "colleague_note") {
+      let tempStr = this.props.defaultValue.match(/\<a.*\>/);
+      let tempArr = this.props.defaultValue.split(/\<a.*\>/);
+      let itm = tempStr[0];
+
+      return <div className="form-read-field">
+          <dl className="key-value">
+            <dt>
+              {this._renderIcon()}
+              {this.props.displayName}
+            </dt>
+            <dd>
+              {tempArr[0]} <span dangerouslySetInnerHTML={{ __html: tempStr[0] }} />
+              {tempArr[1]}
+            </dd>
+          </dl>
+        </div>;
+    }
+    return <div className="form-read-field">
+          <dl className="key-value">
+            <dt>
+              {this._renderIcon()}
+              {this.props.displayName}
+            </dt>
+            <dd>{this.props.defaultValue}</dd>
+          </dl>
+        </div>;
   },
 
   _renderEdit () {

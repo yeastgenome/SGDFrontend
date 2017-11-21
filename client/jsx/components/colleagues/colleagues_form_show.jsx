@@ -117,8 +117,12 @@ const ColleaguesFormShow = React.createClass({
 
     return temp
   },
+  
   _colleague_other_dets(data){
     let temp = []
+    if (data.colleague_note) {
+      temp.push(<StringField isReadOnly={this.props.isReadOnly} displayName="Colleague Note" paramName="colleague_note" defaultValue={data.colleague_note} key="colleague_note" />);
+    }
     if (data.research_interests) {
       temp.push(<StringField isReadOnly={this.props.isReadOnly} displayName="Research Interests" paramName="research_interests" defaultValue={data.research_interests} key="research_interests" />);
     }
