@@ -39,10 +39,9 @@ class Graph extends Component {
   }
 
   handleDownload(e) {
-    var canvasHref = document.querySelector('canvas.sigma-scene').toDataURL();
-    var el = e.target;
-    el.href = canvasHref;
-    el.download = 'network.png';
+    if (this.s) {
+      this.s.renderers[0].snapshot({ download: true });
+    }
   }
 
   didDataChange(prevData, newData) {
@@ -76,7 +75,7 @@ class Graph extends Component {
     return rawEdges.map( (d, i) => {
       d.id = `e${i}`;
       d.color = EDGE_COLOR;
-      d.size = d.evidence;
+      d.size = 2;
       return d;
     });
   }
@@ -157,8 +156,8 @@ class Graph extends Component {
         labelThreshold: 100,
         minNodeSize: 7,
         maxNodeSize: 7,
-        minEdgeSize: 1,
-        maxEdgeSize: 5,
+        minEdgeSize: 2,
+        maxEdgeSize: 2,
         labelThreshold: 0,
         sideMargin: 4,
         zoomingRatio: 1
@@ -215,7 +214,7 @@ class Graph extends Component {
             </span>
           </div>
           <div>
-            <a className='button small secondary' onClick={this.handleDownload}><i className='fa fa-download' /> Download (.png)</a>
+            <a className='button small secondary' onClick={this.handleDownload.bind(this)}><i className='fa fa-download' /> Download (.png)</a>
           </div>
         </div>
       );
