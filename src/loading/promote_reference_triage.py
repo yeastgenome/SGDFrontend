@@ -31,8 +31,8 @@ def add_paper(pmid, created_by="OTTO"):
     insert_authors(reference_id, authors, source_id, created_by)
     insert_pubtypes(pmid, reference_id, record.get('PT', []), source_id, created_by)
     insert_urls(pmid, reference_id, doi_url, pmc_url, source_id, created_by)
-    insert_relations(pmid, reference_id, record, created_by)
-    
+    # removed to support changes in http://redmine.stanford.edu/issues/4758
+    # insert_relations(pmid, reference_id, record, created_by)
     return reference
 
 def insert_urls(pmid, reference_id, doi_url, pmc_url, source_id, created_by):
@@ -286,17 +286,17 @@ def insert_relations(pmid, reference_id, record, created_by):
     
     inText = None
     onText = None
-    type = None
+    rtype = None
     for tag in ['CIN', 'EIN', 'CRI', 'PRIN', 'RPI', 'RIN', 'UIN', 'SPIN', 'ORI']:
         if record.get(tag):
             inText = record[tag]
-            type = tag_to_type[tag]
+            rtype = tag_to_type[tag]
             break
 
     for tag in ['CON', 'EFR', 'CRF', 'PROF', 'RPF', 'ROF', 'UOF']:
         if record.get(tag):
             onText = record[tag]
-            type = tag_to_type[tag]
+            rtype = tag_to_type[tag]
             break
 
     if inText is None and onText is None:
@@ -307,27 +307,37 @@ def insert_relations(pmid, reference_id, record, created_by):
     parent_reference_id = None
     child_reference_id = None
 
+    if type(inText) == list:
+        inText = inText[0]
     if inText is not None and "PMID:" in inText:
+        print(inText)
         parent_reference_id = reference_id
         child_pmid = inText.split("PMID: ")[1].strip()
-        child_reference_id = get_reference_id[int(child_pmid)]
+        print(child_pmid)
+        child_reference_id = get_reference_id(int(child_pmid))
+        print('is there a child?')
+        print(child_pmid, child_reference_id )
         if child_reference_id is not None:
             x = ReferenceRelation(parent_id = parent_reference_id,
                                   child_id = child_reference_id,
                                   source_id = source_id,
-                                  correction_type = type,
+                                  correction_type = rtype,
                                   created_by = created_by)
             DBSession.add(x)
 
+    if type(onText) == list:
+        onText = onText[0]
     if onText is not None and "PMID:" in onText:
         child_reference_id = reference_id
         parent_pmid = onText.split("PMID: ")[1].strip()
-        parent_reference_id = get_reference_id[int(parent_pmid)]
+        parent_reference_id = get_reference_id(int(parent_pmid))
+        print('is there a parent?')
+        print(parent_pmid, parent_reference_id )
         if parent_reference_id is not None:
             x = ReferenceRelation(parent_id = parent_reference_id,
                                   child_id = child_reference_id,
                                   source_id = source_id,
-                                  correction_type = type,
+                                  correction_type = rtype,
                                   created_by = created_by)
             DBSession.add(x)
 
