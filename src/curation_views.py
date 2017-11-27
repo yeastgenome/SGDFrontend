@@ -146,13 +146,10 @@ def reference_triage_promote(request):
             new_reference_id = new_reference.dbentity_id
             DBSession.delete(triage)
             transaction.commit()
-        except IntegrityError as e:
+        except Exception as e:
             log.error(e)
             DBSession.rollback()
             return HTTPBadRequest(body=json.dumps({'error': str(e) }))
-        except Exception as e:
-            log.error(e)
-            return HTTPBadRequest(body=json.dumps({'error': 'Error importing PMID into the database. Verify that PMID is valid and not already present in SGD.'}))
         # update tags
         try:
             curator_session = get_curator_session(request.session['username'])
