@@ -637,6 +637,7 @@ if __name__ == "__main__":
     gpad_file = 'gp_association.559292_sgd.gz'
     gpi_file = 'gp_information.559292_sgd.gz'
     urllib.urlretrieve(url_path + gpad_file, gpad_file)
+    urllib.urlcleanup()
     urllib.urlretrieve(url_path + gpi_file, gpi_file)
 
     if len(sys.argv) >= 2:
