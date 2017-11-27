@@ -147,6 +147,7 @@ def reference_triage_promote(request):
             DBSession.delete(triage)
             transaction.commit()
         except Exception as e:
+            traceback.print_exc()
             log.error(e)
             DBSession.rollback()
             return HTTPBadRequest(body=json.dumps({'error': str(e) }))
@@ -169,9 +170,26 @@ def reference_triage_promote(request):
 
 @view_config(route_name='reference_triage_index', renderer='json', request_method='GET')
 @authenticate
+# TEMP
+# def reference_triage_index(request):
+#     total = DBSession.query(Referencetriage).count()
+#     triages = DBSession.query(Referencetriage).order_by(Referencetriage.date_created.asc()).limit(150).all()
+#     return { 'entries': [t.to_dict() for t in triages], 'total': total }
 def reference_triage_index(request):
     total = DBSession.query(Referencetriage).count()
-    triages = DBSession.query(Referencetriage).order_by(Referencetriage.date_created.asc()).limit(150).all()
+    triages = DBSession.query(Referencetriage).order_by(Referencetriage.date_created.asc()).all()
+
+    # TEMP try to put this one first
+    myindex = 0
+    i = 0
+    for x in triages:
+        if x.pmid == 29097544:
+            myindex = i
+            print('found it')
+        i += 1
+    triages.insert(0, triages.pop(myindex))
+    triages = triages[:150]
+
     return { 'entries': [t.to_dict() for t in triages], 'total': total }
 
 @view_config(route_name='refresh_homepage_cache', request_method='POST', renderer='json')
