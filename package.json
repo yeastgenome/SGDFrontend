@@ -1,6 +1,6 @@
 {
   "name": "SGDBackend-Nex2",
-  "version": "0.0.1",
+  "version": "17.10.0",
   "license": "MIT",
   "author": {
     "name": "Travis Sheppard",
@@ -22,6 +22,7 @@
     "react-simple-dropdown": "^1.1.5",
     "redux": "^3.6.0",
     "reselect": "^2.5.4",
+    "tcomb-form": "^0.9.17",
     "underscore": "^1.8.3",
     "webpack-bundle-tracker": "0.0.93"
   },
@@ -51,6 +52,7 @@
   "scripts": {
     "start": "webpack-dev-server --history-api-fallback --port 2992 --hot --inline",
     "prebuild": "npm run clean && npm run copy",
+    "build:dev": "cross-env DEMO_ENV=development NODE_ENV=production PREVIEW_URL=https://preview.qa.yeastgenome.org  webpack -p --optimize-minimize",
     "build": "cross-env NODE_ENV=production webpack -p --optimize-minimize",
     "clean": "rimraf src/build && mkdir src/build",
     "copy": "cp -r src/public/. src/build",

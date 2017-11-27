@@ -6,13 +6,25 @@ import { allTags } from '../../containers/curateLit/litConstants';
 
 class TagList extends Component {
   updateTags(newTags) {
-    let newEntry = this.props.entry;
-    newEntry.data.tags = newTags;
-    this.props.onUpdate(newEntry, true);
+    this.props.onUpdate(newTags, true);
+  }
+
+  handleCommentChange(_name, _comment) {
+    let tagData = this.getTagData();
+    let activeEntry = _.findWhere(tagData, { name: _name });
+    activeEntry.comment = _comment;
+    this.updateTags(tagData);
+  }
+
+  handleGeneChange(_name, _genes) {
+    let tagData = this.getTagData();
+    let activeEntry = _.findWhere(tagData, { name: _name });
+    activeEntry.genes = _genes;
+    this.updateTags(tagData);
   }
 
   getTagData() {
-    return this.props.entry.data.tags || [];
+    return this.props.tags || [];
   }
 
   getData() {
@@ -52,26 +64,45 @@ class TagList extends Component {
     if (this.props.isReadOnly) {
       return <span>{value}</span>;
     } else {
+      let _handleChange = e => { this.handleGeneChange(name, e.target.value); };
       return (
         <div>
-          <label>Genes (comma-separated)</label>
-          <input className='sgd-geneList' data-type={name} type='text' defaultValue={value} />
+          <label>Genes (space-separated)</label>
+          <textArea className='sgd-geneList' data-type={name} onChange={_handleChange} style={{ minHeight: '1rem' }} type='text' defaultValue={value} />
         </div>
       );
     }
   }
 
-  renderComments(name, value) {
+  renderComments(name, value, ignoreComment) {
+    if (ignoreComment) return null;
     if (this.props.isReadOnly) {
       return <span>{value}</span>;
     } else {
+      let _handleChange = e => { this.handleCommentChange(name, e.target.value); };
       return (
         <div>
-           <label>Comment</label>
-          <input className='sgd-comment' data-type={name} type='text' defaultValue={value} />
+          <label>Comment</label>
+          <textArea className='sgd-comment' data-type={name} onChange={_handleChange} style={{ minHeight: '1rem' }} type='text' defaultValue={value} />
         </div>
       );
     }
+  }
+
+  renderReadNode(d) {
+    let comment = d.comment || '';
+    let commentNode = comment.length ? <span>comment: {comment}</span> : null;
+    return (
+      <div key={`sRTag${d.name}`} style={{ marginLeft: '3rem' }}>
+        <div>
+          <a className={`button small ${style.tagButton}`}>
+            {d.label}
+          </a>
+          <span style={{ marginLeft: '0.5rem' }}>{d.genes}</span>
+        </div>
+        {commentNode}
+      </div>
+    );
   }
 
   renderTags() {
@@ -80,11 +111,12 @@ class TagList extends Component {
       let classSuffix = d.isSelected ? '' : style.inactive;
       let suffixNode = (d.isSelected && !this.props.isReadOnly) ? <span> <i className='fa fa-close' /></span> : null;
       let geneSuffixNode = (d.isSelected && d.hasGenes) ? this.renderGenes(d.name, d.genes) : null;
-      let commentSuffixNode = d.isSelected ? this.renderComments(d.name, d.comment) : null;
+      let commentSuffixNode = d.isSelected ? this.renderComments(d.name, d.comment, d.noComments) : null;
       let _onClick = (e) => {
         e.preventDefault();
         this.toggleSelected(d.name);
       };
+      if (this.props.isReadOnly) return this.renderReadNode(d);
       return (
         <div key={`sTag${i}`}>
           <a className={`button small ${style.tagButton} ${classSuffix}`} onClick={_onClick}>
@@ -111,7 +143,7 @@ class TagList extends Component {
 
   render() {
     return (
-      <div>
+      <div style={{ marginBottom: '1rem' }}>
         {this.renderTags()}
       </div>
     );
@@ -119,7 +151,7 @@ class TagList extends Component {
 }
 
 TagList.propTypes = {
-  entry: React.PropTypes.object,
+  tags: React.PropTypes.array,
   onUpdate: React.PropTypes.func,
   isReadOnly: React.PropTypes.bool,
   isTriage: React.PropTypes.bool

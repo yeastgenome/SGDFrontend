@@ -9,12 +9,19 @@ import json
 import copy
 import requests
 import re
+import traceback
+import transaction
+from datetime import datetime
+from itertools import groupby
 
+from src.curation_helpers import ban_from_cache, link_gene_names, get_curator_session
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
 
 QUERY_LIMIT = 25000
+SGD_SOURCE_ID = 834
+SEPARATOR = ' '
 
 # get list of URLs to visit from comma-separated ENV variable cache_urls 'url1, url2'
 cache_urls = None
@@ -22,7 +29,6 @@ if 'CACHE_URLS' in os.environ.keys():
     cache_urls = os.environ['CACHE_URLS'].split(',')
 else:
     cache_urls = ['http://localhost:6545']
-
 
 class CacheBase(object):
     def get_base_url(self):
@@ -66,6 +72,14 @@ class CacheBase(object):
             except Exception, e:
                 print('error fetching ' + self.display_name)
 
+    def ban_from_cache(self):
+        try:
+            targets = [str(self.sgdid), str(self.dbentity_id)]
+            ban_from_cache(targets)
+        except Exception, e:
+            traceback.print_exc()
+            print('Error banning cache ' + self.sgdid)
+
 Base = declarative_base(cls=CacheBase)
 
 class Allele(Base):
@@ -98,6 +112,7 @@ class Apo(Base):
     apo_namespace = Column(String(20), nullable=False)
     namespace_group = Column(String(40))
     description = Column(String(1000))
+    is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
 
@@ -689,6 +704,7 @@ class Chebi(Base):
     source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     chebiid = Column(String(20), nullable=False, unique=True)
     description = Column(String(2000))
+    is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
 
@@ -820,7 +836,22 @@ class Colleague(Base):
             obj[k.keyword_id].append({'id': k.keyword_id, 'name': k.display_name})
         return obj
 
-
+    def to_dict_basic_data(self):
+        _dict = {
+            "colleague_id": self.colleague_id,
+            "email": self.email if self.display_email else None,
+            "format_name": self.format_name,
+            "name": self.display_name,
+            "link": self.obj_url,
+            "institution": self.institution,
+            "state": self.state,
+            "city": self.city,
+            "country": self.country,
+            "address1": self.address1,
+            "address2": self.address2,
+            "address3": self.address3
+        }
+        return _dict
     def to_dict(self):
         _dict = {
             "colleague_id": self.colleague_id,
@@ -830,17 +861,48 @@ class Colleague(Base):
             "last_name": self.last_name,
             "suffix": self.suffix,
             "institution": self.institution,
-            "email": self.email,
-            "link": self.obj_url
+            "email": self.email if self.display_email else None,
+            "link": self.obj_url,
+            "profession": self.profession,
+            "state": self.state,
+            "country": self.country,
+            "position": self.job_title,
+            "postal_code": self.postal_code,
+            "city": self.city,
+            "research_interests": self.research_interest,
+            "work_phone": self.work_phone,
+            "other_phone": self.other_phone,
+            "format_name": self.format_name,
+            "name": self.display_name,
+            "address1": self.address1,
+            "address2": self.address2,
+            "address3": self.address3,
+            "colleague_note": self.colleague_note
         }
+        coll_url = self.get_collegue_url()
+        _dict["lab_page"] = ''
+        _dict["research_page"] = ''
+        if coll_url is not None:
+
+            if coll_url.url_type == "Research summary":
+                _dict["research_page"] = coll_url.obj_url
+            if coll_url.url_type == "Lab":
+                _dict["lab_page"] = coll_url.obj_url
 
         keyword_ids = DBSession.query(ColleagueKeyword.keyword_id).filter(ColleagueKeyword.colleague_id == self.colleague_id).all()
-
         if len(keyword_ids) > 0:
             ids_query = [k[0] for k in keyword_ids]
             keywords = DBSession.query(Keyword).filter(Keyword.keyword_id.in_(ids_query)).all()
             _dict['keywords'] = [{'id': k.keyword_id, 'name': k.display_name} for k in keywords]
+        else:
+            _dict['keywords'] = []
         return _dict
+
+    def get_collegue_url(self):
+        item = DBSession.query(ColleagueUrl).filter(
+            ColleagueUrl.colleague_id == self.colleague_id).first()
+        return item
+
 
 class ColleagueKeyword(Base):
     __tablename__ = 'colleague_keyword'
@@ -1211,7 +1273,9 @@ class CurationReference(Base):
         'headline_information': 'Headline information',
         'gene_model': 'Gene model',
         'headline_needs_review': 'Headline needs review',
+        'htp_phenotype': 'HTP phenotype',
         'not_yet_curated': 'Not yet curated',
+        'non_phenotype_htp': 'Non-phenotype HTP',
         'paragraph_needs_review': 'Paragraph needs review',
         'pathways': 'Pathways',
         'phenotype_needs_review': 'Phenotype needs review',
@@ -1235,20 +1299,12 @@ class CurationReference(Base):
             json=json
         )
 
-    def to_dict(self):
-        obj = {
-            "tag": self.curation_tag,
-            "locus": None,
-            "comment": self.curator_comment
-        }
-
-        if self.locus:
-            obj['locus'] = {
-                "display_name": self.locus.display_name,
-                "link": self.locus.obj_url
-            }
-
-        return obj
+    def get_name(self):
+        c_name = self.curation_tag
+        for key, value in CurationReference.acceptable_tags.iteritems():
+            if value == c_name:
+                return key
+        return None
 
 class Dataset(Base):
     __tablename__ = 'dataset'
@@ -1468,6 +1524,7 @@ class Datasetsample(Base):
     sample_order = Column(Integer, nullable=False)
     dbxref_id = Column(String(40))
     dbxref_type = Column(String(40))
+    dbxref_url = Column(String(500))
     biosample = Column(String(500))
     strain_name = Column(String(500))
     description = Column(String(500))
@@ -1754,8 +1811,10 @@ class Referencedbentity(Dbentity):
             'created_by' : self.created_by,
             'href': preview_url,
             'date_created': self.date_created.strftime("%Y-%m-%d"),
+            'time_created': self.date_created.isoformat(),
             'name': self.citation,
-            'type': 'added'
+            'type': 'added',
+            'tags': self.get_tags()
         }
 
     def interactions_to_dict(self):
@@ -1796,6 +1855,135 @@ class Referencedbentity(Dbentity):
         base_url = self.get_base_url()
         url1 = base_url + '/literature_details'
         return [url1]
+
+    def get_tags(self):
+        tags = []
+        curation_refs = DBSession.query(CurationReference, Locusdbentity).filter_by(reference_id=self.dbentity_id).outerjoin(Locusdbentity).all()
+        for x in curation_refs:
+            locus_name = None
+            locus = x.Locusdbentity
+            if locus:
+                locus_name = locus.get_name()
+            obj = {
+                'name': x.CurationReference.get_name(),
+                'locus_name': locus_name,
+                'comment': x.CurationReference.curator_comment
+            }
+            tags.append(obj)
+        lit_annotations = DBSession.query(Literatureannotation, Locusdbentity).filter_by(reference_id=self.dbentity_id).outerjoin(Locusdbentity).all()
+        for x in lit_annotations:
+            locus_name = None
+            locus = x.Locusdbentity
+            if locus:
+                locus_name = locus.get_name()
+            obj = {
+                'name': x.Literatureannotation.get_name(),
+                'locus_name': locus_name,
+                'comment': None
+            }
+            # ignore omics tags bc already have internal
+            if obj['name'] in ['non_phenotype_htp', 'htp_phenotype']:
+                continue
+            # Don't append to tags if primary and already in tags.
+            gene_is_tagged_primary_internal = False
+            for tag in tags:
+                is_primary = tag['name'] in ['go', 'classical_phenotype', 'headline_information']
+                if tag['locus_name'] == locus_name and is_primary:
+                    gene_is_tagged_primary_internal = True
+                    break
+            if not gene_is_tagged_primary_internal:
+                tags.append(obj)
+        tag_list = []
+        for k, g in groupby(tags, lambda x: x['name']):
+            g_tags = list(g)
+            name = g_tags[0]['name']
+            comment = g_tags[0]['comment']
+            gene_names = []
+            for x in g_tags:
+                if x['locus_name']:
+                    gene_names.append(x['locus_name'])
+            gene_names = list(set(gene_names))
+            gene_str = SEPARATOR.join(gene_names)
+            tag_list.append({
+                'name': name,
+                'genes': gene_str,
+                'comment': comment
+            })
+        return tag_list
+
+    def update_tags(self, tags, username):
+        curator_session = None
+        try:
+            curator_session = get_curator_session(username)
+            tags = validate_tags(tags)
+            # delete old tags
+            curator_session.query(CurationReference).filter_by(reference_id=self.dbentity_id).delete(synchronize_session=False)
+            curator_session.query(Literatureannotation).filter_by(reference_id=self.dbentity_id).delete(synchronize_session=False)
+            transaction.commit()
+            curator_session.flush()
+            # track which loci have primary annotations for this reference to only have one primary per reference
+            primary_gene_ids = []
+            has_omics = False
+            for tag in tags:
+                name = tag['name']
+                comment = tag['comment']
+                if comment == '':
+                    comment = None
+                raw_genes = tag['genes'].strip()
+                gene_ids = []
+                
+                # add tags by gene
+                if len(raw_genes):
+                    gene_ids = raw_genes.strip().split()
+                    # ignore duplicates
+                    gene_ids = list(set(gene_ids))
+                    tag_dbentity_ids = []
+                    for g_id in gene_ids:
+                        g_id = g_id.strip()
+                        if g_id == '':
+                            continue
+                        upper_g_id = g_id.upper()
+                        gene_dbentity_id = curator_session.query(Locusdbentity.dbentity_id).filter(or_(Locusdbentity.display_name == upper_g_id, Locusdbentity.format_name == g_id)).one_or_none()[0]
+                        # ignore duplicates
+                        if gene_dbentity_id in tag_dbentity_ids:
+                            continue
+                        tag_dbentity_ids.append(gene_dbentity_id)
+                        curation_ref = CurationReference.factory(self.dbentity_id, name, comment, gene_dbentity_id, username)
+                        if curation_ref:
+                            curator_session.add(curation_ref)
+                        # add primary lit annotation
+                        lit_annotation = Literatureannotation.factory(self.dbentity_id, name, gene_dbentity_id, username)
+                        if lit_annotation:
+                            # only make a single primary tag
+                            if lit_annotation.topic == 'Primary Literature':
+                                if gene_dbentity_id in primary_gene_ids:
+                                    continue
+                                else:
+                                    primary_gene_ids.append(gene_dbentity_id)
+                            curator_session.add(lit_annotation)
+                # add a tag with no gene
+                else:
+                    curation_ref = CurationReference.factory(self.dbentity_id, name, comment, None, username)
+                    if curation_ref:
+                        curator_session.add(curation_ref)
+                    lit_annotation = Literatureannotation.factory(self.dbentity_id, name, None, username)
+                    if lit_annotation:
+                        # only make a single omics tag
+                        if lit_annotation.topic == 'Omics':
+                            if has_omics:
+                                continue
+                            else:
+                                has_omics = True
+                        curator_session.add(lit_annotation)
+            transaction.commit()
+        except Exception, e:
+            traceback.print_exc()
+            transaction.abort()
+            curator_session.rollback()
+            raise(e)
+        finally:
+            if curator_session:
+                curator_session.close()
 
 class Filedbentity(Dbentity):
     __tablename__ = 'filedbentity'
@@ -3607,6 +3795,121 @@ class Locusdbentity(Dbentity):
     def get_secondary_base_url(self):
         return '/webservice/locus/' + str(self.dbentity_id)
 
+    def get_summary_dict(self):
+        phenotype_summary = DBSession.query(Locussummary).filter_by(locus_id=self.dbentity_id, summary_type='Phenotype').one_or_none()
+        regulation_summary = DBSession.query(Locussummary).filter_by(locus_id=self.dbentity_id, summary_type='Regulation').one_or_none()
+        if not phenotype_summary:
+            phenotype_summary = ''
+            phenotype_summary_pmids = ''
+        else:
+            summary_ref_ids = DBSession.query(LocussummaryReference.reference_id).filter_by(summary_id=phenotype_summary.summary_id).all()
+            pmids = DBSession.query(Referencedbentity.pmid).filter(Referencedbentity.dbentity_id.in_(summary_ref_ids)).all()
+            pmids = [str(x[0]) for x in pmids]
+            phenotype_summary_pmids = SEPARATOR.join(pmids)
+            phenotype_summary = phenotype_summary.text
+        if not regulation_summary:
+            regulation_summary = ''
+            regulation_summary_pmids = ''
+        else:
+            summary_ref_ids = DBSession.query(LocussummaryReference.reference_id).filter_by(summary_id=regulation_summary.summary_id).all()
+            pmids = DBSession.query(Referencedbentity.pmid).filter(Referencedbentity.dbentity_id.in_(summary_ref_ids)).all()
+            pmids = [str(x[0]) for x in pmids]
+            regulation_summary_pmids = SEPARATOR.join(pmids)
+            regulation_summary = regulation_summary.text
+        return {
+            'name': self.display_name,
+            'paragraphs': {
+                'phenotype_summary': phenotype_summary,
+                'phenotype_summary_pmids': phenotype_summary_pmids,
+                'regulation_summary': regulation_summary,
+                'regulation_summary_pmids': regulation_summary_pmids
+            }
+        }
+
+    def update_summary(self, summary_type, username, text, pmid_list=[]):
+        curator_session = None
+        try:
+            summary_type = summary_type.lower().capitalize()
+            if summary_type == 'Regulation' and len(text) and len(pmid_list) == 0:
+                raise ValueError('Regulation summaries require PMIDs.')
+            # get a special session we can close
+            curator_session = get_curator_session(username)
+            summary = curator_session.query(Locussummary.summary_type, Locussummary.summary_id, Locussummary.html, Locussummary.date_created, Locussummary.text).filter_by(locus_id=self.dbentity_id, summary_type=summary_type).one_or_none()
+            num_summary_refs = 0
+            if summary and len(pmid_list):
+                num_summary_refs = curator_session.query(LocussummaryReference).filter_by(summary_id=summary.summary_id).count()
+            # ignore if same as old summary
+            if summary and summary.text == text and num_summary_refs == len(pmid_list):
+                return
+            # ignore if blank and no summary
+            if summary is None and len(text) == 0:
+                return
+            # if old summary exists and new value is blank, delete summary and locus summary references
+            if summary and len(text) == 0:
+                curator_session.query(LocussummaryReference).filter_by(summary_id=summary.summary_id).delete(synchronize_session=False)
+                curator_session.query(Locussummary).filter_by(locus_id=self.dbentity_id, summary_type=summary_type).delete(synchronize_session=False)
+                transaction.commit()
+                curator_session.flush()
+                return
+            locus_names_ids = curator_session.query(Locusdbentity.display_name, Locusdbentity.sgdid).all()
+            summary_html = link_gene_names(text, locus_names_ids, self.gene_name)
+            # update
+            if summary:
+                curator_session.query(Locussummary).filter_by(summary_id=summary.summary_id).update({ 'text': text, 'html': summary_html })
+            else:
+                new_summary = Locussummary(
+                    locus_id = self.dbentity_id,
+                    summary_type = summary_type,
+                    text = text,
+                    html = summary_html,
+                    created_by = username,
+                    source_id = SGD_SOURCE_ID
+                )
+                curator_session.add(new_summary)
+                summary = new_summary
+            summary = curator_session.query(Locussummary.summary_type, Locussummary.summary_id, Locussummary.html, Locussummary.date_created).filter_by(locus_id=self.dbentity_id, summary_type=summary_type).one_or_none()
+            # add LocussummaryReference(s)
+            if len(pmid_list):
+                matching_refs = curator_session.query(Referencedbentity).filter(Referencedbentity.pmid.in_(pmid_list)).all()
+                if len(matching_refs) != len(pmid_list):
+                    raise ValueError('PMID is not currently in SGD.')
+                pmids = pmid_list
+                for _i, p in enumerate(pmids):
+                    matching_ref = [x for x in matching_refs if x.pmid == int(p)][0]
+                    summary_id = summary.summary_id
+                    reference_id = matching_ref.dbentity_id
+                    order = _i + 1
+                    # look for matching LocussummaryReference
+                    matching_locussummary_refs = curator_session.query(LocussummaryReference).filter_by(summary_id=summary_id, reference_id=reference_id).all()
+                    if len(matching_locussummary_refs):
+                        curator_session.query(LocussummaryReference).filter_by(summary_id=summary_id,reference_id=reference_id).update({ 'reference_order': order })
+                    else:
+                        new_locussummaryref = LocussummaryReference(
+                            summary_id = summary_id,
+                            reference_id = reference_id,
+                            reference_order = order,
+                            source_id = SGD_SOURCE_ID,
+                            created_by = username
+                        )
+                        curator_session.add(new_locussummaryref)
+            # commit and close session to keep user session out of connection pool
+            transaction.commit()
+            return text
+        except Exception as e:
+            traceback.print_exc()
+            if curator_session:
+                curator_session.rollback()
+            raise
+        finally:
+            if curator_session:
+                curator_session.remove()
+
+    def get_name(self):
+        if self.gene_name:
+            return self.gene_name
+        else:
+            return self.systematic_name
+
 class Straindbentity(Dbentity):
     __tablename__ = 'straindbentity'
     __table_args__ = {u'schema': 'nex'}
@@ -3736,6 +4039,7 @@ class Disease(Base):
     source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     doid = Column(String(20), nullable=False, unique=True)
     description = Column(String(2000))
+    is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
 
@@ -4039,6 +4343,7 @@ class Ec(Base):
     obj_url = Column(String(500), nullable=False)
     source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     ecid = Column(String(20), nullable=False, unique=True)
+    is_obsolete = Column(Boolean, nullable=False)
     description = Column(String(1000))
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
@@ -4134,6 +4439,7 @@ class Eco(Base):
     source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     ecoid = Column(String(20), nullable=False, unique=True)
     description = Column(String(1000))
+    is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
 
@@ -4212,6 +4518,7 @@ class Edam(Base):
     edamid = Column(String(20), nullable=False, unique=True)
     edam_namespace = Column(String(20), nullable=False)
     description = Column(String(2000))
+    is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
 
@@ -4480,6 +4787,7 @@ class Go(Base):
     goid = Column(String(20), nullable=False, unique=True)
     go_namespace = Column(String(20), nullable=False)
     description = Column(String(2000))
+    is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
 
@@ -5195,7 +5503,7 @@ class Literatureannotation(Base):
     )
 
     annotation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.annotation_seq'::regclass)"))
-    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=True)
     source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     bud_id = Column(Integer)
     taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
@@ -5212,13 +5520,19 @@ class Literatureannotation(Base):
     acceptable_tags = {
         'classical_phenotype': 'Primary Literature',
         'go': 'Primary Literature',
-        'headline_information': 'Primary Literature',
         'other_primary': 'Primary Literature',
+        'headline_information': 'Primary Literature',
         'additional_literature': 'Additional Literature',
         'htp_phenotype': 'Omics',
         'non_phenotype_htp': 'Omics',
-        'Reviews': 'Reviews'
+        'reviews': 'Reviews'
     }
+
+    @staticmethod
+    def is_primary_tag(tag):
+        if tag not in Literatureannotation.acceptable_tags:
+            return False
+        return 'Primary' in Literatureannotation.acceptable_tags[tag]
 
     @staticmethod
     def factory(reference_id, tag, dbentity_id, created_by, source_id=824, taxonomy_id=274803):
@@ -5249,6 +5563,13 @@ class Literatureannotation(Base):
             }
 
         return obj
+
+    def get_name(self):
+        c_name = self.topic
+        for key, value in Literatureannotation.acceptable_tags.iteritems():
+            if value == c_name:
+                return key
+        return None
 
 class LocusAlias(Base):
     __tablename__ = 'locus_alias'
@@ -5465,9 +5786,10 @@ class Locussummary(Base):
             'created_by' : self.created_by,
             'href': preview_url,
             'date_created': self.date_created.strftime("%Y-%m-%d"),
+            'time_created': self.date_created.isoformat(),
             'name': self.locus.display_name,
             'type': self.summary_type + ' summary',
-            'value': self.html
+            'value': self.text
         }
 
 class LocussummaryReference(Base):
@@ -5529,6 +5851,7 @@ class Obi(Base):
     source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     obiid = Column(String(20), nullable=False, unique=True)
     description = Column(String(2000))
+    is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
 
@@ -6009,46 +6332,49 @@ class Phenotypeannotation(Base):
 
         groups = {}
 
-        for condition in conditions:
-            if condition.condition_class == "chemical":
-                if chemical is not None and (chemical.display_name == condition.condition_name):
+        for condition_item in conditions:
+            if condition_item.condition_class == "chemical":
+                if chemical is not None and (chemical.display_name == condition_item.condition_name):
                     chebi_url = chemical.obj_url
                 else:
                     if chebi_urls == None:
-                        chebi_url = DBSession.query(Chebi.obj_url).filter_by(display_name=condition.condition_name).one_or_none()
+                        chebi_url = DBSession.query(Chebi.obj_url).filter_by(display_name=condition_item.condition_name).one_or_none()
                     else:
-                        chebi_url = chebi_urls.get(condition.condition_name)
+                        chebi_url = chebi_urls.get(
+                            condition_item.condition_name)
 
                 link = None
                 if chebi_url:
                     link = chebi_url
 
-                if condition.group_id not in groups:
-                    groups[condition.group_id] = []
+                if condition_item.group_id not in groups:
+                    groups[condition_item.group_id] = []
 
-                groups[condition.group_id].append({
+                groups[condition_item.group_id].append({
                     "class_type": "CHEMICAL",
-                    "concentration": condition.condition_value,
+                    "concentration": condition_item.condition_value,
                     "bioitem": {
                         "link": link,
-                        "display_name": condition.condition_name
+                        "display_name": condition_item.condition_name
                     },
                     "note": None,
-                    "role": "CHEMICAL"
+                    "role": "CHEMICAL",
+                    "unit": condition_item.condition_unit
                 })
             else:
-                note = condition.condition_name
-                if condition.condition_value:
-                    note += ", " + condition.condition_value
-                    if condition.condition_unit:
-                        note += " " + condition_unit
+                note = condition_item.condition_name
+                if condition_item.condition_value:
+                    note += ", " + condition_item.condition_value
+                    if condition_item.condition_unit:
+                        note += " " + condition_item.condition_unit
 
-                if condition.group_id not in groups:
-                    groups[condition.group_id] = []
+                if condition_item.group_id not in groups:
+                    groups[condition_item.group_id] = []
 
-                groups[condition.group_id].append({
-                    "class_type": condition.condition_class,
-                    "note": note
+                groups[condition_item.group_id].append({
+                    "class_type": condition_item.condition_class,
+                    "note": note,
+                    "unit": condition_item.condition_unit
                 })
 
         if chemical:
@@ -6643,6 +6969,7 @@ class Psimod(Base):
     source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     psimodid = Column(String(20), nullable=False, unique=True)
     description = Column(String(2000))
+    is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
 
@@ -7073,6 +7400,7 @@ class Ro(Base):
     source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     roid = Column(String(20), nullable=False, unique=True)
     description = Column(String(1000))
+    is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
 
@@ -7149,6 +7477,7 @@ class So(Base):
     source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     soid = Column(String(20), nullable=False, unique=True)
     description = Column(String(2000))
+    is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
 
@@ -7308,6 +7637,7 @@ class Taxonomy(Base):
     taxid = Column(String(20), nullable=False, unique=True)
     common_name = Column(String(100))
     rank = Column(String(40), nullable=False)
+    is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
 
@@ -7387,3 +7717,94 @@ class Updatelog(Base):
     created_by = Column(String(12), nullable=False)
     old_value = Column(Text)
     new_value = Column(Text)
+
+# should be valid genes (by standard name or systematic name) and should not be primary, additional, or review for same gene
+def validate_tags(tags):
+    extra_tag_list = ['regulation_information', 'ptm', 'homology_disease']
+    primary_obj = {}
+    additional_obj = {}
+    review_obj = {}
+    extra_obj = {} # tracks if in extra topics and might add additional tag for that gene
+    high_priority_obj = {}
+    gene_ids = []
+    has_reviews = False
+    for tag in tags:
+        name = tag['name']
+        is_primary = Literatureannotation.is_primary_tag(name)
+        is_additional = (name == 'additional_literature')
+        is_reviews = (name == 'reviews')
+        if is_reviews:
+            has_reviews = True
+        is_high_priority = (name == 'high_priority')
+        genes = tag['genes'].strip()
+        if len(genes):
+            t_gene_ids = genes.split()
+            for g in t_gene_ids:
+                # try to uppercase gene names
+                g = g.strip()
+                if g == '':
+                    continue
+                if len(g) <= 6:
+                    g = g.upper()
+                if is_primary:
+                    primary_obj[g] = True
+                if is_additional:
+                    additional_obj[g] = True
+                if is_reviews:
+                    review_obj[g] = True
+                if name in extra_tag_list:
+                    extra_obj[g] = True
+                if is_high_priority:
+                    high_priority_obj[g] = True
+            gene_ids = gene_ids + t_gene_ids
+        elif is_primary or is_additional:
+            raise ValueError('Primary and additional tags must have genes.')
+    # make sure no genes are repeated or shared among primary, additional, and review
+    p_keys = primary_obj.keys()
+    a_keys = additional_obj.keys()
+    r_keys = review_obj.keys()
+    if (has_reviews > 0 and (len(p_keys) + len(a_keys)) > 0):
+        raise ValueError('Review tags are mutually exclusive with primary and additional tags.')
+    unique_keys = set(p_keys + a_keys + r_keys)
+    extra_keys = set(extra_obj.keys())
+    high_priority_keys = set(high_priority_obj.keys())
+    all_keys = list(set(list(unique_keys) + list(extra_keys) + list(high_priority_keys)))
+    # upper_all_keys = [x.upper() for x in all_keys]
+    if len(unique_keys) != (len(p_keys) + len(a_keys) + len(r_keys)):
+        raise ValueError('The same gene can only be used as a primary tag, additional tag, or review.')
+    # validate that all genes are proper identifiers
+    valid_genes = DBSession.query(Locusdbentity.gene_name, Locusdbentity.systematic_name).filter(or_(Locusdbentity.display_name.in_(all_keys), (Locusdbentity.format_name.in_(all_keys)))).all()
+    num_valid_genes = len(valid_genes)
+    if num_valid_genes != len(all_keys):
+        # get invalid gene identifiers
+        try:
+            valid_identifiers = []
+            for x in valid_genes:
+                valid_identifiers.append(x[0])
+                valid_identifiers.append(x[1])
+            invalid_identifiers = [x for x in all_keys if x not in valid_identifiers]
+            invalid_identifiers = ', '.join(invalid_identifiers)
+        except:
+            invalid_identifiers = ''
+        raise ValueError('Genes must be a space-separated list of valid genes by standard name or systematic name. Invalid identifier(s): ' + invalid_identifiers)
+    # maybe modify "extra" tags: if homology/disease, PTM, or regulation for a gene and no public top for that gene, then add to additional information
+    new_additional_genes = []
+    for x in extra_keys:
+        if x not in unique_keys:
+            new_additional_genes.append(x)
+    if len(new_additional_genes) and not has_reviews:
+        new_additional_str = SEPARATOR.join(new_additional_genes)
+        # see if additional tag exists, if not create it
+        is_added_to_existing = False
+        for x in tags:
+            if x['name'] == 'additional_literature':
+                x['genes'] = x['genes'] + SEPARATOR + new_additional_str
+                is_added_to_existing = True
+        if not is_added_to_existing:
+            new_tag = {
+                'name': 'additional_literature',
+                'genes': new_additional_str,
+                'comment': None
+            }
+            tags.append(new_tag)
+    return tags

@@ -29,7 +29,6 @@ export const selectIsReady = createSelector(
   (search) => search.get('isReady')
 );
 
-
 export const selectIsPending = createSelector(
   [selectSearchDomain],
   (search) => search.get('isPending')

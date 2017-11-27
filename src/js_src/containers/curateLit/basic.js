@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import Tags from './tags';
-import LitBasicInfo from '../../components/litBasicInfo';
 import { selectActiveLitEntry, selectHasData } from '../../selectors/litSelectors';
 
 class CurateLitBasic extends Component {
@@ -12,19 +11,12 @@ class CurateLitBasic extends Component {
     let _abstract = d.abstract ? d.abstract.text : { text: '' };
     return (
       <div>
-        <div className='callout'>
-          <div className='text-right'>
-            <a><i className='fa fa-edit' /> Edit</a>
+        <div>
+          <div>
+            <p dangerouslySetInnerHTML={{ __html: _abstract }} />
           </div>
-          <LitBasicInfo
-            abstract={_abstract}
-            citation={d.citation}
-            hideGeneList
-            fulltextUrl={''}
-            pmid={d.pubmed_id.toString()}
-          />
         </div>
-        <Tags id={d.sgdid} />
+        <Tags id={this.props.params.id} />
       </div>
     );
   }
@@ -32,7 +24,8 @@ class CurateLitBasic extends Component {
 
 CurateLitBasic.propTypes = {
   data: React.PropTypes.object,
-  hasData: React.PropTypes.bool
+  hasData: React.PropTypes.bool,
+  params: React.PropTypes.object
 };
 
 function mapStateToProps(state) {

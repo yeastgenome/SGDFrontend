@@ -9,6 +9,7 @@ import fetchData from '../../lib/fetchData';
 import AnnotationSummary from '../../components/annotationSummary';
 import Loader from '../../components/loader';
 import { clearError, setError } from '../../actions/metaActions';
+import CurateLayout from '../curateHome/layout';
 
 const UPLOAD_URL = '/upload_spreadsheet';
 const UPLOAD_TIMEOUT = 120000;
@@ -138,10 +139,12 @@ class SpreadsheetUpload extends Component {
       node = this.renderForm();
     }
     return (
-      <div>
-        <h1>Spreadsheet Upload</h1>
-        {node}
-      </div>
+      <CurateLayout>
+        <div>
+          <h1>Spreadsheet Upload</h1>
+          {node}
+        </div>
+      </CurateLayout>
     );
   }
 }
@@ -166,16 +169,6 @@ const TEMPLATE_OPTIONS = [
     label: 'Summaries',
     value: 'locus_summaries',
     tempalateUrl: 'https://docs.google.com/spreadsheets/d/1GwirBge5wrKBv5mDOnHMOrf7nxLydBQOIojaf5wd3QE/edit#gid=0'
-  },
-  {
-    label: 'Locus Information',
-    value: 'locus_info',
-    tempalateUrl: 'http://downloads.yeastgenome.org/curation/chromosomal_feature/SGD_features.tab'
-  },
-  {
-    label: 'Literature',
-    value: 'literature',
-    tempalateUrl: 'http://downloads.yeastgenome.org/curation/literature/gene_literature.tab'
   }
 ];
 const DEFAULT_VALUE = TEMPLATE_OPTIONS[0].value;

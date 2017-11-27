@@ -7,7 +7,7 @@ import { NON_HIGHLIGHTED_FIELDS } from '../../constants';
 import ActionList from './actionList';
 
 const DEFAULT_FIELDS = ['symbol', 'gene_symbol', 'name', 'gene_synonyms', 'synonyms', 'sourceHref', 'id', 'species', 'type'];
-const LINK_URL = 'http://yeastgenome.org';
+const SGD_LINK_URL = 'https://www.yeastgenome.org';
 
 class ResultsList extends Component {
   renderHighlightedValues(highlight) {
@@ -19,7 +19,7 @@ class ResultsList extends Component {
   }
 
   renderHeader(d) {
-    let href = `${LINK_URL}${d.href}`;
+    let href = `${SGD_LINK_URL}${d.href}`;
     return (
       <div>
         <span className={style.resultCatLabel}><CategoryLabel category={d.category} /></span>

@@ -5,29 +5,31 @@ export function updateTriageEntry (updatedEntry) {
   };
 }
 
-export function updateActiveTags (updatedEntry) {
-  return {
-    type: 'UPDATE_ACTIVE_TAGS',
-    payload: updatedEntry
-  };
-}
-
-export function clearActiveTags () {
-  return {
-    type: 'CLEAR_ACTIVE_TAGS'
-  };
-}
-
 export function removeEntry (id) {
   return { type: 'REMOVE_TRIAGE', payload: id };
 }
 
-export function updateTriageEntries (newEntries, username) {
+export function updateTriageEntries (newEntries, username, total) {
   return {
     type: 'UPDATE_TRIAGE_ENTRIES',
     payload: {
       entries: newEntries,
-      username: username
+      username: username,
+      total: total
     }
   };
 }
+
+export function updateLastPromoted (litObj) {
+  return {
+    type: 'UPDATE_LAST_PROMOTED',
+    payload: litObj
+  };
+}
+
+export function clearLastPromoted () {
+  return {
+    type: 'CLEAR_LAST_PROMOTED'
+  };
+}
+
