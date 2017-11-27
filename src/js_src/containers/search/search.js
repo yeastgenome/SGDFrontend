@@ -12,6 +12,7 @@ import ResultsList from './resultsList';
 import ResultsTable from './resultsTable';
 import { SMALL_COL_CLASS, LARGE_COL_CLASS, SEARCH_API_ERROR_MESSAGE } from '../../constants';
 import { receiveResponse, setError, setPending } from './searchActions';
+import Loader from '../../components/loader';
 import LoadingPage from '../../components/loadingPage';
 
 // used to test rendering fixture response
@@ -21,6 +22,7 @@ import {
   selectActiveCategory,
   selectErrorMessage,
   selectIsError,
+  selectIsPending,
   selectIsReady,
   selectQueryParams,
   selectResults,
@@ -77,10 +79,13 @@ class SearchComponent extends Component {
   }
 
   renderResultsNode() {
-    if (this.props.isTable) {
-      return <ResultsTable entries={this.props.results} />;
+    if (this.props.isPending) {
+      return <div style={{ minHeight: '40rem' }}><Loader /></div>;
+    }
+    if (this.props.isList) {
+      return <ResultsList entries={this.props.results} />;
     } else {
-      return <ResultsList entries={this.props.results} />;      
+      return <ResultsTable entries={this.props.results} />;      
     }
   }
 
@@ -124,8 +129,9 @@ SearchComponent.propTypes = {
   errorMessage: React.PropTypes.string,
   history: React.PropTypes.object,
   isError: React.PropTypes.bool,
+  isPending: React.PropTypes.bool,
   isReady: React.PropTypes.bool,
-  isTable: React.PropTypes.bool,
+  isList: React.PropTypes.bool,
   pageSize: React.PropTypes.number,
   queryParams: React.PropTypes.object,
   results: React.PropTypes.array
@@ -133,7 +139,7 @@ SearchComponent.propTypes = {
 
 function mapStateToProps(state) {
   let _queryParams = selectQueryParams(state);
-  let _isTable = (_queryParams.mode === 'table');
+  let _isList = (_queryParams.mode === 'list');
   let _currentPage = parseInt(_queryParams.page) || 1;
   let _activeCategory = selectActiveCategory(state);
   return {
@@ -141,8 +147,9 @@ function mapStateToProps(state) {
     currentPage: _currentPage,
     errorMessage: selectErrorMessage(state),
     isError: selectIsError(state),
+    isPending: selectIsPending(state),
     isReady: selectIsReady(state),
-    isTable: _isTable,
+    isList: _isList,
     pageSize: selectPageSize(state),
     queryParams: _queryParams,
     results: selectResults(state)

@@ -11,7 +11,7 @@ sys.path.insert(0, '../')
 from config import CREATED_BY
 from util import link_gene_names
 from database_session import get_nex_session as get_session
-from pubmed import get_abstracts
+from pubmed import get_pubmed_record
 
 __author__ = 'sweng66'
 
@@ -60,8 +60,8 @@ def update_all_abstracts(log_file):
 
         if len(pmids) >= MAX:
 
-            abstracts = get_abstracts(','.join(pmids))
-            update_database_batch(nex_session, fw, abstracts, pmid_to_reference, 
+            records = get_pubmed_record(','.join(pmids))
+            update_database_batch(nex_session, fw, records, pmid_to_reference, 
                                   reference_id_to_abstract, source_id)
       
             pmids = []
@@ -69,8 +69,8 @@ def update_all_abstracts(log_file):
         pmids.append(str(pmid))
 
     if len(pmids) > 0:
-        abstracts = get_abstracts(','.join(pmids))
-        update_database_batch(nex_session, fw, abstracts, pmid_to_reference, 
+        records = get_pubmed_record(','.join(pmids))
+        update_database_batch(nex_session, fw, records, pmid_to_reference, 
                               reference_id_to_abstract, source_id)
 
     print "Done"
@@ -79,10 +79,13 @@ def update_all_abstracts(log_file):
     nex_session.commit()
 
 
-def update_database_batch(nex_session, fw, abstracts, pmid_to_reference, reference_id_to_abstract, source_id):
+def update_database_batch(nex_session, fw, records, pmid_to_reference, reference_id_to_abstract, source_id):
 
-    for (pmid, abstract) in abstracts:
-        
+    for rec in records:
+        rec_file = StringIO(rec)
+        record = Medline.read(rec_file)
+
+        pmid = record.get('PMID')
         if pmid is None:
             continue
 
@@ -93,10 +96,10 @@ def update_database_batch(nex_session, fw, abstracts, pmid_to_reference, referen
 
         reference_id = x.dbentity_id
         abstract_db = reference_id_to_abstract.get(reference_id)
-        update_abstract(nex_session, fw, pmid, reference_id, abstract, abstract_db, source_id)
+        update_abstract(nex_session, fw, pmid, reference_id, record, abstract_db, source_id)
 
-def update_abstract(nex_session, fw, pmid, reference_id, abstract, abstract_db, source_id):
-    
+def update_abstract(nex_session, fw, pmid, reference_id, record, abstract_db, source_id):
+    abstract = record.get('AB', '')
     if abstract == '':
         return
     if abstract and abstract == abstract_db:

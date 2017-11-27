@@ -115,7 +115,7 @@ def load_references(log_file):
         # print "gene_name=", gene_names, "\n"
         # print abstract, "\n"
     
-        insert_reference(nex_session, fw, pmid, citation, doi_url, abstract, ", ".join(gene_names))
+        insert_reference(nex_session, fw, pmid, citation, doi_url, abstract, "| ".join(gene_names))
 
     fw.close()
 

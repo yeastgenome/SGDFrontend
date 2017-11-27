@@ -4,11 +4,11 @@ import _ from 'underscore';
 
 const DEFAULT_STATE = fromJS({
   activeLitEntry: {},
-  activeTagData: {
-    data: { tags: [] }
-  },
+  activeTags: [],
   isTagVisible: false,
   triageEntries: [],
+  triageTotal: 0,
+  lastPromoted: null,
 });
 
 export default function litReducer(state = DEFAULT_STATE, action) {
@@ -19,7 +19,7 @@ export default function litReducer(state = DEFAULT_STATE, action) {
   case 'UPDATE_ACTIVE_TAGS':
     return state
       .set('isTagVisible', fromJS(true))
-      .set('activeTagData', fromJS(action.payload));
+      .set('activeTags', fromJS(action.payload));
   case 'CLEAR_ACTIVE_TAGS':
     return state.set('isTagVisible', fromJS(false));
   case 'UPDATE_TRIAGE_ENTRY':
@@ -36,7 +36,13 @@ export default function litReducer(state = DEFAULT_STATE, action) {
   case 'UPDATE_TRIAGE_ENTRIES':
     triageEntries = state.get('triageEntries').toJS();
     let newTriageEntries = replaceTriage(triageEntries, action.payload.entries, action.payload.username);
-    return state.set('triageEntries', fromJS(newTriageEntries));
+    return state
+      .set('triageTotal', fromJS(action.payload.total))
+      .set('triageEntries', fromJS(newTriageEntries));
+  case 'UPDATE_LAST_PROMOTED':
+    return state.set('lastPromoted', fromJS(action.payload));
+  case 'CLEAR_LAST_PROMOTED':
+    return state.set('lastPromoted', fromJS(null));
   default:
     return state;
   }

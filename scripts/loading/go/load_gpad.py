@@ -205,13 +205,11 @@ def load_new_data(data, source_to_id, annotation_type, key_to_annotation, annota
                                          created_by = created_by)
                 nex_session.add(thisAnnot)
                 nex_session.flush()
-                # nex_session.refresh(x)
-                nex_session.commit()
                 annotation_id = thisAnnot.annotation_id
                 count_key= (x['annotation_type'], 'annotation_added')
                 annotation_update_log[count_key] = annotation_update_log[count_key] + 1
 
-            nex_session.commit()
+            # nex_session.commit()
             
             created_by = x['created_by']
             if created_by == '<NULL>' or created_by is None:
@@ -467,9 +465,6 @@ def delete_obsolete_annotations(key_to_annotation, hasGoodAnnot, go_id_to_aspect
                 continue
             elif dbentity_id_with_uniprot.get(x.dbentity_id):
                 ## don't want to delete the annotations that are not in GPAD file yet
-                ## delete goextension and gosupportingevidence first
-                nex_session.query(Goextension).filter_by(annotation_id=x.annotation_id).delete()
-                nex_session.query(Gosupportingevidence).filter_by(annotation_id=x.annotation_id).delete()
                 nex_session.delete(x)
                 nex_session.commit()
                 fw.write("DELETE GOANNOTATION: row=" + str(x) + "\n")
@@ -478,13 +473,15 @@ def delete_obsolete_annotations(key_to_annotation, hasGoodAnnot, go_id_to_aspect
     finally:
         nex_session.close()
     
+
+### WORK FROM HERE
                                          
 def write_summary_and_send_email(annotation_update_log, new_pmids, bad_ref, fw):
 
     summary = ''
     
     if len(new_pmids) > 0:
-        summary = "The following Pubmed ID(s) are not in the database. Please add them into the database so the missing annotations can be added @next run." + "\n" + ", ".join(new_pmids) + "\n\n"
+        summary = "The following Pubmed ID(s) are not in the oracle database. Please add them into the database so the missing annotations can be added @next run." + "\n" + ", ".join(new_pmids) + "\n\n"
 
     if len(bad_ref) > 0:
         summary = summary + "The following new GO_Reference(s) don't have a corresponding SGDID yet." + "\n" + ', '.join(bad_ref) + "\n"

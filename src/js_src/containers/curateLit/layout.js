@@ -12,39 +12,55 @@ import updateTitle from '../../lib/updateTitle';
 import { selectActiveLitEntry } from '../../selectors/litSelectors';
 import { updateActiveEntry } from './litActions';
 import { setNotReady, finishPending } from '../../actions/metaActions';
+import { PREVIEW_URL } from '../../constants.js';
 
 const BASE_CURATE_URL = '/curate/reference';
 const SECTIONS = [
-  'basic',
-  'protein',
-  'phenotypes',
-  'go',
-  'datasets',
-  'regulation',
-  'interaction',
+  'tags'
 ];
 
 class CurateLitLayout extends Component {
   componentDidMount() {
     this.props.dispatch(setNotReady());
     this.fetchData();
+    this._isMounted = true;
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+    updateTitle('');
   }
 
   fetchData() {
     let id = this.props.params.id;
     let url = `/reference/${id}`;
     fetchData(url).then( (data) => {
-      updateTitle(data.citation);
-      this.props.dispatch(updateActiveEntry(data));
-      this.props.dispatch(finishPending());
+      if (this._isMounted) {
+        updateTitle(data.citation);
+        this.props.dispatch(updateActiveEntry(data));
+        this.props.dispatch(finishPending());
+      }
     });
   }
 
   renderHeader() {
     let d = this.props.activeEntry;
+    let previewUrl = `${PREVIEW_URL}/reference/${this.props.params.id}`;
+    let urls = d.urls || [];
+    let linkNodes = urls.map( (d, i) => {
+      return <span key={`refL${i}`} style={{ marginRight: '1rem' }}><a href={d.link} target='_new'>{d.display_name}</a> </span>;
+    });
+    if (d.pubmed_id) {
+      linkNodes.unshift(<span key='refLp' style={{ marginRight: '1rem' }}>PMID: {d.pubmed_id} </span>);
+    }
     return (
       <div>
-        <h3><CategoryLabel category='reference' hideLabel /> {d.citation}</h3>
+        <h3 style={{ display: 'inline-block', marginRight: '0.5rem' }}><CategoryLabel category='reference' hideLabel isPageTitle /> {d.citation}</h3>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <span style={{ display: 'inline-block' }}><a href={previewUrl} target='_new'><i className='fa fa-file-image-o' aria-hidden='true'></i> preview</a></span>
+          <span>{linkNodes}</span>
+        </div>
+        <hr style={{ margin: '1rem 0' }} />
       </div>
     );
   }
@@ -54,7 +70,7 @@ class CurateLitLayout extends Component {
     let current = this.props.pathname.replace(baseUrl, '');
     return SECTIONS.map( (d) => {
       let relative;
-      if (d === 'basic') {
+      if (d === 'tags') {
         relative = '';
       } else {
         relative = `/${d}`;
@@ -90,7 +106,6 @@ class CurateLitLayout extends Component {
 
 CurateLitLayout.propTypes = {
   activeEntry: React.PropTypes.object,
-  activeTagData: React.PropTypes.object,
   children: React.PropTypes.node,
   dispatch: React.PropTypes.func,
   params: React.PropTypes.object,
@@ -101,7 +116,6 @@ CurateLitLayout.propTypes = {
 function mapStateToProps(state) {
   return {
     activeEntry: selectActiveLitEntry(state),
-    activeTagData: state.lit.get('activeTagData').toJS(),
     pathname: state.routing.locationBeforeTransitions.pathname,
     isReady: state.meta.get('isReady')
   };

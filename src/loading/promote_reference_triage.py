@@ -27,13 +27,13 @@ def add_paper(pmid, created_by="OTTO"):
     source_id = ncbi.source_id
 
     ## insert into DBENTITY/REFERENCEDBENTITY/REFERENCEDOCUMENT
-    [reference_id, authors, doi_url, pmc_url, sgdid] = insert_referencedbentity(pmid, source_id, record, created_by)
+    [reference_id, authors, doi_url, pmc_url, sgdid, reference] = insert_referencedbentity(pmid, source_id, record, created_by)
     insert_authors(reference_id, authors, source_id, created_by)
     insert_pubtypes(pmid, reference_id, record.get('PT', []), source_id, created_by)
     insert_urls(pmid, reference_id, doi_url, pmc_url, source_id, created_by)
     insert_relations(pmid, reference_id, record, created_by)
     
-    return (reference_id, sgdid)
+    return reference
 
 def insert_urls(pmid, reference_id, doi_url, pmc_url, source_id, created_by):
     x = ReferenceUrl(display_name = 'PubMed',
@@ -192,7 +192,7 @@ def insert_referencedbentity(pmid, source_id, record, created_by):
                           date_published = pubdate,
                           date_revised = date_revised,
                           issue = issue,
-                          page = year,
+                          page = pages,
                           volume = volume,
                           title = title,
                           doi = doi,
@@ -207,7 +207,7 @@ def insert_referencedbentity(pmid, source_id, record, created_by):
     insert_abstract(pmid, dbentity_id, record,
                     source_id, journal, journal_title, issn_print, created_by)
 
-    return [dbentity_id, authors, doi_url, pmc_url, x.sgdid]
+    return [dbentity_id, authors, doi_url, pmc_url, x.sgdid, x]
 
 
 def get_doi(record):
