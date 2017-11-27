@@ -276,7 +276,7 @@ function set_up_phospho_sort() {
     };
 }
 
-function create_show_child_button(child_button_id, table, data, details_all_link, data_to_table, set_up_table_f) {
+function create_show_child_button(child_button_id, table, data, details_all_link, data_to_table, set_up_table_f, annotationTypeFilter) {
     var direct_data = [];
     var indirect_data = null;
 
@@ -313,7 +313,11 @@ function create_show_child_button(child_button_id, table, data, details_all_link
                         }
                         else {
                             for (var i=0; i < data.length; i++) {
-                                indirect_data.push(data_to_table(data[i], i));
+                                if (typeof annotationTypeFilter === 'string') {
+                                    if (data[i].annotation_type === annotationTypeFilter) indirect_data.push(data_to_table(data[i], i));
+                                } else {
+                                    indirect_data.push(data_to_table(data[i], i));
+                                }
                             }
                             table.fnAddData(indirect_data);
                             set_up_table_f(indirect_data);

@@ -184,7 +184,7 @@
                     </p>
                 </h3>
 
-                <div class="row">
+                <div class="row" id="physicochemical_props_panel">
                     <div class="small-12 large-6 columns content-column">
                         <h3>Amino Acid Composition</h3>
                         {% set table_id = "amino_acid_table" %}
@@ -274,6 +274,7 @@
                         {% include "atomic_table.jinja2" %}
                     </div>
                 </div>
+                <p><span id="no_data">Data not found or not available for&nbsp; <span id="no_data_msg"></span></span></p>
             </div>
          </div>
         </div>

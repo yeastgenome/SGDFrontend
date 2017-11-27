@@ -74,50 +74,104 @@ const ColleaguesFormShow = React.createClass({
       </div>
     );
   },
+  _colleague_contact_dets(data){
+    let temp = []
+    if (data.full_address) {
+        temp.push(<StringField isReadOnly={this.props.isReadOnly} displayName="Address(s)" paramName="full_address" defaultValue={data.full_address} key="fullAd" />);
+      }
+    if (data.city) {
+      temp.push(<StringField isReadOnly={this.props.isReadOnly} displayName="City" paramName="city" defaultValue={data.city} key="address0" />);
+    }
+    if (data.state) {
+      temp.push(<StringField isReadOnly={this.props.isReadOnly} displayName="State / Region" paramName="state" defaultValue={data.state} key="address1" />);
+    }
+    if (data.postal_code) {
+      temp.push(<StringField isReadOnly={this.props.isReadOnly} displayName="Zip" paramName="postal_code" defaultValue={data.postal_code} key="address2" />);
+    }
+    if (data.country) {
+      temp.push(<StringField isReadOnly={this.props.isReadOnly} displayName="Country" paramName="country" defaultValue={data.country} key="address3" />);
+    }
+    if (data.email) {
+      temp.push(<StringField isReadOnly={this.props.isReadOnly} displayName="Email" paramName="email" defaultValue={data.email} key="email" />);
+    }
+    if (data.phones) {
+      temp.push(<StringField isReadOnly={this.props.isReadOnly} displayName="Phones" paramName="phones" defaultValue={data.phones} key="phones" />);
+    }
 
+    return temp
+  },
+  _colleague_dets(data){
+    let temp = []
+    if (data.fullname) {
+      temp.push(<StringField isReadOnly={this.props.isReadOnly} displayName="Name" paramName="fullname" defaultValue={data.fullname} key="name0" />);
+    }
+    if (data.profession) {
+      temp.push(<StringField isReadOnly={this.props.isReadOnly} displayName="Profession" paramName="profession" defaultValue={data.profession} key="profession" />);
+    }
+    if (data.position) {
+      temp.push(<StringField isReadOnly={this.props.isReadOnly} displayName="Title" paramName="position" defaultValue={data.position} key="position" />);
+    }
+    if (data.institution) {
+      temp.push(<MultiSelectField isReadOnly={this.props.isReadOnly} displayName="Institution" paramName="institution" defaultValue={data.institution} optionsUrl={INSTITUTION_URL} isMulti={false} allowCreate={true} key="institution" />);
+    }
+
+    return temp
+  },
+  
+  _colleague_other_dets(data){
+    let temp = []
+    if (data.colleague_note) {
+      temp.push(<StringField isReadOnly={this.props.isReadOnly} displayName="Colleague Note" paramName="colleague_note" defaultValue={data.colleague_note} key="colleague_note" />);
+    }
+    if (data.research_interests) {
+      temp.push(<StringField isReadOnly={this.props.isReadOnly} displayName="Research Interests" paramName="research_interests" defaultValue={data.research_interests} key="research_interests" />);
+    }
+    if (data.keywords) {
+      if (data.keywords.length > 0) {
+        temp.push(<MultiSelectField isReadOnly={this.props.isReadOnly} displayName="Keywords" paramName="keywords" optionsUrl={KEYWORDS_AUTOCOMPLETE_URL} defaultValues={data.keywords} key="keywords" />);
+      }
+    }
+
+    return temp
+  },
   _renderForm () {
     if (this.state.isLoadPending) return <div className='sgd-loader-container'><div className='sgd-loader'></div></div>;    let data = this.state.data;
-    return (
-      <div style={[style.container]}>
+    let temp2 = [];
+    
+    if (data.lab_page) {
+      temp2.push(<StringField isReadOnly={this.props.isReadOnly} displayName="Lab Webpage" paramName="lab_page" defaultValue={data.lab_page} key="lap_page" />);
+    }
+    if (data.research_page) {
+      temp2.push(<StringField isReadOnly={this.props.isReadOnly} displayName="Research Summary Webpage" paramName="research_page" defaultValue={data.research_page} key="research_page" />);
+    }
+    
+    
+    return <div style={[style.container]}>
         {this._renderError()}
         {this._renderControls()}
         {this._renderCaptcha()}
-        <form ref='form' onSubmit={this._submitData}>
-          <div className='row'>
-            <div className='column small-12'>
+        <form ref="form" onSubmit={this._submitData}>
+          <div className="row">
+            <div className="column small-12">
               {this._renderName()}
-              <StringField isReadOnly={this.props.isReadOnly} displayName='Email' paramName='email' defaultValue={data.email} />
-              <StringField isReadOnly={this.props.isReadOnly} displayName='Position' paramName='position' defaultValue={data.position} />
-              <StringField isReadOnly={this.props.isReadOnly} displayName='Profession' paramName='profession' defaultValue={data.profession} />
-              <MultiSelectField isReadOnly={this.props.isReadOnly} displayName='Institution' paramName='institution' defaultValue={data.institution} optionsUrl={INSTITUTION_URL} isMulti={false} allowCreate={true} />
-              <StringField isReadOnly={this.props.isReadOnly} displayName='Work Phone' paramName='work_phone' defaultValue={data.work_phone} />
-              <StringField isReadOnly={this.props.isReadOnly} displayName='Other Phone' paramName='other_phone' defaultValue={data.other_phone} />
               {this._renderAddress()}
-              <StringField isReadOnly={this.props.isReadOnly} displayName='Lab Webpage' paramName='lab_page' defaultValue={data.lab_page} />
-              <StringField isReadOnly={this.props.isReadOnly} displayName='Research Summary Webpage' paramName='research_page' defaultValue={data.research_page} />
-              <StringField isReadOnly={this.props.isReadOnly} displayName='Research Interests' paramName='research_interests' defaultValue={data.research_interests} />
-              <MultiSelectField isReadOnly={this.props.isReadOnly} displayName='Keywords' paramName='keywords' optionsUrl={KEYWORDS_AUTOCOMPLETE_URL} defaultValues={data.keywords} />
-              {this._renderAssociates()}
+              {this._colleague_other_dets(this.state.data)}
+              {this.props.isReadOnly ? [] : temp2}
+              {this.props.isReadOnly ? [] : this._renderAssociates()}
               {this._renderGenes()}
-              {this._renderOrcid()}
+              {this.props.isReadOnly ? this._renderOrcid() : []}
               {this._renderCuratorInput()}
             </div>
           </div>
         </form>
         {this._renderControls()}
-      </div>
-    );
+      </div>;
   },
 
   _renderName () {
     let data = this.state.data;
     if (this.props.isReadOnly) {
-      return [
-        <StringField isReadOnly={this.props.isReadOnly} displayName='First Name' paramName='first_name' defaultValue={data.first_name} key='name0'/>,
-        <StringField isReadOnly={this.props.isReadOnly} displayName='Middle Name' paramName='middle_name' defaultValue={data.middle_name} key='name1'/>,
-        <StringField isReadOnly={this.props.isReadOnly} displayName='Last Name' paramName='last_name' defaultValue={data.last_name} key='name2'/>,
-        <StringField isReadOnly={this.props.isReadOnly} displayName='Suffix' paramName='suffix' defaultValue={data.suffix} key='name3'/>
-      ];
+      return this._colleague_dets(data);
     }
     return (
       <div className='row'>
@@ -140,51 +194,54 @@ const ColleaguesFormShow = React.createClass({
   _renderAddress () {
     let data = this.state.data;
     if (this.props.isReadOnly) {
-      return [
-        <StringField isReadOnly={this.props.isReadOnly} displayName='City' paramName='city' defaultValue={data.city} key='address0' />,
-        <StringField isReadOnly={this.props.isReadOnly} displayName='State / Region' paramName='state' defaultValue={data.state} key='address1' />,
-        <StringField isReadOnly={this.props.isReadOnly} displayName='Postal Code' paramName='postal_code' defaultValue={data.postal_code} key='address2' />,
-        <StringField isReadOnly={this.props.isReadOnly} displayName='Country' paramName='country' defaultValue={data.country} key='address3' />
-      ];
+      return this._colleague_contact_dets(data);
     }
-    return (
-      <div className='row'>
-        <div className='column small-3'>
-          <StringField isReadOnly={this.props.isReadOnly} displayName='City' paramName='city' defaultValue={data.city} />
+    return <div>
+        <div className="row">
+          <div className="column small-3">
+            <StringField isReadOnly={this.props.isReadOnly} displayName="Address" paramName="address1" defaultValue={data.address1} key="ad1" />
+          </div>
+          <div className="column small-3">
+            <StringField isReadOnly={this.props.isReadOnly} displayName="Address" paramName="address2" defaultValue={data.address2} key="ad2" />
+          </div>
+          <div className="column small-3">
+            <StringField isReadOnly={this.props.isReadOnly} displayName="Address" paramName="address3" defaultValue={data.address3} key="ad3" />
+          </div>
         </div>
-        <div className='column small-3'>
-          <StringField isReadOnly={this.props.isReadOnly} displayName='State / Region' paramName='state' defaultValue={data.state} />
+        <div className="row">
+          <div className="column small-3">
+            <StringField isReadOnly={this.props.isReadOnly} displayName="City" paramName="city" defaultValue={data.city} />
+          </div>
+          <div className="column small-3">
+            <StringField isReadOnly={this.props.isReadOnly} displayName="State / Region" paramName="state" defaultValue={data.state} />
+          </div>
+          <div className="column small-3">
+            <StringField isReadOnly={this.props.isReadOnly} displayName="Postal Code" paramName="postal_code" defaultValue={data.postal_code} />
+          </div>
+          <div className="column small-3">
+            <StringField isReadOnly={this.props.isReadOnly} displayName="Country" paramName="country" defaultValue={data.country} />
+          </div>
         </div>
-        <div className='column small-3'>
-          <StringField isReadOnly={this.props.isReadOnly} displayName='Postal Code' paramName='postal_code' defaultValue={data.postal_code} />
-        </div>
-        <div className='column small-3'>
-          <StringField isReadOnly={this.props.isReadOnly} displayName='Country' paramName='country' defaultValue={data.country} />
-        </div>
-      </div>
-    );
+      </div>;
   },
 
   _renderAssociates () {
     let supervisors = this.state.data.supervisors || [];
     let labMembers = this.state.data.lab_members || [];
-    let _formatLink = d => { return `/colleague/${d.format_name}/overview`; }
-    return [
-      <MultiSelectField
-        isReadOnly={this.props.isReadOnly} displayName='Supervisor(s)'
-        paramName='supervisors' optionsUrl={COLLEAGUES_AUTOCOMPLETE_URL}
-        defaultValues={supervisors} defaultOptions={supervisors}
-        allowCreate={true} key='associate0'
-        isLinks={true} formatLink={_formatLink}
-      />,
-      <MultiSelectField
-        isReadOnly={this.props.isReadOnly} displayName='Lab Members'
-        paramName='lab_members' optionsUrl={COLLEAGUES_AUTOCOMPLETE_URL}
-        defaultValues={labMembers} defaultOptions={labMembers}
-        allowCreate={true} key='associate1'
-        isLinks={true} formatLink={_formatLink}
-      />
-    ];
+    let temp = [];
+    let _formatLink = d => {
+      return `/colleague/${d.format_name}/overview`;
+    };
+    if(supervisors.length > 0){
+      temp.push(<MultiSelectField isReadOnly={this.props.isReadOnly} displayName="Supervisor(s)" paramName="supervisors" optionsUrl={COLLEAGUES_AUTOCOMPLETE_URL} defaultValues={supervisors} defaultOptions={supervisors} allowCreate={true} key="associate0" isLinks={true} formatLink={_formatLink} />);
+    }
+    if(labMembers.length > 0){
+      temp.push(<MultiSelectField isReadOnly={this.props.isReadOnly} displayName="Lab Members" paramName="lab_members" optionsUrl={COLLEAGUES_AUTOCOMPLETE_URL} defaultValues={labMembers} defaultOptions={labMembers} allowCreate={true} key="associate1" isLinks={true} formatLink={_formatLink} />);
+    }
+    
+    if(temp.length > 0){
+      return temp;
+    }
   },
 
   _renderCuratorInput () {
@@ -202,7 +259,10 @@ const ColleaguesFormShow = React.createClass({
 
   _renderGenes () {
     let data = this.state.data.associated_genes || [];
-    return <MultiSelectField isReadOnly={this.props.isReadOnly} displayName='Associated Genes' paramName='associated_gene_ids' optionsUrl={GENES_URL} defaultValues={data} defaultOptions={data}/>;
+    if(data.length > 0){
+      return <MultiSelectField isReadOnly={this.props.isReadOnly} displayName="Associated Loci" paramName="associated_gene_ids" optionsUrl={GENES_URL} defaultValues={data} defaultOptions={data} />;
+    }
+    
   },
 
   _renderComments () {
@@ -213,7 +273,9 @@ const ColleaguesFormShow = React.createClass({
   _renderOrcid () {
     let orcid = this.state.data.orcid || '';
     if (this.props.isReadOnly) {
-      return <StringField isReadOnly={this.props.isReadOnly} displayName='ORCID iD' paramName='orcid' defaultValue={orcid} />;
+      if (orcid){
+        return <StringField isReadOnly={this.props.isReadOnly} displayName="ORCID iD" paramName="orcid" defaultValue={orcid} />;
+      }
     } else {
       return (
         <div>
