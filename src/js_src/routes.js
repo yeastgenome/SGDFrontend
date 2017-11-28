@@ -28,6 +28,7 @@ import PublicLayout from './containers/layout/PublicLayout';
 import AuthorResponse from './containers/authorResponse/index';
 import NewColleague from './containers/colleagues/new';
 import EditColleague from './containers/colleagues/edit';
+import NewGeneNameReservation from './containers/reserve/index';
 
 // <Route component={requireAuthentication(SpreadsheetUpload)} path='spreadsheet_upload' />
 // <IndexRoute component={requireAuthentication(CurateHome)} />
@@ -57,7 +58,7 @@ export default (
         <Route component={AuthorResponse} path='author_response' />
         <Route component={NewColleague} path='new_colleague' />
         <Route component={EditColleague} path='colleague/:formatName/edit' />
-        { /* <Route component={NewGeneNameReservation} path='new_reservation' /> */}
+        <Route component={NewGeneNameReservation} path='new_reservation' />
       </Route>
   </Route>
 );
