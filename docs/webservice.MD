@@ -1,4 +1,4 @@
-# SGD Webservice Documentation
+# SGD API Documentation
 
 Many SGD page URLs can be prepended with `/webservice/` to get a JSON representation of the object.
 

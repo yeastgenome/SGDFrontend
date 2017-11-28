@@ -2,6 +2,8 @@
 
 A restful web service for the Saccharomyces Genome Database (SGD) NEX 2, as well as an authenticated curation interface.
 
+SGD API documentation can be found at https://github.com/yeastgenome/SGDBackend-Nex2/blob/master/docs/webservice.MD.
+
 ## Setup
 
 Prerequisites: node.js 6.0.0+ and Python 2.7.x.  To simplify Python setup, virtualenv is highly suggested.
