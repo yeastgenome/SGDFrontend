@@ -147,6 +147,7 @@ def reference_triage_promote(request):
             DBSession.delete(triage)
             transaction.commit()
         except Exception as e:
+            traceback.print_exc()
             log.error(e)
             DBSession.rollback()
             return HTTPBadRequest(body=json.dumps({'error': str(e) }))
