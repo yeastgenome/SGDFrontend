@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import FlexiForm from '../../components/forms/flexiForm';
 import t from 'tcomb-form';
 
-// const TARGET_URL = '/reserve';
+const TARGET_URL = '/reserve';
 
 class GeneNameReservation extends Component {
   render() {
@@ -51,7 +51,7 @@ class GeneNameReservation extends Component {
     return (
       <div>
         <h1>Reserve a Gene Name</h1>
-        <FlexiForm tFormOptions={reserveOptions} tFormSchema={reserveSchema} onSuccess={_onSuccess} submitText='Send gene name reservation' updateUrl='/reserve' />
+        <FlexiForm tFormOptions={reserveOptions} tFormSchema={reserveSchema} onSuccess={_onSuccess} submitText='Send gene name reservation' updateUrl={TARGET_URL} />
         <p>* indicates required field</p>
       </div>
     );

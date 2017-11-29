@@ -131,7 +131,7 @@ def main(global_config, **settings):
     config.add_route('get_downloads_menu', '/downloads/menu', request_method='GET')
     config.add_route('get_downloads_files', '/downloads/{pathid}/files', request_method='GET')
     config.add_route('get_downloads_active_files', '/downloads/{pathid}/files/active', request_method='GET')
-    
+    config.add_route('new_gene_name_reservation', '/reserve', request_method='POST')
     config.add_route('healthcheck', '/healthcheck')
     config.scan()
     config.add_static_view(name='assets', path='./build')
