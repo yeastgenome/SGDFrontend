@@ -2496,12 +2496,21 @@ BEFORE INSERT OR UPDATE ON nex.reporter FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_reporter_biur();
 
 
-DROP TRIGGER IF EXISTS reservedname_audr ON nex.reservedname CASCADE;
-CREATE OR REPLACE FUNCTION trigger_fct_reservedname_audr() RETURNS trigger AS $BODY$
+DROP TRIGGER IF EXISTS reservedname_aiudr ON nex.reservedname CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_reservedname_aiudr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
 BEGIN
-  IF (TG_OP = 'UPDATE') THEN
+  IF (TG_OP = 'INSERT') THEN
+
+        IF (NEW.locus_id is NOT NULL) THEN
+
+            PERFORM nex.insertlocuschange(NEW.locus_id, 'SGD'::text, 'Gene name'::text, OLD.gene_name, NEW.gene_name, USER);
+
+       END IF;
+       RETURN NEW;
+
+  ELSIF (TG_OP = 'UPDATE') THEN
 
     IF (OLD.format_name != NEW.format_name) THEN
        PERFORM nex.insertupdatelog('RESERVEDNAME'::text, 'FORMAT_NAME'::text, OLD.reservedname_id, OLD.format_name, NEW.format_name, USER);
@@ -2527,7 +2536,7 @@ BEGIN
        PERFORM nex.insertupdatelog('RESERVEDNAME'::text, 'LOCUS_ID'::text, OLD.reservedname_id, OLD.locus_id::text, NEW.locus_id::text, USER);
     END IF;
 
-    IF (((OLD.reference_id IS NULL) AND (NEW.reference_id IS NOT NULL)) OR ((OLD.reference_id IS NOT NULL) AND (NEW.reference_id IS NULL)) OR (OLD.reference_id != NEW.reference_id)) THEN
+    IF (OLD.reference_id != NEW.reference_id) THEN
        PERFORM nex.insertupdatelog('RESERVEDNAME'::text, 'REFERENCE_ID'::text, OLD.reservedname_id, OLD.reference_id::text, NEW.reference_id::text, USER);
     END IF;
 
@@ -2547,6 +2556,10 @@ BEGIN
        PERFORM nex.insertupdatelog('RESERVEDNAME'::text, 'DESCRIPTION'::text, OLD.reservedname_id, OLD.description, NEW.description, USER);
     END IF;
 
+    IF (((OLD.name_description IS NULL) AND (NEW.name_description IS NOT NULL)) OR ((OLD.name_description IS NOT NULL) AND (NEW.name_description IS NULL)) OR (OLD.name_description != NEW.name_description)) THEN
+       PERFORM nex.insertupdatelog('RESERVEDNAME'::text, 'NAME_DESCRIPTION'::text, OLD.reservedname_id, OLD.name_description, NEW.name_description, USER);
+    END IF;
+
     RETURN NEW;
 
   ELSIF (TG_OP = 'DELETE') THEN
@@ -2554,9 +2567,10 @@ BEGIN
     v_row := OLD.reservedname_id || '[:]' || OLD.format_name || '[:]' ||
              OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
              OLD.source_id || '[:]' || coalesce(OLD.bud_id,0) || '[:]' ||
-             coalesce(OLD.locus_id,0) || '[:]' || coalesce(OLD.reference_id,0) || '[:]' ||
+             coalesce(OLD.locus_id,0) || '[:]' || OLD.reference_id || '[:]' ||
              OLD.colleague_id || '[:]' || OLD.reservation_date || '[:]' ||
-             OLD.expiration_date || '[:]' || coalesce(OLD.description,'') || '[:]' ||
+             OLD.expiration_date || '[:]' || coalesce(OLD.name_description,'') || '[:]' ||
+             coalesce(OLD.description,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
           PERFORM nex.insertdeletelog('RESERVEDNAME'::text, OLD.reservedname_id, v_row, USER);
@@ -2567,9 +2581,9 @@ BEGIN
 END;
 $BODY$ LANGUAGE 'plpgsql';
 
-CREATE TRIGGER reservedname_audr
-AFTER UPDATE OR DELETE ON nex.reservedname FOR EACH ROW
-EXECUTE PROCEDURE trigger_fct_reservedname_audr();
+CREATE TRIGGER reservedname_aiudr
+AFTER INSERT OR UPDATE OR DELETE ON nex.reservedname FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_reservedname_aiudr();
 
 DROP TRIGGER IF EXISTS reservedname_biur ON nex.reservedname CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_reservedname_biur() RETURNS trigger AS $BODY$
