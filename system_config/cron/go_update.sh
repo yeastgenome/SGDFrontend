@@ -2,7 +2,7 @@
 
 cd /data/www/SGDBackend-NEX2/current
 source /data/envs/sgd/bin/activate 
-source dev_variables.sh 
+source prod_variables.sh 
 python scripts/loading/ontology/go.py
 python scripts/loading/go/load_gpad.py 'manually curated'
 python scripts/loading/go/load_gpad.py computational
