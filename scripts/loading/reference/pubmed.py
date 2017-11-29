@@ -44,8 +44,7 @@ def get_pubmed_record_from_xml(pmid_list):
     for paper in record['PubmedArticle']:    
         entry = {}
         entry['pmid'] = int(paper['MedlineCitation']['PMID'])
-        article = paper['MedlineCitation']['Article']
-        
+        article = paper['MedlineCitation']['Article']        
         journal = article['Journal']
         # entry['issn'] = journal.get('ISSN') 
         entry['journal_abbrev'] = journal.get('ISOAbbreviation')
@@ -71,11 +70,22 @@ def get_pubmed_record_from_xml(pmid_list):
         
         if article.get('AuthorList'):
             authors = []
+            orcid4author = {}
             for author in article['AuthorList']:
                 if author.get('LastName') is None or author.get('Initials') is None:
                     continue
-                authors.append(author['LastName'] + " " + author['Initials'])
+                authorName = author['LastName'] + " " + author['Initials']
+                authors.append(authorName)
+                ident = author.get('Identifier')
+                if len(ident) == 0:
+                    continue                    
+                if ident[0].attributes.get('Source') is None:
+                    continue
+                if ident[0].attributes.get('Source') == 'ORCID': 
+                    orcid = str(ident[0]).replace("http://orcid.org/", "")
+                    orcid4author[authorName] = orcid
             entry['authors'] = authors
+            entry['orcid'] = orcid4author
         
         if paper['PubmedData'].get('PublicationStatus'):
             entry['publication_status'] = paper['PubmedData'].get('PublicationStatus')
