@@ -695,7 +695,7 @@ def setup():
 def index_not_mapped_genes():
     url = "https://downloads.yeastgenome.org/curation/literature/genetic_loci.tab"
     bulk_data = []
-    with open('./scripts/search/not_mapped.json', "r") as json_data:
+    with open('./scripts/search/not_mapped_2.json', "r") as json_data:
         _data = json.load(json_data)
         print('indexing ' + str(len(_data)) + ' not physically mapped genes')
         for item in _data:
@@ -706,7 +706,8 @@ def index_not_mapped_genes():
                     'href': url,
                     'category': 'locus',
                     'feature_type': ["Unmapped Genetic Loci"],
-                    'aliases': item["ALIASES"].split('|')
+                    'aliases': item["ALIASES"].split('|'),
+                    'description': item["DESCRIPTION"]
                 }
                 bulk_data.append({
                     'index': {
@@ -740,7 +741,7 @@ def index_part_2():
     index_references()
 
 if __name__ == '__main__':
-    # cleanup()
+    cleanup()
     setup()
     t1 = Thread(target=index_part_1)
     t2 = Thread(target=index_part_2)
