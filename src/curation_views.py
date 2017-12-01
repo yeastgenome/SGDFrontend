@@ -327,7 +327,6 @@ def upload_spreadsheet(request):
         return HTTPBadRequest(body=json.dumps({ 'error': 'Unable to process file upload. Please try again.' }), content_type='text/json')
 
 @view_config(route_name='new_gene_name_reservation', renderer='json', request_method='POST')
-@authenticate
 def new_gene_name_reservation(request):
     if not check_csrf_token(request, raises=False):
         return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
