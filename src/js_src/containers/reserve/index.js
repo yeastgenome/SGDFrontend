@@ -9,6 +9,11 @@ const TARGET_URL = '/reserve';
 
 class GeneNameReservation extends Component {
   render() {
+    let Author = t.struct({
+      first_name: t.String,
+      last_name: t.String,
+      orcid: t.String
+    });
     let reserveSchema = t.struct({
       new_gene_name: t.String,
       description: t.String,
@@ -18,8 +23,20 @@ class GeneNameReservation extends Component {
       email: t.String,
       institution: t.String,
       position: t.String,
-      title: t.String
+      title: t.String,
+      journal: t.String,
+      year: t.Number,
+      authors: t.list(Author)
     });
+    let authorLayout = locals => {
+      return (
+        <div>
+          <div className='column small-5'>{locals.inputs.first_name}</div>
+          <div className='column small-5'>{locals.inputs.last_name}</div>
+          <div className='column small-2'>{locals.inputs.orcid}</div>
+        </div>
+      );
+    };
     let reserveOptions = {
       fields: {
         new_gene_name: {
@@ -42,6 +59,12 @@ class GeneNameReservation extends Component {
         },
         title: {
           label: 'Publication Title'
+        },
+        authors: {
+          disableOrder: true,
+          item: {
+            template: authorLayout
+          }
         }
       }
     };
