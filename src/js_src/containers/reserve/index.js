@@ -33,9 +33,10 @@ class GeneNameReservation extends Component {
     let authorLayout = locals => {
       return (
         <div className='row'>
-          <div className='column small-5'>{locals.inputs.first_name}</div>
-          <div className='column small-5'>{locals.inputs.last_name}</div>
+          <div className='column small-4'>{locals.inputs.first_name}</div>
+          <div className='column small-4'>{locals.inputs.last_name}</div>
           <div className='column small-2'>{locals.inputs.orcid}</div>
+          <div className='column small-2'>{locals.inputs.removeItem}</div>
         </div>
       );
     };
@@ -97,6 +98,7 @@ class GeneNameReservation extends Component {
         },
         authors: {
           disableOrder: true,
+          disableRemove: true,
           item: {
             template: authorLayout
           }
@@ -106,10 +108,17 @@ class GeneNameReservation extends Component {
     let _onSuccess = (data) => {
       console.log(data);
     };
+    let _defaultData = { authors: [{ first_name: ''}] };
+    t.form.Form.i18n = {
+      optional: '',
+      required: '',
+      add: 'Add another author',
+      remove: 'Remove this author'
+    };
     return (
       <div>
         <h1>Reserve a Gene Name</h1>
-        <FlexiForm tFormOptions={reserveOptions} tFormSchema={reserveSchema} onSuccess={_onSuccess} submitText='Send gene name reservation' updateUrl={TARGET_URL} />
+        <FlexiForm defaultData={_defaultData} tFormOptions={reserveOptions} tFormSchema={reserveSchema} onSuccess={_onSuccess} submitText='Send gene name reservation' updateUrl={TARGET_URL} />
         
       </div>
     );
