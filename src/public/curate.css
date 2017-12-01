@@ -396,3 +396,7 @@ body {
 .sgd-curate-form textarea {
   min-height: 7rem;
 }
+
+.six.wide.column, .eight.wide.column {
+  padding: 0;
+}
