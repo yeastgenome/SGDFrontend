@@ -22,21 +22,20 @@ import Blank from './components/blank';
 import CurateLit from './containers/curateLit/layout';
 import CurateLitBasic from './containers/curateLit/basic';
 import CurateLitPhenotype from './containers/curateLit/phenotype';
-// import CurateLitOverview from './containers/curateLit/index';
+import GeneNameReservationIndex from './containers/reserve/index';
 // public interfaces with no layout
 import PublicLayout from './containers/layout/PublicLayout';
 import AuthorResponse from './containers/authorResponse/index';
 import NewColleague from './containers/colleagues/new';
 import EditColleague from './containers/colleagues/edit';
-import NewGeneNameReservation from './containers/reserve/index';
+import NewGeneNameReservation from './containers/reserve/new';
 
-// <Route component={requireAuthentication(SpreadsheetUpload)} path='spreadsheet_upload' />
-// <IndexRoute component={requireAuthentication(CurateHome)} />
 export default (
   <Route>
     <Route component={Layout} path='/'>
       <IndexRoute component={requireAuthentication(CurateHome)} />
       <Route component={requireAuthentication(TriageIndex)} path='triage' />
+      <Route component={requireAuthentication(GeneNameReservationIndex)} path='reservations' />
       <Route component={requireAuthentication(SpreadsheetUpload)} path='spreadsheet_upload' />
       <Route component={requireAuthentication(Settings)} path='settings' />
       <Route component={Help} path='help' />

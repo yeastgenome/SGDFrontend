@@ -14,7 +14,7 @@ import json
 from .helpers import allowed_file, extract_id_request, secure_save_file, curator_or_none, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id
 from .curation_helpers import ban_from_cache, process_pmid_list, get_curator_session, get_pusher_client
 from .loading.promote_reference_triage import add_paper
-from .models import DBSession, Dbentity, Dbuser, Referencedbentity, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags
+from .models import DBSession, Dbentity, Dbuser, Referencedbentity, Reservedname, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags
 from .tsv_parser import parse_tsv_annotations
 
 logging.basicConfig()
@@ -92,7 +92,7 @@ def reference_triage_id_delete(request):
             return HTTPBadRequest(body=json.dumps({'error': str(e) }))
         finally:
             if curator_session:
-                curator_session.remove()
+                curator_session.close()
     else:
         return HTTPNotFound()
 
@@ -117,6 +117,7 @@ def reference_triage_id_update(request):
             transaction.commit()
         except:
             traceback.print_exc()
+            transaction.abort()
             DBSession.rollback()
             return HTTPBadRequest(body=json.dumps({'error': 'DB failure. Verify if pmid is valid and not already present.'}))
         pusher = get_pusher_client()
@@ -151,6 +152,7 @@ def reference_triage_promote(request):
         except Exception as e:
             traceback.print_exc()
             log.error(e)
+            transaction.abort()
             DBSession.rollback()
             return HTTPBadRequest(body=json.dumps({'error': str(e) }))
         # update tags
@@ -162,7 +164,7 @@ def reference_triage_promote(request):
             log.error(e)
             curator_session.rollback()
         finally:
-            curator_session.remove()
+            curator_session.close()
         pusher = get_pusher_client()
         pusher.trigger('sgd', 'triageUpdate', {})
         pusher.trigger('sgd', 'curateHomeUpdate', {})
@@ -331,6 +333,12 @@ def new_gene_name_reservation(request):
     if not check_csrf_token(request, raises=False):
         return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
     return True
+
+@view_config(route_name='reserved_name_index', renderer='json')
+@authenticate
+def reserved_name_index(request):
+    reses = DBSession.query(Reservedname).all()
+    return [x.to_dict() for x in reses]
 
 # @view_config(route_name='upload', request_method='POST', renderer='json')
 # @authenticate
