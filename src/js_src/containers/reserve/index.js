@@ -35,20 +35,23 @@ class GeneNameReservationIndex extends Component {
         );
       });
       return (
-        <table>
-          <thead>
-            <tr>
-              <th>Proposed Name</th>
-              <th>ORF</th>
-              <th>Reservation Date</th>
-              <th>Expiration Date</th>
-              <th>Reference</th>
-            </tr>
-          </thead>
-          <tbody>
-            {trs}
-          </tbody>
-        </table>
+        <div>
+          <h2>Gene Name Reservations</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Proposed Name</th>
+                <th>ORF</th>
+                <th>Reservation Date</th>
+                <th>Expiration Date</th>
+                <th>Reference</th>
+              </tr>
+            </thead>
+            <tbody>
+              {trs}
+            </tbody>
+          </table>
+        </div>
       );
     }
     return <Loader />;
@@ -57,7 +60,6 @@ class GeneNameReservationIndex extends Component {
   render() {
     return (
       <CurateLayout>
-        <h2>Gene Name Reservations</h2>
         {this.renderReses()}
       </CurateLayout>
     );
