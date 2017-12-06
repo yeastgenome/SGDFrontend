@@ -481,7 +481,7 @@ BEGIN
     END IF;
 
      IF (OLD.user_email != NEW.user_email) THEN
-        PERFORM nex.insertupdatelog('RESERVEDNAMETRIAGE'::text, 'USER_EMAIL'::text, OLD.curation_id, OLD.user_email, NEW.user_email, USER);
+        PERFORM nex.insertupdatelog('RESERVEDNAMETRIAGE'::text, 'USER_EMAIL'::text, OLD.curation_id, OLD.user_email::text, NEW.user_email::text, USER);
     END IF;
 
     IF (OLD.json != NEW.json) THEN
