@@ -24,4 +24,4 @@
 0 0 * * * /bin/bash /data/www/SGDBackend-NEX2/current/system_config/cron/index_disambiguation.sh
 0 1 * * * /bin/bash /data/www/SGDBackend-NEX2/current/system_config/cron/index_elasticsearch.sh
 30 17 * * * /bin/bash /data/www/SGDBackend-NEX2/current/system_config/cron/refresh_cache.sh
-0 0 * * SAT /bin/bash /data/www/SGDBackend-NEX2/current/system_config/cron/load_reference_triage.sh
+0 18 * * FRI /bin/bash /data/www/SGDBackend-NEX2/current/system_config/cron/load_reference_triage.sh
