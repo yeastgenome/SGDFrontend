@@ -1062,6 +1062,15 @@ GRANT SELECT,INSERT,UPDATE,DELETE ON nex.reservedname TO curator;
 GRANT SELECT ON nex.reservedname TO PUBLIC;
 GRANT SELECT ON nex.reservedname TO DBSELECT;
 
+-- Set privilege on TABLE RESERVEDNAMETRIAGE
+ALTER TABLE nex.reservednametriage OWNER TO nex;
+GRANT ALL ON nex.reservednametriage TO nex;
+REVOKE ALL ON nex.reservednametriage FROM PUBLIC;
+GRANT SELECT,INSERT,UPDATE,DELETE ON nex.reservednametriage TO curator;
+GRANT SELECT ON nex.reservednametriage TO PUBLIC;
+GRANT SELECT ON nex.reservednametriage TO DBSELECT;
+
+
 -- Set privilege on TABLE RO
 ALTER TABLE nex.ro OWNER TO nex;
 GRANT ALL ON nex.ro TO nex;

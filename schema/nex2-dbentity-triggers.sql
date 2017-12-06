@@ -196,7 +196,15 @@ BEGIN
 
     IF (((OLD.gene_name IS NULL) AND (NEW.gene_name IS NOT NULL)) OR ((OLD.gene_name IS NOT NULL) AND (NEW.gene_name IS NULL)) OR (OLD.gene_name != NEW.gene_name)) THEN
         PERFORM nex.insertupdatelog('LOCUSDBENTITY'::text, 'GENE_NAME'::text, OLD.dbentity_id, OLD.gene_name, NEW.gene_name, USER);
-        PERFORM nex.insertlocuschange(OLD.dbentity_id, 'SGD'::text, 'Gene name'::text, OLD.gene_name, NEW.gene_name, USER);
+
+        IF NOT EXISTS (SELECT dbentity_id, old_value, new_value
+                      FROM nex.arch_locuschange
+                      WHERE dbentity_id = OLD.dbentity_id
+                      AND old_value = OLD.gene_name
+                      AND new_value = NEW.gene_name ) THEN
+
+             PERFORM nex.insertlocuschange(OLD.dbentity_id, 'SGD'::text, 'Gene name'::text, OLD.gene_name, NEW.gene_name, USER);
+        END IF;
     END IF;
 
     IF (((OLD.qualifier IS NULL) AND (NEW.qualifier IS NOT NULL)) OR ((OLD.qualifier IS NOT NULL) AND (NEW.qualifier IS NULL)) OR (OLD.qualifier != NEW.qualifier)) THEN
@@ -650,7 +658,7 @@ CREATE TRIGGER locusrelation_biur
 BEFORE INSERT OR UPDATE ON nex.locus_relation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_locusrelation_biur();
 
-ROP TRIGGER IF EXISTS locusrelationreference_audr ON nex.locusrelation_reference CASCADE;
+DROP TRIGGER IF EXISTS locusrelationreference_audr ON nex.locusrelation_reference CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_locusrelationreference_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
