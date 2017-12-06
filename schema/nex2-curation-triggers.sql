@@ -210,9 +210,6 @@ BEFORE INSERT OR UPDATE ON nex.colleaguetriage FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_colleaguetriage_biur();
 
 
-
-
-
 DROP TRIGGER IF EXISTS curationlocus_audr ON nex.curation_locus CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_curationlocus_audr() RETURNS trigger AS $BODY$
 DECLARE
@@ -471,3 +468,76 @@ $BODY$ LANGUAGE 'plpgsql';
 CREATE TRIGGER referencetriage_biur
 BEFORE INSERT OR UPDATE ON nex.referencetriage FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_referencetriage_biur();
+
+DROP TRIGGER IF EXISTS reservednametriage_audr ON nex.reservednametriage CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_reservednametriage_audr() RETURNS trigger AS $BODY$
+DECLARE
+    v_row       nex.deletelog.deleted_row%TYPE;
+BEGIN
+  IF (TG_OP = 'UPDATE') THEN
+
+    IF (OLD.proposed_gene_name != NEW.proposed_gene_name) THEN
+        PERFORM nex.insertupdatelog('RESERVEDNAMETRIAGE'::text, 'PROPOSED_GENE_NAME'::text, OLD.curation_id, OLD.proposed_gene_name::text, NEW.proposed_gene_name::text, USER);
+    END IF;
+
+     IF (OLD.user_email != NEW.user_email) THEN
+        PERFORM nex.insertupdatelog('RESERVEDNAMETRIAGE'::text, 'USER_EMAIL'::text, OLD.curation_id, OLD.user_email, NEW.user_email, USER);
+    END IF;
+
+    IF (OLD.json != NEW.json) THEN
+        PERFORM nex.insertupdatelog('RESERVEDNAMETRIAGE'::text, 'JSON'::text, OLD.curation_id, OLD.json, NEW.json, USER);
+    END IF;
+
+    RETURN NEW;
+
+  ELSIF (TG_OP = 'DELETE') THEN
+
+    v_row := OLD.curation_id || '[:]' || OLD.proposed_gene_name || '[:]' ||
+             OLD.user_email || '[:]' || OLD.json || '[:]' ||
+             OLD.date_created || '[:]' || OLD.created_by;
+
+           PERFORM nex.insertdeletelog('RESERVEDNAMETRIAGE'::text, OLD.curation_id, v_row, USER);
+
+     RETURN OLD;
+  END IF;
+
+END;
+$BODY$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER reservednametriage_audr
+AFTER UPDATE OR DELETE ON nex.reservednametriage FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_reservednametriage_audr();
+
+DROP TRIGGER IF EXISTS reservednametriage_biur ON nex.reservednametriage CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_reservednametriage_biur() RETURNS trigger AS $BODY$
+BEGIN
+  IF (TG_OP = 'INSERT') THEN
+
+       NEW.created_by := UPPER(NEW.created_by);
+       PERFORM nex.checkuser(NEW.created_by);
+
+       RETURN NEW;
+
+  ELSIF (TG_OP = 'UPDATE') THEN
+
+    IF (NEW.curation_id != OLD.curation_id) THEN
+        RAISE EXCEPTION 'Primary key cannot be updated';
+    END IF;
+
+    IF (NEW.date_created != OLD.date_created) THEN
+        RAISE EXCEPTION 'Audit columns cannot be updated.';
+    END IF;
+
+    IF (NEW.created_by != OLD.created_by) THEN
+        RAISE EXCEPTION 'Audit columns cannot be updated.';
+    END IF;
+
+    RETURN NEW;
+  END IF;
+
+END;
+$BODY$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER reservednametriage_biur
+BEFORE INSERT OR UPDATE ON nex.reservednametriage FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_reservednametriage_biur();
