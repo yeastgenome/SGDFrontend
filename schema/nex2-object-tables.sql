@@ -808,10 +808,11 @@ CREATE TABLE nex.reservedname (
 	source_id bigint NOT NULL,
 	bud_id integer,
 	locus_id bigint,
-	reference_id bigint,
+	reference_id bigint NOT NULL,
 	colleague_id bigint NOT NULL,
 	reservation_date timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	expiration_date timestamp NOT NULL DEFAULT LOCALTIMESTAMP + interval '365 days',
+    name_description varchar(100),
 	description varchar(500),
 	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	created_by varchar(12) NOT NULL,
@@ -830,6 +831,7 @@ COMMENT ON COLUMN nex.reservedname.expiration_date IS 'Date the gene reservation
 COMMENT ON COLUMN nex.reservedname.locus_id IS 'FK to LOCUSDBENTITY.DBENTITY_ID.';
 COMMENT ON COLUMN nex.reservedname.reservedname_id IS 'Unique identifier (serial number).';
 COMMENT ON COLUMN nex.reservedname.reservation_date IS 'Date the gene reservation was made.';
+COMMENT ON COLUMN nex.reservedname.name_description IS 'Description of the gene name acronym.';
 COMMENT ON COLUMN nex.reservedname.format_name IS 'Unique name to create download files.';
 COMMENT ON COLUMN nex.reservedname.obj_url IS 'URL of the object (relative for local links or complete for external links).';
 ALTER TABLE nex.reservedname ADD CONSTRAINT reservedname_uk UNIQUE (format_name);
