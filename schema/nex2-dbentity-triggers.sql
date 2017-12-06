@@ -658,7 +658,7 @@ CREATE TRIGGER locusrelation_biur
 BEFORE INSERT OR UPDATE ON nex.locus_relation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_locusrelation_biur();
 
-ROP TRIGGER IF EXISTS locusrelationreference_audr ON nex.locusrelation_reference CASCADE;
+DROP TRIGGER IF EXISTS locusrelationreference_audr ON nex.locusrelation_reference CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_locusrelationreference_audr() RETURNS trigger AS $BODY$
 DECLARE
     v_row       nex.deletelog.deleted_row%TYPE;
