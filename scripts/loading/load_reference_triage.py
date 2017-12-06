@@ -19,7 +19,7 @@ __author__ = 'sweng66'
 
 TERMS = ['yeast', 'cerevisiae']
 URL = 'http://www.ncbi.nlm.nih.gov/pubmed/'
-DAY = 15 
+DAY = 7 
 RETMAX = 10000
 
 logging.basicConfig()
