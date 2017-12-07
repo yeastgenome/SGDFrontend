@@ -51,7 +51,8 @@ def update_reference_data(log_file):
 
     fw.write(str(datetime.now()) + "\n")
     fw.write("Getting PMID list...\n")
-
+    
+    log.info(str(datetime.now()))
     log.info("Getting data from the database...")
 
     source_to_id = dict([(x.display_name, x.source_id) for x in nex_session.query(Source).all()])
@@ -111,6 +112,7 @@ def update_reference_data(log_file):
     j = 0
     i = 0
     updated_pmids = []
+    dbentity_ids_with_author_changed = []
     for pmid in pmids_all:
         
         if pmid is None or pmid in [26842620, 27823544, 11483584]:
@@ -143,7 +145,8 @@ def update_reference_data(log_file):
                                   key_to_type,
                                   source_to_id,
                                   update_log,
-                                  updated_pmids)
+                                  updated_pmids,
+                                  dbentity_ids_with_author_changed)
 
             pmids = []
             time.sleep(SLEEP_TIME)
@@ -163,7 +166,8 @@ def update_reference_data(log_file):
                               key_to_type,
                               source_to_id,
                               update_log,
-                              updated_pmids)
+                              updated_pmids,
+                              dbentity_ids_with_author_changed)
         
     nex_session.commit()
 
@@ -177,6 +181,8 @@ def update_reference_data(log_file):
     all_refs = nex_session.query(Dbentity).filter_by(subclass='REFERENCE').all()
 
     for x in all_refs:
+        if x.dbentity_id not in dbentity_ids_with_author_changed:
+            continue
         display_name = dbentity_id_to_citation[x.dbentity_id].split(')')[0] + ')'
         if display_name == x.display_name:
             continue
@@ -191,12 +197,14 @@ def update_reference_data(log_file):
         log.info("Paper(s) with " + field_name + " updated:" + str(update_log[field_name]))
 
     log.info("PMIDs that have some of their info updated: " + ", ".join(str(v) for v in updated_pmids)) 
+
+    log.info(str(datetime.now()))
     log.info("Done!")
 
     fw.close()
 
 
-def update_database_batch(nex_session, fw, records, pmid_to_reference, journal_id_to_abbrev, reference_id_to_authors, abstracts, reference_id_to_abstract, reference_id_to_urls, reference_id_to_pubtypes, key_to_type, source_to_id, update_log, updated_pmids):
+def update_database_batch(nex_session, fw, records, pmid_to_reference, journal_id_to_abbrev, reference_id_to_authors, abstracts, reference_id_to_abstract, reference_id_to_urls, reference_id_to_pubtypes, key_to_type, source_to_id, update_log, updated_pmids, dbentity_ids_with_author_changed):
 
     source_id = source_to_id[SRC]
 
@@ -223,10 +231,12 @@ def update_database_batch(nex_session, fw, records, pmid_to_reference, journal_i
 
         ### UPDATE AUTHORS
         authors = record.get('authors', '')
+        author2orcid = record.get('orcid', {})
         update_authors(nex_session, fw, pmid, 
-                       dbentity_id, authors, 
+                       dbentity_id, authors, author2orcid, 
                        reference_id_to_authors.get(dbentity_id), 
-                       source_id, update_log, updated_pmids)
+                       source_id, update_log, updated_pmids,
+                       dbentity_ids_with_author_changed)
 
         ### UPDATE REFERENCEDBENTITY TABLE
         update_database(nex_session, fw, record, pmid, x, 
@@ -471,13 +481,38 @@ def update_urls(nex_session, fw, pmid, reference_id, pmc_url, doi_url, urls_in_d
         if pmid not in updated_pmids:
             updated_pmids.append(pmid)
 
-def update_authors(nex_session, fw, pmid, reference_id, authors, authors_in_db, source_id, update_log, updated_pmids):
+
+def update_orcid(nex_session, fw, pmid, reference_id, authors, author2orcid):
+
+    for author in authors:
+        
+        orcid = author2orcid.get(author)
+
+        if orcid is None or orcid == '':  
+            continue
+
+        rows = nex_session.query(Referenceauthor).filter_by(reference_id=reference_id, display_name=author).all()
+
+        for x in rows:
+
+            if x.orcid and x.orcid == orcid:
+                continue
+        
+            x.orcid = orcid
+            nex_session.add(x)
+            nex_session.commit()
+
+            fw.write(str(pmid) + ": orcid for " + author + ": " + orcid + "\n")
+
+
+def update_authors(nex_session, fw, pmid, reference_id, authors, author2orcid, authors_in_db, source_id, update_log, updated_pmids, dbentity_ids_with_author_changed):
 
     if authors_in_db is None:
         authors_in_db = []
 
     if ", ".join(authors) == ", ".join(authors_in_db):
         # print pmid, "no change"
+        update_orcid(nex_session, fw, pmid, reference_id, authors, author2orcid)
         return
 
     ## NEED to IMPROVE THE FOLLOWING CODE                                     
@@ -487,6 +522,8 @@ def update_authors(nex_session, fw, pmid, reference_id, authors, authors_in_db, 
 
     if pmid not in updated_pmids:
         updated_pmids.append(pmid)
+    if reference_id not in dbentity_ids_with_author_changed:
+        dbentity_ids_with_author_changed.append(reference_id)
 
     for ra in nex_session.query(Referenceauthor).filter_by(reference_id=reference_id).all():
         nex_session.delete(ra)
@@ -495,13 +532,23 @@ def update_authors(nex_session, fw, pmid, reference_id, authors, authors_in_db, 
     # add new ones                                           
     i = 1
     for author in authors:
-        ra = Referenceauthor(display_name = author,
-                             source_id = source_id,
-                             obj_url = '/author/' + author.replace(' ', '_'),
-                             reference_id = reference_id,
-                             author_order = i,
-                             author_type = 'Author',
-                             created_by = CREATED_BY)
+        if author2orcid.get(author) is None or author2orcid.get(author) == '':
+            ra = Referenceauthor(display_name = author,
+                                 source_id = source_id,
+                                 obj_url = '/author/' + author.replace(' ', '_'),
+                                 reference_id = reference_id,
+                                 author_order = i,
+                                 author_type = 'Author',
+                                 created_by = CREATED_BY)
+        else:
+            ra = Referenceauthor(display_name = author,
+                                 source_id = source_id,
+                                 orcid = author2orcid.get(author),
+                                 obj_url = '/author/' + author.replace(' ', '_'),
+                                 reference_id = reference_id,
+                                 author_order = i,
+                                 author_type = 'Author',
+                                 created_by = CREATED_BY)
         nex_session.add(ra)
         i = i + 1
     nex_session.commit()

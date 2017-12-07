@@ -58,6 +58,7 @@ def update_data(infile):
     id_to_source = {}
     source_to_id = {}
 
+    log.info(str(datetime.now()))
     log.info("Getting data from the database...")
 
     for x in nex_session.query(Source).all():
@@ -133,6 +134,7 @@ def update_data(infile):
     log.info("\tAdded: " + str(ADDED))
     log.info("\tUpdated: " + str(UPDATED))
     log.info("\tDeleted: " + str(DELETED))
+    log.info(str(datetime.now()))
     log.info("Done!")
 
 def get_locus_id(uniprot_id, uniprot_id_to_sgdid, sgdid_to_locus_id):
