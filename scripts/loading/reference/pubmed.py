@@ -82,7 +82,7 @@ def get_pubmed_record_from_xml(pmid_list):
                 if ident[0].attributes.get('Source') is None:
                     continue
                 if ident[0].attributes.get('Source') == 'ORCID': 
-                    orcid = str(ident[0]).replace("http://orcid.org/", "")
+                    orcid = str(ident[0]).replace("http://orcid.org/", "").replace("https://orcid.org/", "")
                     orcid4author[authorName] = orcid
             entry['authors'] = authors
             entry['orcid'] = orcid4author
