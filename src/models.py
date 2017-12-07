@@ -7688,6 +7688,7 @@ class Reservedname(Base):
 
     def to_dict(self):
         obj = {
+            "id": self.reservedname_id,
             "display_name": self.display_name,
             "reservation_date": self.reservation_date.strftime("%Y-%m-%d"),
             "expiration_date": self.expiration_date.strftime("%Y-%m-%d"),
@@ -7709,6 +7710,18 @@ class Reservedname(Base):
             }
 
         return obj
+
+class ReservednameTriage(Base):
+    __tablename__ = 'reservednametriage'
+    __table_args__ = {u'schema': 'nex'}
+
+    curation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
+    proposed_gene_name = Column(String(100), nullable=False)
+    user_email = Column(String(500), nullable=False)
+    created_by = Column(String(12), nullable=False)
+    json = Column(Text, nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+
 
 class Ro(Base):
     __tablename__ = 'ro'

@@ -17,12 +17,14 @@ import LocusShow from './containers/locus/show';
 import TriageIndex from './containers/triage';
 import SpreadsheetUpload from './containers/spreadsheetUpload/index';
 import Settings from './containers/settings/index';
+import NotFound from './containers/curateHome/notFound';
 // curate lit biz
 import Blank from './components/blank';
 import CurateLit from './containers/curateLit/layout';
 import CurateLitBasic from './containers/curateLit/basic';
 import CurateLitPhenotype from './containers/curateLit/phenotype';
 import GeneNameReservationIndex from './containers/reserve/index';
+import GeneNameReservation from './containers/reserve/show';
 // public interfaces with no layout
 import PublicLayout from './containers/layout/PublicLayout';
 import AuthorResponse from './containers/authorResponse/index';
@@ -36,6 +38,7 @@ export default (
       <IndexRoute component={requireAuthentication(CurateHome)} />
       <Route component={requireAuthentication(TriageIndex)} path='triage' />
       <Route component={requireAuthentication(GeneNameReservationIndex)} path='reservations' />
+      <Route component={requireAuthentication(GeneNameReservation)} path='reservations/:id' />
       <Route component={requireAuthentication(SpreadsheetUpload)} path='spreadsheet_upload' />
       <Route component={requireAuthentication(Settings)} path='settings' />
       <Route component={Help} path='help' />
@@ -52,6 +55,7 @@ export default (
         <Route component={requireAuthentication(Blank)} path='regulation' />
         <Route component={requireAuthentication(Blank)} path='interaction' />
       </Route>
+      <Route component={NotFound} path='*' />
     </Route>
     <Route component={PublicLayout}>
         <Route component={AuthorResponse} path='author_response' />
