@@ -29,7 +29,8 @@ log.info("GO Ontology Loading Report:\n")
 def load_ontology(ontology_file):
 
     nex_session = get_session()
-    
+
+    log.info(str(datetime.now()))
     log.info("Getting data from database...")
 
     source_to_id = dict([(x.display_name, x.source_id) for x in nex_session.query(Source).all()])
@@ -86,6 +87,7 @@ def load_ontology(ontology_file):
 
     fw.close()
 
+    log.info(str(datetime.now()))
     log.info("Done!\n\n")
 
 

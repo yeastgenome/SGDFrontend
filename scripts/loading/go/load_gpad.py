@@ -133,6 +133,7 @@ def load_go_annotations(gpad_file, gpi_file, annotation_type, log_file):
     
     fw.close()
 
+    log.info(str(datetime.now()))
     log.info("Done!\n\n")
 
 
