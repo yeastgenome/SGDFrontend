@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router';
 
 import CurateLayout from '../curateHome/layout';
 import fetchData from '../../lib/fetchData';
@@ -25,12 +26,13 @@ class GeneNameReservationIndex extends Component {
       let trs = this.state.data.map( (d, i) => {
         let orfName = d.locus ? d.locus.systematic_name : 'n/a';
         return (
-          <tr key={`gtr${i}`}>
+          <tr key={`gtr${d.id}`}>
             <td>{d.display_name}</td>
             <td>{orfName}</td>
             <td>{d.reservation_date}</td>
             <td>{d.expiration_date}</td>
             <td>{d.reference.display_name}</td>
+            <td><Link to={`/reservations/${d.id}`}><i className='fa fa-edit' /> Curate</Link></td>
           </tr>
         );
       });
@@ -45,6 +47,7 @@ class GeneNameReservationIndex extends Component {
                 <th>Reservation Date</th>
                 <th>Expiration Date</th>
                 <th>Reference</th>
+                <th />
               </tr>
             </thead>
             <tbody>

@@ -328,6 +328,7 @@ def upload_spreadsheet(request):
         traceback.print_exc()
         return HTTPBadRequest(body=json.dumps({ 'error': 'Unable to process file upload. Please try again.' }), content_type='text/json')
 
+# not authenticated to allow the public submission
 @view_config(route_name='new_gene_name_reservation', renderer='json', request_method='POST')
 def new_gene_name_reservation(request):
     if not check_csrf_token(request, raises=False):
@@ -339,6 +340,13 @@ def new_gene_name_reservation(request):
 def reserved_name_index(request):
     reses = DBSession.query(Reservedname).all()
     return [x.to_dict() for x in reses]
+
+@view_config(route_name='reserved_name_curate_show', renderer='json')
+@authenticate
+def reserved_name_curate_show(request):
+    id = request.matchdict['id'].upper()
+    # TEMP
+    return True
 
 # @view_config(route_name='upload', request_method='POST', renderer='json')
 # @authenticate
