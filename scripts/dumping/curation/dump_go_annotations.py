@@ -120,8 +120,8 @@ def dump_data():
 
         (feature_name, gene_name, headline, qualifier) = id_to_gene[x.dbentity_id]
 
-        if qualifier == 'Dubious':
-            continue
+        # if qualifier == 'Dubious':
+        #    continue
 
         if gene_name is None:
             gene_name = feature_name
@@ -183,18 +183,22 @@ def dump_data():
                 if (support_evidences, extensions) in found:
                     continue
                 found[(support_evidences, extensions)] = 1
-                fw.write(DB + "\t")
+                if qualifier != 'Dubious': 
+                    fw.write(DB + "\t")
                 fw2.write(DB + "\t")
                 for i in range(0, LAST_FIELD+1):
                     if i == 6:
-                        fw.write(support_evidences + "\t")
+                        if qualifier != 'Dubious':
+                            fw.write(support_evidences + "\t")
                         fw2.write(support_evidences + "\t")
                     else:
-                        fw.write(str(row[i]) + "\t")
+                        if qualifier != 'Dubious':
+                            fw.write(str(row[i]) + "\t")
                         fw2.write(str(row[i]) + "\t")
 
                     if i == LAST_FIELD:
-                        fw.write(extensions + "\n")
+                        if qualifier != 'Dubious':
+                            fw.write(extensions + "\n")
                         fw2.write(extensions + "\t" + x.annotation_type + "\n")
 
     fw.close()
