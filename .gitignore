@@ -67,7 +67,7 @@ test_variables.sh
 dev_aws_variables.sh
 
 #temp files
-logs
+# logs
 backup
 data
 zz_*
