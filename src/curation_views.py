@@ -73,21 +73,23 @@ def reference_triage_id_delete(request):
             triage = curator_session.query(Referencetriage).filter_by(curation_id=id).one_or_none()
             # only add referencedeleted if reference not in referencedbentity (allow curators to delete a reference that was added to DB but failed to removed from referencetriage)
             existing_ref = curator_session.query(Referencedbentity).filter_by(pmid=triage.pmid).one_or_none()
-            if not existing_ref:
+            existing_ref_deleted = curator_session.query(Referencedeleted).filter_by(pmid=triage.pmid).one_or_none()
+            if not (existing_ref or existing_ref_deleted):
                 reference_deleted = Referencedeleted(pmid=triage.pmid, sgdid=None, reason_deleted='This paper was discarded during literature triage.', created_by=request.session['username'])
                 curator_session.add(reference_deleted)
             else:
-                log.warning(str(triage.pmid) + ' was removed from Referencedbentity but no Referencedeleted was added.')
+                log.warning(str(triage.pmid) + ' was removed from referencetriage but no Referencedeleted was added.')
             curator_session.delete(triage)        
             transaction.commit()
             pusher = get_pusher_client()
             pusher.trigger('sgd', 'triageUpdate', {})
             return HTTPOk()
         except Exception as e:
+            transaction.abort()
             if curator_session:
                 curator_session.rollback()
             log.error(e)
-            return HTTPBadRequest(body=json.dumps({'error': 'DB failure. Verify that PMID is valid and not already present in SGD.'}))
+            return HTTPBadRequest(body=json.dumps({'error': str(e) }))
         finally:
             if curator_session:
                 curator_session.remove()

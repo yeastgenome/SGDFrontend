@@ -1,0 +1,5083 @@
+[
+  {
+    "FEATURE_NAME": "ACD1",
+    "ALIASES": "",
+    "DESCRIPTION": "",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": ""
+  },
+  {
+    "FEATURE_NAME": "ACR1",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in sensitivity to aculeacin A",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1839761"
+  },
+  {
+    "FEATURE_NAME": "ACR2",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in sensitivity to aculeacin A",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "ACR2 is both an alias for YPR200C/ARR2 (an arsenate resistance gene) and the standard name for ACR2, an unmapped gene involved in aculeacin A sensitivity.",
+    "LITERATURE (PMIDs)": "1839761 | 8322514 |9169866"
+  },
+  {
+    "FEATURE_NAME": "ACR3",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in sensitivity to aculeacin A",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "ACR3 is both an alias for YPR201W/ARR3 (an arsenite transporter) and the standard name for ACR3, an unmapped gene involved in aculeacin A sensitivity.",
+    "LITERATURE (PMIDs)": "1839761 | 24798644 | 9169866"
+  },
+  {
+    "FEATURE_NAME": "ACR4",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in sensitivity to aculeacin A",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "Edition 14: ACR4 has not been genetically or physically mapped",
+    "LITERATURE (PMIDs)": "1839761 | 9169866"
+  },
+  {
+    "FEATURE_NAME": "ADD1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant deficient for degradation of alpha 1-proteinase inhibitorZ (A1PiZ)",
+    "NAME_DESCRIPTION": "A1PiZ Degradation Deficient",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8978025"
+  },
+  {
+    "FEATURE_NAME": "ADE15",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant has dominant adenine autotrophy and reduced formyltetrahydrofolate synthetase levels",
+    "NAME_DESCRIPTION": "ADEnine requiring",
+    "CHROMOSOME": "chrVII",
+    "GENETIC_POSITION": "171",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "4147243 | 4147244 | 22905177"
+  },
+  {
+    "FEATURE_NAME": "AMC1",
+    "ALIASES": "CHL6",
+    "DESCRIPTION":
+      "Controls segregation of artificial minichromosomes during mitosis",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "Edition 11: amc1 is allelic to chl6",
+    "LITERATURE (PMIDs)": "2663183 | 3054502 | 8442383 | 8243998 | 1413997"
+  },
+  {
+    "FEATURE_NAME": "ANC4",
+    "ALIASES": "",
+    "DESCRIPTION": "Actin non-complementing mutant",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8243992 | 8243993 | 7579704 | 17167106 | 9153752"
+  },
+  {
+    "FEATURE_NAME": "ANI1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "UV mutant conferring cryptopleurine, cycloheximide, and anisomycin resistance",
+    "NAME_DESCRIPTION": "ANIsomycin resistant",
+    "CHROMOSOME": "chrXV",
+    "GENETIC_POSITION": "46",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3294103 | 10465783"
+  },
+  {
+    "FEATURE_NAME": "APR2",
+    "ALIASES": "",
+    "DESCRIPTION": "",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "chrXIV",
+    "GENETIC_POSITION": "-88.5",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "16547104"
+  },
+  {
+    "FEATURE_NAME": "ARG84",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Promoter mutation for ARG4 and ARG5, the acetylglutamate kinase and N-acetyl-gamma-glutamyl-phosphate reductase involved in arginine biosynthesis",
+    "NAME_DESCRIPTION": "ARGinine requiring",
+    "CHROMOSOME": "chrV",
+    "GENETIC_POSITION": "55",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "6251229 | 2995780 | 1413997 | 1535703 | 2678811"
+  },
+  {
+    "FEATURE_NAME": "ASC2",
+    "ALIASES": "",
+    "DESCRIPTION": "CYP1 absence of growth supressor",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "9504906"
+  },
+  {
+    "FEATURE_NAME": "ATA1",
+    "ALIASES": "",
+    "DESCRIPTION": "Sporulation-specific gene characterized by ATA sequences",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2678811"
+  },
+  {
+    "FEATURE_NAME": "ATI5",
+    "ALIASES": "",
+    "DESCRIPTION": "Acaciae toxin insensitive",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": ""
+  },
+  {
+    "FEATURE_NAME": "AUT6",
+    "ALIASES": "",
+    "DESCRIPTION": "Defective in autophagocytosis",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "The AUT6 locus, identified genetically in Harding et al. 1996 was mislabelled for a period of time in SGD as AUT8. This data entry error was corrected on 7/26/2001. The actual aut8 mutation was identified separately in a different screen from that which is described in Harding et al., and is allelic to the APG2/YNL242W locus.",
+    "LITERATURE (PMIDs)": "10511544 | 8663607"
+  },
+  {
+    "FEATURE_NAME": "AXE1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant resistant to high concentrations of axenomycin; also resistant to cycloheximide, sparsomycin and amycetin, all known inhibitors of the large subunit of the ribosome; most probably one of the proteins of the large ribosomal subunit",
+    "NAME_DESCRIPTION": "AXEnomycin",
+    "CHROMOSOME": "chrVII",
+    "GENETIC_POSITION": "-4",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "6762918 | 24189724 | 2678811"
+  },
+  {
+    "FEATURE_NAME": "BEL3",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant shows enhanced repressible phosphatase (rAPase) activity via disruption of transcriptional activator Gcn4p",
+    "NAME_DESCRIPTION": "Basal Expression Level",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7616963 | 9671481"
+  },
+  {
+    "FEATURE_NAME": "BEL4",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant shows enhanced repressible phosphatase (rAPase) activity via disruption of transcriptional activator Gcn4p",
+    "NAME_DESCRIPTION": "Basal Expression Level",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7616963"
+  },
+  {
+    "FEATURE_NAME": "BEL5",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant shows enhanced repressible phosphatase (rAPase) activity via disruption of transcriptional activator Gcn4p",
+    "NAME_DESCRIPTION": "Basal Expression Level",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7616963 | 9671481"
+  },
+  {
+    "FEATURE_NAME": "BEL6",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant shows enhanced repressible phosphatase (rAPase) activity via disruption of transcriptional activator Gcn4p",
+    "NAME_DESCRIPTION": "Basal Expression Level",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7616963 | 9671481"
+  },
+  {
+    "FEATURE_NAME": "BEL7",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant shows enhanced repressible phosphatase (rAPase) activity via disruption of transcriptional activator Gcn4p",
+    "NAME_DESCRIPTION": "Basal Expression Level",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7616963 | 9671481"
+  },
+  {
+    "FEATURE_NAME": "BLM1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Required for resistance to bleomycin; ionizing radiation and oxidative damage by hydrogen peroxide; mutants display slow growth and abnormal morphology; homozygous mutant has reduced spore viability; bleomycin resistance suppressed by MSH4",
+    "NAME_DESCRIPTION": "BLeoMycin resistance",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1710619 | 6166602 | 8574150 | 9449533"
+  },
+  {
+    "FEATURE_NAME": "BLM5",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Required for resistance to bleomycin; ionizing radiation and oxidative damage by hydrogen peroxide, required for sporulation",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1710619 | 12398929 | 14682384 | 14682386"
+  },
+  {
+    "FEATURE_NAME": "BLS2",
+    "ALIASES": "",
+    "DESCRIPTION": "Recessive blasticidin-S resistance mutant",
+    "NAME_DESCRIPTION": "BLasticidin-S resistant",
+    "CHROMOSOME": "chrXI",
+    "GENETIC_POSITION": "74",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3916720 | 2678811"
+  },
+  {
+    "FEATURE_NAME": "BRR4",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Cold-sensitive (cs) mutant for diminished pre-mRNA splicing ",
+    "NAME_DESCRIPTION": "Bad Response to Refrigeration",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8722763"
+  },
+  {
+    "FEATURE_NAME": "BST3",
+    "ALIASES": "",
+    "DESCRIPTION": "Negatively regulated COPII vesicle formation",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8862519 | 15075228 | 12475940"
+  },
+  {
+    "FEATURE_NAME": "CAG1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Alpha-specific gene involved in regulating sex agglutinin synthesis",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "chrIII",
+    "GENETIC_POSITION": "30",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3881403"
+  },
+  {
+    "FEATURE_NAME": "CCB1",
+    "ALIASES": "",
+    "DESCRIPTION": "Cross-complementation of budding defect",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "chrXV",
+    "GENETIC_POSITION": "108",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": ""
+  },
+  {
+    "FEATURE_NAME": "CDC22",
+    "ALIASES": "DNA1",
+    "DESCRIPTION":
+      "Cell division cycle mutant blocked at 36 degree C, arresting at bud formation",
+    "NAME_DESCRIPTION": "Cell Division Cycle",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "DNA1 has been used to refer to both CDC22 and DNA1/MAK1-3.",
+    "LITERATURE (PMIDs)": "2407608 | 6761543 | 8150258 | 17248617"
+  },
+  {
+    "FEATURE_NAME": "CDC29",
+    "ALIASES": "",
+    "DESCRIPTION": "Cell division cycle blocked at 36 degree C",
+    "NAME_DESCRIPTION": "Cell Division Cycle",
+    "CHROMOSOME": "chrIX",
+    "GENETIC_POSITION": "-23",
+    "NOTES":
+      "Edition 10: cdc29 has been shown to be distal to his6 by mitotic recombination analyses",
+    "LITERATURE (PMIDs)": "17248617 | 2678811"
+  },
+  {
+    "FEATURE_NAME": "CDC61",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Cell division cycle mutant blocked at 36 degree C with a G1 phase arrest",
+    "NAME_DESCRIPTION": "Cell Division Cycle",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "24185994 | 2407608"
+  },
+  {
+    "FEATURE_NAME": "CDC62",
+    "ALIASES": "",
+    "DESCRIPTION": "Cell division cycle blocked at 36 degree C",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "chrVII",
+    "GENETIC_POSITION": "57",
+    "NOTES": "Edition 10: cdc62 data in 1985 mapping review; new reference",
+    "LITERATURE (PMIDs)": "2690082 | 24185994 | 2678811"
+  },
+  {
+    "FEATURE_NAME": "CDC67",
+    "ALIASES": "",
+    "DESCRIPTION": "Regulator of the cell cycle at Start",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "chrXVI",
+    "GENETIC_POSITION": "58",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2407608 | 1547497"
+  },
+  {
+    "FEATURE_NAME": "CDC77",
+    "ALIASES": "NDC2",
+    "DESCRIPTION": "Cell division cycle blocked at 36 degree C",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "chrIV",
+    "GENETIC_POSITION": "-5",
+    "NOTES":
+      "CDC77 was mapped by Mortimer et al. 1989 on chromosome IV. Details of NDC2/CDC77 was published by Villadsen IS, Yeast (conference issue) 4:98 (1988); abstract #B28.",
+    "LITERATURE (PMIDs)": "2678811 | 1413997"
+  },
+  {
+    "FEATURE_NAME": "CDL1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Recessive lethal allele resulting in cell death in the absence of CHC1, encoding the clathrin heavy chain ",
+    "NAME_DESCRIPTION": "Clathrin-Deficient Lethality",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2072897"
+  },
+  {
+    "FEATURE_NAME": "CEM11",
+    "ALIASES": "",
+    "DESCRIPTION": "",
+    "NAME_DESCRIPTION": "Condensing Enzyme with Mitochondrial function",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": ""
+  },
+  {
+    "FEATURE_NAME": "CHL2",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in controlling mitotic transmission of yeast chromosomes",
+    "NAME_DESCRIPTION": "CHromosome Loss",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "Edition 10: chl2 is located on the right arm by 2 micron mapping",
+    "LITERATURE (PMIDs)": "3054502 | 3064490 | 8442383 | 2678811"
+  },
+  {
+    "FEATURE_NAME": "CHL5",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in controlling mitotic transmission of yeast chromosomes",
+    "NAME_DESCRIPTION": "CHromosome Loss",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3054502 | 3064490 | 8442383"
+  },
+  {
+    "FEATURE_NAME": "CHL8",
+    "ALIASES": "AMC3 | CTF12",
+    "DESCRIPTION":
+      "Identified as a chromosome transmission fidelity mutant; has a high rate of chromosome loss",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 11: AMC3 has been renamed chl8 | Edition 11: ctf12, amc3 and chl8 are allelic",
+    "LITERATURE (PMIDs)": "2407610 | 2663183 | 8442383 | 1413997"
+  },
+  {
+    "FEATURE_NAME": "CHL9",
+    "ALIASES": "AMC4",
+    "DESCRIPTION":
+      "Gene of unknown function; involved in controlling the segregation of natural chromosomes in yeast",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "Edition 11: AMC4 has been renamed chl9",
+    "LITERATURE (PMIDs)": "2663183 | 1413997"
+  },
+  {
+    "FEATURE_NAME": "CLS1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant has elevated intracellular calcium content and is unable to grow on Ca2+ rich medium",
+    "NAME_DESCRIPTION": "CaLcium Sensitive",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "CLS1 has been used in the literature to refer to both CRD1/YDL142C which encodes a cardiolipin synthase, and the genetic locus CLS1.",
+    "LITERATURE (PMIDs)": "3531397 | 9169866"
+  },
+  {
+    "FEATURE_NAME": "CLY2",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant cells autolyse with prolonged exposure to 36 degree C",
+    "NAME_DESCRIPTION": "Cell LYsis at 36 degree C",
+    "CHROMOSOME": "chrII",
+    "GENETIC_POSITION": "-39",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "6341816 | 17248609 | 2678811 | 1413997 | 2995780 | 2196995"
+  },
+  {
+    "FEATURE_NAME": "CLY3",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant cells autolyse with prolonged exposure to 36 degree C",
+    "NAME_DESCRIPTION": "Cell LYsis at 36 degree C",
+    "CHROMOSOME": "chrVI",
+    "GENETIC_POSITION": "6",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "17248609 | 8056323 | 2678811 | 2995780 | 6757051 | 6366520 | 7010111 | 8917543"
+  },
+  {
+    "FEATURE_NAME": "CLY8",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant cells autolyse with prolonged exposure to 36 degree C",
+    "NAME_DESCRIPTION": "Cell LYsis at 36 degree C",
+    "CHROMOSOME": "chrVII",
+    "GENETIC_POSITION": "76",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "3029564 | 3547080 | 3886479 | 8483459 | 2407607 | 9008166 | 2668116 | 6096695 | 7010111 | 2678811 | 3896925"
+  },
+  {
+    "FEATURE_NAME": "CLY9",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant cells autolyse with prolonged exposure to 36 degree C",
+    "NAME_DESCRIPTION": "Cell LYsis",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "The 1980 edition of the S. cerevisiae genetic map states: The cly9 marker can no longer be scored reliably and has been removed from the map.",
+    "LITERATURE (PMIDs)": "17248609 | 7010111"
+  },
+  {
+    "FEATURE_NAME": "CRL1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant is resistant to low level cycloheximide exposure; results in cell cycle arrest at 36 degree C",
+    "NAME_DESCRIPTION":
+      "Cycloheximide Resistant temperature sensitive (ts) lethal",
+    "CHROMOSOME": "chrVI",
+    "GENETIC_POSITION": "5",
+    "NOTES":
+      "Edition 10: crl1 exact order of crl1 with respect to SUP11 and SUF20 has not been established",
+    "LITERATURE (PMIDs)": "3294103 | 3294104 | 2678811"
+  },
+  {
+    "FEATURE_NAME": "CRL10",
+    "ALIASES": "",
+    "DESCRIPTION": "May be involved in the fidelity of protein translation",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "chrVII",
+    "GENETIC_POSITION": "92",
+    "NOTES":
+      "May represent an allele of PRE9 (YGR135W), based on genetic map position.",
+    "LITERATURE (PMIDs)": "3294103 | 3294104 | 9398670"
+  },
+  {
+    "FEATURE_NAME": "CRL11",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant resistant to low level cycloheximide exposure; results in cell cycle arrest at 36 degree C",
+    "NAME_DESCRIPTION":
+      "Cycloheximide Resistant temperature sensitive (ts) lethal",
+    "CHROMOSOME": "chrXV",
+    "GENETIC_POSITION": "-41",
+    "NOTES":
+      "Edition 10: crl11 maps centromere proximal to arg1 | May represent an allele of PRE6 (YOL038W), based on genetic map position.",
+    "LITERATURE (PMIDs)": "9398670 | 2678811"
+  },
+  {
+    "FEATURE_NAME": "CRL12",
+    "ALIASES": "",
+    "DESCRIPTION": "May be involved in the fidelity of protein translation",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "chrVII",
+    "GENETIC_POSITION": "186",
+    "NOTES":
+      "May represent an allele of PUP2 (YGR253C), based on genetic map position.",
+    "LITERATURE (PMIDs)": "3294103 | 3294104 | 9398670"
+  },
+  {
+    "FEATURE_NAME": "CRL15",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant resistant to low level cycloheximide exposure; results in cell cycle arrest at 36 degree C",
+    "NAME_DESCRIPTION":
+      "Cycloheximide Resistant temperature sensitive (ts) lethal",
+    "CHROMOSOME": "chrVIII",
+    "GENETIC_POSITION": "30",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3294103"
+  },
+  {
+    "FEATURE_NAME": "CRL16",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant resistant to low level cycloheximide exposure; results in cell cycle arrest at 36 degree C",
+    "NAME_DESCRIPTION":
+      "Cycloheximide Resistant temperature sensitive (ts) lethal",
+    "CHROMOSOME": "chrIV",
+    "GENETIC_POSITION": "236",
+    "NOTES":
+      "May represent an allele of RPT3 (YDR394W), based on genetic map position.",
+    "LITERATURE (PMIDs)": "9398670"
+  },
+  {
+    "FEATURE_NAME": "CRL17",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant resistant to low level cycloheximide exposure; results in cell cycle arrest at 36 degree C",
+    "NAME_DESCRIPTION":
+      "Cycloheximide Resistant temperature sensitive (ts) lethal",
+    "CHROMOSOME": "chrXV",
+    "GENETIC_POSITION": "45",
+    "NOTES":
+      "May represent an allele of RPT5 (YOR117W), based on genetic map position.",
+    "LITERATURE (PMIDs)": "3294103 | 9398670"
+  },
+  {
+    "FEATURE_NAME": "CRL18",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant resistant to low level cycloheximide exposure; results in cell cycle arrest at 36 degree C",
+    "NAME_DESCRIPTION":
+      "Cycloheximide Resistant temperature sensitive (ts) lethal",
+    "CHROMOSOME": "chrIV",
+    "GENETIC_POSITION": "-1",
+    "NOTES":
+      "CRL18 is likely to represent an allele of PTC1 (TPD1, YDL006W), based on shared mutant phenotype and genetic map position. | May represent an allele of RPT2 (YDL007W), based on genetic map position.",
+    "LITERATURE (PMIDs)": "3294103 | 8196609 | 9398670"
+  },
+  {
+    "FEATURE_NAME": "CRL22",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant resistant to low level cycloheximide exposure; results in cell cycle arrest at 36 degree C",
+    "NAME_DESCRIPTION":
+      "Cycloheximide Resistant temperature sensitive (ts) lethal",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 10: crl22 - ade4 order has not been determined | May represent an allele of PRE5 (YMR314W), based on genetic map position.",
+    "LITERATURE (PMIDs)": "3294103 | 9398670 | 2678811"
+  },
+  {
+    "FEATURE_NAME": "CRL4",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant resistant to low level cycloheximide exposure; results in cell cycle arrest at 36 degree C",
+    "NAME_DESCRIPTION":
+      "Cycloheximide Resistant temperature sensitive (ts) lethal",
+    "CHROMOSOME": "chrV",
+    "GENETIC_POSITION": "18",
+    "NOTES":
+      "May represent an allele of RPN3 (YER021W), based on genetic map position.",
+    "LITERATURE (PMIDs)": "3294103 | 9398670"
+  },
+  {
+    "FEATURE_NAME": "CRL7",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant resistant to low level cycloheximide exposure; results in cell cycle arrest at 36 degree C",
+    "NAME_DESCRIPTION":
+      "Cycloheximide Resistant temperature sensitive (ts) lethal",
+    "CHROMOSOME": "chrXV",
+    "GENETIC_POSITION": "71",
+    "NOTES":
+      "May represent an allele of PUP1 (YOR157C), based on genetic map position.",
+    "LITERATURE (PMIDs)": "3294103 | 9398670"
+  },
+  {
+    "FEATURE_NAME": "CRL9",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant resistant to low level cycloheximide exposure; results in cell cycle arrest at 36 degree C",
+    "NAME_DESCRIPTION":
+      "Cycloheximide Resistant temperature sensitive (ts) lethal",
+    "CHROMOSOME": "chrII",
+    "GENETIC_POSITION": "97",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3294103"
+  },
+  {
+    "FEATURE_NAME": "CRT2",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant constitutively activates transcription of RNR3, that encodes a ribonucleotide reductase large subunit isoform ",
+    "NAME_DESCRIPTION": "Constitutive RNR3 Transcription",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1516817 | 23788651"
+  },
+  {
+    "FEATURE_NAME": "CUP14",
+    "ALIASES": "",
+    "DESCRIPTION": "Copper homeostasis",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "chrIV",
+    "GENETIC_POSITION": "286",
+    "NOTES": "Edition 10: cup14 data in 1985 mapping review; new reference",
+    "LITERATURE (PMIDs)": "2653812 | 8628314 | 2678811"
+  },
+  {
+    "FEATURE_NAME": "CUP3",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant displays a modest reduction in copper resistance (Cu2+) relative to wild type",
+    "NAME_DESCRIPTION": "CUPrum",
+    "CHROMOSOME": "chrXII",
+    "GENETIC_POSITION": "323",
+    "NOTES": "Edition 10: cup3 data in 1985 mapping review; new reference",
+    "LITERATURE (PMIDs)": "2653812 | 2678811"
+  },
+  {
+    "FEATURE_NAME": "CVT14",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Transport of proaminopeptidase I (AP1) to the vacuole is altered and mutant accumulates precursor AP1",
+    "NAME_DESCRIPTION": "Cytoplasm to Vacuole Targeting",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8663607 | 10735854"
+  },
+  {
+    "FEATURE_NAME": "CYH1",
+    "ALIASES": "",
+    "DESCRIPTION": "Mutant resistant to low level cycloheximide exposure",
+    "NAME_DESCRIPTION": "CYcloHeximide resistant",
+    "CHROMOSOME": "chrII",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 11: AMY2, cyh1 and cyh10 are probably alleles of pdr3 or pdr7 (pdr4) and have been removed from the map",
+    "LITERATURE (PMIDs)": "2009277 | 5900603 | 1413997"
+  },
+  {
+    "FEATURE_NAME": "CYH10",
+    "ALIASES": "",
+    "DESCRIPTION": "Mutant resistant to low level cycloheximide exposure",
+    "NAME_DESCRIPTION": "CYcloHeximide resistant",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 11: AMY2, cyh1 and cyh10 are probably alleles of pdr3 or pdr7 (pdr4) and have been removed from the map",
+    "LITERATURE (PMIDs)": "4371644 | 2009277 | 1413997"
+  },
+  {
+    "FEATURE_NAME": "CYH4",
+    "ALIASES": "",
+    "DESCRIPTION": "Mutant resistant to low level cycloheximide exposure",
+    "NAME_DESCRIPTION": "CYcloHeximide resistant",
+    "CHROMOSOME": "chrXV",
+    "GENETIC_POSITION": "34",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8929391 | 4582950 | 2188106 | 1413997"
+  },
+  {
+    "FEATURE_NAME": "CYH5",
+    "ALIASES": "",
+    "DESCRIPTION": "Mutant resistant to low level cycloheximide exposure",
+    "NAME_DESCRIPTION": "CYcloHeximide resistant",
+    "CHROMOSOME": "chrXI",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1913874"
+  },
+  {
+    "FEATURE_NAME": "CYS1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant is auxotrophic for cysteine, and deficient in L-serine O-acetyltransferase activity",
+    "NAME_DESCRIPTION": "CYSteine deficient",
+    "CHROMOSOME": "chrI",
+    "GENETIC_POSITION": "-10",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1561836 | 6373742 | 8335636 | 19593469 | 12586406"
+  },
+  {
+    "FEATURE_NAME": "CYS2",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant auxotrophic for cysteine, deficient in L-serine O-acetyltransferase activity",
+    "NAME_DESCRIPTION": "CYSteine deficient",
+    "CHROMOSOME": "chrVII",
+    "GENETIC_POSITION": "87.14",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "1441747 | 1525856 | 1789005 | 1789006 | 3056921 | 12234471 | 12586406"
+  },
+  {
+    "FEATURE_NAME": "DBF1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Protein required for DNA replication; expression is constant across the cell cycle",
+    "NAME_DESCRIPTION": "DumbBell Former",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3299263 | 6750322"
+  },
+  {
+    "FEATURE_NAME": "DBL1",
+    "ALIASES": "",
+    "DESCRIPTION": "Dominant mutant fails to bind alcian blue dye",
+    "NAME_DESCRIPTION": "alcian blue Dye Binding Locus",
+    "CHROMOSOME": "chrXI",
+    "GENETIC_POSITION": "-84",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1097420 | 4194860"
+  },
+  {
+    "FEATURE_NAME": "DDS2",
+    "ALIASES": "",
+    "DESCRIPTION": "Depressed DNA synthesis",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "353510 | 6750322"
+  },
+  {
+    "FEATURE_NAME": "DIE3",
+    "ALIASES": "",
+    "DESCRIPTION": "De-repression of ITR1 Expression",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": ""
+  },
+  {
+    "FEATURE_NAME": "DIS1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Required for mitotic segregation; meiosis I segregation, and spore viability",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "DIS1 has been used in the literature to refer to both ULS1/RIS1/YOR191W, which encodes a member of the SWI-SNF family of DNA-dependent ATPases, and the genetic locus DIS1, which is required for mitotic segregation, meiosis I segregation, and spore viability.",
+    "LITERATURE (PMIDs)": "3294101 | 9169866"
+  },
+  {
+    "FEATURE_NAME": "DLP1",
+    "ALIASES": "",
+    "DESCRIPTION": "Delayed loss of proliferation activity",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "10580697"
+  },
+  {
+    "FEATURE_NAME": "DNA1",
+    "ALIASES": "MAK1-3",
+    "DESCRIPTION":
+      "Mutant allele dna1-1 has a G1 phase cell cycle arrest (dna1-1) at 36°C that is dependent on a functional RAD9 gene",
+    "NAME_DESCRIPTION": "DNA synthesis defective",
+    "CHROMOSOME": "chrXVI",
+    "GENETIC_POSITION": "3",
+    "NOTES": "DNA1 has been used to refer to both CDC22 and DNA1/MAK1-3.",
+    "LITERATURE (PMIDs)": "2652918 | 7828811 | 8649984 | 6761543"
+  },
+  {
+    "FEATURE_NAME": "DPD1",
+    "ALIASES": "",
+    "DESCRIPTION": "",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8816439"
+  },
+  {
+    "FEATURE_NAME": "DRS3",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Cold sensitive mutant displays a deficiency in the 40S ribosomal subunit",
+    "NAME_DESCRIPTION": "Deficient in Ribosomal Subunit",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8247005 | 8720068 | 10465789"
+  },
+  {
+    "FEATURE_NAME": "DSM1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Temperature sensitive mutant, blocked in initiation of DNA meiotic synthesis at 36 degree C",
+    "NAME_DESCRIPTION": "Premeiotic DNA Synthesis deficient",
+    "CHROMOSOME": "chrVII",
+    "GENETIC_POSITION": "14",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "392227"
+  },
+  {
+    "FEATURE_NAME": "DUR4",
+    "ALIASES": "",
+    "DESCRIPTION": "",
+    "NAME_DESCRIPTION": "Urea degradation deficient",
+    "CHROMOSOME": "chrVIII",
+    "GENETIC_POSITION": "-12",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2995780 | 1413997"
+  },
+  {
+    "FEATURE_NAME": "EAM1",
+    "ALIASES": "",
+    "DESCRIPTION": "Endogenous ethanolamine biosynthesis",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "chrX",
+    "GENETIC_POSITION": "-108",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3896927 | 17246236 | 3297920 | 1413997"
+  },
+  {
+    "FEATURE_NAME": "EAM2",
+    "ALIASES": "",
+    "DESCRIPTION": "Endogenous ethanolamine biosynthesis",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3896927 | 2678811 | 3297920 | 1413997 | 2183021"
+  },
+  {
+    "FEATURE_NAME": "EAM6",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant counteracts the cho1 defect in phosphatidylserine synthesis with a novel endogenous supply of ethanolamine",
+    "NAME_DESCRIPTION": "Endogenous ethanolamine biosynthesis",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1413997 | 2678811 | 8641269"
+  },
+  {
+    "FEATURE_NAME": "EIP1",
+    "ALIASES": "",
+    "DESCRIPTION": "",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": ""
+  },
+  {
+    "FEATURE_NAME": "ERG201",
+    "ALIASES": "",
+    "DESCRIPTION": "",
+    "NAME_DESCRIPTION": "Ergosterol biosynthesis defective",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1413997"
+  },
+  {
+    "FEATURE_NAME": "ESC3",
+    "ALIASES": "",
+    "DESCRIPTION": "Escape of sugars control",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "ESC3 was identified and named in Rodriguez C, et al. (2003) FEMS Yeast Res 3(1):77-84",
+    "LITERATURE (PMIDs)": "12702249"
+  },
+  {
+    "FEATURE_NAME": "ETH3",
+    "ALIASES": "",
+    "DESCRIPTION": "Affects methionine biosynthesis",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1096967 | 4580557 | 1394507"
+  },
+  {
+    "FEATURE_NAME": "EXA2",
+    "ALIASES": "",
+    "DESCRIPTION": "Extragenic suppressor of hsp70 subfamily A",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 12: exa1 and exa2 are both centromere linked; the data are consistent with placing these two genes 8 cM and 21 cM from their respective centromeres. Neither gene is on chromosome III",
+    "LITERATURE (PMIDs)": "1644272"
+  },
+  {
+    "FEATURE_NAME": "FET1",
+    "ALIASES": "",
+    "DESCRIPTION": "Mutants defective in FE(II) iron transport",
+    "NAME_DESCRIPTION": "FErrous Transport",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "10565676"
+  },
+  {
+    "FEATURE_NAME": "FIM1",
+    "ALIASES": "",
+    "DESCRIPTION": "",
+    "NAME_DESCRIPTION": "FIMbrin",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1413997"
+  },
+  {
+    "FEATURE_NAME": "FKR1",
+    "ALIASES": "",
+    "DESCRIPTION": "FK506 resistant",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1715022"
+  },
+  {
+    "FEATURE_NAME": "FKR2",
+    "ALIASES": "",
+    "DESCRIPTION": "FK506 resistant",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1715022"
+  },
+  {
+    "FEATURE_NAME": "FKR3",
+    "ALIASES": "",
+    "DESCRIPTION": "FK506 resistant",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1715022"
+  },
+  {
+    "FEATURE_NAME": "FLS1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Temperature sensitive mutants display increased fluphezanine sensitivity",
+    "NAME_DESCRIPTION": "FLuphenazine Sensitive",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3536873"
+  },
+  {
+    "FEATURE_NAME": "FRO1",
+    "ALIASES": "",
+    "DESCRIPTION": "Dominant allele responsible for foam generation",
+    "NAME_DESCRIPTION": "FROthing",
+    "CHROMOSOME": "chrVII",
+    "GENETIC_POSITION": "143",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "10861899 | 22069150"
+  },
+  {
+    "FEATURE_NAME": "FRO2",
+    "ALIASES": "",
+    "DESCRIPTION": "Dominant allele responsible for foam generation",
+    "NAME_DESCRIPTION": "FROthing",
+    "CHROMOSOME": "chrVII",
+    "GENETIC_POSITION": "127",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "10861899 | 22069150"
+  },
+  {
+    "FEATURE_NAME": "FSR1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Fluphenazine resistant mutant generated from fls1. Temperature sensitive cell cycle arrest occurs after nuclear duplication, and before cell division",
+    "NAME_DESCRIPTION": "Fluphenazine Sensitive to Resistant",
+    "CHROMOSOME": "chrII",
+    "GENETIC_POSITION": "150",
+    "NOTES": "Edition 10: fsr1 has been placed arbitrarily distal to his7",
+    "LITERATURE (PMIDs)": "3536873 | 2678811"
+  },
+  {
+    "FEATURE_NAME": "GCD13",
+    "ALIASES": "",
+    "DESCRIPTION": "Negative regulator of GCN4 expression",
+    "NAME_DESCRIPTION": "General Control Derepressed",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3540603 | 3554249 | 9539420 | 6095062"
+  },
+  {
+    "FEATURE_NAME": "GCD3",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Negative regulator gene in general amino acid biosynthetic pathway; possibly upstream of GCN4",
+    "NAME_DESCRIPTION": "General Control Derepressed",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3289762 | 3329041 | 3537730 | 18756096 | 20463023"
+  },
+  {
+    "FEATURE_NAME": "GCD4",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Negative regulatory gene in general amino acid biosynthetic pathway; locus on Chromosome III; proposed negative regulator of GCN4",
+    "NAME_DESCRIPTION": "General Control Derepressed",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3327608 | 3329041"
+  },
+  {
+    "FEATURE_NAME": "GCE1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "cAMP-binding protein; localized to plasma membrane via glycosyl-phosphatidylinositol (GPI)-anchor",
+    "NAME_DESCRIPTION": "GPI-anchored Cylic-AMP-binding Ectoprotein",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "1334092 | 1657142 | 1722148 | 8109981 | 8320256 | 8524327 | 8554322 | 9231801 | 10684630"
+  },
+  {
+    "FEATURE_NAME": "GCN6",
+    "ALIASES": "",
+    "DESCRIPTION": "Positive regulator of GCN4 transcription",
+    "NAME_DESCRIPTION": "General Control Nonderepressible",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3537709 | 6095062"
+  },
+  {
+    "FEATURE_NAME": "GCN7",
+    "ALIASES": "",
+    "DESCRIPTION": "Positive regulator of GCN4 transcription",
+    "NAME_DESCRIPTION": "General Control Nonderepressible",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3537709 | 6095062"
+  },
+  {
+    "FEATURE_NAME": "GCN8",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Recessive mutations confer sensitivity to multiple amino acid analogs, and result in decreased mRNA levels for amino biosynthetic genes under general control",
+    "NAME_DESCRIPTION": "General Control Nonderepressible",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3537709 | 6095062"
+  },
+  {
+    "FEATURE_NAME": "GCN9",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Recessive mutations confer sensitivity to multiple amino acid analogs, and result in decreased mRNA levels for amino biosynthetic genes under general control",
+    "NAME_DESCRIPTION": "General Control Nonderepressible",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3537709 | 6095062"
+  },
+  {
+    "FEATURE_NAME": "GDR1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in nutritional control of germination, mutants sporulate in a wider range of conditions",
+    "NAME_DESCRIPTION": "Germination DeRepressed",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1804755"
+  },
+  {
+    "FEATURE_NAME": "GDR2",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in nutritional control of germination, mutants sporulate in a wider range of conditions",
+    "NAME_DESCRIPTION": "Germination DeRepressed",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1804755"
+  },
+  {
+    "FEATURE_NAME": "GLU3",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant is auxotrophic for glutamic acid and demonstrates a lack of significant citrate synthase activity",
+    "NAME_DESCRIPTION": "GLUtamate auxotroph",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "10066 | 1102943"
+  },
+  {
+    "FEATURE_NAME": "GPI4",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Gene of unknown function; involved in the attachment of glycosylphosphatidylinositol (GPI) anchors to proteins",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7559756 | 9218792 | 10329735"
+  },
+  {
+    "FEATURE_NAME": "GPI5",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Gene of unknown function; involved in the attachment of glycosylphosphatidylinositol (GPI) anchors to proteins",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7559756"
+  },
+  {
+    "FEATURE_NAME": "GPI6",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Gene of unknown function; involved in the attachment of glycosylphosphatidylinositol (GPI) anchors to proteins",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7559756 | 21734149"
+  },
+  {
+    "FEATURE_NAME": "GPI9",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Gene of unknown function; involved in the attachment of glycosylphosphatidylinositol (GPI) anchors to proteins",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7559756"
+  },
+  {
+    "FEATURE_NAME": "GRD10",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants mislocalize fusion product of dipeptidyl aminopeptidase A and alkaline phosphatase (ALP) to the vacuole",
+    "NAME_DESCRIPTION": "Golgi Retention Defective",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8649377"
+  },
+  {
+    "FEATURE_NAME": "GRD14",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants mislocalize a fusion protein containing dipeptidyl aminopeptidase A and alkaline phosphatase (ALP) to the vacuole",
+    "NAME_DESCRIPTION": "Golgi Retention Defective",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8649377"
+  },
+  {
+    "FEATURE_NAME": "GRD15",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants mislocalize a fusion protein containing dipeptidyl aminopeptidase A and alkaline phosphatase (ALP) to the vacuole",
+    "NAME_DESCRIPTION": "Golgi Retention Defective",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8649377"
+  },
+  {
+    "FEATURE_NAME": "GRD16",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants mislocalize a fusion protein containing dipeptidyl aminopeptidase A and alkaline phosphatase (ALP) to the vacuole",
+    "NAME_DESCRIPTION": "Golgi Retention Defective",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8649377"
+  },
+  {
+    "FEATURE_NAME": "GRD17",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants mislocalize a fusion protein containing dipeptidyl aminopeptidase A and alkaline phosphatase (ALP) to the vacuole",
+    "NAME_DESCRIPTION": "Golgi Retention Defective",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8649377"
+  },
+  {
+    "FEATURE_NAME": "GRD18",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants mislocalize a fusion protein containing dipeptidyl aminopeptidase A and alkaline phosphatase (ALP) to the vacuole",
+    "NAME_DESCRIPTION": "Golgi Retention Defective",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8649377"
+  },
+  {
+    "FEATURE_NAME": "GRD3",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants mislocalize a fusion protein containing dipeptidyl aminopeptidase A and alkaline phosphatase (ALP) to the vacuole",
+    "NAME_DESCRIPTION": "Golgi Retention Defective",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8649377"
+  },
+  {
+    "FEATURE_NAME": "GRD4",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants mislocalize a fusion protein containing dipeptidyl aminopeptidase A and alkaline phosphatase (ALP) to the vacuole",
+    "NAME_DESCRIPTION": "Golgi Retention Defective",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8649377"
+  },
+  {
+    "FEATURE_NAME": "GRD5",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants mislocalize a fusion protein containing dipeptidyl aminopeptidase A and alkaline phosphatase (ALP) to the vacuole",
+    "NAME_DESCRIPTION": "Golgi Retention Defective",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8649377"
+  },
+  {
+    "FEATURE_NAME": "GSD3",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants display reduced glycine decarboxylase multienzyme complex (GDC) activity and glycine intake",
+    "NAME_DESCRIPTION": "Defects in conversion of Glycine to Serine",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7498764"
+  },
+  {
+    "FEATURE_NAME": "GSD4",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants display reduced glycine decarboxylase multienzyme complex (GDC) activity and glycine intake",
+    "NAME_DESCRIPTION": "Defects in conversion of Glycine to Serine",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7498764"
+  },
+  {
+    "FEATURE_NAME": "GSD5",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants display reduced glycine decarboxylase multienzyme complex (GDC) activity and glycine intake",
+    "NAME_DESCRIPTION": "Defects in conversion of Glycine to Serine",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7498764"
+  },
+  {
+    "FEATURE_NAME": "GSD6",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants display reduced glycine decarboxylase multienzyme complex (GDC) activity and glycine intake",
+    "NAME_DESCRIPTION": "Defects in conversion of Glycine to Serine",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7498764"
+  },
+  {
+    "FEATURE_NAME": "GSF1",
+    "ALIASES": "",
+    "DESCRIPTION": "Glucose Signaling Factor",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "9335593 | 10628974 | 11514465 | 9618445 | 12618390 | 10712503"
+  },
+  {
+    "FEATURE_NAME": "GSF3",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in Snf1p-mediated glucose transcriptional repression",
+    "NAME_DESCRIPTION": "Glucose Signaling Factor",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "9335593"
+  },
+  {
+    "FEATURE_NAME": "HBO10",
+    "ALIASES": "",
+    "DESCRIPTION": "",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": ""
+  },
+  {
+    "FEATURE_NAME": "HEM10",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in porphobilinogen (PBG) precursor generation for heme biosynthesis; mutants are defective in PBG synthase activity",
+    "NAME_DESCRIPTION": "HEMe synthesis deficient",
+    "CHROMOSOME": "chrVII",
+    "GENETIC_POSITION": "-35",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7035824 | 2678811 | 1413997"
+  },
+  {
+    "FEATURE_NAME": "HEM11",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in heme biosynthesis",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7035824"
+  },
+  {
+    "FEATURE_NAME": "HEM5",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in ferrochelatase activity of heme biosynthesis; mutants accumulate protoporphyrin IX ",
+    "NAME_DESCRIPTION": "HEMe synthesis deficient",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "323256 | 2445751"
+  },
+  {
+    "FEATURE_NAME": "HIR4",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in cell-cycle regulation of histone transcription",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3125420 | 8224824"
+  },
+  {
+    "FEATURE_NAME": "HIT4",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Disruption by transposon insertion confers growth at 37 degrees Celsius",
+    "NAME_DESCRIPTION": "HIgh Temperature growth",
+    "CHROMOSOME": "chrXIII",
+    "GENETIC_POSITION": "159.5",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1325386"
+  },
+  {
+    "FEATURE_NAME": "HPC3",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants derepress histone gene transcription, such as HTA1, upon DNA synthesis inhibition",
+    "NAME_DESCRIPTION": "Histone Promoter Control",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1406694 | 8224824 | 19952074 | 9504914"
+  },
+  {
+    "FEATURE_NAME": "HPC4",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants derepress histone gene transcription, such as HTA1, upon DNA synthesis inhibition",
+    "NAME_DESCRIPTION": "Histone Promoter Control",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1406694"
+  },
+  {
+    "FEATURE_NAME": "HPC5",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants derepress histone gene transcription, such as HTA1, upon DNA synthesis inhibition",
+    "NAME_DESCRIPTION": "Histone Promoter Control",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1406694 | 16264190 | 9504914"
+  },
+  {
+    "FEATURE_NAME": "HPR2",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in mitotic intrachromosomal recombination",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2828154 | 3044923"
+  },
+  {
+    "FEATURE_NAME": "HPR4",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in mitotic intrachromosomal recombination",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2828154 | 3044923"
+  },
+  {
+    "FEATURE_NAME": "HPR7",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in mitotic intrachromosomal recombination",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2828154 | 3044923"
+  },
+  {
+    "FEATURE_NAME": "HPR8",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in mitotic intrachromosomal recombination",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2828154 | 3044923"
+  },
+  {
+    "FEATURE_NAME": "HRS3",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutations abrogate the hyper-deletion phenotype of hpr1; potential DNA repair function",
+    "NAME_DESCRIPTION": "Hyper-Recombination Suppression",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7705651"
+  },
+  {
+    "FEATURE_NAME": "HRS4",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutations abrogate the hyper-deletion phenotype of hpr1; potential DNA repair function",
+    "NAME_DESCRIPTION": "Hyper-Recombination Suppression",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7705651"
+  },
+  {
+    "FEATURE_NAME": "HRS5",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutations abrogate the hyper-deletion phenotype of hpr1; potential DNA repair function",
+    "NAME_DESCRIPTION": "Hyper-Recombination Suppression",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7705651"
+  },
+  {
+    "FEATURE_NAME": "HYG4",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Dominant mutant alleles confer increased hygromycyin B resistance",
+    "NAME_DESCRIPTION": "HYGromycin resitance",
+    "CHROMOSOME": "chrIV",
+    "GENETIC_POSITION": "201",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2678811 | 1413997 | 2963211 | 3056938"
+  },
+  {
+    "FEATURE_NAME": "IAR1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Gene of unknown function; involved in regulating invertase (SUC5) activity and may be in part responsible for low levels of invertase activity observed in diploids",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 14: This gene was first called RPS5 but has been renamed to avoid confusion with the ribosomal gene by that name",
+    "LITERATURE (PMIDs)": "3312477 | 9169866"
+  },
+  {
+    "FEATURE_NAME": "ICK1",
+    "ALIASES": "",
+    "DESCRIPTION": "Found as an extragenic suppressor of ctf13-30",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "9799255 | https://circle.ubc.ca/bitstream/handle/2429/14169/ubc_2003-0260.pdf?sequence=1"
+  },
+  {
+    "FEATURE_NAME": "IKI2",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Recessive mutation confers resistance to the yeast killer toxin complex encoded by plasmid pGKL1",
+    "NAME_DESCRIPTION": "Insensitive to KIller",
+    "CHROMOSOME": "chrXIII",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8704309"
+  },
+  {
+    "FEATURE_NAME": "IKI4",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Recessive mutation confers resistance to the yeast killer toxin complex encoded by plasmid pGKL1",
+    "NAME_DESCRIPTION": "Insensitive to KIller",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8704309"
+  },
+  {
+    "FEATURE_NAME": "IKI5",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Recessive mutation confers resistance to the yeast killer toxin complex encoded by plasmid pGKL1",
+    "NAME_DESCRIPTION": "Insensitive to KIller",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8704309"
+  },
+  {
+    "FEATURE_NAME": "ILP1",
+    "ALIASES": "",
+    "DESCRIPTION": "",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": ""
+  },
+  {
+    "FEATURE_NAME": "IPA1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants show increased porphyrin accumulation in conjunction with udt1, a disruption to the HEM12 gene encoding uroporphyrinogen decarboxylase",
+    "NAME_DESCRIPTION": "Increased accumulation of porphyrins",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7770055"
+  },
+  {
+    "FEATURE_NAME": "IPA2",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants show increased porphyrin accumulation in conjunction with udt1, a disruption to the HEM12 gene encoding uroporphyrinogen decarboxylase",
+    "NAME_DESCRIPTION": "Increased accumulation of porphyrins",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7770055"
+  },
+  {
+    "FEATURE_NAME": "IPA3",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants show increased porphyrin accumulation in conjunction with udt1, a disruption to the HEM12 gene encoding uroporphyrinogen decarboxylase",
+    "NAME_DESCRIPTION": "Increased accumulation of porphyrins",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7770055 | 12073310"
+  },
+  {
+    "FEATURE_NAME": "KEM2",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants display an enhanced nuclear fusion defect during conjugation compared to a kar1-1 single mutant",
+    "NAME_DESCRIPTION": "Kar Enhancing Mutation",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2076815"
+  },
+  {
+    "FEATURE_NAME": "KEM3",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants display an enhanced nuclear fusion defect during conjugation compared to a kar1-1 single mutant",
+    "NAME_DESCRIPTION": "Kar Enhancing Mutation",
+    "CHROMOSOME": "chrVII",
+    "GENETIC_POSITION": "-83",
+    "NOTES":
+      "Edition 11: kem1 and kem3 data are not internally consistent nor are they consistent with other data for the lys5-met13 interval. The positions chosen for these genes are tentative.",
+    "LITERATURE (PMIDs)": "2076815 | 1413997"
+  },
+  {
+    "FEATURE_NAME": "KIT12",
+    "ALIASES": "",
+    "DESCRIPTION": "",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": ""
+  },
+  {
+    "FEATURE_NAME": "KRE10",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in beta-glucan synthesis; mutants are resistant to the S. cerevisiae K1 killer toxin",
+    "NAME_DESCRIPTION": "Killer toxin REsistant",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8462845 | 348280"
+  },
+  {
+    "FEATURE_NAME": "KSL1",
+    "ALIASES": "",
+    "DESCRIPTION": "",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "10652251"
+  },
+  {
+    "FEATURE_NAME": "LAI1",
+    "ALIASES": "",
+    "DESCRIPTION": "L-A Independant",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": ""
+  },
+  {
+    "FEATURE_NAME": "LAI2",
+    "ALIASES": "",
+    "DESCRIPTION": "L-A Independant",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": ""
+  },
+  {
+    "FEATURE_NAME": "LCP1",
+    "ALIASES": "",
+    "DESCRIPTION": "Synthetic lethal with pap1-7",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The LCP1 locus has been genetically defined by Wiederkehr, T., et al. (1998). LCP1 has not been assigned to a standard ORF.",
+    "LITERATURE (PMIDs)": "9814757"
+  },
+  {
+    "FEATURE_NAME": "LCP2",
+    "ALIASES": "",
+    "DESCRIPTION": "Synthetic lethal with pap1-7",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The LCP2 locus has been genetically defined by Wiederkehr, T., et al. (1998). LCP2 has not been assigned to a standard ORF.",
+    "LITERATURE (PMIDs)": "9814757"
+  },
+  {
+    "FEATURE_NAME": "LCP3",
+    "ALIASES": "",
+    "DESCRIPTION": "Synthetic lethal with pap1-7",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The LCP3 locus has been genetically defined by Wiederkehr, T., et al. (1998). LCP3 has not been assigned to a standard ORF.",
+    "LITERATURE (PMIDs)": "9814757"
+  },
+  {
+    "FEATURE_NAME": "LCP4",
+    "ALIASES": "",
+    "DESCRIPTION": "Synthetic lethal with pap1-7",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The LCP4 locus has been genetically defined by Wiederkehr, T., et al. (1998). LCP4 has not been assigned to a standard ORF.",
+    "LITERATURE (PMIDs)": "9814757"
+  },
+  {
+    "FEATURE_NAME": "LDR1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Gene of unknown function; identified in a screen for mutants that fail to localize the soluble Mnn1p lumenal domain to the Golgi",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "Identified in Reynolds et al. 1998.",
+    "LITERATURE (PMIDs)": "9817752"
+  },
+  {
+    "FEATURE_NAME": "LET1",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in S1/S2 permease mediated L-leucine transport ",
+    "NAME_DESCRIPTION": "LEThal",
+    "CHROMOSOME": "chrI",
+    "GENETIC_POSITION": "2",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8891352 | 17248609 | 1413997"
+  },
+  {
+    "FEATURE_NAME": "LET1M",
+    "ALIASES": "",
+    "DESCRIPTION": "",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "chrXIII",
+    "GENETIC_POSITION": "79",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": ""
+  },
+  {
+    "FEATURE_NAME": "LET2",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in S1/S2 permease mediated L-leucine transport ",
+    "NAME_DESCRIPTION": "LEThal",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8891352 | 1413997"
+  },
+  {
+    "FEATURE_NAME": "LET3",
+    "ALIASES": "",
+    "DESCRIPTION": "",
+    "NAME_DESCRIPTION": "LEThal",
+    "CHROMOSOME": "chrX",
+    "GENETIC_POSITION": "-6",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1413997"
+  },
+  {
+    "FEATURE_NAME": "LET5",
+    "ALIASES": "",
+    "DESCRIPTION": "",
+    "NAME_DESCRIPTION": "LEThal",
+    "CHROMOSOME": "chrX",
+    "GENETIC_POSITION": "-17",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1413997"
+  },
+  {
+    "FEATURE_NAME": "LET6",
+    "ALIASES": "",
+    "DESCRIPTION": "",
+    "NAME_DESCRIPTION": "LEThal",
+    "CHROMOSOME": "chrVI",
+    "GENETIC_POSITION": "-7",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1413997"
+  },
+  {
+    "FEATURE_NAME": "LEU6",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant displays a combinatorial reduction in alpha-isopropylmalate (alpha-IPM) synthase activity in concert with LEU4 disruption",
+    "NAME_DESCRIPTION": "LEUcine requiring",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "Edition 14: This gene is unmapped",
+    "LITERATURE (PMIDs)": "3294097 | 9169866"
+  },
+  {
+    "FEATURE_NAME": "LEU7",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant displays a combinatorial reduction in alpha-isopropylmalate (alpha-IPM) synthase activity in concert with LEU4 disruption",
+    "NAME_DESCRIPTION": "LEUcine requiring",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "Edition 14: This gene is unmapped",
+    "LITERATURE (PMIDs)": "3294097 | 9169866"
+  },
+  {
+    "FEATURE_NAME": "LEU8",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant displays a combinatorial reduction in alpha-isopropylmalate (alpha-IPM) synthase activity in concert with LEU4 disruption",
+    "NAME_DESCRIPTION": "LEUcine requiring",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "Edition 14: This gene is unmapped",
+    "LITERATURE (PMIDs)": "3294097 | 9169866"
+  },
+  {
+    "FEATURE_NAME": "LGN1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant unable to significantly derepress high-affinity (low-Km) glucose uptake",
+    "NAME_DESCRIPTION": "Low Glucose concentration",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3049551"
+  },
+  {
+    "FEATURE_NAME": "LGN2",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant has elevated repressed levels of high-affinity uptake that either derepress to normal or near normal levels of high-affinity uptake with loss of low-affinity transport",
+    "NAME_DESCRIPTION": "Low Glucose concentration",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3049551"
+  },
+  {
+    "FEATURE_NAME": "LGN3",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant has elevated repressed levels of high-affinity uptake that either derepress to normal or near normal levels of high-affinity uptake with loss of low-affinity transport",
+    "NAME_DESCRIPTION": "Low Glucose concentration",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3049551"
+  },
+  {
+    "FEATURE_NAME": "LGN5",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant unable to significantly derepress high-affinity (low-Km) glucose uptake",
+    "NAME_DESCRIPTION": "Low Glucose concentration",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3049551"
+  },
+  {
+    "FEATURE_NAME": "LGN6",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant has an intermediate yet constitutive level of high-affinity glucose transport",
+    "NAME_DESCRIPTION": "Low Glucose concentration",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3049551"
+  },
+  {
+    "FEATURE_NAME": "LGN7",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant unable to significantly derepress high-affinity (low-Km) glucose uptake",
+    "NAME_DESCRIPTION": "Low Glucose concentration",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3049551"
+  },
+  {
+    "FEATURE_NAME": "LGN8",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant unable to significantly derepress high-affinity (low-Km) glucose uptake",
+    "NAME_DESCRIPTION": "Low Glucose concentration",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3049551"
+  },
+  {
+    "FEATURE_NAME": "LGN9",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant has an intermediate yet constitutive level of high-affinity glucose transport",
+    "NAME_DESCRIPTION": "Low Glucose concentration",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3049551"
+  },
+  {
+    "FEATURE_NAME": "LTS1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant unable to grow at 4 deg C; may also contribute to cycloheximide resistance and/or ribosomal defects",
+    "NAME_DESCRIPTION": "Low Temperature Sensistive",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "4371644"
+  },
+  {
+    "FEATURE_NAME": "LTS10",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant unable to grow at 4 deg C; may also contribute to cycloheximide resistance and/or ribosomal defects",
+    "NAME_DESCRIPTION": "Low Temperature Sensistive",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "4371644"
+  },
+  {
+    "FEATURE_NAME": "LTS3",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant unable to grow at 4 deg C; may also contribute to cycloheximide resistance and/or ribosomal defects",
+    "NAME_DESCRIPTION": "Low Temperature Sensistive",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "4371644"
+  },
+  {
+    "FEATURE_NAME": "LTS4",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant unable to grow at 4 deg C; may also contribute to cycloheximide resistance and/or ribosomal defects",
+    "NAME_DESCRIPTION": "Low Temperature Sensistive",
+    "CHROMOSOME": "chrIV",
+    "GENETIC_POSITION": "2.5",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "4371644"
+  },
+  {
+    "FEATURE_NAME": "LUP1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Possible regulatory component of an amino acid uptake system; amino acid uptake system is ammonium regulated and hydrophobic",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8162183 | 8891352"
+  },
+  {
+    "FEATURE_NAME": "LYS15",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in the first half of the AA pathway (formation and the conversion of homocitrate to alpha-aminoadipate), part of lysine biosynthesis",
+    "NAME_DESCRIPTION": "LYSine requiring",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2188943 | 2507177 | 3131025"
+  },
+  {
+    "FEATURE_NAME": "MAB1",
+    "ALIASES": "",
+    "DESCRIPTION": "Maintenance of bromovirus functions",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "9391109 | 10759565 | 11160714"
+  },
+  {
+    "FEATURE_NAME": "MAB2",
+    "ALIASES": "",
+    "DESCRIPTION": "Maintenance of bromovirus functions",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "9391109"
+  },
+  {
+    "FEATURE_NAME": "MAK12",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants of killer strains lose M dsRNA, encoding for virus-like particles and secreting protein toxin, but not L dsRNA, and decreased levels of free 60S ribosomal subunits",
+    "NAME_DESCRIPTION": "MAintainence of Killer deficient",
+    "CHROMOSOME": "chrXII",
+    "GENETIC_POSITION": "-31",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7739558"
+  },
+  {
+    "FEATURE_NAME": "MAK13",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants of killer strains lose M dsRNA, encoding for virus-like particles and secreting protein toxin, but not L dsRNA, and also slowed growth at any temperature and decreased levels of free 60S ribosomal subunits",
+    "NAME_DESCRIPTION": "MAintainence of Killer deficient",
+    "CHROMOSOME": "chrIX",
+    "GENETIC_POSITION": "40",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "387719 | 7739558"
+  },
+  {
+    "FEATURE_NAME": "MAK14",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants of killer strains lose M dsRNA, encoding for virus-like particles and secreting protein toxin, but not L dsRNA",
+    "NAME_DESCRIPTION": "MAintainence of Killer deficient",
+    "CHROMOSOME": "chrIII",
+    "GENETIC_POSITION": "61",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7739558"
+  },
+  {
+    "FEATURE_NAME": "MAK15",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants of killer strains lose M dsRNA, encoding for virus-like particles and secreting protein toxin, but not L dsRNA, and also slowed growth at any temperature",
+    "NAME_DESCRIPTION": "MAintainence of Killer deficient",
+    "CHROMOSOME": "chrXI",
+    "GENETIC_POSITION": "69",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "387719 | 7739558"
+  },
+  {
+    "FEATURE_NAME": "MAK19",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants of killer strains lose M dsRNA, encoding for virus-like particles and secreting protein toxin, but not L dsRNA",
+    "NAME_DESCRIPTION": "MAintainence of Killer deficient",
+    "CHROMOSOME": "chrVIII",
+    "GENETIC_POSITION": "130",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7739558"
+  },
+  {
+    "FEATURE_NAME": "MAK20",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants of killer strains lose M dsRNA, encoding for virus-like particles and secreting protein toxin, but not L dsRNA, and also slowed growth at any temperature and decreased free 60S ribosomal subunits",
+    "NAME_DESCRIPTION": "MAintainence of Killer deficient",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 10: mak20 has been removed from the left arm of this chromosome because of uncertainties in the original assignment of this gene",
+    "LITERATURE (PMIDs)": "387719 | 7739558 | 2678811"
+  },
+  {
+    "FEATURE_NAME": "MAK22",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants of killer strains lose M dsRNA, encoding for virus-like particles and secreting protein toxin, but not L dsRNA, and also slowed growth at any temperature and decreased free 60S ribosomal subunits",
+    "NAME_DESCRIPTION": "MAintainence of Killer deficient",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 10: mak22 has been removed from the left arm of this chromosome because of uncertainties in the original assignment of this gene (see Discussion)",
+    "LITERATURE (PMIDs)": "387719 | 7739558 | 2678811"
+  },
+  {
+    "FEATURE_NAME": "MAK24",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants of killer strains lose M dsRNA, encoding for virus-like particles and secreting protein toxin, but not L dsRNA, and decreased free 60S ribosomal subunits",
+    "NAME_DESCRIPTION": "MAintainence of Killer deficient",
+    "CHROMOSOME": "chrVII",
+    "GENETIC_POSITION": "-56",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "17246214 | 7739558"
+  },
+  {
+    "FEATURE_NAME": "MAK26",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants of killer strains lose M dsRNA, encoding for virus-like particles and secreting protein toxin, but not L dsRNA",
+    "NAME_DESCRIPTION": "MAintainence of Killer deficient",
+    "CHROMOSOME": "chrXIV",
+    "GENETIC_POSITION": "-114",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7739558"
+  },
+  {
+    "FEATURE_NAME": "MAK27",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants of killer strains lose M dsRNA, encoding for virus-like particles and secreting protein toxin, but not L dsRNA, and also slowed growth at any temperature and decreased levels of free 60S ribosomal subunits",
+    "NAME_DESCRIPTION": "MAintainence of Killer deficient",
+    "CHROMOSOME": "chrXIII",
+    "GENETIC_POSITION": "156",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "387719 | 1985195 | 3889549 | 6996833 | 7040337 | 7739558"
+  },
+  {
+    "FEATURE_NAME": "MAK4",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants of killer strains lose M dsRNA, encoding for virus-like particles and secreting protein toxin, but not L dsRNA, and also poor association of 40S and 60S ribosomal subunits",
+    "NAME_DESCRIPTION": "MAintainence of Killer deficient",
+    "CHROMOSOME": "chrII",
+    "GENETIC_POSITION": "60",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "787537 | 6996833 | 7040337 | 17246214 | 17248773 | 7739558"
+  },
+  {
+    "FEATURE_NAME": "MAK6",
+    "ALIASES": "LTS5",
+    "DESCRIPTION":
+      "Mutants of killer strains lose M dsRNA, encoding for virus-like particles and secreting protein toxin, but not L dsRNA, and decreased levels of free 60S ribosomal subunit",
+    "NAME_DESCRIPTION": "MAintainence of Killer deficient",
+    "CHROMOSOME": "chrXVI",
+    "GENETIC_POSITION": "8",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "2865193 | 6371496 | 6996833 | 7040337 | 17248773 | 6750608 | 4371644 | 6757051 | 787537 | 206486 | 1413997 | 2678811 | 2995780 | 6987655 | 3280972 | 372549 | 7010111 | 7739558 | 8852903"
+  },
+  {
+    "FEATURE_NAME": "MAK9",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants of killer strains lose M dsRNA, encoding for virus-like particles and secreting protein toxin, but not L dsRNA, and decreased free 60S ribosomal subunits",
+    "NAME_DESCRIPTION": "MAintainence of Killer deficient",
+    "CHROMOSOME": "chrXI",
+    "GENETIC_POSITION": "-110.8",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "387719 | 7739558"
+  },
+  {
+    "FEATURE_NAME": "MCS2",
+    "ALIASES": "",
+    "DESCRIPTION": "",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8108573"
+  },
+  {
+    "FEATURE_NAME": "MCS3",
+    "ALIASES": "",
+    "DESCRIPTION": "",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": ""
+  },
+  {
+    "FEATURE_NAME": "MCS4",
+    "ALIASES": "",
+    "DESCRIPTION": "",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": ""
+  },
+  {
+    "FEATURE_NAME": "MDC1",
+    "ALIASES": "",
+    "DESCRIPTION": "Modifier of DCP1",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "19547915"
+  },
+  {
+    "FEATURE_NAME": "MGL2",
+    "ALIASES": "",
+    "DESCRIPTION": "",
+    "NAME_DESCRIPTION": "a-MethylGLucoside fermentation",
+    "CHROMOSOME": "chrII",
+    "GENETIC_POSITION": "148",
+    "NOTES":
+      "Edition 10: MAL3-SUC3-MGL2 order has been determined by three-point cross analyses",
+    "LITERATURE (PMIDs)": "2678811 | 1413997"
+  },
+  {
+    "FEATURE_NAME": "MGM104",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Nuclear mutation mgm104-1 leads to slow growth on glucose medium and temperature-sensitive (ts) loss of mitochondrial DNA (mtDNA); complementing allele encodes for tyrosyl-tRNA synthetase",
+    "NAME_DESCRIPTION": "Mitochondrial Genome Maintenance",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 14: It was previously believed that TYS1 and MGM104 were identical genes. However, Guan, M.X. (1997) Mol Gen Genet 255:525-532, find that the two loci are unlinked and that TYS1 is an unlinked suppressor of mgm104 mutants",
+    "LITERATURE (PMIDs)": "9294037 | 9169866"
+  },
+  {
+    "FEATURE_NAME": "MIF1",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in chromosome transmission fidelity",
+    "NAME_DESCRIPTION": "MItotic Fidelity of chromosome transmission",
+    "CHROMOSOME": "chrXII",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "MIF1 has been used to refer to both MAS1/YLR163C, which encodes a subunit of mitochondrial processing peptidase, and the genetic locus MIF1 involved in chromosome segregation.",
+    "LITERATURE (PMIDs)": "3510080 | 9169866"
+  },
+  {
+    "FEATURE_NAME": "MIN1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant inhibited by relatively low concentrations of methionine and histidine",
+    "NAME_DESCRIPTION": "Methioine INhibited",
+    "CHROMOSOME": "chrV",
+    "GENETIC_POSITION": "-37",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "206899 | 6757051"
+  },
+  {
+    "FEATURE_NAME": "MIS11",
+    "ALIASES": "",
+    "DESCRIPTION": "",
+    "NAME_DESCRIPTION": "MItochondrial c-tetrahydrofolate Synthetase",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 11: mis11 is distal and adjacent to tec1; both genes are proximal to pho3,5 and distal to gal7, 10, 1",
+    "LITERATURE (PMIDs)": "1413997"
+  },
+  {
+    "FEATURE_NAME": "MMS3",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants confer methylmethanesulfonate and UV radiation sensitivity; may be implicated in the excision repair pathway",
+    "NAME_DESCRIPTION": "Methyl Methane Sulfonate sensitive",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "195865 | 7012135 | 23277058"
+  },
+  {
+    "FEATURE_NAME": "MOF1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants increase -1 frameshift frequency of L-A dsRNA virus open reading frame resulting in gag-pol fusion protein",
+    "NAME_DESCRIPTION": "Maintenance Of Frame",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8138178"
+  },
+  {
+    "FEATURE_NAME": "MOF3",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants increase -1 frameshift frequency of L-A dsRNA virus open reading frame resulting in gag-pol fusion protein",
+    "NAME_DESCRIPTION": "Maintenance Of Frame",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8138178"
+  },
+  {
+    "FEATURE_NAME": "MOF5",
+    "ALIASES": "",
+    "DESCRIPTION": "Maintenance Of Frame",
+    "NAME_DESCRIPTION": "Maintenance Of Frame",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "8138178 | 10376878 | 16246174 | 10882134 | 11674994 | 12762034"
+  },
+  {
+    "FEATURE_NAME": "MOF7",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants increase -1 frameshift frequency of L-A dsRNA virus open reading frame resulting in gag-pol fusion protein",
+    "NAME_DESCRIPTION": "Maintenance Of Frame",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8138178 | 10376878 | 8852903"
+  },
+  {
+    "FEATURE_NAME": "MOF8",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants increase -1 frameshift frequency of L-A dsRNA virus open reading frame resulting in gag-pol fusion protein, decrease activity of nonsense-mediated mRNA decay pathway",
+    "NAME_DESCRIPTION": "Maintenance Of Frame",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "8138178 | 10376878 | 16246174 | 10882134 | 11674994 | 12762034"
+  },
+  {
+    "FEATURE_NAME": "MRT3",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in mRNA Turnover",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8757122 | 8816497 | 10913177"
+  },
+  {
+    "FEATURE_NAME": "MTH3",
+    "ALIASES": "",
+    "DESCRIPTION": "",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": ""
+  },
+  {
+    "FEATURE_NAME": "MTP1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "involved in transport of melezitose; alpha-methylglucoside and maltose",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "chrVII",
+    "GENETIC_POSITION": "225",
+    "NOTES":
+      "Edition 10: MTP1 is 2 cM from MAL1 by random spore analysis | The MTP1 genetic locus may represent an allele of MAL11/YGR289C (also known as AGT1).",
+    "LITERATURE (PMIDs)": "3042166 | 8594329 | 2678811"
+  },
+  {
+    "FEATURE_NAME": "MUM4",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Required for viable spore production, mutants deficient for meiosis but not ectopic recombination",
+    "NAME_DESCRIPTION": "MUddled Meiosis",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "9504908"
+  },
+  {
+    "FEATURE_NAME": "MUP2",
+    "ALIASES": "MET-P1",
+    "DESCRIPTION":
+      "Putative methionine permease; met-p1 mutants recover full sensitivity to ethionine as well as normal permeability to methionine (same Km and V as the wild type) when NH4+ is removed from the medium",
+    "NAME_DESCRIPTION": "Methionine UPtake",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "The MUP2 genetic locus is likely to represent an allele of AGP1.",
+    "LITERATURE (PMIDs)": "6048820 | 8893857 | 18951365 | 19711068 | 9891035"
+  },
+  {
+    "FEATURE_NAME": "MUT1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Required for fidelity in DNA repair; mutant enhances mutation rate and confers resistance to EMS, MMS, UV, and gamma mutagenesis",
+    "NAME_DESCRIPTION": "MUTator",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "383242 | 786780 | 7021317"
+  },
+  {
+    "FEATURE_NAME": "NCE1",
+    "ALIASES": "",
+    "DESCRIPTION": "Negative regulator of CTS1 expression",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "NCE1 has been used in the literature to refer to both NCE101/YJL205C, which encodes a protein of unknown function involved in non-classical protein export, and NCE1, a genetically defined unmapped locus involved in the regulation of CTS1 expression.",
+    "LITERATURE (PMIDs)": "9169866 | 8657150 | 8655575"
+  },
+  {
+    "FEATURE_NAME": "NCE2",
+    "ALIASES": "",
+    "DESCRIPTION": "Negative regulator of CTS1 expression",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "NCE2 has been used in the literature to refer to both NCE102/YPR149W, which encodes a protein of unknown function involved in non-classical protein export, and NCE2, a genetically defined unmapped locus involved in the regulation of CTS1 expression.",
+    "LITERATURE (PMIDs)": "8657150 | 21825281| 9169866 | 8657150 | 8655575"
+  },
+  {
+    "FEATURE_NAME": "NCE3",
+    "ALIASES": "",
+    "DESCRIPTION": "Negative regulator of CTS1 expression",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "NCE3 has been used in the literature to refer to both NCE103/YNL036W, which encodes a substrate for the non-classical protein export pathway, and NCE3, a genetically defined unmapped locus involved in the regulation of CTS1 expression.",
+    "LITERATURE (PMIDs)": "8657150 | 9169866 | 8657150 | 8655575"
+  },
+  {
+    "FEATURE_NAME": "NGM2",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Confers sensitivity to nitrosoguanidine and UV mutagenesis; mutants are defective for induced mutagenesis",
+    "NAME_DESCRIPTION": "NitrosoGuanidine Mutagenesis",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "3528759 | 16783012 | 8031302 | 10915878 | 11018586 | 11205328 | 11459630 | 2492497 | 2676986 | 3897795 | 10713149"
+  },
+  {
+    "FEATURE_NAME": "NHS1",
+    "ALIASES": "",
+    "DESCRIPTION": "Inhibitor of hydrogen sulfide production",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "chrV",
+    "GENETIC_POSITION": "47",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": ""
+  },
+  {
+    "FEATURE_NAME": "NOV1",
+    "ALIASES": "",
+    "DESCRIPTION": "",
+    "NAME_DESCRIPTION": "NOVobiocin resistance",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1413997"
+  },
+  {
+    "FEATURE_NAME": "NUP63",
+    "ALIASES": "",
+    "DESCRIPTION": "Nuclear pore complex protein",
+    "NAME_DESCRIPTION": "NUclear pore",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8195299 | 8227139"
+  },
+  {
+    "FEATURE_NAME": "OSR10",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in osmotic stress response",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The OSR10 locus has been genetically defined by Bruning et al. (1998). OSR10 has not been assigned to a standard ORF.",
+    "LITERATURE (PMIDs)": "9683646"
+  },
+  {
+    "FEATURE_NAME": "OSR2",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in osmotic stress response",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The OSR2 locus has been genetically defined by Bruning et al. (1998). OSR2 has not been assigned to a standard ORF.",
+    "LITERATURE (PMIDs)": "9683646"
+  },
+  {
+    "FEATURE_NAME": "OSR3",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in osmotic stress response",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The OSR3 locus has been genetically defined by Bruning et al. (1998). OSR3 has not been assigned to a standard ORF.",
+    "LITERATURE (PMIDs)": "9683646"
+  },
+  {
+    "FEATURE_NAME": "OSR4",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in osmotic stress response",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The OSR4 locus has been genetically defined by Bruning et al. (1998). OSR4 has not been assigned to a standard ORF.",
+    "LITERATURE (PMIDs)": "9683646"
+  },
+  {
+    "FEATURE_NAME": "OSR6",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in osmotic stress response",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The OSR6 locus has been genetically defined by Bruning et al. (1998). OSR6 has not been assigned to a standard ORF.",
+    "LITERATURE (PMIDs)": "9683646"
+  },
+  {
+    "FEATURE_NAME": "OSR7",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in osmotic stress response",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The OSR7 locus has been genetically defined by Bruning et al. (1998). OSR7 has not been assigned to a standard ORF.",
+    "LITERATURE (PMIDs)": "9683646"
+  },
+  {
+    "FEATURE_NAME": "OSR8",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in osmotic stress response",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The OSR8 locus has been genetically defined by Bruning et al. (1998). OSR8 has not been assigned to a standard ORF.",
+    "LITERATURE (PMIDs)": "9683646"
+  },
+  {
+    "FEATURE_NAME": "OSR9",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in osmotic stress response",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The OSR9 locus has been genetically defined by Bruning et al. (1998). OSR9 has not been assigned to a standard ORF.",
+    "LITERATURE (PMIDs)": "9683646"
+  },
+  {
+    "FEATURE_NAME": "OSS1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mitochondrial gene; mutant confers ossamycin resistance; important for the transcriptional repression of SWE1 a regulator of the G2/M phase transition",
+    "NAME_DESCRIPTION": "OSSamycin resistance",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 13: mitochondrial gene linked to OLI2 and OLI4 | OSS1 has been used in the literature to refer to both ZDS1/YMR273C, which encodes a protein involved in transcriptional silencing and polarity establishment, and OSS1, a genetically defined locus on the mitochondrial chromosome that confers ossamycin resistance when mutated.",
+    "LITERATURE (PMIDs)": "160974 | 7003310 | 8647431"
+  },
+  {
+    "FEATURE_NAME": "OXT1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant resistant to oxythiamine, a competitive inhibitor of thiamine phosphorylation that converts thiamine into thiamine diphosphate ",
+    "NAME_DESCRIPTION": "Resistance to OXyThiamin",
+    "CHROMOSOME": "chrIV",
+    "GENETIC_POSITION": "5",
+    "NOTES": "Edition 11: OXT1 is probably distal to trp1",
+    "LITERATURE (PMIDs)": "2199352 | 1413997"
+  },
+  {
+    "FEATURE_NAME": "PBD1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in glucose repression of vacuolar precursor PRB1; mutants display derepressed expression of PRB1;  Mutant dependent on functional mitochondrial membrane protein prohibitin, encoded by PHB2",
+    "NAME_DESCRIPTION": "PRB1 Derepressed; ProhiBitin Dependent",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "9045801 | 16710639"
+  },
+  {
+    "FEATURE_NAME": "PBD2",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in glucose repression of vacuolar precursor PRB1; mutants display derepressed expression of PRB1;  Mutant dependent on functional mitochondrial membrane protein prohibitin, encoded by PHB2",
+    "NAME_DESCRIPTION": "PRB1 Derepressed; ProhiBitin Dependent",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "9045801 | 16710639"
+  },
+  {
+    "FEATURE_NAME": "PBD3",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in glucose repression of vacuolar precursor PRB1; mutants display derepressed expression",
+    "NAME_DESCRIPTION": "PRB1 Derepressed",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "9045801"
+  },
+  {
+    "FEATURE_NAME": "PBS1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutations confer resistance to high levels of membrane toxin polymyxin B",
+    "NAME_DESCRIPTION": "Polymyxin B reSistance",
+    "CHROMOSOME": "chrXV",
+    "GENETIC_POSITION": "58",
+    "NOTES":
+      "Edition 10: pbs1 has been mapped centromere proximal to ade2 by random spore analysis | Edition 14: The gene name PBS1 has also been used to refer to FKS1/YLR342W on Chromosome XII, which encodes a 1,3-beta-D-glucan synthase.",
+    "LITERATURE (PMIDs)": "2993791 | 3039511 | 18625027 | 2678811"
+  },
+  {
+    "FEATURE_NAME": "PDC3",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "May be involved in pyruvate decarboxylase activity; originally identified as pdc1-30, but not allelic to other pdc1 alleles",
+    "NAME_DESCRIPTION": "Pyruvate DeCarboxylase",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2670281 | 7050079"
+  },
+  {
+    "FEATURE_NAME": "PDE5",
+    "ALIASES": "",
+    "DESCRIPTION": "Putative high affinity cAMP phosphodiesterase",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "11032796"
+  },
+  {
+    "FEATURE_NAME": "PDG1",
+    "ALIASES": "",
+    "DESCRIPTION": "",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": ""
+  },
+  {
+    "FEATURE_NAME": "PDR7",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Required for normal PDR5 (multi-drug resistance pump) mRNA levels",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "chrII",
+    "GENETIC_POSITION": "-2",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7629054 | 8150279"
+  },
+  {
+    "FEATURE_NAME": "PDR9",
+    "ALIASES": "",
+    "DESCRIPTION": "Regulates expression of PDR5",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7629054 | 8150279"
+  },
+  {
+    "FEATURE_NAME": "PDX2",
+    "ALIASES": "",
+    "DESCRIPTION": "",
+    "NAME_DESCRIPTION": "Pyridoxin requiring",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Based on its genetic map position, PDX2 is likely to represent an allele of SNO1.",
+    "LITERATURE (PMIDs)": "2678811 | 1413997"
+  },
+  {
+    "FEATURE_NAME": "PEP16",
+    "ALIASES": "",
+    "DESCRIPTION": "",
+    "NAME_DESCRIPTION": "Proteinase deficient",
+    "CHROMOSOME": "chrXII",
+    "GENETIC_POSITION": "44",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1413997"
+  },
+  {
+    "FEATURE_NAME": "PET1",
+    "ALIASES": "",
+    "DESCRIPTION": "Gene required for respiratory growth",
+    "NAME_DESCRIPTION": "PETite",
+    "CHROMOSOME": "chrVIII",
+    "GENETIC_POSITION": "7",
+    "NOTES":
+      "Edition 11: cen8-pet1-arg4 distances in Edition 10 are incorrect; new data resulted in the repositioning of these genes as well as put2 and crl15",
+    "LITERATURE (PMIDs)":
+      "2215540 | 5900603 | 13977171 | 14802990 | 17247984 | 1413997"
+  },
+  {
+    "FEATURE_NAME": "PET11",
+    "ALIASES": "",
+    "DESCRIPTION": "Gene required for respiratory growth",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "chrII",
+    "GENETIC_POSITION": "101",
+    "NOTES":
+      "Edition 11: pet11 was mistakenly identified as pet111 in Edition 10",
+    "LITERATURE (PMIDs)": "5732415 | 5900603 | 6105114 | 1413997"
+  },
+  {
+    "FEATURE_NAME": "PET114",
+    "ALIASES": "",
+    "DESCRIPTION": "Mutant unable to grow on non-fermentable carbon sources",
+    "NAME_DESCRIPTION": "PETite",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1413997"
+  },
+  {
+    "FEATURE_NAME": "PET14",
+    "ALIASES": "",
+    "DESCRIPTION": "Gene required for respiratory growth",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "chrIV",
+    "GENETIC_POSITION": "112",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "387719 | 1901944 | 17248609 | 6757051 | 8088511 | 1413997 | 17246112 | 2678811 | 3916808 | 8106383 | 171412"
+  },
+  {
+    "FEATURE_NAME": "PET17",
+    "ALIASES": "",
+    "DESCRIPTION": "Gene required for respiratory growth",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "chrXV",
+    "GENETIC_POSITION": "23",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "787537 | 5732415 | 6254831 | 6750608 | 17248609"
+  },
+  {
+    "FEATURE_NAME": "PET2",
+    "ALIASES": "",
+    "DESCRIPTION": "Gene required for respiratory growth",
+    "NAME_DESCRIPTION": "PETite",
+    "CHROMOSOME": "chrXIV",
+    "GENETIC_POSITION": "-171",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "6323924 | 6761582 | 13977171 | 14201165 | 16534748 | 17248609"
+  },
+  {
+    "FEATURE_NAME": "PET3",
+    "ALIASES": "",
+    "DESCRIPTION": "Gene required for respiratory growth",
+    "NAME_DESCRIPTION": "PETite",
+    "CHROMOSOME": "chrVIII",
+    "GENETIC_POSITION": "83",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "3551912 | 7009319 | 7668043 | 8897427 | 13977171 | 14201165"
+  },
+  {
+    "FEATURE_NAME": "PET4",
+    "ALIASES": "",
+    "DESCRIPTION": "Gene required for respiratory growth",
+    "NAME_DESCRIPTION": "PETite",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "13977171 | 14201165"
+  },
+  {
+    "FEATURE_NAME": "PET5",
+    "ALIASES": "",
+    "DESCRIPTION": "Gene required for respiratory growth",
+    "NAME_DESCRIPTION": "PETite",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "13977171 | 14201165 | 4561398 | 773743"
+  },
+  {
+    "FEATURE_NAME": "PET6",
+    "ALIASES": "",
+    "DESCRIPTION": "Gene required for respiratory growth",
+    "NAME_DESCRIPTION": "PETite",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "13977171 | 14201165 | 23012262"
+  },
+  {
+    "FEATURE_NAME": "PET7",
+    "ALIASES": "",
+    "DESCRIPTION": "Gene required for respiratory growth",
+    "NAME_DESCRIPTION": "PETite",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "13977171 | 14201165 | 1001877 | 773743"
+  },
+  {
+    "FEATURE_NAME": "PETX",
+    "ALIASES": "",
+    "DESCRIPTION": "Gene required for respiratory growth",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "chrXIV",
+    "GENETIC_POSITION": "-138",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "773743 | 1990286 | 6341816"
+  },
+  {
+    "FEATURE_NAME": "PFK4",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in glycolysis; mutant lacks particulate phosphofructokinase activity.",
+    "NAME_DESCRIPTION": "Phosphofructokinase",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "6241288 | 1387501 | 6236997"
+  },
+  {
+    "FEATURE_NAME": "PFK5",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in glycolysis; mutant lacks particulate phosphofructokinase activity.",
+    "NAME_DESCRIPTION": "Phosphofructokinase",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "6241288 | 1387501"
+  },
+  {
+    "FEATURE_NAME": "PHD3",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Potential transcriptional regulator of pseudohyphal growth in response to nitrogen starvation",
+    "NAME_DESCRIPTION": "PseudoHyphal Determinant",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The PHD3 locus has been genetically defined by Gimeno and Fink (1994).",
+    "LITERATURE (PMIDs)": "8114741"
+  },
+  {
+    "FEATURE_NAME": "PHD4",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Potential transcriptional regulator of pseudohyphal growth in response to nitrogen starvation",
+    "NAME_DESCRIPTION": "PseudoHyphal Determinant",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The PHD4 locus has been genetically defined by Gimeno and Fink (1994).",
+    "LITERATURE (PMIDs)": "8114741"
+  },
+  {
+    "FEATURE_NAME": "PHD6",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Potential transcriptional regulator of pseudohyphal growth in response to nitrogen starvation",
+    "NAME_DESCRIPTION": "PseudoHyphal Determinant",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The PHD6 locus has been genetically defined by Gimeno and Fink (1994).",
+    "LITERATURE (PMIDs)": "8114741"
+  },
+  {
+    "FEATURE_NAME": "PHD7",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Potential transcriptional regulator of pseudohyphal growth in response to nitrogen starvation",
+    "NAME_DESCRIPTION": "PseudoHyphal Determinant",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The PHD7 locus has been genetically defined by Gimeno and Fink (1994).",
+    "LITERATURE (PMIDs)": "8114741"
+  },
+  {
+    "FEATURE_NAME": "PHO82",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in repressible acid phosphatase synthesis; mutants confer constitutive expression",
+    "NAME_DESCRIPTION": "PHOsphotase Deficient",
+    "CHROMOSOME": "chrVI",
+    "GENETIC_POSITION": "47",
+    "NOTES": "Edition 13: PHO82 may be allelic to PHO4.",
+    "LITERATURE (PMIDs)":
+      "1879680 | 6090271 | 7007314 | 17249024 | 2183025 | 6314088"
+  },
+  {
+    "FEATURE_NAME": "PHO83",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in repressible acid phosphatase synthesis; mutants confer constitutive expression",
+    "NAME_DESCRIPTION": "PHOsphotase Deficient",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 13: The PHO83 mutation may be caused by insertion of a Ty element in the 5",
+    "LITERATURE (PMIDs)": "-noncoding region of the PHO5 gene. 6314088"
+  },
+  {
+    "FEATURE_NAME": "PHR2",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Functions in photoreactivation of UV DNA damage; inhibited photolyase activity in the mutant",
+    "NAME_DESCRIPTION": "PHotoreactivation repair deficient",
+    "CHROMOSOME": "chrXV",
+    "GENETIC_POSITION": "224",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7031712 | 12773185"
+  },
+  {
+    "FEATURE_NAME": "PND1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in glucose repression of vacuolar precursor PRB1; mutants partially derepress expression of PRB1",
+    "NAME_DESCRIPTION": "PRB1 NonDerepressible",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "9045801"
+  },
+  {
+    "FEATURE_NAME": "PND2",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in glucose repression of vacuolar precursor PRB1; mutants partially derepress expression of PRB1",
+    "NAME_DESCRIPTION": "PRB1 NonDerepressible",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "9045801"
+  },
+  {
+    "FEATURE_NAME": "POS1",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in oxidative stress",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The POS1 locus has been genetically defined by Krems et al. (1995).",
+    "LITERATURE (PMIDs)": "7586028 | 23896974"
+  },
+  {
+    "FEATURE_NAME": "POS11",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in oxidative stress",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The POS11 locus has been genetically defined by Krems et al. (1995).",
+    "LITERATURE (PMIDs)": "7586028"
+  },
+  {
+    "FEATURE_NAME": "POS12",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in oxidative stress",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The POS12 locus has been genetically defined by Krems et al. (1995).",
+    "LITERATURE (PMIDs)": "7586028"
+  },
+  {
+    "FEATURE_NAME": "POS13",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in oxidative stress",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The POS13 locus has been genetically defined by Krems et al. (1995).",
+    "LITERATURE (PMIDs)": "7586028"
+  },
+  {
+    "FEATURE_NAME": "POS14",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in oxidative stress",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The POS14 locus has been genetically defined by Krems et al. (1995).",
+    "LITERATURE (PMIDs)": "7586028"
+  },
+  {
+    "FEATURE_NAME": "POS15",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in oxidative stress",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The POS15 locus has been genetically defined by Krems et al. (1995).",
+    "LITERATURE (PMIDs)": "7586028"
+  },
+  {
+    "FEATURE_NAME": "POS16",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in oxidative stress",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The POS16 locus has been genetically defined by Krems et al. (1995).",
+    "LITERATURE (PMIDs)": "7586028"
+  },
+  {
+    "FEATURE_NAME": "POS2",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in oxidative stress",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The POS2 locus has been genetically defined by Krems et al. (1995).",
+    "LITERATURE (PMIDs)": "7586028"
+  },
+  {
+    "FEATURE_NAME": "POS3",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in oxidative stress",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The POS3 locus has been genetically defined by Krems et al. (1995).",
+    "LITERATURE (PMIDs)": "7586028"
+  },
+  {
+    "FEATURE_NAME": "POS4",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in oxidative stress",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The POS4 locus has been genetically defined by Krems et al. (1995).",
+    "LITERATURE (PMIDs)": "7586028"
+  },
+  {
+    "FEATURE_NAME": "POS6",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in oxidative stress",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The POS6 locus has been genetically defined by Krems et al. (1995).",
+    "LITERATURE (PMIDs)": "7586028"
+  },
+  {
+    "FEATURE_NAME": "POS7",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in oxidative stress",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The POS7 locus has been genetically defined by Krems et al. (1995).",
+    "LITERATURE (PMIDs)": "7586028"
+  },
+  {
+    "FEATURE_NAME": "POS8",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in oxidative stress",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The POS8 locus has been genetically defined by Krems et al. (1995).",
+    "LITERATURE (PMIDs)": "7586028"
+  },
+  {
+    "FEATURE_NAME": "PRT2",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Temperature sensitive mutant with depressed protein synthesis ",
+    "NAME_DESCRIPTION": "Protein synthesis defective at 36 degree C",
+    "CHROMOSOME": "chrXIV",
+    "GENETIC_POSITION": "-171",
+    "NOTES": "Edition 13: The name PRT2 has also been used to refer to ECM15",
+    "LITERATURE (PMIDs)": "6761582 | 17248609"
+  },
+  {
+    "FEATURE_NAME": "PRT3",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Temperature sensitive mutant with depressed protein synthesis ",
+    "NAME_DESCRIPTION": "Protein synthesis defective at 36 degree C",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 10: prt3 has been removed from the left arm; previous map position incorrect",
+    "LITERATURE (PMIDs)": "6188333 | 17248609 | 2678811"
+  },
+  {
+    "FEATURE_NAME": "PUT5",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Putative trans regulator of PUT2 (delta 1-pyrroline-5-carboxylate dehydrogenase) in proline utilization; mutant constitutively expresses PUT2 at low levels",
+    "NAME_DESCRIPTION": "Proline nonutilizer",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2689861"
+  },
+  {
+    "FEATURE_NAME": "QSR2",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant is synthetic lethal with QCR6 encoded subunit of mitochondrial cytochrome bc1 complex",
+    "NAME_DESCRIPTION": "Quinol-cytochrome c reductase Subunit-Requiring",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7730379 | 9148960 | 9426207"
+  },
+  {
+    "FEATURE_NAME": "RAA4",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutants are resistant to several amino-acid analogs and have a severe reduction in the uptake of leucine, lysine and ornithine",
+    "NAME_DESCRIPTION": "Resistant to amino acid analogs",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2188104 | 9065387"
+  },
+  {
+    "FEATURE_NAME": "RAD29",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Likely involved in base excision repair; mutants confer increased sensitivity to ionizing radiation",
+    "NAME_DESCRIPTION": "Radiation (ultraviolet or ionizing) sensitive",
+    "CHROMOSOME": "chrII",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "9153760 | 10915878 | 10923258 | 11033772"
+  },
+  {
+    "FEATURE_NAME": "RAH1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Gene of unknown function; identified in a screen for suppressors of the osmosensitivity (but not temperature sensitivity) phenotype of act1-1",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1639843 | 9153752"
+  },
+  {
+    "FEATURE_NAME": "RAH2",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Gene of unknown function; identified in a screen for suppressors of the osmosensitivity (but not temperature sensitivity) phenotype of act1-1",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1639843 | 9153752"
+  },
+  {
+    "FEATURE_NAME": "RAH3",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Gene of unknown function; identified in a screen for suppressors of the osmosensitivity (but not temperature sensitivity) phenotype of act1-1",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1639843 | 7565410 | 8576696 | 8167016 | 9153752"
+  },
+  {
+    "FEATURE_NAME": "RAT6",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in nucleocytoplasmic transfer of mRNA; mutants accumulate mRNA at the nuclear periphery",
+    "NAME_DESCRIPTION": "Ribonucleic Acid Trafficking",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "RAT6 is probably allelic to IPL1.",
+    "LITERATURE (PMIDs)": "10465789"
+  },
+  {
+    "FEATURE_NAME": "REC1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Gene of unknown function; required for mitotic intragenic and intergenic recombination and for sporulation",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "chrVII",
+    "GENETIC_POSITION": "-108",
+    "NOTES":
+      "Edition 10: rec1 is located close to rad54 on the basis of data presented in this Table and in our 1985 review. However, this is not consistent with the rec1-rad54 data also included in the above Table. Because of this uncertainty, rec3 has not been placed on the genetic map",
+    "LITERATURE (PMIDs)": "2178786 | 2678811"
+  },
+  {
+    "FEATURE_NAME": "REC4",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Gene of unknown function; required for mitotic intragenic and intergenic recombination and for sporulation",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "4580568 | 6750384"
+  },
+  {
+    "FEATURE_NAME": "RES1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in sporulation; activated transcriptionally by IME1",
+    "NAME_DESCRIPTION": "REgulation of Sporulation",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1545790 | 2076816"
+  },
+  {
+    "FEATURE_NAME": "RGS1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in secretory vesicle fusion to the plasma membrane; mutant is synthetic lethal with secretory G-protein encoding SEC4 ",
+    "NAME_DESCRIPTION": "Regulation of Glycoprotein Secretion",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8087888"
+  },
+  {
+    "FEATURE_NAME": "ROC2",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Modulator of ROAM (Regulated Overproducing Allele responding to Mating signals) family activation of structural genes",
+    "NAME_DESCRIPTION": "ROAM mutation Control",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "6145588"
+  },
+  {
+    "FEATURE_NAME": "ROS2",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in STE4 related alpha-factor receptor propagation and pheromone response",
+    "NAME_DESCRIPTION": "Relaxation of sterility",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3037311"
+  },
+  {
+    "FEATURE_NAME": "ROS3",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Gene whose mutation suppresses the sterility of a ste4-3 sst2-1 mutant",
+    "NAME_DESCRIPTION": "Relaxation Of Sterility",
+    "CHROMOSOME": "chrV",
+    "GENETIC_POSITION": "-11",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3037311"
+  },
+  {
+    "FEATURE_NAME": "RRM14",
+    "ALIASES": "",
+    "DESCRIPTION": "Rdna recombination mutation",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "chrXIII",
+    "GENETIC_POSITION": "159",
+    "NOTES":
+      "Edition 11: rrm14 has been physically mapped adjacent and proximal to rna1",
+    "LITERATURE (PMIDs)": "1413997"
+  },
+  {
+    "FEATURE_NAME": "RSP1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant reverses suppression of Ty element insertion by SPT mutants; may encode suppressive glycine tRNA",
+    "NAME_DESCRIPTION": "Reverses Spt- Phenotype",
+    "CHROMOSOME": "chrVII",
+    "GENETIC_POSITION": "147.34",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1330824"
+  },
+  {
+    "FEATURE_NAME": "RYE4",
+    "ALIASES": "",
+    "DESCRIPTION": "Regulation of YGP1 Expression",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "11139488 | 11560888"
+  },
+  {
+    "FEATURE_NAME": "RYE6",
+    "ALIASES": "",
+    "DESCRIPTION": "Regulation of YGP1 Expression",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "11139488"
+  },
+  {
+    "FEATURE_NAME": "RYE7",
+    "ALIASES": "",
+    "DESCRIPTION": "Regulation of YGP1 Expression",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "11139488"
+  },
+  {
+    "FEATURE_NAME": "RYE8",
+    "ALIASES": "",
+    "DESCRIPTION": "Regulation of YGP1 Expression",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "11139488"
+  },
+  {
+    "FEATURE_NAME": "SCD1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Enables survival of clathrin deficient CHC1 mutants; involved clathrin mediated vesicular transport",
+    "NAME_DESCRIPTION": "Suppressor of clathrin deficiency",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 14: The name, scd1, has also been used to refer to certain alleles of the SOD1 gene on chromosome X | SCD1 has been used to refer to both SOD1/YJR104C, which encodes copper, zinc superoxide dismutase, and SCD1, a genetic locus that can mutate to suppress clathrin mutations.",
+    "LITERATURE (PMIDs)":
+      "2072897 | 3116672 | 8380227 | 8688556 | 9133677 | 9169866"
+  },
+  {
+    "FEATURE_NAME": "SCH1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Locus that can mutate to suppress the lethality of chs2 null mutant",
+    "NAME_DESCRIPTION": "Suppressor of CHitin synthase disruption",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8431950"
+  },
+  {
+    "FEATURE_NAME": "SCW1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Cell wall protein dissolved in reducing conditons; potential role in cell wall biosynthesis/maintanence",
+    "NAME_DESCRIPTION": "Soluble Cell Wall protein",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "9301021 | 15302828"
+  },
+  {
+    "FEATURE_NAME": "SCW5",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Cell wall protein dissolved in reducing conditons; potential role in cell wall biosynthesis/maintanence",
+    "NAME_DESCRIPTION": "Soluble Cell Wall protein",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "9301021"
+  },
+  {
+    "FEATURE_NAME": "SCW7",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Cell wall protein dissolved in reducing conditons; potential role in cell wall biosynthesis/maintanence",
+    "NAME_DESCRIPTION": "Soluble Cell Wall protein",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "9301021"
+  },
+  {
+    "FEATURE_NAME": "SEC55",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Affects synthesis of secretory, glycosylated form of invertase; mutant accumulates nonglycosylated invertase specifically in the cytoplasm",
+    "NAME_DESCRIPTION": "Secretion deficient",
+    "CHROMOSOME": "chrIII",
+    "GENETIC_POSITION": "59",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "6368571 | 2995780 | 2678811"
+  },
+  {
+    "FEATURE_NAME": "SFS1",
+    "ALIASES": "",
+    "DESCRIPTION": "Serendipitously found suppressor",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": ""
+  },
+  {
+    "FEATURE_NAME": "SHE6",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "mRNA that causes growth arrest when overexpressed; identified by a library screen",
+    "NAME_DESCRIPTION": "Sensitivity to High Expression",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "Edition 14: SHE6 is antisense to YPL212C/PUS1",
+    "LITERATURE (PMIDs)": "7762298 | 9169866"
+  },
+  {
+    "FEATURE_NAME": "SHE7",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "mRNA that causes growth arrest when overexpressed; identified by a library screen",
+    "NAME_DESCRIPTION": "Sensitivity to High Expression",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 13: may be on cosmid 8179 | Edition 14: SHE7 is antisense to YHR046C, although there is no ORF on the Watson strand",
+    "LITERATURE (PMIDs)": "7762298 | 9169866"
+  },
+  {
+    "FEATURE_NAME": "SIN5",
+    "ALIASES": "",
+    "DESCRIPTION": "May be a negative regulator of ACE2",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "3545494 | 8005433 | 8657150 | 11713667 | 10517323 | 2072912"
+  },
+  {
+    "FEATURE_NAME": "SLC44",
+    "ALIASES": "",
+    "DESCRIPTION": "",
+    "NAME_DESCRIPTION": "SphingoLipid Compensation",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": ""
+  },
+  {
+    "FEATURE_NAME": "SLT3",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "tRNA gene for glutamine using the CAA codon; mutant recognizes stop UAA codon",
+    "NAME_DESCRIPTION": "Suppression at Low Temperature",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8637906 | 1868573"
+  },
+  {
+    "FEATURE_NAME": "SLU1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Essential for the first step of splicing; mutant synergistically lethal with mutation in U5 snRNA",
+    "NAME_DESCRIPTION": "Synergistic Lethal with U5 snRNA",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 12: HEM2/YGL040C [delta-aminolevulinate dehydratase] has also been called SLU1, but it should not be confused with the gene by that name that is synergistically lethal with U5 snRNA.",
+    "LITERATURE (PMIDs)": "1406691"
+  },
+  {
+    "FEATURE_NAME": "SLU2",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Essential for the first step of splicing; mutant synergistically lethal with mutation in U5 snRNA",
+    "NAME_DESCRIPTION": "Synergistic Lethal with U5 snRNA",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "SLU2 has been used in the literature to refer to both HEM4/YOR278W, which encodes a porphobilinogen synthase, and SLU2, which is essential for splicing.",
+    "LITERATURE (PMIDs)": "1406691 | 9169866"
+  },
+  {
+    "FEATURE_NAME": "SMD4",
+    "ALIASES": "",
+    "DESCRIPTION": "Extragenic suppressor of nmt1 myristoylation defect",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7937855"
+  },
+  {
+    "FEATURE_NAME": "SMD5",
+    "ALIASES": "",
+    "DESCRIPTION": "Extragenic suppressor of nmt1 myristoylation defect",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7937855"
+  },
+  {
+    "FEATURE_NAME": "SME2",
+    "ALIASES": "",
+    "DESCRIPTION": "Start of meiosis",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": ""
+  },
+  {
+    "FEATURE_NAME": "SME3",
+    "ALIASES": "",
+    "DESCRIPTION": "Start of meiosis",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": ""
+  },
+  {
+    "FEATURE_NAME": "SMR3",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutation confers resistance to cycloheximide, oligomycin and sulfometuron methyl",
+    "NAME_DESCRIPTION": "Sulfometuron Methyl Resistance",
+    "CHROMOSOME": "chrXV",
+    "GENETIC_POSITION": "96",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2160400 | 3881312"
+  },
+  {
+    "FEATURE_NAME": "SMT2",
+    "ALIASES": "",
+    "DESCRIPTION": "Suppressor of Mif Two",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 12: Maps to chr XIV, immediately upstream of TOP2, clone association was not determined by hybridization-rather by sequencing",
+    "LITERATURE (PMIDs)": ""
+  },
+  {
+    "FEATURE_NAME": "SNF10",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in secreted SUC2 (invertase) derepression in response to glucose limitation; mutants are deficient in invertase expression",
+    "NAME_DESCRIPTION": "Sucrose NonFermenting",
+    "CHROMOSOME": "chrIII",
+    "GENETIC_POSITION": "-1.61",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1752413 | 9618445"
+  },
+  {
+    "FEATURE_NAME": "SNS1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in STA10 dependent UAS repression of STA1, which encodes the extracellular glucoamylase isozyme in S. cerevisiae var. diastaticus",
+    "NAME_DESCRIPTION": "STA1 not repressed by STA10",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7700227"
+  },
+  {
+    "FEATURE_NAME": "SOH3",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant displays RAD-mediated suppression of tandem repeat hyperrecombination and suppresses the temperature sensitivity of the hpr1 mutant",
+    "NAME_DESCRIPTION": "Suppressor Of Hpr1",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7982575"
+  },
+  {
+    "FEATURE_NAME": "SOH5",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant displays RAD-mediated suppression of tandem repeat hyperrecombination and suppresses the temperature sensitivity of the hpr1 mutant",
+    "NAME_DESCRIPTION": "Suppressor Of Hpr1",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7982575"
+  },
+  {
+    "FEATURE_NAME": "SOH6",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant displays RAD-mediated suppression of tandem repeat hyperrecombination and suppresses the temperature sensitivity of the hpr1 mutant",
+    "NAME_DESCRIPTION": "Suppressor Of Hpr1",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7982575"
+  },
+  {
+    "FEATURE_NAME": "SOH7",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant displays RAD-mediated suppression of tandem repeat hyperrecombination and suppresses the temperature sensitivity of the hpr1 mutant",
+    "NAME_DESCRIPTION": "Suppressor Of Hpr1",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7982575 | 9032243"
+  },
+  {
+    "FEATURE_NAME": "SOH8",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant displays RAD-mediated suppression of tandem repeat hyperrecombination and suppresses the temperature sensitivity of the hpr1 mutant",
+    "NAME_DESCRIPTION": "Suppressor Of Hpr1",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7982575 | 9618449"
+  },
+  {
+    "FEATURE_NAME": "SOI2",
+    "ALIASES": "",
+    "DESCRIPTION": "Suppressor of the rapid Onset of Impotence",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 13: Comments provided by J. Brickner: Suppressor of the rapid Onset of Impotence observed after shutting off the Kex2p localization-defective mutant Tyr713Ala. Mutations in the cytosolic tail of Kex2p, either deletion of the tail or substitution of Alanine for Tyr713, result in loss of TGN localization. Loss of Golgi retention results in a more rapid loss of mating competence of Mat alpha cells after shutting off expression of a GAL1 promoter-driven form of KEX2-Y713A. SOI2 mutants suppress the localization defect in Kex2p-Y713A and, unlike the parent strain, can mate well after 7h on glucose.",
+    "LITERATURE (PMIDs)": "8887651 | 15090613"
+  },
+  {
+    "FEATURE_NAME": "SON2",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Extragenic suppressor of mutations in the C terminus of SEC63",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8514125"
+  },
+  {
+    "FEATURE_NAME": "SON3",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Extragenic suppressor of mutations in the C terminus of SEC63",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8514125"
+  },
+  {
+    "FEATURE_NAME": "SON4",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Extragenic suppressor of mutations in the C terminus of SEC63",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8514125"
+  },
+  {
+    "FEATURE_NAME": "SON5",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Extragenic suppressor of mutations in the C terminus of SEC63",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8514125"
+  },
+  {
+    "FEATURE_NAME": "SOT1",
+    "ALIASES": "",
+    "DESCRIPTION": "Mutant suppresses deoxythymidine 5",
+    "NAME_DESCRIPTION":
+      "- monophosphate (dTMP) uptake conferred by recessive dTMP uptake (tup) mutants",
+    "CHROMOSOME": "Suppression of deOxyThymidine monophosphate uptake",
+    "GENETIC_POSITION": "chrXVI",
+    "NOTES": "-13",
+    "LITERATURE (PMIDs)": ""
+  },
+  {
+    "FEATURE_NAME": "SPA1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in chromosome segregation and other mitotic functions",
+    "NAME_DESCRIPTION": "Spindle Pole Antigen",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3044610 | 10361272"
+  },
+  {
+    "FEATURE_NAME": "SPD1",
+    "ALIASES": "",
+    "DESCRIPTION": "Mediates nitrogen repression of sporulation in rich media",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "chrXV",
+    "GENETIC_POSITION": "-12",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "1094303 | 3540206 | 3886382 | 6374028 | 6374029 | 19682552 | 25086216"
+  },
+  {
+    "FEATURE_NAME": "SPD3",
+    "ALIASES": "",
+    "DESCRIPTION": "Derepressed for meiosis and spore formation",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "6374028 | 6374029 | 3528755"
+  },
+  {
+    "FEATURE_NAME": "SPD4",
+    "ALIASES": "",
+    "DESCRIPTION": "Derepressed for meiosis and spore formation",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "6374028 | 6374029 | 3528755 | 3299047"
+  },
+  {
+    "FEATURE_NAME": "SPO10",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Gene of unknown function; dispensable for mitosis and premeiotic DNA synthesis; required for spindle pole body duplication, meiosis I, meiosis II, and spores",
+    "NAME_DESCRIPTION": "SPOrulation",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3886327 | 3913414 | 4552504 | 4613605"
+  },
+  {
+    "FEATURE_NAME": "SPO17",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Dispensable for mitosis; required for premeiotic DNA synthesis and subsequent meiotic landmarks, and sporulation-specific amyloglucosidase activity",
+    "NAME_DESCRIPTION": "SPOrulation",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "Edition 10: spo17 is 7.4 cM from trp5",
+    "LITERATURE (PMIDs)": "3147221 | 2678811 | 5473889"
+  },
+  {
+    "FEATURE_NAME": "SPO2",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Dispensable for mitosis; premeiotic DNA synthesis, recombination, meiosis I, meiosis II. Required for nuclear membrane integrity at meiosis I and meiosis II, and localized prospore wall growth at the nuclear envelope.",
+    "NAME_DESCRIPTION": "SPOrulation",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "4591340 | 4606582 | 5473889 | 4613605"
+  },
+  {
+    "FEATURE_NAME": "SPO4",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Dispensable for mitosis; premeiotic DNA synthesis, recomb., meiosis I, meiosis II & prospore wall initiation. Required for spore wall elongation, coordination of spore wall closure with meiosis II segregation, & spore wall maturation",
+    "NAME_DESCRIPTION": "SPOrulation",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "4552504 | 4613605"
+  },
+  {
+    "FEATURE_NAME": "SPO5",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Dispensable for mitosis; premeiotic DNA synthesis, recomb., meiosis I, meiosis II & prospore wall initiation. Required for spore wall elongation, coordination of spore wall closure with meiosis II segregation, & spore wall maturation",
+    "NAME_DESCRIPTION": "SPOrulation",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "4552504 | 4613605"
+  },
+  {
+    "FEATURE_NAME": "SPO50",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Dispensable for mitosis; required for premeiotic DNA synthesis and recombination, and spores",
+    "NAME_DESCRIPTION": "SPOrulation",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1678004 | 6374029"
+  },
+  {
+    "FEATURE_NAME": "SPO51",
+    "ALIASES": "",
+    "DESCRIPTION": "Required for sporulation",
+    "NAME_DESCRIPTION": "SPOrulation",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "6374029"
+  },
+  {
+    "FEATURE_NAME": "SPO53",
+    "ALIASES": "",
+    "DESCRIPTION": "Required for sporulation",
+    "NAME_DESCRIPTION": "SPOrulation",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "6374029"
+  },
+  {
+    "FEATURE_NAME": "SPO9",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Dispensable for mitosis; required for premeiotic DNA synthesis, spindle pole body duplication, meiosis I, meiosis II, and spores",
+    "NAME_DESCRIPTION": "SPOrulation",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3147221 | 4552504 | 4613605"
+  },
+  {
+    "FEATURE_NAME": "SPOT1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Essential for sporulation; required for premeiotic DNA synthesis",
+    "NAME_DESCRIPTION": "SPOrulation (T prefix locus)",
+    "CHROMOSOME": "chrXIII",
+    "GENETIC_POSITION": "0",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "6350825"
+  },
+  {
+    "FEATURE_NAME": "SPOT11",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Essential for sporulation; required for premeiotic DNA synthesis",
+    "NAME_DESCRIPTION": "SPOrulation (T prefix locus)",
+    "CHROMOSOME": "chrXV",
+    "GENETIC_POSITION": "-3",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "6350825"
+  },
+  {
+    "FEATURE_NAME": "SPOT15",
+    "ALIASES": "",
+    "DESCRIPTION": "Essential for sporulation; required for meiosis I",
+    "NAME_DESCRIPTION": "SPOrulation (T prefix locus)",
+    "CHROMOSOME": "chrXV",
+    "GENETIC_POSITION": "57",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "6350825"
+  },
+  {
+    "FEATURE_NAME": "SPOT16",
+    "ALIASES": "",
+    "DESCRIPTION": "Essential for sporulation; required for meiosis II",
+    "NAME_DESCRIPTION": "SPOrulation (T prefix locus)",
+    "CHROMOSOME": "chrXVI",
+    "GENETIC_POSITION": "-140",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "6350825"
+  },
+  {
+    "FEATURE_NAME": "SPOT2",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Essential for sporulation; required for premeiotic DNA synthesis",
+    "NAME_DESCRIPTION": "SPOrulation (T prefix locus)",
+    "CHROMOSOME": "chrVII",
+    "GENETIC_POSITION": "-142",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1545790"
+  },
+  {
+    "FEATURE_NAME": "SPOT20",
+    "ALIASES": "",
+    "DESCRIPTION": "Essential for sporulation; required for spore maturation",
+    "NAME_DESCRIPTION": "SPOrulation (T prefix locus)",
+    "CHROMOSOME": "chrXVI",
+    "GENETIC_POSITION": "41.7",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "6350825"
+  },
+  {
+    "FEATURE_NAME": "SPOT23",
+    "ALIASES": "",
+    "DESCRIPTION": "Essential for sporulation; required for spore maturation",
+    "NAME_DESCRIPTION": "SPOrulation (T prefix locus)",
+    "CHROMOSOME": "chrXI",
+    "GENETIC_POSITION": "19",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "6350825"
+  },
+  {
+    "FEATURE_NAME": "SPOT4",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Essential for sporulation; required for premeiotic DNA synthesis",
+    "NAME_DESCRIPTION": "SPOrulation (T prefix locus)",
+    "CHROMOSOME": "chrIV",
+    "GENETIC_POSITION": "-36",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "6350825"
+  },
+  {
+    "FEATURE_NAME": "SPOT7",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Essential for sporulation; required for premeiotic DNA synthesis",
+    "NAME_DESCRIPTION": "SPOrulation (T prefix locus)",
+    "CHROMOSOME": "chrXIII",
+    "GENETIC_POSITION": "161",
+    "NOTES": "Edition 10: spoT7 data in 1985 mapping review; new reference",
+    "LITERATURE (PMIDs)": "3889549 | 6350825 | 2678811"
+  },
+  {
+    "FEATURE_NAME": "SRA6",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Required for repression of RAS1 transcription on nonfermentable carbon sources; involved in adenate cyclase activation",
+    "NAME_DESCRIPTION": "Suppressors of the RAs mutation",
+    "CHROMOSOME": "chrVII",
+    "GENETIC_POSITION": "45",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "1848378 | 3013722 | 3520568 | 2678811 | 2198534 | 1413997 | 2547147 | 2827010 | 3049076"
+  },
+  {
+    "FEATURE_NAME": "SRA7",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Required for repression of RAS2 disaccumulation of glycogen; involved in adenate cyclase activation",
+    "NAME_DESCRIPTION": "Suppressors of the RAs mutation",
+    "CHROMOSOME": "chrX",
+    "GENETIC_POSITION": "-100",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "3013722 | 8150276 | 2823100 | 2678811"
+  },
+  {
+    "FEATURE_NAME": "SRN11",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Extragenic suppressor of the temperature-sensitive phenotype of rna1-1",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "9790597"
+  },
+  {
+    "FEATURE_NAME": "SRP5",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in cytoplasmic accumulation of the largest subunit of RNA polymerase I (A190) ",
+    "NAME_DESCRIPTION": "Suppressor of Rna Polymerase I or A",
+    "CHROMOSOME": "chrXV",
+    "GENETIC_POSITION": "108",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1846671 | 8041713"
+  },
+  {
+    "FEATURE_NAME": "SRS1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in the self regulation of heat shock protein SSA1, and HSP70 family member",
+    "NAME_DESCRIPTION": "Self Regulating Sequence",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "383698 | 2181281"
+  },
+  {
+    "FEATURE_NAME": "SSB20",
+    "ALIASES": "",
+    "DESCRIPTION": "",
+    "NAME_DESCRIPTION": "Stress-Seventy subfamily B",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2678811 | 1413997"
+  },
+  {
+    "FEATURE_NAME": "SSB38",
+    "ALIASES": "",
+    "DESCRIPTION": "",
+    "NAME_DESCRIPTION": "Stress-Seventy subfamily B",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2678811 | 1413997"
+  },
+  {
+    "FEATURE_NAME": "SSF9",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in Swi4p-mediated start-dependent activation of HO and high level-expression of G1 cyclin genes; mutants restore HO transcription in the absence of SWI4",
+    "NAME_DESCRIPTION": "Suppressor of Swi Four",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7748491 | 7935460"
+  },
+  {
+    "FEATURE_NAME": "SSU3",
+    "ALIASES": "",
+    "DESCRIPTION": "Sensitive to sulfite",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8082198 | 9294463 | 10870099 | 10234785 | 8889516"
+  },
+  {
+    "FEATURE_NAME": "SSU4",
+    "ALIASES": "",
+    "DESCRIPTION": "Sensitive to sulfite",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "8889516 | 2123190 | 8082198 | 10234785 | 9294463 | 9409150"
+  },
+  {
+    "FEATURE_NAME": "SSX6",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in Swi4p-mediated start-dependent activation of HO and high level-expression of G1 cyclin genes; mutants restore HO transcription in the absence of SWI4",
+    "NAME_DESCRIPTION": "Suppressors of SWI6",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "15998722 | 7896087"
+  },
+  {
+    "FEATURE_NAME": "SSY4",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant bears resistance to metsulfuron-methyl and reduced phenylalanine uptake but is unable to grow on sulfonylurea containing YPD",
+    "NAME_DESCRIPTION": "Sulfonylurea Sensitive on YPD",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "9483800"
+  },
+  {
+    "FEATURE_NAME": "STB8",
+    "ALIASES": "",
+    "DESCRIPTION": "",
+    "NAME_DESCRIPTION": "Sin Three Binding protein",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": ""
+  },
+  {
+    "FEATURE_NAME": "SUA2",
+    "ALIASES": "",
+    "DESCRIPTION": "Suppressor of upstream AUG",
+    "NAME_DESCRIPTION": "Suppressor of Upstream AUG",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The SUA2 locus has been genetically defined by Hampsey, M., et al. (1991). SUA2 has not been assigned to a standard ORF.",
+    "LITERATURE (PMIDs)": "1327957 | 1666843"
+  },
+  {
+    "FEATURE_NAME": "SUA3",
+    "ALIASES": "",
+    "DESCRIPTION": "Suppressor of upstream AUG",
+    "NAME_DESCRIPTION": "Suppressor of Upstream AUG",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The SUA3 locus has been genetically defined by Hampsey, M., et al. (1991). SUA3 has not been assigned to a standard ORF.",
+    "LITERATURE (PMIDs)": "1327957 | 1666843"
+  },
+  {
+    "FEATURE_NAME": "SUA4",
+    "ALIASES": "",
+    "DESCRIPTION": "Suppressor of upstream AUG",
+    "NAME_DESCRIPTION": "Suppressor of Upstream AUG",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 15: The SUA4 locus has been genetically defined by Hampsey, M., et al. (1991). SUA4 has not been assigned to a standard ORF.",
+    "LITERATURE (PMIDs)": "1327957 | 1666843"
+  },
+  {
+    "FEATURE_NAME": "SUF15",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in suppression of frameshift mutations by mutant his4 tRNA that recognizes 4 base mRNA codon sequences",
+    "NAME_DESCRIPTION": "SUppression of Frameshift mutation",
+    "CHROMOSOME": "chrVII",
+    "GENETIC_POSITION": "171",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2548921 | 6757051 | 17246112"
+  },
+  {
+    "FEATURE_NAME": "SUF18",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in suppression of frameshift mutations by mutant his4 tRNA that recognizes 4 base mRNA codon sequences",
+    "NAME_DESCRIPTION": "SUppression of Frameshift mutation",
+    "CHROMOSOME": "chrVI",
+    "GENETIC_POSITION": "16",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2995780 | 2678811 | 6757051 | 17246112 | 6366520"
+  },
+  {
+    "FEATURE_NAME": "SUF19",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in suppression of frameshift mutations by mutant his4 tRNA that recognizes 4 base mRNA codon sequences",
+    "NAME_DESCRIPTION": "SUppression of Frameshift mutation",
+    "CHROMOSOME": "chrV",
+    "GENETIC_POSITION": "-38",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1413997 | 2678811 | 2995780"
+  },
+  {
+    "FEATURE_NAME": "SUF21",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in suppression of frameshift mutations by mutant his4 tRNA that recognizes 4 base mRNA codon sequences",
+    "NAME_DESCRIPTION": "SUppression of Frameshift mutation",
+    "CHROMOSOME": "chrXVI",
+    "GENETIC_POSITION": "3",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "6757051 | 1413997 | 17246112 | 2678811 | 2995780 | 2537149 | 6366520"
+  },
+  {
+    "FEATURE_NAME": "SUF22",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in suppression of frameshift mutations by mutant his4 tRNA that recognizes 4 base mRNA codon sequences",
+    "NAME_DESCRIPTION": "SUppression of Frameshift mutation",
+    "CHROMOSOME": "chrXIII",
+    "GENETIC_POSITION": "-31",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "6757051 | 8440738 | 3894935 | 17246112 | 2995780 | 1413997 | 2678811 | 6366520"
+  },
+  {
+    "FEATURE_NAME": "SUF24",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in suppression of frameshift mutations by mutant his4 tRNA that recognizes 4 base mRNA codon sequences",
+    "NAME_DESCRIPTION": "SUppression of Frameshift mutation",
+    "CHROMOSOME": "chrIV",
+    "GENETIC_POSITION": "160",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "6757051 | 6757053 | 1394509 | 1413997 | 17246112 | 2995780 | 2678811"
+  },
+  {
+    "FEATURE_NAME": "SUF25",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in suppression of frameshift mutations by mutant his4 tRNA that recognizes 4 base mRNA codon sequences",
+    "NAME_DESCRIPTION": "SUppression of Frameshift mutation",
+    "CHROMOSOME": "chrIV",
+    "GENETIC_POSITION": "-115",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "6757051 | 17246112 | 2406560 | 2995780 | 1413997 | 11238400 | 2678811 | 6366520 | 6757053"
+  },
+  {
+    "FEATURE_NAME": "SUF76",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Involved in suppression of frameshift mutations by mutant his4 tRNA that recognizes 4 base mRNA codon sequences",
+    "NAME_DESCRIPTION": "SUppression of Frameshift mutation",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": ""
+  },
+  {
+    "FEATURE_NAME": "SUH1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant is involved in restoring histidinol phosphatase activity by suppressing the his2-1 histidine biosynthesis deficient allele",
+    "NAME_DESCRIPTION": "SUppression of his2-1",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "4329443"
+  },
+  {
+    "FEATURE_NAME": "SUH2",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant is involved in restoring histidinol phosphatase activity by suppressing the his2-1 histidine biosynthesis deficient allele",
+    "NAME_DESCRIPTION": "SUppression of his2-1",
+    "CHROMOSOME": "chrXII",
+    "GENETIC_POSITION": "24",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "4329443 | 7010111 | 1413997 | 2678811 | 2995780 | 6366520"
+  },
+  {
+    "FEATURE_NAME": "SUL3",
+    "ALIASES": "",
+    "DESCRIPTION": "Sulfate uptake",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "9055073 | 16102596 | 9409150 | 11921096 | 17151249"
+  },
+  {
+    "FEATURE_NAME": "SUP139",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant is an ominopotent (codon nonspecific) suppressor of nonsense mutations in [PSI]+ factor environment",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "chrV",
+    "GENETIC_POSITION": "52",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1868573 | 2692850 | 1413997 | 2179051 | 16832048"
+  },
+  {
+    "FEATURE_NAME": "SUP15",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant is a suppressor of UAA-codon nonsense mutations in [PSI]+ factor environment",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "chrXVI",
+    "GENETIC_POSITION": "48",
+    "NOTES":
+      "It is very likely that SUP15 and SUP16 are allelic, but this has not been proven definitively.",
+    "LITERATURE (PMIDs)": "372549"
+  },
+  {
+    "FEATURE_NAME": "SUP154",
+    "ALIASES": "",
+    "DESCRIPTION": "Mutant is a suppressor of UGA-codon nonsense mutations ",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "chrVII",
+    "GENETIC_POSITION": "-42",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8608930 | 2678811 | 1413997"
+  },
+  {
+    "FEATURE_NAME": "SUP155",
+    "ALIASES": "",
+    "DESCRIPTION": "Mutant is a suppressor of UGA-codon nonsense mutations ",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8608930 | 1413997 | 2678811 | 1525856"
+  },
+  {
+    "FEATURE_NAME": "SUP160",
+    "ALIASES": "",
+    "DESCRIPTION": "Mutant is a suppressor of UGA-codon nonsense mutations ",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "chrXV",
+    "GENETIC_POSITION": "3",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8608930 | 1413997 | 2678811 | 1525856"
+  },
+  {
+    "FEATURE_NAME": "SUP165",
+    "ALIASES": "",
+    "DESCRIPTION": "Mutant is a suppressor of UGA-codon nonsense mutations ",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES":
+      "Edition 11: SUP165 has been removed from the map because of an improbable (17:3:20)) tetrad ratio (see Edition 10) and inconsistencies with the physical map of Riles and Olson",
+    "LITERATURE (PMIDs)": "8608930 | 2678811 | 1413997 | 16832048"
+  },
+  {
+    "FEATURE_NAME": "SUP22",
+    "ALIASES": "",
+    "DESCRIPTION": "Mutant is a suppressor of UAA-codon nonsense mutations",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "chrIX",
+    "GENETIC_POSITION": "-95",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "6795356 | 2995780 | 7010111 | 1413997"
+  },
+  {
+    "FEATURE_NAME": "SUP25",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant is a suppressor of nonsense mutations by stop codon readthrough",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "chrXI",
+    "GENETIC_POSITION": "63",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "2995780 | 7010111 | 1413997 | 17246112 | 17248609 | 2678811 | 4590685 | 6366520"
+  },
+  {
+    "FEATURE_NAME": "SUP26",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant is a suppressor of UAA-codon nonsense mutations via leucine insertion in [PSI]+ factor environment",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "chrXII",
+    "GENETIC_POSITION": "306",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": ""
+  },
+  {
+    "FEATURE_NAME": "SUP27",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant is a suppressor of UAA-codon nonsense mutations via leucine insertion in [PSI]+ factor environment",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "chrIV",
+    "GENETIC_POSITION": "9",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "17248970"
+  },
+  {
+    "FEATURE_NAME": "SUP28",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Putative leucine tRNA gene that can mutate to suppress UAA mutations; genetic mapping data suggest that SUP28 could correspond to tL(UAA)N",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "chrXIV",
+    "GENETIC_POSITION": "39",
+    "NOTES": "Edition 10: SUP28 data in 1985 mapping review; new reference",
+    "LITERATURE (PMIDs)": "1475183 | 8608930 | 24173554 | 1413997 | 2678811"
+  },
+  {
+    "FEATURE_NAME": "SUP29",
+    "ALIASES": "SUP30",
+    "DESCRIPTION":
+      "Mutant is a suppressor of UAA-codon nonsense mutations via leucine insertion in [PSI]+ factor environment",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "chrX",
+    "GENETIC_POSITION": "0",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "392110 | 1868573 | 6821248 | 17248609 | 3533713 | 1413997 | 2678811 | 7010111 | 8082183"
+  },
+  {
+    "FEATURE_NAME": "SUP33",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Leucine-inserting UAA suppressor; located between FAS1 and TRP3 on left arm of Chromosome XI",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "chrXI",
+    "GENETIC_POSITION": "-122.2",
+    "NOTES": "Edition 10: SUP33 data in 1985 mapping review; new reference",
+    "LITERATURE (PMIDs)":
+      "8608930 | 24173554 | 392110 | 1413997 | 2678811 | 2995780 | 3059716"
+  },
+  {
+    "FEATURE_NAME": "SUP37",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant is a suppressor of nonsense mutations by stop codon readthrough",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "chrXII",
+    "GENETIC_POSITION": "86",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2995780 | 1413997 | 2678811"
+  },
+  {
+    "FEATURE_NAME": "SUP40",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant is a suppressor of nonsense mutations by stop codon readthrough",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2678811 | 1413997 | 7698667"
+  },
+  {
+    "FEATURE_NAME": "SUP42",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant is an ominopotent (codon nonspecific) suppressor of nonsense mutations in [PSI]+ factor environment",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "chrIV",
+    "GENETIC_POSITION": "20",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2179051 | 1413997 | 10580473"
+  },
+  {
+    "FEATURE_NAME": "SUP43",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant is an ominopotent (codon nonspecific) suppressor of nonsense mutations in [PSI]+ factor environment",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "chrXV",
+    "GENETIC_POSITION": "-14",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "2179051 | 3522920 | 2311916 | 2692850 | 1413997 | 10580473 | 3059716"
+  },
+  {
+    "FEATURE_NAME": "SUP50",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant is a suppressor of nonsense mutations by stop codon readthrough",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "1413997 | 7010111 | 17248609 | 2678811 | 2995780 | 7698667"
+  },
+  {
+    "FEATURE_NAME": "SUP57",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant is a suppressor of UAA-codon nonsense mutations via leucine insertion",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "chrVI",
+    "GENETIC_POSITION": "41",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "177333 | 6387150 | 1413997 | 2678811 | 2995780"
+  },
+  {
+    "FEATURE_NAME": "SUP58",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant is a suppressor of UAA-codon nonsense mutations via leucine insertion",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "chrXI",
+    "GENETIC_POSITION": "-58",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "177333 | 6387150 | 2995780 | 1413997 | 2678811 | 7828812"
+  },
+  {
+    "FEATURE_NAME": "SUP71",
+    "ALIASES": "SUP150",
+    "DESCRIPTION": "Mutant is a suppressor of UGA-codon nonsense mutations ",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "chrV",
+    "GENETIC_POSITION": "2",
+    "NOTES":
+      "The genetic loci SUP71 and SUP150 were merged because PMID: 8608930 states that they are allelic.",
+    "LITERATURE (PMIDs)": "8608930 | 17248609"
+  },
+  {
+    "FEATURE_NAME": "SUP72",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant is a suppressor of UGA-codon nonsense mutations, may correspond to tRNA genes",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "chrII",
+    "GENETIC_POSITION": "41",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1413997 | 2678811 | 2995780 | 7813418 | 8608930"
+  },
+  {
+    "FEATURE_NAME": "SUP73",
+    "ALIASES": "",
+    "DESCRIPTION": "Mutant is a suppressor of UGA-codon nonsense mutations ",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "chrX",
+    "GENETIC_POSITION": "-21",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1413997 | 2678811 | 2995780 | 6366520 | 8608930"
+  },
+  {
+    "FEATURE_NAME": "SUP74",
+    "ALIASES": "",
+    "DESCRIPTION": "Mutant is a suppressor of UGA-codon nonsense mutations ",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "chrX",
+    "GENETIC_POSITION": "-32",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "1413997 | 2678811 | 2995780 | 6366520 | 8608930 | 8641269"
+  },
+  {
+    "FEATURE_NAME": "SUP75",
+    "ALIASES": "",
+    "DESCRIPTION": "Mutant is a suppressor of UGA-codon nonsense mutations ",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "chrXI",
+    "GENETIC_POSITION": "-59",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "7828812 | 1413997 | 2678811 | 2995780 | 6366520 | 8408221 | 8608930"
+  },
+  {
+    "FEATURE_NAME": "SUP76",
+    "ALIASES": "",
+    "DESCRIPTION": "Mutant is a suppressor of UGA-codon nonsense mutations ",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "chrVII",
+    "GENETIC_POSITION": "134",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2995780 | 2678811 | 1413997 | 6366520 | 8608930"
+  },
+  {
+    "FEATURE_NAME": "SUP77",
+    "ALIASES": "SUP166",
+    "DESCRIPTION": "Mutant is a suppressor of UGA-codon nonsense mutations ",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "chrVII",
+    "GENETIC_POSITION": "114",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1525856"
+  },
+  {
+    "FEATURE_NAME": "SUP78",
+    "ALIASES": "",
+    "DESCRIPTION": "Mutant is a suppressor of UGA-codon nonsense mutations ",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "chrXIII",
+    "GENETIC_POSITION": "154",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "1413997 | 2678811 | 2995780 | 3896924 | 6366520 | 8608930"
+  },
+  {
+    "FEATURE_NAME": "SUP79",
+    "ALIASES": "",
+    "DESCRIPTION": "Mutant is a suppressor of UGA-codon nonsense mutations ",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "chrXIII",
+    "GENETIC_POSITION": "-48",
+    "NOTES": "",
+    "LITERATURE (PMIDs)":
+      "2828155 | 2675489 | 2678811 | 2995780 | 3896924 | 1413997 | 6366520 | 8608930"
+  },
+  {
+    "FEATURE_NAME": "SUP80",
+    "ALIASES": "",
+    "DESCRIPTION": "Mutant is a suppressor of UGA-codon nonsense mutations ",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "chrIV",
+    "GENETIC_POSITION": "55",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2995780 | 1413997 | 2678811 | 8608930"
+  },
+  {
+    "FEATURE_NAME": "SUP85",
+    "ALIASES": "",
+    "DESCRIPTION": "Mutant is a suppressor of UGA-codon nonsense mutations ",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "chrV",
+    "GENETIC_POSITION": "51",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2995780 | 8608930 | 1413997 | 2678811"
+  },
+  {
+    "FEATURE_NAME": "SUP86",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant is a suppressor of nonsense mutations by stop codon readthrough",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "chrXII",
+    "GENETIC_POSITION": "304",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1413997 | 2678811 | 2995780 | 6366520"
+  },
+  {
+    "FEATURE_NAME": "SUP87",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant is a suppressor of nonsense mutations by stop codon readthrough",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "chrII",
+    "GENETIC_POSITION": "26",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1413997 | 2678811 | 2995780 | 7813418"
+  },
+  {
+    "FEATURE_NAME": "SUP88",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant is a suppressor of UGA-codon nonsense mutations via leucine insertion",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "chrIV",
+    "GENETIC_POSITION": "17",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2675489 | 1413997 | 2678811 | 2995780"
+  },
+  {
+    "FEATURE_NAME": "SUPX",
+    "ALIASES": "",
+    "DESCRIPTION": "Mutant is a suppressor of UAA-codon nonsense mutations ",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "chrV",
+    "GENETIC_POSITION": "30.83",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1441747"
+  },
+  {
+    "FEATURE_NAME": "SUPY",
+    "ALIASES": "",
+    "DESCRIPTION": "Mutant is a suppressor of UAG-codon nonsense mutations ",
+    "NAME_DESCRIPTION": "SUPpression of nonsense mutations",
+    "CHROMOSOME": "chrVI",
+    "GENETIC_POSITION": "48.64",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1441747"
+  },
+  {
+    "FEATURE_NAME": "SUR3",
+    "ALIASES": "",
+    "DESCRIPTION": "Suppressor of rvs161 and rvs167 mutations",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8488727 | 9098885 | 10366774 | 16524918"
+  },
+  {
+    "FEATURE_NAME": "SVL10",
+    "ALIASES": "",
+    "DESCRIPTION": "Styryl dye vacuolar localization",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "9751732"
+  },
+  {
+    "FEATURE_NAME": "SVL11",
+    "ALIASES": "",
+    "DESCRIPTION": "Styryl dye vacuolar localization",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "9751732"
+  },
+  {
+    "FEATURE_NAME": "SVL12",
+    "ALIASES": "",
+    "DESCRIPTION": "Styryl dye vacuolar localization",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "9751732"
+  },
+  {
+    "FEATURE_NAME": "SVL4",
+    "ALIASES": "",
+    "DESCRIPTION": "Styryl dye vacuolar localization",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "9751732"
+  },
+  {
+    "FEATURE_NAME": "SVL5",
+    "ALIASES": "",
+    "DESCRIPTION": "Styryl dye vacuolar localization",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "9751732"
+  },
+  {
+    "FEATURE_NAME": "SVL8",
+    "ALIASES": "",
+    "DESCRIPTION": "Styryl dye vacuolar localization",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "9751732"
+  },
+  {
+    "FEATURE_NAME": "SVL9",
+    "ALIASES": "",
+    "DESCRIPTION": "Styryl dye vacuolar localization",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "9751732"
+  },
+  {
+    "FEATURE_NAME": "TMR7",
+    "ALIASES": "",
+    "DESCRIPTION": "Revertant of tom1 ts mutant",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "10660055"
+  },
+  {
+    "FEATURE_NAME": "TS225",
+    "ALIASES": "",
+    "DESCRIPTION": "",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": ""
+  },
+  {
+    "FEATURE_NAME": "TSF1",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Recessive mutants impair GAL operator silencing; potentially implicated in RNA polymerase II machinery",
+    "NAME_DESCRIPTION": "Transcriptional Silencing Factor",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8349104 | 8423805"
+  },
+  {
+    "FEATURE_NAME": "TSM0039",
+    "ALIASES": "",
+    "DESCRIPTION": "Restricted growth for mutants at 36 deg. C",
+    "NAME_DESCRIPTION": "Temperature sensitive lethal mutations",
+    "CHROMOSOME": "chrV",
+    "GENETIC_POSITION": "4",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2678811 | 1413997"
+  },
+  {
+    "FEATURE_NAME": "TSM0070",
+    "ALIASES": "",
+    "DESCRIPTION": "Restricted growth for mutants at 36 deg. C",
+    "NAME_DESCRIPTION": "Temperature sensitive lethal mutations",
+    "CHROMOSOME": "chrVI",
+    "GENETIC_POSITION": "-30",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2678811 | 1413997"
+  },
+  {
+    "FEATURE_NAME": "TSM0080",
+    "ALIASES": "",
+    "DESCRIPTION": "Restricted growth for mutants at 36 deg. C",
+    "NAME_DESCRIPTION": "Temperature sensitive lethal mutations",
+    "CHROMOSOME": "chrIV",
+    "GENETIC_POSITION": "7",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2678811 | 1413997 | 2526682"
+  },
+  {
+    "FEATURE_NAME": "TSM0111",
+    "ALIASES": "",
+    "DESCRIPTION": "Restricted growth for mutants at 36 deg. C",
+    "NAME_DESCRIPTION": "Temperature sensitive lethal mutations",
+    "CHROMOSOME": "chrXIII",
+    "GENETIC_POSITION": "1",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "24173148"
+  },
+  {
+    "FEATURE_NAME": "TSM0119",
+    "ALIASES": "",
+    "DESCRIPTION": "Restricted growth for mutants at 36 deg. C",
+    "NAME_DESCRIPTION": "Temperature sensitive lethal mutations",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": ""
+  },
+  {
+    "FEATURE_NAME": "TSM0120",
+    "ALIASES": "",
+    "DESCRIPTION": "Restricted growth for mutants at 36 deg. C",
+    "NAME_DESCRIPTION": "Temperature sensitive lethal mutations",
+    "CHROMOSOME": "chrXVI",
+    "GENETIC_POSITION": "32",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2678811 | 1413997 | 9730282"
+  },
+  {
+    "FEATURE_NAME": "TSM0139",
+    "ALIASES": "",
+    "DESCRIPTION": "Restricted growth for mutants at 36 deg. C",
+    "NAME_DESCRIPTION": "Temperature sensitive lethal mutations",
+    "CHROMOSOME": "chrIX",
+    "GENETIC_POSITION": "-47",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1413997 | 2653960 | 2678811"
+  },
+  {
+    "FEATURE_NAME": "TSM0151",
+    "ALIASES": "",
+    "DESCRIPTION": "Restricted growth for mutants at 36 deg. C",
+    "NAME_DESCRIPTION": "Temperature sensitive lethal mutations",
+    "CHROMOSOME": "chrVIII",
+    "GENETIC_POSITION": "23",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1413997 | 2678811"
+  },
+  {
+    "FEATURE_NAME": "TSM0186",
+    "ALIASES": "",
+    "DESCRIPTION": "Restricted growth for mutants at 36 deg. C",
+    "NAME_DESCRIPTION": "Temperature sensitive lethal mutations",
+    "CHROMOSOME": "chrVIII",
+    "GENETIC_POSITION": "19",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1413997"
+  },
+  {
+    "FEATURE_NAME": "TSM0225",
+    "ALIASES": "",
+    "DESCRIPTION": "Restricted growth for mutants at 36 deg. C",
+    "NAME_DESCRIPTION": "Temperature sensitive lethal mutations",
+    "CHROMOSOME": "chrIV",
+    "GENETIC_POSITION": "-49",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1413997 | 2678811"
+  },
+  {
+    "FEATURE_NAME": "TSM0800",
+    "ALIASES": "",
+    "DESCRIPTION": "Restricted growth for mutants at 36 deg. C",
+    "NAME_DESCRIPTION": "Temperature sensitive lethal mutations",
+    "CHROMOSOME": "chrXIII",
+    "GENETIC_POSITION": "12",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1413997 | 2678811"
+  },
+  {
+    "FEATURE_NAME": "TSM134",
+    "ALIASES": "",
+    "DESCRIPTION": "Restricted growth for mutants at 36 deg. C",
+    "NAME_DESCRIPTION": "Temperature sensitive lethal mutations",
+    "CHROMOSOME": "chrII",
+    "GENETIC_POSITION": "38",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "340892 | 348562 | 17248609"
+  },
+  {
+    "FEATURE_NAME": "TSM5",
+    "ALIASES": "",
+    "DESCRIPTION": "Restricted growth for mutants at 36 deg. C",
+    "NAME_DESCRIPTION": "Temperature sensitive lethal mutations",
+    "CHROMOSOME": "chrIII",
+    "GENETIC_POSITION": "60",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": ""
+  },
+  {
+    "FEATURE_NAME": "TSM5162",
+    "ALIASES": "",
+    "DESCRIPTION": "Restricted growth for mutants at 36 deg. C",
+    "NAME_DESCRIPTION": "Temperature sensitive lethal mutations",
+    "CHROMOSOME": "chrIV",
+    "GENETIC_POSITION": "23",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1413997 | 2678811 | 2995780"
+  },
+  {
+    "FEATURE_NAME": "TSM8740",
+    "ALIASES": "",
+    "DESCRIPTION": "Restricted growth for mutants at 36 deg. C",
+    "NAME_DESCRIPTION": "Temperature sensitive lethal mutations",
+    "CHROMOSOME": "chrXV",
+    "GENETIC_POSITION": "55",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2841184 | 24186473"
+  },
+  {
+    "FEATURE_NAME": "TTR2",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant characterized by increased levels of cytochrome-c, respiration rate, and sensitivity to carbon deprivation",
+    "NAME_DESCRIPTION": "TrieThyltin resistance",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2202522 | 2167772"
+  },
+  {
+    "FEATURE_NAME": "TTR3",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant characterized by increased levels of cytochrome-c, respiration rate, and sensitivity to carbon deprivation",
+    "NAME_DESCRIPTION": "TrieThyltin resistance",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "2202522 | 2167772"
+  },
+  {
+    "FEATURE_NAME": "TUP4",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant incorporates exogenous deoxythymidine monophosphate (dTMP) into DNA and has elevated levels of inorganic phosphate transport",
+    "NAME_DESCRIPTION": "DeoxyThymidine monophosphate UPtake positive",
+    "CHROMOSOME": "chrXV",
+    "GENETIC_POSITION": "-10",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8893 | 374400 | 787537 | 4281200 | 4587606 | 6293915"
+  },
+  {
+    "FEATURE_NAME": "TYE1",
+    "ALIASES": "",
+    "DESCRIPTION": "Required for Ty mediated expression of ADH2",
+    "NAME_DESCRIPTION": "TY-mediated constitutive Expression",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1664298 | 6267430"
+  },
+  {
+    "FEATURE_NAME": "TYE5",
+    "ALIASES": "",
+    "DESCRIPTION": "Required for Ty mediated expression of ADH2",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1664298"
+  },
+  {
+    "FEATURE_NAME": "UDT1",
+    "ALIASES": "",
+    "DESCRIPTION": "Involved in transcription of HEM12",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "7770055"
+  },
+  {
+    "FEATURE_NAME": "URR3",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Required for GAL1 repression by URS element; mutant suppresses URS derepression by snf1 mutation",
+    "NAME_DESCRIPTION": "URS Repression",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1541392 | 8262068 | 8467796 | 9618445"
+  },
+  {
+    "FEATURE_NAME": "URR4",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Required for GAL1 repression by URS element; mutant suppresses URS derepression by snf1 mutation",
+    "NAME_DESCRIPTION": "URS Repression",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "1541392 | 8262068 | 8467796 | 9618445"
+  },
+  {
+    "FEATURE_NAME": "VMA42",
+    "ALIASES": "",
+    "DESCRIPTION": "Required for V-ATPase activity",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "9488470"
+  },
+  {
+    "FEATURE_NAME": "VMA43",
+    "ALIASES": "",
+    "DESCRIPTION": "Required for V-ATPase activity",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "9488470"
+  },
+  {
+    "FEATURE_NAME": "VMA44",
+    "ALIASES": "",
+    "DESCRIPTION": "Required for V-ATPase activity",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "9488470"
+  },
+  {
+    "FEATURE_NAME": "XCM2",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant suppresses mitotic spindle pole and nuclear intergrity defects of calmodulin mutant cmd1-101",
+    "NAME_DESCRIPTION": "eXtragenic suppressor of CMd1",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8247006"
+  },
+  {
+    "FEATURE_NAME": "XCM3",
+    "ALIASES": "",
+    "DESCRIPTION":
+      "Mutant suppresses mitotic spindle pole and nuclear intergrity defects of calmodulin mutant cmd1-101",
+    "NAME_DESCRIPTION": "eXtragenic suppressor of CMd1",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "8247006"
+  },
+  {
+    "FEATURE_NAME": "XSP18",
+    "ALIASES": "",
+    "DESCRIPTION": "Extragenic suppressor of pdc2",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "9055069"
+  },
+  {
+    "FEATURE_NAME": "XSP37",
+    "ALIASES": "",
+    "DESCRIPTION": "Extragenic suppressor of pdc2",
+    "NAME_DESCRIPTION": "",
+    "CHROMOSOME": "",
+    "GENETIC_POSITION": "",
+    "NOTES": "",
+    "LITERATURE (PMIDs)": "9055069"
+  }
+]
