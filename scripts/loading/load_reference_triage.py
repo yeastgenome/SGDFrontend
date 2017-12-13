@@ -10,7 +10,7 @@ import transaction
 import sys
 reload(sys)  # reload to set encoding
 sys.setdefaultencoding('UTF8')
-from src.models import Referencedbentity, Referencetriage, Locusdbentity, LocusAlias
+from src.models import Referencedbentity, Referencetriage, Referencedeleted, Locusdbentity, LocusAlias
 from scripts.loading.reference.pubmed import get_pmid_list, get_pubmed_record, set_cite, get_abstract
 from scripts.loading.util import extract_gene_names
 
@@ -19,7 +19,7 @@ __author__ = 'sweng66'
 
 TERMS = ['yeast', 'cerevisiae']
 URL = 'http://www.ncbi.nlm.nih.gov/pubmed/'
-DAY = 15 
+DAY = 7 
 RETMAX = 10000
 
 logging.basicConfig()
@@ -37,6 +37,8 @@ def load_references():
     # some preparation
     pmid_to_reference_id = dict([(x.pmid, x.dbentity_id) for x in db_session.query(Referencedbentity).all()])
     pmid_to_curation_id = dict([(x.pmid, x.curation_id) for x in db_session.query(Referencetriage).all()])
+    pmid_to_refdeleted_id = dict([(x.pmid, x.referencedeleted_id) for x in db_session.query(Referencedeleted).all()])
+
     # get gene names to highlight
     gene_list = []
     all_loci = db_session.query(Locusdbentity).all()
@@ -64,7 +66,10 @@ def load_references():
             continue
         if int(pmid) in pmid_to_curation_id:
             continue
+        if int(pmid) in pmid_to_refdeleted_id:
+            continue
         pmids.append(pmid)
+
     if len(pmids) == 0:
         log.info("No new papers")
         return
