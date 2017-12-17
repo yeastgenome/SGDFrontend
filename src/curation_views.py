@@ -344,9 +344,13 @@ def reserved_name_index(request):
 @view_config(route_name='reserved_name_curate_show', renderer='json')
 @authenticate
 def reserved_name_curate_show(request):
-    id = request.matchdict['id'].upper()
-    # TEMP
-    return True
+    req_id = request.matchdict['id'].upper()
+    # may be either Reservedname or reservedname triage entry
+    res = DBSession.query(Reservedname).filter(Reservedname.reservedname_id == req_id).one_or_none()
+    if not res:
+        return HTTPNotFound()
+    return res.to_curate_dict()
+
 
 # @view_config(route_name='upload', request_method='POST', renderer='json')
 # @authenticate

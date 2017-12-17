@@ -7688,28 +7688,40 @@ class Reservedname(Base):
 
     def to_dict(self):
         obj = {
-            "id": self.reservedname_id,
-            "display_name": self.display_name,
-            "reservation_date": self.reservation_date.strftime("%Y-%m-%d"),
-            "expiration_date": self.expiration_date.strftime("%Y-%m-%d"),
-            "locus": None,
-            "reference": None
+            'id': self.reservedname_id,
+            'display_name': self.display_name,
+            'reservation_date': self.reservation_date.strftime('%Y-%m-%d'),
+            'expiration_date': self.expiration_date.strftime('%Y-%m-%d'),
+            'locus': None,
+            'reference': None
         }
 
         if self.locus:
-            obj["locus"] = {
-                "display_name": self.locus.display_name,
-                "systematic_name": self.locus.systematic_name,
-                "link": self.locus.obj_url
+            obj['locus'] = {
+                'display_name': self.locus.display_name,
+                'systematic_name': self.locus.systematic_name,
+                'link': self.locus.obj_url
             }
 
         if self.reference:
-            obj["reference"] = {
-                "display_name": self.reference.display_name,
-                "link": self.reference.obj_url
+            obj['reference'] = {
+                'display_name': self.reference.display_name,
+                'link': self.reference.obj_url
             }
 
         return obj
+
+    def to_curate_dict(self):
+        obj = self.to_dict()
+        # colleague info
+        submitter = self.colleague
+        obj['submitter_name'] = submitter.first_name + ' ' + submitter.last_name
+        obj['submitter_email'] = submitter.email
+        obj['submitter_phone'] = submitter.work_phone
+        # other res info
+        obj['reservation_status'] = 'Reserved'
+        return obj
+
 
 class ReservednameTriage(Base):
     __tablename__ = 'reservednametriage'
