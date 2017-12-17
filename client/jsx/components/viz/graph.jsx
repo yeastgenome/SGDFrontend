@@ -17,7 +17,6 @@ class Graph extends Component {
   constructor(props) {
     super(props);
     this.lastNodes = [];
-    this.lastMaxMalue = DEFAULT_MAX_VALUE;
     this.state = {
       currentMaxValue: DEFAULT_MAX_VALUE
     };
@@ -106,7 +105,8 @@ class Graph extends Component {
     let defaultColorScale = d3.scale.category10();
     let colorScale = this.props.colorScale || defaultColorScale;
     // only get state.currentMaxNodes
-    return this.props.data.nodes.slice(0, this.state.currentMaxNodes).map( (d) => {
+    var maxNodes = this.state.currentMaxNodes || DEFAULT_MAX_VALUE;
+    return this.props.data.nodes.slice(0, maxNodes).map( (d) => {
       d.color = colorScale(d.category);
       d.label = d.name;
       d.size = d.direct ? 1 : 0.5;
@@ -220,35 +220,32 @@ class Graph extends Component {
         <span key={`hl${i}`} style={{ fontSize: '0.9rem', marginRight: '1rem' }}><span style={{ background: thisBg, borderRadius: '0.5rem', display: 'inline-block', height: NODE_SIZE, position: 'relative', top: '0.1rem', width: NODE_SIZE }}></span> {d}</span>
       );
     });
+    let headerText = this.props.headerText;
     return (
-      <div>
-        {nodes}
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div>
+          {nodes}
+        </div>
+        <div>
+          {headerText}
+        </div>
       </div>
     );
   }
 
   renderFooter() {
-    let footerText = this.props.footerText;
     let _onChange = debounce(this.handleMaxSizeChange, SIZE_DEBOUNCE).bind(this);
-    if (typeof footerText === 'string') {
-      return (
-        <div>
-          <div style={{ textAlign: 'right' }}>
-            <span>
-              {footerText}
-            </span>
+    return (
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div>
+            <label>Max Nodes</label>
+            <input type='range' style={{ minWidth: '15rem' }} min='5' max='100' defaultValue={DEFAULT_MAX_VALUE.toString()} onChange={_onChange} ref='slider' />
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <div>
-              {/*<label>Max Nodes</label>*/}
-              <input type='range' style={{ minWidth: '15rem' }} min='5' max='500' defaultValue='25' onChange={_onChange} ref='slider' />
-            </div>
-            <a className='button small secondary' onClick={this.handleDownload.bind(this)}><i className='fa fa-download' /> Download (.png)</a>
-          </div>
+          <a className='button small secondary' onClick={this.handleDownload.bind(this)}><i className='fa fa-download' /> Download (.png)</a>
         </div>
-      );
-    }
-    return null;
+      </div>
+    );
   }
 
   render() {
@@ -264,7 +261,7 @@ class Graph extends Component {
 
 Graph.propTypes = {
   data: React.PropTypes.object, // { nodes: [], edges: [] }
-  footerText: React.PropTypes.string, // optional
+  headerText: React.PropTypes.string, // optional
   colorScale: React.PropTypes.func, // optional, default to d3.scale.category10(d.category)
   stage: React.PropTypes.number // optional to force animation 
 };
