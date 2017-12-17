@@ -2880,7 +2880,7 @@ class Locusdbentity(Dbentity):
         }
 
     def regulation_graph(self):
-        MAX_NODES = 150
+        MAX_NODES = 500
         # get annotations to and from gene, or among regulators/targets
         direct_relations = DBSession.query(Regulationannotation.target_id, Regulationannotation.regulator_id).filter(or_(Regulationannotation.target_id == self.dbentity_id, Regulationannotation.regulator_id == self.dbentity_id)).all()
         target_ids = []
@@ -2936,7 +2936,7 @@ class Locusdbentity(Dbentity):
                 "id": d[2],
                 "link": d[3],
                 "type": "BIOENTITY",
-                "sub_type": sub_type
+                "category": sub_type
             })
         # format edges
         edges = []
@@ -2963,81 +2963,6 @@ class Locusdbentity(Dbentity):
             "nodes": nodes,
             "edges": edges,
             "min_evidence_count": 1
-        }
-
-        list_genes_to_regulations = sorted([(g, genes_to_regulations[g]) for g in genes_to_regulations], key=lambda x: len(x[1]), reverse=True)
-
-        nodes = {}
-        edges = []
-
-        edges_added = set([])
-
-        nodes[self.dbentity_id] = {
-            "data": {
-                "name": self.display_name,
-                "id": self.format_name,
-                "link": self.obj_url,
-                "type": "BIOENTITY",
-                "sub_type": "FOCUS"
-            }
-        }
-
-        min_cutoff = 99999999
-
-        genes_cache_query = DBSession.query(Dbentity.dbentity_id, Dbentity.display_name, Dbentity.format_name, Dbentity.obj_url).filter(Dbentity.dbentity_id.in_(genes_to_regulations.keys())).all()
-        genes_cache = {}
-        for gene in genes_cache_query:
-            genes_cache[gene.dbentity_id] = gene
-
-        i = 0
-        while i < len(list_genes_to_regulations) and len(nodes) <= MAX_NODES:
-            dbentity_id = list_genes_to_regulations[i][0]
-            dbentity = genes_cache[dbentity_id]
-
-            evidences = set([])
-            for annotation in list_genes_to_regulations[i][1]:
-                evidences.add(annotation.reference_id)
-
-            min_cutoff = min(min_cutoff, len(evidences))
-
-            sub_type = "TARGET"
-            if dbentity_id == list_genes_to_regulations[i][1][0].regulator_id:
-                sub_type = "REGULATOR"
-
-            if dbentity_id not in nodes:
-                nodes[dbentity_id] = {
-                    "data": {
-                        "name": dbentity.display_name,
-                        "id": dbentity.format_name,
-                        "link": dbentity.obj_url,
-                        "type": "BIOENTITY",
-                        "sub_type": sub_type
-                    }
-                }
-
-                action = "expression null"
-                if list_genes_to_regulations[i][1][0].direction == "positive":
-                    action = "expression activated"
-                elif list_genes_to_regulations[i][1][0].direction == "negative":
-                    action = "expression repressed"
-
-                edges.append({
-                    "data": {
-                        "action": action,
-                        "source": self.format_name,
-                        "target": dbentity.format_name,
-                        "evidence": len(evidences)
-                    }
-                })
-                edges_added.add(self.format_name + " " + dbentity.format_name)
-
-            i += 1
-        DBSession.close()
-
-        return {
-            "nodes": [nodes[n] for n in nodes],
-            "edges": edges,
-            "min_evidence_count": min_cutoff
         }
 
     def expression_graph(self):
