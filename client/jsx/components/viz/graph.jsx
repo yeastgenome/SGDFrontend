@@ -2,7 +2,8 @@
 import React, { Component } from 'react';
 import d3 from 'd3';
 
-const MAX_HEIGHT = 1000;
+const DEFAULT_MAX_VALUE = 50;
+const MAX_HEIGHT = 600;
 const TARGET_ID = 'j-sigma-target';
 const TRANSITION_DURATION = 1000;
 const DEFAULT_X = 0;
@@ -10,11 +11,16 @@ const DEFAULT_Y = 0;
 const N_TICKS = 100;
 const EDGE_COLOR = '#e2e2e2';
 const HIGHLIGHTED_EDGE_COLOR = '#808080';
+const SIZE_DEBOUNCE = 1000;
 
 class Graph extends Component {
   constructor(props) {
     super(props);
     this.lastNodes = [];
+    this.lastMaxMalue = DEFAULT_MAX_VALUE;
+    this.state = {
+      currentMaxValue: DEFAULT_MAX_VALUE
+    };
   }
 
   componentDidMount() {
@@ -44,6 +50,12 @@ class Graph extends Component {
     }
   }
 
+  handleMaxSizeChange() {
+    let newValue = this.refs.slider.value;
+    this.setState({ currentMaxNodes: newValue });
+    this.drawGraph();
+  }
+
   didDataChange(prevData, newData) {
     let areNodesEqual = (prevData.nodes.length !== newData.nodes.length);
     let areEdgesEqual = (prevData.edges.length !== newData.edges.length);
@@ -57,7 +69,7 @@ class Graph extends Component {
   // the edges need by d3 to calc format
   getFormattedLinks() {
     let nodes = this.props.data.nodes;
-    let edges = this.props.data.edges;
+    let edges = this.getEdges();
     function findIndexOfNodeById(id) {
       let thisNode = nodes.filter( d => d.id === id )[0];
       return nodes.indexOf(thisNode);
@@ -72,7 +84,17 @@ class Graph extends Component {
   getEdges() {
     let data = this.props.data;
     let rawEdges = data.edges;
-    return rawEdges.map( (d, i) => {
+    let nodes = this.getNodes();
+    let filteredEdges = rawEdges.filter( (d) => {
+      let hasSource = nodes.filter( (_d) => {
+        return (_d.id === d.source);
+      }).length;
+      let hasTarget = nodes.filter( (_d) => {
+        return (_d.id === d.target);
+      }).length;
+      return (hasSource && hasTarget);
+    });
+    return filteredEdges.map( (d, i) => {
       d.id = `e${i}`;
       d.color = EDGE_COLOR;
       d.size = 2;
@@ -83,8 +105,9 @@ class Graph extends Component {
   getNodes() {
     let defaultColorScale = d3.scale.category10();
     let colorScale = this.props.colorScale || defaultColorScale;
-    return this.props.data.nodes.map( (d) => {
-      d.color = colorScale(d.sub_type);
+    // only get state.currentMaxNodes
+    return this.props.data.nodes.slice(0, this.state.currentMaxNodes).map( (d) => {
+      d.color = colorScale(d.category);
       d.label = d.name;
       d.size = d.direct ? 1 : 0.5;
       return d;
@@ -132,6 +155,15 @@ class Graph extends Component {
     if (this.s) {
       this.s.graph.clear();
       this.s.refresh();
+    } else {
+      sigma.classes.graph.addMethod('neighbors', function(nodeId) {
+      var k,
+          neighbors = {},
+          index = this.allNeighborsIndex[nodeId] || {};
+      for (k in index)
+        neighbors[k] = this.nodesIndex[k];
+      return neighbors;
+    });
     }
     let _nodes = this.getFormattedNodes();
     let _edges = this.getEdges();
@@ -140,14 +172,6 @@ class Graph extends Component {
       nodes: _nodes,
       edges: _edges
     };
-    sigma.classes.graph.addMethod('neighbors', function(nodeId) {
-      var k,
-          neighbors = {},
-          index = this.allNeighborsIndex[nodeId] || {};
-      for (k in index)
-        neighbors[k] = this.nodesIndex[k];
-      return neighbors;
-    });
     this.s = new sigma({
       graph: _graph,
       container: TARGET_ID,
@@ -205,6 +229,7 @@ class Graph extends Component {
 
   renderFooter() {
     let footerText = this.props.footerText;
+    let _onChange = debounce(this.handleMaxSizeChange, SIZE_DEBOUNCE).bind(this);
     if (typeof footerText === 'string') {
       return (
         <div>
@@ -213,7 +238,11 @@ class Graph extends Component {
               {footerText}
             </span>
           </div>
-          <div>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div>
+              {/*<label>Max Nodes</label>*/}
+              <input type='range' style={{ minWidth: '15rem' }} min='5' max='500' defaultValue='25' onChange={_onChange} ref='slider' />
+            </div>
             <a className='button small secondary' onClick={this.handleDownload.bind(this)}><i className='fa fa-download' /> Download (.png)</a>
           </div>
         </div>
@@ -240,3 +269,23 @@ Graph.propTypes = {
   stage: React.PropTypes.number // optional to force animation 
 };
 module.exports = Graph;
+
+// Returns a function, that, as long as it continues to be invoked, will not
+// be triggered. The function will be called after it stops being called for
+// N milliseconds. If `immediate` is passed, trigger the function on the
+// leading edge, instead of the trailing.
+// https://davidwalsh.name/javascript-debounce-function
+function debounce(func, wait, immediate) {
+  var timeout;
+  return function() {
+    var context = this, args = arguments;
+    var later = function() {
+      timeout = null;
+      if (!immediate) func.apply(context, args);
+    };
+    var callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow) func.apply(context, args);
+  };
+};
