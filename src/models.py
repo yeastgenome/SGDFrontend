@@ -2640,7 +2640,7 @@ class Locusdbentity(Dbentity):
                 "id": self.format_name,
                 "link": self.obj_url,
                 "type": "BIOENTITY",
-                "sub_type": "FOCUS"
+                "category": "FOCUS"
             }
         }
 
@@ -2924,19 +2924,19 @@ class Locusdbentity(Dbentity):
         for d in all_gene_info:
             gene_ids_info[str(d[0])] = d
             d_id = d[0]
-            sub_type = None
+            cat = None
             if d_id == self.dbentity_id:
-                sub_type = "FOCUS"
+                cat = "FOCUS"
             elif d_id in target_ids:
-                sub_type = "TARGET"
+                cat = "TARGET"
             elif d_id in regulator_ids:
-                sub_type = "REGULATOR"
+                cat = "REGULATOR"
             nodes.append({
                 "name": d[1],
                 "id": d[2],
                 "link": d[3],
                 "type": "BIOENTITY",
-                "category": sub_type
+                "category": cat
             })
         # format edges
         edges = []
@@ -3015,7 +3015,7 @@ class Locusdbentity(Dbentity):
                         "id": dbentity[1],
                         "link": dbentity[2],
                         "type": "BIOENTITY",
-                        "sub_type": None
+                        "category": None
                     }
                 }
 
