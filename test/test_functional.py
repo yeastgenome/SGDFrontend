@@ -59,7 +59,7 @@ class SGDFunctionalTests(unittest.TestCase):
     #     self.assertEqual(res.status, '200 OK')
 
     def test_sign_out(self):
-        res = self.testapp.delete('/signout')
+        res = self.testapp.get('/signout')
         self.assertEqual(res.status, '200 OK')
 
     # def test_colleagues_by_format_name(self):
