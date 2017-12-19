@@ -5,7 +5,7 @@ import mock
 import json
 import test.fixtures as factory
 from test.mock_helpers import MockQuery
-from src.views import reference_triage, reference_triage_id, reference_triage_id_delete, reference_triage_id_update, reference_triage_promote
+from src.curation_views import reference_triage_id, reference_triage_id_delete, reference_triage_id_update, reference_triage_promote
 
 
 class ReferenceTriage(unittest.TestCase):
