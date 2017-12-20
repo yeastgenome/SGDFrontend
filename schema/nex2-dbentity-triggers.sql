@@ -197,10 +197,9 @@ BEGIN
     IF (((OLD.gene_name IS NULL) AND (NEW.gene_name IS NOT NULL)) OR ((OLD.gene_name IS NOT NULL) AND (NEW.gene_name IS NULL)) OR (OLD.gene_name != NEW.gene_name)) THEN
         PERFORM nex.insertupdatelog('LOCUSDBENTITY'::text, 'GENE_NAME'::text, OLD.dbentity_id, OLD.gene_name, NEW.gene_name, USER);
 
-        IF NOT EXISTS (SELECT dbentity_id, old_value, new_value
+        IF NOT EXISTS (SELECT dbentity_id, new_value
                       FROM nex.arch_locuschange
                       WHERE dbentity_id = OLD.dbentity_id
-                      AND old_value = OLD.gene_name
                       AND new_value = NEW.gene_name ) THEN
 
              PERFORM nex.insertlocuschange(OLD.dbentity_id, 'SGD'::text, 'Gene name'::text, OLD.gene_name, NEW.gene_name, USER);
