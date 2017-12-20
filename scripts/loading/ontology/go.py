@@ -20,7 +20,7 @@ ontology = 'GO'
 src = 'GOC'
 CREATED_BY = os.environ['DEFAULT_USER']
 
-logging.basicConfig()
+logging.basicConfig(format='%(message)s')
 log = logging.getLogger()
 log.setLevel(logging.INFO)
 

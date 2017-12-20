@@ -11,7 +11,7 @@ from src.helpers import upload_file
 
 __author__ = 'sweng66'
 
-logging.basicConfig()
+logging.basicConfig(format='%(message)s')
 log = logging.getLogger()
 log.setLevel(logging.INFO)
 

@@ -12,7 +12,7 @@ from scripts.loading.database_session import get_session
 
 __author__ = 'sweng66'
 
-logging.basicConfig()
+logging.basicConfig(format='%(message)s')
 log = logging.getLogger()
 log.setLevel(logging.INFO)
 
