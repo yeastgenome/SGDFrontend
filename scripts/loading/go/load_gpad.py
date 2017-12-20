@@ -20,7 +20,7 @@ __author__ = 'sweng66'
 
 TAXON_ID = 'TAX:4932'
 
-logging.basicConfig()
+logging.basicConfig(format='%(message)s')
 log = logging.getLogger()
 log.setLevel(logging.INFO)
 

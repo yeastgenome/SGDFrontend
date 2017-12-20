@@ -17,8 +17,7 @@ from scripts.loading.util import link_gene_names
 
 __author__ = 'sweng66'
 
-
-logging.basicConfig()
+logging.basicConfig(format='%(message)s')
 log = logging.getLogger()
 log.setLevel(logging.INFO)
 CREATED_BY = os.environ['DEFAULT_USER']
