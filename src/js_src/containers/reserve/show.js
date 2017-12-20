@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
 // import { Link } from 'react-router';
 
 import CategoryLabel from '../../components/categoryLabel';
 import CurateLayout from '../curateHome/layout';
 import DetailList from '../../components/detailList';
+import { setMessage } from '../../actions/metaActions';
 import fetchData from '../../lib/fetchData';
 import Loader from '../../components/loader';
 
@@ -25,6 +28,13 @@ class GeneNameReservation extends Component {
     });
   }
 
+  handlePromote(e) {
+    e.preventDefault();
+    this.setState({ data: null });
+    this.props.dispatch(push({ pathname: 'reservations' }));
+    this.props.dispatch(setMessage('The new gene name was standardized.'));
+  }
+
   renderRes() {
     let data = this.state.data;
     if (data) {
@@ -42,7 +52,7 @@ class GeneNameReservation extends Component {
   renderActions() {
     return (
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '3rem' }}>
-        <a className='button primary'><i className='fa fa-check' /> Standardize Gene Name</a>
+        <a className='button primary' onClick={this.handlePromote.bind(this)}><i className='fa fa-check' /> Standardize Gene Name</a>
         <a className='button secondary'>Extend Gene Name Reservation</a>
         <a className='button alert'><i className='fa fa-trash' /> Discard Gene Name Reservation</a>
       </div>
@@ -62,7 +72,13 @@ class GeneNameReservation extends Component {
 }
 
 GeneNameReservation.propTypes = {
-  params: React.PropTypes.object
+  params: React.PropTypes.object,
+  dispatch: React.PropTypes.func
 };
 
-export default GeneNameReservation;
+function mapStateToProps() {
+  return {
+  };
+}
+
+export default connect(mapStateToProps)(GeneNameReservation);
