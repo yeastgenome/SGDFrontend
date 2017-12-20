@@ -3349,6 +3349,7 @@ class Locusdbentity(Dbentity):
             r_obj["link"] = reservedname.obj_url
             r_obj["class_type"] = "RESERVEDNAME"
             obj["reserved_name"] = r_obj
+            obj['name_description'] = reservedname.name_description
 
         return obj
 
@@ -7360,6 +7361,7 @@ class Reservedname(Base):
     description = Column(String(500))
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
+    name_description = Column(String(100))
 
     colleague = relationship(u'Colleague')
     locus = relationship(u'Locusdbentity')
