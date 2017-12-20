@@ -55,13 +55,13 @@ export default (
         <Route component={requireAuthentication(Blank)} path='regulation' />
         <Route component={requireAuthentication(Blank)} path='interaction' />
       </Route>
-      <Route component={NotFound} path='*' />
     </Route>
     <Route component={PublicLayout}>
-        <Route component={AuthorResponse} path='author_response' />
-        <Route component={NewColleague} path='new_colleague' />
-        <Route component={EditColleague} path='colleague/:formatName/edit' />
-        <Route component={NewGeneNameReservation} path='new_reservation' />
-      </Route>
+      <Route component={AuthorResponse} path='author_response' />
+      <Route component={NewColleague} path='new_colleague' />
+      <Route component={EditColleague} path='colleague/:formatName/edit' />
+      <Route component={NewGeneNameReservation} path='new_reservation' />
+    </Route>
+    <Route component={NotFound} path='*' />
   </Route>
 );
