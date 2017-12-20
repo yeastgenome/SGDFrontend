@@ -66,6 +66,7 @@ class GeneNameReservation extends Component {
             <div className='column small-4'>{locals.inputs.journal}</div>
             <div className='column small-2'>{locals.inputs.year}</div>
           </div>
+          <span><a href='https://orcid.org/register' target='_new'><i className='fa fa-question-circle' /> Register for an ORCID iD</a></span>
           <div>{locals.inputs.authors}</div>
         </div>
       );
