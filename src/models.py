@@ -3480,12 +3480,15 @@ class Locusdbentity(Dbentity):
             r_obj["link"] = reservedname.obj_url
             r_obj["class_type"] = "RESERVEDNAME"
             obj["reserved_name"] = r_obj
+<<<<<<< HEAD
             obj["name_description"] = reservedname.name_description
             if reservedname.reference:
                 ref = reservedname.reference
                 ref_obj = reservedname.reference.to_dict_citation()
                 ref_obj['id'] = ref.dbentity_id
                 r_obj["reference"] = ref_obj
+=======
+>>>>>>> gene name res display
 
         return obj
 
@@ -7693,7 +7696,8 @@ class Reservedname(Base):
             'reservation_date': self.reservation_date.strftime('%Y-%m-%d'),
             'expiration_date': self.expiration_date.strftime('%Y-%m-%d'),
             'locus': None,
-            'reference': None
+            'reference': None,
+            'reservation_status': 'Reserved'
         }
 
         if self.locus:
@@ -7709,8 +7713,12 @@ class Reservedname(Base):
                 'link': self.reference.obj_url
             }
 
+        if self.name_description:
+            obj['name_description'] = self.name_description
+
         return obj
 
+    # extend to_dict with curator properties
     def to_curate_dict(self):
         obj = self.to_dict()
         # colleague info
@@ -7718,8 +7726,6 @@ class Reservedname(Base):
         obj['submitter_name'] = submitter.first_name + ' ' + submitter.last_name
         obj['submitter_email'] = submitter.email
         obj['submitter_phone'] = submitter.work_phone
-        # other res info
-        obj['reservation_status'] = 'Reserved'
         return obj
 
 

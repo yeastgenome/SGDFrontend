@@ -32,6 +32,7 @@ class GeneNameReservationIndex extends Component {
             <td>{d.reservation_date}</td>
             <td>{d.expiration_date}</td>
             <td>{d.reference.display_name}</td>
+            <td>{d.reservation_status}</td>
             <td><Link to={`/reservations/${d.id}`}><i className='fa fa-edit' /> Curate</Link></td>
           </tr>
         );
@@ -47,6 +48,7 @@ class GeneNameReservationIndex extends Component {
                 <th>Reservation Date</th>
                 <th>Expiration Date</th>
                 <th>Reference</th>
+                <th>Status</th>
                 <th />
               </tr>
             </thead>
