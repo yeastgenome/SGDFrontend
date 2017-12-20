@@ -338,8 +338,23 @@ def new_gene_name_reservation(request):
 @view_config(route_name='reserved_name_index', renderer='json')
 @authenticate
 def reserved_name_index(request):
+    # TEMP make fake fake referencetriage objects
+    res_triages = [
+        {
+            'id': 1234567,
+            'display_name' : 'ABC1',
+            'reservation_status': 'Unprocessed',
+            'locus': None,
+            'reference': {
+                'display_name': 'MY DEMO REFERENCE',
+                'link': '/123'
+            }
+        }
+    ]
     reses = DBSession.query(Reservedname).all()
-    return [x.to_dict() for x in reses]
+    reses = [x.to_dict() for x in reses]
+    reses = res_triages + reses
+    return reses
 
 @view_config(route_name='reserved_name_curate_show', renderer='json')
 @authenticate
@@ -348,7 +363,16 @@ def reserved_name_curate_show(request):
     # may be either Reservedname or reservedname triage entry
     res = DBSession.query(Reservedname).filter(Reservedname.reservedname_id == req_id).one_or_none()
     if not res:
-        return HTTPNotFound()
+        # TEMP show demo
+        return  {
+            'display_name' : 'ABC1',
+            'reservation_status': 'Unprocessed',
+            'locus': None,
+            'reference': {
+                'display_name': 'MY DEMO REFERENCE',
+                'link': '/123'
+            }
+        }
     return res.to_curate_dict()
 
 

@@ -32,7 +32,11 @@ class GeneNameReservation extends Component {
     e.preventDefault();
     this.setState({ data: null });
     this.props.dispatch(push({ pathname: 'reservations' }));
-    this.props.dispatch(setMessage('The new gene name was standardized.'));
+    if (this.state.data.reservation_status === 'Unprocessed') {
+      this.props.dispatch(setMessage('The new gene name reservation was added. It may take a day to show up in the search.'));
+    } else {
+      this.props.dispatch(setMessage('The new gene name was standardized.'));
+    }
   }
 
   renderRes() {
@@ -50,9 +54,17 @@ class GeneNameReservation extends Component {
   }
 
   renderActions() {
+    let data = this.state.data;
+    let reservation_status = data ? data.reservation_status : false;
+    let promoteNode;
+    if (reservation_status === 'Unprocessed') {
+      promoteNode = <a className='button primary' onClick={this.handlePromote.bind(this)}><i className='fa fa-check' /> Add Gene Name Reservation</a>;
+    } else {
+      promoteNode = <a className='button primary' onClick={this.handlePromote.bind(this)}><i className='fa fa-check' /> Standardize Gene Name</a>;
+    }
     return (
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '3rem' }}>
-        <a className='button primary' onClick={this.handlePromote.bind(this)}><i className='fa fa-check' /> Standardize Gene Name</a>
+        {promoteNode}
         <a className='button secondary'>Extend Gene Name Reservation</a>
         <a className='button alert'><i className='fa fa-trash' /> Discard Gene Name Reservation</a>
       </div>
