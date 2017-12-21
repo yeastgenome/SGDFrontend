@@ -121,6 +121,9 @@ def go_side_effect(*args, **kwargs):
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Gosupportingevidence'>":
         goevd = factory.GosupportingevidenceFactory()
         return MockQuery(goevd)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Contig'>":
+        contig = factory.ContigFactory()
+        return MockQuery(contig)
 
 def locus_expression_side_effect(*args, **kwargs):
     if len(args) == 1 and str(args[0]) == "<class 'src.models.Locusdbentity'>":
@@ -161,7 +164,9 @@ def locus_expression_side_effect(*args, **kwargs):
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.DatasetUrl'>":
         dsurl = factory.DatasetUrlFactory()
         return MockQuery(dsurl)
-
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Contig'>":
+        contig = factory.ContigFactory()
+        return MockQuery(contig)
 
 def locus_side_effect(*args, **kwargs):
     if len(args) == 1 and str(args[0]) == "<class 'src.models.Locusdbentity'>":
@@ -412,7 +417,9 @@ def locus_side_effect(*args, **kwargs):
     elif len(args) == 1 and str(args[0]) == 'Dbentity.format_name':
         db = factory.DbentityFactory()
         return MockQuery((db.format_name,))
-
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Contig'>":
+        contig = factory.ContigFactory()
+        return MockQuery(contig)
     else:
         print "the problem is the condition!!!!"
         print args[0]
