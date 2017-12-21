@@ -95,6 +95,8 @@ def main(global_config, **settings):
 
     config.add_route('ecnumber', '/ecnumber/{id}', request_method='GET')
     config.add_route('ecnumber_locus_details', '/ecnumber/{id}/locus_details', request_method='GET')
+
+    config.add_route('primer3', '/primer3', request_method='GET')
     
     # curator interfaces
     config.add_route('account', '/account')
