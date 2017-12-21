@@ -69,3 +69,4 @@ psycopg2==2.6.1
 elasticsearch==2.3.0
 biopython==1.68
 multiprocess==0.70.5
+primer3-py==0.5.5

@@ -6,6 +6,8 @@ from sqlalchemy import func, distinct, and_, or_
 from sqlalchemy.orm.exc import DetachedInstanceError
 from sqlalchemy.exc import IntegrityError
 from datetime import timedelta
+from primer3.bindings import designPrimers
+
 import os
 import re
 import transaction
@@ -14,7 +16,7 @@ import datetime
 import logging
 import json
 
-from .models import DBSession, ESearch, Colleague, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, Dataset, DatasetKeyword, Contig, Proteindomain, Ec
+from .models import DBSession, ESearch, Colleague, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, Dataset, DatasetKeyword, Contig, Proteindomain, Ec, Dnasequenceannotation, Straindbentity
 from .helpers import extract_id_request, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id
 from .search_helpers import build_autocomplete_search_body_request, format_autocomplete_results, build_search_query, build_es_search_body_request, build_es_aggregation_body_request, format_search_results, format_aggregation_results, build_sequence_objects_search_query
 
@@ -737,6 +739,50 @@ def ecnumber(request):
         return ec.to_dict()
     else:
         return HTTPNotFound()
+
+@view_config(route_name='primer3', renderer='json', request_method='GET')
+def primer3(request):
+    p_keys = request.params.keys()
+    if 'sequence' in p_keys:
+        sequence = str(request.params.get('sequence'))
+    elif 'gene_name' in p_keys:
+        gene_name = request.params.get('gene_name')
+        locus = DBSession.query(Locusdbentity).filter(or_(Locusdbentity.gene_name == gene_name.upper(),Locusdbentity.systematic_name == gene_name)).one_or_none()
+        tax_id = DBSession.query(Straindbentity.taxonomy_id).filter(Straindbentity.strain_type =='Reference').one_or_none()
+        dna = DBSession.query(Dnasequenceannotation.residues).filter(and_(Dnasequenceannotation.taxonomy_id == tax_id, Dnasequenceannotation.dbentity_id == locus.dbentity_id, Dnasequenceannotation.dna_type =='GENOMIC')).one_or_none()[0]
+        sequence = str(dna)
+    else:
+        return HTTPBadRequest('No sequence provided')
+
+    result = designPrimers(
+        {
+            'SEQUENCE_ID': 'MH1000',
+            'SEQUENCE_TEMPLATE': sequence
+        },
+        {
+        'PRIMER_OPT_SIZE': 20,
+        'PRIMER_PICK_INTERNAL_OLIGO': 1,
+        'PRIMER_INTERNAL_MAX_SELF_END': 8,
+        'PRIMER_MIN_SIZE': 18,
+        'PRIMER_MAX_SIZE': 25,
+        'PRIMER_OPT_TM': 60.0,
+        'PRIMER_MIN_TM': 57.0,
+        'PRIMER_MAX_TM': 63.0,
+        'PRIMER_MIN_GC': 20.0,
+        'PRIMER_MAX_GC': 80.0,
+        'PRIMER_MAX_POLY_X': 100,
+        'PRIMER_INTERNAL_MAX_POLY_X': 100,
+        'PRIMER_SALT_MONOVALENT': 50.0,
+        'PRIMER_DNA_CONC': 50.0,
+        'PRIMER_MAX_NS_ACCEPTED': 0,
+        'PRIMER_MAX_SELF_ANY': 12,
+        'PRIMER_MAX_SELF_END': 8,
+        'PRIMER_PAIR_MAX_COMPL_ANY': 12,
+        'PRIMER_PAIR_MAX_COMPL_END': 8,
+        'PRIMER_PRODUCT_SIZE_RANGE': [[75, 100], [100, 125], [125, 150],
+                                      [150, 175], [175, 200], [200, 225]],
+        })
+    return result
 
 @view_config(route_name='ecnumber_locus_details', renderer='json', request_method='GET')
 def ecnumber_locus_details(request):
