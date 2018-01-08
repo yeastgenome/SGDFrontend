@@ -57,6 +57,7 @@ def load_summaries(summary_file, created_by):
         
 
         if len(pieces) < 3:
+            nex_session.commit()
             continue
 
         pmids = pieces[2].strip().replace(" ", "").split("|") 
