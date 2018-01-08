@@ -1,25 +1,25 @@
+import urllib
 from datetime import datetime
 import sys
+import os
 reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('utf-8')
-sys.path.insert(0, '../../../src/')
-from models import Source, Edam, EdamUrl, EdamAlia, EdamRelation, Ro
+from src.models import Source, Edam, EdamUrl, EdamAlia, EdamRelation, Ro
 sys.path.insert(0, '../')
-from config import CREATED_BY
-from database_session import get_nex_session as get_session
-from ontology import read_owl  
+from scripts.loading.database_session import get_session
+from scripts.loading.ontology import read_owl  
                  
 __author__ = 'sweng66'
 
 ## Created on May 2017
 ## This script is used to update EDAM ontology in NEX2.
 
-ontology_file = 'data/EDAM.owl'
-log_file = 'logs/edam.log'
+log_file = 'scripts/loading/ontology/logs/edam.log'
 ontology = 'EDAM'
 src = 'EDAM'
+CREATED_BY = os.environ['DEFAULT_USER']
 
-def load_ontology():
+def load_ontology(ontology_file):
 
     nex_session = get_session()
 
@@ -290,7 +290,11 @@ def write_summary_and_send_email(fw, update_log, to_delete_list):
 
 if __name__ == "__main__":
         
-    load_ontology()
+    # http://edamontology.org/EDAM_1.20.owl
+    url_path = "http://edamontology.org/"
+    owl_file = "EDAM_1.20.owl"
+    urllib.urlretrieve(url_path + owl_file, owl_file)
+    load_ontology(owl_file)
 
 
     
