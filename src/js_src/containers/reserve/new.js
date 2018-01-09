@@ -6,7 +6,25 @@ import t from 'tcomb-form';
 const TARGET_URL = '/reserve';
 
 class GeneNameReservation extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isSuccess: false
+    };
+  }
+
+  renderSuccess() {
+    return (
+      <div>
+        <p>Thanks for submitting your gene name reservation! SGD curators will review and be in touch.</p>
+      </div>
+    );
+  }
+
   render() {
+    if (this.state.isSuccess) {
+      return this.renderSuccess();
+    }
     let Author = t.struct({
       first_name: t.maybe(t.String),
       last_name: t.maybe(t.String),
@@ -106,8 +124,8 @@ class GeneNameReservation extends Component {
         }
       }
     };
-    let _onSuccess = (data) => {
-      console.log(data);
+    let _onSuccess = () => {
+      this.setState({ isSuccess: true });
     };
     let _defaultData = { authors: [{ first_name: ''}] };
     t.form.Form.i18n = {
@@ -120,7 +138,6 @@ class GeneNameReservation extends Component {
       <div>
         <h1>Reserve a Gene Name</h1>
         <FlexiForm defaultData={_defaultData} tFormOptions={reserveOptions} tFormSchema={reserveSchema} onSuccess={_onSuccess} requestMethod='POST' submitText='Send gene name reservation' updateUrl={TARGET_URL} />
-        
       </div>
     );
   }
