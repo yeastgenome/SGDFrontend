@@ -14,7 +14,7 @@ import json
 from .helpers import allowed_file, extract_id_request, secure_save_file, curator_or_none, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id
 from .curation_helpers import ban_from_cache, process_pmid_list, get_curator_session, get_pusher_client
 from .loading.promote_reference_triage import add_paper
-from .models import DBSession, Dbentity, Dbuser, Referencedbentity, Reservedname, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags
+from .models import DBSession, Dbentity, Dbuser, Referencedbentity, Reservedname, ReservednameTriage, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags
 from .tsv_parser import parse_tsv_annotations
 
 logging.basicConfig()
@@ -334,13 +334,42 @@ def new_gene_name_reservation(request):
     if not check_csrf_token(request, raises=False):
         return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
     data = request.json_body
-
     required_fields = ['new_gene_name', 'description', 'first_name', 'last_name', 'email', 'year']
     for x in required_fields:
         if not data[x]:
-            msg = x + ' is a required field.'
+            field_name = x.replace('_', ' ')
+            field_name = field_name.replace('new', 'proposed')
+            msg = field_name + ' is a required field.'
             return HTTPBadRequest(body=json.dumps({ 'error': msg }), content_type='text/json')
-    return True
+        if x == 'year':
+            try:
+                iy = int(data[x])
+            except ValueError as e:
+                msg = 'Please enter a valid year.'
+                return HTTPBadRequest(body=json.dumps({ 'error': msg }), content_type='text/json')
+        # TODO, validate email, new gene name, ORF
+    # input is valid, add entry to reservednametriage
+    try:
+        proposed_gene_name = data['new_gene_name']
+        user_email = data['user_email']
+        # create username from db URI
+        s = os.environ['NEX2_URI']
+        start = 'postgresql://'
+        end = '@'
+        userp = s[s.find(start)+len(start):s.find(end)]
+        created_by = userp.split(':')[0].upper()
+        data_json = json.dumps(data)
+        new_res = ReservednameTriage(
+            proposed_gene_name=proposed_gene_name,
+            user_email=user_email,
+            created_by=created_by,
+            json=data_json
+        )
+        DBSession.add(new_res)
+        transaction.commit()
+        return True
+    except Exception as e:
+        transaction.abort()
 
 @view_config(route_name='reserved_name_index', renderer='json')
 @authenticate
