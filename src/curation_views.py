@@ -1,10 +1,11 @@
+from oauth2client import client, crypt
 from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPOk, HTTPNotFound, HTTPFound
 from pyramid.view import view_config
 from pyramid.session import check_csrf_token
 from sqlalchemy import create_engine
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import scoped_session, sessionmaker
-from oauth2client import client, crypt
+from validate_email import validate_email
 import logging
 import os
 import traceback
@@ -347,7 +348,12 @@ def new_gene_name_reservation(request):
             except ValueError as e:
                 msg = 'Please enter a valid year.'
                 return HTTPBadRequest(body=json.dumps({ 'error': msg }), content_type='text/json')
-        # TODO, validate email, new gene name, ORF
+        if x == 'email':
+            is_valid = validate_email(data[x])
+            if not is_valid:
+                msg = 'Invalid email address.'
+                return HTTPBadRequest(body=json.dumps({ 'error': msg }), content_type='text/json')
+        # TODO new gene name, ORF
     # input is valid, add entry to reservednametriage
     try:
         proposed_gene_name = data['new_gene_name']
