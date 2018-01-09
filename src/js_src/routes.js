@@ -27,9 +27,9 @@ import GeneNameReservationIndex from './containers/reserve/index';
 import GeneNameReservation from './containers/reserve/show';
 // public interfaces with no layout
 import PublicLayout from './containers/layout/PublicLayout';
-import AuthorResponse from './containers/authorResponse/index';
-import NewColleague from './containers/colleagues/new';
-import EditColleague from './containers/colleagues/edit';
+// import AuthorResponse from './containers/authorResponse/index';
+// import NewColleague from './containers/colleagues/new';
+// import EditColleague from './containers/colleagues/edit';
 import NewGeneNameReservation from './containers/reserve/new';
 
 export default (
@@ -57,9 +57,9 @@ export default (
       </Route>
     </Route>
     <Route component={PublicLayout}>
-      <Route component={AuthorResponse} path='author_response' />
-      <Route component={NewColleague} path='new_colleague' />
-      <Route component={EditColleague} path='colleague/:formatName/edit' />
+      {/*<Route component={AuthorResponse} path='author_response' />*/}
+      {/*<Route component={NewColleague} path='new_colleague' />*/}
+      {/*<Route component={EditColleague} path='colleague/:formatName/edit' />*/}
       <Route component={NewGeneNameReservation} path='new_reservation' />
     </Route>
     <Route component={NotFound} path='*' />
