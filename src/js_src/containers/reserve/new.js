@@ -8,25 +8,26 @@ const TARGET_URL = '/reserve';
 class GeneNameReservation extends Component {
   render() {
     let Author = t.struct({
-      first_name: t.String,
-      last_name: t.String,
-      orcid: t.String
+      first_name: t.maybe(t.String),
+      last_name: t.maybe(t.String),
+      orcid: t.maybe(t.String)
     });
     let reserveSchema = t.struct({
-      new_gene_name: t.String,
-      orf_name: t.String,
-      description: t.String,
-      first_name: t.String,
-      last_name: t.String,
-      email: t.String,
-      phone_number: t.String,
-      position: t.String,
-      institution: t.String,
-      profession: t.String,
-      publication_title: t.String,
-      journal: t.String,
-      year: t.Number,
-      authors: t.list(Author)
+      new_gene_name: t.maybe(t.String),
+      orf_name: t.maybe(t.String),
+      description: t.maybe(t.String),
+      notes: t.maybe(t.String),
+      first_name: t.maybe(t.String),
+      last_name: t.maybe(t.String),
+      email: t.maybe(t.String),
+      phone_number: t.maybe(t.String),
+      position: t.maybe(t.String),
+      institution: t.maybe(t.String),
+      profession: t.maybe(t.String),
+      publication_title: t.maybe(t.String),
+      journal: t.maybe(t.String),
+      year: t.maybe(t.String),
+      authors: t.maybe(t.list(Author))
     });
     let authorLayout = locals => {
       return (
@@ -48,6 +49,7 @@ class GeneNameReservation extends Component {
             <div className='column small-6'>{locals.inputs.orf_name}</div>
           </div>
           <div>{locals.inputs.description}</div>
+          <div>{locals.inputs.notes}</div>
           <p><b>Your Information</b></p>
           <div className='row'>
             <div className='column small-3'>{locals.inputs.first_name}</div>
@@ -92,8 +94,8 @@ class GeneNameReservation extends Component {
         email: {
           label: 'Email *'
         },
-        publication_title: {
-          label: 'Publication Title *'
+        year: {
+          label: 'Year *'
         },
         authors: {
           disableOrder: true,
@@ -117,7 +119,7 @@ class GeneNameReservation extends Component {
     return (
       <div>
         <h1>Reserve a Gene Name</h1>
-        <FlexiForm defaultData={_defaultData} tFormOptions={reserveOptions} tFormSchema={reserveSchema} onSuccess={_onSuccess} submitText='Send gene name reservation' updateUrl={TARGET_URL} />
+        <FlexiForm defaultData={_defaultData} tFormOptions={reserveOptions} tFormSchema={reserveSchema} onSuccess={_onSuccess} requestMethod='POST' submitText='Send gene name reservation' updateUrl={TARGET_URL} />
         
       </div>
     );
