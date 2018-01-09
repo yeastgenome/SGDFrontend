@@ -333,6 +333,13 @@ def upload_spreadsheet(request):
 def new_gene_name_reservation(request):
     if not check_csrf_token(request, raises=False):
         return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
+    data = request.json_body
+
+    required_fields = ['new_gene_name', 'description', 'first_name', 'last_name', 'email', 'year']
+    for x in required_fields:
+        if not data[x]:
+            msg = x + ' is a required field.'
+            return HTTPBadRequest(body=json.dumps({ 'error': msg }), content_type='text/json')
     return True
 
 @view_config(route_name='reserved_name_index', renderer='json')
