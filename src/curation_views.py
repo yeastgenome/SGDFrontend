@@ -353,11 +353,11 @@ def new_gene_name_reservation(request):
             if not is_valid:
                 msg = 'Invalid email address.'
                 return HTTPBadRequest(body=json.dumps({ 'error': msg }), content_type='text/json')
-        # TODO new gene name, ORF
+        # TODO validate new gene name, ORF
     # input is valid, add entry to reservednametriage
     try:
         proposed_gene_name = data['new_gene_name']
-        user_email = data['user_email']
+        user_email = data['email']
         # create username from db URI
         s = os.environ['NEX2_URI']
         start = 'postgresql://'
@@ -375,24 +375,15 @@ def new_gene_name_reservation(request):
         transaction.commit()
         return True
     except Exception as e:
+        traceback.print_exc()
         transaction.abort()
 
 @view_config(route_name='reserved_name_index', renderer='json')
 @authenticate
 def reserved_name_index(request):
-    # TEMP make fake fake referencetriage objects
-    res_triages = [
-        {
-            'id': 1234567,
-            'display_name' : 'ABC1',
-            'reservation_status': 'Unprocessed',
-            'locus': None,
-            'reference': {
-                'display_name': 'MY DEMO REFERENCE',
-                'link': '/123'
-            }
-        }
-    ]
+    res_triages = DBSession.query(ReservednameTriage).all()
+    print(res_triages)
+    res_triages = [x.to_dict() for x in res_triages]
     reses = DBSession.query(Reservedname).all()
     reses = [x.to_dict() for x in reses]
     reses = res_triages + reses

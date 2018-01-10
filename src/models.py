@@ -7740,6 +7740,17 @@ class ReservednameTriage(Base):
     json = Column(Text, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
 
+    def to_dict(self):
+        obj = json.loads(self.json)
+        return  {
+            'id': self.curation_id,
+            'display_name' : self.proposed_gene_name,
+            'reservation_status': 'Unprocessed',
+            'locus': obj['orf_name'],
+            'reference': {
+            }
+        }
+
 
 class Ro(Base):
     __tablename__ = 'ro'
