@@ -1106,7 +1106,7 @@ class Contig(Base):
         strains = Straindbentity.get_strains_by_taxon_id(self.taxonomy_id)
         urls = DBSession.query(ContigUrl).filter_by(contig_id=self.contig_id).all()
         # get sequences and group by feature type, exclude inactive and non S288c features
-        inactive_ids_raw = DBSession.query(Locusdbentity.dbentity_id).filter(Locusdbentity.dbentity_status != 'Active')
+        inactive_ids_raw = DBSession.query(Locusdbentity.dbentity_id).filter(Locusdbentity.dbentity_status != 'Active').all()
         inactive_ids = [d[0]for d in inactive_ids_raw]
         sequences = DBSession.\
             query(Dnasequenceannotation.so_id, func.count(Dnasequenceannotation.annotation_id)).\
