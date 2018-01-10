@@ -2880,7 +2880,7 @@ class Locusdbentity(Dbentity):
         }
 
     def regulation_graph(self):
-        MAX_NODES = 500
+        MAX_NODES = 150
         # get annotations to and from gene, or among regulators/targets
         direct_relations = DBSession.query(Regulationannotation.target_id, Regulationannotation.regulator_id).filter(or_(Regulationannotation.target_id == self.dbentity_id, Regulationannotation.regulator_id == self.dbentity_id)).all()
         target_ids = []
