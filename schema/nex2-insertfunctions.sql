@@ -62,6 +62,10 @@ BEGIN
     WHERE display_name = p_sourceName;
 
     SELECT LOCALTIMESTAMP INTO v_added_date;
+
+    IF (p_old = '') THEN
+        p_old := NULL;
+    END IF;
     
     INSERT INTO nex.arch_locuschange
         (dbentity_id, source_id, change_type, old_value, new_value, date_added_to_database, added_by)
