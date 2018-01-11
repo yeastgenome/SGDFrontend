@@ -15,6 +15,7 @@ import CurateHome from './containers/curateHome';
 import Search from './containers/search';
 import LocusLayout from './containers/locus/layout';
 import LocusBasic from './containers/locus/basic';
+import LocusSummaries from './containers/locus/summaries';
 import TriageIndex from './containers/triage';
 import SpreadsheetUpload from './containers/spreadsheetUpload/index';
 import Settings from './containers/settings/index';
@@ -48,7 +49,7 @@ export default (
       <Route component={GoogleLogin} path='google_login' />
       <Route component={requireAuthentication(LocusLayout)} path='curate/locus/:id'>
         <IndexRoute component={requireAuthentication(LocusBasic)} />
-        {/*<Route component={requireAuthentication(LocusSummaries)} path='summaries' />*/}
+        <Route component={requireAuthentication(LocusSummaries)} path='summaries' />
       </Route>
       <Route component={requireAuthentication(CurateLit)} path='curate/reference/:id'>
         <IndexRoute component={requireAuthentication(CurateLitBasic)} />
