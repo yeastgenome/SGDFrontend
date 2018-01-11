@@ -13,7 +13,8 @@ import { requireAuthentication } from './containers/authenticateComponent';
 // import CurateLayout from './containers/curateHome/layout';
 import CurateHome from './containers/curateHome';
 import Search from './containers/search';
-import LocusShow from './containers/locus/show';
+import LocusLayout from './containers/locus/layout';
+import LocusBasic from './containers/locus/basic';
 import TriageIndex from './containers/triage';
 import SpreadsheetUpload from './containers/spreadsheetUpload/index';
 import Settings from './containers/settings/index';
@@ -45,7 +46,10 @@ export default (
       <Route component={requireAuthentication(Search)} path='search' />
       <Route component={PublicHome} path='login' />
       <Route component={GoogleLogin} path='google_login' />
-      <Route component={requireAuthentication(LocusShow)} path='curate/locus/:id' />
+      <Route component={requireAuthentication(LocusLayout)} path='curate/locus/:id'>
+        <IndexRoute component={requireAuthentication(LocusBasic)} />
+        {/*<Route component={requireAuthentication(LocusSummaries)} path='summaries' />*/}
+      </Route>
       <Route component={requireAuthentication(CurateLit)} path='curate/reference/:id'>
         <IndexRoute component={requireAuthentication(CurateLitBasic)} />
         <Route component={requireAuthentication(Blank)} path='protein' />
