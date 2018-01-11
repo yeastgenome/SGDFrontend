@@ -18,6 +18,7 @@ class Graph extends Component {
   constructor(props) {
     super(props);
     this.lastNodes = [];
+    this.canClick = true;
     this.state = {
       currentMaxValue: DEFAULT_MAX_VALUE
     };
@@ -38,6 +39,7 @@ class Graph extends Component {
 
   // redirect to 'link' property of node data
   handleNodeClick(e) {
+    if (!this.canClick) return;
     let newUrl = e.data.node.link;
     if (newUrl && window) {
       window.location.href = newUrl;
@@ -200,9 +202,6 @@ class Graph extends Component {
         duration: TRANSITION_DURATION
       }
     );
-    this.s.bind('clickNode', (e) => {
-      this.handleNodeClick(e);
-    });
     this.s.bind('overNode', (e) => {
       var nodeId = e.data.node.id;
       var toKeep = this.s.graph.neighbors(nodeId);
@@ -214,6 +213,18 @@ class Graph extends Component {
           e.color = EDGE_COLOR;;
       });
       this.s.refresh();
+    });
+    let dragListener = sigma.plugins.dragNodes(this.s, this.s.renderers[0]);
+    dragListener.bind('startdrag', (e) => {
+      this.canClick = false;
+    });
+    dragListener.bind('dragend', (e) => {
+      setTimeout(() => {
+        this.canClick = true;
+      }, 50)
+    });
+    this.s.bind('clickNode', (e) => {
+      this.handleNodeClick(e);
     });
   }
 
