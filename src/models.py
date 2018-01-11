@@ -1108,6 +1108,7 @@ class Contig(Base):
         # get sequences and group by feature type, exclude inactive and non S288c features
         inactive_ids_raw = DBSession.query(Locusdbentity.dbentity_id).filter(Locusdbentity.dbentity_status != 'Active').all()
         inactive_ids = [d[0]for d in inactive_ids_raw]
+
         sequences = DBSession.\
             query(Dnasequenceannotation.so_id, func.count(Dnasequenceannotation.annotation_id)).\
             filter(and_(Dnasequenceannotation.contig_id==self.contig_id, Dnasequenceannotation.dna_type=="GENOMIC", Dnasequenceannotation.taxonomy_id == TAXON_ID, ~Dnasequenceannotation.dbentity_id.in_(inactive_ids))).\

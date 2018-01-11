@@ -769,7 +769,9 @@ def sequence_side_effect(*args, **kwargs):
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Dnasequenceannotation'>":
         dnaseq = factory.DnasequenceannotationFactory()
         contig = factory.ContigFactory()
+        locus = factory.LocusdbentityFactory()
         dnaseq.contig = contig
+        dnaseq.dbentity = locus
         return MockQuery(dnaseq)
     elif len(args) == 1 and str(args[0]) == 'Dnasequenceannotation.so_id':
         dnaseq = factory.DnasequenceannotationFactory()
