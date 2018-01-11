@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import d3 from 'd3';
 
 const DEFAULT_MAX_VALUE = 50;
+const MAX_MAX_VALUE = 150;
 const MAX_HEIGHT = 600;
 const TARGET_ID = 'j-sigma-target';
 const TRANSITION_DURATION = 1000;
@@ -174,7 +175,12 @@ class Graph extends Component {
     };
     this.s = new sigma({
       graph: _graph,
-      container: TARGET_ID,
+      renderers: [
+        {
+          container: TARGET_ID,
+          type: 'canvas'
+        }
+      ],
       settings: {
         animationsTime: TRANSITION_DURATION,
         labelThreshold: 100,
@@ -237,10 +243,14 @@ class Graph extends Component {
     let _onChange = debounce(this.handleMaxSizeChange, SIZE_DEBOUNCE).bind(this);
     return (
       <div>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
           <div>
-            <label>Max Nodes</label>
-            <input type='range' style={{ minWidth: '15rem' }} min='5' max='100' defaultValue={DEFAULT_MAX_VALUE.toString()} onChange={_onChange} ref='slider' />
+            <label>Maximum Number of Nodes</label>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span>{DEFAULT_MAX_VALUE.toString()}</span>
+              <span>{MAX_MAX_VALUE.toString()}</span>
+            </div>
+            <input type='range' style={{ minWidth: '15rem' }} min={DEFAULT_MAX_VALUE.toString()} max={MAX_MAX_VALUE.toString()} defaultValue={DEFAULT_MAX_VALUE.toString()} onChange={_onChange} ref='slider' />
           </div>
           <a className='button small secondary' onClick={this.handleDownload.bind(this)}><i className='fa fa-download' /> Download (.png)</a>
         </div>
