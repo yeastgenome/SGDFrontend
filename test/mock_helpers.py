@@ -819,6 +819,9 @@ def locus_reference_side_effect(*args, **kwargs):
     elif len(args) == 2 and str(args[0]) == "Phenotypeannotation.reference_id" and str(args[1]) == "Phenotypeannotation.experiment_id":
         phen = factory.PhenotypeannotationFactory()
         return MockQuery((phen.reference_id, phen.experiment_id))
+    elif len(args) == 2 and str(args[0]) == "Literatureannotation.reference_id" and str(args[1]) == "Literatureannotation.topic":
+        lit = factory.LiteratureannotationFactory()
+        return MockQuery((lit.reference_id, lit.topic))
     else:
         print "the problem is the condition!!!!"
         print args[0]
