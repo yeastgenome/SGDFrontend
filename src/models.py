@@ -2920,6 +2920,12 @@ class Locusdbentity(Dbentity):
         # format nodes
         nodes = []
         all_gene_info = DBSession.query(Dbentity.dbentity_id, Dbentity.display_name, Dbentity.format_name, Dbentity.obj_url).filter(Dbentity.dbentity_id.in_(ids_from_keys)).all()
+        # ensure self is first
+        def self_sort_fn(x):
+            if x[0] == self.dbentity_id:
+                return 1
+            return -1
+        all_gene_info = sorted(all_gene_info, key=lambda x: self_sort_fn(x), reverse=True)
         gene_ids_info = {}
         for d in all_gene_info:
             gene_ids_info[str(d[0])] = d
