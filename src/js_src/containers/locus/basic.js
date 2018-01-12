@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-// import t from 'tcomb-form';
+import t from 'tcomb-form';
 
 import FlexiForm from '../../components/flexiForm';
 import Loader from '../../components/loader';
@@ -81,10 +81,16 @@ class LocusBasic extends Component {
   render() {
     let data = this.props.data;
     if (!data || this.props.isPending) return <Loader />;
-    
+    let bgiSchema = t.struct({
+      gene_name: t.maybe(t.String),
+      aliases: t.maybe(t.String)
+    });
+    let _onSuccess  = () => {
+      console.log('update bgi');
+    };
     return (
       <div>
-        <FlexiForm tFormOptions={reserveOptions} tFormSchema={reserveSchema} onSuccess={_onSuccess} requestMethod='PUT' updateUrl={TARGET_URL} />
+        <FlexiForm tFormSchema={bgiSchema} onSuccess={_onSuccess} requestMethod='PUT' updateUrl={TARGET_URL} />
       </div>
     );
   }
