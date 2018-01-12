@@ -3935,7 +3935,7 @@ class Locusdbentity(Dbentity):
     def get_secondary_base_url(self):
         return '/webservice/locus/' + str(self.dbentity_id)
 
-    def get_summary_dict(self):
+    def to_curate_dict(self):
         phenotype_summary = DBSession.query(Locussummary).filter_by(locus_id=self.dbentity_id, summary_type='Phenotype').one_or_none()
         regulation_summary = DBSession.query(Locussummary).filter_by(locus_id=self.dbentity_id, summary_type='Regulation').one_or_none()
         if not phenotype_summary:
@@ -3963,6 +3963,11 @@ class Locusdbentity(Dbentity):
                 'phenotype_summary_pmids': phenotype_summary_pmids,
                 'regulation_summary': regulation_summary,
                 'regulation_summary_pmids': regulation_summary_pmids
+            },
+            'basic': {
+                'gene_name': self.gene_name,
+                'description': self.description,
+                'name_description': self.name_description
             }
         }
 
