@@ -33,6 +33,9 @@ class MockQueryFilter(object):
 
     def query_params(self):
         return self._params
+
+    def distinct(self, *args, **kwargs):
+        return self
     
 
 class MockQuery(object):
@@ -354,20 +357,85 @@ def locus_side_effect(*args, **kwargs):
     elif len(args) == 3 and str(args[0]) == 'Locussummary.summary_id' and str(args[1]) == 'Locussummary.html' and str(args[2]) == 'Locussummary.date_created':
         ls = factory.LocussummaryFactory()
         return MockQuery((ls.summary_id, ls.html, ls.date_created))
+    elif len(args) == 5 and str(args[0]) == 'Locussummary.summary_id' \
+        and str(args[1]) == 'Locussummary.html' and str(args[2]) == 'Locussummary.date_created' \
+        and str(args[3]) == 'Locussummary.summary_order' and str(args[4]) == 'Locussummary.summary_type':
+        ls = factory.LocussummaryFactory()
+        return MockQuery((ls.summary_id, ls.html, ls.date_created, ls.summary_order, ls.summary_type))
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.LocusReferences'>":
-        lref = factory.LocusReferencesFactory
+        lref = factory.LocusReferencesFactory()
         ref = factory.ReferencedbentityFactory()
         lref.reference = ref
         return MockQuery(lref)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.LocusRelation'>":
+        lrel = factory.LocusRelationFactory()
+        parent = factory.LocusdbentityFactory()
+        child = factory.LocusdbentityFactory()
+        source = factory.SourceFactory()
+        ro = factory.RoFactory()
+        lrel.parent = parent
+        lrel.child = child
+        lrel.source = source
+        lrel.ro = ro
+        return MockQuery(lrel)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.LocusRelationReference'>":
+        lrel_ref = factory.LocusRelationReferenceFactory()
+        ref = factory.ReferencedbentityFactory()
+        lrel_ref.reference = ref
+        return MockQuery(lrel_ref)
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.LocussummaryReference'>":
         lsref = factory.LocussummaryReferenceFactory()
+        ref = factory.ReferencedbentityFactory()
+        source = factory.SourceFactory()
+        summary = factory.LocussummaryFactory()
+        lsref.source = source
+        lsref.reference = ref
+        lsref.summary = summary
         return MockQuery(lsref)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Locusnote'>":
+        lnote = factory.LocusnoteFactory()
+        source = factory.SourceFactory()
+        lnote.source = source
+        return MockQuery(lnote)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.LocusnoteReference'>":
+        lnote_ref = factory.LocusnoteFactory()
+        note = factory.LocusnoteFactory()
+        ref = factory.ReferencedbentityFactory()
+        source = factory.SourceFactory()
+        lnote_ref.note = note
+        lnote_ref.reference = ref
+        lnote_ref.source = source
+        return MockQuery(lnote_ref)
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.LocusUrl'>":
         lurl = factory.LocusUrlFactory()
         return MockQuery(lurl)
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Locusnoteannotation'>":
         laf = factory.LocusnoteannotationFactory()
         return MockQuery(laf)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Pathwayannotation'>":
+        paf = factory.PathwayannotationFactory()
+        dbentity = factory.DbentityFactory()
+        ec = factory.EcFactory()
+        pathway = factory.PathwaydbentityFactory()
+        ref = factory.ReferencedbentityFactory()
+        src = factory.SourceFactory()
+        tax = factory.TaxonomyFactory()
+        paf.dbentity = dbentity
+        paf.ec = ec
+        paf.pathway = pathway
+        paf.reference = ref
+        paf.source = src
+        paf.taxonomy = tax
+        return MockQuery(paf)
+    elif len(args) == 1 and str(args[0]) == 'PathwayUrl.obj_url':
+        path_url = factory.PathwayUrlFactory()
+        return MockQuery(path_url.obj_url)
+    elif len(args) == 1 and str(args[0]) == 'Dbentity.display_name':
+        dbentity = factory.DbentityFactory()
+        return MockQuery(dbentity.display_name)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Reservedname'>":
+        rname = factory.ReservednameFactory()
+        return MockQuery(rname)
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Posttranslationannotation'>":
         pta = factory.PosttranslationannotationFactory()
         source = factory.SourceFactory()
@@ -692,6 +760,12 @@ def side_effect(*args, **kwargs):
     elif len(args) == 2 and str(args[0]) == 'Contig.format_name' and str(args[1]) == 'Contig.obj_url':
         c_name = factory.ContigFactory()
         return MockQuery((c_name.format_name, c_name.obj_url))
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Ec'>":
+        ec = factory.EcFactory()
+        return MockQuery(ec)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.EcUrl'>":
+        ecurl = factory.EcUrlFactory()
+        return MockQuery(ecurl)
 
 # def mock_extract_id_request(request, classname):
 #      return 'S000203483'

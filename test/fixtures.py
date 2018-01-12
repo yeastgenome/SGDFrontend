@@ -8,7 +8,8 @@ from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRela
     Gosupportingevidence, Eco, Ro, Go, GoRelation, GoUrl, GoAlias, ApoRelation, Referencetriage, Proteinsequenceannotation, ProteinsequenceDetail, \
     Goslimannotation, Goslim, Expressionannotation, Datasetsample, DatasetUrl, DatasetFile, ReferenceAlias, Dnasequenceannotation, Dnasubsequence,\
     So, ContigUrl, LocusAlias, LocusAliasReferences, LocusReferences, LocussummaryReference, LocusUrl, Posttranslationannotation,\
-    Psimod, Proteinexptannotation, Proteindomainannotation, Proteindomain, ProteindomainUrl, Ec, EcAlias, EcUrl
+    Psimod, Proteinexptannotation, Proteindomainannotation, Proteindomain, ProteindomainUrl, Ec, EcAlias, EcUrl, LocusRelation, LocusRelationReference, \
+    Locusnote, LocusnoteReference, Pathwayannotation, Pathwaydbentity, PathwayUrl
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -771,7 +772,7 @@ class ObiFactory(factory.alchemy.SQLAlchemyModelFactory):
     created_by = "TOTO"
 
 
-class ReservedNameFactory(factory.alchemy.SQLAlchemyModelFactory):
+class ReservednameFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = Reservedname
         sqlalchemy_session = DBSession
@@ -1546,5 +1547,102 @@ class SoFactory(factory.alchemy.SQLAlchemyModelFactory):
     source_id = 1
     soid = 264265
     description = "description"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class LocusRelationFactory(factory.alchemy.SQLAlchemyModelFactory):
+
+    class Meta:
+        model = LocusRelation
+        sqlalchemy_session = DBSession
+
+    relation_id = 1
+    source_id = 1
+    bud_id = 1
+    parent_id = 1
+    child_id = 1
+    ro_id = 1
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class LocusRelationReferenceFactory(factory.alchemy.SQLAlchemyModelFactory):
+
+    class Meta:
+        model = LocusRelationReference
+        sqlalchemy_session = DBSession
+
+    locusrelation_reference_id = 1
+    relation_id = 1
+    reference_id = 1
+    source_id = 1
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class LocusnoteFactory(factory.alchemy.SQLAlchemyModelFactory):
+
+    class Meta:
+        model = Locusnote
+        sqlalchemy_session = DBSession
+
+    note_id = 1
+    source_id = 1
+    bud_id = 1
+    locus_id = 1
+    note_class = "note class"
+    note_type = "note type"
+    note = "note"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class LocusnoteReferenceFactory(factory.alchemy.SQLAlchemyModelFactory):
+
+    class Meta:
+        model = LocusnoteReference
+        sqlalchemy_session = DBSession
+
+    note_reference_id = 1
+    note_id = 1
+    reference_id = 1
+    source_id = 1
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class PathwayannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
+
+    class Meta:
+        model = Pathwayannotation
+        sqlalchemy_session = DBSession
+
+    annotation_id = 1
+    dbentity_id = 1
+    source_id = 1
+    taxonomy_id = 1
+    reference_id = 1
+    pathway_id = 1
+    ec_id = 1
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class PathwaydbentityFactory(factory.alchemy.SQLAlchemyModelFactory):
+
+    class Meta:
+        model = Pathwaydbentity
+        sqlalchemy_session = DBSession
+
+    dbentity_id = 1
+    biocyc_id = "biocyc id"
+
+class PathwayUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
+
+    class Meta:
+        model = PathwayUrl
+        sqlalchemy_session = DBSession
+
+    url_id = 1
+    display_name = "display name"
+    obj_url = "obj url"
+    source_id = 1
+    pathway_id = 1
+    url_type = "url type"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
