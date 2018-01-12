@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 // import t from 'tcomb-form';
 
-// import fetchData from '../../lib/fetchData';
+import FlexiForm from '../../components/flexiForm';
 import Loader from '../../components/loader';
 // import { updateData, setPending, clearPending} from './locusActions';
 // import { setMessage, setError, clearError } from '../../actions/metaActions';
+
+const TARGET_URL = '/locus/bgi';
 
 class LocusBasic extends Component {
   // handleSubmit(e) {
@@ -79,9 +81,10 @@ class LocusBasic extends Component {
   render() {
     let data = this.props.data;
     if (!data || this.props.isPending) return <Loader />;
+    
     return (
       <div>
-        basic
+        <FlexiForm tFormOptions={reserveOptions} tFormSchema={reserveSchema} onSuccess={_onSuccess} requestMethod='PUT' updateUrl={TARGET_URL} />
       </div>
     );
   }
