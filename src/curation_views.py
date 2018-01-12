@@ -40,7 +40,7 @@ def account(request):
 def get_locus_curate(request):
     id = extract_id_request(request, 'locus', param_name="sgdid")
     locus = get_locus_by_id(id)
-    return locus.get_summary_dict()
+    return locus.to_curate_dict()
 
 @view_config(route_name='locus_curate_update', request_method='PUT', renderer='json')
 @authenticate
