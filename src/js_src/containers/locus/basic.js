@@ -34,8 +34,10 @@ class LocusBasic extends Component {
     };
     let url = `/locus/${this.props.params.id}/bgi`;
     return (
-      <div>
-        <FlexiForm defaultData={this.props.data.basic} onSuccess={this.handleSuccess.bind(this)} requestMethod='PUT' tFormSchema={bgiSchema} tFormOptions={bgiOptions} updateUrl={url} />
+      <div className='row'>
+        <div className='columns small-12 medium-6'>
+          <FlexiForm defaultData={this.props.data.basic} onSuccess={this.handleSuccess.bind(this)} requestMethod='PUT' tFormSchema={bgiSchema} tFormOptions={bgiOptions} updateUrl={url} />
+        </div>
       </div>
     );
   }
