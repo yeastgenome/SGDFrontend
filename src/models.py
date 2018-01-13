@@ -3956,6 +3956,10 @@ class Locusdbentity(Dbentity):
             pmids = [str(x[0]) for x in pmids]
             regulation_summary_pmids = SEPARATOR.join(pmids)
             regulation_summary = regulation_summary.text
+
+        aliases = DBSession.query(LocusAlias.display_name).filter(and_(LocusAlias.locus_id==self.dbentity_id, LocusAlias.alias_type=='Uniform')).all()
+        aliases = SEPARATOR.join([x[0] for x in aliases])
+
         return {
             'name': self.display_name,
             'paragraphs': {
@@ -3966,6 +3970,7 @@ class Locusdbentity(Dbentity):
             },
             'basic': {
                 'gene_name': self.gene_name,
+                'aliases': aliases,
                 'description': self.description,
                 'name_description': self.name_description
             }
