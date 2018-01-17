@@ -14,19 +14,32 @@ class LocusBasic extends Component {
   render() {
     let data = this.props.data;
     if (!data || this.props.isPending) return <Loader />;
+    let Alias = t.struct({
+      alias: t.String,
+      pmid: t.String
+    });
     let bgiSchema = t.struct({
       gene_name: t.maybe(t.String),
       gene_name_pmids: t.maybe(t.String),
       name_description: t.maybe(t.String),
       name_description_pmids : t.maybe(t.String),
+      aliases: t.list(Alias),
       feature_type: t.String,
       qualifier: t.String,
-      aliases: t.maybe(t.String),
       headline: t.String,
       description: t.maybe(t.String),
       description_pmids : t.maybe(t.String),
       ncbi_protein_name: t.String
     });
+    let aliasLayout = locals => {
+      return (
+        <div className='row'>
+          <div className='columns small-3'>{locals.inputs.alias}</div>
+          <div className='columns small-3'>{locals.inputs.pmid}</div>
+          <div className='columns small-6'>{locals.inputs.removeItem}</div>
+        </div>
+      );
+    };
     let bgiOptions = {
       fields: {
         description: {
@@ -34,6 +47,12 @@ class LocusBasic extends Component {
         },
         name_description: {
           type: 'textarea'
+        },
+        aliases: {
+          disableOrder: true,
+          item: {
+            template: aliasLayout
+          }
         }
       }
     };
