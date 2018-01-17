@@ -4,6 +4,7 @@ import { Link } from 'react-router';
 
 import style from './style.css';
 import CategoryLabel from '../../components/categoryLabel';
+import DetailList from '../../components/detailList';
 import fetchData from '../../lib/fetchData';
 // import Loader from '../../components/loader';
 import updateTitle from '../../lib/updateTitle';
@@ -58,7 +59,8 @@ class LocusLayout extends Component {
       <div>
         <h3 style={{ display: 'inline-block', marginRight: '0.5rem' }}><CategoryLabel category='locus' hideLabel isPageTitle /> {data.name}</h3>
         <span><a href={previewUrl} target='_new'><i className='fa fa-file-image-o' aria-hidden='true'></i> preview</a></span>
-        <hr style={{ margin: 0 }} />
+        <DetailList data={data} fields={['sgdid', 'systematic_name']} />
+        <hr style={{ margin: '1rem 0 0 0' }} />
       </div>
     );
   }

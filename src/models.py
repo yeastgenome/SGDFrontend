@@ -3962,6 +3962,8 @@ class Locusdbentity(Dbentity):
 
         return {
             'name': self.display_name,
+            'sgdid': self.sgdid,
+            'systematic_name': self.systematic_name,
             'paragraphs': {
                 'phenotype_summary': phenotype_summary,
                 'phenotype_summary_pmids': phenotype_summary_pmids,
@@ -3969,10 +3971,12 @@ class Locusdbentity(Dbentity):
                 'regulation_summary_pmids': regulation_summary_pmids
             },
             'basic': {
-                'gene_name': self.gene_name,
                 'aliases': aliases,
                 'description': self.description,
-                'name_description': self.name_description
+                'feature_type': '', #TEMP todo
+                'gene_name': self.gene_name,
+                'name_description': self.name_description,
+                'qualifier': qualifier
             }
         }
 
