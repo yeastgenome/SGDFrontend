@@ -3960,6 +3960,12 @@ class Locusdbentity(Dbentity):
         aliases = DBSession.query(LocusAlias.display_name).filter(and_(LocusAlias.locus_id==self.dbentity_id, LocusAlias.alias_type=='Uniform')).all()
         aliases = SEPARATOR.join([x[0] for x in aliases])
 
+        gene_name_pmids = ''
+        if self.gene_name:
+            pmids_results = DBSession.query(LocusReferences, Referencedbentity.pmid).filter(and_(LocusReferences.locus_id==self.dbentity_id, LocusReferences.reference_class=='gene_name')).outerjoin(Referencedbentity).all()
+            pmids_results = [str(x[1]) for x in pmids_results]
+            gene_name_pmids = SEPARATOR.join(pmids_results)
+
         return {
             'name': self.display_name,
             'sgdid': self.sgdid,
@@ -3975,6 +3981,8 @@ class Locusdbentity(Dbentity):
                 'description': self.description,
                 'feature_type': '', #TEMP todo
                 'gene_name': self.gene_name,
+                'gene_name_pmids': gene_name_pmids,
+                'headline': self.headline,
                 'name_description': self.name_description,
                 'qualifier': self.qualifier
             }
