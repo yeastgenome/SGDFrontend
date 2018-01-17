@@ -16,11 +16,16 @@ class LocusBasic extends Component {
     if (!data || this.props.isPending) return <Loader />;
     let bgiSchema = t.struct({
       gene_name: t.maybe(t.String),
+      gene_name_pmids: t.maybe(t.String),
+      name_description: t.maybe(t.String),
+      name_description_pmids : t.maybe(t.String),
+      feature_type: t.String,
+      qualifier: t.String,
       aliases: t.maybe(t.String),
+      headline: t.String,
       description: t.maybe(t.String),
       description_pmids : t.maybe(t.String),
-      name_description: t.maybe(t.String),
-      name_description_pmids : t.maybe(t.String)
+      ncbi_protein_name: t.String
     });
     let bgiOptions = {
       fields: {
