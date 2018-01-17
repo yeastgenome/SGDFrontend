@@ -13,6 +13,7 @@ from src.views import locus, locus_go_details, locus_phenotype_details, locus_ph
 
 
 class LocusTest(unittest.TestCase):
+
     def setUp(self):
         self.config = testing.setUp()
 
@@ -31,6 +32,7 @@ class LocusTest(unittest.TestCase):
         #request.matchdict['sgdid'] = "S000114259"
         id = mock_redis.extract_id_request(request, 'locus', param_name='id')
         response = locus(request)
+        self.maxDiff = None
         self.assertEqual(response, loc.to_dict())
 
     @mock.patch('src.views.extract_id_request', return_value="S000114259")

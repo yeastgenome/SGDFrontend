@@ -9,7 +9,7 @@ from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRela
     Goslimannotation, Goslim, Expressionannotation, Datasetsample, DatasetUrl, DatasetFile, ReferenceAlias, Dnasequenceannotation, Dnasubsequence,\
     So, ContigUrl, LocusAlias, LocusAliasReferences, LocusReferences, LocussummaryReference, LocusUrl, Posttranslationannotation,\
     Psimod, Proteinexptannotation, Proteindomainannotation, Proteindomain, ProteindomainUrl, Ec, EcAlias, EcUrl, LocusRelation, LocusRelationReference, \
-    Locusnote, LocusnoteReference, Pathwayannotation, Pathwaydbentity, PathwayUrl
+    Locusnote, LocusnoteReference, Pathwayannotation, Pathwaydbentity, PathwayUrl, Bindingmotifannotation
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -1644,5 +1644,22 @@ class PathwayUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
     source_id = 1
     pathway_id = 1
     url_type = "url type"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class BindingmotifannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
+
+    class Meta:
+        model = Bindingmotifannotation
+        sqlalchemy_session = DBSession
+
+    annotation_id = 1
+    dbentity_id = 1
+    source_id = 1
+    taxonomy_id = 1
+    reference_id = 1
+    obj_url  = "obj url"
+    motif_id = 1
+    logo_url = "logo url"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"

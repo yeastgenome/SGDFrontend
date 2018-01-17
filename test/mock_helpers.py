@@ -169,6 +169,12 @@ def locus_side_effect(*args, **kwargs):
     if len(args) == 1 and str(args[0]) == "<class 'src.models.Locusdbentity'>":
         locus = factory.LocusdbentityFactory()
         return MockQuery(locus)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Bindingmotifannotation'>":
+        bind = factory.BindingmotifannotationFactory()
+        return MockQuery(bind)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Go'>":
+        go = factory.GoFactory()
+        return MockQuery(go)
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Phenotypeannotation'>":
         source = factory.SourceFactory()
         journal = factory.JournalFactory()
@@ -302,7 +308,24 @@ def locus_side_effect(*args, **kwargs):
         return MockQuery(genannot.dbentity1_id)
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Regulationannotation'>":
         regannot = factory.RegulationannotationFactory()
+        eco = factory.EcoFactory()
+        go = factory.GoFactory()
+        reference = factory.ReferencedbentityFactory()
+        regulator = factory.DbentityFactory()
+        source = factory.SourceFactory()
+        target = factory.DbentityFactory()
+        taxonomy = factory.TaxonomyFactory()
+        regannot.eco = eco
+        regannot.go = go
+        regannot.reference = reference
+        regannot.regulator = regulator
+        regannot.source = source
+        regannot.target = target
+        regannot.taxonomy = taxonomy
         return MockQuery(regannot)
+    elif len(args) == 2 and str(args[0]) == 'Regulationannotation.target_id' and str(args[1]) == 'Regulationannotation.regulator_id':
+        regannot = factory.RegulationannotationFactory()
+        return MockQuery((regannot.target_id, regannot.regulator_id))
     elif len(args) == 2 and str(args[0]) == 'Literatureannotation.topic' and str(args[1]) == 'count(nex.literatureannotation.annotation_id)':
         litannot = factory.LiteratureannotationFactory()
         return MockQuery((litannot.topic, 20))
@@ -318,6 +341,9 @@ def locus_side_effect(*args, **kwargs):
     elif len(args) == 1 and str(args[0]) == 'Regulationannotation.reference_id':
         regannot = factory.RegulationannotationFactory()
         return MockQuery(regannot.reference_id)
+    elif len(args) == 1 and str(args[0]) == 'Regulationannotation.target_id':
+        regannot = factory.RegulationannotationFactory()
+        return MockQuery(regannot.target_id)
     elif len(args) == 1 and str(args[0]) == 'Literatureannotation.reference_id':
         litannot = factory.LiteratureannotationFactory()
         return MockQuery(litannot.reference_id)
@@ -461,6 +487,9 @@ def locus_side_effect(*args, **kwargs):
     elif len(args) == 3 and str(args[0]) == 'Dbentity.display_name' and str(args[1]) == 'Dbentity.format_name' and str(args[2]) == 'Dbentity.obj_url':
         db = factory.DbentityFactory()
         return MockQuery((db.display_name, db.format_name, db.obj_url))
+    elif len(args) == 4 and str(args[0]) == 'Dbentity.dbentity_id' and str(args[1]) == 'Dbentity.display_name' and str(args[2]) == 'Dbentity.format_name' and str(args[3]) == 'Dbentity.obj_url':
+        db = factory.DbentityFactory()
+        return MockQuery((db.dbentity_id, db.display_name, db.format_name, db.obj_url))
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Proteindomain'>":
         pd = factory.ProteindomainFactory()
         source = factory.SourceFactory()
