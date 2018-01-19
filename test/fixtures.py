@@ -232,7 +232,7 @@ class ReferencedbentityFactory(factory.alchemy.SQLAlchemyModelFactory):
     journal_id = 1
     book_id = 1
     subclass = "REFERENCE"
-    format_name = factory.Sequence(lambda n: 'format_{0}'.format(n))
+    format_name = "format name"
     display_name = "My entity"
     obj_url = "http://example.org/entity"
     source_id = 1

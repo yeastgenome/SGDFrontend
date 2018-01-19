@@ -29,7 +29,6 @@ class LocusTest(unittest.TestCase):
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        #request.matchdict['sgdid'] = "S000114259"
         id = mock_redis.extract_id_request(request, 'locus', param_name='id')
         response = locus(request)
         self.maxDiff = None
@@ -44,7 +43,6 @@ class LocusTest(unittest.TestCase):
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        #request.matchdict['id'] = "S000114259"
         id = mock_redis.extract_id_request(request, 'locus', param_name='id')
         response = locus_go_details(request)
         self.assertEqual(response, locus.go_to_dict())
@@ -57,7 +55,6 @@ class LocusTest(unittest.TestCase):
         locus = factory.LocusdbentityFactory()
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        #request.matchdict['id'] = "S000114259"
         id = mock_redis.extract_id_request(request, 'locus', param_name='id')
         response = locus_interaction_details(request)
         self.assertEqual(response, locus.interactions_to_dict())
@@ -70,7 +67,6 @@ class LocusTest(unittest.TestCase):
         locus = factory.LocusdbentityFactory(format_name='format_1')
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        #request.matchdict['id'] = "S000114259"
         id = mock_redis.extract_id_request(request, 'locus', param_name='id')
         response = locus_phenotype_details(request)
         self.assertEqual(response, locus.phenotype_to_dict())
@@ -84,11 +80,11 @@ class LocusTest(unittest.TestCase):
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        #request.matchdict['id'] = "S000114259"
         id = mock_redis.extract_id_request(request, 'locus', param_name='id')
         response = locus_literature_details(request)
         self.assertEqual(response, locus.literature_to_dict())
 
+    @mock.patch('src.views.extract_id_request', return_value="S000114259")
     @mock.patch('src.models.DBSession.execute')
     @mock.patch('src.models.DBSession.query')
     def test_should_return_valid_locus_sequence_details(self, mock_search, mock_execute, mock_redis):
@@ -98,7 +94,6 @@ class LocusTest(unittest.TestCase):
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        #request.matchdict['id'] = "S000114259"
         id = mock_redis.extract_id_request(request, 'locus', param_name='id')
         response = locus_sequence_details(request)
         self.assertEqual(response, locus.sequence_details())
@@ -112,7 +107,6 @@ class LocusTest(unittest.TestCase):
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        #request.matchdict['id'] = "S000114259"
         id = mock_redis.extract_id_request(request, 'locus', param_name='id')
         response = locus_protein_experiment_details(request)
         self.assertEqual(response, locus.protein_experiment_details())
@@ -126,7 +120,6 @@ class LocusTest(unittest.TestCase):
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        #request.matchdict['id'] = "S000114259"
         id = mock_redis.extract_id_request(request, 'locus', param_name='id')
         response = locus_protein_domain_details(request)
         self.assertEqual(response, locus.protein_domain_details())
@@ -140,7 +133,6 @@ class LocusTest(unittest.TestCase):
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        #request.matchdict['id'] = "S000114259"
         id = mock_redis.extract_id_request(request, 'locus', param_name='id')
         response = locus_protein_domain_graph(request)
         self.assertEqual(response, locus.protein_domain_graph())
@@ -154,7 +146,6 @@ class LocusTest(unittest.TestCase):
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        #request.matchdict['id'] = "S000114259"
         id = mock_redis.extract_id_request(request, 'locus', param_name='id')
         response = locus_posttranslational_details(request)
         self.assertEqual(response, locus.posttranslational_details())
@@ -168,7 +159,6 @@ class LocusTest(unittest.TestCase):
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        #request.matchdict['id'] = "S000114259"
         id = mock_redis.extract_id_request(request, 'locus', param_name='id')
         response = locus_ecnumber_details(request)
         self.assertEqual(response, locus.ecnumber_details())
@@ -182,7 +172,6 @@ class LocusTest(unittest.TestCase):
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        #request.matchdict['sgdid'] = 'nonexistent_id'
         id = mock_redis.extract_id_request(request, 'locus', param_name='id')
         response = locus(request)
         self.assertEqual(response.status_code, 404)
@@ -194,7 +183,6 @@ class LocusTest(unittest.TestCase):
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        #request.matchdict['id'] = 'nonexistent_id'
         id = mock_redis.extract_id_request(request, 'locus', param_name='id')
         response = locus_go_details(request)
         self.assertEqual(response.status_code, 404)
@@ -206,7 +194,6 @@ class LocusTest(unittest.TestCase):
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        #request.matchdict['id'] = 'nonexistent_id'
         id = mock_redis.extract_id_request(request, 'locus', param_name='id')
         response = locus_interaction_details(request)
         self.assertEqual(response.status_code, 404)
@@ -218,7 +205,6 @@ class LocusTest(unittest.TestCase):
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        #request.matchdict['id'] = 'nonexistent_id'
         id = mock_redis.extract_id_request(request, 'locus', param_name='id')
         response = locus_phenotype_details(request)
         self.assertEqual(response.status_code, 404)
@@ -230,7 +216,6 @@ class LocusTest(unittest.TestCase):
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        #request.matchdict['id'] = 'nonexistent_id'
         id = mock_redis.extract_id_request(request, 'locus', param_name='id')
         response = locus_literature_details(request)
         self.assertEqual(response.status_code, 404)
@@ -242,7 +227,6 @@ class LocusTest(unittest.TestCase):
 
          request = testing.DummyRequest()
          request.context = testing.DummyResource()
-         #request.matchdict['id'] = 'nonexistent_id'
          id = mock_redis.extract_id_request(request, 'locus', param_name='id')
          response = locus_sequence_details(request)
          self.assertEqual(response.status_code, 404)
