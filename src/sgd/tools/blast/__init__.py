@@ -26,7 +26,7 @@ def _run_blast(p):
 
     paramData = _construct_blast_parameters(p)
 
-    url = config.compute_url + "cgi-bin/blast2.pl"
+    url = config.compute_url + "cgi-bin/aws-blast"
 
     req = Request(url=url, data=paramData)
 
