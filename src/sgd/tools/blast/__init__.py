@@ -128,53 +128,39 @@ def _get_blast_options(p):
     alignToShow = p.get('alignToShow')
     wordLength = p.get('wordLength')
     filter = p.get('filter')
-
-    hspmax = 6000
-    gapmax = 3000
-    if len(seq) < 10000:
-        if program == 'blastn':
-            hspmax = 6000
-            gapmax = 3000
-        else:
-            hspmax = 2000
-            gapmax = 1000
-    else:
-        hspmax = 10000
-        if program == 'blastn':
-            gapmax = 3000
-        else:
-            gapmax = 1000
-        
-    otmp = ''
-    if (database == 'Sc_mito_chr' and (program == 'blastn' or program == 'tblastx')):
-        # default is 1
-        otmp = " -dbgcode 3 "
-   
-                
-    options = " -hspsepsmax=" + str(hspmax) + " -hspsepqmax=" + str(gapmax) + ' ' + otmp
-               
-    if threshold and threshold != 'default':
-        options = options + " E=" + threshold
-                    
-    if cutoffScore and cutoffScore != 'default':
-        options = options + " S=" + cutoffScore
     
-    options = options + " B=" + alignToShow + " V=" + alignToShow
+    options = ""
 
-    if outFormat.startswith("nongapped"):
-        options = options + " -nogap"
-                   
+    # options = "-evalue 0.1  -word_size 11 -outfmt 0 -html -ungapped"
+                                   
+    # if cutoffScore and cutoffScore != 'default':
+    #    options = options + " S=" + cutoffScore
+    
+    options = options + " -num_alignments " + alignToShow 
+
+    if (database == 'Sc_mito_chr' and (program == 'blastn' or program == 'tblastx')):
+        # default is 1                      
+        options = options + " -query_genetic_code 3"
+
+    if program != 'blastn' and threshold and threshold != 'default':
+        options = options + " -threshold " + threshold
+
     if program != 'blastn' and matrix != "BLOSUM62":
-        options = options + " -matrix=" + matrix
+        options = options + " -matrix " + matrix
                 
     if wordLength != 'default':
-        options = options + " -W=" + wordLength
-                        
+        options = options + " -word_size " + wordLength
+     
+    options = options + " -outfmt 0 -html"
+
+    if outFormat.startswith("ungapped"):
+        options = options + " -ungapped"
+
     if filter == 'on':
         if program != 'blastn':
-            options = options + " -filter=seg"
+            options = options + " -seg yes"
         else:
-            options = options + " -filter=dust"
+            options = options + " -dust '20 64 1'"
     
     return options;
 
