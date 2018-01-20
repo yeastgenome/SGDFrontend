@@ -251,7 +251,7 @@ var SearchForm = React.createClass({
 	_getSubmitNode: function() {
                
                 return(<div>
-                      <p><input type="submit" value="Run WU-BLAST" className="button secondary"></input> OR  <input type="reset" value="Select Defaults" className="button secondary"></input>
+                      <p><input type="submit" value="Run NCBI-BLAST" className="button secondary"></input> OR  <input type="reset" value="Select Defaults" className="button secondary"></input>
 		      </p>
                 </div>);
 
@@ -351,7 +351,7 @@ var SearchForm = React.createClass({
 
         _getOutFormatMenu: function() {
 
-                var format = ['gapped alignments', 'nongapped alignments'];
+                var format = ['gapped alignments', 'ungapped alignments'];
 
 		var _elements = [];
                 format.forEach ( function(f) {
