@@ -139,6 +139,16 @@ def topics(request):
 def extensions(request):
     return {'options': [{'id': e, 'name': e} for e in FILE_EXTENSIONS]}
 
+@view_config(route_name='reference_this_week', renderer='json', request_method='GET')
+def reference_this_week(request):
+    recent_literature = DBSession.query(Referencedbentity).order_by(Referencedbentity.dbentity_id.desc()).limit(50).all()
+    refs = [x.to_dict_citation() for x in recent_literature]
+    return {
+        'start': 'a month ago',
+        'end': 'now',
+        'references': refs
+    }
+
 @view_config(route_name='reference_list', renderer='json', request_method='POST')
 def reference_list(request):
     reference_ids = request.POST.get('reference_ids', request.json_body.get('reference_ids', None))
