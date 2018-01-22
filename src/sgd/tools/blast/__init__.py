@@ -134,7 +134,7 @@ def _get_blast_options(p):
     # options = "-evalue 0.1  -word_size 11 -outfmt 0 -html -ungapped"
                                    
     # if cutoffScore and cutoffScore != 'default':
-    #    options = options + " S=" + cutoffScore
+    #  1122   options = options + " S=" + cutoffScore
     
     options = options + " -num_alignments " + alignToShow 
 
