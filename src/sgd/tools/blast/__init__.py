@@ -129,14 +129,7 @@ def _get_blast_options(p):
     wordLength = p.get('wordLength')
     filter = p.get('filter')
     
-    options = ""
-
-    # options = "-evalue 0.1  -word_size 11 -outfmt 0 -html -ungapped"
-                                   
-    # if cutoffScore and cutoffScore != 'default':
-    #  1122   options = options + " S=" + cutoffScore
-    
-    options = options + " -num_alignments " + alignToShow 
+    options = "-evalue " + cutoffScore + " -num_alignments " + alignToShow 
 
     if (database == 'Sc_mito_chr' and (program == 'blastn' or program == 'tblastx')):
         # default is 1                      

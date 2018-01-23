@@ -70,14 +70,14 @@ var SearchForm = React.createClass({
 
 		if (this.props.blastType == 'sgd') {
 		        return (<div>
-			       <span style={{ textAlign: "center" }}><h1><i>S. cerevisiae</i> WU-BLAST2 Search <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/sequence-help/blast"><img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img></a></h1>
+			       <span style={{ textAlign: "center" }}><h1><i>S. cerevisiae</i> NCBI-BLAST Search <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/sequence-help/blast"><img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img></a></h1>
 			       <hr /></span>
 			       {formNode}
 			</div>);
 		}
 		else {
 		        return (<div>
-                               <span style={{ textAlign: "center" }}><h1>Fungal Genomes Search using WU-BLAST2 <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/sequence-help/fungal-blast"><img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img></a></h1>
+                               <span style={{ textAlign: "center" }}><h1>Fungal Genomes Search using NCBI-BLAST <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/sequence-help/fungal-blast"><img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img></a></h1>
 			       <hr /></span>
                                {formNode}
                         </div>);
@@ -259,7 +259,6 @@ var SearchForm = React.createClass({
 
 	_getSeqBoxNode: function(seq) {
                 return (<div>
-                        <span style={{ color: 'red' }}><p>NOTE: If the input sequence is less than 30 letters you should change the default Cutoff Score value to something less than 100 or you can miss matches.</p></span>
                         { this._submitNode }     
                         <p><h3>Upload Local TEXT File: FASTA, GCG, and RAW sequence formats are okay</h3></p>
                         WORD Documents do not work unless saved as TEXT. 
@@ -337,7 +336,7 @@ var SearchForm = React.createClass({
                                   <tbody>
                                       <tr><th>Output format:</th><td>{outFormatMenu}</td><td><br></br></td></tr>
                                       <tr><th>Comparison Matrix:</th><td>{matrixMenu}</td><td><br></br></td></tr>
-                                      <tr><th>Cutoff Score (S value):</th><td>{cutoffMenu}</td><td><br></br></td></tr>
+                                      <tr><th>Cutoff Score (E value):</th><td>{cutoffMenu}</td><td><br></br></td></tr>
                                       <tr><th>Word Length (W value):</th><td>{wordLengthMenu}</td><td>Default = 11 for BLASTN, 3 for all others</td></tr>
                                       <tr><th>Expect threshold (E threshold):</th><td>{thresholdMenu}</td><td><br></br></td></tr>
                                       <tr><th>Number of best alignments to show:</th><td>{alignToShowMenu}</td><td><br></br></td></tr>
@@ -376,8 +375,8 @@ var SearchForm = React.createClass({
 
         _getCutoffScoreMenu: function() {
 
-                var cutoffScore = ['default', '30', '50', '70', '90', '110'];
-		var _elements = this._getDropdownList(cutoffScore, "default");
+                var cutoffScore = ['10', '1', '0.1', '0.01', '0.001', '0.0001', '0.00001'];
+		var _elements = this._getDropdownList(cutoffScore, "0.01");
 		return <p><select ref='cutoffScore' onChange={this._onChange}>{_elements}</select></p>;
 
         },
