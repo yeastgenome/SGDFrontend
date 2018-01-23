@@ -151,7 +151,9 @@ def _get_blast_options(p):
     if wordLength != 'default':
         options = options + " -word_size " + wordLength
      
-    options = options + " -outfmt 0 -html"
+    # options = options + " -outfmt 0 -html"
+
+    options = options + " -outfmt 0"
 
     if outFormat.startswith("ungapped"):
         options = options + " -ungapped"
