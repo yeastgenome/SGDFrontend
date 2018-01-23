@@ -22,6 +22,7 @@ import Settings from './containers/settings/index';
 import NotFound from './containers/curateHome/notFound';
 // curate lit biz
 import Blank from './components/blank';
+import NewReference from './containers/newReference';
 import CurateLit from './containers/curateLit/layout';
 import CurateLitBasic from './containers/curateLit/basic';
 import CurateLitPhenotype from './containers/curateLit/phenotype';
@@ -51,6 +52,7 @@ export default (
         <IndexRoute component={requireAuthentication(LocusBasic)} />
         <Route component={requireAuthentication(LocusSummaries)} path='summaries' />
       </Route>
+      <Route component={requireAuthentication(NewReference)} path='curate/reference/new' />
       <Route component={requireAuthentication(CurateLit)} path='curate/reference/:id'>
         <IndexRoute component={requireAuthentication(CurateLitBasic)} />
         <Route component={requireAuthentication(Blank)} path='protein' />
