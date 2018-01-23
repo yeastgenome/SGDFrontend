@@ -62,6 +62,21 @@ def locus_curate_update(request):
     except ValueError as e:
         return HTTPBadRequest(body=json.dumps({ 'error': str(e) }), content_type='text/json')
 
+@view_config(route_name='new_reference', renderer='json', request_method='POST')
+@authenticate
+def new_reference(request):
+    try:
+        params = request.json_body
+        pmid = int(params['pmid'])
+        username = request.session['username']
+        Referencedbentity.clear_from_triage_and_deleted(pmid, username)
+        add_paper(pmid, username)
+        transaction.commit()
+    except Exception as e:
+        transaction.abort()
+        log.error(e)
+        return HTTPBadRequest(body=json.dumps({ 'message': str(e) }), content_type='text/json')
+
 @view_config(route_name='reference_triage_id_delete', renderer='json', request_method='DELETE')
 @authenticate
 def reference_triage_id_delete(request):
@@ -382,7 +397,6 @@ def new_gene_name_reservation(request):
 @authenticate
 def reserved_name_index(request):
     res_triages = DBSession.query(ReservednameTriage).all()
-    print(res_triages)
     res_triages = [x.to_dict() for x in res_triages]
     reses = DBSession.query(Reservedname).all()
     reses = [x.to_dict() for x in reses]
