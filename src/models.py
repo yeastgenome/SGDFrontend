@@ -75,7 +75,7 @@ class CacheBase(object):
                 # purge
                 response = requests.request('PURGE', url)
                 if (response.status_code != 200):
-                    raise('Error fetching ')
+                    raise ValueError('Error fetching ')
             except Exception, e:
                 print('error fetching ' + self.display_name)
 
@@ -1618,6 +1618,26 @@ class Referencedbentity(Dbentity):
     journal = relationship(u'Journal')
 
     go_blacklist = None
+
+    # takes a PMID and deleted matching entried from REFERENCETRIAGE and REFERENCEDELETED, raises error if found in REFERENCEDBENTITY
+    @classmethod
+    def clear_from_triage_and_deleted(Referencedbentity, user_pmid, username):
+        curator_session = None
+        try:
+            curator_session = get_curator_session(username)
+            exists = curator_session.query(Referencedbentity).filter(Referencedbentity.pmid==user_pmid).one_or_none()
+            if exists:
+                raise ValueError('Reference already exists.')
+            curator_session.query(Referencedeleted).filter_by(pmid=user_pmid).delete(synchronize_session=False)
+            curator_session.query(Referencetriage).filter_by(pmid=user_pmid).delete(synchronize_session=False)
+            transaction.commit()
+        except Exception, e:
+            traceback.print_exc()
+            transaction.abort()
+            raise(e)
+        finally:
+            if curator_session:
+                curator_session.close()
 
     @staticmethod
     def get_go_blacklist_ids():

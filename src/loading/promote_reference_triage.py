@@ -22,6 +22,11 @@ _all_genes = None
 
 def add_paper(pmid, created_by="OTTO"):
     record = Medline.read(Entrez.efetch(db="pubmed", id=str(pmid), rettype='medline'))
+    rec_keys = record.keys()
+    if 'PMID' not in rec_keys:
+        raise ValueError('Unable to fetch record feom pubmed. Make sure it is a valid PMID.')
+    
+    print(record)
 
     ncbi = DBSession.query(Source).filter_by(format_name='NCBI').one_or_none()
     source_id = ncbi.source_id
