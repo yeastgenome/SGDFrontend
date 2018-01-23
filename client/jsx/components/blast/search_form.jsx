@@ -602,10 +602,10 @@ var SearchForm = React.createClass({
 		}
 
 		// check sequence length and cutoffScore (s) value
-		if (cutoffScore != 'default' && cutoffScore < 60 && seq.length > 100) {
-		     alert("The maximum sequence length for an S value less than 60 is 100. Please adjust either the S value or sequence");
-		     return 0;
-		}		
+		// if (cutoffScore != 'default' && cutoffScore < 60 && seq.length > 100) {
+		//     alert("The maximum sequence length for an S value less than 60 is 100. Please adjust either the S value or sequence");
+		//     return 0;
+		// }		
 
 		// check sequence length and wordlength
 		if (program == 'blastn' && wordLength != 'default' && 
