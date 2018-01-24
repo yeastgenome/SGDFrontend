@@ -5,7 +5,7 @@ from pyramid.compat import escape
 from sqlalchemy import func, distinct, and_, or_
 from sqlalchemy.orm.exc import DetachedInstanceError
 from sqlalchemy.exc import IntegrityError
-from datetime import datetime, timedelta
+from datetime import timedelta
 import os
 import re
 import transaction
@@ -142,20 +142,15 @@ def extensions(request):
 
 @view_config(route_name='reference_this_week', renderer='json', request_method='GET')
 def reference_this_week(request):
-    #import pdb
-    #pdb.set_trace()
-    #start_date = datetime.today()
-    #end_date = start_date - datetime.timedelta(days=30)
-    #recent_literature = DBSession.query(Referencedbentity).order_by(Referencedbentity.dbentity_id.desc()).limit(50).all()
-    start_date = datetime.today() - timedelta(days=30)
-    #recent_literature = DBSession.query(Referencedbentity).join(Dbentity, Dbentity.dbentity_id == Referencedbentity.dbentity_id).filter(Dbentity.date_created >= end, Dbentity.date_created <=start).all()
-    #recent_literature = DBSession.query(Referencedbentity).filter(and_(Referencedbentity.date_created >= str(end_date), Referencedbentity.date_created <= str(start_date)))
-    recent_literature = DBSession.query(Referencedbentity).filter(Referencedbentity.date_created > start_date).all()
+    start_date = datetime.datetime.today() - datetime.timedelta(days=30)
+    end_date = datetime.datetime.today()
+
+    recent_literature = DBSession.query(Referencedbentity).filter(Referencedbentity.date_created >= start_date).order_by(Referencedbentity.date_created.desc()).all()
 
     refs = [x.to_dict_citation() for x in recent_literature]
     return {
         'start': json.dumps(start_date, default = myconverter),
-        #'end': json.dumps(end_date, default = myconverter),
+        'end': json.dumps(end_date, default = myconverter),
         'references': refs
     }
 
