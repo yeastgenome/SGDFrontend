@@ -3977,14 +3977,32 @@ class Locusdbentity(Dbentity):
             regulation_summary_pmids = SEPARATOR.join(pmids)
             regulation_summary = regulation_summary.text
 
-        aliases = DBSession.query(LocusAlias.display_name).filter(and_(LocusAlias.locus_id==self.dbentity_id, LocusAlias.alias_type=='Uniform')).all()
-        aliases = [{ 'alias': x[0] } for x in aliases]
+        aliases = DBSession.query(LocusAlias).filter(and_(LocusAlias.locus_id==self.dbentity_id, LocusAlias.alias_type=='Uniform')).all()
+        aliases_list = []
+        for x in aliases:
+            a_pmids= DBSession.query(LocusAliasReferences, Referencedbentity.pmid).filter(LocusAliasReferences.alias_id==x.alias_id).outerjoin(Referencedbentity).all()
+            pmids_results = [str(y[1]) for y in a_pmids]
+            aliases_list.append({
+                'alias': x.display_name,
+                'pmids': pmids_results
+            })
 
         gene_name_pmids = ''
         if self.gene_name:
             pmids_results = DBSession.query(LocusReferences, Referencedbentity.pmid).filter(and_(LocusReferences.locus_id==self.dbentity_id, LocusReferences.reference_class=='gene_name')).outerjoin(Referencedbentity).all()
             pmids_results = [str(x[1]) for x in pmids_results]
             gene_name_pmids = SEPARATOR.join(pmids_results)
+        name_description_pmids = ''
+        if self.name_description:
+            pmids_results = DBSession.query(LocusReferences, Referencedbentity.pmid).filter(and_(LocusReferences.locus_id==self.dbentity_id, LocusReferences.reference_class=='name_description')).outerjoin(Referencedbentity).all()
+            pmids_results = [str(x[1]) for x in pmids_results]
+            name_description_pmids = SEPARATOR.join(pmids_results)
+        description_pmids = ''
+        if self.description:
+            pmids_results = DBSession.query(LocusReferences, Referencedbentity.pmid).filter(and_(LocusReferences.locus_id==self.dbentity_id, LocusReferences.reference_class=='description')).outerjoin(Referencedbentity).all()
+            pmids_results = [str(x[1]) for x in pmids_results]
+            description_pmids = SEPARATOR.join(pmids_results)
+
 
         return {
             'name': self.display_name,
@@ -3997,13 +4015,14 @@ class Locusdbentity(Dbentity):
                 'regulation_summary_pmids': regulation_summary_pmids
             },
             'basic': {
-                'aliases': aliases,
+                'aliases': aliases_list,
                 'description': self.description,
+                'description_pmids': description_pmids,
                 'feature_type': '', #TEMP todo
                 'gene_name': self.gene_name,
                 'gene_name_pmids': gene_name_pmids,
-                'headline': self.headline,
                 'name_description': self.name_description,
+                'name_description_pmids': name_description_pmids,
                 'qualifier': self.qualifier
             }
         }

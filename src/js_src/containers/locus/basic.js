@@ -18,6 +18,11 @@ class LocusBasic extends Component {
       alias: t.String,
       pmid: t.String
     });
+    let Qualifier = t.enums.of([
+      'Verified',
+      'Uncharacterized',
+      'Dubious'
+    ], 'Qualifier');
     let bgiSchema = t.struct({
       gene_name: t.maybe(t.String),
       gene_name_pmids: t.maybe(t.String),
@@ -25,8 +30,7 @@ class LocusBasic extends Component {
       name_description_pmids : t.maybe(t.String),
       aliases: t.list(Alias),
       feature_type: t.String,
-      qualifier: t.String,
-      headline: t.String,
+      qualifier: Qualifier,
       description: t.maybe(t.String),
       description_pmids : t.maybe(t.String),
       ncbi_protein_name: t.String
