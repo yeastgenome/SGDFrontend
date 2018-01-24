@@ -4023,9 +4023,18 @@ class Locusdbentity(Dbentity):
                 'gene_name_pmids': gene_name_pmids,
                 'name_description': self.name_description,
                 'name_description_pmids': name_description_pmids,
-                'qualifier': self.qualifier
+                'qualifier': self.qualifier,
+                'ncbi_protein_name': '' #TEMP todo
             }
         }
+
+    def update_basic(self, new_info, username):
+        print(new_info)
+        old_info = self.to_curate_dict()['basic']
+        for key in new_info.keys():
+            if new_info[key] != old_info[key]:
+                print('need to update ' + key)
+        return self.to_curate_dict()
 
     def update_summary(self, summary_type, username, text, pmid_list=[]):
         curator_session = None

@@ -16,7 +16,7 @@ class LocusBasic extends Component {
     if (!data || this.props.isPending) return <Loader />;
     let Alias = t.struct({
       alias: t.String,
-      pmid: t.String
+      pmid: t.maybe(t.String)
     });
     let Qualifier = t.enums.of([
       'Verified',
@@ -29,11 +29,11 @@ class LocusBasic extends Component {
       name_description: t.maybe(t.String),
       name_description_pmids : t.maybe(t.String),
       aliases: t.list(Alias),
-      feature_type: t.String,
+      feature_type: t.maybe(t.String),
       qualifier: Qualifier,
       description: t.maybe(t.String),
       description_pmids : t.maybe(t.String),
-      ncbi_protein_name: t.String
+      ncbi_protein_name: t.maybe(t.String)
     });
     let aliasLayout = locals => {
       return (
@@ -60,7 +60,7 @@ class LocusBasic extends Component {
         }
       }
     };
-    let url = `/locus/${this.props.params.id}/bgi`;
+    let url = `/locus/${this.props.params.id}/basic`;
     return (
       <div className='row'>
         <div className='columns small-12 medium-6'>
