@@ -42,11 +42,11 @@ def get_locus_curate(request):
     locus = get_locus_by_id(id)
     return locus.to_curate_dict()
 
-@view_config(route_name='locus_curate_update', request_method='PUT', renderer='json')
+@view_config(route_name='locus_curate_summaries', request_method='PUT', renderer='json')
 @authenticate
-def locus_curate_update(request):
+def locus_curate_summaries(request):
     try:
-        id = extract_id_request(request, 'locus', param_name="sgdid")
+        id = extract_id_request(request, 'locus', param_name='sgdid')
         locus = get_locus_by_id(id)
         new_phenotype_summary = request.params.get('phenotype_summary')
         new_regulation_summary = request.params.get('regulation_summary')
@@ -61,6 +61,18 @@ def locus_curate_update(request):
         return locus.get_summary_dict()
     except ValueError as e:
         return HTTPBadRequest(body=json.dumps({ 'error': str(e) }), content_type='text/json')
+
+@view_config(route_name='locus_curate_basic', request_method='PUT', renderer='json')
+@authenticate
+def locus_curate_basic(request):
+    try:
+        id = extract_id_request(request, 'locus', param_name='sgdid')
+        locus = get_locus_by_id(id)
+        params = request.json_body
+        username = request.session['username']
+        return locus.update_basic(params, username)
+    except ValueError as e:
+        return HTTPBadRequest(body=json.dumps({ 'message': str(e) }), content_type='text/json')
 
 @view_config(route_name='new_reference', renderer='json', request_method='POST')
 @authenticate
