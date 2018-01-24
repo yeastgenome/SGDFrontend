@@ -27,7 +27,9 @@ def main(global_config, **settings):
     
     config.add_route('strain', '/strain/{id}', request_method='GET')
     
+    config.add_route('reference_this_week', '/references/this_week', request_method='GET')
     config.add_route('reference', '/reference/{id}', request_method='GET')
+
     config.add_route('reference_literature_details', '/reference/{id}/literature_details', request_method='GET')
     config.add_route('reference_interaction_details', '/reference/{id}/interaction_details', request_method='GET')
     config.add_route('reference_go_details', '/reference/{id}/go_details', request_method='GET')
