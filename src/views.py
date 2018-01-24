@@ -149,8 +149,8 @@ def reference_this_week(request):
 
     refs = [x.to_dict_citation() for x in recent_literature]
     return {
-        'start': json.dumps(start_date, default = myconverter),
-        'end': json.dumps(end_date, default = myconverter),
+        'start': start_date.strftime("%Y-%m-%d"),
+        'end': end_date.strftime("%Y-%m-%d"),
         'references': refs
     }
 
@@ -772,7 +772,3 @@ def healthcheck(request):
             DBSession.remove()
             attempts += 1
     return ldict
-
-def myconverter(o):
-    if isinstance(o, datetime.date):
-        return "{}-{}-{}".format(o.year, o.month, o.day)
