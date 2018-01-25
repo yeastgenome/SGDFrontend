@@ -3,4 +3,6 @@ python:
   - "2.7"
 install:
   - pip install -r requirements.txt
-script: make tests
+  - pip install pyramid-celery==3.0.0
+script:
+  source test_variables.sh && nosetests -s
