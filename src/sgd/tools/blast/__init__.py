@@ -4,6 +4,7 @@ from src.sgd.frontend import config
 from urllib2 import Request, urlopen, URLError
 
 def do_blast(request):
+
     
     p = dict(request.params)
 
