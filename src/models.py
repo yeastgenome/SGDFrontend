@@ -4849,7 +4849,6 @@ class Go(Base):
     is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
-    is_obsolete = Column(Boolean, nullable=False)
 
     source = relationship(u'Source')
 
@@ -5797,30 +5796,6 @@ class Locusnote(Base):
             "date_created": self.date_created.strftime("%Y-%m-%d"),
             "references": [ref.reference.to_dict_citation() for ref in references]
         }
-
-class Locusnoteannotation(Base):
-    __tablename__ = 'locusnoteannotation'
-    __table_args__ = (
-        UniqueConstraint('dbentity_id', 'note_type', 'display_name', 'note'),
-        {u'schema': 'nex'}
-    )
-
-    annotation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.annotation_seq'::regclass)"))
-    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
-    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
-    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
-    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
-    bud_id = Column(Integer)
-    note_type = Column(String(40), nullable=False)
-    display_name = Column(String(500), nullable=False)
-    note = Column(String(2000), nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
-    created_by = Column(String(12), nullable=False)
-
-    dbentity = relationship(u'Dbentity')
-    reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
-    source = relationship(u'Source')
-    taxonomy = relationship(u'Taxonomy')
 
 
 class LocusnoteReference(Base):
