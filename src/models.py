@@ -4463,7 +4463,6 @@ class EcAlias(Base):
     alias_type = Column(String(40), nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
-    is_obsolete = Column(Boolean, nullable=False)
 
     ec = relationship(u'Ec')
     source = relationship(u'Source')
