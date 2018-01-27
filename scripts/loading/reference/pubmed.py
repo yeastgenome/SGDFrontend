@@ -5,7 +5,7 @@ import os
 reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
 
-Entrez.email = os.environ['EMAIL']
+Entrez.email = "yeastgenome@gmail.com"
 
 __author__ = 'sweng66'
     
