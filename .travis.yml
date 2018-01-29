@@ -15,5 +15,6 @@ before_script:
   - psql -U postgres sgd -c "CREATE SCHEMA nex AUTHORIZATION nex"
   - psql -U postgres sgd -c "GRANT USAGE ON SCHEMA nex TO CURATOR"
 script:
-  - echo 'export NEX2_URI="postgresql://nex:passwd@localhost/sgd"' > test_variables.sh
+  - printf 'export NEX2_URI="postgresql://nex:passwd@localhost/sgd"\n' > test_variables.sh
+  - printf 'export ES_URI="http:localhost:9200/"\n' >> test_variables.sh
   - source test_variables.sh && nosetests -s
