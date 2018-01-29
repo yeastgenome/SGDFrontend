@@ -765,7 +765,7 @@ COMMENT ON COLUMN nex.referencedbentity.dbentity_id IS 'Unique identifier (seria
 COMMENT ON COLUMN nex.referencedbentity.title IS 'Title of the reference.';
 COMMENT ON COLUMN nex.referencedbentity.date_published IS 'Full date the reference was published.';
 COMMENT ON COLUMN nex.referencedbentity.citation IS 'Full citation of the reference.';
-ALTER TABLE nex.referencedbentity ADD CONSTRAINT reference_citation_uk UNIQUE (citation);
+ALTER TABLE nex.referencedbentity ADD CONSTRAINT reference_citation_uk UNIQUE (citation,pmid);
 ALTER TABLE nex.referencedbentity ADD CONSTRAINT referencedbentity_method_obtained_ck CHECK (METHOD_OBTAINED IN ('Curator PubMed reference','Curator triage','Curator non-PubMed reference','Gene registry','PDB script','PubMed script','SacchDB','YPD'));
 ALTER TABLE nex.referencedbentity ADD CONSTRAINT referencedbentity_fulltext_status_ck CHECK (FULLTEXT_STATUS IN ('N', 'NAA', 'NAM', 'NAP', 'Y', 'YF', 'YT'));
 ALTER TABLE nex.referencedbentity ADD CONSTRAINT referencedbentity_pub_status_ck CHECK (PUBLICATION_STATUS IN ('Epub ahead of print','In preparation','In press','Published','Submitted','Unpublished'));

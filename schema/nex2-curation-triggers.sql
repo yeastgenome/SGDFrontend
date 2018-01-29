@@ -541,3 +541,91 @@ $BODY$ LANGUAGE 'plpgsql';
 CREATE TRIGGER reservednametriage_biur
 BEFORE INSERT OR UPDATE ON nex.reservednametriage FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_reservednametriage_biur();
+
+
+DROP TRIGGER IF EXISTS curatoractivity_audr ON nex.curatoractivity CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_curatoractivity_audr() RETURNS trigger AS $BODY$
+DECLARE
+    v_row       nex.deletelog.deleted_row%TYPE;
+BEGIN
+  IF (TG_OP = 'UPDATE') THEN
+
+    IF (OLD.display_name != NEW.display_name) THEN
+        PERFORM nex.insertupdatelog('CURATORACTIVITY'::text, 'DISPLAY_NAME'::text, OLD.curation_id, OLD.display_name::text, NEW.display_name::text, USER);
+    END IF;
+
+     IF (OLD.obj_url != NEW.obj_url) THEN
+        PERFORM nex.insertupdatelog('CURATORACTIVITY'::text, 'OBJ_URL'::text, OLD.curation_id, OLD.obj_url::text, NEW.obj_url::text, USER);
+    END IF;
+
+     IF (OLD.activity_category != NEW.activity_category) THEN
+        PERFORM nex.insertupdatelog('CURATORACTIVITY'::text, 'ACTIVITY_CATEGORY'::text, OLD.curation_id, OLD.activity_category::text, NEW.activity_category::text, USER);
+    END IF;
+
+    IF (((OLD.dbentity_id IS NULL) AND (NEW.dbentity_id IS NOT NULL)) OR ((OLD.dbentity_id IS NOT NULL) AND (NEW.dbentity_id IS NULL)) OR (OLD.dbentity_id != NEW.dbentity_id)) THEN
+        PERFORM nex.insertupdatelog('COLLEAGUETRIAGE'::text, 'DBENTITY_ID'::text, OLD.curation_id, OLD.dbentity_id::text, NEW.dbentity_id::text, USER);
+    END IF;
+
+     IF (OLD.message != NEW.message) THEN
+        PERFORM nex.insertupdatelog('CURATORACTIVITY'::text, 'MESSAGE'::text, OLD.curation_id, OLD.message::text, NEW.message::text, USER);
+    END IF;
+
+    IF (OLD.json != NEW.json) THEN
+        PERFORM nex.insertupdatelog('CURATORACTIVITY'::text, 'JSON'::text, OLD.curation_id, OLD.json, NEW.json, USER);
+    END IF;
+
+    RETURN NEW;
+
+  ELSIF (TG_OP = 'DELETE') THEN
+
+    v_row := OLD.curation_id || '[:]' || OLD.display_name || '[:]' ||
+             OLD.obj_url || '[:]' || OLD.activity_category || '[:]' ||
+             coalesce(OLD.dbentity_id,0) || '[:]' ||
+             OLD.message || '[:]' || OLD.json || '[:]' ||
+             OLD.date_created || '[:]' || OLD.created_by;
+
+           PERFORM nex.insertdeletelog('CURATORACTIVITY'::text, OLD.curation_id, v_row, USER);
+
+     RETURN OLD;
+  END IF;
+
+END;
+$BODY$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER curatoractivity_audr
+AFTER UPDATE OR DELETE ON nex.curatoractivity FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_curatoractivity_audr();
+
+DROP TRIGGER IF EXISTS curatoractivity_biur ON nex.curatoractivity CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_curatoractivity_biur() RETURNS trigger AS $BODY$
+BEGIN
+  IF (TG_OP = 'INSERT') THEN
+
+       NEW.created_by := UPPER(NEW.created_by);
+       PERFORM nex.checkuser(NEW.created_by);
+
+       RETURN NEW;
+
+  ELSIF (TG_OP = 'UPDATE') THEN
+
+    IF (NEW.curation_id != OLD.curation_id) THEN
+        RAISE EXCEPTION 'Primary key cannot be updated';
+    END IF;
+
+    IF (NEW.date_created != OLD.date_created) THEN
+        RAISE EXCEPTION 'Audit columns cannot be updated.';
+    END IF;
+
+    IF (NEW.created_by != OLD.created_by) THEN
+        RAISE EXCEPTION 'Audit columns cannot be updated.';
+    END IF;
+
+    RETURN NEW;
+  END IF;
+
+END;
+$BODY$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER curatoractivity_biur
+BEFORE INSERT OR UPDATE ON nex.curatoractivity FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_curatoractivity_biur();
