@@ -23,6 +23,25 @@ def get_abstract(pmid):
             abstractText = abstractText + abstract
     return abstractText
 
+def get_abstracts(pmid_list):
+
+    handle = Entrez.efetch(db="pubmed", id=pmid_list, rettype='abstract')
+    record = Entrez.read(handle)
+
+    abstracts = []
+    for paper in record['PubmedArticle']:
+        abstractText = ""
+        article = paper['MedlineCitation']['Article']
+        if article.get('Abstract'):
+            for abstract in article['Abstract']['AbstractText']:
+                if abstractText != "":
+                    abstractText = abstractText + "<p>"
+                abstractText = abstractText + abstract
+        pmid = int(paper['MedlineCitation']['PMID'])
+        abstracts.append((pmid, abstractText))
+
+    return abstracts
+
 def get_pubmed_esummary(pmid_list):
 
     handle = Entrez.esummary(db="pubmed", id=pmid_list) 
