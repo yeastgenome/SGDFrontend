@@ -560,6 +560,10 @@ ALTER TABLE nex.authorresponse ADD CONSTRAINT authorresponse_coll_fk FOREIGN KEY
 ALTER TABLE nex.authorresponse ADD CONSTRAINT authorresponse_source_fk FOREIGN KEY (source_id) REFERENCES source(source_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
 ALTER TABLE nex.authorresponse ADD CONSTRAINT authorresponse_ref_fk FOREIGN KEY (reference_id) REFERENCES dbentity(dbentity_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
 
+ALTER TABLE nex.colleaguetriage ADD CONSTRAINT colleaguetriage_coll_fk FOREIGN KEY (colleague_id) REFERENCES colleague(colleague_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
+
+ALTER TABLE nex.curatoractivity ADD CONSTRAINT curatoractivity_dbentity_fk FOREIGN KEY (dbentity_id) REFERENCES dbentity(dbentity_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
+
 
 ALTER TABLE nex.arch_contigchange ADD CONSTRAINT archcontigchange_contig_fk FOREIGN KEY (contig_id) REFERENCES arch_contig(contig_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
 

@@ -254,6 +254,14 @@ GRANT SELECT,INSERT,UPDATE,DELETE ON nex.curation_reference TO curator;
 GRANT SELECT ON nex.curation_reference TO PUBLIC;
 GRANT SELECT ON nex.curation_reference TO DBSELECT;
 
+-- Set privilege on TABLE CURATORACTIVITY
+ALTER TABLE nex.curatoractivity OWNER TO nex;
+GRANT ALL ON nex.curatoractivity TO nex;
+REVOKE ALL ON nex.curatoractivity FROM PUBLIC;
+GRANT SELECT,INSERT,UPDATE,DELETE ON nex.curatoractivity TO curator;
+GRANT SELECT ON nex.curatoractivity TO PUBLIC;
+GRANT SELECT ON nex.curatoractivity TO DBSELECT;
+
 -- Set privilege on TABLE DATASET
 ALTER TABLE nex.dataset OWNER TO nex;
 GRANT ALL ON nex.dataset TO nex;

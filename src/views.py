@@ -5,6 +5,7 @@ from pyramid.compat import escape
 from sqlalchemy import func, distinct, and_, or_
 from sqlalchemy.orm.exc import DetachedInstanceError
 from sqlalchemy.exc import IntegrityError
+from datetime import timedelta
 import os
 import re
 import transaction
@@ -138,6 +139,20 @@ def topics(request):
 @view_config(route_name='extensions', renderer='json', request_method='GET')
 def extensions(request):
     return {'options': [{'id': e, 'name': e} for e in FILE_EXTENSIONS]}
+
+@view_config(route_name='reference_this_week', renderer='json', request_method='GET')
+def reference_this_week(request):
+    start_date = datetime.datetime.today() - datetime.timedelta(days=30)
+    end_date = datetime.datetime.today()
+
+    recent_literature = DBSession.query(Referencedbentity).filter(Referencedbentity.date_created >= start_date).order_by(Referencedbentity.date_created.desc()).all()
+
+    refs = [x.to_dict_citation() for x in recent_literature]
+    return {
+        'start': start_date.strftime("%Y-%m-%d"),
+        'end': end_date.strftime("%Y-%m-%d"),
+        'references': refs
+    }
 
 @view_config(route_name='reference_list', renderer='json', request_method='POST')
 def reference_list(request):
@@ -494,12 +509,6 @@ def locus_interaction_graph(request):
 def locus_regulation_graph(request):
     id = extract_id_request(request, 'locus')
     locus = get_locus_by_id(id)
-    # TEMP disable
-    return {
-        'nodes': [],
-        'edges': []
-    }
-
     if locus:
         return locus.regulation_graph()
     else:

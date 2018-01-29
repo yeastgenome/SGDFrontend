@@ -2505,7 +2505,7 @@ BEGIN
 
         IF (NEW.locus_id is NOT NULL) THEN
 
-            PERFORM nex.insertlocuschange(NEW.locus_id, 'SGD'::text, 'Gene name'::text, OLD.gene_name, NEW.gene_name, USER);
+            PERFORM nex.insertlocuschange(NEW.locus_id, 'SGD'::text, 'Gene name'::text, NULL, NEW.display_name, USER);
 
        END IF;
        RETURN NEW;
