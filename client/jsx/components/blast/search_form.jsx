@@ -160,7 +160,7 @@ var SearchForm = React.createClass({
                 	var databaseNode = this._getDatabaseNode(configData);
                 	var optionNode = this._getOptionsNode(configData);
 			// need to put the date in a config file
-			var descText = "<p>Datasets updated: January 13, 2015</p><p>This form allows BLAST searches of S. cerevisiae sequence datasets. To search multiple fungal sequences, go to the <a href='/blast-fungal'>Fungal BLAST search form</a>.</p>";
+			var descText = "<p>Datasets updated: January 31, 2018</p><p>This form allows BLAST searches of S. cerevisiae sequence datasets. To search multiple fungal sequences, go to the <a href='/blast-fungal'>Fungal BLAST search form</a>.</p>";
 			
 			if (this.props.blastType == 'fungal') {
 			     descText = "<p>This form allows BLAST searches of multiple fungal sequence datasets. To restrict your search to S. cerevisiae with additional BLAST search options, go to the <a href='/blast-sgd'><i>S. cerevisiae</i> BLAST search form</a>.</p>";
