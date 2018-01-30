@@ -71,7 +71,8 @@ def locus_curate_basic(request):
         params = request.json_body
         username = request.session['username']
         return locus.update_basic(params, username)
-    except ValueError as e:
+    except Exception as e:
+        log.error(e)
         return HTTPBadRequest(body=json.dumps({ 'message': str(e) }), content_type='text/json')
 
 @view_config(route_name='new_reference', renderer='json', request_method='POST')

@@ -5,9 +5,11 @@ import t from 'tcomb-form';
 import FlexiForm from '../../components/forms/flexiForm';
 import Loader from '../../components/loader';
 import { setMessage } from '../../actions/metaActions';
+import { updateData } from './locusActions';
 
 class LocusBasic extends Component {
-  handleSuccess() {
+  handleSuccess(data) {
+    this.props.dispatch(updateData(data));
     this.props.dispatch(setMessage('Locus updated.'));
   }
 

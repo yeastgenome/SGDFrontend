@@ -4030,11 +4030,41 @@ class Locusdbentity(Dbentity):
         }
 
     def update_basic(self, new_info, username):
-        print(new_info)
         old_info = self.to_curate_dict()['basic']
+        # list which keys need updating
+        keys_to_update = []
         for key in new_info.keys():
             if new_info[key] != old_info[key]:
-                print('need to update ' + key)
+                keys_to_update.append(key)
+        # update them, if necessary
+        if len(keys_to_update):
+            curator_session = None
+            try:
+                curator_session = get_curator_session(username)
+                self = curator_session.merge(self)
+                for key in keys_to_update:
+                    if key == 'description':
+                        self.description = new_info['description']
+                    elif key == 'gene_name':
+                        new_name = new_info['gene_name']
+                        if new_name == '':
+                            new_name = None
+                            self.display_name = self.systematic_name
+                        else:
+                            self.display_name = new_name
+                        self.gene_name = new_name
+                    elif key == 'name_description':
+                        self.name_description = new_info['name_description']
+                    elif key == 'qualifier':
+                        self.qualifier = new_info['qualifier']
+                transaction.commit()
+            except Exception as e:
+                transaction.abort()
+                traceback.print_exc()
+                raise(e)
+            finally:
+                if curator_session:
+                    curator_session.remove()
         return self.to_curate_dict()
 
     def update_summary(self, summary_type, username, text, pmid_list=[]):
