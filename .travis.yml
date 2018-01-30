@@ -5,6 +5,8 @@ install:
   - pip install -r requirements.txt
 addons:
   postgresql: "9.6"
+services:
+  - redis-server
 before_script:
   - psql -c "CREATE USER nex WITH PASSWORD '[passwd]'"
   - psql -U postgres postgres -c "CREATE DATABASE sgd WITH OWNER nex ENCODING 'UTF8'"
