@@ -7829,6 +7829,19 @@ class Reservedname(Base):
         obj['submitter_phone'] = submitter.work_phone
         return obj
 
+    def promote(self, username):
+        try:
+            curator_session = get_curator_session(username)
+            self = curator_session.merge(self)
+            transaction.commit()
+        except Exception as e:
+            transaction.abort()
+            traceback.print_exc()
+            raise(e)
+        finally:
+            if curator_session:
+                curator_session.remove()
+        return True
 
 class ReservednameTriage(Base):
     __tablename__ = 'reservednametriage'

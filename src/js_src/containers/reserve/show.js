@@ -6,7 +6,7 @@ import { push } from 'react-router-redux';
 import CategoryLabel from '../../components/categoryLabel';
 import CurateLayout from '../curateHome/layout';
 import DetailList from '../../components/detailList';
-import { setMessage } from '../../actions/metaActions';
+import { setError, setMessage } from '../../actions/metaActions';
 import fetchData from '../../lib/fetchData';
 import Loader from '../../components/loader';
 
@@ -31,11 +31,27 @@ class GeneNameReservation extends Component {
   handlePromote(e) {
     e.preventDefault();
     this.setState({ data: null });
-    this.props.dispatch(push({ pathname: 'reservations' }));
+    
     if (this.state.data.reservation_status === 'Unprocessed') {
+      this.props.dispatch(push({ pathname: 'reservations' }));
       this.props.dispatch(setMessage('The new gene name reservation was added. It may take a day to show up in the search.'));
     } else {
-      this.props.dispatch(setMessage('The new gene name was standardized.'));
+      let url = `${DATA_BASE_URL}/${this.props.params.id}/promote`;
+      let reqOptions = {
+        type: 'PUT',
+        headers: {
+          'X-CSRF-Token': window.CSRF_TOKEN
+        }
+      };
+      this.setState({ isPending: true });
+      fetchData(url, reqOptions).then( _data => {
+        this.setState({ data: _data });
+        this.props.dispatch(push({ pathname: 'reservations' }));
+        this.props.dispatch(setMessage('The new gene name was standardized.'));
+      }).catch( (data) => {
+        let errorMessage = data ? data.message : 'Unable to promote gene name.';
+        this.props.dispatch(setError(errorMessage));
+      });  
     }
   }
 
