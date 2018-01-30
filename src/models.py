@@ -25,6 +25,7 @@ ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
 QUERY_LIMIT = 25000
 SGD_SOURCE_ID = 834
 SEPARATOR = ' '
+TAXON_ID = 274901
 
 S3_BUCKET = os.environ['S3_BUCKET']
 S3_ACCESS_KEY = os.environ['S3_ACCESS_KEY']
@@ -1108,7 +1109,6 @@ class Contig(Base):
         return obj
 
     def to_dict(self):
-        TAXON_ID = 274901
         strains = Straindbentity.get_strains_by_taxon_id(self.taxonomy_id)
         urls = DBSession.query(ContigUrl).filter_by(contig_id=self.contig_id).all()
         # get sequences and group by feature type, exclude inactive and non S288c features
@@ -2196,7 +2196,7 @@ class Locusdbentity(Dbentity):
         # get all dbentity_ids from dnasequenceannotation model
         all_dbentity_ids = DBSession.query(
             Dnasequenceannotation).filter(
-                Dnasequenceannotation.taxonomy_id == 274901,
+                Dnasequenceannotation.taxonomy_id == TAXON_ID,
                 Dnasequenceannotation.dna_type == 'GENOMIC').all()
         comp = [x.dbentity_id for x in all_dbentity_ids if x.dbentity.dbentity_status == 'Active' ]
         locus_data = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(comp),Locusdbentity.not_in_s288c == False).all()
@@ -3470,7 +3470,7 @@ class Locusdbentity(Dbentity):
 
         # URLs (resources)
         sos = DBSession.query(Dnasequenceannotation.so_id).filter(
-            Dnasequenceannotation.dbentity_id == self.dbentity_id,Dnasequenceannotation.taxonomy_id == 274901).group_by(
+            Dnasequenceannotation.dbentity_id == self.dbentity_id,Dnasequenceannotation.taxonomy_id == TAXON_ID).group_by(
                     Dnasequenceannotation.so_id).all()
         locus_type = DBSession.query(So.display_name).filter(So.so_id.in_([so[0] for so in sos])).all()
         obj["locus_type"] = ",".join([l[0] for l in locus_type])
@@ -4002,7 +4002,8 @@ class Locusdbentity(Dbentity):
             pmids_results = DBSession.query(LocusReferences, Referencedbentity.pmid).filter(and_(LocusReferences.locus_id==self.dbentity_id, LocusReferences.reference_class=='description')).outerjoin(Referencedbentity).all()
             pmids_results = [str(x[1]) for x in pmids_results]
             description_pmids = SEPARATOR.join(pmids_results)
-
+        feature_type = DBSession.query(So.display_name).outerjoin(Dnasequenceannotation).filter(Dnasequenceannotation.dbentity_id == self.dbentity_id,Dnasequenceannotation.taxonomy_id == TAXON_ID, Dnasequenceannotation.dna_type == 'GENOMIC').scalar()
+        protein_name = DBSession.query(LocusAlias.display_name).filter(LocusAlias.locus_id == self.dbentity_id, LocusAlias.alias_type == 'NCBI protein name').scalar()
 
         return {
             'name': self.display_name,
@@ -4018,13 +4019,13 @@ class Locusdbentity(Dbentity):
                 'aliases': aliases_list,
                 'description': self.description,
                 'description_pmids': description_pmids,
-                'feature_type': '', #TEMP todo
+                'feature_type': feature_type,
                 'gene_name': self.gene_name,
                 'gene_name_pmids': gene_name_pmids,
                 'name_description': self.name_description,
                 'name_description_pmids': name_description_pmids,
                 'qualifier': self.qualifier,
-                'ncbi_protein_name': '' #TEMP todo
+                'ncbi_protein_name': protein_name
             }
         }
 
