@@ -3984,7 +3984,7 @@ class Locusdbentity(Dbentity):
             pmids_results = [str(y[1]) for y in a_pmids]
             aliases_list.append({
                 'alias': x.display_name,
-                'pmids': pmids_results
+                'pmids': SEPARATOR.join(pmids_results)
             })
 
         gene_name_pmids = ''
@@ -4057,6 +4057,61 @@ class Locusdbentity(Dbentity):
                         self.name_description = new_info['name_description']
                     elif key == 'qualifier':
                         self.qualifier = new_info['qualifier']
+                    # changes outside of locusdbentity
+                    elif key == 'ncbi_protein_name':
+                        protein_alias = DBSession.query(LocusAlias).filter(LocusAlias.locus_id == self.dbentity_id, LocusAlias.alias_type == 'NCBI protein name').one_or_none()
+                        protein_alias.display_name = new_info['ncbi_protein_name']
+                    elif key == 'feature_type':
+                        new_so_id = curator_session.query(So.so_id).filter(So.display_name == new_info['feature_type']).scalar()
+                        dna_seq = curator_session.query(Dnasequenceannotation).filter(Dnasequenceannotation.dbentity_id == self.dbentity_id, Dnasequenceannotation.taxonomy_id == TAXON_ID, Dnasequenceannotation.dna_type == 'GENOMIC').one_or_none()
+                        dna_seq.so_id = new_so_id
+                    elif key == 'gene_name_pmids':
+                        # delete the old name gene_name PMIDS
+                        curator_session.query(LocusReferences).filter(and_(LocusReferences.locus_id==self.dbentity_id, LocusReferences.reference_class=='gene_name')).delete(synchronize_session=False)
+                        pmid_list = convert_space_separated_pmids_to_list(new_info['gene_name_pmids'])
+                        # add new entries
+                        for p in pmid_list:
+                            new_ref_id = curator_session.query(Referencedbentity.dbentity_id).filter(Referencedbentity.pmid == p).scalar()
+                            new_locus_ref = LocusReferences(
+                                reference_id = new_ref_id,
+                                locus_id = self.dbentity_id,
+                                source_id = SGD_SOURCE_ID,
+                                reference_class = 'gene_name',
+                                created_by = username
+                            )
+                            curator_session.add(new_locus_ref)
+                    elif key == 'description_pmids':
+                        # delete the old name description PMIDS
+                        curator_session.query(LocusReferences).filter(and_(LocusReferences.locus_id==self.dbentity_id, LocusReferences.reference_class=='description')).delete(synchronize_session=False)
+                        pmid_list = convert_space_separated_pmids_to_list(new_info['description_pmids'])
+                        # add new entries
+                        for p in pmid_list:
+                            new_ref_id = curator_session.query(Referencedbentity.dbentity_id).filter(Referencedbentity.pmid == p).scalar()
+                            new_locus_ref = LocusReferences(
+                                reference_id = new_ref_id,
+                                locus_id = self.dbentity_id,
+                                source_id = SGD_SOURCE_ID,
+                                reference_class = 'description',
+                                created_by = username
+                            )
+                            curator_session.add(new_locus_ref)
+                    elif key == 'name_description_pmids':
+                        # delete the old name name_description PMIDS
+                        curator_session.query(LocusReferences).filter(and_(LocusReferences.locus_id==self.dbentity_id, LocusReferences.reference_class=='name_description')).delete(synchronize_session=False)
+                        pmid_list = convert_space_separated_pmids_to_list(new_info['name_description_pmids'])
+                        # add new entries
+                        for p in pmid_list:
+                            new_ref_id = curator_session.query(Referencedbentity.dbentity_id).filter(Referencedbentity.pmid == p).scalar()
+                            new_locus_ref = LocusReferences(
+                                reference_id = new_ref_id,
+                                locus_id = self.dbentity_id,
+                                source_id = SGD_SOURCE_ID,
+                                reference_class = 'name_description',
+                                created_by = username
+                            )
+                            curator_session.add(new_locus_ref)                    # TEMP debug old stuff
+                    else:
+                        print(new_info[key], old_info[key])
                 transaction.commit()
             except Exception as e:
                 transaction.abort()
@@ -8284,3 +8339,8 @@ def validate_tags(tags):
             }
             tags.append(new_tag)
     return tags
+
+def convert_space_separated_pmids_to_list(str_pmids):
+    str_list = str_pmids.split(SEPARATOR)
+    int_list = [int(x) for x in str_list]
+    return int_list
