@@ -7970,6 +7970,41 @@ class Reservedname(Base):
         try:
             curator_session = get_curator_session(username)
             self = curator_session.merge(self)
+            locus = curator_session.query(Locusdbentity).filter(Locusdbentity.dbentity_id == self.locus_id)
+            locus.gene_name = self.display_name
+            locus.display_name = self.display_name
+            locus.name_description = self.name_description
+            new_gene_name_locus_reference = LocusReferences(
+                locus_id=self.locus_id,
+                reference_id=self.reference_id,
+                reference_class='gene_name',
+                created_by=username,
+                source_id=SGD_SOURCE_ID
+            )
+            new_name_description_locus_reference = LocusReferences(
+                locus_id=self.locus_id,
+                reference_id=self.reference_id,
+                reference_class='name_description',
+                created_by=username,
+                source_id=SGD_SOURCE_ID
+            )
+            curator_session.add(new_gene_name_locus_reference)
+            curator_session.add(new_name_description_locus_reference)
+            # TODO archlocuschange
+            # arch_locuschange = curator_session.query(ArchLocuschange).filter(ArchLocuschange.dbentity_id == self.locus_id).one_or_none()
+            # arch_locuschange.date_name_standardized = datetime.now()
+            # add curator activity
+            new_curate_activity = CuratorActivity(
+                display_name = locus.display_name,
+                obj_url = locus.obj_url,
+                activity_category = 'locus',
+                dbentity_id = locus.dbentity_id,
+                message = 'stardized gene name',
+                json = json.dumps({ 'keys': { 'gene_name': self.display_name } }),
+                created_by = username
+            )
+            curator_session.add(new_curate_activity)
+            curator_session.delete(self)
             transaction.commit()
             locus.ban_from_cache()
         except Exception as e:
