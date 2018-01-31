@@ -935,7 +935,7 @@ class CuratorActivity(Base):
             'date_created': self.date_created.strftime("%Y-%m-%d"),
             'time_created': self.date_created.isoformat(),
             'name': self.display_name,
-            'message': self.message,
+            'type': self.message,
             'is_curator_activity': True,
             'data': json.loads(self.json)
         }
@@ -7999,7 +7999,7 @@ class Reservedname(Base):
                 obj_url = locus.obj_url,
                 activity_category = 'locus',
                 dbentity_id = locus.dbentity_id,
-                message = 'stardized gene name',
+                message = 'standardized gene name',
                 json = json.dumps({ 'keys': { 'gene_name': self.display_name } }),
                 created_by = username
             )
