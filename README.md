@@ -1,6 +1,6 @@
 # SGDBackend-Nex2
 
-[![Build Status](https://travis-ci.org/yeastgenome/SGDBackend-Nex2.svg?branch=development)](https://travis-ci.org/yeastgenome/SGDBackend-Nex2)
+[![Build Status](https://travis-ci.org/yeastgenome/SGDBackend-Nex2.svg)](https://travis-ci.org/yeastgenome/SGDBackend-Nex2)
 
 A restful web service for the Saccharomyces Genome Database (SGD) NEX 2, as well as an authenticated curation interface.
 
