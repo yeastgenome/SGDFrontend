@@ -6,6 +6,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import scoped_session, sessionmaker
 from validate_email import validate_email
+import datetime
 import logging
 import os
 import traceback
@@ -15,7 +16,7 @@ import json
 from .helpers import allowed_file, extract_id_request, secure_save_file, curator_or_none, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id
 from .curation_helpers import ban_from_cache, process_pmid_list, get_curator_session, get_pusher_client
 from .loading.promote_reference_triage import add_paper
-from .models import DBSession, Dbentity, Dbuser, Referencedbentity, Reservedname, ReservednameTriage, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags
+from .models import DBSession, Dbentity, Dbuser, CuratorActivity, Referencedbentity, Reservedname, ReservednameTriage, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags
 from .tsv_parser import parse_tsv_annotations
 
 logging.basicConfig()
@@ -70,6 +71,8 @@ def locus_curate_basic(request):
         locus = get_locus_by_id(id)
         params = request.json_body
         username = request.session['username']
+        pusher = get_pusher_client()
+        pusher.trigger('sgd', 'curateHomeUpdate', {})
         return locus.update_basic(params, username)
     except Exception as e:
         log.error(e)
@@ -330,6 +333,13 @@ def get_recent_annotations(request):
     annotations = []
     recent_summaries = DBSession.query(Locussummary).order_by(Locussummary.date_created.desc()).limit(limit).all()
     recent_literature = DBSession.query(Referencedbentity).order_by(Referencedbentity.dbentity_id.desc()).limit(limit).all()
+
+    # use curator activity
+    start_date = datetime.datetime.today() - datetime.timedelta(days=30)
+    end_date = datetime.datetime.today()
+    recent_activity = DBSession.query(CuratorActivity).filter(CuratorActivity.date_created >= start_date).order_by(CuratorActivity.date_created.desc()).all()
+    for d in recent_activity:
+        annotations.append(d.to_dict())
     for d in recent_literature:
         annotations.append(d.annotations_summary_to_dict())
     for d in recent_summaries:

@@ -3,6 +3,7 @@ import CategoryLabel from './categoryLabel';
 import { Link } from 'react-router';
 
 import { PREVIEW_URL } from '../constants';
+import DetaiLList from './detailList';
 
 import TagList from './tagList';
 
@@ -14,7 +15,24 @@ class AnnotationSummary extends Component {
     return null;
   }
 
+  renderActivity(d) {
+    if (d.data) {
+      if (d.data.keys) {
+        return (
+          <div style={{ marginLeft: '1rem', marginBottom: '1rem' }}>
+            <DetaiLList data={d.data.keys} />
+          </div>
+        );  
+      }
+      
+    }
+    return null;
+  }
+
   renderBlock(d) {
+    if (d.is_curator_activity) {
+      return this.renderActivity(d);
+    }
     if (d.value) {
       return (
         <blockquote dangerouslySetInnerHTML={{ __html: d.value}} />
