@@ -7970,7 +7970,7 @@ class Reservedname(Base):
         try:
             curator_session = get_curator_session(username)
             self = curator_session.merge(self)
-            locus = curator_session.query(Locusdbentity).filter(Locusdbentity.dbentity_id == self.locus_id)
+            locus = curator_session.query(Locusdbentity).filter(Locusdbentity.dbentity_id == self.locus_id).one_or_none()
             locus.gene_name = self.display_name
             locus.display_name = self.display_name
             locus.name_description = self.name_description
