@@ -910,6 +910,35 @@ class Colleague(Base):
             ColleagueUrl.colleague_id == self.colleague_id).first()
         return item
 
+class CuratorActivity(Base):
+    __tablename__ = 'curatoractivity'
+    __table_args__ = (
+        UniqueConstraint('curation_id'),
+        {u'schema': 'nex'}
+    )
+
+    curation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.link_seq'::regclass)"))
+    display_name = Column(String(500), nullable=False)
+    obj_url = Column(String(500), nullable=False)
+    activity_category = Column(String(100), nullable=False)
+    dbentity_id = Column(ForeignKey(u'nex.locusdbentity.dbentity_id', ondelete=u'CASCADE'), nullable=True)
+    message = Column(String(500), nullable=False)
+    json = Column(Text, nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    def to_dict(self):
+        return {
+            'category': self.activity_category,
+            'created_by': self.created_by,
+            'href': self.obj_url,
+            'date_created': self.date_created.strftime("%Y-%m-%d"),
+            'time_created': self.date_created.isoformat(),
+            'name': self.display_name,
+            'message': self.message,
+            'is_curator_activity': True,
+            'data': json.loads(self.json)
+        }
 
 class ColleagueKeyword(Base):
     __tablename__ = 'colleague_keyword'
@@ -4143,8 +4172,27 @@ class Locusdbentity(Dbentity):
                                     created_by = username
                                 )
                                 curator_session.add(new_locus_alias_ref)
+                # create curator activity
+                update_dict = {}
+                for key in keys_to_update:
+                    new_val = None
+                    if key == 'aliases':
+                        new_val = ''
+                        for a in new_info[key]:
+                            new_val = new_val + a['alias'] + ' '
                     else:
-                        print(new_info[key], old_info[key])
+                        new_val = new_info[key]
+                    update_dict[key] = new_val
+                new_curate_activity = CuratorActivity(
+                    display_name = self.display_name,
+                    obj_url = self.obj_url,
+                    activity_category = 'locus',
+                    dbentity_id = self.dbentity_id,
+                    message = 'updated locus information',
+                    json = json.dumps({ 'keys': update_dict }),
+                    created_by = username
+                )
+                curator_session.add(new_curate_activity)
                 transaction.commit()
                 self.ban_from_cache()
             except Exception as e:
@@ -7923,6 +7971,7 @@ class Reservedname(Base):
             curator_session = get_curator_session(username)
             self = curator_session.merge(self)
             transaction.commit()
+            locus.ban_from_cache()
         except Exception as e:
             transaction.abort()
             traceback.print_exc()
