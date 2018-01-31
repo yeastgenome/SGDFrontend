@@ -3980,7 +3980,7 @@ class Locusdbentity(Dbentity):
         aliases = DBSession.query(LocusAlias).filter(and_(LocusAlias.locus_id==self.dbentity_id, LocusAlias.alias_type=='Uniform')).all()
         aliases_list = []
         for x in aliases:
-            a_pmids= DBSession.query(LocusAliasReferences, Referencedbentity.pmid).filter(LocusAliasReferences.alias_id==x.alias_id).outerjoin(Referencedbentity).all()
+            a_pmids = DBSession.query(LocusAliasReferences, Referencedbentity.pmid).filter(LocusAliasReferences.alias_id==x.alias_id).outerjoin(Referencedbentity).all()
             pmids_results = [str(y[1]) for y in a_pmids]
             aliases_list.append({
                 'alias': x.display_name,
@@ -4031,6 +4031,11 @@ class Locusdbentity(Dbentity):
 
     def update_basic(self, new_info, username):
         old_info = self.to_curate_dict()['basic']
+        # sanitize aliases
+        new_aliases = new_info['aliases']
+        for x in new_aliases:
+            if x['pmids'] is None:
+                x['pmids'] = ''
         # list which keys need updating
         keys_to_update = []
         for key in new_info.keys():
@@ -4109,10 +4114,39 @@ class Locusdbentity(Dbentity):
                                 reference_class = 'name_description',
                                 created_by = username
                             )
-                            curator_session.add(new_locus_ref)                    # TEMP debug old stuff
+                            curator_session.add(new_locus_ref)
+                    elif key == 'aliases':
+                        # delete old aliases and references
+                        old_aliases = curator_session.query(LocusAlias).filter(and_(LocusAlias.locus_id==self.dbentity_id, LocusAlias.alias_type=='Uniform')).all()
+                        for a in old_aliases:
+                            curator_session.query(LocusAliasReferences).filter(LocusAliasReferences.alias_id == a.alias_id).delete(synchronize_session=False)
+                            curator_session.delete(a)
+                        curator_session.flush()
+                        for a in new_info['aliases']:
+                            new_alias = LocusAlias(
+                                display_name = a['alias'],
+                                locus_id = self.dbentity_id,
+                                alias_type = 'Uniform',
+                                has_external_id_section = False,
+                                source_id = SGD_SOURCE_ID,
+                                created_by = username
+                            )
+                            curator_session.add(new_alias)
+                            curator_session.flush()
+                            int_pmids = convert_space_separated_pmids_to_list(a['pmids'])
+                            for p in int_pmids:
+                                new_ref_id = curator_session.query(Referencedbentity.dbentity_id).filter(Referencedbentity.pmid == p).scalar()
+                                new_locus_alias_ref = LocusAliasReferences(
+                                    alias_id = new_alias.alias_id,
+                                    reference_id = new_ref_id,
+                                    source_id = SGD_SOURCE_ID,
+                                    created_by = username
+                                )
+                                curator_session.add(new_locus_alias_ref)
                     else:
                         print(new_info[key], old_info[key])
                 transaction.commit()
+                self.ban_from_cache()
             except Exception as e:
                 transaction.abort()
                 traceback.print_exc()
@@ -8341,6 +8375,8 @@ def validate_tags(tags):
     return tags
 
 def convert_space_separated_pmids_to_list(str_pmids):
+    if str_pmids == '':
+        return []
     str_list = str_pmids.split(SEPARATOR)
     int_list = [int(x) for x in str_list]
     return int_list
