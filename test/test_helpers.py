@@ -8,9 +8,10 @@ import fixtures as factory
 
 from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPOk
 
-from src.helpers import md5, allowed_file, secure_save_file, curator_or_none, authenticate, extract_references, extract_keywords, \
+from src.helpers import md5, allowed_file, secure_save_file, curator_or_none, extract_references, extract_keywords, \
     get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file
 from src.models import Dbuser, Filepath
+from src.curation_views import authenticate
 
 
 class HelpersTest(unittest.TestCase):

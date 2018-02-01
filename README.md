@@ -1,5 +1,7 @@
 # SGDBackend-Nex2
 
+[![Build Status](https://travis-ci.org/yeastgenome/SGDBackend-Nex2.svg)](https://travis-ci.org/yeastgenome/SGDBackend-Nex2)
+
 A restful web service for the Saccharomyces Genome Database (SGD) NEX 2, as well as an authenticated curation interface.
 
 SGD API documentation can be found at https://github.com/yeastgenome/SGDBackend-Nex2/blob/master/docs/webservice.MD.

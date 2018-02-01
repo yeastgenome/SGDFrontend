@@ -1114,8 +1114,9 @@ class Contig(Base):
         strains = Straindbentity.get_strains_by_taxon_id(self.taxonomy_id)
         urls = DBSession.query(ContigUrl).filter_by(contig_id=self.contig_id).all()
         # get sequences and group by feature type, exclude inactive and non S288c features
-        inactive_ids_raw = DBSession.query(Locusdbentity.dbentity_id).filter(Locusdbentity.dbentity_status != 'Active')
+        inactive_ids_raw = DBSession.query(Locusdbentity.dbentity_id).filter(Locusdbentity.dbentity_status != 'Active').all()
         inactive_ids = [d[0]for d in inactive_ids_raw]
+
         sequences = DBSession.\
             query(Dnasequenceannotation.so_id, func.count(Dnasequenceannotation.annotation_id)).\
             filter(and_(Dnasequenceannotation.contig_id==self.contig_id, Dnasequenceannotation.dna_type=="GENOMIC", Dnasequenceannotation.taxonomy_id == TAXON_ID, ~Dnasequenceannotation.dbentity_id.in_(inactive_ids))).\
@@ -2631,10 +2632,8 @@ class Locusdbentity(Dbentity):
         for lit in regulation_lit_htp:
             obj["htp"].append(lit.to_dict_citation())
 
-        apo_ids_r = DBSession.query(Apo.apo_id).filter_by(namespace_group="classical genetics").all()
-        apo_ids = [d[0] for d in apo_ids_r]
-        apo_ids_large_scale_r = DBSession.query(Apo.apo_id).filter_by(namespace_group="large-scale survey").all()
-        apo_ids_large_scale = [d[0] for d in apo_ids_large_scale_r]
+        apo_ids = DBSession.query(Apo.apo_id).filter_by(namespace_group="classical genetics").all()
+        apo_ids_large_scale = DBSession.query(Apo.apo_id).filter_by(namespace_group="large-scale survey").all()
 
         phenotype_ids = DBSession.query(Phenotypeannotation.reference_id, Phenotypeannotation.experiment_id).filter(Phenotypeannotation.dbentity_id == self.dbentity_id).all()
 
