@@ -18,7 +18,7 @@ def read_obo(filename):
     for line in f:
         line = line.strip()
         if line == '[Term]' or line == '[Typedef]':
-            if term is not None and id not None and is_obsolete == 0:
+            if term is not None and id is not None and is_obsolete == 0:
                 data.append({ 'term': term,
                               'id': id,
                               'aliases': aliases,

@@ -90,7 +90,7 @@ class ReferencesTest(unittest.TestCase):
     #     self.assertTrue(mock_search.return_value._full_params[1].compare(Referencedocument.document_type == 'Medline'))
     @mock.patch('src.views.extract_id_request', return_value="S000114259")
     @mock.patch('src.models.DBSession.query')
-    def test_should_return_valid_reference(self, mock_search):
+    def test_should_return_valid_reference(self, mock_search, mock_redis):
 
         mock_search.side_effect = reference_side_effect
 
@@ -209,7 +209,7 @@ class ReferencesTest(unittest.TestCase):
     #
     @mock.patch('src.views.extract_id_request', return_value="nonexistent_id")
     @mock.patch('src.models.DBSession.query')
-    def test_should_return_non_existent_reference(self, mock_search):
+    def test_should_return_non_existent_reference(self, mock_search, mock_redis):
         mock_search.return_value = MockQuery(None)
 
         request = testing.DummyRequest()

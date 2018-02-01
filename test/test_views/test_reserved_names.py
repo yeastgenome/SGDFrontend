@@ -18,7 +18,7 @@ class ReservedNameTest(unittest.TestCase):
     @mock.patch('src.views.extract_id_request', return_value="S000203483")
     @mock.patch('src.models.DBSession.query')
     def test_should_return_valid_reserved_name(self, mock_search, mock_redis):
-        r_name = factory.ReservedNameFactory()
+        r_name = factory.ReservednameFactory()
         mock_search.return_value = MockQuery(r_name)
         
         request = testing.DummyRequest()

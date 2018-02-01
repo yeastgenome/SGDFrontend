@@ -44,7 +44,6 @@ class ContigTest(unittest.TestCase):
         request.context = testing.DummyResource()
         #request.matchdict['id'] = "1381933"
         id = mock_redis.extract_id_request(request, 'contig', param_name='id')
-
         response = contig_sequence_details(request)
 
         self.assertEqual(response, ctg.sequence_details())
