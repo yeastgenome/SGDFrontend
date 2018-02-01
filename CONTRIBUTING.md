@@ -8,3 +8,5 @@ When the development branch is ready for release, it should be deployed to QA an
 
     $ git tag -a v17.9.0 -m "description of bug fixes"
     $ git push origin --tags
+### Git flow
+![Alt](https://github.com/yeastgenome/SGDBackend-Nex2/blob/qa/docs/SGD-Git-flow-example.png)
