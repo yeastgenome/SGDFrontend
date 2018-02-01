@@ -1,7 +1,7 @@
 import datetime
 import factory
 from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRelation, ColleagueKeyword, Keyword, Dbuser, Dbentity, Edam, \
-    Referencedbentity, Journal, Book, FileKeyword, Filedbentity, Filepath, Referencedocument, Chebi, ChebiUrl, Phenotypeannotation, \
+    Referencedbentity, Journal, Book, FileKeyword, Filedbentity, FilePath, Referencedocument, Chebi, ChebiUrl, Phenotypeannotation, \
     PhenotypeannotationCond, Locusdbentity, Locussummary, Taxonomy, Phenotype, Apo, Allele, Reporter, Obi, Reservedname, Straindbentity, StrainUrl, \
     Strainsummary, StrainsummaryReference, Dataset, DatasetReference, DatasetKeyword, Referencetype, ReferenceRelation, ReferenceUrl, Referenceauthor, \
     Physinteractionannotation, Geninteractionannotation, Goannotation, Regulationannotation, Literatureannotation, Contig, EcoAlias, EcoUrl, Goextension, \
@@ -356,12 +356,11 @@ class FileKeywordFactory(factory.alchemy.SQLAlchemyModelFactory):
     
 class FilepathFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
-        model = Filepath
+        model = FilePath
         sqlalchemy_session = DBSession
 
-    filepath_id = 1
+    file_path_id = 1
     source_id = 1
-    filepath = "my_path"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
