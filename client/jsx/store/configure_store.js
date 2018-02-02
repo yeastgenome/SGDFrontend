@@ -15,16 +15,13 @@ const ConfigureStore = (initialState, history) => {
     routing: routeReducer
   };
   const reducer = combineReducers(reducerObj);
-  if (process.env.NODE_ENV == 'development'){
-    //redux debugging
-    const store = compose(applyMiddleware(thunk), applyMiddleware(syncHistory(history)))(createStore)(reducer, initialState, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
-    return store;
-  }
-  else{
-    const store = compose(applyMiddleware(thunk), applyMiddleware(syncHistory(history)))(createStore)(reducer, initialState);
-    return store;
-  }
-  
+
+  const store = compose(
+    applyMiddleware(reduxPromise),
+    applyMiddleware(thunk),
+    applyMiddleware(syncHistory(history))
+  )(createStore)(reducer, initialState);
+  return store;
 };
 
 export default ConfigureStore;
