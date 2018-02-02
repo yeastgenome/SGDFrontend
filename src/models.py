@@ -2032,6 +2032,7 @@ class Referencedbentity(Dbentity):
                                 has_omics = True
                         curator_session.add(lit_annotation)
             transaction.commit()
+            self.sync_to_curate_activity(username)
         except Exception, e:
             traceback.print_exc()
             transaction.abort()
@@ -2040,6 +2041,35 @@ class Referencedbentity(Dbentity):
         finally:
             if curator_session:
                 curator_session.close()
+
+    def sync_to_curate_activity(self, username):
+        tags_obj = self.get_tags()
+        try:
+            curator_session = get_curator_session(username)
+            existing = curator_session.query(CuratorActivity).filter(CuratorActivity.dbentity_id == self.dbentity_id).one_or_none()
+            message = 'added'
+            if existing:
+                curator_session.delete(existing)
+                message = 'updated'
+            new_curate_activity = CuratorActivity(
+                display_name = self.display_name,
+                obj_url = self.obj_url,
+                activity_category = 'reference',
+                dbentity_id = self.dbentity_id,
+                message = message,
+                json = json.dumps({ 'tags': tags_obj }),
+                created_by = username
+            )
+            curator_session.add(new_curate_activity)
+            transaction.commit()
+        except Exception as e:
+            traceback.print_exc()
+            transaction.abort()
+            raise(e)
+        finally:
+            if curator_session:
+                curator_session.close()
+
 
 class FilePath(Base):
     __tablename__ = 'file_path'

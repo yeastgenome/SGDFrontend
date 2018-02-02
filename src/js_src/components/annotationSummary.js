@@ -23,6 +23,8 @@ class AnnotationSummary extends Component {
             <DetaiLList data={d.data.keys} />
           </div>
         );  
+      } else if (d.data.tags) {
+        return this.renderTags(d.data);
       }
       
     }

@@ -16,6 +16,7 @@ class CurateHome extends Component {
     super(props);
     this.state = {
       isPending: true,
+      showEveryone: false,
       annotationData: [],
     };
   }
@@ -31,6 +32,13 @@ class CurateHome extends Component {
     this._isMounted = false;
   }
 
+  handleChange(e) {
+    let _showEveryone = (e.target.value === 'EVERYONE');
+    this.setState({ showEveryone: _showEveryone }, () => {
+      this.fetchData();
+    });
+  }
+
   listenForUpdates() {
     let pusher = getPusherClient();
     this.channel = pusher.subscribe(CHANNEL);
@@ -40,22 +48,38 @@ class CurateHome extends Component {
   }
 
   fetchData() {
-    fetchData(ANNOTATION_URL).then( (data) => {
+    let url = ANNOTATION_URL;
+    if (this.state.showEveryone) url = `${ANNOTATION_URL}?everyone=1`;
+    this.setState({ isPending: true });
+    fetchData(url).then( (data) => {
       if (this._isMounted) this.setState({ annotationData: data, isPending: false });
     });
+  }
+
+  renderSelector() {
+    return (
+      <span onChange={this.handleChange.bind(this)}>
+        <span>Annotations by</span>
+        <input defaultChecked={true} id='annotationsMe' name='annotationsBy' style={{ marginLeft: '1rem' }} type='radio' value='ME' />
+        <label htmlFor='annotationsMe'>Me</label>
+        <input id='annotationsE' name='annotationsBy' type='radio' value='EVERYONE' />
+        <label htmlFor='annotationsE'>Everyone</label>
+      </span>
+    );
   }
 
   renderContent() {
     if (this.state.isPending) return <Loader />;
     return (
-        <div className={style.annotationContainer}>
-          <AnnotationSummary annotations={this.state.annotationData} message='recent annotations.' />
-        </div>
+      <div className={style.annotationContainer}>
+        <AnnotationSummary annotations={this.state.annotationData} message='recent annotations.' />
+        }
+      </div>
     );
   }
 
   render() {
-    return <CurateLayout>{this.renderContent()}</CurateLayout>;
+    return <CurateLayout><div>{this.renderSelector()}{this.renderContent()}</div></CurateLayout>;
   }
 }
 

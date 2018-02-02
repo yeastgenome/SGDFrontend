@@ -2,7 +2,7 @@ from oauth2client import client, crypt
 from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPOk, HTTPNotFound, HTTPFound
 from pyramid.view import view_config
 from pyramid.session import check_csrf_token
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, and_
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import scoped_session, sessionmaker
 from validate_email import validate_email
@@ -332,16 +332,18 @@ def get_recent_annotations(request):
     limit = 25
     annotations = []
     recent_summaries = DBSession.query(Locussummary).order_by(Locussummary.date_created.desc()).limit(limit).all()
-    recent_literature = DBSession.query(Referencedbentity).order_by(Referencedbentity.dbentity_id.desc()).limit(limit).all()
+    is_everyone = request.params.get('everyone', False)
+    username = request.session['username']
 
     # use curator activity
     start_date = datetime.datetime.today() - datetime.timedelta(days=30)
     end_date = datetime.datetime.today()
-    recent_activity = DBSession.query(CuratorActivity).filter(CuratorActivity.date_created >= start_date).order_by(CuratorActivity.date_created.desc()).all()
+    if is_everyone:
+        recent_activity = DBSession.query(CuratorActivity).filter(CuratorActivity.date_created >= start_date).order_by(CuratorActivity.date_created.desc()).all()
+    else:
+        recent_activity = DBSession.query(CuratorActivity).filter(and_(CuratorActivity.date_created >= start_date, CuratorActivity.created_by == username)).order_by(CuratorActivity.date_created.desc()).all()
     for d in recent_activity:
         annotations.append(d.to_dict())
-    for d in recent_literature:
-        annotations.append(d.annotations_summary_to_dict())
     for d in recent_summaries:
         annotations.append(d.to_dict())
     annotations = sorted(annotations, key=lambda r: r['time_created'], reverse=True)
