@@ -133,10 +133,10 @@ def extract_keywords(request):
     return keywords
 
 def get_or_create_filepath(request):
-    filepath = DBSession.query(FilePath).filter(FilePath.filepath == request.POST.get("new_filepath")).one_or_none()
+    filepath = DBSession.query(FilePath).one_or_none()
 
     if filepath is None:
-        filepath = FilePath(filepath=request.POST.get("new_filepath"), source_id=339)
+        filepath = FilePath(source_id=339)
         DBSession.add(filepath)
         DBSession.flush()
         DBSession.refresh(filepath)

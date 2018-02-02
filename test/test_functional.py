@@ -22,7 +22,7 @@ class SGDFunctionalTests(unittest.TestCase):
             f.write("Upload me and delete me!")
         
         from src import main
-        settings = {'pyramid.includes': ['pyramid_celery', 'pyramid_redis_sessions', 'pyramid_jinja2'], 'jinja2.directories': "../templates", 'redis.sessions.secret': 'my_session_secret_for_testing_only', 'redis.session.timeout': 30}
+        settings = {'pyramid.includes': ['pyramid_redis_sessions', 'pyramid_jinja2'], 'jinja2.directories': "../templates", 'redis.sessions.secret': 'my_session_secret_for_testing_only', 'redis.session.timeout': 30}
         app = main({'__file__': 'development.ini'}, **settings)
         
         self.testapp = TestApp(app)
@@ -59,7 +59,7 @@ class SGDFunctionalTests(unittest.TestCase):
     #     self.assertEqual(res.status, '200 OK')
 
     def test_sign_out(self):
-        res = self.testapp.delete('/signout')
+        res = self.testapp.get('/signout')
         self.assertEqual(res.status, '200 OK')
 
     # def test_colleagues_by_format_name(self):
