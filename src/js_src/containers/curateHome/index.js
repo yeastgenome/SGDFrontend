@@ -43,7 +43,7 @@ class CurateHome extends Component {
     let pusher = getPusherClient();
     this.channel = pusher.subscribe(CHANNEL);
     this.channel.bind(EVENT, () => {
-      this.fetchData();
+      if (this.state.showEveryone) this.fetchData();
     });
   }
 
