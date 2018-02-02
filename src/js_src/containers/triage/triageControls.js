@@ -145,7 +145,7 @@ class TriageControls extends Component {
           <div className={`columns small-6 ${style.triageControls}`}>
             <p>You have claimed this reference. <a onClick={handleUnclaim}>Unclaim</a></p>
           </div>
-          <div className='columns small-6 text-right'>
+          <div className={`${style.dbControls}`}>
             <a className='button' onClick={this.handlePromoteEntry.bind(this)}><i className='fa fa-check' /> Add to Database</a>
             <a className='button secondary' onClick={this.handleDiscardEntry.bind(this)}><i className='fa fa-trash' /> Discard</a>
           </div>
