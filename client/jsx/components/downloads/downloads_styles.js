@@ -14,11 +14,11 @@ export default StyleSheet.create({
     'marginLeft': [{ 'unit': 'em', 'value': NaN }]
   },
   'togglable-down::after': {
-    'content': ''▼'',
-    'display': ''inline-block''
+    'content': '▼',
+    'display': 'inline-block'
   },
   'togglable-up::after': {
-    'content': ''▶'',
-    'display': ''inline-block''
+    'content': '▶',
+    'display': 'inline-block'
   }
 });

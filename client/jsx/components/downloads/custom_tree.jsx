@@ -70,6 +70,7 @@ class CustomTree extends Component {
       };
     }
     if (this.props.node.childNodes == undefined) {
+      
       //leaf node
       return (
         <div>
