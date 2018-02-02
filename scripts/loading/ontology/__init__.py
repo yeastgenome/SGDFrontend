@@ -18,7 +18,7 @@ def read_obo(filename):
         line = line.strip()
         if line == '[Term]' or line == '[Typedef]':
             if term is not None and id is not None and is_obsolete == 0:
-                data.append({ 'term': term.replace("&apos;", "'"),
+                data.append({ 'term': term.replace("&apos;", "'").replace("&lt;", "<").replace("&gt;", ">"),
                               'id': id,
                               'aliases': aliases,
                               'parents': parents,
@@ -42,7 +42,7 @@ def read_obo(filename):
                 term = pieces[1].strip()
             elif pieces[0] == 'synonym':
                 synonym_items = pieces[1].split('"')
-                alias = synonym_items[1].replace("&apos;", "'")
+                alias = synonym_items[1].replace("&apos;", "'").replace("&lt;", "<").replace("&gt;", ">")
                 alias_type = synonym_items[2].strip().split(' ')[0]
                 aliases.append((alias, alias_type))
             elif pieces[0] == 'def':
@@ -247,7 +247,7 @@ def read_owl(filename, ontology, is_sgd_term=None):
             for term_stop_tag in term_stop_tags:
                 if term_stop_tag in line:
                     if is_obsolete_id == 0 and id is not None and term is not None:
-                        data.append({ "term": term,
+                        data.append({ "term": term.replace("&apos;", "'").replace("&lt;", "<").replace("&gt;", ">"),
                                       "id": id,
                                       "namespace": namespace,
                                       "definition": definition,
@@ -321,7 +321,7 @@ def read_owl(filename, ontology, is_sgd_term=None):
         # <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">mitochondrion inheritance</rdfs:label> 
         # <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">never in taxon</rdfs:label>              
         if '<rdfs:label' in line:
-            term = line.split('>')[1].split('<')[0].strip().replace('_', ' ').replace('&apos;', '')
+            term = line.split('>')[1].split('<')[0].strip().replace('_', ' ').replace("&apos;", "'")
             if '#' in term:
                 term = None
             
@@ -336,6 +336,7 @@ def read_owl(filename, ontology, is_sgd_term=None):
                 # print "ALIAS TYPE: ", alias_type
                 # print "ALIAS NAME: ", alias_name     
                 continue
+            alias_name = alias_name.replace("&apos;", "'").replace("&lt;", "<").replace("&gt;", ">")
             aliases.append((alias_name, alias_type))
 
         # <oboInOwl:hasOBONamespace rdf:datatype="http://www.w3.org/2001/XMLSchema#string">biological_process</oboInOwl:hasOBONamespace>                                                                            
