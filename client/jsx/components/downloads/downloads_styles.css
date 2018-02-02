@@ -1,0 +1,20 @@
+togglable {
+    color: #D78770;
+    cursor: pointer;
+}
+
+.togglable-down::after,
+.togglable-up::after {
+    font-size: '8px';
+    margin-left: '0.5em';
+}
+
+.togglable-down::after {
+    content: '▼';
+    display: 'inline-block';
+}
+
+.togglable-up::after {
+    content: '▶';
+    display: 'inline-block';
+}
