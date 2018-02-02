@@ -171,38 +171,6 @@ class HelpersTest(unittest.TestCase):
 
         self.assertEqual(extract_keywords(request), [keyword.keyword_id])
 
-    # @mock.patch('src.models.DBSession.query')
-    # def test_existent_filepath_should_return_object(self, mock_search):
-    #     params = {'new_filepath': '/i/do/exist'}
-    #     filepath = factory.FilepathFactory.build()
-        
-    #     mock_search.return_value = MockQuery(filepath)
-
-    #     request = testing.DummyRequest(post=params)
-    #     request.context = testing.DummyResource()
-
-    #     self.assertEqual(get_or_create_filepath(request), filepath)
-
-    # @mock.patch('src.helpers.DBSession')
-    # def test_inexistent_filepath_should_return_new_object(self, mock_session):
-    #     params = {'new_filepath': '/valid/path'}
-    #     filepath = factory.FilepathFactory.build(filepath='/valid/path')
-
-    #     mock_session.query.return_value = MockQuery(None)
-    #     mock_session.return_value = MockQuery(None)
-
-    #     request = testing.DummyRequest(post=params)
-    #     request.context = testing.DummyResource()
-
-    #     response = get_or_create_filepath(request)
-        
-    #     self.assertTrue(mock_session.add.called_with(filepath))
-    #     self.assertTrue(mock_session.flush.called)
-    #     self.assertTrue(mock_session.refresh.called_with(filepath))
-    #     self.assertEqual(response.__class__, Filepath)
-    #     self.assertEqual(response.filepath, params["new_filepath"])
-    #     self.assertEqual(response.source_id, 339)
-
     @mock.patch('src.models.DBSession.query')
     def test_valid_topic_but_inexistent_should_raise_bad_requset(self, mock_search):
         params = {'topic_id': '1234'}
