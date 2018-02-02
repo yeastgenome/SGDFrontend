@@ -51,7 +51,7 @@ def blog_list(request):
     next_url = request.path + '?page=' + str(page + 1)
     offset = str((page - 1) * BLOG_PAGE_SIZE)
     offset_expression = 'offset=' + offset + 'number=' + str(BLOG_PAGE_SIZE)
-    if url_params.has_key('category'): 
+    if url_params.has_key('category'):
         url_suffix = '?category=' + url_params['category'] + '&' + offset_expression
     elif url_params.has_key('tag'):
         url_suffix = '?tag=' + url_params['tag'] + '&' + offset_expression
@@ -63,7 +63,7 @@ def blog_list(request):
     else:
         url_suffix = '?' + offset_expression
     wp_url = BLOG_BASE_URL + url_suffix
-    response = requests.get(wp_url)   
+    response = requests.get(wp_url)
     posts = json.loads(response.text)['posts']
     for post in posts:
         post = add_simple_date_to_post(post)
@@ -77,7 +77,7 @@ def blog_post(self, request):
     if response.status_code == 404:
         return not_found(request)
     post = add_simple_date_to_post(json.loads(response.text))
-    return render_to_response(TEMPLATE_ROOT + 'blog_post.jinja2', { 'post': post, 'categories': wp_categories, 'years': get_archive_years() }, request=request)    
+    return render_to_response(TEMPLATE_ROOT + 'blog_post.jinja2', { 'post': post, 'categories': wp_categories, 'years': get_archive_years() }, request=request)
 
 @view_config(route_name='blast_sgd')
 def blast_sgd(request):
@@ -91,6 +91,11 @@ def colleague_show(request):
 def downloads(request):
     return render_to_response(TEMPLATE_ROOT + 'downloads.jinja2', {}, request=request)
 
+@view_config(route_name='downloads_tree')
+def downloads_tree(request):
+    return render_to_response(
+        TEMPLATE_ROOT + 'downloads_tree.jinja2', {}, request=request)
+
 @view_config(route_name='new_colleague')
 def new_colleague(request):
     return render_to_response(TEMPLATE_ROOT + 'new_colleague.jinja2', {}, request=request)
@@ -99,7 +104,7 @@ def new_colleague(request):
 def interaction_search(request):
     return render_to_response(TEMPLATE_ROOT + 'interaction_search.jinja2', {}, request=request)
 
-@view_config(route_name='download_list') 
+@view_config(route_name='download_list')
 def download_list(request):
     date = datetime.datetime.now().strftime("%m/%d/%Y")
     query = request.params.get('query')
@@ -111,12 +116,12 @@ def download_list(request):
         response_text += (locus_name + '\n')
     return Response(body=response_text, content_type='text/plain', charset='utf-8', content_disposition='attachment; filename=search_results.txt')
 
-@view_config(route_name='references_this_week') 
+@view_config(route_name='references_this_week')
 def references_this_week(request):
     page = {}
     return render_to_response(TEMPLATE_ROOT + 'references_this_week.jinja2', page, request=request)
 
-@view_config(route_name='reference') 
+@view_config(route_name='reference')
 def reference(request):
     ref_id = request.matchdict['identifier']
     ref_obj = get_obj(ref_id, 'reference')
@@ -124,7 +129,7 @@ def reference(request):
         return not_found(request)
     return render_to_response(TEMPLATE_ROOT + 'reference.jinja2', ref_obj, request=request)
 
-@view_config(route_name='phenotype') 
+@view_config(route_name='phenotype')
 def phenotype(request):
     pheno_id = request.matchdict['identifier']
     pheno_obj = get_obj(pheno_id, 'phenotype')
@@ -133,7 +138,7 @@ def phenotype(request):
     return render_to_response(TEMPLATE_ROOT + 'phenotype.jinja2', pheno_obj, request=request)
 
 # If is_quick, try to redirect to gene page.  If not, or no suitable response, then just show results in script tag and let client js do the rest.
-@view_config(route_name='search') 
+@view_config(route_name='search')
 def search(request):
     # get limit, default to 25
     limit = '25' if request.params.get('page_size') is None else request.params.get('page_size')
@@ -157,15 +162,15 @@ def search(request):
         # no protein search or no protein page redirect applicable
         redirect_url  = get_redirect_url_from_results(parsed_results)
         if redirect_url:
-           return HTTPFound(get_https_url(redirect_url, request)) 
+            return HTTPFound(get_https_url(redirect_url, request))
     # if wrapped, or page > 0, just make bootstrapped results None to avoid pagination logic in python and fetch on client
     page = 0 if request.params.get('page') is None else int(request.params.get('page'))
     if request.params.get('wrapResults') == 'true' or page > 0:
-        json_results = 'false'    
+        json_results = 'false'
     # otherwise, render results page and put results in script tag
     return render_to_response(TEMPLATE_ROOT + 'search.jinja2', { 'bootstrapped_search_results_json': json_results }, request=request)
 
-@view_config(route_name='snapshot') 
+@view_config(route_name='snapshot')
 def snapshot(request):
     return render_to_response(TEMPLATE_ROOT + 'snapshot.jinja2', {}, request=request)
 
@@ -180,15 +185,15 @@ def suggestion(request):
 @view_config(route_name='variant_viewer')
 def variant_viewer(request):
     return render_to_response(TEMPLATE_ROOT + 'variant_viewer.jinja2', {}, request=request)
-    
-@view_config(route_name='home') 
+
+@view_config(route_name='home')
 def home(request):
     blog_posts = get_recent_blog_posts()
     meetings = get_meetings()
     return render_to_response(TEMPLATE_ROOT + 'homepage.jinja2', { 'meetings': meetings, 'blog_posts': blog_posts }, request=request)
 
 # # example
-# @view_config(route_name='example') 
+# @view_config(route_name='example')
 # def example(request):
 #     return render_to_response(TEMPLATE_ROOT + 'example.jinja2', {}, request=request)
 

@@ -23,6 +23,8 @@ def prep_views(chosen_frontend, config):
     config.add_route('blog_tag', '/blog/tag/{tag}')
     config.add_route('colleague_show', '/colleague/{identifier}')
     config.add_route('downloads', '/download-data')
+    #downloads_tree view
+    config.add_route('downloads_tree', '/downloads')
     config.add_route('new_colleague', '/new_colleague')
     config.add_route('interaction_search', '/interaction-search')
     config.add_route('download_list', '/download-list')
