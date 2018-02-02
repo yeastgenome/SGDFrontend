@@ -141,7 +141,7 @@ class TriageControls extends Component {
     return (
       <div>
         {this.renderTags()}
-        <div className="row">
+        <div className='row'>
           <div className={`columns small-6 ${style.triageControls}`}>
             <p>You have claimed this reference. <a onClick={handleUnclaim}>Unclaim</a></p>
           </div>
