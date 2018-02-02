@@ -1,16 +1,12 @@
-from util import prepare_schema_connection
-import config
+import os
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 __author__ = 'sweng66'
 
-def get_dev_session():
+def get_session():
 
-    nex_session_maker = prepare_schema_connection(config.NEX_DBTYPE, config.CURATE_DEV_HOST, config.NEX_DBNAME, config.NEX_SCHEMA, config.NEX_DBUSER, config.NEX_DBPASS)
+    engine = create_engine(os.environ['NEX2_URI'])
+    session_maker = sessionmaker(bind=engine)
+    return session_maker()
 
-    return nex_session_maker()
-
-def get_nex_session():
-
-    nex_session_maker = prepare_schema_connection(config.NEX_DBTYPE, config.NEX_HOST, config.NEX_DBNAME, config.NEX_SCHEMA, config.NEX_DBUSER, config.NEX_DBPASS)
-
-    return nex_session_maker()    
