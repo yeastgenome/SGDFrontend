@@ -252,7 +252,7 @@ def get_journal_id(record, created_by):
     j = Journal(issn_print = issn_print,
                 issn_electronic = issn_electronic,
                 display_name = journal_full_name,
-                format_name = format_name,
+                format_name = (format_name[:98] + '..') if len(format_name) >100 else format_name,
                 title = journal_full_name,
                 med_abbr = journal_abbr,
                 source_id = source_id,
