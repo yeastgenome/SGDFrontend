@@ -43,20 +43,22 @@ def insert_urls(pmid, reference_id, doi_url, pmc_url, source_id, created_by):
                      source_id = source_id,
                      created_by = created_by)
     DBSession.add(x)
-    x = ReferenceUrl(display_name = 'DOI full text',
-                     obj_url = doi_url,
-                     reference_id = reference_id,
-                     url_type = 'DOI full text',
-                     source_id = source_id,
-                     created_by= created_by)
-    DBSession.add(x)
-    x =ReferenceUrl(display_name = 'PMC full text',
-                     obj_url = pmc_url,
-                     reference_id = reference_id,
-                     url_type = 'PMC full text',
-                     source_id = source_id,
-                     created_by= created_by)
-    DBSession.add(x)
+    if doi_url:
+        x = ReferenceUrl(display_name = 'DOI full text',
+                        obj_url = doi_url,
+                        reference_id = reference_id,
+                        url_type = 'DOI full text',
+                        source_id = source_id,
+                        created_by= created_by)
+        DBSession.add(x)
+    if pmc_url:
+        x =ReferenceUrl(display_name = 'PMC full text',
+                        obj_url = pmc_url,
+                        reference_id = reference_id,
+                        url_type = 'PMC full text',
+                        source_id = source_id,
+                        created_by= created_by)
+        DBSession.add(x)
     DBSession.flush()
     DBSession.refresh(x)
 
@@ -170,7 +172,7 @@ def insert_referencedbentity(pmid, source_id, record, created_by):
     citation = set_cite(title, authors, year, journal, volume, issue, pages)
     doi, doi_url = get_doi(record)
     pmcid = record.get('PMC', None)
-    pmc_url = pmc_root + pmcid + '/' if pmcid else ''
+    pmc_url = pmc_root + pmcid + '/' if pmcid else None
 
     publication_status = status
     fulltext_status = pdf_status
@@ -211,8 +213,8 @@ def insert_referencedbentity(pmid, source_id, record, created_by):
 
 
 def get_doi(record):
-    doi = ''
-    doi_url = ''
+    doi = None
+    doi_url = None
     if record.get('AID'):
         # ['S0167-7012(17)30042-8 [pii]', '10.1016/j.mimet.2017.02.002 [doi]']                    
         for id in record['AID']:
@@ -252,7 +254,7 @@ def get_journal_id(record, created_by):
     j = Journal(issn_print = issn_print,
                 issn_electronic = issn_electronic,
                 display_name = journal_full_name,
-                format_name = format_name,
+                format_name = (format_name[:98] + '..') if len(format_name) > 100 else format_name,
                 title = journal_full_name,
                 med_abbr = journal_abbr,
                 source_id = source_id,
@@ -354,7 +356,7 @@ def get_reference_id(pmid):
 def get_pubstatus_date_revised(record):
     pubstatus = record.get('PST', '')  # 'aheadofprint', 'epublish'                               
            
-    date_revised = record.get('LR', '')
+    date_revised = record.get('LR', None)
     if date_revised:
         date_revised = date_revised[0:4] + "-" + date_revised[4:6] + "-" + date_revised[6:8]        
     return pubstatus, date_revised
