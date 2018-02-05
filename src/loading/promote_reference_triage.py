@@ -43,20 +43,22 @@ def insert_urls(pmid, reference_id, doi_url, pmc_url, source_id, created_by):
                      source_id = source_id,
                      created_by = created_by)
     DBSession.add(x)
-    x = ReferenceUrl(display_name = 'DOI full text',
-                     obj_url = doi_url,
-                     reference_id = reference_id,
-                     url_type = 'DOI full text',
-                     source_id = source_id,
-                     created_by= created_by)
-    DBSession.add(x)
-    x =ReferenceUrl(display_name = 'PMC full text',
-                     obj_url = pmc_url,
-                     reference_id = reference_id,
-                     url_type = 'PMC full text',
-                     source_id = source_id,
-                     created_by= created_by)
-    DBSession.add(x)
+    if doi_url:
+        x = ReferenceUrl(display_name = 'DOI full text',
+                        obj_url = doi_url,
+                        reference_id = reference_id,
+                        url_type = 'DOI full text',
+                        source_id = source_id,
+                        created_by= created_by)
+        DBSession.add(x)
+    if pmc_url:
+        x =ReferenceUrl(display_name = 'PMC full text',
+                        obj_url = pmc_url,
+                        reference_id = reference_id,
+                        url_type = 'PMC full text',
+                        source_id = source_id,
+                        created_by= created_by)
+        DBSession.add(x)
     DBSession.flush()
     DBSession.refresh(x)
 
