@@ -252,7 +252,7 @@ def get_journal_id(record, created_by):
     j = Journal(issn_print = issn_print,
                 issn_electronic = issn_electronic,
                 display_name = journal_full_name,
-                format_name = (format_name[:98] + '..') if len(format_name) >100 else format_name,
+                format_name = (format_name[:98] + '..') if len(format_name) > 100 else format_name,
                 title = journal_full_name,
                 med_abbr = journal_abbr,
                 source_id = source_id,
@@ -355,6 +355,8 @@ def get_pubstatus_date_revised(record):
     pubstatus = record.get('PST', '')  # 'aheadofprint', 'epublish'                               
            
     date_revised = record.get('LR', '')
+    if date_revised == '':
+        date_revised = None
     if date_revised:
         date_revised = date_revised[0:4] + "-" + date_revised[4:6] + "-" + date_revised[6:8]        
     return pubstatus, date_revised
