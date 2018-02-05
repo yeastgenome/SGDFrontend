@@ -170,7 +170,7 @@ def insert_referencedbentity(pmid, source_id, record, created_by):
     citation = set_cite(title, authors, year, journal, volume, issue, pages)
     doi, doi_url = get_doi(record)
     pmcid = record.get('PMC', None)
-    pmc_url = pmc_root + pmcid + '/' if pmcid else ''
+    pmc_url = pmc_root + pmcid + '/' if pmcid else None
 
     publication_status = status
     fulltext_status = pdf_status
