@@ -80,7 +80,6 @@
     "mocha": "^2.3.4",
     "uglify-js": "^3.0.15",
     "uglifyify": "^3.0.4",
-    "webworkify": "^1.0.2",
-    "coffee-script": "~1.6.3"
+    "webworkify": "^1.0.2"
   }
 }
