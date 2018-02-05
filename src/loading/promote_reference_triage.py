@@ -213,8 +213,8 @@ def insert_referencedbentity(pmid, source_id, record, created_by):
 
 
 def get_doi(record):
-    doi = ''
-    doi_url = ''
+    doi = None
+    doi_url = None
     if record.get('AID'):
         # ['S0167-7012(17)30042-8 [pii]', '10.1016/j.mimet.2017.02.002 [doi]']                    
         for id in record['AID']:
