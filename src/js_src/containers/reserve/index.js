@@ -24,7 +24,7 @@ class GeneNameReservationIndex extends Component {
   renderReses() {
     if (this.state.data) {
       let trs = this.state.data.map( (d, i) => {
-        let orfName = d.locus ? d.locus.systematic_name : 'n/a';
+        let orfName = d.systematic_name || 'n/a';
         return (
           <tr key={`gtr${d.id}`}>
             <td>{d.display_name}</td>

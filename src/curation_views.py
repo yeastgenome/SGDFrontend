@@ -424,7 +424,7 @@ def reserved_name_index(request):
     res_triages = DBSession.query(ReservednameTriage).all()
     res_triages = [x.to_dict() for x in res_triages]
     reses = DBSession.query(Reservedname).all()
-    reses = [x.to_dict() for x in reses]
+    reses = [x.to_curate_dict() for x in reses]
     reses = res_triages + reses
     return reses
 
@@ -456,6 +456,27 @@ def reserved_name_curate_show(request):
         #         'link': '/123'
         #     }
         # }
+
+
+@view_config(route_name='reserved_name_update', renderer='json', request_method='PUT')
+@authenticate
+def reserved_name_update(request):
+    if not check_csrf_token(request, raises=False):
+        return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
+    req_id = request.matchdict['id'].upper()
+    params = request.json_body
+    username = request.session['username']
+    res = DBSession.query(Reservedname).filter(Reservedname.reservedname_id == req_id).one_or_none()
+    if not res:
+        res = DBSession.query(ReservednameTriage).filter(ReservednameTriage.curation_id == req_id).one_or_none()
+    if not res:
+        return HTTPNotFound()
+
+    try:
+        return res.update(params, username)
+    except Exception as e:
+        log.error(e)
+        return HTTPBadRequest(body=json.dumps({ 'message': str(e) }), content_type='text/json')
 
 @view_config(route_name='reserved_name_promote', renderer='json', request_method='PUT')
 @authenticate
