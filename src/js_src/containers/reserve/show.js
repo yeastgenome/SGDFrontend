@@ -11,7 +11,7 @@ import fetchData from '../../lib/fetchData';
 import Loader from '../../components/loader';
 
 const DATA_BASE_URL = '/reservations';
-const DISPLAY_KEYS = ['reservation_status', 'display_name', 'name_description', 'locus', 'reservation_date', 'expiration_date', 'submitter_name', 'submitter_email', 'reference'];
+const DISPLAY_KEYS = ['reservation_status', 'display_name', 'name_description', 'notes', 'systematic_name', 'reservation_date', 'expiration_date', 'submitter_name', 'submitter_email', 'reference'];
 
 class GeneNameReservation extends Component {
   constructor(props) {
@@ -69,6 +69,15 @@ class GeneNameReservation extends Component {
     return <Loader />;
   }
 
+  renderExtendNode() {
+    let data = this.state.data;
+    let reservation_status = data ? data.reservation_status : false;
+    if (reservation_status === 'Reserved') {
+      return <a className='button secondary'>Extend Gene Name Reservation</a>;
+    }
+    return null;
+  }
+
   renderActions() {
     let data = this.state.data;
     let reservation_status = data ? data.reservation_status : false;
@@ -81,7 +90,7 @@ class GeneNameReservation extends Component {
     return (
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '3rem' }}>
         {promoteNode}
-        <a className='button secondary'>Extend Gene Name Reservation</a>
+        {this.renderExtendNode()}
         <a className='button alert'><i className='fa fa-trash' /> Discard Gene Name Reservation</a>
       </div>
     );

@@ -434,19 +434,28 @@ def reserved_name_curate_show(request):
     req_id = request.matchdict['id'].upper()
     # may be either Reservedname or reservedname triage entry
     res = DBSession.query(Reservedname).filter(Reservedname.reservedname_id == req_id).one_or_none()
-    if not res:
-        # TEMP show demo
-        return  {
-            'display_name' : 'ABC1',
-            'reservation_status': 'Unprocessed',
-            'locus': None,
-            'reference': {
-                'display_name': 'MY DEMO REFERENCE',
-                'link': '/123'
-            }
-        }
-    return res.to_curate_dict()
 
+    res_dict = None
+    if res:
+        res_dict = res.to_curate_dict()
+    else:
+        res = DBSession.query(ReservednameTriage).filter(ReservednameTriage.curation_id == req_id).one_or_none()
+        res_dict = res.to_dict()
+
+    if res_dict:
+        return res_dict
+    else:
+        return HTTPNotFound()
+        # # TEMP show demo
+        # return  {
+        #     'display_name' : 'ABC1',
+        #     'reservation_status': 'Unprocessed',
+        #     'locus': None,
+        #     'reference': {
+        #         'display_name': 'MY DEMO REFERENCE',
+        #         'link': '/123'
+        #     }
+        # }
 
 @view_config(route_name='reserved_name_promote', renderer='json', request_method='PUT')
 @authenticate

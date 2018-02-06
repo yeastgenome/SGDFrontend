@@ -7994,6 +7994,8 @@ class Reservedname(Base):
         obj['submitter_name'] = submitter.first_name + ' ' + submitter.last_name
         obj['submitter_email'] = submitter.email
         obj['submitter_phone'] = submitter.work_phone
+        if obj['locus']:
+            obj['systematic_name'] = obj['locus']['systematic_name']
         return obj
 
     def promote(self, username):
@@ -8057,14 +8059,25 @@ class ReservednameTriage(Base):
     json = Column(Text, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
 
+    def to_citation(self):
+        obj = json.loads(self.json)
+        return obj['last_name'] + ' ' + obj['first_name'][:1] + ' (' + obj['year'] + ')'
+
     def to_dict(self):
         obj = json.loads(self.json)
+        submitter_name = obj['first_name'] + ' ' + obj['last_name']
         return  {
             'id': self.curation_id,
             'display_name' : self.proposed_gene_name,
             'reservation_status': 'Unprocessed',
-            'locus': obj['orf_name'],
+            'name_description': obj['description'],
+            'notes': obj['notes'],
+            'systematic_name': obj['orf_name'],
+            'submitter_name': submitter_name,
+            'submitter_email': obj['email'],
+            'submitter_phone': obj['phone_number'],
             'reference': {
+                'display_name': self.to_citation()
             }
         }
 
