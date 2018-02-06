@@ -8048,6 +8048,30 @@ class Reservedname(Base):
                 curator_session.remove()
         return True
 
+    def update(self, new_info, username):
+        try:
+            curator_session = get_curator_session(username)
+            self = curator_session.merge(self)
+            if new_info['systematic_name']:
+                res_systematic_name = new_info['systematic_name'].upper()
+                locus_id = curator_session.query(Locusdbentity.dbentity_id).filter(Locusdbentity.systematic_name == res_systematic_name).scalar()
+                if not locus_id:
+                    raise ValueError('Systematic name does not match a locus.')
+                self.locus_id = locus_id
+            if new_info['name_description']:
+                self.name_description = new_info['name_description']
+            return_val = self.to_curate_dict()
+            transaction.commit()
+            return return_val
+        except Exception as e:
+            transaction.abort()
+            traceback.print_exc()
+            raise(e)
+        finally:
+            if curator_session:
+                curator_session.remove()
+        
+
 class ReservednameTriage(Base):
     __tablename__ = 'reservednametriage'
     __table_args__ = {u'schema': 'nex'}
@@ -8072,7 +8096,7 @@ class ReservednameTriage(Base):
             'reservation_status': 'Unprocessed',
             'name_description': obj['description'],
             'notes': obj['notes'],
-            'systematic_name': obj['orf_name'],
+            'systematic_name': obj['systematic_name'],
             'submitter_name': submitter_name,
             'submitter_email': obj['email'],
             'submitter_phone': obj['phone_number'],
@@ -8081,6 +8105,27 @@ class ReservednameTriage(Base):
             }
         }
 
+    def update(self, new_info, username):
+        try:
+            curator_session = get_curator_session(username)
+            self = curator_session.merge(self)
+            data = json.loads(self.json)
+            if new_info['systematic_name']:
+                res_systematic_name = new_info['systematic_name'].upper()
+                data['systematic_name'] = res_systematic_name
+            if new_info['name_description']:
+                data['description'] = new_info['name_description']
+            self.json = json.dumps(data)
+            return_val = self.to_dict()
+            transaction.commit()
+            return return_val
+        except Exception as e:
+            transaction.abort()
+            traceback.print_exc()
+            raise(e)
+        finally:
+            if curator_session:
+                curator_session.remove()
 
 class Ro(Base):
     __tablename__ = 'ro'

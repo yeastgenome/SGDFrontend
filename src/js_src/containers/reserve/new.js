@@ -32,7 +32,7 @@ class GeneNameReservation extends Component {
     });
     let reserveSchema = t.struct({
       new_gene_name: t.maybe(t.String),
-      orf_name: t.maybe(t.String),
+      systematic_name: t.maybe(t.String),
       description: t.maybe(t.String),
       notes: t.maybe(t.String),
       first_name: t.maybe(t.String),
@@ -64,7 +64,7 @@ class GeneNameReservation extends Component {
           <p><b>Gene Name Information</b></p>
           <div className='row'>
             <div className='column small-6'>{locals.inputs.new_gene_name}</div>
-            <div className='column small-6'>{locals.inputs.orf_name}</div>
+            <div className='column small-6'>{locals.inputs.systematic_name}</div>
           </div>
           <div>{locals.inputs.description}</div>
           <div>{locals.inputs.notes}</div>
@@ -100,7 +100,7 @@ class GeneNameReservation extends Component {
         description: {
           label: 'Description of Gene Name Acronym *'
         },
-        orf_name: {
+        systematic_name: {
           label: 'ORF Name'
         },
         first_name: {
