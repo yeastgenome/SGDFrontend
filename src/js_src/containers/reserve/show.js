@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-// import { Link } from 'react-router';
+import { Link } from 'react-router';
 
 import CategoryLabel from '../../components/categoryLabel';
 import CurateLayout from '../curateHome/layout';
@@ -57,11 +57,12 @@ class GeneNameReservation extends Component {
 
   renderRes() {
     let data = this.state.data;
+    let editUrl = `${DATA_BASE_URL}/${this.props.params.id}/edit`;
     if (data) {
       return (
         <div>
           <h3><CategoryLabel category='reserved_name' hideLabel /> Reserved Gene Name: {data.display_name}</h3>
-          <a><i className='fa fa-edit' /> Edit</a>
+          <Link to={editUrl}><i className='fa fa-edit' /> Edit</Link>
           <DetailList data={data} fields={DISPLAY_KEYS} />
         </div>
       );
