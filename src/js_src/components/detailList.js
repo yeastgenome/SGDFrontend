@@ -17,8 +17,13 @@ class DetailList extends Component {
         value = value.join(JOIN_CHAR);
         valueNode = <span dangerouslySetInnerHTML={{ __html: value }} />;
       } else if (typeof value === 'object' && value !== null) {
-        let _href = PREVIEW_URL + value.link;
-        valueNode = <a href={_href} target='_new'>{value.display_name}</a>;
+        if (value.link) {
+          let _href = PREVIEW_URL + value.link;
+          valueNode = <a href={_href} target='_new'>{value.display_name}</a>;
+        } else {
+          valueNode = <span>{value.display_name}</span>;
+        }
+        
       } else {
         valueNode = <span dangerouslySetInnerHTML={{ __html: value }} />;
       }
