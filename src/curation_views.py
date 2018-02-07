@@ -485,6 +485,8 @@ def reserved_name_promote(request):
         return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
     req_id = request.matchdict['id'].upper()
     res = DBSession.query(Reservedname).filter(Reservedname.reservedname_id == req_id).one_or_none()
+    if not res:
+        res = DBSession.query(ReservednameTriage).filter(ReservednameTriage.curation_id == req_id).one_or_none()
     try:
         return res.promote(request.session['username'])
     except Exception as e:
