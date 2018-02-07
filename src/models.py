@@ -4082,6 +4082,7 @@ class Locusdbentity(Dbentity):
                 'feature_type': feature_type,
                 'gene_name': self.gene_name,
                 'gene_name_pmids': gene_name_pmids,
+                'headline': self.headline,
                 'name_description': self.name_description,
                 'name_description_pmids': name_description_pmids,
                 'qualifier': self.qualifier,
@@ -4110,6 +4111,11 @@ class Locusdbentity(Dbentity):
                 for key in keys_to_update:
                     if key == 'description':
                         self.description = new_info['description']
+                        # make headline
+                        new_headline = new_info['description'][:70]
+                        sep = ';'
+                        new_headline = new_headline.split(sep, 1)[0]
+                        self.headline = new_headline
                     elif key == 'gene_name':
                         new_name = new_info['gene_name']
                         if new_name == '':

@@ -39,6 +39,7 @@ class LocusBasic extends Component {
       feature_type: t.maybe(t.String),
       qualifier: Qualifier,
       description: t.maybe(t.String),
+      headline: t.String,
       description_pmids : t.maybe(t.String),
       ncbi_protein_name: t.maybe(t.String)
     });
@@ -56,6 +57,9 @@ class LocusBasic extends Component {
       fields: {
         description: {
           type: 'textarea'
+        },
+        headline: {
+          type: 'static'
         },
         name_description: {
           type: 'textarea'
