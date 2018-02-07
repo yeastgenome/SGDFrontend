@@ -18,7 +18,12 @@ class LocusBasic extends Component {
     if (!data || this.props.isPending) return <Loader />;
     let Alias = t.struct({
       alias: t.String,
-      pmids: t.maybe(t.String)
+      pmids: t.maybe(t.String),
+      type: t.enums.of([
+        'Uniform',
+        'Non-uniform',
+        'Retired name'
+      ], 'Type')
     });
     let Qualifier = t.enums.of([
       'Verified',
@@ -40,8 +45,9 @@ class LocusBasic extends Component {
     let aliasLayout = locals => {
       return (
         <div className='row'>
-          <div className='columns small-3'>{locals.inputs.alias}</div>
-          <div className='columns small-3'>{locals.inputs.pmids}</div>
+          <div className='columns small-2'>{locals.inputs.alias}</div>
+          <div className='columns small-2'>{locals.inputs.type}</div>
+          <div className='columns small-2'>{locals.inputs.pmids}</div>
           <div className='columns small-6'>{locals.inputs.removeItem}</div>
         </div>
       );
