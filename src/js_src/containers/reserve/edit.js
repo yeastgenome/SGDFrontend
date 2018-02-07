@@ -52,6 +52,13 @@ class GeneNameReservationEdit extends Component {
     let pmidSchema = t.struct({
       pmid: t.String
     });
+    let pmidOptions = {
+      fields: {
+        pmid: {
+          label: 'PMID'
+        }
+      }
+    };
     let reserveUpdateUrl = `${DATA_BASE_URL}/${this.props.params.id}`;
     let pmidUpdateUrl = `${DATA_BASE_URL}/${this.props.params.id}/pmid`;
     if (data) {
@@ -61,7 +68,11 @@ class GeneNameReservationEdit extends Component {
           <div>
             <FlexiForm defaultData={data} onSuccess={this.handleUpdateSuccess.bind(this)} requestMethod='PUT' tFormSchema={reserveSchema} tFormOptions={reserveOptions} updateUrl={reserveUpdateUrl} />
             <p>Add PMID to change personal communication to reference. The personal communication will only be deleted if it is not used on other gene name reservations.</p>
-            <FlexiForm onSuccess={this.handlePmidSuccess.bind(this)} requestMethod='PUT' tFormSchema={pmidSchema} updateUrl={pmidUpdateUrl} submitText='Associate PMID' />
+            <div className='row'>
+              <div className='columns small-12 medium-4'>
+                <FlexiForm onSuccess={this.handlePmidSuccess.bind(this)} requestMethod='PUT' tFormSchema={pmidSchema} tFormOptions={pmidOptions} updateUrl={pmidUpdateUrl} submitText='Associate PMID' />
+              </div>
+            </div>
           </div>
         </div>
       );
