@@ -22,12 +22,16 @@ class NewReference extends Component {
       return <p>Reference was added successfully.</p>;
     }
     let refSchema = t.struct({
-      pmid: t.String
+      pmids: t.String,
+      override_previous: t.Boolean
     });
     let refOptions = {
       fields: {
-        pmid: {
-          label: 'PMID *'
+        pmids: {
+          label: 'PMIDs * (space-separated)'
+        },
+        override_previous: {
+          label: 'Add even if already in REFERENCEDELETED'
         }
       }
     };
@@ -36,7 +40,7 @@ class NewReference extends Component {
         <h1>Add a New Reference</h1>
         <p>Enter the the PMID of the reference you wish to add. Matching entries in REFERENCETRIAGE and REFERENCEDELETED will be removed. If the reference is already in the database, no operation will be performed.</p>
         <div className='row'>
-          <div className='columns medium-2 center'>      
+          <div className='columns medium-3 center'>      
             <FlexiForm onSuccess={this.handleSuccess.bind(this)} requestMethod='POST' tFormSchema={refSchema} tFormOptions={refOptions} updateUrl={URL} />
           </div>
         </div>
