@@ -31,6 +31,7 @@ def prep_views(chosen_frontend, config):
     config.add_route('suggestion', '/suggestion')
     config.add_route('variant_viewer', '/variant-viewer')
     config.add_route('search', '/search')
+    config.add_route('primer3', '/primer3')
     # config.add_route('example', '/example')
     # locus pages from locus_views
     config.add_route('locus', '/locus/{identifier}')
