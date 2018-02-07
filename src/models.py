@@ -4177,7 +4177,7 @@ class Locusdbentity(Dbentity):
                             curator_session.add(new_locus_ref)
                     elif key == 'aliases':
                         # delete old aliases and references
-                        old_aliases = curator_session.query(LocusAlias).filter(and_(LocusAlias.locus_id==self.dbentity_id, LocusAlias.alias_type=='Uniform')).all()
+                        old_aliases = curator_session.query(LocusAlias).filter(and_(LocusAlias.locus_id==self.dbentity_id, LocusAlias.alias_type.in_(['Uniform', 'Non-uniform', 'Retired name']))).all()
                         for a in old_aliases:
                             curator_session.query(LocusAliasReferences).filter(LocusAliasReferences.alias_id == a.alias_id).delete(synchronize_session=False)
                             curator_session.delete(a)
