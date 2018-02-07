@@ -4036,14 +4036,15 @@ class Locusdbentity(Dbentity):
             regulation_summary_pmids = SEPARATOR.join(pmids)
             regulation_summary = regulation_summary.text
 
-        aliases = DBSession.query(LocusAlias).filter(and_(LocusAlias.locus_id==self.dbentity_id, LocusAlias.alias_type=='Uniform')).all()
+        aliases = DBSession.query(LocusAlias).filter(and_(LocusAlias.locus_id==self.dbentity_id, LocusAlias.alias_type.in_(['Uniform', 'Non-uniform', 'Retired name']))).all()
         aliases_list = []
         for x in aliases:
             a_pmids = DBSession.query(LocusAliasReferences, Referencedbentity.pmid).filter(LocusAliasReferences.alias_id==x.alias_id).outerjoin(Referencedbentity).all()
             pmids_results = [str(y[1]) for y in a_pmids]
             aliases_list.append({
                 'alias': x.display_name,
-                'pmids': SEPARATOR.join(pmids_results)
+                'pmids': SEPARATOR.join(pmids_results),
+                'type': x.alias_type
             })
 
         gene_name_pmids = ''
@@ -4185,7 +4186,7 @@ class Locusdbentity(Dbentity):
                             new_alias = LocusAlias(
                                 display_name = a['alias'],
                                 locus_id = self.dbentity_id,
-                                alias_type = 'Uniform',
+                                alias_type = a['type'],
                                 has_external_id_section = False,
                                 source_id = SGD_SOURCE_ID,
                                 created_by = username
