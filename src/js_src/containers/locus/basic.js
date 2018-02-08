@@ -53,7 +53,7 @@ class LocusBasic extends Component {
       aliases: t.list(Alias),
       feature_type: t.maybe(t.String),
       qualifier: Qualifier,
-      description: t.maybe(t.String),
+      description: t.String,
       headline: t.String,
       description_pmids : t.maybe(t.String),
       ncbi_protein_name: t.maybe(t.String)
