@@ -70,8 +70,6 @@ def get_pusher_client():
     return pusher_client
 
 def ban_from_cache(targets, is_exact=False):
-    # TEMP
-    return
     # ignore if developing against local db
     if 'localhost' in os.environ['NEX2_URI']:
         return
