@@ -397,6 +397,14 @@ body {
   min-height: 7rem;
 }
 
+.sgd-curate-form .field-description textarea {
+  min-height: 15rem;
+}
+
+.sgd-curate-form .field-headline {
+  margin-bottom: 1rem;
+}
+
 .six.wide.column, .eight.wide.column {
   padding: 0;
 }
