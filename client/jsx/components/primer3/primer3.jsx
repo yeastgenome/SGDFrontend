@@ -136,15 +136,6 @@ const Primer3 = React.createClass({
   },
   _renderForm () {
     if (this.state.isLoadPending) return <div className='sgd-loader-container'><div className='sgd-loader'></div></div>;    let data = this.state.data;
-    let temp2 = [];
-
-    if (data.lab_page) {
-      temp2.push(<StringField isReadOnly={this.props.isReadOnly} displayName="Lab Webpage" paramName="lab_page" defaultValue={data.lab_page} key="lap_page" />);
-    }
-    if (data.research_page) {
-      temp2.push(<StringField isReadOnly={this.props.isReadOnly} displayName="Research Summary Webpage" paramName="research_page" defaultValue={data.research_page} key="research_page" />);
-    }
-
 
     return <div style={[style.container]}>
         {this._renderError()}
@@ -152,15 +143,99 @@ const Primer3 = React.createClass({
         <form ref="form" onSubmit={this._submitData}>
           <div className="row">
             <div className="column small-12">
-              {this._renderLocation()}
+              {this._renderInput()}
+              {this._renderPurposeInput()}
+              {this._renderPrimerLocation()}
+              {this._renderMeltingTemp()}
               {this._renderPrimerComposition()}
               {this._renderPrimerAnnealing()}
               {this._colleague_other_dets(this.state.data)}
-              {this.props.isReadOnly ? [] : temp2}
             </div>
           </div>
         </form>
         {this._renderControls()}
+      </div>;
+  },
+
+
+   _renderInput () {
+    let data = this.state.data;
+    if (this.props.isReadOnly) {
+      return this._colleague_contact_dets(data);
+    }
+    return <div>
+        <div className="row">
+          <div className="column small-4">
+            <StringField isReadOnly={this.props.isReadOnly} displayName="Locus: Enter a standard gene name or systematic ORF name (i.e. ACT1, YKR054C)" paramName="gene_name" defaultValue={data.gene_name} />
+          </div>
+          <br></br>
+          <h1> OR </h1>
+          <br></br>
+          <div className="column small-10">
+            <StringField isReadOnly={this.props.isReadOnly} displayName="Enter the DNA Sequence (numbers are OK, but comments should be removed)" paramName="sequence" defaultValue={data.sequence}  />
+          </div>
+        </div>
+      </div>;
+  },
+
+
+  _renderPurposeInput () {
+    if (!this.props.isCurator && this.props.isReadOnly) return null;
+    let data = this.state.data;
+    return (
+      <div>
+        {this._renderComments()}
+        <CheckField isReadOnly={this.props.isReadOnly} displayName='PCR or ' paramName='pcr' defaultValue={data.pcr} />
+        <CheckField isReadOnly={this.props.isReadOnly} displayName='SEQUENCING' paramName='sequencing' defaultValue={data.sequencing} />
+      </div>
+    );
+  },
+
+   _renderPrimerLocation () {
+    let data = this.state.data;
+    let supervisors = this.state.data.supervisors || [];
+    let labMembers = this.state.data.lab_members || [];
+     return <div>
+        <div className="row">
+        <h3> Location </h3>
+          <div className="column small-3">
+            <StringField isReadOnly={this.props.isReadOnly} displayName="Length in which to search for valid primers:" paramName="dna_len" defaultValue={data.dna_len} />
+          </div>
+          <div className="column small-3">
+            <StringField isReadOnly={this.props.isReadOnly} displayName="Distance between sequencing primers:" paramName="primer_distance" defaultValue={data.primer_distance}  />
+          </div>
+          <div className="column small-3">
+            <StringField isReadOnly={this.props.isReadOnly} displayName="Optimum primer length:" paramName="primer_length" defaultValue={data.primer_length}  />
+          </div>
+          <div className="column small-2">
+            <StringField isReadOnly={this.props.isReadOnly} displayName="Minimum length:" paramName="primer_min_len" defaultValue={data.primer_min_len}  />
+          </div>
+          <div className="column small-1">
+            <StringField isReadOnly={this.props.isReadOnly} displayName="Maximum length:" paramName="primer_max_len" defaultValue={data.primer_max_len}  />
+          </div>
+
+        </div>
+      </div>;
+  },
+
+   _renderMeltingTemp () {
+    let data = this.state.data;
+    if (this.props.isReadOnly) {
+      return this._colleague_contact_dets(data);
+    }
+    return <div>
+        <div className="row">
+           <h3> Melting Temperature </h3>
+          <div className="column small-4">
+            <StringField isReadOnly={this.props.isReadOnly} displayName="Optimum Tm:" paramName="opt_tm" defaultValue={data.opt_tm} />
+          </div>
+          <div className="column small-4">
+            <StringField isReadOnly={this.props.isReadOnly} displayName="Minimum Tm:" paramName="min_tm" defaultValue={data.min_tm}  />
+          </div>
+          <div className="column small-4">
+            <StringField isReadOnly={this.props.isReadOnly} displayName="Maximum Tm:" paramName="max_tm" defaultValue={data.max_tm}  />
+          </div>
+        </div>
       </div>;
   },
 
@@ -171,13 +246,14 @@ const Primer3 = React.createClass({
     }
     return (
       <div className='row'>
-        <div className='columns small-3'>
+       <h3> Primer Composition </h3>
+        <div className='columns small-4'>
           <StringField isReadOnly={this.props.isReadOnly} displayName='Optimum percent GC content:' paramName='gc_content' defaultValue={data.gc_content} />
         </div>
-        <div className='columns small-2'>
+        <div className='columns small-4'>
           <StringField isReadOnly={this.props.isReadOnly} displayName='Minimum GC:' paramName='min_gc' defaultValue={data.min_gc} />
         </div>
-        <div className='columns small-5'>
+        <div className='columns small-4'>
           <StringField isReadOnly={this.props.isReadOnly} displayName='Maximum GC:' paramName='max_gc' defaultValue={data.max_gc} />
         </div>
       </div>
@@ -191,33 +267,15 @@ const Primer3 = React.createClass({
     }
     return <div>
         <div className="row">
-          <div className="column small-4">
+           <h3> Primer Annealing </h3>
+          <div className="column small-6">
             <StringField isReadOnly={this.props.isReadOnly} displayName="Self Anneal:" paramName="self_anneal" defaultValue={data.selfanneal} />
           </div>
-          <div className="column small-4">
+          <div className="column small-6">
             <StringField isReadOnly={this.props.isReadOnly} displayName="Self End Anneal:" paramName="self_end_anneal" defaultValue={data.self_end_anneal}  />
           </div>
         </div>
       </div>;
-  },
-
-  _renderLocation () {
-    let supervisors = this.state.data.supervisors || [];
-    let labMembers = this.state.data.lab_members || [];
-    let temp = [];
-    let _formatLink = d => {
-      return `/colleague/${d.format_name}/overview`;
-    };
-    if(supervisors.length > 0){
-      temp.push(<MultiSelectField isReadOnly={this.props.isReadOnly} displayName="Supervisor(s)" paramName="supervisors" optionsUrl={COLLEAGUES_AUTOCOMPLETE_URL} defaultValues={supervisors} defaultOptions={supervisors} allowCreate={true} key="associate0" isLinks={true} formatLink={_formatLink} />);
-    }
-    if(labMembers.length > 0){
-      temp.push(<MultiSelectField isReadOnly={this.props.isReadOnly} displayName="Lab Members" paramName="lab_members" optionsUrl={COLLEAGUES_AUTOCOMPLETE_URL} defaultValues={labMembers} defaultOptions={labMembers} allowCreate={true} key="associate1" isLinks={true} formatLink={_formatLink} />);
-    }
-
-    if(temp.length > 0){
-      return temp;
-    }
   },
 
   _renderCuratorInput () {
