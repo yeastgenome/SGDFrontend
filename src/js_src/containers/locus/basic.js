@@ -19,8 +19,9 @@ class LocusBasic extends Component {
       this.props.dispatch(setError(`Description cannot be greater than ${DESCRIPTION_LENGTH} characters.`));
     }
     let headline = description.slice(0, HEADLINE_LENGTH);
-    headline = headline.substring(headline.indexOf(';') + 1);
-    console.log(headline);
+    headline = headline.slice(0, headline.indexOf(';'));
+    let el = document.getElementsByClassName('field-headline')[0];
+    el.innerHTML = `<label>Headline</label>${headline}`;
   }
 
   handleSuccess(data) {
