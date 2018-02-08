@@ -48,7 +48,7 @@ class FlexiForm extends Component {
     t.form.Form.templates = semantic;
     return (
       <form className='sgd-curate-form' onSubmit={this.handleSubmit.bind(this)}>
-        <t.form.Form options={this.props.tFormOptions} ref={input => this.formInput = input} type={this.props.tFormSchema} value={this.state.data} />
+        <t.form.Form options={this.props.tFormOptions} onChange={this.props.onChange} ref={input => this.formInput = input} type={this.props.tFormSchema} value={this.state.data} />
           <div className='form-group'>
             <button type='submit' className='button'>{submitText}</button>
           </div>
@@ -62,6 +62,7 @@ FlexiForm.propTypes = {
   dispatch: React.PropTypes.func,
   getUrl: React.PropTypes.string,
   onSuccess: React.PropTypes.func,// (data) =>
+  onChange: React.PropTypes.func,
   submitText: React.PropTypes.string,
   requestMethod: React.PropTypes.string,
   tFormSchema: React.PropTypes.func.isRequired,

@@ -4,10 +4,25 @@ import t from 'tcomb-form';
 
 import FlexiForm from '../../components/forms/flexiForm';
 import Loader from '../../components/loader';
-import { setMessage } from '../../actions/metaActions';
+import { setMessage, setError } from '../../actions/metaActions';
 import { updateData } from './locusActions';
 
+const DESCRIPTION_LENGTH = 500;
+const HEADLINE_LENGTH = 70;
+
 class LocusBasic extends Component {
+  // give some feedback for changes to description, such as updated headline
+  handleChange(data) {
+    // TODO properly get headline and reflect
+    let description = data['description'];
+    if (description.length > DESCRIPTION_LENGTH) {
+      this.props.dispatch(setError(`Description cannot be greater than ${DESCRIPTION_LENGTH} characters.`));
+    }
+    let headline = description.slice(0, HEADLINE_LENGTH);
+    headline = headline.substring(headline.indexOf(';') + 1);
+    console.log(headline);
+  }
+
   handleSuccess(data) {
     this.props.dispatch(updateData(data));
     this.props.dispatch(setMessage('Locus updated.'));
@@ -76,7 +91,7 @@ class LocusBasic extends Component {
     return (
       <div className='row'>
         <div className='columns small-12 medium-6'>
-          <FlexiForm defaultData={this.props.data.basic} onSuccess={this.handleSuccess.bind(this)} requestMethod='PUT' tFormSchema={bgiSchema} tFormOptions={bgiOptions} updateUrl={url} />
+          <FlexiForm defaultData={this.props.data.basic} onChange={this.handleChange.bind(this)} onSuccess={this.handleSuccess.bind(this)} requestMethod='PUT' tFormSchema={bgiSchema} tFormOptions={bgiOptions} updateUrl={url} />
         </div>
       </div>
     );
