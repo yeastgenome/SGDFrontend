@@ -3,6 +3,9 @@ MAX_AGG_SIZE = 999
 def build_autocomplete_search_body_request(query,
                                            category='locus',
                                            field='name'):
+    _source_fields = ['name', 'href', 'category', 'gene_symbol']
+    if category == 'colleague':
+        _source_fields = _source_fields + ['institution']
     es_query = {
         "query": {
             "bool": {
@@ -23,7 +26,7 @@ def build_autocomplete_search_body_request(query,
                 }]
             }
         },
-        '_source': ['name', 'href', 'category', 'gene_symbol']
+        '_source': _source_fields
     }
 
     if category != '':
@@ -64,6 +67,9 @@ def format_autocomplete_results(es_response, field='name'):
                 'href': hit['_source']['href'],
                 'category': hit['_source']['category']
             }
+            if 'institution' in hit['_source'].keys():
+                obj['institution'] = hit['_source']['institution']
+                obj['format_name'] = hit['_id']
 
             if hit['_source'].get('gene_symbol') and hit['_source']['category'] == "locus":
                 obj['name'] = hit['_source']['gene_symbol'].upper()
