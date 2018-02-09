@@ -16,7 +16,7 @@ import json
 from .helpers import allowed_file, extract_id_request, secure_save_file, curator_or_none, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id
 from .curation_helpers import ban_from_cache, process_pmid_list, get_curator_session, get_pusher_client
 from .loading.promote_reference_triage import add_paper
-from .models import DBSession, Dbentity, Dbuser, CuratorActivity, Referencedbentity, Reservedname, ReservednameTriage, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags
+from .models import DBSession, Dbentity, Dbuser, CuratorActivity, Colleague, Referencedbentity, Reservedname, ReservednameTriage, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags
 from .tsv_parser import parse_tsv_annotations
 
 logging.basicConfig()
@@ -417,6 +417,19 @@ def new_gene_name_reservation(request):
     except Exception as e:
         traceback.print_exc()
         transaction.abort()
+
+
+# not authenticated to allow the public submission
+@view_config(route_name='colleague_update', renderer='json', request_method='PUT')
+def colleague_update(request):
+    if not check_csrf_token(request, raises=False):
+        return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
+    req_id = request.matchdict['id'].upper()
+    colleague = DBSession.query(Colleague).filter(Colleague.colleague_id == req_id).one_or_none()
+    if not colleague:
+        return HTTPNotFound()
+    return { 'colleague_id': colleague.colleague_id }
+
 
 @view_config(route_name='reserved_name_index', renderer='json')
 @authenticate

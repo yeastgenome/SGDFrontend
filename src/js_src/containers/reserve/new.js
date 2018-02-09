@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import ColleagueUpdate from './colleagueUpdate';
 import FlexiForm from '../../components/forms/flexiForm';
 import t from 'tcomb-form';
 
@@ -9,8 +10,14 @@ class GeneNameReservation extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isSuccess: false
+      colleagueId: null,
+      isSuccess: false,
+      stage: 0
     };
+  }
+
+  handleColleagueCompletion(_colleagueId) {
+    this.setState({ stage: 1, colleagueId: _colleagueId });
   }
 
   renderSuccess() {
@@ -21,27 +28,22 @@ class GeneNameReservation extends Component {
     );
   }
 
-  render() {
-    if (this.state.isSuccess) {
-      return this.renderSuccess();
-    }
+  renderColleagueUpdate() {
+    return <ColleagueUpdate onComplete={this.handleColleagueCompletion.bind(this)} />;
+  }
+
+  renderResForm() {
     let Author = t.struct({
       first_name: t.maybe(t.String),
       last_name: t.maybe(t.String),
       orcid: t.maybe(t.String)
     });
     let reserveSchema = t.struct({
+      colleague_id: t.Number,
       new_gene_name: t.maybe(t.String),
       systematic_name: t.maybe(t.String),
       description: t.maybe(t.String),
       notes: t.maybe(t.String),
-      first_name: t.maybe(t.String),
-      last_name: t.maybe(t.String),
-      email: t.maybe(t.String),
-      phone_number: t.maybe(t.String),
-      position: t.maybe(t.String),
-      institution: t.maybe(t.String),
-      profession: t.maybe(t.String),
       publication_title: t.maybe(t.String),
       journal: t.maybe(t.String),
       year: t.maybe(t.String),
@@ -68,18 +70,6 @@ class GeneNameReservation extends Component {
           </div>
           <div>{locals.inputs.description}</div>
           <div>{locals.inputs.notes}</div>
-          <p><b>Your Information</b></p>
-          <div className='row'>
-            <div className='column small-3'>{locals.inputs.first_name}</div>
-            <div className='column small-3'>{locals.inputs.last_name}</div>
-            <div className='column small-3'>{locals.inputs.email}</div>
-            <div className='column small-3'>{locals.inputs.phone_number}</div>
-          </div>
-          <div className='row'>
-            <div className='column small-4'>{locals.inputs.position}</div>
-            <div className='column small-4'>{locals.inputs.institution}</div>
-            <div className='column small-4'>{locals.inputs.profession}</div>
-          </div>
           <p><b>Publication Information</b></p>
           <div className='row'>
             <div className='column small-6'>{locals.inputs.publication_title}</div>
@@ -127,17 +117,25 @@ class GeneNameReservation extends Component {
     let _onSuccess = () => {
       this.setState({ isSuccess: true });
     };
-    let _defaultData = { authors: [{ first_name: ''}] };
+    let _defaultData = { colleague_id: this.state.colleagueId, authors: [{ first_name: ''}] };
     t.form.Form.i18n = {
       optional: '',
       required: '',
       add: 'Add another author',
       remove: 'Remove this author'
     };
+    return <FlexiForm defaultData={_defaultData} tFormOptions={reserveOptions} tFormSchema={reserveSchema} onSuccess={_onSuccess} requestMethod='POST' submitText='Send gene name reservation' updateUrl={TARGET_URL} />;
+  }
+
+  render() {
+    if (this.state.isSuccess) {
+      return this.renderSuccess();
+    }
+    let formNode = (this.state.stage === 0) ? this.renderColleagueUpdate() : this.renderResForm();
     return (
       <div>
         <h1>Reserve a Gene Name</h1>
-        <FlexiForm defaultData={_defaultData} tFormOptions={reserveOptions} tFormSchema={reserveSchema} onSuccess={_onSuccess} requestMethod='POST' submitText='Send gene name reservation' updateUrl={TARGET_URL} />
+        {formNode}
       </div>
     );
   }

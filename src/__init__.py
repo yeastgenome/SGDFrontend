@@ -102,6 +102,7 @@ def main(global_config, **settings):
     config.add_route('db_sign_in', '/db_sign_in')
     config.add_route('sign_out', '/signout')
     config.add_route('colleague_triage_all', '/colleagues/triage', request_method='GET')
+    config.add_route('colleague_update', '/colleagues/{id}', request_method='PUT')
     # config.add_route('colleague_triage_accept', '/colleagues/triage/{id}', request_method='POST')
     # config.add_route('colleague_triage_update', '/colleagues/triage/{id}', request_method='PUT')
     # config.add_route('colleague_triage_delete', '/colleagues/triage/{id}', request_method='DELETE')
