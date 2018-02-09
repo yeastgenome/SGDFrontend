@@ -34,7 +34,7 @@ class LocusBasic extends Component {
     if (!data || this.props.isPending) return <Loader />;
     let Alias = t.struct({
       alias: t.String,
-      pmids: t.maybe(t.String),
+      pmids: t.String,
       type: t.enums.of([
         'Uniform',
         'Non-uniform',
