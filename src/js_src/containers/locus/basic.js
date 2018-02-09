@@ -63,9 +63,9 @@ class LocusBasic extends Component {
       return (
         <div className='row'>
           <div className='columns small-2'>{locals.inputs.alias}</div>
-          <div className='columns small-2'>{locals.inputs.type}</div>
-          <div className='columns small-2'>{locals.inputs.pmids}</div>
-          <div className='columns small-6'>{locals.inputs.removeItem}</div>
+          <div className='columns small-3'>{locals.inputs.type}</div>
+          <div className='columns small-5'>{locals.inputs.pmids}</div>
+          <div className='columns small-2'>{locals.inputs.removeItem}</div>
         </div>
       );
     };
