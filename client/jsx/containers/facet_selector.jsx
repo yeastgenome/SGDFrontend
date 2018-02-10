@@ -59,6 +59,7 @@ const FacetSelector = React.createClass({
   },
 
   _renderSecondaryAggs () {
+    //debugger;
     const qp = this.props.queryParams;
     
     // if no filters, show a message
@@ -71,6 +72,10 @@ const FacetSelector = React.createClass({
     }
     let catNodes = this.props.aggregations.map( (d, i) => {
       // create a currentAgg object like { key: 'cellular component', values: ['cytoplasm'] }
+      let facetflag = false;
+      if (qp.category === "download" && d.key === "status") {
+        facetflag = true;
+      }
       let currentAgg = { key: d.key };
       let rawValue = qp[d.key];
       switch (typeof rawValue) {

@@ -28,6 +28,7 @@ const DEFAULT_STATE = {
 };
 
 const searchResultsReducer = function (_state, action) {
+  //debugger;
   let state = _.clone(_state);
   if (typeof state === 'undefined') {
     return DEFAULT_STATE;

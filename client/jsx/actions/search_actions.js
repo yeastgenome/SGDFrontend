@@ -49,6 +49,7 @@ export function setUserInput (newValue) {
 export function startSearchFetchMaybeAsycFetch () {
  
   return function (dispatch, getState) {
+    //debugger;
     dispatch(startSearchFetch());
     dispatch(fetchSearchResults());
     const state = getState().searchResults;
@@ -87,6 +88,7 @@ export function fetchSearchResults () {
     // format the API request from quer params
     
     const state = getState();
+    //debugger;
     const searchState = state.searchResults;
     // if not isHydrated and global bootstrappedSearchResults, use that as result, don't fetch anything, set isHydrated to false
     if (!searchState.isHydrated && typeof bootstrappedSearchResults === 'object') {
