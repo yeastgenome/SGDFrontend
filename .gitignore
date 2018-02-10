@@ -32,3 +32,4 @@ asset_version.json
 *.rdb
 .vscode/settings.json
 .cache/
+docs/
