@@ -39,7 +39,7 @@ class GeneNameReservation extends Component {
       orcid: t.maybe(t.String)
     });
     let reserveSchema = t.struct({
-      colleague_id: t.Number,
+      colleague_id: t.maybe(t.Number),
       new_gene_name: t.maybe(t.String),
       systematic_name: t.maybe(t.String),
       description: t.maybe(t.String),
@@ -64,6 +64,7 @@ class GeneNameReservation extends Component {
         <div>
           <p>* indicates required field</p>
           <p><b>Gene Name Information</b></p>
+          {locals.inputs.colleague_id}
           <div className='row'>
             <div className='column small-6'>{locals.inputs.new_gene_name}</div>
             <div className='column small-6'>{locals.inputs.systematic_name}</div>
@@ -93,14 +94,8 @@ class GeneNameReservation extends Component {
         systematic_name: {
           label: 'ORF Name'
         },
-        first_name: {
-          label: 'First Name *'
-        },
-        last_name: {
-          label: 'Last Name *'
-        },
-        email: {
-          label: 'Email *'
+        colleague_id: {
+          type: 'hidden'
         },
         year: {
           label: 'Year *'

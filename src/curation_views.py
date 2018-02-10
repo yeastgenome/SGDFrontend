@@ -375,29 +375,30 @@ def new_gene_name_reservation(request):
     if not check_csrf_token(request, raises=False):
         return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
     data = request.json_body
-    required_fields = ['new_gene_name', 'description', 'first_name', 'last_name', 'email', 'year']
+    required_fields = ['colleague_id', 'new_gene_name', 'description', 'email', 'year']
     for x in required_fields:
         if not data[x]:
             field_name = x.replace('_', ' ')
             field_name = field_name.replace('new', 'proposed')
             msg = field_name + ' is a required field.'
-            return HTTPBadRequest(body=json.dumps({ 'error': msg }), content_type='text/json')
+            return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
         if x == 'year':
             try:
                 iy = int(data[x])
             except ValueError as e:
                 msg = 'Please enter a valid year.'
-                return HTTPBadRequest(body=json.dumps({ 'error': msg }), content_type='text/json')
+                return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
         if x == 'email':
             is_valid = validate_email(data[x])
             if not is_valid:
                 msg = 'Invalid email address.'
-                return HTTPBadRequest(body=json.dumps({ 'error': msg }), content_type='text/json')
+                return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
+    return True
         # TODO validate new gene name, ORF
     # input is valid, add entry to reservednametriage
     try:
         proposed_gene_name = data['new_gene_name']
-        user_email = data['email']
+        colleague_id = data['colleague_id']
         # create username from db URI
         s = os.environ['NEX2_URI']
         start = 'postgresql://'
@@ -407,7 +408,7 @@ def new_gene_name_reservation(request):
         data_json = json.dumps(data)
         new_res = ReservednameTriage(
             proposed_gene_name=proposed_gene_name,
-            user_email=user_email,
+            colleague_id=colleague_id,
             created_by=created_by,
             json=data_json
         )
@@ -459,17 +460,6 @@ def reserved_name_curate_show(request):
         return res_dict
     else:
         return HTTPNotFound()
-        # # TEMP show demo
-        # return  {
-        #     'display_name' : 'ABC1',
-        #     'reservation_status': 'Unprocessed',
-        #     'locus': None,
-        #     'reference': {
-        #         'display_name': 'MY DEMO REFERENCE',
-        #         'link': '/123'
-        #     }
-        # }
-
 
 @view_config(route_name='reserved_name_update', renderer='json', request_method='PUT')
 @authenticate
@@ -490,6 +480,34 @@ def reserved_name_update(request):
     except Exception as e:
         log.error(e)
         return HTTPBadRequest(body=json.dumps({ 'message': str(e) }), content_type='text/json')
+
+@view_config(route_name='reserved_name_delete', renderer='json', request_method='DELETE')
+@authenticate
+def reserved_name_delete(request):
+    if not check_csrf_token(request, raises=False):
+        return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
+    curator_session = None
+    try:
+        username = request.session['username']
+        curator_session = get_curator_session(username)
+        req_id = request.matchdict['id'].upper()
+        res = curator_session.query(ReservednameTriage).filter(ReservednameTriage.curation_id == req_id).one_or_none()
+        if not res:
+            res = curator_session.query(Reservedname).filter(Reservedname.reservedname_id == req_id).one_or_none()
+        if not res:
+            return HTTPNotFound()
+        print('deleteing res')
+        print(res)
+        curator_session.delete(res)
+        transaction.commit()
+        return True
+    except Exception as e:
+        transaction.abort()
+        log.error(e)
+        return HTTPBadRequest(body=json.dumps({ 'message': str(e) }), content_type='text/json')
+    finally:
+        if curator_session:
+            curator_session.remove()
 
 @view_config(route_name='reserved_name_promote', renderer='json', request_method='PUT')
 @authenticate

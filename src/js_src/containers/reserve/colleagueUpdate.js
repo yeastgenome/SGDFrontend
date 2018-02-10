@@ -118,8 +118,8 @@ class ColleagueUpdate extends Component {
     let reserveOptions = {
       template: formLayout,
       fields: {
-        first_name: {
-          label: 'First Name *'
+        colleague_id: {
+          type: 'First Name *'
         },
         last_name: {
           label: 'Last Name *'
@@ -130,7 +130,7 @@ class ColleagueUpdate extends Component {
       }
     };
     let _onSuccess = (data) => {
-      if (this.props.onComplete) this.props.onComplete(data);
+      if (this.props.onComplete) this.props.onComplete(data.colleague_id);
     };
     let _requestMethod = 'POST';
     let url = 'colleagues';

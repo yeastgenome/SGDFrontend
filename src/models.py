@@ -8085,7 +8085,7 @@ class ReservednameTriage(Base):
 
     curation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     proposed_gene_name = Column(String(100), nullable=False)
-    user_email = Column(String(500), nullable=False)
+    colleague_id = Column(ForeignKey(u'nex.colleague.colleague_id', ondelete=u'CASCADE'), index=True)
     created_by = Column(String(12), nullable=False)
     json = Column(Text, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
@@ -8096,21 +8096,22 @@ class ReservednameTriage(Base):
 
     def to_dict(self):
         obj = json.loads(self.json)
-        submitter_name = obj['first_name'] + ' ' + obj['last_name']
-        return  {
+        return_obj = {
             'id': self.curation_id,
             'display_name' : self.proposed_gene_name,
             'reservation_status': 'Unprocessed',
             'name_description': obj['description'],
             'notes': obj['notes'],
             'systematic_name': obj['systematic_name'],
-            'submitter_name': submitter_name,
-            'submitter_email': obj['email'],
-            'submitter_phone': obj['phone_number'],
             'reference': {
                 'display_name': self.to_citation()
             }
         }
+        colleague = DBSession.query(Colleague).filter(Colleague.colleague_id == self.colleague_id).one_or_none()
+        return_obj['submitter_name'] = colleague.first_name + ' ' + colleague.last_name
+        return_obj['submitter_email'] = colleague.email
+        return_obj['submitter_phone'] = colleague.work_phone
+        return return_obj
 
     def update(self, new_info, username):
         try:
