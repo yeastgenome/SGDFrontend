@@ -5,6 +5,7 @@ import { Link } from 'react-router';
 
 import CategoryLabel from '../../components/categoryLabel';
 import CurateLayout from '../curateHome/layout';
+import DeleteButton from '../../components/deleteButton';
 import DetailList from '../../components/detailList';
 import { setError, setMessage } from '../../actions/metaActions';
 import fetchData from '../../lib/fetchData';
@@ -26,6 +27,11 @@ class GeneNameReservation extends Component {
     fetchData(url).then( _data => {
       this.setState({ data: _data });
     });
+  }
+
+  handleDelete() {
+    this.props.dispatch(push({ pathname: 'reservations' }));
+    this.props.dispatch(setMessage('Gene name reservation was deleted.'));
   }
 
   handlePromote(e) {
@@ -81,6 +87,7 @@ class GeneNameReservation extends Component {
 
   renderActions() {
     let data = this.state.data;
+    let deleteUrl = `${DATA_BASE_URL}/${this.props.params.id}`;
     let reservation_status = data ? data.reservation_status : false;
     let promoteNode;
     if (reservation_status === 'Unprocessed') {
@@ -92,7 +99,7 @@ class GeneNameReservation extends Component {
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '3rem' }}>
         {promoteNode}
         {this.renderExtendNode()}
-        <a className='button alert'><i className='fa fa-trash' /> Discard Gene Name Reservation</a>
+        <DeleteButton label='Discard gene name reservation' url={deleteUrl} onSuccess={this.handleDelete.bind(this)} />
       </div>
     );
   }
