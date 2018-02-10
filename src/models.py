@@ -8085,7 +8085,7 @@ class ReservednameTriage(Base):
 
     curation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     proposed_gene_name = Column(String(100), nullable=False)
-    colleague_id = Column(ForeignKey(u'nex.colleague.colleague_id', ondelete=u'CASCADE'), index=True)
+    # colleague_id = Column(ForeignKey(u'nex.colleague.colleague_id', ondelete=u'CASCADE'), index=True)
     created_by = Column(String(12), nullable=False)
     json = Column(Text, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
@@ -8107,10 +8107,10 @@ class ReservednameTriage(Base):
                 'display_name': self.to_citation()
             }
         }
-        colleague = DBSession.query(Colleague).filter(Colleague.colleague_id == self.colleague_id).one_or_none()
-        return_obj['submitter_name'] = colleague.first_name + ' ' + colleague.last_name
-        return_obj['submitter_email'] = colleague.email
-        return_obj['submitter_phone'] = colleague.work_phone
+        # colleague = DBSession.query(Colleague).filter(Colleague.colleague_id == self.colleague_id).one_or_none()
+        # return_obj['submitter_name'] = colleague.first_name + ' ' + colleague.last_name
+        # return_obj['submitter_email'] = colleague.email
+        # return_obj['submitter_phone'] = colleague.work_phone
         return return_obj
 
     def update(self, new_info, username):
@@ -8137,9 +8137,30 @@ class ReservednameTriage(Base):
 
     def promote(self, username):
         try:
+            obj = json.loads(self.json)
+            print(obj)
+            curator_session = get_curator_session(username)
+            # create personal communication
+            citation = self.to_citation()
+            ref = Referencedbentity(
+                display_name = citation,
+                source_id = SGD_SOURCE_ID,
+                subclass = 'REFERENCE',
+                dbentity_status = 'Active',
+                method_obtained = 'Gene registry',
+                publication_status = 'Unpublished',
+                fulltext_status = 'NAP',
+                citation = citation,
+                year = int(obj['year']),
+                title = obj['title'],
+                created_by = username
+            )
             # TEMP do nothing
             return True
-            curator_session = get_curator_session(username)
+            # if there is a systematic name, add row to LOCUS_REFERENCE for personal communication reference
+            # if there is a systematic name, add rows to LOCUSNOTE and LOCUSNOTE_REFERENCE for the history section on the LSP
+            # add row to reservedname
+
             self = curator_session.merge(self)
             locus = curator_session.query(Locusdbentity).filter(Locusdbentity.dbentity_id == self.locus_id).one_or_none()
             locus.gene_name = self.display_name
