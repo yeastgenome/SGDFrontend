@@ -1,10 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
-import { routeActions } from 'react-router-redux'
+import { routeActions } from 'react-router-redux';
 import Radium from 'radium';
 import _ from 'underscore';
 import pluralize from 'pluralize';
+import StatusBtns from '../components/status_buttons/status_btns.jsx';
 
 import { getHrefWithoutAgg, getCategoryDisplayName, getFacetName } from '../lib/search_helpers';
 
@@ -52,7 +53,9 @@ const FacetSelector = React.createClass({
   },
 
   _renderSecondaryAggs () {
+    //debugger;
     const qp = this.props.queryParams;
+    
     // if no filters, show a message
     let emptyMsgNode = <p>No filters are available for this category.</p>;;
     if (this.props.aggregations.length === 0) {
@@ -63,6 +66,10 @@ const FacetSelector = React.createClass({
     }
     let catNodes = this.props.aggregations.map( (d, i) => {
       // create a currentAgg object like { key: 'cellular component', values: ['cytoplasm'] }
+      let facetflag = false;
+      if (qp.category === "download" && d.key === "status") {
+        facetflag = true;
+      }
       let currentAgg = { key: d.key };
       let rawValue = qp[d.key];
       switch (typeof rawValue) {
@@ -76,9 +83,7 @@ const FacetSelector = React.createClass({
           currentAgg.values = [];
           break;
       };
-      return (
-        <FacetList aggKey={d.key} values={d.values} currentValues={currentAgg.values} queryParams={this.props.queryParams} key={d.key} name={getFacetName(d.key)}/>
-      );
+      return <FacetList customFacetFlag={facetflag} aggKey={d.key} values={d.values} currentValues={currentAgg.values} queryParams={this.props.queryParams} key={d.key} name={getFacetName(d.key)} />;
     });
 
     return (
@@ -111,94 +116,139 @@ const FacetSelector = React.createClass({
   }
 });
 
-const FacetList = Radium(React.createClass({
-  propTypes: {
-    aggKey: React.PropTypes.string.isRequired,
-    values: React.PropTypes.array.isRequired,
-    currentValues: React.PropTypes.array.isRequired,
-    queryParams: React.PropTypes.object.isRequired,
-    name: React.PropTypes.string,
-  },
+const FacetList = Radium(
+  React.createClass({
+    propTypes: {
+      aggKey: React.PropTypes.string.isRequired,
+      values: React.PropTypes.array.isRequired,
+      currentValues: React.PropTypes.array.isRequired,
+      queryParams: React.PropTypes.object.isRequired,
+      name: React.PropTypes.string,
+      customFacetFlag: React.PropTypes.bool
+    },
 
-  getInitialState () {
-    // null means don't slice, show all
-    return {
-      isCollapsed: false,
-      visibleLength: DEFAULT_FACET_LENGTH
-    };
-  },
-
-  render () {
-    // if no values, don't show
-    if (this.props.values.length === 0) return null;
-    const slicedValues = (this.state.visibleLength === null) ? this.props.values : this.props.values.slice(0, this.state.visibleLength);
-    const valueNodes = slicedValues.map( (d, i) => {
-      let isActive = (this.props.currentValues.indexOf(d.key) > -1);
-      let newHref = this._getToggledHref(this.props.aggKey, d.key, this.props.currentValues);
-      return this._renderAgg(d.key, d.total, `2agg${d.key}.${i}`, newHref, isActive);
-    });
-    const iconString = this.state.isCollapsed ? 'right' : 'down';
-    const valuesNodesMaybe = this.state.isCollapsed ? null : <div>{valueNodes}{this._renderShowMoreMaybe()}</div>;
-    return (
-      <div>
-        <p onClick={this._toggleIsCollapsed} style={style.aggLabel}><span>{this.props.name || this.props.aggKey}</span><i className={`fa fa-angle-${iconString}`} style={[style.icon]} /></p>
-        {valuesNodesMaybe}
-      </div>
-    );
-  },
-
-  _renderShowMoreMaybe () {
-    const visibleLength = this.state.visibleLength;
-    const valLength = this.props.values.length;
-    // no more to show, show nothing
-    if (visibleLength === DEFAULT_FACET_LENGTH && valLength <= visibleLength) return null;
-    let text, _onClick;
-    // currently showing all, allow collapse
-    if (visibleLength === null) {
-      _onClick = e => {
-        e.preventDefault();
-        this.setState({ visibleLength: DEFAULT_FACET_LENGTH });
+    getInitialState() {
+      // null means don't slice, show all
+      return {
+        isCollapsed: false,
+        visibleLength: DEFAULT_FACET_LENGTH
       };
-      text = `Show ${DEFAULT_FACET_LENGTH}`;
-    // only showing 5, show more
-    } else if (visibleLength === DEFAULT_FACET_LENGTH) {
-      _onClick = e => {
-        e.preventDefault();
-        this.setState({ visibleLength: MEDIUM_FACET_LENGTH });
-      };
-      text = 'Show more';
-    // medium length, show all
-    } else {
-      _onClick = e => {
-        e.preventDefault();
-        this.setState({ visibleLength: null });
-      };
-      text = 'Show all';
-    }
-    return <p className='text-right'><a onClick={_onClick}>{text}</a></p>;
-  },
+    },
 
-  _renderAgg (name, total, _key, href, isActive) {
-    let activityStyle = isActive ? style.activeAgg: style.inactiveAgg;
-    let klass = isActive ? 'search-agg active' : 'search-agg';
-    return (
-      <Link to={href} key={_key}>
-        <div key={`aggA${_key}`} style={[style.agg, activityStyle]} className={klass}>        
-          <span>{name}</span>
-          <span>{total.toLocaleString()}</span>
+    render() {
+      // if no values, don't show
+      if (this.props.values.length === 0) return null;
+      const slicedValues =
+        this.state.visibleLength === null
+          ? this.props.values
+          : this.props.values.slice(0, this.state.visibleLength);
+      const valueNodes = slicedValues.map((d, i) => {
+        let isActive = this.props.currentValues.indexOf(d.key) > -1;
+        let newHref = this._getToggledHref(
+          this.props.aggKey,
+          d.key,
+          this.props.currentValues
+        );
+        if (this.props.customFacetFlag) {
+          return this._renderStatusButtons(d.key, `2agg${d.key}.${i}`, newHref, isActive);
+        }
+        return this._renderAgg(
+          d.key,
+          d.total,
+          `2agg${d.key}.${i}`,
+          newHref,
+          isActive
+        );
+      });
+      const iconString = this.state.isCollapsed ? "right" : "down";
+      const valuesNodesMaybe = this.state.isCollapsed ? null : (
+        <div>
+          {valueNodes}
+          {this._renderShowMoreMaybe()}
         </div>
-      </Link>
-    );
-  },
+      );
+      return (
+        <div>
+          <p onClick={this._toggleIsCollapsed} style={style.aggLabel}>
+            <span>{this.props.name || this.props.aggKey}</span>
+            <i className={`fa fa-angle-${iconString}`} style={[style.icon]} />
+          </p>
+          {valuesNodesMaybe}
+        </div>
+      );
+    },
+    _renderStatusButtons(name, _key, href, isActive) {
+      return <StatusBtns name={name} />;
+    },
 
-  _getToggledHref (aggKey, value, currentValues, isReset) {
-    return getHrefWithoutAgg(this.props.queryParams, aggKey, value, currentValues, isReset);
-  },
+    _renderShowMoreMaybe() {
+      const visibleLength = this.state.visibleLength;
+      const valLength = this.props.values.length;
+      // no more to show, show nothing
+      if (visibleLength === DEFAULT_FACET_LENGTH && valLength <= visibleLength)
+        return null;
+      let text, _onClick;
+      // currently showing all, allow collapse
+      if (visibleLength === null) {
+        _onClick = e => {
+          e.preventDefault();
+          this.setState({ visibleLength: DEFAULT_FACET_LENGTH });
+        };
+        text = `Show ${DEFAULT_FACET_LENGTH}`;
+        // only showing 5, show more
+      } else if (visibleLength === DEFAULT_FACET_LENGTH) {
+        _onClick = e => {
+          e.preventDefault();
+          this.setState({ visibleLength: MEDIUM_FACET_LENGTH });
+        };
+        text = "Show more";
+        // medium length, show all
+      } else {
+        _onClick = e => {
+          e.preventDefault();
+          this.setState({ visibleLength: null });
+        };
+        text = "Show all";
+      }
+      return (
+        <p className="text-right">
+          <a onClick={_onClick}>{text}</a>
+        </p>
+      );
+    },
 
-  _toggleIsCollapsed () {
-    this.setState({ isCollapsed: !this.state.isCollapsed });
-  }
-}));
+    _renderAgg(name, total, _key, href, isActive) {
+      let activityStyle = isActive ? style.activeAgg : style.inactiveAgg;
+      let klass = isActive ? "search-agg active" : "search-agg";
+      return (
+        <Link to={href} key={_key}>
+          <div
+            key={`aggA${_key}`}
+            style={[style.agg, activityStyle]}
+            className={klass}
+          >
+            <span>{name}</span>
+            <span>{total.toLocaleString()}</span>
+          </div>
+        </Link>
+      );
+    },
+
+    _getToggledHref(aggKey, value, currentValues, isReset) {
+      return getHrefWithoutAgg(
+        this.props.queryParams,
+        aggKey,
+        value,
+        currentValues,
+        isReset
+      );
+    },
+
+    _toggleIsCollapsed() {
+      this.setState({ isCollapsed: !this.state.isCollapsed });
+    }
+  })
+);
 
 const LINK_COLOR = '#6582A6';
 const HOVER_COLOR = '#e6e6e6';
