@@ -17,7 +17,7 @@ import boto
 from boto.s3.key import Key
 import hashlib
 
-from src.curation_helpers import ban_from_cache, link_gene_names, get_curator_session
+from src.curation_helpers import ban_from_cache, get_author_etc, link_gene_names, get_curator_session
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
@@ -8005,6 +8005,38 @@ class Reservedname(Base):
             obj['systematic_name'] = obj['locus']['systematic_name']
         return obj
 
+    # add rows to LOCUS_REFERENCE, LOCUSNOTE, and LOCUSNOTE_REFERENCE for associated changes to locus
+    def associate_locus(self, systematic_name, username):
+        curator_session = None 
+        try:
+            curator_session = get_curator_session(username)
+            self = curator_session.merge(self)
+            gene_name_locus_ref = LocusReferences(
+                locus_id = locus_id,
+                reference_id = personal_communication_ref.dbentity_id,
+                reference_class = 'gene_name',
+                source_id = SGD_SOURCE_ID,
+                created_by = username
+            )
+            curator_session.add(gene_name_locus_ref)
+            name_description_locus_ref = LocusReferences(
+                locus_id = locus_id,
+                reference_id = personal_communication_ref.dbentity_id,
+                reference_class = 'name_description',
+                source_id = SGD_SOURCE_ID,
+                created_by = username
+            )
+            curator_session.add(name_description_locus_ref)
+
+        except Exception as e:
+            transaction.abort()
+            traceback.print_exc()
+            raise(e)
+        finally:
+            if curator_session:
+                curator_session.remove()
+
+
     def promote(self, username):
         try:
             curator_session = get_curator_session(username)
@@ -8085,14 +8117,28 @@ class ReservednameTriage(Base):
 
     curation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     proposed_gene_name = Column(String(100), nullable=False)
-    # colleague_id = Column(ForeignKey(u'nex.colleague.colleague_id', ondelete=u'CASCADE'), index=True)
+    colleague_id = Column(ForeignKey(u'nex.colleague.colleague_id', ondelete=u'CASCADE'), index=True)
     created_by = Column(String(12), nullable=False)
     json = Column(Text, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
 
+    def get_author_list(self):
+        obj = json.loads(self.json)
+        authors = obj['authors']
+        author_list = []
+        for x in authors:
+            if x['first_name'] and x['last_name']:
+                a_str = x['last_name'] + ' ' + x['first_name'][:1]
+                author_list.append(a_str)
+        if len(author_list) == 0:
+            colleague = DBSession.query(Colleague).filter(Colleague.colleague_id == self.colleague_id).one_or_none()
+            author_list = [colleague.last_name + ' ' + colleague.first_name[:1]]
+        return author_list
+
     def to_citation(self):
         obj = json.loads(self.json)
-        return obj['last_name'] + ' ' + obj['first_name'][:1] + ' (' + obj['year'] + ')'
+        author_list = self.get_author_list()
+        return get_author_etc(author_list) + ' ' + '(' + obj['year'] + ')'
 
     def to_dict(self):
         obj = json.loads(self.json)
@@ -8107,10 +8153,10 @@ class ReservednameTriage(Base):
                 'display_name': self.to_citation()
             }
         }
-        # colleague = DBSession.query(Colleague).filter(Colleague.colleague_id == self.colleague_id).one_or_none()
-        # return_obj['submitter_name'] = colleague.first_name + ' ' + colleague.last_name
-        # return_obj['submitter_email'] = colleague.email
-        # return_obj['submitter_phone'] = colleague.work_phone
+        colleague = DBSession.query(Colleague).filter(Colleague.colleague_id == self.colleague_id).one_or_none()
+        return_obj['submitter_name'] = colleague.first_name + ' ' + colleague.last_name
+        return_obj['submitter_email'] = colleague.email
+        return_obj['submitter_phone'] = colleague.work_phone
         return return_obj
 
     def update(self, new_info, username):
@@ -8138,66 +8184,85 @@ class ReservednameTriage(Base):
     def promote(self, username):
         try:
             obj = json.loads(self.json)
-            print(obj)
             curator_session = get_curator_session(username)
+            self = curator_session.merge(self)
             # create personal communication
             citation = self.to_citation()
-            ref = Referencedbentity(
-                display_name = citation,
+            # see if there is already personal communication for this and add if not yet added
+            personal_communication_ref = curator_session.query(Referencedbentity).filter(Referencedbentity.citation == citation).one_or_none()
+            if not personal_communication_ref:
+                title = None
+                if 'title' in obj.keys():
+                    title = obj['title']
+                if 'title' == '':
+                    title = None
+                personal_communication_ref = Referencedbentity(
+                    display_name = citation,
+                    source_id = SGD_SOURCE_ID,
+                    subclass = 'REFERENCE',
+                    dbentity_status = 'Active',
+                    method_obtained = 'Gene registry',
+                    publication_status = 'Unpublished',
+                    fulltext_status = 'NAP',
+                    citation = citation,
+                    year = int(obj['year']),
+                    title = title,
+                    created_by = username
+                )
+                curator_session.add(personal_communication_ref)
+                curator_session.flush()
+                curator_session.refresh(personal_communication_ref)
+                author_list = self.get_author_list()
+                for i, author in enumerate(author_list):
+                    new_ref_author = Referenceauthor(
+                        display_name = author,
+                        obj_url = '/author/' + author.replace(' ', '_'),
+                        source_id = SGD_SOURCE_ID,
+                        reference_id = personal_communication_ref.dbentity_id,
+                        author_order = i,
+                        author_type = 'Author', 
+                        created_by = username
+                    )
+                    curator_session.add(new_ref_author)
+                # add referencetype
+                new_reftype = Referencetype(
+                    display_name = 'Personal Communication to SGD',
+                    obj_url = '/referencetype/Personal_Communication_to_SGD',
+                    source_id = SGD_SOURCE_ID,
+                    reference_id = personal_communication_ref.dbentity_id,
+                    created_by = username
+                )
+                curator_session.add(new_reftype)
+            # see if there is a locus
+            locus_id = None
+            if 'systematic_name' in obj.keys():
+                locus_id = curator_session.query(Locusdbentity.dbentity_id).filter(Locusdbentity.systematic_name == obj['systematic_name']).scalar()
+            # actually add gene name reservation
+            new_res = Reservedname(
+                format_name = self.proposed_gene_name,
+                display_name = self.proposed_gene_name,
+                obj_url = '/reservedname/' + self.proposed_gene_name,
                 source_id = SGD_SOURCE_ID,
-                subclass = 'REFERENCE',
-                dbentity_status = 'Active',
-                method_obtained = 'Gene registry',
-                publication_status = 'Unpublished',
-                fulltext_status = 'NAP',
-                citation = citation,
-                year = int(obj['year']),
-                title = obj['title'],
+                locus_id = locus_id,
+                reference_id = personal_communication_ref.dbentity_id,
+                colleague_id = self.colleague_id,
+                name_description = obj['description'],
                 created_by = username
             )
-            # TEMP do nothing
-            return True
-            # if there is a systematic name, add row to LOCUS_REFERENCE for personal communication reference
-            # if there is a systematic name, add rows to LOCUSNOTE and LOCUSNOTE_REFERENCE for the history section on the LSP
-            # add row to reservedname
-
-            self = curator_session.merge(self)
-            locus = curator_session.query(Locusdbentity).filter(Locusdbentity.dbentity_id == self.locus_id).one_or_none()
-            locus.gene_name = self.display_name
-            locus.display_name = self.display_name
-            locus.name_description = self.name_description
-            new_gene_name_locus_reference = LocusReferences(
-                locus_id=self.locus_id,
-                reference_id=self.reference_id,
-                reference_class='gene_name',
-                created_by=username,
-                source_id=SGD_SOURCE_ID
-            )
-            new_name_description_locus_reference = LocusReferences(
-                locus_id=self.locus_id,
-                reference_id=self.reference_id,
-                reference_class='name_description',
-                created_by=username,
-                source_id=SGD_SOURCE_ID
-            )
-            curator_session.add(new_gene_name_locus_reference)
-            curator_session.add(new_name_description_locus_reference)
-            # TODO archlocuschange
-            # arch_locuschange = curator_session.query(ArchLocuschange).filter(ArchLocuschange.dbentity_id == self.locus_id).one_or_none()
-            # arch_locuschange.date_name_standardized = datetime.now()
-            # add curator activity
+            curator_session.add(new_res)
+            curator_session.flush()
+            curator_session.refresh(new_res)
             new_curate_activity = CuratorActivity(
-                display_name = locus.display_name,
-                obj_url = locus.obj_url,
-                activity_category = 'locus',
-                dbentity_id = locus.dbentity_id,
-                message = 'standardized gene name',
-                json = json.dumps({ 'keys': { 'gene_name': self.display_name } }),
+                display_name = new_res.display_name,
+                obj_url = new_res.obj_url,
+                activity_category = 'reserved_name',
+                message = 'gene name reservation added',
                 created_by = username
             )
             curator_session.add(new_curate_activity)
             curator_session.delete(self)
             transaction.commit()
+            return True
         except Exception as e:
             transaction.abort()
             traceback.print_exc()

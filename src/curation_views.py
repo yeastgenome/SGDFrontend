@@ -375,7 +375,7 @@ def new_gene_name_reservation(request):
     if not check_csrf_token(request, raises=False):
         return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
     data = request.json_body
-    required_fields = ['colleague_id', 'new_gene_name', 'description', 'email', 'year']
+    required_fields = ['colleague_id', 'new_gene_name', 'description', 'year']
     for x in required_fields:
         if not data[x]:
             field_name = x.replace('_', ' ')
@@ -388,12 +388,6 @@ def new_gene_name_reservation(request):
             except ValueError as e:
                 msg = 'Please enter a valid year.'
                 return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
-        if x == 'email':
-            is_valid = validate_email(data[x])
-            if not is_valid:
-                msg = 'Invalid email address.'
-                return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
-    return True
         # TODO validate new gene name, ORF
     # input is valid, add entry to reservednametriage
     try:
@@ -496,8 +490,6 @@ def reserved_name_delete(request):
             res = curator_session.query(Reservedname).filter(Reservedname.reservedname_id == req_id).one_or_none()
         if not res:
             return HTTPNotFound()
-        print('deleteing res')
-        print(res)
         curator_session.delete(res)
         transaction.commit()
         return True
