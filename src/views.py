@@ -266,9 +266,9 @@ def reserved_name(request):
     id = extract_id_request(request, "reservedname")
 
     if id:
-        reference = DBSession.query(Reservedname).filter_by(reservedname_id=id).one_or_none()
+        reserved_name = DBSession.query(Reservedname).filter_by(reservedname_id=id).one_or_none()
     else:
-        reference = DBSession.query(Reservedname).filter_by(display_name=request.matchdict['id']).one_or_none()
+        reserved_name = DBSession.query(Reservedname).filter_by(display_name=request.matchdict['id']).one_or_none()
         
     if reserved_name:
         return reserved_name.to_dict()
