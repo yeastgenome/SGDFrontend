@@ -3,10 +3,11 @@ from StringIO import StringIO
 from Bio import Entrez, Medline 
 from urllib import urlopen
 import sys
-reload(sys)  # Reload does the trick!
+reload(sys)  # Reload does the trick! 
 sys.setdefaultencoding('UTF8')
 sys.path.insert(0, '../../../src/')
-from models import Referencedbentity, Referencetriage, Locusdbentity, LocusAlias
+from models import Referencedbentity, Referencetriage, Referencedeleted, \
+                   Locusdbentity, LocusAlias
 sys.path.insert(0, '../')
 from database_session import get_dev_session
 from config import CREATED_BY
@@ -26,7 +27,8 @@ def load_references(log_file):
 
     pmid_to_reference_id =  dict([(x.pmid, x.dbentity_id) for x in nex_session.query(Referencedbentity).all()])
     pmid_to_curation_id =  dict([(x.pmid, x.curation_id) for x in nex_session.query(Referencetriage).all()])
-    
+    pmid_to_refdeleted_id = dict([(x.pmid, x.referencedeleted_id) for x in nex_session.query(Referencedeleted).all()])
+
     gene_list = []
     all_loci = nex_session.query(Locusdbentity).all()
     for x in all_loci:
@@ -58,10 +60,10 @@ def load_references(log_file):
     pmids = []
     for pmid in pmid_list:
         if int(pmid) in pmid_to_reference_id:
-            # print ("The pmid=", pmid, " is in the REFERENCEDBENTITY table.", "\n")
             continue
         if int(pmid) in pmid_to_curation_id:
-            # print ("The pmid=", pmid, " is in the REFERENCETRIAGE table.", "\n")
+            continue
+        if int(pmid) in pmid_to_refdeleted_id:
             continue
         pmids.append(pmid)
 

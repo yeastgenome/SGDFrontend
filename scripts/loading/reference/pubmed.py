@@ -1,14 +1,13 @@
 from Bio import Entrez
 from urllib import urlopen
 import sys
+import os
 reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
-sys.path.insert(0, '../')
-# from config import EMAIL
+
+Entrez.email = "yeastgenome@gmail.com"
 
 __author__ = 'sweng66'
-
-Entrez.email = 'sgd-programmers@lists.stanford.edu'
     
 def get_abstract(pmid):
 
@@ -24,6 +23,25 @@ def get_abstract(pmid):
             abstractText = abstractText + abstract
     return abstractText
 
+def get_abstracts(pmid_list):
+
+    handle = Entrez.efetch(db="pubmed", id=pmid_list, rettype='abstract')
+    record = Entrez.read(handle)
+
+    abstracts = []
+    for paper in record['PubmedArticle']:
+        abstractText = ""
+        article = paper['MedlineCitation']['Article']
+        if article.get('Abstract'):
+            for abstract in article['Abstract']['AbstractText']:
+                if abstractText != "":
+                    abstractText = abstractText + "<p>"
+                abstractText = abstractText + abstract
+        pmid = int(paper['MedlineCitation']['PMID'])
+        abstracts.append((pmid, abstractText))
+
+    return abstracts
+
 def get_pubmed_esummary(pmid_list):
 
     handle = Entrez.esummary(db="pubmed", id=pmid_list) 
@@ -36,6 +54,75 @@ def get_pubmed_record(pmid_list):
     records_txt = handle.read()
     return records_txt.split("\n\n")
 
+def get_pubmed_record_from_xml(pmid_list):
+
+    handle = Entrez.efetch(db="pubmed", id=pmid_list, rettype='xml')
+    record = Entrez.read(handle)
+
+    data = []
+    for paper in record['PubmedArticle']:    
+        entry = {}
+        entry['pmid'] = int(paper['MedlineCitation']['PMID'])
+        article = paper['MedlineCitation']['Article']        
+        journal = article['Journal']
+        # entry['issn'] = journal.get('ISSN') 
+        entry['journal_abbrev'] = journal.get('ISOAbbreviation')
+        entry['journal_title'] = journal.get('Title')
+        if journal.get('JournalIssue'):
+            entry['issue'] = journal['JournalIssue'].get('Issue')
+            entry['volume'] = journal['JournalIssue'].get('Volume')
+            if journal['JournalIssue'].get('PubDate'):
+                entry['year'] = journal['JournalIssue']['PubDate'].get('Year')
+        entry['title'] = article.get('ArticleTitle')
+        if paper['MedlineCitation'].get('DateRevised'):
+            dateRevised = paper['MedlineCitation']['DateRevised']
+            entry['date_revised'] = dateRevised['Year'] + "-" + dateRevised['Month'] + "-" + dateRevised['Day']  
+            
+        if article.get('Pagination'):
+            entry['page'] = article['Pagination'].get('MedlinePgn')
+        
+        if article.get('PublicationTypeList'):
+            types = []
+            for type in article['PublicationTypeList']:
+                types.append(str(type))
+            entry['pubtypes'] = types
+        
+        if article.get('AuthorList'):
+            authors = []
+            orcid4author = {}
+            for author in article['AuthorList']:
+                if author.get('LastName') is None or author.get('Initials') is None:
+                    continue
+                authorName = author['LastName'] + " " + author['Initials']
+                authors.append(authorName)
+                ident = author.get('Identifier')
+                if len(ident) == 0:
+                    continue                    
+                if ident[0].attributes.get('Source') is None:
+                    continue
+                if ident[0].attributes.get('Source') == 'ORCID': 
+                    orcid = str(ident[0]).replace("http://orcid.org/", "").replace("https://orcid.org/", "")
+                    orcid4author[authorName] = orcid
+            entry['authors'] = authors
+            entry['orcid'] = orcid4author
+        
+        if paper['PubmedData'].get('PublicationStatus'):
+            entry['publication_status'] = paper['PubmedData'].get('PublicationStatus')
+
+        if paper['PubmedData'].get('ArticleIdList'):
+            for item in paper['PubmedData'].get('ArticleIdList'):
+                if item.attributes.get('IdType') is not None and item.attributes.get('IdType') == 'pmc':
+                    entry['pmc'] = str(item)
+                if item.attributes.get('IdType') is not None and item.attributes.get('IdType') == 'doi':
+                    entry['doi'] = str(item)
+        
+        # print entry, "\n"
+
+        data.append(entry)
+        
+    return data
+        
+ 
 def get_author_etc(author_list):
 
     if author_list is None or len(author_list) == 0:

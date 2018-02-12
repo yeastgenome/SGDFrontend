@@ -724,6 +724,7 @@ def index_not_mapped_genes():
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
+
 def index_part_1():
     index_not_mapped_genes()
     index_genes()
@@ -741,9 +742,11 @@ def index_part_2():
     index_references()
 
 if __name__ == '__main__':
+
     cleanup()
     setup()
     t1 = Thread(target=index_part_1)
     t2 = Thread(target=index_part_2)
     t1.start()
     t2.start()
+

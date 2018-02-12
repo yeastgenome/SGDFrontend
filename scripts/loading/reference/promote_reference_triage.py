@@ -3,14 +3,9 @@ from Bio import Entrez, Medline
 import sys
 reload(sys)
 sys.setdefaultencoding('UTF8')
-sys.path.insert(0, '../../../src/')
-# from ..models 
-from models import Dbentity, Referencedbentity, Referencedocument, Referenceauthor,\
-                   Referencetype, ReferenceUrl, ReferenceRelation, Source, \
-                   Journal, Locusdbentity
-
-sys.path.insert(0, '../')
-from database_session import get_nex_session as get_session
+from src.models import Dbentity, Referencedbentity, Referencedocument, Referenceauthor,\
+    Referencetype, ReferenceUrl, ReferenceRelation, Source, Journal, Locusdbentity
+from scripts.loading.database_session import get_session
 
 Entrez.email = "sweng@stanford.edu"
 
@@ -195,9 +190,6 @@ def insert_referencedbentity(pmid, source_id, record, created_by):
     if pubstatus == 'aheadofprint':
         publication_status = epub_status
         fulltext_status = epub_pdf_status
-
-    if pmid == 28068035:
-        year = 2015
 
     x = Referencedbentity(display_name = citation.split(')')[0] + ')',
                           source_id = source_id,

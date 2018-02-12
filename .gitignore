@@ -67,13 +67,15 @@ test_variables.sh
 dev_aws_variables.sh
 
 #temp files
-logs
+# logs
 backup
 data
+*.log-*
 zz_*
 tmo_*
 tmp_*
 template*
+*.log
 
 Gemfile.lock
 
