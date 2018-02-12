@@ -24,7 +24,7 @@ class ObservableTest(unittest.TestCase):
         obs = factory.ApoFactory()
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        #request.matchdict['format_name'] = "APO:0000007"
+        request.matchdict['format_name'] = "APO:0000007"
         format_name = mock_redis.extract_id_request(request, 'observable', param_name='format_name')
 
         response = observable(request)
@@ -79,7 +79,7 @@ class ObservableTest(unittest.TestCase):
 
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        #request.matchdict['format_name'] = 'nonexistent_id'
+        request.matchdict['format_name'] = 'nonexistent_id'
         format_name = mock_redis.extract_id_request(request, 'observable', param_name='format_name')
 
         response = observable(request)

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import t from 'tcomb-form';
+import semantic from 'tcomb-form-templates-semantic';
 
 import Loader from '../loader';
 import { setError, clearError } from '../../actions/metaActions';
@@ -11,7 +12,7 @@ class FlexiForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: null,
+      data: props.defaultData,
       isPending: false
     };
   }
@@ -19,11 +20,13 @@ class FlexiForm extends Component {
   handleSubmit(e) {
     e.preventDefault();
     let value = this.formInput.getValue();
-    let method = this.state.data ? 'PUT' : 'POST';
-    this.setState({ isPending: true });
+    let strValue = JSON.stringify(value);
+    let method = this.props.requestMethod || 'PUT';
+    this.setState({ isPending: true, data: value });
     let formOptions = {
       type: method,
-      data: value,
+      data: strValue,
+      contentType: 'application/json',
       headers: {
         'X-CSRF-Token': window.CSRF_TOKEN
       }
@@ -32,9 +35,9 @@ class FlexiForm extends Component {
       this.setState({ isPending: false });
       this.props.dispatch(clearError());
       if (this.props.onSuccess) this.props.onSuccess(data);
-    }).catch( () => {
+    }).catch( (data) => {
       this.setState({ isPending: false });
-      let errorMessage = 'Unable to login. Please verify your username and password are correct.';
+      let errorMessage = data ? data.message : 'Unable to login. Please verify your username and password are correct.';
       this.props.dispatch(setError(errorMessage));
     });
   }
@@ -42,6 +45,7 @@ class FlexiForm extends Component {
   render() {
     if (this.state.isPending) return <Loader />;
     let submitText = this.props.submitText || 'Update';
+    t.form.Form.templates = semantic;
     return (
       <form className='sgd-curate-form' onSubmit={this.handleSubmit.bind(this)}>
         <t.form.Form options={this.props.tFormOptions} ref={input => this.formInput = input} type={this.props.tFormSchema} value={this.state.data} />
@@ -54,10 +58,12 @@ class FlexiForm extends Component {
 }
 
 FlexiForm.propTypes = {
+  defaultData: React.PropTypes.object,
   dispatch: React.PropTypes.func,
   getUrl: React.PropTypes.string,
   onSuccess: React.PropTypes.func,// (data) =>
   submitText: React.PropTypes.string,
+  requestMethod: React.PropTypes.string,
   tFormSchema: React.PropTypes.func.isRequired,
   tFormOptions: React.PropTypes.object,
   updateUrl: React.PropTypes.string.isRequired,

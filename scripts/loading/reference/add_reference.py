@@ -1,16 +1,15 @@
 from StringIO import StringIO
 from Bio import Entrez, Medline
+import os
 import sys
 reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
-sys.path.insert(0, '../../../src/')
-from models import Dbentity, Referencedbentity, Referencedocument, Referenceauthor,\
-                   Referencetype, ReferenceUrl, ReferenceRelation, Source, \
-                   Journal
-sys.path.insert(0, '../')
-from database_session import get_dev_session as get_session
-from util import link_gene_names
-from config import CREATED_BY
+from src.models import Dbentity, Referencedbentity, Referencedocument, Referenceauthor,\
+    Referencetype, ReferenceUrl, ReferenceRelation, Source, Journal
+from scripts.loading.database_session import get_session
+from scripts.loading.util import link_gene_names
+
+CREATED_BY = os.environ['DEFAULT_USER']
 
 __author___ = 'sweng66'
 

@@ -2,17 +2,16 @@ from datetime import datetime
 import json
 import csv
 import sys
-sys.path.insert(0, '../../../src/')
-from models import Pathwaydbentity, Pathwaysummary, PathwaysummaryReference, Referencedbentity, Source
-sys.path.insert(0, '../')
-from database_session import get_nex_session as get_session
-from config import CREATED_BY, EMAIL
-from util import sendmail
+import os
+from src.models import Pathwaydbentity, Pathwaysummary, PathwaysummaryReference, Referencedbentity, Source
+from scripts.loading.database_session import get_session
                              
 __author__ = 'sweng66'
 
-log_file = "logs/pathway_summary.log"
+log_file = "scripts/loading/pathway/logs/pathway_summary.log"
 summary_type = "Metabolic"
+
+CREATED_BY = os.environ['DEFAULT_USER']
 
 def load_summaries(summary_file, created_by):
     
@@ -23,7 +22,8 @@ def load_summaries(summary_file, created_by):
 
     biocyc_id_to_dbentity_id = dict([(x.biocyc_id, x.dbentity_id) for x in nex_session.query(Pathwaydbentity).all()])
     pmid_to_reference_id = dict([(x.pmid, x.dbentity_id) for x in nex_session.query(Referencedbentity).all()])
-    
+    pathway_id_to_pathwaysummary = dict([(x.pathway_id, x) for x in nex_session.query(Pathwaysummary).all()])
+
     sgd = nex_session.query(Source).filter_by(format_name='SGD').one_or_none()
     source_id = sgd.source_id
 
@@ -36,12 +36,16 @@ def load_summaries(summary_file, created_by):
 
         pathway_name = pieces[0].strip()
         summary_text = pieces[1].strip()
-        pmids = pieces[2].strip().replace(" ", "").split("|")
+        # pmids = pieces[2].strip().replace(" ", "").split("|")
 
         dbentity_id = biocyc_id_to_dbentity_id.get(pathway_name)
 
         if dbentity_id is None:
             print "The biocyc_id:", pathway_name, " is not in the database."
+            continue
+
+        if dbentity_id in pathway_id_to_pathwaysummary:
+            print "There is a summary in the database for pathway_id=", dbentity_id
             continue
 
         summary_id = insert_pathwaysummary(nex_session, fw, dbentity_id, summary_text, source_id, created_by)
@@ -51,6 +55,13 @@ def load_summaries(summary_file, created_by):
             print line
             continue
         
+
+        if len(pieces) < 3:
+            nex_session.commit()
+            continue
+
+        pmids = pieces[2].strip().replace(" ", "").split("|") 
+
         reference_id_list = []
         bad = 0
         for pmid in pmids:

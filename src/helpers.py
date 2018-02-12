@@ -1,6 +1,4 @@
 from math import pi, sqrt, acos
-import boto
-from boto.s3.key import Key
 import datetime
 import hashlib
 import werkzeug
@@ -14,16 +12,13 @@ from sqlalchemy.exc import IntegrityError, InternalError, StatementError
 import traceback
 import requests
 
-from .models import DBSession, Dbuser, Go, Referencedbentity, Keyword, Locusdbentity, Filepath, Edam, Filedbentity, FileKeyword, ReferenceFile
+from .models import DBSession, Dbuser, Go, Referencedbentity, Keyword, Locusdbentity, FilePath, Edam, Filedbentity, FileKeyword, ReferenceFile
 
 import logging
 log = logging.getLogger(__name__)
 
 FILE_EXTENSIONS = ['bed', 'bedgraph', 'bw', 'cdt', 'chain', 'cod', 'csv', 'cusp', 'doc', 'docx', 'fsa', 'gb', 'gcg', 'gff', 'gif', 'gz', 'html', 'jpg', 'pcl', 'pdf', 'pl', 'png', 'pptx', 'README', 'sql', 'sqn', 'tgz', 'txt', 'vcf', 'wig', 'wrl', 'xls', 'xlsx', 'xml', 'sql', 'txt', 'html', 'gz', 'tsv']
 MAX_QUERY_ATTEMPTS = 3
-S3_BUCKET = os.environ['S3_BUCKET']
-S3_ACCESS_KEY = os.environ['S3_ACCESS_KEY']
-S3_SECRET_KEY = os.environ['S3_SECRET_KEY']
 
 import redis
 disambiguation_table = redis.Redis()
@@ -138,10 +133,10 @@ def extract_keywords(request):
     return keywords
 
 def get_or_create_filepath(request):
-    filepath = DBSession.query(Filepath).filter(Filepath.filepath == request.POST.get("new_filepath")).one_or_none()
+    filepath = DBSession.query(FilePath).one_or_none()
 
     if filepath is None:
-        filepath = Filepath(filepath=request.POST.get("new_filepath"), source_id=339)
+        filepath = FilePath(source_id=339)
         DBSession.add(filepath)
         DBSession.flush()
         DBSession.refresh(filepath)
@@ -223,7 +218,9 @@ def upload_file(username, file, **kwargs):
     is_public = kwargs.get('is_public', False)
     is_in_spell = kwargs.get('is_in_spell', False)
     is_in_browser = kwargs.get('is_in_browser', False)
-    file_date = kwargs.get('file_date', datetime.datetime.now())
+    file_date = kwargs.get('file_date')
+    if file_date is None:
+        file_date = datetime.datetime.now()
     json = kwargs.get('json', None)
     year = kwargs.get('year', file_date.year)
     file_extension = kwargs.get('file_extension')
@@ -232,51 +229,49 @@ def upload_file(username, file, **kwargs):
     source_id = kwargs.get('source_id', 834)
     status = kwargs.get('status', 'Active')
     description = kwargs.get('description', None)
+    readme_file_id = kwargs.get('readme_file_id', None)
+    # get file size
+    file.seek(0, os.SEEK_END)
+    file_size = file.tell()
+    file.seek(0)
 
-    md5sum = hashlib.md5(file.read()).hexdigest()
-    fdb = Filedbentity(
-        md5sum=md5sum,
-        previous_file_name=filename,
-        data_id=data_id,
-        topic_id=topic_id,
-        format_id=format_id,
-        file_date=file_date,
-        json=json,
-        year=year,
-        is_public=is_public,
-        is_in_spell=is_in_spell,
-        is_in_browser=is_in_browser,
-        source_id=source_id,
-        # filepath_id=filepath.filepath_id,
-        file_extension=file_extension,
-        format_name=format_name,
-        display_name=display_name,
-        s3_url=None,
-        dbentity_status=status,
-        description=description,
-        subclass='FILE',
-        created_by=username
-    )
-    DBSession.add(fdb)
-    DBSession.flush()
-    DBSession.refresh(fdb)
-    # get s3_url and upload
-    s3_path = fdb.sgdid + '/' + filename
-    conn = boto.connect_s3(S3_ACCESS_KEY, S3_SECRET_KEY)
-    bucket = conn.get_bucket(S3_BUCKET)
-    k = Key(bucket)
-    k.key = s3_path
-    k.set_contents_from_file(file, rewind=True)
-    k.make_public()
-    file_s3 = bucket.get_key(k.key)
-    etag_md5_s3 = file_s3.etag.strip('"').strip("'")
-    # if md5 checksum matches, save s3 URL to db
-    if (md5sum == etag_md5_s3):
-        fdb.s3_url = file_s3.generate_url(expires_in=0, query_auth=False)
+    try:
+        md5sum = hashlib.md5(file.read()).hexdigest()
+        fdb = Filedbentity(
+            md5sum=md5sum,
+            previous_file_name=filename,
+            data_id=data_id,
+            topic_id=topic_id,
+            format_id=format_id,
+            file_date=file_date,
+            json=json,
+            year=year,
+            is_public=is_public,
+            is_in_spell=is_in_spell,
+            is_in_browser=is_in_browser,
+            source_id=source_id,
+            file_extension=file_extension,
+            format_name=format_name,
+            display_name=display_name,
+            s3_url=None,
+            dbentity_status=status,
+            description=description,
+            readme_file_id=readme_file_id,
+            subclass='FILE',
+            created_by=username,
+            file_size=file_size
+        )
+        DBSession.add(fdb)
         DBSession.flush()
+        did = fdb.dbentity_id
         transaction.commit()
-    else:
-        raise Exception('MD5sum check failed.')
+        DBSession.flush()
+        fdb = DBSession.query(Filedbentity).filter(Filedbentity.dbentity_id == did).one_or_none()
+        fdb.upload_file_to_s3(file, filename)
+    except Exception as e:
+        DBSession.rollback()
+        DBSession.remove()
+        raise(e)
 
 def area_of_intersection(r, s, x):
     if x <= abs(r-s):

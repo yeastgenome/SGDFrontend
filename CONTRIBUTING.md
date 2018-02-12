@@ -10,3 +10,5 @@ When the qa branch is ready for release, it should be deployed to QA and staging
 
     $ git tag -a v18.3.0 -m "description of bug fixes"
     $ git push origin --tags
+### Git flow 
+![Alt](docs/SGD-Git-flow-example.png)
