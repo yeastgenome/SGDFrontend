@@ -83,3 +83,18 @@ def ban_from_cache(targets, is_exact=False):
         for x in targets:
             tn.write(command + x + '\n')
         tn.close()
+
+def get_author_etc(author_list):
+    if author_list is None or len(author_list) == 0:
+        return ""
+
+    author_et_al = ""
+
+    if len(author_list) == 1:
+        author_et_al = author_list[0]
+    elif len(author_list) == 2:
+        author_et_al = " and ".join(author_list)
+    else:
+        author_et_al = author_list[0] + ", et al."
+
+    return author_et_al
