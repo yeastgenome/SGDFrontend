@@ -493,7 +493,7 @@ def reserved_name_associate_pmid(request):
             Referencedbentity.clear_from_triage_and_deleted(pmid, username)
             ref = add_paper(pmid, username)
         res = curator_session.query(Reservedname).filter(Reservedname.reservedname_id == req_id).one_or_none()
-        res.associate_pmid(ref.pmid)
+        res.associate_published_reference(ref.dbentity_id, username)
         transaction.commit()
         return True
     except Exception as e:
