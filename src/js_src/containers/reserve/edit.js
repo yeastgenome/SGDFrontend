@@ -70,7 +70,7 @@ class GeneNameReservationEdit extends Component {
             <p>Add PMID to change personal communication to reference. The personal communication will only be deleted if it is not used on other gene name reservations.</p>
             <div className='row'>
               <div className='columns small-12 medium-4'>
-                <FlexiForm onSuccess={this.handlePmidSuccess.bind(this)} requestMethod='PUT' tFormSchema={pmidSchema} tFormOptions={pmidOptions} updateUrl={pmidUpdateUrl} submitText='Associate PMID' />
+                <FlexiForm onSuccess={this.handlePmidSuccess.bind(this)} requestMethod='POST' tFormSchema={pmidSchema} tFormOptions={pmidOptions} updateUrl={pmidUpdateUrl} submitText='Associate PMID' />
               </div>
             </div>
           </div>

@@ -475,6 +475,33 @@ def reserved_name_update(request):
         log.error(e)
         return HTTPBadRequest(body=json.dumps({ 'message': str(e) }), content_type='text/json')
 
+        
+
+@view_config(route_name='reserved_name_associate_pmid', renderer='json', request_method='POST')
+@authenticate
+def reserved_name_associate_pmid(request):
+    if not check_csrf_token(request, raises=False):
+        return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
+    try:
+        req_id = request.matchdict['id'].upper()
+        params = request.json_body
+        pmid = int(params['pmid'])
+        username = request.session['username']
+        # first make sure pmid has real reference. Add if not
+        ref = DBSession.query(Referencedbentity).filter(Referencedbentity.pmid == pmid).one_or_none()
+        if not ref:
+            Referencedbentity.clear_from_triage_and_deleted(pmid, username)
+            ref = add_paper(pmid, username)
+        res = curator_session.query(Reservedname).filter(Reservedname.reservedname_id == req_id).one_or_none()
+        res.associate_pmid(ref.pmid)
+        transaction.commit()
+        return True
+    except Exception as e:
+        transaction.abort()
+        log.error(e)
+        return HTTPBadRequest(body=json.dumps({ 'message': str(e) }), content_type='text/json')
+
+
 @view_config(route_name='reserved_name_delete', renderer='json', request_method='DELETE')
 @authenticate
 def reserved_name_delete(request):
