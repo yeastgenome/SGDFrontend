@@ -6,6 +6,7 @@ from sqlalchemy import create_engine, and_
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import scoped_session, sessionmaker
 from validate_email import validate_email
+from random import randint
 import datetime
 import logging
 import os
@@ -393,12 +394,7 @@ def new_gene_name_reservation(request):
     try:
         proposed_gene_name = data['new_gene_name'].upper()
         colleague_id = data['colleague_id']
-        # create username from db URI
-        s = os.environ['NEX2_URI']
-        start = 'postgresql://'
-        end = '@'
-        userp = s[s.find(start)+len(start):s.find(end)]
-        created_by = userp.split(':')[0].upper()
+        created_by = get_username_from_db_uri()
         data_json = json.dumps(data)
         new_res = ReservednameTriage(
             proposed_gene_name=proposed_gene_name,
@@ -425,6 +421,48 @@ def colleague_update(request):
         return HTTPNotFound()
     return { 'colleague_id': colleague.colleague_id }
 
+# not authenticated to allow the public submission
+@view_config(route_name='new_colleague', renderer='json', request_method='POST')
+def new_colleague(request):
+    if not check_csrf_token(request, raises=False):
+        return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
+    params = request.json_body
+    required_fields = ['last_name', 'email']
+    for x in required_fields:
+        if not params[x]:
+            msg = x + ' is a required field.'
+            return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
+    try:
+        full_name = params['first_name'] + ' ' + params['last_name']
+        format_name = full_name + str(randint(1,100))# add a random number to be sure it's unique
+        created_by = get_username_from_db_uri()
+        new_colleague = Colleague(
+            format_name = format_name,
+            display_name = full_name,
+            obj_url = '/colleague/' + format_name,
+            source_id = 759,# direct submission
+            orcid = params['orcid'],
+            first_name = params['first_name'],
+            last_name = params['last_name'],
+            job_title = params['position'],
+            email = params['email'],
+            institution = params['institution'],
+            profession = params['profession'],
+            is_pi = False,
+            is_contact = False,
+            is_beta_tester = False,
+            display_email = False,
+            created_by = created_by
+        )
+        DBSession.add(new_colleague)
+        transaction.commit()
+        DBSession.flush()
+        new_colleague = DBSession.query(Colleague).filter(Colleague.format_name == format_name).one_or_none()
+        return { 'colleague_id': new_colleague.colleague_id }
+    except Exception as e:
+        transaction.abort()
+        log.error(e)
+        return HTTPBadRequest(body=json.dumps({ 'message': str(e) }), content_type='text/json')
 
 @view_config(route_name='reserved_name_index', renderer='json')
 @authenticate
@@ -542,6 +580,14 @@ def reserved_name_promote(request):
     except Exception as e:
         log.error(e)
         return HTTPBadRequest(body=json.dumps({ 'message': str(e) }), content_type='text/json')
+
+def get_username_from_db_uri():
+    s = os.environ['NEX2_URI']
+    start = 'postgresql://'
+    end = '@'
+    userp = s[s.find(start)+len(start):s.find(end)]
+    created_by = userp.split(':')[0].upper()
+    return created_by
 
 # @view_config(route_name='upload', request_method='POST', renderer='json')
 # @authenticate

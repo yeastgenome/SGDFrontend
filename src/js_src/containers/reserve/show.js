@@ -37,6 +37,7 @@ class GeneNameReservation extends Component {
   handlePromote(e) {
     e.preventDefault();
     if (window.confirm('Are you sure you want to promote the gene name reservation?')) {
+      let oldData = this.state.data;
       this.setState({ data: null });
       let url = `${DATA_BASE_URL}/${this.props.params.id}/promote`;
       let successMessage;
@@ -59,6 +60,7 @@ class GeneNameReservation extends Component {
       }).catch( (data) => {
         let errorMessage = data ? data.message : 'Unable to promote gene name.';
         this.props.dispatch(setError(errorMessage));
+        this.setState({ isPending: false, data: oldData });
       });
     }
   }
