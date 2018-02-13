@@ -36,29 +36,31 @@ class GeneNameReservation extends Component {
 
   handlePromote(e) {
     e.preventDefault();
-    this.setState({ data: null });
-    let url = `${DATA_BASE_URL}/${this.props.params.id}/promote`;
-    let successMessage;
-    if (this.state.data.reservation_status === 'Unprocessed') {
-      successMessage = 'The new gene name reservation was added. It may take a day to show up in the search.';
-    } else {
-      successMessage = 'The new gene name was standardized.';
-    }
-    let reqOptions = {
-      type: 'PUT',
-      headers: {
-        'X-CSRF-Token': window.CSRF_TOKEN
+    if (window.confirm('Are you sure you want to promote the gene name reservation?')) {
+      this.setState({ data: null });
+      let url = `${DATA_BASE_URL}/${this.props.params.id}/promote`;
+      let successMessage;
+      if (this.state.data.reservation_status === 'Unprocessed') {
+        successMessage = 'The new gene name reservation was added. It may take a day to show up in the search.';
+      } else {
+        successMessage = 'The new gene name was standardized.';
       }
-    };
-    this.setState({ isPending: true });
-    fetchData(url, reqOptions).then( _data => {
-      this.setState({ data: _data });
-      this.props.dispatch(push({ pathname: 'reservations' }));
-      this.props.dispatch(setMessage(successMessage));
-    }).catch( (data) => {
-      let errorMessage = data ? data.message : 'Unable to promote gene name.';
-      this.props.dispatch(setError(errorMessage));
-    });  
+      let reqOptions = {
+        type: 'PUT',
+        headers: {
+          'X-CSRF-Token': window.CSRF_TOKEN
+        }
+      };
+      this.setState({ isPending: true });
+      fetchData(url, reqOptions).then( _data => {
+        this.setState({ data: _data });
+        this.props.dispatch(push({ pathname: 'reservations' }));
+        this.props.dispatch(setMessage(successMessage));
+      }).catch( (data) => {
+        let errorMessage = data ? data.message : 'Unable to promote gene name.';
+        this.props.dispatch(setError(errorMessage));
+      });
+    }
   }
 
   renderRes() {
