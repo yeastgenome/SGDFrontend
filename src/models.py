@@ -24,6 +24,7 @@ ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
 
 QUERY_LIMIT = 25000
 SGD_SOURCE_ID = 834
+DIRECT_SUBMISSION_SOURCE_ID = 759
 SEPARATOR = ' '
 TAXON_ID = 274901
 
@@ -8058,9 +8059,8 @@ class Reservedname(Base):
                     created_by = username
                 )
                 curator_session.add(new_locusnote_ref)
-            self.locus_id = locus_id
             transaction.commit()
-            return True
+            return locus_id
         except Exception as e:
             transaction.abort()
             traceback.print_exc()
@@ -8150,7 +8150,7 @@ class Reservedname(Base):
             new_colleague_locus = ColleagueLocus(
                 colleague_id = self.colleague_id,
                 locus_id = self.locus_id,
-                source_id = 759,# direct submission
+                source_id = DIRECT_SUBMISSION_SOURCE_ID,
                 created_by = username
             )
             curator_session.add(new_colleague_locus)
@@ -8183,8 +8183,9 @@ class Reservedname(Base):
             self = curator_session.merge(self)
             if new_info['systematic_name']:
                 res_systematic_name = new_info['systematic_name'].upper()
-                self.associate_locus(res_systematic_name, username)
+                new_locus_id = self.associate_locus(res_systematic_name, username)
                 self = curator_session.merge(self)
+                self.locus_id = new_locus_id
             if new_info['name_description']:
                 self.name_description = new_info['name_description']
             return_val = self.to_curate_dict()
@@ -8286,7 +8287,7 @@ class ReservednameTriage(Base):
                     title = None
                 personal_communication_ref = Referencedbentity(
                     display_name = citation,
-                    source_id = SGD_SOURCE_ID,
+                    source_id = DIRECT_SUBMISSION_SOURCE_ID,
                     subclass = 'REFERENCE',
                     dbentity_status = 'Active',
                     method_obtained = 'Gene registry',
@@ -8305,7 +8306,7 @@ class ReservednameTriage(Base):
                     new_ref_author = Referenceauthor(
                         display_name = author,
                         obj_url = '/author/' + author.replace(' ', '_'),
-                        source_id = SGD_SOURCE_ID,
+                        source_id = DIRECT_SUBMISSION_SOURCE_ID,
                         reference_id = personal_communication_ref.dbentity_id,
                         author_order = i,
                         author_type = 'Author', 
@@ -8316,7 +8317,7 @@ class ReservednameTriage(Base):
                 new_reftype = Referencetype(
                     display_name = 'Personal Communication to SGD',
                     obj_url = '/referencetype/Personal_Communication_to_SGD',
-                    source_id = SGD_SOURCE_ID,
+                    source_id = DIRECT_SUBMISSION_SOURCE_ID,
                     reference_id = personal_communication_ref.dbentity_id,
                     created_by = username
                 )
@@ -8330,7 +8331,7 @@ class ReservednameTriage(Base):
                 format_name = self.proposed_gene_name,
                 display_name = self.proposed_gene_name,
                 obj_url = '/reservedname/' + self.proposed_gene_name,
-                source_id = SGD_SOURCE_ID,
+                source_id = DIRECT_SUBMISSION_SOURCE_ID,
                 locus_id = locus_id,
                 reference_id = personal_communication_ref.dbentity_id,
                 colleague_id = self.colleague_id,
@@ -8352,7 +8353,7 @@ class ReservednameTriage(Base):
             curator_session.delete(self)
             transaction.commit()
             if locus_id:
-                new_curate_activity.associate_locus(obj['systematic_name'], username)
+                new_res.associate_locus(obj['systematic_name'], username)
             return True
         except Exception as e:
             transaction.abort()

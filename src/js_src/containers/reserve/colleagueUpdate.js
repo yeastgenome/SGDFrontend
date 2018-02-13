@@ -92,6 +92,7 @@ class ColleagueUpdate extends Component {
       first_name: t.maybe(t.String),
       last_name: t.maybe(t.String),
       email: t.maybe(t.String),
+      orcid: t.maybe(t.String),
       phone_number: t.maybe(t.String),
       position: t.maybe(t.String),
       institution: t.maybe(t.String),
@@ -102,10 +103,14 @@ class ColleagueUpdate extends Component {
         <div>
           <p>* indicates required field</p>
           <div className='row'>
-            <div className='column small-3'>{locals.inputs.first_name}</div>
+            <div className='column small-2'>{locals.inputs.first_name}</div>
             <div className='column small-3'>{locals.inputs.last_name}</div>
-            <div className='column small-3'>{locals.inputs.email}</div>
+            <div className='column small-4'>{locals.inputs.email}</div>
             <div className='column small-3'>{locals.inputs.phone_number}</div>
+          </div>
+          <span><a href='https://orcid.org/register' target='_new'><i className='fa fa-question-circle' /> Register for an ORCID iD</a></span>
+          <div className='row'>
+            <div className='column small-2'>{locals.inputs.orcid}</div>
           </div>
           <div className='row'>
             <div className='column small-4'>{locals.inputs.position}</div>
