@@ -391,7 +391,7 @@ def new_gene_name_reservation(request):
         # TODO validate new gene name, ORF
     # input is valid, add entry to reservednametriage
     try:
-        proposed_gene_name = data['new_gene_name']
+        proposed_gene_name = data['new_gene_name'].upper()
         colleague_id = data['colleague_id']
         # create username from db URI
         s = os.environ['NEX2_URI']

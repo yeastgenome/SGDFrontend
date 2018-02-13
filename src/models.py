@@ -8256,6 +8256,7 @@ class ReservednameTriage(Base):
                 display_name = new_res.display_name,
                 obj_url = new_res.obj_url,
                 activity_category = 'reserved_name',
+                json = json.dumps({}),
                 message = 'gene name reservation added',
                 created_by = username
             )
