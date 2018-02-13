@@ -8005,12 +8005,19 @@ class Reservedname(Base):
             obj['systematic_name'] = obj['locus']['systematic_name']
         return obj
 
+    def is_ref_published(self):
+        return self.reference.publication_status == 'Published'
+
     # add rows to LOCUS_REFERENCE, LOCUSNOTE, and LOCUSNOTE_REFERENCE for associated changes to locus
     def associate_locus(self, systematic_name, username):
         curator_session = None 
         try:
             curator_session = get_curator_session(username)
             self = curator_session.merge(self)
+            locus_id = curator_session.query(Locusdbentity.dbentity_id).filter(Locusdbentity.systematic_name == systematic_name).scalar()
+            if not locus_id:
+                raise ValueError('Not a valid systematic name.')
+            personal_communication_ref = curator_session.query(Referencedbentity).filter(Referencedbentity.dbentity_id == self.reference_id).one_or_none()
             gene_name_locus_ref = LocusReferences(
                 locus_id = locus_id,
                 reference_id = personal_communication_ref.dbentity_id,
@@ -8027,7 +8034,27 @@ class Reservedname(Base):
                 created_by = username
             )
             curator_session.add(name_description_locus_ref)
-
+            # new locus_note and locusnote locusnote_reference
+            note_html_str = '<b>Name</b> ' + self.display_name
+            new_locusnote = Locusnote(
+                source_id = SGD_SOURCE_ID,
+                locus_id = locus_id,
+                note_class = 'Locus',
+                note_type = 'Name',
+                note = note_html_str,
+                created_by = username
+            )
+            curator_session.add(new_locusnote)
+            curator_session.flush()
+            curator_session.refresh(new_locusnote)
+            new_locusnote_ref = LocusnoteReference(
+                note_id = new_locusnote.note_id,
+                reference_id = self.reference_id,
+                source_id = SGD_SOURCE_ID,
+                created_by = username
+            )
+            curator_session.add(new_locusnote_ref)
+            transaction.commit()
         except Exception as e:
             transaction.abort()
             traceback.print_exc()
@@ -8036,11 +8063,60 @@ class Reservedname(Base):
             if curator_session:
                 curator_session.remove()
 
-
-    def promote(self, username):
+    def associate_published_reference(self, ref_id, username):
+        if not self.locus_id:
+            raise ValueError('Reserved name must be associated with a locus before adding published reference.')
+        if self.is_ref_published():
+            raise ValueError('Associated reference is already published.')
+        curator_session = None 
         try:
             curator_session = get_curator_session(username)
             self = curator_session.merge(self)
+            # see how many locus_references exist for personal communication
+            locus_ref_count = curator_session.query(LocusReferences).filter(and_(LocusReferences.locus_id == self.locus_id, LocusReferences.reference_class == 'gene_name')).count()
+            # delete old locusreferences
+            old_locusreferences = curator_session.query(LocusReferences).filter(and_(LocusReferences.locus_id == self.locus_id, LocusReferences.reference_class.in_(['gene_name', 'name_description'])))
+            old_locusreferences.delete(synchronize_session=False)
+            gene_name_locus_ref = LocusReferences(
+                locus_id = self.locus_id,
+                reference_id = ref_id,
+                reference_class = 'gene_name',
+                source_id = SGD_SOURCE_ID,
+                created_by = username
+            )
+            curator_session.add(gene_name_locus_ref)
+            name_description_locus_ref = LocusReferences(
+                locus_id = self.locus_id,
+                reference_id = ref_id,
+                reference_class = 'name_description',
+                source_id = SGD_SOURCE_ID,
+                created_by = username
+            )
+            curator_session.add(name_description_locus_ref)
+            # if this is only reference for personal communication, delete it
+            if locus_ref_count == 1:
+                personal_communication_ref = curator_session.query(Referencedbentity).filter(Referencedbentity.dbentity_id == self.reference_id).one_or_none()
+                curator_session.delete(personal_communication_ref)
+            # finally change reference_id
+            self.reference_id = ref_id
+            transaction.commit()
+        except Exception as e:
+            transaction.abort()
+            traceback.print_exc()
+            raise(e)
+        finally:
+            if curator_session:
+                curator_session.remove()
+
+    # standardize
+    def promote(self, username):
+        if not self.is_ref_published():
+            raise ValueError('Associated reference must be published before standardizing reservation.')
+        try:
+            curator_session = get_curator_session(username)
+            self = curator_session.merge(self)
+            if not self.locus_id:
+                raise ValueError('Reserved name must be associated with an ORF before being standardized.')
             locus = curator_session.query(Locusdbentity).filter(Locusdbentity.dbentity_id == self.locus_id).one_or_none()
             locus.gene_name = self.display_name
             locus.display_name = self.display_name
@@ -8061,9 +8137,20 @@ class Reservedname(Base):
             )
             curator_session.add(new_gene_name_locus_reference)
             curator_session.add(new_name_description_locus_reference)
-            # TODO archlocuschange
-            # arch_locuschange = curator_session.query(ArchLocuschange).filter(ArchLocuschange.dbentity_id == self.locus_id).one_or_none()
-            # arch_locuschange.date_name_standardized = datetime.now()
+            # archlocuschange update or add
+            existing_archlocus = curator_session.query(ArchLocuschange).filter(and_(ArchLocuschange.dbentity_id == self.locus_id, ArchLocuschange.change_type == 'Gene name')).one_or_none()
+            if existing_archlocus:
+                existing_archlocus.date_name_standardized = datetime.now()
+            else:
+                new_archlocuschange = ArchLocuschange(
+                    dbentity_id = self.locus_id,
+                    change_type = 'Gene name',
+                    new_value = self.display_name,
+                    source_id = SGD_SOURCE_ID,
+                    date_name_standardized = datetime.now(),
+                    added_by = username
+                )
+                curator_session.add(new_archlocuschange)
             # add curator activity
             new_curate_activity = CuratorActivity(
                 display_name = locus.display_name,
@@ -8093,10 +8180,7 @@ class Reservedname(Base):
             self = curator_session.merge(self)
             if new_info['systematic_name']:
                 res_systematic_name = new_info['systematic_name'].upper()
-                locus_id = curator_session.query(Locusdbentity.dbentity_id).filter(Locusdbentity.systematic_name == res_systematic_name).scalar()
-                if not locus_id:
-                    raise ValueError('Systematic name does not match a locus.')
-                self.locus_id = locus_id
+                self.associate_locus(res_systematic_name, username)
             if new_info['name_description']:
                 self.name_description = new_info['name_description']
             return_val = self.to_curate_dict()
@@ -8263,6 +8347,8 @@ class ReservednameTriage(Base):
             curator_session.add(new_curate_activity)
             curator_session.delete(self)
             transaction.commit()
+            if locus_id:
+                new_curate_activity.associate_locus(obj['systematic_name'], username)
             return True
         except Exception as e:
             transaction.abort()
