@@ -8017,44 +8017,50 @@ class Reservedname(Base):
             locus_id = curator_session.query(Locusdbentity.dbentity_id).filter(Locusdbentity.systematic_name == systematic_name).scalar()
             if not locus_id:
                 raise ValueError('Not a valid systematic name.')
-            personal_communication_ref = curator_session.query(Referencedbentity).filter(Referencedbentity.dbentity_id == self.reference_id).one_or_none()
-            gene_name_locus_ref = LocusReferences(
-                locus_id = locus_id,
-                reference_id = personal_communication_ref.dbentity_id,
-                reference_class = 'gene_name',
-                source_id = SGD_SOURCE_ID,
-                created_by = username
-            )
-            curator_session.add(gene_name_locus_ref)
-            name_description_locus_ref = LocusReferences(
-                locus_id = locus_id,
-                reference_id = personal_communication_ref.dbentity_id,
-                reference_class = 'name_description',
-                source_id = SGD_SOURCE_ID,
-                created_by = username
-            )
-            curator_session.add(name_description_locus_ref)
+            has_locusreferences = curator_session.query(LocusReferences).filter(and_(LocusReferences.locus_id == locus_id, LocusReferences.reference_class == 'gene_name')).count()
+            if not has_locusreferences:
+                personal_communication_ref = curator_session.query(Referencedbentity).filter(Referencedbentity.dbentity_id == self.reference_id).one_or_none()
+                gene_name_locus_ref = LocusReferences(
+                    locus_id = locus_id,
+                    reference_id = personal_communication_ref.dbentity_id,
+                    reference_class = 'gene_name',
+                    source_id = SGD_SOURCE_ID,
+                    created_by = username
+                )
+                curator_session.add(gene_name_locus_ref)
+                name_description_locus_ref = LocusReferences(
+                    locus_id = locus_id,
+                    reference_id = personal_communication_ref.dbentity_id,
+                    reference_class = 'name_description',
+                    source_id = SGD_SOURCE_ID,
+                    created_by = username
+                )
+                curator_session.add(name_description_locus_ref)
             # new locus_note and locusnote locusnote_reference
-            note_html_str = '<b>Name</b> ' + self.display_name
-            new_locusnote = Locusnote(
-                source_id = SGD_SOURCE_ID,
-                locus_id = locus_id,
-                note_class = 'Locus',
-                note_type = 'Name',
-                note = note_html_str,
-                created_by = username
-            )
-            curator_session.add(new_locusnote)
-            curator_session.flush()
-            curator_session.refresh(new_locusnote)
-            new_locusnote_ref = LocusnoteReference(
-                note_id = new_locusnote.note_id,
-                reference_id = self.reference_id,
-                source_id = SGD_SOURCE_ID,
-                created_by = username
-            )
-            curator_session.add(new_locusnote_ref)
+            has_locusnote = curator_session.query(Locusnote).filter(and_(Locusnote.locus_id == locus_id, Locusnote.note_type == 'Name', Locusnote.note_class == 'Locus')).count()
+            if not has_locusnote:
+                note_html_str = '<b>Name</b> ' + self.display_name
+                new_locusnote = Locusnote(
+                    source_id = SGD_SOURCE_ID,
+                    locus_id = locus_id,
+                    note_class = 'Locus',
+                    note_type = 'Name',
+                    note = note_html_str,
+                    created_by = username
+                )
+                curator_session.add(new_locusnote)
+                curator_session.flush()
+                curator_session.refresh(new_locusnote)
+                new_locusnote_ref = LocusnoteReference(
+                    note_id = new_locusnote.note_id,
+                    reference_id = self.reference_id,
+                    source_id = SGD_SOURCE_ID,
+                    created_by = username
+                )
+                curator_session.add(new_locusnote_ref)
+            self.locus_id = locus_id
             transaction.commit()
+            return True
         except Exception as e:
             transaction.abort()
             traceback.print_exc()
@@ -8093,8 +8099,14 @@ class Reservedname(Base):
                 created_by = username
             )
             curator_session.add(name_description_locus_ref)
-            # if this is only reference for personal communication, delete it
+            # update LocusnoteReference to have new ref id
+            curator_session.query(LocusnoteReference).filter_by(reference_id=self.reference_id).update({ 'reference_id': ref_id })
+            # if this is only one reference for personal communication, delete it
             if locus_ref_count == 1:
+                ref_authors = curator_session.query(Referenceauthor).filter(Referenceauthor.reference_id == self.reference_id)
+                ref_authors.delete(synchronize_session=False)
+                ref_types = curator_session.query(Referencetype).filter(Referencetype.reference_id == self.reference_id)
+                ref_types.delete(synchronize_session=False)
                 personal_communication_ref = curator_session.query(Referencedbentity).filter(Referencedbentity.dbentity_id == self.reference_id).one_or_none()
                 curator_session.delete(personal_communication_ref)
             # finally change reference_id
@@ -8121,22 +8133,6 @@ class Reservedname(Base):
             locus.gene_name = self.display_name
             locus.display_name = self.display_name
             locus.name_description = self.name_description
-            new_gene_name_locus_reference = LocusReferences(
-                locus_id=self.locus_id,
-                reference_id=self.reference_id,
-                reference_class='gene_name',
-                created_by=username,
-                source_id=SGD_SOURCE_ID
-            )
-            new_name_description_locus_reference = LocusReferences(
-                locus_id=self.locus_id,
-                reference_id=self.reference_id,
-                reference_class='name_description',
-                created_by=username,
-                source_id=SGD_SOURCE_ID
-            )
-            curator_session.add(new_gene_name_locus_reference)
-            curator_session.add(new_name_description_locus_reference)
             # archlocuschange update or add
             existing_archlocus = curator_session.query(ArchLocuschange).filter(and_(ArchLocuschange.dbentity_id == self.locus_id, ArchLocuschange.change_type == 'Gene name')).one_or_none()
             if existing_archlocus:
@@ -8181,6 +8177,7 @@ class Reservedname(Base):
             if new_info['systematic_name']:
                 res_systematic_name = new_info['systematic_name'].upper()
                 self.associate_locus(res_systematic_name, username)
+                self = curator_session.merge(self)
             if new_info['name_description']:
                 self.name_description = new_info['name_description']
             return_val = self.to_curate_dict()
