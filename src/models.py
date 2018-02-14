@@ -8108,8 +8108,6 @@ class Reservedname(Base):
                 ref_authors.delete(synchronize_session=False)
                 ref_types = curator_session.query(Referencetype).filter(Referencetype.reference_id == self.reference_id)
                 ref_types.delete(synchronize_session=False)
-                # old_locusreferences = curator_session.query(LocusReferences).filter(LocusReferences.reference_id == self.reference_id)
-                # old_locusreferences.delete(synchronize_session=False)
                 personal_communication_ref = curator_session.query(Referencedbentity).filter(Referencedbentity.dbentity_id == self.reference_id).one_or_none()
                 curator_session.delete(personal_communication_ref)
             # finally change reference_id
