@@ -90,7 +90,7 @@ const FacetSelector = React.createClass({
           currentAgg.values = [];
           break;
       };
-      if(d.key === 'status'){
+      if(d.key === 'status' && qp.category === 'download'){
             return <FacetList  customFacetRadioBtnFlag={true} customFacetFlag={true} aggKey={d.key} values={[{}]} currentValues={currentAgg.values} queryParams={this.props.queryParams} key={d.key} name={getFacetName(d.key)} />;
       }
       else{
@@ -164,7 +164,7 @@ const FacetList = Radium(
           let temp = [];
           for(let itm in this.state.statusObj){
               let stb = this.state.statusObj[itm];
-              temp.push(this._renderStatusButtons(itm, `2agg${itm}`, stb.href, false));
+              temp.push(this._renderStatusButtons(itm, `2agg${itm}`, stb.href, isActive));
           }
           return temp; 
         }

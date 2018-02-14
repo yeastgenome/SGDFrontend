@@ -12,19 +12,21 @@ import ClassNames from "classnames";
 
 class StatusBtns extends Component {
     constructor(props){
-        super(props);
-    }
+        super(props);  
+      }
     
     render(){
         let activityStyle = this.props.isActive ? this.props.style.activeAgg : this.props.style.inactiveAgg;
         let klass = this.props.isActive ? "search-agg active" : "search-agg";
-        return <div key={Math.random()} className={`${klass} activityStyle`}>
-            <label>
-              {this.props.name}{' '}
-              <Link to={this.props.href}><input style={[this.props.style.radioButton]} type="radio" value={this.props.name} checked={this.props.flag} name={this.props.name} onChange={this.props.btnClick} key={this.props.key} /></Link>
-            </label>
+        return <div style={[this.props.style.agg, activityStyle]} key={`agg1${this.props.key}`} className={klass}>
+            <Link to={this.props.href}>
+              <input style={[this.props.style.radioButton]} type="radio" value={this.props.name} checked={this.props.flag} name={this.props.name} onChange={this.props.btnClick} key={this.props.key} />
+            </Link>
+            <span style={{ color: "#6582A6" }}>
+              {" "}
+              {S(this.props.name).capitalize().s}
+            </span>
           </div>;
-
     }
 }
 
