@@ -23,13 +23,6 @@ const FacetSelector = React.createClass({
       </div>
     );
   },
-  _fetchES(href){
-    if(href){
-      //this.props.dispatch(push(href));
-    }
-  },
-
-
 
   _renderCatSelector () {
     let keySuffix = this.props.isMobile ? 'm': '';
@@ -95,7 +88,6 @@ const FacetSelector = React.createClass({
       }
       else{
             return <FacetList customFacetRadioBtnFlag={true} customFacetFlag={false} aggKey={d.key} values={d.values} currentValues={currentAgg.values} queryParams={this.props.queryParams} key={d.key} name={getFacetName(d.key)} />;
-
       }
     });
 
