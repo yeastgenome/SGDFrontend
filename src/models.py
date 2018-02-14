@@ -8147,13 +8147,16 @@ class Reservedname(Base):
                     added_by = username
                 )
                 curator_session.add(new_archlocuschange)
-            new_colleague_locus = ColleagueLocus(
-                colleague_id = self.colleague_id,
-                locus_id = self.locus_id,
-                source_id = DIRECT_SUBMISSION_SOURCE_ID,
-                created_by = username
-            )
-            curator_session.add(new_colleague_locus)
+            # see if colleague locus exists
+            has_colleague_locus = curator_session.query(ColleagueLocus).filter(and_(ColleagueLocus.locus_id == self.locus_id, ColleagueLocus.colleague_id == self.colleague_id)).count()
+            if not has_colleague_locus:
+                new_colleague_locus = ColleagueLocus(
+                    colleague_id = self.colleague_id,
+                    locus_id = self.locus_id,
+                    source_id = DIRECT_SUBMISSION_SOURCE_ID,
+                    created_by = username
+                )
+                curator_session.add(new_colleague_locus)
             # add curator activity
             new_curate_activity = CuratorActivity(
                 display_name = locus.display_name,
