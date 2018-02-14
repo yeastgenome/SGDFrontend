@@ -24,13 +24,6 @@ const FacetSelector = React.createClass({
       </div>
     );
   },
-  _fetchES(href){
-    if(href){
-      //this.props.dispatch(push(href));
-    }
-  },
-
-
 
   _renderCatSelector () {
     let keySuffix = this.props.isMobile ? 'm': '';
