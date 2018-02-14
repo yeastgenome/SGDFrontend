@@ -8184,7 +8184,7 @@ class Reservedname(Base):
             curator_session = get_curator_session(username)
             self = curator_session.merge(self)
             if new_info['systematic_name']:
-                res_systematic_name = new_info['systematic_name'].upper()
+                res_systematic_name = new_info['systematic_name']
                 new_locus_id = self.associate_locus(res_systematic_name, username)
                 self = curator_session.merge(self)
                 self.locus_id = new_locus_id
