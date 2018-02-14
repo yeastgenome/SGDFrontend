@@ -28,7 +28,6 @@ const DEFAULT_STATE = {
 };
 
 const searchResultsReducer = function (_state, action) {
-  //debugger;
   let state = _.clone(_state);
   if (typeof state === 'undefined') {
     return DEFAULT_STATE;
@@ -39,11 +38,9 @@ const searchResultsReducer = function (_state, action) {
     if(action.payload.query.category){
       if (action.payload.query.category === "download" && action.payload.query.status === undefined && state.downloadsFlag) {
         state.downloadsFlag = false;
-        //params.status = "Active";
       } 
       else if(params.category === "download" && (Object.keys(params).length === 2 || Object.keys(params).length === 3)) {
           state.downloadsFlag = true;
-          //params.status = "Active";
         }
       else{
         state.downloadsFlag = false;
