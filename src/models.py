@@ -8082,7 +8082,7 @@ class Reservedname(Base):
             locus_ref_count = curator_session.query(LocusReferences).filter(and_(LocusReferences.locus_id == self.locus_id, LocusReferences.reference_class == 'gene_name')).count()
             # delete old locusreferences
             old_locusreferences = curator_session.query(LocusReferences).filter(and_(LocusReferences.locus_id == self.locus_id, LocusReferences.reference_class.in_(['gene_name', 'name_description'])))
-            old_locusreferences.delete(synchronize_session=False)
+            old_locusreferences.delete(synchronize_session=True)
             gene_name_locus_ref = LocusReferences(
                 locus_id = self.locus_id,
                 reference_id = ref_id,
