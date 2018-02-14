@@ -4,11 +4,8 @@
  * purpose: render radio button for status e.g downloads_page
  */
 import React, { Component } from "react";
-import _ from "underscore";
 import S from "string";
 import { Link } from "react-router";
-import ClassNames from "classnames";
-
 
 class StatusBtns extends Component {
     constructor(props){
