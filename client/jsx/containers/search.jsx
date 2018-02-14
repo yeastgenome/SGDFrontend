@@ -343,7 +343,6 @@ const style = {
 
 function mapStateToProps(_state) {
   let state = _state.searchResults;
-  //debugger;
   return { 
     results: state.results, 
     asyncResults: state.asyncResults, 
