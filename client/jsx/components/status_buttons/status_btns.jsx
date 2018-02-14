@@ -16,7 +16,6 @@ class StatusBtns extends Component {
     }
     
     render(){
-       //debugger;
         let activityStyle = this.props.isActive ? this.props.style.activeAgg : this.props.style.inactiveAgg;
         let klass = this.props.isActive ? "search-agg active" : "search-agg";
         return <div key={Math.random()} className={`${klass} activityStyle`}>
