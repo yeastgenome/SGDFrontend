@@ -1,14 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
-import { routeActions } from 'react-router-redux';
+import { routeActions, push } from 'react-router-redux';
 import Radium from 'radium';
 import _ from 'underscore';
 import pluralize from 'pluralize';
 import StatusBtns from '../components/status_buttons/status_btns.jsx';
-
 import { getHrefWithoutAgg, getCategoryDisplayName, getFacetName } from '../lib/search_helpers';
-
+ 
 const DEFAULT_FACET_LENGTH = 5;
 const MEDIUM_FACET_LENGTH = 20;
 const SEARCH_URL = '/search';
@@ -24,13 +23,26 @@ const FacetSelector = React.createClass({
       </div>
     );
   },
+  _fetchES(href){
+    if(href){
+      //this.props.dispatch(push(href));
+    }
+  },
+
+
 
   _renderCatSelector () {
     let keySuffix = this.props.isMobile ? 'm': '';
     let aggs = (this.props.aggregations.length === 0) ? [] : this.props.aggregations[0].values;
     let aggNodes = aggs.map( (d, i) => {
       let name = pluralize(getCategoryDisplayName(d.key));
-      let href = `${this._getRawUrl()}&category=${d.key}`;
+     let href = '';
+      if(d.key === 'download'){
+        href = `${this._getRawUrl()}&category=${d.key}&status=Active`;
+      }
+      else{
+        href = `${this._getRawUrl()}&category=${d.key}`;
+      }
       return this._renderAgg(name, d.total, d.key, href, false, true);
     });
     return (
@@ -53,7 +65,6 @@ const FacetSelector = React.createClass({
   },
 
   _renderSecondaryAggs () {
-    //debugger;
     const qp = this.props.queryParams;
     
     // if no filters, show a message
@@ -66,10 +77,6 @@ const FacetSelector = React.createClass({
     }
     let catNodes = this.props.aggregations.map( (d, i) => {
       // create a currentAgg object like { key: 'cellular component', values: ['cytoplasm'] }
-      let facetflag = false;
-      if (qp.category === "download" && d.key === "status") {
-        facetflag = true;
-      }
       let currentAgg = { key: d.key };
       let rawValue = qp[d.key];
       switch (typeof rawValue) {
@@ -83,7 +90,13 @@ const FacetSelector = React.createClass({
           currentAgg.values = [];
           break;
       };
-      return <FacetList customFacetFlag={facetflag} aggKey={d.key} values={d.values} currentValues={currentAgg.values} queryParams={this.props.queryParams} key={d.key} name={getFacetName(d.key)} />;
+      if(d.key === 'status'){
+            return <FacetList  customFacetRadioBtnFlag={true} customFacetFlag={true} aggKey={d.key} values={[{}]} currentValues={currentAgg.values} queryParams={this.props.queryParams} key={d.key} name={getFacetName(d.key)} />;
+      }
+      else{
+            return <FacetList customFacetRadioBtnFlag={true} customFacetFlag={false} aggKey={d.key} values={d.values} currentValues={currentAgg.values} queryParams={this.props.queryParams} key={d.key} name={getFacetName(d.key)} />;
+
+      }
     });
 
     return (
@@ -124,15 +137,13 @@ const FacetList = Radium(
       currentValues: React.PropTypes.array.isRequired,
       queryParams: React.PropTypes.object.isRequired,
       name: React.PropTypes.string,
-      customFacetFlag: React.PropTypes.bool
+      customFacetFlag: React.PropTypes.bool,
+      customFacetRadioBtnFlag: React.PropTypes.bool
     },
 
     getInitialState() {
       // null means don't slice, show all
-      return {
-        isCollapsed: false,
-        visibleLength: DEFAULT_FACET_LENGTH
-      };
+      return { isCollapsed: false, visibleLength: DEFAULT_FACET_LENGTH, selectedStatus: 'active', statusObj: { archived: { href: '/search?category=download&page=0&q=&status=Archived' }, active: { href: '/search?category=download&page=0&q=&status=Active' } } };
     },
 
     render() {
@@ -150,17 +161,17 @@ const FacetList = Radium(
           this.props.currentValues
         );
         if (this.props.customFacetFlag) {
-          return this._renderStatusButtons(d.key, `2agg${d.key}.${i}`, newHref, isActive);
+          let temp = [];
+          for(let itm in this.state.statusObj){
+              let stb = this.state.statusObj[itm];
+              temp.push(this._renderStatusButtons(itm, `2agg${itm}`, stb.href, false));
+          }
+          return temp; 
         }
-        return this._renderAgg(
-          d.key,
-          d.total,
-          `2agg${d.key}.${i}`,
-          newHref,
-          isActive
-        );
+        return this._renderAgg(d.key, d.total, `2agg${d.key}.${i}`, newHref, isActive);
+        
       });
-      const iconString = this.state.isCollapsed ? "right" : "down";
+      const iconString = this.state.isCollapsed ? 'right' : 'down';
       const valuesNodesMaybe = this.state.isCollapsed ? null : (
         <div>
           {valueNodes}
@@ -177,8 +188,12 @@ const FacetList = Radium(
         </div>
       );
     },
+    _onStatusBtnChange(event){
+      this.setState({selectedStatus: event.currentTarget.value.toLowerCase()});
+    },
+  
     _renderStatusButtons(name, _key, href, isActive) {
-      return <StatusBtns name={name} />;
+      return <StatusBtns name={name} btnKey={_key} key={_key} style={style} href={href} isActive={isActive} btnClick={this._onStatusBtnChange} flag={this.state.selectedStatus === name.toLowerCase()} actionFunc={this.props.actionTrigger} />;
     },
 
     _renderShowMoreMaybe() {
@@ -201,17 +216,17 @@ const FacetList = Radium(
           e.preventDefault();
           this.setState({ visibleLength: MEDIUM_FACET_LENGTH });
         };
-        text = "Show more";
+        text = 'Show more';
         // medium length, show all
       } else {
         _onClick = e => {
           e.preventDefault();
           this.setState({ visibleLength: null });
         };
-        text = "Show all";
+        text = 'Show all';
       }
       return (
-        <p className="text-right">
+        <p className='text-right'>
           <a onClick={_onClick}>{text}</a>
         </p>
       );
@@ -219,7 +234,7 @@ const FacetList = Radium(
 
     _renderAgg(name, total, _key, href, isActive) {
       let activityStyle = isActive ? style.activeAgg : style.inactiveAgg;
-      let klass = isActive ? "search-agg active" : "search-agg";
+      let klass = isActive ? 'search-agg active' : 'search-agg';
       return (
         <Link to={href} key={_key}>
           <div
@@ -283,14 +298,17 @@ const style = {
   },
   icon: {
     fontWeight: 'bold'
+  },
+  radioButton:{
+    marginRight: '1.1rem !important'
   }
 };
 
 function mapStateToProps(_state) {
   let state = _state.searchResults;
   state.aggregations.map( item => {
-    if (item.key == "year"){
-      item["values"].sortOnYear("key", true);
+    if (item.key == 'year'){
+      item['values'].sortOnYear('key', true);
       return;
     }
   });
