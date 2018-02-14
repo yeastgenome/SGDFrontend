@@ -8081,8 +8081,8 @@ class Reservedname(Base):
             # see how many locus_references exist for personal communication
             locus_ref_count = curator_session.query(LocusReferences).filter(and_(LocusReferences.locus_id == self.locus_id, LocusReferences.reference_class == 'gene_name')).count()
             # delete old locusreferences
-            old_locusreferences = curator_session.query(LocusReferences).filter(and_(LocusReferences.locus_id == self.locus_id, LocusReferences.reference_class.in_(['gene_name', 'name_description'])))
-            old_locusreferences.delete(synchronize_session=True)
+            old_locusreferences = curator_session.query(LocusReferences).filter(and_(LocusReferences.locus_id == self.locus_id, LocusReferences.reference_id == self.reference_id))
+            old_locusreferences.delete(synchronize_session=False)
             gene_name_locus_ref = LocusReferences(
                 locus_id = self.locus_id,
                 reference_id = ref_id,
@@ -8101,12 +8101,15 @@ class Reservedname(Base):
             curator_session.add(name_description_locus_ref)
             # update LocusnoteReference to have new ref id
             curator_session.query(LocusnoteReference).filter_by(reference_id=self.reference_id).update({ 'reference_id': ref_id })
-            # if this is only one reference for personal communication, delete it
+            # see how many locus_references exist for personal communication, if this is only one reference for personal communication, delete it
+            locus_ref_count = curator_session.query(LocusReferences).filter(and_(LocusReferences.reference_id == self.reference_id, LocusReferences.reference_class == 'gene_name')).count()
             if locus_ref_count == 1:
                 ref_authors = curator_session.query(Referenceauthor).filter(Referenceauthor.reference_id == self.reference_id)
                 ref_authors.delete(synchronize_session=False)
                 ref_types = curator_session.query(Referencetype).filter(Referencetype.reference_id == self.reference_id)
                 ref_types.delete(synchronize_session=False)
+                # old_locusreferences = curator_session.query(LocusReferences).filter(LocusReferences.reference_id == self.reference_id)
+                # old_locusreferences.delete(synchronize_session=False)
                 personal_communication_ref = curator_session.query(Referencedbentity).filter(Referencedbentity.dbentity_id == self.reference_id).one_or_none()
                 curator_session.delete(personal_communication_ref)
             # finally change reference_id
