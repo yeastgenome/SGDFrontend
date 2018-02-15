@@ -292,11 +292,15 @@ class YeastgenomeFrontend(FrontendInterface):
         relative_url = '/' + ('/'.join(url_repr))
         backend_url = self.backend_url
         full_url = backend_url + relative_url
+        if request.json_body:
+            request_data = request.json_body
+        else:
+            request_data = None
         if args is not None and len(args) > 0:
             full_url += '?' + request.query_string
         self.log.info(full_url)
         try:
-            return get_json(full_url)
+            return get_json(full_url, request_data)
         # prevent from returning 200 for failed backend requests
         except ValueError:
             return Response('null', status=404)
