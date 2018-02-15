@@ -52,7 +52,7 @@ class LocusBasic extends Component {
       name_description: t.maybe(t.String),
       name_description_pmids : t.maybe(t.String),
       aliases: t.list(Alias),
-      feature_type: t.maybe(t.String),
+      feature_type: t.enums.of(['blocked_reading_frame', 'long_terminal_repeat', 'gene_group', 'LTR_retrotransposon', 'origin_of_replication', 'ARS', 'intein_encoding_region', 'transposable_element_gene', 'centromere', 'disabled_reading_frame', 'ncRNA_gene', 'pseudogene', 'matrix_attachment_site', 'ORF', 'centromere_DNA_Element_I', 'centromere_DNA_Element_III', 'tRNA_gene', 'snoRNA_gene', 'rRNA_gene', 'centromere_DNA_Element_II', 'silent_mating_type_cassette_array', 'snRNA_gene', 'telomerase_RNA_gene', 'mating_type_region', 'telomere']),
       qualifier: Qualifier,
       description: t.String,
       headline: t.String,

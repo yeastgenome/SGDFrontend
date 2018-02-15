@@ -4119,7 +4119,7 @@ class Locusdbentity(Dbentity):
                         self.headline = new_headline
                     elif key == 'gene_name':
                         new_name = new_info['gene_name']
-                        if new_name == '':
+                        if new_name == '' or new_name is None:
                             new_name = None
                             self.display_name = self.systematic_name
                         else:
@@ -8786,7 +8786,7 @@ def validate_tags(tags):
     return tags
 
 def convert_space_separated_pmids_to_list(str_pmids):
-    if str_pmids == '':
+    if str_pmids == '' or str_pmids is None:
         return []
     str_list = str_pmids.split(SEPARATOR)
     int_list = [int(x) for x in str_list]
