@@ -88,10 +88,13 @@ var SearchForm = React.createClass({
 			     return <p>Please wait... The search may take a while to run.</p>; 
 
 			}
-			var genomeBoxNode = this._getGenomeBoxNode();
+			
+			var configData = this.state.configData;
+
+			var genomeBoxNode = this._getGenomeBoxNode(configData);
 			var seqtypeNode = this._getSeqtypeNode(); 
 			var patternBoxNode = this._getPatternBoxNode();
-			var datasetNode = this._getDatasetNode();
+			var datasetNode = this._getDatasetNode(configData);
                 	var submitNode = this._getSubmitNode();
                 	var optionNode = this._getOptionsNode();
 			var patternExampleNode = this._getPatternExampleNote();
@@ -119,9 +122,21 @@ var SearchForm = React.createClass({
 		}
 	},
 	
-	_getGenomeBoxNode: function() {
+	_getGenomeBoxNode: function(data) {
 	
-                return(<div><p>GENOME BOX SESSION</p></div>);
+		var _genomeDef = 'S288C';
+		var _elements = _.map(data.genome, g => {
+                       if (g.strain == _genomeDef) {
+                            return <option value={g.strain} selected="selected">{g.label}</option>;
+                       }
+                       else {
+                            return <option value={g.strain}>{g.label}</option>;
+                       }
+                });
+                return(<div>
+                       <p><h3>Choose a genome to search: </h3></p>
+                       <p><select ref='genome' name='genome' onChange={this._onChange}>{_elements}</select></p>
+                </div>);
 			      
 	},
 		
