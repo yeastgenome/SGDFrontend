@@ -1669,6 +1669,21 @@ class Referencedbentity(Dbentity):
             if curator_session:
                 curator_session.close()
 
+    # See if in referencedeleted or referencetriage and return string describing error to see if curators really want to add. Returns None if no errors
+    @classmethod
+    def get_deletion_warnings(Referencedbentity, user_pmid):
+        reason_deleted = DBSession.query(Referencedeleted.reason_deleted).filter_by(pmid=user_pmid).scalar()
+        is_in_triage = DBSession.query(Referencetriage).filter_by(pmid=user_pmid).count()
+        is_in_ref = DBSession.query(Referencedbentity).filter_by(pmid=user_pmid).count()
+        if reason_deleted:
+            return 'Warning: previously deleted: ' + reason_deleted
+        elif is_in_triage:
+            return 'Warning: in triage'
+        elif is_in_ref:
+            return 'Warning: already in database'
+        else:
+            return None
+
     @staticmethod
     def get_go_blacklist_ids():
         if Referencedbentity.go_blacklist is None:
@@ -2070,7 +2085,6 @@ class Referencedbentity(Dbentity):
         finally:
             if curator_session:
                 curator_session.close()
-
 
 class FilePath(Base):
     __tablename__ = 'file_path'
