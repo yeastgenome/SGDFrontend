@@ -124,7 +124,10 @@ class ColleagueUpdate extends Component {
       template: formLayout,
       fields: {
         colleague_id: {
-          type: 'First Name *'
+          type: 'hidden'
+        },
+        first_name: {
+          label: 'First Name *'
         },
         last_name: {
           label: 'Last Name *'

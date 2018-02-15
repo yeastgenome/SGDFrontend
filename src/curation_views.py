@@ -427,7 +427,7 @@ def new_colleague(request):
     if not check_csrf_token(request, raises=False):
         return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
     params = request.json_body
-    required_fields = ['last_name', 'email']
+    required_fields = ['first_name', 'last_name', 'email']
     for x in required_fields:
         if not params[x]:
             msg = x + ' is a required field.'
