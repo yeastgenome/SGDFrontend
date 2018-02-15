@@ -23,7 +23,7 @@ run-prod:
 	pserve sgdfrontend_production.ini --daemon --pid-file=/var/run/pyramid/frontend.pid
 
 stop-prod:
-	pserve sgdfrontend_production.ini --stop-daemon --pid-file=/var/run/pyramid/frontend.pid
+	-pserve sgdfrontend_production.ini --stop-daemon --pid-file=/var/run/pyramid/frontend.pid
 
 build: dependencies grunt
 	pip install -r requirements.txt
