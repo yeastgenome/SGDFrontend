@@ -83,7 +83,7 @@ def blog_post(self, request):
 def blast_sgd(request):
     return render_to_response(TEMPLATE_ROOT + 'blast_sgd.jinja2', {}, request=request)
 
-@view_config(route_name=patmatch')
+@view_config(route_name='patmatch')
 def patmatch(request):
     return render_to_response(TEMPLATE_ROOT + 'patmatch.jinja2', {}, request=request)
 
