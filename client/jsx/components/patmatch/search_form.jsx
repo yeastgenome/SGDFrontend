@@ -121,7 +121,7 @@ var SearchForm = React.createClass({
 	
 	_getgetGenomeBoxNode: function() {
 	
-                return(<div><p>GENOME BOX SESSION</p></dev>);
+                return(<div><p>GENOME BOX SESSION</p></div>);
 			      
 	},
 		
@@ -157,7 +157,7 @@ var SearchForm = React.createClass({
 
 	_getDatasetNode: function() {
 
-	        return(<div><p>DATASET SECTION</p></dev>);
+	        return(<div><p>DATASET SECTION</p></div>);
 
 	},
 
@@ -172,13 +172,13 @@ var SearchForm = React.createClass({
 
 	_getOptionsNode: function() {
 
-	        return(<div><p>OPTIONS SECTION</p></dev>);
+	        return(<div><p>OPTIONS SECTION</p></div>);
 
 	},	
 
 	_getPatternExampleNote: function() {
 
-                return(<div><p>PATTERN EXAMPLES SECTION</p></dev>);
+                return(<div><p>PATTERN EXAMPLES SECTION</p></div>);
 
         },
 
