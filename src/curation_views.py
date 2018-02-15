@@ -7,6 +7,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import scoped_session, sessionmaker
 from validate_email import validate_email
 from random import randint
+from Bio import Entrez, Medline
 import datetime
 import logging
 import os
@@ -17,7 +18,7 @@ import json
 from .helpers import allowed_file, extract_id_request, secure_save_file, curator_or_none, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id
 from .curation_helpers import ban_from_cache, process_pmid_list, get_curator_session, get_pusher_client
 from .loading.promote_reference_triage import add_paper
-from .models import DBSession, Dbentity, Dbuser, CuratorActivity, Colleague, Referencedbentity, Reservedname, ReservednameTriage, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags
+from .models import DBSession, Dbentity, Dbuser, CuratorActivity, Colleague, Referencedbentity, Reservedname, ReservednameTriage, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags, convert_space_separated_pmids_to_list
 from .tsv_parser import parse_tsv_annotations
 
 logging.basicConfig()
@@ -79,16 +80,53 @@ def locus_curate_basic(request):
         log.error(e)
         return HTTPBadRequest(body=json.dumps({ 'message': str(e) }), content_type='text/json')
 
+@view_config(route_name='get_new_reference_info', renderer='json', request_method='POST')
+@authenticate
+def get_new_reference_info(request):
+    try:
+        params = request.json_body
+        if not params:
+            raise ValueError('Please enter at least 1 PMID.')
+        pmids = params['pmids']
+        int_pmids = convert_space_separated_pmids_to_list(pmids)
+        confirmation_list = []
+        for x in int_pmids:
+            record = Medline.read(Entrez.efetch(db='pubmed', id=str(x), rettype='medline'))
+            warning = Referencedbentity.get_deletion_warnings(x)
+            confirmation_item = {
+                'name': record.get('TI') + ' PMID: ' + str(x),
+                'pmid': x,
+                'warning': warning
+            }            
+            confirmation_list.append(confirmation_item)
+        return {
+            'references': confirmation_list
+        }
+    except Exception as e:
+        traceback.print_exc()
+        log.error(e)
+        DBSession.rollback()
+        return HTTPBadRequest(body=json.dumps({ 'message': str(e) }), content_type='text/json')
+
 @view_config(route_name='new_reference', renderer='json', request_method='POST')
 @authenticate
 def new_reference(request):
+    if not check_csrf_token(request, raises=False):
+        return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
     try:
         params = request.json_body
-        pmid = int(params['pmid'])
         username = request.session['username']
-        Referencedbentity.clear_from_triage_and_deleted(pmid, username)
-        add_paper(pmid, username)
+        references = params['references']
+        for x in references:
+            pmid = x['pmid']
+            Referencedbentity.clear_from_triage_and_deleted(pmid, username)
+            new_ref = add_paper(pmid, username)
         transaction.commit()
+        # sync to curator activity
+        for x in references:
+            pmid = x['pmid']
+            ref = DBSession.query(Referencedbentity).filter(Referencedbentity.pmid == pmid).one_or_none()
+            ref.sync_to_curate_activity(username)
     except Exception as e:
         transaction.abort()
         log.error(e)
@@ -97,6 +135,8 @@ def new_reference(request):
 @view_config(route_name='reference_triage_id_delete', renderer='json', request_method='DELETE')
 @authenticate
 def reference_triage_id_delete(request):
+    if not check_csrf_token(request, raises=False):
+        return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
     id = request.matchdict['id'].upper()
     triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
     curator_session = None
@@ -142,6 +182,8 @@ def reference_triage_id(request):
 @view_config(route_name='reference_triage_id_update', renderer='json', request_method='PUT')
 @authenticate
 def reference_triage_id_update(request):
+    if not check_csrf_token(request, raises=False):
+        return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
     id = request.matchdict['id'].upper()
     triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
     if triage:
@@ -162,6 +204,8 @@ def reference_triage_id_update(request):
 @view_config(route_name='reference_triage_promote', renderer='json', request_method='PUT')
 @authenticate
 def reference_triage_promote(request):
+    if not check_csrf_token(request, raises=False):
+        return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
     tags = request.json['tags']
     username = request.session['username']
     # validate tags before doing anything else
