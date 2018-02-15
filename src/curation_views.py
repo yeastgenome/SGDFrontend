@@ -416,6 +416,8 @@ def colleague_update(request):
     if not check_csrf_token(request, raises=False):
         return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
     req_id = request.matchdict['id'].upper()
+    if req_id == 'NULL':
+        return HTTPBadRequest(body=json.dumps({ 'message': 'Please select your name from colleague list or create a new entry.' }), content_type='text/json')
     colleague = DBSession.query(Colleague).filter(Colleague.colleague_id == req_id).one_or_none()
     if not colleague:
         return HTTPNotFound()
