@@ -3,9 +3,10 @@
  * date: 02/09/2018
  * purpose: render radio button for status e.g downloads_page
  */
-import React, { Component } from "react";
-import S from "string";
-import { Link } from "react-router";
+import React, { Component } from 'react';
+import S from 'string';
+import { Link } from 'react-router';
+import ClassNames from 'classnames';
 
 class StatusBtns extends Component {
     constructor(props){
@@ -13,14 +14,14 @@ class StatusBtns extends Component {
       }
     
     render(){
-        let activityStyle = this.props.isActive ? this.props.style.activeAgg : this.props.style.inactiveAgg;
-        let klass = this.props.isActive ? "search-agg active" : "search-agg";
-        return <div style={[this.props.style.agg, activityStyle]} key={`agg1${this.props.key}`} className={klass}>
+        let activityStyle = this.props.isActive ? 'active-agg' : 'inactive-agg';
+        let klass = this.props.isActive ? 'search-agg active' : 'search-agg';
+        return <div  key={`agg1${this.props.key}`} className={ClassNames(klass, activityStyle,'status-btn')}>
             <Link to={this.props.href}>
-              <input style={[this.props.style.radioButton]} type="radio" value={this.props.name} checked={this.props.flag} name={this.props.name} onChange={this.props.btnClick} key={this.props.key} />
+              <input type='radio' value={this.props.name} checked={this.props.flag} name={this.props.name} onChange={this.props.btnClick} key={this.props.key} />
             </Link>
-            <span style={{ color: "#6582A6" }}>
-              {" "}
+            <span className={'status-btn-label'}>
+              {' '}
               {S(this.props.name).capitalize().s}
             </span>
           </div>;
