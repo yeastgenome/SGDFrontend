@@ -10,7 +10,7 @@ def do_patmatch(request):
     if p.get('conf'):
         data = _get_config(p.get('conf'))
         return Response(body=json.dumps(data), content_type='application/json')
-    
+        
     data = _run_patmatch(p)
 
     return Response(body=json.dumps(data), content_type='application/json')
@@ -74,7 +74,9 @@ def _construct_patmatch_parameters(p):
 
 def _get_config(conf):
 
-    url = config.patmatch_url + "patmatch/" + conf
+    # url = config.patmatch_url + "patmatch/" + conf
+    url = config.compute_url + "blast/blast-sgd.json"  
+
     data = _get_json_from_server(url)
 
     return data
