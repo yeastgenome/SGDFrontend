@@ -22,11 +22,14 @@ var SearchForm = React.createClass({
 		     submitted = 1;
 		}
 
+		this._getConfigData();
+
 		// submitted: submitted,
 		return {
 			isComplete: false,
 			isPending: false,
 			userError: null,
+			configData: {},
 			strain: null,
 			seqtype: null,
 			dataset: null,
@@ -196,7 +199,7 @@ var SearchForm = React.createClass({
                 this.setState({ text: e.target.value});
         },
 
-	_getConfigData: function(db) {
+	_getConfigData: function() {
                 var jsonUrl = PATMATCH_URL + "?conf=patmatch.conf";
                 $.ajax({
                       url: jsonUrl,

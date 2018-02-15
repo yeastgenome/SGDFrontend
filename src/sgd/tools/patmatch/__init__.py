@@ -6,7 +6,11 @@ from urllib2 import Request, urlopen, URLError
 def do_patmatch(request):
 
     p = dict(request.params)
-        
+
+    if p.get('conf'):
+        data = _get_config(p.get('conf'))
+        return Response(body=json.dumps(data), content_type='application/json')
+    
     data = _run_patmatch(p)
 
     return Response(body=json.dumps(data), content_type='application/json')
@@ -64,9 +68,23 @@ def _construct_patmatch_parameters(p):
                                    'mismatch': p.get('mismatch'),
                                    'insertion': insertion,
                                    'deletion': deletion,
-                                   'substitution': substitution})
+                                   'substitution': substitution })
     return paramData
 
 
+def _get_config(conf):
+
+    url = config.patmatch_url + "patmatch/" + conf
+    data = _get_json_from_server(url)
+
+    return data
+
+
+def _get_json_from_server(url):
+
+    req = Request(url)
+    res = urlopen(req)
+    data = json.loads(res.read())
+    return data
              
 
