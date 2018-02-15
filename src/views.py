@@ -740,13 +740,13 @@ def ecnumber(request):
     else:
         return HTTPNotFound()
 
-@view_config(route_name='primer3', renderer='json', request_method='GET')
+@view_config(route_name='primer3', renderer='json', request_method='POST')
 def primer3(request):
-    p_keys = request.params.keys()
-    if 'sequence' in p_keys:
-        sequence = str(request.params.get('sequence'))
-    elif 'gene_name' in p_keys:
-        gene_name = request.params.get('gene_name')
+    params = request.json_body
+    print(params)
+    p_keys = params.keys()
+    if 'gene_name' in p_keys:
+        gene_name = params.get('gene_name')
         locus = DBSession.query(Locusdbentity).filter(or_(Locusdbentity.gene_name == gene_name.upper(),Locusdbentity.systematic_name == gene_name)).one_or_none()
         tax_id = DBSession.query(Straindbentity.taxonomy_id).filter(Straindbentity.strain_type =='Reference').one_or_none()
         dna = DBSession.query(Dnasequenceannotation.residues).filter(and_(Dnasequenceannotation.taxonomy_id == tax_id, Dnasequenceannotation.dbentity_id == locus.dbentity_id, Dnasequenceannotation.dna_type =='GENOMIC')).one_or_none()[0]
