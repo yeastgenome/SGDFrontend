@@ -7,6 +7,7 @@ import _ from 'underscore';
 import pluralize from 'pluralize';
 import StatusBtns from '../components/status_buttons/status_btns.jsx';
 import { getHrefWithoutAgg, getCategoryDisplayName, getFacetName } from '../lib/search_helpers';
+import ClassNames from 'classnames';
  
 const DEFAULT_FACET_LENGTH = 5;
 const MEDIUM_FACET_LENGTH = 20;
@@ -40,7 +41,7 @@ const FacetSelector = React.createClass({
     });
     return (
       <div>
-        <p style={[style.catLabel]}>Categories</p>
+        <p className={'cat-label'}>Categories</p>
         {aggNodes}
       </div>
     );
@@ -99,12 +100,12 @@ const FacetSelector = React.createClass({
   },
 
   _renderAgg (name, total, _key, href, isActive, isCategory) {
-    let activityStyle = isActive ? style.activeAgg: style.inactiveAgg;
+    let activityStyle = isActive ? 'active-agg': 'inactive-agg';
     let klass = isActive ? 'search-agg active' : 'search-agg';
     let catIconNode = isCategory ? <span className={`search-cat ${_key}`}></span> : null;
     return (
       <Link to={href} key={_key}>
-        <div key={`aggA${_key}`} style={[style.agg, activityStyle]} className={klass}>
+        <div key={`aggA${_key}`} className={ClassNames(klass,'agg',activityStyle)}>
           <span>{catIconNode}{name}</span>
           <span>{total.toLocaleString()}</span>
         </div>
@@ -135,7 +136,7 @@ const FacetList = Radium(
 
     getInitialState() {
       // null means don't slice, show all
-      return { isCollapsed: false, visibleLength: DEFAULT_FACET_LENGTH, selectedStatus: 'active', statusObj: { archived: { href: '/search?category=download&page=0&q=&status=Archived' }, active: { href: '/search?category=download&page=0&q=&status=Active' } } };
+      return { isCollapsed: false, visibleLength: DEFAULT_FACET_LENGTH, selectedStatus: 'active', statusObj: { active: { href: '/search?category=download&page=0&q=&status=Active' }, archived: { href: '/search?category=download&page=0&q=&status=Archived' } } };
     },
 
     render() {
@@ -172,9 +173,9 @@ const FacetList = Radium(
       );
       return (
         <div>
-          <p onClick={this._toggleIsCollapsed} style={style.aggLabel}>
+          <p onClick={this._toggleIsCollapsed} className={'agg-label'}>
             <span>{this.props.name || this.props.aggKey}</span>
-            <i className={`fa fa-angle-${iconString}`} style={[style.icon]} />
+            <i className={`fa fa-angle-${iconString} icon`} />
           </p>
           {valuesNodesMaybe}
         </div>
@@ -185,7 +186,7 @@ const FacetList = Radium(
     },
   
     _renderStatusButtons(name, _key, href, isActive) {
-      return <StatusBtns name={name} btnKey={_key} key={_key} style={style} href={href} isActive={isActive} btnClick={this._onStatusBtnChange} flag={this.state.selectedStatus === name.toLowerCase()} actionFunc={this.props.actionTrigger} />;
+      return <StatusBtns name={name} btnKey={_key} key={_key} href={href} isActive={isActive} btnClick={this._onStatusBtnChange} flag={this.state.selectedStatus === name.toLowerCase()} actionFunc={this.props.actionTrigger} />;
     },
 
     _renderShowMoreMaybe() {
@@ -225,14 +226,13 @@ const FacetList = Radium(
     },
 
     _renderAgg(name, total, _key, href, isActive) {
-      let activityStyle = isActive ? style.activeAgg : style.inactiveAgg;
+      let activityStyle = isActive ? 'active-agg' : 'inactive-agg';
       let klass = isActive ? 'search-agg active' : 'search-agg';
       return (
         <Link to={href} key={_key}>
           <div
             key={`aggA${_key}`}
-            style={[style.agg, activityStyle]}
-            className={klass}
+            className={ClassNames(klass, 'agg',activityStyle)}
           >
             <span>{name}</span>
             <span>{total.toLocaleString()}</span>
@@ -256,45 +256,6 @@ const FacetList = Radium(
     }
   })
 );
-
-const LINK_COLOR = '#6582A6';
-const HOVER_COLOR = '#e6e6e6';
-const style = {
-  agg: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    cursor: 'pointer',
-    padding: '0.25rem 0.5rem',
-    marginBottom: '0.25rem',
-    userSelect: 'none',
-    transition: 'background-color 300ms ease-out'
-  },
-  activeAgg: {
-    color: 'white',
-    border: `1px solid ${HOVER_COLOR}`
-  },
-  catLabel: {
-    marginBottom: '0.25rem'
-  },
-  inactiveAgg: {
-    color: LINK_COLOR,
-    border: '1px solid transparent'
-  },
-  aggLabel: {
-    margin: '0 0 0.5rem 0',
-    display: 'flex',
-    justifyContent: 'space-between',
-    cursor: 'pointer',
-    textTransform: 'capitalize',
-    fontWeight: 'bold'
-  },
-  icon: {
-    fontWeight: 'bold'
-  },
-  radioButton:{
-    marginRight: '1.1rem !important'
-  }
-};
 
 function mapStateToProps(_state) {
   let state = _state.searchResults;
