@@ -144,7 +144,9 @@ def _get_blast_options(p):
                 
     if wordLength != 'default':
         options = options + " -word_size " + wordLength
-     
+    else:
+        options = options + " -word_size 11"
+
     # options = options + " -outfmt 0 -html"
 
     options = options + " -outfmt 0"
