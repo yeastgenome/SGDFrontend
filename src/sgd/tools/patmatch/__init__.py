@@ -74,8 +74,7 @@ def _construct_patmatch_parameters(p):
 
 def _get_config(conf):
 
-    # url = config.patmatch_url + "patmatch/" + conf
-    url = config.compute_url + "blast/blast-sgd.json"  
+    url = config.patmatch_url + "patmatch/" + conf
 
     data = _get_json_from_server(url)
 
