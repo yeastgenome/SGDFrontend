@@ -119,7 +119,7 @@ var SearchForm = React.createClass({
 		}
 	},
 	
-	_getgetGenomeBoxNode: function() {
+	_getGenomeBoxNode: function() {
 	
                 return(<div><p>GENOME BOX SESSION</p></div>);
 			      
