@@ -8148,7 +8148,7 @@ class Reservedname(Base):
             transaction.commit()
             # if this is only one reference for personal communication, delete it
             if locus_ref_count == 1:
-                personal_communication_ref = curator_session.query(Referencedbentity).filter(Referencedbentity.dbentity_id == self.personal_communication_ref_id).one_or_none()
+                personal_communication_ref = curator_session.query(Referencedbentity).filter(Referencedbentity.dbentity_id == personal_communication_ref_id).one_or_none()
                 personal_communication_ref.delete_with_children(username)           
         except Exception as e:
             transaction.abort()
