@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 import t from 'tcomb-form';
 import { Link } from 'react-router';
+import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
 
+import { setMessage } from '../../actions/metaActions';
 import FlexiForm from '../../components/forms/flexiForm';
+
 
 const GET_CONFIRM_URL = '/reference/confirm';
 const ADD_DATA_URL = '/reference';
@@ -11,8 +15,7 @@ class NewReference extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      confirmationData: null,
-      isSuccess: false
+      confirmationData: null
     };
   }
 
@@ -21,7 +24,8 @@ class NewReference extends Component {
   }
 
   handleSuccess() {
-    this.setState({ isSuccess: true });
+    this.props.dispatch(push({ pathname: '/' }));
+    this.props.dispatch(setMessage('Reference(s) added successfully.'));
   }
 
   // really a static form
@@ -92,9 +96,6 @@ class NewReference extends Component {
   }
 
   render() {
-    if (this.state.isSuccess) {
-      return <p>References were added successfully.</p>;
-    }
     if (this.state.confirmationData) {
       return this.renderCart();
     }
@@ -123,4 +124,13 @@ class NewReference extends Component {
   }
 }
 
-export default NewReference;
+NewReference.propTypes = {
+  dispatch: React.PropTypes.func
+};
+
+function mapStateToProps() {
+  return {
+  };
+}
+
+export default connect(mapStateToProps)(NewReference);
