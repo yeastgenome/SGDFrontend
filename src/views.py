@@ -263,13 +263,11 @@ def get_sequence_object(request):
 
 @view_config(route_name='reserved_name', renderer='json', request_method='GET')
 def reserved_name(request):
-    id = extract_id_request(request, "reservedname")
-
+    id = extract_id_request(request, 'reservedname', 'id', True)
     if id:
         reserved_name = DBSession.query(Reservedname).filter_by(reservedname_id=id).one_or_none()
     else:
-        reserved_name = DBSession.query(Reservedname).filter_by(display_name=request.matchdict['id']).one_or_none()
-        
+        reserved_name = DBSession.query(Reservedname).filter_by(display_name=request.matchdict['id']).one_or_none()  
     if reserved_name:
         return reserved_name.to_dict()
     else:
