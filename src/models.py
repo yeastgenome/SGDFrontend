@@ -8167,6 +8167,8 @@ class Reservedname(Base):
             self = curator_session.merge(self)
             if not self.locus_id:
                 raise ValueError('Reserved name must be associated with an ORF before being standardized.')
+            if not self.name_description:
+                raise ValueError('Reserved name must have a name description before being standardized.')
             locus = curator_session.query(Locusdbentity).filter(Locusdbentity.dbentity_id == self.locus_id).one_or_none()
             locus.gene_name = self.display_name
             locus.display_name = self.display_name
