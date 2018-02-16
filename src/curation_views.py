@@ -68,6 +68,8 @@ def locus_curate_summaries(request):
 @view_config(route_name='locus_curate_basic', request_method='PUT', renderer='json')
 @authenticate
 def locus_curate_basic(request):
+    if not check_csrf_token(request, raises=False):
+        return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
     try:
         id = extract_id_request(request, 'locus', param_name='sgdid')
         locus = get_locus_by_id(id)
@@ -77,6 +79,7 @@ def locus_curate_basic(request):
         pusher.trigger('sgd', 'curateHomeUpdate', {})
         return locus.update_basic(params, username)
     except Exception as e:
+        traceback.print_exc()
         log.error(e)
         return HTTPBadRequest(body=json.dumps({ 'message': str(e) }), content_type='text/json')
 
