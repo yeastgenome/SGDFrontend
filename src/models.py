@@ -1672,11 +1672,11 @@ class Referencedbentity(Dbentity):
     # See if in referencedeleted or referencetriage and return string describing error to see if curators really want to add. Returns None if no errors
     @classmethod
     def get_deletion_warnings(Referencedbentity, user_pmid):
-        reason_deleted = DBSession.query(Referencedeleted.reason_deleted).filter_by(pmid=user_pmid).scalar()
+        ref_deleted = DBSession.query(Referencedeleted).filter_by(pmid=user_pmid).scalar()
         is_in_triage = DBSession.query(Referencetriage).filter_by(pmid=user_pmid).count()
         is_in_ref = DBSession.query(Referencedbentity).filter_by(pmid=user_pmid).count()
-        if reason_deleted:
-            return 'Warning: previously deleted: ' + reason_deleted
+        if ref_deleted:
+            return 'Warning: previously deleted: ' + ref_deleted.reason_deleted + 'by ' + ref_deleted.created_by
         elif is_in_triage:
             return 'Warning: in triage'
         elif is_in_ref:
