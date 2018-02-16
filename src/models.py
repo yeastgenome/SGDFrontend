@@ -11,7 +11,7 @@ import requests
 import re
 import traceback
 import transaction
-from datetime import datetime
+from datetime import datetime, timedelta
 from itertools import groupby
 import boto
 from boto.s3.key import Key
@@ -8232,6 +8232,24 @@ class Reservedname(Base):
                 self.locus_id = new_locus_id
             if new_info['name_description']:
                 self.name_description = new_info['name_description']
+            return_val = self.to_curate_dict()
+            transaction.commit()
+            return return_val
+        except Exception as e:
+            transaction.abort()
+            traceback.print_exc()
+            raise(e)
+        finally:
+            if curator_session:
+                curator_session.remove()
+
+    def extend(self, username):
+        curator_session = None
+        try:
+            curator_session = get_curator_session(username)
+            self = curator_session.merge(self)
+            old_date = self.expiration_date
+            self.expiration_date = old_date + timedelta(days=180)
             return_val = self.to_curate_dict()
             transaction.commit()
             return return_val

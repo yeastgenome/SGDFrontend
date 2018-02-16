@@ -630,6 +630,20 @@ def reserved_name_promote(request):
         log.error(e)
         return HTTPBadRequest(body=json.dumps({ 'message': str(e) }), content_type='text/json')
 
+@view_config(route_name='extend_reserved_name', renderer='json', request_method='PUT')
+@authenticate
+def extend_reserved_name(request):
+    if not check_csrf_token(request, raises=False):
+        return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
+    req_id = request.matchdict['id'].upper()
+    res = DBSession.query(Reservedname).filter(Reservedname.reservedname_id == req_id).one_or_none()
+    try:
+        return res.extend(request.session['username'])
+    except Exception as e:
+        log.error(e)
+        return HTTPBadRequest(body=json.dumps({ 'message': str(e) }), content_type='text/json')
+
+
 def get_username_from_db_uri():
     s = os.environ['NEX2_URI']
     start = 'postgresql://'
