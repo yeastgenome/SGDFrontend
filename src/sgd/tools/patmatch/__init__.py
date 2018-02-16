@@ -112,14 +112,14 @@ def _get_config(conf):
     res = urlopen(req)
     data = json.loads(res.read())
 
-    return { "genome": [ { "strain": "S288C", 
-                           "label": url }, 
-                         { 'strain': 'BY4741_Stanford_2014_JRIS00000000',
-                           'label':  req },
-                         { 'strain': "W303",
-                           'label': res }
-                    ]
-             }
+    # return { "genome": [ { "strain": "S288C", 
+    #                       "label": url }, 
+    #                     { 'strain': 'BY4741_Stanford_2014_JRIS00000000',
+    #                       'label':  req },
+    #                     { 'strain': "W303",
+    #                       'label': res }
+    #                ]
+    #         }
  
     return data
 
