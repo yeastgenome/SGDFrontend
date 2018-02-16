@@ -105,7 +105,9 @@ def _get_config(conf):
     # return test_data
 
     # url = config.patmatch_url + "patmatch/" + conf
-    url = patmatch_url + "patmatch/patmatch.json"
+    # url = patmatch_url + "patmatch/patmatch.json"
+    url = "http://blast.dev.yeastgenome.org/blast/blast-sgd.json"
+
     req = Request(url)
     res = urlopen(req)
     data = json.loads(res.read())
