@@ -3,7 +3,7 @@ from pyramid.response import Response
 from src.sgd.frontend import config
 from urllib2 import Request, urlopen, URLError
 
-patmatch_url = "http://patmatch.dev.yeastgenome.org/";
+patmatch_url = "http://patmatch.dev.yeastgenome.org/"
                
 def do_patmatch(request):
 
@@ -101,9 +101,19 @@ def _get_config(conf):
                 }
             ]
     }
- 
+
+    # return test_data
+
     # url = config.patmatch_url + "patmatch/" + conf
-    url = patmatch_url + "patmatch/patmatch.json" 
+    url = patmatch_url + "patmatch/patmatch.json"
+    
+    return { "genome": [ { "strain": "S288C", 
+                           "label": url }, 
+                         { 'strain': 'BY4741_Stanford_2014_JRIS00000000',
+                           'label':  'S. cerevisiae Strain BY4741_JRIS00000000 (Stanford)' }
+                        ]
+             }
+ 
     req = Request(url)
     res = urlopen(req)
     data = json.loads(res.read())
