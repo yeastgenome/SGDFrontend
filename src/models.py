@@ -2086,6 +2086,34 @@ class Referencedbentity(Dbentity):
             if curator_session:
                 curator_session.close()
 
+    # does not delete annotations
+    def delete_with_children(self, username):
+        curator_session = None
+        try:
+            curator_session = get_curator_session(username)
+            self = curator_session.merge(self)
+            ref_aliases = curator_session.query(ReferenceAlias).filter(ReferenceAlias.reference_id == self.dbentity_id)
+            ref_aliases.delete(synchronize_session=False)
+            ref_authors = curator_session.query(Referenceauthor).filter(Referenceauthor.reference_id == self.dbentity_id)
+            ref_authors.delete(synchronize_session=False)
+            ref_docs = curator_session.query(Referencedocument).filter(Referencedocument.reference_id == self.dbentity_id)
+            ref_docs.delete(synchronize_session=False)
+            ref_types = curator_session.query(Referencetype).filter(Referencetype.reference_id == self.dbentity_id)
+            ref_types.delete(synchronize_session=False)
+            ref_urls = curator_session.query(ReferenceUrl).filter(ReferenceUrl.reference_id == self.dbentity_id)
+            ref_urls.delete(synchronize_session=False)
+            ref_unlinks = curator_session.query(Referenceunlink).filter(Referenceunlink.reference_id == self.dbentity_id)
+            ref_unlinks.delete(synchronize_session=False)
+            curator_session.delete(self)
+            transaction.commit()
+        except Exception as e:
+            traceback.print_exc()
+            transaction.abort()
+            raise(e)
+        finally:
+            if curator_session:
+                curator_session.close()
+
 class FilePath(Base):
     __tablename__ = 'file_path'
     __table_args__ = {u'schema': 'nex'}
@@ -8114,17 +8142,14 @@ class Reservedname(Base):
             curator_session.add(name_description_locus_ref)
             # update LocusnoteReference to have new ref id
             curator_session.query(LocusnoteReference).filter_by(reference_id=self.reference_id).update({ 'reference_id': ref_id })
-            # if this is only one reference for personal communication, delete it
-            if locus_ref_count == 1:
-                ref_authors = curator_session.query(Referenceauthor).filter(Referenceauthor.reference_id == self.reference_id)
-                ref_authors.delete(synchronize_session=False)
-                ref_types = curator_session.query(Referencetype).filter(Referencetype.reference_id == self.reference_id)
-                ref_types.delete(synchronize_session=False)
-                personal_communication_ref = curator_session.query(Referencedbentity).filter(Referencedbentity.dbentity_id == self.reference_id).one_or_none()
-                curator_session.delete(personal_communication_ref)
             # finally change reference_id
+            personal_communication_ref_id = self.reference_id
             self.reference_id = ref_id
             transaction.commit()
+            # if this is only one reference for personal communication, delete it
+            if locus_ref_count == 1:
+                personal_communication_ref = curator_session.query(Referencedbentity).filter(Referencedbentity.dbentity_id == self.personal_communication_ref_id).one_or_none()
+                personal_communication_ref.delete_with_children(username)           
         except Exception as e:
             transaction.abort()
             traceback.print_exc()
