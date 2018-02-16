@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import style from './style.css';
 import { makeFieldDisplayName } from '../lib/searchHelpers';
-import PREVIEW_URL from '../constants';
+import { PREVIEW_URL } from '../constants';
 
 const JOIN_CHAR = ', ';
 
