@@ -77,7 +77,7 @@ def _construct_patmatch_parameters(p):
 
 def _get_config(conf):
 
-    data = {
+    test_data = {
         'genome': [
             {
                 'strain': 'S288C',
@@ -102,21 +102,13 @@ def _get_config(conf):
             ]
     }
  
-    return data
-
     # url = config.patmatch_url + "patmatch/" + conf
-    url = patmatch_url + "patmatch/" + conf  
- 
-    data = _get_json_from_server(url)
-
-    return data
-
-
-def _get_json_from_server(url):
-
+    url = patmatch_url + "patmatch/patmatch.json" 
     req = Request(url)
     res = urlopen(req)
     data = json.loads(res.read())
     return data
+
+
              
 
