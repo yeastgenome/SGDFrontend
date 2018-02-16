@@ -106,22 +106,13 @@ def _get_config(conf):
 
     # url = config.patmatch_url + "patmatch/" + conf
     # url = patmatch_url + "patmatch/patmatch.json"
-    # url = "https://blast.yeastgenome.org/blast/blast-sgd.json"
+    url = "https://blast.yeastgenome.org/blast/blast-sgd.json"
 
-    url = "http://patmatch.dev.yeastgenome.org/patmatch/patmatch.json"
+    # url = "http://patmatch.dev.yeastgenome.org/patmatch/patmatch.json"
 
     req = Request(url)
     res = urlopen(req)
     data = json.loads(res.read())
-
-    # return { "genome": [ { "strain": "S288C", 
-    #                       "label": url }, 
-    #                     { 'strain': 'BY4741_Stanford_2014_JRIS00000000',
-    #                       'label':  req },
-    #                     { 'strain': "W303",
-    #                       'label': res }
-    #                ]
-    #         }
  
     return data
 
