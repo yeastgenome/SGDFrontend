@@ -77,37 +77,10 @@ def _construct_patmatch_parameters(p):
 
 def _get_config(conf):
 
-    test_data = {
-        'genome': [
-            {
-                'strain': 'S288C',
-                'label':  'S. cerevisiae Reference Strain S288C'
-                },
-            {
-                'strain': 'AWRI1631_AWRI_2008_ABSV01000000',
-                'label':  'S. cerevisiae Strain AWRI1631_ABSV01000000 (AWRI)'
-                },
-            {
-                'strain': 'AWRI796_AWRI_2010_ADVS01000000',
-                'label':  'S. cerevisiae Strain AWRI796_ADVS01000000 (AWRI)'
-                },
-            {
-                'strain': 'BC187_Stanford_2014_JRII00000000',
-                'label':  'S. cerevisiae Strain BC187_JRII00000000 (Stanford)'
-                },
-            {
-                'strain': 'BY4741_Stanford_2014_JRIS00000000',
-                'label':  'S. cerevisiae Strain BY4741_JRIS00000000 (Stanford)'
-                }
-            ]
-    }
-
-    # return test_data
-
     # url = config.patmatch_url + "patmatch/" + conf
     # url = patmatch_url + "patmatch/patmatch.json"
 
-    url = "http://patmatch.dev.yeastgenome.org/patmatch/patmatch.json"
+    url = "https://blast.yeastgenome.org/blast/patmatch.json"
 
     req = Request(url)
     res = urlopen(req)
