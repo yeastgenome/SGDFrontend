@@ -78,9 +78,10 @@ def _construct_patmatch_parameters(p):
 def _get_config(conf):
 
     # url = config.patmatch_url + "patmatch/" + conf
-    # url = patmatch_url + "patmatch/patmatch.json"
 
-    url = "https://blast.yeastgenome.org/blast/patmatch.json"
+    url = patmatch_url + "patmatch/patmatch.json"
+
+    # url = "https://blast.yeastgenome.org/blast/patmatch.json"
 
     req = Request(url)
     res = urlopen(req)
