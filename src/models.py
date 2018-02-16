@@ -8230,6 +8230,8 @@ class Reservedname(Base):
                 new_locus_id = self.associate_locus(res_systematic_name, username)
                 self = curator_session.merge(self)
                 self.locus_id = new_locus_id
+            if new_info['display_name']:
+                self.display_name = new_info['display_name'].upper().strip()
             if new_info['name_description']:
                 self.name_description = new_info['name_description']
             return_val = self.to_curate_dict()
