@@ -106,9 +106,9 @@ def _get_config(conf):
 
     # url = config.patmatch_url + "patmatch/" + conf
     # url = patmatch_url + "patmatch/patmatch.json"
-    url = "https://blast.yeastgenome.org/blast/blast-sgd.json"
-
+    # url = "https://blast.yeastgenome.org/blast/blast-sgd.json"
     # url = "http://patmatch.dev.yeastgenome.org/patmatch/patmatch.json"
+    url = "https://blast.yeastgenome.org/blast/patmatch.json"
 
     req = Request(url)
     res = urlopen(req)
