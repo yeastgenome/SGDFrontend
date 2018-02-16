@@ -215,7 +215,7 @@ var SearchForm = React.createClass({
         },
 
 	_getConfigData: function() {
-                var jsonUrl = PATMATCH_URL + "?conf=patmatch.conf";
+                var jsonUrl = PATMATCH_URL + "?conf=patmatch.json";
                 $.ajax({
                       url: jsonUrl,
                       dataType: 'json',
