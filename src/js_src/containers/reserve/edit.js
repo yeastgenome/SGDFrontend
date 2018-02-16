@@ -39,11 +39,15 @@ class GeneNameReservationEdit extends Component {
   renderForms() {
     let data = this.state.data;
     let reserveSchema = t.struct({
+      display_name: t.String,
       systematic_name: t.maybe(t.String),
       name_description: t.maybe(t.String)
     });
     let reserveOptions = {
       fields: {
+        display_name: {
+          label: 'Proposed name'
+        },
         systematic_name: {
           label: 'Systematic name'
         },
