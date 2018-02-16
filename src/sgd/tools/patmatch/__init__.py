@@ -3,8 +3,8 @@ from pyramid.response import Response
 from src.sgd.frontend import config
 from urllib2 import Request, urlopen, URLError
 
-patmatch_url = "https://patmatch.dev.yeastgenome.org/";
-
+patmatch_url = "http://patmatch.dev.yeastgenome.org/";
+               
 def do_patmatch(request):
 
     p = dict(request.params)
