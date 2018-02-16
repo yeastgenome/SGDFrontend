@@ -34,6 +34,29 @@ class GeneNameReservation extends Component {
     this.props.dispatch(setMessage('Gene name reservation was deleted.'));
   }
 
+  handleExtend(e) {
+    e.preventDefault();
+    if (window.confirm('Are you sure you want to extend the gene name reservation?')) {
+      let url = `${DATA_BASE_URL}/${this.props.params.id}/extend`;
+      let reqOptions = {
+        type: 'PUT',
+        headers: {
+          'X-CSRF-Token': window.CSRF_TOKEN
+        }
+      };
+      this.setState({ isPending: true });
+      let oldData = this.state.data;
+      fetchData(url, reqOptions).then( _data => {
+        this.setState({ data: _data, isPending: false });
+        this.props.dispatch(setMessage('Gene name reservation successfully extended.'));
+      }).catch( (data) => {
+        let errorMessage = data ? data.message : 'Unable to extend gene name reservation.';
+        this.props.dispatch(setError(errorMessage));
+        this.setState({ isPending: false, data: oldData });
+      });
+    }
+  }
+
   handlePromote(e) {
     e.preventDefault();
     if (window.confirm('Are you sure you want to promote the gene name reservation?')) {
@@ -84,7 +107,7 @@ class GeneNameReservation extends Component {
     let data = this.state.data;
     let reservation_status = data ? data.reservation_status : false;
     if (reservation_status === 'Reserved') {
-      return <a className='button secondary'>Extend Gene Name Reservation</a>;
+      return <a className='button secondary' onClick={this.handleExtend.bind(this)}>Extend gene name reservation by 6 months</a>;
     }
     return null;
   }
