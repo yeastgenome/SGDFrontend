@@ -179,7 +179,7 @@ var SearchForm = React.createClass({
 		// else {
 		//     seqtype = 'dna';
 		// }
-		var strain = this.refs.genome.value.trim();
+		// var strain = this.refs.genome.value.trim();
 		var i = 0;
 		
 		var _elements = []; 
