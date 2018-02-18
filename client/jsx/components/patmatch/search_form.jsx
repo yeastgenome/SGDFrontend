@@ -134,7 +134,7 @@ var SearchForm = React.createClass({
                        }
                 });
                 return(<div>
-                       <p><h3>Choose a genome to search: </h3></p>
+                       <h3>Choose a genome to search: </h3>
                        <p><select ref='genome' name='genome' onChange={this._onChange}>{_elements}</select></p>
                 </div>);
 			      
@@ -142,10 +142,10 @@ var SearchForm = React.createClass({
 		
 	_getSeqtypeNode: function() {
 
-                var format = ['peptide', 'nucleotide'];
+                var seqtype = ['peptide', 'nucleotide'];
 
                 var _elements = [];
-                format.forEach ( function(f) {
+                seqtype.forEach ( function(f) {
                      if (f == 'peptide') {
                           _elements.push(<option value={f} selected="selected">{f}</option>);
                      }
@@ -155,7 +155,7 @@ var SearchForm = React.createClass({
                 });
 
                 return(<div>
-		      <p><h3>Enter a</h3></p>
+		      <h3>Enter a</h3>
 		      <p><select ref='seqtype' onChange={this._onChange}>{_elements}</select></p>
 		</div>);
 
@@ -164,15 +164,46 @@ var SearchForm = React.createClass({
 	_getPatternBoxNode: function() {
 
                 return (<div>
-                        <p><h3>sequence or pattern (<a href='#examples'>syntax</a>)</h3></p>
-                        <input ref='pattern' onChange={this._onChange} size='50'></input>
+                        <h3>sequence or pattern (<a href='#examples'>syntax</a>)</h3>
+                        <textarea ref='pattern' onChange={this._onChange} rows='2', cols='200'></textarea>
                 </div>);
 
         },
 
-	_getDatasetNode: function() {
+	_getDatasetNode: function(data) {
+		
+		var seqtype = this.refs.seqtype.value.trim();
+		if (seqtype == 'peptide') {
+		     seqtype = 'protein';
+		}
+		else {
+		     seqtype = 'dna';
+		}
+		var strain = this.refs.genome.value.trim();
+		var i = 0;
+		var _elements = [];
+		for (var key in data.dataset) {
+		    if (key == strain) {
+		       	    datasets = data.dataset[key];
+		       	    _elements = _.map(datasets, d => {
+                       	    	  if (d.seqtype == seqtype) {
+			               if (i == 0) {
+                               	       	    return <option value={g.strain} selected="selected">{g.label}</option>;
+                       		       }
+                       		       else {
+                            	            return <option value={g.strain}>{g.label}</option>;
+                       		       }
+				       i = i + 1;
+				  }
+			    )};
+		    }
+                }
 
-	        return(<div><p>DATASET SECTION</p></div>);
+                return(<div>
+                       <h3> Choose a Sequence Database (click and hold to see the list):</h3>
+		       All public S. cerevisiae sequences can be found within these datasets.
+                       <p><select ref='dataset' name='dataset' onChange={this._onChange}>{_elements}</select></p>
+                </div>);
 
 	},
 
@@ -230,7 +261,7 @@ var SearchForm = React.createClass({
 
 	_onSubmit: function (e) {
 
-		var strain = this.refs.strain.value.trim();
+		var strain = this.refs.genome.value.trim();
 		var seqtype = this.refs.seqtype.value.trim();
 		var pattern = this.refs.pattern.value.trim();
 		var dataset = this.refs.dataset.value.trim();
