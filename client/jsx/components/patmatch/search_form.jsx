@@ -163,9 +163,9 @@ var SearchForm = React.createClass({
 
 	_getPatternBoxNode: function() {
 
+			    //<textarea ref='pattern' onChange={this._onChange} rows='2', cols='200'></textarea>
                 return (<div>
                         <h3>sequence or pattern (<a href='#examples'>syntax</a>)</h3>
-                        <textarea ref='pattern' onChange={this._onChange} rows='2', cols='200'></textarea>
                 </div>);
 
         },
