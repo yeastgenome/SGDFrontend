@@ -172,13 +172,13 @@ var SearchForm = React.createClass({
 
 	_getDatasetNode: function(data) {
 		
-		var seqtype = this.refs.seqtype.value.trim();
-		if (seqtype == 'peptide') {
-		     seqtype = 'protein';
-		}
-		else {
-		     seqtype = 'dna';
-		}
+		// var seqtype = this.refs.seqtype.value.trim();
+		// if (seqtype == 'peptide') {
+		//     seqtype = 'protein';
+		// }
+		// else {
+		//     seqtype = 'dna';
+		// }
 		var strain = this.refs.genome.value.trim();
 		var i = 0;
 		
