@@ -165,7 +165,7 @@ var SearchForm = React.createClass({
 
                 return (<div>
                         <p><h3>sequence or pattern (<a href='#examples'>syntax</a>)</h3></p>
-                        <textfield ref='pattern' onChange={this._onChange} size='50'></textfield><p></p>
+                        <input ref='pattern' onChange={this._onChange} size='50'></input>
                 </div>);
 
         },
