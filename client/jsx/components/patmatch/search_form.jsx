@@ -205,7 +205,7 @@ var SearchForm = React.createClass({
 		return(<div>
                        <h3> Choose a Sequence Database (click and hold to see the list):</h3>
                        All public S. cerevisiae sequences can be found within these datasets.
-		       strain={strain}, seqtype={seqtype}
+		       
                 </div>);
 
 	},
