@@ -181,28 +181,31 @@ var SearchForm = React.createClass({
 		}
 		var strain = this.refs.genome.value.trim();
 		var i = 0;
-		var _elements = [];
-		for (var key in data.dataset) {
-		    if (key == strain) {
-		       	    datasets = data.dataset[key];
-		       	    _elements = _.map(datasets, d => {
-                       	    	  if (d.seqtype == seqtype) {
-			               if (i == 0) {
-                               	       	    return <option value={g.strain} selected="selected">{g.label}</option>;
-                       		       }
-                       		       else {
-                            	            return <option value={g.strain}>{g.label}</option>;
-                       		       }
-				       i = i + 1;
-				  }
-			    )};
-		    }
-                }
+		
+		var _elements = []; 
+		// for (var key in data.dataset) {
+		//    if (key == strain) {
+		//       	    datasets = data.dataset[key];
+		//       	    _.map(datasets, d => {
+                //       	    	  if (d.seqtype == seqtype) {
+		//	               if (i == 0) {
+		//		           _elements.push(<option value={d.dataset_file_name} selected="selected">{d.label}</option>);
+                //      		       }
+                //       		       else {
+                //            	           _elements.push(<option value={d.dataset_file_name}>{d.label}</option>);
+                //       		       }
+		//		       i = i + 1;
+		//		  }
+		//	    )};
 
-                return(<div>
+		//    }
+                // }
+
+		// <p><select ref='dataset' name='dataset' onChange={this._onChange}>{_elements}</select></p>
+		return(<div>
                        <h3> Choose a Sequence Database (click and hold to see the list):</h3>
-		       All public S. cerevisiae sequences can be found within these datasets.
-                       <p><select ref='dataset' name='dataset' onChange={this._onChange}>{_elements}</select></p>
+                       All public S. cerevisiae sequences can be found within these datasets.
+		       strain={strain}, seqtype={seqtype}
                 </div>);
 
 	},
