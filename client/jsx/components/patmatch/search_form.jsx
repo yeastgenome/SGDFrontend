@@ -189,11 +189,11 @@ var SearchForm = React.createClass({
 		for (var key in data.dataset) {
 		    if (key == strain) {
 		       	    var datasets = data.dataset[key];
-
-			    // console.log(datasets)
-			    
 			    for (var i = 0; i < datasets.length; i++) { 
     			    	var d = datasets[i];
+				if (d.seqtype != seqtype) {
+				     continue;
+				}
 				console.log(d.label);
 				if (i==0) {
 				     _elements.push(<option value={d.dataset_file_name} selected="selected">{d.label}</option>);
