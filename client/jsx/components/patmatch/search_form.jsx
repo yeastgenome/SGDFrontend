@@ -216,7 +216,16 @@ var SearchForm = React.createClass({
 
 	_getPatternExampleNote: function() {
 
-                return(<div><p>PATTERN EXAMPLES SECTION</p></div>);
+	        var _tableRows = [];
+		_tableRows.push(["Peptide Searches", 'IFVLWMAGCYPTSHEDQNKR', 'Exact match', 'ELVIS']);
+		var _tableData = {
+                    headers: [["Search type", "Character", "Meaning", 'Examples']],
+		    	       rows: _tableRow
+                };
+
+		return(<div><p><a name='syntax'><h3>Supported Pattern Syntax and Examples:</h3></a></p>
+		      <DataTable data={_tableData} />		  
+		</div>);
 
         },
 
