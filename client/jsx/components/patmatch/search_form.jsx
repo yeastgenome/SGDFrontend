@@ -250,9 +250,9 @@ var SearchForm = React.createClass({
 	},
 
         _onChange: function(e) {
-		console.log("Genome BEFORE:"+this.state.genome);
+		console.log("BEFORE:"+e.target.value);
                 this.setState({ text: e.target.value});
-		console.log("Genome AFTER:"+this.state.genome);
+		console.log("AFTER:"+this.state.genome);
         },
 
 	_getConfigData: function() {
