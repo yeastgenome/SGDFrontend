@@ -127,6 +127,7 @@ var SearchForm = React.createClass({
 		var _genomeDef = 'S288C';
 		var _elements = _.map(data.genome, g => {
                        if (g.strain == _genomeDef) {
+		       	    console.log(g.strain);
                             return <option value={g.strain} selected="selected">{g.label}</option>;
                        }
                        else {
@@ -181,8 +182,8 @@ var SearchForm = React.createClass({
 		// }
 		// var strain = this.refs.genome.value.trim();
 
-		console.log(this.refs.genome);
-		console.log(this.refs.seqtype);
+		console.log(this.refs.genome.value);
+		console.log(this.refs.seqtype.value);
 	
 		var seqtype = 'dna';
 		var strain = 'S288C';		
