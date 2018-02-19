@@ -142,17 +142,16 @@ var SearchForm = React.createClass({
 		
 	_getSeqtypeNode: function() {
 
-                var seqtype = ['peptide', 'nucleotide'];
-		
+                var pattern_type = {'peptide': 'protein', 'nucleotide': 'dna'};
                 var _elements = [];
-                seqtype.forEach ( function(f) {
-                     if (f == 'peptide') {
-                          _elements.push(<option value={f} selected="selected">{f}</option>);
+                for (var key in pattern_type) {
+                     if (key == 'peptide') {
+                          _elements.push(<option value={pattern_type[key]} selected="selected">{key}</option>);
                      }
                      else {
-                          _elements.push(<option value={f}>{f}</option>);
+                          _elements.push(<option value={pattern_type[key]}>{key}</option>);
                      }
-                });
+                }
 
                 return(<div>
 		      <h3>Enter a</h3>
@@ -172,28 +171,13 @@ var SearchForm = React.createClass({
 
 	_getDatasetNode: function(data) {
 			
-		// var seqtype = this.refs.seqtype.value.trim();
-		// if (seqtype == 'peptide') {
-		//     seqtype = 'protein';
-		// }
-		// else {
-		//     seqtype = 'dna';
-		//}
-		// var strain = this.refs.genome.value.trim();
-
-		console.log(this.state.genome);
-		console.log(this.state.seqtype);
-	
-		var seqtype = 'dna';
-		var strain = 'S288C';		
-
 		var _elements = []; 
 		for (var key in data.dataset) {
-		     if (key == strain) {
+		     if (key == this.state.genome) {
 		       	    var datasets = data.dataset[key];
 			    for (var i = 0; i < datasets.length; i++) { 
     			    	var d = datasets[i];
-				if (d.seqtype != seqtype) {
+				if (d.seqtype != this.state.seqtype) {
 				     continue;
 				}
 				// console.log(d.label);
