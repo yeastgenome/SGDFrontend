@@ -215,17 +215,16 @@ var SearchForm = React.createClass({
 
 	_getPatternExampleNote: function() {
 
-	        var _tableRows = [];
-		_tableRows.push(<tr><td rowSpan='2'>Peptide Searches</td><td>IFVLWMAGCYPTSHEDQNKR</td><td>Exact match</td><td>ELVIS</td></tr>);
-		// _tableRows.push(<tr><td>IFVLWMAGCYPTSHEDQNKR</td><td>Exact match</td><td>ELVIS</td></tr>);
+	        var bodyRows = [];
+		bodyRows.push("<tr><td rowSpan=2>Peptide Searches</td><td>IFVLWMAGCYPTSHEDQNKR</td><td>Exact match</td><td>ELVIS</td></tr>");
+		bodyRows.push("<tr<<td>IFVLWMAGCYPTSHEDQNKR</td><td>Exact match</td><td>ELVIS</td></tr>");
 		
-		var _tableData = {
-                    headers: [["Search type", "Character", "Meaning", 'Examples']],
-		    	       rows: _tableRows
-                };
-
+		// <DataTable data={_tableData} />
 		return(<div><p><a name='syntax'><h3>Supported Pattern Syntax and Examples:</h3></a></p>
-		      <DataTable data={_tableData} />		  
+		      <table>
+		         <thead><tr><th>Search type</th><th>Character</th><th>Meaning</th><th>Examples</th></tr></thead>
+			 <tbody>{bodyRows}</tbody>
+		      </table>
 		</div>);
 
         },
