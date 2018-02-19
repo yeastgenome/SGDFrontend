@@ -190,11 +190,19 @@ var SearchForm = React.createClass({
 		    if (key == strain) {
 		       	    var datasets = data.dataset[key];
 
-			    console.log(datasets)
+			    // console.log(datasets)
+			    
+			    for (var i = 0; i < datasets.length; i++) { 
+    			    	var d = datasets[i];
+				console.log(d.dataset_file_name);
+			    }			    
+		    }
+		}	    
+
+			    
 
 		       	    // _.map(datasets, d => {
-                       	    //	  if (d.seqtype == seqtype) {
-			    //           if (i == 0) {
+              		    //           if (i == 0) {
 			    //	           _elements.push(<option value={d.dataset_file_name} selected="selected">{d.label}</option>);
                       	    //	       }
                        	    //	       else {
@@ -202,10 +210,10 @@ var SearchForm = React.createClass({
                        	    //	       }
 			    //	       i = i + 1;
 			    // 	  }
-			    // )};
+		//	    )};
 
-		    }
-                 }
+		//    }
+                // }
 
 		// <p><select ref='dataset' name='dataset' onChange={this._onChange}>{_elements}</select></p>
 		return(<div>
