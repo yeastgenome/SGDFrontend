@@ -171,7 +171,7 @@ var SearchForm = React.createClass({
         },
 
 	_getDatasetNode: function(data) {
-		
+			
 		// var seqtype = this.refs.seqtype.value.trim();
 		// if (seqtype == 'peptide') {
 		//     seqtype = 'protein';
@@ -180,8 +180,9 @@ var SearchForm = React.createClass({
 		//     seqtype = 'dna';
 		// }
 		// var strain = this.refs.genome.value.trim();
-		var i = 0;
-		
+
+		console.log(this.refs);
+	
 		var seqtype = 'dna';
 		var strain = 'S288C';		
 
@@ -194,7 +195,7 @@ var SearchForm = React.createClass({
 				if (d.seqtype != seqtype) {
 				     continue;
 				}
-				console.log(d.label);
+				// console.log(d.label);
 				if (i==0) {
 				     _elements.push(<option value={d.dataset_file_name} selected="selected">{d.label}</option>);
 				}
