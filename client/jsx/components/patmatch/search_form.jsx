@@ -6,8 +6,7 @@ var $ = require("jquery");
 
 var Params = require("../mixins/parse_url_params.jsx");
 
-// var RadioSelector = require("./radio_selector.jsx");
-// var BlastBarChart = require("./blast_bar_chart.jsx");
+var DataTable = require("../widgets/data_table.jsx");
 
 var PATMATCH_URL = "/run_patmatch";
 
