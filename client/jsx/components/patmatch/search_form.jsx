@@ -220,7 +220,7 @@ var SearchForm = React.createClass({
 		_tableRows.push(["Peptide Searches", 'IFVLWMAGCYPTSHEDQNKR', 'Exact match', 'ELVIS']);
 		var _tableData = {
                     headers: [["Search type", "Character", "Meaning", 'Examples']],
-		    	       rows: _tableRow
+		    	       rows: _tableRows
                 };
 
 		return(<div><p><a name='syntax'><h3>Supported Pattern Syntax and Examples:</h3></a></p>
