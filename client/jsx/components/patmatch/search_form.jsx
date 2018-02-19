@@ -181,7 +181,8 @@ var SearchForm = React.createClass({
 		// }
 		// var strain = this.refs.genome.value.trim();
 
-		console.log(this.refs);
+		console.log(this.refs.genome);
+		console.log(this.refs.seqtype);
 	
 		var seqtype = 'dna';
 		var strain = 'S288C';		
