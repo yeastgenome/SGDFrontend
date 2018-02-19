@@ -30,8 +30,8 @@ var SearchForm = React.createClass({
 			isPending: false,
 			userError: null,
 			configData: {},
-			strain: null,
-			seqtype: null,
+			strain: 'S288C',
+			seqtype: 'peptide',
 			dataset: null,
 			pattern: null,
 			maxHits: null,
@@ -144,7 +144,7 @@ var SearchForm = React.createClass({
 	_getSeqtypeNode: function() {
 
                 var seqtype = ['peptide', 'nucleotide'];
-
+		
                 var _elements = [];
                 seqtype.forEach ( function(f) {
                      if (f == 'peptide') {
@@ -173,20 +173,20 @@ var SearchForm = React.createClass({
 
 	_getDatasetNode: function(data) {
 			
-		// var seqtype = this.refs.seqtype.value.trim();
-		// if (seqtype == 'peptide') {
-		//     seqtype = 'protein';
-		// }
-		// else {
-		//     seqtype = 'dna';
-		// }
-		// var strain = this.refs.genome.value.trim();
+		var seqtype = this.refs.seqtype.value.trim();
+		if (seqtype == 'peptide') {
+		     seqtype = 'protein';
+		}
+		else {
+		     seqtype = 'dna';
+		}
+		var strain = this.refs.genome.value.trim();
 
-		console.log(this.refs.genome.value);
-		console.log(this.refs.seqtype.value);
+		console.log(this.state.genome);
+		console.log(this.state.seqtype);
 	
-		var seqtype = 'dna';
-		var strain = 'S288C';		
+		// var seqtype = 'dna';
+		// var strain = 'S288C';		
 
 		var _elements = []; 
 		for (var key in data.dataset) {
