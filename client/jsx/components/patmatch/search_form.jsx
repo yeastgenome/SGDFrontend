@@ -173,20 +173,20 @@ var SearchForm = React.createClass({
 
 	_getDatasetNode: function(data) {
 			
-		var seqtype = this.refs.seqtype.value.trim();
-		if (seqtype == 'peptide') {
-		     seqtype = 'protein';
-		}
-		else {
-		     seqtype = 'dna';
-		}
-		var strain = this.refs.genome.value.trim();
+		// var seqtype = this.refs.seqtype.value.trim();
+		// if (seqtype == 'peptide') {
+		//     seqtype = 'protein';
+		// }
+		// else {
+		//     seqtype = 'dna';
+		//}
+		// var strain = this.refs.genome.value.trim();
 
 		console.log(this.state.genome);
 		console.log(this.state.seqtype);
 	
-		// var seqtype = 'dna';
-		// var strain = 'S288C';		
+		var seqtype = 'dna';
+		var strain = 'S288C';		
 
 		var _elements = []; 
 		for (var key in data.dataset) {
