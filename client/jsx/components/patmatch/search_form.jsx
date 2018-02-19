@@ -182,24 +182,30 @@ var SearchForm = React.createClass({
 		// var strain = this.refs.genome.value.trim();
 		var i = 0;
 		
-		var _elements = []; 
-		// for (var key in data.dataset) {
-		//    if (key == strain) {
-		//       	    datasets = data.dataset[key];
-		//       	    _.map(datasets, d => {
-                //       	    	  if (d.seqtype == seqtype) {
-		//	               if (i == 0) {
-		//		           _elements.push(<option value={d.dataset_file_name} selected="selected">{d.label}</option>);
-                //      		       }
-                //       		       else {
-                //            	           _elements.push(<option value={d.dataset_file_name}>{d.label}</option>);
-                //       		       }
-		//		       i = i + 1;
-		//		  }
-		//	    )};
+		seqtype = 'dna';
+		strain = 'S288C';		
 
-		//    }
-                // }
+		var _elements = []; 
+		for (var key in data.dataset) {
+		    if (key == strain) {
+		       	    datasets = data.dataset[key];
+
+			    console.log(datasets)
+
+		       	    // _.map(datasets, d => {
+                       	    //	  if (d.seqtype == seqtype) {
+			    //           if (i == 0) {
+			    //	           _elements.push(<option value={d.dataset_file_name} selected="selected">{d.label}</option>);
+                      	    //	       }
+                       	    //	       else {
+                            //	           _elements.push(<option value={d.dataset_file_name}>{d.label}</option>);
+                       	    //	       }
+			    //	       i = i + 1;
+			    // 	  }
+			    // )};
+
+		    }
+                 }
 
 		// <p><select ref='dataset' name='dataset' onChange={this._onChange}>{_elements}</select></p>
 		return(<div>
