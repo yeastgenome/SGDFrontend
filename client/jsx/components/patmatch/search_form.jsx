@@ -30,7 +30,7 @@ var SearchForm = React.createClass({
 			isPending: false,
 			userError: null,
 			configData: {},
-			strain: 'S288C',
+			genome: 'S288C',
 			seqtype: 'peptide',
 			dataset: null,
 			pattern: null,
@@ -127,7 +127,6 @@ var SearchForm = React.createClass({
 		var _genomeDef = 'S288C';
 		var _elements = _.map(data.genome, g => {
                        if (g.strain == _genomeDef) {
-		       	    console.log("STRAIN="+g.strain);
                             return <option value={g.strain} selected="selected">{g.label}</option>;
                        }
                        else {
