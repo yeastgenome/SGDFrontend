@@ -135,7 +135,7 @@ var SearchForm = React.createClass({
                 });
                 return(<div>
                        <h3>Choose a genome to search: </h3>
-                       <p><select ref='genome' name='genome' onChange={this._onChange}>{_elements}</select></p>
+                       <p><select ref='genome' name='genome' onChange={this._onChangeGenome}>{_elements}</select></p>
                 </div>);
 			      
 	},
@@ -156,7 +156,7 @@ var SearchForm = React.createClass({
 
                 return(<div>
 		      <h3>Enter a</h3>
-		      <p><select ref='seqtype' onChange={this._onChange}>{_elements}</select></p>
+		      <p><select name='seqtype' ref='seqtype' onChange={this._onChangeSeqtype}>{_elements}</select></p>
 		</div>);
 
         },
@@ -250,15 +250,21 @@ var SearchForm = React.createClass({
 	},
 
         _onChange: function(e) {
-		console.log("BEFORE:"+e.target.name);
                 this.setState({ text: e.target.value});
-		console.log("AFTER:"+e.target.value);
         },
 
+	_onChangeGenome: function(e) {
+                this.setState({ genome: e.target.value});
+        },
+
+	_onChangeSeqtype: function(e) {
+                this.setState({ seqtype: e.target.value});
+        },
+	
 	_getConfigData: function() {
                 var jsonUrl = PATMATCH_URL + "?conf=patmatch.json";
                 $.ajax({
-                      url: jsonUrl,
+    		      url: jsonUrl,
                       dataType: 'json',
                       success: function(data) {
                             this.setState({configData: data});
