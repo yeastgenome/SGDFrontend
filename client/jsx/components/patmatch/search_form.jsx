@@ -194,32 +194,22 @@ var SearchForm = React.createClass({
 			    
 			    for (var i = 0; i < datasets.length; i++) { 
     			    	var d = datasets[i];
-				console.log(d.dataset_file_name);
+				console.log(d.label);
+				if (i==0) {
+				     _elements.push(<option value={d.dataset_file_name} selected="selected">{d.label}</option>);
+				}
+				else {
+				     _elements.push(<option value={d.dataset_file_name}>{d.label}</option>);			
+				}			
+			
 			    }			    
 		    }
 		}	    
 
-			    
-
-		       	    // _.map(datasets, d => {
-              		    //           if (i == 0) {
-			    //	           _elements.push(<option value={d.dataset_file_name} selected="selected">{d.label}</option>);
-                      	    //	       }
-                       	    //	       else {
-                            //	           _elements.push(<option value={d.dataset_file_name}>{d.label}</option>);
-                       	    //	       }
-			    //	       i = i + 1;
-			    // 	  }
-		//	    )};
-
-		//    }
-                // }
-
-		// <p><select ref='dataset' name='dataset' onChange={this._onChange}>{_elements}</select></p>
 		return(<div>
                        <h3> Choose a Sequence Database (click and hold to see the list):</h3>
                        All public S. cerevisiae sequences can be found within these datasets.
-		       
+		       <p><select ref='dataset' name='dataset' onChange={this._onChange}>{_elements}</select></p>
                 </div>);
 
 	},
