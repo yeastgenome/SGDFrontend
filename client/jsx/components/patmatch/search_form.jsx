@@ -6,6 +6,8 @@ var $ = require("jquery");
 
 var Params = require("../mixins/parse_url_params.jsx");
 
+var ExampleTable = require("./example_table.jsx");
+
 var DataTable = require("../widgets/data_table.jsx");
 
 var PATMATCH_URL = "/run_patmatch";
@@ -215,16 +217,11 @@ var SearchForm = React.createClass({
 
 	_getPatternExampleNote: function() {
 
-	        var bodyRows = [];
-		bodyRows.push("<tr><td rowSpan=2>Peptide Searches</td><td>IFVLWMAGCYPTSHEDQNKR</td><td>Exact match</td><td>ELVIS</td></tr>");
-		bodyRows.push("<tr<<td>IFVLWMAGCYPTSHEDQNKR</td><td>Exact match</td><td>ELVIS</td></tr>");
+		var examples = ExampleTable.examples();
 		
 		// <DataTable data={_tableData} />
 		return(<div><p><a name='syntax'><h3>Supported Pattern Syntax and Examples:</h3></a></p>
-		      <table>
-		         <thead><tr><th>Search type</th><th>Character</th><th>Meaning</th><th>Examples</th></tr></thead>
-			 <tbody>{bodyRows}</tbody>
-		      </table>
+		      {examples}
 		</div>);
 
         },
