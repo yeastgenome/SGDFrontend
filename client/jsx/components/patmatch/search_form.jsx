@@ -188,7 +188,7 @@ var SearchForm = React.createClass({
 		var _elements = []; 
 		for (var key in data.dataset) {
 		    if (key == strain) {
-		       	    datasets = data.dataset[key];
+		       	    var datasets = data.dataset[key];
 
 			    console.log(datasets)
 
