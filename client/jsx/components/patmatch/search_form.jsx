@@ -189,7 +189,7 @@ var SearchForm = React.createClass({
 
 		var _elements = []; 
 		for (var key in data.dataset) {
-		    if (key == strain) {
+		     if (key == strain) {
 		       	    var datasets = data.dataset[key];
 			    for (var i = 0; i < datasets.length; i++) { 
     			    	var d = datasets[i];
@@ -202,10 +202,9 @@ var SearchForm = React.createClass({
 				}
 				else {
 				     _elements.push(<option value={d.dataset_file_name}>{d.label}</option>);			
-				}			
-			
+				}						
 			    }			    
-		    }
+		     }
 		}	    
 
 		return(<div>
@@ -251,7 +250,9 @@ var SearchForm = React.createClass({
 	},
 
         _onChange: function(e) {
+		console.log("Genome BEFORE:"+this.state.genome);
                 this.setState({ text: e.target.value});
+		console.log("Genome AFTER:"+this.state.genome);
         },
 
 	_getConfigData: function() {
