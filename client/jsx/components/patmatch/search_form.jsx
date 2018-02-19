@@ -216,7 +216,9 @@ var SearchForm = React.createClass({
 	_getPatternExampleNote: function() {
 
 	        var _tableRows = [];
-		_tableRows.push(["Peptide Searches", 'IFVLWMAGCYPTSHEDQNKR', 'Exact match', 'ELVIS']);
+		_tableRows.push(<tr><td rowSpan='2'>Peptide Searches</td><td>IFVLWMAGCYPTSHEDQNKR</td><td>Exact match</td><td>ELVIS</td></tr>);
+		// _tableRows.push(<tr><td>IFVLWMAGCYPTSHEDQNKR</td><td>Exact match</td><td>ELVIS</td></tr>);
+		
 		var _tableData = {
                     headers: [["Search type", "Character", "Meaning", 'Examples']],
 		    	       rows: _tableRows
