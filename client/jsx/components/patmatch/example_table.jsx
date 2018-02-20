@@ -44,9 +44,13 @@ module.exports = {
 		rows.push(["All Searches", "[^]", "An excluded subset of elements", <span><a href='/nph-patmatch?seqtype=pep&pattern=NDBB...[VILM]Z[DE]...[^PG]'>NDBB...[VILM]Z[DE]...[^PG]</a></span>]);
 		rows.push(["All Searches", "()", "Specifies a sub-pattern", <span><a href={ "/nph-patmatch?seqtype=pep&pattern=(YDXXX){2,}" }>(YDXXX){'{2,}'}</a></span>]); 
 
-		/* var meaning = <span>{ "{m} = exactly m times" }<br>{ "{m,} = at least m times" }<br>{ "{,m} = 0 to m times" }<br>{ "{m,n} = between m and n times" }</span>; */
 
-		var meaning = <span>{ "{m} = exactly m times <br> {m,} = at least m times <br> {m,n} = between m and n times" } </span>;
+/*		var meaning = <span>{ "{m} = exactly m times <br> {m,} = at least m times <br> {m,n} = between m and n times" } </span>; */
+		var meaning = <span>{` "{m} = exactly m times "
+		    	      		"{m,} = at least m times "
+					"{m,n} = between m and n times" 
+				     `}</span>;	
+		    	      		 
 
 		rows.push(["All Searches", "{m,n}", meaning, <span><a href={ '/nph-patmatch?seqtype=pep&pattern=L{3,5}X{5}DGO' }>{'L{3,5}X{5}DGO'}</a></span>]);
 
