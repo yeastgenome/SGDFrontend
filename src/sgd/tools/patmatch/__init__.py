@@ -4,7 +4,7 @@ from src.sgd.frontend import config
 from urllib2 import Request, urlopen, URLError
 
 patmatch_url = "http://patmatch.dev.yeastgenome.org/"
-               
+                
 def do_patmatch(request):
 
     p = dict(request.params)
@@ -23,7 +23,6 @@ def _run_patmatch(p):
 
     paramData = _construct_patmatch_parameters(p)
 
-    # url = config.patmatch_url + "cgi-bin/aws-patmatch"
     url = patmatch_url + "cgi-bin/aws-patmatch" 
 
     req = Request(url=url, data=paramData)
