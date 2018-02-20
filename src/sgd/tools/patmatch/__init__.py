@@ -48,16 +48,16 @@ def _run_patmatch(p):
 
 def _construct_patmatch_parameters(p):
 
-    insertion = 1 if p.get('insertion') else 0 
-    deletion = 1 if p.get('deletion') else 0
-    substitution = 1  if p.get('substitution') else 0
-    strain = p.get('strain')
-    if strand.startswith('Both'):
-        strand = 'both'
-    elif strand.startswith('Reverse'):
-        strand = 'crick'
-    else:
-        strand = 'watson'
+    # insertion = 1 if p.get('insertion') else 0 
+    # deletion = 1 if p.get('deletion') else 0
+    # substitution = 1  if p.get('substitution') else 0
+    # strain = p.get('strain')
+    # if strand.startswith('Both'):
+    #    strand = 'both'
+    # elif strand.startswith('Reverse'):
+    #    strand = 'crick'
+    # else:
+    #    strand = 'watson'
 
     import urllib
     
@@ -66,11 +66,11 @@ def _construct_patmatch_parameters(p):
                                    'seqtype': p.get('seqtype'),
                                    'dataset': p.get('dataset'),
                                    'maxhits': p.get('max_hits'),
-                                   'strand': strand,
+                                   'strand': p.get('strand'),
                                    'mismatch': p.get('mismatch'),
-                                   'insertion': insertion,
-                                   'deletion': deletion,
-                                   'substitution': substitution })
+                                   'insertion': p.get('insertion'),
+                                   'deletion': p.get('deletion'),
+                                   'substitution': p.get('substitution') })
     return paramData
 
 
