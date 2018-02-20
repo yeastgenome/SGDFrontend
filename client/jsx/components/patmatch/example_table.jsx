@@ -7,9 +7,11 @@ module.exports = {
 	examples: function() {
 		 
 		// rows.push(["Peptide Searches", "IFVLWMAGCYPTSHEDQNKR", "Exact match", "<a href=/nph-patmatch?pattern=ELVIS>ELVIS</a>"]);
+
 		var rows = [];
 		
-		rows.push(["Peptide Searches", "IFVLWMAGCYPTSHEDQNKR", "Exact match", "<span><a href=/nph-patmatch?pattern=ELVIS>ELVIS</a></span>"]);
+		var cell = "<a href=/nph-patmatch?pattern=ELVIS>ELVIS</a>";
+		rows.push(["Peptide Searches", "IFVLWMAGCYPTSHEDQNKR", "Exact match", cell]);
 		rows.push(["Peptide Searches", "J", "Any hydrophobic residue (IFVLWMAGCY)", "<a href=/nph-patmatch?pattern=AAAAAAJJ>AAAAAAJJ</a>"]);
 		rows.push(["Peptide Searches", "O", "Any hydrophilic residue (TSHEDQNKR)", "<a href=/nph-patmatch?pattern=GLFGO>GLFGO</a>"]);
 		rows.push(["Peptide Searches", "B", "D or N", "<a href=/nph-patmatch?pattern=FLGB>FLGB</a>"]);
@@ -43,3 +45,4 @@ module.exports = {
 		
 	}
 };
+
