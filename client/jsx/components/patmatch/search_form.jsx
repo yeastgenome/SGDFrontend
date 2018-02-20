@@ -212,10 +212,10 @@ var SearchForm = React.createClass({
 
 	_getOptionsNode: function() {
 
-		var maximumHitsNode = _getMaximumHitsNode();
-		var strandNode = _getStrandNote();
-		var mismatchNode = _getMismatchNode();
-		var mismatchTypeNode = _getMismatchTypeNode();
+		var maximumHitsNode = this._getMaximumHitsNode();
+		var strandNode = this._getStrandNote();
+		var mismatchNode = this._getMismatchNode();
+		var mismatchTypeNode = this._getMismatchTypeNode();
 
 		var descText = "<p>PLEASE WAIT FOR EACH REQUEST TO COMPLETE BEFORE SUBMITTING ANOTHER. These searches are done on a single computer at Stanford shared by many other people.</p><hr><h3>More Options:</h3>";
 
