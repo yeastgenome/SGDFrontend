@@ -4,7 +4,7 @@ var React = require("react");
 var _ = require("underscore");
 var $ = require("jquery");
 
-var Checklist = require("../widgets/checklist.jsx");
+var Checklist = require("./checklist.jsx");
 
 var Params = require("../mixins/parse_url_params.jsx");
 
