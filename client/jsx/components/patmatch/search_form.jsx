@@ -21,7 +21,7 @@ var SearchForm = React.createClass({
 		var param = Params.getParams();
 		
 		var submitted = '';
-		if (param['submit']) {
+		if (param['pattern']) {
 		     submitted = 1;
 		}
 
