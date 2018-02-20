@@ -38,7 +38,7 @@ module.exports = {
 		rows.push(["All Searches", "[^]", "An excluded subset of elements", <span><a href='/nph-patmatch?seqtype=pep&pattern=NDBB...[VILM]Z[DE]...[^PG]'>NDBB...[VILM]Z[DE]...[^PG]</a></span>]);
 		rows.push(["All Searches", "()", "Specifies a sub-pattern", <span><a href={ "/nph-patmatch?seqtype=pep&pattern=(YDXXX){2,}" }>(YDXXX){'{2,}'}</a></span>]); 
 
-		rows.push(["All Searches", "{m,n}", "{m} = exactly m times; {m,} = at least m times; {m,n} = between m and n times", <span><a href={ '/nph-patmatch?seqtype=pep&pattern=L{3,5}X{5}DGO' }>{'L{3,5}X{5}DGO'}</a></span>]);
+		rows.push(["All Searches", <span><p>{ "{m,n} {m} = exactly m times" }</p> <p>{ "{m,} = at least m times" }</p> <p>{ "{m,n} = between m and n times" }</p></span>, <span><a href={ '/nph-patmatch?seqtype=pep&pattern=L{3,5}X{5}DGO' }>{'L{3,5}X{5}DGO'}</a></span>]);
 
 
 		rows.push(["All Searches", "<", "Constrains pattern to N-terminus or 5' end", <span><a href={ '/nph-patmatch?seqtype=pep&pattern=<MNTD' }>{ '<MNTD' }</a>{ ' (pep)' }<a href={ '/nph-patmatch?seqtype=nuc&pattern=<ATGX{6,10}RTTRTT' }>{ '<ATGX{6,10}RTTRTT' }</a>{ ' (nuc)' }</span>]);
