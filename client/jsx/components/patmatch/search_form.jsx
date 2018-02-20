@@ -4,6 +4,8 @@ var React = require("react");
 var _ = require("underscore");
 var $ = require("jquery");
 
+var Checklist = require("../widgets/checklist.jsx");
+
 var Params = require("../mixins/parse_url_params.jsx");
 
 var ExampleTable = require("./example_table.jsx");
@@ -181,7 +183,6 @@ var SearchForm = React.createClass({
 				if (d.seqtype != this.state.seqtype) {
 				     continue;
 				}
-				// console.log(d.label);
 				if (i==0) {
 				     _elements.push(<option value={d.dataset_file_name} selected="selected">{d.label}</option>);
 				}
@@ -211,18 +212,68 @@ var SearchForm = React.createClass({
 
 	_getOptionsNode: function() {
 
-	        return(<div><p>OPTIONS SECTION</p></div>);
+		var maximumHitsNode = _getMaximumHitsNode();
+		var strandNode = _getStrandNote();
+		var mismatchNode = _getMismatchNode();
+		var mismatchTypeNode = _getMismatchTypeNode();
+
+		var descText = "<p>PLEASE WAIT FOR EACH REQUEST TO COMPLETE BEFORE SUBMITTING ANOTHER. These searches are done on a single computer at Stanford shared by many other people.</p><hr><h3>More Options:</h3>";
+
+	        return(<div>
+		      <div dangerouslySetInnerHTML={{ __html: descText}} />
+		      <p>Maximum hits:</p>
+		      { maximumHitsNode }
+		      <p>If DNA, Strand:</p>
+                      { strandNode }
+		      <p>Mismatch:</p>
+                      { mismatchNode }
+                      { mismatchTypeNode }
+		</div>);
 
 	},	
 
+	_getMaximumHitsNode: function() {
+
+		var hits = ['25', '50', '100', '200', '500', '1000', "no limit"];
+		var _elements = this._getDropdownList(hits, "100");
+                return <p><select name='max_hits' ref='max_hits' onChange={this._onChange}>{_elements}</select></p>;
+	
+	},
+
+	_getStrandNote: function() {
+
+               	var strands = ['Both strands', 'Strand in dataset', 'Reverse complement of strand in dataset'];
+                var _elements = this._getDropdownList(strands, "Both strands");
+                return <p><select name='strand' ref='strand' onChange={this._onChange}>{_elements}</select></p>;
+			
+	},
+
+	_getMismatchNode: function() {
+	
+		var mismatch = ['0', '1', '2', '3'];
+                var _elements = this._getDropdownList(mismatch, "0");
+                return <p><select name='mismatch' ref='mismatch' onChange={this._onChange}>{_elements}</select></p>;
+
+	},	
+
+	_getMismatchTypeNode: function() {
+
+	        var _elements = { 'insertion': '1',
+		    	          'deletion': '1',
+				  'substitution': 1 };
+
+	        return (<div><p><a href='#mismatch_note'>(more information on use of the Mismatch option)</a></p>
+		       <Checklist elements={_elements} />
+		       </div>);
+
+	},
 	_getPatternExampleNote: function() {
 
 		var examples = ExampleTable.examples();
 		
-		// <DataTable data={_tableData} />
-		return(<div><p><a name='syntax'><h3>Supported Pattern Syntax and Examples:</h3></a></p>
+		return(<div><p><a name='examples'><h3>Supported Pattern Syntax and Examples:</h3></a></p>
 		      {examples}
-		      <p><h3> Limits on the use of the Mismatch option</h3></p>
+		      <p><h3><a name='mismatch_note'>Limits on the use of the Mismatch option</a></h3></p>
 		      <p>At this time, the mismatch option (Insertions, Deletions, or Substitutions) can only be used in combination with exact patterns that do not contain ambiguous peptide or nucleotide characters (e.g. X for any amino acid or R for any purine) or regular expressions (e.g. L{3,5}X{5}DGO). In addition, the mismatch=3 option can only be used for query strings of at least 7 in length.</p>
 		</div>);
 

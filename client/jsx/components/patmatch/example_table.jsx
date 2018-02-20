@@ -45,10 +45,6 @@ module.exports = {
 
 
 		rows.push(["All Searches", ">", "Constrains pattern to C-terminus or 3' end", <span><br><a href={ "/nph-patmatch?seqtype=pep&pattern=sjgo>" }>{ "sjgo>" }</a>{ ' (pep)' }</br> <br><a href={ "/nph-patmatch?seqtype=nuc&pattern=yattrtga>" }>{ "yattrtga>" }</a>{ ' (nuc)' }</br></span>]);
-
-
-		rows.push(["All Searches", "<", "Constrains pattern to N-terminus or 5' end" , <span><br><a href={ '/nph-patmatch?seqtype=pep&pattern=<MNTD' }>{ '<MNTD' }</a>{ ' (pep)' }</br> <br><a href={ '/nph-patmatch?seqtype=nuc&pattern=<ATGX{6,10}RTTRTT' }>{ '<ATGX{6,10}RTTRTT' }</a>{ ' (nuc)' }</br></span>]);
-
 		
 		var _tableData = {
                         headers: [["Search type", "Character", "Meaning", "Examples"]],
