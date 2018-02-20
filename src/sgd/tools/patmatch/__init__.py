@@ -28,10 +28,11 @@ def _run_patmatch(p):
     result = res.read()
 
     dataSet = result.split("\t")
-    
+
+    #  json.loads(dataSet[1]) 
     if dataSet[1]:
         data = { "result": dataSet[0],
-                 "hits":   json.loads(dataSet[1]) }
+                 "hits":   dataSet[1] }
                  # "totalHits": dataSet[2],
                  # "showHits": dataSet[3]}
     else:
