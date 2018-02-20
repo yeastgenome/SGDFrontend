@@ -28,8 +28,6 @@ def _run_patmatch(p):
     res = urlopen(req)
     result = res.read()
 
-    url patmatch_url + "patmatch/patmatch.json"
-
     dataSet = result.split("\t")
     
     if dataSet[1]:
