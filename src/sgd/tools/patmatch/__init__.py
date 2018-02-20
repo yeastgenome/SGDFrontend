@@ -23,13 +23,14 @@ def _run_patmatch(p):
 
     paramData = _construct_patmatch_parameters(p)
 
-    url = patmatch_url + "cgi-bin/aws-patmatch" 
-
-    req = Request(url=url, data=paramData)
-
+    # url = patmatch_url + "cgi-bin/aws-patmatch" 
+    # req = Request(url=url, data=paramData)
+    url = patmatch_url + "patmatch/patmatch.json"
+    req = Request(url=url)
     res = urlopen(req)
-
     result = res.read()
+
+    url patmatch_url + "patmatch/patmatch.json"
 
     dataSet = result.split("\t")
     
