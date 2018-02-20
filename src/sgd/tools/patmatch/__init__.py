@@ -23,28 +23,24 @@ def _run_patmatch(p):
     url = patmatch_url + "cgi-bin/aws-patmatch" 
    
     req = Request(url=url, data=paramData)
-    # req = Request(url)
     res = urlopen(req)
-    return res.read()
-
-    # data = json.loads(res.read())
     
-    # result = res.read()
+    result = res.read()
 
-    # dataSet = result.split("\t")
+    dataSet = result.split("\t")
     
-    # if dataSet[1]:
-    #    data = { "result": dataSet[0],
-    #             "hits":   json.loads(dataSet[1]) }
-    #             # "totalHits": dataSet[2],
-    #             # "showHits": dataSet[3]}
-    # else:
-    #    data = { "result": dataSet[0],
-    #             "hits": "",
-    #             "totalHits": 0,
-    #             "showHits": 0}
+    if dataSet[1]:
+        data = { "result": dataSet[0],
+                 "hits":   json.loads(dataSet[1]) }
+                 # "totalHits": dataSet[2],
+                 # "showHits": dataSet[3]}
+    else:
+        data = { "result": dataSet[0],
+                 "hits": "",
+                 "totalHits": 0,
+                 "showHits": 0}
 
-    # return data
+    return data
 
 def _construct_patmatch_parameters(p):
 
