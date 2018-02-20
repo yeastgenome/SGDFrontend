@@ -221,11 +221,11 @@ var SearchForm = React.createClass({
 
 	        return(<div>
 		      <div dangerouslySetInnerHTML={{ __html: descText}} />
-		      <p>Maximum hits:</p>
+		      <br>Maximum hits:</br>
 		      { maximumHitsNode }
-		      <p>If DNA, Strand:</p>
+		      <br>If DNA, Strand:</br>
                       { strandNode }
-		      <p>Mismatch:</p>
+		      <br>Mismatch:</br>
                       { mismatchNode }
                       { mismatchTypeNode }
 		</div>);
@@ -236,7 +236,7 @@ var SearchForm = React.createClass({
 
 		var hits = ['25', '50', '100', '200', '500', '1000', "no limit"];
 		var _elements = this._getDropdownList(hits, "100");
-                return <p><select name='max_hits' ref='max_hits' onChange={this._onChange}>{_elements}</select></p>;
+                return <select name='max_hits' ref='max_hits' onChange={this._onChange}>{_elements}</select>;
 	
 	},
 
@@ -244,7 +244,7 @@ var SearchForm = React.createClass({
 
                	var strands = ['Both strands', 'Strand in dataset', 'Reverse complement of strand in dataset'];
                 var _elements = this._getDropdownList(strands, "Both strands");
-                return <p><select name='strand' ref='strand' onChange={this._onChange}>{_elements}</select></p>;
+                return <select name='strand' ref='strand' onChange={this._onChange}>{_elements}</select>;
 			
 	},
 
@@ -252,7 +252,7 @@ var SearchForm = React.createClass({
 	
 		var mismatch = ['0', '1', '2', '3'];
                 var _elements = this._getDropdownList(mismatch, "0");
-                return <p><select name='mismatch' ref='mismatch' onChange={this._onChange}>{_elements}</select></p>;
+                return <select name='mismatch' ref='mismatch' onChange={this._onChange}>{_elements}</select>;
 
 	},	
 
