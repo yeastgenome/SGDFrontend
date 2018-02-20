@@ -19,13 +19,7 @@ module.exports = {
 		rows.push(["Peptide Searches", "B", "D or N", <span><a href='/nph-patmatch?pattern=FLGB'>FLGB</a></span>]);
 	        rows.push(["Peptide Searches", "Z", "E or Q", <span><a href='/nph-patmatch?pattern=GLFGZ'>GLFGZ</a></span>]);
 
-
-
-/*		rows.push(["Peptide Searches", "X or .", "Any amino acid", <span><a href="/nph-patmatch?pattern=DXXXDN..RQS">DXXXDN..RQS</a><span>]); */
-
-
-
-
+		rows.push(["Peptide Searches", "X or .", "Any amino acid", <span><a href='/nph-patmatch?pattern=DXXXDNR..QS'>DXXXDNR..QS</a></span>]);
 
 		rows.push(["Nucleotide Searches", "ACTGU", "Exact match", <span><a href='/nph-patmatch?seqtype=nuc&pattern=ACGGCGTA'>ACGGCGTA</a></span>]);
 		rows.push(["Nucleotide Searches", "R", "Any purine base (AG)", <span><a href='/nph-patmatch?seqtype=nuc&pattern=AATTTGGRGGR'>AATTTGGRGGR</a></span>]);
@@ -44,16 +38,7 @@ module.exports = {
 		rows.push(["All Searches", "[^]", "An excluded subset of elements", <span><a href='/nph-patmatch?seqtype=pep&pattern=NDBB...[VILM]Z[DE]...[^PG]'>NDBB...[VILM]Z[DE]...[^PG]</a></span>]);
 		rows.push(["All Searches", "()", "Specifies a sub-pattern", <span><a href={ "/nph-patmatch?seqtype=pep&pattern=(YDXXX){2,}" }>(YDXXX){'{2,}'}</a></span>]); 
 
-
-/*		var meaning = <span>{ "{m} = exactly m times <br> {m,} = at least m times <br> {m,n} = between m and n times" } </span>; */
-
-		var meaning = <span>{` {m} = exactly m times <br\> 
-		    	      	       {m,} = at least m times <br\>
-				       {m,n} = between m and n times 
-				     `}</span>;	
-		    	      		 
-
-		rows.push(["All Searches", "{m,n}", meaning, <span><a href={ '/nph-patmatch?seqtype=pep&pattern=L{3,5}X{5}DGO' }>{'L{3,5}X{5}DGO'}</a></span>]);
+		rows.push(["All Searches", "{m,n}", "{m} = exactly m times; {m,} = at least m times; {m,n} = between m and n times", <span><a href={ '/nph-patmatch?seqtype=pep&pattern=L{3,5}X{5}DGO' }>{'L{3,5}X{5}DGO'}</a></span>]);
 
 
 		rows.push(["All Searches", "<", "Constrains pattern to N-terminus or 5' end", <span><a href={ '/nph-patmatch?seqtype=pep&pattern=<MNTD' }>{ '<MNTD' }</a>{ ' (pep)' }<a href={ '/nph-patmatch?seqtype=nuc&pattern=<ATGX{6,10}RTTRTT' }>{ '<ATGX{6,10}RTTRTT' }</a>{ ' (nuc)' }</span>]);
