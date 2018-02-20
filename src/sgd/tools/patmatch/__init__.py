@@ -18,7 +18,7 @@ def do_patmatch(request):
 
 def _run_patmatch(p):
 
-    # paramData = _construct_patmatch_parameters(p)
+    paramData = _construct_patmatch_parameters(p)
 
     url = patmatch_url + "cgi-bin/aws-patmatch" 
    
@@ -48,10 +48,10 @@ def _run_patmatch(p):
 
 def _construct_patmatch_parameters(p):
 
-    insertion = 1  if p.get('insertion') else 0 
+    insertion = 1 if p.get('insertion') else 0 
     deletion = 1 if p.get('deletion') else 0
     substitution = 1  if p.get('substitution') else 0
-    
+    strain = p.get('strain')
     if strand.startswith('Both'):
         strand = 'both'
     elif strand.startswith('Reverse'):
