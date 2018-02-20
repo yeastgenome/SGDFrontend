@@ -222,6 +222,8 @@ var SearchForm = React.createClass({
 		// <DataTable data={_tableData} />
 		return(<div><p><a name='syntax'><h3>Supported Pattern Syntax and Examples:</h3></a></p>
 		      {examples}
+		      <p><h3> Limits on the use of the Mismatch option</h3></p>
+		      <p>At this time, the mismatch option (Insertions, Deletions, or Substitutions) can only be used in combination with exact patterns that do not contain ambiguous peptide or nucleotide characters (e.g. X for any amino acid or R for any purine) or regular expressions (e.g. L{3,5}X{5}DGO). In addition, the mismatch=3 option can only be used for query strings of at least 7 in length.</p>
 		</div>);
 
         },
