@@ -22,14 +22,16 @@ def _run_patmatch(p):
 
     # url = patmatch_url + "cgi-bin/aws-patmatch" 
    
-    # url = "http://patmatch.dev.yeastgenome.org/cgi-bin/aws-patmatch"
+    url = "http://patmatch.dev.yeastgenome.org/cgi-bin/aws-patmatch"
     
-    url = patmatch_url + "patmatch/patmatch.json"
+    # url = patmatch_url + "patmatch/patmatch.json"
 
     # req = Request(url=url, data=paramData)
     req = Request(url)
     res = urlopen(req)
-    data = json.loads(res.read())
+    return res.read()
+
+    # data = json.loads(res.read())
     
     # result = res.read()
 
@@ -46,7 +48,7 @@ def _run_patmatch(p):
     #             "totalHits": 0,
     #             "showHits": 0}
 
-    return data
+    # return data
 
 def _construct_patmatch_parameters(p):
 
