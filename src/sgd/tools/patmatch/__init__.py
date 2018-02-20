@@ -13,8 +13,8 @@ def do_patmatch(request):
         data = _get_config(p.get('conf'))
         return Response(body=json.dumps(data), content_type='application/json')
         
-    data = _run_patmatch(p)
-
+    # data = _run_patmatch(p)
+    data = _get_config()
     return Response(body=json.dumps(data), content_type='application/json')
 
 def _run_patmatch(p):
@@ -71,7 +71,7 @@ def _construct_patmatch_parameters(p):
     return paramData
 
 
-def _get_config(conf):
+def _get_config():
 
     url = patmatch_url + "patmatch/patmatch.json"
     req = Request(url)
