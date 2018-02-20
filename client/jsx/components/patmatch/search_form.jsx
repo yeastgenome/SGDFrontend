@@ -326,12 +326,22 @@ var SearchForm = React.createClass({
 
 	_onSubmit: function (e) {
 
-		var strain = this.refs.genome.value.trim();
-		var seqtype = this.refs.seqtype.value.trim();
-		var pattern = this.refs.pattern.value.trim();
-		var dataset = this.refs.dataset.value.trim();
+		// var strain = this.refs.genome.value.trim();
+		// var seqtype = this.refs.seqtype.value.trim();
+		// var pattern = this.refs.pattern.value.trim();
+		// var dataset = this.refs.dataset.value.trim();
 		// more here		
-                		
+                	
+		var strain = this.state.genome;
+		var seqtype = this.state.seqtype;
+		var pattern = this.refs.pattern.value.trim();
+		var dataset =  this.refs.dataset.value.trim();
+		
+		console.log("strain="+strain);
+		console.log("seqtype="+seqtype);
+		console.log("pattern="+pattern);
+		console.log("dataset="+dataset);
+
 		if (pattern) {
 		    window.localStorage.clear();
 		    window.localStorage.setItem("seqtype", seqtype);
