@@ -267,7 +267,7 @@ var SearchForm = React.createClass({
 
 		var _init_active_keys = ['insertion', 'deletion', 'substitution'];
 
-	        return (<div><p><a href='#mismatch_note'>(more information on use of the Mismatch option)</a></p>
+	        return (<div><a href='#mismatch_note'>(more information on use of the Mismatch option)</a>
 		       <Checklist elements={_elements} initialActiveElementKeys={_init_active_keys} />
 		       </div>);
 
