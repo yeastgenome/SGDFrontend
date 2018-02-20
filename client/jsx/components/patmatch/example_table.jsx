@@ -44,15 +44,15 @@ module.exports = {
 		rows.push(["All Searches", ">", "Constrains pattern to C-terminus or 3' end", "<a href='/nph-patmatch?seqtype=pep&pattern=sjgo>'>sjgo></a> (pep)<br><a href='/nph-patmatch?seqtype=nuc&pattern=yattrtga>'>yattrtga></a> (nuc)"]);
 		 
 
-		var example_data = ['a', 'b', 'c'];
-	        var testRows = _.map(example_data, e=> {
-		    return <span><a href='/nph-patmatch?pattern={e}'>{e}</a></span>; 
-		});
+		// var example_data = ['a', 'b', 'c'];
+	        // var testRows = _.map(example_data, e=> {
+		//    return <span><a href='/nph-patmatch?pattern={e}'>{e}</a></span>; 
+		// });
 		
 
 		var tableData = {
                         headers: [["Examples"]],
-                        rows: testRows
+                        rows: rows
                 };
 
  		return <DataTable data={tableData} />;
