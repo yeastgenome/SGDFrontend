@@ -1,6 +1,11 @@
+"use strict";
+
 var React = require("react");
-var DataTable = require("../widgets/data_table.jsx");
 var $ = require("jquery");
+var _ = require("underscore");
+
+var DataTable = require("../widgets/data_table.jsx");
+
 
 module.exports = {
 
@@ -10,8 +15,10 @@ module.exports = {
 
 		var rows = [];
 		
-		var cell = "<a href=/nph-patmatch?pattern=ELVIS>ELVIS</a>";
+		var cell = <span><a href='/nph-patmatch?pattern=ELVIS'>ELVIS</a></span>;
+
 		rows.push(["Peptide Searches", "IFVLWMAGCYPTSHEDQNKR", "Exact match", cell]);
+
 		rows.push(["Peptide Searches", "J", "Any hydrophobic residue (IFVLWMAGCY)", "<a href=/nph-patmatch?pattern=AAAAAAJJ>AAAAAAJJ</a>"]);
 		rows.push(["Peptide Searches", "O", "Any hydrophilic residue (TSHEDQNKR)", "<a href=/nph-patmatch?pattern=GLFGO>GLFGO</a>"]);
 		rows.push(["Peptide Searches", "B", "D or N", "<a href=/nph-patmatch?pattern=FLGB>FLGB</a>"]);
@@ -36,12 +43,19 @@ module.exports = {
 		rows.push(["All Searches", "<", "Constrains pattern to N-terminus or 5' end", "<a href='/nph-patmatch?seqtype=pep&pattern=<MNTD'><MNTD</a> (pep)<br><a href=/nph-patmatch?seqtype=nuc&pattern=<ATGX{6,10}RTTRTT><ATGX{6,10}RTTRTT (nuc)</a>"]);
 		rows.push(["All Searches", ">", "Constrains pattern to C-terminus or 3' end", "<a href='/nph-patmatch?seqtype=pep&pattern=sjgo>'>sjgo></a> (pep)<br><a href='/nph-patmatch?seqtype=nuc&pattern=yattrtga>'>yattrtga></a> (nuc)"]);
 		 
+
+		var example_data = ['a', 'b', 'c'];
+	        var testRows = _.map(example_data, e=> {
+		    return <span><a href='/nph-patmatch?pattern={e}'>{e}</a></span>; 
+		});
+		
+
 		var tableData = {
-                        headers: [["Search type", "Character", "Meaning", "Examples"]],
-                        rows: rows
+                        headers: [["Examples"]],
+                        rows: testRows
                 };
 
- 		return<DataTable data={tableData} />;
+ 		return <DataTable data={tableData} />;
 		
 	}
 };
