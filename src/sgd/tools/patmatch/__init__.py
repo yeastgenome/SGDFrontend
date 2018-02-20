@@ -66,7 +66,7 @@ def _construct_patmatch_parameters(p):
                                    'strain': p.get('strain'),
                                    'seqtype': p.get('seqtype'),
                                    'dataset': p.get('dataset'),
-                                   'maxhits': p.get('maxhits'),
+                                   'maxhits': p.get('max_hits'),
                                    'strand': strand,
                                    'mismatch': p.get('mismatch'),
                                    'insertion': insertion,
