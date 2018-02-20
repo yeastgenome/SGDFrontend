@@ -369,9 +369,9 @@ var SearchForm = React.createClass({
 			type: 'POST',
 
 			// add more to data: eg, insertion, deletion, ....
-			data: { 'seqtype':     seqtype,
-			        'pattern':     pattern,
-				'dataset':     dataset
+			data: { 'seqtype':     "dna",
+			        'pattern':     "ACCTG",
+				'dataset':     "orf_dna.seq"
                         },
 			success: function(data) {
 			      this.setState({isComplete: true,
