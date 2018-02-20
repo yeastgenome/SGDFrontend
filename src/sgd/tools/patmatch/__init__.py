@@ -18,14 +18,10 @@ def do_patmatch(request):
 
 def _run_patmatch(p):
 
-    # paramData = _construct_patmatch_parameters(p)
+    paramData = _construct_patmatch_parameters(p)
 
-    # url = patmatch_url + "cgi-bin/aws-patmatch" 
+    url = patmatch_url + "cgi-bin/aws-patmatch" 
    
-    url = "http://patmatch.dev.yeastgenome.org/cgi-bin/aws-patmatch"
-    
-    # url = patmatch_url + "patmatch/patmatch.json"
-
     # req = Request(url=url, data=paramData)
     req = Request(url)
     res = urlopen(req)
