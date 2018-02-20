@@ -23,10 +23,8 @@ def _run_patmatch(p):
 
     paramData = _construct_patmatch_parameters(p)
 
-    # url = patmatch_url + "cgi-bin/aws-patmatch" 
-    # req = Request(url=url, data=paramData)
-    url = patmatch_url + "patmatch/patmatch.json"
-    req = Request(url=url)
+    url = patmatch_url + "cgi-bin/aws-patmatch" 
+    req = Request(url=url, data=paramData)
     res = urlopen(req)
     result = res.read()
 
@@ -36,9 +34,9 @@ def _run_patmatch(p):
     
     if dataSet[1]:
         data = { "result": dataSet[0],
-                 "hits":   json.loads(dataSet[1]),
-                 "totalHits": dataSet[2],
-                 "showHits": dataSet[3]}
+                 "hits":   json.loads(dataSet[1]) }
+                 # "totalHits": dataSet[2],
+                 # "showHits": dataSet[3]}
     else:
         data = { "result": dataSet[0],
                  "hits": "",
