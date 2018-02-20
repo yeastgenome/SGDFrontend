@@ -25,7 +25,7 @@ var Checklist = React.createClass({
 	render: function () {
 		var _currentActive = this.state.activeElementKeys;
 		var inputs = _.map(this.props.elements, (d, i) => {
-			var _isActive = _currentActive.indexOf(d.key) >= 1;
+			var _isActive = _currentActive.indexOf(d.key) >= 0;
 			var _onClick = e => {
 				// e.preventDefault();
 				e.nativeEvent.stopImmediatePropagation();
