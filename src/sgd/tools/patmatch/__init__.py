@@ -22,8 +22,8 @@ def _run_patmatch(p):
 
     url = patmatch_url + "cgi-bin/aws-patmatch" 
    
-    # req = Request(url=url, data=paramData)
-    req = Request(url)
+    req = Request(url=url, data=paramData)
+    # req = Request(url)
     res = urlopen(req)
     return res.read()
 
