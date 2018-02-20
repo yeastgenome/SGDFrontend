@@ -21,9 +21,10 @@ var SearchForm = React.createClass({
 		var param = Params.getParams();
 		
 		var submitted = null;
-		if (param['pattern']) {
-		     submitted = 1;
-		}
+		
+		# if (param['pattern']) {
+		#     submitted = 1;
+		# }
 
 		this._getConfigData();
 
@@ -334,19 +335,19 @@ var SearchForm = React.createClass({
                 	
 		var strain = this.state.genome;
 		var seqtype = this.state.seqtype;
-		var pattern = this.refs.pattern.value.trim();
-		var dataset =  this.refs.dataset.value.trim();
+		// var pattern = this.refs.pattern.value.trim();
+		// var dataset =  this.refs.dataset.value.trim();
 		
 		console.log("strain="+strain);
 		console.log("seqtype="+seqtype);
-		console.log("pattern="+pattern);
-		console.log("dataset="+dataset);
+		console.log("pattern="+this.refs.pattern);
+		console.log("dataset="+this.refs.dataset);
 
 		if (pattern) {
 		    window.localStorage.clear();
 		    window.localStorage.setItem("seqtype", seqtype);
-		    window.localStorage.setItem("pattern", pattern);
-		    window.localStorage.setItem("dataset", dataset);
+		    // window.localStorage.setItem("pattern", pattern);
+		    // window.localStorage.setItem("dataset", dataset);
 		    // more here
 		}
 		else {
@@ -358,9 +359,9 @@ var SearchForm = React.createClass({
 
 	_doPatmatch: function() {
 
-		var seqtype = window.localStorage.getItem("seqtype");
-		var pattern = window.localStorage.getItem("pattern");
-		var dataset = window.localStorage.getItem("dataset");
+		// var seqtype = window.localStorage.getItem("seqtype");
+		// var pattern = window.localStorage.getItem("pattern");
+		// var dataset = window.localStorage.getItem("dataset");
 		// more here
 
 		$.ajax({
