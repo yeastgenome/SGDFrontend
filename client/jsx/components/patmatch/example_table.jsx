@@ -1,3 +1,4 @@
+var React = require("react");
 var DataTable = require("../widgets/data_table.jsx");
 
 module.exports = {
