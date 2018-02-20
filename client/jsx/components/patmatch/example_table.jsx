@@ -46,8 +46,8 @@ module.exports = {
 
 
 /*		var meaning = <span>{ "{m} = exactly m times <br> {m,} = at least m times <br> {m,n} = between m and n times" } </span>; */
-		var meaning = <span>{` {m} = exactly m times \n 
-		    	      	       {m,} = at least m times \n
+		var meaning = <span>{` {m} = exactly m times <br>
+		    	      	       {m,} = at least m times <br>
 				       {m,n} = between m and n times 
 				     `}</span>;	
 		    	      		 
