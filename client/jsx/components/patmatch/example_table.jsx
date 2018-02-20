@@ -17,7 +17,7 @@ module.exports = {
 		
 		var cell = <span><a href='/nph-patmatch?pattern=ELVIS'>ELVIS</a></span>;
 
-		rows.push(["Peptide Searches", "IFVLWMAGCYPTSHEDQNKR", "Exact match", cell]);
+		rows.push(["Peptide Searches", "IFVLWMAGCYPTSHEDQNKR", "Exact match", <span><a href='/nph-patmatch?pattern=ELVIS'>ELVIS</a></span>]);
 
 		rows.push(["Peptide Searches", "J", "Any hydrophobic residue (IFVLWMAGCY)", "<a href=/nph-patmatch?pattern=AAAAAAJJ>AAAAAAJJ</a>"]);
 		rows.push(["Peptide Searches", "O", "Any hydrophilic residue (TSHEDQNKR)", "<a href=/nph-patmatch?pattern=GLFGO>GLFGO</a>"]);
@@ -51,7 +51,7 @@ module.exports = {
 		
 
 		var tableData = {
-                        headers: [["Examples"]],
+                        headers: [["Search type", "Character", "Meaning", "Examples"]],
                         rows: rows
                 };
 
