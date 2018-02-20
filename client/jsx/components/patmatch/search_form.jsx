@@ -32,7 +32,7 @@ var SearchForm = React.createClass({
 			userError: null,
 			configData: {},
 			genome: 'S288C',
-			seqtype: 'peptide',
+			seqtype: 'protein',
 			dataset: null,
 			pattern: null,
 			maxHits: null,
@@ -174,14 +174,14 @@ var SearchForm = React.createClass({
 
 	        console.log(this.state.genome);
 		console.log(this.state.seqtype);
-
+		
 	        var _defaultGenome = this.state.genome;
 		if (!this.state.genome) {
 		   _defaultGenome = 'S288C';
 		}
 		var _defaultType = this.state.seqtype;
 		if (!this.state.seqtype) {
-		    _defaultType = "peptide";
+		    _defaultType = "protein";
 		}
 	 			
 		var _elements = []; 
