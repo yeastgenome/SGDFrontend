@@ -20,14 +20,13 @@ var SearchForm = React.createClass({
 	        
 		var param = Params.getParams();
 		
-		var submitted = '';
+		var submitted = null;
 		if (param['pattern']) {
 		     submitted = 1;
 		}
 
 		this._getConfigData();
 
-		// submitted: submitted,
 		return {
 			isComplete: false,
 			isPending: false,
@@ -45,7 +44,8 @@ var SearchForm = React.createClass({
 			substitution: null,
 			resultData: {},
 			param: param,
-			didPatmatch: 0
+			didPatmatch: 0,
+			submitted: submitted
 		};
 	},
 
