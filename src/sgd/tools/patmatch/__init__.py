@@ -18,7 +18,7 @@ def do_patmatch(request):
 
 def _run_patmatch(p):
 
-    paramData = _construct_patmatch_parameters(p)
+    # paramData = _construct_patmatch_parameters(p)
 
     url = patmatch_url + "cgi-bin/aws-patmatch" 
    
