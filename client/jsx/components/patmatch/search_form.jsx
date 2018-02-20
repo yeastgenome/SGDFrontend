@@ -171,26 +171,14 @@ var SearchForm = React.createClass({
         },
 
 	_getDatasetNode: function(data) {
-
-	        console.log(this.state.genome);
-		console.log(this.state.seqtype);
-		
-	        var _defaultGenome = this.state.genome;
-		if (!this.state.genome) {
-		   _defaultGenome = 'S288C';
-		}
-		var _defaultType = this.state.seqtype;
-		if (!this.state.seqtype) {
-		    _defaultType = "protein";
-		}
 	 			
 		var _elements = []; 
 		for (var key in data.dataset) {
-		     if (key == _defaultGenome) {
+		     if (key == this.state.genome) {
 		       	    var datasets = data.dataset[key];
 			    for (var i = 0; i < datasets.length; i++) { 
     			    	var d = datasets[i];
-				if (d.seqtype != _defaultType) {
+				if (d.seqtype != this.state.seqtype) {
 				     continue;
 				}
 				// console.log(d.label);
