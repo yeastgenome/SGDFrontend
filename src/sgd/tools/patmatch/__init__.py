@@ -49,9 +49,9 @@ def _run_patmatch(p):
 
 def _construct_patmatch_parameters(p):
 
-    insertion = p.get('insertion') if p.get('insertion') else 0 
-    deletion = p.get('deletion') if p.get('deletion') else 0
-    substitution = p.get('substitution') if p.get('substitution') else 0
+    insertion = 1  if p.get('insertion') else 0 
+    deletion = 1 if p.get('deletion') else 0
+    substitution = 1  if p.get('substitution') else 0
     
     if strand.startswith('Both'):
         strand = 'both'
