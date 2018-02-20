@@ -258,9 +258,12 @@ var SearchForm = React.createClass({
 
 	_getMismatchTypeNode: function() {
 
-	        var _elements = { 'insertion': '1',
-		    	          'deletion': '1',
-				  'substitution': 1 };
+	        var _elements = [ { 'key': 'insertion',
+		    	      	    'name': 'Insertions' },
+				  { 'key': 'deletion',
+                                    'name': 'Deletions' },
+				  { 'key': 'substitution',
+                                    'name': 'Substitutions' } ]
 
 	        return (<div><p><a href='#mismatch_note'>(more information on use of the Mismatch option)</a></p>
 		       <Checklist elements={_elements} />
