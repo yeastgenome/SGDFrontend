@@ -10,7 +10,7 @@ def do_patmatch(request):
     p = dict(request.params)
 
     if p.get('conf'):
-        data = _get_config(p.get('conf'))
+        data = _get_config()
         return Response(body=json.dumps(data), content_type='application/json')
         
     data = _run_patmatch(p)
@@ -24,23 +24,7 @@ def _run_patmatch(p):
    
     req = Request(url=url, data=paramData)
     res = urlopen(req)
-    
-    result = res.read()
-
-    dataSet = result.split("\t")
-
-    #  json.loads(dataSet[1]) 
-    if dataSet[1]:
-        data = { "result": dataSet[0],
-                 "hits":   dataSet[1] }
-                 # "totalHits": dataSet[2],
-                 # "showHits": dataSet[3]}
-    else:
-        data = { "result": dataSet[0],
-                 "hits": "",
-                 "totalHits": 0,
-                 "showHits": 0}
-
+    data = json.loads(res.read())
     return data
 
 def _construct_patmatch_parameters(p):
