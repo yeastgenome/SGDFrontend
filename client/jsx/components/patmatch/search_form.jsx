@@ -379,8 +379,7 @@ var SearchForm = React.createClass({
                         },
 			success: function(data) {
 			      this.setState({isComplete: true,
-			                     resultData: data,
-			         	     filter: filter});
+			                     resultData: data});
 			}.bind(this),
 			error: function(xhr, status, err) {
 			      this.setState({isPending: true}); 
