@@ -75,15 +75,10 @@ var SearchForm = React.createClass({
 
 			}
 			var data = this.state.resultData;
-
-		       var _results = _.map(data, d => {
-                       	   return <p>{d.seqname} {d.beg} {d.end} {d.matchingPattern}</p>;
-                       });
-
-
-		       return (<div>{_results}</div>);
 			
-			
+			var _resultTable = this._getResultTable(data)
+
+		       	return (<div>{_resultTable}</div>);			
 
 		} 
 		else if (this.state.isPending) {
@@ -397,6 +392,16 @@ var SearchForm = React.createClass({
 
 	},
 
+	_getResultTable: function(data) {
+
+	        console.log("dataset="+dataset);
+					
+		var _results = _.map(data, d => {
+                           return <p>{d.seqname} {d.beg} {d.end} {d.matchingPattern}</p>;
+                });
+
+		return _results;
+        }
 });
 
 module.exports = SearchForm;
