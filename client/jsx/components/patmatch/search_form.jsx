@@ -369,13 +369,13 @@ var SearchForm = React.createClass({
 
 		$.ajax({
 			url: PATMATCH_URL,
-			data_type: 'json',
+			dataType: 'json',
 			type: 'POST',
 
 			// add more to data: eg, insertion, deletion, ....
-			data: { 'seqtype':     seqtype,
-			        'pattern':     pattern,
-				'dataset':     dataset
+			data: { 'seqtype':     'pep',
+			        'pattern':     'ELVIS',
+				'dataset':     'orf_pep'
                         },
 			success: function(data) {
 			      this.setState({isComplete: true,
