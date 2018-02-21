@@ -40,12 +40,15 @@ def _construct_patmatch_parameters(p):
     # else:
     #    strand = 'watson'
 
-    import urllib
+    seqtype = p.get('seqtype') if p.get('seqtype') is not None else 'pep'
+    dataset = p.get('dataset') if p.get('dataset') is not None else 'orf_pep'
     
+    import urllib
+
     paramData = urllib.urlencode({ 'pattern': p.get('pattern'),
                                    'strain': p.get('strain'),
-                                   'seqtype': p.get('seqtype'),
-                                   'dataset': p.get('dataset'),
+                                   'seqtype': seqtype,
+                                   'dataset': dataset,
                                    'maxhits': p.get('max_hits'),
                                    'strand': p.get('strand'),
                                    'mismatch': p.get('mismatch'),
