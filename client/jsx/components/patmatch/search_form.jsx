@@ -394,6 +394,7 @@ var SearchForm = React.createClass({
 
 	_getResultTable: function(data) {
 
+	        var dataset = window.localStorage.getItem("dataset");
 	        console.log("dataset="+dataset);
 					
 		var _results = _.map(data, d => {
