@@ -73,8 +73,8 @@ var SearchForm = React.createClass({
 			     return (<div dangerouslySetInnerHTML={{ __html: errorReport }} />);
 
 			}
-			data = this.state.resultData.result;
-			hits = this.state.resultData.hits;
+			var data = this.state.resultData.result;
+			var hits = this.state.resultData.hits;
 			return (<div dangerouslySetInnerHTML={{ __html: "DATA="+data+"<p><p>HITS"+hits}} />);
 
 		} 
@@ -378,13 +378,11 @@ var SearchForm = React.createClass({
 				'dataset':     dataset
                         },
 			success: function(data) {
-			      alert("Success!!")
 			      this.setState({isComplete: true,
 			                     resultData: data,
 			         	     filter: filter});
 			}.bind(this),
 			error: function(xhr, status, err) {
-			      alert("ERROR!!")
 			      this.setState({isPending: true}); 
 			}.bind(this) 
 		});
