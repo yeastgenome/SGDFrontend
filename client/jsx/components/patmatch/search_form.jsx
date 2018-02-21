@@ -12,7 +12,8 @@ var ExampleTable = require("./example_table.jsx");
 
 var DataTable = require("../widgets/data_table.jsx");
 
-var PATMATCH_URL = "/run_patmatch";
+var PATMATCH_CONFIG_URL = "http://patmatch.dev.yeastgenome.org/patmatch/patmatch.json";
+var PATMATCH_URL = "http://patmatch.dev.yeastgenome.org/cgi-bin/aws-patmatch";
 
 var SearchForm = React.createClass({
 
@@ -312,7 +313,7 @@ var SearchForm = React.createClass({
         },
 	
 	_getConfigData: function() {
-                var jsonUrl = PATMATCH_URL + "?conf=patmatch.json";
+                var jsonUrl = PATMATCH_CONFIG_URL;
                 $.ajax({
     		      url: jsonUrl,
                       dataType: 'json',
