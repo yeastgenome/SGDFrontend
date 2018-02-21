@@ -75,7 +75,15 @@ var SearchForm = React.createClass({
 
 			}
 			var data = this.state.resultData;
-			return (<div dangerouslySetInnerHTML={{ __html: data }} />);
+
+		       var _results = _.map(data, d => {
+                       	   return <p>{d.seqname} {d.beg} {d.end} {d.matchingPattern}</p>;
+                       });
+
+
+		       return (<div>{_results}</div>);
+			
+			
 
 		} 
 		else if (this.state.isPending) {
