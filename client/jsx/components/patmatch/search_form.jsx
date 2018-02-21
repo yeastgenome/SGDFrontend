@@ -73,9 +73,8 @@ var SearchForm = React.createClass({
 			     return (<div dangerouslySetInnerHTML={{ __html: errorReport }} />);
 
 			}
-			var data = this.state.resultData.result;
-			var hits = this.state.resultData.hits;
-			return (<div dangerouslySetInnerHTML={{ __html: "DATA="+data+"<p><p>HITS"+hits}} />);
+			var data = this.state.resultData;
+			return (<div dangerouslySetInnerHTML={{ __html: data }} />);
 
 		} 
 		else if (this.state.isPending) {
