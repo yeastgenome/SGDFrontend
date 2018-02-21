@@ -22,9 +22,9 @@ var SearchForm = React.createClass({
 		
 		var submitted = null;
 		
-		# if (param['pattern']) {
-		#     submitted = 1;
-		# }
+		if (param['pattern']) {
+		     submitted = 1;
+		}
 
 		this._getConfigData();
 
@@ -335,19 +335,20 @@ var SearchForm = React.createClass({
                 	
 		var strain = this.state.genome;
 		var seqtype = this.state.seqtype;
-		// var pattern = this.refs.pattern.value.trim();
-		// var dataset =  this.refs.dataset.value.trim();
-		
+		var pattern = this.refs.pattern;
+		var dataset =  this.refs.dataset;
+				
 		console.log("strain="+strain);
 		console.log("seqtype="+seqtype);
-		console.log("pattern="+this.refs.pattern);
-		console.log("dataset="+this.refs.dataset);
+		console.log("pattern="+pattern);
+		console.log("dataset="+dataset);
 
 		if (pattern) {
 		    window.localStorage.clear();
+		    window.localStorage.setItem("strain",  strain);
 		    window.localStorage.setItem("seqtype", seqtype);
-		    // window.localStorage.setItem("pattern", pattern);
-		    // window.localStorage.setItem("dataset", dataset);
+		    window.localStorage.setItem("pattern", pattern);
+		    window.localStorage.setItem("dataset", dataset);
 		    // more here
 		}
 		else {
@@ -359,9 +360,10 @@ var SearchForm = React.createClass({
 
 	_doPatmatch: function() {
 
-		// var seqtype = window.localStorage.getItem("seqtype");
-		// var pattern = window.localStorage.getItem("pattern");
-		// var dataset = window.localStorage.getItem("dataset");
+		var strain  = window.localStorage.getItem("strain");
+		var seqtype = window.localStorage.getItem("seqtype");
+		var pattern = window.localStorage.getItem("pattern");
+		var dataset = window.localStorage.getItem("dataset");
 		// more here
 
 		$.ajax({
@@ -370,16 +372,18 @@ var SearchForm = React.createClass({
 			type: 'POST',
 
 			// add more to data: eg, insertion, deletion, ....
-			data: { 'seqtype':     "dna",
-			        'pattern':     "ACCTG",
-				'dataset':     "orf_dna.seq"
+			data: { 'seqtype':     seqtype,
+			        'pattern':     pattern,
+				'dataset':     dataset
                         },
 			success: function(data) {
+			      alert("Success!!")
 			      this.setState({isComplete: true,
 			                     resultData: data,
 			         	     filter: filter});
 			}.bind(this),
 			error: function(xhr, status, err) {
+			      alert("ERROR!!")
 			      this.setState({isPending: true}); 
 			}.bind(this) 
 		});
