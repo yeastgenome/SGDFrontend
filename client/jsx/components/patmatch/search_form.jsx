@@ -396,13 +396,6 @@ var SearchForm = React.createClass({
 
 	        console.log("dataset="+dataset);
 
-		if (seqtype == 'pep' || seqtype == 'peptide') {
-		     seqtype = 'protein';
-		}
-		else {
-		     seqtype = 'dna';
-		}
-
 		var configData = this.state.configData;
 		var seqSearched = 0;
 		var datasetDisplayName = "";		
@@ -410,7 +403,6 @@ var SearchForm = React.createClass({
                      var datasets = configData.dataset[key];
                      for (var i = 0; i < datasets.length; i++) {
                          var d = datasets[i];
-			 console.log("HI: "+d.dataset_file_name+" seqcount="+d.seqcount + " label="+d.label);
                          if (d.dataset_file_name == dataset) {
 			    seqSearched = d.seqcount;
 			    datasetDisplayName = d.label.split(" = ")[1];
@@ -430,7 +422,7 @@ var SearchForm = React.createClass({
 		console.log("Dataset =" + datasetDisplayName);
 						
 		var _results = _.map(data, d => {
-                           return <p>{d.seqname} {d.beg} {d.end} {d.matchingPattern}</p>;
+                           return <p>{d.seqname} {d.beg} {d.end} {d.matchingPattern} {d.gene_name} {d.sgdid} {d.desc}</p>;
                 });
 
 		return _results;
