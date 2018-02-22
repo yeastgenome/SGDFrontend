@@ -751,6 +751,33 @@ def primer3(request):
         tax_id = DBSession.query(Straindbentity.taxonomy_id).filter(Straindbentity.strain_type =='Reference').one_or_none()
         dna = DBSession.query(Dnasequenceannotation.residues).filter(and_(Dnasequenceannotation.taxonomy_id == tax_id, Dnasequenceannotation.dbentity_id == locus.dbentity_id, Dnasequenceannotation.dna_type =='GENOMIC')).one_or_none()[0]
         sequence = str(dna)
+    if 'maximum_tm' in p_keys:
+        maximum_tm = params.get('maximum_tm')
+    if 'minimum_tm' in p_keys:
+        minimum_tm = params.get('minimum_tm')
+    if 'optimum_tm' in p_keys:
+        optimum_tm = params.get('optimum_tm')
+    if 'maximum_gc' in p_keys:
+        maximum_gc = params.get('maximum_gc')
+    if 'minimum_gc' in p_keys:
+        minimum_gc = params.get('minimum_gc')
+    if 'optimum_gc' in p_keys:
+        optimum_gc = params.get('optimum_gc')
+    if 'maximum_length' in p_keys:
+        maximum_length = params.get('maximum_length')
+    if 'minimum_length' in p_keys:
+        minimum_length = params.get('minimum_length')
+    if 'optimum_primer_length' in p_keys:
+        optimum_primer_length = params.get('optimum_primer_length')
+    if 'pair_end_anneal' in p_keys:
+        pair_end_anneal = params.get('pair_end_anneal')
+    if 'pair_anneal' in p_keys:
+        pair_anneal = params.get('pair_anneal')
+    if 'self_end_anneal' in p_keys:
+        self_end_anneal = params.get('self_end_anneal')
+    if 'self_anneal' in p_keys:
+        self_anneal = params.get('self_anneal')
+
     else:
         return HTTPBadRequest('No sequence provided')
 
@@ -760,25 +787,19 @@ def primer3(request):
             'SEQUENCE_TEMPLATE': sequence
         },
         {
-        'PRIMER_OPT_SIZE': 20,
-        'PRIMER_PICK_INTERNAL_OLIGO': 1,
-        'PRIMER_INTERNAL_MAX_SELF_END': 8,
-        'PRIMER_MIN_SIZE': 18,
-        'PRIMER_MAX_SIZE': 25,
-        'PRIMER_OPT_TM': 60.0,
-        'PRIMER_MIN_TM': 57.0,
-        'PRIMER_MAX_TM': 63.0,
-        'PRIMER_MIN_GC': 20.0,
-        'PRIMER_MAX_GC': 80.0,
-        'PRIMER_MAX_POLY_X': 100,
-        'PRIMER_INTERNAL_MAX_POLY_X': 100,
-        'PRIMER_SALT_MONOVALENT': 50.0,
-        'PRIMER_DNA_CONC': 50.0,
-        'PRIMER_MAX_NS_ACCEPTED': 0,
-        'PRIMER_MAX_SELF_ANY': 12,
-        'PRIMER_MAX_SELF_END': 8,
-        'PRIMER_PAIR_MAX_COMPL_ANY': 12,
-        'PRIMER_PAIR_MAX_COMPL_END': 8,
+        'PRIMER_OPT_SIZE': optimum_primer_length,
+        'PRIMER_MIN_SIZE': minimum_length,
+        'PRIMER_MAX_SIZE': maximum_length,
+        'PRIMER_OPT_TM': optimum_tm,
+        'PRIMER_MIN_TM': minimum_tm,
+        'PRIMER_MAX_TM': maximum_tm,
+        'PRIMER_MIN_GC': minimum_gc,
+        'PRIMER_MAX_GC': maximum_gc,
+        'PRIMER_OPT_GC': optimum_gc,
+        'PRIMER_MAX_SELF_ANY': self_anneal,
+        'PRIMER_MAX_SELF_END': self_end_anneal,
+        'PRIMER_PAIR_MAX_COMPL_ANY': pair_anneal,
+        'PRIMER_PAIR_MAX_COMPL_END': pair_end_anneal,
         'PRIMER_PRODUCT_SIZE_RANGE': [[75, 100], [100, 125], [125, 150],
                                       [150, 175], [175, 200], [200, 225]],
         })
