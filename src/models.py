@@ -2067,8 +2067,9 @@ class Referencedbentity(Dbentity):
             if existing:
                 curator_session.delete(existing)
                 message = 'updated'
+            diplay_name = self.display_name + ' PMID: ' + str(self.pmid)
             new_curate_activity = CuratorActivity(
-                display_name = self.display_name,
+                display_name = diplay_name,
                 obj_url = self.obj_url,
                 activity_category = 'reference',
                 dbentity_id = self.dbentity_id,
