@@ -424,9 +424,10 @@ var SearchForm = React.createClass({
                          }
                      }
                 }
-		
+
+/*		
 		var _rows = [];
-		// _rows.push(["Peptide Searches", "IFVLWMAGCYPTSHEDQNKR", "Exact match", <span><a href='/nph-patmatch?pattern=ELVIS'>ELVIS</a></span>]););
+
 		_rows.push(['Total Hits', totalHits]);
 		_rows.push(['Number of Unique Sequence Extries Hit', uniqueHits]);
 		_rows.push(['Sequences Searched', seqSearched]);
@@ -439,6 +440,8 @@ var SearchForm = React.createClass({
 		_rows.push(['Dataset', datasetDisplayName]);		
 
 		var _headerData = { rows: _rows };
+
+*/
 
 		var extraCols = 0;
 		if( dataset.indexOf('orf_') >= 0){		
@@ -476,10 +479,14 @@ var SearchForm = React.createClass({
 		    bPaginate: true,
 		    oLanguage: { "sEmptyTable": "No Hits." }
                 };
-
+/*
 		return (<div><DataTable data={_headerData} />
 		        <DataTable data={_tableData} usePlugin={true} pluginOptions={_dataTableOptions} />
 			</div>);
+
+*/
+
+		return <DataTable data={_tableData} usePlugin={true} pluginOptions={_dataTableOptions} />;
         }
 });
 
