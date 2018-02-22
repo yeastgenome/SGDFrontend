@@ -468,14 +468,14 @@ var SearchForm = React.createClass({
 			   	if (d.gene_name) {
 			       	     name = name + "/" + d.gene_name;
 			   	}
-                           	return [name, d.count, d.matchingPattern, d.beg, d.end, 'Sequence', 'RestrictionMap', headline];
+                           	return [name, d.count, d.matchingPattern, d.beg, d.end, 'Sequence',  headline];
 			   }
                 });
 
 		var header = ['Sequence Name', 'Hit Number', 'Matching Pattern', 'Matching Begin', 'Matching End', 'Matching Result'];
      	        if (extraCols == 1) {
 
-		     header = ['Sequence Name', 'Hit Number', 'Matching Pattern', 'Matching Begin', 'Matching End', 'Matching Result', 'Retrieve', 'Locus Information'];
+		     header = ['Sequence Name', 'Hit Number', 'Matching Pattern', 'Matching Begin', 'Matching End', 'Matching Result',  'Locus Information'];
 
 		}
 
