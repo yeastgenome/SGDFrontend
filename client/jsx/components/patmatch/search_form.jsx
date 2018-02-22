@@ -452,14 +452,22 @@ var SearchForm = React.createClass({
 
 	        var dataset = window.localStorage.getItem("dataset");
 
-		var extraCols = 0;
-		if( dataset.indexOf('orf_') >= 0){		
-		    extraCols = 1;
+		var withDesc = 0;
+		if( dataset.indexOf('orf_') >= 0 ){		
+		    withDesc = 1;
+		}
+		
+		var notFeat = 0;
+		if ( dataset.indexOf('Not') >= 0 ) {
+		    notFeat = 1;
 		}
 						
 		var _tableRows = _.map(data, d => {
-
-		    	   if (extraCols == 0) {
+		    	       
+			   if (notFeat == 1) {
+			      	return [d.chr, d.orfs, d.count, d.matchingPattern, d.beg, d.end, 'Sequence'];
+			   }
+		    	   else if (withDesc == 0) {
 			        return [d.seqname, d.count, d.matchingPattern, d.beg, d.end, 'Sequence'];
 			   }
 			   else {		    	   
@@ -473,9 +481,14 @@ var SearchForm = React.createClass({
                 });
 
 		var header = ['Sequence Name', 'Hit Number', 'Matching Pattern', 'Matching Begin', 'Matching End', 'Matching Result'];
-     	        if (extraCols == 1) {
+     	        if (withDesc == 1) {
 
 		     header = ['Sequence Name', 'Hit Number', 'Matching Pattern', 'Matching Begin', 'Matching End', 'Matching Result',  'Locus Information'];
+
+		}
+		else if (notFeat == 1) {
+
+		     header = ['Chromosome', 'Between ORF - ORF', 'Hit Number', 'Matching Pattern', 'Matching Begin', 'Matching End', 'Matching Result'];
 
 		}
 
