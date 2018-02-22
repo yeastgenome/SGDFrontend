@@ -465,13 +465,17 @@ var SearchForm = React.createClass({
 		var _tableRows = _.map(data, d => {
 		    	       
 			   if (notFeat == 1) {
-			        console.log(d.seqname + " " + d.orfs + " " + d.count + " " + d.matchingPattern + " " + d.beg + " " + d.end);
-			      	// return [d.orfs, d.count, d.matchingPattern, d.beg, d.end, 'Sequence'];
+
+			      	return [d.orfs, d.count, d.matchingPattern, d.beg, d.end, 'Sequence'];
+
 			   }
 		    	   if (withDesc == 0) {
+
 			        return [d.seqname, d.count, d.matchingPattern, d.beg, d.end, 'Sequence'];
+
 			   }
 			   else {		    	   
+
 		    	   	var headline = d.desc.split(';')[0];
 			   	var name = d.seqname;
 			   	if (d.gene_name) {
