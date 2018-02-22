@@ -441,8 +441,6 @@ var SearchForm = React.createClass({
 
 		var _summaryData = { rows: _summaryRows };
 
-
-
 		var extraCols = 0;
 		if( dataset.indexOf('orf_') >= 0){		
 		    extraCols = 1;
@@ -479,15 +477,15 @@ var SearchForm = React.createClass({
 		    bPaginate: true,
 		    oLanguage: { "sEmptyTable": "No Hits." }
                 };
-/*
+
 		return (<div><DataTable data={_summaryData} />
 		        <DataTable data={_tableData} usePlugin={true} pluginOptions={_dataTableOptions} />
 			</div>);
 
-*/
+		//return <DataTable data={_tableData} usePlugin={true} pluginOptions={_dataTableOptions} />;
 
-		return <DataTable data={_tableData} usePlugin={true} pluginOptions={_dataTableOptions} />;
         }
+
 });
 
 module.exports = SearchForm;
