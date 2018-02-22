@@ -339,10 +339,10 @@ var SearchForm = React.createClass({
 		// var dataset = this.refs.dataset.value.trim();
 		// more here		
                 	
-		var genome = this.state.genome;
-		var seqtype = this.state.seqtype;
-		var pattern = this.refs.pattern;
-		var dataset =  this.refs.dataset;
+		var genome = this.state.genome.value.trim();
+		var seqtype = this.state.seqtype.value.trim();
+		var pattern = this.refs.pattern.value.trim();
+		var dataset =  this.refs.dataset.value.trim();
 				
 		if (pattern) {
 		    window.localStorage.clear();
@@ -361,22 +361,28 @@ var SearchForm = React.createClass({
 
 	_doPatmatch: function() {
 
-		// var genome = this.refs.genome.value.trim();
-		var genome = this.refs.genome;
-                var seqtype = this.refs.seqtype;
-                var pattern = this.refs.pattern;
-                var dataset = this.refs.dataset;
+	        param = this.state.param;
 
+		// var genome = this.refs.genome.value.trim();
+		var genome = param['genome'];
+                var seqtype = param['seqtype'];
+                var pattern = param['pattern'];
+                var dataset = param['dataset'];
+		var mismatch = param['mismatch'];
+		
+		console.log(genome);
 		console.log(seqtype);
 		console.log(pattern);
 		console.log(dataset);
-
+		console.log(mismatch);
+		
 		if (pattern) {
                     window.localStorage.clear();
                     window.localStorage.setItem("genome",  genome);
                     window.localStorage.setItem("seqtype", seqtype);
                     window.localStorage.setItem("pattern", pattern);
                     window.localStorage.setItem("dataset", dataset);
+		    window.localStorage.setItem("mismatch", mismatch);
                     // more here
                 }
 
