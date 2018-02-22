@@ -408,6 +408,7 @@ var SearchForm = React.createClass({
 		var seqSearched = 0;
 		var datasetDisplayName = "";		
 		for (var key in configData.dataset) {
+		     console.log("HELLO: " + key);
                      if (key == genome) {
                             var datasets = configData.dataset[key];
                             for (var i = 0; i < datasets.length; i++) {
@@ -424,7 +425,7 @@ var SearchForm = React.createClass({
 		console.log("Total Hits : " + totalHits)
 		console.log("Number of Unique Sequence Entries Hit : " + uniqueHits)
 		console.log("Sequences Searched : " + seqSearched);
-		if (seqtype == "dna") {
+		if (seqtype == "dna" || seqtype == "nuc") {
 		     console.log("Entered nucleotide pattern : " + pattern);
 		}
 		else {
