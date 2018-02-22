@@ -435,21 +435,35 @@ var SearchForm = React.createClass({
                 }
 		console.log("Dataset =" + datasetDisplayName);
 
-								
+		var extraCols = 0;
+		if( dataset.indexOf('orf_') >= 0){		
+		    extraCols = 1;
+		}
+						
 		var _tableRows = _.map(data, d => {
-		    	   
-		    	   // var headline = d.desc.split(';')[0];
-			   var headline = d.desc;
-			   var name = d.seqname;
-			   if (d.gene_name) {
-			       name = name + "/" + d.gene_name;
+
+		    	   if (extraCols == 0) {
+			        return [d.seqname, d.count, d.matchingPattern, d.beg, d.end, 'Sequence'];
 			   }
-                           return [name, d.count, d.matchingPattern, d.beg, d.end, 'Sequence', 'RestrictionMap', headline];
-			   // return <p>{name} {d.beg} {d.end} {d.matchingPattern} {d.sgdid} {headline}</p>;
+			   else {		    	   
+		    	   	var headline = d.desc.split(';')[0];
+			   	var name = d.seqname;
+			   	if (d.gene_name) {
+			       	     name = name + "/" + d.gene_name;
+			   	}
+                           	return [name, d.count, d.matchingPattern, d.beg, d.end, 'Sequence', 'RestrictionMap', headline];
+			   }
                 });
 
+		var header = ['Sequence Name', 'Hit Number', 'Matching Pattern', 'Matching Begin', 'Matching End', 'Matching Result'];
+     	        if (extraCols == 1) {
+
+		     header = ['Sequence Name', 'Hit Number', 'Matching Pattern', 'Matching Begin', 'Matching End', 'Matching Result', 'Retrieve', 'Locus Information'];
+
+		}
+
 		var _tableData = {
-		      headers: [['Sequence Name', 'Hit Number', 'Matching Pattern', 'Matching Begin', 'Matching End', 'Matching Result', 'Retrieve', 'Locus Information']],
+		      headers: [header],
 		      rows: _tableRows
 		};
 
