@@ -478,8 +478,8 @@ var SearchForm = React.createClass({
 		    oLanguage: { "sEmptyTable": "No Hits." }
                 };
 
-		return (<div><DataTable data={_summaryData} />
-		        <DataTable data={_tableData} usePlugin={true} pluginOptions={_dataTableOptions} />
+		return (<div><p><DataTable data={_summaryData} /></p>
+		        <p><DataTable data={_tableData} usePlugin={true} pluginOptions={_dataTableOptions} /></p>
 			</div>);
 
 		//return <DataTable data={_tableData} usePlugin={true} pluginOptions={_dataTableOptions} />;
