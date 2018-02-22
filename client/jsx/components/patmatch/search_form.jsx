@@ -361,7 +361,7 @@ var SearchForm = React.createClass({
 
 	_doPatmatch: function() {
 
-	        param = this.state.param;
+	        var param = this.state.param;
 
 		// var genome = this.refs.genome.value.trim();
 		var genome = param['genome'];
