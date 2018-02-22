@@ -424,16 +424,21 @@ var SearchForm = React.createClass({
                          }
                      }
                 }
-		console.log("Total Hits : " + totalHits)
-		console.log("Number of Unique Sequence Entries Hit : " + uniqueHits)
-		console.log("Sequences Searched : " + seqSearched);
-		if (seqtype == "dna" || seqtype == "nuc") {
-		     console.log("Entered nucleotide pattern : " + pattern);
-		}
-		else {
-		     console.log("Entered peptide pattern : " + pattern);
+		
+		var _rows = [];
+		// _rows.push(["Peptide Searches", "IFVLWMAGCYPTSHEDQNKR", "Exact match", <span><a href='/nph-patmatch?pattern=ELVIS'>ELVIS</a></span>]););
+		_rows.push(['Total Hits', totalHits]);
+		_rows.push(['Number of Unique Sequence Extries Hit', uniqueHits]);
+		_rows.push(['Sequences Searched', seqSearched]);
+		if (seqtype == "dna" || seqtype.indexOf('nuc') >= 0) {
+                       _rows.push(['Entered nucleotide pattern', pattern]);
                 }
-		console.log("Dataset =" + datasetDisplayName);
+                else {
+                       _rows.push(['Entered peptide pattern', pattern]);
+                }
+		_rows.push(['Dataset', datasetDisplayName]);		
+
+		var _headerData = { rows: _rows };
 
 		var extraCols = 0;
 		if( dataset.indexOf('orf_') >= 0){		
@@ -472,7 +477,9 @@ var SearchForm = React.createClass({
 		    oLanguage: { "sEmptyTable": "No Hits." }
                 };
 
-		return <DataTable data={_tableData} usePlugin={true} pluginOptions={_dataTableOptions} />
+		return (<div><DataTable data={_headerData} />
+		        <DataTable data={_tableData} usePlugin={true} pluginOptions={_dataTableOptions} />
+			</div>);
         }
 });
 
