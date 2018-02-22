@@ -366,24 +366,21 @@ var SearchForm = React.createClass({
 		// var genome = this.refs.genome.value.trim();
 		var genome = param['genome'];
                 var seqtype = param['seqtype'];
+		if (typeof(seqtype) == "undefined") {
+                    seqtype = 'pep';
+                }
                 var pattern = param['pattern'];
                 var dataset = param['dataset'];
-		var mismatch = param['mismatch'];
-		
-		console.log(genome);
-		console.log(seqtype);
-		console.log(pattern);
-		console.log(dataset);
-		console.log(mismatch);
-		
+		if (typeof(dataset) == "undefined") {
+		    dataset = 'orf_pep';
+		}
+ 		
 		if (pattern) {
                     window.localStorage.clear();
                     window.localStorage.setItem("genome",  genome);
                     window.localStorage.setItem("seqtype", seqtype);
                     window.localStorage.setItem("pattern", pattern);
-                    window.localStorage.setItem("dataset", dataset);
-		    window.localStorage.setItem("mismatch", mismatch);
-                    // more here
+                    window.localStorage.setItem("dataset", dataset);		    
                 }
 
 		$.ajax({
