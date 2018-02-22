@@ -464,9 +464,9 @@ var SearchForm = React.createClass({
 						
 		var _tableRows = _.map(data, d => {
 		    	       
-			   // if (notFeat == 1) {
-			   //   	return [d.chr, d.orfs, d.count, d.matchingPattern, d.beg, d.end, 'Sequence'];
-			   // }
+			   if (notFeat == 1) {
+			      	return [d.orfs, d.count, d.matchingPattern, d.beg, d.end, 'Sequence'];
+			   }
 		    	   if (withDesc == 0) {
 			        return [d.seqname, d.count, d.matchingPattern, d.beg, d.end, 'Sequence'];
 			   }
