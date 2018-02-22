@@ -407,7 +407,7 @@ var SearchForm = React.createClass({
 
 	},
 
-	_getSummaryTable: function(totalHits, uniqHits) {
+	_getSummaryTable: function(totalHits, uniqueHits) {
 	
                 var dataset = window.localStorage.getItem("dataset");
                 var pattern = window.localStorage.getItem("pattern");
