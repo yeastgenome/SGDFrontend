@@ -441,7 +441,8 @@ var SearchForm = React.createClass({
                 }
                 _summaryRows.push(['Dataset', datasetDisplayName]);
 
-                var _summaryData = { rows: _summaryRows };
+                var _summaryData = { headers: [['', '']],
+		                     rows: _summaryRows };
 		
 		return <DataTable data={_summaryData} />;		
 
