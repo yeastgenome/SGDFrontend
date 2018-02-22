@@ -78,9 +78,12 @@ var SearchForm = React.createClass({
 			var totalHits = this.state.resultData.totalHits;
 			var uniqueHits = this.state.resultData.uniqueHits;
 
-			var _resultTable = this._getResultTable(data, totalHits, uniqueHits)
+			var _summaryTable = this._getSummaryTable(totalHits, uniqHits)
+			var _resultTable = this._getResultTable(data)
 
-		       	return (<div>{_resultTable}</div>);			
+		       	return (<div><p>{_summaryTable}</p>
+				     <p>{_resultTable}</p>
+			       </div>);			
 
 		} 
 		else if (this.state.isPending) {
@@ -404,42 +407,49 @@ var SearchForm = React.createClass({
 
 	},
 
-	_getResultTable: function(data, totalHits, uniqueHits) {
+	_getSummaryTable: function(totalHits, uniqHits) {
+	
+                var dataset = window.localStorage.getItem("dataset");
+                var pattern = window.localStorage.getItem("pattern");
+                var seqtype = window.localStorage.getItem("seqtype");
 
-	        var dataset = window.localStorage.getItem("dataset");
-		var pattern = window.localStorage.getItem("pattern");
-		var seqtype = window.localStorage.getItem("seqtype");
-
-		var configData = this.state.configData;
-		var seqSearched = 0;
-		var datasetDisplayName = "";		
-		for (var key in configData.dataset) {
+                var configData = this.state.configData;
+                var seqSearched = 0;
+                var datasetDisplayName = "";
+                for (var key in configData.dataset) {
                      var datasets = configData.dataset[key];
                      for (var i = 0; i < datasets.length; i++) {
                          var d = datasets[i];
                          if (d.dataset_file_name == dataset) {
-			    seqSearched = d.seqcount;
-			    datasetDisplayName = d.label.split(" = ")[1];
-			    break;                                     
+                            seqSearched = d.seqcount;
+                            datasetDisplayName = d.label.split(" = ")[1];
+                            break;
                          }
                      }
                 }
 
-		
-		var _summaryRows = [];
+                var _summaryRows = [];
 
-		_summaryRows.push(['Total Hits', totalHits]);
-		_summaryRows.push(['Number of Unique Sequence Extries Hit', uniqueHits]);
-		_summaryRows.push(['Sequences Searched', seqSearched]);
-		if (seqtype == "dna" || seqtype.indexOf('nuc') >= 0) {
+                _summaryRows.push(['Total Hits', totalHits]);
+                _summaryRows.push(['Number of Unique Sequence Extries Hit', uniqueHits]);
+                _summaryRows.push(['Sequences Searched', seqSearched]);
+                if (seqtype == "dna" || seqtype.indexOf('nuc') >= 0) {
                        _summaryRows.push(['Entered nucleotide pattern', pattern]);
                 }
                 else {
                        _summaryRows.push(['Entered peptide pattern', pattern]);
                 }
-		_summaryRows.push(['Dataset', datasetDisplayName]);		
+                _summaryRows.push(['Dataset', datasetDisplayName]);
 
-		var _summaryData = { rows: _summaryRows };
+                var _summaryData = { rows: _summaryRows };
+		
+		return <DataTable data={_summaryData} />;		
+
+	},
+
+	_getResultTable: function(data) {
+
+	        var dataset = window.localStorage.getItem("dataset");
 
 		var extraCols = 0;
 		if( dataset.indexOf('orf_') >= 0){		
@@ -478,11 +488,7 @@ var SearchForm = React.createClass({
 		    oLanguage: { "sEmptyTable": "No Hits." }
                 };
 
-		return (<div><p><DataTable data={_summaryData} /></p>
-		        <p><DataTable data={_tableData} usePlugin={true} pluginOptions={_dataTableOptions} /></p>
-			</div>);
-
-		//return <DataTable data={_tableData} usePlugin={true} pluginOptions={_dataTableOptions} />;
+		return <DataTable data={_tableData} usePlugin={true} pluginOptions={_dataTableOptions} />;
 
         }
 
