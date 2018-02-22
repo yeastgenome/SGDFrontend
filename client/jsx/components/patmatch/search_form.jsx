@@ -425,23 +425,23 @@ var SearchForm = React.createClass({
                      }
                 }
 
-/*		
-		var _rows = [];
+		
+		var _summaryRows = [];
 
-		_rows.push(['Total Hits', totalHits]);
-		_rows.push(['Number of Unique Sequence Extries Hit', uniqueHits]);
-		_rows.push(['Sequences Searched', seqSearched]);
+		_summaryRows.push(['Total Hits', totalHits]);
+		_summaryRows.push(['Number of Unique Sequence Extries Hit', uniqueHits]);
+		_summaryRows.push(['Sequences Searched', seqSearched]);
 		if (seqtype == "dna" || seqtype.indexOf('nuc') >= 0) {
-                       _rows.push(['Entered nucleotide pattern', pattern]);
+                       _summaryRows.push(['Entered nucleotide pattern', pattern]);
                 }
                 else {
-                       _rows.push(['Entered peptide pattern', pattern]);
+                       _summaryRows.push(['Entered peptide pattern', pattern]);
                 }
-		_rows.push(['Dataset', datasetDisplayName]);		
+		_summaryRows.push(['Dataset', datasetDisplayName]);		
 
-		var _headerData = { rows: _rows };
+		var _summaryData = { rows: _summaryRows };
 
-*/
+
 
 		var extraCols = 0;
 		if( dataset.indexOf('orf_') >= 0){		
@@ -480,7 +480,7 @@ var SearchForm = React.createClass({
 		    oLanguage: { "sEmptyTable": "No Hits." }
                 };
 /*
-		return (<div><DataTable data={_headerData} />
+		return (<div><DataTable data={_summaryData} />
 		        <DataTable data={_tableData} usePlugin={true} pluginOptions={_dataTableOptions} />
 			</div>);
 
