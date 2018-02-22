@@ -51,15 +51,16 @@ module.exports = {
                         rows: rows
                 };
 
-		var _columns = [ { name: 'first', title: 'Search type' }, 
-		    	        { title: 'Character' }, 
-				{ title: 'Meaning' },
-				{ title: 'Examples' } ];
-
-		var _rowsGroup = [ 'first:name' ];
+		// var _columns = [ { name: 'first', title: 'Search type' }, 
+		//    	        { title: 'Character' }, 
+		//		{ title: 'Meaning' },
+		//		{ title: 'Examples' } ];
+                //
+		// var _rowsGroup = [ 'first:name' ];
 				 
-                return <DataTable data={_tableData} columns={_columns} rowsGroup={_rowsGroup}  />;
+                // return <DataTable data={_tableData} columns={_columns} rowsGroup={_rowsGroup}  />;
 
+		return <DataTable data={_tableData}  />;
 	}	
 };
 

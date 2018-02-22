@@ -426,11 +426,21 @@ var SearchForm = React.createClass({
 			   if (d.gene_name) {
 			       name = name + "/" + d.gene_name;
 			   }
-                           // return [name, {d.beg} {d.end} {d.matchingPattern} {d.gene_name} {d.sgdid} {headline}</p>;
-			   return <p>{name} {d.beg} {d.end} {d.matchingPattern} {d.sgdid} {headline}</p>;
+                           return [name, d.count, d.matchingPattern, d.beg, d.end, 'Sequence', 'RestrictionMap', headline];
+			   // return <p>{name} {d.beg} {d.end} {d.matchingPattern} {d.sgdid} {headline}</p>;
                 });
 
-		return _tableRows;
+		var _tableData = {
+		      headers: [['Sequence Name', 'Hit Number', 'Matching Pattern', 'Matching Begin', 'Matching End', 'Matching Result', 'Retrieve', 'Locus Information']],
+		      rows: _tableRows
+		};
+
+		var _dataTableOptions = {
+		    bPaginate: true,
+		    oLanguage: { "sEmptyTable": "No Hits." }
+                };
+
+		return <DataTable data={_tableData} usePlugin={true} pluginOptions={_dataTableOptions} />
         }
 });
 
