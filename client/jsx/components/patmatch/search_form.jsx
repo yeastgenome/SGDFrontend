@@ -431,7 +431,7 @@ var SearchForm = React.createClass({
                 var _summaryRows = [];
 
                 _summaryRows.push(['Total Hits', totalHits]);
-                _summaryRows.push(['Number of Unique Sequence Extries Hit', uniqueHits]);
+                _summaryRows.push(['Number of Unique Sequence Entries Hit', uniqueHits]);
                 _summaryRows.push(['Sequences Searched', seqSearched]);
                 if (seqtype == "dna" || seqtype.indexOf('nuc') >= 0) {
                        _summaryRows.push(['Entered nucleotide pattern', pattern]);
