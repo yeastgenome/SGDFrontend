@@ -437,7 +437,9 @@ var SearchForm = React.createClass({
 
 								
 		var _tableRows = _.map(data, d => {
-		    	   var headline = d.desc.split(';')[0];
+		    	   
+		    	   // var headline = d.desc.split(';')[0];
+			   var headline = d.desc;
 			   var name = d.seqname;
 			   if (d.gene_name) {
 			       name = name + "/" + d.gene_name;
