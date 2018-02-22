@@ -391,7 +391,6 @@ var SearchForm = React.createClass({
 	_getResultTable: function(data, totalHits, uniqueHits) {
 
 	        var dataset = window.localStorage.getItem("dataset");
-		var genome = window.localStorage.getItem("genome");
 		var pattern = window.localStorage.getItem("pattern");
 		var seqtype = window.localStorage.getItem("seqtype");
 
@@ -408,18 +407,15 @@ var SearchForm = React.createClass({
 		var seqSearched = 0;
 		var datasetDisplayName = "";		
 		for (var key in configData.dataset) {
-		     console.log("HELLO: " + key);
-                     if (key == genome) {
-                            var datasets = configData.dataset[key];
-                            for (var i = 0; i < datasets.length; i++) {
-                                var d = datasets[i];
-				console.log("HI: "+d.dataset_file_name+" seqcount="+d.seqcount + " label="+d.label);
-                                if (d.dataset_file_name == dataset) {
-				    seqSearched = d.seqcount;
-				    datasetDisplayName = d.label.split(" = ")[1];
-				    break;                                     
-                                }
-                            }
+                     var datasets = configData.dataset[key];
+                     for (var i = 0; i < datasets.length; i++) {
+                         var d = datasets[i];
+			 console.log("HI: "+d.dataset_file_name+" seqcount="+d.seqcount + " label="+d.label);
+                         if (d.dataset_file_name == dataset) {
+			    seqSearched = d.seqcount;
+			    datasetDisplayName = d.label.split(" = ")[1];
+			    break;                                     
+                         }
                      }
                 }
 		console.log("Total Hits : " + totalHits)
