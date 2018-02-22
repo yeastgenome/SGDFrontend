@@ -77,6 +77,7 @@ var SearchForm = React.createClass({
 			var data = this.state.resultData.hits;
 			var totalHits = this.state.resultData.totalHits;
 			var uniqueHits = this.state.resultData.uniqueHits;
+
 			var _resultTable = this._getResultTable(data, totalHits, uniqueHits)
 
 		       	return (<div>{_resultTable}</div>);			
@@ -396,6 +397,13 @@ var SearchForm = React.createClass({
 
 	        console.log("dataset="+dataset);
 
+		if (seqtype == 'pep' || seqtype == 'peptide') {
+		     seqtype = 'protein';
+		}
+		else {
+		     seqtype = 'dna';
+		}
+
 		var configData = this.state.configData;
 		var seqSearched = 0;
 		var datasetDisplayName = "";		
@@ -404,6 +412,7 @@ var SearchForm = React.createClass({
                             var datasets = configData.dataset[key];
                             for (var i = 0; i < datasets.length; i++) {
                                 var d = datasets[i];
+				console.log("HI: "+d.dataset_file_name+" seqcount="+d.seqcount + " label="+d.label);
                                 if (d.dataset_file_name == dataset) {
 				    seqSearched = d.seqcount;
 				    datasetDisplayName = d.label.split(" = ")[1];
