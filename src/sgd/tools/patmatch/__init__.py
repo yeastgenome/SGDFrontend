@@ -24,6 +24,21 @@ def _run_patmatch(p):
    
     req = Request(url=url, data=paramData)
     res = urlopen(req)
+    result = res.read();
+
+    dataSet = result.split("\t")
+
+    if dataSet[1]:
+        data = { "hits": json.loads(dataSet[0]),
+                 "uniqueHits": dataSet[1],
+                 "totalHits": dataSet[2] }
+    else:
+        data = { "hits": dataSet[0],
+                 "uniqueHits": 0,
+                 "totalHits": 0 }
+                 
+    return data
+
     data = json.loads(res.read())
     return data
 

@@ -74,9 +74,10 @@ var SearchForm = React.createClass({
 			     return (<div dangerouslySetInnerHTML={{ __html: errorReport }} />);
 
 			}
-			var data = this.state.resultData;
-			
-			var _resultTable = this._getResultTable(data)
+			var data = this.state.resultData.hits;
+			var totalHits = this.state.resultData.totalHits;
+			var uniqueHits = this.state.resultData.uniqueHits;
+			var _resultTable = this._getResultTable(data, totalHits, uniqueHits)
 
 		       	return (<div>{_resultTable}</div>);			
 
@@ -337,19 +338,14 @@ var SearchForm = React.createClass({
 		// var dataset = this.refs.dataset.value.trim();
 		// more here		
                 	
-		var strain = this.state.genome;
+		var genome = this.state.genome;
 		var seqtype = this.state.seqtype;
 		var pattern = this.refs.pattern;
 		var dataset =  this.refs.dataset;
 				
-		console.log("strain="+strain);
-		console.log("seqtype="+seqtype);
-		console.log("pattern="+pattern);
-		console.log("dataset="+dataset);
-
 		if (pattern) {
 		    window.localStorage.clear();
-		    window.localStorage.setItem("strain",  strain);
+		    window.localStorage.setItem("genome",  genome);
 		    window.localStorage.setItem("seqtype", seqtype);
 		    window.localStorage.setItem("pattern", pattern);
 		    window.localStorage.setItem("dataset", dataset);
@@ -364,7 +360,7 @@ var SearchForm = React.createClass({
 
 	_doPatmatch: function() {
 
-		var strain  = window.localStorage.getItem("strain");
+		var genome  = window.localStorage.getItem("genome");
 		var seqtype = window.localStorage.getItem("seqtype");
 		var pattern = window.localStorage.getItem("pattern");
 		var dataset = window.localStorage.getItem("dataset");
@@ -383,7 +379,6 @@ var SearchForm = React.createClass({
 			success: function(data) {
 			      this.setState({isComplete: true,
 			                     resultData: data});
-			      console.log(data);
 			}.bind(this),
 			error: function(xhr, status, err) {
 			      this.setState({isPending: true}); 
@@ -392,11 +387,42 @@ var SearchForm = React.createClass({
 
 	},
 
-	_getResultTable: function(data) {
+	_getResultTable: function(data, totalHits, uniqueHits) {
 
 	        var dataset = window.localStorage.getItem("dataset");
+		var genome = window.localStorage.getItem("genome");
+		var pattern = window.localStorage.getItem("pattern");
+		var seqtype = window.localStorage.getItem("seqtype");
+
 	        console.log("dataset="+dataset);
-					
+
+		var configData = this.state.configData;
+		var seqSearched = 0;
+		var datasetDisplayName = "";		
+		for (var key in configData.dataset) {
+                     if (key == genome) {
+                            var datasets = configData.dataset[key];
+                            for (var i = 0; i < datasets.length; i++) {
+                                var d = datasets[i];
+                                if (d.dataset_file_name == dataset) {
+				    seqSearched = d.seqcount;
+				    datasetDisplayName = d.label.split(" = ")[1];
+				    break;                                     
+                                }
+                            }
+                     }
+                }
+		console.log("Total Hits : " + totalHits)
+		console.log("Number of Unique Sequence Entries Hit : " + uniqueHits)
+		console.log("Sequences Searched : " + seqSearched);
+		if (seqtype == "dna") {
+		     console.log("Entered nucleotide pattern : " + pattern);
+		}
+		else {
+		     console.log("Entered peptide pattern : " + pattern);
+                }
+		console.log("Dataset =" + datasetDisplayName);
+						
 		var _results = _.map(data, d => {
                            return <p>{d.seqname} {d.beg} {d.end} {d.matchingPattern}</p>;
                 });
