@@ -361,11 +361,19 @@ var SearchForm = React.createClass({
 
 	_doPatmatch: function() {
 
-		var genome  = window.localStorage.getItem("genome");
-		var seqtype = window.localStorage.getItem("seqtype");
-		var pattern = window.localStorage.getItem("pattern");
-		var dataset = window.localStorage.getItem("dataset");
-		// more here
+		var genome = this.refs.genome.value.trim();
+                var seqtype = this.refs.seqtype.value.trim();
+                var pattern = this.refs.pattern.value.trim();
+                var dataset = this.refs.dataset.value.trim();
+
+		if (pattern) {
+                    window.localStorage.clear();
+                    window.localStorage.setItem("genome",  genome);
+                    window.localStorage.setItem("seqtype", seqtype);
+                    window.localStorage.setItem("pattern", pattern);
+                    window.localStorage.setItem("dataset", dataset);
+                    // more here
+                }
 
 		$.ajax({
 			url: PATMATCH_URL,
