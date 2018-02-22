@@ -52,11 +52,11 @@ module.exports = {
                 };
 
 		var _columns = [ { name: 'first', title: 'Search type' }, 
-		    	        { name: 'second', title: 'Character' }, 
+		    	        { title: 'Character' }, 
 				{ title: 'Meaning' },
-				{ name: 'third', title: 'Examples' } ];
+				{ title: 'Examples' } ];
 
-		var _rowsGroup = [ 'first:name', 'second:name', 'third:name' ];
+		var _rowsGroup = [ 'first:name' ];
 				 
                 return <DataTable data={_tableData} columns={_columns} rowsGroup={_rowsGroup}  />;
 
