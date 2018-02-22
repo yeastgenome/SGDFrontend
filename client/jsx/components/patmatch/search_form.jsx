@@ -361,10 +361,15 @@ var SearchForm = React.createClass({
 
 	_doPatmatch: function() {
 
-		var genome = this.refs.genome.value.trim();
-                var seqtype = this.refs.seqtype.value.trim();
-                var pattern = this.refs.pattern.value.trim();
-                var dataset = this.refs.dataset.value.trim();
+		// var genome = this.refs.genome.value.trim();
+		var genome = this.refs.genome;
+                var seqtype = this.refs.seqtype;
+                var pattern = this.refs.pattern;
+                var dataset = this.refs.dataset;
+
+		console.log(seqtype);
+		console.log(pattern);
+		console.log(dataset);
 
 		if (pattern) {
                     window.localStorage.clear();
