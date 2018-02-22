@@ -78,7 +78,7 @@ var SearchForm = React.createClass({
 			var totalHits = this.state.resultData.totalHits;
 			var uniqueHits = this.state.resultData.uniqueHits;
 
-			var _summaryTable = this._getSummaryTable(totalHits, uniqHits)
+			var _summaryTable = this._getSummaryTable(totalHits, uniqueHits)
 			var _resultTable = this._getResultTable(data)
 
 		       	return (<div><p>{_summaryTable}</p>
