@@ -394,8 +394,6 @@ var SearchForm = React.createClass({
 		var pattern = window.localStorage.getItem("pattern");
 		var seqtype = window.localStorage.getItem("seqtype");
 
-	        console.log("dataset="+dataset);
-
 		var configData = this.state.configData;
 		var seqSearched = 0;
 		var datasetDisplayName = "";		
@@ -420,12 +418,19 @@ var SearchForm = React.createClass({
 		     console.log("Entered peptide pattern : " + pattern);
                 }
 		console.log("Dataset =" + datasetDisplayName);
-						
-		var _results = _.map(data, d => {
-                           return <p>{d.seqname} {d.beg} {d.end} {d.matchingPattern} {d.gene_name} {d.sgdid} {d.desc}</p>;
+
+								
+		var _tableRows = _.map(data, d => {
+		    	   var headline = d.desc.split(';')[0];
+			   var name = d.seqname;
+			   if (d.gene_name) {
+			       name = name + "/" + d.gene_name;
+			   }
+                           // return [name, {d.beg} {d.end} {d.matchingPattern} {d.gene_name} {d.sgdid} {headline}</p>;
+			   return <p>{name} {d.beg} {d.end} {d.matchingPattern} {d.sgdid} {headline}</p>;
                 });
 
-		return _results;
+		return _tableRows;
         }
 });
 

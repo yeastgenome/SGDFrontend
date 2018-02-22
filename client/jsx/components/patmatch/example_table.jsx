@@ -51,8 +51,14 @@ module.exports = {
                         rows: rows
                 };
 
-                return <DataTable data={_tableData} />;
+		var _columns = [ { name: 'first', title: 'Search type' }, 
+		    	        { name: 'second', title: 'Character' }, 
+				{ title: 'Meaning' },
+				{ name: 'third', title: 'Examples' } ];
 
+		var _rowsGroup = [ 'first:name', 'second:name', 'third:name' ];
+				 
+                return <DataTable data={_tableData} columns={_columns} rowsGroup={_rowsGroup}  />;
 
 	}	
 };
