@@ -382,10 +382,23 @@ var SearchForm = React.createClass({
                     strand = 'Both strands';
                 }
  		
-		var mismatch = param('mismatch');
-		if (typeof(mismatch) == "undefined") {
-                    mismatch = 0;
-                }
+		genome=S288C
+		seqtype=dna
+		pattern=ACGGCCGG
+		dataset=NotFeature.dna
+		max_hits=100
+		strand=Both+strands
+		mismatch=0
+		insertion=insertion
+		deletion=deletion
+		substitution=substitution
+
+		console.log(param('mismatch'));
+
+		// var mismatch = param('mismatch');
+		// if (typeof(mismatch) == "undefined") {
+                //    mismatch = 0;
+                // }
 
 		// var maxHits = param('max_hits');
                 // if (typeof(maxHits) == "undefined") {
