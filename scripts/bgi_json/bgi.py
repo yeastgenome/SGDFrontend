@@ -6,8 +6,8 @@ import re
 import time
 import sys
 from random import randint
-from pycallgraph import PyCallGraph
-from pycallgraph.output import GraphvizOutput
+#from pycallgraph import PyCallGraph
+#from pycallgraph.output import GraphvizOutput
 from datetime import datetime
 
 engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
@@ -228,9 +228,9 @@ def get_locus_alias_data(locus_alias_list, id, item_obj):
 if __name__ == '__main__':
     start_time = time.time()
     print "--------------start loading genes--------------"
-    with PyCallGraph(output=GraphvizOutput()):
-        get_bgi_data()
-
+    get_bgi_data()
+    '''with PyCallGraph(output=GraphvizOutput()):
+        get_bgi_data()'''
     with open('./scripts/bgi_json/data_dump/log_time.txt', 'w+') as res_file:
         time_taken = "time taken: " + ("--- %s seconds ---" % (time.time() - start_time))
         res_file.write(time_taken)
