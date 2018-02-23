@@ -368,14 +368,20 @@ var SearchForm = React.createClass({
 
 		var genome = param['genome'];
                 var seqtype = param['seqtype'];
-		if (typeof(seqtype) == "undefined") {
+		if (typeof(seqtype) == "undefined" || seqtype == 'protein') {
                     seqtype = 'pep';
                 }
                 var pattern = param['pattern'];
                 var dataset = param['dataset'];
 		if (typeof(dataset) == "undefined") {
-		    dataset = 'orf_pep';
+		    if (seqtype == 'pep') {
+		        dataset = 'orf_pep';
+		    }
+		    else {
+		        dataset = 'orf_dna';
+		    }
 		}
+		
 		var strand = param['strand'];
 		if (typeof(strand) == "undefined") {
                     strand = 'Both strands';
