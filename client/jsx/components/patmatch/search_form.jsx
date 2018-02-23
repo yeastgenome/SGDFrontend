@@ -377,6 +377,10 @@ var SearchForm = React.createClass({
 		if (typeof(dataset) == "undefined") {
 		    dataset = 'orf_pep';
 		}
+		var strand = param['strand'];
+		if (typeof(strand) == "undefined") {
+                    strand = 'both strands';
+                }
  		
 		if (pattern) {
                     window.localStorage.clear();
@@ -384,6 +388,7 @@ var SearchForm = React.createClass({
                     window.localStorage.setItem("seqtype", seqtype);
                     window.localStorage.setItem("pattern", pattern);
                     window.localStorage.setItem("dataset", dataset);		    
+		    window.localStorage.setItem("strand", strand);
                 }
 
 		$.ajax({
@@ -412,6 +417,7 @@ var SearchForm = React.createClass({
                 var dataset = window.localStorage.getItem("dataset");
                 var pattern = window.localStorage.getItem("pattern");
                 var seqtype = window.localStorage.getItem("seqtype");
+		var strand  = window.localStorage.getItem("strand");
 
                 var configData = this.state.configData;
                 var seqSearched = 0;
@@ -440,6 +446,10 @@ var SearchForm = React.createClass({
                        _summaryRows.push(['Entered peptide pattern', pattern]);
                 }
                 _summaryRows.push(['Dataset', datasetDisplayName]);
+		
+		if (seqtype == "dna" || seqtype.indexOf('nuc') >= 0) {
+                       _summaryRows.push(['Strand', strand]);
+                }
 
                 var _summaryData = { headers: [['', '']],
 		                     rows: _summaryRows };
