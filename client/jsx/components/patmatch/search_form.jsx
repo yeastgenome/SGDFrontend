@@ -366,7 +366,6 @@ var SearchForm = React.createClass({
 
 	        var param = this.state.param;
 
-		// var genome = this.refs.genome.value.trim();
 		var genome = param['genome'];
                 var seqtype = param['seqtype'];
 		if (typeof(seqtype) == "undefined") {
@@ -381,41 +380,7 @@ var SearchForm = React.createClass({
 		if (typeof(strand) == "undefined") {
                     strand = 'Both strands';
                 }
- 		
-		// genome=S288C
-		// seqtype=dna
-		// pattern=ACGGCCGG
-		// dataset=NotFeature.dna
-		// max_hits=100
-		// strand=Both+strands
-		// mismatch=0
-		// insertion=insertion
-		// deletion=deletion
-		// substitution=substitution
-
-		for (var key in param) {
-		    console.log( key + " = " + param[key]);
-		} 
-
-		// var mismatch = param('mismatch');
-		// if (typeof(mismatch) == "undefined") {
-                //    mismatch = 0;
-                // }
-
-		// var maxHits = param('max_hits');
-                // if (typeof(maxHits) == "undefined") {
-                //    maxHits = 100;
-                // }
-		
-		// var insertion = param('insertion');
-                // if (typeof(insertion) == "undefined") {
-                //     insertion = 0;
-                // }
-		// else {
-		//     insertion = 1;
-		// }
-		
-
+	
 		if (pattern) {
                     window.localStorage.clear();
                     window.localStorage.setItem("genome",  genome);
@@ -425,25 +390,20 @@ var SearchForm = React.createClass({
 		    window.localStorage.setItem("strand", strand);
                 }
 
-		//'mismatch':     param('mismatch'),
-                //                 'insertion':    param('insertion'),
-                //                'deletion':     param('deletion'),
-                //                'substitution': param('substitution'),
-                //                'max_hits':     param('max_hits')
-
-		// console.log("mismatch=" + mismatch);
-		// console.log("maxHits=" + maxHits);
-
 		$.ajax({
 			url: PATMATCH_URL,
 			data_type: 'json',
 			type: 'POST',
 
-			// add more to data: eg, insertion, deletion, ....
 			data: { 'seqtype':      seqtype,
 			        'pattern':      pattern,
 				'dataset':      dataset,
-				'strand':       strand
+				'strand':       strand,
+				'max_hits':     param['max_hits'],
+				'mismatch':	param['mismatch'],
+				'insertion':    param['insertion'],
+				'deletion':     param['deletion'],
+				'substitution': param['substition']			
                         },
 			success: function(data) {
 			      this.setState({isComplete: true,
