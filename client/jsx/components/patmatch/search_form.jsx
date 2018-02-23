@@ -382,16 +382,16 @@ var SearchForm = React.createClass({
                     strand = 'Both strands';
                 }
  		
-		genome=S288C
-		seqtype=dna
-		pattern=ACGGCCGG
-		dataset=NotFeature.dna
-		max_hits=100
-		strand=Both+strands
-		mismatch=0
-		insertion=insertion
-		deletion=deletion
-		substitution=substitution
+		// genome=S288C
+		// seqtype=dna
+		// pattern=ACGGCCGG
+		// dataset=NotFeature.dna
+		// max_hits=100
+		// strand=Both+strands
+		// mismatch=0
+		// insertion=insertion
+		// deletion=deletion
+		// substitution=substitution
 
 		console.log(param('mismatch'));
 
