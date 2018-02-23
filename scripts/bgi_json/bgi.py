@@ -81,7 +81,7 @@ def get_bgi_data():
             temp_itm = ["gene"]
             if(item.has_expression):
                 temp_itm.append("gene/expression")
-                temp_itm.append("spell")
+                temp_itm.append("gene/spell")
             if(item.has_interaction):
                 temp_itm.append("gene/interaction")
 
@@ -115,12 +115,10 @@ def get_bgi_data():
                 for mod_item in mod_locus_alias_data:
                     mod_value = mod_locus_alias_data.get(mod_item)
                     if (type(mod_value) is list):
-                        if (len(mod_locus_alias_data.get("aliases")) == 0):
-                            obj["synonyms"].append(item.systematic_name)
-                        else:
-                            if (mod_locus_alias_data.get("aliases") is not None):
-                                obj["synonyms"] = mod_locus_alias_data.get(
-                                    "aliases")
+                        if (mod_locus_alias_data.get("aliases") is not None):
+                            obj["synonyms"] = mod_locus_alias_data.get(
+                                "aliases")
+
                     else:
                         if (mod_value.get("secondaryIds") is not None):
                             temp_sec_item = mod_value.get("secondaryIds")
@@ -147,14 +145,16 @@ def get_bgi_data():
                     obj["primaryId"] = "SGD:" + item.sgdid
                     item = combined_list[item_key]["locus_obj"]
                     obj["geneSynopsis"] = item.description
-                    obj["symbol"] = item.display_name if item.display_name != None else item.systematic_name
+                    obj["symbol"] = item.gene_name if item.gene_name is not None else item.systematic_name
+                    obj["synonyms"].append(item.systematic_name)
                     result.append(obj)
 
                 else:
                     obj["primaryId"] = "SGD:" + item.sgdid
                     item = combined_list[item_key]["locus_obj"]
                     obj["geneSynopsis"] = item.description
-                    obj["symbol"] = item.display_name if item.display_name != None else item.systematic_name
+                    obj["symbol"] = item.gene_name if item.gene_name is not None else item.systematic_name
+                    obj["synonyms"].append(item.systematic_name)
                     result.append(obj)
         if(len(result) > 0):
             output_obj = {
