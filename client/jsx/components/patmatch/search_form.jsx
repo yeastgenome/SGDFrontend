@@ -406,7 +406,8 @@ var SearchForm = React.createClass({
 			data: { 'seqtype':      seqtype,
 			        'pattern':      pattern,
 				'dataset':      dataset,
-				'strand':       strand
+				'strand':       strand,
+				'max_hits':     param('max_hits')
                         },
 			success: function(data) {
 			      this.setState({isComplete: true,
