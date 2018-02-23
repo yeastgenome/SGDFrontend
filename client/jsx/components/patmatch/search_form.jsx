@@ -379,7 +379,7 @@ var SearchForm = React.createClass({
 		}
 		var strand = param['strand'];
 		if (typeof(strand) == "undefined") {
-                    strand = 'both strands';
+                    strand = 'Both strands';
                 }
  		
 		if (pattern) {
@@ -391,6 +391,12 @@ var SearchForm = React.createClass({
 		    window.localStorage.setItem("strand", strand);
                 }
 
+		//'mismatch':     param('mismatch'),
+                //                 'insertion':    param('insertion'),
+                //                'deletion':     param('deletion'),
+                //                'substitution': param('substitution'),
+                //                'max_hits':     param('max_hits')
+
 		$.ajax({
 			url: PATMATCH_URL,
 			data_type: 'json',
@@ -400,12 +406,7 @@ var SearchForm = React.createClass({
 			data: { 'seqtype':      seqtype,
 			        'pattern':      pattern,
 				'dataset':      dataset,
-				'strand':       strand,
-				'mismatch':     param('mismatch'),
-				'insertion':    param('insertion'),
-				'deletion':     param('deletion'),
-				'substitution': param('substitution'),
-				'max_hits':	param('max_hits')
+				'strand':       strand
                         },
 			success: function(data) {
 			      this.setState({isComplete: true,
