@@ -9,7 +9,6 @@ from datetime import datetime
 import dateutil.parser as parser 
 from random import *
 
-import pdb
 #sample data
 '''{
         "DOid": "DOID:162", 
