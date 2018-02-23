@@ -393,7 +393,9 @@ var SearchForm = React.createClass({
 		// deletion=deletion
 		// substitution=substitution
 
-		console.log("param=" + param);
+		for (var key in param) {
+		    console.log( key + " = " + param[key]);
+		} 
 
 		// var mismatch = param('mismatch');
 		// if (typeof(mismatch) == "undefined") {
