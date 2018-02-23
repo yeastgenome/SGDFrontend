@@ -397,9 +397,15 @@ var SearchForm = React.createClass({
 			type: 'POST',
 
 			// add more to data: eg, insertion, deletion, ....
-			data: { 'seqtype':     seqtype,
-			        'pattern':     pattern,
-				'dataset':     dataset
+			data: { 'seqtype':      seqtype,
+			        'pattern':      pattern,
+				'dataset':      dataset,
+				'strand':       strand,
+				'mismatch':     param('mismatch'),
+				'insertion':    param('insertion'),
+				'deletion':     param('deletion'),
+				'substitution': param('substitution'),
+				'max_hits':	param('max_hits')
                         },
 			success: function(data) {
 			      this.setState({isComplete: true,
