@@ -387,18 +387,18 @@ var SearchForm = React.createClass({
                     mismatch = 0;
                 }
 
-		var maxHits = param('max_hits');
-                if (typeof(maxHits) == "undefined") {
-                    maxHits = 100;
-                }
+		// var maxHits = param('max_hits');
+                // if (typeof(maxHits) == "undefined") {
+                //    maxHits = 100;
+                // }
 		
-		var insertion = param('insertion');
-                if (typeof(insertion) == "undefined") {
-                     insertion = 0;
-                }
-		else {
-		     insertion = 1;
-		}
+		// var insertion = param('insertion');
+                // if (typeof(insertion) == "undefined") {
+                //     insertion = 0;
+                // }
+		// else {
+		//     insertion = 1;
+		// }
 		
 
 		if (pattern) {
@@ -416,8 +416,8 @@ var SearchForm = React.createClass({
                 //                'substitution': param('substitution'),
                 //                'max_hits':     param('max_hits')
 
-		console.log("mismatch=" + mismatch);
-		console.log("maxHits=" + maxHits);
+		// console.log("mismatch=" + mismatch);
+		// console.log("maxHits=" + maxHits);
 
 		$.ajax({
 			url: PATMATCH_URL,
@@ -428,10 +428,7 @@ var SearchForm = React.createClass({
 			data: { 'seqtype':      seqtype,
 			        'pattern':      pattern,
 				'dataset':      dataset,
-				'strand':       strand,
-				'mismatch':     mismatch,
-				'max_hits':     maxHits,
-				'insertion':    insertion
+				'strand':       strand
                         },
 			success: function(data) {
 			      this.setState({isComplete: true,
