@@ -397,6 +397,11 @@ var SearchForm = React.createClass({
                 //                'substitution': param('substitution'),
                 //                'max_hits':     param('max_hits')
 
+		console.log('insertion =' + param('insertion'));
+		console.log('deletion =' + param('deletion'));
+		console.log('substitution =' + param('substitution'));
+		console.log('max_hits =' + param('max_hits'));
+
 		$.ajax({
 			url: PATMATCH_URL,
 			data_type: 'json',
@@ -406,8 +411,7 @@ var SearchForm = React.createClass({
 			data: { 'seqtype':      seqtype,
 			        'pattern':      pattern,
 				'dataset':      dataset,
-				'strand':       strand,
-				'max_hits':     param('max_hits')
+				'strand':       strand
                         },
 			success: function(data) {
 			      this.setState({isComplete: true,
