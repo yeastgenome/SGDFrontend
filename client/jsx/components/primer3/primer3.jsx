@@ -5,8 +5,9 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import _ from 'underscore';
 
-const t = require('tcomb-form');
+import t from 'tcomb-form';
 const Form = t.form.Form;
+
 
 import apiRequest from '../../lib/api_request.jsx';
 import { StringField, CheckField, TextField, SelectField, MultiSelectField, RadioSelector} from '../../components/widgets/form_helpers.jsx';
@@ -38,7 +39,8 @@ const Primer3 = React.createClass({
         pair_end_anneal: '12',
         method: 'SEQUENCING',
         num_strands: 'ONE',
-        which_strand: 'CODING'
+        which_strand: 'CODING',
+        end_point: 'NO'
       },
       isLoadPending: false, // loading existing data
       isUpdatePending: false, // sending update to server
@@ -63,10 +65,7 @@ const Primer3 = React.createClass({
 	    dataType: 'json',
 	    processData: true,
 	    success: ( returnData ) => {
-	        this.setState({ result: returnData.toString() });
-	        console.log(returnData);
-	        for k, v in returnData.items():
-                console.log('{:<30} {:<25} {:<25}'.format(k, repr(returnData.get(k)), repr(v)))
+	        this.setState({ result: returnData });
 	    }
 	});
     if (value) {
@@ -74,13 +73,25 @@ const Primer3 = React.createClass({
     }
   },
 
+  renderResults(){
+    let data = this.state.result;
+    console.log(data);
+    const DISPLAY_KEYS = Object.keys(data);//['PRIMER_RIGHT_2_SEQUENCE', 'PRIMER_RIGHT_2_END_STABILITY'];
+    let nodes = DISPLAY_KEYS.map( (d,i) => {
+        let val = data[d];
+        console.log(d, val);
+        return <span key={`prim3${i}`}><strong>{d}:</strong> {val}<br /></span>;
+    });
+    return <span>{nodes}</span>;
+  },
+
+
   renderExampleForm() {
 
     const Method = t.enums.of(['PCR', 'SEQUENCING'], 'Method');
-
     const Strand = t.enums.of(['ONE', 'BOTH'], 'Strand');
-
     const Coding = t.enums.of(['CODING', 'NONCODIG'], 'Coding');
+    const Endpoint = t.enums.of(['YES', 'NO'], 'Endpoint');
 
     Method.getTcombFormFactory = (options) => {
         return t.form.Radio;
@@ -94,12 +105,17 @@ const Primer3 = React.createClass({
         return t.form.Radio;
     };
 
+    Endpoint.getTcombFormFactory = (options) => {
+        return t.form.Radio;
+    };
+
     const PcrFormSchema = t.struct({
        gene_name: t.String,
        sequence: t.maybe(t.String),
        distance_from_start_codon: t.Number,
        distance_from_stop_codon: t.Number,
-       lenght_dna_primers: t.Number,
+       end_point: Endpoint,
+       length_dna_primers: t.Number,
        optimum_tm: t.Number,
        minimum_tm: t.Number,
        maximum_tm: t.Number,
@@ -116,72 +132,43 @@ const Primer3 = React.createClass({
     });
 
 
-    const rOptions = t.struct({
-       optimum_gc: t.Number,
-       minimum_gc: t.Number,
-       maximum_gc: t.Number
-    });
-
-    const GCContent = t.struct({
-       optimum_gc: t.Number,
-       minimum_gc: t.Number,
-       maximum_gc: t.Number
-    });
-
-    const Length = t.struct({
+    const SeqFormSchema = t.struct({
+       gene_name: t.String,
+       sequence: t.maybe(t.String),
+       distance_from_start_codon: t.String,
+       distance_from_stop_codon: t.String,
+       length_dna_primers: t.String,
+       method: Method,
+       which_strand: Coding,
+       num_strands: Strand,
        distance_between_primers: t.Number,
        optimum_primer_length: t.Number,
        minimum_length: t.Number,
        maximum_length: t.Number,
-    });
-
-    const Distance = t.struct({
-       distance_from_start_codon: t.String,
-       distance_from_stop_codon: t.String,
-       length_dna_primers: t.String,
-    });
-
-    const SeqFormSchema = t.struct({
-       gene_name: t.String,
-       sequence: t.maybe(t.String),
-       method: Method,
-       which_strand: Coding,
-       num_strands: Strand,
-       len_options: Length,
-       dis_options: Distance,
-       gc_options: GCContent,
-       len_options: Length,
+       optimum_gc: t.Number,
+       minimum_gc: t.Number,
+       maximum_gc: t.Number,
        self_anneal: t.Number,
        self_end_anneal: t.Number
     });
 
-    const gcLayout = locals => {
+
+    const formLayout = locals => {
       return (
-        <div className='row'>
+         <div className='row'>
+          <div className='columns small-4'>{locals.inputs.distance_from_start_codon}</div>
+          <div className='columns small-4'>{locals.inputs.distance_from_stop_codon}</div>
+          <div className='columns small-4'>{locals.inputs.distance_between_primers}</div>
+
           <div className='columns small-4'>{locals.inputs.optimum_gc}</div>
           <div className='columns small-4'>{locals.inputs.minimum_gc}</div>
           <div className='columns small-4'>{locals.inputs.maximum_gc}</div>
-        </div>
-      );
-    };
 
-    const lenLayout = locals => {
-      return (
-        <div className='row'>
-          <div className='columns small-3'>{locals.inputs.distance_between_primers}</div>
+          <div className='columns small-3'>{locals.inputs.length_dna_primers}</div>
           <div className='columns small-3'>{locals.inputs.optimum_primer_length}</div>
           <div className='columns small-3'>{locals.inputs.minimum_length}</div>
           <div className='columns small-3'>{locals.inputs.maximum_length}</div>
-        </div>
-      );
-    };
 
-    const disLayout = locals => {
-      return (
-        <div className='row'>
-          <div className='columns small-4'>{locals.inputs.distance_from_start_codon}</div>
-          <div className='columns small-4'>{locals.inputs.distance_from_stop_codon}</div>
-          <div className='columns small-4'>{locals.inputs.length_dna_primers}</div>
         </div>
       );
     };
@@ -189,23 +176,15 @@ const Primer3 = React.createClass({
     var options = {
 
         fields: {
-            gene_name: {type: 'textbox'},
+            gene_name:{type: 'textbox'},
             sequence: {type: 'textarea'},
-            gc_options: {
-                template: gcLayout
-            },
-            len_options: {
-                template: lenLayout
-            },
-            dis_options: {
-                template: disLayout
-            }
+            template: formLayout
        }
     };
 
     return (
       <form onSubmit={this.handleSubmit}>
-        <t.form.Form ref="primerForm" type={SeqFormSchema}
+        <t.form.Form ref="primerForm" type={PcrFormSchema}
         value={this.state.value} onChange={this.onChange} options={options}/>
         <div className="form-group">
           <button type="submit" className="button primary">Save</button>
@@ -214,9 +193,11 @@ const Primer3 = React.createClass({
     );
   },
 
+
+
   render () {
     if (this.state.result) {
-        return <p>{this.state.result}</p>;
+        return this.renderResults();
     }
     return this.renderExampleForm();
   },
