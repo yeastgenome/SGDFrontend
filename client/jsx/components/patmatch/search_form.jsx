@@ -396,11 +396,12 @@ var SearchForm = React.createClass({
 		    window.localStorage.setItem("strand", strand);
                 }
 
+		console.log("pattern="+pattern);
+
 		$.ajax({
 			url: PATMATCH_URL,
 			data_type: 'json',
 			type: 'POST',
-
 			data: { 'seqtype':      seqtype,
 			        'pattern':      pattern,
 				'dataset':      dataset,
@@ -414,6 +415,7 @@ var SearchForm = React.createClass({
 			success: function(data) {
 			      this.setState({isComplete: true,
 			                     resultData: data});
+			      console.log("data="+data);
 			}.bind(this),
 			error: function(xhr, status, err) {
 			      this.setState({isPending: true}); 
@@ -428,10 +430,6 @@ var SearchForm = React.createClass({
                 var pattern = window.localStorage.getItem("pattern");
                 var seqtype = window.localStorage.getItem("seqtype");
 		var strand  = window.localStorage.getItem("strand");
-
-		console.log("pattern=" + pattern);
-		console.log("totalHits=" + totalHits);
-		console.log("uniqueHits=" + uniqueHits);
 
                 var configData = this.state.configData;
                 var seqSearched = 0;
