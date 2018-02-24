@@ -78,6 +78,9 @@ var SearchForm = React.createClass({
 			var totalHits = this.state.resultData.totalHits;
 			var uniqueHits = this.state.resultData.uniqueHits;
 			
+			console.log("data="+data);
+			console.log("totalHits="+totalHits);
+
 			if (totalHits == 0) {
 			     return (<div><p>No hits found for your pattern. Please modify your pattern and try again..</p></div>);
 			}
@@ -401,10 +404,7 @@ var SearchForm = React.createClass({
                 }
 
 		var pattern = pattern.replace("%3C", "<");
-
-		console.log("pattern="+pattern);
 		var pattern = pattern.replace("%3E", ">");
-		console.log("pattern="+pattern);
 
 		$.ajax({
 			url: PATMATCH_URL,
