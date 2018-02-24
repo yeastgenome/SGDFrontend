@@ -397,6 +397,8 @@ var SearchForm = React.createClass({
                 }
 
 		console.log("pattern="+pattern);
+		var pattern = pattern.replace("%3C", "<");
+		console.log("pattern="+pattern);
 
 		$.ajax({
 			url: PATMATCH_URL,
