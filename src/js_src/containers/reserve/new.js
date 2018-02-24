@@ -47,6 +47,12 @@ class GeneNameReservation extends Component {
       publication_title: t.maybe(t.String),
       journal: t.maybe(t.String),
       year: t.maybe(t.String),
+      status: t.enums.of([
+        'In press',
+        'Submitted',
+        'In preparation',
+        'Unpublished'
+      ]),
       authors: t.maybe(t.list(Author))
     });
     let authorLayout = locals => {
@@ -76,6 +82,11 @@ class GeneNameReservation extends Component {
             <div className='column small-6'>{locals.inputs.publication_title}</div>
             <div className='column small-4'>{locals.inputs.journal}</div>
             <div className='column small-2'>{locals.inputs.year}</div>
+          </div>
+          <div className='row'>
+            <div className='column small-3'>
+              {locals.inputs.status}
+            </div>
           </div>
           <span><a href='https://orcid.org/register' target='_new'><i className='fa fa-question-circle' /> Register for an ORCID iD</a></span>
           <div>{locals.inputs.authors}</div>
@@ -112,7 +123,7 @@ class GeneNameReservation extends Component {
     let _onSuccess = () => {
       this.setState({ isSuccess: true });
     };
-    let _defaultData = { colleague_id: this.state.colleagueId, authors: [{ first_name: ''}] };
+    let _defaultData = { colleague_id: this.state.colleagueId, status: 'Unpublished', authors: [{ first_name: ''}] };
     t.form.Form.i18n = {
       optional: '',
       required: '',
