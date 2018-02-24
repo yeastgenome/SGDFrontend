@@ -33,7 +33,7 @@ def _run_patmatch(p):
                  "uniqueHits": dataSet[1],
                  "totalHits": dataSet[2] }
     else:
-        data = { "hits": dataSet[0],
+        data = { "hits": json.loads(dataSet[0]),
                  "uniqueHits": 0,
                  "totalHits": 0 }
                  
