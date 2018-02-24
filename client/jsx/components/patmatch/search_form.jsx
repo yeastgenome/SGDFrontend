@@ -21,10 +21,14 @@ var SearchForm = React.createClass({
 	        
 		var param = Params.getParams();
 		
-		var submitted = null;
-		
+		var submitted = null;				
 		if (param['pattern']) {
 		     submitted = 1;
+		}
+		
+		var get_seq = 0;
+		if (param['seqname']) {
+		   get_seq = 1;
 		}
 
 		this._getConfigData();
@@ -45,9 +49,13 @@ var SearchForm = React.createClass({
 			insersion: null,
 			substitution: null,
 			resultData: {},
+			seqname: null,
+			beg: null,
+			end: null,
 			param: param,
 			didPatmatch: 0,
-			submitted: submitted
+			submitted: submitted,
+			getSeq: get_seq
 		};
 	},
 
@@ -64,11 +72,28 @@ var SearchForm = React.createClass({
 	        if (this.state.submitted) {
 	              this._doPatmatch();
 	        }
+		if (this.state.getSeq) {
+		      this._getSeq();
+		}
 	},
 
 	_getFormNode: function () {
 				
+
 	        if (this.state.isComplete) {
+
+		   	if (this.state.getSeq) {
+			     
+			     // var dataset = window.localStorage.getItem("dataset");
+                             // var pattern = window.localStorage.getItem("pattern");
+                	     // var seqtype = window.localStorage.getItem("seqtype");
+                	     // var strand  = window.localStorage.getItem("strand");
+			     
+			     var seq = this.state.resultData.seq;
+			     var defline = this.state.resultData.defline;
+
+			     return (<div dangerouslySetInnerHTML={{ __html: defline }} />);
+			 }
 
 		        // if (this.state.resultData.hits == '') {
 			//     var errorReport = this.state.resultData.result;
@@ -340,12 +365,6 @@ var SearchForm = React.createClass({
         },
 
 	_onSubmit: function (e) {
-
-		// var strain = this.refs.genome.value.trim();
-		// var seqtype = this.refs.seqtype.value.trim();
-		// var pattern = this.refs.pattern.value.trim();
-		// var dataset = this.refs.dataset.value.trim();
-		// more here		
                 	
 		var genome = this.state.genome.value.trim();
 		var seqtype = this.state.seqtype.value.trim();
@@ -427,6 +446,33 @@ var SearchForm = React.createClass({
 			}.bind(this) 
 		});
 
+	},
+
+	_getSeq: function() {
+
+		var param = this.state.param;
+
+		window.localStorage.setItem("dataset", param['dataset']);
+                window.localStorage.setItem("seqname", param['seqname']);
+                window.localStorage.setItem("beg", param['beg']);
+		window.localStorage.setItem("end", param['end']);
+
+		$.ajax({
+                        url: PATMATCH_URL,
+                        data_type: 'json',
+                        type: 'POST',
+                        data: { 'seqname':      param['seqname'],
+                                'dataset':      param['dataset']
+                        },
+                        success: function(data) {
+                              this.setState({isComplete: true,
+                                             resultData: data});
+                        }.bind(this),
+                        error: function(xhr, status, err) {
+                              this.setState({isPending: true});
+                        }.bind(this)
+                });
+ 
 	},
 
 	_getSummaryTable: function(totalHits, uniqueHits) {
