@@ -28,6 +28,7 @@ var SearchForm = React.createClass({
 		
 		var get_seq = 0;
 		if (param['seqname']) {
+		   console.log('seqname is passed');
 		   get_seq = 1;
 		}
 
@@ -74,6 +75,7 @@ var SearchForm = React.createClass({
 	              this._doPatmatch();
 	        }
 		if (this.state.getSeq) {
+		      console.log('Getting seq now..');
 		      this._getSeq();
 		}
 	},
@@ -455,6 +457,10 @@ var SearchForm = React.createClass({
                 window.localStorage.setItem("beg", param['beg']);
 		window.localStorage.setItem("end", param['end']);
 
+
+		console.log('seqname='+param['seqname']);
+		console.log('dataset='+param['dataset']);
+
 		$.ajax({
                         url: PATMATCH_URL,
                         data_type: 'json',
@@ -465,9 +471,11 @@ var SearchForm = React.createClass({
                         success: function(data) {
                               this.setState({seqFetched: true,
                                              resultData: data});
+			      console.log('seq fetched..');
                         }.bind(this),
                         error: function(xhr, status, err) {
                               this.setState({isPending: true});
+			      console.log('seq fetch error..');
                         }.bind(this)
                 });
  
