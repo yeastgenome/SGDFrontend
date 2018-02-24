@@ -14,7 +14,7 @@ def do_patmatch(request):
         return Response(body=json.dumps(data), content_type='application/json')
 
     if p.get('seqname'):
-        data = _get_seq()
+        data = _get_seq(p)
         return Response(body=json.dumps(data), content_type='application/json')
 
     data = _run_patmatch(p)
