@@ -55,6 +55,7 @@ var SearchForm = React.createClass({
 			param: param,
 			didPatmatch: 0,
 			submitted: submitted,
+			seqFetched: false,
 			getSeq: get_seq
 		};
 	},
@@ -78,22 +79,19 @@ var SearchForm = React.createClass({
 	},
 
 	_getFormNode: function () {
-				
+					
+		if (this.state.seqFetched) {
+		        // var dataset = window.localStorage.getItem("dataset");
+                        // var pattern = window.localStorage.getItem("pattern");
+                        // var seqtype = window.localStorage.getItem("seqtype");
+                        // var strand  = window.localStorage.getItem("strand");
 
-	        if (this.state.isComplete) {
+                        var seq = this.state.resultData.seq;
+                        var defline = this.state.resultData.defline;
 
-		   	if (this.state.getSeq) {
-			     
-			     // var dataset = window.localStorage.getItem("dataset");
-                             // var pattern = window.localStorage.getItem("pattern");
-                	     // var seqtype = window.localStorage.getItem("seqtype");
-                	     // var strand  = window.localStorage.getItem("strand");
-			     
-			     var seq = this.state.resultData.seq;
-			     var defline = this.state.resultData.defline;
-
-			     return (<div dangerouslySetInnerHTML={{ __html: defline }} />);
-			 }
+                        return (<div dangerouslySetInnerHTML={{ __html: defline }} />);  
+		}
+	        else if (this.state.isComplete) {
 
 		        // if (this.state.resultData.hits == '') {
 			//     var errorReport = this.state.resultData.result;
@@ -465,7 +463,7 @@ var SearchForm = React.createClass({
                                 'dataset':      param['dataset']
                         },
                         success: function(data) {
-                              this.setState({isComplete: true,
+                              this.setState({seqFetched: true,
                                              resultData: data});
                         }.bind(this),
                         error: function(xhr, status, err) {
