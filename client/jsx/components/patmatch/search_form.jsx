@@ -77,6 +77,10 @@ var SearchForm = React.createClass({
 			var data = this.state.resultData.hits;
 			var totalHits = this.state.resultData.totalHits;
 			var uniqueHits = this.state.resultData.uniqueHits;
+			
+			if (totalHits == 0) {
+			     return (<div><p>No hits found for your pattern. Please modify your pattern and try again..</p></div>);
+			}
 
 			var _summaryTable = this._getSummaryTable(totalHits, uniqueHits)
 			var _resultTable = this._getResultTable(data)
