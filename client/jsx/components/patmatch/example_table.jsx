@@ -19,7 +19,7 @@ module.exports = {
 		rows.push(["Peptide Searches", "B", "D or N", <span><a href='/nph-patmatch?pattern=FLGB'>FLGB</a></span>]);
 	        rows.push(["Peptide Searches", "Z", "E or Q", <span><a href='/nph-patmatch?pattern=GLFGZ'>GLFGZ</a></span>]);
 
-		rows.push(["Peptide Searches", "X or .", "Any amino acid", <span><a href='/nph-patmatch?pattern=DXXXDNR..QS'>DXXXDNR..QS</a></span>]);
+		rows.push(["Peptide Searches", "X or .", "Any amino acid", <span><a href='/nph-patmatch?pattern=DTXXDN..RQS'>DTXXDN..RQS</a></span>]);
 
 		rows.push(["Nucleotide Searches", "ACTGU", "Exact match", <span><a href='/nph-patmatch?seqtype=nuc&pattern=ACGGCGTA'>ACGGCGTA</a></span>]);
 		rows.push(["Nucleotide Searches", "R", "Any purine base (AG)", <span><a href='/nph-patmatch?seqtype=nuc&pattern=AATTTGGRGGR'>AATTTGGRGGR</a></span>]);
