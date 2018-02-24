@@ -12,9 +12,28 @@ def do_patmatch(request):
     if p.get('conf'):
         data = _get_config()
         return Response(body=json.dumps(data), content_type='application/json')
-        
+
+    if p.get('seqname'):
+        data = _get_seq()
+        return Response(body=json.dumps(data), content_type='application/json')
+
     data = _run_patmatch(p)
     return Response(body=json.dumps(data), content_type='application/json')
+
+def _get_seq(p):
+
+    import urllib
+
+    paramData = urllib.urlencode({ 'seqname': p.get('seqname'),
+                                   'dataset': p.get('dataset') })
+
+    url = patmatch_url + "cgi-bin/aws-patmatch"
+    req = Request(url=url, data=paramData)
+    res = urlopen(req)
+    result = res.read();
+
+    return json.loads(result)
+
 
 def _run_patmatch(p):
 
