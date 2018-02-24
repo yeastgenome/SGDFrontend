@@ -397,7 +397,10 @@ var SearchForm = React.createClass({
                 }
 
 		var pattern = pattern.replace("%3C", "<");
+
+		console.log("pattern="+pattern);
 		var pattern = pattern.replace("%3E", ">");
+		console.log("pattern="+pattern);
 
 		$.ajax({
 			url: PATMATCH_URL,
@@ -416,7 +419,6 @@ var SearchForm = React.createClass({
 			success: function(data) {
 			      this.setState({isComplete: true,
 			                     resultData: data});
-			      console.log("data="+data);
 			}.bind(this),
 			error: function(xhr, status, err) {
 			      this.setState({isPending: true}); 
