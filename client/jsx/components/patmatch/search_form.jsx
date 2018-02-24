@@ -396,9 +396,8 @@ var SearchForm = React.createClass({
 		    window.localStorage.setItem("strand", strand);
                 }
 
-		console.log("pattern="+pattern);
 		var pattern = pattern.replace("%3C", "<");
-		console.log("pattern="+pattern);
+		var pattern = pattern.replace("%3E", ">");
 
 		$.ajax({
 			url: PATMATCH_URL,
@@ -453,6 +452,10 @@ var SearchForm = React.createClass({
                 _summaryRows.push(['Total Hits', totalHits]);
                 _summaryRows.push(['Number of Unique Sequence Entries Hit', uniqueHits]);
                 _summaryRows.push(['Sequences Searched', seqSearched]);
+
+		var pattern = pattern.replace("%3C", "<");
+		var pattern = pattern.replace("%3E", ">");
+
                 if (seqtype == "dna" || seqtype.indexOf('nuc') >= 0) {
                        _summaryRows.push(['Entered nucleotide pattern', pattern]);
                 }
