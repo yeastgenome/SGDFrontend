@@ -28,7 +28,6 @@ var SearchForm = React.createClass({
 		
 		var get_seq = 0;
 		if (param['seqname']) {
-		   console.log('seqname is passed');
 		   get_seq = 1;
 		}
 
@@ -82,7 +81,11 @@ var SearchForm = React.createClass({
 
 	_getFormNode: function () {
 					
-		if (this.state.seqFetched) {
+		if (this.state.getSeq && this.state.seqFetched) {
+		        this._getSeq();
+			return;
+		}		   		       
+		else if (this.state.seqFetched) {
 		        // var dataset = window.localStorage.getItem("dataset");
                         // var pattern = window.localStorage.getItem("pattern");
                         // var seqtype = window.localStorage.getItem("seqtype");
