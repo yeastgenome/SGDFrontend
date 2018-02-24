@@ -429,6 +429,10 @@ var SearchForm = React.createClass({
                 var seqtype = window.localStorage.getItem("seqtype");
 		var strand  = window.localStorage.getItem("strand");
 
+		console.log("pattern=" + pattern);
+		console.log("totalHits=" + totalHits);
+		console.log("uniqueHits=" + uniqueHits);
+
                 var configData = this.state.configData;
                 var seqSearched = 0;
                 var datasetDisplayName = "";
