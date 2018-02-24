@@ -69,11 +69,12 @@ var SearchForm = React.createClass({
 	_getFormNode: function () {
 				
 	        if (this.state.isComplete) {
-		        if (this.state.resultData.hits == '') {
-			     var errorReport = this.state.resultData.result;
-			     return (<div dangerouslySetInnerHTML={{ __html: errorReport }} />);
 
-			}
+		        // if (this.state.resultData.hits == '') {
+			//     var errorReport = this.state.resultData.result;
+			//     return (<div dangerouslySetInnerHTML={{ __html: errorReport }} />);
+			// }
+
 			var data = this.state.resultData.hits;
 			var totalHits = this.state.resultData.totalHits;
 			var uniqueHits = this.state.resultData.uniqueHits;
@@ -423,15 +424,9 @@ var SearchForm = React.createClass({
 			success: function(data) {
 			      this.setState({isComplete: true,
 			                     resultData: data});
-
-			      console.log("Hello data="+data);
-
 			}.bind(this),
 			error: function(xhr, status, err) {
 			      this.setState({isPending: true});
-
-			      console.log("OK BYE");
- 
 			}.bind(this) 
 		});
 
