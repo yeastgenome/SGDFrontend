@@ -90,6 +90,8 @@ var SearchForm = React.createClass({
                         // var pattern = window.localStorage.getItem("pattern");
                         // var seqtype = window.localStorage.getItem("seqtype");
                         // var strand  = window.localStorage.getItem("strand");
+			
+			console.log("Pattern="+param['pattern']);
 
                         var seq = this.state.resultData.seq;
 			var pattern = "SGMCK";
