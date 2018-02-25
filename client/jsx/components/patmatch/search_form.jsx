@@ -114,7 +114,7 @@ var SearchForm = React.createClass({
 			}    
 			
                         var defline = this.state.resultData.defline;
-			var result = "<h3>" + defline + "</h3><p>" + seqSection + "</p>" + "<p>" + seq + "</p>"
+			var result = <div><h3> { defline } </h3><p> { seqSection } </p></div>;
                         return (<div dangerouslySetInnerHTML={{ __html: result }} />);
   
 		}
