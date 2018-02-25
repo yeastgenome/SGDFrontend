@@ -86,25 +86,19 @@ var SearchForm = React.createClass({
 			return;
 		}		
 		else if (this.state.getSeq && this.state.seqFetched) {
-		        // var dataset = window.localStorage.getItem("dataset");
-                        // var pattern = window.localStorage.getItem("pattern");
-                        // var seqtype = window.localStorage.getItem("seqtype");
-                        // var strand  = window.localStorage.getItem("strand");
 
-			var param = this.state.param;
+		        var param = this.state.param;
 			
-			console.log("beg="+param['beg']);
-			
-			var beg = 6;
-			var end = 10;
+			var beg = param['beg'];
+			var end = param['end'];
+
                         var seq = this.state.resultData.seq;
 			
-			// var seqHlited = seq.replace(pattern, "<font color='blue'>"+pattern+"</font>"); 
 			var seqSection = "";
 			var maxlen = 60;
 			var i = 1;
 			var j = 1;
-			var seqBases = seqHlited.split('');
+			var seqBases = seq.split('');
 			for (var base in seqBases) {
 			    if (j > maxlen) {
 			        seqSection = seqSection + "<br>";
@@ -409,7 +403,6 @@ var SearchForm = React.createClass({
 		    window.localStorage.setItem("seqtype", seqtype);
 		    window.localStorage.setItem("pattern", pattern);
 		    window.localStorage.setItem("dataset", dataset);
-		    // more here
 		}
 		else {
 		    e.preventDefault();
@@ -483,11 +476,6 @@ var SearchForm = React.createClass({
 	_getSeq: function() {
 
 		var param = this.state.param;
-
-		window.localStorage.setItem("dataset", param['dataset']);
-                window.localStorage.setItem("seqname", param['seqname']);
-                window.localStorage.setItem("beg", param['beg']);
-		window.localStorage.setItem("end", param['end']);
 
 		$.ajax({
                         url: PATMATCH_URL,
