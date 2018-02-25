@@ -92,11 +92,12 @@ var SearchForm = React.createClass({
 			var beg = param['beg'];
 			var end = param['end'];
 
-                        var seq = this.state.resultData.seq;
+                        var seq = this.state.resultData.seq.split("function")[0];
 			
 			var seqSection = "";
 			var maxlen = 60;
 			var j = 1;
+
 			var seqBases = seq.split('');
 			for (var i in seqBases) {
 			    if (j > maxlen) {
@@ -113,7 +114,7 @@ var SearchForm = React.createClass({
 			}    
 			
                         var defline = this.state.resultData.defline;
-			var result = "<h3>" + defline + "</h3><p>" + seqSection + "</p>";
+			var result = "<h3>" + defline + "</h3><p>" + seqSection + "</p>" 
                         return (<div dangerouslySetInnerHTML={{ __html: result }} />);
   
 		}
