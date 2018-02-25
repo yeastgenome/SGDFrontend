@@ -73,13 +73,14 @@ var SearchForm = React.createClass({
 	        if (this.state.submitted) {
 	              this._doPatmatch();
 	        }
-		if (this.state.getSeq) {
-		      this._getSeq();
-		}
+		// if (this.state.getSeq) {
+		//      this._getSeq();
+		// }
 	},
 
 	_getFormNode: function () {
 
+		
 		if (this.state.getSeq && !this.state.seqFetched) {
 		        this._getSeq();
 			return;
@@ -92,7 +93,7 @@ var SearchForm = React.createClass({
 
                         var seq = this.state.resultData.seq;
                         var defline = this.state.resultData.defline;
-			var result = "<h3>{defline}</h3><p>{seq}</p>";
+			var result = "<h3>" + defline + "</h3><p>" + seq + "</p>";
                         return (<div dangerouslySetInnerHTML={{ __html: result }} />);
   
 		}
