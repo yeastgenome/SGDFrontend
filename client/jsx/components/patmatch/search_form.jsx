@@ -90,14 +90,38 @@ var SearchForm = React.createClass({
                         // var pattern = window.localStorage.getItem("pattern");
                         // var seqtype = window.localStorage.getItem("seqtype");
                         // var strand  = window.localStorage.getItem("strand");
-			
-			console.log("Pattern="+param['pattern']);
 
+			var param = this.state.param;
+			
+			console.log("beg="+param['beg']);
+			
+			var beg = 6;
+			var end = 10;
                         var seq = this.state.resultData.seq;
-			var pattern = "SGMCK";
-			var seqHlited = seq.replace(pattern, "<font color='blue'>"+pattern+"</font>"); 
+			
+			// var seqHlited = seq.replace(pattern, "<font color='blue'>"+pattern+"</font>"); 
+			var seqSection = "";
+			var maxlen = 60;
+			var i = 1;
+			var j = 1;
+			var seqBases = seqHlited.split('');
+			for (var base in seqBases) {
+			    if (j > maxlen) {
+			        seqSection = seqSection + "<br>";
+				j = 1;
+			    }
+			    if (i >= beg && i <= end) { 
+			        seqSection = seqSection + "<font color='blue'>" + base + "</font>";
+			    }
+			    else {
+			        seqSection = seqSection + base;
+			    }
+			    i = i + 1;
+			    j = j + 1;
+			}    
+			
                         var defline = this.state.resultData.defline;
-			var result = "<h3>" + defline + "</h3><p>" + seqHlited + "</p>";
+			var result = "<h3>" + defline + "</h3><p>" + seqSection + "</p>";
                         return (<div dangerouslySetInnerHTML={{ __html: result }} />);
   
 		}
