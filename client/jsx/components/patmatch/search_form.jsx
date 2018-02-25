@@ -498,9 +498,9 @@ var SearchForm = React.createClass({
 
                 var defline = this.state.resultData.defline;
 
-		return(<div><h3>The matching region is highlighted in the following retrieved sequence.</h3>
-                      {defline}
-		      {seq}
+		return(<div><h2>The matching region is highlighted in the following retrieved sequence.</h2>
+                      <h3>{defline}</h3>
+		      <p>{seqSection}</p>
 		      </div>);
 
 	},
