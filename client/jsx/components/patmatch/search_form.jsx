@@ -92,8 +92,10 @@ var SearchForm = React.createClass({
                         // var strand  = window.localStorage.getItem("strand");
 
                         var seq = this.state.resultData.seq;
+			var pattern = "SGMCK";
+			var seqHlited = seq.replace(pattern, "<font color='blue'>"+pattern+"</font>"); 
                         var defline = this.state.resultData.defline;
-			var result = "<h3>" + defline + "</h3><p>" + seq + "</p>";
+			var result = "<h3>" + defline + "</h3><p>" + seqHlited + "</p>";
                         return (<div dangerouslySetInnerHTML={{ __html: result }} />);
   
 		}
