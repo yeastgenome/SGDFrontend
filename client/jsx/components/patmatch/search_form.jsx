@@ -81,7 +81,8 @@ var SearchForm = React.createClass({
 
 	_getFormNode: function () {
 					
-		if (this.state.getSeq && this.state.seqFetched) {
+		if (this.state.getSeq && !this.state.seqFetched) {
+
 		        this._getSeq();
 			return;
 		}		   		       
