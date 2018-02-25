@@ -96,21 +96,19 @@ var SearchForm = React.createClass({
 			
 			var seqSection = "";
 			var maxlen = 60;
-			var i = 1;
 			var j = 1;
 			var seqBases = seq.split('');
-			for (var base in seqBases) {
+			for (var i in seqBases) {
 			    if (j > maxlen) {
 			        seqSection = seqSection + "<br>";
 				j = 1;
 			    }
-			    if (i >= beg && i <= end) { 
-			        seqSection = seqSection + "<font color='blue'>" + base + "</font>";
+			    if (i >= beg-1 && i <= end-1) { 
+			        seqSection = seqSection + "<font color='blue'>" + seqBases[i] + "</font>";
 			    }
 			    else {
-			        seqSection = seqSection + base;
+			        seqSection = seqSection + seqBases[i];
 			    }
-			    i = i + 1;
 			    j = j + 1;
 			}    
 			
