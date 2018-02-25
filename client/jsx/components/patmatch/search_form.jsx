@@ -1,19 +1,19 @@
-"use strict";
+// "use strict";
 
-var React = require("react");
-var _ = require("underscore");
-var $ = require("jquery");
+import React from 'react';
+import _ from 'underscore';
+import $ from 'jquery';
 
-var Checklist = require("../widgets/checklist.jsx");
+// var React = require("react");
+// var _ = require("underscore");
+// var $ = require("jquery");
 
-var Params = require("../mixins/parse_url_params.jsx");
+const Checklist = require("../widgets/checklist.jsx");
+const Params = require("../mixins/parse_url_params.jsx");
+const ExampleTable = require("./example_table.jsx");
+const DataTable = require("../widgets/data_table.jsx");
 
-var ExampleTable = require("./example_table.jsx");
-
-var DataTable = require("../widgets/data_table.jsx");
-
-
-var PATMATCH_URL = "/run_patmatch";
+const PATMATCH_URL = "/run_patmatch";
 
 var SearchForm = React.createClass({
 
@@ -95,7 +95,7 @@ var SearchForm = React.createClass({
 			var seqNode = this._getSeqNode(seq, beg, end);
 			return seqNode;
 			
-                        // return (<div dangerouslySetInnerHTML={{ __html: result }} />);
+                        return (<div dangerouslySetInnerHTML={{ __html: seqNode }} />);
   
 		}
 	        else if (this.state.isComplete) {
@@ -497,11 +497,12 @@ var SearchForm = React.createClass({
 		}
 
                 var defline = this.state.resultData.defline;
-
-		return(<div><h2>The matching region is highlighted in the following retrieved sequence.</h2>
-                      <h3>{defline}</h3>
-		      <p>{seqSection}</p>
-		      </div>);
+	
+		var seqNode = "<h2>The matching region is highlighted in the following retrieved sequence (in <font color='blue'>blue</font>).</h2><h3>" + defline + "</h3><p>" + seqSection + "</p>";
+			
+		return seqNode;
+     
+		// return <div dangerouslySetInnerHTML={{ __html: seqNode }} />);
 
 	},
 
