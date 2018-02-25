@@ -88,34 +88,13 @@ var SearchForm = React.createClass({
 		else if (this.state.getSeq && this.state.seqFetched) {
 
 		        var param = this.state.param;
-			
 			var beg = param['beg'];
 			var end = param['end'];
-
                         var seq = this.state.resultData.seq;
 			
-			var seqSection = "";
-			var maxlen = 60;
-			var j = 1;
-
-			var seqBases = seq.split('');
-			for (var i in seqBases) {
-			    if (j > maxlen) {
-			        seqSection = seqSection + "<br>";
-				j = 1;
-			    }
-			    if (i >= beg-1 && i <= end-1) { 
-			        seqSection = seqSection + "<font color='blue'>" + seqBases[i] + "</font>";
-			    }
-			    else {
-			        seqSection = seqSection + seqBases[i];
-			    }
-			    j = j + 1;
-			}    
+			var seqNode = this._getSeqNode(seq, beg, end);
+			return seqNode;
 			
-                        var defline = this.state.resultData.defline;
-			var result = "<h3>" + defline + "</h3><p>" + seqSection + "</p>";
-			return (<div> { result } </div>);
                         // return (<div dangerouslySetInnerHTML={{ __html: result }} />);
   
 		}
@@ -493,6 +472,37 @@ var SearchForm = React.createClass({
                         }.bind(this)
                 });
  
+	},
+
+	_getSeqNode: function(seq, beg, end) {
+
+		var seqSection = "";
+                var maxlen = 60;
+                var j = 1;
+
+                var seqBases = seq.split('');
+                for (var i in seqBases) {
+                     if (j > maxlen) {
+                           seqSection = seqSection + "<br>";
+                           j = 1;
+                     }
+                     if (i >= beg-1 && i <= end-1) {
+                           seqSection = seqSection + "<font color='blue'>" + seqBases[i] + "</font>";
+                     }
+                     else {
+                           seqSection = seqSection + seqBases[i];
+                     }
+                     j = j + 1;
+                        
+		}
+
+                var defline = this.state.resultData.defline;
+
+		return(<div><h3>The matching region is highlighted in the following retrieved sequence.</h3>
+                      {defline}
+		      {seqSection}
+		      </div>);
+
 	},
 
 	_getSummaryTable: function(totalHits, uniqueHits) {
