@@ -500,7 +500,7 @@ var SearchForm = React.createClass({
 
 		return(<div><h3>The matching region is highlighted in the following retrieved sequence.</h3>
                       {defline}
-		      {seqSection}
+		      {seq}
 		      </div>);
 
 	},
