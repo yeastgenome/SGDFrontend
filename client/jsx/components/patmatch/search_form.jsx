@@ -96,9 +96,9 @@ var SearchForm = React.createClass({
 			var seqNode = this._getSeqNode(seq, beg, end);
 			 
 
-			// return (<div dangerouslySetInnerHTML={{ __html: seqNode }} />);
+			return (<div dangerouslySetInnerHTML={{ __html: seqNode }} />);
 				
-			return <div className="panel sgd-viz">{seqNode}</div>;
+			// return <div className="panel sgd-viz">{seqNode}</div>;
 
 		}
 	        else if (this.state.isComplete) {
@@ -210,17 +210,25 @@ var SearchForm = React.createClass({
     	        });
 		
 		
-    	  	var seqNode = _.map(lineArr, (l, i) => {
-    	  	       return <span key={'seq' + i}>{l}<br /></span>;
-    	  	});
+    	  	// var seqNode = _.map(lineArr, (l, i) => {
+    	  	//       return <span key={'seq' + i}>{l}<br /></span>;
+    	  	// });
+		//		
+		// return (<div>
+             	//       <blockquote style={{ fontFamily: "Monospace", fontSize: 14 }}>
+             	//       <pre>
+                //       {seqNode}
+             	//       </pre>
+             	//       </blockquote>
+             	//       </div>);
 		
-		return (<div>
-             	       <blockquote style={{ fontFamily: "Monospace", fontSize: 14 }}>
-             	       <pre>
-                       {seqNode}
-             	       </pre>
-             	       </blockquote>
-             	       </div>);
+		var seqlines = "";
+		_.map(lineArr, (l, i) => {
+		    seqlines += l + "\n";
+		});
+
+		return "<blockquote style={{ fontFamily: 'Monospace', fontSize: 14 }}><pre>" + seqlines + "</pre></blockquote>";
+
 
 	},
 
