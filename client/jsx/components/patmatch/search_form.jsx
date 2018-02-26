@@ -89,7 +89,7 @@ var SearchForm = React.createClass({
 			
 			// var innerNode = (<SequenceDisplay sequence={seq} text={text} beg={beg} end={end} />);
 			
-			var seqNode = SequenceDisplay.ormatSequenceTextNode(seq, beg, end);
+			var seqNode = SequenceDisplay.formatSequenceTextNode(seq, beg, end);
  
 			console.log("seqNode="+seqNode);							
 
