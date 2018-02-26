@@ -68,18 +68,19 @@ const SequenceDisplay = React.createClass({
 	  }
 	  var baseArr = line.split("");
 	  var k = 0;
-	  var _newBaseArr =  _.map(baseArr, (base, j) => {
+	  var newLine = ""
+	  _.map(baseArr, (base, j) => {
 	      if (k < tmpBeg || k > tmpEnd || base == ' ') {
-	      	   return base;
+	      	   newLine += base;
 	      }
 	      else {
-	      	   return <strong style='color: blue;'> {base} </strong>;
+	      	   newLine += <strong style='color: blue;'> {base} </strong>;
 	      } 
 	      if (base != ' ') {
 	      	   k++;
 	      }
 	  });
-	  line = _newBaseArr.join(''); 
+	  line = newLine; 
       }
       return `${spacesStr}${lineNum} ${line}`;
     });
