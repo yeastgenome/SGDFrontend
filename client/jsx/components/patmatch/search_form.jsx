@@ -88,11 +88,7 @@ var SearchForm = React.createClass({
 			var text = this.state.resultData.defline;
 			
 			var innerNode = (<SequenceDisplay sequence={seq} text={text} beg={beg} end={end} />);
-
-			console.log("innerNode=" + <div> { innerNode } </div>);
-			
-			
-				
+							
 			return <div> { innerNode } </div>;
 
  

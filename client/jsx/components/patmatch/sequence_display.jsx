@@ -23,6 +23,8 @@ const SequenceDisplay = React.createClass({
 
     var sequenceTextNode = this._formatSequenceTextNode();
 
+    console.log(<div>sequenceTextNode</div>);
+
     return (<div>
             {textNode}
             {sequenceTextNode}
