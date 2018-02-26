@@ -40,11 +40,9 @@ const SequenceDisplay = React.createClass({
                    
       return (<div>
       	     <blockquote style={{ fontFamily: "Monospace", fontSize: 14 }}>
-
-      
+	     <pre>      
              	 {sequenceNode}
-      
-
+    	     </pre>
 	     </blockquote>
       	     </div>);
    
@@ -77,7 +75,7 @@ const SequenceDisplay = React.createClass({
 	      	   newLine += base;
 	      }
 	      else {
-	      	   newLine += <strong style='color: blue;'> {base} </strong>;
+	      	   newLine += <span style={{ color: 'blue' }} > {base} </span>;
 	      } 
 	      if (base != ' ') {
 	      	   k++;
