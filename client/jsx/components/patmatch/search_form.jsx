@@ -565,7 +565,9 @@ var SearchForm = React.createClass({
 
                            	// return [<span>{lspLink}</span>, d.count, d.matchingPattern, d.beg, d.end, 'Sequence', headline];
 
-				_tableRows.push([ <span><a href='/locus/{ d.seqname }'>{ name }</a></span>, d.count, d.matchingPattern, d.beg, d.end, 'Sequence', headline]);
+				var lspLink = '/locus/' + d.seqname;
+
+				_tableRows.push([ <span><a href={ lspLink } >{ name }</a></span>, d.count, d.matchingPattern, d.beg, d.end, 'Sequence', headline]);
 				
 			   }
                 });
