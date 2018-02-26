@@ -34,7 +34,7 @@ const SequenceDisplay = React.createClass({
     // console.log("textNode="+textNode);
     // console.log("sequenceTextNode="+sequenceTextNode);
 
-    return textNode + sequenceTextNode;
+    return sequenceTextNode;
 
   },
 
