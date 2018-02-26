@@ -536,15 +536,21 @@ var SearchForm = React.createClass({
 		    notFeat = 1;
 		}
 								
-		var _tableRows = _.map(data, d => {
-			  if (notFeat == 1) {
+		var _tableRows = [];
 
-			      	return [d.chr, d.orfs, d.count, d.matchingPattern, d.beg, d.end, 'Sequence'];
+		_.map(data, d => {
+			  if (notFeat == 1) {
+    
+			      	// return [d.chr, d.orfs, d.count, d.matchingPattern, d.beg, d.end, 'Sequence'];
+				
+				_tableRows.push([d.chr, d.orfs, d.count, d.matchingPattern, d.beg, d.end, 'Sequence']);
 
 			   }
 		    	   if (withDesc == 0) {
 
-			        return [d.seqname, d.count, d.matchingPattern, d.beg, d.end, 'Sequence'];
+			        // return [d.seqname, d.count, d.matchingPattern, d.beg, d.end, 'Sequence'];
+
+				_tableRows.push([d.seqname, d.count, d.matchingPattern, d.beg, d.end, 'Sequence']);
 
 			   }
 			   else {		    	   
@@ -560,7 +566,10 @@ var SearchForm = React.createClass({
 
 				var lspLink = "<a href=/locus/" + d.seqname + ">" + name + "</a>";
 
-                           	return [<span>{lspLink}</span>, d.count, d.matchingPattern, d.beg, d.end, 'Sequence', headline];
+                           	// return [<span>{lspLink}</span>, d.count, d.matchingPattern, d.beg, d.end, 'Sequence', headline];
+
+				_tableRows.push([ <span>{ lspLink }</span>, d.count, d.matchingPattern, d.beg, d.end, 'Sequence', headline]);
+				
 			   }
                 });
 
