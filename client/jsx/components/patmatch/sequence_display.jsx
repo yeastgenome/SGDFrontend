@@ -18,17 +18,21 @@ const SequenceDisplay = React.createClass({
   render: function () {
     var textNode = null;
     if (this.props.text) {
-      textNode = <h3>{this.props.text}</h3>;
+      // textNode = <h3>{this.props.text}</h3>;
+      textNode = "<h3>" + this.props.text + "</h3>";
     }
 
     var sequenceTextNode = this._formatSequenceTextNode();
 
     console.log(<div>sequenceTextNode</div>);
 
-    return (<div>
-            {textNode}
-            {sequenceTextNode}
-    </div>);
+    // return (<div>
+    //        {textNode}
+    //        {sequenceTextNode}
+    // </div>);
+
+    return textNode + sequenceTextNode;
+
   },
 
   _formatSequenceTextNode: function () {
@@ -37,7 +41,9 @@ const SequenceDisplay = React.createClass({
       var end = this.props.end;
       var sequenceNode = this._getSequenceNode(seq, beg, end);
 
-      return (<pre>{sequenceNode}</pre>);
+      // return (<pre>{sequenceNode}</pre>);
+
+      return "<pre>" + sequenceNod + "</pre>";
 
   },
 
