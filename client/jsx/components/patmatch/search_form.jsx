@@ -314,6 +314,7 @@ var SearchForm = React.createClass({
 		       </div>);
 
 	},
+
 	_getPatternExampleNote: function() {
 
 		var examples = ExampleTable.examples();
@@ -554,7 +555,12 @@ var SearchForm = React.createClass({
 			   	if (d.gene_name) {
 			       	     name = name + "/" + d.gene_name;
 			   	}
-                           	return [name, d.count, d.matchingPattern, d.beg, d.end, 'Sequence',  headline];
+
+				
+				var lspLink = "<a href=/locus/" + d.seqname + ">" + name + "</a>";
+
+                           	return [<span>{lspLink}</span>, d.count, d.matchingPattern, d.beg, d.end, 'Sequence', headline];
+
 			   }
                 });
 
