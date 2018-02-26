@@ -563,12 +563,9 @@ var SearchForm = React.createClass({
 
 				// rows.push(["Peptide Searches", "IFVLWMAGCYPTSHEDQNKR", "Exact match", <span><a href='/nph-patmatch?pattern=ELVIS'>ELVIS</a></span>]);				
 
-
-				var lspLink = "<a href=/locus/" + d.seqname + ">" + name + "</a>";
-
                            	// return [<span>{lspLink}</span>, d.count, d.matchingPattern, d.beg, d.end, 'Sequence', headline];
 
-				_tableRows.push([ <span>{ lspLink }</span>, d.count, d.matchingPattern, d.beg, d.end, 'Sequence', headline]);
+				_tableRows.push([ <span><a href='/locus/{ d.seqname }'>{ name }</a></span>, d.count, d.matchingPattern, d.beg, d.end, 'Sequence', headline]);
 				
 			   }
                 });
