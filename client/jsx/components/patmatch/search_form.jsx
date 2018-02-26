@@ -536,20 +536,15 @@ var SearchForm = React.createClass({
 		    notFeat = 1;
 		}
 								
-		// var _tableRows = _.map(data, d => {
-		   
-		var _tableRows = [];
-		_.map(data, d => { 	       
-			   if (notFeat == 1) {
-			        _tableRows.push([d.chr, d.orfs, d.count, d.matchingPattern, d.beg, d.end, 'Sequence']);
+		var _tableRows = _.map(data, d => {
+			  if (notFeat == 1) {
 
-			      	// return [d.chr, d.orfs, d.count, d.matchingPattern, d.beg, d.end, 'Sequence'];
+			      	return [d.chr, d.orfs, d.count, d.matchingPattern, d.beg, d.end, 'Sequence'];
 
 			   }
 		    	   if (withDesc == 0) {
 
-			        _tableRows.push([d.chr, d.orfs, d.count, d.matchingPattern, d.beg, d.end, 'Sequence']);
-			        // return [d.seqname, d.count, d.matchingPattern, d.beg, d.end, 'Sequence'];
+			        return [d.seqname, d.count, d.matchingPattern, d.beg, d.end, 'Sequence'];
 
 			   }
 			   else {		    	   
@@ -560,15 +555,12 @@ var SearchForm = React.createClass({
 			       	     name = name + "/" + d.gene_name;
 			   	}
 
-
 				// rows.push(["Peptide Searches", "IFVLWMAGCYPTSHEDQNKR", "Exact match", <span><a href='/nph-patmatch?pattern=ELVIS'>ELVIS</a></span>]);				
 
 
 				var lspLink = "<a href=/locus/" + d.seqname + ">" + name + "</a>";
 
-                           	// return [<span>{lspLink}</span>, d.count, d.matchingPattern, d.beg, d.end, 'Sequence', headline];
-
-				_tableRows.push([<span>{lspLink}</span>, d.count, d.matchingPattern, d.beg, d.end, 'Sequence', headline]);
+                           	return [<span>{lspLink}</span>, d.count, d.matchingPattern, d.beg, d.end, 'Sequence', headline];
 			   }
                 });
 
