@@ -61,12 +61,12 @@ const SequenceDisplay = React.createClass({
       	  var newline = "";
 	  var newlineArr = line.split("");
 	  for (var j = 0; j < newlineArr.length; j++) {
-	      if (j < tmpBeg || j > tmpEnd || newlineArr[j] == ' ') {
-  	      	  newline += newlineArr[j]; 
-	      }
-	      else {
+	      // if (j < tmpBeg || j > tmpEnd || newlineArr[j] == ' ') {
+  	      //	  newline += newlineArr[j]; 
+	      // }
+	      // else {
 	      	  newline += "<font color='blue'>newlineArr[j]</font>"; 
-	      }
+	      // }
 	  }
 	  line = newline;
       }
