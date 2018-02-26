@@ -55,6 +55,9 @@ const SequenceDisplay = React.createClass({
       var lineNum = i * LETTERS_PER_LINE + 1;
       var numSpaces = maxLabelLength - lineNum.toString().length;
       var spacesStr = Array(numSpaces + 1).join(" ");
+
+      console.log("lineNum:" + lineNum + ", beg:" + beg + ", end:" + end);
+
       if (beg >= lineNum && beg <= lineNum + 59) {
       	  console.log("FOUND THE LINE"+lineNum);
       	  var tmpBeg = beg - lineNum;
