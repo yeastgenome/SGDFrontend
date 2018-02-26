@@ -81,7 +81,8 @@ const SequenceDisplay = React.createClass({
       return `${spacesStr}${lineNum} ${line}`;
     });
     return _.map(lineArr, (l, i) => {
-      return <span key={'seq' + i}>{l}<br /></span>;
+        // return <span key={'seq' + i}>{l}<br /></span>;
+	return <span>{l}<br /></span>;
     });
   }
 
