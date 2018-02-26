@@ -87,8 +87,7 @@ const SequenceDisplay = React.createClass({
     });
     return _.map(lineArr, (l, i) => {
         // return <span key={'seq' + i}>{l}<br /></span>;
-	// return <span>{l}<br /></span>;
-	return (<div dangerouslySetInnerHTML={{ __html: {l} }} />);
+	return <span>{l}<br /></span>;
     });
   }
 
