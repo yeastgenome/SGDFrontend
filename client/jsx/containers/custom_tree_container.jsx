@@ -8,6 +8,7 @@ import { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import CustomTree from "../components/downloads/custom_tree.jsx";
+import MenuList from "../components/widgets/tree_menu/menu_list.jsx";
 import * as downloadsActions from "../actions/downloads_actions";
 import DataTable from "../components/widgets/data_table.jsx";
 import S from "string";
@@ -142,18 +143,20 @@ class CustomTreeContainer extends Component {
               <DataTable data={table} usePlugin={true} />
             </div>
           </div>
+          
         </div>
       );
       return renderTemplate;
     } else {
-      let renderTemplate = (
-        <div>
+      let renderTemplate = <div>
           {pageTitle}
           <div className="row">
             <div className="columns small-4">{data}</div>
           </div>
-        </div>
-      );
+          <div className="row mtree-sgd">
+            <MenuList />
+          </div>
+        </div>;
       return renderTemplate;
     }
   }
