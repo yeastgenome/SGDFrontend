@@ -75,9 +75,7 @@ const SequenceDisplay = React.createClass({
 	      	   newLine += base;
 	      }
 	      else {
-	      	   newLine += "<font color='blue'>" + base + "</font>";
- 
-		   // <span style={{ color: 'blue' }} > {base} </span>;
+	      	   newLine += "<span style='color:blue;'>" + base + "</span>";
 	      } 
 	      if (base != ' ') {
 	      	   k++;
@@ -89,7 +87,8 @@ const SequenceDisplay = React.createClass({
     });
     return _.map(lineArr, (l, i) => {
         // return <span key={'seq' + i}>{l}<br /></span>;
-	return <span>{l}<br /></span>;
+	// return <span>{l}<br /></span>;
+	return (<div dangerouslySetInnerHTML={{ __html: {l} }} />);
     });
   }
 
