@@ -96,11 +96,9 @@ var SearchForm = React.createClass({
 			var seqNode = this._getSeqNode(seq, beg, end);
 			 
 
-			return (<div dangerouslySetInnerHTML={{ __html: seqNode }} />);
+			// return (<div dangerouslySetInnerHTML={{ __html: seqNode }} />);
 				
-
-
-			// return <div className="panel sgd-viz">{seqNode}</div>;
+			return <div className="panel sgd-viz">{seqNode}</div>;
 
 		}
 	        else if (this.state.isComplete) {
