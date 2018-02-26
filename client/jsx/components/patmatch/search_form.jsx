@@ -90,9 +90,9 @@ var SearchForm = React.createClass({
 			var innerNode = (<SequenceDisplay sequence={seq} text={text} beg={beg} end={end} />);
 							
 
-			return (<div dangerouslySetInnerHTML={{ __html: innerNode }} />);
+			// return (<div dangerouslySetInnerHTML={{ __html: innerNode }} />);
 				
-			// return <div> { innerNode } </div>;
+			return <div> { innerNode } </div>;
 			// return <div className="panel sgd-viz">{innerNode}</div>;
 
 		}
