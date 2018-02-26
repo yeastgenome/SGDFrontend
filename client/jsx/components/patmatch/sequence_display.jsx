@@ -34,17 +34,35 @@ const SequenceDisplay = React.createClass({
       var beg = this.props.beg;
       var end = this.props.end;
       var sequenceNode = this._getSequenceNode(seq, beg, end);
-      var legendNode = null;
+      var complexSequenceNode = this._getComplexSequenceNode(seq);
   
       return (<div>
              {legendNode}
              <pre>
              <blockquote style={{ fontFamily: "Monospace", fontSize: 14 }}>
              		 {sequenceNode}
+			 {complexSequenceNode}
              </blockquote>
              </pre>
       	     </div>);
    
+  },
+
+  _getComplexSequenceNode: function (sequence) {
+    var maxLabelLength = sequence.length.toString().length + 1;
+    var chunked = sequence.split("");
+    var offset = 0;
+
+    return _.map(chunked, (c, i) => {
+      i++;
+      var sp = (i % LETTERS_PER_CHUNK === 0 && !(i % LETTERS_PER_LINE === 0)) ? " " : "";
+      var cr = (i % LETTERS_PER_LINE === 0) && (i > 1) ? "\n" : "";
+      var str = c + sp + cr;
+    
+      var labelNode = (i - 1) % LETTERS_PER_LINE === 0 ? <span style={{ color: "#6f6f6f" }}>{`${Array(maxLabelLength - i.toString().length).join(" ")}${i} `}</span> : null;
+
+      return <span key={`sequence-car${i}`} style={{ color: "#6f6f6f" }}>{labelNode}{str}</span>;
+    });
   },
 
   _getSequenceNode: function (sequence, beg, end) {
@@ -67,8 +85,7 @@ const SequenceDisplay = React.createClass({
 	      	   newline += base;
 	      }
 	      else {
-	      	   console.log("FOUND THIS BASE"+base);
-	      	   newline += "<span style={{ color: 'blue' }}>baseArr[j]</span>";
+	      	   newline += <span style={{ color: 'blue' }}>{base}</span>;
 	      } 
 	      if (base != ' ') {
 	      	   k++;
