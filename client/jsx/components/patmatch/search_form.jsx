@@ -539,37 +539,31 @@ var SearchForm = React.createClass({
 		var _tableRows = [];
 
 		_.map(data, d => {
-			  if (notFeat == 1) {
-    
-			      	// return [d.chr, d.orfs, d.count, d.matchingPattern, d.beg, d.end, 'Sequence'];
+			    
+			var seqlink = '/nph-patmatch?seqname=' + d.seqname + '&dataset=' + dataset + '&beg=' + beg + '&end=' + end;
+				   
+	 	  	if (notFeat == 1) {
+    				
+			     _tableRows.push([d.chr, d.orfs, d.count, d.matchingPattern, d.beg, d.end, <span><a href={ seqLink}>Sequence</a></span>]);
+
+			}
+		    	else if (withDesc == 0) {
+
+			     _tableRows.push([d.seqname, d.count, d.matchingPattern, d.beg, d.end, <span><a href={ seqLink}>Sequence</a></span>]);
+
+			}
+			else {		    	   
+
+		    	     var headline = d.desc.split(';')[0];
+			     var name = d.seqname;
+			     if (d.gene_name) {
+			       	  name = name + "/" + d.gene_name;
+			     }
+			     var lspLink = '/locus/' + d.seqname;
+
+			     _tableRows.push([ <span><a href={ lspLink } >{ name }</a></span>, d.count, d.matchingPattern, d.beg, d.end, <span><a href={ seqLink}>Sequence</a></span>, headline]);
 				
-				_tableRows.push([d.chr, d.orfs, d.count, d.matchingPattern, d.beg, d.end, 'Sequence']);
-
-			   }
-		    	   if (withDesc == 0) {
-
-			        // return [d.seqname, d.count, d.matchingPattern, d.beg, d.end, 'Sequence'];
-
-				_tableRows.push([d.seqname, d.count, d.matchingPattern, d.beg, d.end, 'Sequence']);
-
-			   }
-			   else {		    	   
-
-		    	   	var headline = d.desc.split(';')[0];
-			   	var name = d.seqname;
-			   	if (d.gene_name) {
-			       	     name = name + "/" + d.gene_name;
-			   	}
-
-				// rows.push(["Peptide Searches", "IFVLWMAGCYPTSHEDQNKR", "Exact match", <span><a href='/nph-patmatch?pattern=ELVIS'>ELVIS</a></span>]);				
-
-                           	// return [<span>{lspLink}</span>, d.count, d.matchingPattern, d.beg, d.end, 'Sequence', headline];
-
-				var lspLink = '/locus/' + d.seqname;
-
-				_tableRows.push([ <span><a href={ lspLink } >{ name }</a></span>, d.count, d.matchingPattern, d.beg, d.end, 'Sequence', headline]);
-				
-			   }
+			}
                 });
 
 		var header = ['Sequence Name', 'Hit Number', 'Matching Pattern', 'Matching Begin', 'Matching End', 'Matching Result'];
