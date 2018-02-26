@@ -91,11 +91,12 @@ var SearchForm = React.createClass({
 			
 			var seqNode = this._getSeqNode(seq, beg, end);
  
-			return (<div dangerouslySetInnerHTML={{ __html: seqNode }} />);
-				
-			// return <div> { innerNode } </div>;
 
-			// return <div className="panel sgd-viz">{innerNode}</div>;
+			// return (<div dangerouslySetInnerHTML={{ __html: seqNode }} />);
+				
+			return <div> { seqNode } </div>;
+
+			// return <div className="panel sgd-viz">{seqNode}</div>;
 
 		}
 	        else if (this.state.isComplete) {
@@ -206,16 +207,11 @@ var SearchForm = React.createClass({
       		        return `${spacesStr}${lineNum} ${line}`;
     	        });
 
-    	  	// return _.map(lineArr, (l, i) => {
-    	  	//       return <span key={'seq' + i}>{l}<br /></span>;
-    	  	//    // return <span>{l}<br /></span>;
-    	  	// });
-    	  	var sequenceSection = "";
-    	  	_.map(lineArr, (l, i) => {
-              	      sequenceSection += l + "<br />";
-          	});
-
-    	  	return sequenceSection;
+    	  	return _.map(lineArr, (l, i) => {
+    	  	       return <span key={'seq' + i}>{l}<br /></span>;
+		       alert(l);
+    	  	    // return <span>{l}<br /></span>;
+    	  	});
 
 	},
 
