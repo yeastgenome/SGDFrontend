@@ -87,13 +87,15 @@ var SearchForm = React.createClass({
                         var seq = this.state.resultData.seq;
 			var text = this.state.resultData.defline;
 			
-			var innerNode = (<SequenceDisplay sequence={seq} text={text} beg={beg} end={end} />);
+			// var innerNode = (<SequenceDisplay sequence={seq} text={text} beg={beg} end={end} />);
 			
-			console.log("innerNode="+innerNode);							
+			var seqNode = SequenceDisplay.ormatSequenceTextNode(seq, beg, end);
+ 
+			console.log("seqNode="+seqNode);							
 
-			// return (<div dangerouslySetInnerHTML={{ __html: innerNode }} />);
+			return (<div dangerouslySetInnerHTML={{ __html: seqNode }} />);
 				
-			return <div> { innerNode } </div>;
+			// return <div> { innerNode } </div>;
 
 			// return <div className="panel sgd-viz">{innerNode}</div>;
 

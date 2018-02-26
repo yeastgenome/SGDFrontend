@@ -6,42 +6,8 @@ const LETTERS_PER_LINE = 60;
 
 const SequenceDisplay = React.createClass({
 
-  getDefaultProps: function () {
-    return {
-      sequence: null,
-      text: null,
-      beg: null,
-      end: null
-    };
-  },
+  formatSequenceTextNode: function (seq, beg, end) {
 
-  render: function () {
-    var textNode = null;
-    if (this.props.text) {
-      // textNode = <h3>{this.props.text}</h3>;
-      textNode = "<h3>" + this.props.text + "</h3>";
-    }
-
-    var sequenceTextNode = this._formatSequenceTextNode();
-
-    console.log(<div>sequenceTextNode</div>);
-
-    // return (<div>
-    //        {textNode}
-    //        {sequenceTextNode}
-    // </div>);
-    
-    // console.log("textNode="+textNode);
-    // console.log("sequenceTextNode="+sequenceTextNode);
-
-    return textNode;
-
-  },
-
-  _formatSequenceTextNode: function () {
-      var seq = this.props.sequence;
-      var beg = this.props.beg;
-      var end = this.props.end;
       var sequenceNode = this._getSequenceNode(seq, beg, end);
 
       // return (<pre>{sequenceNode}</pre>);
