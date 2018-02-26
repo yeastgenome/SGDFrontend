@@ -88,8 +88,10 @@ var SearchForm = React.createClass({
 			var text = this.state.resultData.defline;
 			
 			var innerNode = (<SequenceDisplay sequence={seq} text={text} beg={beg} end={end} />);
-				 
-			return <div className="panel sgd-viz">{innerNode}</div>;
+				
+			return <div> { innerNode } </div>;
+ 
+			// return <div className="panel sgd-viz">{innerNode}</div>;
 
 		}
 	        else if (this.state.isComplete) {
