@@ -6,7 +6,7 @@ const Checklist = require("../widgets/checklist.jsx");
 const Params = require("../mixins/parse_url_params.jsx");
 const ExampleTable = require("./example_table.jsx");
 const DataTable = require("../widgets/data_table.jsx");
-const SequenceDisplay = require("./sequence_display.jsx");
+// const SequenceDisplay = require("./sequence_display.jsx");
 const PatmatchUrl = "/run_patmatch";
 
 var SearchForm = React.createClass({
@@ -89,10 +89,8 @@ var SearchForm = React.createClass({
 			
 			// var innerNode = (<SequenceDisplay sequence={seq} text={text} beg={beg} end={end} />);
 			
-			var seqNode = SequenceDisplay.formatSequenceTextNode(seq, beg, end);
+			var seqNode = this._getSeqNode(seq, beg, end);
  
-			console.log("seqNode="+seqNode);							
-
 			return (<div dangerouslySetInnerHTML={{ __html: seqNode }} />);
 				
 			// return <div> { innerNode } </div>;
@@ -172,6 +170,55 @@ var SearchForm = React.createClass({
 		}
 	},
 	
+	_getSeqNode: function(sequence, beg, end) {
+		var tenChunked = sequence.match(/.{1,10}/g).join(" ");
+    		var lineArr = tenChunked.match(/.{1,66}/g);
+    		var maxLabelLength = ((lineArr.length * LETTERS_PER_LINE + 1).toString().length)
+
+    		lineArr = _.map(lineArr, (line, i) => {
+      			var lineNum = i * LETTERS_PER_LINE + 1;
+      			var numSpaces = maxLabelLength - lineNum.toString().length;
+      			var spacesStr = Array(numSpaces + 1).join(" ");
+			
+      			if (beg >= lineNum && beg <= lineNum + 59) {
+          		    var tmpBeg = beg - lineNum;
+          		    var tmpEnd = end - lineNum;
+          		    if (tmpEnd > 59) {
+             		       tmpEnd = 59;
+             		       beg = lineNum + 60;
+          		    }
+          		    var baseArr = line.split("");
+          		    var k = 0;
+          		    var newLine = ""
+          		    _.map(baseArr, (base, j) => {
+              		         if (k < tmpBeg || k > tmpEnd || base == ' ') {
+                   		      newLine += base;
+              			 }
+              			 else {
+                   		      newLine += "<span style='color:blue;'>" + base + "</span>";
+              			 }
+              			 if (base != ' ') {
+                   		      k++;
+              			 }
+          	            });
+          	       	    line = newLine;
+      		 	}
+      		        return `${spacesStr}${lineNum} ${line}`;
+    	        });
+
+    	  	// return _.map(lineArr, (l, i) => {
+    	  	//       return <span key={'seq' + i}>{l}<br /></span>;
+    	  	//    // return <span>{l}<br /></span>;
+    	  	// });
+    	  	var sequenceSection = "";
+    	  	_.map(lineArr, (l, i) => {
+              	      sequenceSection += l + "<br />";
+          	});
+
+    	  	return sequenceSection;
+
+	},
+
 	_getGenomeBoxNode: function(data) {
 	
 		var _genomeDef = 'S288C';
