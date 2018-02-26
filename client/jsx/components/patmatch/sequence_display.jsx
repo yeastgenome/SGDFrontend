@@ -35,9 +35,8 @@ const SequenceDisplay = React.createClass({
       var end = this.props.end;
       var sequenceNode = this._getSequenceNode(seq, beg, end);
       var complexSequenceNode = this._getComplexSequenceNode(seq);
-  
+        
       return (<div>
-             {legendNode}
              <pre>
              <blockquote style={{ fontFamily: "Monospace", fontSize: 14 }}>
              		 {sequenceNode}
