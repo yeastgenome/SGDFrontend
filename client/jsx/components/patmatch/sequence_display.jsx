@@ -48,10 +48,13 @@ const SequenceDisplay = React.createClass({
   },
 
   _getSequenceNode: function (sequence, beg, end) {
+
     var tenChunked = sequence.match(/.{1,10}/g).join(" ");
     var lineArr = tenChunked.match(/.{1,66}/g);
     var maxLabelLength = ((lineArr.length * LETTERS_PER_LINE + 1).toString().length)
+
     lineArr = _.map(lineArr, (line, i) => {
+
       var lineNum = i * LETTERS_PER_LINE + 1;
       var numSpaces = maxLabelLength - lineNum.toString().length;
       var spacesStr = Array(numSpaces + 1).join(" ");
@@ -63,21 +66,20 @@ const SequenceDisplay = React.createClass({
 	     tmpEnd = 59;
 	     beg = lineNum + 60;
 	  }
-      	  var newline = "";
 	  var baseArr = line.split("");
 	  var k = 0;
-	  _.map(baseArr, (base, j) => {
+	  var _newBaseArr =  _.map(baseArr, (base, j) => {
 	      if (k < tmpBeg || k > tmpEnd || base == ' ') {
-	      	   newline += base;
+	      	   return base;
 	      }
 	      else {
-	      	   newline += <span style='color: blue;'> {base} </span>;
+	      	   return <span style='color: blue;'> {base} </span>;
 	      } 
 	      if (base != ' ') {
 	      	   k++;
 	      }
 	  });
-	  line = newline;
+	  line = _newBaseArr.join(''); 
       }
       return `${spacesStr}${lineNum} ${line}`;
     });
