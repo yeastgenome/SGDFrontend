@@ -87,7 +87,7 @@ var SearchForm = React.createClass({
                         var seq = this.state.resultData.seq;
 			var text = this.state.resultData.defline;
 			
-			innerNode = (<SequenceDisplay sequence={seq} text={text} />);
+			var innerNode = (<SequenceDisplay sequence={seq} text={text} />);
 				 
 			return <div className="panel sgd-viz">{innerNode}</div>;
 
