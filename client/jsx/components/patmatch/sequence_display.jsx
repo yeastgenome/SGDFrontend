@@ -37,15 +37,8 @@ const SequenceDisplay = React.createClass({
       var end = this.props.end;
       var sequenceNode = this._getSequenceNode(seq, beg, end);
 
-                   
-      return (<div>
-      	     <blockquote style={{ fontFamily: "Monospace", fontSize: 14 }}>
-	     <pre>      
-             	 {sequenceNode}
-    	     </pre>
-	     </blockquote>
-      	     </div>);
-   
+      return (<pre>{sequenceNode}</pre>);
+
   },
 
   _getSequenceNode: function (sequence, beg, end) {
@@ -85,10 +78,20 @@ const SequenceDisplay = React.createClass({
       }
       return `${spacesStr}${lineNum} ${line}`;
     });
-    return _.map(lineArr, (l, i) => {
-        // return <span key={'seq' + i}>{l}<br /></span>;
-	return <span>{l}<br /></span>;
+    
+    var sequenceSection = "";
+    // return _.map(lineArr, (l, i) => {
+    //    return <span key={'seq' + i}>{l}<br /></span>;
+    //	 // return <span>{l}<br /></span>;	
+    // });
+    
+    var	sequenceSection	= "";
+    _.map(lineArr, (l, i) => {
+    	sequenceSection += "<br />" + l;
     });
+
+    return sequenceSection;
+
   }
 
 });
