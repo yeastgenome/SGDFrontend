@@ -59,15 +59,19 @@ const SequenceDisplay = React.createClass({
       	  var tmpBeg = beg - lineNum;
 	  var tmpEnd = end - lineNum;
       	  var newline = "";
-	  var newlineArr = line.split("");
-	  for (var j = 0; j < newlineArr.length; j++) {
-	      // if (j < tmpBeg || j > tmpEnd || newlineArr[j] == ' ') {
-  	      //	  newline += newlineArr[j]; 
-	      // }
-	      // else {
-	      	  newline += "<font color='blue'>newlineArr[j]</font>"; 
-	      // }
-	  }
+	  var baseArr = line.split("");
+	  var k = 0;
+	  _.map(baseArr, (base, j) => {
+	      if (k < tmpBeg || k > tmpEnd || base == ' ') {
+	      	   newline += base;
+	      }
+	      else {
+	      	   newline += "<font color='blue'>baseArr[j]</font>";
+	      } 
+	      if (base != ' ') {
+	      	   k++;
+	      }
+	  });
 	  line = newline;
       }
       return `${spacesStr}${lineNum} ${line}`;
