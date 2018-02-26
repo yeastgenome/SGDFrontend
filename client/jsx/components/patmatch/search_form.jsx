@@ -1,19 +1,13 @@
-// "use strict";
-
 import React from 'react';
 import _ from 'underscore';
 import $ from 'jquery';
-
-// var React = require("react");
-// var _ = require("underscore");
-// var $ = require("jquery");
 
 const Checklist = require("../widgets/checklist.jsx");
 const Params = require("../mixins/parse_url_params.jsx");
 const ExampleTable = require("./example_table.jsx");
 const DataTable = require("../widgets/data_table.jsx");
-
-const PATMATCH_URL = "/run_patmatch";
+const SequenceDisplay = require("./sequence_display.jsx");
+const PatmatchUrl = "/run_patmatch";
 
 var SearchForm = React.createClass({
 
@@ -91,12 +85,12 @@ var SearchForm = React.createClass({
 			var beg = param['beg'];
 			var end = param['end'];
                         var seq = this.state.resultData.seq;
+			var text = this.state.resultData.defline;
 			
-			var seqNode = this._getSeqNode(seq, beg, end);
-			return seqNode;
-			
-                        return (<div dangerouslySetInnerHTML={{ __html: seqNode }} />);
-  
+			innerNode = (<SequenceDisplay sequence={seq} text={text} />);
+				 
+			return <div className="panel sgd-viz">{innerNode}</div>;
+
 		}
 	        else if (this.state.isComplete) {
 
@@ -356,7 +350,7 @@ var SearchForm = React.createClass({
         },
 	
 	_getConfigData: function() {
-                var jsonUrl = PATMATCH_URL + "?conf=patmatch.json";
+                var jsonUrl = PatmatchUrl + "?conf=patmatch.json";
                 $.ajax({
     		      url: jsonUrl,
                       dataType: 'json',
@@ -428,7 +422,7 @@ var SearchForm = React.createClass({
 		var pattern = pattern.replace("%3E", ">");
 
 		$.ajax({
-			url: PATMATCH_URL,
+			url: PatmatchUrl,
 			data_type: 'json',
 			type: 'POST',
 			data: { 'seqtype':      seqtype,
@@ -457,7 +451,7 @@ var SearchForm = React.createClass({
 		var param = this.state.param;
 
 		$.ajax({
-                        url: PATMATCH_URL,
+                        url: PatmatchUrl,
                         data_type: 'json',
                         type: 'POST',
                         data: { 'seqname':      param['seqname'],
@@ -472,38 +466,6 @@ var SearchForm = React.createClass({
                         }.bind(this)
                 });
  
-	},
-
-	_getSeqNode: function(seq, beg, end) {
-
-		var seqSection = "";
-                var maxlen = 60;
-                var j = 1;
-
-                var seqBases = seq.split('');
-                for (var i in seqBases) {
-                     if (j > maxlen) {
-                           seqSection = seqSection + "<br>";
-                           j = 1;
-                     }
-                     if (i >= beg-1 && i <= end-1) {
-                           seqSection = seqSection + "<font color='blue'>" + seqBases[i] + "</font>";
-                     }
-                     else {
-                           seqSection = seqSection + seqBases[i];
-                     }
-                     j = j + 1;
-                        
-		}
-
-                var defline = this.state.resultData.defline;
-	
-		var seqNode = "<h2>The matching region is highlighted in the following retrieved sequence (in <font color='blue'>blue</font>).</h2><h3>" + defline + "</h3><p>" + seqSection + "</p>";
-			
-		return seqNode;
-     
-		// return <div dangerouslySetInnerHTML={{ __html: seqNode }} />);
-
 	},
 
 	_getSummaryTable: function(totalHits, uniqueHits) {
