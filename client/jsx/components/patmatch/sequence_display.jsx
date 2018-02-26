@@ -34,12 +34,13 @@ const SequenceDisplay = React.createClass({
       var beg = this.props.beg;
       var end = this.props.end;
       var sequenceNode = this._getSequenceNode(seq, beg, end);
+
+      // </blockquote>
+      // <blockquote style={{ fontFamily: "Monospace", fontSize: 14 }}>
              
       return (<div>
-             <pre>
-             <blockquote style={{ fontFamily: "Monospace", fontSize: 14 }}>
-             		 {sequenceNode}
-             </blockquote>
+             <pre>    
+             	 {sequenceNode}
              </pre>
       	     </div>);
    
