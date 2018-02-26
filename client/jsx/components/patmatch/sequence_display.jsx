@@ -71,7 +71,7 @@ const SequenceDisplay = React.createClass({
 	      	   newline += base;
 	      }
 	      else {
-	      	   newline += "<strong style='color: blue;'>" + base + "</strong>";
+	      	   newline += <span style='color: blue;'> {base} </span>;
 	      } 
 	      if (base != ' ') {
 	      	   k++;
