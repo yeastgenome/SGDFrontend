@@ -56,10 +56,7 @@ const SequenceDisplay = React.createClass({
       var numSpaces = maxLabelLength - lineNum.toString().length;
       var spacesStr = Array(numSpaces + 1).join(" ");
 
-      console.log("lineNum:" + lineNum + ", beg:" + beg + ", end:" + end);
-
       if (beg >= lineNum && beg <= lineNum + 59) {
-      	  console.log("FOUND THE LINE"+lineNum);
       	  var tmpBeg = beg - lineNum;
 	  var tmpEnd = end - lineNum;
       	  var newline = "";
@@ -67,12 +64,11 @@ const SequenceDisplay = React.createClass({
 	  var k = 0;
 	  _.map(baseArr, (base, j) => {
 	      if (k < tmpBeg || k > tmpEnd || base == ' ') {
-	      	   console.log("NOT THIS BASE");
 	      	   newline += base;
 	      }
 	      else {
 	      	   console.log("FOUND THIS BASE"+base);
-	      	   newline += "<font color='blue'>baseArr[j]</font>";
+	      	   newline += "<span style={{ color: 'blue' }}>baseArr[j]</span>";
 	      } 
 	      if (base != ' ') {
 	      	   k++;
