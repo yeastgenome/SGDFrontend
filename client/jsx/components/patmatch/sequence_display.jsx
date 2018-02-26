@@ -73,8 +73,7 @@ const SequenceDisplay = React.createClass({
 	      	   return base;
 	      }
 	      else {
-	      	   // return <span style='color: blue;'> {base} </span>;
-		   return ":";
+	      	   return <strong style='color: blue;'> {base} </strong>;
 	      } 
 	      if (base != ' ') {
 	      	   k++;
