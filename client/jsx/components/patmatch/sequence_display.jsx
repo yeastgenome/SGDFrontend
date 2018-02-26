@@ -31,8 +31,8 @@ const SequenceDisplay = React.createClass({
     //        {sequenceTextNode}
     // </div>);
     
-    console.log("textNode="+textNode);
-    console.log("sequenceTextNode="+sequenceTextNode);
+    // console.log("textNode="+textNode);
+    // console.log("sequenceTextNode="+sequenceTextNode);
 
     return textNode + sequenceTextNode;
 
@@ -96,11 +96,7 @@ const SequenceDisplay = React.createClass({
     
     var	sequenceSection	= "";
     _.map(lineArr, (l, i) => {
-    	sequenceSection += "<br />" + l;
-
-	
-	console.log("sequenceSection="+sequenceSection);
-
+    	sequenceSection += l + "<br />";
     });
 
     return sequenceSection;
