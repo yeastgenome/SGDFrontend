@@ -540,7 +540,7 @@ var SearchForm = React.createClass({
 
 		_.map(data, d => {
 			    
-			var seqlink = '/nph-patmatch?seqname=' + d.seqname + '&dataset=' + dataset + '&beg=' + d.beg + '&end=' + d.end;
+			var seqLink = '/nph-patmatch?seqname=' + d.seqname + '&dataset=' + dataset + '&beg=' + d.beg + '&end=' + d.end;
 				   
 	 	  	if (notFeat == 1) {
     				
