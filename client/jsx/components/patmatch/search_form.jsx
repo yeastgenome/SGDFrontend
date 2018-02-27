@@ -91,7 +91,7 @@ var SearchForm = React.createClass({
 			var text = this.state.resultData.defline;			
 			var seqNode = this._getSeqNode(seq, beg, end);
 			
-			var seqSection = "<h2>The matching region is highlighted in the following retrieved sequence (in <span style='color:blue;'>blue</span>)</h2><h3>" + text + "</h3>" + seqNode;
+			var seqSection = "<h2>The matching region is highlighted in the following retrieved sequence (in <span style='color:blue;'>blue</span>)</h2><p>" + text + "</p>" + seqNode;
 			
 			return (<div dangerouslySetInnerHTML={{ __html: seqSection }} />);
 				
