@@ -214,7 +214,12 @@ var SearchForm = React.createClass({
           	            });
           	       	    line = newLine;
       		 	}
-      		        return `${spacesStr}${lineNum} ${line}`;
+			if (dataset == 'yeast_gb.dna' && (parseInt(lineNum) < beg - 240 || parseInt(lineNum) > end + 240)) { 
+			     return "";
+      		        }
+			else {
+			     return `${spacesStr}${lineNum} ${line}`;
+			}
     	        });
 		
 		
