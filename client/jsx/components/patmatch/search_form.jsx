@@ -91,7 +91,10 @@ var SearchForm = React.createClass({
 			var text = this.state.resultData.defline;			
 			var seqNode = this._getSeqNode(seq, beg, end);
 			
-			var seqSection = "<h2>The matching region is highlighted in the following retrieved sequence (in <span style='color:blue;'>blue</span>)</h2><p>" + text + "</p>" + seqNode;
+			var seqname = window.localStorage.getItem("seqname");
+			var datasetLabel = window.localStorage.getItem("dataset_label");
+
+			var seqSection = "<center><h1>" + datasetLabel + " for " + seqname + "</h1></center><h2>The matching region is highlighted in the following retrieved sequence (in <span style='color:blue;'>blue</span>)</h2>" + seqNode;
 			
 			return (<div dangerouslySetInnerHTML={{ __html: seqSection }} />);
 				
@@ -513,6 +516,8 @@ var SearchForm = React.createClass({
 	_getSeq: function() {
 
 		var param = this.state.param;
+		
+		window.localStorage.setItem("seqname", param['seqname']);
 
 		$.ajax({
                         url: PatmatchUrl,
@@ -553,7 +558,9 @@ var SearchForm = React.createClass({
                          }
                      }
                 }
-
+		
+		window.localStorage.setItem("dataset_label", datasetDisplayName);
+		
                 var _summaryRows = [];
 
                 _summaryRows.push(['Total Hits', totalHits]);
