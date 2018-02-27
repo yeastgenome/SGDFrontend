@@ -51,7 +51,7 @@ BEGIN
 
     IF (OLD.dbentity_status != NEW.dbentity_status) THEN
         PERFORM nex.insertupdatelog('DBENTITY'::text, 'DBENTITY_STATUS'::text, OLD.dbentity_id, OLD.dbentity_status, NEW.dbentity_status, USER);
-        PERFORM nex.insertlocuschange(OLD.dbentity_id, 'SGD'::text, 'Status'::text, OLD.dbentity_status, NEW.dbentity_status, USER);
+        PERFORM nex.insertnewoldlocuschange(OLD.dbentity_id, 'SGD'::text, 'Status'::text, OLD.dbentity_status, NEW.dbentity_status, USER);
     END IF;
 
     RETURN NEW;
@@ -202,13 +202,17 @@ BEGIN
                       WHERE dbentity_id = OLD.dbentity_id
                       AND new_value = NEW.gene_name ) THEN
 
-             PERFORM nex.insertlocuschange(OLD.dbentity_id, 'SGD'::text, 'Gene name'::text, OLD.gene_name, NEW.gene_name, USER);
+             IF (OLD.gene_name IS NULL) THEN
+                  PERFORM nex.insertnewonlylocuschange(OLD.dbentity_id, 'SGD'::text, 'Gene name'::text, NEW.gene_name, USER);
+             ELSE
+                  PERFORM nex.insertnewoldlocuschange(OLD.dbentity_id, 'SGD'::text, 'Gene name'::text, OLD.gene_name, NEW.gene_name, USER);
+             END IF;
         END IF;
     END IF;
 
     IF (((OLD.qualifier IS NULL) AND (NEW.qualifier IS NOT NULL)) OR ((OLD.qualifier IS NOT NULL) AND (NEW.qualifier IS NULL)) OR (OLD.qualifier != NEW.qualifier)) THEN
         PERFORM nex.insertupdatelog('LOCUSDBENTITY'::text, 'QUALIFIER'::text, OLD.dbentity_id, OLD.qualifier, NEW.qualifier, USER);
-	PERFORM nex.insertlocuschange(OLD.dbentity_id, 'SGD'::text, 'Qualifier'::text, OLD.qualifier, NEW.qualifier, USER);
+	    PERFORM nex.insertnewoldlocuschange(OLD.dbentity_id, 'SGD'::text, 'Qualifier'::text, OLD.qualifier, NEW.qualifier, USER);
     END IF;
 
     IF (((OLD.genetic_position IS NULL) AND (NEW.genetic_position IS NOT NULL)) OR ((OLD.genetic_position IS NOT NULL) AND (NEW.genetic_position IS NULL)) OR (OLD.genetic_position != NEW.genetic_position)) THEN
