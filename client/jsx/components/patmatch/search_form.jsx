@@ -180,6 +180,9 @@ var SearchForm = React.createClass({
 		var seqname = param['seqname'];
 
                 var seq = this.state.resultData.seq;
+
+		var seqlen = seq.length;
+
                 // var text = this.state.resultData.defline;
 
 		var tenChunked = seq.match(/.{1,10}/g).join(" ");
@@ -214,7 +217,7 @@ var SearchForm = React.createClass({
           	            });
           	       	    line = newLine;
       		 	}
-			if (dataset == 'yeast_gb.dna' && (parseInt(lineNum) < beg - 240 || parseInt(lineNum) > end + 240)) { 
+			if (seqlen > 10000 && (parseInt(lineNum) < beg - 240 || parseInt(lineNum) > end + 240)) { 
 			     return "";
       		        }
 			else {
