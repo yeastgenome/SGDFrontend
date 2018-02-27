@@ -183,6 +183,18 @@ var SearchForm = React.createClass({
 
 		var seqlen = seq.length;
 
+		var seqStart = 0;
+		if (seqLen > 10000) {
+		   if ((beg - beg%60) > 240) {
+		      seqStart = beg - beg%60 - 240;
+		   }
+		   var seqEnd = seqStart+540;
+		   if (seqEnd > seqlen) {
+		      	seqEnd = seqlen;
+		   }
+		   seq = seq.substring(seqStart, seqEnd); 
+		}
+
                 // var text = this.state.resultData.defline;
 
 		var tenChunked = seq.match(/.{1,10}/g).join(" ");
@@ -190,7 +202,7 @@ var SearchForm = React.createClass({
     		var maxLabelLength = ((lineArr.length * LETTERS_PER_LINE + 1).toString().length)
 
     		lineArr = _.map(lineArr, (line, i) => {
-      			var lineNum = i * LETTERS_PER_LINE + 1;
+      			var lineNum = seqStart + i * LETTERS_PER_LINE + 1;
       			var numSpaces = maxLabelLength - lineNum.toString().length;
       			var spacesStr = Array(numSpaces + 1).join(" ");
 			
@@ -217,12 +229,8 @@ var SearchForm = React.createClass({
           	            });
           	       	    line = newLine;
       		 	}
-			if (seqlen > 10000 && (parseInt(lineNum) < beg - 240 || parseInt(lineNum) > end + 240)) { 
-			     return "";
-      		        }
-			else {
-			     return `${spacesStr}${lineNum} ${line}`;
-			}
+			return `${spacesStr}${lineNum} ${line}`;
+			
     	        });
 		
 		
