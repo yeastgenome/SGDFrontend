@@ -184,17 +184,18 @@ var SearchForm = React.createClass({
 		var seqlen = seq.length;
 
 		var seqStart = 0;
-		if (seqLen > 10000) {
-		   if ((beg - beg%60) > 240) {
-		      seqStart = beg - beg%60 - 240;
-		   }
-		   var seqEnd = seqStart+540;
-		   if (seqEnd > seqlen) {
-		      	seqEnd = seqlen;
-		   }
-		   seq = seq.substring(seqStart, seqEnd); 
-		}
+		// if (seqLen > 10000) {
+		//   if ((beg - beg%60) > 240) {
+		//      seqStart = beg - beg%60 - 240;
+		//   }
+		//   var seqEnd = seqStart+540;
+		//   if (seqEnd > seqlen) {
+		//      	seqEnd = seqlen;
+		//   }
+		//   seq = seq.substring(seqStart, seqEnd); 
+		// }
 
+		
                 // var text = this.state.resultData.defline;
 
 		var tenChunked = seq.match(/.{1,10}/g).join(" ");
