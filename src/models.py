@@ -2058,16 +2058,27 @@ class Filedbentity(Dbentity):
         bucket = conn.get_bucket(S3_BUCKET)
         k = Key(bucket)
         k.key = s3_path
+        # make content-type 'text/plain' if it's a README
+        if self.readme_file_id is None:
+            k.content_type = 'text/plain'        
         k.set_contents_from_file(file, rewind=True)
         k.make_public()
         file_s3 = bucket.get_key(k.key)
         etag_md5_s3 = file_s3.etag.strip('"').strip("'")
+        # get file size
+        file.seek(0, os.SEEK_END)
+        file_size = file.tell()
+        file.seek(0)
+
+        self.file_size = file_size
         # if md5 checksum matches, save s3 URL to db
+        if self.md5sum is None:
+            self.md5sum = etag_md5_s3
         if (self.md5sum == etag_md5_s3):
             self.s3_url = file_s3.generate_url(expires_in=0, query_auth=False)
             transaction.commit()
         else:
-            DBSession.rollback()
+            transaction.abort()
             raise Exception('MD5sum check failed.')
 
     def get_path(self):
