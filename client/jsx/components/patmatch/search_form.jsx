@@ -354,8 +354,8 @@ var SearchForm = React.createClass({
 
 	_getMaximumHitsNode: function() {
 
-		var hits = ['25', '50', '100', '200', '500', '1000', "no limit"];
-		var _elements = this._getDropdownList(hits, "100");
+		var hits = ['25', '50', '100', '200', '500', '1000', "2000", "5000", "no limit"];
+		var _elements = this._getDropdownList(hits, "500");
                 return <select name='max_hits' ref='max_hits' onChange={this._onChange}>{_elements}</select>;
 	
 	},
