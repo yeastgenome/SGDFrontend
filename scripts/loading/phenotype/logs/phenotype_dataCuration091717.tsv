@@ -1,0 +1,120 @@
+Insert a new allele: display_name=yhc3-R293C
+Insert a new allele: display_name=yhc3-V289F
+Insert a new allele: display_name=yhc3-R293H
+Insert a new allele: display_name=yhc3-L44P
+Insert a new allele: display_name=yhc3-L112P
+Insert a new allele: display_name=yhc3-E243K
+Insert a new phenotypeannotation: dbentity_id=1268541 reference_id=501951 phenotype_id=1355369 experiment_id=169844 mutant_id=169827
+Insert a new phenotypeannotation: dbentity_id=1268541 reference_id=501951 phenotype_id=1355671 experiment_id=169844 mutant_id=169827
+Insert a new phenotypeannotation: dbentity_id=1268541 reference_id=501951 phenotype_id=1355216 experiment_id=169844 mutant_id=169827
+Insert a new phenotypeannotation: dbentity_id=1268541 reference_id=501951 phenotype_id=1355704 experiment_id=169844 mutant_id=169827
+Insert a new phenotypeannotation: dbentity_id=1287022 reference_id=563773 phenotype_id=1355304 experiment_id=169844 mutant_id=169827
+Insert a new phenotypeannotation: dbentity_id=1287022 reference_id=563773 phenotype_id=1355507 experiment_id=169844 mutant_id=169828
+Insert a new phenotypeannotation: dbentity_id=1287022 reference_id=563773 phenotype_id=1355256 experiment_id=169844 mutant_id=169828
+Insert a new allele: display_name=dbf4-6
+Insert a new phenotypeannotation: dbentity_id=1267053 reference_id=613082 phenotype_id=1355220 experiment_id=169844 mutant_id=169830
+Insert a new phenotypeannotation: dbentity_id=1269436 reference_id=613082 phenotype_id=1355211 experiment_id=169844 mutant_id=169830
+Insert a new phenotypeannotation: dbentity_id=1269436 reference_id=613082 phenotype_id=1355312 experiment_id=169844 mutant_id=169830
+Insert a new phenotypeannotation: dbentity_id=1267053 reference_id=613082 phenotype_id=1355316 experiment_id=169844 mutant_id=169830
+Insert a new phenotypeannotation: dbentity_id=1269436 reference_id=600380 phenotype_id=1355218 experiment_id=169844 mutant_id=169830
+Insert a new phenotypeannotation: dbentity_id=1269436 reference_id=600380 phenotype_id=1355211 experiment_id=169844 mutant_id=169830
+Insert a new allele: display_name=uso1-1
+Insert a new reporter: display_name=Grh1p
+Insert a new phenotypeannotation: dbentity_id=1280721 reference_id=357671 phenotype_id=1355810 experiment_id=169844 mutant_id=169830
+Insert a new phenotypeannotation: dbentity_id=1277235 reference_id=1443143 phenotype_id=1355218 experiment_id=169844 mutant_id=169827
+Insert a new phenotypeannotation: dbentity_id=1268410 reference_id=1443143 phenotype_id=1355218 experiment_id=169844 mutant_id=169827
+Insert a new reporter: display_name=Mcd1-13Myc
+Insert a new phenotypeannotation: dbentity_id=1277235 reference_id=1443143 phenotype_id=1355330 experiment_id=169844 mutant_id=169827
+Insert a new phenotypeannotation: dbentity_id=1268410 reference_id=1443143 phenotype_id=1355330 experiment_id=169844 mutant_id=169827
+Insert a new phenotypeannotation: dbentity_id=1277235 reference_id=1443143 phenotype_id=1355205 experiment_id=169844 mutant_id=169827
+Insert a new phenotypeannotation: dbentity_id=1268410 reference_id=1443143 phenotype_id=1355205 experiment_id=169844 mutant_id=169827
+Insert a new phenotypeannotation: dbentity_id=1277225 reference_id=1443143 phenotype_id=1355205 experiment_id=169844 mutant_id=169827
+Insert a new phenotypeannotation: dbentity_id=1267635 reference_id=308828 phenotype_id=1355310 experiment_id=169844 mutant_id=169827
+Insert a new phenotypeannotation: dbentity_id=1267635 reference_id=308828 phenotype_id=1355672 experiment_id=169844 mutant_id=169827
+Insert a new reporter: display_name=Atg3-GFP
+Insert a new phenotypeannotation: dbentity_id=1271166 reference_id=354718 phenotype_id=1355386 experiment_id=169844 mutant_id=169827
+Insert a new phenotypeannotation: dbentity_id=1267639 reference_id=354718 phenotype_id=1355386 experiment_id=169844 mutant_id=169827
+Insert a new phenotypeannotation: dbentity_id=1279423 reference_id=354718 phenotype_id=1355386 experiment_id=169844 mutant_id=169827
+Insert a new reporter: display_name=Ugo1p-GFP
+Insert a new phenotypeannotation: dbentity_id=1268849 reference_id=357671 phenotype_id=1355810 experiment_id=169844 mutant_id=169827
+Insert a new reporter: display_name=Grh1p-2xGFP
+Insert a new phenotypeannotation: dbentity_id=1273237 reference_id=357671 phenotype_id=1355198 experiment_id=169844 mutant_id=169830
+Insert a new phenotypeannotation: dbentity_id=1287042 reference_id=357671 phenotype_id=1355198 experiment_id=169844 mutant_id=169830
+Insert a new phenotypeannotation: dbentity_id=1287540 reference_id=357671 phenotype_id=1355198 experiment_id=169844 mutant_id=169827
+Insert a new reporter: display_name=Grh1-GFP
+Insert a new phenotypeannotation: dbentity_id=1267832 reference_id=408446 phenotype_id=1355386 experiment_id=169844 mutant_id=169827
+Insert a new phenotypeannotation: dbentity_id=1287540 reference_id=408446 phenotype_id=1355386 experiment_id=169844 mutant_id=169827
+Insert a new phenotypeannotation: dbentity_id=1279423 reference_id=408446 phenotype_id=1355228 experiment_id=169844 mutant_id=169827
+Insert a new phenotypeannotation: dbentity_id=1282695 reference_id=408446 phenotype_id=1355228 experiment_id=169844 mutant_id=169827
+Insert a new reporter: display_name=Vps23-mCherry
+Insert a new phenotypeannotation: dbentity_id=1268849 reference_id=408446 phenotype_id=1355386 experiment_id=169844 mutant_id=169827
+Insert a new reporter: display_name=RFP-Atg9
+Insert a new phenotypeannotation: dbentity_id=1268849 reference_id=408446 phenotype_id=1355386 experiment_id=169844 mutant_id=169827
+Insert a new allele: display_name=rip1::HIS3
+Insert a new phenotypeannotation: dbentity_id=1269235 reference_id=1443582 phenotype_id=1355791 experiment_id=169844 mutant_id=169827
+Insert a new allele: display_name=swi6::KanMX4
+Insert a new phenotypeannotation: dbentity_id=1283120 reference_id=409491 phenotype_id=1355300 experiment_id=169844 mutant_id=169827
+Insert a new reporter: display_name=Atg9-GFP
+Insert a new phenotypeannotation: dbentity_id=1271166 reference_id=447693 phenotype_id=1355386 experiment_id=169844 mutant_id=169830
+Insert a new phenotypeannotation: dbentity_id=1273237 reference_id=447693 phenotype_id=1355386 experiment_id=169844 mutant_id=169830
+Insert a new phenotypeannotation: dbentity_id=1268806 reference_id=447693 phenotype_id=1355386 experiment_id=169844 mutant_id=169827
+Insert a new phenotypeannotation: dbentity_id=1284184 reference_id=447693 phenotype_id=1355386 experiment_id=169844 mutant_id=169827
+Insert a new allele: display_name=atg21-FTTG
+Insert a new phenotypeannotation: dbentity_id=1285534 reference_id=320227 phenotype_id=1355386 experiment_id=169844 mutant_id=169829
+Insert a new reporter: display_name=Ape1p (mApeI)
+Insert a new phenotypeannotation: dbentity_id=1285534 reference_id=320227 phenotype_id=1355316 experiment_id=169844 mutant_id=169829
+Insert a new phenotypeannotation: dbentity_id=1285534 reference_id=320227 phenotype_id=1355316 experiment_id=169844 mutant_id=169829
+Insert a new reporter: display_name=Atg16-GFP
+Insert a new phenotypeannotation: dbentity_id=1285534 reference_id=320227 phenotype_id=1355386 experiment_id=169844 mutant_id=169827
+Insert a new phenotypeannotation: dbentity_id=1285534 reference_id=320227 phenotype_id=1355386 experiment_id=169844 mutant_id=169829
+Insert a new reporter: display_name=Atg5-YFP
+Insert a new phenotypeannotation: dbentity_id=1292953 reference_id=320227 phenotype_id=1355386 experiment_id=169844 mutant_id=169827
+Insert a new phenotypeannotation: dbentity_id=1285940 reference_id=512418 phenotype_id=1355550 experiment_id=169845 mutant_id=169829
+Insert a new phenotypeannotation: dbentity_id=1285940 reference_id=512418 phenotype_id=1355550 experiment_id=169845 mutant_id=169827
+Insert a new allele: display_name=snf1-G53R
+Insert a new phenotypeannotation: dbentity_id=1285940 reference_id=512418 phenotype_id=1355518 experiment_id=169845 mutant_id=169825
+Insert a new phenotypeannotation: dbentity_id=1269172 reference_id=540502 phenotype_id=1355250 experiment_id=169844 mutant_id=169827
+Insert a new phenotypeannotation: dbentity_id=1268829 reference_id=540502 phenotype_id=1355250 experiment_id=169844 mutant_id=169827
+Insert a new phenotypeannotation: dbentity_id=1269172 reference_id=540502 phenotype_id=1355260 experiment_id=169844 mutant_id=169827
+Insert a new phenotypeannotation: dbentity_id=1299259 reference_id=531162 phenotype_id=1355211 experiment_id=169844 mutant_id=169830
+Insert a new allele: display_name=brl1-3231
+Insert a new phenotypeannotation: dbentity_id=1299259 reference_id=531162 phenotype_id=1355211 experiment_id=169844 mutant_id=169830
+Insert a new phenotypeannotation: dbentity_id=1299259 reference_id=531162 phenotype_id=1355211 experiment_id=169844 mutant_id=169830
+Insert a new allele: display_name=brl1-C371S
+Insert a new phenotypeannotation: dbentity_id=1299259 reference_id=531162 phenotype_id=1355211 experiment_id=169844 mutant_id=169830
+Insert a new allele: display_name=brl1-K405I
+Insert a new phenotypeannotation: dbentity_id=1299259 reference_id=531162 phenotype_id=1355211 experiment_id=169844 mutant_id=169830
+Insert a new phenotypeannotation: dbentity_id=1299259 reference_id=531162 phenotype_id=1355250 experiment_id=169844 mutant_id=169830
+Insert a new phenotypeannotation: dbentity_id=1299259 reference_id=531162 phenotype_id=1355250 experiment_id=169844 mutant_id=169830
+Insert a new reporter: display_name=NLS/NES-GFP2
+Insert a new phenotypeannotation: dbentity_id=1299259 reference_id=531162 phenotype_id=1355250 experiment_id=169844 mutant_id=169830
+Insert a new phenotypeannotation: dbentity_id=1299259 reference_id=531162 phenotype_id=1355250 experiment_id=169844 mutant_id=169830
+Insert a new phenotypeannotation: dbentity_id=1282627 reference_id=481571 phenotype_id=1355611 experiment_id=169845 mutant_id=169830
+Insert a new phenotypeannotation: dbentity_id=1282627 reference_id=481571 phenotype_id=1355297 experiment_id=169845 mutant_id=169830
+Insert a new reporter: display_name=Mam1-myc9
+Insert a new phenotypeannotation: dbentity_id=1282627 reference_id=481571 phenotype_id=1355386 experiment_id=169845 mutant_id=169830
+Insert a new allele: display_name=spo13-m2
+Insert a new phenotypeannotation: dbentity_id=1275849 reference_id=481571 phenotype_id=1355316 experiment_id=169845 mutant_id=169829
+Insert a new phenotypeannotation: dbentity_id=1275849 reference_id=481571 phenotype_id=1355386 experiment_id=169845 mutant_id=169829
+Insert a new phenotypeannotation: dbentity_id=1267908 reference_id=590898 phenotype_id=1355739 experiment_id=169845 mutant_id=169827
+Insert a new phenotypeannotation: dbentity_id=1285586 reference_id=552494 phenotype_id=1355302 experiment_id=169845 mutant_id=169827
+Insert a new phenotypeannotation: dbentity_id=1268276 reference_id=552494 phenotype_id=1355302 experiment_id=169845 mutant_id=169827
+Insert a new reporter: display_name=Lrs4-Myc18
+Insert a new phenotypeannotation: dbentity_id=1285586 reference_id=552494 phenotype_id=1355386 experiment_id=169844 mutant_id=169827
+Insert a new reporter: display_name=Csm1-Myc9
+Insert a new phenotypeannotation: dbentity_id=1268276 reference_id=552494 phenotype_id=1355386 experiment_id=169844 mutant_id=169827
+Insert a new reporter: display_name=Mam1-Myc9
+Insert a new phenotypeannotation: dbentity_id=1285586 reference_id=552494 phenotype_id=1355386 experiment_id=169845 mutant_id=169827
+Insert a new phenotypeannotation: dbentity_id=1268276 reference_id=552494 phenotype_id=1355386 experiment_id=169845 mutant_id=169827
+Insert a new phenotypeannotation: dbentity_id=1267908 reference_id=552494 phenotype_id=1355386 experiment_id=169845 mutant_id=169827
+Insert a new phenotypeannotation: dbentity_id=1285586 reference_id=552494 phenotype_id=1355386 experiment_id=169845 mutant_id=169827
+Insert a new phenotypeannotation: dbentity_id=1268276 reference_id=552494 phenotype_id=1355386 experiment_id=169845 mutant_id=169827
+Insert a new phenotypeannotation: dbentity_id=1285586 reference_id=552494 phenotype_id=1355444 experiment_id=169844 mutant_id=169827
+Insert a new allele: display_name=mcm5-(bob1)
+Insert a new phenotypeannotation: dbentity_id=1283741 reference_id=630350 phenotype_id=1355346 experiment_id=169844 mutant_id=169831
+Insert a new allele: display_name=cdc7-as3
+Insert a new reporter: display_name=Mer2p
+Insert a new phenotypeannotation: dbentity_id=1282627 reference_id=491629 phenotype_id=1355316 experiment_id=169845 mutant_id=169830
+Insert a new phenotypeannotation: dbentity_id=1282901 reference_id=471755 phenotype_id=1355291 experiment_id=169844 mutant_id=169827
+Insert a new allele: display_name=Haa1-S135F_Truncated
+Insert a new phenotypeannotation: dbentity_id=1288128 reference_id=1899094 phenotype_id=1355358 experiment_id=169844 mutant_id=169826
