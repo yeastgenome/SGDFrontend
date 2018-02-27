@@ -117,7 +117,7 @@ var SearchForm = React.createClass({
 
 		       	return (<div><p><center>{_summaryTable}</center></p>
 				     <p><center>{_resultTable}</center></p>
-				     <p><center><a href={downloadUrl}>Download Full Results</a></center></p>
+				     <p><center><blockquote style={{ fontFamily: "Monospace", fontSize: 14 }}><a href={downloadUrl}>Download Full Results</a></blockquote></center></p>
 			       </div>);			
 
 		} 
