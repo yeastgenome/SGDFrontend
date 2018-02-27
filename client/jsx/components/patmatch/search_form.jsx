@@ -106,16 +106,19 @@ var SearchForm = React.createClass({
 			var data = this.state.resultData.hits;
 			var totalHits = this.state.resultData.totalHits;
 			var uniqueHits = this.state.resultData.uniqueHits;
+			var downloadUrl = this.state.resultData.downloadUrl;
 			
 			if (totalHits == 0) {
 			     return (<div><p>No hits found for your pattern. Please modify your pattern and try again..</p></div>);
 			}
 
-			var _summaryTable = this._getSummaryTable(totalHits, uniqueHits)
-			var _resultTable = this._getResultTable(data, totalHits)
+			var _summaryTable = this._getSummaryTable(totalHits, uniqueHits);
+			var _resultTable = this._getResultTable(data, totalHits);
+			var _downloadButton = this._getDownloadButton(downloadUrl);
 
 		       	return (<div><p><center>{_summaryTable}</center></p>
-				     <p>{_resultTable}</p>
+				     <p><center>{_resultTable}</center></p>
+				     <p><center><a href={downloadUrl}>Download Full Results</a></center></p>
 			       </div>);			
 
 		} 
@@ -168,6 +171,7 @@ var SearchForm = React.createClass({
 		}
 	},
 	
+
 	_getSeqNode: function() {
 
 		var param = this.state.param;

@@ -50,11 +50,13 @@ def _run_patmatch(p):
     if dataSet[1]:
         data = { "hits": json.loads(dataSet[0]),
                  "uniqueHits": dataSet[1],
-                 "totalHits": dataSet[2] }
+                 "totalHits": dataSet[2],
+                 "downloadUrl": dataSet[3]}
     else:
         data = { "hits": json.loads(dataSet[0]),
                  "uniqueHits": 0,
-                 "totalHits": 0 }
+                 "totalHits": 0,
+                 "downloadUrl": ""}
                  
     return data
 
