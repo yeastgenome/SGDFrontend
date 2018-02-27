@@ -112,7 +112,7 @@ var SearchForm = React.createClass({
 			}
 
 			var _summaryTable = this._getSummaryTable(totalHits, uniqueHits)
-			var _resultTable = this._getResultTable(data)
+			var _resultTable = this._getResultTable(data, totalHits)
 
 		       	return (<div><p><center>{_summaryTable}</center></p>
 				     <p>{_resultTable}</p>
@@ -599,7 +599,7 @@ var SearchForm = React.createClass({
 
 	},
 
-	_getResultTable: function(data) {
+	_getResultTable: function(data, totalHits) {
 
 	        var dataset = window.localStorage.getItem("dataset");
 
@@ -666,9 +666,14 @@ var SearchForm = React.createClass({
 		      headers: [header],
 		      rows: _tableRows
 		};
+		
+		var pagination= true;
+		if (totalHits  <= 10) {
+		      pagination = false;
+		}
 
 		var _dataTableOptions = {
-		    bPaginate: true,
+		    bPaginate: pagination,
 		    oLanguage: { "sEmptyTable": "No Hits." }
                 };
 
