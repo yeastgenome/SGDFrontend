@@ -114,7 +114,6 @@ var SearchForm = React.createClass({
 
 			var _summaryTable = this._getSummaryTable(totalHits, uniqueHits);
 			var _resultTable = this._getResultTable(data, totalHits);
-			var _downloadButton = this._getDownloadButton(downloadUrl);
 
 		       	return (<div><p><center>{_summaryTable}</center></p>
 				     <p><center>{_resultTable}</center></p>
