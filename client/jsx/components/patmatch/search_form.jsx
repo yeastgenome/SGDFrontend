@@ -84,19 +84,9 @@ var SearchForm = React.createClass({
 		}		
 		else if (this.state.getSeq && this.state.seqFetched) {
 
-		        var param = this.state.param;
-			var beg = param['beg'];
-			var end = param['end'];
-                        var seq = this.state.resultData.seq;
-			var text = this.state.resultData.defline;			
-			var seqNode = this._getSeqNode(seq, beg, end);
+		     	var seqNode = this._getSeqNode();
 			
-			var seqname = window.localStorage.getItem("seqname");
-			var datasetLabel = window.localStorage.getItem("dataset_label");
-
-			var seqSection = "<center><h1>" + datasetLabel + " for " + seqname + "</h1></center><h2>The matching region is highlighted in the following retrieved sequence (in <span style='color:blue;'>blue</span>)</h2>" + seqNode;
-			
-			return (<div dangerouslySetInnerHTML={{ __html: seqSection }} />);
+			return (<div dangerouslySetInnerHTML={{ __html: seqNode }} />);
 				
 		}
 	        else if (this.state.isComplete) {
@@ -171,8 +161,18 @@ var SearchForm = React.createClass({
 		}
 	},
 	
-	_getSeqNode: function(sequence, beg, end) {
-		var tenChunked = sequence.match(/.{1,10}/g).join(" ");
+	_getSeqNode: function() {
+
+		var param = this.state.param;
+                var beg = param['beg'];
+                var end = param['end'];
+		var dataset = param['dataset'];
+		var seqname = param['seqname'];
+
+                var seq = this.state.resultData.seq;
+                // var text = this.state.resultData.defline;
+
+		var tenChunked = seq.match(/.{1,10}/g).join(" ");
     		var lineArr = tenChunked.match(/.{1,66}/g);
     		var maxLabelLength = ((lineArr.length * LETTERS_PER_LINE + 1).toString().length)
 
@@ -224,9 +224,14 @@ var SearchForm = React.createClass({
 		_.map(lineArr, (l, i) => {
 		    seqlines += l + "\n";
 		});
+	    
+		var seqSection = "<blockquote style={{ fontFamily: 'Monospace', fontSize: 14 }}><pre>" + seqlines + "</pre></blockquote>";
+		
+		var datasetLabel = this._getDatasetLabel(dataset);
+		
+                var seqNode = "<center><h1>" + datasetLabel + " for " + seqname + "</h1></center><h3>The matching region is highlighted in the following retrieved sequence (in <span style='color:blue;'>blue</span>)</h3>" + seqSection;
 
-		return "<blockquote style={{ fontFamily: 'Monospace', fontSize: 14 }}><pre>" + seqlines + "</pre></blockquote>";
-
+		return seqNode;
 
 	},
 
@@ -517,8 +522,6 @@ var SearchForm = React.createClass({
 
 		var param = this.state.param;
 		
-		window.localStorage.setItem("seqname", param['seqname']);
-
 		$.ajax({
                         url: PatmatchUrl,
                         data_type: 'json',
@@ -657,7 +660,35 @@ var SearchForm = React.createClass({
 
 		return <DataTable data={_tableData} usePlugin={true} pluginOptions={_dataTableOptions} />;
 
-        }
+        },
+
+	_getDatasetLabel: function(dataset) {
+
+	        var configData = this.state.configData;
+                var datasetDisplayName = "";
+		var seqtype = "";
+                for (var key in configData.dataset) {
+                     var datasets = configData.dataset[key];
+                     for (var i = 0; i < datasets.length; i++) {
+                         var d = datasets[i];
+                         if (d.dataset_file_name == dataset) {
+                            seqtype = d.seqtype;
+                            datasetDisplayName = d.label.split(" = ")[0];
+                            break;
+                         }
+                     }
+               }
+
+	       if (seqtype == 'dna') {
+	           seqtype = 'DNA';
+	       }
+	       else {
+ 	           seqtype = 'Protein';
+	       }
+
+	       return datasetDisplayName + " " + seqtype + " Sequence";
+		    
+	}
 
 });
 
