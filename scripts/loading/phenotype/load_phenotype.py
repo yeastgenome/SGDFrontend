@@ -317,8 +317,8 @@ def load_phenotypes(infile, logfile):
         annotation_id_to_last_group_id[annotation_id] = group_id
 
     ########## 
-    nex_session.rollback()
-    # nex_session.commit()
+    # nex_session.rollback()
+    nex_session.commit()
     
     fw.close()
     f.close()
