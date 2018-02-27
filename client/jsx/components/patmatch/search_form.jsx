@@ -6,7 +6,6 @@ const Checklist = require("../widgets/checklist.jsx");
 const Params = require("../mixins/parse_url_params.jsx");
 const ExampleTable = require("./example_table.jsx");
 const DataTable = require("../widgets/data_table.jsx");
-// const SequenceDisplay = require("./sequence_display.jsx");
 
 const PatmatchUrl = "/run_patmatch";
 
@@ -89,17 +88,13 @@ var SearchForm = React.createClass({
 			var beg = param['beg'];
 			var end = param['end'];
                         var seq = this.state.resultData.seq;
-			var text = this.state.resultData.defline;
-			
-			// var innerNode = (<SequenceDisplay sequence={seq} text={text} beg={beg} end={end} />);
-			
+			var text = this.state.resultData.defline;			
 			var seqNode = this._getSeqNode(seq, beg, end);
-			 
-
-			return (<div dangerouslySetInnerHTML={{ __html: seqNode }} />);
+			
+			var seqSection = "<h2>The matching region is highlighted in the following retrieved sequence (in <span style='color:blue;'>blue</span>)</h2><h3>" + text + "</h3>" + seqNode;
+			
+			return (<div dangerouslySetInnerHTML={{ __html: seqSection }} />);
 				
-			// return <div className="panel sgd-viz">{seqNode}</div>;
-
 		}
 	        else if (this.state.isComplete) {
 
