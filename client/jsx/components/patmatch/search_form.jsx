@@ -59,11 +59,18 @@ var SearchForm = React.createClass({
 
 	render: function () {		
 		var formNode = this._getFormNode();
-		return (<div>
-			<span style={{ textAlign: "center" }}><h1>Yeast Genome Pattern Matching <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/analyze-help/pattern-matching?authuser=0"><img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img></a></h1>
-			<hr /></span>
-			{formNode}
-		</div>);
+		
+		if (this.state.getSeq) {
+		     return (<div>{ formNode }</div>);
+		}
+		else {
+		     return (<div>
+			    <span style={{ textAlign: "center" }}><h1>Yeast Genome Pattern Matching <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/analyze-help/pattern-matching?authuser=0"><img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img></a></h1>
+			    <hr /></span>
+			    {formNode}
+		     </div>);
+		}
+		 
 	},
 
 	componentDidMount: function () {
@@ -229,7 +236,7 @@ var SearchForm = React.createClass({
 		
 		var datasetLabel = this._getDatasetLabel(dataset);
 		
-                var seqNode = "<center><h1>" + datasetLabel + " for " + seqname + "</h1></center><h3>The matching region is highlighted in the following retrieved sequence (in <span style='color:blue;'>blue</span>)</h3>" + seqSection;
+                var seqNode = "<center><h1>" + datasetLabel + " for " + seqname + "</h1><h3>The matching region is highlighted in the following retrieved sequence (in <span style='color:blue;'>blue</span>)</h3>" + seqSection + "</center>";
 
 		return seqNode;
 
