@@ -616,8 +616,15 @@ var SearchForm = React.createClass({
 		var _tableRows = [];
 
 		_.map(data, d => {
-			    
-			var seqLink = '/nph-patmatch?seqname=' + d.seqname + '&dataset=' + dataset + '&beg=' + d.beg + '&end=' + d.end;
+
+			var beg = d.beg;
+			var end = d.end;
+			if (notFeat == 1) {
+			    var featStart = d.seqname.split(':')[1].split("-")[0];
+			    beg = beg - parseInt(featStart) + 1;
+			    end = end - parseInt(featStart) + 1;
+			}   
+			var seqLink = '/nph-patmatch?seqname=' + d.seqname + '&dataset=' + dataset + '&beg=' + beg + '&end=' + end;
 				   
 	 	  	if (notFeat == 1) {
     				
