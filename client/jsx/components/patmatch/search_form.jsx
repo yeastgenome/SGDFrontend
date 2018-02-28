@@ -180,10 +180,15 @@ var SearchForm = React.createClass({
 		var seqname = param['seqname'];
 
                 var seq = this.state.resultData.seq;
+		// var text = this.state.resultData.defline;
 
 		var seqlen = seq.length;
+		
+		if (seqLen > 10000) {
+		    return "<h3>Hello world</h3>" + seqlen;
+		}
 
-                // var text = this.state.resultData.defline;
+
 
 		var tenChunked = seq.match(/.{1,10}/g).join(" ");
     		var lineArr = tenChunked.match(/.{1,66}/g);
