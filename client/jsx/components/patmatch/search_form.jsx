@@ -254,12 +254,12 @@ var SearchForm = React.createClass({
 		    seqlines += l + "\n";
 		});
 	    
-		var spacesStr = Array(maxLabelLength + 1).join(" ");
+		// var spacesStr = Array(maxLabelLength + 1).join(" ");
 		if (seqEnd < seqlen) {
-	    	     seqlines += "\n" + spacesStr + " ..........";
+	    	     seqlines += " ..........";
 		}
 		if (seqStart > 0) {
-		   seqlines = spacesStr + " ..........\n" + seqlines;
+		   seqlines = " ..........\n" + seqlines;
 		}
 
 		var seqSection = "<blockquote style={{ fontFamily: 'Monospace', fontSize: 14 }}><pre>" + seqlines + "</pre></blockquote>";
