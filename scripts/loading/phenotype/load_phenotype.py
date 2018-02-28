@@ -149,7 +149,7 @@ def load_phenotypes(infile, logfile):
                     break
 
             if field_name == "experiment_type":
-                experiment_id = experiment_to_id.get(x.strip())
+                experiment_id = experiment_to_id.get(x.strip().replace('"', ''))
                 if experiment_id is None:
                     print "The experiment_type:", x, " is not in the APO table."
                     bad_row = 1
