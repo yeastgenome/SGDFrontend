@@ -184,8 +184,8 @@ var SearchForm = React.createClass({
 
 		var seqlen = seq.length;
 		
-		if (seqLen > 10000) {
-		    return "<h3>Hello world</h3>" + seqlen;
+		if (seqlen > 10000) {
+		    return "<center><h3>Hello world " + seqlen + "</h3></center>";
 		}
 
 
