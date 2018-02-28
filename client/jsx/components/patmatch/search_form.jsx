@@ -266,7 +266,7 @@ var SearchForm = React.createClass({
 		
 		var datasetLabel = this._getDatasetLabel(dataset);
 		
-                var seqNode = "<center><h1>" + datasetLabel + " for " + seqname + "</h1><h3>The matching region is highlighted in the following retrieved sequence (in <span style='color:blue;'>blue</span>)</h3>" + text + seqSection + "</center>";
+                var seqNode = "<center><h1>" + datasetLabel + " for " + seqname + "</h1><h3>The matching region is highlighted in the following retrieved sequence (in <span style='color:blue;'>blue</span>)</h3>" + seqSection + "</center>";
 
 		return seqNode;
 
