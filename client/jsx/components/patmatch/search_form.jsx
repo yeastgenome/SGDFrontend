@@ -254,13 +254,13 @@ var SearchForm = React.createClass({
 		    seqlines += l + "\n";
 		});
 	    
-		// var spacesStr = Array(maxLabelLength + 1).join(" ");
-		// if (seqEnd < seqlen) {
-	    	//   seqlines += spacesStr + " ..........";
-		// }
-		// if (seqStart > 0) {
-		//   seqlines = spacesStr + " ..........\n" + seqlines;
-		// }
+		var spacesStr = Array(maxLabelLength + 1).join(" ");
+		if (seqEnd < seqlen) {
+	    	     seqlines += "\n" + spacesStr + " ..........";
+		}
+		if (seqStart > 0) {
+		   seqlines = spacesStr + " ..........\n" + seqlines;
+		}
 
 		var seqSection = "<blockquote style={{ fontFamily: 'Monospace', fontSize: 14 }}><pre>" + seqlines + "</pre></blockquote>";
 		
