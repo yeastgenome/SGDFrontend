@@ -321,6 +321,7 @@ var SearchForm = React.createClass({
 
 	_getDatasetNode: function(data) {
 	 			
+				// if( dataset.indexOf('orf_') >= 0 ){
 		var _elements = []; 
 		for (var key in data.dataset) {
 		     if (key == this.state.genome) {
@@ -330,7 +331,7 @@ var SearchForm = React.createClass({
 				if (d.seqtype != this.state.seqtype) {
 				     continue;
 				}
-				if (i==0) {
+				if (d.label.indexOf('Coding') >= 0 || d.label.indexOf('Trans') >= 0 ){
 				     _elements.push(<option value={d.dataset_file_name} selected="selected">{d.label}</option>);
 				}
 				else {
