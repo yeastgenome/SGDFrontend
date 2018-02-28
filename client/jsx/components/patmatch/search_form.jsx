@@ -184,12 +184,6 @@ var SearchForm = React.createClass({
 
 		var seqlen = seq.length;
 		
-		// if (seqlen > 10000) {
-		//    return "<center><h3>Hello world " + seqlen + "</h3></center>";
-		// }
-
-
-
 		var tenChunked = seq.match(/.{1,10}/g).join(" ");
     		var lineArr = tenChunked.match(/.{1,66}/g);
     		var maxLabelLength = ((lineArr.length * LETTERS_PER_LINE + 1).toString().length)
@@ -546,8 +540,7 @@ var SearchForm = React.createClass({
                         data_type: 'json',
                         type: 'POST',
                         data: { 'seqname':      param['seqname'],
-                                'dataset':      param['dataset'],
-				'end':		param['end'] + 240
+                                'dataset':      param['dataset']
                         },
                         success: function(data) {
                               this.setState({seqFetched: true,
