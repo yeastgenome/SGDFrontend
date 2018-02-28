@@ -1,6 +1,13 @@
 import React, {Component} from 'react';
 
 class MenuList extends Component{
+    constructor(props){
+      super(props);
+
+    }
+    _getTreeData(){
+      //TODO:get props data and put together the tree from parent component
+    }
 
     render(){
         return (<ul className="mtree sgd">

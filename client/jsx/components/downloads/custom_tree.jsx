@@ -31,33 +31,23 @@ class CustomTree extends Component {
     }
   }
   render() {
+    
     let childNodes;
     let style;
     let cssClasses;
-    if (this.props.node.childNodes != undefined) {
+    if(this.props.node.childNodes != null){
+    if (this.props.node.childNodes != undefined && this.props.node.childNodes.length > 0) {
       childNodes = this.props.node.childNodes.map((node, index) => {
-        return (
-          <li key={index} value={index}>
-            <CustomTree
-              node={node}
-              leafClick={this.props.leafClick}
-              nodeClick={this.props.nodeClick}
-              queryString={this.props.queryString}
-            />
-          </li>
-        );
+        if(this.props.node.childNodes != null){
+        return <li key={index} value={index}>
+            <CustomTree node={node} leafClick={this.props.leafClick} nodeClick={this.props.nodeClick} queryString={this.props.queryString} />
+          </li>;
+        }
       });
-      cssClasses = {
-        togglable: true,
-        "togglable-down": this.state.visible,
-        "togglable-up": !this.state.visible
-      };
+      cssClasses = { togglable: true, "togglable-down": this.state.visible, "togglable-up": !this.state.visible };
     } else {
       if (this.props.node.title && this.props.queryString) {
-        if (
-          this.props.node.title.toLowerCase() ===
-          this.props.queryString.item.toLowerCase()
-        ) {
+        if (this.props.node.title.toLowerCase() === this.props.queryString.item.toLowerCase()) {
           cssClasses = { "highlight-node": true };
         }
       }
@@ -69,7 +59,7 @@ class CustomTree extends Component {
         listStyleType: "none"
       };
     }
-    if (this.props.node.childNodes == undefined) {
+    if (this.props.node.childNodes == undefined || this.props.node.childNodes.length == 0) {
       
       //leaf node
       return (
@@ -103,6 +93,7 @@ class CustomTree extends Component {
         </div>
       );
     }
+  }
   }
 }
 export default CustomTree;
