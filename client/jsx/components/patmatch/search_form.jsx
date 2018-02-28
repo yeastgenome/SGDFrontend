@@ -185,16 +185,15 @@ var SearchForm = React.createClass({
 
 		var seqStart = 0;
 		if (seqLen > 10000) {
-		   if ((beg - beg%60) > 240) {
-		      seqStart = beg - beg%60 - 240;
-		   }
-		   console.log("seqStart:"+seqStart);
-
-		//   var seqEnd = seqStart+540;
-		//   if (seqEnd > seqlen) {
-		//      	seqEnd = seqlen;
-		//   }
-		//   seq = seq.substring(seqStart, seqEnd); 
+		     if (Math.ceil(beg/60)*60 > 240) {
+		          seqStart = Math.ceil(beg/60)*60 - 240;
+	             }
+		     console.log("seqStart:"+seqStart);
+		     var seqEnd = seqStart+540;
+		     if (seqEnd > seqlen) {
+		      	seqEnd = seqlen;
+		     }
+		     seq = seq.substring(seqStart, seqEnd); 
 	        }
 
 		
