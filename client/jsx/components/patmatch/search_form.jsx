@@ -188,7 +188,7 @@ var SearchForm = React.createClass({
                 if (seqlen > 10000) {
                      if (Math.ceil(beg/60)*60 > 240) {
                      	  seqStart = Math.ceil(beg/60)*60 - 240;
-			  return "<h1>seqStart</h1>";
+			  return "<h1>" + seqStart + "</h1>";
                      }
                      var seqEnd = seqStart+537;
                      if (seqEnd > seqlen) {
