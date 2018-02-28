@@ -9,6 +9,7 @@ import * as action_types from "./action_types";
 import _ from "underscore";
 
 export const fetchDownloadResultsSuccess = results => {
+  ;
   return {
     type: action_types.FETCH_DOWNLOADS_RESULTS_SUCCESS,
     payload: results
@@ -16,6 +17,7 @@ export const fetchDownloadResultsSuccess = results => {
 };
 
 export const fetchDownloadsMenuSuccess = results => {
+  ;
   return {
     type: action_types.FETCH_DOWNLOADS_MENU,
     payload: results
