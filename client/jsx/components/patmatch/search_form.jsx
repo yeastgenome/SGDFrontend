@@ -183,24 +183,6 @@ var SearchForm = React.createClass({
 
 		var seqlen = seq.length;
 
-		var seqStart = 0;
-
-		// if (seqLen > 10000) {
-		//     if (Math.ceil(beg/60)*60 > 240) {
-		//          seqStart = Math.ceil(beg/60)*60 - 240;
-	        //     }
-		//     console.log("seqStart:"+seqStart);
-		//     var seqEnd = seqStart+540;
-		//     if (seqEnd > seqlen) {
-		//      	seqEnd = seqlen;
-		//     }
-		//     seq = seq.substring(seqStart, seqEnd); 
-	        // }
-
-		if (seqLen > 10000) {
-		   return "<h3>Hello world</h3>" + seqLen;
-		}
-
                 // var text = this.state.resultData.defline;
 
 		var tenChunked = seq.match(/.{1,10}/g).join(" ");
@@ -208,7 +190,7 @@ var SearchForm = React.createClass({
     		var maxLabelLength = ((lineArr.length * LETTERS_PER_LINE + 1).toString().length)
 
     		lineArr = _.map(lineArr, (line, i) => {
-      			var lineNum = seqStart + i * LETTERS_PER_LINE + 1;
+      			var lineNum = i * LETTERS_PER_LINE + 1;
       			var numSpaces = maxLabelLength - lineNum.toString().length;
       			var spacesStr = Array(numSpaces + 1).join(" ");
 			
