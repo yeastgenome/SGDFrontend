@@ -546,7 +546,8 @@ var SearchForm = React.createClass({
                         data_type: 'json',
                         type: 'POST',
                         data: { 'seqname':      param['seqname'],
-                                'dataset':      param['dataset']
+                                'dataset':      param['dataset'],
+				'end':		param['end'] + 240
                         },
                         success: function(data) {
                               this.setState({seqFetched: true,
