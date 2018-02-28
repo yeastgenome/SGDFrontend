@@ -204,7 +204,7 @@ var SearchForm = React.createClass({
 		var tenChunked = seq.match(/.{1,10}/g).join(" ");
     		var lineArr = tenChunked.match(/.{1,66}/g);
     		// var maxLabelLength = ((lineArr.length * LETTERS_PER_LINE + 1).toString().length)
-		var maxLabelLength = seq_orig.length + 1;
+		var maxLabelLength = seqEnd.toString().length + 1;
 
     		lineArr = _.map(lineArr, (line, i) => {
       			var lineNum = seqStart + i * LETTERS_PER_LINE + 1;
