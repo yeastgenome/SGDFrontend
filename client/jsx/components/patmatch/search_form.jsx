@@ -187,16 +187,16 @@ var SearchForm = React.createClass({
 		var seqlen = seq.length;
 		var seqStart = 0;
 
-                if (seqlen > 10000) {
+                if (seqlen > 5000) {
                      if (Math.ceil(beg/LETTERS_PER_LINE)*LETTERS_PER_LINE >  LETTERS_PER_LINE*4) {
                      	  seqStart = Math.ceil(beg/ LETTERS_PER_LINE)*LETTERS_PER_LINE -  LETTERS_PER_LINE*4;
                      }
-                     var seqEnd = seqStart+ LETTERS_PER_LINE*9 - 3;
+                     var seqEnd = seqStart+ LETTERS_PER_LINE*9 - 2;
                      if (seqEnd > seqlen) {
                          seqEnd = seqlen;
                      }
                      seq = seq.substring(seqStart, seqEnd);
-		     if (seqEnd == seqStart + LETTERS_PER_LINE*9 - 3) {
+		     if (seqEnd == seqStart + LETTERS_PER_LINE*9 - 2) {
 		     	 seq = seq + "...";
 		     }
                 }
