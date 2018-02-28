@@ -99,7 +99,7 @@ const SearchResult = React.createClass({
       }
       if (this.props.readme_url) {
         fileSizeNode = <div className="columns medium-4 " key="abv3" style={{ marginTop: "1.0rem"}}>
-              <a download href={this.props.readme_url} style={{ marginTop: "0.6rem", color: "#2993FC" }}>
+              <a target="_blank" href={this.props.readme_url} style={{ marginTop: "0.6rem", color: "#2993FC" }}>
                 <i className="fa fa-file-text-o" /> README
               </a>
           </div>;

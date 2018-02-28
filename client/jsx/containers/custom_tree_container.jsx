@@ -93,6 +93,7 @@ class CustomTreeContainer extends Component {
     this.props.dispatch(downloadsActions.getNode(node));
   }
   componentDidMount() {
+    ;
     this.props.dispatch(downloadsActions.fetchDownloadsMenuData());
     if (this.props.query) {
       this.props.dispatch(
@@ -100,8 +101,13 @@ class CustomTreeContainer extends Component {
       );
     }
   }
+  renderMtree(){
+    let items = this.props.downloadsMenu;
+  }
   renderTreeStructure() {
     let items = this.props.downloadsMenu;
+    ;
+
     if (items.length > 0) {
       let treeNodes = items.map((node, index) => {
         if (node) {
