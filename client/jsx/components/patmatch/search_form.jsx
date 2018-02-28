@@ -258,7 +258,7 @@ var SearchForm = React.createClass({
 	    	   seqlines += spacesStr + " ..........";
 		}
 		if (seqStart > 0) {
-		   seqlines = spacesStr + " .........." + seqlines;
+		   seqlines = spacesStr + " ..........\n" + seqlines;
 		}
 
 		var seqSection = "<blockquote style={{ fontFamily: 'Monospace', fontSize: 14 }}><pre>" + seqlines + "</pre></blockquote>";
