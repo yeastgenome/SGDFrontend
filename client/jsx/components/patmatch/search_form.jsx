@@ -193,10 +193,14 @@ var SearchForm = React.createClass({
 		     if (seqEnd > seqlen) {
 		      	seqEnd = seqlen;
 		     }
-		     seq = seq.substring(seqStart, seqEnd); 
+		     // seq = seq.substring(seqStart, seqEnd); 
 	        }
 
-		
+		// testing part
+		seq = seq.substring(1440, 1980);
+		seqStart = 1440;
+		// end testing
+
                 // var text = this.state.resultData.defline;
 
 		var tenChunked = seq.match(/.{1,10}/g).join(" ");
