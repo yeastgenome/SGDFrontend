@@ -191,14 +191,11 @@ var SearchForm = React.createClass({
                      if (Math.ceil(beg/LETTERS_PER_LINE)*LETTERS_PER_LINE >  LETTERS_PER_LINE*4) {
                      	  seqStart = Math.ceil(beg/ LETTERS_PER_LINE)*LETTERS_PER_LINE -  LETTERS_PER_LINE*4;
                      }
-                     var seqEnd = seqStart+ LETTERS_PER_LINE*9 - 2;
+                     var seqEnd = seqStart+ LETTERS_PER_LINE*9;
                      if (seqEnd > seqlen) {
                          seqEnd = seqlen;
                      }
                      seq = seq.substring(seqStart, seqEnd);
-		     if (seqEnd == seqStart + LETTERS_PER_LINE*9 - 2) {
-		     	 seq = seq + "...";
-		     }
                 }
 		
 		var tenChunked = seq.match(/.{1,10}/g).join(" ");
@@ -221,7 +218,7 @@ var SearchForm = React.createClass({
           		    var baseArr = line.split("");
           		    var k = 0;
           		    var newLine = ""
-          		    _.map(baseArr, (base, j) => {
+           		    _.map(baseArr, (base, j) => {
               		         if (k < tmpBeg || k > tmpEnd || base == ' ') {
                    		      newLine += base;
               			 }
@@ -256,6 +253,14 @@ var SearchForm = React.createClass({
 		    seqlines += l + "\n";
 		});
 	    
+		var spacesStr = Array(maxLabelLength + 1).join(" ");
+		if (seqEnd < seqlen) {
+	    	   seqlines += spacesStr + " ..........";
+		}
+		if (seqStart > 0) {
+		   seqlines = spacesStr + " .........." + seqlines;
+		}
+
 		var seqSection = "<blockquote style={{ fontFamily: 'Monospace', fontSize: 14 }}><pre>" + seqlines + "</pre></blockquote>";
 		
 		var datasetLabel = this._getDatasetLabel(dataset);
