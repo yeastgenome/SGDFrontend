@@ -153,7 +153,7 @@ var SearchForm = React.createClass({
 							
 			return (<div>
 			        <div dangerouslySetInnerHTML={{ __html: descText}} />
-				<form onSubmit={this._onSubmit} target="search_result">
+				<form onSubmit={this._onSubmit} target="infowin">
 					<div className="row">
                         		     <div className="large-12 columns">
                                		     	  { genomeBoxNode }
@@ -659,12 +659,12 @@ var SearchForm = React.createClass({
 				   
 	 	  	if (notFeat == 1) {
     				
-			     _tableRows.push([d.chr, d.orfs, d.count, d.matchingPattern, d.beg, d.end, <span><a href={ seqLink}>Sequence</a></span>]);
+			     _tableRows.push([d.chr, d.orfs, d.count, d.matchingPattern, d.beg, d.end, <span><a href={ seqLink} target='infowin2'>Sequence</a></span>]);
 
 			}
 		    	else if (withDesc == 0) {
 
-			     _tableRows.push([d.seqname, d.count, d.matchingPattern, d.beg, d.end, <span><a href={ seqLink}>Sequence</a></span>]);
+			     _tableRows.push([d.seqname, d.count, d.matchingPattern, d.beg, d.end, <span><a href={ seqLink} target='infowin2'>Sequence</a></span>]);
 
 			}
 			else {		    	   
@@ -676,7 +676,7 @@ var SearchForm = React.createClass({
 			     }
 			     var lspLink = '/locus/' + d.seqname;
 
-			     _tableRows.push([ <span><a href={ lspLink } >{ name }</a></span>, d.count, d.matchingPattern, d.beg, d.end, <span><a href={ seqLink}>Sequence</a></span>, headline]);
+			     _tableRows.push([ <span><a href={ lspLink } target='infowin2'>{ name }</a></span>, d.count, d.matchingPattern, d.beg, d.end, <span><a href={ seqLink} target='infowin2'>Sequence</a></span>, headline]);
 				
 			}
                 });
