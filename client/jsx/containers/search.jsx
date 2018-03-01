@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import Radium from 'radium';
 import { connect } from 'react-redux';
 import _ from 'underscore';
+import S from "string";
 
 import SearchResult from '../components/search/search_result.jsx';
 import SearchDownloadAnalyze from '../components/search/search_download_analyze.jsx';
@@ -12,7 +13,9 @@ import Collapser from '../components/widgets/collapser.jsx';
 import ErrorMessage from '../components/widgets/error_message.jsx';
 import Loader from '../components/widgets/loader.jsx';
 import Paginator from '../components/widgets/paginator.jsx';
-import { startSearchFetchMaybeAsycFetch } from '../actions/search_actions';
+import {
+  startSearchFetchMaybeAsycFetch
+} from "../actions/search_actions";
 import { createPath } from '../lib/search_helpers';
 
 const SEARCH_URL = '/search';
@@ -24,15 +27,14 @@ const Search = React.createClass({
     if (this.props.apiError) {
       return <ErrorMessage />;
     }
-    return (
-      <div className="row">
+    return <div className="row">
         <div className="column medium-4 hide-for-small">
-          <FacetSelector isMobile={false} />
+          <FacetSelector isMobile={false} downloadsStatus={this._getDownloadsStatus} />
         </div>
         <div className="column small-12 medium-8">
           <div className="show-for-small-only">
             <Collapser label="Categories">
-              <FacetSelector isMobile={true} />
+              <FacetSelector isMobile={true} downloadsStatus={this._getDownloadsStatus} />
             </Collapser>
           </div>
           <div style={[style.resultsWraper]}>
@@ -41,8 +43,7 @@ const Search = React.createClass({
             {this._renderSearchContent()}
           </div>
         </div>
-      </div>
-    );
+      </div>;
   },
 
   // listen for history changes and fetch results when they change, also update google analytics
@@ -285,6 +286,13 @@ const Search = React.createClass({
     this.props.dispatch(startSearchFetchMaybeAsycFetch());
   },
 
+  _getDownloadsStatus(str){
+    this.props.history.pushState(null, SEARCH_URL, {
+      category:'download',
+      status: S(str).capitalize().s
+    });
+  },
+
   _isWrappedResults() {
     return (
       this.props.activeCategory === "locus" && this.props.geneMode !== "list"
@@ -311,7 +319,8 @@ const Search = React.createClass({
     results: React.PropTypes.array, // [{ name, url, category, description }]
     total: React.PropTypes.number,
     totalPages: React.PropTypes.number,
-    apiError: React.PropTypes.bool
+    apiError: React.PropTypes.bool,
+
   }
 });
 
@@ -354,7 +363,8 @@ function mapStateToProps(_state) {
     sortBy: state.sortBy, apiError: state.apiError, query: state.query, 
     url: `${_state.routing.location.pathname}${_state.routing.location.search}`, 
     queryParams: _state.routing.location.query, 
-    geneMode: state.geneMode
+    geneMode: state.geneMode,
+    selectedStatus: state.selectedStatus
   };
 };
 

@@ -14,18 +14,18 @@ class StatusBtns extends Component {
       }
     
     render(){
-      let cStyle={};
+      let cStyle={marginLeft:"0.2rem"};
         let activityStyle = this.props.flag ? "active-agg" : "inactive-agg";
         let klass = this.props.flag ? "search-agg active" : "search-agg";
         if (this.props.flag) {
-          cStyle = { color: "white" };
+          cStyle = { color: "white", marginLeft: "0.2rem" };
         } return <div key={`agg1${this.props.key}`} className={ClassNames(klass, activityStyle, "status-btn")}>
-              <Link to={this.props.href}>
-                <input type="radio" value={this.props.name} checked={this.props.flag} name={this.props.name} onChange={this.props.btnClick} key={this.props.key} />
-              </Link>
-              <span className={"status-btn-label"} style={cStyle}>
-                {S(this.props.name).capitalize().s}
-              </span>
+              <label className={"status-btn-label"}>
+                  <input type="radio" value={this.props.name} checked={this.props.flag} name={this.props.name} onChange={this.props.btnClick} key={this.props.key} />
+                  <span style={cStyle}>
+                    {S(this.props.name).capitalize().s}
+                  </span>
+              </label>
             </div>;
     }
 }
