@@ -59,7 +59,7 @@ module.exports = {
 				 
                 // return <DataTable data={_tableData} columns={_columns} rowsGroup={_rowsGroup}  />;
 
-		var dataTableOptions = {
+		var _dataTableOptions = {
                     bPaginate: false,
                     oLanguage: { "sEmptyTable": "" }
                 };
