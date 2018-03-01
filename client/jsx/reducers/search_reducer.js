@@ -6,7 +6,7 @@ const DEFAULT_RESULTS_PER_PAGE = 25;
 const DEFAULT_SORT_BY = 'relevance';
 const DEFAULT_GENE_MODE = 'list';
 const DEFAULT_STATE = {
-  userInput: '',
+  userInput: "",
   results: [],
   asyncResults: [],
   activeCategory: null,
@@ -15,15 +15,16 @@ const DEFAULT_STATE = {
   currentPage: 0,
   totalPages: 0,
   resultsPerPage: DEFAULT_RESULTS_PER_PAGE,
-  query: '',
+  query: "",
   isPending: false,
   isAsyncPending: false,
-  asyncProgress: 0.00,
+  asyncProgress: 0.0,
   isPaginatePending: false, // if the only change is the page, note special state for rendering total
   apiError: null,
   isHydrated: false,
   sortBy: DEFAULT_SORT_BY,
-  geneMode: DEFAULT_GENE_MODE
+  geneMode: DEFAULT_GENE_MODE,
+  downloadsFlag: true
 };
 
 const searchResultsReducer = function (_state, action) {
@@ -33,11 +34,27 @@ const searchResultsReducer = function (_state, action) {
   }
   // let the URL change the query and other params
   if (action.type === '@@router/UPDATE_LOCATION' && action.payload.pathname === '/search') {
-    let params = action.payload.query;
+     let params = action.payload.query;
+    if(action.payload.query.category){
+      if (action.payload.query.category === "download" && action.payload.query.status === undefined && state.downloadsFlag) {
+        state.downloadsFlag = false;
+      } 
+      else if(params.category === "download" && (Object.keys(params).length === 2 || Object.keys(params).length === 3)) {
+          state.downloadsFlag = true;
+        }
+      else{
+        state.downloadsFlag = false;
+        params = action.payload.query;
+      }
+       
+      }
+
+   
     // set userInput and query from q
     let newQuery = (typeof params.q === 'string') ? params.q : '';
     state.query = newQuery;
     state.userInput = newQuery;
+    
     // set currentPage from page
     let newPage = (typeof params.page === 'string' || typeof params.page === 'number') ? parseInt(params.page) : 0;
     // set paginate pending if page is changing

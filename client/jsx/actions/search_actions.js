@@ -47,6 +47,7 @@ export function setUserInput (newValue) {
 
 // start fetch, fetch, and start async fetching
 export function startSearchFetchMaybeAsycFetch () {
+ 
   return function (dispatch, getState) {
     dispatch(startSearchFetch());
     dispatch(fetchSearchResults());
@@ -84,6 +85,7 @@ export function startAsyncFetch () {
 export function fetchSearchResults () {
   return function (dispatch, getState) {
     // format the API request from quer params
+    
     const state = getState();
     const searchState = state.searchResults;
     // if not isHydrated and global bootstrappedSearchResults, use that as result, don't fetch anything, set isHydrated to false
@@ -99,6 +101,9 @@ export function fetchSearchResults () {
     const newQp = _.clone(qp);
     newQp.offset = _offset;
     newQp.limit = _limit;
+    /*if(state.searchResults.downloadsFlag){
+      newQp.status = 'Active';
+    }*/
     const url = createPath({ pathname: RESULTS_URL, query: newQp });
     fetchFromApi(url)
       .then( response => {
