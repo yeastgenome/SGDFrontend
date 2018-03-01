@@ -40,10 +40,10 @@ module.exports = {
 		rows.push(["All Searches", "{m,n}", <span><br>{ "{m} = exactly m times" }</br> <br>{ "{m,} = at least m times" }</br> <br>{ "{,m} = 0 to m times" }</br> <br>{ "{m,n} = between m and n times" }</br></span>, <span><a href={ '/nph-patmatch?seqtype=pep&pattern=L{3,5}X{5}DGO' } target='infowin'>{'L{3,5}X{5}DGO'}</a></span>]);
 
 
-		rows.push(["All Searches", "<", "Constrains pattern to N-terminus or 5' end", <span><br><a href={ '/nph-patmatch?seqtype=pep&pattern=<MNTD' }>{ '<MNTD' }</a>{ ' (pep)' }</br> <br><a href={ '/nph-patmatch?seqtype=nuc&pattern=<ATGX{6,10}RTTRTT' } target='infowin'>{ '<ATGX{6,10}RTTRTT' }</a>{ ' (nuc)' }</br></span>]);
+		rows.push(["All Searches", "<", "Constrains pattern to N-terminus or 5' end", <span><br><a href={ '/nph-patmatch?seqtype=pep&pattern=<MNTD' } target='infowin'>{ '<MNTD' }</a>{ ' (pep)' }</br> <br><a href={ '/nph-patmatch?seqtype=nuc&pattern=<ATGX{6,10}RTTRTT' } target='infowin'>{ '<ATGX{6,10}RTTRTT' }</a>{ ' (nuc)' }</br></span>]);
 
 
-		rows.push(["All Searches", ">", "Constrains pattern to C-terminus or 3' end", <span><br><a href={ "/nph-patmatch?seqtype=pep&pattern=sjgo>" }>{ "sjgo>" }</a>{ ' (pep)' }</br> <br><a href={ "/nph-patmatch?seqtype=nuc&pattern=yattrtga>" } target='infowin'>{ "yattrtga>" }</a>{ ' (nuc)' }</br></span>]);
+		rows.push(["All Searches", ">", "Constrains pattern to C-terminus or 3' end", <span><br><a href={ "/nph-patmatch?seqtype=pep&pattern=sjgo>" } target='infowin'>{ "sjgo>" }</a>{ ' (pep)' }</br> <br><a href={ "/nph-patmatch?seqtype=nuc&pattern=yattrtga>" } target='infowin'>{ "yattrtga>" }</a>{ ' (nuc)' }</br></span>]);
 		
 		var _tableData = {
                         headers: [["Search type", "Character", "Meaning", "Examples"]],
