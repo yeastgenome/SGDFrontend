@@ -59,7 +59,11 @@ module.exports = {
 				 
                 // return <DataTable data={_tableData} columns={_columns} rowsGroup={_rowsGroup}  />;
 
-		return <DataTable data={_tableData}  />;
+		var dataTableOptions = {
+                    bPaginate: false,
+                    oLanguage: { "sEmptyTable": "" }
+                };
+		return <DataTable data={_tableData}  usePlugin={true} pluginOptions={_dataTableOptions} />;
 	}	
 };
 
