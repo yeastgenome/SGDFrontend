@@ -26,19 +26,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
     "NOTES":
       "ACR2 is both an alias for YPR200C/ARR2 (an arsenate resistance gene) and the standard name for ACR2, an unmapped gene involved in aculeacin A sensitivity.",
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "ACR2 is both an alias for YPR200C/ARR2 (an arsenate resistance gene) and the standard name for ACR2, an unmapped gene involved in aculeacin A sensitivity.",
-=======
->>>>>>> added updated not_mapped file, es-script
-=======
-=======
-    "NOTES": "ACR2 is both an alias for YPR200C/ARR2 (an arsenate resistance gene) and the standard name for ACR2, an unmapped gene involved in aculeacin A sensitivity.",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "1839761 | 8322514 |9169866"
   },
   {
@@ -48,12 +37,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
     "NOTES":
       "ACR3 is both an alias for YPR201W/ARR3 (an arsenite transporter) and the standard name for ACR3, an unmapped gene involved in aculeacin A sensitivity.",
-=======
-    "NOTES": "ACR3 is both an alias for YPR201W/ARR3 (an arsenite transporter) and the standard name for ACR3, an unmapped gene involved in aculeacin A sensitivity.",
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "1839761 | 24798644 | 9169866"
   },
   {
@@ -89,12 +74,8 @@
   {
     "FEATURE_NAME": "AMC1",
     "ALIASES": "CHL6",
-<<<<<<< HEAD
     "DESCRIPTION":
       "Controls segregation of artificial minichromosomes during mitosis",
-=======
-    "DESCRIPTION": "Controls segregation of artificial minichromosomes during mitosis",
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -208,23 +189,15 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
     "NOTES":
       "The AUT6 locus, identified genetically in Harding et al. 1996 was mislabelled for a period of time in SGD as AUT8. This data entry error was corrected on 7/26/2001. The actual aut8 mutation was identified separately in a different screen from that which is described in Harding et al., and is allelic to the APG2/YNL242W locus.",
-=======
-    "NOTES": "The AUT6 locus, identified genetically in Harding et al. 1996 was mislabelled for a period of time in SGD as AUT8. This data entry error was corrected on 7/26/2001. The actual aut8 mutation was identified separately in a different screen from that which is described in Harding et al., and is allelic to the APG2/YNL242W locus.",
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "10511544 | 8663607"
   },
   {
     "FEATURE_NAME": "AXE1",
     "ALIASES": "",
-<<<<<<< HEAD
     "DESCRIPTION":
       "Mutant resistant to high concentrations of axenomycin; also resistant to cycloheximide, sparsomycin and amycetin, all known inhibitors of the large subunit of the ribosome; most probably one of the proteins of the large ribosomal subunit",
-=======
-    "DESCRIPTION": "Mutant resistant to high concentrations of axenomycin; also resistant to cycloheximide, sparsomycin and amycetin, all known inhibitors of the large subunit of the ribosome; most probably one of the proteins of the large ribosomal subunit",
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "AXEnomycin",
     "CHROMOSOME": "chrVII",
     "GENETIC_POSITION": "-4",
@@ -284,12 +257,8 @@
   {
     "FEATURE_NAME": "BLM1",
     "ALIASES": "",
-<<<<<<< HEAD
     "DESCRIPTION":
       "Required for resistance to bleomycin; ionizing radiation and oxidative damage by hydrogen peroxide; mutants display slow growth and abnormal morphology; homozygous mutant has reduced spore viability; bleomycin resistance suppressed by MSH4",
-=======
-    "DESCRIPTION": "Required for resistance to bleomycin; ionizing radiation and oxidative damage by hydrogen peroxide; mutants display slow growth and abnormal morphology; homozygous mutant has reduced spore viability; bleomycin resistance suppressed by MSH4",
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "BLeoMycin resistance",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -299,12 +268,8 @@
   {
     "FEATURE_NAME": "BLM5",
     "ALIASES": "",
-<<<<<<< HEAD
     "DESCRIPTION":
       "Required for resistance to bleomycin; ionizing radiation and oxidative damage by hydrogen peroxide, required for sporulation",
-=======
-    "DESCRIPTION": "Required for resistance to bleomycin; ionizing radiation and oxidative damage by hydrogen peroxide, required for sporulation",
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -344,12 +309,8 @@
   {
     "FEATURE_NAME": "CAG1",
     "ALIASES": "",
-<<<<<<< HEAD
     "DESCRIPTION":
       "Alpha-specific gene involved in regulating sex agglutinin synthesis",
-=======
-    "DESCRIPTION": "Alpha-specific gene involved in regulating sex agglutinin synthesis",
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "chrIII",
     "GENETIC_POSITION": "30",
@@ -383,12 +344,8 @@
     "NAME_DESCRIPTION": "Cell Division Cycle",
     "CHROMOSOME": "chrIX",
     "GENETIC_POSITION": "-23",
-<<<<<<< HEAD
     "NOTES":
       "Edition 10: cdc29 has been shown to be distal to his6 by mitotic recombination analyses",
-=======
-    "NOTES": "Edition 10: cdc29 has been shown to be distal to his6 by mitotic recombination analyses",
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "17248617 | 2678811"
   },
   {
@@ -428,12 +385,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "chrIV",
     "GENETIC_POSITION": "-5",
-<<<<<<< HEAD
     "NOTES":
       "CDC77 was mapped by Mortimer et al. 1989 on chromosome IV. Details of NDC2/CDC77 was published by Villadsen IS, Yeast (conference issue) 4:98 (1988); abstract #B28.",
-=======
-    "NOTES": "CDC77 was mapped by Mortimer et al. 1989 on chromosome IV. Details of NDC2/CDC77 was published by Villadsen IS, Yeast (conference issue) 4:98 (1988); abstract #B28.",
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "2678811 | 1413997"
   },
   {
@@ -459,12 +412,8 @@
   {
     "FEATURE_NAME": "CHL2",
     "ALIASES": "",
-<<<<<<< HEAD
     "DESCRIPTION":
       "Involved in controlling mitotic transmission of yeast chromosomes",
-=======
-    "DESCRIPTION": "Involved in controlling mitotic transmission of yeast chromosomes",
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "CHromosome Loss",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -474,12 +423,8 @@
   {
     "FEATURE_NAME": "CHL5",
     "ALIASES": "",
-<<<<<<< HEAD
     "DESCRIPTION":
       "Involved in controlling mitotic transmission of yeast chromosomes",
-=======
-    "DESCRIPTION": "Involved in controlling mitotic transmission of yeast chromosomes",
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "CHromosome Loss",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -489,41 +434,20 @@
   {
     "FEATURE_NAME": "CHL8",
     "ALIASES": "AMC3 | CTF12",
-<<<<<<< HEAD
     "DESCRIPTION":
       "Identified as a chromosome transmission fidelity mutant; has a high rate of chromosome loss",
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-    "NOTES": "Edition 11: AMC3 has been renamed chl8 | Edition 11: ctf12, amc3 and chl8 are allelic",
-    "DESCRIPTION":
-      "Identified as a chromosome transmission fidelity mutant; has a high rate of chromosome loss",
-    "NAME_DESCRIPTION": "",
-    "CHROMOSOME": "",
-    "GENETIC_POSITION": "",
-=======
->>>>>>> added updated not_mapped file, es-script
     "NOTES":
       "Edition 11: AMC3 has been renamed chl8 | Edition 11: ctf12, amc3 and chl8 are allelic",
-=======
-    "DESCRIPTION": "Identified as a chromosome transmission fidelity mutant; has a high rate of chromosome loss",
-    "NAME_DESCRIPTION": "",
-    "CHROMOSOME": "",
-    "GENETIC_POSITION": "",
-    "NOTES": "Edition 11: AMC3 has been renamed chl8 | Edition 11: ctf12, amc3 and chl8 are allelic",
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "2407610 | 2663183 | 8442383 | 1413997"
   },
   {
     "FEATURE_NAME": "CHL9",
     "ALIASES": "AMC4",
-<<<<<<< HEAD
     "DESCRIPTION":
       "Gene of unknown function; involved in controlling the segregation of natural chromosomes in yeast",
-=======
-    "DESCRIPTION": "Gene of unknown function; involved in controlling the segregation of natural chromosomes in yeast",
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -537,12 +461,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
     "NOTES":
       "CLS1 has been used in the literature to refer to both CRD1/YDL142C which encodes a cardiolipin synthase, and the genetic locus CLS1.",
-=======
-    "NOTES": "CLS1 has been used in the literature to refer to both CRD1/YDL142C which encodes a cardiolipin synthase, and the genetic locus CLS1.",
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "3531397 | 9169866"
   },
   {
@@ -553,12 +473,8 @@
     "CHROMOSOME": "chrII",
     "GENETIC_POSITION": "-39",
     "NOTES": "",
-<<<<<<< HEAD
     "LITERATURE (PMIDs)":
       "6341816 | 17248609 | 2678811 | 1413997 | 2995780 | 2196995"
-=======
-    "LITERATURE (PMIDs)": "6341816 | 17248609 | 2678811 | 1413997 | 2995780 | 2196995"
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "CLY3",
@@ -568,12 +484,8 @@
     "CHROMOSOME": "chrVI",
     "GENETIC_POSITION": "6",
     "NOTES": "",
-<<<<<<< HEAD
     "LITERATURE (PMIDs)":
       "17248609 | 8056323 | 2678811 | 2995780 | 6757051 | 6366520 | 7010111 | 8917543"
-=======
-    "LITERATURE (PMIDs)": "17248609 | 8056323 | 2678811 | 2995780 | 6757051 | 6366520 | 7010111 | 8917543"
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "CLY8",
@@ -583,12 +495,8 @@
     "CHROMOSOME": "chrVII",
     "GENETIC_POSITION": "76",
     "NOTES": "",
-<<<<<<< HEAD
     "LITERATURE (PMIDs)":
       "3029564 | 3547080 | 3886479 | 8483459 | 2407607 | 9008166 | 2668116 | 6096695 | 7010111 | 2678811 | 3896925"
-=======
-    "LITERATURE (PMIDs)": "3029564 | 3547080 | 3886479 | 8483459 | 2407607 | 9008166 | 2668116 | 6096695 | 7010111 | 2678811 | 3896925"
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "CLY9",
@@ -597,12 +505,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
     "NOTES":
       "The 1980 edition of the S. cerevisiae genetic map states: The cly9 marker can no longer be scored reliably and has been removed from the map.",
-=======
-    "NOTES": "The 1980 edition of the S. cerevisiae genetic map states: The cly9 marker can no longer be scored reliably and has been removed from the map.",
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "17248609 | 7010111"
   },
   {
@@ -612,12 +516,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "chrVI",
     "GENETIC_POSITION": "5",
-<<<<<<< HEAD
     "NOTES":
       "Edition 10: crl1 exact order of crl1 with respect to SUP11 and SUF20 has not been established",
-=======
-    "NOTES": "Edition 10: crl1 exact order of crl1 with respect to SUP11 and SUF20 has not been established",
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "3294103 | 3294104 | 2678811"
   },
   {
@@ -627,12 +527,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "chrVII",
     "GENETIC_POSITION": "92",
-<<<<<<< HEAD
     "NOTES":
       "May represent an allele of PRE9 (YGR135W), based on genetic map position.",
-=======
-    "NOTES": "May represent an allele of PRE9 (YGR135W), based on genetic map position.",
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "3294103 | 3294104 | 9398670"
   },
   {
@@ -642,12 +538,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "chrXV",
     "GENETIC_POSITION": "-41",
-<<<<<<< HEAD
     "NOTES":
       "Edition 10: crl11 maps centromere proximal to arg1 | May represent an allele of PRE6 (YOL038W), based on genetic map position.",
-=======
-    "NOTES": "Edition 10: crl11 maps centromere proximal to arg1 | May represent an allele of PRE6 (YOL038W), based on genetic map position.",
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "9398670 | 2678811"
   },
   {
@@ -657,12 +549,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "chrVII",
     "GENETIC_POSITION": "186",
-<<<<<<< HEAD
     "NOTES":
       "May represent an allele of PUP2 (YGR253C), based on genetic map position.",
-=======
-    "NOTES": "May represent an allele of PUP2 (YGR253C), based on genetic map position.",
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "3294103 | 3294104 | 9398670"
   },
   {
@@ -682,12 +570,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "chrIV",
     "GENETIC_POSITION": "236",
-<<<<<<< HEAD
     "NOTES":
       "May represent an allele of RPT3 (YDR394W), based on genetic map position.",
-=======
-    "NOTES": "May represent an allele of RPT3 (YDR394W), based on genetic map position.",
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "9398670"
   },
   {
@@ -697,12 +581,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "chrXV",
     "GENETIC_POSITION": "45",
-<<<<<<< HEAD
     "NOTES":
       "May represent an allele of RPT5 (YOR117W), based on genetic map position.",
-=======
-    "NOTES": "May represent an allele of RPT5 (YOR117W), based on genetic map position.",
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "3294103 | 9398670"
   },
   {
@@ -712,12 +592,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "chrIV",
     "GENETIC_POSITION": "-1",
-<<<<<<< HEAD
     "NOTES":
       "CRL18 is likely to represent an allele of PTC1 (TPD1, YDL006W), based on shared mutant phenotype and genetic map position. | May represent an allele of RPT2 (YDL007W), based on genetic map position.",
-=======
-    "NOTES": "CRL18 is likely to represent an allele of PTC1 (TPD1, YDL006W), based on shared mutant phenotype and genetic map position. | May represent an allele of RPT2 (YDL007W), based on genetic map position.",
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "3294103 | 8196609 | 9398670"
   },
   {
@@ -727,12 +603,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
     "NOTES":
       "Edition 10: crl22 - ade4 order has not been determined | May represent an allele of PRE5 (YMR314W), based on genetic map position.",
-=======
-    "NOTES": "Edition 10: crl22 - ade4 order has not been determined | May represent an allele of PRE5 (YMR314W), based on genetic map position.",
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "3294103 | 9398670 | 2678811"
   },
   {
@@ -742,12 +614,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "chrV",
     "GENETIC_POSITION": "18",
-<<<<<<< HEAD
     "NOTES":
       "May represent an allele of RPN3 (YER021W), based on genetic map position.",
-=======
-    "NOTES": "May represent an allele of RPN3 (YER021W), based on genetic map position.",
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "3294103 | 9398670"
   },
   {
@@ -757,12 +625,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "chrXV",
     "GENETIC_POSITION": "71",
-<<<<<<< HEAD
     "NOTES":
       "May represent an allele of PUP1 (YOR157C), based on genetic map position.",
-=======
-    "NOTES": "May represent an allele of PUP1 (YOR157C), based on genetic map position.",
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "3294103 | 9398670"
   },
   {
@@ -822,12 +686,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "chrII",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
     "NOTES":
       "Edition 11: AMY2, cyh1 and cyh10 are probably alleles of pdr3 or pdr7 (pdr4) and have been removed from the map",
-=======
-    "NOTES": "Edition 11: AMY2, cyh1 and cyh10 are probably alleles of pdr3 or pdr7 (pdr4) and have been removed from the map",
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "2009277 | 5900603 | 1413997"
   },
   {
@@ -837,12 +697,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
     "NOTES":
       "Edition 11: AMY2, cyh1 and cyh10 are probably alleles of pdr3 or pdr7 (pdr4) and have been removed from the map",
-=======
-    "NOTES": "Edition 11: AMY2, cyh1 and cyh10 are probably alleles of pdr3 or pdr7 (pdr4) and have been removed from the map",
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "4371644 | 2009277 | 1413997"
   },
   {
@@ -883,22 +739,14 @@
     "CHROMOSOME": "chrVII",
     "GENETIC_POSITION": "87.14",
     "NOTES": "",
-<<<<<<< HEAD
     "LITERATURE (PMIDs)":
       "1441747 | 1525856 | 1789005 | 1789006 | 3056921 | 12234471 | 12586406"
-=======
-    "LITERATURE (PMIDs)": "1441747 | 1525856 | 1789005 | 1789006 | 3056921 | 12234471 | 12586406"
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "DBF1",
     "ALIASES": "",
-<<<<<<< HEAD
     "DESCRIPTION":
       "Protein required for DNA replication; expression is constant across the cell cycle",
-=======
-    "DESCRIPTION": "Protein required for DNA replication; expression is constant across the cell cycle",
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "DumbBell Former",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -938,30 +786,13 @@
   {
     "FEATURE_NAME": "DIS1",
     "ALIASES": "",
-<<<<<<< HEAD
     "DESCRIPTION":
       "Required for mitotic segregation; meiosis I segregation, and spore viability",
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-    "NOTES": "DIS1 has been used in the literature to refer to both ULS1/RIS1/YOR191W, which encodes a member of the SWI-SNF family of DNA-dependent ATPases, and the genetic locus DIS1, which is required for mitotic segregation, meiosis I segregation, and spore viability.",
-    "DESCRIPTION":
-      "Required for mitotic segregation; meiosis I segregation, and spore viability",
-    "NAME_DESCRIPTION": "",
-    "CHROMOSOME": "",
-    "GENETIC_POSITION": "",
-=======
->>>>>>> added updated not_mapped file, es-script
     "NOTES":
       "DIS1 has been used in the literature to refer to both ULS1/RIS1/YOR191W, which encodes a member of the SWI-SNF family of DNA-dependent ATPases, and the genetic locus DIS1, which is required for mitotic segregation, meiosis I segregation, and spore viability.",
-=======
-    "DESCRIPTION": "Required for mitotic segregation; meiosis I segregation, and spore viability",
-    "NAME_DESCRIPTION": "",
-    "CHROMOSOME": "",
-    "GENETIC_POSITION": "",
-    "NOTES": "DIS1 has been used in the literature to refer to both ULS1/RIS1/YOR191W, which encodes a member of the SWI-SNF family of DNA-dependent ATPases, and the genetic locus DIS1, which is required for mitotic segregation, meiosis I segregation, and spore viability.",
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "3294101 | 9169866"
   },
   {
@@ -1081,12 +912,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
     "NOTES":
       "ESC3 was identified and named in Rodriguez C, et al. (2003) FEMS Yeast Res 3(1):77-84",
-=======
-    "NOTES": "ESC3 was identified and named in Rodriguez C, et al. (2003) FEMS Yeast Res 3(1):77-84",
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "12702249"
   },
   {
@@ -1106,12 +933,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
     "NOTES":
       "Edition 12: exa1 and exa2 are both centromere linked; the data are consistent with placing these two genes 8 cM and 21 cM from their respective centromeres. Neither gene is on chromosome III",
-=======
-    "NOTES": "Edition 12: exa1 and exa2 are both centromere linked; the data are consistent with placing these two genes 8 cM and 21 cM from their respective centromeres. Neither gene is on chromosome III",
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "1644272"
   },
   {
@@ -1217,12 +1040,8 @@
   {
     "FEATURE_NAME": "GCD3",
     "ALIASES": "",
-<<<<<<< HEAD
     "DESCRIPTION":
       "Negative regulator gene in general amino acid biosynthetic pathway; possibly upstream of GCN4",
-=======
-    "DESCRIPTION": "Negative regulator gene in general amino acid biosynthetic pathway; possibly upstream of GCN4",
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "General Control Derepressed",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -1232,19 +1051,8 @@
   {
     "FEATURE_NAME": "GCD4",
     "ALIASES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "DESCRIPTION": "Negative regulatory gene in general amino acid biosynthetic pathway; locus on Chromosome III; proposed negative regulator of GCN4",
-
-=======
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "DESCRIPTION":
       "Negative regulatory gene in general amino acid biosynthetic pathway; locus on Chromosome III; proposed negative regulator of GCN4",
-=======
-    "DESCRIPTION": "Negative regulatory gene in general amino acid biosynthetic pathway; locus on Chromosome III; proposed negative regulator of GCN4",
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "General Control Derepressed",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -1254,22 +1062,14 @@
   {
     "FEATURE_NAME": "GCE1",
     "ALIASES": "",
-<<<<<<< HEAD
     "DESCRIPTION":
       "cAMP-binding protein; localized to plasma membrane via glycosyl-phosphatidylinositol (GPI)-anchor",
-=======
-    "DESCRIPTION": "cAMP-binding protein; localized to plasma membrane via glycosyl-phosphatidylinositol (GPI)-anchor",
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "GPI-anchored Cylic-AMP-binding Ectoprotein",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
     "NOTES": "",
-<<<<<<< HEAD
     "LITERATURE (PMIDs)":
       "1334092 | 1657142 | 1722148 | 8109981 | 8320256 | 8524327 | 8554322 | 9231801 | 10684630"
-=======
-    "LITERATURE (PMIDs)": "1334092 | 1657142 | 1722148 | 8109981 | 8320256 | 8524327 | 8554322 | 9231801 | 10684630"
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "GCN6",
@@ -1344,12 +1144,8 @@
   {
     "FEATURE_NAME": "GPI4",
     "ALIASES": "",
-<<<<<<< HEAD
     "DESCRIPTION":
       "Gene of unknown function; involved in the attachment of glycosylphosphatidylinositol (GPI) anchors to proteins",
-=======
-    "DESCRIPTION": "Gene of unknown function; involved in the attachment of glycosylphosphatidylinositol (GPI) anchors to proteins",
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -1359,12 +1155,8 @@
   {
     "FEATURE_NAME": "GPI5",
     "ALIASES": "",
-<<<<<<< HEAD
     "DESCRIPTION":
       "Gene of unknown function; involved in the attachment of glycosylphosphatidylinositol (GPI) anchors to proteins",
-=======
-    "DESCRIPTION": "Gene of unknown function; involved in the attachment of glycosylphosphatidylinositol (GPI) anchors to proteins",
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -1374,12 +1166,8 @@
   {
     "FEATURE_NAME": "GPI6",
     "ALIASES": "",
-<<<<<<< HEAD
     "DESCRIPTION":
       "Gene of unknown function; involved in the attachment of glycosylphosphatidylinositol (GPI) anchors to proteins",
-=======
-    "DESCRIPTION": "Gene of unknown function; involved in the attachment of glycosylphosphatidylinositol (GPI) anchors to proteins",
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -1389,12 +1177,8 @@
   {
     "FEATURE_NAME": "GPI9",
     "ALIASES": "",
-<<<<<<< HEAD
     "DESCRIPTION":
       "Gene of unknown function; involved in the attachment of glycosylphosphatidylinositol (GPI) anchors to proteins",
-=======
-    "DESCRIPTION": "Gene of unknown function; involved in the attachment of glycosylphosphatidylinositol (GPI) anchors to proteins",
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -1539,12 +1323,8 @@
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
     "NOTES": "",
-<<<<<<< HEAD
     "LITERATURE (PMIDs)":
       "9335593 | 10628974 | 11514465 | 9618445 | 12618390 | 10712503"
-=======
-    "LITERATURE (PMIDs)": "9335593 | 10628974 | 11514465 | 9618445 | 12618390 | 10712503"
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "GSF3",
@@ -1729,14 +1509,6 @@
   {
     "FEATURE_NAME": "IAR1",
     "ALIASES": "",
-<<<<<<< HEAD
-    "DESCRIPTION":
-      "Gene of unknown function; involved in regulating invertase (SUC5) activity and may be in part responsible for low levels of invertase activity observed in diploids",
-    "NAME_DESCRIPTION": "",
-    "CHROMOSOME": "",
-    "GENETIC_POSITION": "",
-<<<<<<< HEAD
-    "NOTES": "Edition 14: This gene was first called RPS5 but has been renamed to avoid confusion with the ribosomal gene by that name",
     "DESCRIPTION":
       "Gene of unknown function; involved in regulating invertase (SUC5) activity and may be in part responsible for low levels of invertase activity observed in diploids",
     "NAME_DESCRIPTION": "",
@@ -1744,25 +1516,6 @@
     "GENETIC_POSITION": "",
     "NOTES":
       "Edition 14: This gene was first called RPS5 but has been renamed to avoid confusion with the ribosomal gene by that name",
-    "DESCRIPTION": "Gene of unknown function; involved in regulating invertase (SUC5) activity and may be in part responsible for low levels of invertase activity observed in diploids",
-    "NAME_DESCRIPTION": "",
-    "CHROMOSOME": "",
-    "GENETIC_POSITION": "",
-    "NOTES": "Edition 14: This gene was first called RPS5 but has been renamed to avoid confusion with the ribosomal gene by that name",
-=======
-    "NOTES":
-      "Edition 14: This gene was first called RPS5 but has been renamed to avoid confusion with the ribosomal gene by that name",
-<<<<<<< HEAD
->>>>>>> added updated not_mapped file, es-script
-=======
-=======
-    "DESCRIPTION": "Gene of unknown function; involved in regulating invertase (SUC5) activity and may be in part responsible for low levels of invertase activity observed in diploids",
-    "NAME_DESCRIPTION": "",
-    "CHROMOSOME": "",
-    "GENETIC_POSITION": "",
-    "NOTES": "Edition 14: This gene was first called RPS5 but has been renamed to avoid confusion with the ribosomal gene by that name",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "3312477 | 9169866"
   },
   {
@@ -1773,12 +1526,8 @@
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
     "NOTES": "",
-<<<<<<< HEAD
     "LITERATURE (PMIDs)":
       "9799255 |  https://circle.ubc.ca/bitstream/handle/2429/14169/ubc_2003-0260.pdf?sequence=1"
-=======
-    "LITERATURE (PMIDs)": "9799255 |  https://circle.ubc.ca/bitstream/handle/2429/14169/ubc_2003-0260.pdf?sequence=1"
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "IKI2",
@@ -1867,12 +1616,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "chrVII",
     "GENETIC_POSITION": "-83",
-<<<<<<< HEAD
     "NOTES":
       "Edition 11: kem1 and kem3 data are not internally consistent nor are they consistent with other data for the lys5-met13 interval. The positions chosen for these genes are tentative.",
-=======
-    "NOTES": "Edition 11: kem1 and kem3 data are not internally consistent nor are they consistent with other data for the lys5-met13 interval. The positions chosen for these genes are tentative.",
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "2076815 | 1413997"
   },
   {
@@ -1932,12 +1677,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
     "NOTES":
       "Edition 15: The LCP1 locus has been genetically defined by Wiederkehr, T., et al. (1998). LCP1 has not been assigned to a standard ORF.",
-=======
-    "NOTES": "Edition 15: The LCP1 locus has been genetically defined by Wiederkehr, T., et al. (1998). LCP1 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "9814757"
   },
   {
@@ -1947,12 +1688,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
     "NOTES":
       "Edition 15: The LCP2 locus has been genetically defined by Wiederkehr, T., et al. (1998). LCP2 has not been assigned to a standard ORF.",
-=======
-    "NOTES": "Edition 15: The LCP2 locus has been genetically defined by Wiederkehr, T., et al. (1998). LCP2 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "9814757"
   },
   {
@@ -1962,25 +1699,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-    "NOTES": "Edition 15: The LCP3 locus has been genetically defined by Wiederkehr, T., et al. (1998). LCP3 has not been assigned to a standard ORF.",
-
     "NOTES":
       "Edition 15: The LCP3 locus has been genetically defined by Wiederkehr, T., et al. (1998). LCP3 has not been assigned to a standard ORF.",
-
-=======
-    "NOTES":
-      "Edition 15: The LCP3 locus has been genetically defined by Wiederkehr, T., et al. (1998). LCP3 has not been assigned to a standard ORF.",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "NOTES":
-      "Edition 15: The LCP3 locus has been genetically defined by Wiederkehr, T., et al. (1998). LCP3 has not been assigned to a standard ORF.",
-=======
-    "NOTES": "Edition 15: The LCP3 locus has been genetically defined by Wiederkehr, T., et al. (1998). LCP3 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "9814757"
   },
   {
@@ -1990,23 +1710,15 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
     "NOTES":
       "Edition 15: The LCP4 locus has been genetically defined by Wiederkehr, T., et al. (1998). LCP4 has not been assigned to a standard ORF.",
-=======
-    "NOTES": "Edition 15: The LCP4 locus has been genetically defined by Wiederkehr, T., et al. (1998). LCP4 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "9814757"
   },
   {
     "FEATURE_NAME": "LDR1",
     "ALIASES": "",
-<<<<<<< HEAD
     "DESCRIPTION":
       "Gene of unknown function; identified in a screen for mutants that fail to localize the soluble Mnn1p lumenal domain to the Golgi",
-=======
-    "DESCRIPTION": "Gene of unknown function; identified in a screen for mutants that fail to localize the soluble Mnn1p lumenal domain to the Golgi",
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -2226,12 +1938,8 @@
   {
     "FEATURE_NAME": "LUP1",
     "ALIASES": "",
-<<<<<<< HEAD
     "DESCRIPTION":
       "Possible regulatory component of an amino acid uptake system; amino acid uptake system is ammonium regulated and hydrophobic",
-=======
-    "DESCRIPTION": "Possible regulatory component of an amino acid uptake system; amino acid uptake system is ammonium regulated and hydrophobic",
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -2325,12 +2033,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
     "NOTES":
       "Edition 10: mak20 has been removed from the left arm of this chromosome because of uncertainties in the original assignment of this gene",
-=======
-    "NOTES": "Edition 10: mak20 has been removed from the left arm of this chromosome because of uncertainties in the original assignment of this gene",
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "387719 | 7739558 | 2678811"
   },
   {
@@ -2340,12 +2044,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
     "NOTES":
       "Edition 10: mak22 has been removed from the left arm of this chromosome because of uncertainties in the original assignment of this gene (see Discussion)",
-=======
-    "NOTES": "Edition 10: mak22 has been removed from the left arm of this chromosome because of uncertainties in the original assignment of this gene (see Discussion)",
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "387719 | 7739558 | 2678811"
   },
   {
@@ -2376,12 +2076,8 @@
     "CHROMOSOME": "chrXIII",
     "GENETIC_POSITION": "156",
     "NOTES": "",
-<<<<<<< HEAD
     "LITERATURE (PMIDs)":
       "387719 | 1985195 | 3889549 | 6996833 | 7040337 | 7739558"
-=======
-    "LITERATURE (PMIDs)": "387719 | 1985195 | 3889549 | 6996833 | 7040337 | 7739558"
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "MAK4",
@@ -2391,12 +2087,8 @@
     "CHROMOSOME": "chrII",
     "GENETIC_POSITION": "60",
     "NOTES": "",
-<<<<<<< HEAD
     "LITERATURE (PMIDs)":
       "787537 | 6996833 | 7040337 | 17246214 | 17248773 | 7739558"
-=======
-    "LITERATURE (PMIDs)": "787537 | 6996833 | 7040337 | 17246214 | 17248773 | 7739558"
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "MAK6",
@@ -2406,12 +2098,8 @@
     "CHROMOSOME": "chrXVI",
     "GENETIC_POSITION": "8",
     "NOTES": "",
-<<<<<<< HEAD
     "LITERATURE (PMIDs)":
       "2865193 | 6371496 | 6996833 | 7040337 | 17248773 | 6750608 | 4371644 | 6757051 | 787537 | 206486 | 1413997 | 2678811 | 2995780 | 6987655 | 3280972 | 372549 | 7010111 | 7739558 | 8852903"
-=======
-    "LITERATURE (PMIDs)": "2865193 | 6371496 | 6996833 | 7040337 | 17248773 | 6750608 | 4371644 | 6757051 | 787537 | 206486 | 1413997 | 2678811 | 2995780 | 6987655 | 3280972 | 372549 | 7010111 | 7739558 | 8852903"
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "MAK9",
@@ -2470,30 +2158,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "chrII",
     "GENETIC_POSITION": "148",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 10: MAL3-SUC3-MGL2 order has been determined by three-point cross analyses",
-
-=======
->>>>>>> updated not_mapped genes file
     "NOTES":
       "Edition 10: MAL3-SUC3-MGL2 order has been determined by three-point cross analyses",
-=======
-    "NOTES": "Edition 10: MAL3-SUC3-MGL2 order has been determined by three-point cross analyses",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 10: MAL3-SUC3-MGL2 order has been determined by three-point cross analyses",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 10: MAL3-SUC3-MGL2 order has been determined by three-point cross analyses",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "2678811"
   },
   {
@@ -2503,32 +2169,8 @@
     "NAME_DESCRIPTION": "Mitochondrial Genome Maintenance",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 14: It was previously believed that TYS1 and MGM104 were identical genes. However, Guan, M.X. (1997) Mol Gen Genet 255:525-532, find that the two loci are unlinked and that TYS1 is an unlinked suppressor of mgm104 mutants",
-
     "NOTES":
       "Edition 14: It was previously believed that TYS1 and MGM104 were identical genes. However, Guan, M.X. (1997) Mol Gen Genet 255:525-532, find that the two loci are unlinked and that TYS1 is an unlinked suppressor of mgm104 mutants",
-=======
-    "NOTES": "Edition 14: It was previously believed that TYS1 and MGM104 were identical genes. However, Guan, M.X. (1997) Mol Gen Genet 255:525-532, find that the two loci are unlinked and that TYS1 is an unlinked suppressor of mgm104 mutants",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 14: It was previously believed that TYS1 and MGM104 were identical genes. However, Guan, M.X. (1997) Mol Gen Genet 255:525-532, find that the two loci are unlinked and that TYS1 is an unlinked suppressor of mgm104 mutants",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 14: It was previously believed that TYS1 and MGM104 were identical genes. However, Guan, M.X. (1997) Mol Gen Genet 255:525-532, find that the two loci are unlinked and that TYS1 is an unlinked suppressor of mgm104 mutants",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "NOTES":
-      "Edition 14: It was previously believed that TYS1 and MGM104 were identical genes. However, Guan, M.X. (1997) Mol Gen Genet 255:525-532, find that the two loci are unlinked and that TYS1 is an unlinked suppressor of mgm104 mutants",
-=======
-    "NOTES": "Edition 14: It was previously believed that TYS1 and MGM104 were identical genes. However, Guan, M.X. (1997) Mol Gen Genet 255:525-532, find that the two loci are unlinked and that TYS1 is an unlinked suppressor of mgm104 mutants",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "9294037 | 9169866"
   },
   {
@@ -2538,32 +2180,8 @@
     "NAME_DESCRIPTION": "MItotic Fidelity of chromosome transmission",
     "CHROMOSOME": "chrXII",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "MIF1 has been used to refer to both MAS1/YLR163C, which encodes a subunit of mitochondrial processing peptidase, and the genetic locus MIF1 involved in chromosome segregation.",
-
     "NOTES":
       "MIF1 has been used to refer to both MAS1/YLR163C, which encodes a subunit of mitochondrial processing peptidase, and the genetic locus MIF1 involved in chromosome segregation.",
-=======
-    "NOTES": "MIF1 has been used to refer to both MAS1/YLR163C, which encodes a subunit of mitochondrial processing peptidase, and the genetic locus MIF1 involved in chromosome segregation.",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "MIF1 has been used to refer to both MAS1/YLR163C, which encodes a subunit of mitochondrial processing peptidase, and the genetic locus MIF1 involved in chromosome segregation.",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "MIF1 has been used to refer to both MAS1/YLR163C, which encodes a subunit of mitochondrial processing peptidase, and the genetic locus MIF1 involved in chromosome segregation.",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "NOTES":
-      "MIF1 has been used to refer to both MAS1/YLR163C, which encodes a subunit of mitochondrial processing peptidase, and the genetic locus MIF1 involved in chromosome segregation.",
-=======
-    "NOTES": "MIF1 has been used to refer to both MAS1/YLR163C, which encodes a subunit of mitochondrial processing peptidase, and the genetic locus MIF1 involved in chromosome segregation.",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "3510080 | 9169866"
   },
   {
@@ -2583,32 +2201,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 11: mis11 is distal and adjacent to tec1; both genes are proximal to pho3,5 and distal to gal7, 10, 1",
-
     "NOTES":
       "Edition 11: mis11 is distal and adjacent to tec1; both genes are proximal to pho3,5 and distal to gal7, 10, 1",
-=======
-    "NOTES": "Edition 11: mis11 is distal and adjacent to tec1; both genes are proximal to pho3,5 and distal to gal7, 10, 1",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 11: mis11 is distal and adjacent to tec1; both genes are proximal to pho3,5 and distal to gal7, 10, 1",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 11: mis11 is distal and adjacent to tec1; both genes are proximal to pho3,5 and distal to gal7, 10, 1",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "NOTES":
-      "Edition 11: mis11 is distal and adjacent to tec1; both genes are proximal to pho3,5 and distal to gal7, 10, 1",
-=======
-    "NOTES": "Edition 11: mis11 is distal and adjacent to tec1; both genes are proximal to pho3,5 and distal to gal7, 10, 1",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "1413997"
   },
   {
@@ -2649,33 +2243,8 @@
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
     "NOTES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "LITERATURE (PMIDs)": "8138178 | 10376878 | 16246174 | 10882134 | 11674994 | 12762034"
-=======
-<<<<<<< HEAD
     "LITERATURE (PMIDs)":
       "8138178 | 10376878 | 16246174 | 10882134 | 11674994 | 12762034"
-=======
-    "LITERATURE (PMIDs)": "8138178 | 10376878 | 16246174 | 10882134 | 11674994 | 12762034"
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)": "8138178 | 10376878 | 16246174 | 10882134 | 11674994 | 12762034"
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)":
-      "8138178 | 10376878 | 16246174 | 10882134 | 11674994 | 12762034"
->>>>>>> added updated not_mapped file, es-script
-=======
-    "LITERATURE (PMIDs)":
-      "8138178 | 10376878 | 16246174 | 10882134 | 11674994 | 12762034"
-=======
-    "LITERATURE (PMIDs)": "8138178 | 10376878 | 16246174 | 10882134 | 11674994 | 12762034"
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "MOF7",
@@ -2695,31 +2264,8 @@
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
     "NOTES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "LITERATURE (PMIDs)": "8138178 | 10376878 | 16246174 | 10882134 | 11674994 | 12762034"
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)":
       "8138178 | 10376878 | 16246174 | 10882134 | 11674994 | 12762034"
-=======
-    "LITERATURE (PMIDs)": "8138178 | 10376878 | 16246174 | 10882134 | 11674994 | 12762034"
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)": "8138178 | 10376878 | 16246174 | 10882134 | 11674994 | 12762034"
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)":
-      "8138178 | 10376878 | 16246174 | 10882134 | 11674994 | 12762034"
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "MRT3",
@@ -2744,17 +2290,6 @@
   {
     "FEATURE_NAME": "MTP1",
     "ALIASES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "DESCRIPTION": "involved in transport of melezitose; alpha-methylglucoside and maltose",
-    "NAME_DESCRIPTION": "",
-    "CHROMOSOME": "chrVII",
-    "GENETIC_POSITION": "225",
-    "NOTES": "Edition 10: MTP1 is 2 cM from MAL1 by random spore analysis | The MTP1 genetic locus may represent an allele of MAL11/YGR289C (also known as AGT1).",
-=======
-<<<<<<< HEAD
     "DESCRIPTION":
       "involved in transport of melezitose; alpha-methylglucoside and maltose",
     "NAME_DESCRIPTION": "",
@@ -2762,40 +2297,6 @@
     "GENETIC_POSITION": "225",
     "NOTES":
       "Edition 10: MTP1 is 2 cM from MAL1 by random spore analysis | The MTP1 genetic locus may represent an allele of MAL11/YGR289C (also known as AGT1).",
-=======
-=======
->>>>>>> updated not_mapped genes file
-    "DESCRIPTION": "involved in transport of melezitose; alpha-methylglucoside and maltose",
-    "NAME_DESCRIPTION": "",
-    "CHROMOSOME": "chrVII",
-    "GENETIC_POSITION": "225",
-    "NOTES": "Edition 10: MTP1 is 2 cM from MAL1 by random spore analysis | The MTP1 genetic locus may represent an allele of MAL11/YGR289C (also known as AGT1).",
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
->>>>>>> updated not_mapped genes file
-=======
-=======
->>>>>>> updated not_mapped genes file
-    "DESCRIPTION":
-      "involved in transport of melezitose; alpha-methylglucoside and maltose",
-    "NAME_DESCRIPTION": "",
-    "CHROMOSOME": "chrVII",
-    "GENETIC_POSITION": "225",
-    "NOTES":
-      "Edition 10: MTP1 is 2 cM from MAL1 by random spore analysis | The MTP1 genetic locus may represent an allele of MAL11/YGR289C (also known as AGT1).",
-<<<<<<< HEAD
->>>>>>> added updated not_mapped file, es-script
-=======
-=======
-    "DESCRIPTION": "involved in transport of melezitose; alpha-methylglucoside and maltose",
-    "NAME_DESCRIPTION": "",
-    "CHROMOSOME": "chrVII",
-    "GENETIC_POSITION": "225",
-    "NOTES": "Edition 10: MTP1 is 2 cM from MAL1 by random spore analysis | The MTP1 genetic locus may represent an allele of MAL11/YGR289C (also known as AGT1).",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "3042166 | 8594329 | 2678811"
   },
   {
@@ -2811,31 +2312,8 @@
   {
     "FEATURE_NAME": "MUP2",
     "ALIASES": "MET-P1",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "DESCRIPTION": "Putative methionine permease; met-p1 mutants recover full sensitivity to ethionine as well as normal permeability to methionine (same Km and V as the wild type) when NH4+ is removed from the medium",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "DESCRIPTION":
       "Putative methionine permease; met-p1 mutants recover full sensitivity to ethionine as well as normal permeability to methionine (same Km and V as the wild type) when NH4+ is removed from the medium",
-=======
-    "DESCRIPTION": "Putative methionine permease; met-p1 mutants recover full sensitivity to ethionine as well as normal permeability to methionine (same Km and V as the wild type) when NH4+ is removed from the medium",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION": "Putative methionine permease; met-p1 mutants recover full sensitivity to ethionine as well as normal permeability to methionine (same Km and V as the wild type) when NH4+ is removed from the medium",
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION":
-      "Putative methionine permease; met-p1 mutants recover full sensitivity to ethionine as well as normal permeability to methionine (same Km and V as the wild type) when NH4+ is removed from the medium",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "Methionine UPtake",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -2859,31 +2337,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "NCE1 has been used in the literature to refer to both NCE101/YJL205C, which encodes a protein of unknown function involved in non-classical protein export, and NCE1, a genetically defined unmapped locus involved in the regulation of CTS1 expression.",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "NOTES":
       "NCE1 has been used in the literature to refer to both NCE101/YJL205C, which encodes a protein of unknown function involved in non-classical protein export, and NCE1, a genetically defined unmapped locus involved in the regulation of CTS1 expression.",
-=======
-    "NOTES": "NCE1 has been used in the literature to refer to both NCE101/YJL205C, which encodes a protein of unknown function involved in non-classical protein export, and NCE1, a genetically defined unmapped locus involved in the regulation of CTS1 expression.",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "NCE1 has been used in the literature to refer to both NCE101/YJL205C, which encodes a protein of unknown function involved in non-classical protein export, and NCE1, a genetically defined unmapped locus involved in the regulation of CTS1 expression.",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "NCE1 has been used in the literature to refer to both NCE101/YJL205C, which encodes a protein of unknown function involved in non-classical protein export, and NCE1, a genetically defined unmapped locus involved in the regulation of CTS1 expression.",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "9169866 | 8657150 | 8655575"
   },
   {
@@ -2893,33 +2348,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "NCE2 has been used in the literature to refer to both NCE102/YPR149W, which encodes a protein of unknown function involved in non-classical protein export, and NCE2, a genetically defined unmapped locus involved in the regulation of CTS1 expression.",
-=======
-<<<<<<< HEAD
     "NOTES":
       "NCE2 has been used in the literature to refer to both NCE102/YPR149W, which encodes a protein of unknown function involved in non-classical protein export, and NCE2, a genetically defined unmapped locus involved in the regulation of CTS1 expression.",
-=======
-    "NOTES": "NCE2 has been used in the literature to refer to both NCE102/YPR149W, which encodes a protein of unknown function involved in non-classical protein export, and NCE2, a genetically defined unmapped locus involved in the regulation of CTS1 expression.",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "NCE2 has been used in the literature to refer to both NCE102/YPR149W, which encodes a protein of unknown function involved in non-classical protein export, and NCE2, a genetically defined unmapped locus involved in the regulation of CTS1 expression.",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "NCE2 has been used in the literature to refer to both NCE102/YPR149W, which encodes a protein of unknown function involved in non-classical protein export, and NCE2, a genetically defined unmapped locus involved in the regulation of CTS1 expression.",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "NOTES":
-      "NCE2 has been used in the literature to refer to both NCE102/YPR149W, which encodes a protein of unknown function involved in non-classical protein export, and NCE2, a genetically defined unmapped locus involved in the regulation of CTS1 expression.",
-=======
-    "NOTES": "NCE2 has been used in the literature to refer to both NCE102/YPR149W, which encodes a protein of unknown function involved in non-classical protein export, and NCE2, a genetically defined unmapped locus involved in the regulation of CTS1 expression.",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "8657150 | 21825281| 9169866 | 8657150 | 8655575"
   },
   {
@@ -2929,31 +2359,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "NCE3 has been used in the literature to refer to both NCE103/YNL036W, which encodes a substrate for the non-classical protein export pathway, and NCE3, a genetically defined unmapped locus involved in the regulation of CTS1 expression.",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "NOTES":
       "NCE3 has been used in the literature to refer to both NCE103/YNL036W, which encodes a substrate for the non-classical protein export pathway, and NCE3, a genetically defined unmapped locus involved in the regulation of CTS1 expression.",
-=======
-    "NOTES": "NCE3 has been used in the literature to refer to both NCE103/YNL036W, which encodes a substrate for the non-classical protein export pathway, and NCE3, a genetically defined unmapped locus involved in the regulation of CTS1 expression.",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "NCE3 has been used in the literature to refer to both NCE103/YNL036W, which encodes a substrate for the non-classical protein export pathway, and NCE3, a genetically defined unmapped locus involved in the regulation of CTS1 expression.",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "NCE3 has been used in the literature to refer to both NCE103/YNL036W, which encodes a substrate for the non-classical protein export pathway, and NCE3, a genetically defined unmapped locus involved in the regulation of CTS1 expression.",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "8657150 | 9169866 | 8657150 | 8655575"
   },
   {
@@ -2964,33 +2371,8 @@
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
     "NOTES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "LITERATURE (PMIDs)": "3528759 | 16783012 | 8031302 | 10915878 | 11018586 | 11205328 | 11459630 | 2492497 | 2676986 | 3897795 | 10713149"
-=======
-<<<<<<< HEAD
     "LITERATURE (PMIDs)":
       "3528759 | 16783012 | 8031302 | 10915878 | 11018586 | 11205328 | 11459630 | 2492497 | 2676986 | 3897795 | 10713149"
-=======
-    "LITERATURE (PMIDs)": "3528759 | 16783012 | 8031302 | 10915878 | 11018586 | 11205328 | 11459630 | 2492497 | 2676986 | 3897795 | 10713149"
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)": "3528759 | 16783012 | 8031302 | 10915878 | 11018586 | 11205328 | 11459630 | 2492497 | 2676986 | 3897795 | 10713149"
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)":
-      "3528759 | 16783012 | 8031302 | 10915878 | 11018586 | 11205328 | 11459630 | 2492497 | 2676986 | 3897795 | 10713149"
->>>>>>> added updated not_mapped file, es-script
-=======
-    "LITERATURE (PMIDs)":
-      "3528759 | 16783012 | 8031302 | 10915878 | 11018586 | 11205328 | 11459630 | 2492497 | 2676986 | 3897795 | 10713149"
-=======
-    "LITERATURE (PMIDs)": "3528759 | 16783012 | 8031302 | 10915878 | 11018586 | 11205328 | 11459630 | 2492497 | 2676986 | 3897795 | 10713149"
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "NHS1",
@@ -3029,33 +2411,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 15: The OSR10 locus has been genetically defined by Bruning et al. (1998). OSR10 has not been assigned to a standard ORF.",
-=======
-<<<<<<< HEAD
     "NOTES":
       "Edition 15: The OSR10 locus has been genetically defined by Bruning et al. (1998). OSR10 has not been assigned to a standard ORF.",
-=======
-    "NOTES": "Edition 15: The OSR10 locus has been genetically defined by Bruning et al. (1998). OSR10 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 15: The OSR10 locus has been genetically defined by Bruning et al. (1998). OSR10 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 15: The OSR10 locus has been genetically defined by Bruning et al. (1998). OSR10 has not been assigned to a standard ORF.",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "NOTES":
-      "Edition 15: The OSR10 locus has been genetically defined by Bruning et al. (1998). OSR10 has not been assigned to a standard ORF.",
-=======
-    "NOTES": "Edition 15: The OSR10 locus has been genetically defined by Bruning et al. (1998). OSR10 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "9683646"
   },
   {
@@ -3065,31 +2422,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 15: The OSR2 locus has been genetically defined by Bruning et al. (1998). OSR2 has not been assigned to a standard ORF.",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "NOTES":
       "Edition 15: The OSR2 locus has been genetically defined by Bruning et al. (1998). OSR2 has not been assigned to a standard ORF.",
-=======
-    "NOTES": "Edition 15: The OSR2 locus has been genetically defined by Bruning et al. (1998). OSR2 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 15: The OSR2 locus has been genetically defined by Bruning et al. (1998). OSR2 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 15: The OSR2 locus has been genetically defined by Bruning et al. (1998). OSR2 has not been assigned to a standard ORF.",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "9683646"
   },
   {
@@ -3099,33 +2433,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 15: The OSR3 locus has been genetically defined by Bruning et al. (1998). OSR3 has not been assigned to a standard ORF.",
-=======
-<<<<<<< HEAD
     "NOTES":
       "Edition 15: The OSR3 locus has been genetically defined by Bruning et al. (1998). OSR3 has not been assigned to a standard ORF.",
-=======
-    "NOTES": "Edition 15: The OSR3 locus has been genetically defined by Bruning et al. (1998). OSR3 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 15: The OSR3 locus has been genetically defined by Bruning et al. (1998). OSR3 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 15: The OSR3 locus has been genetically defined by Bruning et al. (1998). OSR3 has not been assigned to a standard ORF.",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "NOTES":
-      "Edition 15: The OSR3 locus has been genetically defined by Bruning et al. (1998). OSR3 has not been assigned to a standard ORF.",
-=======
-    "NOTES": "Edition 15: The OSR3 locus has been genetically defined by Bruning et al. (1998). OSR3 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "9683646"
   },
   {
@@ -3135,31 +2444,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 15: The OSR4 locus has been genetically defined by Bruning et al. (1998). OSR4 has not been assigned to a standard ORF.",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "NOTES":
       "Edition 15: The OSR4 locus has been genetically defined by Bruning et al. (1998). OSR4 has not been assigned to a standard ORF.",
-=======
-    "NOTES": "Edition 15: The OSR4 locus has been genetically defined by Bruning et al. (1998). OSR4 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 15: The OSR4 locus has been genetically defined by Bruning et al. (1998). OSR4 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 15: The OSR4 locus has been genetically defined by Bruning et al. (1998). OSR4 has not been assigned to a standard ORF.",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "9683646"
   },
   {
@@ -3169,33 +2455,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 15: The OSR6 locus has been genetically defined by Bruning et al. (1998). OSR6 has not been assigned to a standard ORF.",
-=======
-<<<<<<< HEAD
     "NOTES":
       "Edition 15: The OSR6 locus has been genetically defined by Bruning et al. (1998). OSR6 has not been assigned to a standard ORF.",
-=======
-    "NOTES": "Edition 15: The OSR6 locus has been genetically defined by Bruning et al. (1998). OSR6 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 15: The OSR6 locus has been genetically defined by Bruning et al. (1998). OSR6 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 15: The OSR6 locus has been genetically defined by Bruning et al. (1998). OSR6 has not been assigned to a standard ORF.",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "NOTES":
-      "Edition 15: The OSR6 locus has been genetically defined by Bruning et al. (1998). OSR6 has not been assigned to a standard ORF.",
-=======
-    "NOTES": "Edition 15: The OSR6 locus has been genetically defined by Bruning et al. (1998). OSR6 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "9683646"
   },
   {
@@ -3205,31 +2466,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 15: The OSR7 locus has been genetically defined by Bruning et al. (1998). OSR7 has not been assigned to a standard ORF.",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "NOTES":
       "Edition 15: The OSR7 locus has been genetically defined by Bruning et al. (1998). OSR7 has not been assigned to a standard ORF.",
-=======
-    "NOTES": "Edition 15: The OSR7 locus has been genetically defined by Bruning et al. (1998). OSR7 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 15: The OSR7 locus has been genetically defined by Bruning et al. (1998). OSR7 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 15: The OSR7 locus has been genetically defined by Bruning et al. (1998). OSR7 has not been assigned to a standard ORF.",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "9683646"
   },
   {
@@ -3239,33 +2477,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 15: The OSR8 locus has been genetically defined by Bruning et al. (1998). OSR8 has not been assigned to a standard ORF.",
-=======
-<<<<<<< HEAD
     "NOTES":
       "Edition 15: The OSR8 locus has been genetically defined by Bruning et al. (1998). OSR8 has not been assigned to a standard ORF.",
-=======
-    "NOTES": "Edition 15: The OSR8 locus has been genetically defined by Bruning et al. (1998). OSR8 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 15: The OSR8 locus has been genetically defined by Bruning et al. (1998). OSR8 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 15: The OSR8 locus has been genetically defined by Bruning et al. (1998). OSR8 has not been assigned to a standard ORF.",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "NOTES":
-      "Edition 15: The OSR8 locus has been genetically defined by Bruning et al. (1998). OSR8 has not been assigned to a standard ORF.",
-=======
-    "NOTES": "Edition 15: The OSR8 locus has been genetically defined by Bruning et al. (1998). OSR8 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "9683646"
   },
   {
@@ -3275,31 +2488,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 15: The OSR9 locus has been genetically defined by Bruning et al. (1998). OSR9 has not been assigned to a standard ORF.",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "NOTES":
       "Edition 15: The OSR9 locus has been genetically defined by Bruning et al. (1998). OSR9 has not been assigned to a standard ORF.",
-=======
-    "NOTES": "Edition 15: The OSR9 locus has been genetically defined by Bruning et al. (1998). OSR9 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 15: The OSR9 locus has been genetically defined by Bruning et al. (1998). OSR9 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 15: The OSR9 locus has been genetically defined by Bruning et al. (1998). OSR9 has not been assigned to a standard ORF.",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "9683646"
   },
   {
@@ -3309,31 +2499,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 13: mitochondrial gene linked to OLI2 and OLI4 | OSS1 has been used in the literature to refer to both ZDS1/YMR273C, which encodes a protein involved in transcriptional silencing and polarity establishment, and OSS1, a genetically defined locus on the mitochondrial chromosome that confers ossamycin resistance when mutated.",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "NOTES":
       "Edition 13: mitochondrial gene linked to OLI2 and OLI4 | OSS1 has been used in the literature to refer to both ZDS1/YMR273C, which encodes a protein involved in transcriptional silencing and polarity establishment, and OSS1, a genetically defined locus on the mitochondrial chromosome that confers ossamycin resistance when mutated.",
-=======
-    "NOTES": "Edition 13: mitochondrial gene linked to OLI2 and OLI4 | OSS1 has been used in the literature to refer to both ZDS1/YMR273C, which encodes a protein involved in transcriptional silencing and polarity establishment, and OSS1, a genetically defined locus on the mitochondrial chromosome that confers ossamycin resistance when mutated.",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 13: mitochondrial gene linked to OLI2 and OLI4 | OSS1 has been used in the literature to refer to both ZDS1/YMR273C, which encodes a protein involved in transcriptional silencing and polarity establishment, and OSS1, a genetically defined locus on the mitochondrial chromosome that confers ossamycin resistance when mutated.",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 13: mitochondrial gene linked to OLI2 and OLI4 | OSS1 has been used in the literature to refer to both ZDS1/YMR273C, which encodes a protein involved in transcriptional silencing and polarity establishment, and OSS1, a genetically defined locus on the mitochondrial chromosome that confers ossamycin resistance when mutated.",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "160974 | 7003310 | 8647431"
   },
   {
@@ -3383,63 +2550,15 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "chrXV",
     "GENETIC_POSITION": "58",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 10: pbs1 has been mapped centromere proximal to ade2 by random spore analysis | Edition 14: The gene name PBS1 has also been used to refer to FKS1/YLR342W on Chromosome XII, which encodes a 1,3-beta-D-glucan synthase.",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "NOTES":
       "Edition 10: pbs1 has been mapped centromere proximal to ade2 by random spore analysis | Edition 14: The gene name PBS1 has also been used to refer to FKS1/YLR342W on Chromosome XII, which encodes a 1,3-beta-D-glucan synthase.",
-=======
-    "NOTES": "Edition 10: pbs1 has been mapped centromere proximal to ade2 by random spore analysis | Edition 14: The gene name PBS1 has also been used to refer to FKS1/YLR342W on Chromosome XII, which encodes a 1,3-beta-D-glucan synthase.",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 10: pbs1 has been mapped centromere proximal to ade2 by random spore analysis | Edition 14: The gene name PBS1 has also been used to refer to FKS1/YLR342W on Chromosome XII, which encodes a 1,3-beta-D-glucan synthase.",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 10: pbs1 has been mapped centromere proximal to ade2 by random spore analysis | Edition 14: The gene name PBS1 has also been used to refer to FKS1/YLR342W on Chromosome XII, which encodes a 1,3-beta-D-glucan synthase.",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "2993791 | 3039511 | 18625027 | 2678811"
   },
   {
     "FEATURE_NAME": "PDC3",
     "ALIASES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "DESCRIPTION": "May be involved in pyruvate decarboxylase activity; originally identified as pdc1-30, but not allelic to other pdc1 alleles",
-=======
-<<<<<<< HEAD
     "DESCRIPTION":
       "May be involved in pyruvate decarboxylase activity; originally identified as pdc1-30, but not allelic to other pdc1 alleles",
-=======
-    "DESCRIPTION": "May be involved in pyruvate decarboxylase activity; originally identified as pdc1-30, but not allelic to other pdc1 alleles",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION": "May be involved in pyruvate decarboxylase activity; originally identified as pdc1-30, but not allelic to other pdc1 alleles",
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION":
-      "May be involved in pyruvate decarboxylase activity; originally identified as pdc1-30, but not allelic to other pdc1 alleles",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "DESCRIPTION":
-      "May be involved in pyruvate decarboxylase activity; originally identified as pdc1-30, but not allelic to other pdc1 alleles",
-=======
-    "DESCRIPTION": "May be involved in pyruvate decarboxylase activity; originally identified as pdc1-30, but not allelic to other pdc1 alleles",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "Pyruvate DeCarboxylase",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -3469,33 +2588,8 @@
   {
     "FEATURE_NAME": "PDR7",
     "ALIASES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "DESCRIPTION": "Required for normal PDR5 (multi-drug resistance pump) mRNA levels",
-=======
-<<<<<<< HEAD
     "DESCRIPTION":
       "Required for normal PDR5 (multi-drug resistance pump) mRNA levels",
-=======
-    "DESCRIPTION": "Required for normal PDR5 (multi-drug resistance pump) mRNA levels",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION": "Required for normal PDR5 (multi-drug resistance pump) mRNA levels",
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION":
-      "Required for normal PDR5 (multi-drug resistance pump) mRNA levels",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "DESCRIPTION":
-      "Required for normal PDR5 (multi-drug resistance pump) mRNA levels",
-=======
-    "DESCRIPTION": "Required for normal PDR5 (multi-drug resistance pump) mRNA levels",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "chrII",
     "GENETIC_POSITION": "-2",
@@ -3519,33 +2613,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Based on its genetic map position, PDX2 is likely to represent an allele of SNO1.",
-=======
-<<<<<<< HEAD
     "NOTES":
       "Based on its genetic map position, PDX2 is likely to represent an allele of SNO1.",
-=======
-    "NOTES": "Based on its genetic map position, PDX2 is likely to represent an allele of SNO1.",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Based on its genetic map position, PDX2 is likely to represent an allele of SNO1.",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Based on its genetic map position, PDX2 is likely to represent an allele of SNO1.",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "NOTES":
-      "Based on its genetic map position, PDX2 is likely to represent an allele of SNO1.",
-=======
-    "NOTES": "Based on its genetic map position, PDX2 is likely to represent an allele of SNO1.",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "2678811"
   },
   {
@@ -3565,40 +2634,10 @@
     "NAME_DESCRIPTION": "PETite",
     "CHROMOSOME": "chrVIII",
     "GENETIC_POSITION": "7",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 11: cen8-pet1-arg4 distances in Edition 10 are incorrect; new data resulted in the repositioning of these genes as well as put2 and crl15",
-    "LITERATURE (PMIDs)": "2215540 | 5900603 | 13977171 | 14802990 | 17247984 | 1413997"
-=======
-<<<<<<< HEAD
-=======
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "NOTES":
       "Edition 11: cen8-pet1-arg4 distances in Edition 10 are incorrect; new data resulted in the repositioning of these genes as well as put2 and crl15",
     "LITERATURE (PMIDs)":
       "2215540 | 5900603 | 13977171 | 14802990 | 17247984 | 1413997"
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 11: cen8-pet1-arg4 distances in Edition 10 are incorrect; new data resulted in the repositioning of these genes as well as put2 and crl15",
-    "LITERATURE (PMIDs)": "2215540 | 5900603 | 13977171 | 14802990 | 17247984 | 1413997"
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 11: cen8-pet1-arg4 distances in Edition 10 are incorrect; new data resulted in the repositioning of these genes as well as put2 and crl15",
-    "LITERATURE (PMIDs)": "2215540 | 5900603 | 13977171 | 14802990 | 17247984 | 1413997"
->>>>>>> updated not_mapped genes file
-=======
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "PET11",
@@ -3607,33 +2646,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "chrII",
     "GENETIC_POSITION": "101",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 11: pet11 was mistakenly identified as pet111 in Edition 10",
-=======
-<<<<<<< HEAD
     "NOTES":
       "Edition 11: pet11 was mistakenly identified as pet111 in Edition 10",
-=======
-    "NOTES": "Edition 11: pet11 was mistakenly identified as pet111 in Edition 10",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 11: pet11 was mistakenly identified as pet111 in Edition 10",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 11: pet11 was mistakenly identified as pet111 in Edition 10",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "NOTES":
-      "Edition 11: pet11 was mistakenly identified as pet111 in Edition 10",
-=======
-    "NOTES": "Edition 11: pet11 was mistakenly identified as pet111 in Edition 10",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "5732415 | 5900603 | 6105114 | 1413997"
   },
   {
@@ -3654,31 +2668,8 @@
     "CHROMOSOME": "chrIV",
     "GENETIC_POSITION": "112",
     "NOTES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "LITERATURE (PMIDs)": "387719 | 1901944 | 17248609 | 6757051 | 8088511 | 1413997 | 17246112 | 2678811 | 3916808 | 8106383 | 171412"
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)":
       "387719 | 1901944 | 17248609 | 6757051 | 8088511 | 1413997 | 17246112 | 2678811 | 3916808 | 8106383 | 171412"
-=======
-    "LITERATURE (PMIDs)": "387719 | 1901944 | 17248609 | 6757051 | 8088511 | 1413997 | 17246112 | 2678811 | 3916808 | 8106383 | 171412"
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)": "387719 | 1901944 | 17248609 | 6757051 | 8088511 | 1413997 | 17246112 | 2678811 | 3916808 | 8106383 | 171412"
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)":
-      "387719 | 1901944 | 17248609 | 6757051 | 8088511 | 1413997 | 17246112 | 2678811 | 3916808 | 8106383 | 171412"
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "PET17",
@@ -3698,33 +2689,8 @@
     "CHROMOSOME": "chrXIV",
     "GENETIC_POSITION": "-171",
     "NOTES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "LITERATURE (PMIDs)": "6323924 | 6761582 | 13977171 | 14201165 | 16534748 | 17248609"
-=======
-<<<<<<< HEAD
     "LITERATURE (PMIDs)":
       "6323924 | 6761582 | 13977171 | 14201165 | 16534748 | 17248609"
-=======
-    "LITERATURE (PMIDs)": "6323924 | 6761582 | 13977171 | 14201165 | 16534748 | 17248609"
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)": "6323924 | 6761582 | 13977171 | 14201165 | 16534748 | 17248609"
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)":
-      "6323924 | 6761582 | 13977171 | 14201165 | 16534748 | 17248609"
->>>>>>> added updated not_mapped file, es-script
-=======
-    "LITERATURE (PMIDs)":
-      "6323924 | 6761582 | 13977171 | 14201165 | 16534748 | 17248609"
-=======
-    "LITERATURE (PMIDs)": "6323924 | 6761582 | 13977171 | 14201165 | 16534748 | 17248609"
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "PET3",
@@ -3734,31 +2700,8 @@
     "CHROMOSOME": "chrVIII",
     "GENETIC_POSITION": "83",
     "NOTES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "LITERATURE (PMIDs)": "3551912 | 7009319 | 7668043 | 8897427 | 13977171 | 14201165"
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)":
       "3551912 | 7009319 | 7668043 | 8897427 | 13977171 | 14201165"
-=======
-    "LITERATURE (PMIDs)": "3551912 | 7009319 | 7668043 | 8897427 | 13977171 | 14201165"
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)": "3551912 | 7009319 | 7668043 | 8897427 | 13977171 | 14201165"
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)":
-      "3551912 | 7009319 | 7668043 | 8897427 | 13977171 | 14201165"
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "PET4",
@@ -3837,31 +2780,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 15: The PHD3 locus has been genetically defined by Gimeno and Fink (1994).",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "NOTES":
       "Edition 15: The PHD3 locus has been genetically defined by Gimeno and Fink (1994).",
-=======
-    "NOTES": "Edition 15: The PHD3 locus has been genetically defined by Gimeno and Fink (1994).",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 15: The PHD3 locus has been genetically defined by Gimeno and Fink (1994).",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 15: The PHD3 locus has been genetically defined by Gimeno and Fink (1994).",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "8114741"
   },
   {
@@ -3871,31 +2791,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 15: The PHD4 locus has been genetically defined by Gimeno and Fink (1994).",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "NOTES":
       "Edition 15: The PHD4 locus has been genetically defined by Gimeno and Fink (1994).",
-=======
-    "NOTES": "Edition 15: The PHD4 locus has been genetically defined by Gimeno and Fink (1994).",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 15: The PHD4 locus has been genetically defined by Gimeno and Fink (1994).",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 15: The PHD4 locus has been genetically defined by Gimeno and Fink (1994).",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "8114741"
   },
   {
@@ -3905,33 +2802,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 15: The PHD6 locus has been genetically defined by Gimeno and Fink (1994).",
-=======
-<<<<<<< HEAD
     "NOTES":
       "Edition 15: The PHD6 locus has been genetically defined by Gimeno and Fink (1994).",
-=======
-    "NOTES": "Edition 15: The PHD6 locus has been genetically defined by Gimeno and Fink (1994).",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 15: The PHD6 locus has been genetically defined by Gimeno and Fink (1994).",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 15: The PHD6 locus has been genetically defined by Gimeno and Fink (1994).",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "NOTES":
-      "Edition 15: The PHD6 locus has been genetically defined by Gimeno and Fink (1994).",
-=======
-    "NOTES": "Edition 15: The PHD6 locus has been genetically defined by Gimeno and Fink (1994).",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "8114741"
   },
   {
@@ -3941,33 +2813,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 15: The PHD7 locus has been genetically defined by Gimeno and Fink (1994).",
-=======
-<<<<<<< HEAD
     "NOTES":
       "Edition 15: The PHD7 locus has been genetically defined by Gimeno and Fink (1994).",
-=======
-    "NOTES": "Edition 15: The PHD7 locus has been genetically defined by Gimeno and Fink (1994).",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 15: The PHD7 locus has been genetically defined by Gimeno and Fink (1994).",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 15: The PHD7 locus has been genetically defined by Gimeno and Fink (1994).",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "NOTES":
-      "Edition 15: The PHD7 locus has been genetically defined by Gimeno and Fink (1994).",
-=======
-    "NOTES": "Edition 15: The PHD7 locus has been genetically defined by Gimeno and Fink (1994).",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "8114741"
   },
   {
@@ -3978,33 +2825,8 @@
     "CHROMOSOME": "chrVI",
     "GENETIC_POSITION": "47",
     "NOTES": "Edition 13: PHO82 may be allelic to PHO4.",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "LITERATURE (PMIDs)": "1879680 | 6090271 | 7007314 | 17249024 | 2183025 | 6314088"
-=======
-<<<<<<< HEAD
     "LITERATURE (PMIDs)":
       "1879680 | 6090271 | 7007314 | 17249024 | 2183025 | 6314088"
-=======
-    "LITERATURE (PMIDs)": "1879680 | 6090271 | 7007314 | 17249024 | 2183025 | 6314088"
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)": "1879680 | 6090271 | 7007314 | 17249024 | 2183025 | 6314088"
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)":
-      "1879680 | 6090271 | 7007314 | 17249024 | 2183025 | 6314088"
->>>>>>> added updated not_mapped file, es-script
-=======
-    "LITERATURE (PMIDs)":
-      "1879680 | 6090271 | 7007314 | 17249024 | 2183025 | 6314088"
-=======
-    "LITERATURE (PMIDs)": "1879680 | 6090271 | 7007314 | 17249024 | 2183025 | 6314088"
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "PHO83",
@@ -4013,33 +2835,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 13: The PHO83 mutation may be caused by insertion of a Ty element in the 5",
-=======
-<<<<<<< HEAD
     "NOTES":
       "Edition 13: The PHO83 mutation may be caused by insertion of a Ty element in the 5",
-=======
-    "NOTES": "Edition 13: The PHO83 mutation may be caused by insertion of a Ty element in the 5",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 13: The PHO83 mutation may be caused by insertion of a Ty element in the 5",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 13: The PHO83 mutation may be caused by insertion of a Ty element in the 5",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "NOTES":
-      "Edition 13: The PHO83 mutation may be caused by insertion of a Ty element in the 5",
-=======
-    "NOTES": "Edition 13: The PHO83 mutation may be caused by insertion of a Ty element in the 5",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "-noncoding region of the PHO5 gene. 6314088"
   },
   {
@@ -4079,31 +2876,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 15: The POS1 locus has been genetically defined by Krems et al. (1995).",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "NOTES":
       "Edition 15: The POS1 locus has been genetically defined by Krems et al. (1995).",
-=======
-    "NOTES": "Edition 15: The POS1 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 15: The POS1 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 15: The POS1 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "7586028 | 23896974"
   },
   {
@@ -4113,33 +2887,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 15: The POS11 locus has been genetically defined by Krems et al. (1995).",
-=======
-<<<<<<< HEAD
     "NOTES":
       "Edition 15: The POS11 locus has been genetically defined by Krems et al. (1995).",
-=======
-    "NOTES": "Edition 15: The POS11 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 15: The POS11 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 15: The POS11 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "NOTES":
-      "Edition 15: The POS11 locus has been genetically defined by Krems et al. (1995).",
-=======
-    "NOTES": "Edition 15: The POS11 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "7586028"
   },
   {
@@ -4149,31 +2898,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 15: The POS12 locus has been genetically defined by Krems et al. (1995).",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "NOTES":
       "Edition 15: The POS12 locus has been genetically defined by Krems et al. (1995).",
-=======
-    "NOTES": "Edition 15: The POS12 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 15: The POS12 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 15: The POS12 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "7586028"
   },
   {
@@ -4183,31 +2909,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 15: The POS13 locus has been genetically defined by Krems et al. (1995).",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "NOTES":
       "Edition 15: The POS13 locus has been genetically defined by Krems et al. (1995).",
-=======
-    "NOTES": "Edition 15: The POS13 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 15: The POS13 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 15: The POS13 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "7586028"
   },
   {
@@ -4217,31 +2920,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 15: The POS14 locus has been genetically defined by Krems et al. (1995).",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "NOTES":
       "Edition 15: The POS14 locus has been genetically defined by Krems et al. (1995).",
-=======
-    "NOTES": "Edition 15: The POS14 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 15: The POS14 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 15: The POS14 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "7586028"
   },
   {
@@ -4251,33 +2931,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 15: The POS15 locus has been genetically defined by Krems et al. (1995).",
-=======
-<<<<<<< HEAD
     "NOTES":
       "Edition 15: The POS15 locus has been genetically defined by Krems et al. (1995).",
-=======
-    "NOTES": "Edition 15: The POS15 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 15: The POS15 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 15: The POS15 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "NOTES":
-      "Edition 15: The POS15 locus has been genetically defined by Krems et al. (1995).",
-=======
-    "NOTES": "Edition 15: The POS15 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "7586028"
   },
   {
@@ -4287,33 +2942,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 15: The POS16 locus has been genetically defined by Krems et al. (1995).",
-=======
-<<<<<<< HEAD
     "NOTES":
       "Edition 15: The POS16 locus has been genetically defined by Krems et al. (1995).",
-=======
-    "NOTES": "Edition 15: The POS16 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 15: The POS16 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 15: The POS16 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "NOTES":
-      "Edition 15: The POS16 locus has been genetically defined by Krems et al. (1995).",
-=======
-    "NOTES": "Edition 15: The POS16 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "7586028"
   },
   {
@@ -4323,33 +2953,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 15: The POS2 locus has been genetically defined by Krems et al. (1995).",
-=======
-<<<<<<< HEAD
     "NOTES":
       "Edition 15: The POS2 locus has been genetically defined by Krems et al. (1995).",
-=======
-    "NOTES": "Edition 15: The POS2 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 15: The POS2 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 15: The POS2 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "NOTES":
-      "Edition 15: The POS2 locus has been genetically defined by Krems et al. (1995).",
-=======
-    "NOTES": "Edition 15: The POS2 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "7586028"
   },
   {
@@ -4359,33 +2964,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 15: The POS3 locus has been genetically defined by Krems et al. (1995).",
-=======
-<<<<<<< HEAD
     "NOTES":
       "Edition 15: The POS3 locus has been genetically defined by Krems et al. (1995).",
-=======
-    "NOTES": "Edition 15: The POS3 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 15: The POS3 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 15: The POS3 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "NOTES":
-      "Edition 15: The POS3 locus has been genetically defined by Krems et al. (1995).",
-=======
-    "NOTES": "Edition 15: The POS3 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "7586028"
   },
   {
@@ -4395,31 +2975,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 15: The POS4 locus has been genetically defined by Krems et al. (1995).",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "NOTES":
       "Edition 15: The POS4 locus has been genetically defined by Krems et al. (1995).",
-=======
-    "NOTES": "Edition 15: The POS4 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 15: The POS4 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 15: The POS4 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "7586028"
   },
   {
@@ -4429,33 +2986,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 15: The POS6 locus has been genetically defined by Krems et al. (1995).",
-=======
-<<<<<<< HEAD
     "NOTES":
       "Edition 15: The POS6 locus has been genetically defined by Krems et al. (1995).",
-=======
-    "NOTES": "Edition 15: The POS6 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 15: The POS6 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 15: The POS6 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "NOTES":
-      "Edition 15: The POS6 locus has been genetically defined by Krems et al. (1995).",
-=======
-    "NOTES": "Edition 15: The POS6 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "7586028"
   },
   {
@@ -4465,31 +2997,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 15: The POS7 locus has been genetically defined by Krems et al. (1995).",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "NOTES":
       "Edition 15: The POS7 locus has been genetically defined by Krems et al. (1995).",
-=======
-    "NOTES": "Edition 15: The POS7 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 15: The POS7 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 15: The POS7 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "7586028"
   },
   {
@@ -4499,31 +3008,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 15: The POS8 locus has been genetically defined by Krems et al. (1995).",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "NOTES":
       "Edition 15: The POS8 locus has been genetically defined by Krems et al. (1995).",
-=======
-    "NOTES": "Edition 15: The POS8 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 15: The POS8 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 15: The POS8 locus has been genetically defined by Krems et al. (1995).",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "7586028"
   },
   {
@@ -4543,31 +3029,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 10: prt3 has been removed from the left arm; previous map position incorrect",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "NOTES":
       "Edition 10: prt3 has been removed from the left arm; previous map position incorrect",
-=======
-    "NOTES": "Edition 10: prt3 has been removed from the left arm; previous map position incorrect",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 10: prt3 has been removed from the left arm; previous map position incorrect",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 10: prt3 has been removed from the left arm; previous map position incorrect",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "6188333 | 17248609 | 2678811"
   },
   {
@@ -4613,33 +3076,8 @@
   {
     "FEATURE_NAME": "RAH1",
     "ALIASES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "DESCRIPTION": "Gene of unknown function; identified in a screen for suppressors of the osmosensitivity (but not temperature sensitivity) phenotype of act1-1",
-=======
-<<<<<<< HEAD
     "DESCRIPTION":
       "Gene of unknown function; identified in a screen for suppressors of the osmosensitivity (but not temperature sensitivity) phenotype of act1-1",
-=======
-    "DESCRIPTION": "Gene of unknown function; identified in a screen for suppressors of the osmosensitivity (but not temperature sensitivity) phenotype of act1-1",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION": "Gene of unknown function; identified in a screen for suppressors of the osmosensitivity (but not temperature sensitivity) phenotype of act1-1",
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION":
-      "Gene of unknown function; identified in a screen for suppressors of the osmosensitivity (but not temperature sensitivity) phenotype of act1-1",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "DESCRIPTION":
-      "Gene of unknown function; identified in a screen for suppressors of the osmosensitivity (but not temperature sensitivity) phenotype of act1-1",
-=======
-    "DESCRIPTION": "Gene of unknown function; identified in a screen for suppressors of the osmosensitivity (but not temperature sensitivity) phenotype of act1-1",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -4649,31 +3087,8 @@
   {
     "FEATURE_NAME": "RAH2",
     "ALIASES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "DESCRIPTION": "Gene of unknown function; identified in a screen for suppressors of the osmosensitivity (but not temperature sensitivity) phenotype of act1-1",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "DESCRIPTION":
       "Gene of unknown function; identified in a screen for suppressors of the osmosensitivity (but not temperature sensitivity) phenotype of act1-1",
-=======
-    "DESCRIPTION": "Gene of unknown function; identified in a screen for suppressors of the osmosensitivity (but not temperature sensitivity) phenotype of act1-1",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION": "Gene of unknown function; identified in a screen for suppressors of the osmosensitivity (but not temperature sensitivity) phenotype of act1-1",
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION":
-      "Gene of unknown function; identified in a screen for suppressors of the osmosensitivity (but not temperature sensitivity) phenotype of act1-1",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -4683,33 +3098,8 @@
   {
     "FEATURE_NAME": "RAH3",
     "ALIASES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "DESCRIPTION": "Gene of unknown function; identified in a screen for suppressors of the osmosensitivity (but not temperature sensitivity) phenotype of act1-1",
-=======
-<<<<<<< HEAD
     "DESCRIPTION":
       "Gene of unknown function; identified in a screen for suppressors of the osmosensitivity (but not temperature sensitivity) phenotype of act1-1",
-=======
-    "DESCRIPTION": "Gene of unknown function; identified in a screen for suppressors of the osmosensitivity (but not temperature sensitivity) phenotype of act1-1",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION": "Gene of unknown function; identified in a screen for suppressors of the osmosensitivity (but not temperature sensitivity) phenotype of act1-1",
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION":
-      "Gene of unknown function; identified in a screen for suppressors of the osmosensitivity (but not temperature sensitivity) phenotype of act1-1",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "DESCRIPTION":
-      "Gene of unknown function; identified in a screen for suppressors of the osmosensitivity (but not temperature sensitivity) phenotype of act1-1",
-=======
-    "DESCRIPTION": "Gene of unknown function; identified in a screen for suppressors of the osmosensitivity (but not temperature sensitivity) phenotype of act1-1",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -4729,22 +3119,6 @@
   {
     "FEATURE_NAME": "REC1",
     "ALIASES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
-    "DESCRIPTION": "Gene of unknown function; required for mitotic intragenic and intergenic recombination and for sporulation",
-    "NAME_DESCRIPTION": "",
-    "CHROMOSOME": "chrVII",
-    "GENETIC_POSITION": "-108",
-    "NOTES": "Edition 10: rec1 is located close to rad54 on the basis of data presented in this Table and in our 1985 review. However, this is not consistent with the rec1-rad54 data also included in the above Table. Because of this uncertainty, rec3 has not been placed on the genetic map",
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "DESCRIPTION":
       "Gene of unknown function; required for mitotic intragenic and intergenic recombination and for sporulation",
     "NAME_DESCRIPTION": "",
@@ -4752,60 +3126,13 @@
     "GENETIC_POSITION": "-108",
     "NOTES":
       "Edition 10: rec1 is located close to rad54 on the basis of data presented in this Table and in our 1985 review. However, this is not consistent with the rec1-rad54 data also included in the above Table. Because of this uncertainty, rec3 has not been placed on the genetic map",
-=======
-    "DESCRIPTION": "Gene of unknown function; required for mitotic intragenic and intergenic recombination and for sporulation",
-    "NAME_DESCRIPTION": "",
-    "CHROMOSOME": "chrVII",
-    "GENETIC_POSITION": "-108",
-    "NOTES": "Edition 10: rec1 is located close to rad54 on the basis of data presented in this Table and in our 1985 review. However, this is not consistent with the rec1-rad54 data also included in the above Table. Because of this uncertainty, rec3 has not been placed on the genetic map",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION":
-      "Gene of unknown function; required for mitotic intragenic and intergenic recombination and for sporulation",
-    "NAME_DESCRIPTION": "",
-    "CHROMOSOME": "chrVII",
-    "GENETIC_POSITION": "-108",
-    "NOTES":
-      "Edition 10: rec1 is located close to rad54 on the basis of data presented in this Table and in our 1985 review. However, this is not consistent with the rec1-rad54 data also included in the above Table. Because of this uncertainty, rec3 has not been placed on the genetic map",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "2178786 | 2678811"
   },
   {
     "FEATURE_NAME": "REC4",
     "ALIASES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "DESCRIPTION": "Gene of unknown function; required for mitotic intragenic and intergenic recombination and for sporulation",
-=======
-<<<<<<< HEAD
     "DESCRIPTION":
       "Gene of unknown function; required for mitotic intragenic and intergenic recombination and for sporulation",
-=======
-    "DESCRIPTION": "Gene of unknown function; required for mitotic intragenic and intergenic recombination and for sporulation",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION": "Gene of unknown function; required for mitotic intragenic and intergenic recombination and for sporulation",
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION":
-      "Gene of unknown function; required for mitotic intragenic and intergenic recombination and for sporulation",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "DESCRIPTION":
-      "Gene of unknown function; required for mitotic intragenic and intergenic recombination and for sporulation",
-=======
-    "DESCRIPTION": "Gene of unknown function; required for mitotic intragenic and intergenic recombination and for sporulation",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -4855,33 +3182,8 @@
   {
     "FEATURE_NAME": "ROS3",
     "ALIASES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "DESCRIPTION": "Gene whose mutation suppresses the sterility of a ste4-3 sst2-1 mutant",
-=======
-<<<<<<< HEAD
     "DESCRIPTION":
       "Gene whose mutation suppresses the sterility of a ste4-3 sst2-1 mutant",
-=======
-    "DESCRIPTION": "Gene whose mutation suppresses the sterility of a ste4-3 sst2-1 mutant",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION": "Gene whose mutation suppresses the sterility of a ste4-3 sst2-1 mutant",
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION":
-      "Gene whose mutation suppresses the sterility of a ste4-3 sst2-1 mutant",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "DESCRIPTION":
-      "Gene whose mutation suppresses the sterility of a ste4-3 sst2-1 mutant",
-=======
-    "DESCRIPTION": "Gene whose mutation suppresses the sterility of a ste4-3 sst2-1 mutant",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "Relaxation Of Sterility",
     "CHROMOSOME": "chrV",
     "GENETIC_POSITION": "-11",
@@ -4895,33 +3197,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "chrXIII",
     "GENETIC_POSITION": "159",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 11: rrm14 has been physically mapped adjacent and proximal to rna1",
-=======
-<<<<<<< HEAD
     "NOTES":
       "Edition 11: rrm14 has been physically mapped adjacent and proximal to rna1",
-=======
-    "NOTES": "Edition 11: rrm14 has been physically mapped adjacent and proximal to rna1",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 11: rrm14 has been physically mapped adjacent and proximal to rna1",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 11: rrm14 has been physically mapped adjacent and proximal to rna1",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "NOTES":
-      "Edition 11: rrm14 has been physically mapped adjacent and proximal to rna1",
-=======
-    "NOTES": "Edition 11: rrm14 has been physically mapped adjacent and proximal to rna1",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "1413997"
   },
   {
@@ -4981,69 +3258,16 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 14: The name, scd1, has also been used to refer to certain alleles of the SOD1 gene on chromosome X | SCD1 has been used to refer to both SOD1/YJR104C, which encodes copper, zinc superoxide dismutase, and SCD1, a genetic locus that can mutate to suppress clathrin mutations.",
-    "LITERATURE (PMIDs)": "2072897 | 3116672 | 8380227 | 8688556 | 9133677 | 9169866"
-=======
-<<<<<<< HEAD
-=======
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "NOTES":
       "Edition 14: The name, scd1, has also been used to refer to certain alleles of the SOD1 gene on chromosome X | SCD1 has been used to refer to both SOD1/YJR104C, which encodes copper, zinc superoxide dismutase, and SCD1, a genetic locus that can mutate to suppress clathrin mutations.",
     "LITERATURE (PMIDs)":
       "2072897 | 3116672 | 8380227 | 8688556 | 9133677 | 9169866"
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 14: The name, scd1, has also been used to refer to certain alleles of the SOD1 gene on chromosome X | SCD1 has been used to refer to both SOD1/YJR104C, which encodes copper, zinc superoxide dismutase, and SCD1, a genetic locus that can mutate to suppress clathrin mutations.",
-    "LITERATURE (PMIDs)": "2072897 | 3116672 | 8380227 | 8688556 | 9133677 | 9169866"
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 14: The name, scd1, has also been used to refer to certain alleles of the SOD1 gene on chromosome X | SCD1 has been used to refer to both SOD1/YJR104C, which encodes copper, zinc superoxide dismutase, and SCD1, a genetic locus that can mutate to suppress clathrin mutations.",
-    "LITERATURE (PMIDs)": "2072897 | 3116672 | 8380227 | 8688556 | 9133677 | 9169866"
->>>>>>> updated not_mapped genes file
-=======
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "SCH1",
     "ALIASES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "DESCRIPTION": "Locus that can mutate to suppress the lethality of chs2 null mutant",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "DESCRIPTION":
       "Locus that can mutate to suppress the lethality of chs2 null mutant",
-=======
-    "DESCRIPTION": "Locus that can mutate to suppress the lethality of chs2 null mutant",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION": "Locus that can mutate to suppress the lethality of chs2 null mutant",
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION":
-      "Locus that can mutate to suppress the lethality of chs2 null mutant",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "Suppressor of CHitin synthase disruption",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -5103,33 +3327,8 @@
   {
     "FEATURE_NAME": "SHE6",
     "ALIASES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "DESCRIPTION": "mRNA that causes growth arrest when overexpressed; identified by a library screen",
-=======
-<<<<<<< HEAD
     "DESCRIPTION":
       "mRNA that causes growth arrest when overexpressed; identified by a library screen",
-=======
-    "DESCRIPTION": "mRNA that causes growth arrest when overexpressed; identified by a library screen",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION": "mRNA that causes growth arrest when overexpressed; identified by a library screen",
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION":
-      "mRNA that causes growth arrest when overexpressed; identified by a library screen",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "DESCRIPTION":
-      "mRNA that causes growth arrest when overexpressed; identified by a library screen",
-=======
-    "DESCRIPTION": "mRNA that causes growth arrest when overexpressed; identified by a library screen",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "Sensitivity to High Expression",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -5139,17 +3338,6 @@
   {
     "FEATURE_NAME": "SHE7",
     "ALIASES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "DESCRIPTION": "mRNA that causes growth arrest when overexpressed; identified by a library screen",
-    "NAME_DESCRIPTION": "Sensitivity to High Expression",
-    "CHROMOSOME": "",
-    "GENETIC_POSITION": "",
-    "NOTES": "Edition 13: may be on cosmid 8179 | Edition 14: SHE7 is antisense to YHR046C, although there is no ORF on the Watson strand",
-=======
-<<<<<<< HEAD
     "DESCRIPTION":
       "mRNA that causes growth arrest when overexpressed; identified by a library screen",
     "NAME_DESCRIPTION": "Sensitivity to High Expression",
@@ -5157,40 +3345,6 @@
     "GENETIC_POSITION": "",
     "NOTES":
       "Edition 13: may be on cosmid 8179 | Edition 14: SHE7 is antisense to YHR046C, although there is no ORF on the Watson strand",
-=======
-=======
->>>>>>> updated not_mapped genes file
-    "DESCRIPTION": "mRNA that causes growth arrest when overexpressed; identified by a library screen",
-    "NAME_DESCRIPTION": "Sensitivity to High Expression",
-    "CHROMOSOME": "",
-    "GENETIC_POSITION": "",
-    "NOTES": "Edition 13: may be on cosmid 8179 | Edition 14: SHE7 is antisense to YHR046C, although there is no ORF on the Watson strand",
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
->>>>>>> updated not_mapped genes file
-=======
-=======
->>>>>>> updated not_mapped genes file
-    "DESCRIPTION":
-      "mRNA that causes growth arrest when overexpressed; identified by a library screen",
-    "NAME_DESCRIPTION": "Sensitivity to High Expression",
-    "CHROMOSOME": "",
-    "GENETIC_POSITION": "",
-    "NOTES":
-      "Edition 13: may be on cosmid 8179 | Edition 14: SHE7 is antisense to YHR046C, although there is no ORF on the Watson strand",
-<<<<<<< HEAD
->>>>>>> added updated not_mapped file, es-script
-=======
-=======
-    "DESCRIPTION": "mRNA that causes growth arrest when overexpressed; identified by a library screen",
-    "NAME_DESCRIPTION": "Sensitivity to High Expression",
-    "CHROMOSOME": "",
-    "GENETIC_POSITION": "",
-    "NOTES": "Edition 13: may be on cosmid 8179 | Edition 14: SHE7 is antisense to YHR046C, although there is no ORF on the Watson strand",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "7762298 | 9169866"
   },
   {
@@ -5201,31 +3355,8 @@
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
     "NOTES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "LITERATURE (PMIDs)": "3545494 | 8005433 | 8657150 | 11713667 | 10517323 | 2072912"
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)":
       "3545494 | 8005433 | 8657150 | 11713667 | 10517323 | 2072912"
-=======
-    "LITERATURE (PMIDs)": "3545494 | 8005433 | 8657150 | 11713667 | 10517323 | 2072912"
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)": "3545494 | 8005433 | 8657150 | 11713667 | 10517323 | 2072912"
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)":
-      "3545494 | 8005433 | 8657150 | 11713667 | 10517323 | 2072912"
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "SLC44",
@@ -5250,19 +3381,6 @@
   {
     "FEATURE_NAME": "SLU1",
     "ALIASES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "DESCRIPTION": "Essential for the first step of splicing; mutant synergistically lethal with mutation in U5 snRNA",
-    "NAME_DESCRIPTION": "Synergistic Lethal with U5 snRNA",
-    "CHROMOSOME": "",
-    "GENETIC_POSITION": "",
-    "NOTES": "Edition 12: HEM2/YGL040C [delta-aminolevulinate dehydratase] has also been called SLU1, but it should not be confused with the gene by that name that is synergistically lethal with U5 snRNA.",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "DESCRIPTION":
       "Essential for the first step of splicing; mutant synergistically lethal with mutation in U5 snRNA",
     "NAME_DESCRIPTION": "Synergistic Lethal with U5 snRNA",
@@ -5270,56 +3388,11 @@
     "GENETIC_POSITION": "",
     "NOTES":
       "Edition 12: HEM2/YGL040C [delta-aminolevulinate dehydratase] has also been called SLU1, but it should not be confused with the gene by that name that is synergistically lethal with U5 snRNA.",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
-=======
->>>>>>> updated not_mapped genes file
-    "DESCRIPTION": "Essential for the first step of splicing; mutant synergistically lethal with mutation in U5 snRNA",
-    "NAME_DESCRIPTION": "Synergistic Lethal with U5 snRNA",
-    "CHROMOSOME": "",
-    "GENETIC_POSITION": "",
-    "NOTES": "Edition 12: HEM2/YGL040C [delta-aminolevulinate dehydratase] has also been called SLU1, but it should not be confused with the gene by that name that is synergistically lethal with U5 snRNA.",
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION":
-      "Essential for the first step of splicing; mutant synergistically lethal with mutation in U5 snRNA",
-    "NAME_DESCRIPTION": "Synergistic Lethal with U5 snRNA",
-    "CHROMOSOME": "",
-    "GENETIC_POSITION": "",
-    "NOTES":
-      "Edition 12: HEM2/YGL040C [delta-aminolevulinate dehydratase] has also been called SLU1, but it should not be confused with the gene by that name that is synergistically lethal with U5 snRNA.",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "1406691"
   },
   {
     "FEATURE_NAME": "SLU2",
     "ALIASES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
-    "DESCRIPTION": "Essential for the first step of splicing; mutant synergistically lethal with mutation in U5 snRNA",
-    "NAME_DESCRIPTION": "Synergistic Lethal with U5 snRNA",
-    "CHROMOSOME": "",
-    "GENETIC_POSITION": "",
-    "NOTES": "SLU2 has been used in the literature to refer to both HEM4/YOR278W, which encodes a  porphobilinogen synthase, and SLU2, which is essential for splicing.",
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "DESCRIPTION":
       "Essential for the first step of splicing; mutant synergistically lethal with mutation in U5 snRNA",
     "NAME_DESCRIPTION": "Synergistic Lethal with U5 snRNA",
@@ -5327,28 +3400,6 @@
     "GENETIC_POSITION": "",
     "NOTES":
       "SLU2 has been used in the literature to refer to both HEM4/YOR278W, which encodes a  porphobilinogen synthase, and SLU2, which is essential for splicing.",
-=======
-    "DESCRIPTION": "Essential for the first step of splicing; mutant synergistically lethal with mutation in U5 snRNA",
-    "NAME_DESCRIPTION": "Synergistic Lethal with U5 snRNA",
-    "CHROMOSOME": "",
-    "GENETIC_POSITION": "",
-    "NOTES": "SLU2 has been used in the literature to refer to both HEM4/YOR278W, which encodes a  porphobilinogen synthase, and SLU2, which is essential for splicing.",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION":
-      "Essential for the first step of splicing; mutant synergistically lethal with mutation in U5 snRNA",
-    "NAME_DESCRIPTION": "Synergistic Lethal with U5 snRNA",
-    "CHROMOSOME": "",
-    "GENETIC_POSITION": "",
-    "NOTES":
-      "SLU2 has been used in the literature to refer to both HEM4/YOR278W, which encodes a  porphobilinogen synthase, and SLU2, which is essential for splicing.",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "1406691 | 9169866"
   },
   {
@@ -5408,31 +3459,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 12: Maps to chr XIV, immediately upstream of TOP2, clone association was not determined by hybridization-rather by sequencing",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "NOTES":
       "Edition 12: Maps to chr XIV, immediately upstream of TOP2, clone association was not determined by hybridization-rather by sequencing",
-=======
-    "NOTES": "Edition 12: Maps to chr XIV, immediately upstream of TOP2, clone association was not determined by hybridization-rather by sequencing",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 12: Maps to chr XIV, immediately upstream of TOP2, clone association was not determined by hybridization-rather by sequencing",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 12: Maps to chr XIV, immediately upstream of TOP2, clone association was not determined by hybridization-rather by sequencing",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": ""
   },
   {
@@ -5512,63 +3540,15 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 13: Comments provided by J. Brickner: Suppressor of the rapid Onset of Impotence observed after shutting off the Kex2p localization-defective mutant Tyr713Ala. Mutations in the cytosolic tail of Kex2p, either deletion of the tail or substitution of Alanine for Tyr713, result in loss of TGN localization. Loss of Golgi retention results in a more rapid loss of mating competence of Mat alpha cells after shutting off expression of a GAL1 promoter-driven form of KEX2-Y713A. SOI2 mutants suppress the localization defect in Kex2p-Y713A and, unlike the parent strain, can mate well after 7h on glucose.",
-=======
-<<<<<<< HEAD
     "NOTES":
       "Edition 13: Comments provided by J. Brickner: Suppressor of the rapid Onset of Impotence observed after shutting off the Kex2p localization-defective mutant Tyr713Ala. Mutations in the cytosolic tail of Kex2p, either deletion of the tail or substitution of Alanine for Tyr713, result in loss of TGN localization. Loss of Golgi retention results in a more rapid loss of mating competence of Mat alpha cells after shutting off expression of a GAL1 promoter-driven form of KEX2-Y713A. SOI2 mutants suppress the localization defect in Kex2p-Y713A and, unlike the parent strain, can mate well after 7h on glucose.",
-=======
-    "NOTES": "Edition 13: Comments provided by J. Brickner: Suppressor of the rapid Onset of Impotence observed after shutting off the Kex2p localization-defective mutant Tyr713Ala. Mutations in the cytosolic tail of Kex2p, either deletion of the tail or substitution of Alanine for Tyr713, result in loss of TGN localization. Loss of Golgi retention results in a more rapid loss of mating competence of Mat alpha cells after shutting off expression of a GAL1 promoter-driven form of KEX2-Y713A. SOI2 mutants suppress the localization defect in Kex2p-Y713A and, unlike the parent strain, can mate well after 7h on glucose.",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 13: Comments provided by J. Brickner: Suppressor of the rapid Onset of Impotence observed after shutting off the Kex2p localization-defective mutant Tyr713Ala. Mutations in the cytosolic tail of Kex2p, either deletion of the tail or substitution of Alanine for Tyr713, result in loss of TGN localization. Loss of Golgi retention results in a more rapid loss of mating competence of Mat alpha cells after shutting off expression of a GAL1 promoter-driven form of KEX2-Y713A. SOI2 mutants suppress the localization defect in Kex2p-Y713A and, unlike the parent strain, can mate well after 7h on glucose.",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 13: Comments provided by J. Brickner: Suppressor of the rapid Onset of Impotence observed after shutting off the Kex2p localization-defective mutant Tyr713Ala. Mutations in the cytosolic tail of Kex2p, either deletion of the tail or substitution of Alanine for Tyr713, result in loss of TGN localization. Loss of Golgi retention results in a more rapid loss of mating competence of Mat alpha cells after shutting off expression of a GAL1 promoter-driven form of KEX2-Y713A. SOI2 mutants suppress the localization defect in Kex2p-Y713A and, unlike the parent strain, can mate well after 7h on glucose.",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "NOTES":
-      "Edition 13: Comments provided by J. Brickner: Suppressor of the rapid Onset of Impotence observed after shutting off the Kex2p localization-defective mutant Tyr713Ala. Mutations in the cytosolic tail of Kex2p, either deletion of the tail or substitution of Alanine for Tyr713, result in loss of TGN localization. Loss of Golgi retention results in a more rapid loss of mating competence of Mat alpha cells after shutting off expression of a GAL1 promoter-driven form of KEX2-Y713A. SOI2 mutants suppress the localization defect in Kex2p-Y713A and, unlike the parent strain, can mate well after 7h on glucose.",
-=======
-    "NOTES": "Edition 13: Comments provided by J. Brickner: Suppressor of the rapid Onset of Impotence observed after shutting off the Kex2p localization-defective mutant Tyr713Ala. Mutations in the cytosolic tail of Kex2p, either deletion of the tail or substitution of Alanine for Tyr713, result in loss of TGN localization. Loss of Golgi retention results in a more rapid loss of mating competence of Mat alpha cells after shutting off expression of a GAL1 promoter-driven form of KEX2-Y713A. SOI2 mutants suppress the localization defect in Kex2p-Y713A and, unlike the parent strain, can mate well after 7h on glucose.",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "8887651 | 15090613"
   },
   {
     "FEATURE_NAME": "SON2",
     "ALIASES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "DESCRIPTION": "Extragenic suppressor of mutations in the C terminus of SEC63",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "DESCRIPTION":
       "Extragenic suppressor of mutations in the C terminus of SEC63",
-=======
-    "DESCRIPTION": "Extragenic suppressor of mutations in the C terminus of SEC63",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION": "Extragenic suppressor of mutations in the C terminus of SEC63",
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION":
-      "Extragenic suppressor of mutations in the C terminus of SEC63",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -5578,33 +3558,8 @@
   {
     "FEATURE_NAME": "SON3",
     "ALIASES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "DESCRIPTION": "Extragenic suppressor of mutations in the C terminus of SEC63",
-=======
-<<<<<<< HEAD
     "DESCRIPTION":
       "Extragenic suppressor of mutations in the C terminus of SEC63",
-=======
-    "DESCRIPTION": "Extragenic suppressor of mutations in the C terminus of SEC63",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION": "Extragenic suppressor of mutations in the C terminus of SEC63",
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION":
-      "Extragenic suppressor of mutations in the C terminus of SEC63",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "DESCRIPTION":
-      "Extragenic suppressor of mutations in the C terminus of SEC63",
-=======
-    "DESCRIPTION": "Extragenic suppressor of mutations in the C terminus of SEC63",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -5614,31 +3569,8 @@
   {
     "FEATURE_NAME": "SON4",
     "ALIASES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "DESCRIPTION": "Extragenic suppressor of mutations in the C terminus of SEC63",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "DESCRIPTION":
       "Extragenic suppressor of mutations in the C terminus of SEC63",
-=======
-    "DESCRIPTION": "Extragenic suppressor of mutations in the C terminus of SEC63",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION": "Extragenic suppressor of mutations in the C terminus of SEC63",
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION":
-      "Extragenic suppressor of mutations in the C terminus of SEC63",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -5648,33 +3580,8 @@
   {
     "FEATURE_NAME": "SON5",
     "ALIASES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "DESCRIPTION": "Extragenic suppressor of mutations in the C terminus of SEC63",
-=======
-<<<<<<< HEAD
     "DESCRIPTION":
       "Extragenic suppressor of mutations in the C terminus of SEC63",
-=======
-    "DESCRIPTION": "Extragenic suppressor of mutations in the C terminus of SEC63",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION": "Extragenic suppressor of mutations in the C terminus of SEC63",
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION":
-      "Extragenic suppressor of mutations in the C terminus of SEC63",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "DESCRIPTION":
-      "Extragenic suppressor of mutations in the C terminus of SEC63",
-=======
-    "DESCRIPTION": "Extragenic suppressor of mutations in the C terminus of SEC63",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -5694,31 +3601,8 @@
   {
     "FEATURE_NAME": "SPA1",
     "ALIASES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "DESCRIPTION": "Involved in chromosome segregation and other mitotic functions",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "DESCRIPTION":
       "Involved in chromosome segregation and other mitotic functions",
-=======
-    "DESCRIPTION": "Involved in chromosome segregation and other mitotic functions",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION": "Involved in chromosome segregation and other mitotic functions",
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION":
-      "Involved in chromosome segregation and other mitotic functions",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "Spindle Pole Antigen",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -5733,31 +3617,8 @@
     "CHROMOSOME": "chrXV",
     "GENETIC_POSITION": "-12",
     "NOTES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "LITERATURE (PMIDs)": "1094303 | 3540206 | 3886382 | 6374028 | 6374029 | 19682552 | 25086216"
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)":
       "1094303 | 3540206 | 3886382 | 6374028 | 6374029 | 19682552 | 25086216"
-=======
-    "LITERATURE (PMIDs)": "1094303 | 3540206 | 3886382 | 6374028 | 6374029 | 19682552 | 25086216"
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)": "1094303 | 3540206 | 3886382 | 6374028 | 6374029 | 19682552 | 25086216"
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)":
-      "1094303 | 3540206 | 3886382 | 6374028 | 6374029 | 19682552 | 25086216"
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "SPD3",
@@ -5782,31 +3643,8 @@
   {
     "FEATURE_NAME": "SPO10",
     "ALIASES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "DESCRIPTION": "Gene of unknown function; dispensable for mitosis and premeiotic DNA synthesis; required for spindle pole body duplication, meiosis I, meiosis II, and spores",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "DESCRIPTION":
       "Gene of unknown function; dispensable for mitosis and premeiotic DNA synthesis; required for spindle pole body duplication, meiosis I, meiosis II, and spores",
-=======
-    "DESCRIPTION": "Gene of unknown function; dispensable for mitosis and premeiotic DNA synthesis; required for spindle pole body duplication, meiosis I, meiosis II, and spores",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION": "Gene of unknown function; dispensable for mitosis and premeiotic DNA synthesis; required for spindle pole body duplication, meiosis I, meiosis II, and spores",
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION":
-      "Gene of unknown function; dispensable for mitosis and premeiotic DNA synthesis; required for spindle pole body duplication, meiosis I, meiosis II, and spores",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "SPOrulation",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -5816,33 +3654,8 @@
   {
     "FEATURE_NAME": "SPO17",
     "ALIASES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "DESCRIPTION": "Dispensable for mitosis; required for premeiotic DNA synthesis and subsequent meiotic landmarks, and sporulation-specific amyloglucosidase activity",
-=======
-<<<<<<< HEAD
     "DESCRIPTION":
       "Dispensable for mitosis; required for premeiotic DNA synthesis and subsequent meiotic landmarks, and sporulation-specific amyloglucosidase activity",
-=======
-    "DESCRIPTION": "Dispensable for mitosis; required for premeiotic DNA synthesis and subsequent meiotic landmarks, and sporulation-specific amyloglucosidase activity",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION": "Dispensable for mitosis; required for premeiotic DNA synthesis and subsequent meiotic landmarks, and sporulation-specific amyloglucosidase activity",
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION":
-      "Dispensable for mitosis; required for premeiotic DNA synthesis and subsequent meiotic landmarks, and sporulation-specific amyloglucosidase activity",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "DESCRIPTION":
-      "Dispensable for mitosis; required for premeiotic DNA synthesis and subsequent meiotic landmarks, and sporulation-specific amyloglucosidase activity",
-=======
-    "DESCRIPTION": "Dispensable for mitosis; required for premeiotic DNA synthesis and subsequent meiotic landmarks, and sporulation-specific amyloglucosidase activity",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "SPOrulation",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -5852,33 +3665,8 @@
   {
     "FEATURE_NAME": "SPO2",
     "ALIASES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "DESCRIPTION": "Dispensable for mitosis; premeiotic DNA synthesis, recombination, meiosis I, meiosis II. Required for nuclear membrane integrity at meiosis I and meiosis II, and localized prospore wall growth at the nuclear envelope.",
-=======
-<<<<<<< HEAD
     "DESCRIPTION":
       "Dispensable for mitosis; premeiotic DNA synthesis, recombination, meiosis I, meiosis II. Required for nuclear membrane integrity at meiosis I and meiosis II, and localized prospore wall growth at the nuclear envelope.",
-=======
-    "DESCRIPTION": "Dispensable for mitosis; premeiotic DNA synthesis, recombination, meiosis I, meiosis II. Required for nuclear membrane integrity at meiosis I and meiosis II, and localized prospore wall growth at the nuclear envelope.",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION": "Dispensable for mitosis; premeiotic DNA synthesis, recombination, meiosis I, meiosis II. Required for nuclear membrane integrity at meiosis I and meiosis II, and localized prospore wall growth at the nuclear envelope.",
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION":
-      "Dispensable for mitosis; premeiotic DNA synthesis, recombination, meiosis I, meiosis II. Required for nuclear membrane integrity at meiosis I and meiosis II, and localized prospore wall growth at the nuclear envelope.",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "DESCRIPTION":
-      "Dispensable for mitosis; premeiotic DNA synthesis, recombination, meiosis I, meiosis II. Required for nuclear membrane integrity at meiosis I and meiosis II, and localized prospore wall growth at the nuclear envelope.",
-=======
-    "DESCRIPTION": "Dispensable for mitosis; premeiotic DNA synthesis, recombination, meiosis I, meiosis II. Required for nuclear membrane integrity at meiosis I and meiosis II, and localized prospore wall growth at the nuclear envelope.",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "SPOrulation",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -5888,33 +3676,8 @@
   {
     "FEATURE_NAME": "SPO4",
     "ALIASES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "DESCRIPTION": "Dispensable for mitosis; premeiotic DNA synthesis, recomb., meiosis I, meiosis II & prospore wall initiation. Required for spore wall elongation, coordination of spore wall closure with meiosis II segregation, & spore wall maturation",
-=======
-<<<<<<< HEAD
     "DESCRIPTION":
       "Dispensable for mitosis; premeiotic DNA synthesis, recomb., meiosis I, meiosis II & prospore wall initiation. Required for spore wall elongation, coordination of spore wall closure with meiosis II segregation, & spore wall maturation",
-=======
-    "DESCRIPTION": "Dispensable for mitosis; premeiotic DNA synthesis, recomb., meiosis I, meiosis II & prospore wall initiation. Required for spore wall elongation, coordination of spore wall closure with meiosis II segregation, & spore wall maturation",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION": "Dispensable for mitosis; premeiotic DNA synthesis, recomb., meiosis I, meiosis II & prospore wall initiation. Required for spore wall elongation, coordination of spore wall closure with meiosis II segregation, & spore wall maturation",
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION":
-      "Dispensable for mitosis; premeiotic DNA synthesis, recomb., meiosis I, meiosis II & prospore wall initiation. Required for spore wall elongation, coordination of spore wall closure with meiosis II segregation, & spore wall maturation",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "DESCRIPTION":
-      "Dispensable for mitosis; premeiotic DNA synthesis, recomb., meiosis I, meiosis II & prospore wall initiation. Required for spore wall elongation, coordination of spore wall closure with meiosis II segregation, & spore wall maturation",
-=======
-    "DESCRIPTION": "Dispensable for mitosis; premeiotic DNA synthesis, recomb., meiosis I, meiosis II & prospore wall initiation. Required for spore wall elongation, coordination of spore wall closure with meiosis II segregation, & spore wall maturation",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "SPOrulation",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -5924,33 +3687,8 @@
   {
     "FEATURE_NAME": "SPO5",
     "ALIASES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "DESCRIPTION": "Dispensable for mitosis; premeiotic DNA synthesis, recomb., meiosis I, meiosis II & prospore wall initiation. Required for spore wall elongation, coordination of spore wall closure with meiosis II segregation, & spore wall maturation",
-=======
-<<<<<<< HEAD
     "DESCRIPTION":
       "Dispensable for mitosis; premeiotic DNA synthesis, recomb., meiosis I, meiosis II & prospore wall initiation. Required for spore wall elongation, coordination of spore wall closure with meiosis II segregation, & spore wall maturation",
-=======
-    "DESCRIPTION": "Dispensable for mitosis; premeiotic DNA synthesis, recomb., meiosis I, meiosis II & prospore wall initiation. Required for spore wall elongation, coordination of spore wall closure with meiosis II segregation, & spore wall maturation",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION": "Dispensable for mitosis; premeiotic DNA synthesis, recomb., meiosis I, meiosis II & prospore wall initiation. Required for spore wall elongation, coordination of spore wall closure with meiosis II segregation, & spore wall maturation",
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION":
-      "Dispensable for mitosis; premeiotic DNA synthesis, recomb., meiosis I, meiosis II & prospore wall initiation. Required for spore wall elongation, coordination of spore wall closure with meiosis II segregation, & spore wall maturation",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "DESCRIPTION":
-      "Dispensable for mitosis; premeiotic DNA synthesis, recomb., meiosis I, meiosis II & prospore wall initiation. Required for spore wall elongation, coordination of spore wall closure with meiosis II segregation, & spore wall maturation",
-=======
-    "DESCRIPTION": "Dispensable for mitosis; premeiotic DNA synthesis, recomb., meiosis I, meiosis II & prospore wall initiation. Required for spore wall elongation, coordination of spore wall closure with meiosis II segregation, & spore wall maturation",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "SPOrulation",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -5960,31 +3698,8 @@
   {
     "FEATURE_NAME": "SPO50",
     "ALIASES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "DESCRIPTION": "Dispensable for mitosis; required for premeiotic DNA synthesis and recombination, and spores",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "DESCRIPTION":
       "Dispensable for mitosis; required for premeiotic DNA synthesis and recombination, and spores",
-=======
-    "DESCRIPTION": "Dispensable for mitosis; required for premeiotic DNA synthesis and recombination, and spores",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION": "Dispensable for mitosis; required for premeiotic DNA synthesis and recombination, and spores",
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION":
-      "Dispensable for mitosis; required for premeiotic DNA synthesis and recombination, and spores",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "SPOrulation",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -6014,33 +3729,8 @@
   {
     "FEATURE_NAME": "SPO9",
     "ALIASES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "DESCRIPTION": "Dispensable for mitosis; required for premeiotic DNA synthesis, spindle pole body duplication, meiosis I, meiosis II, and spores",
-=======
-<<<<<<< HEAD
     "DESCRIPTION":
       "Dispensable for mitosis; required for premeiotic DNA synthesis, spindle pole body duplication, meiosis I, meiosis II, and spores",
-=======
-    "DESCRIPTION": "Dispensable for mitosis; required for premeiotic DNA synthesis, spindle pole body duplication, meiosis I, meiosis II, and spores",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION": "Dispensable for mitosis; required for premeiotic DNA synthesis, spindle pole body duplication, meiosis I, meiosis II, and spores",
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION":
-      "Dispensable for mitosis; required for premeiotic DNA synthesis, spindle pole body duplication, meiosis I, meiosis II, and spores",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "DESCRIPTION":
-      "Dispensable for mitosis; required for premeiotic DNA synthesis, spindle pole body duplication, meiosis I, meiosis II, and spores",
-=======
-    "DESCRIPTION": "Dispensable for mitosis; required for premeiotic DNA synthesis, spindle pole body duplication, meiosis I, meiosis II, and spores",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "SPOrulation",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -6145,31 +3835,8 @@
     "CHROMOSOME": "chrVII",
     "GENETIC_POSITION": "45",
     "NOTES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "LITERATURE (PMIDs)": "1848378 | 3013722 | 3520568 | 2678811 | 2198534 | 1413997 | 2547147 | 2827010 | 3049076"
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)":
       "1848378 | 3013722 | 3520568 | 2678811 | 2198534 | 1413997 | 2547147 | 2827010 | 3049076"
-=======
-    "LITERATURE (PMIDs)": "1848378 | 3013722 | 3520568 | 2678811 | 2198534 | 1413997 | 2547147 | 2827010 | 3049076"
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)": "1848378 | 3013722 | 3520568 | 2678811 | 2198534 | 1413997 | 2547147 | 2827010 | 3049076"
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)":
-      "1848378 | 3013722 | 3520568 | 2678811 | 2198534 | 1413997 | 2547147 | 2827010 | 3049076"
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "SRA7",
@@ -6184,31 +3851,8 @@
   {
     "FEATURE_NAME": "SRN11",
     "ALIASES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "DESCRIPTION": "Extragenic suppressor of the temperature-sensitive phenotype of rna1-1",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "DESCRIPTION":
       "Extragenic suppressor of the temperature-sensitive phenotype of rna1-1",
-=======
-    "DESCRIPTION": "Extragenic suppressor of the temperature-sensitive phenotype of rna1-1",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION": "Extragenic suppressor of the temperature-sensitive phenotype of rna1-1",
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION":
-      "Extragenic suppressor of the temperature-sensitive phenotype of rna1-1",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
@@ -6283,31 +3927,8 @@
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
     "NOTES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "LITERATURE (PMIDs)": "8889516 | 2123190 | 8082198 | 10234785 | 9294463 | 9409150"
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)":
       "8889516 | 2123190 | 8082198 | 10234785 | 9294463 | 9409150"
-=======
-    "LITERATURE (PMIDs)": "8889516 | 2123190 | 8082198 | 10234785 | 9294463 | 9409150"
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)": "8889516 | 2123190 | 8082198 | 10234785 | 9294463 | 9409150"
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)":
-      "8889516 | 2123190 | 8082198 | 10234785 | 9294463 | 9409150"
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "SSX6",
@@ -6346,33 +3967,8 @@
     "NAME_DESCRIPTION": "Suppressor of Upstream AUG",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 15: The SUA2 locus has been genetically defined by Hampsey, M., et al. (1991). SUA2 has not been assigned to a standard ORF.",
-=======
-<<<<<<< HEAD
     "NOTES":
       "Edition 15: The SUA2 locus has been genetically defined by Hampsey, M., et al. (1991). SUA2 has not been assigned to a standard ORF.",
-=======
-    "NOTES": "Edition 15: The SUA2 locus has been genetically defined by Hampsey, M., et al. (1991). SUA2 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 15: The SUA2 locus has been genetically defined by Hampsey, M., et al. (1991). SUA2 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 15: The SUA2 locus has been genetically defined by Hampsey, M., et al. (1991). SUA2 has not been assigned to a standard ORF.",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "NOTES":
-      "Edition 15: The SUA2 locus has been genetically defined by Hampsey, M., et al. (1991). SUA2 has not been assigned to a standard ORF.",
-=======
-    "NOTES": "Edition 15: The SUA2 locus has been genetically defined by Hampsey, M., et al. (1991). SUA2 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "1327957 | 1666843"
   },
   {
@@ -6382,31 +3978,8 @@
     "NAME_DESCRIPTION": "Suppressor of Upstream AUG",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 15: The SUA3 locus has been genetically defined by Hampsey, M., et al. (1991). SUA3 has not been assigned to a standard ORF.",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "NOTES":
       "Edition 15: The SUA3 locus has been genetically defined by Hampsey, M., et al. (1991). SUA3 has not been assigned to a standard ORF.",
-=======
-    "NOTES": "Edition 15: The SUA3 locus has been genetically defined by Hampsey, M., et al. (1991). SUA3 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 15: The SUA3 locus has been genetically defined by Hampsey, M., et al. (1991). SUA3 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 15: The SUA3 locus has been genetically defined by Hampsey, M., et al. (1991). SUA3 has not been assigned to a standard ORF.",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "1327957 | 1666843"
   },
   {
@@ -6416,33 +3989,8 @@
     "NAME_DESCRIPTION": "Suppressor of Upstream AUG",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 15: The SUA4 locus has been genetically defined by Hampsey, M., et al. (1991). SUA4 has not been assigned to a standard ORF.",
-=======
-<<<<<<< HEAD
     "NOTES":
       "Edition 15: The SUA4 locus has been genetically defined by Hampsey, M., et al. (1991). SUA4 has not been assigned to a standard ORF.",
-=======
-    "NOTES": "Edition 15: The SUA4 locus has been genetically defined by Hampsey, M., et al. (1991). SUA4 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 15: The SUA4 locus has been genetically defined by Hampsey, M., et al. (1991). SUA4 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 15: The SUA4 locus has been genetically defined by Hampsey, M., et al. (1991). SUA4 has not been assigned to a standard ORF.",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "NOTES":
-      "Edition 15: The SUA4 locus has been genetically defined by Hampsey, M., et al. (1991). SUA4 has not been assigned to a standard ORF.",
-=======
-    "NOTES": "Edition 15: The SUA4 locus has been genetically defined by Hampsey, M., et al. (1991). SUA4 has not been assigned to a standard ORF.",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "1327957 | 1666843"
   },
   {
@@ -6483,33 +4031,8 @@
     "CHROMOSOME": "chrXVI",
     "GENETIC_POSITION": "3",
     "NOTES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "LITERATURE (PMIDs)": "6757051 | 1413997 | 17246112 | 2678811 | 2995780 | 2537149 | 6366520"
-=======
-<<<<<<< HEAD
     "LITERATURE (PMIDs)":
       "6757051 | 1413997 | 17246112 | 2678811 | 2995780 | 2537149 | 6366520"
-=======
-    "LITERATURE (PMIDs)": "6757051 | 1413997 | 17246112 | 2678811 | 2995780 | 2537149 | 6366520"
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)": "6757051 | 1413997 | 17246112 | 2678811 | 2995780 | 2537149 | 6366520"
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)":
-      "6757051 | 1413997 | 17246112 | 2678811 | 2995780 | 2537149 | 6366520"
->>>>>>> added updated not_mapped file, es-script
-=======
-    "LITERATURE (PMIDs)":
-      "6757051 | 1413997 | 17246112 | 2678811 | 2995780 | 2537149 | 6366520"
-=======
-    "LITERATURE (PMIDs)": "6757051 | 1413997 | 17246112 | 2678811 | 2995780 | 2537149 | 6366520"
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "SUF22",
@@ -6519,33 +4042,8 @@
     "CHROMOSOME": "chrXIII",
     "GENETIC_POSITION": "-31",
     "NOTES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "LITERATURE (PMIDs)": "6757051 | 8440738 | 3894935 | 17246112 | 2995780 | 1413997 | 2678811 | 6366520"
-=======
-<<<<<<< HEAD
     "LITERATURE (PMIDs)":
       "6757051 | 8440738 | 3894935 | 17246112 | 2995780 | 1413997 | 2678811 | 6366520"
-=======
-    "LITERATURE (PMIDs)": "6757051 | 8440738 | 3894935 | 17246112 | 2995780 | 1413997 | 2678811 | 6366520"
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)": "6757051 | 8440738 | 3894935 | 17246112 | 2995780 | 1413997 | 2678811 | 6366520"
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)":
-      "6757051 | 8440738 | 3894935 | 17246112 | 2995780 | 1413997 | 2678811 | 6366520"
->>>>>>> added updated not_mapped file, es-script
-=======
-    "LITERATURE (PMIDs)":
-      "6757051 | 8440738 | 3894935 | 17246112 | 2995780 | 1413997 | 2678811 | 6366520"
-=======
-    "LITERATURE (PMIDs)": "6757051 | 8440738 | 3894935 | 17246112 | 2995780 | 1413997 | 2678811 | 6366520"
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "SUF24",
@@ -6555,33 +4053,8 @@
     "CHROMOSOME": "chrIV",
     "GENETIC_POSITION": "160",
     "NOTES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "LITERATURE (PMIDs)": "6757051 | 6757053 | 1394509 | 1413997 | 17246112 | 2995780 | 2678811"
-=======
-<<<<<<< HEAD
     "LITERATURE (PMIDs)":
       "6757051 | 6757053 | 1394509 | 1413997 | 17246112 | 2995780 | 2678811"
-=======
-    "LITERATURE (PMIDs)": "6757051 | 6757053 | 1394509 | 1413997 | 17246112 | 2995780 | 2678811"
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)": "6757051 | 6757053 | 1394509 | 1413997 | 17246112 | 2995780 | 2678811"
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)":
-      "6757051 | 6757053 | 1394509 | 1413997 | 17246112 | 2995780 | 2678811"
->>>>>>> added updated not_mapped file, es-script
-=======
-    "LITERATURE (PMIDs)":
-      "6757051 | 6757053 | 1394509 | 1413997 | 17246112 | 2995780 | 2678811"
-=======
-    "LITERATURE (PMIDs)": "6757051 | 6757053 | 1394509 | 1413997 | 17246112 | 2995780 | 2678811"
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "SUF25",
@@ -6591,33 +4064,8 @@
     "CHROMOSOME": "chrIV",
     "GENETIC_POSITION": "-115",
     "NOTES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "LITERATURE (PMIDs)": "6757051 | 17246112 | 2406560 | 2995780 | 1413997 | 11238400 | 2678811 | 6366520 | 6757053"
-=======
-<<<<<<< HEAD
     "LITERATURE (PMIDs)":
       "6757051 | 17246112 | 2406560 | 2995780 | 1413997 | 11238400 | 2678811 | 6366520 | 6757053"
-=======
-    "LITERATURE (PMIDs)": "6757051 | 17246112 | 2406560 | 2995780 | 1413997 | 11238400 | 2678811 | 6366520 | 6757053"
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)": "6757051 | 17246112 | 2406560 | 2995780 | 1413997 | 11238400 | 2678811 | 6366520 | 6757053"
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)":
-      "6757051 | 17246112 | 2406560 | 2995780 | 1413997 | 11238400 | 2678811 | 6366520 | 6757053"
->>>>>>> added updated not_mapped file, es-script
-=======
-    "LITERATURE (PMIDs)":
-      "6757051 | 17246112 | 2406560 | 2995780 | 1413997 | 11238400 | 2678811 | 6366520 | 6757053"
-=======
-    "LITERATURE (PMIDs)": "6757051 | 17246112 | 2406560 | 2995780 | 1413997 | 11238400 | 2678811 | 6366520 | 6757053"
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "SUF76",
@@ -6647,33 +4095,8 @@
     "CHROMOSOME": "chrXII",
     "GENETIC_POSITION": "24",
     "NOTES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "LITERATURE (PMIDs)": "4329443 | 7010111 | 1413997 | 2678811 | 2995780 | 6366520"
-=======
-<<<<<<< HEAD
     "LITERATURE (PMIDs)":
       "4329443 | 7010111 | 1413997 | 2678811 | 2995780 | 6366520"
-=======
-    "LITERATURE (PMIDs)": "4329443 | 7010111 | 1413997 | 2678811 | 2995780 | 6366520"
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)": "4329443 | 7010111 | 1413997 | 2678811 | 2995780 | 6366520"
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)":
-      "4329443 | 7010111 | 1413997 | 2678811 | 2995780 | 6366520"
->>>>>>> added updated not_mapped file, es-script
-=======
-    "LITERATURE (PMIDs)":
-      "4329443 | 7010111 | 1413997 | 2678811 | 2995780 | 6366520"
-=======
-    "LITERATURE (PMIDs)": "4329443 | 7010111 | 1413997 | 2678811 | 2995780 | 6366520"
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "SUL3",
@@ -6702,31 +4125,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "chrXVI",
     "GENETIC_POSITION": "48",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "It is very likely that SUP15 and SUP16 are allelic, but this has not been proven definitively.",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "NOTES":
       "It is very likely that SUP15 and SUP16 are allelic, but this has not been proven definitively.",
-=======
-    "NOTES": "It is very likely that SUP15 and SUP16 are allelic, but this has not been proven definitively.",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "It is very likely that SUP15 and SUP16 are allelic, but this has not been proven definitively.",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "It is very likely that SUP15 and SUP16 are allelic, but this has not been proven definitively.",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "372549"
   },
   {
@@ -6766,33 +4166,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "Edition 11: SUP165 has been removed from the map because of an improbable (17:3:20)) tetrad ratio (see Edition 10) and inconsistencies with the physical map of Riles and Olson",
-=======
-<<<<<<< HEAD
     "NOTES":
       "Edition 11: SUP165 has been removed from the map because of an improbable (17:3:20)) tetrad ratio (see Edition 10) and inconsistencies with the physical map of Riles and Olson",
-=======
-    "NOTES": "Edition 11: SUP165 has been removed from the map because of an improbable (17:3:20)) tetrad ratio (see Edition 10) and inconsistencies with the physical map of Riles and Olson",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "Edition 11: SUP165 has been removed from the map because of an improbable (17:3:20)) tetrad ratio (see Edition 10) and inconsistencies with the physical map of Riles and Olson",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "Edition 11: SUP165 has been removed from the map because of an improbable (17:3:20)) tetrad ratio (see Edition 10) and inconsistencies with the physical map of Riles and Olson",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "NOTES":
-      "Edition 11: SUP165 has been removed from the map because of an improbable (17:3:20)) tetrad ratio (see Edition 10) and inconsistencies with the physical map of Riles and Olson",
-=======
-    "NOTES": "Edition 11: SUP165 has been removed from the map because of an improbable (17:3:20)) tetrad ratio (see Edition 10) and inconsistencies with the physical map of Riles and Olson",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "8608930 | 2678811 | 1413997 | 16832048"
   },
   {
@@ -6813,31 +4188,8 @@
     "CHROMOSOME": "chrXI",
     "GENETIC_POSITION": "63",
     "NOTES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "LITERATURE (PMIDs)": "2995780 | 7010111 | 1413997 | 17246112 | 17248609 | 2678811 | 4590685 | 6366520"
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)":
       "2995780 | 7010111 | 1413997 | 17246112 | 17248609 | 2678811 | 4590685 | 6366520"
-=======
-    "LITERATURE (PMIDs)": "2995780 | 7010111 | 1413997 | 17246112 | 17248609 | 2678811 | 4590685 | 6366520"
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)": "2995780 | 7010111 | 1413997 | 17246112 | 17248609 | 2678811 | 4590685 | 6366520"
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)":
-      "2995780 | 7010111 | 1413997 | 17246112 | 17248609 | 2678811 | 4590685 | 6366520"
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "SUP26",
@@ -6862,31 +4214,8 @@
   {
     "FEATURE_NAME": "SUP28",
     "ALIASES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "DESCRIPTION": "Putative leucine tRNA gene that can mutate to suppress UAA mutations; genetic mapping data suggest that SUP28 could correspond to tL(UAA)N",
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "DESCRIPTION":
       "Putative leucine tRNA gene that can mutate to suppress UAA mutations; genetic mapping data suggest that SUP28 could correspond to tL(UAA)N",
-=======
-    "DESCRIPTION": "Putative leucine tRNA gene that can mutate to suppress UAA mutations; genetic mapping data suggest that SUP28 could correspond to tL(UAA)N",
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION": "Putative leucine tRNA gene that can mutate to suppress UAA mutations; genetic mapping data suggest that SUP28 could correspond to tL(UAA)N",
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION":
-      "Putative leucine tRNA gene that can mutate to suppress UAA mutations; genetic mapping data suggest that SUP28 could correspond to tL(UAA)N",
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "chrXIV",
     "GENETIC_POSITION": "39",
@@ -6901,91 +4230,20 @@
     "CHROMOSOME": "chrX",
     "GENETIC_POSITION": "0",
     "NOTES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "LITERATURE (PMIDs)": "392110 | 1868573 | 6821248 | 17248609 | 3533713 | 1413997 | 2678811 | 7010111 | 8082183"
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)":
       "392110 | 1868573 | 6821248 | 17248609 | 3533713 | 1413997 | 2678811 | 7010111 | 8082183"
-=======
-    "LITERATURE (PMIDs)": "392110 | 1868573 | 6821248 | 17248609 | 3533713 | 1413997 | 2678811 | 7010111 | 8082183"
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)": "392110 | 1868573 | 6821248 | 17248609 | 3533713 | 1413997 | 2678811 | 7010111 | 8082183"
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)":
-      "392110 | 1868573 | 6821248 | 17248609 | 3533713 | 1413997 | 2678811 | 7010111 | 8082183"
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "SUP33",
     "ALIASES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "DESCRIPTION": "Leucine-inserting UAA suppressor; located between FAS1 and TRP3 on left arm of Chromosome XI",
-=======
-<<<<<<< HEAD
     "DESCRIPTION":
       "Leucine-inserting UAA suppressor; located between FAS1 and TRP3 on left arm of Chromosome XI",
-=======
-    "DESCRIPTION": "Leucine-inserting UAA suppressor; located between FAS1 and TRP3 on left arm of Chromosome XI",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION": "Leucine-inserting UAA suppressor; located between FAS1 and TRP3 on left arm of Chromosome XI",
->>>>>>> updated not_mapped genes file
-=======
-    "DESCRIPTION":
-      "Leucine-inserting UAA suppressor; located between FAS1 and TRP3 on left arm of Chromosome XI",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "DESCRIPTION":
-      "Leucine-inserting UAA suppressor; located between FAS1 and TRP3 on left arm of Chromosome XI",
-=======
-    "DESCRIPTION": "Leucine-inserting UAA suppressor; located between FAS1 and TRP3 on left arm of Chromosome XI",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "chrXI",
     "GENETIC_POSITION": "-122.2",
     "NOTES": "Edition 10: SUP33 data in 1985 mapping review; new reference",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "LITERATURE (PMIDs)": "8608930 | 24173554 | 392110 | 1413997 | 2678811 | 2995780 | 3059716"
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)":
       "8608930 | 24173554 | 392110 | 1413997 | 2678811 | 2995780 | 3059716"
-=======
-    "LITERATURE (PMIDs)": "8608930 | 24173554 | 392110 | 1413997 | 2678811 | 2995780 | 3059716"
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)": "8608930 | 24173554 | 392110 | 1413997 | 2678811 | 2995780 | 3059716"
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)":
-      "8608930 | 24173554 | 392110 | 1413997 | 2678811 | 2995780 | 3059716"
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "SUP37",
@@ -7025,33 +4283,8 @@
     "CHROMOSOME": "chrXV",
     "GENETIC_POSITION": "-14",
     "NOTES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "LITERATURE (PMIDs)": "2179051 | 3522920 | 2311916 | 2692850 | 1413997 | 10580473 | 3059716"
-=======
-<<<<<<< HEAD
     "LITERATURE (PMIDs)":
       "2179051 | 3522920 | 2311916 | 2692850 | 1413997 | 10580473 | 3059716"
-=======
-    "LITERATURE (PMIDs)": "2179051 | 3522920 | 2311916 | 2692850 | 1413997 | 10580473 | 3059716"
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)": "2179051 | 3522920 | 2311916 | 2692850 | 1413997 | 10580473 | 3059716"
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)":
-      "2179051 | 3522920 | 2311916 | 2692850 | 1413997 | 10580473 | 3059716"
->>>>>>> added updated not_mapped file, es-script
-=======
-    "LITERATURE (PMIDs)":
-      "2179051 | 3522920 | 2311916 | 2692850 | 1413997 | 10580473 | 3059716"
-=======
-    "LITERATURE (PMIDs)": "2179051 | 3522920 | 2311916 | 2692850 | 1413997 | 10580473 | 3059716"
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "SUP50",
@@ -7061,33 +4294,8 @@
     "CHROMOSOME": "",
     "GENETIC_POSITION": "",
     "NOTES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "LITERATURE (PMIDs)": "1413997 | 7010111 | 17248609 | 2678811 | 2995780 | 7698667"
-=======
-<<<<<<< HEAD
     "LITERATURE (PMIDs)":
       "1413997 | 7010111 | 17248609 | 2678811 | 2995780 | 7698667"
-=======
-    "LITERATURE (PMIDs)": "1413997 | 7010111 | 17248609 | 2678811 | 2995780 | 7698667"
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)": "1413997 | 7010111 | 17248609 | 2678811 | 2995780 | 7698667"
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)":
-      "1413997 | 7010111 | 17248609 | 2678811 | 2995780 | 7698667"
->>>>>>> added updated not_mapped file, es-script
-=======
-    "LITERATURE (PMIDs)":
-      "1413997 | 7010111 | 17248609 | 2678811 | 2995780 | 7698667"
-=======
-    "LITERATURE (PMIDs)": "1413997 | 7010111 | 17248609 | 2678811 | 2995780 | 7698667"
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "SUP57",
@@ -7107,31 +4315,8 @@
     "CHROMOSOME": "chrXI",
     "GENETIC_POSITION": "-58",
     "NOTES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "LITERATURE (PMIDs)": "177333 | 6387150 | 2995780 | 1413997 | 2678811 | 7828812"
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)":
       "177333 | 6387150 | 2995780 | 1413997 | 2678811 | 7828812"
-=======
-    "LITERATURE (PMIDs)": "177333 | 6387150 | 2995780 | 1413997 | 2678811 | 7828812"
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)": "177333 | 6387150 | 2995780 | 1413997 | 2678811 | 7828812"
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)":
-      "177333 | 6387150 | 2995780 | 1413997 | 2678811 | 7828812"
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "SUP71",
@@ -7140,33 +4325,8 @@
     "NAME_DESCRIPTION": "",
     "CHROMOSOME": "chrV",
     "GENETIC_POSITION": "2",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "NOTES": "The genetic loci SUP71 and SUP150 were merged because PMID: 8608930 states that they are allelic.",
-=======
-<<<<<<< HEAD
     "NOTES":
       "The genetic loci SUP71 and SUP150 were merged because PMID: 8608930 states that they are allelic.",
-=======
-    "NOTES": "The genetic loci SUP71 and SUP150 were merged because PMID: 8608930 states that they are allelic.",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES": "The genetic loci SUP71 and SUP150 were merged because PMID: 8608930 states that they are allelic.",
->>>>>>> updated not_mapped genes file
-=======
-    "NOTES":
-      "The genetic loci SUP71 and SUP150 were merged because PMID: 8608930 states that they are allelic.",
->>>>>>> added updated not_mapped file, es-script
-=======
-    "NOTES":
-      "The genetic loci SUP71 and SUP150 were merged because PMID: 8608930 states that they are allelic.",
-=======
-    "NOTES": "The genetic loci SUP71 and SUP150 were merged because PMID: 8608930 states that they are allelic.",
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)": "8608930 | 17248609"
   },
   {
@@ -7197,31 +4357,8 @@
     "CHROMOSOME": "chrX",
     "GENETIC_POSITION": "-32",
     "NOTES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "LITERATURE (PMIDs)": "1413997 | 2678811 | 2995780 |  6366520 | 8608930 | 8641269"
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)":
       "1413997 | 2678811 | 2995780 |  6366520 | 8608930 | 8641269"
-=======
-    "LITERATURE (PMIDs)": "1413997 | 2678811 | 2995780 |  6366520 | 8608930 | 8641269"
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)": "1413997 | 2678811 | 2995780 |  6366520 | 8608930 | 8641269"
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)":
-      "1413997 | 2678811 | 2995780 |  6366520 | 8608930 | 8641269"
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "SUP75",
@@ -7231,33 +4368,8 @@
     "CHROMOSOME": "chrXI",
     "GENETIC_POSITION": "-59",
     "NOTES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "LITERATURE (PMIDs)": "7828812 | 1413997 | 2678811 | 2995780 | 6366520 | 8408221 | 8608930"
-=======
-<<<<<<< HEAD
     "LITERATURE (PMIDs)":
       "7828812 | 1413997 | 2678811 | 2995780 | 6366520 | 8408221 | 8608930"
-=======
-    "LITERATURE (PMIDs)": "7828812 | 1413997 | 2678811 | 2995780 | 6366520 | 8408221 | 8608930"
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)": "7828812 | 1413997 | 2678811 | 2995780 | 6366520 | 8408221 | 8608930"
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)":
-      "7828812 | 1413997 | 2678811 | 2995780 | 6366520 | 8408221 | 8608930"
->>>>>>> added updated not_mapped file, es-script
-=======
-    "LITERATURE (PMIDs)":
-      "7828812 | 1413997 | 2678811 | 2995780 | 6366520 | 8408221 | 8608930"
-=======
-    "LITERATURE (PMIDs)": "7828812 | 1413997 | 2678811 | 2995780 | 6366520 | 8408221 | 8608930"
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "SUP76",
@@ -7287,31 +4399,8 @@
     "CHROMOSOME": "chrXIII",
     "GENETIC_POSITION": "154",
     "NOTES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "LITERATURE (PMIDs)": "1413997 | 2678811 | 2995780 | 3896924 | 6366520 | 8608930"
-=======
-<<<<<<< HEAD
-=======
->>>>>>> updated not_mapped genes file
     "LITERATURE (PMIDs)":
       "1413997 | 2678811 | 2995780 | 3896924 | 6366520 | 8608930"
-=======
-    "LITERATURE (PMIDs)": "1413997 | 2678811 | 2995780 | 3896924 | 6366520 | 8608930"
->>>>>>> updated not_mapped genes file
-<<<<<<< HEAD
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)": "1413997 | 2678811 | 2995780 | 3896924 | 6366520 | 8608930"
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)":
-      "1413997 | 2678811 | 2995780 | 3896924 | 6366520 | 8608930"
->>>>>>> added updated not_mapped file, es-script
-=======
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "SUP79",
@@ -7321,33 +4410,8 @@
     "CHROMOSOME": "chrXIII",
     "GENETIC_POSITION": "-48",
     "NOTES": "",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "LITERATURE (PMIDs)": "2828155 | 2675489 | 2678811 | 2995780 | 3896924 | 1413997 | 6366520 | 8608930"
-=======
-<<<<<<< HEAD
     "LITERATURE (PMIDs)":
       "2828155 | 2675489 | 2678811 | 2995780 | 3896924 | 1413997 | 6366520 | 8608930"
-=======
-    "LITERATURE (PMIDs)": "2828155 | 2675489 | 2678811 | 2995780 | 3896924 | 1413997 | 6366520 | 8608930"
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)": "2828155 | 2675489 | 2678811 | 2995780 | 3896924 | 1413997 | 6366520 | 8608930"
->>>>>>> updated not_mapped genes file
-=======
-    "LITERATURE (PMIDs)":
-      "2828155 | 2675489 | 2678811 | 2995780 | 3896924 | 1413997 | 6366520 | 8608930"
->>>>>>> added updated not_mapped file, es-script
-=======
-    "LITERATURE (PMIDs)":
-      "2828155 | 2675489 | 2678811 | 2995780 | 3896924 | 1413997 | 6366520 | 8608930"
-=======
-    "LITERATURE (PMIDs)": "2828155 | 2675489 | 2678811 | 2995780 | 3896924 | 1413997 | 6366520 | 8608930"
->>>>>>> updated not_mapped genes file
->>>>>>> updated not_mapped genes file
   },
   {
     "FEATURE_NAME": "SUP80",
