@@ -1,9 +1,10 @@
-from src.models import DBSession, Base, Colleague, ColleagueLocus, Dbentity, Locusnote, LocusnoteReference, Locusdbentity, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi
+from src.models import DBSession, Base, Colleague, ColleagueLocus, Dbentity, Locusnote, Filedbentity, FileKeyword, LocusnoteReference, Locusdbentity, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi
 from sqlalchemy import create_engine, and_
 from elasticsearch import Elasticsearch
 from mapping import mapping
 import os
 import requests
+import json
 from multiprocess import Pool
 
 engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
@@ -489,3 +490,52 @@ class IndexESHelper:
                     obj[item2[1].reference_id] = []
                 obj[item2[1].reference_id].append(temp)
         return obj
+
+    @classmethod
+    def get_file_dbentity_keyword(cls):
+        obj = {}
+        _data = DBSession.query(
+            Filedbentity, FileKeyword).join(FileKeyword).filter(
+                Filedbentity.dbentity_id == FileKeyword.file_id).all()
+        for item in _data:
+            if (item):
+                if item[0].dbentity_id not in obj:
+                    obj[item[0].dbentity_id] = []
+                obj[item[0].dbentity_id].append(item[1].keyword.display_name)
+
+        return obj
+
+    @classmethod
+    def convertBytes(cls, numBytes, suffix='B'):
+        '''
+        Convert bytes to human readable unit
+        '''
+        if numBytes is not None or numBytes > 0:
+            units = ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z']
+            for item in units:
+                if abs(numBytes) < 1024.0:
+                    return "%3.1f%s%s" % (numBytes, item, suffix)
+                numBytes /= 1024.0
+            return "%.1f%s%s" % (numBytes, 'Y', suffix)
+        return None
+
+    @classmethod
+    def get_not_mapped_genes(cls):
+        obj = {}
+        with open('./scripts/search/not_mapped_3.json', "r") as json_data:
+            _data = json.load(json_data)
+            for item in _data:
+                if len(item["FEATURE_NAME"]) > 0:
+                    if item["FEATURE_NAME"] not in obj:
+                        obj[item["FEATURE_NAME"]] = []
+                    obj[item["FEATURE_NAME"]].append(item)
+        if len(obj) > 0:
+            return obj
+        else:
+            return None
+
+    
+    @classmethod
+    def get_readme_file(cls, id):
+        _data = DBSession.query(Filedbentity).filter_by(Filedbentity.dbentity_id == id).all()
+        
