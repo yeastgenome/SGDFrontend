@@ -164,7 +164,7 @@ def search(request):
             'results': [],
             'aggregations': []
         }
-    
+
     aggregation_body = build_es_aggregation_body_request(
         es_query,
         category,
@@ -176,7 +176,7 @@ def search(request):
         body=aggregation_body,
         preference='p_'+query
     )
-   
+
     return {
         'total': search_results['hits']['total'],
         'results': format_search_results(search_results, json_response_fields, query),
@@ -833,3 +833,11 @@ def healthcheck(request):
             DBSession.remove()
             attempts += 1
     return ldict
+
+
+# get all paths
+@view_config(
+    route_name='get_downloads_menu', renderer='json', request_method='GET')
+def get_downloads_path(request):
+    result = models_helper.get_downloads_menu()
+    return result
