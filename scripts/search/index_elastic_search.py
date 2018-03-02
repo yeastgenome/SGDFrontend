@@ -318,6 +318,8 @@ def index_genes():
         keys = []
         _keys = [gene.gene_name, gene.systematic_name, gene.sgdid
                 ] + alias_quick_direct_keys
+        # If this gene has a reservedname associated with it, add that reservedname to
+        # the list of keywords used for the quick search of this gene
         reservedname = DBSession.query(Reservedname).filter_by(locus_id=gene.dbentity_id).one_or_none()
         if reservedname:
             _keys.append(reservedname.display_name)
@@ -489,6 +491,7 @@ def index_strains():
 
 
 def index_reserved_names():
+    # only index reservednames that do not have a locus associated with them
     reserved_names = DBSession.query(Reservedname).filter_by(locus_id=None).all()
 
     print("Indexing " + str(len(reserved_names)) + " reserved names")
