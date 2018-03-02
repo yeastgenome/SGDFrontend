@@ -102,7 +102,7 @@ class Allele(Base):
     description = Column(String(500))
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
-    
+
     source = relationship(u'Source')
 
 
@@ -1938,7 +1938,7 @@ class Referencedbentity(Dbentity):
                     comment = None
                 raw_genes = tag['genes'].strip()
                 gene_ids = []
-                
+
                 # add tags by gene
                 if len(raw_genes):
                     gene_ids = raw_genes.strip().split()
@@ -2026,21 +2026,40 @@ class Path(Base):
 class Filedbentity(Dbentity):
     __tablename__ = 'filedbentity'
     __table_args__ = {u'schema': 'nex'}
-    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
-    topic_id = Column(ForeignKey(u'nex.edam.edam_id', ondelete=u'CASCADE'), nullable=False, index=True)
-    data_id = Column(ForeignKey(u'nex.edam.edam_id', ondelete=u'CASCADE'), nullable=False, index=True)
+
+    dbentity_id = Column(
+        ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'),
+        primary_key=True,
+        server_default=text("nextval('nex.object_seq'::regclass)"))
+    topic_id = Column(
+        ForeignKey(u'nex.edam.edam_id', ondelete=u'CASCADE'),
+        nullable=False,
+        index=True)
+    data_id = Column(
+        ForeignKey(u'nex.edam.edam_id', ondelete=u'CASCADE'),
+        nullable=False,
+        index=True)
     format_id = Column(
         ForeignKey(u'nex.edam.edam_id', ondelete=u'CASCADE'),
         nullable=False,
         index=True)
     file_extension = Column(String(10), nullable=False)
+    file_date = Column(DateTime, nullable=False)
+    is_public = Column(Boolean, nullable=False)
+    is_in_spell = Column(Boolean, nullable=False)
+    is_in_browser = Column(Boolean, nullable=False)
+    md5sum = Column(String(32), index=True)
+    readme_file_id = Column(
+        ForeignKey(u'nex.filedbentity.dbentity_id', ondelete=u'CASCADE'),
+        index=True)
     previous_file_name = Column(String(100))
     s3_url = Column(String(500))
     description = Column(String(4000))
     json = Column(Text)
     year = Column(SmallInteger, nullable=False)
     file_size = Column(SmallInteger)
-    data = relationship(u'Edam', primaryjoin='Filedbentity.data_id == Edam.edam_id')
+    data = relationship(
+        u'Edam', primaryjoin='Filedbentity.data_id == Edam.edam_id')
     format = relationship(
         u'Edam', primaryjoin='Filedbentity.format_id == Edam.edam_id')
     readme_file = relationship(
@@ -2052,19 +2071,32 @@ class Filedbentity(Dbentity):
 
     def to_dict(self):
         obj = {
-            "id": self.dbentity_id,
-            "data_id": self.data_id if self.format_id else 0,
-            "format_id": self.format_id if self.format_id else 0,
-            "readme_file_id": self.readme_file_id if self.readme_file_id else '',
-            "file_size": self.file_size if self.file_size else 0,
-            "data": self.data.edam_to_dict() if self.data else '',
-            "format": self.format.edam_to_dict() if self.format else '',
-            "is_public": str(self.is_public),
-            "file_extension": self.file_extension if self.file_extension else '' ,
-            "topic": self.topic.edam_to_dict() if self.topic else '',
-            "s3_url": self.s3_url if self.s3_url else '' ,
-            "description": self.description if self.description else '',
-            "year": self.year
+            "id":
+                self.dbentity_id,
+            "data_id":
+                self.data_id if self.format_id else 0,
+            "format_id":
+                self.format_id if self.format_id else 0,
+            "readme_file_id":
+                self.readme_file_id if self.readme_file_id else '',
+            "file_size":
+                self.file_size if self.file_size else 0,
+            "data":
+                self.data.edam_to_dict() if self.data else '',
+            "format":
+                self.format.edam_to_dict() if self.format else '',
+            "is_public":
+                str(self.is_public),
+            "file_extension":
+                self.file_extension if self.file_extension else '',
+            "topic":
+                self.topic.edam_to_dict() if self.topic else '',
+            "s3_url":
+                self.s3_url if self.s3_url else '',
+            "description":
+                self.description if self.description else '',
+            "year":
+                self.year
         }
         return obj
 
@@ -2075,32 +2107,19 @@ class Filedbentity(Dbentity):
         bucket = conn.get_bucket(S3_BUCKET)
         k = Key(bucket)
         k.key = s3_path
-        # make content-type 'text/plain' if it's a README
-        if self.readme_file_id is None:
-            k.content_type = 'text/plain'        
-
         k.set_contents_from_file(file, rewind=True)
         k.make_public()
         file_s3 = bucket.get_key(k.key)
         etag_md5_s3 = file_s3.etag.strip('"').strip("'")
-        # get file size
-        file.seek(0, os.SEEK_END)
-        file_size = file.tell()
-        file.seek(0)
-
-        self.file_size = file_size
         # if md5 checksum matches, save s3 URL to db
-        if self.md5sum is None:
-            self.md5sum = etag_md5_s3
         if (self.md5sum == etag_md5_s3):
             self.s3_url = file_s3.generate_url(expires_in=0, query_auth=False)
             transaction.commit()
-        else:
-            transaction.abort()
             raise Exception('MD5sum check failed.')
 
     def get_path(self):
-        path_res = DBSession.query(FilePath, Path).filter(FilePath.file_id==self.dbentity_id).outerjoin(Path).all()
+        path_res = DBSession.query(FilePath, Path).filter(
+            FilePath.file_id == self.dbentity_id).outerjoin(Path).all()
         if len(path_res) == 0:
             return None
         base = path_res[0][1].path

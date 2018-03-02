@@ -24,9 +24,9 @@ def main(global_config, **settings):
 
     # nex2
     config.add_route('reserved_name', '/reservedname/{id}', request_method='GET')
-    
+
     config.add_route('strain', '/strain/{id}', request_method='GET')
-    
+
     config.add_route('reference_this_week', '/references/this_week', request_method='GET')
     config.add_route('reference', '/reference/{id}', request_method='GET')
 
@@ -41,7 +41,7 @@ def main(global_config, **settings):
 
     config.add_route('chemical', '/chemical/{format_name}', request_method='GET')
     config.add_route('chemical_phenotype_details', '/chemical/{id}/phenotype_details', request_method='GET')
-    
+
     config.add_route('phenotype', '/phenotype/{format_name}', request_method='GET')
     config.add_route('phenotype_locus_details', '/phenotype/{id}/locus_details', request_method='GET')
 
@@ -83,7 +83,7 @@ def main(global_config, **settings):
     config.add_route('domain','/domain/{format_name}', request_method='GET')
     config.add_route('domain_locus_details','/domain/{id}/locus_details', request_method='GET')
     config.add_route('domain_enrichment','/domain/{id}/enrichment', request_method='GET')
-    
+
     config.add_route('contig', '/contig/{format_name}', request_method='GET')
     config.add_route('contig_sequence_details', '/contig/{id}/sequence_details', request_method='GET')
 
@@ -95,7 +95,7 @@ def main(global_config, **settings):
 
     config.add_route('ecnumber', '/ecnumber/{id}', request_method='GET')
     config.add_route('ecnumber_locus_details', '/ecnumber/{id}/locus_details', request_method='GET')
-    
+
     # curator interfaces
     config.add_route('account', '/account')
     config.add_route('sign_in', '/signin')
@@ -105,7 +105,7 @@ def main(global_config, **settings):
     # config.add_route('colleague_triage_accept', '/colleagues/triage/{id}', request_method='POST')
     # config.add_route('colleague_triage_update', '/colleagues/triage/{id}', request_method='PUT')
     # config.add_route('colleague_triage_delete', '/colleagues/triage/{id}', request_method='DELETE')
-    
+
     # config.add_route('colleague_create', '/colleagues', request_method='POST')
     # config.add_route('colleague_update', '/colleagues/{format_name}', request_method='PUT')
     config.add_route('colleague_get', '/colleagues/{format_name}', request_method='GET')
@@ -121,19 +121,17 @@ def main(global_config, **settings):
 
     config.add_route('get_locus_curate', '/locus/{sgdid}/curate', request_method='GET')
     config.add_route('locus_curate_update', '/locus/{sgdid}/curate', request_method='PUT')
-    
+
     config.add_route('formats', '/formats')
     config.add_route('topics', '/topics')
     config.add_route('extensions', '/extensions')
     config.add_route('upload', '/upload')
     config.add_route('upload_spreadsheet', '/upload_spreadsheet', request_method='POST')
-
-    config.add_route('healthcheck', '/healthcheck')
-
     #downloads UI endpoints
     config.add_route(
         'get_downloads_menu', '/downloads/menu', request_method='GET')
 
+    config.add_route('healthcheck', '/healthcheck')
     config.scan()
     config.add_static_view(name='assets', path='./build')
 
