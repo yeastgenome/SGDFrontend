@@ -28,6 +28,9 @@ def render_locus_page(request, template_name):
 
 @view_config(route_name='locus')
 def locus(request):
+    # Remove the 'SGD:' prefix in the request URL if it exists
+    if 'SGD:' in request.matchdict['identifier']:
+        request.matchdict['identifier'] = request.matchdict['identifier'].replace('SGD:', '')
     return render_locus_page(request, 'locus')
 
 @view_config(route_name='sequence_details')
