@@ -119,7 +119,6 @@ class Apo(Base):
     apo_namespace = Column(String(20), nullable=False)
     namespace_group = Column(String(40))
     description = Column(String(1000))
-<<<<<<< HEAD
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
     is_obsolete = Column(Boolean, nullable=False)
@@ -1917,6 +1916,11 @@ class Referencedbentity(Dbentity):
                 'genes': gene_str,
                 'comment': comment
             })
+        return tag_list
+
+    def update_tags(self, tags, username):
+        curator_session = None
+        try:
             curator_session = get_curator_session(username)
             tags = validate_tags(tags)
             # delete old tags
@@ -1934,7 +1938,7 @@ class Referencedbentity(Dbentity):
                     comment = None
                 raw_genes = tag['genes'].strip()
                 gene_ids = []
-
+                
                 # add tags by gene
                 if len(raw_genes):
                     gene_ids = raw_genes.strip().split()
@@ -1971,6 +1975,10 @@ class Referencedbentity(Dbentity):
                         curator_session.add(curation_ref)
                     lit_annotation = Literatureannotation.factory(self.dbentity_id, name, None, username)
                     if lit_annotation:
+                        # only make a single omics tag
+                        if lit_annotation.topic == 'Omics':
+                            if has_omics:
+                                continue
                             else:
                                 has_omics = True
                         curator_session.add(lit_annotation)
@@ -1979,7 +1987,10 @@ class Referencedbentity(Dbentity):
             traceback.print_exc()
             transaction.abort()
             curator_session.rollback()
+            raise(e)
         finally:
+            if curator_session:
+                curator_session.close()
 
 class FilePath(Base):
     __tablename__ = 'file_path'
@@ -1995,12 +2006,9 @@ class FilePath(Base):
 
 class Path(Base):
     __tablename__ = 'path'
-    __table_args__ = (
+    __table_args__ = (UniqueConstraint('path_id', 'path'),{u'schema': 'nex'})
     path_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.url_seq'::regclass)"))
-    source_id = Column(
-        ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'),
-        nullable=False,
-        index=True)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     path = Column(String(500), nullable=False)
     description = Column(String(1000), nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
