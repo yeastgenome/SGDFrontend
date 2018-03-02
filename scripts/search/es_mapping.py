@@ -36,7 +36,10 @@ es_mapping = {
                 "biological_process": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"}
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
                     }
                 },
                 "category": {
@@ -45,23 +48,37 @@ es_mapping = {
                 "observable": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"}
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
                     }
                 },
                 "qualifier": {
                     "type": "string",
-                    "fields": {"raw": {"type": "string", "index": "not_analyzed"}
+                    "fields": {
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
                     }
                 },
                 "references": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"}
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
                     }
                 },
                 "phenotype_loci": {
                     "type": "string",
-                    "fields": {"raw": {"type": "string", "index": "not_analyzed"}
+                    "fields": {
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
                     }
                 },
                 "keys": {
@@ -73,121 +90,196 @@ es_mapping = {
                 "chemical": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"}
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
                     }
                 },
                 "mutant_type": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"}
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
                     }
                 },
                 "go_loci": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"}
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
                     }
                 },
                 "strain": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"}
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
                     }
                 },
                 "author": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"}
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
                     }
                 },
                 "journal": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"}
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
                     }
                 },
                 "year": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"}
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
                     }
                 },
                 "first_name": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"},
-                        "autocomplete": {"type": "string", "analyzer": "autocomplete"}
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        },
+                        "autocomplete": {
+                            "type": "string",
+                            "analyzer": "autocomplete"
+                        }
                     }
                 },
                 "last_name": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"},
-                        "autocomplete": {"type": "string", "analyzer": "autocomplete"}
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        },
+                        "autocomplete": {
+                            "type": "string",
+                            "analyzer": "autocomplete"
+                        }
                     }
                 },
                 "institution": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"},
-                        "autocomplete": {"type": "string", "analyzer": "autocomplete"}
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        },
+                        "autocomplete": {
+                            "type": "string",
+                            "analyzer": "autocomplete"
+                        }
                     }
                 },
                 "position": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"}
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
                     }
                 },
                 "country": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"},
-                        "autocomplete": {"type": "string", "analyzer": "autocomplete"}
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        },
+                        "autocomplete": {
+                            "type": "string",
+                            "analyzer": "autocomplete"
+                        }
                     }
                 },
                 "state": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"},
-                        "autocomplete": {"type": "string", "analyzer": "autocomplete"}
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        },
+                        "autocomplete": {
+                            "type": "string",
+                            "analyzer": "autocomplete"
+                        }
                     }
                 },
                 "colleague_loci": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"}
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
                     }
                 },
                 "keywords": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"},
-                        "autocomplete": {"type": "string", "analyzer": "autocomplete"}
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        },
+                        "autocomplete": {
+                            "type": "string",
+                            "analyzer": "autocomplete"
+                        }
                     }
                 },
                 "reference_loci": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"}
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
                     }
                 },
                 "ec_number": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"}
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
                     }
                 },
                 "tc_number": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"}
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
                     }
                 },
                 "cellular_component": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"}
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
                     }
                 },
                 "description": {
@@ -200,12 +292,15 @@ es_mapping = {
                     "type": "string"
                 },
                 "summary": {
-                    "type":"string"
+                    "type": "string"
                 },
                 "feature_type": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"}
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
                     }
                 },
                 "href": {
@@ -214,15 +309,27 @@ es_mapping = {
                 "molecular_function": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"}
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
                     }
                 },
                 "name": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string","analyzer": "raw"},
-                        "autocomplete": {"type": "string", "analyzer": "autocomplete"},
-                        "search": {"type": "string","analyzer": "default"},
+                        "raw": {
+                            "type": "string",
+                            "analyzer": "raw"
+                        },
+                        "autocomplete": {
+                            "type": "string",
+                            "analyzer": "autocomplete"
+                        },
+                        "search": {
+                            "type": "string",
+                            "analyzer": "default"
+                        },
                     }
                 },
                 "go_id": {
@@ -240,13 +347,91 @@ es_mapping = {
                 "phenotypes": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"}
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
                     }
                 },
                 "aliases": {
                     "type": "string",
                     "fields": {
-                        "raw": {"type": "string", "index": "not_analyzed"}
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
+                    }
+                },
+                "format": {
+                    "type": "string",
+                    "fields": {
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
+                    }
+                },
+                "keyword": {
+                    "type": "string",
+                    "fields": {
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
+                    }
+                },
+                "status": {
+                    "type": "string",
+                    "fields": {
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
+                    }
+                },
+                "file_size": {
+                    "type": "string",
+                    "fields": {
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
+                    }
+                },
+                "readme_url": {
+                    "type": "string",
+                    "fields": {
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
+                    }
+                },
+                "topic": {
+                    "type": "string",
+                    "fields": {
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
+                    }
+                },
+                "data": {
+                    "type": "string",
+                    "fields": {
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
+                    }
+                },
+                "is_quick_flag": {
+                    "type": "string",
+                    "fields": {
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
                     }
                 }
             }
