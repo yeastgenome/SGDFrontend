@@ -128,8 +128,7 @@ def main(global_config, **settings):
     config.add_route('upload', '/upload')
     config.add_route('upload_spreadsheet', '/upload_spreadsheet', request_method='POST')
     #downloads UI endpoints
-    config.add_route(
-        'get_downloads_menu', '/downloads/menu', request_method='GET')
+    config.add_route('get_downloads_menu', '/downloads/menu', request_method='GET')
 
     config.add_route('healthcheck', '/healthcheck')
     config.scan()

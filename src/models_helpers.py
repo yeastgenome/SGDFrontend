@@ -297,7 +297,6 @@ class ModelsHelper(object):
         path_data = DBSession.query(Path).all()
         tree = PathTree()
         temp = []
-        import pdb ; pdb.set_trace()
         for item in path_data:
             branch = tree
             temp_arr = item.path.split('/')
@@ -319,6 +318,12 @@ class ModelsHelper(object):
                 nameStr += item.capitalize() + ' '
             return nameStr.strip()
         return None
+    def get_downloads_menu_helper(self, path_tree):
+        if path_tree:
+            key_list = path_tree.keys()
+
+        else:
+            return None
 
     def traverseMenuItem(self, tree_menu_obj):
         if bool(tree_menu_obj.menu):
