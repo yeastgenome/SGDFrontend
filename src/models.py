@@ -122,9 +122,10 @@ class Apo(Base):
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
     is_obsolete = Column(Boolean, nullable=False)
-    is_obsolete = Column(Boolean, nullable=False)
-    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
-    created_by = Column(String(12), nullable=False)
+
+    source = relationship(u'Source')
+
+    db_cache = {}
 
     ROOT_ID = 169833
 
@@ -242,7 +243,6 @@ class Apo(Base):
 
         for child_relation in children_relation:
             child_node = child_relation.to_graph(nodes, edges, add_child=True, add_parent_type=add_parent_type)
-
             all_children.append({
                 "display_name": child_node.display_name,
                 "link": child_node.obj_url
@@ -261,6 +261,8 @@ class Apo(Base):
             if level < parent_level:
                 parents_relation += DBSession.query(ApoRelation).filter_by(child_id=parent_relation.parent.apo_id).all()
                 level += 1
+
+
         graph = {
             "edges": edges,
             "nodes": nodes,
@@ -419,8 +421,6 @@ class ApoUrl(Base):
 
     apo = relationship(u'Apo')
     source = relationship(u'Source')
-
-
 class ArchContig(Base):
     __tablename__ = 'arch_contig'
     __table_args__ = {u'schema': 'nex'}
