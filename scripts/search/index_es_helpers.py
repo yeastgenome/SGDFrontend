@@ -522,7 +522,7 @@ class IndexESHelper:
     @classmethod
     def get_not_mapped_genes(cls):
         obj = {}
-        with open('./scripts/search/not_mapped_3.json', "r") as json_data:
+        with open('./scripts/search/not_mapped.json', "r") as json_data:
             _data = json.load(json_data)
             for item in _data:
                 if len(item["FEATURE_NAME"]) > 0:
