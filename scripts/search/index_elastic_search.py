@@ -700,7 +700,7 @@ def setup():
 def index_not_mapped_genes():
     url = "https://downloads.yeastgenome.org/curation/literature/genetic_loci.tab"
     bulk_data = []
-    with open('./scripts/search/not_mapped_3.json',
+    with open('./scripts/search/not_mapped.json',
               "r") as json_data:
         _data = json.load(json_data)
         print('indexing ' + str(len(_data)) + ' not physically mapped genes')
