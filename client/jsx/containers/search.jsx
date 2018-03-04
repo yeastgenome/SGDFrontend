@@ -287,11 +287,19 @@ const Search = React.createClass({
   },
 
   _getDownloadsStatus(str){
-    let qArray = location.search.split('&')
+     let qArray = location.search.split('&').map((item, index) => {
+       if (item.includes('q')) {
+         return item
+       }
+     }).filter((item) => {
+       if (item) {
+         return item
+       }
+     });
     let modSearchUrl = SEARCH_URL;
     if(qArray.length > 0){
       modSearchUrl = qArray[0].includes('q') ? modSearchUrl + qArray[0] : modSearchUrl
-    } 
+    }
     this.props.history.pushState(null, modSearchUrl, {
       category:'download',
       status: S(str).capitalize().s

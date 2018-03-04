@@ -41,7 +41,13 @@ const FacetSelector = React.createClass({
       let name = pluralize(getCategoryDisplayName(d.key));
       let href = "";
       if (d.key === "download") {
-        href = `${this._getRawUrl()}&category=${d.key}&status=Active`;
+        if(!location.search.toLocaleLowerCase().includes('status=active')){
+          href = `${this._getRawUrl()}&category=${d.key}&status=Active`;
+        }
+        else{
+          href = `${this._getRawUrl()}&category=${d.key}`;
+        }
+        
       } else {
         href = `${this._getRawUrl()}&category=${d.key}`;
       }
@@ -200,8 +206,9 @@ const FacetList = Radium(
           let temp = [];
           for (let itm in this.state.statusObj) {
             let stb = this.state.statusObj[itm];
+            let modNewRef = this._getToggledHref(itm, `2agg${itm}`, this.props.currentValues);
             temp.push(
-              this._renderStatusButtons(itm, `2agg${itm}`, stb.href, isActive)
+              this._renderStatusButtons(itm, `2agg${itm}`, modNewRef, isActive)
             );
           }
           return temp;
