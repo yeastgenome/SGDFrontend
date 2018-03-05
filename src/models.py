@@ -102,7 +102,7 @@ class Allele(Base):
     description = Column(String(500))
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
-    
+
     source = relationship(u'Source')
 
 
@@ -421,8 +421,6 @@ class ApoUrl(Base):
 
     apo = relationship(u'Apo')
     source = relationship(u'Source')
-
-
 class ArchContig(Base):
     __tablename__ = 'arch_contig'
     __table_args__ = {u'schema': 'nex'}
@@ -583,6 +581,7 @@ class ArchLocuschange(Base):
     date_archived = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     date_name_standardized = Column(DateTime, nullable=False)
 
+
     def to_dict(self):
         return {
             "category": self.display_name,
@@ -715,7 +714,6 @@ class Chebi(Base):
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
     is_obsolete = Column(Boolean, nullable=False)
-
     source = relationship(u'Source')
 
     def to_dict(self):
@@ -1585,7 +1583,6 @@ class Dbentity(Base):
 
     source = relationship(u'Source')
 
-
 class Pathwaydbentity(Dbentity):
     __tablename__ = 'pathwaydbentity'
     __table_args__ = {u'schema': 'nex'}
@@ -1941,7 +1938,7 @@ class Referencedbentity(Dbentity):
                     comment = None
                 raw_genes = tag['genes'].strip()
                 gene_ids = []
-                
+
                 # add tags by gene
                 if len(raw_genes):
                     gene_ids = raw_genes.strip().split()
@@ -2005,16 +2002,11 @@ class FilePath(Base):
     source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
-
     source = relationship(u'Source')
 
 class Path(Base):
     __tablename__ = 'path'
-    __table_args__ = (
-        UniqueConstraint('path_id', 'path'),
-        {u'schema': 'nex'}
-    )
-
+    __table_args__ = (UniqueConstraint('path_id', 'path'),{u'schema': 'nex'})
     path_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.url_seq'::regclass)"))
     source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     path = Column(String(500), nullable=False)
@@ -2024,32 +2016,90 @@ class Path(Base):
 
     source = relationship(u'Source')
 
+    def path_to_dict(self):
+        obj = {
+            "description": self.description
+        }
+        return obj
+
+
 class Filedbentity(Dbentity):
     __tablename__ = 'filedbentity'
     __table_args__ = {u'schema': 'nex'}
 
-    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
-    topic_id = Column(ForeignKey(u'nex.edam.edam_id', ondelete=u'CASCADE'), nullable=False, index=True)
-    data_id = Column(ForeignKey(u'nex.edam.edam_id', ondelete=u'CASCADE'), nullable=False, index=True)
-    format_id = Column(ForeignKey(u'nex.edam.edam_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    dbentity_id = Column(
+        ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'),
+        primary_key=True,
+        server_default=text("nextval('nex.object_seq'::regclass)"))
+    topic_id = Column(
+        ForeignKey(u'nex.edam.edam_id', ondelete=u'CASCADE'),
+        nullable=False,
+        index=True)
+    data_id = Column(
+        ForeignKey(u'nex.edam.edam_id', ondelete=u'CASCADE'),
+        nullable=False,
+        index=True)
+    format_id = Column(
+        ForeignKey(u'nex.edam.edam_id', ondelete=u'CASCADE'),
+        nullable=False,
+        index=True)
     file_extension = Column(String(10), nullable=False)
     file_date = Column(DateTime, nullable=False)
     is_public = Column(Boolean, nullable=False)
     is_in_spell = Column(Boolean, nullable=False)
     is_in_browser = Column(Boolean, nullable=False)
     md5sum = Column(String(32), index=True)
-    readme_file_id = Column(ForeignKey(u'nex.filedbentity.dbentity_id', ondelete=u'CASCADE'), index=True)
+    readme_file_id = Column(
+        ForeignKey(u'nex.filedbentity.dbentity_id', ondelete=u'CASCADE'),
+        index=True)
     previous_file_name = Column(String(100))
     s3_url = Column(String(500))
     description = Column(String(4000))
     json = Column(Text)
     year = Column(SmallInteger, nullable=False)
-    file_size = Column(Integer)
+    file_size = Column(SmallInteger)
+    data = relationship(
+        u'Edam', primaryjoin='Filedbentity.data_id == Edam.edam_id')
+    format = relationship(
+        u'Edam', primaryjoin='Filedbentity.format_id == Edam.edam_id')
+    readme_file = relationship(
+        u'Filedbentity',
+        foreign_keys=[dbentity_id],
+        primaryjoin='Filedbentity.dbentity_id == Filedbentity.readme_file_id')
+    topic = relationship(
+        u'Edam', primaryjoin='Filedbentity.topic_id == Edam.edam_id')
 
-    data = relationship(u'Edam', primaryjoin='Filedbentity.data_id == Edam.edam_id')
-    format = relationship(u'Edam', primaryjoin='Filedbentity.format_id == Edam.edam_id')
-    readme_file = relationship(u'Filedbentity', foreign_keys=[dbentity_id])
-    topic = relationship(u'Edam', primaryjoin='Filedbentity.topic_id == Edam.edam_id')
+    def to_dict(self):
+        obj = {
+            "id":
+                self.dbentity_id,
+            "data_id":
+                self.data_id if self.format_id else 0,
+            "format_id":
+                self.format_id if self.format_id else 0,
+            "readme_file_id":
+                self.readme_file_id if self.readme_file_id else '',
+            "file_size":
+                self.file_size if self.file_size else 0,
+            "data":
+                self.data.to_dict() if self.data else '',
+            "format":
+                self.format.to_dict() if self.format else '',
+            "is_public":
+                str(self.is_public),
+            "file_extension":
+                self.file_extension if self.file_extension else '',
+            "topic":
+                self.topic.to_dict() if self.topic else '',
+            "s3_url":
+                self.s3_url if self.s3_url else '',
+            "description":
+                self.description if self.description else '',
+            "year":
+                self.year
+        }
+        return obj
+    
 
     def upload_file_to_s3(self, file, filename):
         # get s3_url and upload
@@ -2082,7 +2132,8 @@ class Filedbentity(Dbentity):
             raise Exception('MD5sum check failed.')
 
     def get_path(self):
-        path_res = DBSession.query(FilePath, Path).filter(FilePath.file_id==self.dbentity_id).outerjoin(Path).all()
+        path_res = DBSession.query(FilePath, Path).filter(
+            FilePath.file_id == self.dbentity_id).outerjoin(Path).all()
         if len(path_res) == 0:
             return None
         base = path_res[0][1].path
@@ -4423,7 +4474,6 @@ class Ec(Base):
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
     is_obsolete = Column(Boolean, nullable=False)
-
     source = relationship(u'Source')
 
     def locus_details(self):
@@ -4594,16 +4644,16 @@ class Edam(Base):
     edamid = Column(String(20), nullable=False, unique=True)
     edam_namespace = Column(String(20), nullable=False)
     description = Column(String(2000))
+    is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
-    is_obsolete = Column(Boolean, nullable=False)
-
     source = relationship(u'Source')
-
     def to_dict(self):
         return {
             "id": self.edam_id,
-            "name": self.format_name
+            "name": self.format_name if self.format_name else '',
+            "obj_url": self.obj_url if self.obj_url else '',
+            "description": self.description if self.description else ''
         }
 
 
@@ -7031,9 +7081,10 @@ class Psimod(Base):
     source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     psimodid = Column(String(20), nullable=False, unique=True)
     description = Column(String(2000))
+    is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
-    is_obsolete = Column(Boolean, nullable=False)
+
 
     source = relationship(u'Source')
 
@@ -7463,9 +7514,9 @@ class Ro(Base):
     source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     roid = Column(String(20), nullable=False, unique=True)
     description = Column(String(1000))
+    is_obsolete = Column(Boolean, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
-    is_obsolete = Column(Boolean, nullable=False)
 
     source = relationship(u'Source')
 
@@ -7703,7 +7754,6 @@ class Taxonomy(Base):
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
     is_obsolete = Column(Boolean, nullable=False)
-
     source = relationship(u'Source')
 
 

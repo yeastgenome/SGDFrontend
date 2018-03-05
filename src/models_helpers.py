@@ -1,4 +1,4 @@
-from src.models import DBSession, Base, Colleague, ColleagueLocus, ColleagueRelation, ColleagueReference, ColleagueUrl, Colleaguetriage, Dbentity, Locusdbentity, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi
+from src.models import DBSession, Base, Colleague, ColleagueLocus, ColleagueRelation, FilePath, Filedbentity, Path, ColleagueReference, ColleagueUrl, Colleaguetriage, Dbentity, Locusdbentity, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi
 import os
 import requests
 
@@ -217,3 +217,136 @@ class ModelsHelper(object):
                     ]
                 }
             return None
+
+    def get_files_helper(self):
+
+        result = DBSession.query(Filedbentity).all()
+        obj = {}
+        for item in result:
+            res = item.to_dict()
+            if item.dbentity_id not in obj:
+                obj[item.dbentity_id] = []
+            obj[item.dbentity_id].append(res)
+        return obj
+
+
+    def get_filepath(self):
+        result = self.get_file_path_obj(self.set_file_dict(),
+                                        self.set_path_dict())
+        return result
+        '''obj = {}
+        result = DBSession.query(FilePath).all()
+        if result:
+            for item in result:
+                res = item.file_path_to_dict()
+
+                if item.file_id not in obj:
+                    obj[item.file_id] = []
+                obj[item.file_id].append(res)
+        return obj'''
+
+    #TODO: construct file-path dictionary
+    def set_file_dict(self):
+        file_obj = DBSession.query(
+            Filedbentity, FilePath).join(FilePath).filter(
+                Filedbentity.dbentity_id == FilePath.file_id, Filedbentity.readme_file_id != None, Filedbentity.is_public, Filedbentity.s3_url != None).all()
+        obj = {}
+        if file_obj:
+            for item in file_obj:
+                if item[1].file_path_id not in obj:
+                    obj[item[1].file_path_id] = []
+                obj[item[1].file_path_id].append(item[0])
+
+        return obj
+
+
+    def set_path_dict(self):
+        path_obj = DBSession.query(Path, FilePath).join(FilePath).filter(Path.path_id == FilePath.path_id).all()
+        obj = {}
+        if path_obj:
+            for item in path_obj:
+                if item[1].file_path_id not in obj:
+                    obj[item[1].file_path_id] = []
+                obj[item[1].file_path_id].append(item[0])
+
+        return obj
+
+    def get_file_path_obj(self, file_data, path_data):
+        obj_container = []
+        if file_data and path_data:
+            for item_key, item_value in file_data.items():
+                obj = {"id": item_key, "_file": None, "_path": None}
+                if item_value:
+                    obj["_file"] = [x.to_dict() for x in item_value]
+                else:
+                    obj["_file"] = []
+
+                if item_key in path_data:
+                    obj["_path"] = [
+                        x.path_to_dict() for x in path_data.get(item_key)
+                    ]
+                else:
+                    obj["_path"] = []
+                obj_container.append(obj)
+
+        return obj_container
+
+    def get_downloads_menu(self):
+
+        path_data = DBSession.query(Path).all()
+        tree = PathTree()
+        temp = []
+        for item in path_data:
+            branch = tree
+            temp_arr = item.path.split('/')
+            for itm in temp_arr[1:]:
+                branch = branch.menu.setdefault(itm, PathTree(item.path_id, item.path, self.setMenuName(itm), item.description))
+        if tree:
+            for tKey, tValue in tree.menu.items():
+                tempItem = self.traverseMenuItem(tValue)
+                if tempItem is not None:
+                    tValue.childNodes.append(tempItem)
+                temp.append(tValue)
+            return temp
+
+    def setMenuName(self, name):
+        if name:
+            res = name.split('-')
+            nameStr = ''
+            for item in res:
+                nameStr += item.capitalize() + ' '
+            return nameStr.strip()
+        return None
+    def get_downloads_menu_helper(self, path_tree):
+        if path_tree:
+            key_list = path_tree.keys()
+
+        else:
+            return None
+
+    def traverseMenuItem(self, tree_menu_obj):
+        if bool(tree_menu_obj.menu):
+            for ky, vl in tree_menu_obj.menu.items():
+                tree_menu_obj.childNodes.append(vl)
+                if bool(vl.menu):
+                    self.traverseMenuItem(vl)
+
+
+class PathTree(object):
+    def __init__(self, id=0, path=None, format_name=None, description=None, *args, **kwargs):
+        self.menu = {}
+        self.childNodes = []
+        self.path_id = id
+        self.path = path
+        self.description = description
+        self.title = format_name
+
+    def __json__(self, request):
+        return {
+            'menu': self.menu,
+            'title': self.title,
+            'id': self.path_id,
+            'path': self.path,
+            'description': self.description,
+            'childNodes': self.childNodes
+        }
