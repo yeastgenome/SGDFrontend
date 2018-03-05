@@ -1,4 +1,6 @@
-def build_autocomplete_search_body_request(query, category='locus', field='name'):
+def build_autocomplete_search_body_request(query,
+                                           category='locus',
+                                           field='name'):
     es_query = {
         "query": {
             "bool": {
@@ -9,16 +11,14 @@ def build_autocomplete_search_body_request(query, category='locus', field='name'
                         }
                     }
                 }],
-                "should": [
-                    {
-                        "match": {
-                            "category": {
-                                "query": "locus",
-                                "boost": 2
-                            }
+                "should": [{
+                    "match": {
+                        "category": {
+                            "query": "locus",
+                            "boost": 2
                         }
                     }
-                ]
+                }]
             }
         },
         '_source': ['name', 'href', 'category', 'gene_symbol']
@@ -270,7 +270,13 @@ def format_search_results(search_results, json_response_fields, query):
             item = raw_obj.get('aliases')
 
             if query.replace('"','').lower().strip() in raw_obj.get('keys'):
-                if obj["category"] == "resource":
+                if obj["category"] == "locus":
+                    if obj["is_quick_flag"]:
+                        obj['is_quick'] = False
+                    else:
+                        obj['is_quick'] = True
+
+                elif obj["category"] == "resource":
                     obj['is_quick'] = False
                 else:
                     obj['is_quick'] = True
