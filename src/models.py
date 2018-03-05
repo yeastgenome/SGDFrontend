@@ -2082,15 +2082,15 @@ class Filedbentity(Dbentity):
             "file_size":
                 self.file_size if self.file_size else 0,
             "data":
-                self.data.edam_to_dict() if self.data else '',
+                self.data.to_dict() if self.data else '',
             "format":
-                self.format.edam_to_dict() if self.format else '',
+                self.format.to_dict() if self.format else '',
             "is_public":
                 str(self.is_public),
             "file_extension":
                 self.file_extension if self.file_extension else '',
             "topic":
-                self.topic.edam_to_dict() if self.topic else '',
+                self.topic.to_dict() if self.topic else '',
             "s3_url":
                 self.s3_url if self.s3_url else '',
             "description":
@@ -4648,7 +4648,7 @@ class Edam(Base):
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
     source = relationship(u'Source')
-    def edam_to_dict(self):
+    def to_dict(self):
         return {
             "id": self.edam_id,
             "name": self.format_name if self.format_name else '',
