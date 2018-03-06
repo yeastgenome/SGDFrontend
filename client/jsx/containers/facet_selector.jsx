@@ -207,8 +207,7 @@ const FacetList = Radium(
         if (this.props.customFacetFlag) {
           let temp = [];
           for (let itm in this.state.statusObj) {
-            let stb = this.state.statusObj[itm];
-            let modNewRef = this._getToggledHref(itm, `2agg${itm}`, this.props.currentValues);
+            let modNewRef = this._getToggledHref('status', itm, this.props.currentValues);
             if(this.props.downloadStatusStr){
               temp.push(this._renderStatusButtons(itm, `2agg${itm}`, modNewRef, isActive, this.props.downloadStatusStr));
             }
