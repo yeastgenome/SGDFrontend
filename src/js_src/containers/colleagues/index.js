@@ -1,29 +1,68 @@
 import React, { Component } from 'react';
-import _ from 'underscore';
+import { Link } from 'react-router';
 
-import Table from '../../components/table';
+import CurateLayout from '../curateHome/layout';
+import fetchData from '../../lib/fetchData';
+import Loader from '../../components/loader';
 
-class ColleaguesIndex extends Component {
+const DATA_URL = '/colleagues/triage';
+
+class ColleagueTriageIndex extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: null
+    };
+  }
+
+  componentDidMount() {
+    fetchData(DATA_URL).then( _data => {
+      this.setState({ data: _data });
+    });
+  }
+
+  renderColleagues() {
+    if (this.state.data) {
+      if (this.state.data.length === 0) return <div><h2>Colleague Updates</h2><p>No updates have been submitted.</p></div>;
+      let trs = this.state.data.map( (d, i) => {
+        return (
+          <tr key={`gtr${d.id}`}>
+            <td>{`${d.first_name} ${d.last_name}`}</td>
+            <td>{d.type}</td>
+            <td>{d.submission_date}</td>
+            <td><Link to={`/colleagues/triage/${d.id}`}><i className='fa fa-edit' /> Curate</Link></td>
+          </tr>
+        );
+      });
+      return (
+        <div>
+          <h2>Colleague Updates</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Submission Date</th>
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              {trs}
+            </tbody>
+          </table>
+        </div>
+      );
+    }
+    return <Loader />;
+  }
+
   render() {
-    // TEMP example data
-    let entries = [
-      {
-        name: {
-          name: 'Travis Sheppard',
-          href: '/curate/colleague_triage/123'
-        },
-        type: 'update',
-        received: '4/5/2017'
-      }
-    ];
-    let _fields = _.keys(entries[0]);
     return (
-      <div>
-        <h1>Pending Colleague Updates</h1>
-        <Table entries={entries} fields={_fields} />
-      </div>
+      <CurateLayout>
+        {this.renderColleagues()}
+      </CurateLayout>
     );
   }
 }
 
-export default ColleaguesIndex;
+export default ColleagueTriageIndex;

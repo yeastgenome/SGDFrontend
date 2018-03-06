@@ -1,17 +1,81 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
+// import { Link } from 'react-router';
 
-class ColleagueShow extends Component {
+import CategoryLabel from '../../components/categoryLabel';
+import CurateLayout from '../curateHome/layout';
+import ColleagueForm from '../../components/colleagueForm';
+import DeleteButton from '../../components/deleteButton';
+import { setMessage } from '../../actions/metaActions';
+import fetchData from '../../lib/fetchData';
+import Loader from '../../components/loader';
+
+const DATA_BASE_URL = '/colleagues/triage';
+
+class ColleagueTriageShow extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: null
+    };
+  }
+
+  componentDidMount() {
+    let url = `${DATA_BASE_URL}/${this.props.params.id}`;
+    fetchData(url).then( _data => {
+      this.setState({ data: _data });
+    });
+  }
+
+  handleDelete() {
+    this.props.dispatch(push({ pathname: 'colleague/triage' }));
+    this.props.dispatch(setMessage('Colleague triage entry was deleted.'));
+  }
+
+
+  renderForm() {
+    let data = this.state.data;
+    if (data) {
+      return (
+        <div>
+          <h3><CategoryLabel category='colleague' hideLabel /> Colleague: {data.first_name} {data.last_name}</h3>
+          <ColleagueForm defaultData={data} />
+        </div>
+      );
+    }
+    return <Loader />;
+  }
+
+  renderActions() {
+    let deleteUrl = `${DATA_BASE_URL}/${this.props.params.id}`;
+    return (
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '3rem' }}>
+        <DeleteButton label='Discard colleague update' url={deleteUrl} onSuccess={this.handleDelete.bind(this)} />
+      </div>
+    );
+  }
+
   render() {
     return (
-      <div>
-        <h1>Colleague Update</h1>
-        <div className='text-right'>
-          <a className='button'><i className='fa fa-check' /> Approve</a>
-          <a className='button secondary'><i className='fa fa-trash' /> Discard</a>
+      <CurateLayout>
+        <div>
+          {this.renderForm()}
+          {this.renderActions()}
         </div>
-      </div>
+      </CurateLayout>
     );
   }
 }
 
-export default ColleagueShow;
+ColleagueTriageShow.propTypes = {
+  params: React.PropTypes.object,
+  dispatch: React.PropTypes.func
+};
+
+function mapStateToProps() {
+  return {
+  };
+}
+
+export default connect(mapStateToProps)(ColleagueTriageShow);

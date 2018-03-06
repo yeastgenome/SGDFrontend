@@ -4,10 +4,10 @@ import { IndexRoute, Route  } from 'react-router';
 // unauthenticated routes and layout
 import Layout from './containers/layout';
 import PublicHome from './containers/publicHome';
-// import ColleaguesIndex from './containers/colleagues/index';
-// import ColleaguesShow from './containers/colleagues/show';
 import Help from './containers/help';
 import GoogleLogin from './containers/googleLogin';
+import PublicLayout from './containers/layout/PublicLayout';
+import NewGeneNameReservation from './containers/reserve/new';
 // authenticated curate inputs
 import { requireAuthentication } from './containers/authenticateComponent';
 // import CurateLayout from './containers/curateHome/layout';
@@ -29,12 +29,12 @@ import CurateLitPhenotype from './containers/curateLit/phenotype';
 import GeneNameReservationIndex from './containers/reserve/index';
 import GeneNameReservation from './containers/reserve/show';
 import GeneNameReservationEdit from './containers/reserve/edit';
-// public interfaces with no layout
-import PublicLayout from './containers/layout/PublicLayout';
+import ColleaguesIndex from './containers/colleagues/index';
+import ColleaguesShow from './containers/colleagues/show';
 // import AuthorResponse from './containers/authorResponse/index';
 // import NewColleague from './containers/colleagues/new';
 // import EditColleague from './containers/colleagues/edit';
-import NewGeneNameReservation from './containers/reserve/new';
+
 
 export default (
   <Route>
@@ -44,6 +44,8 @@ export default (
       <Route component={requireAuthentication(GeneNameReservationIndex)} path='reservations' />
       <Route component={requireAuthentication(GeneNameReservation)} path='reservations/:id' />
       <Route component={requireAuthentication(GeneNameReservationEdit)} path='reservations/:id/edit' />
+      <Route component={requireAuthentication(ColleaguesIndex)} path='colleagues/triage' />
+      <Route component={requireAuthentication(ColleaguesShow)} path='colleagues/triage/:id' />
       <Route component={requireAuthentication(SpreadsheetUpload)} path='spreadsheet_upload' />
       <Route component={requireAuthentication(Settings)} path='settings' />
       <Route component={Help} path='help' />

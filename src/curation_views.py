@@ -18,7 +18,7 @@ import json
 from .helpers import allowed_file, extract_id_request, secure_save_file, curator_or_none, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id
 from .curation_helpers import ban_from_cache, process_pmid_list, get_curator_session, get_pusher_client
 from .loading.promote_reference_triage import add_paper
-from .models import DBSession, Dbentity, Dbuser, CuratorActivity, Colleague, Referencedbentity, Reservedname, ReservednameTriage, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags, convert_space_separated_pmids_to_list
+from .models import DBSession, Dbentity, Dbuser, CuratorActivity, Colleague, Colleaguetriage, Referencedbentity, Reservedname, ReservednameTriage, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags, convert_space_separated_pmids_to_list
 from .tsv_parser import parse_tsv_annotations
 
 logging.basicConfig()
@@ -455,7 +455,8 @@ def new_gene_name_reservation(request):
     except Exception as e:
         traceback.print_exc()
         transaction.abort()
-
+        log.error(e)
+        return HTTPBadRequest(body=json.dumps({ 'message': str(e) }), content_type='text/json')
 
 # not authenticated to allow the public submission
 @view_config(route_name='colleague_update', renderer='json', request_method='PUT')
@@ -463,12 +464,29 @@ def colleague_update(request):
     if not check_csrf_token(request, raises=False):
         return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
     req_id = request.matchdict['id'].upper()
+    data = request.json_body
     if req_id == 'NULL':
         return HTTPBadRequest(body=json.dumps({ 'message': 'Please select your name from colleague list or create a new entry.' }), content_type='text/json')
     colleague = DBSession.query(Colleague).filter(Colleague.colleague_id == req_id).one_or_none()
     if not colleague:
         return HTTPNotFound()
-    return { 'colleague_id': colleague.colleague_id }
+    # add colleague triage entry
+    try:
+        created_by = get_username_from_db_uri()
+        new_c_triage = Colleaguetriage(
+            colleague_id = req_id,
+            json=json.dumps(data),
+            triage_type='Update',
+            created_by=created_by
+        )
+        DBSession.add(new_c_triage)
+        transaction.commit()
+        return { 'colleague_id': req_id }
+    except Exception as e:
+        traceback.print_exc()
+        transaction.abort()
+        log.error(e)
+        return HTTPBadRequest(body=json.dumps({ 'message': str(e) }), content_type='text/json')
 
 # not authenticated to allow the public submission
 @view_config(route_name='new_colleague', renderer='json', request_method='POST')
@@ -507,6 +525,14 @@ def new_colleague(request):
         transaction.commit()
         DBSession.flush()
         new_colleague = DBSession.query(Colleague).filter(Colleague.format_name == format_name).one_or_none()
+        new_c_triage = Colleaguetriage(
+            colleague_id = new_colleague.colleague_id,
+            json=json.dumps(params),
+            triage_type='New',
+            created_by=created_by
+        )
+        DBSession.add(new_c_triage)
+        transaction.commit()
         return { 'colleague_id': new_colleague.colleague_id }
     except Exception as e:
         transaction.abort()
@@ -642,6 +668,61 @@ def extend_reserved_name(request):
     except Exception as e:
         log.error(e)
         return HTTPBadRequest(body=json.dumps({ 'message': str(e) }), content_type='text/json')
+
+
+@view_config(route_name='colleague_triage_index', renderer='json', request_method='GET')
+@authenticate
+def colleague_triage_index(request):
+    c_triages = DBSession.query(Colleaguetriage).all()
+    return [x.to_dict() for x in c_triages]
+
+@view_config(route_name='colleague_triage_show', renderer='json', request_method='GET')
+@authenticate
+def colleague_triage_show(request):
+    req_id = request.matchdict['id'].upper()
+    c_triage = DBSession.query(Colleaguetriage).filter(Colleaguetriage.curation_id == req_id).one_or_none()
+    if c_triage:
+        return c_triage.to_dict()
+    else:
+        return HTTPNotFound()
+
+@view_config(route_name='colleague_triage_update', renderer='json', request_method='PUT')
+@authenticate
+def colleague_triage_update(request):
+    if not check_csrf_token(request, raises=False):
+        return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
+    return True
+
+@view_config(route_name='colleague_triage_promote', renderer='json', request_method='PUT')
+@authenticate
+def colleague_triage_promote(request):
+    if not check_csrf_token(request, raises=False):
+        return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
+    return True
+
+@view_config(route_name='colleague_triage_delete', renderer='json', request_method='DELETE')
+@authenticate
+def colleague_triage_delete(request):
+    if not check_csrf_token(request, raises=False):
+        return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
+    curator_session = None
+    try:
+        username = request.session['username']
+        curator_session = get_curator_session(username)
+        req_id = request.matchdict['id'].upper()
+        c_triage = curator_session.query(Colleaguetriage).filter(Colleaguetriage.curation_id == req_id).one_or_none()
+        if not c_triage:
+            return HTTPNotFound()
+        curator_session.delete(c_triage)
+        transaction.commit()
+        return True
+    except Exception as e:
+        transaction.abort()
+        log.error(e)
+        return HTTPBadRequest(body=json.dumps({ 'message': str(e) }), content_type='text/json')
+    finally:
+        if curator_session:
+            curator_session.remove()
 
 
 def get_username_from_db_uri():
