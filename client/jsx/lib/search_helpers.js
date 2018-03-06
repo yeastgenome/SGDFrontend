@@ -43,7 +43,13 @@ export function getHrefWithoutAgg (queryParamsObject, aggKey, thisValue, current
     newActiveVals.push(thisValue);
   }
   let newQp = _.clone(queryParamsObject);
-  newQp[aggKey] = newActiveVals;
+  if(aggKey == 'status'){
+    newQp[aggKey] = [thisValue];
+  }
+  else{
+    newQp[aggKey] = newActiveVals;
+  }
+  
   // reset pagintion
   newQp.page = 0;
   // Create a little history object to use the createPath method. 
@@ -57,9 +63,9 @@ export function getFacetName (key) {
       return 'Genes of Interest';
       break;
     case 'go_locus':
-      return "Associated Genes";
+      return 'Associated Genes';
     case 'reference_locus':
-      return "Associated Genes";
+      return 'Associated Genes';
     case 'reference_loci':
       return 'Associated Genes'
     case 'phenotype_locus': 

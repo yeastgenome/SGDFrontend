@@ -6,7 +6,7 @@ const DEFAULT_RESULTS_PER_PAGE = 25;
 const DEFAULT_SORT_BY = 'relevance';
 const DEFAULT_GENE_MODE = 'list';
 const DEFAULT_STATE = {
-  userInput: "",
+  userInput: '',
   results: [],
   asyncResults: [],
   activeCategory: null,
@@ -15,7 +15,7 @@ const DEFAULT_STATE = {
   currentPage: 0,
   totalPages: 0,
   resultsPerPage: DEFAULT_RESULTS_PER_PAGE,
-  query: "",
+  query: '',
   isPending: false,
   isAsyncPending: false,
   asyncProgress: 0.0,
@@ -24,7 +24,8 @@ const DEFAULT_STATE = {
   isHydrated: false,
   sortBy: DEFAULT_SORT_BY,
   geneMode: DEFAULT_GENE_MODE,
-  downloadsFlag: true
+  downloadsFlag: true,
+  downloadStatusStr: ''
 };
 
 const searchResultsReducer = function (_state, action) {
@@ -36,20 +37,19 @@ const searchResultsReducer = function (_state, action) {
   if (action.type === '@@router/UPDATE_LOCATION' && action.payload.pathname === '/search') {
      let params = action.payload.query;
     if(action.payload.query.category){
-      if (action.payload.query.category === "download" && action.payload.query.status === undefined && state.downloadsFlag) {
+      if (action.payload.query.category === 'download' && action.payload.query.status === undefined && state.downloadsFlag) {
         state.downloadsFlag = false;
       } 
-      else if(params.category === "download" && (Object.keys(params).length === 2 || Object.keys(params).length === 3)) {
+      else if(params.category === 'download' && params.hasOwnProperty('status')) {
           state.downloadsFlag = true;
+          state.downloadStatusStr = params['status'];
         }
       else{
         state.downloadsFlag = false;
+        state.downloadStatusStr = '';
         params = action.payload.query;
+       }
       }
-       
-      }
-
-   
     // set userInput and query from q
     let newQuery = (typeof params.q === 'string') ? params.q : '';
     state.query = newQuery;
@@ -93,7 +93,7 @@ const searchResultsReducer = function (_state, action) {
         return d;
       });
       state.aggregations = action.response.aggregations.map( d => {
-        // correct the go and phenotype locus categoriesto prepend "go_" or "phenotype_" to "locus"
+        // correct the go and phenotype locus categoriesto prepend 'go_' or 'phenotype_' to 'locus'
         if (d.key === 'locus') {
           switch(state.activeCategory) {
             case 'phenotype':
@@ -123,7 +123,7 @@ const searchResultsReducer = function (_state, action) {
         // sort to try to put relevant (mathces query) facet value on top
         if (state.query !== '') {
           // escape regex special characters http://stackoverflow.com/questions/3115150/how-to-escape-regular-expression-special-characters-using-javascript
-          let regexQuery = state.query.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+          let regexQuery = state.query.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
           d.values = d.values.sort( (a, b) => {
             let aMatch = a.key.toLowerCase().match(regexQuery);
             let bMatch = b.key.toLowerCase().match(regexQuery);

@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import Radium from 'radium';
 import { connect } from 'react-redux';
 import _ from 'underscore';
-import S from "string";
+import S from 'string';
 
 import SearchResult from '../components/search/search_result.jsx';
 import SearchDownloadAnalyze from '../components/search/search_download_analyze.jsx';
@@ -15,26 +15,26 @@ import Loader from '../components/widgets/loader.jsx';
 import Paginator from '../components/widgets/paginator.jsx';
 import {
   startSearchFetchMaybeAsycFetch
-} from "../actions/search_actions";
+} from '../actions/search_actions';
 import { createPath } from '../lib/search_helpers';
 
 const SEARCH_URL = '/search';
 const CATS_SORTED_BY_ANNOTATION = ['phenotype', 'biological_process','cellular_component', 'molecular_function'];
 
 const Search = React.createClass({
-  displayName: "Search",
-  render() { 
+  displayName: 'Search',
+  render() {
     if (this.props.apiError) {
       return <ErrorMessage />;
     }
-    return <div className="row">
-        <div className="column medium-4 hide-for-small">
-          <FacetSelector isMobile={false} downloadsStatus={this._getDownloadsStatus} />
+    return <div className='row'>
+        <div className='column medium-4 hide-for-small'>
+          <FacetSelector isMobile={false} downloadStatus={this._getdownloadStatus} downloadStatusStr={this.props.downloadStatusStr} />
         </div>
-        <div className="column small-12 medium-8">
-          <div className="show-for-small-only">
-            <Collapser label="Categories">
-              <FacetSelector isMobile={true} downloadsStatus={this._getDownloadsStatus} />
+        <div className='column small-12 medium-8'>
+          <div className='show-for-small-only'>
+            <Collapser label='Categories'>
+              <FacetSelector isMobile={true} downloadStatus={this._getdownloadStatus} downloadStatusStr={this.props.downloadStatusStr} />
             </Collapser>
           </div>
           <div style={[style.resultsWraper]}>
@@ -59,32 +59,32 @@ const Search = React.createClass({
   },
 
   _renderViewAs() {
-    if (this.props.activeCategory !== "locus") return null;
+    if (this.props.activeCategory !== 'locus') return null;
     const qp = _.clone(this.props.queryParams);
-    const isList = this.props.geneMode === "list";
-    const isWrap = this.props.geneMode === "wrap";
+    const isList = this.props.geneMode === 'list';
+    const isWrap = this.props.geneMode === 'wrap';
     const listPath = createPath({
       pathname: SEARCH_URL,
-      query: _.extend(qp, { page: 0, geneMode: "list" })
+      query: _.extend(qp, { page: 0, geneMode: 'list' })
     });
     const wrapPath = createPath({
       pathname: SEARCH_URL,
-      query: _.extend(qp, { page: 0, geneMode: "wrap" })
+      query: _.extend(qp, { page: 0, geneMode: 'wrap' })
     });
 
     return (
-      <ul className="button-group" style={[style.viewAs]}>
+      <ul className='button-group' style={[style.viewAs]}>
         <Link
           to={listPath}
-          className={`button tiny${!isList ? " secondary" : ""}`}
+          className={`button tiny${!isList ? ' secondary' : ''}`}
         >
-          <i className="fa fa-reorder" /> <span>List</span>
+          <i className='fa fa-reorder' /> <span>List</span>
         </Link>
         <Link
           to={wrapPath}
-          className={`button tiny${!isWrap ? " secondary" : ""}`}
+          className={`button tiny${!isWrap ? ' secondary' : ''}`}
         >
-          <i className="fa fa-th" /> <span>Wrapped</span>
+          <i className='fa fa-th' /> <span>Wrapped</span>
         </Link>
       </ul>
     );
@@ -115,21 +115,21 @@ const Search = React.createClass({
       if (window) window.scrollTo(0, 0); // go to top
     };
     return (
-      <div className="row">
-        <div className="columns large-3 medium-4 small-6">
+      <div className='row'>
+        <div className='columns large-3 medium-4 small-6'>
           <Paginator
             currentPage={this.props.currentPage}
             totalPages={this.props.totalPages}
             onPaginate={_onPaginate}
           />
         </div>
-        <div className="columns large-2 medium-4 hide-for-small">
+        <div className='columns large-2 medium-4 hide-for-small'>
           {this._renderPageSizeSelector()}
         </div>
-        <div className="columns large-2 medium-4 small-6">
+        <div className='columns large-2 medium-4 small-6'>
           {this._renderSortBySelector()}
         </div>
-        <div className="columns large-5 small-12 text-right">
+        <div className='columns large-5 small-12 text-right'>
           {this._renderViewAs()}
         </div>
       </div>
@@ -148,9 +148,9 @@ const Search = React.createClass({
       />
     );
     return (
-      <div className="row">
-        <div className="columns small-6">{actionProgressNode}</div>
-        <div className="columns small-6 text-right">{this._renderViewAs()}</div>
+      <div className='row'>
+        <div className='columns small-6'>{actionProgressNode}</div>
+        <div className='columns small-6 text-right'>{this._renderViewAs()}</div>
       </div>
     );
   },
@@ -160,8 +160,8 @@ const Search = React.createClass({
     return (
       <div style={[style.progressBar]}>
         <label>Downloading ...</label>
-        <div className="progress">
-          <span className="meter" style={{ width: strWidth }} />
+        <div className='progress'>
+          <span className='meter' style={{ width: strWidth }} />
         </div>
       </div>
     );
@@ -199,12 +199,12 @@ const Search = React.createClass({
 
   _renderSortBySelector() {
     let options = [
-      { value: "relevance", name: "Relevance" },
-      { value: "alphabetical", name: "Alphabetical" }
+      { value: 'relevance', name: 'Relevance' },
+      { value: 'alphabetical', name: 'Alphabetical' }
     ];
     // only allow some categories to search by annotation
     if (this.props.canSortByAnnotation)
-      options.push({ value: "annotation", name: "Annotation Count" });
+      options.push({ value: 'annotation', name: 'Annotation Count' });
     let optionsNodes = options.map(d => {
       return (
         <option key={`psOp${d.value}`} value={d.value}>
@@ -240,39 +240,35 @@ const Search = React.createClass({
         <p>No results. Please broaden your search or try a different query.</p>
       );
     // maybe render special result types
-    if (this.props.geneMode === "wrap") {
+    if (this.props.geneMode === 'wrap') {
       return this._renderWrappedResults();
     }
     // if not wrapped or analyzed, just render regular results
     let results = this.props.results;
-    if(this.props.url.match(/^\/+search+\?+q\=\&category\=download/g)){
-    let temp = results.map((d, i) => {
-      let id = d.id || i;
-      
-      if (d.status === "Active") {
-        return <SearchResult key={"searchResults" + id} {...d} />;
-      }
-      
-    });
-  
-    return temp;
-    }
-    else{
+    if (this.props.url.match(/^\/+search+\?+q\=\&category\=download/g)) {
+      let temp = results.map((d, i) => {
+        let id = d.id || i;
+
+        if (d.status === 'Active') {
+          return <SearchResult key={'searchResults' + id} {...d} />;
+        }
+      });
+
+      return temp;
+    } else {
       return results.map((d, i) => {
-      let id = d.id || i;
-      return <SearchResult key={"searchResults" + id} {...d} />;
-    });
+        let id = d.id || i;
+        return <SearchResult key={'searchResults' + id} {...d} />;
+      });
     }
-    
-    
   },
 
   _renderWrappedResults() {
     const nodes = this.props.asyncResults.map((d, i) => {
       // only show display name if there is a '/' in name
-      const displayName = d.name.split(" / ")[0];
+      const displayName = d.name.split(' / ')[0];
       return (
-        <a href={d.href} style={[style.wrappedResult]} key={"serchWR" + i}>
+        <a href={d.href} style={[style.wrappedResult]} key={'serchWR' + i}>
           {displayName}
         </a>
       );
@@ -286,16 +282,18 @@ const Search = React.createClass({
     this.props.dispatch(startSearchFetchMaybeAsycFetch());
   },
 
-  _getDownloadsStatus(str){
-    this.props.history.pushState(null, SEARCH_URL, {
-      category:'download',
-      status: S(str).capitalize().s
-    });
+  _getdownloadStatus(str) {
+    this.setState({selectedRadioBtn: str});
+    let tempQParams = this.props.queryParams;
+    if(tempQParams.hasOwnProperty('status')){
+      tempQParams["status"] = S(str).capitalize().s;
+    }
+    this.props.history.pushState(null, SEARCH_URL, tempQParams);
   },
 
   _isWrappedResults() {
     return (
-      this.props.activeCategory === "locus" && this.props.geneMode !== "list"
+      this.props.activeCategory === 'locus' && this.props.geneMode !== 'list'
     );
   },
 
@@ -305,8 +303,8 @@ const Search = React.createClass({
     let fullUrl = `${this.props.location.pathname}${
       this.props.location.search
     }`;
-    ga("set", "page", fullUrl);
-    ga("send", "pageview");
+    ga('set', 'page', fullUrl);
+    ga('send', 'pageview');
   },
   propTypes: {
     activeCategory: React.PropTypes.string,
@@ -319,8 +317,7 @@ const Search = React.createClass({
     results: React.PropTypes.array, // [{ name, url, category, description }]
     total: React.PropTypes.number,
     totalPages: React.PropTypes.number,
-    apiError: React.PropTypes.bool,
-
+    apiError: React.PropTypes.bool
   }
 });
 
@@ -364,7 +361,8 @@ function mapStateToProps(_state) {
     url: `${_state.routing.location.pathname}${_state.routing.location.search}`, 
     queryParams: _state.routing.location.query, 
     geneMode: state.geneMode,
-    selectedStatus: state.selectedStatus
+    downloadStatusStr: state.downloadStatusStr,
+    downloadStatus: state.downloadStatus
   };
 };
 

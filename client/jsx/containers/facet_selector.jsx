@@ -8,7 +8,7 @@ import pluralize from 'pluralize';
 import StatusBtns from '../components/status_buttons/status_btns.jsx';
 import { getHrefWithoutAgg, getCategoryDisplayName, getFacetName } from '../lib/search_helpers';
 import ClassNames from 'classnames';
-import S from "string";
+import S from 'string';
 
 const DEFAULT_FACET_LENGTH = 5;
 const MEDIUM_FACET_LENGTH = 20;
@@ -18,7 +18,8 @@ const SELECT_OPTION_DELEMITER = '@@';
 
 const FacetSelector = React.createClass({
   propTypes: {
-    downloadsStatus: React.PropTypes.func,
+    downloadStatus: React.PropTypes.func,
+    downloadStatusStr: React.PropTypes.string
   },
   render() {
     if (this.props.isAggPending) return null;
@@ -32,16 +33,22 @@ const FacetSelector = React.createClass({
   },
 
   _renderCatSelector() {
-    let keySuffix = this.props.isMobile ? "m" : "";
+    let keySuffix = this.props.isMobile ? 'm' : '';
     let aggs =
       this.props.aggregations.length === 0
         ? []
         : this.props.aggregations[0].values;
     let aggNodes = aggs.map((d, i) => {
       let name = pluralize(getCategoryDisplayName(d.key));
-      let href = "";
-      if (d.key === "download") {
-        href = `${this._getRawUrl()}&category=${d.key}&status=Active`;
+      let href = '';
+      if (d.key === 'download') {
+        if(!location.search.toLocaleLowerCase().includes('status=active')){
+          href = `${this._getRawUrl()}&category=${d.key}&status=Active`;
+        }
+        else{
+          href = `${this._getRawUrl()}&category=${d.key}`;
+        }
+        
       } else {
         href = `${this._getRawUrl()}&category=${d.key}`;
       }
@@ -49,7 +56,7 @@ const FacetSelector = React.createClass({
     });
     return (
       <div>
-        <p className={"cat-label"}>Categories</p>
+        <p className={'cat-label'}>Categories</p>
         {aggNodes}
       </div>
     );
@@ -57,17 +64,17 @@ const FacetSelector = React.createClass({
 
   _renderCatAggs() {
     let catName =
-      this.props.activeCategory === "locus"
-        ? "Genes / Genomic Features"
+      this.props.activeCategory === 'locus'
+        ? 'Genes / Genomic Features'
         : pluralize(getCategoryDisplayName(this.props.activeCategory));
     return (
       <div>
         <p>
           <Link to={this._getRawUrl()}>
-            <i className="fa fa-chevron-left" /> Show all categories
+            <i className='fa fa-chevron-left' /> Show all categories
           </Link>
         </p>
-        <h2 className="search-cat-title">
+        <h2 className='search-cat-title'>
           <span className={`search-cat ${this.props.activeCategory}`} />
           {catName}
         </h2>
@@ -96,20 +103,20 @@ const FacetSelector = React.createClass({
       let currentAgg = { key: d.key };
       let rawValue = qp[d.key];
       switch (typeof rawValue) {
-        case "string":
+        case 'string':
           currentAgg.values = [rawValue];
           break;
-        case "object":
+        case 'object':
           currentAgg.values = rawValue;
           break;
         default:
           currentAgg.values = [];
           break;
       }
-      if (d.key === "status" && qp.category === "download") {
-        return <FacetList customFacetRadioBtnFlag={true} customFacetFlag={true} aggKey={d.key} values={[{}]} currentValues={currentAgg.values} queryParams={this.props.queryParams} key={d.key} name={getFacetName(d.key)} downloadsStatus={this.props.downloadsStatus} />;
+      if (d.key === 'status' && qp.category === 'download') {
+        return <FacetList customFacetRadioBtnFlag={true} customFacetFlag={true} aggKey={d.key} values={[{}]} currentValues={currentAgg.values} queryParams={this.props.queryParams} key={d.key} name={getFacetName(d.key)} downloadStatus={this.props.downloadStatus} downloadStatusStr={this.props.downloadStatusStr} />;
       } else {
-        return <FacetList customFacetRadioBtnFlag={true} customFacetFlag={false} aggKey={d.key} values={d.values} currentValues={currentAgg.values} queryParams={this.props.queryParams} key={d.key} name={getFacetName(d.key)} downloadsStatus={this.props.downloadsStatus} />;
+        return <FacetList customFacetRadioBtnFlag={true} customFacetFlag={false} aggKey={d.key} values={d.values} currentValues={currentAgg.values} queryParams={this.props.queryParams} key={d.key} name={getFacetName(d.key)} downloadStatus={this.props.downloadStatus} downloadStatusStr={this.props.downloadStatusStr} />;
       }
     });
 
@@ -117,8 +124,8 @@ const FacetSelector = React.createClass({
   },
 
   _renderAgg(name, total, _key, href, isActive, isCategory) {
-    let activityStyle = isActive ? "active-agg" : "inactive-agg";
-    let klass = isActive ? "search-agg active" : "search-agg";
+    let activityStyle = isActive ? 'active-agg' : 'inactive-agg';
+    let klass = isActive ? 'search-agg active' : 'search-agg';
     let catIconNode = isCategory ? (
       <span className={`search-cat ${_key}`} />
     ) : null;
@@ -126,7 +133,7 @@ const FacetSelector = React.createClass({
       <Link to={href} key={_key}>
         <div
           key={`aggA${_key}`}
-          className={ClassNames(klass, "agg", activityStyle)}
+          className={ClassNames(klass, 'agg', activityStyle)}
         >
           <span>
             {catIconNode}
@@ -163,7 +170,8 @@ const FacetList = Radium(
       name: React.PropTypes.string,
       customFacetFlag: React.PropTypes.bool,
       customFacetRadioBtnFlag: React.PropTypes.bool,
-      downloadsStatus: React.PropTypes.func
+      downloadStatus: React.PropTypes.func,
+      downloadStatusStr: React.PropTypes.string
     },
 
     getInitialState() {
@@ -171,15 +179,15 @@ const FacetList = Radium(
       let tempStr = 'active'
         if (location.search
             .toLocaleLowerCase()
-            .indexOf("active") > -1) {
-              tempStr="active";
+            .indexOf('active') > -1) {
+              tempStr='active';
         } else if (location.search
             .toLocaleLowerCase()
-            .indexOf("archived") > -1) {
-              tempStr = "archived";
+            .indexOf('archived') > -1) {
+              tempStr = 'archived';
         }
 
-      return { isCollapsed: false, visibleLength: DEFAULT_FACET_LENGTH, selectedStatus: tempStr, statusObj: { active: { href: "/search?category=download&page=0&q=&status=Active" }, archived: { href: "/search?category=download&page=0&q=&status=Archived" } } };
+      return { isCollapsed: false, visibleLength: DEFAULT_FACET_LENGTH, selectedStatus: tempStr, statusObj: { active: { href: '/search?category=download&page=0&q=&status=Active' }, archived: { href: '/search?category=download&page=0&q=&status=Archived' } } };
     },
 
     render() {
@@ -199,10 +207,15 @@ const FacetList = Radium(
         if (this.props.customFacetFlag) {
           let temp = [];
           for (let itm in this.state.statusObj) {
-            let stb = this.state.statusObj[itm];
-            temp.push(
-              this._renderStatusButtons(itm, `2agg${itm}`, stb.href, isActive)
-            );
+            let modNewRef = this._getToggledHref('status', itm, this.props.currentValues);
+            if(this.props.downloadStatusStr){
+              temp.push(this._renderStatusButtons(itm, `2agg${itm}`, modNewRef, isActive, this.props.downloadStatusStr));
+            }
+            else{
+              temp.push(this._renderStatusButtons(itm, `2agg${itm}`, modNewRef, isActive, ''));
+
+            }
+            
           }
           return temp;
         }
@@ -214,7 +227,7 @@ const FacetList = Radium(
           isActive
         );
       });
-      const iconString = this.state.isCollapsed ? "right" : "down";
+      const iconString = this.state.isCollapsed ? 'right' : 'down';
       const valuesNodesMaybe = this.state.isCollapsed ? null : (
         <div>
           {valueNodes}
@@ -223,7 +236,7 @@ const FacetList = Radium(
       );
       return (
         <div>
-          <p onClick={this._toggleIsCollapsed} className={"agg-label"}>
+          <p onClick={this._toggleIsCollapsed} className={'agg-label'}>
             <span>{this.props.name || this.props.aggKey}</span>
             <i className={`fa fa-angle-${iconString} icon`} />
           </p>
@@ -236,23 +249,17 @@ const FacetList = Radium(
       this.setState({
         selectedStatus: event.currentTarget.value.toLowerCase()
       });
-      this.props.downloadsStatus(event.currentTarget.value.toLowerCase());
+      this.props.downloadStatus(event.currentTarget.value.toLowerCase());
     },
 
-    _renderStatusButtons(name, _key, href, isActive) {
-      return (
-        <StatusBtns
-          name={name}
-          btnKey={_key}
-          key={_key}
-          href={href}
-          isActive={isActive}
-          btnClick={this._onStatusBtnChange}
-          flag={this.state.selectedStatus === name.toLowerCase()}
-          actionFunc={this.props.actionTrigger}
-          sString={this.props.sStatus}
-        />
-      );
+    _renderStatusButtons(name, _key, href, isActive, dStr) {
+      if(dStr){
+        return <StatusBtns name={name} btnKey={_key} key={_key} href={href} isActive={isActive} btnClick={this._onStatusBtnChange} flag={dStr.toLowerCase() === name.toLowerCase()} actionFunc={this.props.actionTrigger} sString={this.props.sStatus} />;
+      }
+      else{
+        return <StatusBtns name={name} btnKey={_key} key={_key} href={href} isActive={isActive} btnClick={this._onStatusBtnChange} flag={this.state.selectedStatus === name.toLowerCase()} actionFunc={this.props.actionTrigger} sString={this.props.sStatus} />;
+      }
+      
     },
 
     _renderShowMoreMaybe() {
@@ -275,30 +282,30 @@ const FacetList = Radium(
           e.preventDefault();
           this.setState({ visibleLength: MEDIUM_FACET_LENGTH });
         };
-        text = "Show more";
+        text = 'Show more';
         // medium length, show all
       } else {
         _onClick = e => {
           e.preventDefault();
           this.setState({ visibleLength: null });
         };
-        text = "Show all";
+        text = 'Show all';
       }
       return (
-        <p className="text-right">
+        <p className='text-right'>
           <a onClick={_onClick}>{text}</a>
         </p>
       );
     },
 
     _renderAgg(name, total, _key, href, isActive) {
-      let activityStyle = isActive ? "active-agg" : "inactive-agg";
-      let klass = isActive ? "search-agg active" : "search-agg";
+      let activityStyle = isActive ? 'active-agg' : 'inactive-agg';
+      let klass = isActive ? 'search-agg active' : 'search-agg';
       return (
         <Link to={href} key={_key}>
           <div
             key={`aggA${_key}`}
-            className={ClassNames(klass, "agg", activityStyle)}
+            className={ClassNames(klass, 'agg', activityStyle)}
           >
             <span>{name}</span>
             <span>{total.toLocaleString()}</span>
