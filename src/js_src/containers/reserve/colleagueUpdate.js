@@ -89,6 +89,7 @@ class ColleagueUpdate extends Component {
 
   renderForm() {
     if (this.state.isPending) return <Loader />;
+    if (!this.state.selectorValue && !this.state.isNewColleague) return null;
     let reserveSchema = t.struct({
       first_name: t.maybe(t.String),
       middle_initial: t.maybe(t.String),
@@ -111,7 +112,7 @@ class ColleagueUpdate extends Component {
       country: t.maybe(t.enums.of(COUNTRIES)),// will be pull down
       zip_code: t.maybe(t.String),
       // TODO URLs
-      research_keywords: t.maybe(t.String),// will be pull down
+      research_keywords: t.maybe(t.list(t.String)),// will be pull down
       research_interests: t.maybe(t.String),
       associated_genes: t.maybe(t.String),
 
@@ -158,9 +159,9 @@ class ColleagueUpdate extends Component {
             <div className='column small-3'>{locals.inputs.profession}</div>
             <div className='column small-3'>{locals.inputs.pi}</div>
           </div>
-          {locals.inputs.research_keywords}
           {locals.inputs.research_interests}
           {locals.inputs.associated_genes}
+          {locals.inputs.research_keywords}
         </div>
       );
     };
@@ -188,6 +189,13 @@ class ColleagueUpdate extends Component {
         address_2: {
           label: 'Address line 2'
         },
+        associated_genes: {
+          label: 'Associated genes (optional) (comma-separated)'
+        },
+        research_keywords: {
+          disableOrder: true,
+          disableRemove: true
+        }
       }
     };
     let _onSuccess = (data) => {

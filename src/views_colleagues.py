@@ -102,7 +102,7 @@ def colleague_by_format_name(request):
     colleague = DBSession.query(Colleague).filter(Colleague.format_name == format_name).one_or_none()
     if colleague is not None:
         associated_data = models_helper.get_colleague_associated_data()
-        result = models_helper.get_colleague_data(colleague, associated_data)
+        result = colleague.to_dict()
         return result
     else:
         return HTTPNotFound(body=json.dumps({'error': 'Colleague not found'}))
