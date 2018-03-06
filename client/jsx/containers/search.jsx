@@ -284,28 +284,11 @@ const Search = React.createClass({
 
   _getdownloadStatus(str) {
     this.setState({selectedRadioBtn: str});
-    let qArray = location.search
-      .split('&')
-      .map((item, index) => {
-        if (item.includes('q')) {
-          return item;
-        }
-      })
-      .filter(item => {
-        if (item) {
-          return item;
-        }
-      });
-    let modSearchUrl = SEARCH_URL;
-    if (qArray.length > 0) {
-      modSearchUrl = qArray[0].includes('q')
-        ? modSearchUrl + qArray[0]
-        : modSearchUrl;
+    let tempQParams = this.props.queryParams;
+    if(tempQParams.hasOwnProperty('status')){
+      tempQParams["status"] = S(str).capitalize().s;
     }
-    this.props.history.pushState(null, modSearchUrl, {
-      category: 'download',
-      status: S(str).capitalize().s
-    });
+    this.props.history.pushState(null, SEARCH_URL, tempQParams);
   },
 
   _isWrappedResults() {
