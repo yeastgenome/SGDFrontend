@@ -39,11 +39,6 @@ models_helper = ModelsHelper()
 #         return HTTPNotFound(body=json.dumps({'error': 'Colleague not found'}))
 #     return {'sucess': True}
 
-@view_config(route_name='colleague_triage_all', renderer='json', request_method='GET')
-def colleague_triage_get_all(request):
-    colleague_triage = DBSession.query(Colleaguetriage).all()
-    return [triage.json for triage in colleague_triage]
-
 # @view_config(route_name='colleague_triage_accept', renderer='json', request_method='POST')
 # def colleague_triage_accept(request):
 #     triage_id = request.matchdict['id']

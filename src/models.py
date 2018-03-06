@@ -1078,7 +1078,11 @@ class Colleaguetriage(Base):
     created_by = Column(String(12), nullable=False)
 
     def to_dict(self):
-        return json.loads(self.json)
+        data = json.loads(self.json)
+        data['id'] = self.curation_id
+        data['type'] = self.triage_type
+        data['submission_date'] = self.date_created.strftime("%Y-%m-%d")
+        return data
 
 
 class Contig(Base):
