@@ -483,7 +483,7 @@ def new_colleague(request):
             return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
     try:
         full_name = params['first_name'] + ' ' + params['last_name']
-        format_name = full_name + str(randint(1,100))# add a random number to be sure it's unique
+        format_name = params['first_name'] + '_' + params['last_name'] + str(randint(1,100))# add a random number to be sure it's unique
         created_by = get_username_from_db_uri()
         new_colleague = Colleague(
             format_name = format_name,
