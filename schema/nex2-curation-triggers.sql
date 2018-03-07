@@ -150,8 +150,8 @@ BEGIN
         PERFORM nex.insertupdatelog('COLLEAGUETRIAGE'::text, 'JSON'::text, OLD.curation_id, OLD.json, NEW.json, USER);
     END IF;
 
-    IF (((OLD.colleague_comment IS NULL) AND (NEW.colleague_comment IS NOT NULL)) OR ((OLD.colleague_comment IS NOT NULL) AND (NEW.colleague_comment IS NULL)) OR (OLD.colleague_comment != NEW.colleague_comment)) THEN
-        PERFORM nex.insertupdatelog('COLLEAGUETRIAGE'::text, 'COLLEAGUE_COMMENT'::text, OLD.curation_id, OLD.colleague_comment, NEW.colleague_comment, USER);
+    IF (((OLD.curator_comment IS NULL) AND (NEW.curator_comment IS NOT NULL)) OR ((OLD.curator_comment IS NOT NULL) AND (NEW.curator_comment IS NULL)) OR (OLD.curator_comment != NEW.curator_comment)) THEN
+        PERFORM nex.insertupdatelog('COLLEAGUETRIAGE'::text, 'CURATOR_COMMENT'::text, OLD.curation_id, OLD.curator_comment, NEW.curator_comment, USER);
     END IF;
 
     RETURN NEW;
@@ -160,7 +160,7 @@ BEGIN
 
     v_row := OLD.curation_id || '[:]' || OLD.triage_type || '[:]' ||
              coalesce(OLD.colleague_id,0) || '[:]' || OLD.json || '[:]' ||
-	         coalesce(OLD.colleague_comment,'') || '[:]' ||
+	         coalesce(OLD.curator_comment,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
              PERFORM nex.insertdeletelog('COLLEAGUETRIAGE'::text, OLD.curation_id, v_row, USER);
