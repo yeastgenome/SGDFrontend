@@ -1079,6 +1079,8 @@ class Colleaguetriage(Base):
 
     def to_dict(self):
         data = json.loads(self.json)
+        if data is None:
+            data = {}
         data['id'] = self.curation_id
         data['type'] = self.triage_type
         data['submission_date'] = self.date_created.strftime("%Y-%m-%d")
