@@ -12,7 +12,7 @@ import Loader from '../../components/loader';
 // const DATA_BASE_URL = '/reservations';
 const AUTOCOMPLETE_BASE = '/autocomplete_results?category=colleague&q=';
 const COLLEAGUE_BASE = '/colleagues';
-import { COUNTRIES, STATES } from './colleagueConstants';
+import { COUNTRIES, KEYWORDS, STATES } from './colleagueConstants';
 
 class ColleagueUpdate extends Component {
   constructor(props) {
@@ -109,14 +109,13 @@ class ColleagueUpdate extends Component {
       address_2: t.maybe(t.String),
       city: t.maybe(t.String),
       state: t.maybe(t.enums.of(STATES)),
-      country: t.maybe(t.enums.of(COUNTRIES)),// will be pull down
+      country: t.maybe(t.enums.of(COUNTRIES)),
       zip_code: t.maybe(t.String),
-      // TODO URLs
-      research_keywords: t.maybe(t.list(t.String)),// will be pull down
+      lab_website: t.maybe(t.String),
+      research_summary_website: t.maybe(t.String),
+      research_keywords: t.maybe(t.list(t.enums.of(KEYWORDS))),
       research_interests: t.maybe(t.String),
-      associated_genes: t.maybe(t.String),
-
-
+      associated_genes: t.maybe(t.String)
     });
     let formLayout = locals => {
       return (
@@ -157,6 +156,10 @@ class ColleagueUpdate extends Component {
             <div className='column small-4'>{locals.inputs.country}</div>
           </div>
           <div className='row'>
+            <div className='column small-6'>{locals.inputs.lab_website}</div>
+            <div className='column small-6'>{locals.inputs.research_summary_website}</div>
+          </div>
+          <div className='row'>
             <div className='column small-3'>{locals.inputs.job_title}</div>
             <div className='column small-3'>{locals.inputs.institution}</div>
             <div className='column small-3'>{locals.inputs.profession}</div>
@@ -164,7 +167,11 @@ class ColleagueUpdate extends Component {
           </div>
           {locals.inputs.research_interests}
           {locals.inputs.associated_genes}
-          {locals.inputs.research_keywords}
+          <div className='row'>
+            <div className='column small-4'>
+              {locals.inputs.research_keywords}
+            </div>
+          </div>
         </div>
       );
     };
