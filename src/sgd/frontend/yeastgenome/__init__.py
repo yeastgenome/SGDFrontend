@@ -119,7 +119,13 @@ class YeastgenomeFrontend(FrontendInterface):
         return self.get_obj('domain', domain_repr)
 
     def reserved_name(self, reserved_name_repr):
-        return self.get_obj('reservedname', reserved_name_repr)
+        obj = self.get_obj('reservedname', reserved_name_repr)
+        # Redirect to underlying locus page if the reservedname has a locus
+        if 'reservedname_js' in obj:
+            js_dict = json.loads(obj['reservedname_js'])
+            if js_dict['locus']:
+                return HTTPFound(js_dict['locus']['link'])
+        return obj
 
     def author(self, author_repr):
         return self.get_obj('author', author_repr)
