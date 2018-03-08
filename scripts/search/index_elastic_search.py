@@ -237,7 +237,6 @@ def index_genes():
 
     for gene in all_genes:
         if gene.gene_name:
-            is_quick_flag = not_mapped_genes.has_key(gene.gene_name)
             _name = gene.gene_name
             if gene.systematic_name and gene.gene_name != gene.systematic_name:
                 _name += " / " + gene.systematic_name
@@ -819,7 +818,8 @@ def index_part_2():
 if __name__ == '__main__':
     cleanup()
     setup()
-    t1 = Thread(target=index_part_1)
+    index_genes()
+    '''t1 = Thread(target=index_part_1)
     t2 = Thread(target=index_part_2)
     t1.start()
-    t2.start()
+    t2.start()'''
