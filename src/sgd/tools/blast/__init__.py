@@ -145,7 +145,10 @@ def _get_blast_options(p):
     if wordLength != 'default':
         options = options + " -word_size " + wordLength
     else:
-        options = options + " -word_size 11"
+        if program == 'blastn':
+            options = options + " -word_size 11"
+        else:
+            options = options + " -word_size 3"
 
     # options = options + " -outfmt 0 -html"
 
