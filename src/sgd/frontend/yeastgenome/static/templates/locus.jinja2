@@ -64,7 +64,7 @@
                 <dd>{{ locus.format_name }}</dd>
 
                 <dt>SGD ID</dt>
-                <dd>{{ locus.sgdid }}</dd>
+                <dd>SGD:{{ locus.sgdid }}</dd>
 
                 {% for alias in locus.aliases if alias.category == 'Alias' %}
                     {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
