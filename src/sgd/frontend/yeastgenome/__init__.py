@@ -10,7 +10,6 @@ import os.path
 import sys
 import random
 import re
-import yaml
 from pyramid.config import Configurator
 from pyramid.renderers import JSONP, render
 from pyramid.response import Response
@@ -123,7 +122,7 @@ class YeastgenomeFrontend(FrontendInterface):
         obj = self.get_obj('reservedname', reserved_name_repr)
         # Redirect to underlying locus page if the reservedname has a locus
         if 'reservedname_js' in obj:
-            js_dict = yaml.load(obj['reservedname_js'])
+            js_dict = json.loads(obj['reservedname_js'])
             if js_dict['locus']:
                 return HTTPFound(js_dict['locus']['link'])
         return obj
