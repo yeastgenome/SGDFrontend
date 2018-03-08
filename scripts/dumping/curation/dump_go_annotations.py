@@ -98,7 +98,7 @@ def dump_data():
         extensions = []
         if x.group_id in group_id_to_extensions:
             extensions = group_id_to_extensions[x.group_id]
-        extensions.append(id_to_ro[x.ro_id]+'(' + x.dbxref_id + ')')
+        extensions.append(id_to_ro[x.ro_id].replace(" ", "_")+'(' + x.dbxref_id + ')')
         group_id_to_extensions[x.group_id] = extensions
         pre_annot_id = x.annotation_id
 
