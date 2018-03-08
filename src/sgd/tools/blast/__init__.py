@@ -5,7 +5,7 @@ from urllib2 import Request, urlopen, URLError
 
 def do_blast(request):
 
-    
+
     p = dict(request.params)
 
     if p.get('name'):
@@ -94,11 +94,18 @@ def _get_seq(name, type):
 
     url = config.backend_url + "/locus/" + name + "/sequence_details"
     res = _get_json_from_server(url)
+    
+    rows = []
     if type in ('nuc', 'dna'):
-        data['seq'] = res['genomic_dna'][0]['residues']
+        rows = res['genomic_dna']
     else:
-        data['seq'] = res['protein'][0]['residues']
+        rows = res['protein']
         
+    for row in rows:
+        strain = row['strain']
+        if strain['display_name'] == 'S288C':
+            data['seq'] = row['residues']
+    
     return data
 
 
@@ -145,7 +152,10 @@ def _get_blast_options(p):
     if wordLength != 'default':
         options = options + " -word_size " + wordLength
     else:
-        options = options + " -word_size 11"
+        if program == 'blastn':
+            options = options + " -word_size 11"
+        else:
+            options = options + " -word_size 3"
 
     # options = options + " -outfmt 0 -html"
 
