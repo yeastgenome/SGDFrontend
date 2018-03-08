@@ -191,7 +191,6 @@ CREATE TABLE nex.dnasubsequence (
 	dnasubsequence_id bigint NOT NULL DEFAULT nextval('detail_seq'),
 	annotation_id bigint NOT NULL,
 	dbentity_id bigint NOT NULL,
-    child_dbentity_id bigint,
 	display_name varchar(500) NOT NULL,
 	bud_id integer,
 	so_id bigint NOT NULL,
@@ -213,7 +212,6 @@ CREATE TABLE nex.dnasubsequence (
 COMMENT ON TABLE nex.dnasubsequence IS 'Current DNA sequence details for subfeatures.';
 COMMENT ON COLUMN nex.dnasubsequence.file_id IS 'FK to FILE.FILE_ID.';
 COMMENT ON COLUMN nex.dnasubsequence.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID of the parent feature.';
-COMMENT ON COLUMN nex.dnasubsequence.child_dbentity_id IS 'FK to DBENTITY.DBENTITY_ID of the child feature (S288C subfeatures).';
 COMMENT ON COLUMN nex.dnasubsequence.residues IS 'DNA sequence.';
 COMMENT ON COLUMN nex.dnasubsequence.dnasubsequence_id IS 'Unique identifier (serial number).';
 COMMENT ON COLUMN nex.dnasubsequence.contig_end_index IS 'Stop coordinate based on the contig.';
@@ -235,7 +233,6 @@ ALTER TABLE nex.dnasubsequence ADD CONSTRAINT dnasubsequence_uk UNIQUE (annotati
 CREATE INDEX dnasubsequence_genomerelease_fk_index ON nex.dnasubsequence (genomerelease_id);
 CREATE INDEX dnasubsequence_so_fk_index ON nex.dnasubsequence (so_id);
 CREATE INDEX dnasubsequence_dbentity_fk_index ON nex.dnasubsequence (dbentity_id);
-CREATE INDEX dnasubsequence_child_dbentity_fk_index ON nex.dnasubsequence (child_dbentity_id);
 CREATE INDEX dnasubsequence_file_fk_index ON nex.dnasubsequence (file_id);
 
 DROP TABLE IF EXISTS nex.enzymeannotation CASCADE;
