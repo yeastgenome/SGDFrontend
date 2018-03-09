@@ -695,7 +695,6 @@ var SearchForm = React.createClass({
                       this.setState({
                             uploadedSeq: upload.target.result
                       });
-                      // console.log(this.state.uploadedSeq);
               }.bind(this);
               reader.readAsText(fileHandle);
         }

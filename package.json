@@ -26,7 +26,7 @@
     }
   },
   "dependencies": {
-    "babel-cli": "^6.26.0",
+    "axios": "^0.16.1",
     "body-parser": "^1.13.2",
     "bootstrap": "~3.3.1",
     "browserify-shim": "~3.8.3",
@@ -81,7 +81,6 @@
     "mocha": "^2.3.4",
     "uglify-js": "^3.0.15",
     "uglifyify": "^3.0.4",
-    "webworkify": "^1.0.2",
-    "coffee-script": "~1.6.3"
+    "webworkify": "^1.0.2"
   }
 }

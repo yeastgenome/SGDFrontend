@@ -91,7 +91,7 @@ function set_up_tools(table, go_term_finder_id, go_slim_mapper_id, spell_id, yea
 			var sys_name = data[i][2];
 			bioent_format_names.push(sys_name);
 		}
-		post_to_url("http://spell.yeastgenome.org/search/show_results", {
+		post_to_url("https://spell.yeastgenome.org/search/show_results", {
 			"search_string" : bioent_format_names
 		});
 	};
