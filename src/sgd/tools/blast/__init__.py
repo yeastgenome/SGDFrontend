@@ -173,4 +173,3 @@ def _get_blast_options(p):
     return options;
 
              
-
