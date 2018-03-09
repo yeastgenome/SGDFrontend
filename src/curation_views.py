@@ -87,12 +87,15 @@ def locus_curate_basic(request):
 @view_config(route_name='get_new_reference_info', renderer='json', request_method='POST')
 @authenticate
 def get_new_reference_info(request):
+    MAX_PUBS_ADDED = 20
     try:
         params = request.json_body
         if not params:
             raise ValueError('Please enter at least 1 PMID.')
         pmids = params['pmids']
         int_pmids = convert_space_separated_pmids_to_list(pmids)
+        if len(int_pmids) > MAX_PUBS_ADDED:
+            raise ValueError('Only ' + str(MAX_PUBS_ADDED) + ' may be added at once.')
         # avoid repeat PMIDs
         repeat_pmids = [x for x, count in collections.Counter(int_pmids).items() if count > 1]
         if len(repeat_pmids):
