@@ -12,7 +12,7 @@ import fetchData from '../../lib/fetchData';
 import Loader from '../../components/loader';
 
 const DATA_BASE_URL = '/reservations';
-const DISPLAY_KEYS = ['reservation_status', 'display_name', 'name_description', 'notes', 'systematic_name', 'reservation_date', 'expiration_date', 'submitter_name', 'submitter_email', 'reference'];
+const DISPLAY_KEYS = ['reservation_status', 'display_name', 'name_description', 'systematic_name', 'reservation_date', 'expiration_date', 'submitter_name', 'submitter_email', 'reference', 'notes'];
 
 class GeneNameReservation extends Component {
   constructor(props) {
