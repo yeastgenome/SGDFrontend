@@ -8063,7 +8063,8 @@ class Reservedname(Base):
         if self.reference:
             obj['reference'] = {
                 'display_name': self.reference.display_name,
-                'link': self.reference.obj_url
+                'link': self.reference.obj_url,
+                'pmid': self.reference.pmid
             }
 
         if self.name_description:
@@ -8149,8 +8150,6 @@ class Reservedname(Base):
     def associate_published_reference(self, ref_id, username):
         if not self.locus_id:
             raise ValueError('Reserved name must be associated with a locus before adding published reference.')
-        if self.is_ref_published():
-            raise ValueError('Associated reference is already published.')
         curator_session = None 
         try:
             curator_session = get_curator_session(username)
@@ -8179,10 +8178,11 @@ class Reservedname(Base):
             curator_session.query(LocusnoteReference).filter_by(reference_id=self.reference_id).update({ 'reference_id': ref_id })
             # finally change reference_id
             personal_communication_ref_id = self.reference_id
+            personal_communication_ref = curator_session.query(Referencedbentity).filter(Referencedbentity.dbentity_id == personal_communication_ref_id).one_or_none()
             self.reference_id = ref_id
             transaction.commit()
             # if this is only one reference for personal communication, delete it
-            if locus_ref_count == 1:
+            if locus_ref_count == 1 and personal_communication_ref.publication_status != 'Published':
                 personal_communication_ref = curator_session.query(Referencedbentity).filter(Referencedbentity.dbentity_id == personal_communication_ref_id).one_or_none()
                 personal_communication_ref.delete_with_children(username)           
         except Exception as e:
