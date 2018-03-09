@@ -36,6 +36,37 @@ class GeneNameReservationEdit extends Component {
     this.props.dispatch(setMessage('Publication associated with gene name reservation.'));
   }
 
+  renderPMIDForm() {
+    let data = this.state.data;
+    if (!data) return null;
+    if (data.reservation_status === 'Unprocessed') return null;
+    let pmidSchema = t.struct({
+      pmid: t.String
+    });
+    let pmidOptions = {
+      fields: {
+        pmid: {
+          label: 'PMID'
+        }
+      }
+    };
+    let pmidUpdateUrl = `${DATA_BASE_URL}/${this.props.params.id}/pmid`;
+    let _defaultData = null;
+    if (data.reference.pmid) {
+      _defaultData = { pmid: data.reference.pmid };
+    }
+    return (
+      <div>
+        <p>Add PMID to change personal communication to reference. The personal communication will only be deleted if it is not used on other gene name reservations.</p>
+        <div className='row'>
+          <div className='columns small-12 medium-4'>
+            <FlexiForm defaultData={_defaultData} onSuccess={this.handlePmidSuccess.bind(this)} requestMethod='POST' tFormSchema={pmidSchema} tFormOptions={pmidOptions} updateUrl={pmidUpdateUrl} submitText='Associate PMID' />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   renderForms() {
     let data = this.state.data;
     let reserveSchema = t.struct({
@@ -57,30 +88,16 @@ class GeneNameReservationEdit extends Component {
         }
       }
     };
-    let pmidSchema = t.struct({
-      pmid: t.String
-    });
-    let pmidOptions = {
-      fields: {
-        pmid: {
-          label: 'PMID'
-        }
-      }
-    };
+    
     let reserveUpdateUrl = `${DATA_BASE_URL}/${this.props.params.id}`;
-    let pmidUpdateUrl = `${DATA_BASE_URL}/${this.props.params.id}/pmid`;
+    
     if (data) {
       return (
         <div>
           <h3><CategoryLabel category='reserved_name' hideLabel /> Reserved Gene Name: {data.display_name}</h3>
           <div>
             <FlexiForm defaultData={data} onSuccess={this.handleUpdateSuccess.bind(this)} requestMethod='PUT' tFormSchema={reserveSchema} tFormOptions={reserveOptions} updateUrl={reserveUpdateUrl} />
-            <p>Add PMID to change personal communication to reference. The personal communication will only be deleted if it is not used on other gene name reservations.</p>
-            <div className='row'>
-              <div className='columns small-12 medium-4'>
-                <FlexiForm onSuccess={this.handlePmidSuccess.bind(this)} requestMethod='POST' tFormSchema={pmidSchema} tFormOptions={pmidOptions} updateUrl={pmidUpdateUrl} submitText='Associate PMID' />
-              </div>
-            </div>
+            {this.renderPMIDForm()}
           </div>
         </div>
       );
