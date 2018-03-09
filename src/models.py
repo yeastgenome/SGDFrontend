@@ -8080,6 +8080,7 @@ class Reservedname(Base):
         obj['submitter_name'] = submitter.first_name + ' ' + submitter.last_name
         obj['submitter_email'] = submitter.email
         obj['submitter_phone'] = submitter.work_phone
+        obj['notes'] = self.description
         if obj['locus']:
             obj['systematic_name'] = obj['locus']['systematic_name']
         return obj
@@ -8269,6 +8270,8 @@ class Reservedname(Base):
                 self.display_name = new_info['display_name'].upper().strip()
             if new_info['name_description']:
                 self.name_description = new_info['name_description']
+            if new_info['notes']:
+                self.description = new_info['notes']
             return_val = self.to_curate_dict()
             transaction.commit()
             return return_val
@@ -8357,6 +8360,8 @@ class ReservednameTriage(Base):
                 data['systematic_name'] = res_systematic_name
             if new_info['name_description']:
                 data['description'] = new_info['name_description']
+            if new_info['notes']:
+                data['notes'] = new_info['notes']
             self.json = json.dumps(data)
             return_val = self.to_dict()
             transaction.commit()
@@ -8435,6 +8440,7 @@ class ReservednameTriage(Base):
                 reference_id = personal_communication_ref.dbentity_id,
                 colleague_id = self.colleague_id,
                 name_description = obj['description'],
+                description = obj['notes'],
                 created_by = username
             )
             curator_session.add(new_res)
