@@ -8,6 +8,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from validate_email import validate_email
 from random import randint
 from Bio import Entrez, Medline
+import collections
 import datetime
 import logging
 import os
@@ -92,6 +93,12 @@ def get_new_reference_info(request):
             raise ValueError('Please enter at least 1 PMID.')
         pmids = params['pmids']
         int_pmids = convert_space_separated_pmids_to_list(pmids)
+        repeat_pmids = [x for x, count in collections.Counter(int_pmids).items() if count > 1]
+        if len(repeat_pmids):
+            str_pmids = [str(x) for x in repeat_pmids]
+            str_pmids = ', '.join(str_pmids)
+            msg = 'A PMID was repeated: ' + str_pmids
+            raise ValueError(msg)
         confirmation_list = []
         for x in int_pmids:
             record = Medline.read(Entrez.efetch(db='pubmed', id=str(x), rettype='medline'))
