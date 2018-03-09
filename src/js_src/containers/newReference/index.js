@@ -114,6 +114,7 @@ class NewReference extends Component {
       <div>
         <h1>Add New References</h1>
         <Link to='/'>Cancel</Link>
+        <p>Only 10 references can be added at once.</p>
         <div className='row'>
           <div className='columns medium-3'>      
             <FlexiForm onSuccess={this.handlePopulateConfirmation.bind(this)} requestMethod='POST' tFormSchema={refSchema} tFormOptions={refOptions} submitText='Confirm reference information' updateUrl={GET_CONFIRM_URL} />
