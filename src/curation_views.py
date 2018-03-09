@@ -87,7 +87,7 @@ def locus_curate_basic(request):
 @view_config(route_name='get_new_reference_info', renderer='json', request_method='POST')
 @authenticate
 def get_new_reference_info(request):
-    MAX_PUBS_ADDED = 20
+    MAX_PUBS_ADDED = 10
     try:
         params = request.json_body
         if not params:
