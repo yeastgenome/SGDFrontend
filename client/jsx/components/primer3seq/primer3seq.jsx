@@ -8,13 +8,13 @@ import _ from 'underscore';
 import t from 'tcomb-form';
 const Form = t.form.Form;
 
-const DataTable = require('../widgets/data_table.jsx');
+
 import apiRequest from '../../lib/api_request.jsx';
 import { StringField, CheckField, TextField, SelectField, MultiSelectField, RadioSelector} from '../../components/widgets/form_helpers.jsx';
 
 const PRIMER3URL = '/backend/primer3';
 
-const Primer3 = React.createClass({
+const Primer3Seq = React.createClass({
 
   getInitialState () {
     return {
@@ -24,9 +24,6 @@ const Primer3 = React.createClass({
         distance_from_stop_codon: '35',
         length_dna_primers: '35',
         distance_between_primers: '250',
-        optimum_tm: '56',
-        minimum_tm: '52',
-        maximum_tm: '60',
         optimum_primer_length: '20',
         minimum_length: '18',
         maximum_length: '21',
@@ -35,9 +32,6 @@ const Primer3 = React.createClass({
         maximum_gc: '60',
         self_anneal: '24',
         self_end_anneal: '12',
-        pair_anneal: '24',
-        pair_end_anneal: '12',
-        method: 'SEQUENCING',
         num_strands: 'ONE',
         which_strand: 'CODING',
         end_point: 'NO'
@@ -75,8 +69,8 @@ const Primer3 = React.createClass({
 
   renderResults(){
     let data = this.state.result;
-    //console.log(data);
-    const DISPLAY_KEYS = Object.keys(data);
+    console.log(data);
+    const DISPLAY_KEYS = Object.keys(data);//['PRIMER_RIGHT_2_SEQUENCE', 'PRIMER_RIGHT_2_END_STABILITY'];
     let nodes = DISPLAY_KEYS.map( (d,i) => {
         let val = data[d];
         console.log(d, val);
@@ -88,14 +82,9 @@ const Primer3 = React.createClass({
 
   renderExampleForm() {
 
-    const Method = t.enums.of(['PCR', 'SEQUENCING'], 'Method');
     const Strand = t.enums.of(['ONE', 'BOTH'], 'Strand');
     const Coding = t.enums.of(['CODING', 'NONCODIG'], 'Coding');
     const Endpoint = t.enums.of(['YES', 'NO'], 'Endpoint');
-
-    Method.getTcombFormFactory = (options) => {
-        return t.form.Radio;
-    };
 
     Strand.getTcombFormFactory = (options) => {
         return t.form.Radio;
@@ -109,37 +98,14 @@ const Primer3 = React.createClass({
         return t.form.Radio;
     };
 
-    const PcrFormSchema = t.struct({
-       gene_name: t.maybe(t.String),
-       sequence: t.maybe(t.String),
-       distance_from_start_codon: t.Number,
-       distance_from_stop_codon: t.Number,
-       end_point: Endpoint,
-       length_dna_primers: t.Number,
-       optimum_tm: t.Number,
-       minimum_tm: t.Number,
-       maximum_tm: t.Number,
-       optimum_primer_length: t.Number,
-       minimum_length: t.Number,
-       maximum_length: t.Number,
-       optimum_gc: t.Number,
-       minimum_gc: t.Number,
-       maximum_gc: t.Number,
-       self_anneal: t.Number,
-       self_end_anneal: t.Number,
-       pair_anneal: t.Number,
-       pair_end_anneal: t.Number
-    });
-
-
     const SeqFormSchema = t.struct({
        gene_name: t.String,
        sequence: t.maybe(t.String),
        distance_from_start_codon: t.String,
        distance_from_stop_codon: t.String,
        length_dna_primers: t.String,
-       method: Method,
        which_strand: Coding,
+       end_point: Endpoint,
        num_strands: Strand,
        distance_between_primers: t.Number,
        optimum_primer_length: t.Number,
@@ -184,7 +150,7 @@ const Primer3 = React.createClass({
 
     return (
       <form onSubmit={this.handleSubmit}>
-        <t.form.Form ref="primerForm" type={PcrFormSchema}
+        <t.form.Form ref="primerForm" type={SeqFormSchema}
         value={this.state.value} onChange={this.onChange} options={options}/>
         <div className="form-group">
           <button type="submit" className="button primary">Save</button>
@@ -232,4 +198,4 @@ function mapStateToProps(_state) {
   };
 }
 
-export default connect(mapStateToProps)(Radium(Primer3));
+export default connect(mapStateToProps)(Radium(Primer3Seq));

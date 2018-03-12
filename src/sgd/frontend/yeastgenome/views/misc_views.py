@@ -184,6 +184,10 @@ def variant_viewer(request):
 @view_config(route_name='primer3')
 def primer3(request):
     return render_to_response(TEMPLATE_ROOT + 'primer3.jinja2', {}, request=request)
+
+@view_config(route_name='primer3seq')
+def primer3seq(request):
+    return render_to_response(TEMPLATE_ROOT + 'primer3seq.jinja2', {}, request=request)
     
 @view_config(route_name='home') 
 def home(request):

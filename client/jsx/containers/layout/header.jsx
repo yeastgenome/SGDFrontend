@@ -81,7 +81,8 @@ const Header = React.createClass({
                 <li><a className="disabled-header-a" href="/cgi-bin/GO/goTermFinder.pl">GO Term Finder</a></li>
                 <li><a className="disabled-header-a" href="/cgi-bin/GO/goSlimMapper.pl">GO Slim Mapper</a></li>
                 <li><a className="disabled-header-a" href="/cgi-bin/PATMATCH/nph-patmatch">Pattern Matching</a></li>
-                <li><a className="disabled-header-a" href="/primer3">Design Primers</a></li>
+                <li><a className="disabled-header-a" href="/primer3">Design PCR Primers</a></li>
+                <li><a className="disabled-header-a" href="/primer3">Design Sequencing Primers</a></li>
                 <li><a className="disabled-header-a" href="/cgi-bin/PATMATCH/RestrictionMapper">Restriction Mapper</a></li>
               </ul>
             </li>
