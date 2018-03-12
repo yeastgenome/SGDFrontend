@@ -322,6 +322,8 @@ def index_genes():
         keys = []
         _keys = [gene.gene_name, gene.systematic_name, gene.sgdid
                 ] + alias_quick_direct_keys
+        # Add SGD:<gene SGDID> to list of keywords for quick search
+        _keys.append('SGD:{}'.format(gene.sgdid))
         # If this gene has a reservedname associated with it, add that reservedname to
         # the list of keywords used for the quick search of this gene
         reservedname = DBSession.query(Reservedname).filter_by(locus_id=gene.dbentity_id).one_or_none()

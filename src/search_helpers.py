@@ -272,10 +272,9 @@ def format_search_results(search_results, json_response_fields, query):
             if query.replace('"','').lower().strip() in raw_obj.get('keys'):
                 if obj["category"] == "locus":
                     if obj["is_quick_flag"]:
-                        obj['is_quick'] = False
-                    else:
                         obj['is_quick'] = True
-
+                    else:
+                        obj['is_quick'] = False
                 elif obj["category"] == "resource":
                     obj['is_quick'] = False
                 else:
