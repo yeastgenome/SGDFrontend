@@ -237,7 +237,6 @@ def index_genes():
 
     for gene in all_genes:
         if gene.gene_name:
-            is_quick_flag = not_mapped_genes.has_key(gene.gene_name)
             _name = gene.gene_name
             if gene.systematic_name and gene.gene_name != gene.systematic_name:
                 _name += " / " + gene.systematic_name
