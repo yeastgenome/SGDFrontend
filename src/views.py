@@ -19,12 +19,14 @@ import json
 from .models import DBSession, ESearch, Colleague, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, Dataset, DatasetKeyword, Contig, Proteindomain, Ec, Dnasequenceannotation, Straindbentity
 from .helpers import extract_id_request, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id
 from .search_helpers import build_autocomplete_search_body_request, format_autocomplete_results, build_search_query, build_es_search_body_request, build_es_aggregation_body_request, format_search_results, format_aggregation_results, build_sequence_objects_search_query
+from .models_helpers import ModelsHelper
 
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.ERROR)
 log = logging.getLogger()
 
 ES_INDEX_NAME = os.environ.get('ES_INDEX_NAME', 'searchable_items_aws')
+models_helper = ModelsHelper()
 
 @view_config(route_name='home', request_method='GET', renderer='home.jinja2')
 def home_view(request):
@@ -63,19 +65,78 @@ def search(request):
 
     # subcategory filters. Map: (request GET param name from frontend, ElasticSearch field name)
     category_filters = {
-        "locus": [('feature type', 'feature_type'), ('molecular function', 'molecular_function'), ('phenotype', 'phenotypes'), ('cellular component', 'cellular_component'), ('biological process', 'biological_process'), ('status', 'status')],
-        "phenotype": [("observable", "observable"), ("qualifier", "qualifier"), ("references", "references"), ("phenotype_locus", "phenotype_loci"), ("chemical", "chemical"), ("mutant_type", "mutant_type")],
+        "locus": [('feature type', 'feature_type'), ('molecular function',
+                                                     'molecular_function'),
+                  ('phenotype', 'phenotypes'), ('cellular component',
+                                                'cellular_component'),
+                  ('biological process', 'biological_process'), ('status',
+                                                                 'status')],
+        "phenotype": [("observable", "observable"), ("qualifier", "qualifier"),
+                      ("references", "references"), ("phenotype_locus",
+                                                     "phenotype_loci"),
+                      ("chemical", "chemical"), ("mutant_type", "mutant_type")],
         "biological_process": [("go_locus", "go_loci")],
         "cellular_component": [("go_locus", "go_loci")],
         "molecular_function": [("go_locus", "go_loci")],
-        "reference": [("author", "author"), ("journal", "journal"), ("year", "year"), ("reference_locus", "reference_loci")],
+        "reference": [("author", "author"), ("journal", "journal"),
+                      ("year", "year"), ("reference_locus", "reference_loci")],
         "contig": [("strain", "strain")],
-        "colleague": [("last_name", "last_name"), ("position", "position"), ("institution", "institution"), ("country", "country"), ("keywords", "keywords"), ("colleague_loci", "colleague_loci")]
+        "colleague": [("last_name", "last_name"), ("position", "position"),
+                      ("institution", "institution"), ("country", "country"),
+                      ("keywords", "keywords"), ("colleague_loci",
+                                                 "colleague_loci")],
+        "download": [("topic", "topic"), ("data", "data"), ("keyword", "keyword"), ("format", "format"),
+                     ("status", "status"), ("year", "year")]
     }
 
-    search_fields = ["name", "description", "first_name", "last_name", "institution", "colleague_loci", "feature_type", "name_description", "summary", "phenotypes", "cellular_component", "biological_process", "molecular_function", "ec_number", "protein", "tc_number", "secondary_sgdid", "sequence_history", "gene_history", "observable", "qualifier", "references", "phenotype_loci", "chemical", "mutant_type", "synonyms", "go_id", "go_loci", "author", "journal", "reference_loci","aliases", "status"] # year not inserted, have to change to str in mapping
+    search_fields = [
+        "name",
+        "description",
+        "first_name",
+        "last_name",
+        "institution",
+        "colleague_loci",
+        "feature_type",
+        "name_description",
+        "summary",
+        "phenotypes",
+        "cellular_component",
+        "biological_process",
+        "molecular_function",
+        "ec_number",
+        "protein",
+        "tc_number",
+        "secondary_sgdid",
+        "sequence_history",
+        "gene_history",
+        "observable",
+        "qualifier",
+        "references",
+        "phenotype_loci",
+        "chemical",
+        "mutant_type",
+        "synonyms",
+        "go_id",
+        "go_loci",
+        "author",
+        "journal",
+        "reference_loci",
+        "aliases",
+        "data",
+        "topic",
+        "format",
+        "status",
+        "keyword",
+        "file_size",
+        "year",
+        "readme_url",
+    ]  # year not inserted, have to change to str in mapping
 
-    json_response_fields = ['name', 'href', 'description', 'category', 'bioentity_id', 'phenotype_loci', 'go_loci', 'reference_loci','aliases','year']
+    json_response_fields = [
+        'name', 'href', 'description', 'category', 'bioentity_id',
+        'phenotype_loci', 'go_loci', 'reference_loci', 'aliases', 'year',
+        'keyword', 'format', 'status', 'file_size', 'readme_url', 'topic', 'data', 'is_quick_flag'
+    ]
 
     args = {}
 
@@ -105,7 +166,7 @@ def search(request):
             'results': [],
             'aggregations': []
         }
-    
+
     aggregation_body = build_es_aggregation_body_request(
         es_query,
         category,
@@ -117,7 +178,7 @@ def search(request):
         body=aggregation_body,
         preference='p_'+query
     )
-   
+
     return {
         'total': search_results['hits']['total'],
         'results': format_search_results(search_results, json_response_fields, query),
@@ -905,3 +966,11 @@ def healthcheck(request):
             DBSession.remove()
             attempts += 1
     return ldict
+
+
+# get all paths
+@view_config(
+    route_name='get_downloads_menu', renderer='json', request_method='GET')
+def get_downloads_path(request):
+    result = models_helper.get_downloads_menu()
+    return result

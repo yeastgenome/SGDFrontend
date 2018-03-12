@@ -2,12 +2,12 @@ from sqlalchemy.engine import create_engine
 from sqlalchemy.ext.declarative.api import declarative_base
 from sqlalchemy.orm.session import sessionmaker
 from sqlalchemy import not_
-# from go.gpad_config import curator_id, computational_created_by,  \
-#     go_db_code_mapping, go_ref_mapping, current_go_qualifier, email_receiver, \
-#     email_subject
-
+from scripts.loading.database_session import get_session
+from scripts.loading.go.gpad_config import curator_id, computational_created_by,  \
+    go_db_code_mapping, go_ref_mapping, current_go_qualifier, email_receiver, \
+    email_subject
+import gzip
 import sys
-sys.path.insert(0, '../../src/')
 
 __author__ = 'sweng66'
 
@@ -307,8 +307,8 @@ def get_strain_taxid_mapping():
 
 def read_gpad_file(filename, nex_session, uniprot_to_date_assigned, uniprot_to_sgdid_list, get_extension=None, get_support=None, new_pmids=None, dbentity_with_new_pmid=None, dbentity_with_uniprot=None, bad_ref=None):
 
-    from models import Referencedbentity, Locusdbentity, Go, EcoAlias
-    import config
+    from src.models import Referencedbentity, Locusdbentity, Go, EcoAlias
+    # import src.scripts.loading.config
 
     goid_to_go_id = dict([(x.goid, x.go_id) for x in nex_session.query(Go).all()])
     evidence_to_eco_id = dict([(x.display_name, x.eco_id) for x in nex_session.query(EcoAlias).all()])
@@ -321,7 +321,11 @@ def read_gpad_file(filename, nex_session, uniprot_to_date_assigned, uniprot_to_s
 
     sgdid_to_locus_id = dict([(x.sgdid, x.dbentity_id) for x in nex_session.query(Locusdbentity).all()])
 
-    f = open(filename)
+    f = None
+    if filename.endswith('.gz'):
+        f = gzip.open(filename)
+    else:
+        f = open(filename)
     
     read_line = {}
     data = []
@@ -390,7 +394,7 @@ def read_gpad_file(filename, nex_session, uniprot_to_date_assigned, uniprot_to_s
         dbentity_ids = []
         sgdid_list = uniprot_to_sgdid_list.get(uniprotID)
         if sgdid_list is None:
-            print "UniProt ID ", uniprotID, " is not in GPI file."
+            # print "UniProt ID ", uniprotID, " is not in GPI file."
             continue
 
         for sgdid in sgdid_list:
@@ -398,7 +402,7 @@ def read_gpad_file(filename, nex_session, uniprot_to_date_assigned, uniprot_to_s
                 continue
             locus_id = sgdid_to_locus_id.get(sgdid)
             if locus_id is None:
-                print "The sgdid = ", sgdid, " is not in LOCUSDBENTITY table."
+                # print "The sgdid = ", sgdid, " is not in LOCUSDBENTITY table."
                 continue    
             dbentity_ids.append(locus_id)
             if dbentity_with_uniprot is not None:
@@ -415,7 +419,7 @@ def read_gpad_file(filename, nex_session, uniprot_to_date_assigned, uniprot_to_s
             if ref_sgdid is None:
                 if bad_ref is not None and field[4] not in bad_ref:
                     bad_ref.append(field[4])
-                print "UNKNOWN REF: ", field[4], ", line=", line
+                # print "UNKNOWN REF: ", field[4], ", line=", line
                 continue
             reference_id = sgdid_to_reference_id.get(ref_sgdid)
         if reference_id is None:
@@ -474,7 +478,11 @@ def annot_prop_to_dict(annot_prop):
         
 def read_gpi_file(filename):
 
-    f = open(filename)
+    f = None
+    if filename.endswith('.gz'):
+        f = gzip.open(filename)
+    else:
+        f = open(filename)
 
     uniprot_to_date_assigned = {}
     uniprot_to_sgdid_list = {}
@@ -556,6 +564,9 @@ def get_go_extension_link(dbxref_id):
     if dbxref_id.startswith('PANTHER:'):
         id = dbxref_id.replace('PANTHER:', '')
         return "http://pantree.org/node/annotationNode.jsp?id=" + id
+    if dbxref_id.startswith('araport11:'):
+        id = dbxref_id.replace('araport11:', '')
+        return "https://www.araport.org/search/thalemine/" + id
     return "Unknown"
 
 def children_from_obo(filename, ancestor):
@@ -750,7 +761,7 @@ number_to_roman = {'01': 'I', '1': 'I',
                    }
 
 def get_word_to_dbentity_id(word, nex_session):
-    from models import Locusdbentity
+    from src.models import Locusdbentity
 
     global word_to_dbentity_id
     if word_to_dbentity_id is None:
@@ -765,7 +776,7 @@ def get_word_to_dbentity_id(word, nex_session):
     return None if word not in word_to_dbentity_id else word_to_dbentity_id[word]
 
 def get_dbentity_by_name(dbentity_name, to_ignore, nex_session):
-    from models import Locusdbentity
+    from src.models import Locusdbentity
     if dbentity_name not in to_ignore:
         try:
             int(dbentity_name)
@@ -847,13 +858,11 @@ def link_gene_names(text, to_ignore, nex_session):
 relation_to_ro_id = None
 
 def get_relation_to_ro_id(relation_type, nex_session=None):
-    from models import Ro
+    from src.models import Ro
     global relation_to_ro_id
     if relation_to_ro_id is None:
         if nex_session is None:
-            import config
-            nex_session_maker = prepare_schema_connection(config.NEX_DBTYPE, config.NEX_HOST, config.NEX_DBNAME, config.NEX_SCHEMA, config.NEX_DBUSER, config.NEX_DBPASS)
-            nex_session = nex_session_maker()
+            nex_session = get_session()
         relation_to_ro_id = {}
         for relation in nex_session.query(Ro).all():
             relation_to_ro_id[relation.display_name] = relation.ro_id
