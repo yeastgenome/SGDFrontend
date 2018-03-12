@@ -1,4 +1,4 @@
-from src.models import DBSession, Base, Colleague, ColleagueLocus, Dbentity, Locusdbentity, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi
+from src.models import DBSession, Base, Colleague, ColleagueLocus, Dbentity, Locusdbentity, Filedbentity, FileKeyword, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi
 from sqlalchemy import create_engine, and_
 from elasticsearch import Elasticsearch
 from mapping import mapping
@@ -43,7 +43,7 @@ def index_toolbar_links():
         ("Gene List", "https://yeastmine.yeastgenome.org/yeastmine/bag.do",
          []), ("Yeastmine", "https://yeastmine.yeastgenome.org",
                'yeastmine'), ("Submit Data", "/cgi-bin/submitData.pl",
-                              []), ("SPELL", "http://spell.yeastgenome.org",
+                              []), ("SPELL", "https://spell.yeastgenome.org",
                                     'spell'), ("BLAST", "/blast-sgd", 'blast'),
         ("Fungal BLAST", "/blast-fungal",
          'blast'), ("Pattern Matching", "/cgi-bin/PATMATCH/nph-patmatch",
@@ -71,7 +71,7 @@ def index_toolbar_links():
                                       "/cgi-bin/GO/goSlimMapper.pl", 'go'),
         ("GO Slim Mapping File",
          "https://downloads.yeastgenome.org/curation/literature/go_slim_mapping.tab",
-         'go'), ("Expression", "http://spell.yeastgenome.org/#",
+         'go'), ("Expression", "https://spell.yeastgenome.org/#",
                  []), ("Biochemical Pathways",
                        "http://pathway.yeastgenome.org/",
                        []), ("Browse All Phenotypes", "/ontology/phenotype/ypo",
@@ -232,6 +232,9 @@ def index_genes():
         ["Uniform", "Non-uniform", "Retired name", "UniProtKB ID"])
 
     ###################################
+    not_mapped_genes = IndexESHelper.get_not_mapped_genes()
+    is_quick_flag = True
+
     for gene in all_genes:
         if gene.gene_name:
             _name = gene.gene_name
@@ -318,6 +321,13 @@ def index_genes():
         keys = []
         _keys = [gene.gene_name, gene.systematic_name, gene.sgdid
                 ] + alias_quick_direct_keys
+        # Add SGD:<gene SGDID> to list of keywords for quick search
+        _keys.append('SGD:{}'.format(gene.sgdid))
+        # If this gene has a reservedname associated with it, add that reservedname to
+        # the list of keywords used for the quick search of this gene
+        reservedname = DBSession.query(Reservedname).filter_by(locus_id=gene.dbentity_id).one_or_none()
+        if reservedname:
+            _keys.append(reservedname.display_name)
         for k in _keys:
             if k:
                 keys.append(k.lower())
@@ -371,7 +381,8 @@ def index_genes():
             'bioentity_id':
                 gene.dbentity_id,
             'keys':
-                list(keys)
+                list(keys),
+            'is_quick_flag': str(is_quick_flag)
         }
 
         bulk_data.append({
@@ -486,7 +497,8 @@ def index_strains():
 
 
 def index_reserved_names():
-    reserved_names = DBSession.query(Reservedname).all()
+    # only index reservednames that do not have a locus associated with them
+    reserved_names = DBSession.query(Reservedname).filter_by(locus_id=None).all()
 
     print("Indexing " + str(len(reserved_names)) + " reserved names")
     for reserved_name in reserved_names:
@@ -691,10 +703,11 @@ def setup():
         put_mapping()
 
 
+
 def index_not_mapped_genes():
     url = "https://downloads.yeastgenome.org/curation/literature/genetic_loci.tab"
     bulk_data = []
-    with open('./scripts/search/not_mapped_gene_files/not_mapped_3.json',
+    with open('./scripts/search/not_mapped.json',
               "r") as json_data:
         _data = json.load(json_data)
         print('indexing ' + str(len(_data)) + ' not physically mapped genes')
@@ -707,7 +720,8 @@ def index_not_mapped_genes():
                     'category': 'locus',
                     'feature_type': ["Unmapped Genetic Loci"],
                     'aliases': item["ALIASES"].split('|'),
-                    'description': item["DESCRIPTION"]
+                    'description': item["DESCRIPTION"],
+                    'is_quick_flag': "False"
                 }
                 bulk_data.append({
                     'index': {
@@ -724,7 +738,69 @@ def index_not_mapped_genes():
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
+
+def index_downloads():
+    bulk_data = []
+    dbentity_file_obj = IndexESHelper.get_file_dbentity_keyword()
+    files = DBSession.query(Filedbentity).filter(Filedbentity.is_public == True,
+                                                 Filedbentity.s3_url != None,
+                                                 Filedbentity.readme_file_id != None).all()
+    print('indexing ' + str(len(files)) + ' download files')
+    for x in files:
+        keyword = []
+        status = ''
+        temp = dbentity_file_obj.get(x.dbentity_id)
+        if temp:
+            keyword = temp
+        if (x.dbentity_status == "Active" or x.dbentity_status == "Archived"):
+            if x.dbentity_status == "Active":
+                status = "Active"
+            else:
+                status = "Archived"
+        obj = {
+            'name':
+                x.display_name,
+            'href':
+                x.s3_url,
+            'category':
+                'download',
+            'description':
+                x.description,
+            'keyword':
+                keyword,
+            'format':
+                str(x.format.display_name),
+            'status':
+                str(status),
+            'file_size':
+                str(IndexESHelper.convertBytes(x.file_size))
+                if x.file_size is not None else x.file_size,
+            'year':
+                str(x.year),
+            'readme_url':
+                x.readme_file[0].s3_url,
+            'topic': x.topic.display_name,
+            'data': x.data.display_name
+        }
+        bulk_data.append({
+            'index': {
+                '_index': INDEX_NAME,
+                '_type': DOC_TYPE,
+                '_id': x.sgdid
+            }
+        })
+
+        bulk_data.append(obj)
+        if len(bulk_data) == 50:
+            es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
+            bulk_data = []
+
+    if len(bulk_data) > 0:
+        es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
+
+
 def index_part_1():
+    index_downloads()
     index_not_mapped_genes()
     index_genes()
     index_strains()
@@ -739,6 +815,7 @@ def index_part_2():
     index_observables()
     index_go_terms()
     index_references()
+
 
 if __name__ == '__main__':
     cleanup()
