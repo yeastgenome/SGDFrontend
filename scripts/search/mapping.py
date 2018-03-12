@@ -403,6 +403,106 @@ mapping = {
 
                         }
                    },
+                "format": {
+                        "type": "string",
+                        "fields": {
+                            "raw": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            },
+                            "symbol": {
+                                "type": "string",
+                                "analyzer": "symbols"
+                            }
+
+                        }
+                   },
+                "keyword": {
+                        "type": "string",
+                        "fields": {
+                            "raw": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            },
+                            "symbol": {
+                                "type": "string",
+                                "analyzer": "symbols"
+                            }
+
+                        }
+                   },
+                "file_size": {
+                        "type": "string",
+                        "fields": {
+                            "raw": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            },
+                            "symbol": {
+                                "type": "string",
+                                "analyzer": "symbols"
+                            }
+
+                        }
+                   },
+                "readme_url": {
+                        "type": "string",
+                        "fields": {
+                            "raw": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            },
+                            "symbol": {
+                                "type": "string",
+                                "analyzer": "symbols"
+                            }
+
+                        }
+                   },
+                "topic": {
+                        "type": "string",
+                        "fields": {
+                            "raw": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            },
+                            "symbol": {
+                                "type": "string",
+                                "analyzer": "symbols"
+                            }
+
+                        }
+                   },
+                "data": {
+                        "type": "string",
+                        "fields": {
+                            "raw": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            },
+                            "symbol": {
+                                "type": "string",
+                                "analyzer": "symbols"
+                            }
+
+                        }
+                   },
+                "is_quick_flag": {
+                        "type": "string",
+                        "fields": {
+                            "raw": {
+                                "type": "string",
+                                "index": "not_analyzed"
+                            },
+                            "symbol": {
+                                "type": "string",
+                                "analyzer": "symbols"
+                            }
+
+                        }
+                   }
+
+
 
                 }
             }
