@@ -747,10 +747,14 @@ def primer3(request):
     p_keys = params.keys()
     if 'gene_name' in p_keys:
         gene_name = params.get('gene_name')
-        locus = DBSession.query(Locusdbentity).filter(or_(Locusdbentity.gene_name == gene_name.upper(),Locusdbentity.systematic_name == gene_name)).one_or_none()
-        tax_id = DBSession.query(Straindbentity.taxonomy_id).filter(Straindbentity.strain_type =='Reference').one_or_none()
-        dna = DBSession.query(Dnasequenceannotation.residues).filter(and_(Dnasequenceannotation.taxonomy_id == tax_id, Dnasequenceannotation.dbentity_id == locus.dbentity_id, Dnasequenceannotation.dna_type =='GENOMIC')).one_or_none()[0]
-        sequence = str(dna)
+        if gene_name is None:
+            sequence = params.get('sequence')
+            sequence = str(sequence.replace('\r', '').replace('\n', ''))
+        else:
+            locus = DBSession.query(Locusdbentity).filter(or_(Locusdbentity.gene_name == gene_name.upper(),Locusdbentity.systematic_name == gene_name)).one_or_none()
+            tax_id = DBSession.query(Straindbentity.taxonomy_id).filter(Straindbentity.strain_type =='Reference').one_or_none()
+            dna = DBSession.query(Dnasequenceannotation.residues).filter(and_(Dnasequenceannotation.taxonomy_id == tax_id, Dnasequenceannotation.dbentity_id == locus.dbentity_id, Dnasequenceannotation.dna_type =='GENOMIC')).one_or_none()[0]
+            sequence = str(dna)
     if 'maximum_tm' in p_keys:
         maximum_tm = params.get('maximum_tm')
     if 'minimum_tm' in p_keys:
@@ -780,7 +784,9 @@ def primer3(request):
 
     else:
         return HTTPBadRequest('No sequence provided')
-
+    stop = len(sequence) - 100
+    print stop
+    print len(sequence)
     result = designPrimers(
         {
             'SEQUENCE_ID': 'MH1000',
@@ -800,9 +806,69 @@ def primer3(request):
         'PRIMER_MAX_SELF_END': self_end_anneal,
         'PRIMER_PAIR_MAX_COMPL_ANY': pair_anneal,
         'PRIMER_PAIR_MAX_COMPL_END': pair_end_anneal,
-        'PRIMER_PRODUCT_SIZE_RANGE': [[75, 100], [100, 125], [125, 150],
-                                      [150, 175], [175, 200], [200, 225]],
+        'PRIMER_PRODUCT_SIZE_RANGE': [[100, 2500]],
+        'PRIMER_DNA_CONC': 50,
+        'PRIMER_SALT_MONOVALENT': 50
         })
+    # return this error if sequence is not formatted correctly -- IOError: Unrecognized base in input sequence
+    return result
+
+@view_config(route_name='primer3seq', renderer='json', request_method='POST')
+def primer3seq(request):
+    params = request.json_body
+    print(params)
+    p_keys = params.keys()
+    if 'gene_name' in p_keys:
+        gene_name = params.get('gene_name')
+        if gene_name is None:
+            sequence = params.get('sequence')
+            sequence = str(sequence.replace('\r', '').replace('\n', ''))
+        else:
+            locus = DBSession.query(Locusdbentity).filter(or_(Locusdbentity.gene_name == gene_name.upper(),Locusdbentity.systematic_name == gene_name)).one_or_none()
+            tax_id = DBSession.query(Straindbentity.taxonomy_id).filter(Straindbentity.strain_type =='Reference').one_or_none()
+            dna = DBSession.query(Dnasequenceannotation.residues).filter(and_(Dnasequenceannotation.taxonomy_id == tax_id, Dnasequenceannotation.dbentity_id == locus.dbentity_id, Dnasequenceannotation.dna_type =='GENOMIC')).one_or_none()[0]
+            sequence = str(dna)
+    if 'maximum_gc' in p_keys:
+        maximum_gc = params.get('maximum_gc')
+    if 'minimum_gc' in p_keys:
+        minimum_gc = params.get('minimum_gc')
+    if 'optimum_gc' in p_keys:
+        optimum_gc = params.get('optimum_gc')
+    if 'maximum_length' in p_keys:
+        maximum_length = params.get('maximum_length')
+    if 'minimum_length' in p_keys:
+        minimum_length = params.get('minimum_length')
+    if 'optimum_primer_length' in p_keys:
+        optimum_primer_length = params.get('optimum_primer_length')
+    if 'self_end_anneal' in p_keys:
+        self_end_anneal = params.get('self_end_anneal')
+    if 'self_anneal' in p_keys:
+        self_anneal = params.get('self_anneal')
+
+    else:
+        return HTTPBadRequest('No sequence provided')
+    stop = len(sequence) - 100
+    print stop
+    print len(sequence)
+    result = designPrimers(
+        {
+            'SEQUENCE_ID': 'MH1000',
+            'SEQUENCE_TEMPLATE': sequence
+        },
+        {
+        'PRIMER_OPT_SIZE': optimum_primer_length,
+        'PRIMER_MIN_SIZE': minimum_length,
+        'PRIMER_MAX_SIZE': maximum_length,
+        'PRIMER_MIN_GC': minimum_gc,
+        'PRIMER_MAX_GC': maximum_gc,
+        'PRIMER_OPT_GC': optimum_gc,
+        'PRIMER_MAX_SELF_ANY': self_anneal,
+        'PRIMER_MAX_SELF_END': self_end_anneal,
+        'PRIMER_PRODUCT_SIZE_RANGE': [[100, 2500]],
+        'PRIMER_DNA_CONC': 50,
+        'PRIMER_SALT_MONOVALENT': 50
+        })
+    # return this error if sequence is not formatted correctly -- IOError: Unrecognized base in input sequence
     return result
 
 @view_config(route_name='ecnumber_locus_details', renderer='json', request_method='GET')
