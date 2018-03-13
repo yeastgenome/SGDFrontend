@@ -15,6 +15,7 @@ import os
 import traceback
 import transaction
 import json
+import re
 
 from .helpers import allowed_file, extract_id_request, secure_save_file, curator_or_none, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id
 from .curation_helpers import ban_from_cache, process_pmid_list, get_curator_session, get_pusher_client
@@ -440,7 +441,8 @@ def new_gene_name_reservation(request):
     if not check_csrf_token(request, raises=False):
         return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
     data = request.json_body
-    required_fields = ['colleague_id', 'new_gene_name', 'description', 'year']
+    required_fields = ['colleague_id', 'year']
+    # validate fields outside of reservation
     for x in required_fields:
         if not data[x]:
             field_name = x.replace('_', ' ')
@@ -453,20 +455,58 @@ def new_gene_name_reservation(request):
             except ValueError as e:
                 msg = 'Please enter a valid year.'
                 return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
-        # TODO validate new gene name, ORF
-    # input is valid, add entry to reservednametriage
+    res_required_fields = ['new_gene_name', 'description']
+    # validate reservations themselves
+    for res in data['reservations']:
+        for x in res_required_fields:
+            if not res[x]:
+                field_name = x.replace('_', ' ')
+                field_name = field_name.replace('new', 'proposed')
+                msg = field_name + ' is a required field.'
+                return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
+        proposed_name = res['new_gene_name'].strip().upper()
+        is_already_res = DBSession.query(Reservedname).filter(Reservedname.display_name == proposed_name).one_or_none()
+        if is_already_res:
+            msg = 'The proposed name ' + proposed_name + ' is already reserved. Please contact sgd-helpdesk@lists.stanford.edu for more information.'
+            return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
+        is_already_gene = DBSession.query(Locusdbentity).filter(Locusdbentity.gene_name == proposed_name).one_or_none()
+        if is_already_res:
+            msg = 'The proposed name ' + proposed_name + ' is a standard gene name. Please contact sgd-helpdesk@lists.stanford.edu for more information.'
+            return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
+        # make sure is proper format
+        gene_name_pattern = re.compile(r'\b[A-Z]{3}[0-9]+\b')
+        if not gene_name_pattern.match(proposed_name):
+            msg = 'Proposed gene name does not meet standards for gene names. Must be 3 letters followed by a number.'
+            return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
+        # validate ORF as valid systematic name
+        if res['systematic_name']:
+            proposed_systematic_name = res['systematic_name'].strip()
+            systematic_locus = DBSession.query(Locusdbentity).filter(Locusdbentity.systematic_name == proposed_systematic_name).one_or_none()
+            if not systematic_locus:
+                msg = proposed_systematic_name + ' is not a recognized locus systematic name.'
+                return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
+            # also see if there is already a res for that locus
+            is_systematic_res = DBSession.query(Reservedname).filter(Reservedname.locus_id == systematic_locus.dbentity_id).one_or_none()
+            if is_systematic_res:
+                msg = proposed_systematic_name + ' has already been reserved. Please contact sgd-helpdesk@lists.stanford.edu for more information.'
+                return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
+    # input is valid, add entry or entries to reservednametriage
     try:
-        proposed_gene_name = data['new_gene_name'].upper()
         colleague_id = data['colleague_id']
         created_by = get_username_from_db_uri()
-        data_json = json.dumps(data)
-        new_res = ReservednameTriage(
-            proposed_gene_name=proposed_gene_name,
-            colleague_id=colleague_id,
-            created_by=created_by,
-            json=data_json
-        )
-        DBSession.add(new_res)
+        for res in data['reservations']:
+            proposed_gene_name = res['new_gene_name'].upper()
+            res_data = data
+            res_data.pop('reservations', None)
+            res_data.update(res)
+            res_json = json.dumps(res_data)
+            new_res = ReservednameTriage(
+                proposed_gene_name=proposed_gene_name,
+                colleague_id=colleague_id,
+                created_by=created_by,
+                json=res_json
+            )
+            DBSession.add(new_res)
         transaction.commit()
         return True
     except Exception as e:

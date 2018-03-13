@@ -116,23 +116,23 @@ class GeneNameReservation extends Component {
           disableRemove: true,
           label: 'Gene name reservations',
           item: {
-            template: resLayout
+            template: resLayout,
+            fields: {
+              new_gene_name: {
+                label: 'Proposed Gene Name *'
+              },
+              description: {
+                label: 'Description of Gene Name Acronym *'
+              },
+              systematic_name: {
+                label: 'ORF Name'
+              },
+            }
           },
           i18n: {
             add: 'Add another gene name reservation',
             optional: '',
             required: ''
-          },
-          fields: {
-            new_gene_name: {
-              label: 'Proposed Gene Name *'
-            },
-            description: {
-              label: 'Description of Gene Name Acronym *'
-            },
-            systematic_name: {
-              label: 'ORF Name'
-            },
           }
         },
         authors: {
