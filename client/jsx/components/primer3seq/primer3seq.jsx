@@ -12,7 +12,7 @@ const Form = t.form.Form;
 import apiRequest from '../../lib/api_request.jsx';
 import { StringField, CheckField, TextField, SelectField, MultiSelectField, RadioSelector} from '../../components/widgets/form_helpers.jsx';
 
-const PRIMER3URL = '/backend/primer3';
+const PRIMER3URL = '/backend/primer3seq';
 
 const Primer3Seq = React.createClass({
 
