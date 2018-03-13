@@ -38,12 +38,15 @@ class GeneNameReservation extends Component {
       last_name: t.maybe(t.String),
       orcid: t.maybe(t.String)
     });
-    let reserveSchema = t.struct({
-      colleague_id: t.maybe(t.Number),
+    let Reservation = t.struct({
       new_gene_name: t.maybe(t.String),
       systematic_name: t.maybe(t.String),
       description: t.maybe(t.String),
       notes: t.maybe(t.String),
+    });
+    let reserveSchema = t.struct({
+      colleague_id: t.maybe(t.Number),
+      reservations: t.list(Reservation),
       publication_title: t.maybe(t.String),
       journal: t.maybe(t.String),
       year: t.maybe(t.String),
@@ -55,6 +58,18 @@ class GeneNameReservation extends Component {
       ]),
       authors: t.maybe(t.list(Author))
     });
+    let resLayout = locals => {
+      return (
+        <div>
+          <div className='row'>
+            <div className='column small-6'>{locals.inputs.new_gene_name}</div>
+            <div className='column small-6'>{locals.inputs.systematic_name}</div>
+          </div>
+          <div>{locals.inputs.description}</div>
+          <div>{locals.inputs.notes}</div>
+        </div>
+      );
+    };
     let authorLayout = locals => {
       return (
         <div className='row'>
@@ -69,14 +84,8 @@ class GeneNameReservation extends Component {
       return (
         <div>
           <p>* indicates required field</p>
-          <p><b>Gene Name Information</b></p>
           {locals.inputs.colleague_id}
-          <div className='row'>
-            <div className='column small-6'>{locals.inputs.new_gene_name}</div>
-            <div className='column small-6'>{locals.inputs.systematic_name}</div>
-          </div>
-          <div>{locals.inputs.description}</div>
-          <div>{locals.inputs.notes}</div>
+          {locals.inputs.reservations}
           <p><b>Publication Information</b></p>
           <div className='row'>
             <div className='column small-6'>{locals.inputs.publication_title}</div>
@@ -96,40 +105,54 @@ class GeneNameReservation extends Component {
     let reserveOptions = {
       template: formLayout,
       fields: {
-        new_gene_name: {
-          label: 'Proposed Gene Name *'
-        },
-        description: {
-          label: 'Description of Gene Name Acronym *'
-        },
-        systematic_name: {
-          label: 'ORF Name'
-        },
         colleague_id: {
           type: 'hidden'
         },
         year: {
           label: 'Year *'
         },
+        reservations: {
+          disableOrder: true,
+          disableRemove: true,
+          label: 'Gene name reservations',
+          item: {
+            template: resLayout
+          },
+          i18n: {
+            add: 'Add another gene name reservation',
+            optional: '',
+            required: ''
+          },
+          fields: {
+            new_gene_name: {
+              label: 'Proposed Gene Name *'
+            },
+            description: {
+              label: 'Description of Gene Name Acronym *'
+            },
+            systematic_name: {
+              label: 'ORF Name'
+            },
+          }
+        },
         authors: {
           disableOrder: true,
           disableRemove: true,
           item: {
             template: authorLayout
-          }
+          },
+          i18n: {
+            add: 'Add another author',
+            optional: '',
+            required: '',
+          },
         }
       }
     };
     let _onSuccess = () => {
       this.setState({ isSuccess: true });
     };
-    let _defaultData = { colleague_id: this.state.colleagueId, status: 'Unpublished', authors: [{ first_name: ''}] };
-    t.form.Form.i18n = {
-      optional: '',
-      required: '',
-      add: 'Add another author',
-      remove: 'Remove this author'
-    };
+    let _defaultData = { colleague_id: this.state.colleagueId, status: 'Unpublished', reservations: [{ new_gene_name: '' }], authors: [{ first_name: ''}] };
     return <FlexiForm defaultData={_defaultData} tFormOptions={reserveOptions} tFormSchema={reserveSchema} onSuccess={_onSuccess} requestMethod='POST' submitText='Send gene name reservation' updateUrl={TARGET_URL} />;
   }
 
