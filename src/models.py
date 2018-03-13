@@ -8211,8 +8211,9 @@ class Reservedname(Base):
             locus.display_name = self.display_name
             locus.name_description = self.name_description
             # archlocuschange update or add
-            existing_archlocus = curator_session.query(ArchLocuschange).filter(and_(ArchLocuschange.dbentity_id == self.locus_id, ArchLocuschange.change_type == 'Gene name')).one_or_none()
-            if existing_archlocus:
+            existing_archlocus = curator_session.query(ArchLocuschange).filter(and_(ArchLocuschange.dbentity_id == self.locus_id, ArchLocuschange.change_type == 'Gene name')).all()
+            if len(existing_archlocus):
+                existing_archlocus = existing_archlocus[0]
                 existing_archlocus.date_name_standardized = datetime.now()
             else:
                 new_archlocuschange = ArchLocuschange(
@@ -8262,7 +8263,13 @@ class Reservedname(Base):
             curator_session = get_curator_session(username)
             self = curator_session.merge(self)
             if new_info['systematic_name']:
-                res_systematic_name = new_info['systematic_name']
+                res_systematic_name = new_info['systematic_name'].strip()
+                is_locus = curator_session.query(Locusdbentity).filter(Locusdbentity.systematic_name == res_systematic_name).one_or_none()
+                if not is_locus:
+                    raise ValueError(res_systematic_name + ' is not a valid systematic_name.')
+                is_already_reserved = curator_session.query(Reservedname).filter(Reservedname.locus_id == is_locus.dbentity_id).one_or_none()
+                if is_already_reserved:
+                    raise ValueError(res_systematic_name + ' is already reserved for ' + is_already_reserved.display_name)
                 new_locus_id = self.associate_locus(res_systematic_name, username)
                 self = curator_session.merge(self)
                 self.locus_id = new_locus_id
