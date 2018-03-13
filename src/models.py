@@ -8289,7 +8289,7 @@ class Reservedname(Base):
             curator_session = get_curator_session(username)
             self = curator_session.merge(self)
             old_date = self.expiration_date
-            self.expiration_date = old_date + timedelta(days=180)
+            self.expiration_date = old_date + timedelta(days=365)
             return_val = self.to_curate_dict()
             transaction.commit()
             return return_val

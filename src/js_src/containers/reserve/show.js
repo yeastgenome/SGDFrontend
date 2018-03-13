@@ -107,7 +107,7 @@ class GeneNameReservation extends Component {
     let data = this.state.data;
     let reservation_status = data ? data.reservation_status : false;
     if (reservation_status === 'Reserved') {
-      return <a className='button secondary' onClick={this.handleExtend.bind(this)}>Extend gene name reservation by 6 months</a>;
+      return <a className='button secondary' onClick={this.handleExtend.bind(this)}>Extend gene name reservation by 1 year</a>;
     }
     return null;
   }
