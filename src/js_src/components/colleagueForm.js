@@ -129,14 +129,17 @@ class ColleagueForm extends Component {
     let _onSuccess = (data) => {
       if (this.props.onComplete) this.props.onComplete(data.colleague_id);
     };
-    let _requestMethod = 'PUT';
-    return <FlexiForm defaultData={this.props.defaultData} tFormOptions={colleagueOptions} tFormSchema={colleagueSchema} onSuccess={_onSuccess} requestMethod={_requestMethod} submitText='Approve Changes' updateUrl={this.props.submitUrl} />;
+    let _requestMethod = this.props.requestMethod || 'PUT';
+    let _submitText = this.props.submitText || 'Approve Changes';
+    return <FlexiForm defaultData={this.props.defaultData} tFormOptions={colleagueOptions} tFormSchema={colleagueSchema} onSuccess={_onSuccess} requestMethod={_requestMethod} submitText={_submitText} updateUrl={this.props.submitUrl} />;
   }
 }
 
 ColleagueForm.propTypes = {
   defaultData: React.PropTypes.object,
   onComplete: React.PropTypes.func,
+  requestMethod: React.PropTypes.string,
+  submitText: React.PropTypes.string,
   submitUrl: React.PropTypes.string
 };
 
