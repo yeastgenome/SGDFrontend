@@ -167,7 +167,7 @@ class IndexESHelper:
             Locusdbentity, Goannotation).join(
                 Goannotation,
                 Locusdbentity.dbentity_id == Goannotation.dbentity_id).filter(
-                    Goannotation.go_qualifier == 'NOT').all()
+                    Goannotation.go_qualifier != 'NOT').all()
         for item in _locus_go_annotation:
             if item[0].dbentity_id not in obj:
                 obj[item[0].dbentity_id] = []
