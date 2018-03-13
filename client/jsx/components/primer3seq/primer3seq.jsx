@@ -99,7 +99,7 @@ const Primer3Seq = React.createClass({
     };
 
     const SeqFormSchema = t.struct({
-       gene_name: t.String,
+       gene_name: t.maybe(t.String),
        sequence: t.maybe(t.String),
        distance_from_start_codon: t.String,
        distance_from_stop_codon: t.String,
