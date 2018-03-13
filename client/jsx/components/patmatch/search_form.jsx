@@ -543,7 +543,7 @@ var SearchForm = React.createClass({
 				'mismatch':	param['mismatch'],
 				'insertion':    param['insertion'],
 				'deletion':     param['deletion'],
-				'substitution': param['substition']			
+				'substitution': param['substitution']			
                         },
 			success: function(data) {
 			      this.setState({isComplete: true,
