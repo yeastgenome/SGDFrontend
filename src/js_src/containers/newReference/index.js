@@ -28,6 +28,10 @@ class NewReference extends Component {
     this.props.dispatch(setMessage('Reference(s) added successfully.'));
   }
 
+  handleError() {
+    this.setState({ confirmationData: null });
+  }
+
   // really a static form
   renderCart() {
     let Reference = t.struct({
@@ -89,7 +93,7 @@ class NewReference extends Component {
     return (
       <div className='row'>
         <div className='columns medium-12'>      
-          <FlexiForm defaultData={this.state.confirmationData} onSuccess={this.handleSuccess.bind(this)} requestMethod='POST' tFormSchema={confirmSchema} tFormOptions={confirmOptions} submitText='Add References' updateUrl={ADD_DATA_URL} />
+          <FlexiForm defaultData={this.state.confirmationData} onError={this.handleError.bind(this)} onSuccess={this.handleSuccess.bind(this)} requestMethod='POST' tFormSchema={confirmSchema} tFormOptions={confirmOptions} submitText='Add References' updateUrl={ADD_DATA_URL} />
         </div>
       </div>
     );
