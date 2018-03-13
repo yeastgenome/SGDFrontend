@@ -110,6 +110,9 @@ def get_new_reference_info(request):
                 raise ValueError('At least 1 PMID is already in the database: ' + str(x))
             record = Medline.read(Entrez.efetch(db='pubmed', id=str(x), rettype='medline'))
             warning = Referencedbentity.get_deletion_warnings(x)
+            journal_title = record.get('JT', '')
+            if len(journal_title) <= 1:
+                raise ValueError('Cannot import PMID ' + str(x) + ' because journal title is blank.')
             confirmation_item = {
                 'name': record.get('TI') + ' PMID: ' + str(x),
                 'pmid': x,

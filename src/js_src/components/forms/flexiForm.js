@@ -40,6 +40,9 @@ class FlexiForm extends Component {
       this.setState({ isPending: false });
       let errorMessage = data ? data.message : 'There was an unknown error with your submission. With the upmost humility, we ask that you please refresh the page and try again.';
       this.props.dispatch(setError(errorMessage));
+      if (this.props.onError) {
+        this.props.onError();
+      }
     });
   }
 
@@ -62,6 +65,7 @@ FlexiForm.propTypes = {
   defaultData: React.PropTypes.object,
   dispatch: React.PropTypes.func,
   getUrl: React.PropTypes.string,
+  onError: React.PropTypes.func,
   onSuccess: React.PropTypes.func,// (data) =>
   onChange: React.PropTypes.func,
   submitText: React.PropTypes.string,
