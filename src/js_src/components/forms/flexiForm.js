@@ -29,7 +29,8 @@ class FlexiForm extends Component {
       contentType: 'application/json',
       headers: {
         'X-CSRF-Token': window.CSRF_TOKEN
-      }
+      },
+      timeout: this.props.timeout
     };
     fetchData(this.props.updateUrl, formOptions).then( (data) => {
       this.setState({ isPending: false });
@@ -67,6 +68,7 @@ FlexiForm.propTypes = {
   requestMethod: React.PropTypes.string,
   tFormSchema: React.PropTypes.func.isRequired,
   tFormOptions: React.PropTypes.object,
+  timeout: React.PropTypes.number,
   updateUrl: React.PropTypes.string.isRequired,
 };
 
