@@ -8403,7 +8403,7 @@ class ReservednameTriage(Base):
                     subclass = 'REFERENCE',
                     dbentity_status = 'Active',
                     method_obtained = 'Gene registry',
-                    publication_status = 'Unpublished',
+                    publication_status = obj['publication_status'],
                     fulltext_status = 'NAP',
                     citation = citation,
                     year = int(obj['year']),
