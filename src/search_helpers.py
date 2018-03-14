@@ -1,4 +1,4 @@
-MAX_AGG_SIZE = 1500
+MAX_AGG_SIZE = 999
 
 def build_autocomplete_search_body_request(query,
                                            category='locus',
