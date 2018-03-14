@@ -151,6 +151,7 @@ class GeneNameReservation extends Component {
     };
     let _onSuccess = () => {
       this.setState({ isSuccess: true });
+      if (window) window.scrollTo(0, 0);
     };
     let _defaultData = { colleague_id: this.state.colleagueId, status: 'Unpublished', reservations: [{ new_gene_name: '' }], authors: [{ first_name: ''}] };
     return <FlexiForm defaultData={_defaultData} tFormOptions={reserveOptions} tFormSchema={reserveSchema} onSuccess={_onSuccess} requestMethod='POST' submitText='Send gene name reservation' updateUrl={TARGET_URL} />;
