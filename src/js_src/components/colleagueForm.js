@@ -16,6 +16,7 @@ class ColleagueForm extends Component {
       display_email: t.Boolean,
       receive_quarterly_newsletter: t.Boolean,
       willing_to_be_beta_tester: t.Boolean,
+      is_pi: t.Boolean,
       phone_number: t.maybe(t.String),
       job_title: t.maybe(t.String),
       profession: t.maybe(t.String),
@@ -32,8 +33,6 @@ class ColleagueForm extends Component {
       research_keywords: t.maybe(t.list(t.enums.of(KEYWORDS))),
       research_interests: t.maybe(t.String),
       associated_genes: t.maybe(t.String),
-
-
     });
     let formLayout = locals => {
       return (
@@ -52,7 +51,8 @@ class ColleagueForm extends Component {
           <div className='row'>
             <div className='column small-2'>{locals.inputs.display_email}</div>
             <div className='column small-3'>{locals.inputs.receive_quarterly_newsletter}</div>
-            <div className='column small-7'>{locals.inputs.willing_to_be_beta_tester}</div>
+            <div className='column small-3'>{locals.inputs.willing_to_be_beta_tester}</div>
+            <div className='column small-4'>{locals.inputs.is_pi}</div>
           </div>
           <span><a href='https://orcid.org/register' target='_new'><i className='fa fa-question-circle' /> Register for an ORCID iD</a></span>
           <div className='row'>
@@ -83,13 +83,13 @@ class ColleagueForm extends Component {
             <div className='column small-3'>{locals.inputs.profession}</div>
             <div className='column small-3'>{locals.inputs.pi}</div>
           </div>
-          {locals.inputs.research_interests}
-          {locals.inputs.associated_genes}
           <div className='row'>
             <div className='column small-4'>
               {locals.inputs.research_keywords}
             </div>
           </div>
+          {locals.inputs.research_interests}
+          {locals.inputs.associated_genes}
         </div>
       );
     };
@@ -110,6 +110,9 @@ class ColleagueForm extends Component {
         },
         pi: {
           label: 'PI (optional)'
+        },
+        is_pi: {
+          label: 'I am a PI'
         },
         address_1: {
           label: 'Address (optional)'
