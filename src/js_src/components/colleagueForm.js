@@ -13,10 +13,10 @@ class ColleagueForm extends Component {
       suffix: t.maybe(t.String),
       orcid: t.maybe(t.String),
       email: t.maybe(t.String),
-      display_email: t.Boolean,
-      receive_quarterly_newsletter: t.Boolean,
-      willing_to_be_beta_tester: t.Boolean,
-      is_pi: t.Boolean,
+      display_email: t.maybe(t.Boolean),
+      receive_quarterly_newsletter: t.maybe(t.Boolean),
+      willing_to_be_beta_tester: t.maybe(t.Boolean),
+      is_pi: t.maybe(t.Boolean),
       phone_number: t.maybe(t.String),
       job_title: t.maybe(t.String),
       profession: t.maybe(t.String),
@@ -27,12 +27,12 @@ class ColleagueForm extends Component {
       city: t.maybe(t.String),
       state: t.maybe(t.enums.of(STATES)),
       country: t.maybe(t.enums.of(COUNTRIES)),
-      zip_code: t.maybe(t.String),
+      postal_code: t.maybe(t.String),
       lab_website: t.maybe(t.String),
       research_summary_website: t.maybe(t.String),
       research_keywords: t.maybe(t.list(t.enums.of(KEYWORDS))),
       research_interests: t.maybe(t.String),
-      associated_genes: t.maybe(t.String),
+      associated_genes: t.maybe(t.String)
     });
     let formLayout = locals => {
       return (
@@ -70,7 +70,7 @@ class ColleagueForm extends Component {
           <div className='row'>
             <div className='column small-3'>{locals.inputs.city}</div>
             <div className='column small-3'>{locals.inputs.state}</div>
-            <div className='column small-2'>{locals.inputs.zip_code}</div>
+            <div className='column small-2'>{locals.inputs.postal_code}</div>
             <div className='column small-4'>{locals.inputs.country}</div>
           </div>
           <div className='row'>

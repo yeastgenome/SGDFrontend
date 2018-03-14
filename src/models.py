@@ -891,11 +891,7 @@ class Colleague(Base):
             'email': self.email if self.display_email else None,
             'link': self.obj_url,
             'profession': self.profession,
-            'state': self.state,
-            'country': self.country,
             'position': self.job_title,
-            'postal_code': self.postal_code,
-            'city': self.city,
             'research_interests': self.research_interest,
             'work_phone': self.work_phone,
             'phone_number': self.work_phone,
@@ -905,11 +901,16 @@ class Colleague(Base):
             'address1': self.address1,
             'address2': self.address2,
             'address3': self.address3,
+            'postal_code': self.postal_code,
+            'city': self.city,
+            'state': self.state,
+            'country': self.country,
             'colleague_note': self.colleague_note,
             'websites': websites,
             'display_email': self.display_email,
             'receive_quarterly_newsletter': self.is_contact,
-            'willing_to_be_beta_tester': self.is_beta_tester
+            'willing_to_be_beta_tester': self.is_beta_tester,
+            'is_pi': self.is_pi
         }
         _dict['lab_page'] = ''
         _dict['research_page'] = ''

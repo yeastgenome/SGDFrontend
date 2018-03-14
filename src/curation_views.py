@@ -529,16 +529,21 @@ def colleague_update(request):
         return HTTPNotFound()
     # add colleague triage entry
     try:
-        created_by = get_username_from_db_uri()
-        new_c_triage = Colleaguetriage(
-            colleague_id = req_id,
-            json=json.dumps(data),
-            triage_type='Update',
-            created_by=created_by
-        )
-        DBSession.add(new_c_triage)
-        transaction.commit()
-        return { 'colleague_id': req_id }
+        is_changed = False# TODO make a real comparison
+        old_dict = colleague.to_dict()
+        if is_changed:
+            created_by = get_username_from_db_uri()
+            new_c_triage = Colleaguetriage(
+                colleague_id = req_id,
+                json=json.dumps(data),
+                triage_type='Update',
+                created_by=created_by
+            )
+            DBSession.add(new_c_triage)
+            transaction.commit()
+            return { 'colleague_id': req_id }
+        else:
+            return { 'colleague_id': req_id }
     except Exception as e:
         traceback.print_exc()
         transaction.abort()
