@@ -2340,6 +2340,12 @@ class Locusdbentity(Dbentity):
         locus_data = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(comp),Locusdbentity.not_in_s288c == False).all()
         return locus_data
 
+    # returns true of 3 letters and a number
+    @classmethod
+    def is_valid_gene_name(Locusdbentity, potential_name):
+        gene_name_pattern = re.compile(r'\b[A-Z]{3}[0-9]+\b')
+        return gene_name_pattern.match(potential_name)
+
     def regulation_target_enrichment(self):
         target_ids = DBSession.query(Regulationannotation.target_id).filter_by(regulator_id=self.dbentity_id).all()
         format_names = DBSession.query(Dbentity.format_name).filter(Dbentity.dbentity_id.in_(target_ids)).all()
@@ -8268,14 +8274,23 @@ class Reservedname(Base):
                 is_locus = curator_session.query(Locusdbentity).filter(Locusdbentity.systematic_name == res_systematic_name).one_or_none()
                 if not is_locus:
                     raise ValueError(res_systematic_name + ' is not a valid systematic_name.')
-                is_already_reserved = curator_session.query(Reservedname).filter(Reservedname.locus_id == is_locus.dbentity_id).one_or_none()
+                is_already_reserved = curator_session.query(Reservedname).filter(and_(Reservedname.locus_id == is_locus.dbentity_id, Reservedname.reservedname_id != self.reservedname_id)).one_or_none()
                 if is_already_reserved:
                     raise ValueError(res_systematic_name + ' is already reserved for ' + is_already_reserved.display_name)
                 new_locus_id = self.associate_locus(res_systematic_name, username)
                 self = curator_session.merge(self)
                 self.locus_id = new_locus_id
-            if new_info['display_name']:
-                self.display_name = new_info['display_name'].upper().strip()
+            if new_info['display_name'] and new_info['display_name'] != self.display_name:
+                potential_name = new_info['display_name'].upper().strip()
+                if not Locusdbentity.is_valid_gene_name(potential_name):
+                    raise ValueError(potential_name + ' does not follow gene name conventions.')
+                exists_in_locus = curator_session.query(Locusdbentity).filter(Locusdbentity.gene_name == potential_name).one_or_none()
+                if exists_in_locus:
+                    raise ValueError(potential_name + ' is already a standard gene name.')
+                exists_in_res = curator_session.query(Reservedname).filter(Reservedname.display_name == potential_name).one_or_none()
+                if exists_in_res:
+                    raise ValueError(potential_name + ' is a reserved gene name.')
+                self.display_name = potential_name
             if new_info['name_description']:
                 self.name_description = new_info['name_description']
             if new_info['notes']:

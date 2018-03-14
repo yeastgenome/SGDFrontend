@@ -474,8 +474,7 @@ def new_gene_name_reservation(request):
             msg = 'The proposed name ' + proposed_name + ' is a standard gene name. Please contact sgd-helpdesk@lists.stanford.edu for more information.'
             return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
         # make sure is proper format
-        gene_name_pattern = re.compile(r'\b[A-Z]{3}[0-9]+\b')
-        if not gene_name_pattern.match(proposed_name):
+        if not Locusdbentity.is_valid_gene_name(proposed_name):
             msg = 'Proposed gene name does not meet standards for gene names. Must be 3 letters followed by a number.'
             return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
         # validate ORF as valid systematic name
