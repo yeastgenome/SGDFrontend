@@ -8352,7 +8352,10 @@ class ReservednameTriage(Base):
     def to_citation(self):
         obj = json.loads(self.json)
         author_list = self.get_author_list()
-        return get_author_etc(author_list) + ' ' + '(' + obj['year'] + ')'
+        cit = get_author_etc(author_list) + ' ' + '(' + obj['year'] + ')'
+        if 'publication_title' in obj.keys():
+            cit = cit + ' ' + obj['publication_title']
+        return cit
 
     def to_dict(self):
         obj = json.loads(self.json)
@@ -8408,10 +8411,16 @@ class ReservednameTriage(Base):
             personal_communication_ref = curator_session.query(Referencedbentity).filter(Referencedbentity.citation == citation).one_or_none()
             if not personal_communication_ref:
                 title = None
-                if 'title' in obj.keys():
-                    title = obj['title']
-                if 'title' == '':
+                if 'publication_title' in obj.keys():
+                    title = obj['publication_title']
+                if title == '':
                     title = None
+                journal_id = None
+                if 'journal' in obj.keys():
+                    journal_name = obj['journal']
+                    existing_journal = curator_session.query(Journal).filter(Journal.display_name == journal_name).one_or_none()
+                    if existing_journal:
+                        journal_id = existing_journal.journal_id
                 personal_communication_ref = Referencedbentity(
                     display_name = citation,
                     source_id = DIRECT_SUBMISSION_SOURCE_ID,
@@ -8423,6 +8432,7 @@ class ReservednameTriage(Base):
                     citation = citation,
                     year = int(obj['year']),
                     title = title,
+                    journal_id = journal_id,
                     created_by = username
                 )
                 curator_session.add(personal_communication_ref)
