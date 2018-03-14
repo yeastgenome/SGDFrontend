@@ -8366,6 +8366,7 @@ class ReservednameTriage(Base):
             'name_description': obj['description'],
             'notes': obj['notes'],
             'systematic_name': obj['systematic_name'],
+            'reservation_date': self.date_created.strftime("%Y-%m-%d"),
             'reference': {
                 'display_name': self.to_citation()
             }
@@ -8474,6 +8475,7 @@ class ReservednameTriage(Base):
                 colleague_id = self.colleague_id,
                 name_description = obj['description'],
                 description = obj['notes'],
+                date_created = self.date_created,
                 created_by = username
             )
             curator_session.add(new_res)
