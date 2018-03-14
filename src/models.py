@@ -8156,8 +8156,8 @@ class Reservedname(Base):
         try:
             curator_session = get_curator_session(username)
             self = curator_session.merge(self)
-            # see how many locus_references exist for personal communication, save for later
-            locus_ref_count = curator_session.query(LocusReferences).filter(and_(LocusReferences.reference_id == self.reference_id, LocusReferences.reference_class == 'gene_name')).count()
+            # see how many reserved name use this reference exist for personal communication, save for later
+            ref_count = curator_session.query(Reservedname).filter(Reservedname.reference_id == self.reference_id).count()
             # delete old locusreferences
             curator_session.query(LocusReferences).filter(and_(LocusReferences.locus_id == self.locus_id, LocusReferences.reference_id == self.reference_id)).delete(synchronize_session=False)
             gene_name_locus_ref = LocusReferences(
@@ -8184,7 +8184,7 @@ class Reservedname(Base):
             self.reference_id = ref_id
             transaction.commit()
             # if this is only one reference for personal communication, delete it
-            if locus_ref_count == 1 and personal_communication_ref.publication_status != 'Published':
+            if ref_count == 1 and personal_communication_ref.publication_status != 'Published':
                 personal_communication_ref = curator_session.query(Referencedbentity).filter(Referencedbentity.dbentity_id == personal_communication_ref_id).one_or_none()
                 personal_communication_ref.delete_with_children(username)           
         except Exception as e:
