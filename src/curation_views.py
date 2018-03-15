@@ -528,8 +528,12 @@ def colleague_update(request):
         return HTTPNotFound()
     # add colleague triage entry
     try:
-        is_changed = False# TODO make a real comparison
-        old_dict = colleague.to_dict()
+        is_changed = False
+        old_dict = colleague.to_simple_dict()
+        for x in old_dict.keys():
+            if old_dict[x] != data[x]:
+                print('changing ' + x)
+                is_changed = True
         if is_changed:
             created_by = get_username_from_db_uri()
             new_c_triage = Colleaguetriage(
@@ -555,7 +559,7 @@ def new_colleague(request):
     if not check_csrf_token(request, raises=False):
         return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
     params = request.json_body
-    required_fields = ['first_name', 'last_name', 'email']
+    required_fields = ['first_name', 'last_name', 'email', 'orcid']
     for x in required_fields:
         if not params[x]:
             msg = x + ' is a required field.'
@@ -572,11 +576,7 @@ def new_colleague(request):
             orcid = params['orcid'],
             first_name = params['first_name'],
             last_name = params['last_name'],
-            job_title = params['position'],
             email = params['email'],
-            institution = params['institution'],
-            profession = params['profession'],
-            is_pi = False,
             is_contact = False,
             is_beta_tester = False,
             display_email = False,
@@ -648,8 +648,6 @@ def reserved_name_update(request):
     except Exception as e:
         log.error(e)
         return HTTPBadRequest(body=json.dumps({ 'message': str(e) }), content_type='text/json')
-
-        
 
 @view_config(route_name='reserved_name_associate_pmid', renderer='json', request_method='POST')
 @authenticate
@@ -759,7 +757,34 @@ def colleague_triage_update(request):
 def colleague_triage_promote(request):
     if not check_csrf_token(request, raises=False):
         return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
-    return True
+    curator_session = None
+    try:
+        username = request.session['username']
+        curator_session = get_curator_session(username)
+        req_id = int(request.matchdict['id'])
+        params = request.json_body
+        c_triage = curator_session.query(Colleaguetriage).filter(Colleaguetriage.curation_id == req_id).one_or_none()
+        if not c_triage:
+            return HTTPNotFound()
+        colleague = curator_session.query(Colleague).filter(Colleague.colleague_id == c_triage.colleague_id).one_or_none()
+        colleague.first_name = params.get('first_name')
+        colleague.last_name = params.get('last_name')
+        colleague.orcid = params.get('orcid')
+        colleague.email = params.get('email')
+        colleague.display_email = params.get('display_email')
+        colleague.is_contact = params.get('receive_quarterly_newsletter')
+        colleague.is_beta_tester = params.get('willing_to_be_beta_tester')
+        # TODO, if new colleague, somehow mark that entry
+        curator_session.delete(c_triage)
+        transaction.commit()
+        return True
+    except Exception as e:
+        transaction.abort()
+        log.error(e)
+        return HTTPBadRequest(body=json.dumps({ 'message': str(e) }), content_type='text/json')
+    finally:
+        if curator_session:
+            curator_session.remove()
 
 @view_config(route_name='colleague_triage_delete', renderer='json', request_method='DELETE')
 @authenticate
