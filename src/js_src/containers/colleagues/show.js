@@ -29,18 +29,23 @@ class ColleagueTriageShow extends Component {
   }
 
   handleDelete() {
-    this.props.dispatch(push({ pathname: 'colleague/triage' }));
+    this.props.dispatch(push({ pathname: 'colleagues/triage' }));
     this.props.dispatch(setMessage('Colleague triage entry was deleted.'));
   }
 
+  handleComplete() {
+    this.props.dispatch(push({ pathname: 'colleagues/triage' }));
+    this.props.dispatch(setMessage('Colleague entry was successfully updated.'));
+  }
 
   renderForm() {
     let data = this.state.data;
+    let url = `${DATA_BASE_URL}/${this.props.params.id}/promote`;
     if (data) {
       return (
         <div>
           <h3><CategoryLabel category='colleague' hideLabel /> Colleague: {data.first_name} {data.last_name}</h3>
-          <ColleagueForm defaultData={data} />
+          <ColleagueForm defaultData={data} onComplete={this.handleComplete.bind(this)} submitUrl={url} requestMethod='PUT' />
         </div>
       );
     }

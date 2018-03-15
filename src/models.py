@@ -844,8 +844,19 @@ class Colleague(Base):
             obj[k.keyword_id].append({'id': k.keyword_id, 'name': k.display_name})
         return obj
 
+    def to_simple_dict(self):
+        return {
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'orcid': self.orcid,
+            'email': self.email,
+            'display_email': self.display_email,
+            'receive_quarterly_newsletter': self.is_contact,
+            'willing_to_be_beta_tester': self.is_beta_tester
+        }
+
     def to_dict_basic_data(self):
-        _dict = {
+        return {
             "colleague_id": self.colleague_id,
             "email": self.email if self.display_email else None,
             "format_name": self.format_name,
@@ -859,7 +870,6 @@ class Colleague(Base):
             "address2": self.address2,
             "address3": self.address3
         }
-        return _dict
 
     def to_dict(self):
         websites = []
