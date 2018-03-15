@@ -4177,6 +4177,8 @@ class Locusdbentity(Dbentity):
 
     def update_basic(self, new_info, username):
         old_info = self.to_curate_dict()['basic']
+        if new_info['feature_type'] == None or new_info['feature_type'] == '':
+            raise ValueError('Feature type cannot be blank.')
         # sanitize aliases
         new_aliases = new_info['aliases']
         for x in new_aliases:
@@ -4219,8 +4221,8 @@ class Locusdbentity(Dbentity):
                         protein_alias.display_name = new_info['ncbi_protein_name']
                     elif key == 'feature_type':
                         new_so_id = curator_session.query(So.so_id).filter(So.display_name == new_info['feature_type']).scalar()
-                        dna_seq = curator_session.query(Dnasequenceannotation).filter(Dnasequenceannotation.dbentity_id == self.dbentity_id, Dnasequenceannotation.taxonomy_id == TAXON_ID, Dnasequenceannotation.dna_type == 'GENOMIC').one_or_none()
-                        dna_seq.so_id = new_so_id
+                        dna_seq = curator_session.query(Dnasequenceannotation).filter(and_(Dnasequenceannotation.dbentity_id == self.dbentity_id, Dnasequenceannotation.taxonomy_id == TAXON_ID))\
+                            .update({ 'so_id': new_so_id })
                     elif key == 'gene_name_pmids':
                         # delete the old name gene_name PMIDS
                         curator_session.query(LocusReferences).filter(and_(LocusReferences.locus_id==self.dbentity_id, LocusReferences.reference_class=='gene_name')).delete(synchronize_session=False)
