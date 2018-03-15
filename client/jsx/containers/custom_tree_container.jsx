@@ -15,8 +15,10 @@ import S from "string";
 import _ from "underscore";
 import { $, jQuery } from "jquery";
 import ClassNames from "classnames";
+import DownloadsDescription from "../components/downloads/downloads_description";
+import StaticInfo from "../components/downloads/StaticInfo";
 
-const DOWNLOADS_URL = "/downloads";
+const DOWNLOADS_URL = "/downloads-tree";
 
 class CustomTreeContainer extends Component {
   constructor(props) {
@@ -28,51 +30,25 @@ class CustomTreeContainer extends Component {
   renderDataTable(data) {
     let results = { headers: [], rows: [] };
     if (data) {
-      let modData = data.datasets.map((item, index) => {
-        let rmText = `${item.name}.README`;
-        let dText = `${item.name}.tgz`;
-        return {
-          readme_href: (
-            <span>
-              <a href={item.readme_href} download={rmText}>
-                <i
-                  className="fa fa-file-text-o fa-lg"
-                  aria-hidden="true"
-                  style={{ width: 80 }}
-                />
-              </a>
-            </span>
-          ),
-          download_href: (
-            <span>
-              <a href={item.download_href} download={dText}>
-                <i
-                  className="fa fa-cloud-download fa-lg"
-                  aria-hidden="true"
-                  style={{ width: 80, color: "#8C1515" }}
-                />
-              </a>
-            </span>
-          ),
-          name: item.name,
-          description: item.description
-        };
-      });
+      let modData = data.map((item, index) => {
+        if(item){
+          let rmText = item.name;
+          let dText = item.name;
+          return { readme_href: <span>
+                <a href={item.readme_url} target="_blank">
+                  <i className="fa fa-file-text-o fa-lg" aria-hidden="true" style={{ width: 80 }} />
+                </a>
+              </span>, download_href: <span>
+                <a href={item.href} download={dText}>
+                  <i className="fa fa-cloud-download fa-lg" aria-hidden="true" style={{ width: 80, color: "#8C1515" }} />
+                </a>
+              </span>, name: item.name, description: item.description };
+      }});
       modData.map((item, index) => {
         let temp = _.values(item);
         results.rows.push(temp);
       });
-      results.headers.push(
-        Object.keys(data.datasets[0]).map((item, index) => {
-          if (item.indexOf("readme") !== -1) {
-            return "ReadMe ";
-          } else if (item.indexOf("download") !== -1) {
-            return "Download ";
-          } else {
-            return S(item).capitalize().s;
-          }
-        })
-      );
+      results.headers.push(["README ", "Download ", "Name ", " Description"]);
       return results;
     }
   }
@@ -93,7 +69,6 @@ class CustomTreeContainer extends Component {
     this.props.dispatch(downloadsActions.getNode(node));
   }
   componentDidMount() {
-    ;
     this.props.dispatch(downloadsActions.fetchDownloadsMenuData());
     if (this.props.query) {
       this.props.dispatch(
@@ -127,8 +102,22 @@ class CustomTreeContainer extends Component {
       return [];
     }
   }
+
+  renderDescriptions(){
+    let items = this.props.downloadsMenu;
+    if(items.length > 0){
+      let temp_arr = items.map(itm => {
+        if(itm){
+          return <DownloadsDescription key={itm.title} description={itm.description} title={itm.title} path={itm.path} />;
+        }
+      });
+      return temp_arr;
+    }
+
+  }
   render() {
     let data = this.renderTreeStructure();
+    let data_info = this.renderDescriptions();
     const pageTitle = (
       <div className="row">
         <h1>Downloads</h1>
@@ -157,10 +146,11 @@ class CustomTreeContainer extends Component {
       let renderTemplate = <div>
           {pageTitle}
           <div className="row">
-            <div className="columns small-4">{data}</div>
-          </div>
-          <div className="row mtree-sgd">
-            <MenuList />
+            <div className="columns small-2">{data}</div>
+            <div className="columns small-10">
+              <StaticInfo />
+              {data_info}
+            </div>
           </div>
         </div>;
       return renderTemplate;

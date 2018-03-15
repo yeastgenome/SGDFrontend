@@ -62,21 +62,13 @@ class CustomTree extends Component {
     if (this.props.node.childNodes == undefined || this.props.node.childNodes.length == 0) {
       
       //leaf node
-      return (
-        <div>
+      return <div>
           <span onClick={this.props.leafClick} data-node={this.props.node}>
-            <a
-              id={S(this.props.node.title).capitalize().s}
-              name={S(this.props.node.title).capitalize().s}
-              data-node={this.props.node}
-              value={this.props.node}
-              className={ClassNames(cssClasses)}
-            >
+            <a id={this.props.node.id}  name={S(this.props.node.title).capitalize().s} data-node={this.props.node} value={this.props.node} className={ClassNames(cssClasses)}>
               {this.props.node.title}
             </a>
           </span>
-        </div>
-      );
+        </div>;
     } else {
       //parent node
       return (
@@ -86,6 +78,7 @@ class CustomTree extends Component {
             id={S(this.props.node.title).capitalize().s}
             value={this.props.node}
             className={ClassNames(cssClasses)}
+            data-id={this.props.node.id}
           >
             {this.props.node.title}
           </span>
