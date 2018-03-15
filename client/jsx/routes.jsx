@@ -14,6 +14,6 @@ module.exports = (
     <Route path="colleague/:formatName" component={ColleaguesShow} />
     <Route path="search" component={Search} />
     <Route path="style-guide" component={StyleGuide} />
-    <Route path="downloads" component={CustomTreeContainer} />
+    <Route path="downloads-tree" component={CustomTreeContainer} />
   </Route>
 );

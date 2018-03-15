@@ -42,7 +42,6 @@ export default function(state = initialState, action) {
   }
   switch (action.type) {
     case action_types.FETCH_DOWNLOADS_RESULTS_SUCCESS:
-    
       return Object.assign({}, state, {
         downloadsResults: action.payload.datasets,
         selectedLeaf: action.payload.query.item

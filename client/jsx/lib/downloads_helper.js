@@ -4,6 +4,7 @@ export const menuUrl =
 export const resultsUrl =
   "http://5914e65eb2398800112223cb.mockapi.io/api/v1/results";
 export const treeUrl = "backend/downloads/menu";
+export const getFilesUrl = "/backend/downloads/";
 /**
  * 'http://www4.dev.yeastgenome.org/webservice/datasets/expression'
  * this url needs CORS configured on server to run properly in local environment
