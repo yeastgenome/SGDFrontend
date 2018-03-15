@@ -838,6 +838,13 @@ def healthcheck(request):
 # get all paths
 @view_config(
     route_name='get_downloads_menu', renderer='json', request_method='GET')
+def get_downloads_menu(request):
+    menu_itms = models_helper.get_downloads_menu()
+    return menu_itms
+
+@view_config(
+    route_name='get_downloads_files', renderer='json', request_method='GET')
 def get_downloads_path(request):
-    result = models_helper.get_downloads_menu()
-    return result
+    id = request.matchdict["pathid"]
+    file_res = models_helper.get_files_by_path_id(id)
+    return file_res
