@@ -780,7 +780,8 @@ def index_downloads():
             'readme_url':
                 x.readme_file[0].s3_url,
             'topic': x.topic.display_name,
-            'data': x.data.display_name
+            'data': x.data.display_name,
+            'path_id': x.get_path_id()
         }
         bulk_data.append({
             'index': {
@@ -820,7 +821,9 @@ def index_part_2():
 if __name__ == '__main__':
     cleanup()
     setup()
+    index_downloads()
+    '''
     t1 = Thread(target=index_part_1)
     t2 = Thread(target=index_part_2)
     t1.start()
-    t2.start()
+    t2.start()'''
