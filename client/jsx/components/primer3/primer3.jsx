@@ -112,75 +112,99 @@ const Primer3 = React.createClass({
     const PcrFormSchema = t.struct({
        gene_name: t.maybe(t.String),
        sequence: t.maybe(t.String),
+
        distance_from_start_codon: t.Number,
        distance_from_stop_codon: t.Number,
-       end_point: Endpoint,
+       distance_between_primers: t.Number,
+       optimum_primer_length: t.Number,
+
        length_dna_primers: t.Number,
+       minimum_length: t.Number,
+       maximum_length: t.Number,
+
+       end_point: Endpoint,
+
        optimum_tm: t.Number,
        minimum_tm: t.Number,
        maximum_tm: t.Number,
-       optimum_primer_length: t.Number,
-       minimum_length: t.Number,
-       maximum_length: t.Number,
+
        optimum_gc: t.Number,
        minimum_gc: t.Number,
        maximum_gc: t.Number,
+
        self_anneal: t.Number,
        self_end_anneal: t.Number,
        pair_anneal: t.Number,
        pair_end_anneal: t.Number
     });
 
-
-    const SeqFormSchema = t.struct({
-       gene_name: t.String,
-       sequence: t.maybe(t.String),
-       distance_from_start_codon: t.String,
-       distance_from_stop_codon: t.String,
-       length_dna_primers: t.String,
-       method: Method,
-       which_strand: Coding,
-       num_strands: Strand,
-       distance_between_primers: t.Number,
-       optimum_primer_length: t.Number,
-       minimum_length: t.Number,
-       maximum_length: t.Number,
-       optimum_gc: t.Number,
-       minimum_gc: t.Number,
-       maximum_gc: t.Number,
-       self_anneal: t.Number,
-       self_end_anneal: t.Number
-    });
-
-
     const formLayout = locals => {
       return (
-         <div className='row'>
-          <div className='columns small-4'>{locals.inputs.distance_from_start_codon}</div>
-          <div className='columns small-4'>{locals.inputs.distance_from_stop_codon}</div>
-          <div className='columns small-4'>{locals.inputs.distance_between_primers}</div>
 
+       <div>
+
+         <div className='row'>
+          <div className='columns small-6'>{locals.inputs.gene_name}</div>
+         </div>
+         <br> </br>
+         <p><b> Please input gene name OR sequence</b></p>
+         <div className='row'>
+          <div className='columns small-6'>{locals.inputs.sequence}</div>
+         </div>
+
+         <span><a href='https://sites.google.com/view/yeastgenome-help/analyze-help/design-primers' target='_new'><i className='fa primer-help' />Location</a></span>
+         <div className='row'>
+          <div className='columns small-3'>{locals.inputs.distance_from_start_codon}</div>
+          <div className='columns small-3'>{locals.inputs.distance_from_stop_codon}</div>
+          <div className='columns small-3'>{locals.inputs.distance_between_primers}</div>
+          <div className='columns small-3'>{locals.inputs.optimum_primer_length}</div>
+         </div>
+
+         <div className='row'>
+          <div className='columns small-2'>{locals.inputs.end_point}</div>
+         </div>
+
+        <span><a href='https://sites.google.com/view/yeastgenome-help/analyze-help/design-primers' target='_new'><i className='fa primer-help' />Primer Length</a></span>
+         <div className='row'>
+          <div className='columns small-4'>{locals.inputs.length_dna_primers}</div>
+          <div className='columns small-4'>{locals.inputs.minimum_length}</div>
+          <div className='columns small-4'>{locals.inputs.maximum_length}</div>
+         </div>
+
+        <span><a href='https://sites.google.com/view/yeastgenome-help/analyze-help/design-primers' target='_new'><i className='fa primer-help' />Primer Composition</a></span>
+         <div className='row'>
           <div className='columns small-4'>{locals.inputs.optimum_gc}</div>
           <div className='columns small-4'>{locals.inputs.minimum_gc}</div>
           <div className='columns small-4'>{locals.inputs.maximum_gc}</div>
+         </div>
 
-          <div className='columns small-3'>{locals.inputs.length_dna_primers}</div>
-          <div className='columns small-3'>{locals.inputs.optimum_primer_length}</div>
-          <div className='columns small-3'>{locals.inputs.minimum_length}</div>
-          <div className='columns small-3'>{locals.inputs.maximum_length}</div>
+        <span><a href='https://sites.google.com/view/yeastgenome-help/analyze-help/design-primers' target='_new'><i className='fa primer-help' />Melting Temperature</a></span>
+
+         <div className='row'>
+          <div className='columns small-4'>{locals.inputs.optimum_tm}</div>
+          <div className='columns small-4'>{locals.inputs.minimum_tm}</div>
+          <div className='columns small-4'>{locals.inputs.maximum_tm}</div>
+        </div>
+
+        <span><a href='https://sites.google.com/view/yeastgenome-help/analyze-help/design-primers' target='_new'><i className='fa primer-help' />Primer Annealing</a></span>
+        <div className='row'>
+          <div className='columns small-3'>{locals.inputs.self_anneal}</div>
+          <div className='columns small-3'>{locals.inputs.self_end_anneal}</div>
+          <div className='columns small-3'>{locals.inputs.pair_anneal}</div>
+          <div className='columns small-3'>{locals.inputs.pair_end_anneal}</div>
+        </div>
 
         </div>
       );
     };
 
     var options = {
-
         fields: {
             gene_name:{type: 'textbox'},
-            sequence: {type: 'textarea'},
-            template: formLayout
-       }
-    };
+            sequence: {type: 'textarea'}
+       },
+       template: formLayout
+    }
 
     return (
       <form onSubmit={this.handleSubmit}>
