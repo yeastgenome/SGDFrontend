@@ -498,14 +498,21 @@ def index_strains():
 
 def index_reserved_names():
     # only index reservednames that do not have a locus associated with them
-    reserved_names = DBSession.query(Reservedname).filter_by(locus_id=None).all()
+    reserved_names = DBSession.query(Reservedname).all()
 
     print("Indexing " + str(len(reserved_names)) + " reserved names")
     for reserved_name in reserved_names:
+        name = reserved_name.display_name
+        href = reserved_name.obj_url
+        # change name if has an orf
+        if reserved_name.locus_id:
+            locus = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id == reserved_name.locus_id).one_or_none()
+            name = name + ' / ' + locus.systematic_name
+            href = locus.obj_url
         obj = {
-            "name": reserved_name.display_name,
-            "href": reserved_name.obj_url,
-            "description": reserved_name.description,
+            "name": name,
+            "href": href,
+            "description": reserved_name.name_description,
             "category": "reserved_name",
             "keys": [reserved_name.display_name.lower()]
         }
