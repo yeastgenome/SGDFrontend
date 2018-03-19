@@ -3471,16 +3471,16 @@ class Locusdbentity(Dbentity):
         # reserved name
         reservedname = DBSession.query(Reservedname).filter_by(locus_id=self.dbentity_id).one_or_none()
         if reservedname:
-            if reservedname.reference:
-                ref = reservedname.reference
-                ref_obj = reservedname.reference.to_dict_citation()
-                ref_obj['id'] = ref.dbentity_id
-                r_obj["reference"] = ref_obj
             r_obj = reservedname.to_dict()
             r_obj["link"] = reservedname.obj_url
             r_obj["class_type"] = "RESERVEDNAME"
             obj["reserved_name"] = r_obj
             obj["name_description"] = reservedname.name_description
+            if reservedname.reference:
+                ref = reservedname.reference
+                ref_obj = reservedname.reference.to_dict_citation()
+                ref_obj['id'] = ref.dbentity_id
+                r_obj["reference"] = ref_obj
 
         return obj
 
