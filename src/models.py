@@ -7147,6 +7147,123 @@ class PsimiAlias(Base):
     source = relationship(u'Source')
 
 
+class Complexdbentity(Dbentity):
+    __tablename__ = 'complexdbentity'
+    __table_args__ = {u'schema': 'nex'}
+    __url_segment__ = '/complex/'
+
+    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
+    intact_id = Column(String(40), nullable=False)
+    systematic_name = Column(String(500), nullable=False)
+    eco_id = Column(ForeignKey(u'nex.eco.eco_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    description = Column(Text, nullable=True)   
+    properties = Column(Text, nullable=True)
+
+    eco = relationship(u'Eco')
+
+class ComplexAlias(Base):
+    __tablename__ = 'complex_alias'
+    __table_args__ = (
+        UniqueConstraint('complex_id', 'display_name', 'alias_type'),
+        {u'schema': 'nex'}
+    )
+
+    alias_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.alias_seq'::regclass)"))
+    display_name = Column(String(500), nullable=False)
+    obj_url = Column(String(500))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    complex_id = Column(ForeignKey(u'nex.complexdbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    alias_type = Column(String(40), nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    complex = relationship(u'Complexdbentity')
+    source = relationship(u'Source')
+
+class ComplexGo(Base):
+    __tablename__ = 'complex_go'
+    __table_args__ = (
+        UniqueConstraint('complex_id', 'go_id'),
+        {u'schema': 'nex'}
+    )
+
+    complex_go_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.link_seq'::regclass)"))    
+    complex_id = Column(ForeignKey(u'nex.complexdbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    go_id = Column(ForeignKey(u'nex.go.go_id', ondelete=u'CASCADE'), nullable=False, index=True)    
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    complex = relationship(u'Complexdbentity')
+    source = relationship(u'Source')
+    go = relationship(u'Go')
+
+class ComplexReference(Base):
+    __tablename__ = 'complex_reference'
+    __table_args__ = (
+        UniqueConstraint('complex_id', 'reference_id'),
+        {u'schema': 'nex'}
+    )
+
+    complex_reference_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.link_seq'::regclass)"))
+    complex_id = Column(ForeignKey(u'nex.complexdbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    complex = relationship(u'Complexdbentity')
+    source = relationship(u'Source')
+    reference = relationship(u'Referencedbentity')
+
+
+class Complexbindingannotation(Base):
+    __tablename__ = 'complexbindingannotation'
+    __table_args__ = (
+        UniqueConstraint('complex_id', 'interactor_id', 'binding_interactor_id', 'reference_id', 'binding_type_id'),
+        {u'schema': 'nex'}
+    )
+
+    annotation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.annotation_seq'::regclass)"))
+    complex_id = Column(ForeignKey(u'nex.complexdbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    interactor_id = Column(ForeignKey(u'nex.interactor.interactor_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    binding_interactor_id = Column(ForeignKey(u'nex.interactor.interactor_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    binding_type_id = Column(ForeignKey(u'nex.psimi.psimi_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    range_start = Column(Integer)
+    range_end = Column(Integer)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    interactor = relationship(u'Interactor', foreign_keys=[interactor_id])
+    binding_interactor = relationship(u'Interactor', foreign_keys=[binding_interactor_id])
+    reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
+    source = relationship(u'Source')
+    taxonomy = relationship(u'Taxonomy')
+    complex = relationship(u'Complexdbentity')
+
+class Interactor(Base):
+    __tablename__ = 'interactor'
+    __table_args__ = {u'schema': 'nex'}
+
+    interactor_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
+    format_name = Column(String(100), nullable=False, unique=True)
+    display_name = Column(String(500), nullable=False, index=True)
+    obj_url = Column(String(500), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    intact_id = Column(String(20), nullable=False)
+    locus_id = Column(ForeignKey(u'nex.locusdbentity.dbentity_id', ondelete=u'CASCADE'), nullable=True, index=True)
+    description = Column(String(500))
+    type_id = Column(ForeignKey(u'nex.psimi.psimi_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    role_id = Column(ForeignKey(u'nex.psimi.psimi_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    stoichiometry = Column(Integer)
+    protein_residues = Column(Text, nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+
 class ReferenceAlias(Base):
     __tablename__ = 'reference_alias'
     __table_args__ = (
