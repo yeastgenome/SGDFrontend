@@ -8366,7 +8366,7 @@ class ReservednameTriage(Base):
         author_list = self.get_author_list()
         cit = get_author_etc(author_list) + ' ' + '(' + obj['year'] + ')'
         if 'publication_title' in obj.keys():
-            cit = cit + ' ' + obj['publication_title']
+            cit = cit + ' ' + str(obj['publication_title'])
         return cit
 
     def to_dict(self):
