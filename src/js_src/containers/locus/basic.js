@@ -68,8 +68,6 @@ class LocusBasic extends Component {
       'Dubious'
     ], 'Qualifier');
     let bgiSchema = t.struct({
-      gene_name: t.maybe(t.String),
-      gene_name_pmids: t.maybe(t.String),
       name_description: t.maybe(t.String),
       name_description_pmids : t.maybe(t.String),
       aliases: t.list(Alias),
