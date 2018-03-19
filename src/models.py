@@ -4187,9 +4187,11 @@ class Locusdbentity(Dbentity):
 
     def update_basic(self, new_info, username):
         old_info = self.to_curate_dict()['basic']
-        if new_info['feature_type'] == None or new_info['feature_type'] == '':
+        if 'feature_type' in new_info.keys() and (new_info['feature_type'] == None or new_info['feature_type'] == ''):
             raise ValueError('Feature type cannot be blank.')
         # sanitize aliases
+        if 'aliases' not in new_info.keys():
+            new_info['aliases'] = old_info['aliases']
         new_aliases = new_info['aliases']
         for x in new_aliases:
             if x['pmids'] is None:
@@ -4199,6 +4201,11 @@ class Locusdbentity(Dbentity):
         for key in new_info.keys():
             if new_info[key] != old_info[key]:
                 keys_to_update.append(key)
+        # if changing gene name, append old name as alias
+        if 'gene_name' in keys_to_update and old_info['gene_name']:
+            new_alias = { 'alias': old_info['gene_name'], 'pmids': old_info['gene_name_pmids'], 'type': 'Retired name' }
+            new_info['aliases'].append(new_alias)
+            keys_to_update.append('aliases')
         # update them, if necessary
         if len(keys_to_update):
             curator_session = None
@@ -4220,7 +4227,27 @@ class Locusdbentity(Dbentity):
                             self.display_name = self.systematic_name
                         else:
                             self.display_name = new_name
-                        self.gene_name = new_name
+                            # TODO add locusnote
+                            # note_html_str = '<b>Name</b> ' + new_name
+                            # new_locusnote = Locusnote(
+                            #     source_id = SGD_SOURCE_ID,
+                            #     locus_id = self.dbentity_id,
+                            #     note_class = 'Locus',
+                            #     note_type = 'Name',
+                            #     note = note_html_str,
+                            #     created_by = username
+                            # )
+                            # curator_session.add(new_locusnote)
+                            # curator_session.flush()
+                            # curator_session.refresh(new_locusnote)
+                            # new_locusnote_ref = LocusnoteReference(
+                            #     note_id = new_locusnote.note_id,
+                            #     reference_id = self.reference_id,
+                            #     source_id = SGD_SOURCE_ID,
+                            #     created_by = username
+                            # )
+                            # curator_session.add(new_locusnote_ref)
+                            self.gene_name = new_name
                     elif key == 'name_description':
                         self.name_description = new_info['name_description']
                     elif key == 'qualifier':

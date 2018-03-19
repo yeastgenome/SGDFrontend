@@ -14,6 +14,7 @@ import { PREVIEW_URL } from '../../constants.js';
 const BASE_CURATE_URL = '/curate/locus';
 const SECTIONS = [
   'basic',
+  'gene_name',
   'summaries'
 ];
 
@@ -46,7 +47,7 @@ class LocusLayout extends Component {
       let isActive = (current === relative);
       let url = `${baseUrl}${relative}`;
       let _className = isActive ? style.activeNavLink : style.navLink;
-      return <li key={`lit${d}`}><Link className={_className} to={url}>{d}</Link></li>;
+      return <li key={`lit${d}`}><Link className={_className} to={url}>{d.replace('_', ' ')}</Link></li>;
     });
     return <ul className={`vertical menu ${style.menu}`}>{nodes}</ul>;
   }
