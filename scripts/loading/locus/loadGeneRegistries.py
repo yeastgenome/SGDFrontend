@@ -3,7 +3,8 @@ import os
 from datetime import datetime
 import sys
 reload(sys)  # Reload does the trick!
-from src.models import Locusdbentity, Referencedbentity, Reservedname, Source, Locusnote, LocusnoteReference
+from src.models import Locusdbentity, Referencedbentity, Reservedname, Source, Locusnote, \
+                       LocusReferences, LocusnoteReference
 from scripts.loading.database_session import get_session
 
 __author__ = 'sweng66'
@@ -49,7 +50,9 @@ def load_data(infile, logfile):
 
         insert_reservedname(nex_session, fw, locus_id, display_name, reference_id, colleague_id, 
                             source_id, reservation_date, expiration_date, name_description, created_by)
-        
+       
+        insert_locus_reference(nex_session, fw, locus_id, reference_id, source_id, reservation_date, created_by)
+
         note_id = insert_locusnote(nex_session, fw, locus_id, display_name, source_id, reservation_date, created_by)
 
         insert_locusnote_reference(nex_session, fw, note_id, reference_id, source_id, reservation_date, created_by)
@@ -59,6 +62,21 @@ def load_data(infile, logfile):
 
     fw.close()
     f.close()
+
+
+def insert_locus_reference(nex_session, fw, locus_id, reference_id, source_id, date_created, created_by):
+
+    x = LocusReferences(locus_id = locus_id,
+                        reference_id = reference_id,
+                        reference_class = 'name_description',
+                        source_id = source_id,
+                        date_created = date_created,
+                        created_by = created_by)
+    nex_session.add(x)
+
+    fw.write("Insert Locus_reference row for locus_id = " + str(locus_id) + ", reference_id = " + str(reference_id\
+) + ", created_by = " + created_by + ", date_created = " + date_created + "\n")
+           
 
 def insert_locusnote_reference(nex_session, fw, note_id, reference_id, source_id, date_created, created_by):
 
