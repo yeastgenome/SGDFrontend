@@ -4189,6 +4189,8 @@ class Locusdbentity(Dbentity):
         old_info = self.to_curate_dict()['basic']
         if 'feature_type' in new_info.keys() and (new_info['feature_type'] == None or new_info['feature_type'] == ''):
             raise ValueError('Feature type cannot be blank.')
+        if ('old_gene_name_alias_type' in new_info.keys()) and not new_info['old_gene_name_alias_type']:
+            raise ValueError('Please select an alias type for old gene name.')
         # sanitize aliases
         if 'aliases' not in new_info.keys():
             new_info['aliases'] = old_info['aliases']
@@ -4199,11 +4201,15 @@ class Locusdbentity(Dbentity):
         # list which keys need updating
         keys_to_update = []
         for key in new_info.keys():
+            # ignore old_gene_name_alias_type
+            if key == 'old_gene_name_alias_type':
+                continue
             if new_info[key] != old_info[key]:
                 keys_to_update.append(key)
         # if changing gene name, append old name as alias
         if 'gene_name' in keys_to_update and old_info['gene_name']:
-            new_alias = { 'alias': old_info['gene_name'], 'pmids': old_info['gene_name_pmids'], 'type': 'Retired name' }
+            new_alias_type = new_info['old_gene_name_alias_type']
+            new_alias = { 'alias': old_info['gene_name'], 'pmids': old_info['gene_name_pmids'], 'type': new_alias_type }
             new_info['aliases'].append(new_alias)
             keys_to_update.append('aliases')
         # update them, if necessary
