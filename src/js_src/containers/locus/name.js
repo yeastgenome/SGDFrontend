@@ -19,7 +19,12 @@ class LocusGeneName extends Component {
     if (!data || this.props.isPending) return <Loader />;
     let geneNameSchema = t.struct({
       gene_name: t.maybe(t.String),
-      gene_name_pmids: t.maybe(t.String)
+      gene_name_pmids: t.maybe(t.String),
+      old_gene_name_alias_type:  t.maybe(t.enums.of([
+        'Uniform',
+        'Non-uniform',
+        'Retired name'
+      ]))
     });
     let url = `/locus/${this.props.params.id}/basic`;
     return (
