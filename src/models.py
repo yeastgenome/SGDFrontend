@@ -4227,27 +4227,30 @@ class Locusdbentity(Dbentity):
                             self.display_name = self.systematic_name
                         else:
                             self.display_name = new_name
-                            # TODO add locusnote
-                            # note_html_str = '<b>Name</b> ' + new_name
-                            # new_locusnote = Locusnote(
-                            #     source_id = SGD_SOURCE_ID,
-                            #     locus_id = self.dbentity_id,
-                            #     note_class = 'Locus',
-                            #     note_type = 'Name',
-                            #     note = note_html_str,
-                            #     created_by = username
-                            # )
-                            # curator_session.add(new_locusnote)
-                            # curator_session.flush()
-                            # curator_session.refresh(new_locusnote)
-                            # new_locusnote_ref = LocusnoteReference(
-                            #     note_id = new_locusnote.note_id,
-                            #     reference_id = self.reference_id,
-                            #     source_id = SGD_SOURCE_ID,
-                            #     created_by = username
-                            # )
-                            # curator_session.add(new_locusnote_ref)
                             self.gene_name = new_name
+                            # add locusnote and locusnotereference(s) for old gene_name_pmids
+                            old_pmids = convert_space_separated_pmids_to_list(old_info['gene_name_pmids'])
+                            for p in old_pmids:
+                                ref_id = curator_session.query(Referencedbentity.dbentity_id).filter(Referencedbentity.pmid == p).scalar()
+                                note_html_str = '<b>Name</b> ' + new_name
+                                new_locusnote = Locusnote(
+                                    source_id = SGD_SOURCE_ID,
+                                    locus_id = self.dbentity_id,
+                                    note_class = 'Locus',
+                                    note_type = 'Name',
+                                    note = note_html_str,
+                                    created_by = username
+                                )
+                                curator_session.add(new_locusnote)
+                                curator_session.flush()
+                                curator_session.refresh(new_locusnote)
+                                new_locusnote_ref = LocusnoteReference(
+                                    note_id = new_locusnote.note_id,
+                                    reference_id = ref_id,
+                                    source_id = SGD_SOURCE_ID,
+                                    created_by = username
+                                )
+                                curator_session.add(new_locusnote_ref)
                     elif key == 'name_description':
                         self.name_description = new_info['name_description']
                     elif key == 'qualifier':

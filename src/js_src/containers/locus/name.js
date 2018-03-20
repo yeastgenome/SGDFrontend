@@ -26,7 +26,7 @@ class LocusGeneName extends Component {
       <div className='row'>
         <div className='columns small-12 medium-6'>
           <FlexiForm defaultData={this.props.data.basic} onSuccess={this.handleSuccess.bind(this)} requestMethod='PUT' tFormSchema={geneNameSchema} updateUrl={url} />
-          <p>After submitting the new gene name, the old gene name will automatically become an alias, using PMIDS from old gene name.</p>
+          <p>The new name will be added as a locusnote. The old gene name (if it exists) will automatically become an alias, using PMIDS from old gene name.</p>
         </div>
       </div>
     );
