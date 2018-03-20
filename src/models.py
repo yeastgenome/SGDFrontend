@@ -4226,13 +4226,20 @@ class Locusdbentity(Dbentity):
                             new_name = None
                             self.display_name = self.systematic_name
                         else:
+                            # see if new name already exists, and if proper name
+                            new_name_already_exists = curator_session.query(Locusdbentity).filter(Locusdbentity.gene_name == new_name).one_or_none()
+                            if new_name_already_exists:
+                                raise ValueError(new_name + ' is already a standard gene name and cannot be used.')
+                            is_valid_gene_name = Locusdbentity.is_valid_gene_name(new_name)
+                            if not is_valid_gene_name:
+                                raise ValueError(new_name + ' does not follow standards for standard gene names.')
                             self.display_name = new_name
                             self.gene_name = new_name
                             # add locusnote and locusnotereference(s) for old gene_name_pmids
                             old_pmids = convert_space_separated_pmids_to_list(old_info['gene_name_pmids'])
                             for p in old_pmids:
                                 ref_id = curator_session.query(Referencedbentity.dbentity_id).filter(Referencedbentity.pmid == p).scalar()
-                                note_html_str = '<b>Name</b> ' + new_name
+                                note_html_str = '<b>Name:</b> ' + new_name
                                 new_locusnote = Locusnote(
                                     source_id = SGD_SOURCE_ID,
                                     locus_id = self.dbentity_id,
