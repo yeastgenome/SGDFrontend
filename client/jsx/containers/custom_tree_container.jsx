@@ -68,6 +68,7 @@ class CustomTreeContainer extends Component {
     this.props.dispatch(downloadsActions.getNode(node));
   }
   componentDidMount() {
+    debugger;
     this.props.dispatch(downloadsActions.fetchDownloadsMenuData());
     if (this.props.query) {
       if(typeof(query) == "string"){
