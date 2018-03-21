@@ -1,14 +1,12 @@
 from gpad_config import curator_id
 import sys
-sys.path.insert(0, '../../../src/')
-from models import Dbentity, Locussummary,  Source, Updatelog
-sys.path.insert(0, '../')
-from database_session import get_nex_session as get_session
+from src.models import Dbentity, Locussummary,  Source, Updatelog
+from scripts.loading.database_session import get_session
 
 __author__ = 'sweng66'
 
-gpi_file = "data/gp_information.559292_sgd"
-log_file = "logs/function_summary.log"
+gpi_file = "scripts/loading/go/data/gp_information.559292_sgd"
+log_file = "scripts/loading/go/logs/function_summary.log"
 summary_type = 'Function'
 
 def load_summaries(summary_file):
@@ -150,7 +148,7 @@ if __name__ == "__main__":
         summary_file = sys.argv[1]
     else:
         print "Usage: load_function_summaries.py summary_file_name_with_path"
-        print "Example: load_function_summaries.py data/protein2go_report-116.tsv"
+        print "Example: scripts/loading/go/load_function_summaries.py scripts/loading/go/data/protein2go_report031518.tsv"
         exit()
 
     load_summaries(summary_file)
