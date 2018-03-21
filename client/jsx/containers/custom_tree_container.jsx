@@ -36,27 +36,31 @@ class CustomTreeContainer extends Component {
   renderDataTable(data) {
     let results = { headers: [], rows: [] };
     if (data) {
-      let modData = data.map((item, index) => {
-        if(item){
-          let rmText = item.name;
-          let dText = item.name;
-          return { readme_href: <span>
+                let modData = data.map((item, index) => {
+                  if (item) {
+                    let rmText = item.name;
+                    let dText = item.name;
+                     return { readme_href: <span key={item.name}>
                 <a href={item.readme_url} target="_blank">
                   <i className="fa fa-file-text-o fa-lg" aria-hidden="true" style={{ width: 80 }} />
                 </a>
-              </span>, download_href: <span>
+              </span>, download_href: <span key={item.name + 1}>
                 <a href={item.href} download={dText}>
                   <i className="fa fa-cloud-download fa-lg" aria-hidden="true" style={{ width: 80, color: "#8C1515" }} />
                 </a>
-              </span>, name: item.name, description: item.description };
-      }});
-      modData.map((item, index) => {
-        let temp = _.values(item);
-        results.rows.push(temp);
-      });
-      results.headers.push(["README ", "Download ", "Name ", " Description"]);
-      return results;
-    }
+              </span>, name: item.name, size:item.file_size, description: item.description };
+                   
+
+                      }
+                });
+                modData.map((item, index) => {
+                  results.rows.push(_.values(item));
+                });
+                //results.headers.push(["README ", "Download ", "Name ", " Description"]);
+              results.headers.push(["README ", "Download ", "Name", "Size","Description"]);
+
+                return results;
+              }
   }
   nodeToggle(node) {
     this.props.dispatch(downloadsActions.toggleNode(!this.props.isVisible));
@@ -75,6 +79,7 @@ class CustomTreeContainer extends Component {
     this.props.dispatch(downloadsActions.getNode(node));
   }
   componentDidMount() {
+    debugger;
     this.props.dispatch(downloadsActions.fetchDownloadsMenuData());
     if (this.props.query) {
       this.props.dispatch(
