@@ -33,7 +33,7 @@ import GeneNameReservationEdit from './containers/reserve/edit';
 import ColleaguesIndex from './containers/colleagues/index';
 import ColleaguesShow from './containers/colleagues/show';
 // import AuthorResponse from './containers/authorResponse/index';
-// import NewColleague from './containers/colleagues/new';
+import NewColleague from './containers/colleagues/new';
 // import EditColleague from './containers/colleagues/edit';
 
 
@@ -71,7 +71,7 @@ export default (
     </Route>
     <Route component={PublicLayout}>
       {/*<Route component={AuthorResponse} path='author_response' />*/}
-      {/*<Route component={NewColleague} path='new_colleague' />*/}
+      <Route component={NewColleague} path='new_colleague' />
       {/*<Route component={EditColleague} path='colleague/:formatName/edit' />*/}
       <Route component={NewGeneNameReservation} path='new_reservation' />
     </Route>

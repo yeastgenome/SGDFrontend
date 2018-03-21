@@ -1,17 +1,24 @@
 import React, { Component } from 'react';
 
-import ColleagueFormShow from './colleagueFormShow';
+import ColleagueUpdate from '../reserve/colleagueUpdate';
 
-class Colleagues extends Component {
+class NewColleague extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isComplete: false
+    };
+  }
+  handleColleagueCompletion() {
+    this.setState({ isComplete: true });
+  }
+
   render() {
-    return (
-      <div>
-        <ColleagueFormShow
-          isCurator={false} 
-        />
-      </div>
-    );
+    if (this.state.isComplete) {
+      return <p>Thanks for your update! SGD curators will review.</p>;
+    }
+    return <ColleagueUpdate onComplete={this.handleColleagueCompletion.bind(this)} submitText={'Submit update'} />;
   }
 }
 
-export default Colleagues;
+export default NewColleague;
