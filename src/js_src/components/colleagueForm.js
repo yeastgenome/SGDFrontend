@@ -30,7 +30,7 @@ class ColleagueForm extends Component {
           </div>
           <span><a href='https://orcid.org/register' target='_new'><i className='fa fa-question-circle' /> Register for an ORCID iD</a></span>
           <div className='row'>
-            <div className='column small-2'>{locals.inputs.orcid}</div>
+            <div className='column small-3'>{locals.inputs.orcid}</div>
           </div>
         </div>
       );

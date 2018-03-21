@@ -521,6 +521,11 @@ def colleague_update(request):
         return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
     req_id = request.matchdict['id'].upper()
     data = request.json_body
+    required_fields = ['first_name', 'last_name', 'email', 'orcid']
+    for x in required_fields:
+        if not data[x]:
+            msg = x + ' is a required field.'
+            return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
     if req_id == 'NULL':
         return HTTPBadRequest(body=json.dumps({ 'message': 'Please select your name from colleague list or create a new entry.' }), content_type='text/json')
     colleague = DBSession.query(Colleague).filter(Colleague.colleague_id == req_id).one_or_none()
@@ -532,17 +537,20 @@ def colleague_update(request):
         old_dict = colleague.to_simple_dict()
         for x in old_dict.keys():
             if old_dict[x] != data[x]:
-                print('changing ' + x)
                 is_changed = True
         if is_changed:
             created_by = get_username_from_db_uri()
-            new_c_triage = Colleaguetriage(
-                colleague_id = req_id,
-                json=json.dumps(data),
-                triage_type='Update',
-                created_by=created_by
-            )
-            DBSession.add(new_c_triage)
+            existing_triage = DBSession.query(Colleaguetriage).filter(Colleaguetriage.colleague_id == req_id).one_or_none()
+            if existing_triage:
+                existing_triage.json = json.dumps(data)
+            else:
+                new_c_triage = Colleaguetriage(
+                    colleague_id = req_id,
+                    json=json.dumps(data),
+                    triage_type='Update',
+                    created_by=created_by
+                )
+                DBSession.add(new_c_triage)
             transaction.commit()
             return { 'colleague_id': req_id }
         else:
