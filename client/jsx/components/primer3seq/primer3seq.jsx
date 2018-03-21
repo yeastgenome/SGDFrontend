@@ -126,8 +126,8 @@ const Primer3Seq = React.createClass({
           <div className='columns small-4'>{locals.inputs.distance_from_stop_codon}</div>
           <div className='columns small-4'>{locals.inputs.distance_between_primers}</div>
 
-          <div className='columns small-4'>{locals.inputs.optimum_gc}</div>
           <div className='columns small-4'>{locals.inputs.minimum_gc}</div>
+          <div className='columns small-4'>{locals.inputs.optimum_gc}</div>
           <div className='columns small-4'>{locals.inputs.maximum_gc}</div>
 
           <div className='columns small-3'>{locals.inputs.length_dna_primers}</div>
