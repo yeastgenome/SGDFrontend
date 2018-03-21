@@ -26,31 +26,41 @@ class CustomTreeContainer extends Component {
     this.leafClick = this.leafClick.bind(this);
     this.nodeToggle = this.nodeToggle.bind(this);
     this.getSelectedNode = this.getSelectedNode.bind(this);
+    this.state = {tableData: null};
   }
+  componentWillReceiveProps(nextProps){
+		debugger;
+		this.setState({ tableData: this.props.downloadsResults });
+	}
+
   renderDataTable(data) {
     let results = { headers: [], rows: [] };
     if (data) {
-      let modData = data.map((item, index) => {
-        if(item){
-          let rmText = item.name;
-          let dText = item.name;
-          return { readme_href: <span>
+                let modData = data.map((item, index) => {
+                  if (item) {
+                    let rmText = item.name;
+                    let dText = item.name;
+                     return { readme_href: <span key={item.name}>
                 <a href={item.readme_url} target="_blank">
                   <i className="fa fa-file-text-o fa-lg" aria-hidden="true" style={{ width: 80 }} />
                 </a>
-              </span>, download_href: <span>
+              </span>, download_href: <span key={item.name + 1}>
                 <a href={item.href} download={dText}>
                   <i className="fa fa-cloud-download fa-lg" aria-hidden="true" style={{ width: 80, color: "#8C1515" }} />
                 </a>
-              </span>, name: item.name, description: item.description };
-      }});
-      modData.map((item, index) => {
-        let temp = _.values(item);
-        results.rows.push(temp);
-      });
-      results.headers.push(["README ", "Download ", "Name ", " Description"]);
-      return results;
-    }
+              </span>, name: item.name, size:item.file_size, description: item.description };
+                   
+
+                      }
+                });
+                modData.map((item, index) => {
+                  results.rows.push(_.values(item));
+                });
+                //results.headers.push(["README ", "Download ", "Name ", " Description"]);
+              results.headers.push(["README ", "Download ", "Name", "Size","Description"]);
+
+                return results;
+              }
   }
   nodeToggle(node) {
     this.props.dispatch(downloadsActions.toggleNode(!this.props.isVisible));
@@ -69,6 +79,7 @@ class CustomTreeContainer extends Component {
     this.props.dispatch(downloadsActions.getNode(node));
   }
   componentDidMount() {
+    debugger;
     this.props.dispatch(downloadsActions.fetchDownloadsMenuData());
     if (this.props.query) {
       this.props.dispatch(
@@ -81,8 +92,6 @@ class CustomTreeContainer extends Component {
   }
   renderTreeStructure() {
     let items = this.props.downloadsMenu;
-    ;
-
     if (items.length > 0) {
       let treeNodes = items.map((node, index) => {
         if (node) {
@@ -124,24 +133,22 @@ class CustomTreeContainer extends Component {
         <hr />
       </div>
     );
-    if (Object.keys(this.props.downloadsResults).length > 0) {
-      let table = this.renderDataTable(this.props.downloadsResults);
-      let cssTree = {
-        "list-style-Type": "none"
-      };
-      let renderTemplate = (
-        <div>
-          {pageTitle}
-          <div className="row">
-            <div className="columns small-2">{data}</div>
-            <div className="columns small-10">
-              <DataTable data={table} usePlugin={true} />
+    if (this.state.tableData && Object.keys(this.state.tableData).length > 0) {
+      let table = this.state.downloadsResults.length > 0 ? this.renderDataTable(this.state.downloadsResults): [];
+      if (table.length > 0){
+        let cssTree = { "list-style-Type": "none" };
+        let renderTemplate = <div>
+            {pageTitle}
+            <div className="row">
+              <div className="columns small-2">{data}</div>
+              <div className="columns small-10">
+                <DataTable data={table} usePlugin={true} />
+              </div>
             </div>
-          </div>
-          
-        </div>
-      );
-      return renderTemplate;
+          </div>;
+        return renderTemplate;
+      }
+      
     } else {
       let renderTemplate = <div>
           {pageTitle}

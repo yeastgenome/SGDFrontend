@@ -23,25 +23,21 @@ const DataTable = React.createClass({
 	// to not depend on _rootNodeID
 	getInitialState: function () {
 		var _fakeId = Math.round((Math.random() * 100)).toString() + "." + Math.round((Math.random() * 100)).toString();
-		return { fakeId: _fakeId };
+		return { fakeId: _fakeId};
 	},
 
 	render: function () {
-		var headerRows = this._getHeaderRows();
-		var bodyRows = this._getBodyRows();
+			var headerRows = this._getHeaderRows();
+      var bodyRows = this._getBodyRows();
 
-		return (
-			<div ref="wrapper" className="data-table table-scroll-container dataTables_wrapper">
-				<table id={this.props.tableId} ref="table" className="table table-striped table-bordered table-condensed">
-					<thead>
-						{headerRows}
-					</thead>
-					<tbody>
-						{bodyRows}
-					</tbody>
-				</table>
-			</div>
-		);
+      return <div ref="wrapper" className="data-table table-scroll-container dataTables_wrapper">
+          <table id={this.props.tableId} ref="table" className="table table-striped table-bordered table-condensed">
+            <thead key="table-header">{headerRows}</thead>
+            <tbody key="table-body">{bodyRows}</tbody>
+          </table>
+        </div>;
+
+		
 	},
 
 	// if props.usePlugin, run dataTable plugin on table in DOM
@@ -55,6 +51,7 @@ const DataTable = React.createClass({
 			$(this.refs.wrapper).find("input").attr("placeholder", "Filter table");
 			$table.fnSearchHighlighting();
 		}
+		
 	},
 
 	_setupPlugins: function () {
