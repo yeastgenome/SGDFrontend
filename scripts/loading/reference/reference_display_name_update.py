@@ -1,45 +1,48 @@
+import logging
+import os
 from datetime import datetime
+import time
 import sys
 reload(sys)  # Reload does the trick!
-sys.path.insert(0, '../../../src/')
 sys.setdefaultencoding('UTF8')
-from models import Dbentity, Referencedbentity
-sys.path.insert(0, '../')
-from config import CREATED_BY
-from database_session import get_nex_session as get_session
+from src.models import Dbentity, Referencedbentity
+from scripts.loading.database_session import get_session
 
 __author__ = 'sweng66'
 
-## Created on June 2017
-## This script is used to the display_name in DBENTITY table based on citation 
-## in REFERENCEDBENTITY table in NEX2.
+logging.basicConfig(format='%(message)s')
+log = logging.getLogger()
+log.setLevel(logging.INFO)
 
-def update_database(log_file):
+def update_reference_data():
 
     nex_session = get_session()
 
-    dbentity_id_to_citation = dict([(x.dbentity_id, x.citation) for x in nex_session.query(Referencedbentity).all()])
+    log.info("Updating DBENTITY.display_name...")
 
+    ## update display_name in DBENTITY table
+    dbentity_id_to_citation = dict([(x.dbentity_id, (x.citation, x.pmid)) for x in nex_session.query(Referencedbentity).all()])
+    
     all_refs = nex_session.query(Dbentity).filter_by(subclass='REFERENCE').all()
 
-    fw = open(log_file, "w")
-
     for x in all_refs:
-        display_name = dbentity_id_to_citation[x.dbentity_id].split(')')[0] + ')'
+        (citation, pmid) = dbentity_id_to_citation[x.dbentity_id]
+        display_name = citation.split(')')[0] + ')'
         if display_name == x.display_name:
-            continue        
-        # nex_session.query(Dbentity).filter_by(dbentity_id=x.dbentity_id).update({"display_name": display_name})
+            continue
+        display_name_old = x.display_name
         x.display_name = display_name
-        fw.write("update display_name from " + x.display_name + " to " + display_name + "\n")
         nex_session.add(x)
         nex_session.commit()
-       
-    nex_session.close()
-    fw.close()
+        log.info("PMID:" + str(pmid) + " display_name is changed from " + display_name_old + " to " + display_name) 
 
-if __name__ == "__main__":
+    log.info("Done")
 
-    log_file = "logs/reference_display_name_update.log"
-    update_database(log_file)
 
+if __name__ == '__main__':
     
+    update_reference_data()
+
+
+
+
