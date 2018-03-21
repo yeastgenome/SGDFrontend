@@ -847,4 +847,7 @@ def get_downloads_menu(request):
 def get_downloads_path(request):
     id = request.matchdict["pathid"]
     file_res = models_helper.get_files_by_path_id(id)
-    return file_res
+    if file_res:
+        return file_res
+    else:
+        return []
