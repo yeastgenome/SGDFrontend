@@ -92,7 +92,8 @@ class ColleagueUpdate extends Component {
       _requestMethod = 'PUT';
       url = `colleagues/${this.state.colleagueId}`;
     }
-    return <ColleagueForm defaultData={this.state.formValue} onComplete={this.props.onComplete.bind(this)} requestMethod={_requestMethod} submitUrl={url} submitText='Next' />;
+    let _submitText = this.props.submitText || 'Next';
+    return <ColleagueForm defaultData={this.state.formValue} onComplete={this.props.onComplete.bind(this)} requestMethod={_requestMethod} submitUrl={url} submitText={_submitText} />;
   }
 
   render() {
@@ -107,7 +108,8 @@ class ColleagueUpdate extends Component {
 
 ColleagueUpdate.propTypes = {
   dispatch: React.PropTypes.func,
-  onComplete: React.PropTypes.func
+  onComplete: React.PropTypes.func,
+  submitText: React.PropTypes.string
 };
 
 function mapStateToProps() {
