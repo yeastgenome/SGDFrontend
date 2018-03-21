@@ -867,7 +867,7 @@ def primer3(request):
         'PRIMER_MAX_SELF_END': self_end_anneal,
         'PRIMER_PAIR_MAX_COMPL_ANY': pair_anneal,
         'PRIMER_PAIR_MAX_COMPL_END': pair_end_anneal,
-        'PRIMER_PRODUCT_SIZE_RANGE': [[100, 2500]],
+        'PRIMER_PRODUCT_SIZE_RANGE': [[100, stop]],
         'PRIMER_DNA_CONC': 50,
         'PRIMER_SALT_MONOVALENT': 50
         })
