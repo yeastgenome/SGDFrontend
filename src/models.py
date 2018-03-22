@@ -8335,6 +8335,8 @@ class Reservedname(Base):
                 new_locus_id = self.associate_locus(res_systematic_name, username)
                 self = curator_session.merge(self)
                 self.locus_id = new_locus_id
+            elif self.locus_id:
+                self.locus_id = None
             if new_info['display_name'] and new_info['display_name'] != self.display_name:
                 potential_name = new_info['display_name'].upper().strip()
                 if not Locusdbentity.is_valid_gene_name(potential_name):
@@ -8441,6 +8443,12 @@ class ReservednameTriage(Base):
             data = json.loads(self.json)
             if new_info['systematic_name']:
                 res_systematic_name = new_info['systematic_name'].upper()
+                is_locus = curator_session.query(Locusdbentity).filter(Locusdbentity.systematic_name == res_systematic_name).one_or_none()
+                if not is_locus:
+                    raise ValueError(res_systematic_name + ' is not a valid systematic_name.')
+                is_already_reserved = curator_session.query(Reservedname).filter(Reservedname.locus_id == is_locus.dbentity_id).one_or_none()
+                if is_already_reserved:
+                    raise ValueError(res_systematic_name + ' is already reserved for ' + is_already_reserved.display_name)
                 data['systematic_name'] = res_systematic_name
             if new_info['name_description']:
                 data['description'] = new_info['name_description']
