@@ -562,6 +562,8 @@ ALTER TABLE nex.authorresponse ADD CONSTRAINT authorresponse_ref_fk FOREIGN KEY 
 
 ALTER TABLE nex.colleaguetriage ADD CONSTRAINT colleaguetriage_coll_fk FOREIGN KEY (colleague_id) REFERENCES colleague(colleague_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
 
+ALTER TABLE nex.reservednametriage ADD CONSTRAINT reservednametriage_coll_fk FOREIGN KEY (colleague_id) REFERENCES colleague(colleague_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
+
 ALTER TABLE nex.curatoractivity ADD CONSTRAINT curatoractivity_dbentity_fk FOREIGN KEY (dbentity_id) REFERENCES dbentity(dbentity_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
 
 
