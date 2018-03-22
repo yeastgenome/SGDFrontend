@@ -50,12 +50,12 @@ class GeneNameReservation extends Component {
       publication_title: t.maybe(t.String),
       journal: t.maybe(t.String),
       year: t.maybe(t.String),
-      status: t.enums.of([
+      status: t.maybe(t.enums.of([
         'In press',
         'Submitted',
         'In preparation',
         'Unpublished'
-      ]),
+      ])),
       authors: t.maybe(t.list(Author))
     });
     let resLayout = locals => {
@@ -111,6 +111,9 @@ class GeneNameReservation extends Component {
         year: {
           label: 'Year *'
         },
+        status: {
+          label: 'Publication status *'
+        },
         reservations: {
           disableOrder: true,
           disableRemove: true,
@@ -125,7 +128,7 @@ class GeneNameReservation extends Component {
                 label: 'Description of Gene Name Acronym *'
               },
               systematic_name: {
-                label: 'ORF Name (srongly encouraged)'
+                label: 'ORF Name (strongly encouraged)'
               },
             }
           },
