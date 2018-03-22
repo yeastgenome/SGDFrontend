@@ -470,7 +470,7 @@ def new_gene_name_reservation(request):
             msg = 'The proposed name ' + proposed_name + ' is already reserved. Please contact sgd-helpdesk@lists.stanford.edu for more information.'
             return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
         is_already_gene = DBSession.query(Locusdbentity).filter(Locusdbentity.gene_name == proposed_name).one_or_none()
-        if is_already_res:
+        if is_already_gene:
             msg = 'The proposed name ' + proposed_name + ' is a standard gene name. Please contact sgd-helpdesk@lists.stanford.edu for more information.'
             return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
         # make sure is proper format
@@ -484,10 +484,14 @@ def new_gene_name_reservation(request):
             if not systematic_locus:
                 msg = proposed_systematic_name + ' is not a recognized locus systematic name.'
                 return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
-            # also see if there is already a res for that locus
+            # also see if there is already a res for that locus, or if already named
             is_systematic_res = DBSession.query(Reservedname).filter(Reservedname.locus_id == systematic_locus.dbentity_id).one_or_none()
             if is_systematic_res:
                 msg = proposed_systematic_name + ' has already been reserved. Please contact sgd-helpdesk@lists.stanford.edu for more information.'
+                return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
+            existing_name = systematic_locus.gene_name
+            if existing_name:
+                msg = proposed_systematic_name + ' already has a standard name: ' + existing_name + '. Please contact sgd-helpdesk@lists.stanford.edu for more information.'
                 return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
     # input is valid, add entry or entries to reservednametriage
     try:
