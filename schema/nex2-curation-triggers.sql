@@ -161,7 +161,7 @@ BEGIN
     v_row := OLD.curation_id || '[:]' || OLD.triage_type || '[:]' ||
              coalesce(OLD.colleague_id,0) || '[:]' || OLD.json || '[:]' ||
 	         coalesce(OLD.curator_comment,'') || '[:]' ||
-             OLD.date_created || '[:]' || OLD.created_by;
+             OLD.date_created;
 
              PERFORM nex.insertdeletelog('COLLEAGUETRIAGE'::text, OLD.curation_id, v_row, USER);
 
@@ -178,14 +178,6 @@ EXECUTE PROCEDURE trigger_fct_colleaguetriage_audr();
 DROP TRIGGER IF EXISTS colleaguetriage_biur ON nex.colleaguetriage CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_colleaguetriage_biur() RETURNS trigger AS $BODY$
 BEGIN
-  IF (TG_OP = 'INSERT') THEN
-
-       NEW.created_by := UPPER(NEW.created_by);
-       PERFORM nex.checkuser(NEW.created_by);
-
-       RETURN NEW;
-       
-  ELSIF (TG_OP = 'UPDATE') THEN
 
     IF (NEW.curation_id != OLD.curation_id) THEN
         RAISE EXCEPTION 'Primary key cannot be updated';
@@ -195,18 +187,13 @@ BEGIN
         RAISE EXCEPTION 'Audit columns cannot be updated.';
     END IF;
 
-    IF (NEW.created_by != OLD.created_by) THEN
-        RAISE EXCEPTION 'Audit columns cannot be updated.';
-    END IF;
-
     RETURN NEW;
-  END IF;
 
 END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER colleaguetriage_biur
-BEFORE INSERT OR UPDATE ON nex.colleaguetriage FOR EACH ROW
+BEFORE UPDATE ON nex.colleaguetriage FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_colleaguetriage_biur();
 
 
@@ -291,7 +278,6 @@ $BODY$ LANGUAGE 'plpgsql';
 CREATE TRIGGER curationlocus_biur
 BEFORE INSERT OR UPDATE ON nex.curation_locus FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_curationlocus_biur();
-
 
 
 DROP TRIGGER IF EXISTS curationreference_audr ON nex.curation_reference CASCADE;
@@ -421,7 +407,7 @@ BEGIN
              OLD.citation || '[:]' || coalesce(OLD.fulltext_url,'') || '[:]' ||
              coalesce(OLD.abstract_genes,'') || '[:]' ||
              coalesce(OLD.abstract,'') || '[:]' || coalesce(OLD.json,'') || '[:]' ||
-             OLD.date_created || '[:]' || OLD.created_by;
+             OLD.date_created;
 
            PERFORM nex.insertdeletelog('REFERENCETRIAGE'::text, OLD.curation_id, v_row, USER);
 
@@ -438,14 +424,6 @@ EXECUTE PROCEDURE trigger_fct_referencetriage_audr();
 DROP TRIGGER IF EXISTS referencetriage_biur ON nex.referencetriage CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_referencetriage_biur() RETURNS trigger AS $BODY$
 BEGIN
-  IF (TG_OP = 'INSERT') THEN
-
-       NEW.created_by := UPPER(NEW.created_by);
-       PERFORM nex.checkuser(NEW.created_by);
-
-       RETURN NEW;
-
-  ELSIF (TG_OP = 'UPDATE') THEN
 
     IF (NEW.curation_id != OLD.curation_id) THEN
         RAISE EXCEPTION 'Primary key cannot be updated';
@@ -455,18 +433,13 @@ BEGIN
         RAISE EXCEPTION 'Audit columns cannot be updated.';
     END IF;
 
-    IF (NEW.created_by != OLD.created_by) THEN
-        RAISE EXCEPTION 'Audit columns cannot be updated.';
-    END IF;
-
     RETURN NEW;
-  END IF;
 
 END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER referencetriage_biur
-BEFORE INSERT OR UPDATE ON nex.referencetriage FOR EACH ROW
+BEFORE UPDATE ON nex.referencetriage FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_referencetriage_biur();
 
 DROP TRIGGER IF EXISTS reservednametriage_audr ON nex.reservednametriage CASCADE;
@@ -494,7 +467,7 @@ BEGIN
 
     v_row := OLD.curation_id || '[:]' || OLD.proposed_gene_name || '[:]' ||
              OLD.colleague_id || '[:]' || OLD.json || '[:]' ||
-             OLD.date_created || '[:]' || OLD.created_by;
+             OLD.date_created;
 
            PERFORM nex.insertdeletelog('RESERVEDNAMETRIAGE'::text, OLD.curation_id, v_row, USER);
 
@@ -511,14 +484,6 @@ EXECUTE PROCEDURE trigger_fct_reservednametriage_audr();
 DROP TRIGGER IF EXISTS reservednametriage_biur ON nex.reservednametriage CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_reservednametriage_biur() RETURNS trigger AS $BODY$
 BEGIN
-  IF (TG_OP = 'INSERT') THEN
-
-       NEW.created_by := UPPER(NEW.created_by);
-       PERFORM nex.checkuser(NEW.created_by);
-
-       RETURN NEW;
-
-  ELSIF (TG_OP = 'UPDATE') THEN
 
     IF (NEW.curation_id != OLD.curation_id) THEN
         RAISE EXCEPTION 'Primary key cannot be updated';
@@ -528,18 +493,13 @@ BEGIN
         RAISE EXCEPTION 'Audit columns cannot be updated.';
     END IF;
 
-    IF (NEW.created_by != OLD.created_by) THEN
-        RAISE EXCEPTION 'Audit columns cannot be updated.';
-    END IF;
-
     RETURN NEW;
-  END IF;
 
 END;
 $BODY$ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER reservednametriage_biur
-BEFORE INSERT OR UPDATE ON nex.reservednametriage FOR EACH ROW
+BEFORE UPDATE ON nex.reservednametriage FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_reservednametriage_biur();
 
 
