@@ -2114,22 +2114,27 @@ class Filedbentity(Dbentity):
         k.set_contents_from_file(file, rewind=True)
         k.make_public()
         file_s3 = bucket.get_key(k.key)
+        # s3 md5sum
         etag_md5_s3 = file_s3.etag.strip('"').strip("'")
+        # get local md5sum https://stackoverflow.com/questions/3431825/generating-an-md5-checksum-of-a-file
+        hash_md5 = hashlib.md5()
+        file.seek(0)
+        for chunk in iter(lambda: file.read(4096), b""):
+            hash_md5.update(chunk)
+        local_md5sum = hash_md5.hexdigest()
+        file.seek(0)
+        # compare m5sum, save if match
+        if local_md5sum != etag_md5_s3:
+            transaction.abort()
+            raise Exception('MD5sum check failed.')
+        self.md5sum = etag_md5_s3
         # get file size
         file.seek(0, os.SEEK_END)
         file_size = file.tell()
         file.seek(0)
-
         self.file_size = file_size
-        # if md5 checksum matches, save s3 URL to db
-        if self.md5sum is None:
-            self.md5sum = etag_md5_s3
-        if (self.md5sum == etag_md5_s3):
-            self.s3_url = file_s3.generate_url(expires_in=0, query_auth=False)
-            transaction.commit()
-        else:
-            transaction.abort()
-            raise Exception('MD5sum check failed.')
+        self.s3_url = file_s3.generate_url(expires_in=0, query_auth=False)
+        transaction.commit()
 
     def get_path(self):
         path_res = DBSession.query(FilePath, Path).filter(
