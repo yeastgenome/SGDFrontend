@@ -46,7 +46,7 @@ def index_toolbar_links():
                               []), ("SPELL", "https://spell.yeastgenome.org",
                                     'spell'), ("BLAST", "/blast-sgd", 'blast'),
         ("Fungal BLAST", "/blast-fungal",
-         'blast'), ("Pattern Matching", "/cgi-bin/PATMATCH/nph-patmatch",
+         'blast'), ("Pattern Matching", "/nph-patmatch",
                     []), ("Design Primers", "/cgi-bin/web-primer", []),
         ("Restriction Mapper", "/cgi-bin/PATMATCH/RestrictionMapper",
          []), ("Genome Browser", "/browse",
