@@ -480,8 +480,8 @@ BEGIN
         PERFORM nex.insertupdatelog('RESERVEDNAMETRIAGE'::text, 'PROPOSED_GENE_NAME'::text, OLD.curation_id, OLD.proposed_gene_name::text, NEW.proposed_gene_name::text, USER);
     END IF;
 
-     IF (OLD.user_email != NEW.user_email) THEN
-        PERFORM nex.insertupdatelog('RESERVEDNAMETRIAGE'::text, 'USER_EMAIL'::text, OLD.curation_id, OLD.user_email::text, NEW.user_email::text, USER);
+     IF (OLD.colleague_id != NEW.colleague_id) THEN
+        PERFORM nex.insertupdatelog('RESERVEDNAMETRIAGE'::text, 'COLLEAGUE_ID'::text, OLD.curation_id, OLD.colleague_id::text, NEW.colleague_id::text, USER);
     END IF;
 
     IF (OLD.json != NEW.json) THEN
@@ -493,7 +493,7 @@ BEGIN
   ELSIF (TG_OP = 'DELETE') THEN
 
     v_row := OLD.curation_id || '[:]' || OLD.proposed_gene_name || '[:]' ||
-             OLD.user_email || '[:]' || OLD.json || '[:]' ||
+             OLD.colleague_id || '[:]' || OLD.json || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
            PERFORM nex.insertdeletelog('RESERVEDNAMETRIAGE'::text, OLD.curation_id, v_row, USER);
