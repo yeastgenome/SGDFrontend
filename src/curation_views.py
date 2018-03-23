@@ -579,7 +579,7 @@ def new_colleague(request):
     colleague_orcid_exists = DBSession.query(Colleague).filter(Colleague.orcid == params.get('orcid')).one_or_none()
     if colleague_orcid_exists:
         msg = 'You entered an ORCID which is already being used by an SGD colleague. Try to find your entry or contact sgd-helpdesk@lists.stanford.edu if you think this is a mistake.'
-        raise ValueError(msg)
+        return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
     try:
         full_name = params['first_name'] + ' ' + params['last_name']
         format_name = params['first_name'] + '_' + params['last_name'] + str(randint(1,100))# add a random number to be sure it's unique
