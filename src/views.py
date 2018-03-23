@@ -808,6 +808,7 @@ def primer3(request):
     p_keys = params.keys()
     if 'gene_name' in p_keys:
         gene_name = params.get('gene_name')
+        print gene_name
         if gene_name is None:
             sequence = params.get('sequence')
             sequence = str(sequence.replace('\r', '').replace('\n', ''))
@@ -816,6 +817,7 @@ def primer3(request):
             tax_id = DBSession.query(Straindbentity.taxonomy_id).filter(Straindbentity.strain_type =='Reference').one_or_none()
             dna = DBSession.query(Dnasequenceannotation.residues).filter(and_(Dnasequenceannotation.taxonomy_id == tax_id, Dnasequenceannotation.dbentity_id == locus.dbentity_id, Dnasequenceannotation.dna_type =='GENOMIC')).one_or_none()[0]
             sequence = str(dna)
+            print sequence
     if 'maximum_tm' in p_keys:
         maximum_tm = params.get('maximum_tm')
     if 'minimum_tm' in p_keys:
@@ -834,102 +836,173 @@ def primer3(request):
         minimum_length = params.get('minimum_length')
     if 'optimum_primer_length' in p_keys:
         optimum_primer_length = params.get('optimum_primer_length')
-    if 'pair_end_anneal' in p_keys:
-        pair_end_anneal = params.get('pair_end_anneal')
-    if 'pair_anneal' in p_keys:
-        pair_anneal = params.get('pair_anneal')
-    if 'self_end_anneal' in p_keys:
-        self_end_anneal = params.get('self_end_anneal')
-    if 'self_anneal' in p_keys:
-        self_anneal = params.get('self_anneal')
+    if 'max_three_prime_pair_complementarity' in p_keys:
+        max_three_prime_pair_complementarity = params.get('max_three_prime_pair_complementarity')
+    if 'max_pair_complementarity' in p_keys:
+        max_pair_complementarity = params.get('max_pair_complementarity')
+    if 'max_three_prime_self_complementarity' in p_keys:
+        max_three_prime_self_complementarity= params.get('max_three_prime_self_complementarity')
+    if 'max_self_complementarity' in p_keys:
+        max_self_complementarity = params.get('max_self_complementarity')
+    if 'product_size_start' in p_keys:
+        product_size_start = params.get('product_size_start')
+    if 'product_size_end' in p_keys:
+        product_size_end = params.get('product_size_end')
 
     else:
         return HTTPBadRequest('No sequence provided')
-    stop = len(sequence) - 100
+    stop = len(sequence) - product_size_end
+    print start
     print stop
-    print len(sequence)
     result = designPrimers(
         {
             'SEQUENCE_ID': 'MH1000',
             'SEQUENCE_TEMPLATE': sequence
         },
         {
-        'PRIMER_OPT_SIZE': optimum_primer_length,
-        'PRIMER_MIN_SIZE': minimum_length,
-        'PRIMER_MAX_SIZE': maximum_length,
-        'PRIMER_OPT_TM': optimum_tm,
-        'PRIMER_MIN_TM': minimum_tm,
-        'PRIMER_MAX_TM': maximum_tm,
-        'PRIMER_MIN_GC': minimum_gc,
-        'PRIMER_MAX_GC': maximum_gc,
-        'PRIMER_OPT_GC': optimum_gc,
-        'PRIMER_MAX_SELF_ANY': self_anneal,
-        'PRIMER_MAX_SELF_END': self_end_anneal,
-        'PRIMER_PAIR_MAX_COMPL_ANY': pair_anneal,
-        'PRIMER_PAIR_MAX_COMPL_END': pair_end_anneal,
-        'PRIMER_PRODUCT_SIZE_RANGE': [[100, stop]],
-        'PRIMER_DNA_CONC': 50,
-        'PRIMER_SALT_MONOVALENT': 50
-        })
-    # return this error if sequence is not formatted correctly -- IOError: Unrecognized base in input sequence
-    return result
-
-@view_config(route_name='primer3seq', renderer='json', request_method='POST')
-def primer3seq(request):
-    params = request.json_body
-    print(params)
-    p_keys = params.keys()
-    if 'gene_name' in p_keys:
-        gene_name = params.get('gene_name')
-        if gene_name is None:
-            sequence = params.get('sequence')
-            sequence = str(sequence.replace('\r', '').replace('\n', ''))
-        else:
-            locus = DBSession.query(Locusdbentity).filter(or_(Locusdbentity.gene_name == gene_name.upper(),Locusdbentity.systematic_name == gene_name)).one_or_none()
-            tax_id = DBSession.query(Straindbentity.taxonomy_id).filter(Straindbentity.strain_type =='Reference').one_or_none()
-            dna = DBSession.query(Dnasequenceannotation.residues).filter(and_(Dnasequenceannotation.taxonomy_id == tax_id, Dnasequenceannotation.dbentity_id == locus.dbentity_id, Dnasequenceannotation.dna_type =='GENOMIC')).one_or_none()[0]
-            sequence = str(dna)
-    if 'maximum_gc' in p_keys:
-        maximum_gc = params.get('maximum_gc')
-    if 'minimum_gc' in p_keys:
-        minimum_gc = params.get('minimum_gc')
-    if 'optimum_gc' in p_keys:
-        optimum_gc = params.get('optimum_gc')
-    if 'maximum_length' in p_keys:
-        maximum_length = params.get('maximum_length')
-    if 'minimum_length' in p_keys:
-        minimum_length = params.get('minimum_length')
-    if 'optimum_primer_length' in p_keys:
-        optimum_primer_length = params.get('optimum_primer_length')
-    if 'self_end_anneal' in p_keys:
-        self_end_anneal = params.get('self_end_anneal')
-    if 'self_anneal' in p_keys:
-        self_anneal = params.get('self_anneal')
-
-    else:
-        return HTTPBadRequest('No sequence provided')
-    stop = len(sequence) - 100
-    print stop
-    print len(sequence)
-    result = designPrimers(
-        {
-            'SEQUENCE_ID': 'MH1000',
-            'SEQUENCE_TEMPLATE': sequence
-        },
-        {
-        'PRIMER_OPT_SIZE': optimum_primer_length,
-        'PRIMER_MIN_SIZE': minimum_length,
-        'PRIMER_MAX_SIZE': maximum_length,
-        'PRIMER_MIN_GC': minimum_gc,
-        'PRIMER_MAX_GC': maximum_gc,
-        'PRIMER_OPT_GC': optimum_gc,
-        'PRIMER_MAX_SELF_ANY': self_anneal,
-        'PRIMER_MAX_SELF_END': self_end_anneal,
-        'PRIMER_PRODUCT_SIZE_RANGE': [[100, 2500]],
-        'PRIMER_DNA_CONC': 50,
-        'PRIMER_SALT_MONOVALENT': 50
-        })
-    # return this error if sequence is not formatted correctly -- IOError: Unrecognized base in input sequence
+            'PRIMER_FIRST_BASE_INDEX': 1,
+            'PRIMER_THERMODYNAMIC_OLIGO_ALIGNMENT': 1,
+            'PRIMER_THERMODYNAMIC_TEMPLATE_ALIGNMENT' : 0,
+            'PRIMER_PICK_LEFT_PRIMER':  1,
+            'PRIMER_PICK_INTERNAL_OLIGO': 0,
+            'PRIMER_PICK_RIGHT_PRIMER': 1,
+            'PRIMER_LIBERAL_BASE': 1,
+            'PRIMER_LIB_AMBIGUITY_CODES_CONSENSUS': 0,
+            'PRIMER_LOWERCASE_MASKING': 0,
+            'PRIMER_PICK_ANYWAY': 0,
+            'PRIMER_EXPLAIN_FLAG': 1,
+            'PRIMER_MASK_TEMPLATE': 0,
+            'PRIMER_TASK' : 'generic',
+            'PRIMER_MASK_FAILURE_RATE': 0.1,
+            'PRIMER_MASK_5P_DIRECTION': 1,
+            'PRIMER_MASK_3P_DIRECTION': 0,
+            'PRIMER_MIN_QUALITY': 0,
+            'PRIMER_MIN_END_QUALITY': 0,
+            'PRIMER_QUALITY_RANGE_MIN': 0,
+            'PRIMER_QUALITY_RANGE_MAX': 100,
+            'PRIMER_MIN_SIZE': minimum_length,
+            'PRIMER_OPT_SIZE': optimum_primer_length,
+            'PRIMER_MAX_SIZE': maximum_length,
+            'PRIMER_MIN_TM': minimum_tm,
+            'PRIMER_OPT_TM': optimum_tm,
+            'PRIMER_MAX_TM': maximum_tm,
+            'PRIMER_PAIR_MAX_DIFF_TM': 5.0,
+            'PRIMER_TM_FORMULA': 1,
+            'PRIMER_PRODUCT_MIN_TM': -1000000.0,
+            'PRIMER_PRODUCT_OPT_TM' : 0.0,
+            'PRIMER_PRODUCT_MAX_TM' : 1000000.0,
+            'PRIMER_MIN_GC' : minimum_gc,
+            'PRIMER_OPT_GC_PERCENT' : optimum_gc,
+            'PRIMER_MAX_GC' : maximum_gc,
+            'PRIMER_PRODUCT_SIZE_RANGE': [[product_size_start,stop]],
+            'PRIMER_NUM_RETURN': 5,
+            'PRIMER_MAX_END_STABILITY' : 9.0,
+            'PRIMER_MAX_LIBRARY_MISPRIMING' : 12.00,
+            'PRIMER_PAIR_MAX_LIBRARY_MISPRIMING' : 20.00,
+            'PRIMER_MAX_SELF_ANY_TH' : 45.0,
+            'PRIMER_MAX_SELF_END_TH' : 35.0,
+            'PRIMER_PAIR_MAX_COMPL_ANY_TH' : 45.0,
+            'PRIMER_PAIR_MAX_COMPL_END_TH' : 35.0,
+            'PRIMER_MAX_HAIRPIN_TH' : 24.0,
+            'PRIMER_MAX_SELF_ANY' : max_self_complementarity,
+            'PRIMER_MAX_SELF_END' : max_three_prime_self_complementarity,
+            'PRIMER_PAIR_MAX_COMPL_ANY' : max_pair_complementarity,
+            'PRIMER_PAIR_MAX_COMPL_END' : max_three_prime_pair_complementarity,
+            'PRIMER_MAX_TEMPLATE_MISPRIMING_TH' : 40.00,
+            'PRIMER_PAIR_MAX_TEMPLATE_MISPRIMING_TH' : 70.00,
+            'PRIMER_MAX_TEMPLATE_MISPRIMING' : 12.00,
+            'PRIMER_PAIR_MAX_TEMPLATE_MISPRIMING' : 24.00,
+            'PRIMER_MAX_NS_ACCEPTED' : 0,
+            'PRIMER_MAX_POLY_X' : 4,
+            'PRIMER_INSIDE_PENALTY' : -1.0,
+            'PRIMER_OUTSIDE_PENALTY' : 0,
+            'PRIMER_GC_CLAMP' : 0,
+            'PRIMER_MAX_END_GC' : 5,
+            'PRIMER_MIN_LEFT_THREE_PRIME_DISTANCE' : 3,
+            'PRIMER_MIN_RIGHT_THREE_PRIME_DISTANCE' : 3,
+            'PRIMER_MIN_5_PRIME_OVERLAP_OF_JUNCTION' : 7,
+            'PRIMER_MIN_3_PRIME_OVERLAP_OF_JUNCTION' : 4,
+            'PRIMER_SALT_MONOVALENT' : 50.0,
+            'PRIMER_SALT_CORRECTIONS' : 1,
+            'PRIMER_SALT_DIVALENT' : 1.5,
+            'PRIMER_DNTP_CONC' : 0.6,
+            'PRIMER_DNA_CONC' : 50.0,
+            'PRIMER_SEQUENCING_SPACING' : 500,
+            'PRIMER_SEQUENCING_INTERVAL' : 250,
+            'PRIMER_SEQUENCING_LEAD' : 50,
+            'PRIMER_SEQUENCING_ACCURACY' : 20,
+            'PRIMER_WT_SIZE_LT' : 1.0,
+            'PRIMER_WT_SIZE_GT' : 1.0,
+            'PRIMER_WT_TM_LT' : 1.0,
+            'PRIMER_WT_TM_GT' : 1.0,
+            'PRIMER_WT_GC_PERCENT_LT' : 0.0,
+            'PRIMER_WT_GC_PERCENT_GT' : 0.0,
+            'PRIMER_WT_SELF_ANY_TH' : 0.0,
+            'PRIMER_WT_SELF_END_TH' : 0.0,
+            'PRIMER_WT_HAIRPIN_TH' : 0.0,
+            'PRIMER_WT_TEMPLATE_MISPRIMING_TH' : 0.0,
+            'PRIMER_WT_SELF_ANY' : 0.0,
+            'PRIMER_WT_SELF_END' : 0.0,
+            'PRIMER_WT_TEMPLATE_MISPRIMING' : 0.0,
+            'PRIMER_WT_NUM_NS' : 0.0,
+            'PRIMER_WT_LIBRARY_MISPRIMING' : 0.0,
+            'PRIMER_WT_SEQ_QUAL' : 0.0,
+            'PRIMER_WT_END_QUAL' : 0.0,
+            'PRIMER_WT_POS_PENALTY' : 0.0,
+            'PRIMER_WT_END_STABILITY' : 0.0,
+            'PRIMER_WT_MASK_FAILURE_RATE' : 0.0,
+            'PRIMER_PAIR_WT_PRODUCT_SIZE_LT' : 0.0,
+            'PRIMER_PAIR_WT_PRODUCT_SIZE_GT' : 0.0,
+            'PRIMER_PAIR_WT_PRODUCT_TM_LT' : 0.0,
+            'PRIMER_PAIR_WT_PRODUCT_TM_GT' : 0.0,
+            'PRIMER_PAIR_WT_COMPL_ANY_TH' : 0.0,
+            'PRIMER_PAIR_WT_COMPL_END_TH' : 0.0,
+            'PRIMER_PAIR_WT_TEMPLATE_MISPRIMING_TH': 0.0,
+            'PRIMER_PAIR_WT_COMPL_ANY' : 0.0,
+            'PRIMER_PAIR_WT_COMPL_END' : 0.0,
+            'PRIMER_PAIR_WT_TEMPLATE_MISPRIMING' : 0.0,
+            'PRIMER_PAIR_WT_DIFF_TM' : 0.0,
+            'PRIMER_PAIR_WT_LIBRARY_MISPRIMING' : 0.0,
+            'PRIMER_PAIR_WT_PR_PENALTY' : 1.0,
+            'PRIMER_PAIR_WT_IO_PENALTY' : 0.0,
+            'PRIMER_INTERNAL_MIN_SIZE' : 18,
+            'PRIMER_INTERNAL_OPT_SIZE' : 20,
+            'PRIMER_INTERNAL_MAX_SIZE' : 27,
+            'PRIMER_INTERNAL_MIN_TM' : 57.0,
+            'PRIMER_INTERNAL_OPT_TM' : 60.0,
+            'PRIMER_INTERNAL_MAX_TM' : 63.0,
+            'PRIMER_INTERNAL_MIN_GC' : 20.0,
+            'PRIMER_INTERNAL_OPT_GC_PERCENT' : 50.0,
+            'PRIMER_INTERNAL_MAX_GC' : 80.0,
+            'PRIMER_INTERNAL_MAX_SELF_ANY_TH': 47.00,
+            'PRIMER_INTERNAL_MAX_SELF_END_TH' : 47.00,
+            'PRIMER_INTERNAL_MAX_HAIRPIN_TH' : 47.00,
+            'PRIMER_INTERNAL_MAX_SELF_ANY': 12.00,
+            'PRIMER_INTERNAL_MAX_SELF_END': 12.00,
+            'PRIMER_INTERNAL_MIN_QUALITY': 0,
+            'PRIMER_INTERNAL_MAX_NS_ACCEPTED' : 0,
+            'PRIMER_INTERNAL_MAX_POLY_X' : 5,
+            'PRIMER_INTERNAL_MAX_LIBRARY_MISHYB' : 12.00,
+            'PRIMER_INTERNAL_SALT_MONOVALENT' : 50.0,
+            'PRIMER_INTERNAL_DNA_CONC' : 50.0,
+            'PRIMER_INTERNAL_SALT_DIVALENT' : 1.5,
+            'PRIMER_INTERNAL_DNTP_CONC' : 0.0,
+            'PRIMER_INTERNAL_WT_SIZE_LT' : 1.0,
+            'PRIMER_INTERNAL_WT_SIZE_GT' : 1.0,
+            'PRIMER_INTERNAL_WT_TM_LT' : 1.0,
+            'PRIMER_INTERNAL_WT_TM_GT' : 1.0,
+            'PRIMER_INTERNAL_WT_GC_PERCENT_LT' : 0.0,
+            'PRIMER_INTERNAL_WT_GC_PERCENT_GT' : 0.0,
+            'PRIMER_INTERNAL_WT_SELF_ANY_TH' : 0.0,
+            'PRIMER_INTERNAL_WT_SELF_END_TH' : 0.0,
+            'PRIMER_INTERNAL_WT_HAIRPIN_TH' : 0.0,
+            'PRIMER_INTERNAL_WT_SELF_ANY' : 0.0,
+            'PRIMER_INTERNAL_WT_SELF_END' : 0.0,
+            'PRIMER_INTERNAL_WT_NUM_NS' : 0.0,
+            'PRIMER_INTERNAL_WT_LIBRARY_MISHYB': 0.0,
+            'PRIMER_INTERNAL_WT_SEQ_QUAL' : 0.0,
+            'PRIMER_INTERNAL_WT_END_QUAL': 0.0
+    })
     return result
 
 @view_config(route_name='ecnumber_locus_details', renderer='json', request_method='GET')
