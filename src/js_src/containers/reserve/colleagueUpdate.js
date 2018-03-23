@@ -65,12 +65,13 @@ class ColleagueUpdate extends Component {
         });
       });
     };
+    let selectNode = this.state.isNewColleague ? null : <Async value={this.state.selectorValue} loadOptions={getOptions} onChange={this.handleSelect.bind(this)} placeholder='Search for your last name in colleague registry' />;
     return (
       <div style={{ marginBottom: '1rem' }}>
         <p>Are you registered as an SGD colleague? If so, select your name and make any desired updates. If not, select the checkbox and enter information below.</p>
         <div className='row'>
           <div className='columns small-12 medium-6'>
-            <Async value={this.state.selectorValue} loadOptions={getOptions} onChange={this.handleSelect.bind(this)} placeholder='Search for your last name in colleague registry' />
+            {selectNode}
           </div>
           <div className='columns small-12 medium-6'>
             <label>
