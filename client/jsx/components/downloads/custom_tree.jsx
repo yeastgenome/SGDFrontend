@@ -1,8 +1,3 @@
-/**
- * author:fgondwe
- * date: 05/05/2017
- * purpose: render tree nodes
- */
 import React, { Component } from "react";
 import ClassNames from "classnames";
 import _ from "underscore";
@@ -20,21 +15,22 @@ class CustomTree extends Component {
   }
   componentDidMount() {
     if (this.props.node.childNodes != undefined) {
-      let item = _.findWhere(this.props.node.childNodes, {
-        title: this.props.queryString.item
-          ? S(this.props.queryString.item).capitalize().s
-          : undefined
-      });
-      if (item) {
-        this.setState({ visible: !this.state.visible });
+      if(this.props.node.childNodes.length > 0){
+        let item = _.findWhere(this.props.node.childNodes, 
+          {id: Object.keys(this.props.queryString).length > 0 ? Number(this.props.queryString.id) : 0}
+      );
+        if (item) {
+          this.setState({ visible: !this.state.visible });
+        }
       }
+      
     }
   }
   render() {
-    
     let childNodes;
     let style;
     let cssClasses;
+    let divClasses;
     if(this.props.node.childNodes != null){
     if (this.props.node.childNodes != undefined && this.props.node.childNodes.length > 0) {
       childNodes = this.props.node.childNodes.map((node, index) => {
@@ -46,9 +42,10 @@ class CustomTree extends Component {
       });
       cssClasses = { togglable: true, "togglable-down": this.state.visible, "togglable-up": !this.state.visible };
     } else {
-      if (this.props.node.title && this.props.queryString) {
-        if (this.props.node.title.toLowerCase() === this.props.queryString.item.toLowerCase()) {
-          cssClasses = { "highlight-node": true };
+      if (this.props.node.title && Object.keys(this.props.queryString).length > 0) {
+        if (this.props.node.id.toString() == this.props.queryString.id.toString()) {
+          cssClasses = { "node-highlight":true };
+          divClasses = { "div-highlight": true }
         }
       }
     }
@@ -62,9 +59,9 @@ class CustomTree extends Component {
     if (this.props.node.childNodes == undefined || this.props.node.childNodes.length == 0) {
       
       //leaf node
-      return <div>
+      return <div className={divClasses ? ClassNames(divClasses) : ""}>
           <span onClick={this.props.leafClick} data-node={this.props.node}>
-            <a id={this.props.node.id}  name={S(this.props.node.title).capitalize().s} data-node={this.props.node} value={this.props.node} className={ClassNames(cssClasses)}>
+            <a id={this.props.node.id} name={S(this.props.node.title).capitalize().s} data-node={this.props.node} value={this.props.node} className={ClassNames(cssClasses)}>
               {this.props.node.title}
             </a>
           </span>

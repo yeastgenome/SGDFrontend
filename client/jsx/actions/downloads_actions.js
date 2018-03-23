@@ -1,8 +1,3 @@
-/**
- * author: fgondwe
- * date: 05/05/2017
- * purpose: manage events for custom tree component
- */
 import * as URLS from "../lib/downloads_helper";
 import Axios from "axios";
 import * as action_types from "./action_types";
@@ -36,6 +31,7 @@ export function fetchDownloadsMenuData() {
 
 export const fetchDownloadResults = query => {
   return dispatch => {
+    dispatch(startPending());
     return Axios.get(URLS.getFilesUrl + query + "/files")
       .then(response => {
         dispatch(fetchDownloadResultsSuccess({
@@ -53,6 +49,12 @@ export const getNode = node => {
   return {
     type: action_types.GET_SELECTED_NODE,
     payload: { node: node }
+  };
+};
+
+export const startPending = () => {
+  return {
+    type: action_types.START_PENDING,
   };
 };
 
