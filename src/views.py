@@ -852,7 +852,7 @@ def primer3(request):
     else:
         return HTTPBadRequest('No sequence provided')
     stop = len(sequence) - product_size_end
-    print start
+    print product_size_start
     print stop
     result = designPrimers(
         {
