@@ -20,24 +20,22 @@ const Primer3 = React.createClass({
     return {
       result: null,
       value: {
-        distance_from_start_codon: '35',
-        distance_from_stop_codon: '35',
-        length_dna_primers: '35',
-        distance_between_primers: '250',
-        optimum_tm: '56',
-        minimum_tm: '52',
-        maximum_tm: '60',
-        optimum_primer_length: '20',
+        //product_size_range: '[[150,250], [100,300], [301,400], [401,500],[501,600],[601,700],[701,850],[851,1000]]',
+        product_size_start: '35',
+        product_size_end: '35',
+        minimum_tm: '57',
+        optimum_tm: '59',
+        maximum_tm: '62',
         minimum_length: '18',
-        maximum_length: '21',
-        optimum_gc: '45',
+        optimum_primer_length: '20',
+        maximum_length: '23',
         minimum_gc: '30',
-        maximum_gc: '60',
-        self_anneal: '24',
-        self_end_anneal: '12',
-        pair_anneal: '24',
-        pair_end_anneal: '12',
-        end_point: 'NO'
+        optimum_gc: '50',
+        maximum_gc: '70',
+        max_self_complementarity: '8',
+        max_three_prime_self_complementarity: '3',
+        max_pair_complementarity: '8',
+        max_three_prime_pair_complementarity: '3',
       },
       isLoadPending: false, // loading existing data
       isUpdatePending: false, // sending update to server
@@ -85,38 +83,30 @@ const Primer3 = React.createClass({
 
   renderExampleForm() {
 
-    const Endpoint = t.enums.of(['YES', 'NO'], 'Endpoint');
-
-    Endpoint.getTcombFormFactory = (options) => {
-        return t.form.Radio;
-    };
-
     const PcrFormSchema = t.struct({
+
        gene_name: t.maybe(t.String),
        sequence: t.maybe(t.String),
 
-       distance_from_start_codon: t.Number,
-       distance_from_stop_codon: t.Number,
-       optimum_primer_length: t.Number,
-
-       length_dna_primers: t.Number,
+       //product_size_range: t.String,
+       product_size_start: t.Number,
+       product_size_end: t.Number,
        minimum_length: t.Number,
+       optimum_primer_length: t.Number,
        maximum_length: t.Number,
 
-       end_point: Endpoint,
-
-       optimum_tm: t.Number,
        minimum_tm: t.Number,
+       optimum_tm: t.Number,
        maximum_tm: t.Number,
 
-       optimum_gc: t.Number,
        minimum_gc: t.Number,
+       optimum_gc: t.Number,
        maximum_gc: t.Number,
 
-       self_anneal: t.Number,
-       self_end_anneal: t.Number,
-       pair_anneal: t.Number,
-       pair_end_anneal: t.Number
+       max_self_complementarity: t.Number,
+       max_three_prime_self_complementarity: t.Number,
+       max_pair_complementarity: t.Number,
+       max_three_prime_pair_complementarity: t.Number
     });
 
     const formLayout = locals => {
@@ -125,7 +115,6 @@ const Primer3 = React.createClass({
         <span style={{ textAlign: "center" }}><h1>Primer Design: Based on Primer3 package <a href='https://pypi.python.org/pypi/primer3-py' target='_new'><i className='fa primer-help' /></a> </h1><hr/></span>
         <br/>
         <span>Sequences of <a href='http://wiki.yeastgenome.org/index.php/Primer_Set_Sequences' target='_new'><i className='fa primer-seqs' />primer sets </a> available to the community</span>
-        <span>DNA Source<a href='https://sites.google.com/view/yeastgenome-help/analyze-help/design-primers' target='_new'><i className='fa primer-help' />[info]</a></span>
          <div className='row'>
           <div className='columns small-6'>{locals.inputs.gene_name}</div>
          </div>
@@ -134,42 +123,38 @@ const Primer3 = React.createClass({
           <div className='columns small-6'>{locals.inputs.sequence}</div>
          </div>
 
-         <span><a href='https://sites.google.com/view/yeastgenome-help/analyze-help/design-primers' target='_new'><i className='fa primer-help' />Location</a></span>
+        <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_PRODUCT_SIZE_RANGE' target='_new'><i className='fa primer-help' />Product Size</a></span>
          <div className='row'>
-          <div className='columns small-4'>{locals.inputs.distance_from_start_codon}</div>
-          <div className='columns small-4'>{locals.inputs.distance_from_stop_codon}</div>
-          <div className='columns small-4'>{locals.inputs.length_dna_primers}</div>
-        </div>
-
-         <div className='row'>
-          <div className='columns small-2'>{locals.inputs.end_point}</div>
+          <div className='columns small-6'>{locals.inputs.product_size_start}</div>
+          <div className='columns small-6'>{locals.inputs.product_size_end}</div>
          </div>
 
-        <span><a href='https://sites.google.com/view/yeastgenome-help/analyze-help/design-primers' target='_new'><i className='fa primer-help' />Primer Length</a></span>
+        <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_MIN_SIZE' target='_new'><i className='fa primer-help' />Primer Length</a></span>
          <div className='row'>
-          <div className='columns small-3'>{locals.inputs.optimum_primer_length}</div>
           <div className='columns small-4'>{locals.inputs.minimum_length}</div>
+          <div className='columns small-3'>{locals.inputs.optimum_primer_length}</div>
           <div className='columns small-4'>{locals.inputs.maximum_length}</div>
          </div>
-        <span><a href='https://sites.google.com/view/yeastgenome-help/analyze-help/design-primers' target='_new'><i className='fa primer-help' />Primer Composition</a></span>
+
+        <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_MIN_GC' target='_new'><i className='fa primer-help' />Primer Composition</a></span>
          <div className='row'>
-          <div className='columns small-4'>{locals.inputs.optimum_gc}</div>
           <div className='columns small-4'>{locals.inputs.minimum_gc}</div>
+          <div className='columns small-4'>{locals.inputs.optimum_gc}</div>
           <div className='columns small-4'>{locals.inputs.maximum_gc}</div>
          </div>
-        <span><a href='https://sites.google.com/view/yeastgenome-help/analyze-help/design-primers' target='_new'><i className='fa primer-help' />Melting Temperature</a></span>
+        <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_PRODUCT_MIN_TM' target='_new'><i className='fa primer-help' />Melting Temperature</a></span>
 
          <div className='row'>
-          <div className='columns small-4'>{locals.inputs.optimum_tm}</div>
           <div className='columns small-4'>{locals.inputs.minimum_tm}</div>
+          <div className='columns small-4'>{locals.inputs.optimum_tm}</div>
           <div className='columns small-4'>{locals.inputs.maximum_tm}</div>
         </div>
-        <span><a href='https://sites.google.com/view/yeastgenome-help/analyze-help/design-primers' target='_new'><i className='fa primer-help' />Primer Annealing</a></span>
+        <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_MAX_SELF_ANY' target='_new'><i className='fa primer-help' />Primer Annealing</a></span>
         <div className='row'>
-          <div className='columns small-3'>{locals.inputs.self_anneal}</div>
-          <div className='columns small-3'>{locals.inputs.self_end_anneal}</div>
-          <div className='columns small-3'>{locals.inputs.pair_anneal}</div>
-          <div className='columns small-3'>{locals.inputs.pair_end_anneal}</div>
+          <div className='columns small-3'>{locals.inputs.max_self_complementarity}</div>
+          <div className='columns small-3'>{locals.inputs.max_three_prime_self_complementarity}</div>
+          <div className='columns small-3'>{locals.inputs.max_pair_complementarity}</div>
+          <div className='columns small-3'>{locals.inputs.max_three_prime_pair_complementarity}</div>
         </div>
 
         </div>
@@ -187,23 +172,17 @@ const Primer3 = React.createClass({
                 type: 'textarea',
                 label: 'Enter the DNA Sequence (comments should be removed)'
             },
-            distance_from_start_codon: {
-                label: 'Distance from START codon (positive numbers are UPSTREAM):  (Enter 0 to start at the first basepair of the start codon)'
+            max_self_complementarity: {
+                label: 'Max Self Complementarity:'
             },
-            distance_from_stop_codon:{
-                label: 'Distance from STOP codon (positive numbers are DOWNSTREAM): (Enter 0 to end at the last basepair of the stop codon)'
+            max_three_prime_self_complementarity: {
+                label: 'Max 3\' Self Complementarity:'
             },
-            self_anneal: {
-                label: 'Self Anneal:'
+            max_pair_complementarity: {
+                label: 'Max Pair Complementarity:'
             },
-            self_end_anneal: {
-                label: 'Self End Anneal:'
-            },
-            pair_anneal: {
-                label: 'Pair Anneal:'
-            },
-            pair_end_anneal: {
-                label: 'Pair End Anneal:'
+            max_three_prime_pair_complementarity: {
+                label: 'Max 3\' Pair Complementarity:'
             },
             optimum_tm: {
                 label: 'Optimum Tm:'
@@ -223,8 +202,11 @@ const Primer3 = React.createClass({
             maximum_gc: {
                 label: 'Maximum GC:'
             },
-            end_point: {
-                label: 'Select YES to Amplify a region with EXACT endpoints indicated in the "distance from" windows above'
+            product_size_start:{
+                label: 'Distance from 5\' end:'
+            },
+            product_size_end:{
+                label: 'Distance from 3\' end:'
             }
 
        },
@@ -236,7 +218,7 @@ const Primer3 = React.createClass({
         <t.form.Form ref="primerForm" type={PcrFormSchema}
         value={this.state.value} onChange={this.onChange} options={options}/>
         <div className="form-group">
-          <button type="submit" className="button primary">Save</button>
+          <button type="submit" className="button primary">Pick Primers</button>
         </div>
       </form>
     );
