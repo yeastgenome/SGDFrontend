@@ -22,7 +22,6 @@ class CustomTreeContainer extends Component {
     this.leafClick = this.leafClick.bind(this);
     this.nodeToggle = this.nodeToggle.bind(this);
     this.getSelectedNode = this.getSelectedNode.bind(this);
-    this.state = {tableData: null};
   }
 
   formatData(data) {
@@ -68,7 +67,6 @@ class CustomTreeContainer extends Component {
     this.props.dispatch(downloadsActions.getNode(node));
   }
   componentDidMount() {
-    debugger;
     this.props.dispatch(downloadsActions.fetchDownloadsMenuData());
     if (this.props.query) {
       if(typeof(query) == "string"){
