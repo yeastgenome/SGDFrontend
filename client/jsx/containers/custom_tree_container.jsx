@@ -39,13 +39,13 @@ class CustomTreeContainer extends Component {
                     <a href={item.href} download={dText}>
                       <i className="fa fa-cloud-download fa-lg" aria-hidden="true" style={{ width: 80, color: "#8C1515" }} />
                     </a>
-                  </span>, name: item.name, size:item.file_size, description: item.description };
+                  </span>, name: item.name, size:item.file_size !== null ? item.file_size : "Not Found", status:item.status, description: item.description };
         }
       });
         modData.map((item, index) => {
           results.rows.push(_.values(item));
         });
-      results.headers.push(["README ", "Download ", "Name", "Size","Description"]);
+      results.headers.push(["README ", "Download ", "Name", "Size","Status", "Description"]);
         return results;
     }
     return results;
@@ -65,6 +65,14 @@ class CustomTreeContainer extends Component {
   }
   getSelectedNode(node) {
     this.props.dispatch(downloadsActions.getNode(node));
+    if(node.node_flag){
+      this.fetchDownloads(node.id);
+      this.props.history.pushState(null, DOWNLOADS_URL, {
+        category: node.title,
+        id: node.id
+      });
+    }
+    
   }
   componentDidMount() {
     this.props.dispatch(downloadsActions.fetchDownloadsMenuData());

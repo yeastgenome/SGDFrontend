@@ -156,8 +156,11 @@ const DataTable = React.createClass({
 			return (
 				<tr key={"bodyRow" + i} className={evenKlass} >
 					{r.map( (d, _i) => {
-						{/* if data is obj with href and value, make a link, otherwise just plain text if just a string */}
-						return this._formatCell(d, i, _i);
+						/* if data is obj with href and value, make a link, otherwise just plain text if just a string */
+						if(d !== null){
+							return this._formatCell(d, i, _i);
+						}
+						
 					})}
 				</tr>
 			);

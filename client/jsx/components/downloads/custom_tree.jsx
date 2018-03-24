@@ -11,7 +11,9 @@ class CustomTree extends Component {
   }
   onToggle(event) {
     this.setState({ visible: !this.state.visible });
-    this.props.nodeClick(this.props.node);
+    let temp_node = this.props.node;
+    temp_node.node_flag = !this.state.visible;
+    this.props.nodeClick(temp_node);
   }
   componentDidMount() {
     if (this.props.node.childNodes != undefined) {
@@ -31,6 +33,7 @@ class CustomTree extends Component {
     let style;
     let cssClasses;
     let divClasses;
+    let listFlag = false;
     if(this.props.node.childNodes != null){
     if (this.props.node.childNodes != undefined && this.props.node.childNodes.length > 0) {
       childNodes = this.props.node.childNodes.map((node, index) => {
@@ -40,7 +43,20 @@ class CustomTree extends Component {
           </li>;
         }
       });
-      cssClasses = { togglable: true, "togglable-down": this.state.visible, "togglable-up": !this.state.visible };
+      if(Object.keys(this.props.queryString).length > 0){
+        if(this.props.queryString.id){
+          if(Number(this.props.queryString.id) == this.props.node.id){
+            cssClasses = { togglable: true, "togglable-down": true, "togglable-up": false };
+            listFlag = true
+          }
+          else{
+            cssClasses = { togglable: true, "togglable-down": false, "togglable-up": true };
+          }
+        }
+      }
+      else{
+        cssClasses = { togglable: true, "togglable-down": this.state.visible, "togglable-up": !this.state.visible };
+      }
     } else {
       if (this.props.node.title && Object.keys(this.props.queryString).length > 0) {
         if (this.props.node.id.toString() == this.props.queryString.id.toString()) {
@@ -50,11 +66,15 @@ class CustomTree extends Component {
       }
     }
     if (!this.state.visible) {
-      style = { display: "none" };
+      if(listFlag){
+        style = { listStyleType: "none" };
+      }
+      else{
+        style = { display: "none" };
+      }
+      
     } else {
-      style = {
-        listStyleType: "none"
-      };
+        style = { listStyleType: "none" };
     }
     if (this.props.node.childNodes == undefined || this.props.node.childNodes.length == 0) {
       
