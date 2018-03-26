@@ -53,7 +53,7 @@ class GeneNameReservationEdit extends Component {
     let pmidUpdateUrl = `${DATA_BASE_URL}/${this.props.params.id}/pmid`;
     let _defaultData = null;
     if (data.reference.pmid) {
-      _defaultData = { pmid: data.reference.pmid };
+      _defaultData = { pmid: data.reference.pmid.toString() };
     }
     return (
       <div>
