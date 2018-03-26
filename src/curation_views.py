@@ -696,6 +696,7 @@ def reserved_name_delete(request):
     if not check_csrf_token(request, raises=False):
         return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
     curator_session = None
+    personal_com_id = None
     try:
         username = request.session['username']
         curator_session = get_curator_session(username)
@@ -703,10 +704,17 @@ def reserved_name_delete(request):
         res = curator_session.query(ReservednameTriage).filter(ReservednameTriage.curation_id == req_id).one_or_none()
         if not res:
             res = curator_session.query(Reservedname).filter(Reservedname.reservedname_id == req_id).one_or_none()
+            personal_com_id = res.reference_id
         if not res:
             return HTTPNotFound()
         curator_session.delete(res)
         transaction.commit()
+        # maybe delete personal communiation
+        if personal_com_id:
+            ref_count = curator_session.query(Reservedname).filter(and_(Reservedname.reference_id == personal_com_id, Reservedname.reservedname_id != req_id)).count()
+            personal_communication_ref = curator_session.query(Referencedbentity).filter(Referencedbentity.dbentity_id == personal_com_id).one_or_none()
+            if ref_count == 0 and personal_communication_ref.publication_status != 'Published':
+                personal_communication_ref.delete_with_children(username)           
         return True
     except Exception as e:
         transaction.abort()
