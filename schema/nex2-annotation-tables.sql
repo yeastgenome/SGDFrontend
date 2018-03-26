@@ -48,8 +48,9 @@ CREATE TABLE nex.diseaseannotation (
 	reference_id bigint NOT NULL,
 	disease_id bigint NOT NULL,
 	eco_id bigint NOT NULL,
+    association_type bigint NOT NULL,
 	annotation_type varchar(40) NOT NULL,
-	disease_qualifier varchar(40) NOT NULL,
+	disease_qualifier varchar(40),
 	date_assigned timestamp NOT NULL,
 	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	created_by varchar(12) NOT NULL,
@@ -62,20 +63,21 @@ COMMENT ON COLUMN nex.diseaseannotation.eco_id IS 'FK to ECO.ECO_ID.';
 COMMENT ON COLUMN nex.diseaseannotation.annotation_id IS 'Unique identifier (serial number).';
 COMMENT ON COLUMN nex.diseaseannotation.created_by IS 'Username of the person who entered the record into the database.';
 COMMENT ON COLUMN nex.diseaseannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
-COMMENT ON COLUMN nex.diseaseannotation.disease_qualifier IS 'Qualifier of the disease annotation (enables, involved in, contributed_to).';
+COMMENT ON COLUMN nex.diseaseannotation.disease_qualifier IS 'Qualifier of the disease annotation.';
 COMMENT ON COLUMN nex.diseaseannotation.date_assigned IS 'Date the disease annotation was assigned or last reviewed.';
 COMMENT ON COLUMN nex.diseaseannotation.dbentity_id IS 'FK to DBENTITY.DBENTITY_ID.';
 COMMENT ON COLUMN nex.diseaseannotation.disease_id IS 'FK to DISEASE.DISEASE_ID.';
+COMMENT ON COLUMN nex.diseaseannotation.association_type IS 'FK to RO.RO_ID.';
 COMMENT ON COLUMN nex.diseaseannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
 COMMENT ON COLUMN nex.diseaseannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
-ALTER TABLE nex.diseaseannotation ADD CONSTRAINT diseaseannotation_uk UNIQUE (dbentity_id,disease_id,eco_id,reference_id,annotation_type,disease_qualifier,source_id);
-ALTER TABLE nex.diseaseannotation ADD CONSTRAINT diseaseanno_qualifier_ck CHECK (DISEASE_QUALIFIER IN ('enables', 'involved in', 'contributes_to'));
-ALTER TABLE nex.diseaseannotation ADD CONSTRAINT diseaseanno_annotation_type CHECK (ANNOTATION_TYPE IN ('high-throughput', 'manually curated', 'computational'));
+ALTER TABLE nex.diseaseannotation ADD CONSTRAINT diseaseannotation_uk UNIQUE (dbentity_id,disease_id,eco_id,reference_id,association_type,annotation_type,source_id);
+ALTER TABLE nex.diseaseannotation ADD CONSTRAINT diseaseanno_annotation_type CHECK (ANNOTATION_TYPE IN ('high-throughput', 'manually curated','computational'));
 CREATE INDEX diseaseanno_tax_fk_index ON nex.diseaseannotation (taxonomy_id);
 CREATE INDEX diseaseanno_disease_fk_index ON nex.diseaseannotation (disease_id);
 CREATE INDEX diseaseanno_ref_fk_index ON nex.diseaseannotation (reference_id);
 CREATE INDEX diseaseanno_eco_fk_index ON nex.diseaseannotation (eco_id);
 CREATE INDEX diseaseanno_source_fk_index ON nex.diseaseannotation (source_id);
+CREATE INDEX diseaseanno_ro_fk_index ON nex.diseaseannotation (association_type);
 
 DROP TABLE IF EXISTS nex.diseasesupportingevidence CASCADE;
 CREATE TABLE nex.diseasesupportingevidence (

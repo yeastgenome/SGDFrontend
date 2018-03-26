@@ -131,12 +131,16 @@ BEGIN
         PERFORM nex.insertupdatelog('DISEASEANNOTATION'::text, 'ECO_ID'::text, OLD.annotation_id, OLD.eco_id::text, NEW.eco_id::text, USER);
     END IF;
 
+    IF (OLD.association_type != NEW.association_type) THEN
+        PERFORM nex.insertupdatelog('DISEASEANNOTATION'::text, 'ASSOCIATION_TYPE'::text, OLD.annotation_id, OLD.association_type::text, NEW.association_type::text, USER);
+    END IF;
+
     IF (OLD.annotation_type != NEW.annotation_type) THEN
         PERFORM nex.insertupdatelog('DISEASEANNOTATION'::text, 'ANNOTATION_TYPE'::text, OLD.annotation_id, OLD.annotation_type, NEW.annotation_type, USER);
     END IF;
 
-    IF (OLD.disease_qualifier != NEW.disease_qualifier) THEN
-        PERFORM nex.insertupdatelog('DISEASEANNOTATION'::text, 'DISEASE_QUALIFIER'::text, OLD.annotation_id, OLD.disease_qualifier, NEW.disease_qualifier, USER);
+    IF  (((OLD.disease_qualifier IS NULL) AND (NEW.disease_qualifier IS NOT NULL)) OR ((OLD.disease_qualifier IS NOT NULL) AND (NEW.disease_qualifier IS NULL)) OR (OLD.disease_qualifier != NEW.disease_qualifier)) THEN
+        PERFORM nex.insertupdatelog('DISEASEANNOTATION'::text, 'DISEASE_QUALIFIER'::text, OLD.annotation_id, OLD.disease_qualifier::text, NEW.disease_qualifier::text, USER);
     END IF;
 
     IF (OLD.date_assigned != NEW.date_assigned) THEN
@@ -150,8 +154,9 @@ BEGIN
     v_row := OLD.annotation_id || '[:]' || OLD.dbentity_id || '[:]' ||
              OLD.source_id || '[:]' || OLD.taxonomy_id || '[:]' ||
              OLD.reference_id || '[:]' || OLD.disease_id || '[:]' ||
-             OLD.eco_id || '[:]' || OLD.annotation_type || '[:]' ||
-             OLD.disease_qualifier || '[:]' || OLD.date_assigned || '[:]' ||
+             OLD.eco_id || '[:]' || OLD.association_type || '[:]' ||
+             OLD.annotation_type || '[:]' ||
+             coalesce(OLD.disease_qualifier,'') || '[:]' || OLD.date_assigned || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
            PERFORM nex.insertdeletelog('DISEASEANNOTATION'::text, OLD.annotation_id, v_row, USER);

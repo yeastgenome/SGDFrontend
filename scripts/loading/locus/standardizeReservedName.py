@@ -45,8 +45,8 @@ def standardize_name(infile, logfile):
         orf_name = pieces[0]
         gene_name = pieces[1]
 
-        if gene_name in ['MIY1', 'MCO13', 'COI1', 'CCW22', 'NRE1']:
-            continue
+        # if gene_name in ['MIY1', 'MCO13', 'COI1', 'CCW22', 'NRE1']:
+        #    continue
 
         created_by = gene_to_created_by.get(gene_name)
 
@@ -61,7 +61,8 @@ def standardize_name(infile, logfile):
         name_desc = pieces[3].replace('"', '')
         if pieces[4]:
             pmid_4_name_desc = int(pieces[4])
-        date_standardized = reformat_date(pieces[5])
+        # date_standardized = reformat_date(pieces[5])
+        date_standardized = pieces[5]
 
         locus_id = name_to_locus_id[orf_name]       
         if pmid_4_gene_name and pmid_4_gene_name not in pmid_to_reference:
@@ -75,8 +76,11 @@ def standardize_name(infile, logfile):
         # 2. update locusdbentity.gene_name = gene_name in the file 
         # 3. update locusdbentity.name_description = name_description in the file 
         update_locusdbentity(nex_session, fw, locus_id, gene_name, name_desc)
-                  
-        # 4. Add rows to LOCUS_REFERENCE where reference_class = 'gene_name' and 'name_description'
+
+        # 4.1 Delete the old row in LOCUS_REFERENCE table reference_class = 'name_description' 
+        delete_locus_reference(nex_session, fw, locus_id, 'name_description')
+
+        # 4.2 Add rows to LOCUS_REFERENCE where reference_class = 'gene_name' and 'name_description'
         insert_locus_reference(nex_session, fw, locus_id, 
                                pmid_to_reference.get(pmid_4_gene_name), 
                                'gene_name', source_id, created_by,
@@ -112,6 +116,14 @@ def standardize_name(infile, logfile):
 
     fw.close()
     f.close()
+
+
+def delete_locus_reference(nex_session, fw, locus_id, reference_class):
+
+    x = nex_session.query(LocusReferences).filter_by(locus_id=locus_id, reference_class=reference_class).one_or_none()
+    nex_session.delete(x)
+
+    fw.write("Old locus_reference row for locus_id = " + str(locus_id) + " has been deleted\n")
 
 def delete_reservedname_row(nex_session, fw, gene_name):
     
