@@ -403,6 +403,7 @@ ALTER TABLE nex.diseaseannotation ADD CONSTRAINT diseaseanno_ref_fk FOREIGN KEY 
 ALTER TABLE nex.diseaseannotation ADD CONSTRAINT diseaseanno_disease_fk FOREIGN KEY (disease_id) REFERENCES disease(disease_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
 ALTER TABLE nex.diseaseannotation ADD CONSTRAINT diseaseanno_tax_fk FOREIGN KEY (taxonomy_id) REFERENCES taxonomy(taxonomy_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
 ALTER TABLE nex.diseaseannotation ADD CONSTRAINT diseaseanno_eco_fk FOREIGN KEY (eco_id) REFERENCES eco(eco_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE nex.diseaseannotation ADD CONSTRAINT diseaseanno_ro_fk FOREIGN KEY (association_type) REFERENCES ro(ro_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
 
 ALTER TABLE nex.diseasesupportingevidence ADD CONSTRAINT diseasesupportingevidence_anno_fk FOREIGN KEY (annotation_id) REFERENCES diseaseannotation(annotation_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
 

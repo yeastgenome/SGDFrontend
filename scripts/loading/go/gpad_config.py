@@ -25,7 +25,8 @@ curator_id = {'Rama Balakrishnan'   : 'RAMA',
               'Sage Hellerstedt'    : 'SAGEH',
               'Kevin MacPherson'    : 'KMACPHER',
               'Olivia Lang'         : 'OWLANG',
-              'Emily Heald'         : 'EMILYJC' }
+              'Emily Heald'         : 'EMILYJC',
+              'Suzi Aleksander'     : 'SUZIA' }
 
 computational_created_by = 'OTTO'
 email_receiver = ['sweng@stanford.edu']
