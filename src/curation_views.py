@@ -596,6 +596,7 @@ def new_colleague(request):
             is_contact = False,
             is_beta_tester = False,
             display_email = False,
+            is_in_triage = True,
             created_by = created_by
         )
         DBSession.add(new_colleague)
@@ -798,7 +799,7 @@ def colleague_triage_promote(request):
         colleague.display_email = params.get('display_email')
         colleague.is_contact = params.get('receive_quarterly_newsletter')
         colleague.is_beta_tester = params.get('willing_to_be_beta_tester')
-        # TODO, if new colleague, somehow mark that entry
+        colleague.is_in_triage = False
         curator_session.delete(c_triage)
         transaction.commit()
         return True

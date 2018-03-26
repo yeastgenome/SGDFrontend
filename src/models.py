@@ -818,6 +818,7 @@ class Colleague(Base):
     is_contact = Column(Boolean, nullable=False)
     is_beta_tester = Column(Boolean, nullable=False)
     display_email = Column(Boolean, nullable=False)
+    is_in_triage = Column(Boolean, nullable=False)
     date_last_modified = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
