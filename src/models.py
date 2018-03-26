@@ -8222,22 +8222,26 @@ class Reservedname(Base):
             ref_count = curator_session.query(Reservedname).filter(Reservedname.reference_id == self.reference_id).count()
             # delete old locusreferences
             curator_session.query(LocusReferences).filter(and_(LocusReferences.locus_id == self.locus_id, LocusReferences.reference_id == self.reference_id)).delete(synchronize_session=False)
-            gene_name_locus_ref = LocusReferences(
-                locus_id = self.locus_id,
-                reference_id = ref_id,
-                reference_class = 'gene_name',
-                source_id = SGD_SOURCE_ID,
-                created_by = username
-            )
-            curator_session.add(gene_name_locus_ref)
-            name_description_locus_ref = LocusReferences(
-                locus_id = self.locus_id,
-                reference_id = ref_id,
-                reference_class = 'name_description',
-                source_id = SGD_SOURCE_ID,
-                created_by = username
-            )
-            curator_session.add(name_description_locus_ref)
+            has_ref_name = curator_session.query(LocusReferences).filter(and_(LocusReferences.locus_id == self.locus_id, LocusReferences.reference_id == ref_id, LocusReferences.reference_class == 'gene_name')).count()
+            if not has_ref_name:
+                gene_name_locus_ref = LocusReferences(
+                    locus_id = self.locus_id,
+                    reference_id = ref_id,
+                    reference_class = 'gene_name',
+                    source_id = SGD_SOURCE_ID,
+                    created_by = username
+                )
+                curator_session.add(gene_name_locus_ref)
+            has_name_desc = curator_session.query(LocusReferences).filter(and_(LocusReferences.locus_id == self.locus_id, LocusReferences.reference_id == ref_id, LocusReferences.reference_class == 'name_description')).count()
+            if not has_name_desc:
+                name_description_locus_ref = LocusReferences(
+                    locus_id = self.locus_id,
+                    reference_id = ref_id,
+                    reference_class = 'name_description',
+                    source_id = SGD_SOURCE_ID,
+                    created_by = username
+                )
+                curator_session.add(name_description_locus_ref)
             # update LocusnoteReference to have new ref id
             curator_session.query(LocusnoteReference).filter_by(reference_id=self.reference_id).update({ 'reference_id': ref_id })
             # finally change reference_id

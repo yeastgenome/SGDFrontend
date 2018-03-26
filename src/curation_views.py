@@ -688,6 +688,7 @@ def reserved_name_associate_pmid(request):
         return True
     except Exception as e:
         transaction.abort()
+        traceback.print_exc()
         log.error(e)
         return HTTPBadRequest(body=json.dumps({ 'message': str(e) }), content_type='text/json')
 
