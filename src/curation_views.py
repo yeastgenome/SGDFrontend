@@ -597,22 +597,22 @@ def new_colleague(request):
             is_beta_tester = False,
             display_email = False,
             is_in_triage = True,
-            is_pi= False,
+            is_pi = False,
             created_by = created_by
         )
         DBSession.add(new_colleague)
-        transaction.commit()
         DBSession.flush()
+        new_colleague_id = new_colleague.colleague_id
         new_colleague = DBSession.query(Colleague).filter(Colleague.format_name == format_name).one_or_none()
         new_c_triage = Colleaguetriage(
-            colleague_id = new_colleague.colleague_id,
+            colleague_id = new_colleague_id,
             json=json.dumps(params),
             triage_type='New',
             created_by=created_by
         )
         DBSession.add(new_c_triage)
         transaction.commit()
-        return { 'colleague_id': new_colleague.colleague_id }
+        return { 'colleague_id': new_colleague_id }
     except Exception as e:
         transaction.abort()
         log.error(e)
