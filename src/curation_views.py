@@ -597,6 +597,7 @@ def new_colleague(request):
             is_beta_tester = False,
             display_email = False,
             is_in_triage = True,
+            is_pi= False,
             created_by = created_by
         )
         DBSession.add(new_colleague)
