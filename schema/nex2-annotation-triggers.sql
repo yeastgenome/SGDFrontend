@@ -1535,7 +1535,7 @@ BEGIN
   ELSIF (TG_OP = 'DELETE') THEN
 
     v_row := OLD.annotation_id || '[:]' || OLD.dbentity_id || '[:]' ||
-             OLD.source_id || '[:]' || OLD.bud_id || '[:]' ||
+             OLD.source_id || '[:]' || coalesce(OLD.bud_id,0) || '[:]' ||
              OLD.taxonomy_id || '[:]' || OLD.reference_id || '[:]' ||
              OLD.phenotype_id || '[:]' || OLD.experiment_id || '[:]' ||
              OLD.mutant_id || '[:]' || coalesce(OLD.allele_id,0) || '[:]' ||
