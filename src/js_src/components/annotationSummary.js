@@ -56,10 +56,14 @@ class AnnotationSummary extends Component {
         let curateUrl = `/curate${d.href}`.replace(/regulation|phenotype/, '');
         curateNode = <Link to={curateUrl}><i className='fa fa-edit' /> Curate</Link>;
       }
+      let linkNode = <a href={previewUrl} target='_new'>{d.name}</a>;
+      if (d.category === 'reserved_name') {
+        linkNode = <span>{d.name}</span>;
+      }
       return (
         <div key={'note' + i}>
           <p>
-            <CategoryLabel category={d.category} hideLabel /> <a href={previewUrl} target='_new'>{d.name}</a> {d.type} {this.renderUpdatedBy(d)} {curateNode}
+            <CategoryLabel category={d.category} hideLabel /> {linkNode} {d.type} {this.renderUpdatedBy(d)} {curateNode}
           </p>
           {this.renderBlock(d)}
           {this.renderTags(d)}
