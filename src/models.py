@@ -8187,7 +8187,7 @@ class Reservedname(Base):
             # new locus_note and locusnote locusnote_reference
             has_locusnote = curator_session.query(Locusnote).filter(and_(Locusnote.locus_id == locus_id, Locusnote.note_type == 'Name', Locusnote.note_class == 'Locus')).count()
             if not has_locusnote:
-                note_html_str = '<b>Name</b> ' + self.display_name
+                note_html_str = '<b>Name:</b> ' + self.display_name
                 new_locusnote = Locusnote(
                     source_id = SGD_SOURCE_ID,
                     locus_id = locus_id,
