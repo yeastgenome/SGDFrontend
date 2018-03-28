@@ -73,7 +73,6 @@ class CurateHome extends Component {
     return (
       <div className={style.annotationContainer}>
         <AnnotationSummary annotations={this.state.annotationData} message='recent annotations.' />
-        }
       </div>
     );
   }
