@@ -1087,7 +1087,6 @@ class Colleaguetriage(Base):
     json = Column(Text, nullable=False)
     curator_comment = Column(String(500))
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
-    created_by = Column(String(12), nullable=False)
 
     def to_dict(self):
         data = json.loads(self.json)
@@ -7900,7 +7899,6 @@ class Referencetriage(Base):
     fulltext_url = Column(String(500))
     abstract = Column(Text)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
-    created_by = Column(String(12), nullable=False)
     json = Column(Text)
     abstract_genes = Column(String(500))
 
@@ -8384,7 +8382,6 @@ class ReservednameTriage(Base):
     curation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
     proposed_gene_name = Column(String(100), nullable=False)
     colleague_id = Column(ForeignKey(u'nex.colleague.colleague_id', ondelete=u'CASCADE'), index=True)
-    created_by = Column(String(12), nullable=False)
     json = Column(Text, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
 

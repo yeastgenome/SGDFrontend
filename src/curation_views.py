@@ -496,7 +496,6 @@ def new_gene_name_reservation(request):
     # input is valid, add entry or entries to reservednametriage
     try:
         colleague_id = data['colleague_id']
-        created_by = get_username_from_db_uri()
         for res in data['reservations']:
             proposed_gene_name = res['new_gene_name'].upper()
             res_data = data
@@ -506,7 +505,6 @@ def new_gene_name_reservation(request):
             new_res = ReservednameTriage(
                 proposed_gene_name=proposed_gene_name,
                 colleague_id=colleague_id,
-                created_by=created_by,
                 json=res_json
             )
             DBSession.add(new_res)
@@ -543,7 +541,6 @@ def colleague_update(request):
             if old_dict[x] != data[x]:
                 is_changed = True
         if is_changed:
-            created_by = get_username_from_db_uri()
             existing_triage = DBSession.query(Colleaguetriage).filter(Colleaguetriage.colleague_id == req_id).one_or_none()
             if existing_triage:
                 existing_triage.json = json.dumps(data)
@@ -552,7 +549,6 @@ def colleague_update(request):
                     colleague_id = req_id,
                     json=json.dumps(data),
                     triage_type='Update',
-                    created_by=created_by
                 )
                 DBSession.add(new_c_triage)
             transaction.commit()
@@ -608,7 +604,6 @@ def new_colleague(request):
             colleague_id = new_colleague_id,
             json=json.dumps(params),
             triage_type='New',
-            created_by=created_by
         )
         DBSession.add(new_c_triage)
         transaction.commit()
