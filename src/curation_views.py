@@ -395,13 +395,9 @@ def update_reference_tags(request):
 @view_config(route_name='get_recent_annotations', request_method='GET', renderer='json')
 @authenticate
 def get_recent_annotations(request):
-    limit = 25
     annotations = []
-    recent_summaries = DBSession.query(Locussummary).order_by(Locussummary.date_created.desc()).limit(limit).all()
     is_everyone = request.params.get('everyone', False)
     username = request.session['username']
-
-    # use curator activity
     start_date = datetime.datetime.today() - datetime.timedelta(days=30)
     end_date = datetime.datetime.today()
     if is_everyone:
@@ -409,8 +405,6 @@ def get_recent_annotations(request):
     else:
         recent_activity = DBSession.query(CuratorActivity).filter(and_(CuratorActivity.date_created >= start_date, CuratorActivity.created_by == username)).order_by(CuratorActivity.date_created.desc()).all()
     for d in recent_activity:
-        annotations.append(d.to_dict())
-    for d in recent_summaries:
         annotations.append(d.to_dict())
     annotations = sorted(annotations, key=lambda r: r['time_created'], reverse=True)
     return annotations

@@ -4419,6 +4419,16 @@ class Locusdbentity(Dbentity):
                 )
                 curator_session.add(new_summary)
                 summary = new_summary
+            new_curate_activity = CuratorActivity(
+                display_name = self.display_name,
+                obj_url = self.obj_url,
+                activity_category = 'locus',
+                dbentity_id = self.dbentity_id,
+                message = 'updated  ' + summary_type + ' summary',
+                json = json.dumps({ 'keys': { 'summary': text } }),
+                created_by = username
+            )
+            curator_session.add(new_curate_activity)
             summary = curator_session.query(Locussummary.summary_type, Locussummary.summary_id, Locussummary.html, Locussummary.date_created).filter_by(locus_id=self.dbentity_id, summary_type=summary_type).one_or_none()
             # add LocussummaryReference(s)
             if len(pmid_list):
