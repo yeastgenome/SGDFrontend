@@ -3654,15 +3654,12 @@ class Locusdbentity(Dbentity):
             r_obj["link"] = reservedname.obj_url
             r_obj["class_type"] = "RESERVEDNAME"
             obj["reserved_name"] = r_obj
-<<<<<<< HEAD
             obj["name_description"] = reservedname.name_description
             if reservedname.reference:
                 ref = reservedname.reference
                 ref_obj = reservedname.reference.to_dict_citation()
                 ref_obj['id'] = ref.dbentity_id
                 r_obj["reference"] = ref_obj
-=======
->>>>>>> gene name res display
 
         return obj
 
