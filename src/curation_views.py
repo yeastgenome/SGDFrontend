@@ -20,7 +20,7 @@ import re
 from .helpers import allowed_file, extract_id_request, secure_save_file, curator_or_none, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id
 from .curation_helpers import ban_from_cache, process_pmid_list, get_curator_session, get_pusher_client
 from .loading.promote_reference_triage import add_paper
-from .models import DBSession, Dbentity, Dbuser, CuratorActivity, Colleague, Colleaguetriage, Referencedbentity, Reservedname, ReservednameTriage, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags, convert_space_separated_pmids_to_list
+from .models import DBSession, Dbentity, Dbuser, CuratorActivity, Colleague, Colleaguetriage, LocusnoteReference, Referencedbentity, Reservedname, ReservednameTriage, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags, convert_space_separated_pmids_to_list
 from .tsv_parser import parse_tsv_annotations
 
 logging.basicConfig()
@@ -701,11 +701,12 @@ def reserved_name_delete(request):
             return HTTPNotFound()
         curator_session.delete(res)
         transaction.commit()
-        # maybe delete personal communiation
+        # maybe delete personal communication
         if personal_com_id:
             ref_count = curator_session.query(Reservedname).filter(and_(Reservedname.reference_id == personal_com_id, Reservedname.reservedname_id != req_id)).count()
+            ref_note_count = curator_session.query(LocusnoteReference).filter(LocusnoteReference.reference_id == personal_com_id).count()
             personal_communication_ref = curator_session.query(Referencedbentity).filter(Referencedbentity.dbentity_id == personal_com_id).one_or_none()
-            if ref_count == 0 and personal_communication_ref.publication_status != 'Published':
+            if ref_count == 0 and ref_note_count == 0 and personal_communication_ref.publication_status != 'Published':
                 personal_communication_ref.delete_with_children(username)           
         return True
     except Exception as e:
