@@ -50,8 +50,9 @@ def load_data(infile, logfile):
 
         insert_reservedname(nex_session, fw, locus_id, display_name, reference_id, colleague_id, 
                             source_id, reservation_date, expiration_date, name_description, created_by)
-       
-        insert_locus_reference(nex_session, fw, locus_id, reference_id, source_id, reservation_date, created_by)
+
+        if name_description:
+            insert_locus_reference(nex_session, fw, locus_id, reference_id, source_id, reservation_date, created_by)
 
         note_id = insert_locusnote(nex_session, fw, locus_id, display_name, source_id, reservation_date, created_by)
 
