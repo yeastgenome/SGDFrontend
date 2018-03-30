@@ -7,7 +7,6 @@ $(document).ready(function() {
 });
 
 function create_dataset_conditions_table(data) {
-    console.log(data);
     if("Error" in data) {
         var options = {};
         options["bPaginate"] = true;
@@ -25,12 +24,9 @@ function create_dataset_conditions_table(data) {
         }
 
         set_up_header('dataset_conditions_table', datatable.length, 'entry', 'entries', Object.keys(data_sets).length, 'dataset', 'datasets');
-        console.log(datatable);
 
         var options = {};
         options["bPaginate"] = true;
-        options["aaSorting"] = [[4, "asc"]];
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, {"bVisible":false}, null, null, null, {'sWidth': '250px'}, null];
         options["oLanguage"] = {"sEmptyTable": "No data for " + data['geo_id']};
         options["aaData"] = datatable;
         options["scrollX"] = true;
