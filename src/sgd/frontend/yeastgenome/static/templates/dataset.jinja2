@@ -83,29 +83,11 @@
         <section id="conditions" data-magellan-destination="conditions">
             <div class="page-header">
                 <h2>Conditions</h2>
-                <div>
-                    <table class="table table-striped table-bordered table-condensed" width="100%">
-                        <thead>
-                             <tr>
-                                 <td>Condition</td>
-                                 <td>GEO ID</td>
-                             </tr>
-                        </thead>
-
-                        <tbody>
-                            {% for condition in dataset.datasetcolumns %}
-                            <tr>
-                                <td>{{ condition.display_name }}</td>
-                                <td>
-                                    {% if condition.geo_id  %}<a href="{{ condition.link }}" target="_blank">{{ condition.geo_id }}</a>{% endif %}
-                                </td>
-
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                <div class="spaced-container">
+                    <!-- Includes dataset_conditions_table into template -->
+                    {% set table_id = "dataset_conditions_table" %}
+                    {% include "dataset_conditions_table.jinja2" %}
                 </div>
-            </div>
         </section>
 
         <!-- Resources
@@ -131,5 +113,11 @@
 
 
 {% block scripts %}
+<script src="{{asset_root}}/js/build/nouislider.min.js"></script>
+<script src="{{asset_root}}/js/build/cytoscape.min.js"></script>
+{# don't host arbor.js on CDN because it makes webworker files that don't work on the cloud :( #}
+<script src="/static/js/build/arbor.js"></script>
+<script src="{{asset_root}}/js/cytoscape.js"></script>
+<script src="{{asset_root}}/js/evidence.js"></script>
+<script src="{{asset_root}}/js/dataset.js"></script>
 {% endblock scripts %}
-
