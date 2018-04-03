@@ -21,8 +21,8 @@ const Primer3 = React.createClass({
       result: null,
       value: {
         //product_size_range: '[[150,250], [100,300], [301,400], [401,500],[501,600],[601,700],[701,850],[851,1000]]',
-        product_size_start: '35',
-        product_size_end: '35',
+        product_size_start: '200',
+        product_size_end: '300',
         minimum_tm: '57',
         optimum_tm: '59',
         maximum_tm: '62',
@@ -36,6 +36,7 @@ const Primer3 = React.createClass({
         max_three_prime_self_complementarity: '3',
         max_pair_complementarity: '8',
         max_three_prime_pair_complementarity: '3',
+        end_point: 'NO'
       },
       isLoadPending: false, // loading existing data
       isUpdatePending: false, // sending update to server
@@ -83,14 +84,26 @@ const Primer3 = React.createClass({
 
   renderExampleForm() {
 
+    const Endpoint = t.enums.of(['NO', 'YES'], 'Endpoint');
+
+    Endpoint.getTcombFormFactory = (options) => {
+        return t.form.Radio;
+    };
+
     const PcrFormSchema = t.struct({
 
        gene_name: t.maybe(t.String),
        sequence: t.maybe(t.String),
 
        //product_size_range: t.String,
+       include_start: t.maybe(t.Number),
+       include_end: t.maybe(t.Number),
+
+       end_point: Endpoint,
+
        product_size_start: t.Number,
        product_size_end: t.Number,
+
        minimum_length: t.Number,
        optimum_primer_length: t.Number,
        maximum_length: t.Number,
@@ -123,10 +136,21 @@ const Primer3 = React.createClass({
           <div className='columns small-6'>{locals.inputs.sequence}</div>
          </div>
 
-        <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_PRODUCT_SIZE_RANGE' target='_new'><i className='fa primer-help' />Product Size</a></span>
+         <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_PRODUCT_SIZE_RANGE' target='_new'><i className='fa primer-help' />Product Size</a></span>
          <div className='row'>
           <div className='columns small-6'>{locals.inputs.product_size_start}</div>
           <div className='columns small-6'>{locals.inputs.product_size_end}</div>
+         </div>
+
+        <span><a href='http://primer3.ut.ee/primer3web_help.htm#SEQUENCE_INCLUDED_REGION' target='_new'><i className='fa primer-help' />Target Included Region</a></span>
+         <div className='row'>
+          <div className='columns small-6'>{locals.inputs.include_start}</div>
+          <div className='columns small-6'>{locals.inputs.include_end}</div>
+        </div>
+
+        <span><a href='http://primer3.ut.ee/primer3web_help.htm#SEQUENCE_FORCE_LEFT_START' target='_new'><i className='fa primer-help' />Force Start position of primers</a></span>
+         <div className='row'>
+          <div className='columns small-6'>{locals.inputs.end_point}</div>
          </div>
 
         <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_MIN_SIZE' target='_new'><i className='fa primer-help' />Primer Length</a></span>
@@ -203,12 +227,20 @@ const Primer3 = React.createClass({
                 label: 'Maximum GC:'
             },
             product_size_start:{
-                label: 'Distance from 5\' end:'
+                label: 'Amplicon Size Min:'
             },
             product_size_end:{
-                label: 'Distance from 3\' end:'
+                label: 'Amplicon Size Max:'
+            },
+            include_start:{
+                label: 'Start primer search at this 5\'location:'
+            },
+            include_end:{
+                label: 'End primer search at this 3\'location:'
+            },
+            end_point:{
+                label: 'Forces the endpoints on 5\' and 3\' locations to above included regions:'
             }
-
        },
        template: formLayout
     }
