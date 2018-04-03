@@ -848,16 +848,43 @@ def primer3(request):
         product_size_start = params.get('product_size_start')
     if 'product_size_end' in p_keys:
         product_size_end = params.get('product_size_end')
-
+    if 'include_end' in p_keys:
+        include_end = params.get('include_end')
+    if 'include_start' in p_keys:
+        include_start = params.get('include_start')
+    if 'end_point' in p_keys:
+        end_point = params.get('end_point')
     else:
         return HTTPBadRequest('No sequence provided')
-    stop = len(sequence) - product_size_end
+
+    if include_end is None or include_start is None:
+        include_start = 1
+        stop = len(sequence)
+    else:
+        stop =  include_end - include_start
+
+    if end_point == 'YES':
+        force_left_start = include_start
+        force_right_start = include_end
+    elif end_point == 'NO':
+        force_left_start = -1000000
+        force_right_start = -1000000
+
+    print len(sequence)
+    print include_start
+    print  stop
+    print force_left_start
+    print force_right_start
+    print product_size_end
     print product_size_start
-    print stop
+
     result = designPrimers(
         {
             'SEQUENCE_ID': 'MH1000',
-            'SEQUENCE_TEMPLATE': sequence
+            'SEQUENCE_TEMPLATE': sequence,
+            'SEQUENCE_INCLUDED_REGION': (include_start, stop),
+            'SEQUENCE_FORCE_LEFT_START': force_left_start,
+            'SEQUENCE_FORCE_RIGHT_START': force_right_start
         },
         {
             'PRIMER_FIRST_BASE_INDEX': 1,
@@ -894,7 +921,7 @@ def primer3(request):
             'PRIMER_MIN_GC' : minimum_gc,
             'PRIMER_OPT_GC_PERCENT' : optimum_gc,
             'PRIMER_MAX_GC' : maximum_gc,
-            'PRIMER_PRODUCT_SIZE_RANGE': [[product_size_start,stop]],
+            'PRIMER_PRODUCT_SIZE_RANGE': [[product_size_start,product_size_end]],
             'PRIMER_NUM_RETURN': 5,
             'PRIMER_MAX_END_STABILITY' : 9.0,
             'PRIMER_MAX_LIBRARY_MISPRIMING' : 12.00,
@@ -1002,6 +1029,7 @@ def primer3(request):
             'PRIMER_INTERNAL_WT_LIBRARY_MISHYB': 0.0,
             'PRIMER_INTERNAL_WT_SEQ_QUAL' : 0.0,
             'PRIMER_INTERNAL_WT_END_QUAL': 0.0
+
     })
     return result
 
