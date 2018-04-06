@@ -478,10 +478,14 @@ def new_gene_name_reservation(request):
             if not systematic_locus:
                 msg = proposed_systematic_name + ' is not a recognized locus systematic name.'
                 return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
-            # also see if there is already a res for that locus, or if already named
+            # see if there is already a res for that locus, or if already named
             is_systematic_res = DBSession.query(Reservedname).filter(Reservedname.locus_id == systematic_locus.dbentity_id).one_or_none()
             if is_systematic_res:
                 msg = proposed_systematic_name + ' has already been reserved. Please contact sgd-helpdesk@lists.stanford.edu for more information.'
+                return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
+            is_already_named = DBSession.query(Locusdbentity.gene_name).filter(Locusdbentity.dbentity_id == systematic_locus.dbentity_id).scalar()
+            if is_already_named:
+                msg = proposed_systematic_name + ' has already been named. Please contact sgd-helpdesk@lists.stanford.edu for more information.'
                 return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
             existing_name = systematic_locus.gene_name
             if existing_name:
