@@ -8,7 +8,6 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from validate_email import validate_email
 from random import randint
 from Bio import Entrez, Medline
-from validate_email import validate_email
 import collections
 import datetime
 import logging
@@ -19,7 +18,7 @@ import json
 import re
 
 from .helpers import allowed_file, extract_id_request, secure_save_file, curator_or_none, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id
-from .curation_helpers import ban_from_cache, process_pmid_list, get_curator_session, get_pusher_client
+from .curation_helpers import ban_from_cache, process_pmid_list, get_curator_session, get_pusher_client, validate_orcid
 from .loading.promote_reference_triage import add_paper
 from .models import DBSession, Dbentity, Dbuser, CuratorActivity, Colleague, Colleaguetriage, LocusnoteReference, Referencedbentity, Reservedname, ReservednameTriage, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags, convert_space_separated_pmids_to_list
 from .tsv_parser import parse_tsv_annotations
@@ -529,8 +528,13 @@ def colleague_update(request):
             return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
     if req_id == 'NULL':
         return HTTPBadRequest(body=json.dumps({ 'message': 'Please select your name from colleague list or create a new entry.' }), content_type='text/json')
+    is_email_valid = validate_email(params['email'], verify=True)
     if not is_email_valid:
         msg = params['email'] + ' is not a valid email.'
+        return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
+    is_orcid_valid = validate_orcid(params['orcid'], verify=True)
+    if not is_orcid_valid:
+        msg = params['orcid'] + ' is not a valid orcid.'
         return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
     colleague = DBSession.query(Colleague).filter(Colleague.colleague_id == req_id).one_or_none()
     if not colleague:
@@ -577,6 +581,10 @@ def new_colleague(request):
     is_email_valid = validate_email(params['email'], verify=True)
     if not is_email_valid:
         msg = params['email'] + ' is not a valid email.'
+        return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
+    is_orcid_valid = validate_orcid(params['orcid'])
+    if not is_orcid_valid:
+        msg = params['orcid'] + ' is not a valid orcid.'
         return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
     colleague_orcid_exists = DBSession.query(Colleague).filter(Colleague.orcid == params.get('orcid')).one_or_none()
     if colleague_orcid_exists:
