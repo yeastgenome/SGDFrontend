@@ -446,6 +446,8 @@ def new_gene_name_reservation(request):
         if x == 'year':
             try:
                 iy = int(data[x])
+                if iy < 1950 or iy > 2050:
+                    raise ValueError('Not a valid year')
             except ValueError as e:
                 msg = 'Please enter a valid year.'
                 return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
