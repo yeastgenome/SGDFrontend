@@ -98,3 +98,7 @@ def get_author_etc(author_list):
         author_et_al = author_list[0] + ", et al."
 
     return author_et_al
+
+def validate_orcid(user_orcid):
+    pattern = re.compile("^\w{4}-\w{4}-\w{4}-\w{4}$")
+    return pattern.match(user_orcid) != None
