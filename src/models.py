@@ -4209,8 +4209,9 @@ class Locusdbentity(Dbentity):
             new_alias = { 'alias': old_info['gene_name'], 'pmids': old_info['gene_name_pmids'], 'type': new_alias_type }
             new_info['aliases'].append(new_alias)
             keys_to_update.append('aliases')
-        # update them, if necessary
-        if len(keys_to_update):
+        if len(keys_to_update) == 0:
+            raise ValueError('Nothing has been changed.')
+        else:
             curator_session = None
             try:
                 curator_session = get_curator_session(username)
