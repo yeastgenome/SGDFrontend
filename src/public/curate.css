@@ -408,3 +408,11 @@ body {
 .six.wide.column, .eight.wide.column {
   padding: 0;
 }
+
+.fieldset-reservations > .ui.grid > .four.column {
+  display: none;
+}
+
+.fieldset-reservations > .ui.grid ~ .ui.grid > .four.column {
+  display: block;
+}
