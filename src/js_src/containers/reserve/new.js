@@ -23,7 +23,7 @@ class GeneNameReservation extends Component {
   renderSuccess() {
     return (
       <div>
-        <p>Thanks for submitting your gene name reservation! SGD curators will review and be in touch.</p>
+        <h2 style={{ marginTop: '1rem' }}>Thanks for submitting your gene name reservation! SGD curators will review and be in touch.</h2>
       </div>
     );
   }
