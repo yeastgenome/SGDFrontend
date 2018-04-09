@@ -116,7 +116,6 @@ class GeneNameReservation extends Component {
         },
         reservations: {
           disableOrder: true,
-          disableRemove: true,
           label: 'Gene name reservations',
           item: {
             template: resLayout,
@@ -134,6 +133,7 @@ class GeneNameReservation extends Component {
           },
           i18n: {
             add: 'Add another gene name reservation',
+            remove: 'Remove this gene name reservation',
             optional: '',
             required: ''
           }
