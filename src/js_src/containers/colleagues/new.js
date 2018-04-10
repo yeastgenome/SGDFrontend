@@ -15,7 +15,7 @@ class NewColleague extends Component {
 
   render() {
     if (this.state.isComplete) {
-      return <h2 style={{ marginTop: '1rem' }}>Thanks for your update! SGD curators will review.</h2>;
+      return <h2 style={{ marginTop: '3rem' }}>Thanks for your update! SGD curators will review.</h2>;
     }
     return <ColleagueUpdate onComplete={this.handleColleagueCompletion.bind(this)} submitText={'Submit update'} />;
   }
