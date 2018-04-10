@@ -455,10 +455,11 @@ def new_gene_name_reservation(request):
     if 'authors' in data.keys():
         authors = data['authors']
         for a in authors:
-            first_name = a['first_name']
-            last_name = a['last_name']
-            if not (first_name.isalpha() and last_name.isalpha()):
-                return HTTPBadRequest(body=json.dumps({ 'message': 'Author names must contain only letters.' }), content_type='text/json')
+            if 'first_name' in a.keys() and 'last_name' in a.keys():
+                first_name = a['first_name']
+                last_name = a['last_name']
+                if not (first_name.isalpha() and last_name.isalpha()):
+                    return HTTPBadRequest(body=json.dumps({ 'message': 'Author names must contain only letters.' }), content_type='text/json')
     res_required_fields = ['new_gene_name', 'description']
     # validate reservations themselves
     for res in data['reservations']:
