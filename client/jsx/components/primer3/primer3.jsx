@@ -8,6 +8,9 @@ import _ from 'underscore';
 import t from 'tcomb-form';
 const Form = t.form.Form;
 
+var v = require('tcomb-validation');
+var validate = v.validate;
+
 const DataTable = require('../widgets/data_table.jsx');
 import apiRequest from '../../lib/api_request.jsx';
 import { StringField, CheckField, TextField, SelectField, MultiSelectField, RadioSelector} from '../../components/widgets/form_helpers.jsx';
@@ -21,8 +24,11 @@ const Primer3 = React.createClass({
       result: null,
       value: {
         //product_size_range: '[[150,250], [100,300], [301,400], [401,500],[501,600],[601,700],[701,850],[851,1000]]',
-        product_size_start: '200',
-        product_size_end: '300',
+        //product_size_start: '200',
+        //product_size_end: '300',
+        include_start: '500',
+        include_end: '900',
+        primer_search_window: '35',
         minimum_tm: '57',
         optimum_tm: '59',
         maximum_tm: '62',
@@ -49,6 +55,10 @@ const Primer3 = React.createClass({
     this.setState({value});
   },
 
+  resetForm() {
+    this.setState({value: null});
+  },
+
   handleSubmit(e) {
     e.preventDefault();
     const value = this.refs.primerForm.getValue();
@@ -69,16 +79,30 @@ const Primer3 = React.createClass({
     }
   },
 
-  renderResults(){
-    let data = this.state.result;
-    //console.log(data);
-    const DISPLAY_KEYS = Object.keys(data);
-    let nodes = DISPLAY_KEYS.map( (d,i) => {
-        let val = data[d];
-        console.log(d, val);
-        return <span key={`prim3${i}`}><strong>{d}:</strong> {val}<br /></span>;
-    });
-    return <span>{nodes}</span>;
+
+    renderResults () {
+        let data = this.state.result;
+        let rowData = [];
+        const DISPLAY_KEYS = Object.keys(data);
+        let nodes = DISPLAY_KEYS.map( (d,i) => {
+            if ( d.indexOf('_TM') > 0 ||  d.indexOf('_GC_PERCENT') > 0  || d.indexOf('_SEQUENCE') > 0 ) {
+                let val = data[d];
+                rowData.push([d, val])
+            }
+        });
+        let _data = {
+            headers: [
+                ['Parameter', 'Value']
+            ],
+        rows: rowData
+    };
+    return (
+      <div>
+        <h2>Primer Pairs</h2>
+        <hr />
+        <DataTable data={_data} usePlugin={true} order={1, "asc"}/>
+      </div>
+    );
   },
 
 
@@ -94,15 +118,11 @@ const Primer3 = React.createClass({
 
        gene_name: t.maybe(t.String),
        sequence: t.maybe(t.String),
-
-       //product_size_range: t.String,
-       include_start: t.maybe(t.Number),
-       include_end: t.maybe(t.Number),
+       include_start: t.Number,
+       include_end: t.Number,
+       primer_search_window: t.Number,
 
        end_point: Endpoint,
-
-       product_size_start: t.Number,
-       product_size_end: t.Number,
 
        minimum_length: t.Number,
        optimum_primer_length: t.Number,
@@ -136,16 +156,12 @@ const Primer3 = React.createClass({
           <div className='columns small-6'>{locals.inputs.sequence}</div>
          </div>
 
-         <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_PRODUCT_SIZE_RANGE' target='_new'><i className='fa primer-help' />Product Size</a></span>
+        <span><a href='http://primer3.ut.ee/primer3web_help.htm#SEQUENCE_TARGET' target='_new'><i className='fa primer-help' />Target Region</a></span>
          <div className='row'>
-          <div className='columns small-6'>{locals.inputs.product_size_start}</div>
-          <div className='columns small-6'>{locals.inputs.product_size_end}</div>
-         </div>
+          <div className='columns small-4'>{locals.inputs.include_start}</div>
+          <div className='columns small-4'>{locals.inputs.include_end}</div>
+          <div className='columns small-4'>{locals.inputs.primer_search_window}</div>
 
-        <span><a href='http://primer3.ut.ee/primer3web_help.htm#SEQUENCE_INCLUDED_REGION' target='_new'><i className='fa primer-help' />Target Included Region</a></span>
-         <div className='row'>
-          <div className='columns small-6'>{locals.inputs.include_start}</div>
-          <div className='columns small-6'>{locals.inputs.include_end}</div>
         </div>
 
         <span><a href='http://primer3.ut.ee/primer3web_help.htm#SEQUENCE_FORCE_LEFT_START' target='_new'><i className='fa primer-help' />Force Start position of primers</a></span>
@@ -189,7 +205,8 @@ const Primer3 = React.createClass({
         fields: {
             gene_name:{
                 type: 'textbox',
-                label: 'Locus: Enter a standard gene name or systematic ORF name (i.e. ACT1, YKR054C)'
+                label: 'Locus: Enter a standard gene name or systematic ORF name (i.e. ACT1, YKR054C)',
+                size: 'lg'
             },
 
             sequence: {
@@ -226,17 +243,14 @@ const Primer3 = React.createClass({
             maximum_gc: {
                 label: 'Maximum GC:'
             },
-            product_size_start:{
-                label: 'Amplicon Size Min:'
-            },
-            product_size_end:{
-                label: 'Amplicon Size Max:'
-            },
             include_start:{
-                label: 'Start primer search at this 5\'location:'
+                label: 'Start at this 5\' location from START codon:'
             },
             include_end:{
-                label: 'End primer search at this 3\'location:'
+                label: 'End at this 5\' location from START codon:'
+            },
+            primer_search_window:{
+                label: 'Look for primers within this bp of Start and End locations:'
             },
             end_point:{
                 label: 'Forces the endpoints on 5\' and 3\' locations to above included regions:'
@@ -245,12 +259,15 @@ const Primer3 = React.createClass({
        template: formLayout
     }
 
+
     return (
       <form onSubmit={this.handleSubmit}>
         <t.form.Form ref="primerForm" type={PcrFormSchema}
         value={this.state.value} onChange={this.onChange} options={options}/>
         <div className="form-group">
           <button type="submit" className="button primary">Pick Primers</button>
+          <span> OR </span>
+          <button type="reset" className="button primary">Reset to Defaults</button>
         </div>
       </form>
     );
