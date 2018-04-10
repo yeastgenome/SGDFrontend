@@ -455,7 +455,7 @@ def new_gene_name_reservation(request):
     if 'authors' in data.keys():
         authors = data['authors']
         for a in authors:
-            if 'first_name' in a.keys() and 'last_name' in a.keys():
+            if a['first_name'] and a['last_name']:
                 first_name = a['first_name']
                 last_name = a['last_name']
                 if not (first_name.isalpha() and last_name.isalpha()):
