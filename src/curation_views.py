@@ -451,6 +451,14 @@ def new_gene_name_reservation(request):
             except ValueError as e:
                 msg = 'Please enter a valid year.'
                 return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
+    # make sure author names have only letters
+    if 'authors' in data.keys():
+        authors = data['authors']
+        for a in authors:
+            first_name = a['first_name']
+            last_name = a['last_name']
+            if not (first_name.isalpha() and last_name.isalpha()):
+                return HTTPBadRequest(body=json.dumps({ 'message': 'Author names must contain only letters.' }), content_type='text/json')
     res_required_fields = ['new_gene_name', 'description']
     # validate reservations themselves
     for res in data['reservations']:
@@ -530,13 +538,13 @@ def colleague_update(request):
             return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
     if req_id == 'NULL':
         return HTTPBadRequest(body=json.dumps({ 'message': 'Please select your name from colleague list or create a new entry.' }), content_type='text/json')
-    is_email_valid = validate_email(params['email'], verify=True)
+    is_email_valid = validate_email(data['email'], verify=False)
     if not is_email_valid:
-        msg = params['email'] + ' is not a valid email.'
+        msg = data['email'] + ' is not a valid email.'
         return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
-    is_orcid_valid = validate_orcid(params['orcid'], verify=True)
+    is_orcid_valid = validate_orcid(data['orcid'])
     if not is_orcid_valid:
-        msg = params['orcid'] + ' is not a valid orcid.'
+        msg = data['orcid'] + ' is not a valid orcid.'
         return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
     colleague = DBSession.query(Colleague).filter(Colleague.colleague_id == req_id).one_or_none()
     if not colleague:
@@ -580,7 +588,7 @@ def new_colleague(request):
         if not params[x]:
             msg = x + ' is a required field.'
             return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
-    is_email_valid = validate_email(params['email'], verify=True)
+    is_email_valid = validate_email(params['email'], verify=False)
     if not is_email_valid:
         msg = params['email'] + ' is not a valid email.'
         return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
