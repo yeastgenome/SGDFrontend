@@ -815,9 +815,8 @@ def primer3(request):
         else:
             locus = DBSession.query(Locusdbentity).filter(or_(Locusdbentity.gene_name == gene_name.upper(),Locusdbentity.systematic_name == gene_name)).one_or_none()
             tax_id = DBSession.query(Straindbentity.taxonomy_id).filter(Straindbentity.strain_type =='Reference').one_or_none()
-            dna = DBSession.query(Dnasequenceannotation.residues).filter(and_(Dnasequenceannotation.taxonomy_id == tax_id, Dnasequenceannotation.dbentity_id == locus.dbentity_id, Dnasequenceannotation.dna_type =='GENOMIC')).one_or_none()[0]
+            dna = DBSession.query(Dnasequenceannotation.residues).filter(and_(Dnasequenceannotation.taxonomy_id == tax_id, Dnasequenceannotation.dbentity_id == locus.dbentity_id, Dnasequenceannotation.dna_type =='1KB')).one_or_none()[0]
             sequence = str(dna)
-            print sequence
     if 'maximum_tm' in p_keys:
         maximum_tm = params.get('maximum_tm')
     if 'minimum_tm' in p_keys:
@@ -844,45 +843,45 @@ def primer3(request):
         max_three_prime_self_complementarity= params.get('max_three_prime_self_complementarity')
     if 'max_self_complementarity' in p_keys:
         max_self_complementarity = params.get('max_self_complementarity')
-    if 'product_size_start' in p_keys:
-        product_size_start = params.get('product_size_start')
-    if 'product_size_end' in p_keys:
-        product_size_end = params.get('product_size_end')
     if 'include_end' in p_keys:
         include_end = params.get('include_end')
     if 'include_start' in p_keys:
         include_start = params.get('include_start')
+    if 'primer_search_window' in p_keys:
+        primer_search_window = params.get('primer_search_window')
     if 'end_point' in p_keys:
         end_point = params.get('end_point')
     else:
         return HTTPBadRequest('No sequence provided')
 
-    if include_end is None or include_start is None:
-        include_start = 1
-        stop = len(sequence)
+    if gene_name is None:
+        five_prime_start = include_start - primer_search_window
+        five_prime_end =  include_end
     else:
-        stop =  include_end - include_start
+        five_prime_start = (1000 + include_start) - primer_search_window
+        five_prime_end = 1000 + include_end
 
     if end_point == 'YES':
-        force_left_start = include_start
-        force_right_start = include_end
+        force_left_start = five_prime_start
+        force_right_start = five_prime_end + include_end
     elif end_point == 'NO':
         force_left_start = -1000000
         force_right_start = -1000000
 
+    print sequence
     print len(sequence)
-    print include_start
-    print  stop
+
+    print five_prime_start
+    print five_prime_end
+
     print force_left_start
     print force_right_start
-    print product_size_end
-    print product_size_start
 
     result = designPrimers(
         {
             'SEQUENCE_ID': 'MH1000',
             'SEQUENCE_TEMPLATE': sequence,
-            'SEQUENCE_INCLUDED_REGION': (include_start, stop),
+            'SEQUENCE_TARGET': [[five_prime_start,primer_search_window], [five_prime_end,primer_search_window]],
             'SEQUENCE_FORCE_LEFT_START': force_left_start,
             'SEQUENCE_FORCE_RIGHT_START': force_right_start
         },
@@ -921,7 +920,7 @@ def primer3(request):
             'PRIMER_MIN_GC' : minimum_gc,
             'PRIMER_OPT_GC_PERCENT' : optimum_gc,
             'PRIMER_MAX_GC' : maximum_gc,
-            'PRIMER_PRODUCT_SIZE_RANGE': [[product_size_start,product_size_end]],
+            #'PRIMER_PRODUCT_SIZE_RANGE': [[product_size_start,product_size_end]],
             'PRIMER_NUM_RETURN': 5,
             'PRIMER_MAX_END_STABILITY' : 9.0,
             'PRIMER_MAX_LIBRARY_MISPRIMING' : 12.00,
