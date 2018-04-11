@@ -6,7 +6,7 @@ from sqlalchemy import func, distinct, and_, or_
 from sqlalchemy.orm.exc import DetachedInstanceError
 from sqlalchemy.exc import IntegrityError
 from datetime import timedelta
-from primer3.bindings import designPrimers
+from primer3 import bindings, designPrimers
 
 import os
 import re
@@ -815,7 +815,7 @@ def primer3(request):
         else:
             locus = DBSession.query(Locusdbentity).filter(or_(Locusdbentity.gene_name == gene_name.upper(),Locusdbentity.systematic_name == gene_name)).one_or_none()
             tax_id = DBSession.query(Straindbentity.taxonomy_id).filter(Straindbentity.strain_type =='Reference').one_or_none()
-            dna = DBSession.query(Dnasequenceannotation.residues).filter(and_(Dnasequenceannotation.taxonomy_id == tax_id, Dnasequenceannotation.dbentity_id == locus.dbentity_id, Dnasequenceannotation.dna_type =='1KB')).one_or_none()[0]
+            dna = DBSession.query(Dnasequenceannotation.residues).filter(and_(Dnasequenceannotation.taxonomy_id == tax_id, Dnasequenceannotation.dbentity_id == locus.dbentity_id, Dnasequenceannotation.dna_type =='GENOMIC')).one_or_none()[0]
             sequence = str(dna)
     if 'maximum_tm' in p_keys:
         maximum_tm = params.get('maximum_tm')
@@ -855,11 +855,11 @@ def primer3(request):
         return HTTPBadRequest('No sequence provided')
 
     if gene_name is None:
-        five_prime_start = include_start - primer_search_window
-        five_prime_end =  include_end
+        five_prime_start = include_start
+        five_prime_end =  include_end - include_start
     else:
-        five_prime_start = (1000 + include_start) - primer_search_window
-        five_prime_end = 1000 + include_end
+        five_prime_start = include_start
+        five_prime_end = include_end - include_start
 
     if end_point == 'YES':
         force_left_start = five_prime_start
@@ -874,14 +874,12 @@ def primer3(request):
     print five_prime_start
     print five_prime_end
 
-    print force_left_start
-    print force_right_start
 
-    result = designPrimers(
+    result = bindings.designPrimers(
         {
             'SEQUENCE_ID': 'MH1000',
             'SEQUENCE_TEMPLATE': sequence,
-            'SEQUENCE_TARGET': [[five_prime_start,primer_search_window], [five_prime_end,primer_search_window]],
+            'SEQUENCE_TARGET': [five_prime_start,five_prime_end],
             'SEQUENCE_FORCE_LEFT_START': force_left_start,
             'SEQUENCE_FORCE_RIGHT_START': force_right_start
         },
@@ -920,7 +918,7 @@ def primer3(request):
             'PRIMER_MIN_GC' : minimum_gc,
             'PRIMER_OPT_GC_PERCENT' : optimum_gc,
             'PRIMER_MAX_GC' : maximum_gc,
-            #'PRIMER_PRODUCT_SIZE_RANGE': [[product_size_start,product_size_end]],
+            'PRIMER_PRODUCT_SIZE_RANGE': [[150,250], [100,300], [301,400], [401,500] ,[501,600] ,[601,700] ,[701,850], [851,1000]],
             'PRIMER_NUM_RETURN': 5,
             'PRIMER_MAX_END_STABILITY' : 9.0,
             'PRIMER_MAX_LIBRARY_MISPRIMING' : 12.00,
@@ -1028,8 +1026,13 @@ def primer3(request):
             'PRIMER_INTERNAL_WT_LIBRARY_MISHYB': 0.0,
             'PRIMER_INTERNAL_WT_SEQ_QUAL' : 0.0,
             'PRIMER_INTERNAL_WT_END_QUAL': 0.0
+    }, debug=False)
 
-    })
+    # fmt = '{:<30} {:<50}'
+    # print(fmt.format('Output Key', 'Binding Result'))
+    # print('-' * 80)
+    # for k in sorted(result):
+    #     print(fmt.format(k, repr(result[k])))
     return result
 
 @view_config(route_name='ecnumber_locus_details', renderer='json', request_method='GET')
