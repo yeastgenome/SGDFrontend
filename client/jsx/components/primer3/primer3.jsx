@@ -28,7 +28,7 @@ const Primer3 = React.createClass({
         //product_size_end: '300',
         include_start: '500',
         include_end: '900',
-        primer_search_window: '35',
+        //primer_search_window: '35',
         minimum_tm: '57',
         optimum_tm: '59',
         maximum_tm: '62',
@@ -85,10 +85,10 @@ const Primer3 = React.createClass({
         let rowData = [];
         const DISPLAY_KEYS = Object.keys(data);
         let nodes = DISPLAY_KEYS.map( (d,i) => {
-            if ( d.indexOf('_TM') > 0 ||  d.indexOf('_GC_PERCENT') > 0  || d.indexOf('_SEQUENCE') > 0 ) {
+            //if ( d.indexOf('_TM') > 0 ||  d.indexOf('_GC_PERCENT') > 0  || d.indexOf('_SEQUENCE') > 0 ) {
                 let val = data[d];
                 rowData.push([d, val])
-            }
+            //}
         });
         let _data = {
             headers: [
@@ -120,7 +120,7 @@ const Primer3 = React.createClass({
        sequence: t.maybe(t.String),
        include_start: t.Number,
        include_end: t.Number,
-       primer_search_window: t.Number,
+       primer_search_window: t.maybe(t.Number),
 
        end_point: Endpoint,
 
