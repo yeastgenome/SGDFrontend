@@ -29,19 +29,37 @@ export function fetchDownloadsMenuData() {
   };
 }
 
-export const fetchDownloadResults = query => {
+export const fetchDownloadResults = (query, flag= true) => {
   return dispatch => {
     dispatch(startPending());
-    return Axios.get(URLS.getFilesUrl + query + "/files")
-      .then(response => {
-        dispatch(fetchDownloadResultsSuccess({
-            datasets: response.data,
-            query: query
-          }));
-      })
-      .catch(error => {
-        throw error;
-      });
+    if(flag){
+       return Axios.get(URLS.getFilesUrl + query + "/files/active")
+         .then(response => {
+           dispatch(fetchDownloadResultsSuccess({
+               datasets: response.data,
+               query: query,
+               flag: flag
+             }));
+         })
+         .catch(error => {
+           throw error;
+         });
+
+    }
+    else{
+       return Axios.get(URLS.getFilesUrl + query + "/files")
+         .then(response => {
+           dispatch(fetchDownloadResultsSuccess({
+               datasets: response.data,
+               query: query,
+               flag: flag
+             }));
+         })
+         .catch(error => {
+           throw error;
+         });
+    }
+   
   };
 };
 

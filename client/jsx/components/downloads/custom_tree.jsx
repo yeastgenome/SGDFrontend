@@ -18,12 +18,19 @@ class CustomTree extends Component {
   componentDidMount() {
     if (this.props.node.childNodes != undefined) {
       if(this.props.node.childNodes.length > 0){
+        let kids = this.props.node.childNodes.filter(itx => itx.id == Number(this.props.queryString.id));
         let item = _.findWhere(this.props.node.childNodes, 
           {id: Object.keys(this.props.queryString).length > 0 ? Number(this.props.queryString.id) : 0}
       );
         if (item) {
           this.setState({ visible: !this.state.visible });
         }
+      if(kids.length > 0){
+        if(kids[0].id ==Number(this.props.queryString.id)){
+          this.setState({ visible: !this.state.visible });
+        }
+      }
+
       }
       
     }
@@ -34,12 +41,14 @@ class CustomTree extends Component {
     let cssClasses;
     let divClasses;
     let listFlag = false;
+    let openFlag = false;
     if(this.props.node.childNodes != null){
     if (this.props.node.childNodes != undefined && this.props.node.childNodes.length > 0) {
       childNodes = this.props.node.childNodes.map((node, index) => {
         if(this.props.node.childNodes != null){
+
         return <li key={index} value={index}>
-            <CustomTree node={node} leafClick={this.props.leafClick} nodeClick={this.props.nodeClick} queryString={this.props.queryString} />
+            <CustomTree node={node} leafClick={this.props.leafClick} path={node.path.split('/').filter(itx => itx).join('_')}  nodeClick={this.props.nodeClick} queryString={this.props.queryString} />
           </li>;
         }
       });
@@ -47,10 +56,19 @@ class CustomTree extends Component {
         if(this.props.queryString.id){
           if(Number(this.props.queryString.id) == this.props.node.id){
             cssClasses = { togglable: true, "togglable-down": true, "togglable-up": false };
-            listFlag = true
+            listFlag = true;
+            openFlag = true;
+          }
+          else if(this.props.queryString.category == this.props.node.title){
+                cssClasses = { togglable: true, "togglable-down": true, "togglable-up": false };
+                openFlag = true;
+          }
+          else if(this.props.activeNode){
+            cssClasses = { togglable: true, "togglable-down": true, "togglable-up": false };
+            openFlag = true;
           }
           else{
-            cssClasses = { togglable: true, "togglable-down": false, "togglable-up": true };
+            cssClasses = { togglable: true, "togglable-down": this.state.visible, "togglable-up": !this.state.visible };
           }
         }
       }
@@ -63,6 +81,10 @@ class CustomTree extends Component {
           cssClasses = { "node-highlight":true };
           divClasses = { "div-highlight": true }
         }
+        else{
+          cssClasses = { "node-highlight": false };
+          divClasses = { "div-highlight": false };
+        }
       }
     }
     if (!this.state.visible) {
@@ -70,38 +92,76 @@ class CustomTree extends Component {
         style = { listStyleType: "none" };
       }
       else{
-        style = { display: "none" };
+        if (cssClasses) {
+          if (cssClasses["togglable-up"] && openFlag == false) {
+            style = { display: "none" };
+          } else {
+            openFlag = true;
+          }
+        } else {
+          if(openFlag == false){
+            style = { display: "none" };
+          }
+          
+        }
+        
       }
       
-    } else {
+    }
+    else if(this.props.queryString.category == this.props.node.title){
+      if (cssClasses) {
+          if (cssClasses["togglable-up"] && openFlag == false) {
+            style = { display: "none" };
+          } else {
+            openFlag = true;
+          }
+        } else {
+          if(openFlag == false){
+            style = { display: "none" };
+          }
+          
+        }
+        
+      } 
+    else {
         style = { listStyleType: "none" };
     }
+ 
     if (this.props.node.childNodes == undefined || this.props.node.childNodes.length == 0) {
       
       //leaf node
       return <div className={divClasses ? ClassNames(divClasses) : ""}>
           <span onClick={this.props.leafClick} data-node={this.props.node}>
-            <a id={this.props.node.id} name={S(this.props.node.title).capitalize().s} data-node={this.props.node} value={this.props.node} className={ClassNames(cssClasses)}>
+            <a id={this.props.node.id} data-path={this.props.path} name={S(this.props.node.title).capitalize().s} data-node={this.props.node} value={this.props.node} className={ClassNames(cssClasses)}>
               {this.props.node.title}
             </a>
           </span>
         </div>;
     } else {
       //parent node
-      return (
-        <div>
-          <span
-            onClick={this.onToggle}
-            id={S(this.props.node.title).capitalize().s}
-            value={this.props.node}
-            className={ClassNames(cssClasses)}
-            data-id={this.props.node.id}
-          >
-            {this.props.node.title}
-          </span>
-          <ul style={style}>{childNodes}</ul>
-        </div>
-      );
+      if(this.props.queryString.category == this.props.node.title || this.props.activeNode){
+        return <div className={"node-parent open-node"}>
+            <span onClick={this.onToggle} id={S(this.props.node.title).capitalize().s} data-path={this.props.path} value={this.props.node} className={ClassNames(cssClasses)} data-id={this.props.node.id}>
+              {this.props.node.title}
+            </span>
+            <ul className="node-children show-items">
+              {childNodes}
+            </ul>
+          </div>;
+
+      }
+      else{
+        return <div className="node-parent close-node">
+            <span onClick={this.onToggle} id={S(this.props.node.title).capitalize().s} value={this.props.node} className={ClassNames(cssClasses)} data-id={this.props.node.id}>
+              {this.props.node.title}
+            </span>
+            <ul style={style} className="node-children">
+              {childNodes}
+            </ul>
+          </div>;
+
+      }
+      
     }
   }
   }

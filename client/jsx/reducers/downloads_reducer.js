@@ -15,7 +15,12 @@ const initialState = {
   queryParams: "",
   tableColumns: [],
   nodeVisible: false,
-  isPending: false
+  isPending: false,
+  isFileStatusActive: true
+};
+
+const getNode = (dataset, id) => {
+  
 };
 
 export default function(state = initialState, action) {
@@ -43,7 +48,8 @@ export default function(state = initialState, action) {
         downloadsResults: action.payload.datasets,
         selectedLeaf: action.payload.query.item
           ? S(action.payload.query.item).capitalize().s
-          : S(action.payload.query)
+          : S(action.payload.query),
+        isFileStatusActive: action.payload.flag
       });
     case action_types.FETCH_DOWNLOADS_MENU:
       return Object.assign({}, state, {
