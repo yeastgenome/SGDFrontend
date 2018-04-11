@@ -361,13 +361,27 @@ class ModelsHelper(object):
 
         return obj
 
-    def get_files_by_id_list(self, file_id_list):
+    def get_files_by_status(self, ids_list, flag):
+        if(ids_list):
+            if(flag):
+                result = DBSession.query(Filedbentity).filter(
+                    Filedbentity.dbentity_id.in_(ids_list),
+                    Filedbentity.is_public == True, Filedbentity.s3_url != None,
+                    Filedbentity.readme_file_id != None,
+                    Filedbentity.dbentity_status == "Active").all()
+                return result
+            else:
+                result = DBSession.query(Filedbentity).filter(
+                    Filedbentity.dbentity_id.in_(ids_list),
+                    Filedbentity.is_public == True, Filedbentity.s3_url != None,
+                    Filedbentity.readme_file_id != None).all()
+                return result
+
+
+    def get_files_by_id_list(self, file_id_list, flag):
         if file_id_list is not None:
             ids_list = [int(y) for ys in file_id_list for y in ys]
-            file_res = DBSession.query(Filedbentity).filter(
-                Filedbentity.dbentity_id.in_(ids_list),
-                Filedbentity.is_public == True, Filedbentity.s3_url != None,
-                Filedbentity.readme_file_id != None).all()
+            file_res = self.get_files_by_status(ids_list, flag)
             if file_res:
                 temp_files = []
                 for x in file_res:
@@ -402,10 +416,10 @@ class ModelsHelper(object):
                 return temp_files
         return None
 
-    def get_files_by_path_id(self, path_id):
+    def get_files_by_path_id(self, path_id, flag):
         file_ids = self.get_id_list_by_path_id(path_id)
         if file_ids:
-            files = self.get_files_by_id_list(file_ids)
+            files = self.get_files_by_id_list(file_ids, flag)
             if files:
                 return files
 
@@ -424,9 +438,13 @@ class PathTree(object):
     def __json__(self, request):
         return {
             'menu': self.menu,
-            'title': self.title,
+            'title': self.format_title(self.title),
             'id': self.path_id,
             'path': self.path,
             'description': self.description,
             'childNodes': self.childNodes
         }
+    def format_title(self, title):
+        if("cerevisiae" not in title.lower()):
+            return title
+        return title.replace("S Cerevisiae", "S. cerevisiae")

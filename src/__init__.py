@@ -130,6 +130,7 @@ def main(global_config, **settings):
     #downloads UI endpoints
     config.add_route('get_downloads_menu', '/downloads/menu', request_method='GET')
     config.add_route('get_downloads_files', '/downloads/{pathid}/files', request_method='GET')
+    config.add_route('get_downloads_active_files', '/downloads/{pathid}/files/active', request_method='GET')
     
     config.add_route('healthcheck', '/healthcheck')
     config.scan()
