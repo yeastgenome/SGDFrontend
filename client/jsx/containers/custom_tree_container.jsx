@@ -13,6 +13,7 @@ import { $, jQuery } from "jquery";
 import ClassNames from "classnames";
 import DownloadsDescription from "../components/downloads/downloads_description";
 import StaticInfo from "../components/downloads/StaticInfo";
+import FileStatusRadio from "../components/downloads/file_status_radio";
 
 const DOWNLOADS_URL = "/downloads-tree";
 
@@ -22,6 +23,28 @@ class CustomTreeContainer extends Component {
     this.leafClick = this.leafClick.bind(this);
     this.nodeToggle = this.nodeToggle.bind(this);
     this.getSelectedNode = this.getSelectedNode.bind(this);
+    this.onFileStatusChange = this.onFileStatusChange.bind(this);
+  }
+
+  onFileStatusChange(event){
+    if(event.target.id == "active"){
+      this.props.dispatch(downloadsActions.fetchDownloadResults(this.props.queryParams.id, true));
+      const item = this.props.queryParams;
+      if (item.status) {
+        item.status = "active";
+        this.props.history.pushState(null, DOWNLOADS_URL, item);
+      }
+      
+    }
+    else{
+      this.props.dispatch(downloadsActions.fetchDownloadResults(this.props.queryParams.id, false));
+      const item = this.props.queryParams;
+      if (item.status) {
+        item.status = "all";
+        this.props.history.pushState(null, DOWNLOADS_URL, item);
+      }
+      
+    }
   }
 
   formatData(data) {
@@ -32,14 +55,14 @@ class CustomTreeContainer extends Component {
               let rmText = item.name;
               let dText = item.name;
                 return { readme_href: <span key={item.name}>
-                  <a href={item.readme_url} target="_blank">
-                    <i className="fa fa-file-text-o fa-lg" aria-hidden="true" style={{ width: 80 }} />
-                  </a>
-                  </span>, download_href: <span key={item.name + 1}>
-                    <a href={item.href} download={dText}>
-                      <i className="fa fa-cloud-download fa-lg" aria-hidden="true" style={{ width: 80, color: "#8C1515" }} />
-                    </a>
-                  </span>, name: item.name, size:item.file_size !== null ? item.file_size : "Not Found", status:item.status, description: item.description };
+                      <a href={item.readme_url} target="_blank" className="td-hide-icon">
+                        <i className="fa fa-file-text-o fa-lg" aria-hidden="true" style={{ width: 80 }} />
+                      </a>
+                    </span>, download_href: <span key={item.name + 1}>
+                      <a href={item.href} download={dText} className="td_hide_icon">
+                        <i className="fa fa-cloud-download fa-lg" aria-hidden="true" style={{ width: 80, color: "#8C1515" }} />
+                      </a>
+                    </span>, name: item.name, size: item.file_size !== null ? item.file_size : "Not Found", status: item.status, description: item.description };
         }
       });
         modData.map((item, index) => {
@@ -54,14 +77,36 @@ class CustomTreeContainer extends Component {
     this.props.dispatch(downloadsActions.toggleNode(!this.props.isVisible));
   }
   fetchDownloads(term) {
-    this.props.dispatch(downloadsActions.fetchDownloadResults(term));
+    if(this.props.queryParams.status){
+      const flag = this.props.queryParams.status == "active" ? true : false
+      this.props.dispatch(downloadsActions.fetchDownloadResults(term, flag));
+    }
+    else{
+      this.props.dispatch(downloadsActions.fetchDownloadResults(term, this.props.isFileStatusActive));
+    }
+    
   }
   leafClick(event) {
+    let qStringObj = this.props.queryParams;
     this.fetchDownloads(event.target.id);
-    this.props.history.pushState(null, DOWNLOADS_URL, {
-      category: this.props.selectedNode.title,
-      id: event.target.id
-    });
+    if(this.props.selectedNode){
+      this.props.history.pushState(null, DOWNLOADS_URL, {
+        category: this.props.selectedNode.title,
+        id: event.target.id,
+        item: event.target.getAttribute("data-path"),
+        status: this.props.isFileStatusActive ? "active" : "all"
+      });
+    }else{
+      if (qStringObj) {
+        this.props.history.pushState(null, DOWNLOADS_URL, {
+          category: qStringObj.category,
+          id: event.target.id,
+          item: event.target.getAttribute("data-path"),
+          status: this.props.isFileStatusActive ? "active" : "all"
+        });
+      } 
+    }
+    
   }
   getSelectedNode(node) {
     this.props.dispatch(downloadsActions.getNode(node));
@@ -69,7 +114,12 @@ class CustomTreeContainer extends Component {
       this.fetchDownloads(node.id);
       this.props.history.pushState(null, DOWNLOADS_URL, {
         category: node.title,
-        id: node.id
+        id: node.id,
+        item: node.path
+          .split("/")
+          .filter(itx => itx)
+          .join("_"),
+        status: this.props.isFileStatusActive ? "active": "all"
       });
     }
     
@@ -81,7 +131,14 @@ class CustomTreeContainer extends Component {
         this.props.dispatch(downloadsActions.fetchDownloadResults(this.props.query));
       }
       else{
-        this.props.dispatch(downloadsActions.fetchDownloadResults(this.props.query.id));
+        if(this.props.queryParams.status){
+          const flag = this.props.queryParams.status == "active" ? true : false;
+          this.props.dispatch(downloadsActions.fetchDownloadResults(this.props.query.id,flag));
+        }
+        else{
+          this.props.dispatch(downloadsActions.fetchDownloadResults(this.props.query.id));
+        }
+        
       }
     }
   }
@@ -91,20 +148,41 @@ class CustomTreeContainer extends Component {
   renderTreeStructure() {
     let items = this.props.downloadsMenu;
     if (items.length > 0) {
-      let treeNodes = items.map((node, index) => {
-        if (node) {
-          return (
-            <CustomTree
-              key={index}
-              node={node}
-              leafClick={this.leafClick}
-              nodeClick={this.getSelectedNode}
-              queryString={this.props.queryParams}
-            />
-          );
-        }
-      });
-      return treeNodes;
+      const selNode = this.props.queryParams.item ? this.props.queryParams.item.split('_').filter(qs => qs)[0]: undefined;
+      const activeNode = selNode ? _.findWhere(items, {title: S(selNode).capitalize().s}): undefined;
+      if(activeNode){
+        let treeNodes = items.map((node, index) => {
+          if(activeNode.title === node.title){
+               if (node) {
+                 return <CustomTree activeNode={true} key={index} node={node} path={node.path
+                       .split("/")
+                       .filter(itx => itx)
+                       .join("_")} leafClick={this.leafClick} nodeClick={this.getSelectedNode} queryString={this.props.queryParams} />;
+               }
+
+          }
+          else{
+               if (node) {
+                 return <CustomTree activeNode={false} key={index} node={node} path={node.path
+                       .split("/")
+                       .filter(itx => itx)
+                       .join("_")} leafClick={this.leafClick} nodeClick={this.getSelectedNode} queryString={this.props.queryParams} />;
+               }
+          }
+       
+        });
+        return treeNodes;
+
+      }
+      else{
+        let treeNodes = items.map((node, index) => {
+          if (node) {
+            return <CustomTree key={index} node={node} path={node.path.split('/').filter(itx => itx).join('_')} leafClick={this.leafClick} nodeClick={this.getSelectedNode} queryString={this.props.queryParams} />;
+          }
+        });
+        return treeNodes;
+      }
+      
     } else {
       return [];
     }
@@ -135,12 +213,25 @@ class CustomTreeContainer extends Component {
       let table = this.formatData(this.props.downloadsResults);
       if (table) {
         let cssTree = { "list-style-Type": "none" };
-        let node = this.props.isPending ? <Loader /> : <DataTable data={table} usePlugin={true} className="downloads-table-center" />;
+        let temp = <div className="row test">
+            <div className="columns small-12">
+              <div className="columns small-6">
+                <FileStatusRadio onFileStatusChange={this.onFileStatusChange} flag={this.props.isFileStatusActive} />
+              </div>
+              <div classsName="columns small-6" />
+            </div>
+            <div className="columns small-12">
+              <DataTable data={table} usePlugin={true} className="downloads-table-center" />
+            </div>
+          </div>;
+        let node = this.props.isPending ? <Loader /> : temp;
         let renderTemplate = <div>
             {pageTitle}
             <div className="row">
               <div className="columns small-2">{data}</div>
-              <div className="columns small-10">{node}</div>
+              <div className="columns small-10">
+              {node}
+              </div>
             </div>
           </div>;
         return renderTemplate;
@@ -161,12 +252,23 @@ class CustomTreeContainer extends Component {
       if(this.props.downloadsResults.length > 0){
         let table = this.formatData(this.props.downloadsResults);
           let cssTree = { "list-style-Type": "none" };
+          let temp = <div className="row test">
+              <div className="columns small-12">
+                <div className="columns small-6">
+                  <FileStatusRadio onFileStatusChange={this.onFileStatusChange} flag={this.props.isFileStatusActive} />
+                </div>
+                <div classsName="columns small-6" />
+              </div>
+              <div className="columns small-12">
+                <DataTable data={table} usePlugin={true} className="downloads-table-center" />
+              </div>
+            </div>;
           let renderTemplate = <div>
               {pageTitle}
               <div className="row">
                 <div className="columns small-2">{data}</div>
                 <div className="columns small-10">
-                  <DataTable data={table} usePlugin={true} className="downloads-table-center" />
+                  {temp}
                 </div>
               </div>
             </div>;
@@ -180,11 +282,8 @@ class CustomTreeContainer extends Component {
               <div className="row">
                 <div className="columns small-2">{data}</div>
                 <div className="columns small-10">
-                  <div className="callout warning">
-                    <p>
-                      <code>Files not found</code>
-                    </p>
-                  </div>
+                  <StaticInfo />
+                  {data_info}
                 </div>
               </div>
             </div>;
@@ -218,7 +317,8 @@ function mapStateToProps(state) {
     url: `${state.routing.location.pathname}${state.routing.location.search}`,
     queryParams: (Object.keys(state.routing.location.query).length === 0 && state.routing.location.query.constructor === Object) ? {} : state.routing.location.query,
     nodeVisible: state.downloads.nodeVisible,
-    selectedNode: state.downloads.selectedNode
+    selectedNode: state.downloads.selectedNode,
+    isFileStatusActive: state.downloads.isFileStatusActive
   };
 }
 export default connect(mapStateToProps)(CustomTreeContainer);
