@@ -71,7 +71,11 @@ const Primer3 = React.createClass({
 	    dataType: 'json',
 	    processData: true,
 	    success: ( returnData ) => {
-	        this.setState({ result: returnData });
+        if (returnData.error) {
+          this.setState({ error: returnData.error });
+        } else {
+          this.setState({ result: returnData, error: null });  
+        }
 	    }
 	});
     if (value) {
@@ -80,21 +84,21 @@ const Primer3 = React.createClass({
   },
 
 
-    renderResults () {
-        let data = this.state.result;
-        let rowData = [];
-        const DISPLAY_KEYS = Object.keys(data);
-        let nodes = DISPLAY_KEYS.map( (d,i) => {
-            //if ( d.indexOf('_TM') > 0 ||  d.indexOf('_GC_PERCENT') > 0  || d.indexOf('_SEQUENCE') > 0 ) {
-                let val = data[d];
-                rowData.push([d, val])
-            //}
-        });
-        let _data = {
-            headers: [
-                ['Parameter', 'Value']
-            ],
-        rows: rowData
+  renderResults () {
+    let data = this.state.result;
+    let rowData = [];
+    const DISPLAY_KEYS = Object.keys(data);
+    let nodes = DISPLAY_KEYS.map( (d,i) => {
+    //if ( d.indexOf('_TM') > 0 ||  d.indexOf('_GC_PERCENT') > 0  || d.indexOf('_SEQUENCE') > 0 ) {
+        let val = data[d];
+        rowData.push([d, val])
+    //}
+    });
+    let _data = {
+      headers: [
+          ['Parameter', 'Value']
+      ],
+      rows: rowData
     };
     return (
       <div>
@@ -106,7 +110,7 @@ const Primer3 = React.createClass({
   },
 
 
-  renderExampleForm() {
+  renderForm() {
 
     const Endpoint = t.enums.of(['NO', 'YES'], 'Endpoint');
 
@@ -264,6 +268,7 @@ const Primer3 = React.createClass({
       <form onSubmit={this.handleSubmit}>
         <t.form.Form ref="primerForm" type={PcrFormSchema}
         value={this.state.value} onChange={this.onChange} options={options}/>
+        {this._renderError()}
         <div className="form-group">
           <button type="submit" className="button primary">Pick Primers</button>
           <span> OR </span>
@@ -277,9 +282,9 @@ const Primer3 = React.createClass({
 
   render () {
     if (this.state.result) {
-        return this.renderResults();
+      return this.renderResults();
     }
-    return this.renderExampleForm();
+    return this.renderForm();
   },
 
 
@@ -287,7 +292,7 @@ const Primer3 = React.createClass({
   _renderError () {
     if (!this.state.error) return null;
     return (
-      <div className='callout warning'>
+      <div className='alert-box warning'>
         <p>{this.state.error}</p>
       </div>
     );
