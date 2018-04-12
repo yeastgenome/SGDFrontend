@@ -51,6 +51,14 @@ const Primer3 = React.createClass({
     };
   },
 
+  componentDidUpdate(prevProps) {
+    console.log('we got an update');
+    console.log(this.props.queryParams, prevProps.queryParams);
+    if (prevProps.queryParams.results && !this.props.queryParams.results) {
+      this.setState({ result: null });
+    }
+  },
+
   onChange(value) {
     this.setState({value});
   },
@@ -60,6 +68,7 @@ const Primer3 = React.createClass({
   },
 
   handleSubmit(e) {
+    this.props.history.pushState(null, '/primer3', { 'results': 1 });
     e.preventDefault();
     const value = this.refs.primerForm.getValue();
     let strValue = JSON.stringify(value);
@@ -314,6 +323,7 @@ const style = {
 
 function mapStateToProps(_state) {
   return {
+    queryParams: _state.routing.location.query
   };
 }
 
