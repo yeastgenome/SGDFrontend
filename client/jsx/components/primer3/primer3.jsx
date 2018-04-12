@@ -52,8 +52,6 @@ const Primer3 = React.createClass({
   },
 
   componentDidUpdate(prevProps) {
-    console.log('we got an update');
-    console.log(this.props.queryParams, prevProps.queryParams);
     if (prevProps.queryParams.results && !this.props.queryParams.results) {
       this.setState({ result: null });
     }
