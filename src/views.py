@@ -804,7 +804,6 @@ def ecnumber(request):
 @view_config(route_name='primer3', renderer='json', request_method='POST')
 def primer3(request):
     params = request.json_body
-    print(params)
     p_keys = params.keys()
     if 'gene_name' in p_keys:
         gene_name = params.get('gene_name')
@@ -812,6 +811,7 @@ def primer3(request):
         if gene_name is None:
             sequence = params.get('sequence')
             sequence = str(sequence.replace('\r', '').replace('\n', ''))
+            # return HTTPBadRequest(body=json.dumps({ 'error': 'Please enter either a gene name or a sequence' }))
         else:
             locus = DBSession.query(Locusdbentity).filter(or_(Locusdbentity.gene_name == gene_name.upper(),Locusdbentity.systematic_name == gene_name)).one_or_none()
             tax_id = DBSession.query(Straindbentity.taxonomy_id).filter(Straindbentity.strain_type =='Reference').one_or_none()
