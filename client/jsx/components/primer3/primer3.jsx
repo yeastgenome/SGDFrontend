@@ -23,12 +23,8 @@ const Primer3 = React.createClass({
     return {
       result: null,
       value: {
-        //product_size_range: '[[150,250], [100,300], [301,400], [401,500],[501,600],[601,700],[701,850],[851,1000]]',
-        //product_size_start: '200',
-        //product_size_end: '300',
         include_start: '500',
         include_end: '900',
-        //primer_search_window: '35',
         minimum_tm: '57',
         optimum_tm: '59',
         maximum_tm: '62',
@@ -131,7 +127,7 @@ const Primer3 = React.createClass({
        sequence: t.maybe(t.String),
        include_start: t.Number,
        include_end: t.Number,
-       primer_search_window: t.maybe(t.Number),
+       maximum_product_size: t.maybe(t.Number),
 
        end_point: Endpoint,
 
@@ -171,7 +167,7 @@ const Primer3 = React.createClass({
          <div className='row'>
           <div className='columns small-4'>{locals.inputs.include_start}</div>
           <div className='columns small-4'>{locals.inputs.include_end}</div>
-          <div className='columns small-4'>{locals.inputs.primer_search_window}</div>
+          <div className='columns small-4'>{locals.inputs.maximum_product_size}</div>
 
         </div>
 
@@ -260,8 +256,8 @@ const Primer3 = React.createClass({
             include_end:{
                 label: 'End at this 5\' location from START codon:'
             },
-            primer_search_window:{
-                label: 'Look for primers within this bp of Start and End locations:'
+            maximum_product_size:{
+                label: 'Maximum product size:'
             },
             end_point:{
                 label: 'Forces the endpoints on 5\' and 3\' locations to above included regions:'
