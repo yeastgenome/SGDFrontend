@@ -84,10 +84,7 @@ const Primer3 = React.createClass({
           this.setState({ result: returnData, error: null });  
         }
 	    }
-	});
-    if (value) {
-      console.log(value);
-    }
+  	});
   },
 
 
@@ -160,11 +157,11 @@ const Primer3 = React.createClass({
         <br/>
         <span>Sequences of <a href='http://wiki.yeastgenome.org/index.php/Primer_Set_Sequences' target='_new'><i className='fa primer-seqs' />primer sets </a> available to the community</span>
          <div className='row'>
-          <div className='columns small-6'>{locals.inputs.gene_name}</div>
+          <div className='columns small-4'>{locals.inputs.gene_name}</div>
          </div>
          <p><b> Please input gene name OR sequence</b></p>
          <div className='row'>
-          <div className='columns small-6'>{locals.inputs.sequence}</div>
+          <div className='columns small-8'>{locals.inputs.sequence}</div>
          </div>
 
         <span><a href='http://primer3.ut.ee/primer3web_help.htm#SEQUENCE_TARGET' target='_new'><i className='fa primer-help' />Target Region</a></span>
@@ -215,7 +212,6 @@ const Primer3 = React.createClass({
     var options = {
         fields: {
             gene_name:{
-                type: 'textbox',
                 label: 'Locus: Enter a standard gene name or systematic ORF name (i.e. ACT1, YKR054C)',
                 size: 'lg'
             },
@@ -272,7 +268,7 @@ const Primer3 = React.createClass({
 
 
     return (
-      <form onSubmit={this.handleSubmit}>
+      <form onSubmit={this.handleSubmit} style={{ marginBottom: '3rem' }}>
         <t.form.Form ref="primerForm" type={PcrFormSchema}
         value={this.state.value} onChange={this.onChange} options={options}/>
         {this._renderError()}

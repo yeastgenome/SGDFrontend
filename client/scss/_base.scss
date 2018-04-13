@@ -25,6 +25,10 @@ input[type="text"] {
 	@include border-radius($global-radius);
 }
 
+form textarea {
+    @include border-radius($global-radius);
+}
+
 .no-margins {
 	margin:0 !important;
 }
