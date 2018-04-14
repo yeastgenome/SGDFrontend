@@ -87,8 +87,8 @@ def blast_sgd(request):
 def patmatch(request):
     return render_to_response(TEMPLATE_ROOT + 'patmatch.jinja2', {}, request=request)
 
-@view_config(route_name='seqTools')
-def seqTools(request):
+@view_config(route_name='seq_tools')
+def seq_tools(request):
     return render_to_response(TEMPLATE_ROOT + 'seqTools.jinja2', {}, request=request)
 
 @view_config(route_name='colleague_show')
