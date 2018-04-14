@@ -2,7 +2,7 @@
 "use strict";
 
 const React = require("react");
-const SearchForm = require("../components/seqTools/search_form.jsx");
+const SearchForm = require("../components/seqtools/search_form.jsx");
 
 var seqToolsView = {};
 
