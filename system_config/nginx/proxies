@@ -1,3 +1,7 @@
+location /1011-yeast-genomes {
+    return 302 /search?q=PMID%3A29643504&category=download&status=Active;
+}
+
 location /cache/chromosomes.shtml {
     proxy_pass http://heritage.yeastgenome.org/cache/chromosomes.shtml;
 }
