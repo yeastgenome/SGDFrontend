@@ -114,7 +114,7 @@ class CustomTree extends Component {
       }
    
       if (
-        this.props.node.childNodes == undefined ||nthis.props.node.childNodes.length == 0) {
+        this.props.node.childNodes == undefined || this.props.node.childNodes.length == 0) {
         //leaf node
         return (
           <div className={divClasses ? ClassNames(divClasses) : ""}>

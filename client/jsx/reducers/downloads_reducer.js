@@ -19,9 +19,6 @@ const initialState = {
   isFileStatusActive: true
 };
 
-const getNode = (dataset, id) => {
-  
-};
 
 export default function(state = initialState, action) {
   if (action.type === "@@router/UPDATE_LOCATION" &&action.payload.pathname === "/downloads") {
