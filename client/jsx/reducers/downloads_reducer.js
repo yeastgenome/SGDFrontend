@@ -34,6 +34,15 @@ export default function(state = initialState, action) {
       if (result) {
         state.query = action.payload.query;
       }
+      if(action.payload.query.status){
+        state.isFileStatusActive = action.payload.query.status == "active" ? true : false;
+      }
+      if(state.selectedNode.length == 0){
+        const item = _.findWhere(state.downloadsMenu, {id: Number(state.query.id)});
+        if(item){
+          state.selectedNode = item;
+        }
+      }
     }
     return state;
   }

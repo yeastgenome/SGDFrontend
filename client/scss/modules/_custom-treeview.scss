@@ -20,10 +20,15 @@
     content: '▶';
     display: 'inline-block';
     float:left;
+
 }
 
 .node-parent.open-node ul.node-children {
     list-style-type: none;
+}
+
+.node-parent.close-node ul.node-children {
+    display: none;
 }
 
 .file-status-radio{
