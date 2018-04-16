@@ -84,15 +84,17 @@ const Primer3 = React.createClass({
   },
 
 
+
   renderResults () {
     let data = this.state.result;
     let rowData = [];
     const DISPLAY_KEYS = Object.keys(data);
     let nodes = DISPLAY_KEYS.map( (d,i) => {
-    //if ( d.indexOf('_TM') > 0 ||  d.indexOf('_GC_PERCENT') > 0  || d.indexOf('_SEQUENCE') > 0 ) {
-        let val = data[d];
-        rowData.push([d, val])
-    //}
+    if ( d.match(/\d+$/) != null || d.indexOf('_TM') > 0 ||  d.indexOf('_GC_PERCENT') > 0  || d.indexOf('_SEQUENCE') > 0 || d.indexOf('_SELF_ANY_TH') > 0
+          || d.indexOf('_SELF_END_TH') > 0 || d.indexOf('_HAIRPIN_TH') > 0 || d.indexOf('_SEQUENCE') > 0) {
+         let val = data[d];
+          rowData.push([d, val])
+    }
     });
     let _data = {
       headers: [
