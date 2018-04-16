@@ -806,17 +806,25 @@ def primer3(request):
     params = request.json_body
     print(params)
     p_keys = params.keys()
+
     if 'gene_name' in p_keys:
         gene_name = params.get('gene_name')
-        print gene_name
         if gene_name is None:
-            sequence = params.get('sequence')
-            sequence = str(sequence.replace('\r', '').replace('\n', ''))
+            if 'sequence' in p_keys:
+                sequence = params.get('sequence')
+                if sequence is None:
+                    return HTTPBadRequest(body=json.dumps({'error': 'No gene name OR sequence provided'}))
+                sequence = str(sequence.replace('\r', '').replace('\n', ''))
         else:
             locus = DBSession.query(Locusdbentity).filter(or_(Locusdbentity.gene_name == gene_name.upper(),Locusdbentity.systematic_name == gene_name)).one_or_none()
             tax_id = DBSession.query(Straindbentity.taxonomy_id).filter(Straindbentity.strain_type =='Reference').one_or_none()
-            dna = DBSession.query(Dnasequenceannotation.residues).filter(and_(Dnasequenceannotation.taxonomy_id == tax_id, Dnasequenceannotation.dbentity_id == locus.dbentity_id, Dnasequenceannotation.dna_type =='GENOMIC')).one_or_none()[0]
-            sequence = str(dna)
+            dna = DBSession.query(Dnasequenceannotation.residues).filter(and_(Dnasequenceannotation.taxonomy_id == tax_id, Dnasequenceannotation.dbentity_id == locus.dbentity_id, Dnasequenceannotation.dna_type =='1KB')).one_or_none()[0]
+            if dna:
+                sequence = str(dna)
+            else:
+                return HTTPNotFound()
+
+
     if 'maximum_tm' in p_keys:
         maximum_tm = params.get('maximum_tm')
     if 'minimum_tm' in p_keys:
@@ -847,23 +855,35 @@ def primer3(request):
         include_end = params.get('include_end')
     if 'include_start' in p_keys:
         include_start = params.get('include_start')
-    if 'primer_search_window' in p_keys:
-        primer_search_window = params.get('primer_search_window')
+    if 'maximum_product_size' in p_keys:
+        maximum_product_size = params.get('maximum_product_size')
     if 'end_point' in p_keys:
         end_point = params.get('end_point')
-    else:
-        return HTTPBadRequest('No sequence provided')
 
     if gene_name is None:
         five_prime_start = include_start
         five_prime_end =  include_end - include_start
     else:
-        five_prime_start = include_start
-        five_prime_end = include_end - include_start
+        if include_start < 0:
+            five_prime_start = 1000 - include_start
+            five_prime_end = include_end - five_prime_start
+        else:
+            five_prime_start = 1000 + include_start
+            five_prime_end = include_end - include_start
+
+    start = 1001
+    stop = 1150
+
+    if (include_end - include_start) > 1000:
+         start = include_end - include_start
+         if maximum_product_size:
+             stop = maximum_product_size
+         else:
+             stop = start + 300
 
     if end_point == 'YES':
         force_left_start = five_prime_start
-        force_right_start = five_prime_end + include_end
+        force_right_start = 1000 + include_end
     elif end_point == 'NO':
         force_left_start = -1000000
         force_right_start = -1000000
@@ -873,6 +893,12 @@ def primer3(request):
 
     print five_prime_start
     print five_prime_end
+
+    print start
+    print stop
+
+    print force_left_start
+    print force_right_start
 
     try:
         result = bindings.designPrimers(
@@ -918,7 +944,7 @@ def primer3(request):
                 'PRIMER_MIN_GC' : minimum_gc,
                 'PRIMER_OPT_GC_PERCENT' : optimum_gc,
                 'PRIMER_MAX_GC' : maximum_gc,
-                'PRIMER_PRODUCT_SIZE_RANGE': [[150,250], [100,300], [301,400], [401,500] ,[501,600] ,[601,700] ,[701,850], [851,1000]],
+                'PRIMER_PRODUCT_SIZE_RANGE': [[100,150],[150,250], [100,300], [301,400], [401,500] ,[501,600] ,[601,700] ,[701,850], [851,1000], [start,stop]],
                 'PRIMER_NUM_RETURN': 5,
                 'PRIMER_MAX_END_STABILITY' : 9.0,
                 'PRIMER_MAX_LIBRARY_MISPRIMING' : 12.00,
@@ -1027,6 +1053,11 @@ def primer3(request):
                 'PRIMER_INTERNAL_WT_SEQ_QUAL' : 0.0,
                 'PRIMER_INTERNAL_WT_END_QUAL': 0.0
         }, debug=False)
+        # fmt = '{:<30} {:<50}'
+        # print(fmt.format('Output Key', 'SimBinding Result'))
+        # print('-' * 80)
+        # for k in sorted(result):
+        #     print(fmt.format(k, repr(result[k])))
         return result
     except Exception as e:
         return HTTPBadRequest(body=json.dumps({'error': str(e) }))
