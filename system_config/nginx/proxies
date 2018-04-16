@@ -1,5 +1,5 @@
 location /1011-yeast-genomes {
-    return 302 /search?q=PMID%3A29643504&category=download&status=Active;
+    return 302 $scheme://www.yeastgenome.org/search?q=PMID%3A29643504&category=download&status=Active;
 }
 
 location /cache/chromosomes.shtml {
