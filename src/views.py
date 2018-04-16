@@ -804,7 +804,6 @@ def ecnumber(request):
 @view_config(route_name='primer3', renderer='json', request_method='POST')
 def primer3(request):
     params = request.json_body
-    print(params)
     p_keys = params.keys()
 
     if 'gene_name' in p_keys:
