@@ -490,6 +490,7 @@ function mapStateToProps(state) {
     nodeVisible: state.downloads.nodeVisible,
     selectedNode: state.downloads.selectedNode,
     isFileStatusActive: state.downloads.isFileStatusActive
+    /*cleanup code */
   };
 }
 export default connect(mapStateToProps)(CustomTreeContainer);
