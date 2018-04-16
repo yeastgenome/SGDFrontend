@@ -15,7 +15,7 @@ import DownloadsDescription from "../components/downloads/downloads_description"
 import StaticInfo from "../components/downloads/StaticInfo";
 import FileStatusRadio from "../components/downloads/file_status_radio";
 
-const DOWNLOADS_URL = "/downloads-tree";
+const DOWNLOADS_URL = "/downloads";
 
 class CustomTreeContainer extends Component {
   constructor(props) {
@@ -347,10 +347,6 @@ class CustomTreeContainer extends Component {
       return temp_arr;
     }
   }
-<<<<<<< HEAD
-
-=======
->>>>>>> 33a93ec5735581ed42bd96f35c5cfcf2a8fd4fbe
   render() {
     let data = this.renderTreeStructure();
     let data_info = this.renderDescriptions();

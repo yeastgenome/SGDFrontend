@@ -99,7 +99,7 @@ class CustomTree extends Component {
     
         }
       } else {
-        if (this.props.node.title &&mObject.keys(this.props.queryString).length > 0) {
+        if (this.props.node.title && Object.keys(this.props.queryString).length > 0) {
           if (
             this.props.node.id.toString() ==
             this.props.queryString.id.toString()
