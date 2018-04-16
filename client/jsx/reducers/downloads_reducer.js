@@ -24,7 +24,7 @@ const getNode = (dataset, id) => {
 };
 
 export default function(state = initialState, action) {
-  if (action.type === "@@router/UPDATE_LOCATION" &&action.payload.pathname === "/downloads-tree") {
+  if (action.type === "@@router/UPDATE_LOCATION" &&action.payload.pathname === "/downloads") {
     if (action.payload.search.length > 0) {
       let regexString = /(^\?([a-zA-Z]|)+\=([\w*\+\w*])+(\&([\w*]+)+\=([\w*\+\w*])+)+)|^\?([a-zA-Z]|)+\=([\w*\+\w*])+/g;
       let result =

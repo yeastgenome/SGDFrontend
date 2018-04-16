@@ -16,6 +16,7 @@ class CustomTree extends Component {
     temp_node.node_flag = !this.state.visible;
     this.props.nodeClick(temp_node, event);
   }
+
   componentDidMount() {
     if (this.props.node.childNodes != undefined) {
       if (this.props.node.childNodes.length > 0) {
@@ -98,10 +99,7 @@ class CustomTree extends Component {
     
         }
       } else {
-        if (
-          this.props.node.title &&
-          Object.keys(this.props.queryString).length > 0
-        ) {
+        if (this.props.node.title &&mObject.keys(this.props.queryString).length > 0) {
           if (
             this.props.node.id.toString() ==
             this.props.queryString.id.toString()
@@ -116,9 +114,7 @@ class CustomTree extends Component {
       }
    
       if (
-        this.props.node.childNodes == undefined ||
-        this.props.node.childNodes.length == 0
-      ) {
+        this.props.node.childNodes == undefined ||nthis.props.node.childNodes.length == 0) {
         //leaf node
         return (
           <div className={divClasses ? ClassNames(divClasses) : ""}>
@@ -221,4 +217,5 @@ class CustomTree extends Component {
     }
   }
 }
+
 export default CustomTree;

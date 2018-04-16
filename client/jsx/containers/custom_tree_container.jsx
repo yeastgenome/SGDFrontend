@@ -15,7 +15,7 @@ import DownloadsDescription from "../components/downloads/downloads_description"
 import StaticInfo from "../components/downloads/StaticInfo";
 import FileStatusRadio from "../components/downloads/file_status_radio";
 
-const DOWNLOADS_URL = "/downloads-tree";
+const DOWNLOADS_URL = "/downloads";
 
 class CustomTreeContainer extends Component {
   constructor(props) {
@@ -236,9 +236,7 @@ class CustomTreeContainer extends Component {
           node.node_flag
         )
       });
-    }
-    
-    
+    } 
   }
   componentDidMount() {
     this.props.dispatch(downloadsActions.fetchDownloadsMenuData());
@@ -261,8 +259,6 @@ class CustomTreeContainer extends Component {
         }
       }
       if(!this.state.idsObj[qId]){
-        //let selObj = this.props.downloadsMenu.filter(itx => itx.path. == qId)[0];
-        //let test = this.getTreeObj(selObj,qId,);
         this.setState({
           visible: true,
           idsObj: this.updateIdsObj(
@@ -351,6 +347,7 @@ class CustomTreeContainer extends Component {
       return temp_arr;
     }
   }
+
   render() {
     let data = this.renderTreeStructure();
     let data_info = this.renderDescriptions();
@@ -478,6 +475,7 @@ class CustomTreeContainer extends Component {
     }
   }
 }
+
 function mapStateToProps(state) {
   return {
     downloadsMenu: state.downloads.downloadsMenu,
@@ -490,7 +488,7 @@ function mapStateToProps(state) {
     nodeVisible: state.downloads.nodeVisible,
     selectedNode: state.downloads.selectedNode,
     isFileStatusActive: state.downloads.isFileStatusActive
-    /*cleanup code */
   };
 }
+
 export default connect(mapStateToProps)(CustomTreeContainer);

@@ -5,7 +5,6 @@ class DownloadsDescription extends Component{
     constructor(props){
         super(props);
     }
-
     render(){
         return (<p>{this.props.title} - {this.props.description}</p>);
     }
