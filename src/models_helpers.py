@@ -411,6 +411,7 @@ class ModelsHelper(object):
                             str(x.year),
                         'readme_url':
                             x.readme_file[0].s3_url
+                            if x.readme_file_id is not None else None
                     }
                     temp_files.append(obj)
                 return temp_files
