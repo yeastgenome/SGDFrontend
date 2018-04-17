@@ -8991,6 +8991,7 @@ def validate_tags(tags):
 def convert_space_separated_pmids_to_list(str_pmids):
     if str_pmids == '' or str_pmids is None:
         return []
+    str_pmids = ' '.join(str_pmids.split())# remove extra spaces
     str_list = str_pmids.split(SEPARATOR)
     int_list = [int(x) for x in str_list]
     return int_list
