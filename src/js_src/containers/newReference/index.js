@@ -6,7 +6,7 @@ import { push } from 'react-router-redux';
 
 import { setMessage } from '../../actions/metaActions';
 import FlexiForm from '../../components/forms/flexiForm';
-
+import CurateLayout from '../curateHome/layout';
 
 const GET_CONFIRM_URL = '/reference/confirm';
 const ADD_DATA_URL = '/reference';
@@ -85,17 +85,22 @@ class NewReference extends Component {
               }
             },
             template: refLayout
+          },
+          i18n: {
+            remove: 'Remove from input list'
           }
         }
       }
     };
 
     return (
-      <div className='row'>
-        <div className='columns medium-12'>      
-          <FlexiForm defaultData={this.state.confirmationData} onError={this.handleError.bind(this)} onSuccess={this.handleSuccess.bind(this)} requestMethod='POST' tFormSchema={confirmSchema} tFormOptions={confirmOptions} submitText='Add References' updateUrl={ADD_DATA_URL} timeout={150000} />
+      <CurateLayout>
+        <div className='row'>
+          <div className='columns medium-12'>      
+            <FlexiForm defaultData={this.state.confirmationData} onError={this.handleError.bind(this)} onSuccess={this.handleSuccess.bind(this)} requestMethod='POST' tFormSchema={confirmSchema} tFormOptions={confirmOptions} submitText='Add References' updateUrl={ADD_DATA_URL} timeout={150000} />
+          </div>
         </div>
-      </div>
+      </CurateLayout>
     );
   }
 
@@ -111,20 +116,22 @@ class NewReference extends Component {
         pmids: {
           label: 'PMIDs * (space-separated)'
         }
-      }
+      }        
     };
     // form to get confirmation data
     return (
-      <div>
-        <h1>Add New References</h1>
-        <Link to='/'>Cancel</Link>
-        <p>Only 10 references can be added at once.</p>
-        <div className='row'>
-          <div className='columns medium-3'>      
-            <FlexiForm onSuccess={this.handlePopulateConfirmation.bind(this)} requestMethod='POST' tFormSchema={refSchema} tFormOptions={refOptions} submitText='Confirm reference information' updateUrl={GET_CONFIRM_URL} timeout={150000} />
+      <CurateLayout>
+        <div>
+          <h1>Add New References</h1>
+          <Link to='/'>Cancel</Link>
+          <p>Only 10 references can be added at once.</p>
+          <div className='row'>
+            <div className='columns medium-3'>      
+              <FlexiForm onSuccess={this.handlePopulateConfirmation.bind(this)} requestMethod='POST' tFormSchema={refSchema} tFormOptions={refOptions} submitText='Confirm reference information' updateUrl={GET_CONFIRM_URL} timeout={150000} />
+            </div>
           </div>
         </div>
-      </div>
+      </CurateLayout>
     );
   }
 }
