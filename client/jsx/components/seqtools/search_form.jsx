@@ -116,9 +116,9 @@ var SearchForm = React.createClass({
 	
 	_getGeneNode: function() {
 
-		reverseCompNode = this._getReverseCompNode('rev1')
-		strainNode = this._getStrainNode()
-		seqtypeNode = this._getSeqtypeNode('seqtype1')
+		var reverseCompNode = this._getReverseCompNode('rev1')
+		var strainNode = this._getStrainNode()
+		var seqtypeNode = this._getSeqtypeNode('seqtype1')
 
                 return (<div>
                         <h3>1. Enter a list of Gene/ORF name or SGDID:</h3>
@@ -136,7 +136,7 @@ var SearchForm = React.createClass({
 			<textarea ref='up' name='up' onChange={this._onChange} rows='1' cols='50'></textarea>
 			<br>and downstream</br>
 			<textarea ref='down' name='down' onChange={this._onChange} rows='1' cols='50'></textarea>
-			REVERSE COMPLEMENT CHECKBOX HERE
+			{ reverseCompNode }
                 </div>);
 
         },
@@ -158,7 +158,7 @@ var SearchForm = React.createClass({
                        }
                 });
 		
-		reverseCompNode = this._getReverseCompNode('rev2')
+		var reverseCompNode = this._getReverseCompNode('rev2')
 
                 return(<div>
                        <h3>2. Pick a chromosome: </h3>
@@ -176,8 +176,8 @@ var SearchForm = React.createClass({
 
 	_getSeqNode: function() {
 
-		seqtypeNode = this._getSeqtypeNode('seqtype3')
-		reverseCompNode = this._getReverseCompNode('rev3')
+		var seqtypeNode = this._getSeqtypeNode('seqtype3')
+		var reverseCompNode = this._getReverseCompNode('rev3')
 
 		return(<div>
                        <h3>3. Type or Paste a: </h3>
@@ -205,7 +205,7 @@ var SearchForm = React.createClass({
 	_getReverseCompNode: function(name) {
 
 	        return (<div>
-		       <p><input ref={name} id='rev' type="checkbox" /> Use the reverse complement</p> 
+		       <p><input ref={name} id={name} type="checkbox" /> Use the reverse complement</p> 
 		       </div>);
 
         },
