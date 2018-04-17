@@ -116,9 +116,9 @@ var SearchForm = React.createClass({
 	
 	_getGeneNode: function() {
 
-		var reverseCompNode = this._getReverseCompNode('rev1')
-		var strainNode = this._getStrainNode()
-		var seqtypeNode = this._getSeqtypeNode('seqtype1')
+		var reverseCompNode = this._getReverseCompNode('rev1');
+		var strainNode = this._getStrainNode();
+		var seqtypeNode = this._getSeqtypeNode('seqtype1');
 
                 return (<div>
                         <h3>1. Enter a list of Gene/ORF name or SGDID:</h3>
@@ -147,7 +147,7 @@ var SearchForm = React.createClass({
 		    	      	'VII': 7, 'VIII': 8, 'IX': 9, 'X': 10, 'XI': 11, 'XII': 12,
 				'XIII': 13, 'XIV': 14, 'XV': 15, 'XVI': 16, 'Mito': 17 }; 
 		    	      
-                var chromosomes = Object.keys(chr2num)
+                var chromosomes = Object.keys(chr2num);
 
                 var _elements = _.map(chromosomes, c => {
                        if (c == 'I') {
@@ -158,7 +158,7 @@ var SearchForm = React.createClass({
                        }
                 });
 		
-		var reverseCompNode = this._getReverseCompNode('rev2')
+		var reverseCompNode = this._getReverseCompNode('rev2');
 
                 return(<div>
                        <h3>2. Pick a chromosome: </h3>
@@ -176,8 +176,8 @@ var SearchForm = React.createClass({
 
 	_getSeqNode: function() {
 
-		var seqtypeNode = this._getSeqtypeNode('seqtype3')
-		var reverseCompNode = this._getReverseCompNode('rev3')
+		var seqtypeNode = this._getSeqtypeNode('seqtype3');
+		var reverseCompNode = this._getReverseCompNode('rev3');
 
 		return(<div>
                        <h3>3. Type or Paste a: </h3>
