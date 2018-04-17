@@ -1,9 +1,3 @@
-/**
- * author: fgondwe
- * date: 05/05/2017
- * purpose: exexute action events for custom tree component
- */
-
 import React from "react";
 import * as action_types from "../actions/action_types";
 import _ from "underscore";
@@ -20,14 +14,14 @@ const initialState = {
   url: "",
   queryParams: "",
   tableColumns: [],
-  nodeVisible: false
+  nodeVisible: false,
+  isPending: false,
+  isFileStatusActive: true
 };
 
+
 export default function(state = initialState, action) {
-  if (
-    action.type === "@@router/UPDATE_LOCATION" &&
-    action.payload.pathname === "/downloads"
-  ) {
+  if (action.type === "@@router/UPDATE_LOCATION" &&action.payload.pathname === "/downloads") {
     if (action.payload.search.length > 0) {
       let regexString = /(^\?([a-zA-Z]|)+\=([\w*\+\w*])+(\&([\w*]+)+\=([\w*\+\w*])+)+)|^\?([a-zA-Z]|)+\=([\w*\+\w*])+/g;
       let result =
@@ -37,27 +31,38 @@ export default function(state = initialState, action) {
       if (result) {
         state.query = action.payload.query;
       }
+      if(action.payload.query.status){
+        state.isFileStatusActive = action.payload.query.status == "active" ? true : false;
+      }
+      if(state.selectedNode.length == 0){
+        const item = _.findWhere(state.downloadsMenu, {id: Number(state.query.id)});
+        if(item){
+          state.selectedNode = item;
+        }
+      }
     }
     return state;
   }
   switch (action.type) {
-    case action_types.FETCH_DOWNLOADS_RESULTS_SUCCESS:
-    
+    case action_types.START_PENDING:
       return Object.assign({}, state, {
+        isPending: true
+      });
+    case action_types.FETCH_DOWNLOADS_RESULTS_SUCCESS:
+      return Object.assign({}, state, {
+        isPending: false,
         downloadsResults: action.payload.datasets,
         selectedLeaf: action.payload.query.item
           ? S(action.payload.query.item).capitalize().s
-          : S(action.payload.query)
+          : S(action.payload.query),
+        isFileStatusActive: action.payload.flag
       });
     case action_types.FETCH_DOWNLOADS_MENU:
-    ;
       return Object.assign({}, state, {
         downloadsMenu: state.downloadsMenu.concat(action.payload.data)
       });
     case action_types.GET_SELECTED_NODE:
-      return Object.assign({}, state, {
-        selectedNode: action.payload.node
-      });
+      return Object.assign({}, state, { selectedNode: action.payload.node });
 
     default:
       return state;

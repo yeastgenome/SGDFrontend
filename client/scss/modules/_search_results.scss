@@ -118,3 +118,18 @@ $hover-color: #e6e6e6;
 	color: #6582A6;
 	margin-left:0.2rem;
 }
+.node-highlight {
+	color: white;
+	padding: '0.1rem';
+}
+.div-highlight {
+	background: #6582A6;
+	padding: 0.1rem;
+}
+.div-highlight a:hover{
+	color: white !important;
+}
+
+.downloads-table-center i{
+	text-align: center !important;
+}

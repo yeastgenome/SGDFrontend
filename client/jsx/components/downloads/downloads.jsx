@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
-//import TreeView from 'treeview-react-bootstrap';
 import CustomTreeView from "../widgets/tree_view.jsx";
 
 export default class Downloads extends Component {
