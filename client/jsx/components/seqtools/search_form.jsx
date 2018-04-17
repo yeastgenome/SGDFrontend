@@ -136,7 +136,7 @@ var SearchForm = React.createClass({
 			<textarea ref='up' name='up' onChange={this._onChange} rows='1' cols='50'></textarea>
 			<br>and downstream</br>
 			<textarea ref='down' name='down' onChange={this._onChange} rows='1' cols='50'></textarea>
-			{ reverseCompNode }
+			REVERSE COMPLEMENT CHECKBOX HERE
                 </div>);
 
         },
@@ -205,7 +205,7 @@ var SearchForm = React.createClass({
 	_getReverseCompNode: function(name) {
 
 	        return (<div>
-		       <input ref={name} id={name} type="checkbox" />
+		       <p><input ref={name} id='rev' type="checkbox" /> Use the reverse complement</p> 
 		       </div>);
 
         },
