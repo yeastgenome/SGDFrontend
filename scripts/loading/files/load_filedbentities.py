@@ -1,6 +1,7 @@
 import csv
 import os
 import logging
+import re
 from datetime import datetime
 import getpass
 import paramiko
@@ -156,6 +157,21 @@ def create_and_upload_file(obj, row_num, sftp_client):
         db_session.rollback()
         db_session.close()
 
+def format_csv_date_string(date_string, flag=False):
+    is_match = re.match('^\d{0,2}\/\d{0,2}\/\d{2}', date_string)
+    if is_match is not None:
+        temp = is_match.group(0).split('/')
+        if(len(temp) == 3):
+            if(flag):
+                temp_str = '{}/{}/{}'.format("20"+ str(temp[2]),temp[0],temp[1])
+                return temp_str
+            else:
+                temp_str = '{}-{}-{}'.format("20" + str(temp[2]), temp[0], temp[1])
+                return temp_str
+
+    else:
+        return None
+
 def load_csv_filedbentities():
     engine = create_engine(NEX2_URI, pool_recycle=3600)
     DBSession.configure(bind=engine)
@@ -177,7 +193,13 @@ def load_csv_filedbentities():
                 return
             raw_date = val[13]
             if len(raw_date):
-                raw_date = datetime.strptime(val[13], '%Y-%m-%d')
+                temp = format_csv_date_string(val[13])
+                if temp is not None:
+                    raw_date = datetime.strptime(temp, '%Y-%m-%d')
+                else:
+                    raw_date = datetime.strptime(val[13], '%Y-%m-%d')
+
+
             else:
                 raw_date = None
             raw_status = val[4].strip()
