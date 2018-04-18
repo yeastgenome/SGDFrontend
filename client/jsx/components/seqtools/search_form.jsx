@@ -239,11 +239,11 @@ var SearchForm = React.createClass({
 
                 var _elements = _.map(strains, s => {
                        var label = strain2label[s];
-                       if(strain == 'S288C') {
-                            return <option value={strain} selected='selected'>{label}</option>;
+                       if(s == 'S288C') {
+                            return <option value={s} selected='selected'>{label}</option>;
                        }
                        else {
-                            return <option value={strain}>{label}</option>;
+                            return <option value={s}>{label}</option>;
                        }
                 });
 
