@@ -23,8 +23,8 @@ const Primer3 = React.createClass({
     return {
       result: null,
       value: {
-        include_start: '500',
-        include_end: '900',
+        input_start: '500',
+        input_end: '900',
         minimum_tm: '57',
         optimum_tm: '59',
         maximum_tm: '62',
@@ -124,8 +124,8 @@ const Primer3 = React.createClass({
 
        gene_name: t.maybe(t.String),
        sequence: t.maybe(t.String),
-       include_start: t.Number,
-       include_end: t.Number,
+       input_start: t.Number,
+       input_end: t.Number,
        maximum_product_size: t.maybe(t.Number),
 
        end_point: Endpoint,
@@ -164,8 +164,8 @@ const Primer3 = React.createClass({
 
         <span><a href='http://primer3.ut.ee/primer3web_help.htm#SEQUENCE_TARGET' target='_new'><i className='fa primer-help' />Target Region</a></span>
          <div className='row'>
-          <div className='columns small-4'>{locals.inputs.include_start}</div>
-          <div className='columns small-4'>{locals.inputs.include_end}</div>
+          <div className='columns small-4'>{locals.inputs.input_start}</div>
+          <div className='columns small-4'>{locals.inputs.input_end}</div>
           <div className='columns small-4'>{locals.inputs.maximum_product_size}</div>
 
         </div>
@@ -248,10 +248,10 @@ const Primer3 = React.createClass({
             maximum_gc: {
                 label: 'Maximum GC:'
             },
-            include_start:{
+            input_start:{
                 label: 'Start at this 5\' location from START codon:'
             },
-            include_end:{
+            input_end:{
                 label: 'End at this 5\' location from START codon:'
             },
             maximum_product_size:{
