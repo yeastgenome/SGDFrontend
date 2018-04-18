@@ -112,7 +112,7 @@ var SearchForm = React.createClass({
 			return (<div>
 			        <div dangerouslySetInnerHTML={{ __html: descText}} />
 				<form onSubmit={this._onSubmit} target="infowin">
-				     <div dangerouslySetInnerHTML={{ __html: chrNode}} />
+				     <div dangerouslySetInnerHTML={{ __html: geneNode}} />
 				</form>
 			</div>);
 		}
