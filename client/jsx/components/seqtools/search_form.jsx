@@ -100,15 +100,19 @@ var SearchForm = React.createClass({
 			var seqNode = this._getSeqNode();
 			
 			var descText = "<p>Try <a target='infowin' href='https://yeastmine.yeastgenome.org/yeastmine/begin.do'>Yeastmine</a> for flexible queries and fast retrieval of chromosomal features, sequences, GO annotations, interaction data and phenotype annotations. The video tutorial <a target='infowin' href='https://vimeo.com/28472349'>Template Basics</a> describes how to quickly retrieve this type of information in YeastMine. To find a comprehensive list of SGD's tutorials describing the many other features available in YeastMine and how to use them, visit SGD's <a target='infowin' href='https://sites.google.com/view/yeastgenome-help/video-tutorials/yeastmine?authuser=0'>YeastMine Video Tutorials</a> page. </p><p>This resource allows retrieval of a list of options for accessing biological information, table/map displays, and sequence analysis tools for 1. a named gene or sequence. 2. a specified chromosomal region, or 3. a raw DNA or protein sequence.</p>";
-							
+				
+			var searchSection = "<table><tr><td>geneNode</td><td><font color='red'>OR</font></td><td>chrNode</td><td><font color='red'>OR</font></td><td>seqNode</td></tr></table>";
+					
+			// <div className="row">
+                        //      <div className="large-12 columns">
+                        //           { geneNode }
+                        //      </div>
+                        //   </div>
+	
 			return (<div>
 			        <div dangerouslySetInnerHTML={{ __html: descText}} />
 				<form onSubmit={this._onSubmit} target="infowin">
-					<div className="row">
-                        		     <div className="large-12 columns">
-                               		     	  { geneNode }
-                   		             </div>
-                                       </div>
+				     <div dangerouslySetInnerHTML={{ __html: searchSection}} />
 				</form>
 			</div>);
 		}
@@ -122,11 +126,10 @@ var SearchForm = React.createClass({
 
                 return (<div>
                         <h3>1. Enter a list of Gene/ORF name or SGDID:</h3>
-			<p>(space delimited gene list eg. ACT1 YHR023W SGD:S000000001) 
+			<p>(Example space delimited gene list: ACT1 YHR023W SGD:S000000001) 
 			<textarea ref='genes' name='genes' onChange={this._onChange} rows='1' cols='50'></textarea></p>
 			<h3>Pick one or more strains:</h3>
-			<p>(Select or unselect multiple strains by pressing the Control (PC) or Command (Mac) key while clicking.)
-			{ strainNode }</p>
+			{ strainNode }
 			<h3>Pick a sequence type:</h3>
 			{ seqtypeNode }
 			<h3><b>If available,</b> add flanking basepairs</h3>
@@ -243,7 +246,8 @@ var SearchForm = React.createClass({
                 });
 
                 return(<div>
-                       <p><select ref='strains' id='strains' onChange={this._onChange} size='11' multiple>{_elements}</select></p>
+		       <p>(Select or unselect multiple strains by pressing the Control (PC) or Command (Mac) key while clicking.)
+                       <select ref='strains' id='strains' onChange={this._onChange} size='11' multiple>{_elements}</select></p>
                 </div>);
 
         },
