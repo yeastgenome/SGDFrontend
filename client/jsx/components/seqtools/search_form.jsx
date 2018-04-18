@@ -123,19 +123,16 @@ var SearchForm = React.createClass({
 
                 return (<div>
                         <h3>1. Enter a list of Gene/ORF name or SGDID:</h3>
+			(example: ACT1 YHR023W SGD:S000000001) 
 			<textarea ref='genes' name='genes' onChange={this._onChange} rows='1' cols='50'></textarea>
-			<br><b>Example</b></br>
-			<br>Gene - ACT1</br>
-			<br>ORF - YHR023W</br>
-			<br>SGDID - SGD:S000001855</br>
 			<p>Pick one or more strains:</p>
 			{ strainNode }
-			<p>Pick a sequence type:</p>
+			<h3>Pick a sequence type:</h3>
 			{ seqtypeNode }
-			<br><b>If available,</b> add flanking basepairs</br>
-			<br>upstream</br>
+			<p><b>If available,</b> add flanking basepairs</p>
+			upstream
 			<textarea ref='up' name='up' onChange={this._onChange} rows='1' cols='50'></textarea>
-			<br>and downstream</br>
+			and downstream
 			<textarea ref='down' name='down' onChange={this._onChange} rows='1' cols='50'></textarea>
 			{ reverseCompNode }
                 </div>);
