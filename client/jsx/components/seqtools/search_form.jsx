@@ -122,11 +122,11 @@ var SearchForm = React.createClass({
 
                 return (<div>
                         <h3>1. Enter a list of Gene/ORF name or SGDID:</h3>
-			<p>(space delimited gene list eg. ACT1 YHR023W SGD:S000000001)</p> 
-			<textarea ref='genes' name='genes' onChange={this._onChange} rows='1' cols='50'></textarea>
+			<p>(space delimited gene list eg. ACT1 YHR023W SGD:S000000001) 
+			<textarea ref='genes' name='genes' onChange={this._onChange} rows='1' cols='50'></textarea></p>
 			<h3>Pick one or more strains:</h3>
-			<p>(Select or unselect multiple strains by pressing the Control (PC) or Command (Mac) key while clicking.)</p>
-			{ strainNode }
+			<p>(Select or unselect multiple strains by pressing the Control (PC) or Command (Mac) key while clicking.)
+			{ strainNode }</p>
 			<h3>Pick a sequence type:</h3>
 			{ seqtypeNode }
 			<h3><b>If available,</b> add flanking basepairs</h3>
