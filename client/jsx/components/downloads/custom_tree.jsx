@@ -8,6 +8,28 @@ class CustomTree extends Component {
     super(props);
     this.state = { visible: false };
     this.onToggle = this.onToggle.bind(this);
+    this.formatLeafTitle = this.formatLeafTitle.bind(this);
+  }
+
+  formatLeafTitle(titleStr){
+    if(titleStr){
+      let tempArr = titleStr.split(' ');
+      const str = tempArr[0].length > 1 ? tempArr[0] + " " + tempArr
+              .slice(1)
+              .join(" ")
+              .trim() : tempArr[0] + ". " + tempArr
+              .slice(1)
+              .join(" ")
+              .trim()
+              .toLowerCase();
+      return str; 
+
+    }
+    else{
+      return titleStr;
+    }
+    
+
   }
 
   onToggle(event) {
@@ -77,18 +99,38 @@ class CustomTree extends Component {
         if (Object.keys(this.props.queryString).length > 0) {
           const sNodesFlag = this.props.statusNodes[this.props.node.id];
           if (sNodesFlag) {
-            cssClasses = { togglable: true, "togglable-down": true, "togglable-up": false };
+            cssClasses = {
+              togglable: true,
+              "togglable-down": true,
+              "togglable-up": false
+            };
             openFlag = true;
-          } 
-          else if (this.props.queryString.category.toLowerCase() === this.props.node.title.toLowerCase() && !sNodesFlag) {
-            cssClasses = { togglable: true, "togglable-down": true, "togglable-up": false };
+          } else if (
+            this.props.queryString.category.toLowerCase() ===
+              this.props.node.title.toLowerCase() &&
+            !sNodesFlag
+          ) {
+            cssClasses = {
+              togglable: true,
+              "togglable-down": true,
+              "togglable-up": false
+            };
             openFlag = true;
-          } 
-          else if (this.props.queryString.id === this.props.node.id && !sNodesFlag) {
-            cssClasses = { togglable: true, "togglable-down": false, "togglable-up": true };
-          } 
-          else {
-            cssClasses = { togglable: true, "togglable-down": false, "togglable-up": true };
+          } else if (
+            this.props.queryString.id === this.props.node.id &&
+            !sNodesFlag
+          ) {
+            cssClasses = {
+              togglable: true,
+              "togglable-down": false,
+              "togglable-up": true
+            };
+          } else {
+            cssClasses = {
+              togglable: true,
+              "togglable-down": false,
+              "togglable-up": true
+            };
           }
         } else {
           cssClasses = {
@@ -96,10 +138,12 @@ class CustomTree extends Component {
             "togglable-down": this.state.visible,
             "togglable-up": !this.state.visible
           };
-    
         }
       } else {
-        if (this.props.node.title && Object.keys(this.props.queryString).length > 0) {
+        if (
+          this.props.node.title &&
+          Object.keys(this.props.queryString).length > 0
+        ) {
           if (
             this.props.node.id.toString() ==
             this.props.queryString.id.toString()
@@ -112,13 +156,19 @@ class CustomTree extends Component {
           }
         }
       }
-   
+
       if (
-        this.props.node.childNodes == undefined || this.props.node.childNodes.length == 0) {
+        this.props.node.childNodes == undefined ||
+        this.props.node.childNodes.length == 0
+      ) {
         //leaf node
         return (
           <div className={divClasses ? ClassNames(divClasses) : ""}>
-            <span onClick={this.props.leafClick} data-node={this.props.node} data-node-id={this.props.node.id}>
+            <span
+              onClick={this.props.leafClick}
+              data-node={this.props.node}
+              data-node-id={this.props.node.id}
+            >
               <a
                 id={this.props.node.id}
                 data-path={this.props.path}
@@ -127,7 +177,7 @@ class CustomTree extends Component {
                 value={this.props.node}
                 className={ClassNames(cssClasses)}
               >
-                {this.props.node.title}
+                {this.formatLeafTitle(this.props.node.title)}
               </a>
             </span>
           </div>
@@ -135,9 +185,12 @@ class CustomTree extends Component {
       } else {
         //parent node
         const qStrObj = this.props.queryString;
-        const isParent = qStrObj.item ? _.contains(qStrObj.item
-            .toLowerCase()
-            .split("_"), this.props.node.title.toLowerCase().replace(' ', '-')): false;
+        const isParent = qStrObj.item
+          ? _.contains(
+              qStrObj.item.toLowerCase().split("_"),
+              this.props.node.title.toLowerCase().replace(" ", "-")
+            )
+          : false;
         if (this.props.statusNodes[this.props.node.id]) {
           return (
             <div className="node-parent open-node">
@@ -148,54 +201,89 @@ class CustomTree extends Component {
                 value={this.props.node}
                 className={ClassNames(cssClasses)}
                 data-id={this.props.node.id}
-                
               >
                 {this.props.node.title}
               </span>
               <ul className="node-children show-items">{childNodes}</ul>
             </div>
           );
-        }
-        else if(isParent){
-          if(qStrObj.item.toLowerCase() === qStrObj.category.toLowerCase().replace(' ','-')){
-            cssClasses = { togglable: true, "togglable-down": false, "togglable-up": true };
-            return <div className="node-parent close-node">
-                <span onClick={this.onToggle} id={S(this.props.node.title).capitalize().s} data-path={this.props.path} value={this.props.node} className={ClassNames(cssClasses)} data-id={this.props.node.id}>
+        } else if (isParent) {
+          if (
+            qStrObj.item.toLowerCase() ===
+            qStrObj.category.toLowerCase().replace(" ", "-")
+          ) {
+            cssClasses = {
+              togglable: true,
+              "togglable-down": false,
+              "togglable-up": true
+            };
+            return (
+              <div className="node-parent close-node">
+                <span
+                  onClick={this.onToggle}
+                  id={S(this.props.node.title).capitalize().s}
+                  data-path={this.props.path}
+                  value={this.props.node}
+                  className={ClassNames(cssClasses)}
+                  data-id={this.props.node.id}
+                >
                   {this.props.node.title}
                 </span>
-                <ul className="node-children show-items">
-                  {childNodes}
-                </ul>
-              </div>;
-
+                <ul className="node-children show-items">{childNodes}</ul>
+              </div>
+            );
+          } else if (
+            Number(qStrObj.id) === this.props.node.id &&
+            !this.props.statusNodes[this.props.node.id]
+          ) {
+            cssClasses = {
+              togglable: true,
+              "togglable-down": false,
+              "togglable-up": true
+            };
+            return (
+              <div className="node-parent close-node">
+                <span
+                  onClick={this.onToggle}
+                  id={S(this.props.node.title).capitalize().s}
+                  data-path={this.props.path}
+                  value={this.props.node}
+                  className={ClassNames(cssClasses)}
+                  data-id={this.props.node.id}
+                >
+                  {this.props.node.title}
+                </span>
+                <ul className="node-children show-items">{childNodes}</ul>
+              </div>
+            );
+          } else {
+            cssClasses = {
+              togglable: true,
+              "togglable-down": true,
+              "togglable-up": false
+            };
+            return (
+              <div className="node-parent open-node">
+                <span
+                  onClick={this.onToggle}
+                  id={S(this.props.node.title).capitalize().s}
+                  data-path={this.props.path}
+                  value={this.props.node}
+                  className={ClassNames(cssClasses)}
+                  data-id={this.props.node.id}
+                >
+                  {this.props.node.title}
+                </span>
+                <ul className="node-children show-items">{childNodes}</ul>
+              </div>
+            );
           }
-          else if(Number(qStrObj.id) === this.props.node.id && !this.props.statusNodes[this.props.node.id]){
-            cssClasses = { togglable: true, "togglable-down": false, "togglable-up": true };
-             return <div className="node-parent close-node">
-                 <span onClick={this.onToggle} id={S(this.props.node.title).capitalize().s} data-path={this.props.path} value={this.props.node} className={ClassNames(cssClasses)} data-id={this.props.node.id}>
-                   {this.props.node.title}
-                 </span>
-                 <ul className="node-children show-items">
-                   {childNodes}
-                 </ul>
-               </div>;
-          }
-
-          else{
-              cssClasses = { togglable: true, "togglable-down": true, "togglable-up": false };
-              return <div className="node-parent open-node">
-                  <span onClick={this.onToggle} id={S(this.props.node.title).capitalize().s} data-path={this.props.path} value={this.props.node} className={ClassNames(cssClasses)} data-id={this.props.node.id}>
-                    {this.props.node.title}
-                  </span>
-                  <ul className="node-children show-items">
-                    {childNodes}
-                  </ul>
-                </div>;
-          }
-          
-        } 
-        else {
-          cssClasses = { togglable: true, "togglable-down": false, "togglable-up": true };
+        } else {
+          cssClasses = {
+            togglable: true,
+            "togglable-down": false,
+            "togglable-up": true
+          };
           return (
             <div className="node-parent close-node">
               <span

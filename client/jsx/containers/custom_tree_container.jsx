@@ -71,6 +71,14 @@ class CustomTreeContainer extends Component {
 
   formatData(data) {
     let results = { headers: [], rows: [] };
+    results.headers.push([
+      "README ",
+      "Download ",
+      "Name",
+      "Size",
+      "Status",
+      "Description"
+    ]);
     if (data.length > 0) {
       let modData = data.map((item, index) => {
         if (item) {
@@ -96,9 +104,9 @@ class CustomTreeContainer extends Component {
               <span key={item.name + 1}>
                 <a href={item.href} download={dText} className="td_hide_icon">
                   <i
-                    className="fa fa-cloud-download fa-lg"
+                    className="fa fa-download fa-lg"
                     aria-hidden="true"
-                    style={{ width: 80, color: "#8C1515" }}
+                    style={{ width: 80, color: "#2b2929" }}
                   />
                 </a>
               </span>
@@ -113,17 +121,13 @@ class CustomTreeContainer extends Component {
       modData.map((item, index) => {
         results.rows.push(_.values(item));
       });
-      results.headers.push([
-        "README ",
-        "Download ",
-        "Name",
-        "Size",
-        "Status",
-        "Description"
-      ]);
+      
       return results;
     }
-    return results;
+    else{
+      return results;
+    }
+    
   }
   nodeToggle(node) {
     this.props.dispatch(downloadsActions.toggleNode(!this.props.isVisible));
@@ -167,7 +171,7 @@ class CustomTreeContainer extends Component {
   getSelectedNode(node, event) {
     const eClass = event.target.getAttribute("class");
     const queryObj =
-      this.props.queryParams.length > 0 ? this.props.queryParams : undefined;
+      Object.keys(this.props.queryParams).length > 0 ? this.props.queryParams : undefined;
     if (node.node_flag) {
       if (queryObj) {
         this.props.history.pushState(null, DOWNLOADS_URL, {
@@ -358,119 +362,59 @@ class CustomTreeContainer extends Component {
     );
     if (this.props.isPending) {
       let table = this.formatData(this.props.downloadsResults);
-      if (table) {
-        let cssTree = { "list-style-Type": "none" };
-        let temp = (
-          <div className="row test">
-            <div className="columns small-12">
-              <div className="columns small-6">
-                <FileStatusRadio
-                  onFileStatusChange={this.onFileStatusChange}
-                  flag={this.props.isFileStatusActive}
-                />
+      let cssTree = { "list-style-Type": "none" };
+      let temp = <div className="row test">
+              <div className="columns small-12">
+                <div className="columns small-6">
+                  <FileStatusRadio onFileStatusChange={this.onFileStatusChange} flag={this.props.isFileStatusActive} />
+                </div>
+                <div classsName="columns small-6" />
               </div>
-              <div classsName="columns small-6" />
-            </div>
-            <div className="columns small-12">
-              <DataTable
-                data={table}
-                usePlugin={true}
-                className="downloads-table-center"
-              />
-            </div>
-          </div>
-        );
+              <div className="columns small-12">
+                <DataTable data={table} usePlugin={true} className="downloads-table-center" />
+              </div>
+            </div> 
         let node = this.props.isPending ? <Loader /> : temp;
         let renderTemplate = (
           <div>
             {pageTitle}
             <div className="row">
-              <div className="columns small-2">{data}</div>
-              <div className="columns small-10">{node}</div>
+              <div className="columns small-3">{data}</div>
+              <div className="columns small-9">{node}</div>
             </div>
           </div>
         );
         return renderTemplate;
-      } else {
-        let renderTemplate = (
-          <div>
-            {pageTitle}
-            <div className="row">
-              <div className="columns small-2">{data}</div>
-              <div className="columns small-10">
-                <StaticInfo />
-                {data_info}
-              </div>
-            </div>
-          </div>
-        );
-        return renderTemplate;
-      }
+      
     } else {
-      if (this.props.downloadsResults.length > 0) {
+      if (this.props.downloadsResults) {
         let table = this.formatData(this.props.downloadsResults);
         let cssTree = { "list-style-Type": "none" };
-        let temp = (
-          <div className="row test">
-            <div className="columns small-12">
-              <div className="columns small-6">
-                <FileStatusRadio
-                  onFileStatusChange={this.onFileStatusChange}
-                  flag={this.props.isFileStatusActive}
-                />
+        let temp = Object.keys(this.props.queryParams).length > 0 ? <div className="row test">
+              <div className="columns small-12">
+                <div className="columns small-6">
+                  <FileStatusRadio onFileStatusChange={this.onFileStatusChange} flag={this.props.isFileStatusActive} />
+                </div>
+                <div classsName="columns small-6" />
               </div>
-              <div classsName="columns small-6" />
-            </div>
-            <div className="columns small-12">
-              <DataTable
-                data={table}
-                usePlugin={true}
-                className="downloads-table-center"
-              />
-            </div>
-          </div>
-        );
+              <div className="columns small-12">
+                <DataTable data={table} usePlugin={true} className="downloads-table-center" />
+              </div>
+            </div> : <div className="columns small-12">
+              <StaticInfo />
+              {data_info}
+            </div>;
         let renderTemplate = (
           <div>
             {pageTitle}
             <div className="row">
-              <div className="columns small-2">{data}</div>
-              <div className="columns small-10">{temp}</div>
+              <div className="columns small-3">{data}</div>
+              <div className="columns small-9">{temp}</div>
             </div>
           </div>
         );
         return renderTemplate;
-      } else {
-        if (Object.keys(this.props.queryParams).length > 0) {
-          let renderTemplate = (
-            <div>
-              {pageTitle}
-              <div className="row">
-                <div className="columns small-2">{data}</div>
-                <div className="columns small-10">
-                  <StaticInfo />
-                  {data_info}
-                </div>
-              </div>
-            </div>
-          );
-          return renderTemplate;
-        } else {
-          let renderTemplate = (
-            <div>
-              {pageTitle}
-              <div className="row">
-                <div className="columns small-2">{data}</div>
-                <div className="columns small-10">
-                  <StaticInfo />
-                  {data_info}
-                </div>
-              </div>
-            </div>
-          );
-          return renderTemplate;
-        }
-      }
+      } 
     }
   }
 }
