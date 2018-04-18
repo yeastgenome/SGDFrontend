@@ -439,7 +439,7 @@ class PathTree(object):
     def __json__(self, request):
         return {
             'menu': self.menu,
-            'title': self.format_title(self.title),
+            'title': self.title,
             'id': self.path_id,
             'path': self.path,
             'description': self.description,
