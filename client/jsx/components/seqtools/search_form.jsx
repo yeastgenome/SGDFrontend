@@ -116,8 +116,8 @@ var SearchForm = React.createClass({
 	
 	_getGeneNode: function() {
 
-		// var reverseComplementNode = this._getReverseCompNode('rev1');
-		// var reverseComplementNode = "HELLO WORLD"
+		var reverseCompNode = this._getReverseCompNode('rev1');
+		// var reverseCompNode = "HELLO WORLD"
 		var strainNode = this._getStrainNode();
 		var seqtypeNode = this._getSeqtypeNode('seqtype1');
 
@@ -137,7 +137,7 @@ var SearchForm = React.createClass({
 			<textarea ref='up' name='up' onChange={this._onChange} rows='1' cols='50'></textarea>
 			<br>and downstream</br>
 			<textarea ref='down' name='down' onChange={this._onChange} rows='1' cols='50'></textarea>
-			
+			{ reverseCompNode }
                 </div>);
 
         },
@@ -159,7 +159,7 @@ var SearchForm = React.createClass({
                        }
                 });
 		
-		var reverseComplementNode = this._getReverseCompNode('rev2');
+		var reverseCompNode = this._getReverseCompNode('rev2');
 
                 return(<div>
                        <h3>2. Pick a chromosome: </h3>
@@ -170,7 +170,7 @@ var SearchForm = React.createClass({
                        <textarea ref='end' name='end' onChange={this._onChange} rows='1' cols='50'></textarea>
 		       <p>The entire chromosome sequence will be displayed if no coordinates are entered.</p>
 		       <p><b>Note</b>: Enter coordinates in ascending order for the Watson strand and descending order for the Crick strand.</p>
-		       { reverseComplementNode }
+		       { reverseCompNode }
                 </div>);
  		 
 	},
@@ -178,7 +178,7 @@ var SearchForm = React.createClass({
 	_getSeqNode: function() {
 
 		var seqtypeNode = this._getSeqtypeNode('seqtype3');
-		var reverseComplementNode = this._getReverseCompNode('rev3');
+		var reverseCompNode = this._getReverseCompNode('rev3');
 
 		return(<div>
                        <h3>3. Type or Paste a: </h3>
@@ -186,7 +186,7 @@ var SearchForm = React.createClass({
 		       <p>Sequence:</p>
                        <textarea ref='seq' name='seq' onChange={this._onChange} rows='10' cols='50'></textarea>
                        <p>The sequence <b>MUST</b> be provided in RAW format, no comments (numbers are okay).</p>
-                       { reverseComplementNode }
+                       { reverseCompNode }
                 </div>);    
 
 	},
@@ -249,7 +249,7 @@ var SearchForm = React.createClass({
 
                 return(<div>
                        Select or unselect multiple strains by pressing the Control (PC) or Command (Mac) key while clicking. 
-                       <p><select ref='strains' id='strains' onChange={this._onChange} size={i} multiple>{_elements}</select></p>
+                       <p><select ref='strains' id='strains' onChange={this._onChange} size='11' multiple>{_elements}</select></p>
                 </div>);
 
         },
