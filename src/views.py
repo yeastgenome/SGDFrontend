@@ -816,13 +816,14 @@ def primer3(request):
                 sequence = str(sequence.replace('\r', '').replace('\n', ''))
         else:
             locus = DBSession.query(Locusdbentity).filter(or_(Locusdbentity.gene_name == gene_name.upper(),Locusdbentity.systematic_name == gene_name)).one_or_none()
+            if locus is None:
+                return HTTPBadRequest(body=json.dumps({'error': 'Gene name provided does not exist in the database:  ' + gene_name}))
             tax_id = DBSession.query(Straindbentity.taxonomy_id).filter(Straindbentity.strain_type =='Reference').one_or_none()
-            dna = DBSession.query(Dnasequenceannotation.residues).filter(and_(Dnasequenceannotation.taxonomy_id == tax_id, Dnasequenceannotation.dbentity_id == locus.dbentity_id, Dnasequenceannotation.dna_type =='1KB')).one_or_none()[0]
-            if dna:
-                sequence = str(dna)
+            dna = DBSession.query(Dnasequenceannotation.residues).filter(and_(Dnasequenceannotation.taxonomy_id == tax_id, Dnasequenceannotation.dbentity_id == locus.dbentity_id, Dnasequenceannotation.dna_type =='1KB')).one_or_none()
+            if dna is None:
+                return HTTPBadRequest(body=json.dumps({'error': 'Sequence for provided gene name does not exist in the database:  ' + gene_name}))
             else:
-                return HTTPNotFound()
-
+                sequence = str(dna)
 
     if 'maximum_tm' in p_keys:
         maximum_tm = params.get('maximum_tm')
@@ -850,39 +851,39 @@ def primer3(request):
         max_three_prime_self_complementarity= params.get('max_three_prime_self_complementarity')
     if 'max_self_complementarity' in p_keys:
         max_self_complementarity = params.get('max_self_complementarity')
-    if 'include_end' in p_keys:
-        include_end = params.get('include_end')
-    if 'include_start' in p_keys:
-        include_start = params.get('include_start')
+    if 'input_end' in p_keys:
+        input_end = params.get('input_end')
+    if 'input_start' in p_keys:
+        input_start = params.get('input_start')
     if 'maximum_product_size' in p_keys:
         maximum_product_size = params.get('maximum_product_size')
     if 'end_point' in p_keys:
         end_point = params.get('end_point')
 
     if gene_name is None:
-        five_prime_start = include_start
-        five_prime_end =  include_end - include_start
+        five_prime_start = input_start
+        five_prime_end =  input_end - input_start
     else:
-        if include_start < 0:
-            five_prime_start = 1000 - include_start
-            five_prime_end = include_end - five_prime_start
+        if input_start < 0:
+            five_prime_start = 1000 - abs(input_start)
+            five_prime_end = input_end - five_prime_start
         else:
-            five_prime_start = 1000 + include_start
-            five_prime_end = include_end - include_start
+            five_prime_start = 1000 + input_start
+            five_prime_end = input_end - input_start
 
-    start = 1001
-    stop = 1150
+    last_range_start = 1001
+    last_range_stop = 1150
 
-    if (include_end - include_start) > 1000:
-         start = include_end - include_start
+    if (input_end - abs(input_start)) > 1000:
+         start = input_end - input_start
          if maximum_product_size:
-             stop = maximum_product_size
+             last_range_stop = maximum_product_size
          else:
-             stop = start + 300
+             last_range_stop = start + 300
 
     if end_point == 'YES':
         force_left_start = five_prime_start
-        force_right_start = 1000 + include_end
+        force_right_start = 1000 + input_end
     elif end_point == 'NO':
         force_left_start = -1000000
         force_right_start = -1000000
@@ -890,11 +891,14 @@ def primer3(request):
     print sequence
     print len(sequence)
 
+    print input_start
+    print input_end
+
     print five_prime_start
     print five_prime_end
 
-    print start
-    print stop
+    print last_range_start
+    print last_range_stop
 
     print force_left_start
     print force_right_start
@@ -943,7 +947,7 @@ def primer3(request):
                 'PRIMER_MIN_GC' : minimum_gc,
                 'PRIMER_OPT_GC_PERCENT' : optimum_gc,
                 'PRIMER_MAX_GC' : maximum_gc,
-                'PRIMER_PRODUCT_SIZE_RANGE': [[100,150],[150,250], [100,300], [301,400], [401,500] ,[501,600] ,[601,700] ,[701,850], [851,1000], [start,stop]],
+                'PRIMER_PRODUCT_SIZE_RANGE': [[100,150],[150,250], [100,300], [301,400], [401,500] ,[501,600] ,[601,700] ,[701,850], [851,1000], [last_range_start,last_range_stop]],
                 'PRIMER_NUM_RETURN': 5,
                 'PRIMER_MAX_END_STABILITY' : 9.0,
                 'PRIMER_MAX_LIBRARY_MISPRIMING' : 12.00,
@@ -1053,7 +1057,7 @@ def primer3(request):
                 'PRIMER_INTERNAL_WT_END_QUAL': 0.0
         }, debug=False)
         # fmt = '{:<30} {:<50}'
-        # print(fmt.format('Output Key', 'SimBinding Result'))
+        # print(fmt.format('Output Key', 'Binding Result'))
         # print('-' * 80)
         # for k in sorted(result):
         #     print(fmt.format(k, repr(result[k])))
