@@ -130,10 +130,8 @@ var SearchForm = React.createClass({
 			<h3>Pick a sequence type:</h3>
 			{ seqtypeNode }
 			<h3><b>If available,</b> add flanking basepairs</h3>
-			<p>upstream</p>
-			<textarea ref='up' name='up' onChange={this._onChange} rows='1' cols='50'></textarea>
-			<p>and downstream</p>
-			<textarea ref='down' name='down' onChange={this._onChange} rows='1' cols='50'></textarea>
+			<p>Upstream: <textarea ref='up' name='up' onChange={this._onChange} rows='1' cols='20'></textarea></p>
+			<p>Downstream: <textarea ref='down' name='down' onChange={this._onChange} rows='1' cols='20'></textarea></p>
 			{ reverseCompNode }
                 </div>);
 
