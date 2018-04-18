@@ -121,7 +121,7 @@ var SearchForm = React.createClass({
                 var seqNode = this._getSeqNode();
 		
 		return (<div><table>
-		        <tr><td>{ geneNode }</td><td><font color='red'>OR</font></td><td>{ chrNode} </td><td><font color='red'>OR</font></td><td>{ seqNode } </td></tr></table>
+		        <tr><td>{ geneNode }</td><td><font color='red'>OR</font></td><td>{ chrNode }</td><td><font color='red'>OR</font></td><td>{ seqNode }</td></tr></table>
 			</div>);
 
 
