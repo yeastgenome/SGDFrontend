@@ -108,25 +108,12 @@ var SearchForm = React.createClass({
 				<form onSubmit={this._onSubmit} target="infowin">
 				      <div className="row">
 				      	   <div className="large-12 columns">
-				              { geneNode }
+				              { geneNode } OR { chrNode } OR { seqNode }
 					   </div>
 				      </div>
 				</form>
 			</div>);
 		}
-	},
-	
-	_getSearchForm: function() {
-
-		var geneNode = this._getGeneNode();
-                var chrNode = this._getChrNode();
-                var seqNode = this._getSeqNode();
-		
-		return (<div>
-		        <p> { geneNode } <font color='red'>OR</font> { chrNode } <font color='red'>OR</font>{ seqNode }</p>
-			</div>);
-
-
 	},
 
 	_getGeneNode: function() {
