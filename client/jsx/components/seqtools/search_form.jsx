@@ -97,7 +97,11 @@ var SearchForm = React.createClass({
 						
 			var descText = "<p>Try <a target='infowin' href='https://yeastmine.yeastgenome.org/yeastmine/begin.do'>Yeastmine</a> for flexible queries and fast retrieval of chromosomal features, sequences, GO annotations, interaction data and phenotype annotations. The video tutorial <a target='infowin' href='https://vimeo.com/28472349'>Template Basics</a> describes how to quickly retrieve this type of information in YeastMine. To find a comprehensive list of SGD's tutorials describing the many other features available in YeastMine and how to use them, visit SGD's <a target='infowin' href='https://sites.google.com/view/yeastgenome-help/video-tutorials/yeastmine?authuser=0'>YeastMine Video Tutorials</a> page. </p><p>This resource allows retrieval of a list of options for accessing biological information, table/map displays, and sequence analysis tools for 1. a named gene or sequence. 2. a specified chromosomal region, or 3. a raw DNA or protein sequence.</p>";
 				
-			var searchForm = this._getSearchForm();
+			var geneNode = this._getGeneNode();
+                	var chrNode = this._getChrNode();
+                	var seqNode = this._getSeqNode();
+
+			// var searchForm = this._getSearchForm();
 					
 			// <div className="row">
                         //      <div className="large-12 columns">
@@ -108,7 +112,7 @@ var SearchForm = React.createClass({
 			return (<div>
 			        <div dangerouslySetInnerHTML={{ __html: descText}} />
 				<form onSubmit={this._onSubmit} target="infowin">
-				     <div dangerouslySetInnerHTML={{ __html: searchForm}} />
+				     <div dangerouslySetInnerHTML={{ __html: chrNode}} />
 				</form>
 			</div>);
 		}
