@@ -103,16 +103,14 @@ var SearchForm = React.createClass({
 
 			// var searchForm = this._getSearchForm();
 					
-			// <div className="row">
-                        //      <div className="large-12 columns">
-                        //           { geneNode }
-                        //      </div>
-                        //   </div>
-	
 			return (<div>
 			        <div dangerouslySetInnerHTML={{ __html: descText}} />
 				<form onSubmit={this._onSubmit} target="infowin">
-				     <div dangerouslySetInnerHTML={{ __html: geneNode}} />
+				      <div className="row">
+				      	   <div className="large-12 columns">
+				              { geneNode }
+					   </div>
+				      </div>
 				</form>
 			</div>);
 		}
