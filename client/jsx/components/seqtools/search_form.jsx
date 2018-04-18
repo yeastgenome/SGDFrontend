@@ -101,6 +101,9 @@ var SearchForm = React.createClass({
                 	var chrNode = this._getChrNode();
                 	var seqNode = this._getSeqNode();
 
+			var _searchForm = [[geneNode, 'OR', chrNode, 'OR', seqNode]];
+			
+
 			// var searchForm = this._getSearchForm();
 					
 			return (<div>
@@ -108,7 +111,7 @@ var SearchForm = React.createClass({
 				<form onSubmit={this._onSubmit} target="infowin">
 				      <div className="row">
 				      	   <div className="large-12 columns">
-				              { geneNode } OR { chrNode } OR { seqNode }
+					      <DataTable data={_searchForm} />
 					   </div>
 				      </div>
 				</form>
