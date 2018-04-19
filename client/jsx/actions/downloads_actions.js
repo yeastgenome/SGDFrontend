@@ -17,11 +17,20 @@ export const fetchDownloadsMenuSuccess = results => {
   };
 };
 
+const sortDownloadsMenu = (response) => {
+  if(response){
+    response.data = _.sortBy(response.data, "orderNumber");
+    return response;
+  }
+  return response;
+};
+
 export function fetchDownloadsMenuData() {
   return dispatch => {
     return Axios(URLS.treeUrl)
       .then(response => {
-        dispatch(fetchDownloadsMenuSuccess(response));
+        const res = sortDownloadsMenu(response);
+        dispatch(fetchDownloadsMenuSuccess(res));
       })
       .catch(error => {
         throw error;

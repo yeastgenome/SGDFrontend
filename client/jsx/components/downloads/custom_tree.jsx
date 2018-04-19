@@ -73,7 +73,7 @@ class CustomTree extends Component {
         this.props.node.childNodes != undefined &&
         this.props.node.childNodes.length > 0
       ) {
-        childNodes = this.props.node.childNodes.map((node, index) => {
+        childNodes = _.sortBy(this.props.node.childNodes, "title").map((node, index) => {
           if (this.props.node.childNodes != null) {
             return (
               <li key={index} value={index}>
