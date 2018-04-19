@@ -132,29 +132,31 @@ class CustomTreeContainer extends Component {
   nodeToggle(node) {
     this.props.dispatch(downloadsActions.toggleNode(!this.props.isVisible));
   }
-  fetchDownloads(term) {
-    if (this.props.queryParams.status) {
-      const flag = this.props.queryParams.status == "active" ? true : false;
-      this.props.dispatch(downloadsActions.fetchDownloadResults(term, flag));
-    } else {
-      this.props.dispatch(
-        downloadsActions.fetchDownloadResults(
-          term,
-          this.props.isFileStatusActive
-        )
-      );
+  fetchDownloads(term, nodeLeafClickFlag) {
+    if(nodeLeafClickFlag){
+      this.props.dispatch(downloadsActions.fetchDownloadResults(term, nodeLeafClickFlag));
     }
+    else{
+      if (this.props.queryParams.status) {
+        const flag = this.props.queryParams.status == "active" ? true : false;
+        this.props.dispatch(downloadsActions.fetchDownloadResults(term, flag));
+      } else {
+        this.props.dispatch(downloadsActions.fetchDownloadResults(term, this.props.isFileStatusActive));
+      }
+
+    }
+    
   }
   leafClick(event) {
     const nodeId = Number(event.target.getAttribute("data-node-id"));
     let qStringObj = this.props.queryParams;
-    this.fetchDownloads(event.target.id);
+    this.fetchDownloads(event.target.id, true);
     if (this.props.selectedNode) {
       this.props.history.pushState(null, DOWNLOADS_URL, {
         category: this.props.selectedNode.title,
         id: event.target.id,
         item: event.target.getAttribute("data-path"),
-        status: this.props.isFileStatusActive ? "active" : "all"
+        status: "active"
       });
     } else {
       if (qStringObj) {
@@ -162,7 +164,7 @@ class CustomTreeContainer extends Component {
           category: qStringObj.category,
           id: event.target.id,
           item: event.target.getAttribute("data-path"),
-          status: this.props.isFileStatusActive ? "active" : "all"
+          status: "active"
         });
       }
     }
@@ -181,7 +183,7 @@ class CustomTreeContainer extends Component {
             .split("/")
             .filter(itx => itx)
             .join("_"),
-          status: queryObj.status
+          status: "active"
         });
       } else {
         this.props.history.pushState(null, DOWNLOADS_URL, {
@@ -191,10 +193,10 @@ class CustomTreeContainer extends Component {
             .split("/")
             .filter(itx => itx)
             .join("_"),
-          status: this.props.isFileStatusActive ? "active" : "all"
+          status: "active"
         });
       }
-      this.fetchDownloads(node.id);
+      this.fetchDownloads(node.id, true);
     }
     else{
        if (queryObj) {
@@ -205,7 +207,7 @@ class CustomTreeContainer extends Component {
              .split("/")
              .filter(itx => itx)
              .join("_"),
-           status: queryObj.status
+           status: "active"
          });
        }
        else{
@@ -216,7 +218,7 @@ class CustomTreeContainer extends Component {
              .split("/")
              .filter(itx => itx)
              .join("_"),
-           status: this.props.isFileStatusActive ? "active" : "all"
+           status: "active" 
          });
          
        }
