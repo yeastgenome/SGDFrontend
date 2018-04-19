@@ -245,7 +245,6 @@ class ModelsHelper(object):
                 obj[item.file_id].append(res)
         return obj'''
 
-    #TODO: construct file-path dictionary
     def set_file_dict(self):
         file_obj = DBSession.query(
             Filedbentity, FilePath).join(FilePath).filter(
