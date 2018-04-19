@@ -98,12 +98,14 @@ var SearchForm = React.createClass({
 				
 			var geneNodeLeft = this._getGeneNodeLeft();
 			var geneNodeRight = this._getGeneNodeRight();
-
                 	var chrNode = this._getChrNode();
                 	var seqNode = this._getSeqNode();
+			var submitNode = this._getSubmitNode();
+			var resetNode = this._getResetNode();
 
 			var _nameSection = { headers: [['1. Search a named gene or sequence', '']],
-			    		     rows:    [[geneNodeLeft, geneNodeRight]] };
+			    		     rows:    [[geneNodeLeft, geneNodeRight],
+					     	       [submitNode, resetNode]] };
 
 			var _chrSeqSection = { headers: [['2. Search a specified chromosomal region', 'OR', '3. Analyze a raw DNA or Protein sequence']],
                                                rows:    [[chrNode, '', seqNode]] };
@@ -226,8 +228,15 @@ var SearchForm = React.createClass({
 	_getSubmitNode: function() {
                
                 return(<div>
-                      <p><input type="submit" value="Submit Form" className="button secondary"></input> OR  <input type="reset" value="Reset Form" className="button secondary"></input>
-		      </p>
+                       <input type="submit" value="Submit Form" className="button secondary"></input>
+                </div>);
+
+        },
+
+	_getResetNode: function() {
+
+		return(<div>
+		       <input type="reset" value="Reset Form" className="button secondary"></input>
                 </div>);
 
         },
