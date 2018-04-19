@@ -44,10 +44,10 @@ class GeneNameReservationStandardize extends Component {
     let standardizeOptions = {
       fields: {
         gene_name_pmid: {
-          label: 'Gene Name PMID'
+          label: 'Gene Name PMID *'
         },
         name_description_pmid: {
-          label: 'Name Description PMID'
+          label: 'Name Description PMID (optional)'
         }
       }
     };
