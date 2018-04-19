@@ -144,7 +144,7 @@ def main(global_config, **settings):
     config.add_route('reserved_name_index', '/reservations', request_method='GET')
     config.add_route('reserved_name_curate_show', '/reservations/{id}', request_method='GET')
     config.add_route('reserved_name_update', '/reservations/{id}', request_method='PUT')
-    config.add_route('reserved_name_associate_pmid', '/reservations/{id}/pmid', request_method='POST')
+    config.add_route('reserved_name_standardize', '/reservations/{id}/standardize', request_method='POST')
     config.add_route('extend_reserved_name', '/reservations/{id}/extend', request_method='PUT')
     config.add_route('reserved_name_delete', '/reservations/{id}', request_method='DELETE')
     config.add_route('reserved_name_promote', '/reservations/{id}/promote', request_method='PUT')

@@ -63,12 +63,7 @@ class GeneNameReservation extends Component {
       let oldData = this.state.data;
       this.setState({ data: null });
       let url = `${DATA_BASE_URL}/${this.props.params.id}/promote`;
-      let successMessage;
-      if (this.state.data.reservation_status === 'Unprocessed') {
-        successMessage = 'The new gene name reservation was added. It may take a day to show up in the search.';
-      } else {
-        successMessage = 'The new gene name was standardized.';
-      }
+      let successMessage = 'The new gene name reservation was added. It may take a day to show up in the search.';
       let reqOptions = {
         type: 'PUT',
         headers: {
@@ -120,7 +115,8 @@ class GeneNameReservation extends Component {
     if (reservation_status === 'Unprocessed') {
       promoteNode = <a className='button primary' onClick={this.handlePromote.bind(this)}><i className='fa fa-check' /> Add Gene Name Reservation</a>;
     } else {
-      promoteNode = <a className='button primary' onClick={this.handlePromote.bind(this)}><i className='fa fa-check' /> Standardize Gene Name</a>;
+      let stLink = `${DATA_BASE_URL}/${this.props.params.id}/standardize`;
+      promoteNode = <Link className='button primary' to={stLink}><i className='fa fa-check' /> Standardize Gene Name</Link>;
     }
     return (
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '3rem' }}>

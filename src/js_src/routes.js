@@ -30,6 +30,7 @@ import CurateLitPhenotype from './containers/curateLit/phenotype';
 import GeneNameReservationIndex from './containers/reserve/index';
 import GeneNameReservation from './containers/reserve/show';
 import GeneNameReservationEdit from './containers/reserve/edit';
+import GeneNameReservationStandardize from './containers/reserve/standardize';
 import ColleaguesIndex from './containers/colleagues/index';
 import ColleaguesShow from './containers/colleagues/show';
 // import AuthorResponse from './containers/authorResponse/index';
@@ -45,6 +46,7 @@ export default (
       <Route component={requireAuthentication(GeneNameReservationIndex)} path='reservations' />
       <Route component={requireAuthentication(GeneNameReservation)} path='reservations/:id' />
       <Route component={requireAuthentication(GeneNameReservationEdit)} path='reservations/:id/edit' />
+      <Route component={requireAuthentication(GeneNameReservationStandardize)} path='reservations/:id/standardize' />
       <Route component={requireAuthentication(ColleaguesIndex)} path='colleagues/triage' />
       <Route component={requireAuthentication(ColleaguesShow)} path='colleagues/triage/:id' />
       <Route component={requireAuthentication(SpreadsheetUpload)} path='spreadsheet_upload' />
