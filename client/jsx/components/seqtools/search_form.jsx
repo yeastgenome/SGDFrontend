@@ -103,7 +103,7 @@ var SearchForm = React.createClass({
 			var submitNode = this._getSubmitNode();
 			var resetNode = this._getResetNode();
 
-			var _nameSection = { headers: [['<h2>1. Search a named gene or sequence</h2>', '']],
+			var _nameSection = { headers: [[<span style={{ fontSize: 14, color: red }}>1. Search a named gene or sequence</span>, '']],
 			    		     rows:    [[geneNodeLeft, geneNodeRight],
 					     	       [submitNode, resetNode]] };
 
