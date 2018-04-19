@@ -2,8 +2,7 @@ import React from 'react';
 import _ from 'underscore';
 import $ from 'jquery';
 
-// const DataTable = require("../widgets/data_table.jsx");
-
+const DataTable = require("../widgets/data_table.jsx");
 const Checklist = require("../widgets/checklist.jsx");
 const Params = require("../mixins/parse_url_params.jsx");
 
