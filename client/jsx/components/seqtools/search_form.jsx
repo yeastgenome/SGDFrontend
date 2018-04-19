@@ -164,7 +164,7 @@ var SearchForm = React.createClass({
                 var chromosomes = Object.keys(chr2num);
 
                 var _elements = _.map(chromosomes, c => {
-                       if (c == 'I') {
+                       if (chr2num[c] == 0) {
                             return <option value={ chr2num[c] } selected="selected">{ c }</option>;
                        }
                        else {
@@ -175,7 +175,7 @@ var SearchForm = React.createClass({
 		var reverseCompNode = this._getReverseCompNode('rev2');
 
                 return(<div>
-                       <h3>Pick a chromosome: </h3>
+                       <h2>Pick a chromosome: </h2>
                        <p><select ref='chr' name='chr' onChange={this._onChangeGenome}>{_elements}</select></p>
 		       <p>Then enter coordinates (optional)
 		       <textarea ref='start' name='start' onChange={this._onChange} rows='1' cols='50'></textarea></p>
@@ -194,10 +194,10 @@ var SearchForm = React.createClass({
 		var reverseCompNode = this._getReverseCompNode('rev3');
 
 		return(<div>
-                       <h3>Type or Paste a: </h3>
+                       <h2>3. Type or Paste a: </h2>
 		       { seqtypeNode }
 		       <p>Sequence:
-                       <textarea ref='seq' name='seq' onChange={this._onChange} rows='10' cols='50'></textarea></p>
+                       <textarea ref='seq' name='seq' onChange={this._onChange} rows='10' cols='45'></textarea></p>
                        <p>The sequence <b>MUST</b> be provided in RAW format, no comments (numbers are okay).</p>
                        { reverseCompNode }
                 </div>);    
