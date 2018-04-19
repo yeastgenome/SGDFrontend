@@ -107,8 +107,8 @@ var SearchForm = React.createClass({
 			    		     rows:    [[geneNodeLeft, geneNodeRight],
 					     	       [submitNode, resetNode]] };
 
-			var _chrSeqSection = { headers: [[<span style={{ fontSize: 20 }}>2. Search a specified chromosomal region</span>, <span style={{ fontSize: 20, color: 'red' }}>OR</span>, <span style={{ fontSize: 20 }}>3. Analyze a raw DNA or Protein sequence</span>]],
-                                               rows:    [[chrNode, '', seqNode]] };
+			var _chrSeqSection = { headers: [[<span style={{ fontSize: 20 }}>OR 2. Search a specified chromosomal region</span>, <span style={{ fontSize: 20 }}>OR 3. Analyze a raw DNA or Protein sequence</span>]],
+                                               rows:    [[chrNode, seqNode]] };
 					
 			return (<div>
 			        <div dangerouslySetInnerHTML={{ __html: descText}} />
@@ -175,7 +175,7 @@ var SearchForm = React.createClass({
 		var reverseCompNode = this._getReverseCompNode('rev2');
 
                 return(<div>
-                       <h2>Pick a chromosome: </h2>
+                       <h3>Pick a chromosome: </h3>
                        <p><select ref='chr' name='chr' onChange={this._onChangeGenome}>{_elements}</select></p>
 		       <p>Then enter coordinates (optional)
 		       <textarea ref='start' name='start' onChange={this._onChange} rows='1' cols='50'></textarea></p>
@@ -194,7 +194,7 @@ var SearchForm = React.createClass({
 		var reverseCompNode = this._getReverseCompNode('rev3');
 
 		return(<div>
-                       <h2>3. Type or Paste a: </h2>
+                       <h3>3. Type or Paste a: </h3>
 		       { seqtypeNode }
 		       <p>Sequence:
                        <textarea ref='seq' name='seq' onChange={this._onChange} rows='10' cols='45'></textarea></p>
