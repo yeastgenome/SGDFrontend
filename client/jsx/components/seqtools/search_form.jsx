@@ -107,7 +107,7 @@ var SearchForm = React.createClass({
 			    		     rows:    [[geneNodeLeft, geneNodeRight],
 					     	       [submitNode, resetNode]] };
 
-			var _chrSeqSection = { headers: [['<h2>2. Search a specified chromosomal region</h2>', '<font color=red><h2>OR</h2></font>', '<h2>3. Analyze a raw DNA or Protein sequence</h2>']],
+			var _chrSeqSection = { headers: [[<span style={{ fontSize: 20 }}>2. Search a specified chromosomal region</span>, <span style={{ fontSize: 20, color: 'red' }}>OR</span>, <span style={{ fontSize: 20 }}>3. Analyze a raw DNA or Protein sequence</span>]],
                                                rows:    [[chrNode, '', seqNode]] };
 					
 			return (<div>
