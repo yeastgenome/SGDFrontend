@@ -103,22 +103,20 @@ var SearchForm = React.createClass({
 			var submitNode = this._getSubmitNode();
 			var resetNode = this._getResetNode();
 
-			var _nameSection = { headers: [['1. Search a named gene or sequence', '']],
+			var _nameSection = { headers: [['<h2>1. Search a named gene or sequence</h2>', '']],
 			    		     rows:    [[geneNodeLeft, geneNodeRight],
 					     	       [submitNode, resetNode]] };
 
-			var _chrSeqSection = { headers: [['2. Search a specified chromosomal region', 'OR', '3. Analyze a raw DNA or Protein sequence']],
+			var _chrSeqSection = { headers: [['<h2>2. Search a specified chromosomal region</h2>', '<font color=red><h2>OR</h2></font>', '<h2>3. Analyze a raw DNA or Protein sequence</h2>']],
                                                rows:    [[chrNode, '', seqNode]] };
 					
-		
-			// <DataTable data={_nameSection}
 			return (<div>
 			        <div dangerouslySetInnerHTML={{ __html: descText}} />
 				<form onSubmit={this._onSubmit} target="infowin">
 				      <div className="row">
 				      	   <div className="large-12 columns">
 					   	<DataTable data={_nameSection} />
-						<DataTable data={_chrSeqSection} />                                                
+						<DataTable data={_chrSeqSection} />        
 					   </div>
 				      </div>
 				</form>
@@ -157,11 +155,12 @@ var SearchForm = React.createClass({
         },
 
 	_getChrNode: function() {
-		 
-		var chr2num = { 'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5, 'VI': 6, 
-		    	      	'VII': 7, 'VIII': 8, 'IX': 9, 'X': 10, 'XI': 11, 'XII': 12,
-				'XIII': 13, 'XIV': 14, 'XV': 15, 'XVI': 16, 'Mito': 17 }; 
-		    	      
+		 		    	      
+		var chr2num = { '-- choose a chromosome --': 0, 
+		    	        'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5, 'VI': 6,
+                                'VII': 7, 'VIII': 8, 'IX': 9, 'X': 10, 'XI': 11, 'XII': 12,
+                                'XIII': 13, 'XIV': 14, 'XV': 15, 'XVI': 16, 'Mito': 17 };
+
                 var chromosomes = Object.keys(chr2num);
 
                 var _elements = _.map(chromosomes, c => {
@@ -176,7 +175,7 @@ var SearchForm = React.createClass({
 		var reverseCompNode = this._getReverseCompNode('rev2');
 
                 return(<div>
-                       <h3>2. Pick a chromosome: </h3>
+                       <h3>Pick a chromosome: </h3>
                        <p><select ref='chr' name='chr' onChange={this._onChangeGenome}>{_elements}</select></p>
 		       <p>Then enter coordinates (optional)
 		       <textarea ref='start' name='start' onChange={this._onChange} rows='1' cols='50'></textarea></p>
@@ -195,7 +194,7 @@ var SearchForm = React.createClass({
 		var reverseCompNode = this._getReverseCompNode('rev3');
 
 		return(<div>
-                       <h3>3. Type or Paste a: </h3>
+                       <h3>Type or Paste a: </h3>
 		       { seqtypeNode }
 		       <p>Sequence:
                        <textarea ref='seq' name='seq' onChange={this._onChange} rows='10' cols='50'></textarea></p>
