@@ -100,8 +100,8 @@ var SearchForm = React.createClass({
                 	var chrNode = this._getChrNode();
                 	var seqNode = this._getSeqNode();
 
-			var _searchForm = [[geneNode, 'OR', chrNode, 'OR', seqNode]];
-			
+			var _searchForm = { headers: [['', '', '', '', '']],
+			    		    rows: [[geneNode, 'OR', chrNode, 'OR', seqNode]] }
 
 			// var searchForm = this._getSearchForm();
 					
