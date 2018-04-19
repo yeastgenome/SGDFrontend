@@ -194,10 +194,10 @@ var SearchForm = React.createClass({
 		var reverseCompNode = this._getReverseCompNode('rev3');
 
 		return(<div>
-                       <h3>3. Type or Paste a: </h3>
+                       <h3>Type or Paste a: </h3>
 		       { seqtypeNode }
 		       <p>Sequence:
-                       <textarea ref='seq' name='seq' onChange={this._onChange} rows='10' cols='35'></textarea></p>
+                       <textarea ref='seq' name='seq' onChange={this._onChange} rows='10' cols='20'></textarea></p>
                        <p>The sequence <b>MUST</b> be provided in RAW format, no comments (numbers are okay).</p>
                        { reverseCompNode }
                 </div>);    
