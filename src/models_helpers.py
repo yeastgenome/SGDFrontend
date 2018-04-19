@@ -328,6 +328,9 @@ class ModelsHelper(object):
             nameStr = ''
             for item in res:
                 nameStr += item.capitalize() + ' '
+            if 'sgd' in nameStr.lower():
+                tmp = nameStr.split(' ');
+                nameStr = tmp[0].upper() + ' ' + tmp[1]
             return nameStr.strip()
         return None
     def get_downloads_menu_helper(self, path_tree):
