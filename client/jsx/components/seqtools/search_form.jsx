@@ -125,6 +125,8 @@ var SearchForm = React.createClass({
 	},
 
 	_getGeneNodeLeft: function() {
+	
+                var reverseCompNode = this._getReverseCompNode('rev1');
 
                 return (<div>
                         <h3>Enter a list of names:</h3>
@@ -133,13 +135,13 @@ var SearchForm = React.createClass({
 			<h3><b>If available,</b> add flanking basepairs</h3>
 			<p>Upstream: <textarea ref='up' name='up' onChange={this._onChange} rows='1' cols='5'></textarea>
 			Downstream: <textarea ref='down' name='down' onChange={this._onChange} rows='1' cols='5'></textarea></p>
+			{ reverseCompNode }
                 </div>);
 
         },
 	
 	_getGeneNodeRight: function() {
 
-                var reverseCompNode = this._getReverseCompNode('rev1');
                 var strainNode = this._getStrainNode();
 		var seqtypeNode = this._getSeqtypeNode('seqtype1');
 
@@ -148,7 +150,6 @@ var SearchForm = React.createClass({
                         { strainNode }
 			<h3>Pick a sequence type:</h3>
                         { seqtypeNode }
-                        { reverseCompNode }
                 </div>);
 
         },
