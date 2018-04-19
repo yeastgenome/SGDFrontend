@@ -8161,7 +8161,8 @@ class Reservedname(Base):
         return obj
 
     def is_ref_published(self):
-        return self.reference.publication_status == 'Published'
+        pub_status = self.reference.publication_status
+        return (pub_status == 'Published' or pub_status == 'Epub ahead of print')
 
     # add rows to LOCUS_REFERENCE, LOCUSNOTE, and LOCUSNOTE_REFERENCE for associated changes to locus
     def associate_locus(self, systematic_name, username):
