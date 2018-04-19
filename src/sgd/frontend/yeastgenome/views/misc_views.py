@@ -91,9 +91,9 @@ def patmatch(request):
 def colleague_show(request):
     return render_to_response(TEMPLATE_ROOT + 'misc.jinja2', {}, request=request)
 
-@view_config(route_name='downloads')
+'''@view_config(route_name='downloads')
 def downloads(request):
-    return render_to_response(TEMPLATE_ROOT + 'downloads.jinja2', {}, request=request)
+    return render_to_response(TEMPLATE_ROOT + 'downloads.jinja2', {}, request=request)'''
 
 @view_config(route_name='downloads_tree')
 def downloads_tree(request):
