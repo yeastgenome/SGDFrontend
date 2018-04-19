@@ -295,11 +295,26 @@ class ModelsHelper(object):
         path_data = DBSession.query(Path).all()
         tree = PathTree()
         temp = []
+        orderTitles = {"Genome Sequences": 1, "Reports": 2, "Datasets": 3, "Community": 4 }
         for item in path_data:
             branch = tree
             temp_arr = item.path.split('/')
             for itm in temp_arr[1:]:
-                branch = branch.menu.setdefault(itm, PathTree(item.path_id, item.path, self.setMenuName(itm), item.description))
+                menuTitle = self.setMenuName(itm)
+                orderNumber = orderTitles.get(menuTitle)
+                if orderNumber:
+                    branch = branch.menu.setdefault(itm,
+                                                    PathTree(
+                                                        item.path_id,
+                                                        item.path,
+                                                        menuTitle,
+                                                        item.description,
+                                                        orderNumber))
+                else:
+                    branch = branch.menu.setdefault(
+                        itm,
+                        PathTree(item.path_id, item.path, menuTitle, item.description))
+
         if tree:
             for tKey, tValue in tree.menu.items():
                 tempItem = self.traverseMenuItem(tValue)
@@ -428,13 +443,14 @@ class ModelsHelper(object):
 
 
 class PathTree(object):
-    def __init__(self, id=0, path=None, format_name=None, description=None, *args, **kwargs):
+    def __init__(self, id=0, path=None, format_name=None, description=None, orderNumber=100, *args, **kwargs):
         self.menu = {}
         self.childNodes = []
         self.path_id = id
         self.path = path
         self.description = description
         self.title = format_name
+        self.orderNumber = orderNumber
 
     def __json__(self, request):
         return {
@@ -443,7 +459,8 @@ class PathTree(object):
             'id': self.path_id,
             'path': self.path,
             'description': self.description,
-            'childNodes': self.childNodes
+            'childNodes': self.childNodes,
+            'orderNumber': self.orderNumber
         }
     def format_title(self, title):
         if("cerevisiae" not in title.lower()):
