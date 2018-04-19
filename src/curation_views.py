@@ -687,24 +687,41 @@ def reserved_name_update(request):
         log.error(e)
         return HTTPBadRequest(body=json.dumps({ 'message': str(e) }), content_type='text/json')
 
-@view_config(route_name='reserved_name_associate_pmid', renderer='json', request_method='POST')
+@view_config(route_name='reserved_name_standardize', renderer='json', request_method='POST')
 @authenticate
-def reserved_name_associate_pmid(request):
+def reserved_name_standardize(request):
     if not check_csrf_token(request, raises=False):
         return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
     try:
         req_id = request.matchdict['id'].upper()
-        params = request.json_body
-        pmid = int(params['pmid'])
         username = request.session['username']
-        # first make sure pmid has real reference. Add if not
-        ref = DBSession.query(Referencedbentity).filter(Referencedbentity.pmid == pmid).one_or_none()
-        if not ref:
-            Referencedbentity.clear_from_triage_and_deleted(pmid, username)
-            ref = add_paper(pmid, username)
+        params = request.json_body
+        if 'gene_name_pmid' not in params.keys():
+            raise ValueError('Please provide a PMID to associate with the gene name.')
+        # associate gene name PMID
+        gene_name_pmid = int(params['gene_name_pmid'])
+        gene_name_ref = DBSession.query(Referencedbentity).filter(Referencedbentity.pmid == gene_name_pmid).one_or_none()
+        if not gene_name_ref:
+            raise ValueError(str(gene_name_pmid) + ' is not in the database. Please add to the database and try again.')
+        has_name_desc = params['name_description_pmid']
+        if has_name_desc:
+            name_desc_pmid = int(params['name_description_pmid'])
+            name_desc_ref = DBSession.query(Referencedbentity).filter(Referencedbentity.pmid == name_desc_pmid).one_or_none()
+            if not name_desc_ref:
+                raise ValueError(str(name_desc_pmid) + ' is not in the database. Please add to the database and try again.')
         res = DBSession.query(Reservedname).filter(Reservedname.reservedname_id == req_id).one_or_none()
-        res.associate_published_reference(ref.dbentity_id, username)
-        transaction.commit()
+        if not res.locus_id:
+            raise ValueError('Reserved name must be associated with an ORF before being standardized.')
+        if not res.name_description:
+            raise ValueError('Reserved name must have a name description before being standardized.')
+        res.associate_published_reference(gene_name_ref.dbentity_id, username, 'gene_name')
+        # maybe associate name desc
+        if has_name_desc:
+            res = DBSession.query(Reservedname).filter(Reservedname.reservedname_id == req_id).one_or_none()
+            name_desc_ref = DBSession.query(Referencedbentity).filter(Referencedbentity.pmid == name_desc_pmid).one_or_none()
+            res.associate_published_reference(name_desc_ref.dbentity_id, username, 'name_description')
+        res = DBSession.query(Reservedname).filter(Reservedname.reservedname_id == req_id).one_or_none()
+        res.standardize(request.session['username'])
         return True
     except Exception as e:
         transaction.abort()
@@ -754,9 +771,7 @@ def reserved_name_promote(request):
     if not check_csrf_token(request, raises=False):
         return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
     req_id = request.matchdict['id'].upper()
-    res = DBSession.query(Reservedname).filter(Reservedname.reservedname_id == req_id).one_or_none()
-    if not res:
-        res = DBSession.query(ReservednameTriage).filter(ReservednameTriage.curation_id == req_id).one_or_none()
+    res = DBSession.query(ReservednameTriage).filter(ReservednameTriage.curation_id == req_id).one_or_none()
     try:
         return res.promote(request.session['username'])
     except Exception as e:

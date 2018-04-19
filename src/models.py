@@ -2150,6 +2150,12 @@ class Referencedbentity(Dbentity):
             ref_urls.delete(synchronize_session=False)
             ref_unlinks = curator_session.query(Referenceunlink).filter(Referenceunlink.reference_id == self.dbentity_id)
             ref_unlinks.delete(synchronize_session=False)
+            locus_refs = curator_session.query(LocusReferences).filter(LocusReferences.reference_id == self.dbentity_id)
+            locus_refs.delete(synchronize_session=False)
+            ref_files = curator_session.query(ReferenceFile).filter(ReferenceFile.reference_id == self.dbentity_id)
+            ref_files.delete(synchronize_session=False)
+            curate_act = curator_session.query(CuratorActivity).filter(CuratorActivity.dbentity_id == self.dbentity_id)
+            curate_act.delete(synchronize_session=False)
             curator_session.delete(self)
             transaction.commit()
         except Exception as e:
@@ -8217,7 +8223,7 @@ class Reservedname(Base):
             if curator_session:
                 curator_session.remove()
 
-    def associate_published_reference(self, ref_id, username):
+    def associate_published_reference(self, ref_id, username, new_reference_class):
         if not self.locus_id:
             raise ValueError('Reserved name must be associated with a locus before adding published reference.')
         curator_session = None 
@@ -8227,36 +8233,27 @@ class Reservedname(Base):
             # see how many reserved name use this reference exist for personal communication, save for later
             ref_count = curator_session.query(Reservedname).filter(Reservedname.reference_id == self.reference_id).count()
             # delete old locusreferences
-            curator_session.query(LocusReferences).filter(and_(LocusReferences.locus_id == self.locus_id, LocusReferences.reference_id == self.reference_id)).delete(synchronize_session=False)
-            has_ref_name = curator_session.query(LocusReferences).filter(and_(LocusReferences.locus_id == self.locus_id, LocusReferences.reference_id == ref_id, LocusReferences.reference_class == 'gene_name')).count()
+            curator_session.query(LocusReferences).filter(and_(LocusReferences.locus_id == self.locus_id, LocusReferences.reference_id == self.reference_id, LocusReferences.reference_class == new_reference_class)).delete(synchronize_session=False)
+            has_ref_name = curator_session.query(LocusReferences).filter(and_(LocusReferences.locus_id == self.locus_id, LocusReferences.reference_id == ref_id, LocusReferences.reference_class == new_reference_class)).count()
             if not has_ref_name:
-                gene_name_locus_ref = LocusReferences(
+                new_locus_ref = LocusReferences(
                     locus_id = self.locus_id,
                     reference_id = ref_id,
-                    reference_class = 'gene_name',
+                    reference_class = new_reference_class,
                     source_id = SGD_SOURCE_ID,
                     created_by = username
                 )
-                curator_session.add(gene_name_locus_ref)
-            has_name_desc = curator_session.query(LocusReferences).filter(and_(LocusReferences.locus_id == self.locus_id, LocusReferences.reference_id == ref_id, LocusReferences.reference_class == 'name_description')).count()
-            if not has_name_desc:
-                name_description_locus_ref = LocusReferences(
-                    locus_id = self.locus_id,
-                    reference_id = ref_id,
-                    reference_class = 'name_description',
-                    source_id = SGD_SOURCE_ID,
-                    created_by = username
-                )
-                curator_session.add(name_description_locus_ref)
-            # update LocusnoteReference to have new ref id
-            curator_session.query(LocusnoteReference).filter_by(reference_id=self.reference_id).update({ 'reference_id': ref_id })
-            # finally change reference_id
-            personal_communication_ref_id = self.reference_id
-            personal_communication_ref = curator_session.query(Referencedbentity).filter(Referencedbentity.dbentity_id == personal_communication_ref_id).one_or_none()
-            self.reference_id = ref_id
+                curator_session.add(new_locus_ref)
+            if new_reference_class == 'gene_name':
+                # update LocusnoteReference to have new ref id
+                curator_session.query(LocusnoteReference).filter_by(reference_id=self.reference_id).update({ 'reference_id': ref_id })
+                # finally change reference_id
+                personal_communication_ref_id = self.reference_id
+                personal_communication_ref = curator_session.query(Referencedbentity).filter(Referencedbentity.dbentity_id == personal_communication_ref_id).one_or_none()
+                self.reference_id = ref_id
             transaction.commit()
             # if this is only one reference for personal communication, delete it
-            if ref_count == 1 and personal_communication_ref.publication_status != 'Published':
+            if new_reference_class == 'gene_name' and ref_count == 1 and personal_communication_ref.publication_status != 'Published':
                 personal_communication_ref = curator_session.query(Referencedbentity).filter(Referencedbentity.dbentity_id == personal_communication_ref_id).one_or_none()
                 personal_communication_ref.delete_with_children(username)           
         except Exception as e:
@@ -8267,8 +8264,7 @@ class Reservedname(Base):
             if curator_session:
                 curator_session.remove()
 
-    # standardize
-    def promote(self, username):
+    def standardize(self, username):
         # a few validations
         if not self.is_ref_published():
             raise ValueError('Associated reference must be published before standardizing reservation.')
