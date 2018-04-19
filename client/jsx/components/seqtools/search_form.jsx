@@ -96,21 +96,27 @@ var SearchForm = React.createClass({
 						
 			var descText = "<p>Try <a target='infowin' href='https://yeastmine.yeastgenome.org/yeastmine/begin.do'>Yeastmine</a> for flexible queries and fast retrieval of chromosomal features, sequences, GO annotations, interaction data and phenotype annotations. The video tutorial <a target='infowin' href='https://vimeo.com/28472349'>Template Basics</a> describes how to quickly retrieve this type of information in YeastMine. To find a comprehensive list of SGD's tutorials describing the many other features available in YeastMine and how to use them, visit SGD's <a target='infowin' href='https://sites.google.com/view/yeastgenome-help/video-tutorials/yeastmine?authuser=0'>YeastMine Video Tutorials</a> page. </p><p>This resource allows retrieval of a list of options for accessing biological information, table/map displays, and sequence analysis tools for 1. a named gene or sequence. 2. a specified chromosomal region, or 3. a raw DNA or protein sequence.</p>";
 				
-			var geneNode = this._getGeneNode();
+			var geneNodeLeft = this._getGeneNode();
+			var geneNodeRight = this._getGeneNodeRight();
+
                 	var chrNode = this._getChrNode();
                 	var seqNode = this._getSeqNode();
 
-			var _searchForm = { headers: [['1. Enter a list of Gene/ORF name or SGDID:', 'OR', '2. Pick a chromosome:', 'OR', 'Type or Past a:']],
-			    		    rows: [[geneNode, 'OR', chrNode, 'OR', seqNode]] }
+			var _nameSection = { headers: [['1. Search a named gene or sequence', '']],
+			    		     rows:    [[geneNodeLeft, geneNodeRight]] };
 
-			// var searchForm = this._getSearchForm();
+			var _chrSeqSection = { headers: [['2. Search a specified chromosomal region', 'OR', '3. Analyze a raw DNA or Protein sequence']],
+                                               rows:    [[chrNode, '', seqNode]] };
 					
+		
+			// <DataTable data={_nameSection}
 			return (<div>
 			        <div dangerouslySetInnerHTML={{ __html: descText}} />
 				<form onSubmit={this._onSubmit} target="infowin">
 				      <div className="row">
 				      	   <div className="large-12 columns">
-					      <DataTable data={_searchForm} />
+					   	<DataTable data={_nameSection} />
+						<DataTable data={_chrSeqSection} />                                                
 					   </div>
 				      </div>
 				</form>
@@ -118,28 +124,36 @@ var SearchForm = React.createClass({
 		}
 	},
 
-	_getGeneNode: function() {
+	_getGeneNodeLeft: function() {
 
-		var reverseCompNode = this._getReverseCompNode('rev1');
-		var strainNode = this._getStrainNode();
 		var seqtypeNode = this._getSeqtypeNode('seqtype1');
 
                 return (<div>
-                        <h3>1. Enter a list of Gene/ORF name or SGDID:</h3>
-			<p>(Example space delimited gene list: ACT1 YHR023W SGD:S000000001) 
+                        <h3>Enter a list of names:</h3>
+			<p>(space-separated gene names (and/or ORF and/or SGDID). Example: ACT1 YHR023W SGD:S000000001) 
 			<textarea ref='genes' name='genes' onChange={this._onChange} rows='1' cols='50'></textarea></p>
-			<h3>Pick one or more strains:</h3>
-			{ strainNode }
 			<h3>Pick a sequence type:</h3>
 			{ seqtypeNode }
 			<h3><b>If available,</b> add flanking basepairs</h3>
-			<p>Upstream: <textarea ref='up' name='up' onChange={this._onChange} rows='1' cols='20'></textarea></p>
-			<p>Downstream: <textarea ref='down' name='down' onChange={this._onChange} rows='1' cols='20'></textarea></p>
-			{ reverseCompNode }
+			<p>Upstream: <textarea ref='up' name='up' onChange={this._onChange} rows='1' cols='5'></textarea>
+			Downstream: <textarea ref='down' name='down' onChange={this._onChange} rows='1' cols='5'></textarea></p>
                 </div>);
 
         },
 	
+	_getGeneNodeRight: function() {
+
+                var reverseCompNode = this._getReverseCompNode('rev1');
+                var strainNode = this._getStrainNode();
+
+                return (<div>
+                        <h3>Pick one or more strains:</h3>
+                        { strainNode }
+                        { reverseCompNode }
+                </div>);
+
+        },
+
 	_getChrNode: function() {
 		 
 		var chr2num = { 'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5, 'VI': 6, 
