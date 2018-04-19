@@ -292,7 +292,7 @@ class ModelsHelper(object):
         return obj_container
 
     def get_downloads_menu(self):
-        path_data = DBSession.query(Path).all()
+        path_data = DBSession.query(Path).order_by(Path.path).all()
         tree = PathTree()
         temp = []
         orderTitles = {"Genome Sequences": 1, "Reports": 2, "Datasets": 3, "Community": 4 }
