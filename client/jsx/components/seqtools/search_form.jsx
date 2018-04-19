@@ -107,8 +107,8 @@ var SearchForm = React.createClass({
 			    		     rows:    [[geneNodeLeft, geneNodeRight],
 					     	       [submitNode, resetNode]] };
 
-			var _chrSeqSection = { headers: [[<span style={{ fontSize: 20 }}><strong style={{ color: 'red'}}>OR</strong> 2. Search a specified chromosomal region</span>, <span style={{ fontSize: 20 }}>OR 3. Analyze a raw DNA or Protein sequence</span>]],
-                                               rows:    [[chrNode, seqNode]] };
+			var _chrSeqSection = { headers: [[<span style={{ fontSize: 20 }}><strong style={{ color: 'red'}}>OR</strong> 2. Search a specified chromosomal region</span>, '', '', <span style={{ fontSize: 20 }}><strong style={{ color: 'red'}}>OR</strong> 3. Analyze a raw DNA or Protein sequence</span>]],
+                                               rows:    [[chrNode, '', '', seqNode]] };
 					
 			return (<div>
 			        <div dangerouslySetInnerHTML={{ __html: descText}} />
@@ -197,7 +197,7 @@ var SearchForm = React.createClass({
                        <h3>3. Type or Paste a: </h3>
 		       { seqtypeNode }
 		       <p>Sequence:
-                       <textarea ref='seq' name='seq' onChange={this._onChange} rows='10' cols='45'></textarea></p>
+                       <textarea ref='seq' name='seq' onChange={this._onChange} rows='10' cols='35'></textarea></p>
                        <p>The sequence <b>MUST</b> be provided in RAW format, no comments (numbers are okay).</p>
                        { reverseCompNode }
                 </div>);    
