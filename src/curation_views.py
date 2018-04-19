@@ -696,7 +696,7 @@ def reserved_name_standardize(request):
         req_id = request.matchdict['id'].upper()
         username = request.session['username']
         params = request.json_body
-        if 'gene_name_pmid' not in params.keys():
+        if not params['gene_name_pmid']:
             raise ValueError('Please provide a PMID to associate with the gene name.')
         # associate gene name PMID
         gene_name_pmid = int(params['gene_name_pmid'])
