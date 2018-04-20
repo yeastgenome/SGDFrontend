@@ -135,8 +135,8 @@ var SearchForm = React.createClass({
 			<h3>Pick a sequence type:</h3>
 			{ seqtypeNode }
 			<h3><b>If available,</b> add flanking basepairs</h3>
-			<p>Upstream: <input type='text' ref='up' name='up' onChange={this._onChange} size='5'></input>
-			Downstream: <input type='text' ref='down' name='down' onChange={this._onChange} size='5'></input></p>
+			<p>Upstream: <input type='text' ref='up' name='up' onChange={this._onChange} size='50'></input>
+			Downstream: <input type='text' ref='down' name='down' onChange={this._onChange} size='50'></input></p>
 			{ reverseCompNode }
                 </div>);
 
@@ -149,8 +149,7 @@ var SearchForm = React.createClass({
                 return (<div>
                         <h3>Pick one or more strains:</h3>
                         { strainNode }
-			<p><input type="submit" ref='submit1' name='submit1' value="Submit Form" className="button secondary"></input>
-			<input type="reset" ref='reset1' name='reset1' value="Reset Form" className="button secondary"></input></p>
+			<p><input type="submit" ref='submit1' name='submit1' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset1' name='reset1' value="Reset Form" className="button secondary"></input></p>
                 </div>);
 
         },
@@ -179,9 +178,9 @@ var SearchForm = React.createClass({
                        <h3>Pick a chromosome: </h3>
                        <p><select ref='chr' name='chr' onChange={this._onChangeGenome}>{_elements}</select></p>
 		       <p>Then enter coordinates (optional)
-		       <textarea ref='start' name='start' onChange={this._onChange} rows='1' cols='7'></textarea></p>
+		       <input type='text' ref='start' name='start' onChange={this._onChange} size='50'></input></p>
 		       <p>to
-                       <textarea ref='end' name='end' onChange={this._onChange} rows='1' cols='7'></textarea></p>
+                       <input type='text' ref='end' name='end' onChange={this._onChange} size='50'></input></p>
 		       <p>The entire chromosome sequence will be displayed if no coordinates are entered.</p>
 		       <p><b>Note</b>: Enter coordinates in ascending order for the Watson strand and descending order for the Crick strand.</p>
 		       { reverseCompNode }
