@@ -178,9 +178,9 @@ var SearchForm = React.createClass({
                        <h3>Pick a chromosome: </h3>
                        <p><select ref='chr' name='chr' onChange={this._onChangeGenome}>{_elements}</select></p>
 		       <p>Then enter coordinates (optional)
-		       <textarea ref='start' name='start' onChange={this._onChange} rows='1' cols='10'></textarea></p>
+		       <textarea ref='start' name='start' onChange={this._onChange} rows='1' cols='7'></textarea></p>
 		       <p>to
-                       <textarea ref='end' name='end' onChange={this._onChange} rows='1' cols='10'></textarea></p>
+                       <textarea ref='end' name='end' onChange={this._onChange} rows='1' cols='7'></textarea></p>
 		       <p>The entire chromosome sequence will be displayed if no coordinates are entered.</p>
 		       <p><b>Note</b>: Enter coordinates in ascending order for the Watson strand and descending order for the Crick strand.</p>
 		       { reverseCompNode }
@@ -197,7 +197,7 @@ var SearchForm = React.createClass({
                        <h3>Type or Paste a: </h3>
 		       { seqtypeNode }
 		       <p>Sequence:
-                       <textarea ref='seq' name='seq' onChange={this._onChange} rows='5' cols='50'></textarea></p>
+                       <textarea ref='seq' name='seq' onChange={this._onChange} rows='8' cols='50'></textarea></p>
                        <p>The sequence <b>MUST</b> be provided in RAW format, no comments (numbers are okay).</p>
                        { reverseCompNode }
                 </div>);    
