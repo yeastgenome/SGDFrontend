@@ -130,7 +130,7 @@ var SearchForm = React.createClass({
                 return (<div style={{ textAlign: "top" }}>
                         <h3>Enter a list of names:</h3>
 			<p>(space-separated gene names (and/or ORF and/or SGDID). Example: ACT1 YHR023W SGD:S000000001) 
-			<input type='text' ref='genes' name='genes' onChange={this._onChange} size='50'></input></p>
+			<textarea ref='genes' name='genes' onChange={this._onChange} rows='2' cols='50'></textarea></p>
 			<h3>Pick a sequence type:</h3>
 			{ seqtypeNode }
 			<h3><b>If available,</b> add flanking basepairs</h3>
@@ -198,7 +198,7 @@ var SearchForm = React.createClass({
                        <h3>Type or Paste a: </h3>
 		       { seqtypeNode }
 		       <p>Sequence:
-                       <textarea ref='seq' name='seq' onChange={this._onChange} rows='6' cols='50'></textarea></p>
+                       <textarea ref='seq' name='seq' onChange={this._onChange} rows='7' cols='50'></textarea></p>
                        <p>The sequence <b>MUST</b> be provided in RAW format, no comments (numbers are okay).</p>
                        { reverseCompNode }
 		       <p><input type="submit" ref='submit3' name='submit3' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset3' name='reset3' value="Reset Form" className="button secondary"></input></p>
