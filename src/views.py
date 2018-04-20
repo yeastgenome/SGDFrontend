@@ -7,6 +7,7 @@ from sqlalchemy.orm.exc import DetachedInstanceError
 from sqlalchemy.exc import IntegrityError
 from datetime import timedelta
 from primer3 import bindings, designPrimers
+from collections import defaultdict
 
 import os
 import re
@@ -805,7 +806,7 @@ def ecnumber(request):
 def primer3(request):
     params = request.json_body
     p_keys = params.keys()
-
+    print params
     if 'gene_name' in p_keys:
         gene_name = params.get('gene_name')
         if gene_name is None:
@@ -824,7 +825,6 @@ def primer3(request):
                 return HTTPBadRequest(body=json.dumps({'error': 'Sequence for provided gene name does not exist in the database:  ' + gene_name}))
             else:
                 sequence = str(dna)
-
     if 'maximum_tm' in p_keys:
         maximum_tm = params.get('maximum_tm')
     if 'minimum_tm' in p_keys:
@@ -866,20 +866,20 @@ def primer3(request):
     else:
         if input_start < 0:
             five_prime_start = 1000 - abs(input_start)
-            five_prime_end = input_end - five_prime_start
+            five_prime_end = input_end + five_prime_start
         else:
             five_prime_start = 1000 + input_start
             five_prime_end = input_end - input_start
 
-    last_range_start = 1001
-    last_range_stop = 1150
+    interval_range = [[100,150],[150,250], [100,300], [301,400], [401,500] ,[501,600] ,[601,700] ,[701,850], [851,1000]]
 
-    if (input_end - abs(input_start)) > 1000:
-         start = input_end - input_start
-         if maximum_product_size:
-             last_range_stop = maximum_product_size
-         else:
-             last_range_stop = start + 300
+
+    if maximum_product_size:
+        if maximum_product_size > five_prime_end:
+            return HTTPBadRequest(body=json.dumps({'error': 'Maximum product size cannot be larger than target size.'}))
+        range_start = five_prime_end
+        range_stop = maximum_product_size
+        interval_range = [[range_start, range_stop]]
 
     if end_point == 'YES':
         force_left_start = five_prime_start
@@ -897,11 +897,10 @@ def primer3(request):
     print five_prime_start
     print five_prime_end
 
-    print last_range_start
-    print last_range_stop
-
     print force_left_start
     print force_right_start
+
+    print interval_range
 
     try:
         result = bindings.designPrimers(
@@ -947,7 +946,7 @@ def primer3(request):
                 'PRIMER_MIN_GC' : minimum_gc,
                 'PRIMER_OPT_GC_PERCENT' : optimum_gc,
                 'PRIMER_MAX_GC' : maximum_gc,
-                'PRIMER_PRODUCT_SIZE_RANGE': [[100,150],[150,250], [100,300], [301,400], [401,500] ,[501,600] ,[601,700] ,[701,850], [851,1000], [last_range_start,last_range_stop]],
+                'PRIMER_PRODUCT_SIZE_RANGE': interval_range,
                 'PRIMER_NUM_RETURN': 5,
                 'PRIMER_MAX_END_STABILITY' : 9.0,
                 'PRIMER_MAX_LIBRARY_MISPRIMING' : 12.00,
@@ -1061,9 +1060,107 @@ def primer3(request):
         # print('-' * 80)
         # for k in sorted(result):
         #     print(fmt.format(k, repr(result[k])))
+        #parsed_result = defaultdict(list)
+        result, notes = primer3_parser(result)
+        print result
+        print notes
         return result
+
     except Exception as e:
         return HTTPBadRequest(body=json.dumps({'error': str(e) }))
+
+
+def primer3_parser(primer3_results):
+   ''' Parse Primer3 designPrimers output, and sort it into a hierachical
+   dictionary structure of primer pairs.
+
+   This method return 2 outputs, the list of primer pairs and a dictionary with
+   notes (the explanatory output from Primer3).
+
+   Author: Martin CF Thomsen
+   '''
+   primer_pairs = {}
+   notes = {}
+   for k in primer3_results:
+      if 'PRIMER_RIGHT' == k[:12]:
+         key = 'right'
+         tmp = k[13:].split('_', 1)
+         if tmp[0].isdigit():
+            id = int(tmp[0])
+            if not id in primer_pairs:
+               primer_pairs[id] = {'pair': {}, 'right': {}, 'left': {},
+                                   'internal': {}}
+            if len(tmp) > 1:
+               key2 = tmp[1].lower()
+               primer_pairs[id][key][key2] = primer3_results[k]
+            else:
+               primer_pairs[id][key]['position'] = primer3_results[k][0]
+               primer_pairs[id][key]['length'] = primer3_results[k][1]
+         elif tmp[0] == 'EXPLAIN':
+            notes[key] = primer3_results[k]
+         elif tmp == ['NUM','RETURNED']: pass
+         else:
+            print(k)
+      elif 'PRIMER_LEFT' == k[:11]:
+         key = 'left'
+         tmp = k[12:].split('_', 1)
+         if tmp[0].isdigit():
+            id = int(tmp[0])
+            if not id in primer_pairs:
+               primer_pairs[id] = {'pair': {}, 'right': {}, 'left': {},
+                                   'internal': {}}
+            if len(tmp) > 1:
+               key2 = tmp[1].lower()
+               primer_pairs[id][key][key2] = primer3_results[k]
+            else:
+               primer_pairs[id][key]['position'] = primer3_results[k][0]
+               primer_pairs[id][key]['length'] = primer3_results[k][1]
+         elif tmp[0] == 'EXPLAIN':
+            notes[key] = primer3_results[k]
+         elif tmp == ['NUM','RETURNED']: pass
+         else:
+            print(k)
+      elif 'PRIMER_PAIR' == k[:11]:
+         key = 'pair'
+         tmp = k[12:].split('_', 1)
+         if tmp[0].isdigit():
+            id = int(tmp[0])
+            if not id in primer_pairs:
+               primer_pairs[id] = {'pair': {}, 'right': {}, 'left': {},
+                                   'internal': {}}
+            if len(tmp) > 1:
+               key2 = tmp[1].lower()
+               primer_pairs[id][key][key2] = primer3_results[k]
+            else:
+               print(k, primer3_results[k])
+         elif tmp[0] == 'EXPLAIN':
+            notes[key] = primer3_results[k]
+         elif tmp == ['NUM','RETURNED']: pass
+         else:
+            print(k)
+      elif 'PRIMER_INTERNAL' == k[:15]:
+         key = 'internal'
+         tmp = k[16:].split('_', 1)
+         if tmp[0].isdigit():
+            id = int(tmp[0])
+            if not id in primer_pairs:
+               primer_pairs[id] = {'pair': {}, 'right': {}, 'left': {},
+                                   'internal': {}}
+            if len(tmp) > 1:
+               key2 = tmp[1].lower()
+               primer_pairs[id][key][key2] = primer3_results[k]
+            else:
+               primer_pairs[id][key]['position'] = primer3_results[k][0]
+               primer_pairs[id][key]['length'] = primer3_results[k][1]
+         elif tmp[0] == 'EXPLAIN':
+            notes['pair'] = primer3_results[k]
+         elif tmp == ['NUM','RETURNED']: pass
+         else:
+            print(k, tmp[0])
+      else:
+         print(k)
+
+   return list(map(primer_pairs.get, sorted(primer_pairs.keys()))), notes
 
 @view_config(route_name='ecnumber_locus_details', renderer='json', request_method='GET')
 def ecnumber_locus_details(request):
