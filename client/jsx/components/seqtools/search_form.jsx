@@ -125,7 +125,6 @@ var SearchForm = React.createClass({
 
 	_getGeneNodeLeft: function() {
 	
-                var reverseCompNode = this._getReverseCompNode('rev1');
 		var seqtypeNode = this._getSeqtypeNode('seqtype1');
 
                 return (<div>
@@ -137,18 +136,19 @@ var SearchForm = React.createClass({
 			<h3><b>If available,</b> add flanking basepairs</h3>
 			<p>Upstream: <input type='text' ref='up' name='up' onChange={this._onChange} size='50'></input>
 			Downstream: <input type='text' ref='down' name='down' onChange={this._onChange} size='50'></input></p>
-			{ reverseCompNode }
                 </div>);
 
         },
 	
 	_getGeneNodeRight: function() {
 
+                var reverseCompNode = this._getReverseCompNode('rev1');	
                 var strainNode = this._getStrainNode();
 
                 return (<div>
                         <h3>Pick one or more strains:</h3>
                         { strainNode }
+			{ reverseCompNode }
 			<p><input type="submit" ref='submit1' name='submit1' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset1' name='reset1' value="Reset Form" className="button secondary"></input></p>
                 </div>);
 
@@ -198,7 +198,7 @@ var SearchForm = React.createClass({
                        <h3>Type or Paste a: </h3>
 		       { seqtypeNode }
 		       <p>Sequence:
-                       <textarea ref='seq' name='seq' onChange={this._onChange} rows='8' cols='50'></textarea></p>
+                       <textarea ref='seq' name='seq' onChange={this._onChange} rows='6' cols='50'></textarea></p>
                        <p>The sequence <b>MUST</b> be provided in RAW format, no comments (numbers are okay).</p>
                        { reverseCompNode }
 		       <p><input type="submit" ref='submit3' name='submit3' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset3' name='reset3' value="Reset Form" className="button secondary"></input></p>
