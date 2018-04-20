@@ -127,7 +127,7 @@ var SearchForm = React.createClass({
 	
 		var seqtypeNode = this._getSeqtypeNode('seqtype1');
 
-                return (<div>
+                return (<div style={{ textAlign: "top" }}>
                         <h3>Enter a list of names:</h3>
 			<p>(space-separated gene names (and/or ORF and/or SGDID). Example: ACT1 YHR023W SGD:S000000001) 
 			<input type='text' ref='genes' name='genes' onChange={this._onChange} size='50'></input></p>
@@ -135,7 +135,7 @@ var SearchForm = React.createClass({
 			{ seqtypeNode }
 			<h3><b>If available,</b> add flanking basepairs</h3>
 			<p>Upstream: <input type='text' ref='up' name='up' onChange={this._onChange} size='50'></input>
-			Downstream: <input type='text' ref='down' name='down' onChange={this._onChange} size='50'></input></p><p></p><p></p>
+			Downstream: <input type='text' ref='down' name='down' onChange={this._onChange} size='50'></input></p>
                 </div>);
 
         },
