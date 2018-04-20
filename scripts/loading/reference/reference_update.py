@@ -37,10 +37,9 @@ DOI_URL_TYPE = 'DOI full text'
 PMC_ROOT = 'http://www.ncbi.nlm.nih.gov/pmc/articles/'
 DOI_ROOT = 'http://dx.doi.org/'
 
-field_names = ['citation', 'title', 'year', 'volume', 'issue', 'page', 'doi',
-               'pmcid', 'publication_status', 'author_name', 'pub_type', 
-               'abstract', 'pmc_url', 'doi_url', 'comment_erratum',
-               'dbentity_display_name', 'date_revised']
+field_names = ['citation', 'title', 'year', 'volume', 'issue', 'page', 'doi', 'pmcid',
+               'publication_status', 'author_name', 'pub_type', 'abstract', 'pmc_url',
+               'doi_url', 'comment_erratum', 'date_revised']
 
 def update_reference_data(log_file):
  
@@ -171,25 +170,6 @@ def update_reference_data(log_file):
     nex_session.commit()
 
     log.info("Reference updated: " + str(i))
-    
-    log.info("Updating DBENTITY.display_name...")
-
-    ## update display_name in DBENTITY table
-    dbentity_id_to_citation = dict([(x.dbentity_id, x.citation) for x in nex_session.query(Referencedbentity).all()])
-    
-    all_refs = nex_session.query(Dbentity).filter_by(subclass='REFERENCE').all()
-
-    for x in all_refs:
-        if x.dbentity_id not in dbentity_ids_with_author_changed:
-            continue
-        display_name = dbentity_id_to_citation[x.dbentity_id].split(')')[0] + ')'
-        if display_name == x.display_name:
-            continue
-        x.display_name = display_name
-        fw.write("update display_name from " + x.display_name + " to " + display_name + "\n")
-        nex_session.add(x)
-        nex_session.commit()
-        update_log['dbentity_display_name'] = update_log['dbentity_display_name'] + 1
 
     log.info("Writing Summary...")
     for field_name in field_names:

@@ -56,6 +56,10 @@ def dump_data():
     fw = open(gaf_file, "w")
     fw2 = open(gaf_file4yeastmine, "w")
 
+    datestamp = str(datetime.now()).split(" ")[0].replace("-", "")
+
+    write_header(fw, datestamp)
+
     log.info(str(datetime.now()))
     log.info("Getting data from the database...")
 
@@ -94,7 +98,7 @@ def dump_data():
         extensions = []
         if x.group_id in group_id_to_extensions:
             extensions = group_id_to_extensions[x.group_id]
-        extensions.append(id_to_ro[x.ro_id]+'(' + x.dbxref_id + ')')
+        extensions.append(id_to_ro[x.ro_id].replace(" ", "_")+'(' + x.dbxref_id + ')')
         group_id_to_extensions[x.group_id] = extensions
         pre_annot_id = x.annotation_id
 
@@ -206,23 +210,33 @@ def dump_data():
 
     log.info("Uploading GAF file to S3...")
 
-    update_database_load_file_to_s3(nex_session, gaf_file, '1', source_to_id, edam_to_id)
+    update_database_load_file_to_s3(nex_session, gaf_file, '1', source_to_id, edam_to_id, datestamp)
 
     log.info("Uploading GAF file for yeastmine to S3...")
 
-    update_database_load_file_to_s3(nex_session, gaf_file4yeastmine, '0', source_to_id, edam_to_id)
+    update_database_load_file_to_s3(nex_session, gaf_file4yeastmine, '0', source_to_id, edam_to_id, datestamp)
 
     nex_session.close()
 
     log.info(str(datetime.now()))
     log.info("Done!")
 
-def update_database_load_file_to_s3(nex_session, gaf_file, is_public, source_to_id, edam_to_id):
+def write_header(fw, datestamp):
+
+    fw.write("!gaf-version: 2.0\n")
+    fw.write("!Date: " + datestamp + "\n")
+    fw.write("!From: Saccharomyces Genome Database (SGD)\n")
+    fw.write("!URL: https://www.yeastgenome.org/\n")
+    fw.write("!Contact Email: sgd-helpdesk@lists.stanford.edu\n")
+    fw.write("!Funding: NHGRI at US NIH, grant number 5-P41-HG001315\n")
+    fw.write("!\n")
+
+def update_database_load_file_to_s3(nex_session, gaf_file, is_public, source_to_id, edam_to_id, datestamp):
 
     # gene_association.sgd.20171204.gz
     # gene_association.sgd-yeastmine.20171204.gz
  
-    datestamp = str(datetime.now()).split(" ")[0].replace("-", "")
+    # datestamp = str(datetime.now()).split(" ")[0].replace("-", "")
     gzip_file = gaf_file + "." + datestamp + ".gz"
     import gzip
     import shutil
@@ -240,7 +254,9 @@ def update_database_load_file_to_s3(nex_session, gaf_file, is_public, source_to_
 
     gzip_file = gzip_file.replace("scripts/dumping/curation/data/", "")
 
-    nex_session.query(Dbentity).filter_by(display_name=gzip_file, dbentity_status='Active').update({"dbentity_status": 'Archived'})
+    # nex_session.query(Dbentity).filter_by(display_name=gzip_file, dbentity_status='Active').update({"dbentity_status": 'Archived'})
+    nex_session.query(Dbentity).filter(Dbentity.display_name.like('gene_association%')).filter(Dbentity.dbentity_status=='Active').update({"dbentity_status":'Archived'}, synchronize_session='fetch')
+    
     nex_session.commit()
 
     data_id = edam_to_id.get('EDAM:2048')   ## data:2048 Report
