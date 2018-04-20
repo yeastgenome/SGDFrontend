@@ -136,6 +136,7 @@ var SearchForm = React.createClass({
 			<p>Upstream: <textarea ref='up' name='up' onChange={this._onChange} rows='1' cols='5'></textarea>
 			Downstream: <textarea ref='down' name='down' onChange={this._onChange} rows='1' cols='5'></textarea></p>
 			{ reverseCompNode }
+			<input type="submit" ref='submit1' name='submit1' value="Submit Form" className="button secondary"></input>
                 </div>);
 
         },
@@ -150,6 +151,7 @@ var SearchForm = React.createClass({
                         { strainNode }
 			<h3>Pick a sequence type:</h3>
                         { seqtypeNode }
+			<input type="reset" ref='reset1' name='reset1' value="Reset Form" className="button secondary"></input>
                 </div>);
 
         },
