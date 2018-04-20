@@ -18,10 +18,18 @@ var SearchForm = React.createClass({
 	        
 		var param = Params.getParams();
 		
-		var submitted = null;				
-		if (param['chr'] || param['genes'] || param['seq']) {
-		     submitted = 1;
+		var submitted = null;
+		var submitted2 = null;
+		var submitted3 = null;
+		if (param['submit']) {
+                     submitted = 1;
+                }				
+		if (param['submit2']) { 
+		     submitted2 = 1;
 		}
+		if (param['submit3']) {
+                     submitted3 = 1;
+                }
 
 		return {
 			isComplete: false,
@@ -40,7 +48,9 @@ var SearchForm = React.createClass({
 			resultData: {},
 			param: param,
 			didSeqAnal: 0,
-			submitted: submitted
+			submitted: submitted,
+			submitted2: submitted2,
+			submitted3: submitted3
 		};
 	},
 
@@ -59,8 +69,14 @@ var SearchForm = React.createClass({
 
 	componentDidMount: function () {
 	        if (this.state.submitted) {
-	              this._runSeqTools();
+	              this._runSeqTools('genes');
 	        }
+		else if (this.state.submitted2) {
+                      this._runSeqTools('chr');
+                }
+		else if (this.state.submitted3) {
+                      this._runSeqTools('seq');
+                }
 	},
 
 	_getFormNode: function () {
@@ -226,21 +242,22 @@ var SearchForm = React.createClass({
 
         },
 
-	_getSubmitNode: function() {
-               
-                return(<div>
-                       <input type="submit" value="Submit Form" className="button secondary"></input>
-                </div>);
+	
+	// _getSubmitNode: function() {
+        //       
+        //        return(<div>
+        //               <input type="submit" value="Submit Form" className="button secondary"></input>
+        //        </div>);
 
-        },
+        // },
 
-	_getResetNode: function() {
+	// _getResetNode: function() {
 
-		return(<div>
-		       <input type="reset" value="Reset Form" className="button secondary"></input>
-                </div>);
+	//	return(<div>
+	//	       <input type="reset" value="Reset Form" className="button secondary"></input>
+        //        </div>);
 
-        },
+        // },
 
 	_getStrainNode: function() {
 
@@ -280,14 +297,17 @@ var SearchForm = React.createClass({
                 this.setState({ text: e.target.value});
         },
 
-	_runSeqTools: function() {
+	_runSeqTools: function(searchType) {
 
 	        var param = this.state.param;
 
-		paramData = {};
-
-		var genes = param['genes'];
-		if (typeof(genes) != "undefined") {
+		var paramData = {};
+		
+		if (searchType == 'genes') {
+		   var genes = param['genes'];
+		   if (typeof(genes) == "undefined") {
+		      alert("Please enter one or more gene names - separated by space.")
+		   }
 		   paramData['genes'] = genes.join(":")
 		   var strains = param['strains']
 		   if (typeof(strains) != "undefined") {
@@ -310,7 +330,10 @@ var SearchForm = React.createClass({
 		   return
 		}
 		
-		if (tyoeof(param['chr']) != "undefined") {
+		if (searchType == 'chr') {
+		   if (tyoeof(param['chr']) == 0) {
+		      alert("Please pick a chromosome.")
+		   }
 		   paramData['chr'] = param['chr']
 		   if (typeof(param['start']) != "undefined") {
 		      this._checkNumber(param['start'])
@@ -325,7 +348,10 @@ var SearchForm = React.createClass({
                    return
 		}
 
-		if (typeof(param['seq']) != "undefined") {
+		if (searchType == 'seq') {
+		   if (typeof(param['seq']) == "undefined") {
+		      alert("Please type or paste a raw sequence.")
+		   }
 		   paramData['seq'] = param['seq']
 		   paramData['seqtype'] = param['seqtype3']
 		   paramData['rev'] = param['rev3']
