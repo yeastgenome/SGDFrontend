@@ -8327,6 +8327,8 @@ class Reservedname(Base):
                 is_locus = curator_session.query(Locusdbentity).filter(Locusdbentity.systematic_name == res_systematic_name).one_or_none()
                 if not is_locus:
                     raise ValueError(res_systematic_name + ' is not a valid systematic_name.')
+                if is_locus.gene_name:
+                    raise ValueError(res_systematic_name + ' already has a standard name.')
                 is_already_reserved = curator_session.query(Reservedname).filter(and_(Reservedname.locus_id == is_locus.dbentity_id, Reservedname.reservedname_id != self.reservedname_id)).one_or_none()
                 if is_already_reserved:
                     raise ValueError(res_systematic_name + ' is already reserved for ' + is_already_reserved.display_name)
