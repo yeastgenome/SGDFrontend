@@ -116,8 +116,6 @@ var SearchForm = React.createClass({
 			var geneNodeRight = this._getGeneNodeRight();
                 	var chrNode = this._getChrNode();
                 	var seqNode = this._getSeqNode();
-			var submitNode = this._getSubmitNode();
-			var resetNode = this._getResetNode();
 
 			var _nameSection = { headers: [[<span style={{ fontSize: 20 }}>1. Search a list of genes</span>, '']],
 			    		     rows:    [[geneNodeLeft, geneNodeRight]] };
