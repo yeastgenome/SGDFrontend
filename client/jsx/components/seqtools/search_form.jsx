@@ -130,7 +130,7 @@ var SearchForm = React.createClass({
                 return (<div style={{ textAlign: "top" }}>
                         <h3>Enter a list of names:</h3>
 			<p>(space-separated gene names (and/or ORF and/or SGDID). Example: ACT1 YHR023W SGD:S000000001) 
-			<textarea ref='genes' name='genes' onChange={this._onChange} rows='3' cols='50'></textarea></p>
+			<textarea ref='genes' name='genes' onChange={this._onChange} rows='2' cols='50'></textarea></p>
 			<h3>Pick a sequence type:</h3>
 			{ seqtypeNode }
 			<h3><b>If available,</b> add flanking basepairs</h3>
