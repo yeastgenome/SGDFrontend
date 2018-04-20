@@ -91,10 +91,6 @@ def patmatch(request):
 def colleague_show(request):
     return render_to_response(TEMPLATE_ROOT + 'misc.jinja2', {}, request=request)
 
-'''@view_config(route_name='downloads')
-def downloads(request):
-    return render_to_response(TEMPLATE_ROOT + 'downloads.jinja2', {}, request=request)'''
-
 @view_config(route_name='downloads_tree')
 def downloads_tree(request):
     return render_to_response(
@@ -190,6 +186,10 @@ def suggestion(request):
 def variant_viewer(request):
     return render_to_response(TEMPLATE_ROOT + 'variant_viewer.jinja2', {}, request=request)
 
+@view_config(route_name='primer3')
+def primer3(request):
+    return render_to_response(TEMPLATE_ROOT + 'primer3.jinja2', {}, request=request)
+    
 @view_config(route_name='home')
 def home(request):
     blog_posts = get_recent_blog_posts()
