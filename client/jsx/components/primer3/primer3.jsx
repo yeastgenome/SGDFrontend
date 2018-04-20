@@ -83,22 +83,88 @@ const Primer3 = React.createClass({
   	});
   },
 
-
+//  renderResults () {
+//    let data = this.state.result;
+//    let rowData = [];
+//    const DISPLAY_KEYS = Object.keys(data);
+//    let nodes = DISPLAY_KEYS.map( (d,i) => {
+//    //if ( d.match(/\d+$/) != null || d.indexOf('_TM') > 0 ||  d.indexOf('_GC_PERCENT') > 0  || d.indexOf('_SEQUENCE') > 0 || d.indexOf('_SELF_ANY_TH') > 0
+//          //|| d.indexOf('_SELF_END_TH') > 0 || d.indexOf('_HAIRPIN_TH') > 0 || d.indexOf('_SEQUENCE') > 0) {
+//         let val = data[d];
+//          rowData.push([d, val])
+//    //}
+//    });
+//    let _data = {
+//      headers: [
+//          ['Parameter', 'Value']
+//      ],
+//      rows: rowData
+//    };
+//    return (
+//      <div>
+//        <h2>Primer Pairs</h2>
+//        <hr />
+//        <DataTable data={_data} usePlugin={true} order={1, "asc"}/>
+//      </div>
+//    );
+//  },
 
   renderResults () {
-    let data = this.state.result;
+
+    //list(map(primer_pairs.get, sorted(primer_pairs.keys())))
+    let data = this.state.result; //list of maps
     let rowData = [];
+    let name, pos, len, size, tm, gc, any_th, end_th, hairpin, seq;
+    name = pos = len = size = tm = gc = any_th = end_th = hairpin = seq = " ";
+    let right_count, left_count;
+    right_count = left_count = 0;
     const DISPLAY_KEYS = Object.keys(data);
     let nodes = DISPLAY_KEYS.map( (d,i) => {
-    if ( d.match(/\d+$/) != null || d.indexOf('_TM') > 0 ||  d.indexOf('_GC_PERCENT') > 0  || d.indexOf('_SEQUENCE') > 0 || d.indexOf('_SELF_ANY_TH') > 0
-          || d.indexOf('_SELF_END_TH') > 0 || d.indexOf('_HAIRPIN_TH') > 0 || d.indexOf('_SEQUENCE') > 0) {
-         let val = data[d];
-          rowData.push([d, val])
-    }
+        let val = data[d];
+        console.log('this is a primer pair....', right_count, left_count)
+        if (val != null){
+            const DISPLAY_KEYS_1 =  Object.keys(val);
+            let nodes_1 = DISPLAY_KEYS_1.map(  (d1, i1) => { //for each element in map {another map --> pair,right,left}
+                let val1 = val[d1]
+                    const DISPLAY_KEYS_2 =  Object.keys(val1);
+                    let nodes_2 = DISPLAY_KEYS_2.map( (d2, i2) => {
+                        if(d1 != 'internal' || d1 != '__proto__') {
+                            let val2 = val1[d2]
+                            if(d1 == 'pair'){
+                                if(d2 == 'product_size') size = val2
+                            }else if (d1 == 'right' || d1=='left') {
+                                if(d1 == 'right'){
+                                    right_count = getCounter(right_count)
+                                    name = 'primer-right-'+right_count
+                                }else if(d1== 'left') {
+                                    left_count = getCounter(left_count)
+                                    name = 'primer-left-'+left_count
+                                }
+                                if(d2 == 'position') pos = val2
+                                if(d2 == 'length') len = val2
+                                if(d2 == 'tm') tm = val2
+                                if(d2 == 'gc_percent') gc = val2
+                                if(d2 == 'self_any_th') end_th = val2
+                                if(d2 == 'self_any_th') any_th = val2
+                                if(d2 == 'hairpin_th') hairpin = val2
+                                if(d2 == 'sequence') seq = val2
+
+                            }
+                        }
+                    });
+                    if(d1 == 'right' || d1 == 'left'){
+                        console.log('.......tablerow' ,pos, len, size, tm, gc, any_th, end_th, hairpin, seq)
+                        rowData.push([name, pos, len, size, tm, gc, any_th, end_th, hairpin, seq])
+                    }
+
+            });
+        }
     });
+
+
     let _data = {
       headers: [
-          ['Parameter', 'Value']
+          ['primer', 'start', 'len', 'product size', 'tm', 'gc%', 'any_th', 'end_th', 'hairpin', 'seq']
       ],
       rows: rowData
     };
@@ -110,7 +176,6 @@ const Primer3 = React.createClass({
       </div>
     );
   },
-
 
   renderForm() {
 
@@ -312,6 +377,11 @@ const style = {
     marginRight: '0.5rem'
   }
 };
+
+function getCounter(c){
+    var cc = c+1
+    return cc
+}
 
 function mapStateToProps(_state) {
   return {
