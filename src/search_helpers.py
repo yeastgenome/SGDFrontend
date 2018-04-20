@@ -1,3 +1,5 @@
+MAX_AGG_SIZE = 999
+
 def build_autocomplete_search_body_request(query,
                                            category='locus',
                                            field='name'):
@@ -89,7 +91,7 @@ def build_es_aggregation_body_request(es_query, category, category_filters):
             agg_query_body['aggs'][subcategory[1]] = {
                 'terms': {
                     'field': subcategory[1] + '.raw',
-                    'size': 999
+                    'size': MAX_AGG_SIZE
                 }
             }
     else:

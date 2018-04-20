@@ -96,6 +96,8 @@ def main(global_config, **settings):
     config.add_route('ecnumber', '/ecnumber/{id}', request_method='GET')
     config.add_route('ecnumber_locus_details', '/ecnumber/{id}/locus_details', request_method='GET')
 
+    config.add_route('primer3', '/primer3', request_method='POST')
+    
     # curator interfaces
     config.add_route('account', '/account')
     config.add_route('sign_in', '/signin')
@@ -129,7 +131,9 @@ def main(global_config, **settings):
     config.add_route('upload_spreadsheet', '/upload_spreadsheet', request_method='POST')
     #downloads UI endpoints
     config.add_route('get_downloads_menu', '/downloads/menu', request_method='GET')
-
+    config.add_route('get_downloads_files', '/downloads/{pathid}/files', request_method='GET')
+    config.add_route('get_downloads_active_files', '/downloads/{pathid}/files/active', request_method='GET')
+    
     config.add_route('healthcheck', '/healthcheck')
     config.scan()
     config.add_static_view(name='assets', path='./build')

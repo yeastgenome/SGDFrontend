@@ -46,7 +46,7 @@ def index_toolbar_links():
                               []), ("SPELL", "https://spell.yeastgenome.org",
                                     'spell'), ("BLAST", "/blast-sgd", 'blast'),
         ("Fungal BLAST", "/blast-fungal",
-         'blast'), ("Pattern Matching", "/cgi-bin/PATMATCH/nph-patmatch",
+         'blast'), ("Pattern Matching", "/nph-patmatch",
                     []), ("Design Primers", "/cgi-bin/web-primer", []),
         ("Restriction Mapper", "/cgi-bin/PATMATCH/RestrictionMapper",
          []), ("Genome Browser", "/browse",
@@ -498,16 +498,25 @@ def index_strains():
 
 def index_reserved_names():
     # only index reservednames that do not have a locus associated with them
-    reserved_names = DBSession.query(Reservedname).filter_by(locus_id=None).all()
+    reserved_names = DBSession.query(Reservedname).all()
 
     print("Indexing " + str(len(reserved_names)) + " reserved names")
     for reserved_name in reserved_names:
+        name = reserved_name.display_name
+        href = reserved_name.obj_url
+        keys = [reserved_name.display_name.lower()]
+        # change name if has an orf
+        if reserved_name.locus_id:
+            locus = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id == reserved_name.locus_id).one_or_none()
+            name = name + ' / ' + locus.systematic_name
+            href = locus.obj_url
+            keys = []
         obj = {
-            "name": reserved_name.display_name,
-            "href": reserved_name.obj_url,
-            "description": reserved_name.description,
+            "name": name,
+            "href": href,
+            "description": reserved_name.name_description,
             "category": "reserved_name",
-            "keys": [reserved_name.display_name.lower()]
+            "keys": keys
         }
         es.index(
             index=INDEX_NAME,
@@ -780,7 +789,8 @@ def index_downloads():
             'readme_url':
                 x.readme_file[0].s3_url,
             'topic': x.topic.display_name,
-            'data': x.data.display_name
+            'data': x.data.display_name,
+            'path_id': x.get_path_id()
         }
         bulk_data.append({
             'index': {
@@ -820,7 +830,9 @@ def index_part_2():
 if __name__ == '__main__':
     cleanup()
     setup()
+    index_downloads()
+    '''
     t1 = Thread(target=index_part_1)
     t2 = Thread(target=index_part_2)
     t1.start()
-    t2.start()
+    t2.start()'''
