@@ -135,8 +135,8 @@ var SearchForm = React.createClass({
 			<h3>Pick a sequence type:</h3>
 			{ seqtypeNode }
 			<h3><b>If available,</b> add flanking basepairs</h3>
-			<p>Upstream: <input type='text' ref='up' name='up' onChange={this._onChange} size='50'></input>
-			Downstream: <input type='text' ref='down' name='down' onChange={this._onChange} size='50'></input></p>
+			<p>Upstream: <input type='text' ref='up' name='up' onChange={this._onChange} size='5'></input>
+			Downstream: <input type='text' ref='down' name='down' onChange={this._onChange} size='5'></input></p>
 			{ reverseCompNode }
                 </div>);
 
