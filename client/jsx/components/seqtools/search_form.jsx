@@ -18,19 +18,6 @@ var SearchForm = React.createClass({
 	        
 		var param = Params.getParams();
 		
-		var submitted = null;
-		var submitted2 = null;
-		var submitted3 = null;
-		if (param['submit']) {
-                     submitted = 1;
-                }				
-		if (param['submit2']) { 
-		     submitted2 = 1;
-		}
-		if (param['submit3']) {
-                     submitted3 = 1;
-                }
-
 		return {
 			isComplete: false,
 			isPending: false,
@@ -48,9 +35,9 @@ var SearchForm = React.createClass({
 			resultData: {},
 			param: param,
 			didSeqAnal: 0,
-			submitted: submitted,
-			submitted2: submitted2,
-			submitted3: submitted3
+			submitted: param['submit1'],
+			submitted2: param['submit2'],
+			submitted3: param['submit3']
 		};
 	},
 
@@ -135,6 +122,17 @@ var SearchForm = React.createClass({
 				</form>
 			</div>);
 		}
+	},
+
+	_onSubmit: function (e) {
+				
+		var submit = this.refs.submit.value.trim();
+		var genes = this.refs.genes.value.trim();
+		if (submit != '' && genes == '') {
+		   alert("Please enter one or more gene names.");
+		   return 0;
+		}
+	
 	},
 
 	_getGeneNodeLeft: function() {
