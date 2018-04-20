@@ -128,6 +128,7 @@ var SearchForm = React.createClass({
 				
 		var submit = this.refs.submit.value.trim();
 		var genes = this.refs.genes.value.trim();
+		alert("submit="+submit+", genes="+genes);
 		if (submit != '' && genes == '') {
 		   alert("Please enter one or more gene names.");
 		   return 0;
