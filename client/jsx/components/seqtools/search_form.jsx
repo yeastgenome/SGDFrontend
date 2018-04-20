@@ -126,16 +126,17 @@ var SearchForm = React.createClass({
 	_getGeneNodeLeft: function() {
 	
                 var reverseCompNode = this._getReverseCompNode('rev1');
+		var seqtypeNode = this._getSeqtypeNode('seqtype1');
 
                 return (<div>
                         <h3>Enter a list of names:</h3>
 			<p>(space-separated gene names (and/or ORF and/or SGDID). Example: ACT1 YHR023W SGD:S000000001) 
 			<textarea ref='genes' name='genes' onChange={this._onChange} rows='1' cols='50'></textarea></p>
+			<h3>Pick a sequence type:</h3>
+			{ seqtypeNode }
 			<h3><b>If available,</b> add flanking basepairs</h3>
 			<p>Upstream: <textarea ref='up' name='up' onChange={this._onChange} rows='1' cols='5'></textarea>
 			Downstream: <textarea ref='down' name='down' onChange={this._onChange} rows='1' cols='5'></textarea></p>
-			<h3>Pick a sequence type:</h3>
-                        { seqtypeNode }
 			{ reverseCompNode }
                 </div>);
 
@@ -144,7 +145,6 @@ var SearchForm = React.createClass({
 	_getGeneNodeRight: function() {
 
                 var strainNode = this._getStrainNode();
-		var seqtypeNode = this._getSeqtypeNode('seqtype1');
 
                 return (<div>
                         <h3>Pick one or more strains:</h3>
