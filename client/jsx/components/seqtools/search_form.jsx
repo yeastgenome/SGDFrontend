@@ -103,7 +103,7 @@ var SearchForm = React.createClass({
 			var submitNode = this._getSubmitNode();
 			var resetNode = this._getResetNode();
 
-			var _nameSection = { headers: [[<span style={{ fontSize: 20 }}>1. Search a named gene or sequence</span>, '']],
+			var _nameSection = { headers: [[<span style={{ fontSize: 20 }}>1. Search a list of genes</span>, '']],
 			    		     rows:    [[geneNodeLeft, geneNodeRight]] };
 
 			var _chrSeqSection = { headers: [[<span style={{ fontSize: 20 }}><strong style={{ color: 'red'}}>OR</strong> 2. Search a specified chromosomal region</span>, '', '', <span style={{ fontSize: 20 }}><strong style={{ color: 'red'}}>OR</strong> 3. Analyze a raw DNA or Protein sequence</span>]],
@@ -135,7 +135,7 @@ var SearchForm = React.createClass({
 			{ seqtypeNode }
 			<h3><b>If available,</b> add flanking basepairs</h3>
 			<p>Upstream: <input type='text' ref='up' name='up' onChange={this._onChange} size='50'></input>
-			Downstream: <input type='text' ref='down' name='down' onChange={this._onChange} size='50'></input></p>
+			Downstream: <input type='text' ref='down' name='down' onChange={this._onChange} size='50'></input></p><p></p><p></p>
                 </div>);
 
         },
