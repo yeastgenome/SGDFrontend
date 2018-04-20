@@ -52,20 +52,6 @@
     "compass/css3/border-radius",
     "compass/css3/transition";
 
-// Font Awesome (check bower.json for version)
-@import 
-    "../../bower_components/font-awesome/scss/variables",
-    "../../bower_components/font-awesome/scss/mixins",
-    "../../bower_components/font-awesome/scss/path",
-    "../../bower_components/font-awesome/scss/core",
-    "../../bower_components/font-awesome/scss/larger",
-    "../../bower_components/font-awesome/scss/fixed-width",
-    "../../bower_components/font-awesome/scss/list",
-    "../../bower_components/font-awesome/scss/bordered-pulled",
-    "../../bower_components/font-awesome/scss/rotated-flipped",
-    "../../bower_components/font-awesome/scss/stacked",
-    "../../bower_components/font-awesome/scss/icons";
-
 // other vendor styles
 @import
     "build/dataTables.foundation",
@@ -87,7 +73,7 @@
     "modules/footer",
     "modules/side-nav",
     "modules/forms",
-    "modules/icons",
+    "modules/icons", 
     "modules/key-value-display",
     "modules/labels",
     "modules/nested-lists",
@@ -105,4 +91,7 @@
     "state",
     "theme",
     "legacy",
-    "modules/print";
+    "modules/print",
+    "modules/custom-treeview",
+    "modules/mtree.scss";
+    

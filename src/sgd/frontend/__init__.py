@@ -4,6 +4,7 @@ from src.sgd.frontend import config
 from pyramid.view import notfound_view_config
 from src.sgd.frontend.yeastgenome import send_message
 from src.sgd.tools.blast import do_blast
+from src.sgd.tools.patmatch import do_patmatch
 
 def prep_views(chosen_frontend, config):
     # some logic (NOT all) has been moved to views to be more 'pyramid-y'
@@ -16,13 +17,16 @@ def prep_views(chosen_frontend, config):
     config.add_route('home', '/')
     config.add_route('blast_fungal', '/blast-fungal')
     config.add_route('blast_sgd', '/blast-sgd')
+    config.add_route('patmatch', '/nph-patmatch')
     config.add_route('blog_post', '/blog/{slug}')
     config.add_route('blog_index', '/blog')
     config.add_route('blog_archive', '/blog/archive/{year}')
     config.add_route('blog_category', '/blog/category/{category}')
     config.add_route('blog_tag', '/blog/tag/{tag}')
     config.add_route('colleague_show', '/colleague/{identifier}')
-    config.add_route('downloads', '/download-data')
+    #config.add_route('downloads', '/downloads')
+    #downloads_tree view
+    config.add_route('downloads_tree', '/downloads')
     config.add_route('new_colleague', '/new_colleague')
     config.add_route('interaction_search', '/interaction-search')
     config.add_route('download_list', '/download-list')
@@ -218,6 +222,9 @@ def prep_views(chosen_frontend, config):
         
     config.add_route('do_blast', '/run_blast')
     config.add_view(do_blast, route_name='do_blast')
+
+    config.add_route('do_patmatch', '/run_patmatch')
+    config.add_view(do_patmatch, route_name='do_patmatch')
 
 
 def prepare_frontend(frontend_type, **configs):

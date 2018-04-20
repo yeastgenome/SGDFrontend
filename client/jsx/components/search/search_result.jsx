@@ -49,7 +49,10 @@ const SearchResult = React.createClass({
     name: React.PropTypes.string.isRequired,
     href: React.PropTypes.string,
     loci: React.PropTypes.array, // i.e. ['rad54', ...]
-    keyStr: React.PropTypes.string // same as key to give a unique str
+    keyStr: React.PropTypes.string, // same as key to give a unique str
+    readme_url: React.PropTypes.string,
+    file_size: React.PropTypes.string,
+
   },
 
   getInitialState() {
@@ -70,18 +73,55 @@ const SearchResult = React.createClass({
 
   _getBasicResultNode () {
     let name = this.props.name || '(no name available)';
-    return (
-      <div>
-        <div className='search-result-title-container' style={[style.titleContainer]}>
-          <h2 style={[style.title]}>
-            <a href={this.props.href}>{name}</a>
-          </h2>
-          <span><span className={`search-cat ${this.props.category}`}/> {this.props.categoryName}</span>
+    let downloadButtonNode = null;
+    let readMeButtonNode= null;
+    let fileSizeNode = null;
+    let downloadNodes = null;
+    let nameNode = <a href={this.props.href}>{name}</a>;
+    if (this.props.category === 'download') {
+      let temp = [];
+      if (this.props.href){
+        downloadButtonNode = <div className="columns medium-4" key="abv">
+            <a className="button secondary small" download href={this.props.href} style={{ marginTop: "0.6rem" }}>
+              <i className="fa fa-download" /> Download
+            </a>
+          </div>;
+          temp.push(downloadButtonNode);
+      }
+      
+      if (this.props.file_size) {
+        readMeButtonNode = <div className="columns medium-4" key="abv2" style={{ marginTop: "1.0rem" }}>
+            <span  style={{ marginTop: "0.6rem", fontSize: "large" }}>
+              {this.props.file_size}
+            </span>
+          </div>;
+        temp.push(readMeButtonNode);
+      }
+      if (this.props.readme_url) {
+        fileSizeNode = <div className="columns medium-4 " key="abv3" style={{ marginTop: "1.0rem"}}>
+              <a target="_blank" href={this.props.readme_url} style={{ marginTop: "0.6rem", color: "#2993FC" }}>
+                <i className="fa fa-file-text-o" /> README
+              </a>
+          </div>;
+        temp.push(fileSizeNode);
+      }
+      
+      if (temp.length > 0){
+        downloadNodes = <div className="row">{temp}</div>
+      }
+      nameNode = <span href={this.props.href}>{name}</span>;
+    }
+    return <div>
+        <div className="search-result-title-container" style={[style.titleContainer]}>
+          <h2 style={[style.title]}>{nameNode}</h2>
+          <span>
+            <span className={`search-cat ${this.props.category}`} /> {this.props.categoryName}
+          </span>
         </div>
         {this._renderHighlightsNode()}
         {this._renderDisplayedLoci()}
-      </div>
-    );
+        {downloadNodes}
+      </div>;
   },
 
   _renderDisplayedLoci () {

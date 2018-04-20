@@ -20,7 +20,7 @@ const Header = React.createClass({
               <a className="hide-external-link-icon" target="_blank" href="https://sites.google.com/view/yeastgenome-help/">Help</a>
               <a href="https://yeastmine.yeastgenome.org/yeastmine/begin.do">YeastMine</a>
               <div className="social-media-links">
-                <a href="/suggestion" target="_blank" id="email-header" className="webicon mail small">Email Us</a>
+                <a href="mailto:sgd-helpdesk@lists.stanford.edu" id="email-header" className="webicon mail small">Email Us</a>
                 <a href="http://twitter.com/#!/yeastgenome" target="_blank" id="twitter" className="webicon twitter small">Twitter</a>
                 <a href="https://www.facebook.com/yeastgenome" target="_blank" className="webicon facebook small" id="facebook">Facebook</a>
                 <a href="https://www.linkedin.com/company/saccharomyces-genome-database" target="_blank" className="webicon linkedin small" id="linkedin">Linkedin</a>
@@ -80,7 +80,7 @@ const Header = React.createClass({
                 <li><a className="disabled-header-a" href="/blast-fungal">Fungal BLAST</a></li>
                 <li><a className="disabled-header-a" href="/cgi-bin/GO/goTermFinder.pl">GO Term Finder</a></li>
                 <li><a className="disabled-header-a" href="/cgi-bin/GO/goSlimMapper.pl">GO Slim Mapper</a></li>
-                <li><a className="disabled-header-a" href="/cgi-bin/PATMATCH/nph-patmatch">Pattern Matching</a></li>
+                <li><a className="disabled-header-a" href="/nph-patmatch">Pattern Matching</a></li>
                 <li><a className="disabled-header-a" href="/primer3">Design Primers</a></li>
                 <li><a className="disabled-header-a" href="/cgi-bin/PATMATCH/RestrictionMapper">Restriction Mapper</a></li>
               </ul>
@@ -213,6 +213,7 @@ const Header = React.createClass({
                   <ul className="dropdown">
                     <li><a className="disabled-header-a" href="http://wiki.yeastgenome.org/index.php/Combined_Physical_and_Genetic_Maps_of_S._cerevisiae">Physical &amp; Genetic Maps</a></li>
                     <li><a className="disabled-header-a" href="http://wiki.yeastgenome.org/index.php/Yeast_Mortimer_Maps_-_Edition_12">Genetic Maps</a></li>
+                    <li><a className="disabled-header-a" href="http://wiki.yeastgenome.org/index.php/ORFmap_Images">ORFMap Chromosomes</a></li>
                     <li><a className="disabled-header-a" href="http://wiki.yeastgenome.org/index.php/Historical_Systematic_Sequence_Information">Sequence</a></li>
                     <li><a className="disabled-header-a" href="http://wiki.yeastgenome.org/index.php/Table_of_Gene_Summary_Paragraphs">Gene Summary Paragraphs</a></li>
                   </ul>

@@ -10,15 +10,19 @@ const SKIPPED_PARAMS = ['page', 'geneMode', 'is_quick', 'page_size', 'sort_by'];
 
 const SearchBreadcrumb = React.createClass({
   render() {
-    return <h2>{this._getText()} {this._renderCrumbs()}</h2>;
+    return (
+      <h2>
+        {this._getText()} {this._renderCrumbs()}
+      </h2>
+    );
   },
 
   // From query params, render links to undo filter selections.  Each one is a link to the href of the unselected filter.
-  _renderCrumbs () {
+  _renderCrumbs() {
     const qp = this.props.queryParams;
     const nodes = [];
-    let queryArray =  Object.keys(qp);
-    queryArray = queryArray.sort( (a, b) => {
+    let queryArray = Object.keys(qp);
+    queryArray = queryArray.sort((a, b) => {
       if (a === 'q') {
         return -1;
       }
@@ -28,7 +32,7 @@ const SearchBreadcrumb = React.createClass({
       return 0;
     });
     // make sure query is first
-    queryArray.forEach( key => {
+    queryArray.forEach(key => {
       // don't render for some values or if q is blank
       if (SKIPPED_PARAMS.indexOf(key) >= 0 || qp[key] === '') return;
       // if category, give a really simple URL that returns to the initial results page (no filters)
@@ -36,17 +40,28 @@ const SearchBreadcrumb = React.createClass({
         let newHref = `${SEARCH_URL}?q=${this.props.query}`;
         let name = getCategoryDisplayName(qp.category);
         nodes.push(this._renderCrumb(name, newHref));
-      // if single value, append the link
+        // if single value, append the link
       } else if (typeof qp[key] === 'string') {
         let hasQuotes = key === 'q';
         let thisValue = qp[key];
+        if (key == 'status') {
+          if (thisValue.toLowerCase() == 'active') {
+            thisValue = 'Archived';
+          }
+          else if (thisValue.toLowerCase() == 'archived') {
+                 thisValue = 'Active';
+               }
+          else{
+            thisValue = 'Active';
+         }
+        }
         let currentValues = [thisValue];
         let newHref = getHrefWithoutAgg(qp, key, thisValue, currentValues);
         nodes.push(this._renderCrumb(qp[key], newHref, hasQuotes));
-      // if multiple, map them
+        // if multiple, map them
       } else {
         let currentValues = qp[key];
-        currentValues.forEach( thisValue => {
+        currentValues.forEach(thisValue => {
           let newHref = getHrefWithoutAgg(qp, key, thisValue, currentValues);
           nodes.push(this._renderCrumb(thisValue, newHref));
         });
@@ -55,21 +70,32 @@ const SearchBreadcrumb = React.createClass({
     return nodes;
   },
 
-  _renderCrumb (label, href, hasQuotes) {
+  _renderCrumb(label, href, hasQuotes) {
     let quoteChar = hasQuotes ? '"' : '';
-    return  <span key={`bcBtn${label}`}><Link to={href} className='button small' style={style.bcButton}><i className='fa fa-times'/><span style={style.bcLabel}>{quoteChar}{label}{quoteChar}</span></Link> </span>;
+    return (
+      <span key={`bcBtn${label}`}>
+        <Link to={href} className='button small' style={style.bcButton}>
+          <i className='fa fa-times' />
+          <span style={style.bcLabel}>
+            {quoteChar}
+            {label}
+            {quoteChar}
+          </span>
+        </Link>{' '}
+      </span>
+    );
   },
 
-  _getText () {
+  _getText() {
     const query = this.props.query;
     const totalString = this.props.total.toLocaleString();
     // blank query
     if (query === '') {
       return `${totalString} results`;
-    // if pending results, not just pagination
+      // if pending results, not just pagination
     } else if (this.props.isPending && !this.props.isPaginatePending) {
       return `... results for `;
-    // everything done
+      // everything done
     } else {
       return `${totalString} results for `;
     }
