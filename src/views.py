@@ -6,6 +6,9 @@ from sqlalchemy import func, distinct, and_, or_
 from sqlalchemy.orm.exc import DetachedInstanceError
 from sqlalchemy.exc import IntegrityError
 from datetime import timedelta
+from primer3 import bindings, designPrimers
+from collections import defaultdict
+
 import os
 import re
 import transaction
@@ -14,7 +17,7 @@ import datetime
 import logging
 import json
 
-from .models import DBSession, ESearch, Colleague, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, Dataset, DatasetKeyword, Contig, Proteindomain, Ec
+from .models import DBSession, ESearch, Colleague, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, Dataset, DatasetKeyword, Contig, Proteindomain, Ec, Dnasequenceannotation, Straindbentity
 from .helpers import extract_id_request, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id
 from .search_helpers import build_autocomplete_search_body_request, format_autocomplete_results, build_search_query, build_es_search_body_request, build_es_aggregation_body_request, format_search_results, format_aggregation_results, build_sequence_objects_search_query
 from .models_helpers import ModelsHelper
@@ -798,6 +801,343 @@ def ecnumber(request):
         return ec.to_dict()
     else:
         return HTTPNotFound()
+
+@view_config(route_name='primer3', renderer='json', request_method='POST')
+def primer3(request):
+    params = request.json_body
+    p_keys = params.keys()
+    if 'gene_name' in p_keys:
+        gene_name = params.get('gene_name')
+        if gene_name is None:
+            if 'sequence' in p_keys:
+                sequence = params.get('sequence')
+                if sequence is None:
+                    return HTTPBadRequest(body=json.dumps({'error': 'No gene name OR sequence provided'}))
+                sequence = str(sequence.replace('\r', '').replace('\n', ''))
+        else:
+            locus = DBSession.query(Locusdbentity).filter(or_(Locusdbentity.gene_name == gene_name.upper(),Locusdbentity.systematic_name == gene_name)).one_or_none()
+            if locus is None:
+                return HTTPBadRequest(body=json.dumps({'error': 'Gene name provided does not exist in the database:  ' + gene_name}))
+            tax_id = DBSession.query(Straindbentity.taxonomy_id).filter(Straindbentity.strain_type =='Reference').one_or_none()
+            dna = DBSession.query(Dnasequenceannotation.residues).filter(and_(Dnasequenceannotation.taxonomy_id == tax_id, Dnasequenceannotation.dbentity_id == locus.dbentity_id, Dnasequenceannotation.dna_type =='1KB')).one_or_none()
+            if dna is None:
+                return HTTPBadRequest(body=json.dumps({'error': 'Sequence for provided gene name does not exist in the database:  ' + gene_name}))
+            else:
+                sequence = str(dna)
+    if 'maximum_tm' in p_keys:
+        maximum_tm = params.get('maximum_tm')
+    if 'minimum_tm' in p_keys:
+        minimum_tm = params.get('minimum_tm')
+    if 'optimum_tm' in p_keys:
+        optimum_tm = params.get('optimum_tm')
+    if 'maximum_gc' in p_keys:
+        maximum_gc = params.get('maximum_gc')
+    if 'minimum_gc' in p_keys:
+        minimum_gc = params.get('minimum_gc')
+    if 'optimum_gc' in p_keys:
+        optimum_gc = params.get('optimum_gc')
+    if 'maximum_length' in p_keys:
+        maximum_length = params.get('maximum_length')
+    if 'minimum_length' in p_keys:
+        minimum_length = params.get('minimum_length')
+    if 'optimum_primer_length' in p_keys:
+        optimum_primer_length = params.get('optimum_primer_length')
+    if 'max_three_prime_pair_complementarity' in p_keys:
+        max_three_prime_pair_complementarity = params.get('max_three_prime_pair_complementarity')
+    if 'max_pair_complementarity' in p_keys:
+        max_pair_complementarity = params.get('max_pair_complementarity')
+    if 'max_three_prime_self_complementarity' in p_keys:
+        max_three_prime_self_complementarity= params.get('max_three_prime_self_complementarity')
+    if 'max_self_complementarity' in p_keys:
+        max_self_complementarity = params.get('max_self_complementarity')
+    if 'input_end' in p_keys:
+        input_end = params.get('input_end')
+    if 'input_start' in p_keys:
+        input_start = params.get('input_start')
+    if 'maximum_product_size' in p_keys:
+        maximum_product_size = params.get('maximum_product_size')
+    if 'end_point' in p_keys:
+        end_point = params.get('end_point')
+
+    if gene_name is None:
+        five_prime_start = input_start
+        five_prime_end =  input_end - input_start
+    else:
+        if input_start < 0:
+            five_prime_start = 1000 - abs(input_start)
+            five_prime_end = input_end + five_prime_start
+        else:
+            five_prime_start = 1000 + input_start
+            five_prime_end = input_end - input_start
+
+    interval_range = [[100,150],[150,250], [100,300], [301,400], [401,500] ,[501,600] ,[601,700] ,[701,850], [851,1000]]
+
+
+    if maximum_product_size:
+        if maximum_product_size > five_prime_end:
+            return HTTPBadRequest(body=json.dumps({'error': 'Maximum product size cannot be larger than target size.'}))
+        range_start = five_prime_end
+        range_stop = maximum_product_size
+        interval_range = [[range_start, range_stop]]
+
+    if end_point == 'YES':
+        force_left_start = five_prime_start
+        force_right_start = 1000 + input_end
+    elif end_point == 'NO':
+        force_left_start = -1000000
+        force_right_start = -1000000
+
+    try:
+        result = bindings.designPrimers(
+            {
+                'SEQUENCE_ID': 'MH1000',
+                'SEQUENCE_TEMPLATE': sequence,
+                'SEQUENCE_TARGET': [five_prime_start,five_prime_end],
+                'SEQUENCE_FORCE_LEFT_START': force_left_start,
+                'SEQUENCE_FORCE_RIGHT_START': force_right_start
+            },
+            {
+                'PRIMER_FIRST_BASE_INDEX': 1,
+                'PRIMER_THERMODYNAMIC_OLIGO_ALIGNMENT': 1,
+                'PRIMER_THERMODYNAMIC_TEMPLATE_ALIGNMENT' : 0,
+                'PRIMER_PICK_LEFT_PRIMER':  1,
+                'PRIMER_PICK_INTERNAL_OLIGO': 0,
+                'PRIMER_PICK_RIGHT_PRIMER': 1,
+                'PRIMER_LIBERAL_BASE': 1,
+                'PRIMER_LIB_AMBIGUITY_CODES_CONSENSUS': 0,
+                'PRIMER_LOWERCASE_MASKING': 0,
+                'PRIMER_PICK_ANYWAY': 0,
+                'PRIMER_EXPLAIN_FLAG': 1,
+                'PRIMER_MASK_TEMPLATE': 0,
+                'PRIMER_TASK' : 'generic',
+                'PRIMER_MASK_FAILURE_RATE': 0.1,
+                'PRIMER_MASK_5P_DIRECTION': 1,
+                'PRIMER_MASK_3P_DIRECTION': 0,
+                'PRIMER_MIN_QUALITY': 0,
+                'PRIMER_MIN_END_QUALITY': 0,
+                'PRIMER_QUALITY_RANGE_MIN': 0,
+                'PRIMER_QUALITY_RANGE_MAX': 100,
+                'PRIMER_MIN_SIZE': minimum_length,
+                'PRIMER_OPT_SIZE': optimum_primer_length,
+                'PRIMER_MAX_SIZE': maximum_length,
+                'PRIMER_MIN_TM': minimum_tm,
+                'PRIMER_OPT_TM': optimum_tm,
+                'PRIMER_MAX_TM': maximum_tm,
+                'PRIMER_PAIR_MAX_DIFF_TM': 5.0,
+                'PRIMER_TM_FORMULA': 1,
+                'PRIMER_PRODUCT_MIN_TM': -1000000.0,
+                'PRIMER_PRODUCT_OPT_TM' : 0.0,
+                'PRIMER_PRODUCT_MAX_TM' : 1000000.0,
+                'PRIMER_MIN_GC' : minimum_gc,
+                'PRIMER_OPT_GC_PERCENT' : optimum_gc,
+                'PRIMER_MAX_GC' : maximum_gc,
+                'PRIMER_PRODUCT_SIZE_RANGE': interval_range,
+                'PRIMER_NUM_RETURN': 5,
+                'PRIMER_MAX_END_STABILITY' : 9.0,
+                'PRIMER_MAX_LIBRARY_MISPRIMING' : 12.00,
+                'PRIMER_PAIR_MAX_LIBRARY_MISPRIMING' : 20.00,
+                'PRIMER_MAX_SELF_ANY_TH' : 45.0,
+                'PRIMER_MAX_SELF_END_TH' : 35.0,
+                'PRIMER_PAIR_MAX_COMPL_ANY_TH' : 45.0,
+                'PRIMER_PAIR_MAX_COMPL_END_TH' : 35.0,
+                'PRIMER_MAX_HAIRPIN_TH' : 24.0,
+                'PRIMER_MAX_SELF_ANY' : max_self_complementarity,
+                'PRIMER_MAX_SELF_END' : max_three_prime_self_complementarity,
+                'PRIMER_PAIR_MAX_COMPL_ANY' : max_pair_complementarity,
+                'PRIMER_PAIR_MAX_COMPL_END' : max_three_prime_pair_complementarity,
+                'PRIMER_MAX_TEMPLATE_MISPRIMING_TH' : 40.00,
+                'PRIMER_PAIR_MAX_TEMPLATE_MISPRIMING_TH' : 70.00,
+                'PRIMER_MAX_TEMPLATE_MISPRIMING' : 12.00,
+                'PRIMER_PAIR_MAX_TEMPLATE_MISPRIMING' : 24.00,
+                'PRIMER_MAX_NS_ACCEPTED' : 0,
+                'PRIMER_MAX_POLY_X' : 4,
+                'PRIMER_INSIDE_PENALTY' : -1.0,
+                'PRIMER_OUTSIDE_PENALTY' : 0,
+                'PRIMER_GC_CLAMP' : 0,
+                'PRIMER_MAX_END_GC' : 5,
+                'PRIMER_MIN_LEFT_THREE_PRIME_DISTANCE' : 3,
+                'PRIMER_MIN_RIGHT_THREE_PRIME_DISTANCE' : 3,
+                'PRIMER_MIN_5_PRIME_OVERLAP_OF_JUNCTION' : 7,
+                'PRIMER_MIN_3_PRIME_OVERLAP_OF_JUNCTION' : 4,
+                'PRIMER_SALT_MONOVALENT' : 50.0,
+                'PRIMER_SALT_CORRECTIONS' : 1,
+                'PRIMER_SALT_DIVALENT' : 1.5,
+                'PRIMER_DNTP_CONC' : 0.6,
+                'PRIMER_DNA_CONC' : 50.0,
+                'PRIMER_SEQUENCING_SPACING' : 500,
+                'PRIMER_SEQUENCING_INTERVAL' : 250,
+                'PRIMER_SEQUENCING_LEAD' : 50,
+                'PRIMER_SEQUENCING_ACCURACY' : 20,
+                'PRIMER_WT_SIZE_LT' : 1.0,
+                'PRIMER_WT_SIZE_GT' : 1.0,
+                'PRIMER_WT_TM_LT' : 1.0,
+                'PRIMER_WT_TM_GT' : 1.0,
+                'PRIMER_WT_GC_PERCENT_LT' : 0.0,
+                'PRIMER_WT_GC_PERCENT_GT' : 0.0,
+                'PRIMER_WT_SELF_ANY_TH' : 0.0,
+                'PRIMER_WT_SELF_END_TH' : 0.0,
+                'PRIMER_WT_HAIRPIN_TH' : 0.0,
+                'PRIMER_WT_TEMPLATE_MISPRIMING_TH' : 0.0,
+                'PRIMER_WT_SELF_ANY' : 0.0,
+                'PRIMER_WT_SELF_END' : 0.0,
+                'PRIMER_WT_TEMPLATE_MISPRIMING' : 0.0,
+                'PRIMER_WT_NUM_NS' : 0.0,
+                'PRIMER_WT_LIBRARY_MISPRIMING' : 0.0,
+                'PRIMER_WT_SEQ_QUAL' : 0.0,
+                'PRIMER_WT_END_QUAL' : 0.0,
+                'PRIMER_WT_POS_PENALTY' : 0.0,
+                'PRIMER_WT_END_STABILITY' : 0.0,
+                'PRIMER_WT_MASK_FAILURE_RATE' : 0.0,
+                'PRIMER_PAIR_WT_PRODUCT_SIZE_LT' : 0.0,
+                'PRIMER_PAIR_WT_PRODUCT_SIZE_GT' : 0.0,
+                'PRIMER_PAIR_WT_PRODUCT_TM_LT' : 0.0,
+                'PRIMER_PAIR_WT_PRODUCT_TM_GT' : 0.0,
+                'PRIMER_PAIR_WT_COMPL_ANY_TH' : 0.0,
+                'PRIMER_PAIR_WT_COMPL_END_TH' : 0.0,
+                'PRIMER_PAIR_WT_TEMPLATE_MISPRIMING_TH': 0.0,
+                'PRIMER_PAIR_WT_COMPL_ANY' : 0.0,
+                'PRIMER_PAIR_WT_COMPL_END' : 0.0,
+                'PRIMER_PAIR_WT_TEMPLATE_MISPRIMING' : 0.0,
+                'PRIMER_PAIR_WT_DIFF_TM' : 0.0,
+                'PRIMER_PAIR_WT_LIBRARY_MISPRIMING' : 0.0,
+                'PRIMER_PAIR_WT_PR_PENALTY' : 1.0,
+                'PRIMER_PAIR_WT_IO_PENALTY' : 0.0,
+                'PRIMER_INTERNAL_MIN_SIZE' : 18,
+                'PRIMER_INTERNAL_OPT_SIZE' : 20,
+                'PRIMER_INTERNAL_MAX_SIZE' : 27,
+                'PRIMER_INTERNAL_MIN_TM' : 57.0,
+                'PRIMER_INTERNAL_OPT_TM' : 60.0,
+                'PRIMER_INTERNAL_MAX_TM' : 63.0,
+                'PRIMER_INTERNAL_MIN_GC' : 20.0,
+                'PRIMER_INTERNAL_OPT_GC_PERCENT' : 50.0,
+                'PRIMER_INTERNAL_MAX_GC' : 80.0,
+                'PRIMER_INTERNAL_MAX_SELF_ANY_TH': 47.00,
+                'PRIMER_INTERNAL_MAX_SELF_END_TH' : 47.00,
+                'PRIMER_INTERNAL_MAX_HAIRPIN_TH' : 47.00,
+                'PRIMER_INTERNAL_MAX_SELF_ANY': 12.00,
+                'PRIMER_INTERNAL_MAX_SELF_END': 12.00,
+                'PRIMER_INTERNAL_MIN_QUALITY': 0,
+                'PRIMER_INTERNAL_MAX_NS_ACCEPTED' : 0,
+                'PRIMER_INTERNAL_MAX_POLY_X' : 5,
+                'PRIMER_INTERNAL_MAX_LIBRARY_MISHYB' : 12.00,
+                'PRIMER_INTERNAL_SALT_MONOVALENT' : 50.0,
+                'PRIMER_INTERNAL_DNA_CONC' : 50.0,
+                'PRIMER_INTERNAL_SALT_DIVALENT' : 1.5,
+                'PRIMER_INTERNAL_DNTP_CONC' : 0.0,
+                'PRIMER_INTERNAL_WT_SIZE_LT' : 1.0,
+                'PRIMER_INTERNAL_WT_SIZE_GT' : 1.0,
+                'PRIMER_INTERNAL_WT_TM_LT' : 1.0,
+                'PRIMER_INTERNAL_WT_TM_GT' : 1.0,
+                'PRIMER_INTERNAL_WT_GC_PERCENT_LT' : 0.0,
+                'PRIMER_INTERNAL_WT_GC_PERCENT_GT' : 0.0,
+                'PRIMER_INTERNAL_WT_SELF_ANY_TH' : 0.0,
+                'PRIMER_INTERNAL_WT_SELF_END_TH' : 0.0,
+                'PRIMER_INTERNAL_WT_HAIRPIN_TH' : 0.0,
+                'PRIMER_INTERNAL_WT_SELF_ANY' : 0.0,
+                'PRIMER_INTERNAL_WT_SELF_END' : 0.0,
+                'PRIMER_INTERNAL_WT_NUM_NS' : 0.0,
+                'PRIMER_INTERNAL_WT_LIBRARY_MISHYB': 0.0,
+                'PRIMER_INTERNAL_WT_SEQ_QUAL' : 0.0,
+                'PRIMER_INTERNAL_WT_END_QUAL': 0.0
+        }, debug=False)
+        result, notes = primer3_parser(result)
+        return result
+
+    except Exception as e:
+        return HTTPBadRequest(body=json.dumps({'error': str(e) }))
+
+
+def primer3_parser(primer3_results):
+   ''' Parse Primer3 designPrimers output, and sort it into a hierachical
+   dictionary structure of primer pairs.
+
+   This method return 2 outputs, the list of primer pairs and a dictionary with
+   notes (the explanatory output from Primer3).
+
+   Author: Martin CF Thomsen
+   '''
+   primer_pairs = {}
+   notes = {}
+   for k in primer3_results:
+      if 'PRIMER_RIGHT' == k[:12]:
+         key = 'right'
+         tmp = k[13:].split('_', 1)
+         if tmp[0].isdigit():
+            id = int(tmp[0])
+            if not id in primer_pairs:
+               primer_pairs[id] = {'pair': {}, 'right': {}, 'left': {},
+                                   'internal': {}}
+            if len(tmp) > 1:
+               key2 = tmp[1].lower()
+               primer_pairs[id][key][key2] = primer3_results[k]
+            else:
+               primer_pairs[id][key]['position'] = primer3_results[k][0]
+               primer_pairs[id][key]['length'] = primer3_results[k][1]
+         elif tmp[0] == 'EXPLAIN':
+            notes[key] = primer3_results[k]
+         elif tmp == ['NUM','RETURNED']: pass
+         else:
+            print(k)
+      elif 'PRIMER_LEFT' == k[:11]:
+         key = 'left'
+         tmp = k[12:].split('_', 1)
+         if tmp[0].isdigit():
+            id = int(tmp[0])
+            if not id in primer_pairs:
+               primer_pairs[id] = {'pair': {}, 'right': {}, 'left': {},
+                                   'internal': {}}
+            if len(tmp) > 1:
+               key2 = tmp[1].lower()
+               primer_pairs[id][key][key2] = primer3_results[k]
+            else:
+               primer_pairs[id][key]['position'] = primer3_results[k][0]
+               primer_pairs[id][key]['length'] = primer3_results[k][1]
+         elif tmp[0] == 'EXPLAIN':
+            notes[key] = primer3_results[k]
+         elif tmp == ['NUM','RETURNED']: pass
+         else:
+            print(k)
+      elif 'PRIMER_PAIR' == k[:11]:
+         key = 'pair'
+         tmp = k[12:].split('_', 1)
+         if tmp[0].isdigit():
+            id = int(tmp[0])
+            if not id in primer_pairs:
+               primer_pairs[id] = {'pair': {}, 'right': {}, 'left': {},
+                                   'internal': {}}
+            if len(tmp) > 1:
+               key2 = tmp[1].lower()
+               primer_pairs[id][key][key2] = primer3_results[k]
+            else:
+               print(k, primer3_results[k])
+         elif tmp[0] == 'EXPLAIN':
+            notes[key] = primer3_results[k]
+         elif tmp == ['NUM','RETURNED']: pass
+         else:
+            print(k)
+      elif 'PRIMER_INTERNAL' == k[:15]:
+         key = 'internal'
+         tmp = k[16:].split('_', 1)
+         if tmp[0].isdigit():
+            id = int(tmp[0])
+            if not id in primer_pairs:
+               primer_pairs[id] = {'pair': {}, 'right': {}, 'left': {},
+                                   'internal': {}}
+            if len(tmp) > 1:
+               key2 = tmp[1].lower()
+               primer_pairs[id][key][key2] = primer3_results[k]
+            else:
+               primer_pairs[id][key]['position'] = primer3_results[k][0]
+               primer_pairs[id][key]['length'] = primer3_results[k][1]
+         elif tmp[0] == 'EXPLAIN':
+            notes['pair'] = primer3_results[k]
+         elif tmp == ['NUM','RETURNED']: pass
+         else:
+            print(k, tmp[0])
+      else:
+         print(k)
+
+   return list(map(primer_pairs.get, sorted(primer_pairs.keys()))), notes
 
 @view_config(route_name='ecnumber_locus_details', renderer='json', request_method='GET')
 def ecnumber_locus_details(request):
