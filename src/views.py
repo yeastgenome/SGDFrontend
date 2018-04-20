@@ -806,7 +806,6 @@ def ecnumber(request):
 def primer3(request):
     params = request.json_body
     p_keys = params.keys()
-    print params
     if 'gene_name' in p_keys:
         gene_name = params.get('gene_name')
         if gene_name is None:
@@ -887,20 +886,6 @@ def primer3(request):
     elif end_point == 'NO':
         force_left_start = -1000000
         force_right_start = -1000000
-
-    print sequence
-    print len(sequence)
-
-    print input_start
-    print input_end
-
-    print five_prime_start
-    print five_prime_end
-
-    print force_left_start
-    print force_right_start
-
-    print interval_range
 
     try:
         result = bindings.designPrimers(
@@ -1055,15 +1040,7 @@ def primer3(request):
                 'PRIMER_INTERNAL_WT_SEQ_QUAL' : 0.0,
                 'PRIMER_INTERNAL_WT_END_QUAL': 0.0
         }, debug=False)
-        # fmt = '{:<30} {:<50}'
-        # print(fmt.format('Output Key', 'Binding Result'))
-        # print('-' * 80)
-        # for k in sorted(result):
-        #     print(fmt.format(k, repr(result[k])))
-        #parsed_result = defaultdict(list)
         result, notes = primer3_parser(result)
-        print result
-        print notes
         return result
 
     except Exception as e:
