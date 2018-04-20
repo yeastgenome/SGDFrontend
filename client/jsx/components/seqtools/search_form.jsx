@@ -104,8 +104,7 @@ var SearchForm = React.createClass({
 			var resetNode = this._getResetNode();
 
 			var _nameSection = { headers: [[<span style={{ fontSize: 20 }}>1. Search a named gene or sequence</span>, '']],
-			    		     rows:    [[geneNodeLeft, geneNodeRight],
-					     	       [submitNode, resetNode]] };
+			    		     rows:    [[geneNodeLeft, geneNodeRight]] };
 
 			var _chrSeqSection = { headers: [[<span style={{ fontSize: 20 }}><strong style={{ color: 'red'}}>OR</strong> 2. Search a specified chromosomal region</span>, '', '', <span style={{ fontSize: 20 }}><strong style={{ color: 'red'}}>OR</strong> 3. Analyze a raw DNA or Protein sequence</span>]],
                                                rows:    [[chrNode, '', '', seqNode]] };
@@ -186,6 +185,7 @@ var SearchForm = React.createClass({
 		       <p>The entire chromosome sequence will be displayed if no coordinates are entered.</p>
 		       <p><b>Note</b>: Enter coordinates in ascending order for the Watson strand and descending order for the Crick strand.</p>
 		       { reverseCompNode }
+		       <p><input type="submit" ref='submit2' name='submit2' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset2' name='reset2' value="Reset Form" className="button secondary"></input></p>
                 </div>);
  		 
 	},
@@ -202,6 +202,7 @@ var SearchForm = React.createClass({
                        <textarea ref='seq' name='seq' onChange={this._onChange} rows='8' cols='50'></textarea></p>
                        <p>The sequence <b>MUST</b> be provided in RAW format, no comments (numbers are okay).</p>
                        { reverseCompNode }
+		       <p><input type="submit" ref='submit3' name='submit3' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset3' name='reset3' value="Reset Form" className="button secondary"></input></p>
                 </div>);    
 
 	},
