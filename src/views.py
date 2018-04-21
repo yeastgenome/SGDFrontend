@@ -874,8 +874,6 @@ def primer3(request):
 
 
     if maximum_product_size:
-        if maximum_product_size > five_prime_end:
-            return HTTPBadRequest(body=json.dumps({'error': 'Maximum product size cannot be larger than target size.'}))
         range_start = five_prime_end
         range_stop = maximum_product_size
         interval_range = [[range_start, range_stop]]
