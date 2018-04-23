@@ -452,6 +452,8 @@ var SearchForm = React.createClass({
 
 	_sendRequest: function(paramData) {
 
+		console.log("paramData="+paramData);
+
 		$.ajax({
 			url: SeqtoolsUrl,
 			data_type: 'json',
