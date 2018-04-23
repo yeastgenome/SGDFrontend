@@ -77,42 +77,17 @@ const Primer3 = React.createClass({
         if (returnData.error) {
           this.setState({ error: returnData.error });
         } else {
-          this.setState({ result: returnData, error: null });  
+          this.setState({ result: returnData.result, error: null, gene_name: returnData.gene_name, sequence: returnData.seq });
         }
 	    }
   	});
   },
 
-//  renderResults () {
-//    let data = this.state.result;
-//    let rowData = [];
-//    const DISPLAY_KEYS = Object.keys(data);
-//    let nodes = DISPLAY_KEYS.map( (d,i) => {
-//    //if ( d.match(/\d+$/) != null || d.indexOf('_TM') > 0 ||  d.indexOf('_GC_PERCENT') > 0  || d.indexOf('_SEQUENCE') > 0 || d.indexOf('_SELF_ANY_TH') > 0
-//          //|| d.indexOf('_SELF_END_TH') > 0 || d.indexOf('_HAIRPIN_TH') > 0 || d.indexOf('_SEQUENCE') > 0) {
-//         let val = data[d];
-//          rowData.push([d, val])
-//    //}
-//    });
-//    let _data = {
-//      headers: [
-//          ['Parameter', 'Value']
-//      ],
-//      rows: rowData
-//    };
-//    return (
-//      <div>
-//        <h2>Primer Pairs</h2>
-//        <hr />
-//        <DataTable data={_data} usePlugin={true} order={1, "asc"}/>
-//      </div>
-//    );
-//  },
 
   renderResults () {
-
-    //list(map(primer_pairs.get, sorted(primer_pairs.keys())))
     let data = this.state.result; //list of maps
+    let gene_name = 'Primer pairs for :   ' + this.state.gene_name
+    let sequence = 'Sequence:   ' + this.state.sequence
     let rowData = [];
     let name, pos, len, size, tm, gc, any_th, end_th, hairpin, seq;
     name = pos = len = size = tm = gc = any_th = end_th = hairpin = seq = " ";
@@ -121,7 +96,6 @@ const Primer3 = React.createClass({
     const DISPLAY_KEYS = Object.keys(data);
     let nodes = DISPLAY_KEYS.map( (d,i) => {
         let val = data[d];
-        console.log('this is a primer pair....', right_count, left_count)
         if (val != null){
             const DISPLAY_KEYS_1 =  Object.keys(val);
             let nodes_1 = DISPLAY_KEYS_1.map(  (d1, i1) => { //for each element in map {another map --> pair,right,left}
@@ -133,27 +107,27 @@ const Primer3 = React.createClass({
                             if(d1 == 'pair'){
                                 if(d2 == 'product_size') size = val2
                             }else if (d1 == 'right' || d1=='left') {
-                                if(d1 == 'right'){
-                                    right_count = getCounter(right_count)
-                                    name = 'primer-right-'+right_count
-                                }else if(d1== 'left') {
-                                    left_count = getCounter(left_count)
-                                    name = 'primer-left-'+left_count
-                                }
                                 if(d2 == 'position') pos = val2
                                 if(d2 == 'length') len = val2
-                                if(d2 == 'tm') tm = val2
-                                if(d2 == 'gc_percent') gc = val2
-                                if(d2 == 'self_any_th') end_th = val2
-                                if(d2 == 'self_any_th') any_th = val2
-                                if(d2 == 'hairpin_th') hairpin = val2
+                                if(d2 == 'tm') tm = val2.toFixed(2)
+                                if(d2 == 'gc_percent') gc = val2.toFixed(2)
+                                if(d2 == 'self_end_th') end_th = val2.toFixed(2)
+                                if(d2 == 'self_any_th') any_th = val2.toFixed(2)
+                                if(d2 == 'hairpin_th') hairpin = val2.toFixed(2)
                                 if(d2 == 'sequence') seq = val2
 
                             }
                         }
                     });
                     if(d1 == 'right' || d1 == 'left'){
-                        console.log('.......tablerow' ,pos, len, size, tm, gc, any_th, end_th, hairpin, seq)
+                        if(d1 == 'right'){
+                            name = 'primer-right-'+right_count
+                            right_count = getCounter(right_count)
+                        }else if(d1== 'left') {
+                            name = 'primer-left-'+left_count
+                            left_count = getCounter(left_count)
+                        }
+                        console.log(name, pos, len, size, tm, gc, any_th, end_th, hairpin, seq)
                         rowData.push([name, pos, len, size, tm, gc, any_th, end_th, hairpin, seq])
                     }
 
@@ -170,9 +144,10 @@ const Primer3 = React.createClass({
     };
     return (
       <div>
-        <h2>Primer Pairs</h2>
+        <h2 style={[style.title]}>{gene_name}</h2>
         <hr />
         <DataTable data={_data} usePlugin={true} order={1, "asc"}/>
+        <h5 style={[style.title]}>{sequence}</h5>
       </div>
     );
   },
@@ -185,7 +160,7 @@ const Primer3 = React.createClass({
         return t.form.Radio;
     };
 
-    const PcrFormSchema = t.struct({
+    const PrimerFormSchema = t.struct({
 
        gene_name: t.maybe(t.String),
        sequence: t.maybe(t.String),
@@ -332,8 +307,8 @@ const Primer3 = React.createClass({
 
     return (
       <form onSubmit={this.handleSubmit} style={{ marginBottom: '3rem' }}>
-        <t.form.Form ref="primerForm" type={PcrFormSchema}
-        value={this.state.value} onChange={this.onChange} options={options}/>
+        <t.form.Form ref="primerForm" type={PrimerFormSchema}
+        value={this.state.value} onChange={this.onChange} options={options} resetForm={this.resetForm}/>
         {this._renderError()}
         <div className="form-group">
           <button type="submit" className="button primary">Pick Primers</button>
@@ -382,6 +357,7 @@ function getCounter(c){
     var cc = c+1
     return cc
 }
+
 
 function mapStateToProps(_state) {
   return {
