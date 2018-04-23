@@ -32,7 +32,7 @@ var SearchForm = React.createClass({
 			start: null,
 			end: null,
 			seq: null,
-			rev: null,
+			rev: 'off',
 			resultData: {},
 			param: param,
 			didSeqAnal: 0,
@@ -289,27 +289,10 @@ var SearchForm = React.createClass({
 	_getReverseCompNode: function(name) {
 
 	        return (<div>
-		       <p><input ref={name} id={name} type="checkbox" value={this.state.rev} onChange={this._onChange}/> Use the reverse complement</p> 
+		       <p><input ref={name} id={name} type="checkbox" value={this.state.rev} onChange={this._onChangeCB}/> Use the reverse complement</p> 
 		       </div>);
 
         },
-
-	
-	// _getSubmitNode: function() {
-        //       
-        //        return(<div>
-        //               <input type="submit" value="Submit Form" className="button secondary"></input>
-        //        </div>);
-
-        // },
-
-	// _getResetNode: function() {
-
-	//	return(<div>
-	//	       <input type="reset" value="Reset Form" className="button secondary"></input>
-        //        </div>);
-
-        // },
 
 	_getStrainNode: function() {
 
@@ -348,6 +331,15 @@ var SearchForm = React.createClass({
         _onChange: function(e) {
                 this.setState({ text: e.target.value});
         },
+
+	_onChangeCB: function() {
+		if (this.state.rev == 'off') {
+		     this.setState({ rev: 'on' });
+		}
+		else {
+		     this.setState({ rev: 'off' });
+		}
+	},
 
 	_runSeqTools: function(searchType) {
 
