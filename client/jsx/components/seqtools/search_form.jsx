@@ -136,6 +136,7 @@ var SearchForm = React.createClass({
 
 		if (genes == '') {
 		   alert("Please enter one or more gene names.");
+		   alert("seqtype="+seqtype+", rev="+rev);
 		   e.preventDefault();
                    return 1;
 		}
