@@ -280,7 +280,7 @@ var SearchForm = React.createClass({
                	_elements.push(<option value='Protein'>Protein</option>);
                 
 		return(<div>
-                      <p><select name={name} ref={name} onChange={this._onChangeSeqtype}>{_elements}</select></p>
+                      <p><select name={name} ref={name} onChange={this._onChange}>{_elements}</select></p>
                 </div>);
 
 	},
@@ -288,7 +288,7 @@ var SearchForm = React.createClass({
 	_getReverseCompNode: function(name) {
 
 	        return (<div>
-		       <p><input ref={name} id={name} type="checkbox" /> Use the reverse complement</p> 
+		       <p><input ref={name} id={name} type="checkbox" onChange={this._onChange} value=""/> Use the reverse complement</p> 
 		       </div>);
 
         },
