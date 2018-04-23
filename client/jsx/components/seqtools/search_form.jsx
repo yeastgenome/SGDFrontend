@@ -135,18 +135,15 @@ var SearchForm = React.createClass({
 		var bad = 0;
 		if (genes == '') {
 		   alert("Please enter one or more gene names.");
-		   bad = 1;
+		   e.preventDefault();
+                   return 1;
 		}
 		
                 if (isNaN(up) || isNaN(down)) {
-                   alter("Please enter a number for up & downstream basepairs." + "up="+up + ", down="+down);
-		   bad = 1;
-		}
-
-		if (bad == 1) {
+                   alert("Please enter a number for up & downstream basepairs.");
 		   e.preventDefault();
-		   return 1;
-                }
+                   return 1;
+		}
         	
 	},
 
