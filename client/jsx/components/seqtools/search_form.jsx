@@ -138,11 +138,11 @@ var SearchForm = React.createClass({
 		   return 1;		  
 		}
 		
-                if (isNaN(up) || isNaN(down)) {
-                   alter("Please enter a number for up & downstream basepairs.");
+                // if (isNaN(up) || isNaN(down)) {
+                   alter("Please enter a number for up & downstream basepairs." + "up="+up + ", down="+down);
 		   e.preventDefault();
 		   return 1;
-                }
+                // }
         	
 	},
 
