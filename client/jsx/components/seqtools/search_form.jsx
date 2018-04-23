@@ -82,7 +82,7 @@ var SearchForm = React.createClass({
 			//       </div>);			
 
 			return (<div>
-			       { data }
+			       HELLO WORLD: { data }
 			       </div>);
 
 		} 
