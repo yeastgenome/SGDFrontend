@@ -8,7 +8,6 @@ const Params = require("../mixins/parse_url_params.jsx");
 
 const SeqtoolsUrl = "/run_seqtools";
 
-
 // const LETTERS_PER_CHUNK = 10;
 // const LETTERS_PER_LINE = 60;
 
@@ -411,18 +410,30 @@ var SearchForm = React.createClass({
 		   paramData['genes'] = window.localStorage.getItem("genes");
 		   paramData['strains'] = window.localStorage.getItem("strains");
 		   paramData['seqtype'] = window.localStorage.getItem("seqtype");
-		   paramData['up'] = window.localStorage.getItem("up");
-		   paramData['down'] = window.localStorage.getItem("down");
-		   paramData['rev'] = window.localStorage.getItem("rev");
+		   if (window.localStorage.getItem("up")) {
+		      paramData['up'] = window.localStorage.getItem("up");
+		   }
+		   if (window.localStorage.getItem("down")) {
+		      paramData['down'] = window.localStorage.getItem("down");
+		   }
+		   if (window.localStorage.getItem("rev")) {
+		      paramData['rev'] = window.localStorage.getItem("rev");
+		   }
 		   this._sendRequest(paramData)
 		   return
 		}
 		
 		if (searchType == 'chr') {
 		   paramData['chr'] = window.localStorage.getItem("chr");
-                   paramData['start'] = window.localStorage.getItem("start");
-                   paramData['end'] = window.localStorage.getItem("end");
-                   paramData['rev'] = window.localStorage.getItem("rev");
+		   if (window.localStorage.getItem("start")) {
+                      paramData['start'] = window.localStorage.getItem("start");
+		   }
+		   if (window.localStorage.getItem("end")) {
+                      paramData['end'] = window.localStorage.getItem("end");
+		   }
+		   if (window.localStorage.getItem("rev")) {
+                      paramData['rev'] = window.localStorage.getItem("rev");
+		   }
 		   this._sendRequest(paramData)
                    return
 		}
@@ -430,7 +441,9 @@ var SearchForm = React.createClass({
 		if (searchType == 'seq') {
 		   paramData['seq'] = window.localStorage.getItem("seq");
                    paramData['seqtype'] = window.localStorage.getItem("seqtype");
-                   paramData['rev'] = window.localStorage.getItem("rev");
+		   if (window.localStorage.getItem("rev")) {
+                      paramData['rev'] = window.localStorage.getItem("rev");
+		   }
 		   this._sendRequest(paramData)
                    return
 		}		
