@@ -97,7 +97,7 @@ var SearchForm = React.createClass({
 		}
 		else {
 
-		        if (this.state.submitted) {
+		        if (this.state.submitted || this.state.submitted2 || this.state.submitted3) {
 			     return <p>Please wait... The search may take a while to run.</p>; 
 
 			}
@@ -453,10 +453,13 @@ var SearchForm = React.createClass({
 			success: function(data) {
 			      this.setState({isComplete: true,
 			                     resultData: data});
+			      console.log("data="+data);
 			}.bind(this),
 			error: function(xhr, status, err) {
 			      this.setState({isPending: true});
+			      console.log("Error="+err);
 			}.bind(this) 
+
 		});
 
 	}
