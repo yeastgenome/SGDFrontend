@@ -23,7 +23,7 @@ var SearchForm = React.createClass({
 			isPending: false,
 			userError: null,
 			genome: 'S288C',
-			seqtype: 'pep',
+			seqtype: 'DNA',
 			genes: null,
 			strains: null,
 			up: null,
@@ -32,6 +32,7 @@ var SearchForm = React.createClass({
 			start: null,
 			end: null,
 			seq: null,
+			rev: null,
 			resultData: {},
 			param: param,
 			didSeqAnal: 0,
@@ -288,7 +289,7 @@ var SearchForm = React.createClass({
 	_getReverseCompNode: function(name) {
 
 	        return (<div>
-		       <p><input ref={name} id={name} type="checkbox" onChange={this._onChange} value=""/> Use the reverse complement</p> 
+		       <p><input ref={name} id={name} type="checkbox" value={this.state.rev} onChange={this._onChange}/> Use the reverse complement</p> 
 		       </div>);
 
         },
