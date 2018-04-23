@@ -132,12 +132,13 @@ var SearchForm = React.createClass({
 		var genes = this.refs.genes.value.trim();
 		var up = this.refs.up.value.trim();
 		var down = this.refs.down.value.trim();
-		var seqtype = this.refs.seqtype1.value.trim()
-		var rev = this.refs.rev1.value.trim();
-
+		var strains = this.refs.strains.value.trim();   
+		// var seqtype = this.refs.seqtype1.value.trim()  //Protein or DNA
+		// var rev = this.refs.rev1.value.trim();	       // on or off
+		
 		if (genes == '') {
 		   alert("Please enter one or more gene names.");
-		   alert("seqtype="+seqtype+", rev="+rev);
+		   alert("strains="+strains);
 		   e.preventDefault();
                    return 1;
 		}
