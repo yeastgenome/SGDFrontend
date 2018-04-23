@@ -36,9 +36,9 @@ var SearchForm = React.createClass({
 			resultData: {},
 			param: param,
 			didSeqAnal: 0,
-			submitted: param['submit1'],
-			submitted2: param['submit2'],
-			submitted3: param['submit3']
+			submitted: 0,
+			submitted2: 0, 
+			submitted3: 0
 		};
 	},
 
@@ -190,6 +190,9 @@ var SearchForm = React.createClass({
                    window.localStorage.setItem("up", '');
                    window.localStorage.setItem("down", '');  
 		}
+		
+		this.setState({ submitted: 1 });
+
 	},
 
 	_onSubmit2: function (e) {
@@ -219,6 +222,8 @@ var SearchForm = React.createClass({
 		}
 		window.localStorage.setItem("rev", rev);
 
+		this.setState({ submitted2: 1 });
+
         },
 
 	_onSubmit3: function (e) {
@@ -245,6 +250,8 @@ var SearchForm = React.createClass({
 		else {
 		   window.localStorage.setItem("rev", '');
 		}
+
+		this.setState({ submitted3: 1 });
 
         },
 
@@ -274,7 +281,7 @@ var SearchForm = React.createClass({
                         <h3>Pick one or more strains:</h3>
                         { strainNode }
 			{ reverseCompNode }
-			<p><input type="submit" ref='submit1' name='submit1' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset1' name='reset1' value="Reset Form" className="button secondary"></input></p>
+			<p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset1' name='reset1' value="Reset Form" className="button secondary"></input></p>
                 </div>);
 
         },
