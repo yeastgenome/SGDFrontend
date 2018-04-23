@@ -133,7 +133,7 @@ var SearchForm = React.createClass({
 		var down = this.refs.down.value.trim();
 
 		if (genes == '') {
-		   alert("Please enter one or more gene names.");
+		   alert("Please enter one or more gene names."+"up="+up + ", down="+down);
 		   e.preventDefault();
 		   return 1;		  
 		}
