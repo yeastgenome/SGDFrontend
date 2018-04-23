@@ -74,12 +74,16 @@ var SearchForm = React.createClass({
 			var data = this.state.resultData;
 
 			
-			var _resultTable = this._getResultTable(data);
+			// var _resultTable = this._getResultTable(data);
 
 		       	// return (<div>
 			//	     <p><center>{_resultTable}</center></p>
 			//	     <p><center><blockquote style={{ fontFamily: "Monospace", fontSize: 14 }}><a href={downloadUrl}>Download Full Results</a></blockquote></center></p>
 			//       </div>);			
+
+			return (<div>
+			       { data }
+			       </div>);
 
 		} 
 		else if (this.state.isPending) {
@@ -158,21 +162,15 @@ var SearchForm = React.createClass({
                          }
                    }
                 }
+
 		if (strains == '') {
 		   alert("Please pick one or more strains.");
                    e.preventDefault();
                    return 1;
 		}	
-
-		// testing here
-		alert("strains="+strains);
-		e.preventDefault();
-                return 1;
-		// end of testing
-
 	
-		var seqtype = this.refs.seqtype1.value.trim();      // Protein or DNA 
-		var rev = this.refs.rev1.value.trim();              // on or off
+		var seqtype = this.refs.seqtype1.value.trim(); // Protein or DNA 
+		var rev = this.refs.rev1.value.trim();         // on or off
 		
 		if (rev == 'off') {
 		   rev = '';
