@@ -130,7 +130,7 @@ var SearchForm = React.createClass({
 	_onSubmit: function (e) {
 		
 		var genes = this.refs.genes.value.trim();		
-		genes = genes.replace(" +", ":");
+		genes = genes.replace(" ", ":");
 
 		// for testing
 		alert("genes="+genes);
