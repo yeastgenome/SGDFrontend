@@ -132,12 +132,6 @@ var SearchForm = React.createClass({
 		var genes = this.refs.genes.value.trim();		
 		var re = / +/g;
 		genes = genes.replace(re, ":");
-
-		// for testing
-		alert("genes="+genes);
-		e.preventDefault();
-                return 1;
-
 		if (genes == '') {
 		   alert("Please enter one or more gene names.");
 		   e.preventDefault();
@@ -173,53 +167,79 @@ var SearchForm = React.createClass({
 		var seqtype = this.refs.seqtype1.value.trim();      // Protein or DNA 
 		var rev = this.refs.rev1.value.trim();              // on or off
 		
-		if (rev == 'off' || (rev == 'on' && seqtype == 'Protein') ) {
-		    rev = '';
+		if (rev == 'off') {
+		   rev = '';
 		} 		
 		
 		window.localStorage.clear();
                 window.localStorage.setItem("genes", genes);
                 window.localStorage.setItem("strains", strains);
-		window.localStorage.setItem("up", up);
-		window.localStorage.setItem("down", down);
 		window.localStorage.setItem("seqtype", seqtype);
-		window.localStorage.setItem("rev", rev);
-		
+		if (seqtype == 'DNA') {
+		   window.localStorage.setItem("rev", rev);
+		   window.localStorage.setItem("up", up);
+                   window.localStorage.setItem("down", down);
+		}
+		else {
+		   window.localStorage.setItem("rev", '');
+                   window.localStorage.setItem("up", '');
+                   window.localStorage.setItem("down", '');  
+		}
 	},
 
 	_onSubmit2: function (e) {
 
-                var chr = this.refs.chr.value.trim();
-                var start = this.refs.start.value.trim();
-		var end = this.refs.end.value.trim();
-		
+                var chr = this.refs.chr.value.trim();		
                 if (chr == 0) {
                    alert("Please pick a chromosome.");
                    e.preventDefault();
                    return 1;
 		}
 
+		var start = this.refs.start.value.trim();
+                var end = this.refs.end.value.trim();
 		if (isNaN(start) || isNaN(end)) {
                    alert("Please enter a number for chromosomal coordinates.");
                    e.preventDefault();
                    return 1;
                 }
-		
+
+		window.localStorage.setItem("chr", chr);
+		window.localStorage.setItem("start", start);
+		window.localStorage.setItem("end", end);
+
+		var rev = this.refs.rev2.value.trim();
+		if (rev == 'off') {
+		   rev = '';
+		}
+		window.localStorage.setItem("rev", rev);
+
         },
 
 	_onSubmit3: function (e) {
 
                 var seq = this.refs.seq.value.trim();
-                var seqtype = this.refs.seqtype3.value.trim();
-                var rev = this.refs.rev3.value.trim();
-
                 if (seq == '') {
                    alert("Please enter a raw sequence.");
                    e.preventDefault();
                    return 1;
                 }
 		
-		// more check here 
+		var seqtype = this.refs.seqtype3.value.trim();
+                var rev = this.refs.rev3.value.trim();
+		if (rev == 'off') {
+		   rev = '';
+		}
+				
+		window.localStorage.setItem("seq", seq);
+		window.localStorage.setItem("seqtype", seqtype);
+		
+		if (seqtype == 'DNA') {
+		   window.localStorage.setItem("rev", rev);
+		}
+		else {
+		   window.localStorage.setItem("rev", '');
+		}
 
         },
 
@@ -379,74 +399,36 @@ var SearchForm = React.createClass({
 
 	_runSeqTools: function(searchType) {
 
-	        var param = this.state.param;
-
 		var paramData = {};
-		
+
 		if (searchType == 'genes') {
-		   var genes = param['genes'];
-		   if (typeof(genes) == "undefined") {
-		      alert("Please enter one or more gene names - separated by space.")
-		   }
-		   paramData['genes'] = genes.join(":")
-		   var strains = param['strains']
-		   if (typeof(strains) != "undefined") {
-		      paramData['strains'] = param['strains'].join(":")
-		   }
-		   else {
-		      paramData['strains'] = 'S288C'
-		   }
-		   if (typeof(param['up']) != "undefined") {
-		      this._checkNumber(param['up'])
-		      paramData['up'] = param['up']
-		   }
-		   if (typeof(param['down']) != "undefined") {
-		      this._checkNumber(param['down'])
-                      paramData['down'] = param['down']
-		   }   
-		   paramData['seqtype'] = param['seqtype1']
-		   paramData['rev'] = param['rev1']
+		   paramData['genes'] = window.localStorage.getItem("genes");
+		   paramData['strains'] = window.localStorage.getItem("strains");
+		   paramData['seqtype'] = window.localStorage.getItem("seqtype");
+		   paramData['up'] = window.localStorage.getItem("up");
+		   paramData['down'] = window.localStorage.getItem("down");
+		   paramData['rev'] = window.localStorage.getItem("rev");
 		   this._sendRequest(paramData)
 		   return
 		}
 		
 		if (searchType == 'chr') {
-		   if (tyoeof(param['chr']) == 0) {
-		      alert("Please pick a chromosome.")
-		   }
-		   paramData['chr'] = param['chr']
-		   if (typeof(param['start']) != "undefined") {
-		      this._checkNumber(param['start'])
-                      paramData['start'] = param['start']
-                   }
-		   if (typeof(param['end']) != "undefined") {
-		      this._checkNumber(param['end'])
-                      paramData['end'] = param['end']
-		   }
-		   paramData['rev'] = param['rev2']
+		   paramData['chr'] = window.localStorage.getItem("chr");
+                   paramData['start'] = window.localStorage.getItem("start");
+                   paramData['end'] = window.localStorage.getItem("end");
+                   paramData['rev'] = window.localStorage.getItem("rev");
 		   this._sendRequest(paramData)
                    return
 		}
 
 		if (searchType == 'seq') {
-		   if (typeof(param['seq']) == "undefined") {
-		      alert("Please type or paste a raw sequence.")
-		   }
-		   paramData['seq'] = param['seq']
-		   paramData['seqtype'] = param['seqtype3']
-		   paramData['rev'] = param['rev3']
+		   paramData['seq'] = window.localStorage.getItem("seq");
+                   paramData['seqtype'] = window.localStorage.getItem("seqtype");
+                   paramData['rev'] = window.localStorage.getItem("rev");
 		   this._sendRequest(paramData)
                    return
 		}		
    		
-	},
-
-	_checkNumber: function(num) {
-
-		if (isNaN(num)) {
-		   alter("Please enter a number");
-		}
-
 	},
 
 	_sendRequest: function(paramData) {
