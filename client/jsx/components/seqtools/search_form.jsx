@@ -131,8 +131,9 @@ var SearchForm = React.createClass({
 		var genes = this.refs.genes.value.trim();
 		var up = this.refs.up.value.trim();
 		var down = this.refs.down.value.trim();
+		var seqtype = this.refs.seqtype1.value.trim()
+		var rev = this.refs.rev1.value.trim();
 
-		var bad = 0;
 		if (genes == '') {
 		   alert("Please enter one or more gene names.");
 		   e.preventDefault();
@@ -144,8 +145,45 @@ var SearchForm = React.createClass({
 		   e.preventDefault();
                    return 1;
 		}
-        	
+
+		// more check here        	
 	},
+
+	_onSubmit2: function (e) {
+
+                var chr = this.refs.chr.value.trim();
+                var start = this.refs.start.value.trim();
+		var end = this.refs.end.value.trim();
+		
+                if (chr == 0) {
+                   alert("Please pick a chromosome.");
+                   e.preventDefault();
+                   return 1;
+		}
+
+		if (isNaN(start) || isNaN(end)) {
+                   alert("Please enter a number for chromosomal coordinates.");
+                   e.preventDefault();
+                   return 1;
+                }
+		
+        },
+
+	_onSubmit3: function (e) {
+
+                var seq = this.refs.seq.value.trim();
+                var seqtype = this.refs.seqtype3.value.trim();
+                var rev = this.refs.rev3.value.trim();
+
+                if (seq == '') {
+                   alert("Please enter a raw sequence.");
+                   e.preventDefault();
+                   return 1;
+                }
+		
+		// more check here 
+
+        },
 
 	_getGeneNodeLeft: function() {
 	
