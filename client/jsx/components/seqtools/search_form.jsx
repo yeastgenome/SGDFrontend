@@ -128,14 +128,14 @@ var SearchForm = React.createClass({
 
 	_onSubmit: function (e) {
 		
-		alert("Please enter one or more gene names.");
-		e.preventDefault();
-		return 1;
+		// alert("Please enter one or more gene names.");
+		// e.preventDefault();
+		// return 1;
 		
 		var submit = this.refs.submit.value.trim();
 		var genes = this.refs.genes.value.trim();
 		alert("submit="+submit+", genes="+genes);
-		if (submit != '' && genes == '') {
+		if (genes == '') {
 		   alert("Please enter one or more gene names.");
 		   e.preventDefault();
 		   return 1;
