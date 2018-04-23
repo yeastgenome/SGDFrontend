@@ -124,6 +124,8 @@ var SearchForm = React.createClass({
 		}
 	},
 
+	// it doesnt work..
+
 	_onSubmit: function (e) {
 				
 		var submit = this.refs.submit.value.trim();
@@ -131,10 +133,14 @@ var SearchForm = React.createClass({
 		alert("submit="+submit+", genes="+genes);
 		if (submit != '' && genes == '') {
 		   alert("Please enter one or more gene names.");
-		   return 0;
+		   e.preventDefault();
+		   return 1;
 		}
-	
+		
+				
 	},
+
+	
 
 	_getGeneNodeLeft: function() {
 	
