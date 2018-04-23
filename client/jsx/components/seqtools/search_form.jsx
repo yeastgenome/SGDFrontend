@@ -112,14 +112,14 @@ var SearchForm = React.createClass({
 					
 			return (<div>
 			        <div dangerouslySetInnerHTML={{ __html: descText}} />
-				<form onSubmit={this._onSubmit} target="infowin">
-				      <div className="row">
-				      	   <div className="large-12 columns">
-					   	<DataTable data={_nameSection} />
-						<DataTable data={_chrSeqSection} />        
-					   </div>
-				      </div>
-				</form>
+				<div className="row">
+				     <div className="large-12 columns">
+					   <form onSubmit={this._onSubmit} target="infowin">
+					   	 <DataTable data={_nameSection} />
+					   </form>
+					   <DataTable data={_chrSeqSection} />        
+			             </div>
+			        </div>
 			</div>);
 		}
 	},
@@ -128,23 +128,23 @@ var SearchForm = React.createClass({
 
 	_onSubmit: function (e) {
 		
-
 		var genes = this.refs.genes.value.trim();
-		
-		// alert("genes=" + genes);
-		// e.preventDefault();
-		// return 1;		
+		var up = this.refs.up.value.trim();
+		var down = this.refs.down.value.trim();
 
 		if (genes == '') {
 		   alert("Please enter one or more gene names.");
 		   e.preventDefault();
-		   return 1;
+		   return 1;		  
 		}
 		
-				
+                if (isNaN(up) || isNaN(down)) {
+                   alter("Please enter a number for up & downstream basepairs.");
+		   e.preventDefault();
+		   return 1;
+                }
+        	
 	},
-
-	
 
 	_getGeneNodeLeft: function() {
 	
@@ -198,6 +198,7 @@ var SearchForm = React.createClass({
 		var reverseCompNode = this._getReverseCompNode('rev2');
 
                 return(<div>
+		       <form onSubmit={this._onSubmit2} target="infowin">
                        <h3>Pick a chromosome: </h3>
                        <p><select ref='chr' name='chr' onChange={this._onChangeGenome}>{_elements}</select></p>
 		       <p>Then enter coordinates (optional)
@@ -208,6 +209,7 @@ var SearchForm = React.createClass({
 		       <p><b>Note</b>: Enter coordinates in ascending order for the Watson strand and descending order for the Crick strand.</p>
 		       { reverseCompNode }
 		       <p><input type="submit" ref='submit2' name='submit2' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset2' name='reset2' value="Reset Form" className="button secondary"></input></p>
+		       </form>
                 </div>);
  		 
 	},
@@ -218,6 +220,7 @@ var SearchForm = React.createClass({
 		var reverseCompNode = this._getReverseCompNode('rev3');
 
 		return(<div>
+		       <form onSubmit={this._onSubmit3} target="infowin">
                        <h3>Type or Paste a: </h3>
 		       { seqtypeNode }
 		       <p>Sequence:
@@ -225,6 +228,7 @@ var SearchForm = React.createClass({
                        <p>The sequence <b>MUST</b> be provided in RAW format, no comments (numbers are okay).</p>
                        { reverseCompNode }
 		       <p><input type="submit" ref='submit3' name='submit3' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset3' name='reset3' value="Reset Form" className="button secondary"></input></p>
+		       </form>
                 </div>);    
 
 	},
