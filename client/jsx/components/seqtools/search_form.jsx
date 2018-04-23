@@ -135,7 +135,7 @@ var SearchForm = React.createClass({
 		// var submit = this.refs.submit.value.trim();
 		var genes = this.refs.genes.value.trim();
 		// alert("submit="+submit+", genes="+genes);
-		alert("genes=" + genes);
+		alert("genes=" + genes + this.refs.submit.value.trim());
 		e.preventDefault();
 		return 1;		
 
