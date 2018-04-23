@@ -163,6 +163,13 @@ var SearchForm = React.createClass({
                    e.preventDefault();
                    return 1;
 		}	
+
+		// testing here
+		alert("strains="+strains);
+		e.preventDefault();
+                return 1;
+		// end of testing
+
 	
 		var seqtype = this.refs.seqtype1.value.trim();      // Protein or DNA 
 		var rev = this.refs.rev1.value.trim();              // on or off
