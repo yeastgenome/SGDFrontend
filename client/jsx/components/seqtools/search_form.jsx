@@ -129,27 +129,61 @@ var SearchForm = React.createClass({
 
 	_onSubmit: function (e) {
 		
-		var genes = this.refs.genes.value.trim();
-		var up = this.refs.up.value.trim();
-		var down = this.refs.down.value.trim();
-		var strains = this.refs.strains.value.trim();   
-		// var seqtype = this.refs.seqtype1.value.trim()  //Protein or DNA
-		// var rev = this.refs.rev1.value.trim();	       // on or off
-		
+		var genes = this.refs.genes.value.trim();		
+		genes = genes.replace(" +", ":");
+
+		// for testing
+		alert("genes="+genes);
+		e.preventDefault();
+                return 1;
+
 		if (genes == '') {
 		   alert("Please enter one or more gene names.");
-		   alert("strains="+strains);
 		   e.preventDefault();
                    return 1;
 		}
 		
+		var up = this.refs.up.value.trim();
+                var down = this.refs.down.value.trim();
                 if (isNaN(up) || isNaN(down)) {
                    alert("Please enter a number for up & downstream basepairs.");
 		   e.preventDefault();
                    return 1;
 		}
 
-		// more check here        	
+		var strainList = document.getElementById('strains');
+                var strains = '';
+		   for (var i = 0; i < strainList.options.length; i++) {
+                     if (strainList.options[i].selected) {
+                         if (strains) {
+                              strains = strains + ':' + strainList.options[i].value;
+			      	               }
+                         else {
+                              strains = strainList.options[i].value;
+                         }
+                   }
+                }
+		if (strains == '') {
+		   alert("Please pick one or more strains.");
+                   e.preventDefault();
+                   return 1;
+		}	
+	
+		var seqtype = this.refs.seqtype1.value.trim();      // Protein or DNA 
+		var rev = this.refs.rev1.value.trim();              // on or off
+		
+		if (rev == 'off' || (rev == 'on' && seqtype == 'Protein') ) {
+		    rev = '';
+		} 		
+		
+		window.localStorage.clear();
+                window.localStorage.setItem("genes", genes);
+                window.localStorage.setItem("strains", strains);
+		window.localStorage.setItem("up", up);
+		window.localStorage.setItem("down", down);
+		window.localStorage.setItem("seqtype", seqtype);
+		window.localStorage.setItem("rev", rev);
+		
 	},
 
 	_onSubmit2: function (e) {
