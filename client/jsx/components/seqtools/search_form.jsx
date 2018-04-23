@@ -36,9 +36,9 @@ var SearchForm = React.createClass({
 			resultData: {},
 			param: param,
 			didSeqAnal: 0,
-			submitted: param['submitted'],
-			submitted2: param['submitted2'], 
-			submitted3: param['submitted3']
+			submitted: param['submit'],
+			submitted2: param['submit2'], 
+			submitted3: param['submit3']
 		};
 	},
 
@@ -191,8 +191,6 @@ var SearchForm = React.createClass({
                    window.localStorage.setItem("down", '');  
 		}
 		
-		// this.setState({ submitted: 1 });
-
 	},
 
 	_onSubmit2: function (e) {
@@ -222,8 +220,6 @@ var SearchForm = React.createClass({
 		}
 		window.localStorage.setItem("rev", rev);
 
-		this.setState({ submitted2: 1 });
-
         },
 
 	_onSubmit3: function (e) {
@@ -250,8 +246,6 @@ var SearchForm = React.createClass({
 		else {
 		   window.localStorage.setItem("rev", '');
 		}
-
-		this.setState({ submitted3: 1 });
 
         },
 
@@ -357,7 +351,7 @@ var SearchForm = React.createClass({
 	_getReverseCompNode: function(name) {
 
 	        return (<div>
-		       <p><input ref={name} id={name} type="checkbox" value={this.state.rev} onChange={this._onChangeCB}/> Use the reverse complement</p> 
+		       <p><input ref={name} name={name} id={name} type="checkbox" value={this.state.rev} onChange={this._onChangeCB}/> Use the reverse complement</p> 
 		       </div>);
 
         },
@@ -391,7 +385,7 @@ var SearchForm = React.createClass({
 
                 return(<div>
 		       <p>(Select or unselect multiple strains by pressing the Control (PC) or Command (Mac) key while clicking.)
-                       <select ref='strains' id='strains' onChange={this._onChange} size='11' multiple>{_elements}</select></p>
+                       <select ref='strains' name='strains' id='strains' onChange={this._onChange} size='11' multiple>{_elements}</select></p>
                 </div>);
 
         },
