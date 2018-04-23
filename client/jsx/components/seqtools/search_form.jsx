@@ -36,9 +36,9 @@ var SearchForm = React.createClass({
 			resultData: {},
 			param: param,
 			didSeqAnal: 0,
-			submitted: 0,
-			submitted2: 0, 
-			submitted3: 0
+			submitted: param['submitted'],
+			submitted2: param['submitted2'], 
+			submitted3: param['submitted3']
 		};
 	},
 
