@@ -452,7 +452,7 @@ var SearchForm = React.createClass({
 
 	_sendRequest: function(paramData) {
 
-		console.log("paramData="+paramData);
+		console.log("genes="+paramData['genes']+", strains="+paramData['strains']);
 
 		$.ajax({
 			url: SeqtoolsUrl,
