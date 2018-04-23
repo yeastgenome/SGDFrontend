@@ -191,7 +191,7 @@ var SearchForm = React.createClass({
                    window.localStorage.setItem("down", '');  
 		}
 		
-		this.setState({ submitted: 1 });
+		// this.setState({ submitted: 1 });
 
 	},
 
@@ -281,7 +281,7 @@ var SearchForm = React.createClass({
                         <h3>Pick one or more strains:</h3>
                         { strainNode }
 			{ reverseCompNode }
-			<p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset1' name='reset1' value="Reset Form" className="button secondary"></input></p>
+			<p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input></p>
                 </div>);
 
         },
