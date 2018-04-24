@@ -450,9 +450,7 @@ var SearchForm = React.createClass({
 
 	_sendRequest: function(paramData) {
 
-		console.log("genes="+paramData['genes']+", strains="+paramData['strains']);
-		console.log("seqtype="+paramData['seqtype']+", rev="+paramData['rev']);
-		console.log("up="+paramData['up'] + ", down=" + paramData['down']);
+		console.log("genes="+paramData['genes']+", strains="+paramData['strains'] + ", seqtype="+paramData['seqtype']+", rev="+paramData['rev'] + ", up="+paramData['up'] + ", down=" + paramData['down']);
 
 		// data: paramData,
                         
