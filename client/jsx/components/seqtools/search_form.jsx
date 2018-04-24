@@ -461,7 +461,8 @@ var SearchForm = React.createClass({
 			url: SeqtoolsUrl,
 			data_type: 'json',
 			type: 'POST',
-			data: paramData,
+			data: { 'genes': paramData['genes'],
+			        'strains': paramData['strains'] },
 			success: function(data) {
 			      this.setState({isComplete: true,
 			                     resultData: data});
