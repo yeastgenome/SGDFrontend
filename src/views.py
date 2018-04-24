@@ -17,8 +17,9 @@ import datetime
 import logging
 import json
 
+
 from .models import DBSession, ESearch, Colleague, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, Dataset, DatasetKeyword, Contig, Proteindomain, Ec, Dnasequenceannotation, Straindbentity
-from .helpers import extract_id_request, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id
+from .helpers import extract_id_request, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id, primer3_parser
 from .search_helpers import build_autocomplete_search_body_request, format_autocomplete_results, build_search_query, build_es_search_body_request, build_es_aggregation_body_request, format_search_results, format_aggregation_results, build_sequence_objects_search_query
 from .models_helpers import ModelsHelper
 
@@ -806,13 +807,16 @@ def ecnumber(request):
 def primer3(request):
     params = request.json_body
     p_keys = params.keys()
+    decodeseq = ''
     if 'gene_name' in p_keys:
         gene_name = params.get('gene_name')
         if gene_name is None:
             if 'sequence' in p_keys:
+                gene_name = 'Input Sequence:'
                 sequence = params.get('sequence')
                 if sequence is None:
                     return HTTPBadRequest(body=json.dumps({'error': 'No gene name OR sequence provided'}))
+                decodeseq = sequence
                 sequence = str(sequence.replace('\r', '').replace('\n', ''))
         else:
             locus = DBSession.query(Locusdbentity).filter(or_(Locusdbentity.gene_name == gene_name.upper(),Locusdbentity.systematic_name == gene_name)).one_or_none()
@@ -823,7 +827,9 @@ def primer3(request):
             if dna is None:
                 return HTTPBadRequest(body=json.dumps({'error': 'Sequence for provided gene name does not exist in the database:  ' + gene_name}))
             else:
+                decodeseq = dna
                 sequence = str(dna)
+
     if 'maximum_tm' in p_keys:
         maximum_tm = params.get('maximum_tm')
     if 'minimum_tm' in p_keys:
@@ -872,11 +878,15 @@ def primer3(request):
 
     interval_range = [[100,150],[150,250], [100,300], [301,400], [401,500] ,[501,600] ,[601,700] ,[701,850], [851,1000]]
 
-
     if maximum_product_size:
         range_start = five_prime_end
         range_stop = maximum_product_size
-        interval_range = [[range_start, range_stop]]
+        if(range_stop < range_start):
+            interval_range = [[range_stop, range_start]]
+        else:
+            interval_range = [[range_start, range_stop]]
+    elif(five_prime_end > 1000):
+        interval_range = [[five_prime_end, five_prime_end+300]]
 
     if end_point == 'YES':
         force_left_start = five_prime_start
@@ -885,10 +895,18 @@ def primer3(request):
         force_left_start = -1000000
         force_right_start = -1000000
 
+    print sequence
+    print len(sequence)
+    print input_end
+    print input_start
+    print five_prime_start
+    print five_prime_end
+    print interval_range
+
     try:
         result = bindings.designPrimers(
             {
-                'SEQUENCE_ID': 'MH1000',
+                'SEQUENCE_ID': str(gene_name),
                 'SEQUENCE_TEMPLATE': sequence,
                 'SEQUENCE_TARGET': [five_prime_start,five_prime_end],
                 'SEQUENCE_FORCE_LEFT_START': force_left_start,
@@ -1039,103 +1057,13 @@ def primer3(request):
                 'PRIMER_INTERNAL_WT_END_QUAL': 0.0
         }, debug=False)
         result, notes = primer3_parser(result)
-        return result
+        obj = {'result' : result, 'gene_name': gene_name, 'seq': decodeseq}
+        return obj
 
     except Exception as e:
         return HTTPBadRequest(body=json.dumps({'error': str(e) }))
 
 
-def primer3_parser(primer3_results):
-   ''' Parse Primer3 designPrimers output, and sort it into a hierachical
-   dictionary structure of primer pairs.
-
-   This method return 2 outputs, the list of primer pairs and a dictionary with
-   notes (the explanatory output from Primer3).
-
-   Author: Martin CF Thomsen
-   '''
-   primer_pairs = {}
-   notes = {}
-   for k in primer3_results:
-      if 'PRIMER_RIGHT' == k[:12]:
-         key = 'right'
-         tmp = k[13:].split('_', 1)
-         if tmp[0].isdigit():
-            id = int(tmp[0])
-            if not id in primer_pairs:
-               primer_pairs[id] = {'pair': {}, 'right': {}, 'left': {},
-                                   'internal': {}}
-            if len(tmp) > 1:
-               key2 = tmp[1].lower()
-               primer_pairs[id][key][key2] = primer3_results[k]
-            else:
-               primer_pairs[id][key]['position'] = primer3_results[k][0]
-               primer_pairs[id][key]['length'] = primer3_results[k][1]
-         elif tmp[0] == 'EXPLAIN':
-            notes[key] = primer3_results[k]
-         elif tmp == ['NUM','RETURNED']: pass
-         else:
-            print(k)
-      elif 'PRIMER_LEFT' == k[:11]:
-         key = 'left'
-         tmp = k[12:].split('_', 1)
-         if tmp[0].isdigit():
-            id = int(tmp[0])
-            if not id in primer_pairs:
-               primer_pairs[id] = {'pair': {}, 'right': {}, 'left': {},
-                                   'internal': {}}
-            if len(tmp) > 1:
-               key2 = tmp[1].lower()
-               primer_pairs[id][key][key2] = primer3_results[k]
-            else:
-               primer_pairs[id][key]['position'] = primer3_results[k][0]
-               primer_pairs[id][key]['length'] = primer3_results[k][1]
-         elif tmp[0] == 'EXPLAIN':
-            notes[key] = primer3_results[k]
-         elif tmp == ['NUM','RETURNED']: pass
-         else:
-            print(k)
-      elif 'PRIMER_PAIR' == k[:11]:
-         key = 'pair'
-         tmp = k[12:].split('_', 1)
-         if tmp[0].isdigit():
-            id = int(tmp[0])
-            if not id in primer_pairs:
-               primer_pairs[id] = {'pair': {}, 'right': {}, 'left': {},
-                                   'internal': {}}
-            if len(tmp) > 1:
-               key2 = tmp[1].lower()
-               primer_pairs[id][key][key2] = primer3_results[k]
-            else:
-               print(k, primer3_results[k])
-         elif tmp[0] == 'EXPLAIN':
-            notes[key] = primer3_results[k]
-         elif tmp == ['NUM','RETURNED']: pass
-         else:
-            print(k)
-      elif 'PRIMER_INTERNAL' == k[:15]:
-         key = 'internal'
-         tmp = k[16:].split('_', 1)
-         if tmp[0].isdigit():
-            id = int(tmp[0])
-            if not id in primer_pairs:
-               primer_pairs[id] = {'pair': {}, 'right': {}, 'left': {},
-                                   'internal': {}}
-            if len(tmp) > 1:
-               key2 = tmp[1].lower()
-               primer_pairs[id][key][key2] = primer3_results[k]
-            else:
-               primer_pairs[id][key]['position'] = primer3_results[k][0]
-               primer_pairs[id][key]['length'] = primer3_results[k][1]
-         elif tmp[0] == 'EXPLAIN':
-            notes['pair'] = primer3_results[k]
-         elif tmp == ['NUM','RETURNED']: pass
-         else:
-            print(k, tmp[0])
-      else:
-         print(k)
-
-   return list(map(primer_pairs.get, sorted(primer_pairs.keys()))), notes
 
 @view_config(route_name='ecnumber_locus_details', renderer='json', request_method='GET')
 def ecnumber_locus_details(request):
