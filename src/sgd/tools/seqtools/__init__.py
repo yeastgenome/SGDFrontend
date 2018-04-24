@@ -17,9 +17,9 @@ def do_seq_analysis(request):
         data = manipulate_sequence(p)
         return Response(body=json.dumps(data), content_type='application/json')
 
-    # data = get_sequence_for_genes(p)
-    # return Response(body=json.dumps(data), content_type='application/json')
-    return Response(body=json.dumps(p), content_type='application/json') 
+    data = get_sequence_for_genes(p)
+    return Response(body=json.dumps(data), content_type='application/json')
+    # return Response(body=json.dumps(p), content_type='application/json') 
 
 def get_sequence_for_chr(p):
 
