@@ -55,7 +55,7 @@ def get_sequence_for_genes(p):
         return { "ERROR": "NO GENE NAME PASSED IN" }
     genes = genes.split(':')
     strains = strains.split(':')
-    type = p.get('type')
+    type = p.get('seqtype')
     up = p.get('up')
     down = p.get('down')
     if up is None or up == '':
@@ -95,7 +95,7 @@ def _get_sequence_from_contig(contig, start, end, strand):
 
 def _get_genomic_or_protein_seq(genes, strains, type):
 
-    # http://0.0.0.0:6545/run_seqtools?genes=ACT1:BUD2&strains=W303:S288C&type=nuc
+    # http://0.0.0.0:6545/run_seqtools?genes=ACT1:BUD2&strains=W303:S288C&type=DNA
     # http://0.0.0.0:6545/run_seqtools?genes=ACT1:BUD2&strains=W303:S288C
 
     data = {}
@@ -105,7 +105,7 @@ def _get_genomic_or_protein_seq(genes, strains, type):
         res = _get_json_from_server(url)
 
         rows = []
-        if type in ['nuc', 'dna']:
+        if type in ['nuc', 'DNA', 'dna']:
             rows = res['genomic_dna']
         else:
             rows = res['protein']
