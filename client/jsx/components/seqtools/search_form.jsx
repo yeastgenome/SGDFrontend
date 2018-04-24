@@ -128,8 +128,6 @@ var SearchForm = React.createClass({
 		}
 	},
 
-	// it doesnt work..
-
 	_onSubmit: function (e) {
 		
 		var genes = this.refs.genes.value.trim();		
@@ -151,15 +149,15 @@ var SearchForm = React.createClass({
 
 		var strainList = document.getElementById('strains');
                 var strains = '';
-		   for (var i = 0; i < strainList.options.length; i++) {
+		for (var i = 0; i < strainList.options.length; i++) {
                      if (strainList.options[i].selected) {
                          if (strains) {
                               strains = strains + ':' + strainList.options[i].value;
-			      	               }
+			 }
                          else {
                               strains = strainList.options[i].value;
                          }
-                   }
+                     }
                 }
 
 		if (strains == '') {
@@ -452,7 +450,10 @@ var SearchForm = React.createClass({
 
 	_sendRequest: function(paramData) {
 
-		// console.log("genes="+paramData['genes']+", strains="+paramData['strains']);
+		console.log("genes="+paramData['genes']+", strains="+paramData['strains']);
+		console.log("seqtype="+paramData['seqtype']+", rev="+paramData['rev']);
+		console.log("up="+paramData['up'] + ", down=" + paramData['down']);
+
 		// data: paramData,
                         
 		$.ajax({
