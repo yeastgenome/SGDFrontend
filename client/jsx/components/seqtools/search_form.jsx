@@ -450,19 +450,19 @@ var SearchForm = React.createClass({
 
 	_sendRequest: function(paramData) {
 
+		// http://www3.dev.yeastgenome.org/run_seqtools?genes=act1&seqtype=DNA&strains=S288C&rev=on
 		console.log("genes="+paramData['genes']+", strains="+paramData['strains'] + ", seqtype="+paramData['seqtype']+", rev="+paramData['rev'] + ", up="+paramData['up'] + ", down=" + paramData['down']);
 
 		// data: paramData,
+		// url: SeqtoolsUrl,
                         
 		$.ajax({
-			url: SeqtoolsUrl,
+			url: 'http://www3.dev.yeastgenome.org/run_seqtools?genes=act1&seqtype=DNA&strains=S288C&rev=on',
 			data_type: 'json',
 			type: 'POST',
-			data: paramData,
 			success: function(data) {
 			      this.setState({isComplete: true,
 			                     resultData: data});
-			      console.log("SUCCESS: data="+data);
 			}.bind(this),
 			error: function(xhr, status, err) {
 			      this.setState({isPending: true});
