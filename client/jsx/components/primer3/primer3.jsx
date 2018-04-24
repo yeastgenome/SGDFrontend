@@ -86,8 +86,9 @@ const Primer3 = React.createClass({
 
   renderResults () {
     let data = this.state.result; //list of maps
-    let gene_name = 'Primer pairs for :   ' + this.state.gene_name
-    let sequence = 'Sequence:   ' + this.state.sequence
+    let gene_name = 'Primer pairs for :    ' + this.state.gene_name
+    let sequence = 'Input Sequence:   ' + this.state.sequence
+    let newsequence = addNewlines(sequence)
     let rowData = [];
     let name, pos, len, size, tm, gc, any_th, end_th, hairpin, seq;
     name = pos = len = size = tm = gc = any_th = end_th = hairpin = seq = " ";
@@ -136,7 +137,7 @@ const Primer3 = React.createClass({
     });
 
 
-    let _data = {
+  let _data = {
       headers: [
           ['primer', 'start', 'len', 'product size', 'tm', 'gc%', 'any_th', 'end_th', 'hairpin', 'seq']
       ],
@@ -147,7 +148,7 @@ const Primer3 = React.createClass({
         <h2 style={[style.title]}>{gene_name}</h2>
         <hr />
         <DataTable data={_data} usePlugin={true} order={1, "asc"}/>
-        <h5 style={[style.title]}>{sequence}</h5>
+        <h5 style={[style.title]}>{newsequence}</h5>
       </div>
     );
   },
@@ -352,6 +353,15 @@ const style = {
     marginRight: '0.5rem'
   }
 };
+
+function addNewlines(seq) {
+  var result = '';
+  while ($.trim(seq).length > 0) {
+    result += seq.substring(0,80) + '\n';
+    seq = seq.substring(80);
+  }
+  return result;
+}
 
 function getCounter(c){
     var cc = c+1
