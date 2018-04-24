@@ -17,6 +17,7 @@ var views = {
   suggestion: require('./views/suggestion_view.jsx'),
   blast_sgd: require('./views/blast_sgd_view.jsx'),
   blast_fungal: require('./views/blast_fungal_view.jsx'),
+  patmatch: require('./views/patmatch_view.jsx'),
   network: require('./views/network_view.jsx'),
   protein: require('./views/protein_view.jsx'),
   regulation: require('./views/regulation_view.jsx'),

@@ -269,6 +269,11 @@ function gene_data_to_table(bioent) {
   	return [bioent['id'], bioent['id'], bioent['format_name'], bioent_name, bioent['description']];
 }
 
+function dataset_data_to_table(dataset) {
+    var dataset_link = create_link(dataset['geo_id'], dataset['link']);
+    return [dataset['display_name'], dataset_link];
+}
+
 function phenotype_data_to_table(evidence, index) {
 	var bioent = create_link(evidence['locus']['display_name'], evidence['locus']['link']);
 
