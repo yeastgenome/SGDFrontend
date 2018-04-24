@@ -17,9 +17,9 @@ def do_seq_analysis(request):
         data = manipulate_sequence(p)
         return Response(body=json.dumps(data), content_type='application/json')
 
-    data = get_sequence_for_genes(p)
-    return Response(body=json.dumps(data), content_type='application/json')
-
+    # data = get_sequence_for_genes(p)
+    # return Response(body=json.dumps(data), content_type='application/json')
+    return Response(body=json.dumps(p), content_type='application/json') 
 
 def get_sequence_for_chr(p):
 
@@ -49,7 +49,7 @@ def get_sequence_for_genes(p):
 
     genes = p.get('genes')
     strains = p.get('strains')
-    if strains is None:
+    if strains is None or strains == '':
         strains = 'S288C'
     if genes is None:
         return { "ERROR": "NO GENE NAME PASSED IN" }
@@ -58,9 +58,9 @@ def get_sequence_for_genes(p):
     type = p.get('type')
     up = p.get('up')
     down = p.get('down')
-    if up is None:
+    if up is None or up == '':
         up = 0
-    if down is None:
+    if down is None or down == '':
         down = 0
     if up == 0 and down == 0:
         return _get_genomic_or_protein_seq(genes, strains, type)
