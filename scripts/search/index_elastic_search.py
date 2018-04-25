@@ -789,7 +789,8 @@ def index_downloads():
             'readme_url':
                 x.readme_file[0].s3_url,
             'topic': x.topic.display_name,
-            'data': x.data.display_name
+            'data': x.data.display_name,
+            'path_id': x.get_path_id()
         }
         bulk_data.append({
             'index': {
