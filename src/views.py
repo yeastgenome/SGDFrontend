@@ -866,41 +866,41 @@ def primer3(request):
         end_point = params.get('end_point')
 
     if gene_name is None:
-        five_prime_start = input_start
-        five_prime_end =  input_end - input_start
+        target_start = input_start
+        target_extend_by =  input_end - input_start
     else:
         if input_start < 0:
-            five_prime_start = 1000 - abs(input_start)
-            five_prime_end = input_end + five_prime_start
+            target_start = 1000 - abs(input_start)
+            target_extend_by = input_end - target_start
         else:
-            five_prime_start = 1000 + input_start
-            five_prime_end = input_end - input_start
+            target_start = 1000 + input_start
+            target_extend_by = input_end - input_start
 
     interval_range = [[100,150],[150,250], [100,300], [301,400], [401,500] ,[501,600] ,[601,700] ,[701,850], [851,1000]]
 
     if maximum_product_size:
-        range_start = five_prime_end
+        range_start = target_extend_by
         range_stop = maximum_product_size
         if(range_stop < range_start):
             interval_range = [[range_stop, range_start]]
         else:
             interval_range = [[range_start, range_stop]]
-    elif(five_prime_end > 1000):
-        interval_range = [[five_prime_end, five_prime_end+300]]
+    elif(target_extend_by > 1000):
+        interval_range = [[target_extend_by, target_extend_by+300]]
 
     if end_point == 'YES':
-        force_left_start = five_prime_start
-        force_right_start = 1000 + input_end
+        force_left_start = target_start
+        force_right_start = target_start + target_extend_by
     elif end_point == 'NO':
         force_left_start = -1000000
         force_right_start = -1000000
 
     print sequence
     print len(sequence)
-    print input_end
     print input_start
-    print five_prime_start
-    print five_prime_end
+    print input_end
+    print target_start
+    print target_extend_by
     print interval_range
 
     try:
@@ -908,7 +908,7 @@ def primer3(request):
             {
                 'SEQUENCE_ID': str(gene_name),
                 'SEQUENCE_TEMPLATE': sequence,
-                'SEQUENCE_TARGET': [five_prime_start,five_prime_end],
+                'SEQUENCE_TARGET': [target_start,target_extend_by],
                 'SEQUENCE_FORCE_LEFT_START': force_left_start,
                 'SEQUENCE_FORCE_RIGHT_START': force_right_start
             },
