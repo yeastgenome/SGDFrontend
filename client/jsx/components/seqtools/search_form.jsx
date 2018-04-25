@@ -82,9 +82,15 @@ var SearchForm = React.createClass({
 
 			var geneStrainPairs = Object.keys(data).sort()
 			
+			var resultSection = "";
+			for (var i = 0; i < geneStrainPairs.length; i++) {
+			    var key = geneStrainPairs[i];
+			    var seq = data[key];
+    			    var geneStrain = key.split(":")    
+    			    resultSection += "; gene=" + geneStrain[0] + " strain=" +  geneStrain[1] + ", sequence=" + seq;  
+			}		
 					
-					
-			return (<div>{geneStrainPairs[0]}</div>);
+			return (<div>{resultSection}</div>);
 
 
 		} 
