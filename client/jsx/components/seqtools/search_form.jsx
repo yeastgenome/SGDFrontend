@@ -413,6 +413,11 @@ var SearchForm = React.createClass({
 		   paramData['genes'] = window.localStorage.getItem("genes");
 		   paramData['strains'] = window.localStorage.getItem("strains");
 		   paramData['seqtype'] = window.localStorage.getItem("seqtype");
+		   
+		   console.log("genes="+paramData['genes']);
+		   console.log("strains="+paramData['strains']);
+		   console.log("seqtype="+paramData['seqtype']);
+
 		   if (window.localStorage.getItem("up")) {
 		      paramData['up'] = window.localStorage.getItem("up");
 		   }
