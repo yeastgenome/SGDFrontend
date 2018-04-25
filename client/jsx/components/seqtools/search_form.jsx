@@ -80,8 +80,8 @@ var SearchForm = React.createClass({
 			//	     <p><center><blockquote style={{ fontFamily: "Monospace", fontSize: 14 }}><a href={downloadUrl}>Download Full Results</a></blockquote></center></p>
 			//       </div>);			
 
-			var geneStrainPairs = Object.keys(data)
-
+			var geneStrainPairs = Object.keys(data).sort()
+			
 					
 					
 			return (<div>{geneStrainPairs[0]}</div>);
