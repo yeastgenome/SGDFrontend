@@ -1,4 +1,4 @@
-from src.models import DBSession, Base, Colleague, ColleagueLocus, ColleagueRelation, FilePath, Filedbentity, Path, ColleagueReference, ColleagueUrl, Colleaguetriage, Dbentity, Locusdbentity, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi
+from src.models import DBSession, Base, Colleague, ColleagueLocus, ColleagueRelation, FilePath, Filedbentity, FileKeyword, Path, ColleagueReference, ColleagueUrl, Colleaguetriage, Dbentity, Locusdbentity, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi
 import os
 import requests
 
@@ -245,7 +245,6 @@ class ModelsHelper(object):
                 obj[item.file_id].append(res)
         return obj'''
 
-    #TODO: construct file-path dictionary
     def set_file_dict(self):
         file_obj = DBSession.query(
             Filedbentity, FilePath).join(FilePath).filter(
@@ -292,15 +291,29 @@ class ModelsHelper(object):
         return obj_container
 
     def get_downloads_menu(self):
-
-        path_data = DBSession.query(Path).all()
+        path_data = DBSession.query(Path).order_by(Path.path).all()
         tree = PathTree()
         temp = []
+        orderTitles = {"Genome Sequences": 1, "Reports": 2, "Datasets": 3, "Community": 4 }
         for item in path_data:
             branch = tree
             temp_arr = item.path.split('/')
             for itm in temp_arr[1:]:
-                branch = branch.menu.setdefault(itm, PathTree(item.path_id, item.path, self.setMenuName(itm), item.description))
+                menuTitle = self.setMenuName(itm)
+                orderNumber = orderTitles.get(menuTitle)
+                if orderNumber:
+                    branch = branch.menu.setdefault(itm,
+                                                    PathTree(
+                                                        item.path_id,
+                                                        item.path,
+                                                        menuTitle,
+                                                        item.description,
+                                                        orderNumber))
+                else:
+                    branch = branch.menu.setdefault(
+                        itm,
+                        PathTree(item.path_id, item.path, menuTitle, item.description))
+
         if tree:
             for tKey, tValue in tree.menu.items():
                 tempItem = self.traverseMenuItem(tValue)
@@ -315,12 +328,14 @@ class ModelsHelper(object):
             nameStr = ''
             for item in res:
                 nameStr += item.capitalize() + ' '
+            if 'sgd' in nameStr.lower():
+                tmp = nameStr.split(' ');
+                nameStr = tmp[0].upper() + ' ' + tmp[1]
             return nameStr.strip()
         return None
     def get_downloads_menu_helper(self, path_tree):
         if path_tree:
             key_list = path_tree.keys()
-
         else:
             return None
 
@@ -331,15 +346,113 @@ class ModelsHelper(object):
                 if bool(vl.menu):
                     self.traverseMenuItem(vl)
 
+    def convertBytes(self, numBytes, suffix='B'):
+        '''
+        Convert bytes to human readable unit
+        '''
+        if numBytes is not None or numBytes > 0:
+            units = ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z']
+            for item in units:
+                if abs(numBytes) < 1024.0:
+                    return "%3.1f%s%s" % (numBytes, item, suffix)
+                numBytes /= 1024.0
+            return "%.1f%s%s" % (numBytes, 'Y', suffix)
+        return None
+
+    def get_id_list_by_path_id(self, path_id):
+        file_path_ids = DBSession.query(FilePath.file_id).filter(FilePath.path_id == path_id).all()
+        if file_path_ids is not None:
+            return file_path_ids
+        return None
+
+    def get_file_dbentity_keyword(self):
+        obj = {}
+        _data = DBSession.query(
+            Filedbentity, FileKeyword).join(FileKeyword).filter(
+                Filedbentity.dbentity_id == FileKeyword.file_id).all()
+        for item in _data:
+            if (item):
+                if item[0].dbentity_id not in obj:
+                    obj[item[0].dbentity_id] = []
+                obj[item[0].dbentity_id].append(item[1].keyword.display_name)
+
+        return obj
+
+    def get_files_by_status(self, ids_list, flag):
+        if(ids_list):
+            if(flag):
+                result = DBSession.query(Filedbentity).filter(
+                    Filedbentity.dbentity_id.in_(ids_list),
+                    Filedbentity.is_public == True, Filedbentity.s3_url != None,
+                    Filedbentity.readme_file_id != None,
+                    Filedbentity.dbentity_status == "Active").all()
+                return result
+            else:
+                result = DBSession.query(Filedbentity).filter(
+                    Filedbentity.dbentity_id.in_(ids_list),
+                    Filedbentity.is_public == True, Filedbentity.s3_url != None,
+                    Filedbentity.readme_file_id != None).all()
+                return result
+
+
+    def get_files_by_id_list(self, file_id_list, flag):
+        if file_id_list is not None:
+            ids_list = [int(y) for ys in file_id_list for y in ys]
+            file_res = self.get_files_by_status(ids_list, flag)
+            if file_res:
+                temp_files = []
+                for x in file_res:
+                    status = ''
+                    if (x.dbentity_status == "Active" or x.dbentity_status == "Archived"):
+                        if x.dbentity_status == "Active":
+                            status = "Active"
+                        else:
+                            status = "Archived"
+                    obj = {
+                        'name':
+                            x.display_name,
+                        'href':
+                            x.s3_url,
+                        'category':
+                            'download',
+                        'description':
+                            x.description,
+                        'format':
+                            str(x.format.display_name),
+                        'status':
+                            str(status),
+                        'file_size':
+                            str(self.convertBytes(x.file_size))
+                            if x.file_size is not None else x.file_size,
+                        'year':
+                            str(x.year),
+                        'readme_url':
+                            x.readme_file[0].s3_url
+                            if x.readme_file_id is not None else None
+                    }
+                    temp_files.append(obj)
+                return temp_files
+        return None
+
+    def get_files_by_path_id(self, path_id, flag):
+        file_ids = self.get_id_list_by_path_id(path_id)
+        if file_ids:
+            files = self.get_files_by_id_list(file_ids, flag)
+            if files:
+                return files
+
+        return None
+
 
 class PathTree(object):
-    def __init__(self, id=0, path=None, format_name=None, description=None, *args, **kwargs):
+    def __init__(self, id=0, path=None, format_name=None, description=None, orderNumber=100, *args, **kwargs):
         self.menu = {}
         self.childNodes = []
         self.path_id = id
         self.path = path
         self.description = description
         self.title = format_name
+        self.orderNumber = orderNumber
 
     def __json__(self, request):
         return {
@@ -348,5 +461,10 @@ class PathTree(object):
             'id': self.path_id,
             'path': self.path,
             'description': self.description,
-            'childNodes': self.childNodes
+            'childNodes': self.childNodes,
+            'orderNumber': self.orderNumber
         }
+    def format_title(self, title):
+        if("cerevisiae" not in title.lower()):
+            return title
+        return title.replace("S Cerevisiae", "S. cerevisiae")
