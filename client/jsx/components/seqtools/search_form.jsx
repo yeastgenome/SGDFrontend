@@ -84,7 +84,7 @@ var SearchForm = React.createClass({
 
 					
 					
-			return (<div>HELLO WORLD{geneStrainPairs[0]}</div>);
+			return (<div>{geneStrainPairs[0]}</div>);
 
 
 		} 
@@ -133,7 +133,9 @@ var SearchForm = React.createClass({
 
 	_onSubmit: function (e) {
 		
-		var genes = this.refs.genes.value.trim();		
+		var genes = this.refs.genes.value.trim();
+		var re = /\+/g;
+		genes = genes.replace(re, " ");		
 		var re = / +/g;
 		genes = genes.replace(re, ":");
 		if (genes == '') {
