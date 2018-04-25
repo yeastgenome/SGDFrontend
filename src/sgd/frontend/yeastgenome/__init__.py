@@ -298,7 +298,7 @@ class YeastgenomeFrontend(FrontendInterface):
         relative_url = '/' + ('/'.join(url_repr))
         backend_url = self.backend_url
         full_url = backend_url + relative_url
-        if request.json_body:
+        if request.method == 'POST':
             request_data = request.json_body
         else:
             request_data = None
