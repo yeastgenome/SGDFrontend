@@ -80,9 +80,8 @@ var SearchForm = React.createClass({
 			//	     <p><center><blockquote style={{ fontFamily: "Monospace", fontSize: 14 }}><a href={downloadUrl}>Download Full Results</a></blockquote></center></p>
 			//       </div>);			
 
-			return (<div>
-			       HELLO WORLD: { data }
-			       </div>);
+			return (<div>HELLO WORLD</div>);
+
 
 		} 
 		else if (this.state.isPending) {
@@ -451,11 +450,6 @@ var SearchForm = React.createClass({
 	_sendRequest: function(paramData) {
 
 		// http://www3.dev.yeastgenome.org/run_seqtools?genes=act1&seqtype=DNA&strains=S288C&rev=on
-
-		console.log("genes="+paramData['genes']+", strains="+paramData['strains'] + ", seqtype="+paramData['seqtype']+", rev="+paramData['rev'] + ", up="+paramData['up'] + ", down=" + paramData['down'] + ", url="+SeqtoolsUrl);
-
-		// data: paramData,
-		// url: SeqtoolsUrl,
                         
 		$.ajax({
 			url: SeqtoolsUrl,
