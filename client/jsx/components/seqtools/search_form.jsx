@@ -177,7 +177,6 @@ var SearchForm = React.createClass({
                    return 1;
 		}	
 	
-		var seqtype = this.refs.seqtype1.value.trim(); // Protein or DNA 
 		var rev = this.refs.rev1.value.trim();         // on or off
 		
 		if (rev == 'off') {
@@ -187,17 +186,10 @@ var SearchForm = React.createClass({
 		window.localStorage.clear();
                 window.localStorage.setItem("genes", genes);
                 window.localStorage.setItem("strains", strains);
-		window.localStorage.setItem("seqtype", seqtype);
-		if (seqtype == 'DNA') {
-		   window.localStorage.setItem("rev", rev);
-		   window.localStorage.setItem("up", up);
-                   window.localStorage.setItem("down", down);
-		}
-		else {
-		   window.localStorage.setItem("rev", '');
-                   window.localStorage.setItem("up", '');
-                   window.localStorage.setItem("down", '');  
-		}
+		window.localStorage.setItem("rev", rev);
+		window.localStorage.setItem("up", up);
+                window.localStorage.setItem("down", down);
+		
 		
 	},
 
@@ -239,7 +231,7 @@ var SearchForm = React.createClass({
                    return 1;
                 }
 		
-		var seqtype = this.refs.seqtype3.value.trim();
+		var seqtype = this.refs.seqtype.value.trim();
                 var rev = this.refs.rev3.value.trim();
 		if (rev == 'off') {
 		   rev = '';
@@ -258,31 +250,28 @@ var SearchForm = React.createClass({
         },
 
 	_getGeneNodeLeft: function() {
-	
-		var seqtypeNode = this._getSeqtypeNode('seqtype1');
+			  
+	        var reverseCompNode = this._getReverseCompNode('rev1');
 
                 return (<div style={{ textAlign: "top" }}>
                         <h3>Enter a list of names:</h3>
 			<p>(space-separated gene names (and/or ORF and/or SGDID). Example: ACT1 YHR023W SGD:S000000001) 
 			<textarea ref='genes' name='genes' onChange={this._onChange} rows='2' cols='50'></textarea></p>
-			<h3>Pick a sequence type:</h3>
-			{ seqtypeNode }
 			<h3><b>If available,</b> add flanking basepairs</h3>
 			<p>Upstream: <input type='text' ref='up' name='up' onChange={this._onChange} size='50'></input>
 			Downstream: <input type='text' ref='down' name='down' onChange={this._onChange} size='50'></input></p>
+			{ reverseCompNode }			
                 </div>);
 
         },
 	
 	_getGeneNodeRight: function() {
 
-                var reverseCompNode = this._getReverseCompNode('rev1');	
                 var strainNode = this._getStrainNode();
 
                 return (<div>
                         <h3>Pick one or more strains:</h3>
                         { strainNode }
-			{ reverseCompNode }
 			<p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input></p>
                 </div>);
 
@@ -327,7 +316,7 @@ var SearchForm = React.createClass({
 
 	_getSeqNode: function() {
 
-		var seqtypeNode = this._getSeqtypeNode('seqtype3');
+		var seqtypeNode = this._getSeqtypeNode();
 		var reverseCompNode = this._getReverseCompNode('rev3');
 
 		return(<div>
@@ -344,14 +333,14 @@ var SearchForm = React.createClass({
 
 	},
 
-	_getSeqtypeNode: function(name) {
+	_getSeqtypeNode: function() {
 
 		var _elements = [];
                	_elements.push(<option value='DNA' selected="selected">DNA</option>);
                	_elements.push(<option value='Protein'>Protein</option>);
                 
 		return(<div>
-                      <p><select name={name} ref={name} onChange={this._onChange}>{_elements}</select></p>
+                      <p><select name='seqtype' ref='seqtype' onChange={this._onChange}>{_elements}</select></p>
                 </div>);
 
 	},
@@ -418,15 +407,10 @@ var SearchForm = React.createClass({
 		if (searchType == 'genes') {
 		   paramData['genes'] = window.localStorage.getItem("genes");
 		   paramData['strains'] = window.localStorage.getItem("strains");
-		   paramData['seqtype'] = window.localStorage.getItem("seqtype");
-
-
 		   
 		   console.log("genes="+paramData['genes']);
 		   console.log("strains="+paramData['strains']);
-		   console.log("seqtype="+paramData['seqtype']);
-
-
+		
 
 		   if (window.localStorage.getItem("up")) {
 		      paramData['up'] = window.localStorage.getItem("up");
