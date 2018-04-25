@@ -137,7 +137,7 @@ var SearchForm = React.createClass({
 		var re = /\+/g;
 		genes = genes.replace(re, " ");		
 		var re = / +/g;
-		genes = genes.replace(re, ":");
+		genes = genes.replace(re, "|");
 		if (genes == '') {
 		   alert("Please enter one or more gene names.");
 		   e.preventDefault();
@@ -157,7 +157,7 @@ var SearchForm = React.createClass({
 		for (var i = 0; i < strainList.options.length; i++) {
                      if (strainList.options[i].selected) {
                          if (strains) {
-                              strains = strains + ':' + strainList.options[i].value;
+                              strains = strains + '|' + strainList.options[i].value;
 			 }
                          else {
                               strains = strainList.options[i].value;

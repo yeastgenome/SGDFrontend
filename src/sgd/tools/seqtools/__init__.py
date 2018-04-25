@@ -53,8 +53,8 @@ def get_sequence_for_genes(p):
         strains = 'S288C'
     if genes is None:
         return { "ERROR": "NO GENE NAME PASSED IN" }
-    genes = genes.split(':')
-    strains = strains.split(':')
+    genes = genes.split('|')
+    strains = strains.split('|')
     type = p.get('seqtype')
     up = p.get('up')
     down = p.get('down')
@@ -95,8 +95,8 @@ def _get_sequence_from_contig(contig, start, end, strand):
 
 def _get_genomic_or_protein_seq(genes, strains, type):
 
-    # http://0.0.0.0:6545/run_seqtools?genes=ACT1:BUD2&strains=W303:S288C&type=DNA
-    # http://0.0.0.0:6545/run_seqtools?genes=ACT1:BUD2&strains=W303:S288C
+    # http://0.0.0.0:6545/run_seqtools?genes=ACT1|BUD2&strains=W303|S288C&type=DNA
+    # http://0.0.0.0:6545/run_seqtools?genes=ACT1|BUD2&strains=W303|S288C
 
     data = {}
     for name in genes:
@@ -122,7 +122,7 @@ def _get_genomic_or_protein_seq(genes, strains, type):
 
 def _get_genomic_with_up_down_seq(genes, strains, up, down):
 
-    # http://0.0.0.0:6545/run_seqtools?genes=ACT1:BUD2&strains=W303:S288C&type=nuc&up=10&down=10
+    # http://0.0.0.0:6545/run_seqtools?genes=ACT1|BUD2&strains=W303|S288C&type=nuc&up=10&down=10
 
     contig_coordinate_data = _get_contig_coordinates(genes, strains)
 
