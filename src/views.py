@@ -812,7 +812,6 @@ def primer3(request):
         gene_name = params.get('gene_name')
         if gene_name is None:
             if 'sequence' in p_keys:
-                gene_name = 'Input Sequence:'
                 sequence = params.get('sequence')
                 if sequence is None:
                     return HTTPBadRequest(body=json.dumps({'error': 'No gene name OR sequence provided'}))
@@ -876,8 +875,7 @@ def primer3(request):
             target_start = 1000 + input_start
             target_extend_by = input_end - input_start
 
-    interval_range = [[100,150],[150,250], [100,300], [301,400], [401,500] ,[501,600] ,[601,700] ,[701,850], [851,1000]]
-
+    interval_range = [[100, 150], [150, 250], [100, 300], [301, 400], [401, 500], [501, 600], [601, 700], [701, 850], [851, 1000]]
     if maximum_product_size:
         range_start = target_extend_by
         range_stop = maximum_product_size
@@ -888,9 +886,7 @@ def primer3(request):
     elif(target_extend_by > 800):
         interval_range = [[target_extend_by, target_extend_by+300]]
 
-
     sequence_target = [[target_start, target_extend_by]]
-
     if end_point == 'YES':
         force_left_start = target_start
         force_right_start = target_start + target_extend_by
@@ -899,16 +895,16 @@ def primer3(request):
         force_left_start = -1000000
         force_right_start = -1000000
 
-    # print sequence
-    # print len(sequence)
-    # print input_start
-    # print input_end
-    # print target_start
-    # print target_extend_by
-    # print interval_range
-    # print sequence_target
-    # print force_left_start
-    # print force_right_start
+    print sequence
+    print len(sequence)
+    print input_start
+    print input_end
+    print target_start
+    print target_extend_by
+    print interval_range
+    print sequence_target
+    print force_left_start
+    print force_right_start
 
     try:
         result = bindings.designPrimers(
