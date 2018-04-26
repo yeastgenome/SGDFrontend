@@ -99,25 +99,41 @@ def _get_genomic_or_protein_seq(genes, strains, type):
     # http://0.0.0.0:6545/run_seqtools?genes=ACT1|BUD2&strains=W303|S288C
 
     data = {}
+
     for name in genes:
+
         name = name.replace("SGD:", "")
         url = seq_url.replace("_REPLACE_NAME_HERE_", name)
         res = _get_json_from_server(url)
 
-        rows = []
-        if type in ['nuc', 'DNA', 'dna']:
-            rows = res['genomic_dna']
-        else:
-            rows = res['protein']
+        allSeqData = {}
+        [format_name, proteinData] = _extract_seq(strains, res['protein'])
+        allSeqData['protein'] = proteinData
+        [format_name, genomicData] = _extract_seq(strains, res['genomic_dna'])
+        allSeqData['genome_dna'] = genomicData
+        [format_name, codingData] = _extract_seq(strains, res['coding_dna'])
+        allSeqData['coding_dna'] = codingData
+        data[format_name] = allSeqData
 
-        for row in rows:
-            strain = row['strain']
-            if strain['display_name'] in strains:
-                seq = row['residues']
-                key = name + ":" + strain['display_name']
-                data[key] = seq
-                
     return data
+
+
+def _extract_seq(strains, rows):
+
+    seqData = {}
+    format_name = None
+    for row in rows:
+        strain = row['strain']
+        if strain['display_name'] in strains:
+            loucs = row['locus']
+            format_name = locus['format_name']
+            strain_name = strain['display_name']
+            seqData[strain_name] = { "display_name": locus['display_name'],
+                                     "headline": locus['headline'],
+                                     "locus_type": locus['locus_type'],
+                                     "sgdid": "SGD:" + locus['link'].replace("/locus/", ""),
+                                     "residue": row['residues'] }
+    return [format_name, seqData]
 
 
 def _get_genomic_with_up_down_seq(genes, strains, up, down):
