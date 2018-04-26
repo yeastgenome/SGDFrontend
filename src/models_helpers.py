@@ -245,7 +245,6 @@ class ModelsHelper(object):
                 obj[item.file_id].append(res)
         return obj'''
 
-    #TODO: construct file-path dictionary
     def set_file_dict(self):
         file_obj = DBSession.query(
             Filedbentity, FilePath).join(FilePath).filter(
@@ -291,43 +290,6 @@ class ModelsHelper(object):
 
         return obj_container
 
-    def get_downloads_menu(self):
-        path_data = DBSession.query(Path).all()
-        tree = PathTree()
-        temp = []
-        for item in path_data:
-            branch = tree
-            temp_arr = item.path.split('/')
-            for itm in temp_arr[1:]:
-                branch = branch.menu.setdefault(itm, PathTree(item.path_id, item.path, self.setMenuName(itm), item.description))
-        if tree:
-            for tKey, tValue in tree.menu.items():
-                tempItem = self.traverseMenuItem(tValue)
-                if tempItem is not None:
-                    tValue.childNodes.append(tempItem)
-                temp.append(tValue)
-            return temp
-
-    def setMenuName(self, name):
-        if name:
-            res = name.split('-')
-            nameStr = ''
-            for item in res:
-                nameStr += item.capitalize() + ' '
-            return nameStr.strip()
-        return None
-    def get_downloads_menu_helper(self, path_tree):
-        if path_tree:
-            key_list = path_tree.keys()
-        else:
-            return None
-
-    def traverseMenuItem(self, tree_menu_obj):
-        if bool(tree_menu_obj.menu):
-            for ky, vl in tree_menu_obj.menu.items():
-                tree_menu_obj.childNodes.append(vl)
-                if bool(vl.menu):
-                    self.traverseMenuItem(vl)
 
     def convertBytes(self, numBytes, suffix='B'):
         '''
@@ -425,27 +387,3 @@ class ModelsHelper(object):
                 return files
 
         return None
-
-
-class PathTree(object):
-    def __init__(self, id=0, path=None, format_name=None, description=None, *args, **kwargs):
-        self.menu = {}
-        self.childNodes = []
-        self.path_id = id
-        self.path = path
-        self.description = description
-        self.title = format_name
-
-    def __json__(self, request):
-        return {
-            'menu': self.menu,
-            'title': self.format_title(self.title),
-            'id': self.path_id,
-            'path': self.path,
-            'description': self.description,
-            'childNodes': self.childNodes
-        }
-    def format_title(self, title):
-        if("cerevisiae" not in title.lower()):
-            return title
-        return title.replace("S Cerevisiae", "S. cerevisiae")
