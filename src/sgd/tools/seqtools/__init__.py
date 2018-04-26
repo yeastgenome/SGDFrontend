@@ -19,7 +19,7 @@ def do_seq_analysis(request):
 
     data = get_sequence_for_genes(p)
     return Response(body=json.dumps(data), content_type='application/json')
-    # return Response(body=json.dumps(p), content_type='application/json') 
+
 
 def get_sequence_for_chr(p):
 
@@ -115,8 +115,8 @@ def _get_genomic_or_protein_seq(genes, strains, type):
         allSeqData['coding_dna'] = codingData
         data[format_name] = allSeqData
 
-    return data
-
+    # return data
+    return { "seq": "testing" }
 
 def _extract_seq(strains, rows):
 
@@ -124,10 +124,10 @@ def _extract_seq(strains, rows):
     format_name = None
     for row in rows:
         strain = row['strain']
-        if strain['display_name'] in strains:
+        strain_name = strain['display_name']
+        if strain_name in strains:
             loucs = row['locus']
             format_name = locus['format_name']
-            strain_name = strain['display_name']
             seqData[strain_name] = { "display_name": locus['display_name'],
                                      "headline": locus['headline'],
                                      "locus_type": locus['locus_type'],
