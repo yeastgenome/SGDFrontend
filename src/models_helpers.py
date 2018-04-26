@@ -290,61 +290,6 @@ class ModelsHelper(object):
 
         return obj_container
 
-    def get_downloads_menu(self):
-        path_data = DBSession.query(Path).order_by(Path.path).all()
-        tree = PathTree()
-        temp = []
-        orderTitles = {"Genome Sequences": 1, "Reports": 2, "Datasets": 3, "Community": 4 }
-        for item in path_data:
-            branch = tree
-            temp_arr = item.path.split('/')
-            for itm in temp_arr[1:]:
-                menuTitle = self.setMenuName(itm)
-                orderNumber = orderTitles.get(menuTitle)
-                if orderNumber:
-                    branch = branch.menu.setdefault(itm,
-                                                    PathTree(
-                                                        item.path_id,
-                                                        item.path,
-                                                        menuTitle,
-                                                        item.description,
-                                                        orderNumber))
-                else:
-                    branch = branch.menu.setdefault(
-                        itm,
-                        PathTree(item.path_id, item.path, menuTitle, item.description))
-
-        if tree:
-            for tKey, tValue in tree.menu.items():
-                tempItem = self.traverseMenuItem(tValue)
-                if tempItem is not None:
-                    tValue.childNodes.append(tempItem)
-                temp.append(tValue)
-            return temp
-
-    def setMenuName(self, name):
-        if name:
-            res = name.split('-')
-            nameStr = ''
-            for item in res:
-                nameStr += item.capitalize() + ' '
-            if 'sgd' in nameStr.lower():
-                tmp = nameStr.split(' ');
-                nameStr = tmp[0].upper() + ' ' + tmp[1]
-            return nameStr.strip()
-        return None
-    def get_downloads_menu_helper(self, path_tree):
-        if path_tree:
-            key_list = path_tree.keys()
-        else:
-            return None
-
-    def traverseMenuItem(self, tree_menu_obj):
-        if bool(tree_menu_obj.menu):
-            for ky, vl in tree_menu_obj.menu.items():
-                tree_menu_obj.childNodes.append(vl)
-                if bool(vl.menu):
-                    self.traverseMenuItem(vl)
 
     def convertBytes(self, numBytes, suffix='B'):
         '''
@@ -442,29 +387,3 @@ class ModelsHelper(object):
                 return files
 
         return None
-
-
-class PathTree(object):
-    def __init__(self, id=0, path=None, format_name=None, description=None, orderNumber=100, *args, **kwargs):
-        self.menu = {}
-        self.childNodes = []
-        self.path_id = id
-        self.path = path
-        self.description = description
-        self.title = format_name
-        self.orderNumber = orderNumber
-
-    def __json__(self, request):
-        return {
-            'menu': self.menu,
-            'title': self.title,
-            'id': self.path_id,
-            'path': self.path,
-            'description': self.description,
-            'childNodes': self.childNodes,
-            'orderNumber': self.orderNumber
-        }
-    def format_title(self, title):
-        if("cerevisiae" not in title.lower()):
-            return title
-        return title.replace("S Cerevisiae", "S. cerevisiae")
