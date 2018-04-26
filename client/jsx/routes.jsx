@@ -8,7 +8,6 @@ import Search from './containers/search.jsx';
 import StyleGuide from './components/style_guide/style_guide.jsx';
 import Primer3 from './components/primer3/primer3.jsx';
 import ExampleContainer from './containers/example_container.jsx';
-import CustomTreeContainer from "./containers/custom_tree_container.jsx";
 
 module.exports = (
   <Route path="/" component={Layout}>
@@ -16,6 +15,5 @@ module.exports = (
     <Route path="search" component={Search} />
     <Route path="style-guide" component={StyleGuide} />
     <Route path="primer3" component={Primer3} />
-    <Route path="downloads" component={CustomTreeContainer} />
   </Route>
 );
