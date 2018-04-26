@@ -895,16 +895,16 @@ def primer3(request):
         force_left_start = -1000000
         force_right_start = -1000000
 
-    print sequence
-    print len(sequence)
-    print input_start
-    print input_end
-    print target_start
-    print target_extend_by
-    print interval_range
-    print sequence_target
-    print force_left_start
-    print force_right_start
+    # print sequence
+    # print len(sequence)
+    # print input_start
+    # print input_end
+    # print target_start
+    # print target_extend_by
+    # print interval_range
+    # print sequence_target
+    # print force_left_start
+    # print force_right_start
 
     try:
         result = bindings.designPrimers(
