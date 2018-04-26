@@ -22,24 +22,7 @@ const Primer3 = React.createClass({
   getInitialState () {
     return {
       result: null,
-      value: {
-        input_start: '500',
-        input_end: '900',
-        minimum_tm: '57',
-        optimum_tm: '59',
-        maximum_tm: '62',
-        minimum_length: '18',
-        optimum_primer_length: '20',
-        maximum_length: '23',
-        minimum_gc: '30',
-        optimum_gc: '50',
-        maximum_gc: '70',
-        max_self_complementarity: '8',
-        max_three_prime_self_complementarity: '3',
-        max_pair_complementarity: '8',
-        max_three_prime_pair_complementarity: '3',
-        end_point: 'NO'
-      },
+      value: DEFAULT_VALUE,
       isLoadPending: false, // loading existing data
       isUpdatePending: false, // sending update to server
       isComplete: false,
@@ -59,6 +42,17 @@ const Primer3 = React.createClass({
 
   resetForm() {
     this.setState({value: null});
+  },
+
+  handleReset(e) {
+    e.preventDefault();
+    this.setState({
+      value: DEFAULT_VALUE,
+      result: null,
+      error: null,
+      gene_name: null,
+      sequence: null
+    });
   },
 
   handleSubmit(e) {
@@ -314,7 +308,7 @@ const Primer3 = React.createClass({
         <div className="form-group">
           <button type="submit" className="button primary">Pick Primers</button>
           <span> OR </span>
-          <button type="reset" className="button primary">Reset to Defaults</button>
+          <button onClick={this.handleReset} className="button primary">Reset to Defaults</button>
         </div>
       </form>
     );
@@ -376,3 +370,22 @@ function mapStateToProps(_state) {
 }
 
 export default connect(mapStateToProps)(Radium(Primer3));
+
+const DEFAULT_VALUE = {
+  input_start: '500',
+  input_end: '900',
+  minimum_tm: '57',
+  optimum_tm: '59',
+  maximum_tm: '62',
+  minimum_length: '18',
+  optimum_primer_length: '20',
+  maximum_length: '23',
+  minimum_gc: '30',
+  optimum_gc: '50',
+  maximum_gc: '70',
+  max_self_complementarity: '8',
+  max_three_prime_self_complementarity: '3',
+  max_pair_complementarity: '8',
+  max_three_prime_pair_complementarity: '3',
+  end_point: 'NO'
+};
