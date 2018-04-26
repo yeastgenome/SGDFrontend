@@ -871,7 +871,7 @@ def primer3(request):
     else:
         if input_start < 0:
             target_start = 1000 - abs(input_start)
-            target_extend_by = input_end - target_start
+            target_extend_by = (1000 + input_end) - target_start
         else:
             target_start = 1000 + input_start
             target_extend_by = input_end - input_start
@@ -885,30 +885,37 @@ def primer3(request):
             interval_range = [[range_stop, range_start]]
         else:
             interval_range = [[range_start, range_stop]]
-    elif(target_extend_by > 1000):
+    elif(target_extend_by > 800):
         interval_range = [[target_extend_by, target_extend_by+300]]
+
+
+    sequence_target = [[target_start, target_extend_by]]
 
     if end_point == 'YES':
         force_left_start = target_start
         force_right_start = target_start + target_extend_by
+        sequence_target = []
     elif end_point == 'NO':
         force_left_start = -1000000
         force_right_start = -1000000
 
-    print sequence
-    print len(sequence)
-    print input_start
-    print input_end
-    print target_start
-    print target_extend_by
-    print interval_range
+    # print sequence
+    # print len(sequence)
+    # print input_start
+    # print input_end
+    # print target_start
+    # print target_extend_by
+    # print interval_range
+    # print sequence_target
+    # print force_left_start
+    # print force_right_start
 
     try:
         result = bindings.designPrimers(
             {
                 'SEQUENCE_ID': str(gene_name),
                 'SEQUENCE_TEMPLATE': sequence,
-                'SEQUENCE_TARGET': [target_start,target_extend_by],
+                'SEQUENCE_TARGET': sequence_target,
                 'SEQUENCE_FORCE_LEFT_START': force_left_start,
                 'SEQUENCE_FORCE_RIGHT_START': force_right_start
             },
@@ -1056,8 +1063,16 @@ def primer3(request):
                 'PRIMER_INTERNAL_WT_SEQ_QUAL' : 0.0,
                 'PRIMER_INTERNAL_WT_END_QUAL': 0.0
         }, debug=False)
-        result, notes = primer3_parser(result)
-        obj = {'result' : result, 'gene_name': gene_name, 'seq': decodeseq}
+
+        # fmt = '{:<30} {:<50}'
+        # print(fmt.format('Output Key', 'Binding Result'))
+        # print('-' * 80)
+        # for k in sorted(result):
+        #     print(fmt.format(k, repr(result[k])))
+
+        presult, notes = primer3_parser(result)
+        obj = {'result' : presult, 'gene_name': gene_name, 'seq': decodeseq}
+        # print presult
         return obj
 
     except Exception as e:
