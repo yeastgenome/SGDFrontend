@@ -387,5 +387,6 @@ const DEFAULT_VALUE = {
   max_three_prime_self_complementarity: '3',
   max_pair_complementarity: '8',
   max_three_prime_pair_complementarity: '3',
-  end_point: 'NO'
+  end_point: 'NO',
+  sequence: ''
 };
