@@ -1114,39 +1114,3 @@ def healthcheck(request):
             DBSession.remove()
             attempts += 1
     return ldict
-
-
-# get all paths
-@view_config(
-    route_name='get_downloads_menu', renderer='json', request_method='GET')
-def get_downloads_menu(request):
-    try:
-        menu_itms = models_helper.get_downloads_menu()
-        return menu_itms
-    except:
-        return []
-
-@view_config(
-    route_name='get_downloads_files', renderer='json', request_method='GET')
-def get_downloads_path(request):
-    try:
-        id = request.matchdict["pathid"]
-        file_res = models_helper.get_files_by_path_id(id, False)
-        if file_res:
-            return file_res
-        else:
-            return []
-    except:
-        return []
-@view_config(
-    route_name='get_downloads_active_files', renderer='json', request_method='GET')
-def get_downloads_active_files(request):
-    try:
-        id = request.matchdict["pathid"]
-        file_res = models_helper.get_files_by_path_id(id, True)
-        if file_res:
-            return file_res
-        else:
-            return []
-    except:
-        return []
