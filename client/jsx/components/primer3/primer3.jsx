@@ -81,7 +81,10 @@ const Primer3 = React.createClass({
 
   renderResults () {
     let data = this.state.result; //list of maps
-    let gene_name = 'Primer pairs for :    ' + this.state.gene_name
+    let gene_name = this.state.gene_name
+    if (gene_name == null){ gene_name = 'Input Sequence'}
+    console.log('gene name', gene_name)
+    let gname_str = 'Primer pairs for  :    ' + gene_name
     //let sequence = 'Input Sequence:   ' + this.state.sequence
     //let newsequence = addNewlines(sequence)
     let input = this.state.input
@@ -107,6 +110,8 @@ const Primer3 = React.createClass({
                                 if(d2 == 'position') {
                                     if(input == 'name'){
                                         pos = val2 - 1000
+                                    }else if(input == 'seq'){
+                                        pos = val2
                                     }
                                 }
                                 if(d2 == 'length') len = val2
@@ -136,7 +141,6 @@ const Primer3 = React.createClass({
         }
     });
 
-
   let _data = {
       headers: [
           ['primer', 'start', 'len', 'product size', 'tm', 'gc%', 'any_th', 'end_th', 'hairpin', 'seq']
@@ -145,7 +149,7 @@ const Primer3 = React.createClass({
     };
     return (
       <div>
-        <h2 style={[style.title]}>{gene_name}</h2>
+        <h2 style={[style.title]}>{gname_str}</h2>
         <hr />
         <DataTable data={_data} usePlugin={true} order={0, "asc"}/>
       </div>
