@@ -807,7 +807,7 @@ def ecnumber(request):
 def primer3(request):
     params = request.json_body
     p_keys = params.keys()
-    decodeseq = ''
+
     if 'gene_name' in p_keys:
         gene_name = params.get('gene_name')
         if gene_name is None:
@@ -817,6 +817,7 @@ def primer3(request):
                     return HTTPBadRequest(body=json.dumps({'error': 'No gene name OR sequence provided'}))
                 decodeseq = sequence
                 sequence = str(sequence.replace('\r', '').replace('\n', ''))
+                input = 'seq'
         else:
             locus = DBSession.query(Locusdbentity).filter(or_(Locusdbentity.gene_name == gene_name.upper(),Locusdbentity.systematic_name == gene_name)).one_or_none()
             if locus is None:
@@ -829,6 +830,7 @@ def primer3(request):
                 decodeseq = dna
                 sequence = str(dna)
                 sequence = sequence[3:-3]
+                input = 'name'
 
     if 'maximum_tm' in p_keys:
         maximum_tm = params.get('maximum_tm')
@@ -895,6 +897,17 @@ def primer3(request):
     elif end_point == 'NO':
         force_left_start = -1000000
         force_right_start = -1000000
+
+    print sequence
+    print len(sequence)
+    print input_start
+    print input_end
+    print target_start
+    print target_extend_by
+    print interval_range
+    print sequence_target
+    print force_right_start
+    print force_left_start
 
     try:
         result = bindings.designPrimers(
@@ -1051,7 +1064,7 @@ def primer3(request):
         }, debug=False)
 
         presult, notes = primer3_parser(result)
-        obj = {'result' : presult, 'gene_name': gene_name, 'seq': decodeseq}
+        obj = {'result' : presult, 'gene_name': gene_name, 'seq': decodeseq, 'input': input}
         return obj
 
     except Exception as e:
