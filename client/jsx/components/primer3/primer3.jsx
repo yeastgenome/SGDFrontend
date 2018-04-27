@@ -71,7 +71,8 @@ const Primer3 = React.createClass({
         if (returnData.error) {
           this.setState({ error: returnData.error });
         } else {
-          this.setState({ result: returnData.result, error: null, gene_name: returnData.gene_name, sequence: returnData.seq });
+          this.setState({ result: returnData.result, error: null, gene_name: returnData.gene_name,
+          sequence: returnData.seq, input: returnData.input});
         }
 	    }
   	});
@@ -81,8 +82,9 @@ const Primer3 = React.createClass({
   renderResults () {
     let data = this.state.result; //list of maps
     let gene_name = 'Primer pairs for :    ' + this.state.gene_name
-    let sequence = 'Input Sequence:   ' + this.state.sequence
-    let newsequence = addNewlines(sequence)
+    //let sequence = 'Input Sequence:   ' + this.state.sequence
+    //let newsequence = addNewlines(sequence)
+    let input = this.state.input
     let rowData = [];
     let name, pos, len, size, tm, gc, any_th, end_th, hairpin, seq;
     name = pos = len = size = tm = gc = any_th = end_th = hairpin = seq = " ";
@@ -102,7 +104,11 @@ const Primer3 = React.createClass({
                             if(d1 == 'pair'){
                                 if(d2 == 'product_size') size = val2
                             }else if (d1 == 'right' || d1=='left') {
-                                if(d2 == 'position') pos = val2
+                                if(d2 == 'position') {
+                                    if(input == 'name'){
+                                        pos = val2 - 1000
+                                    }
+                                }
                                 if(d2 == 'length') len = val2
                                 if(d2 == 'tm') tm = val2.toFixed(2)
                                 if(d2 == 'gc_percent') gc = val2.toFixed(2)
@@ -122,7 +128,7 @@ const Primer3 = React.createClass({
                             name = 'primer-left-'+left_count
                             left_count = getCounter(left_count)
                         }
-                        console.log(name, pos, len, size, tm, gc, any_th, end_th, hairpin, seq)
+                        //console.log(name, pos, len, size, tm, gc, any_th, end_th, hairpin, seq)
                         rowData.push([name, pos, len, size, tm, gc, any_th, end_th, hairpin, seq])
                     }
 
@@ -141,8 +147,7 @@ const Primer3 = React.createClass({
       <div>
         <h2 style={[style.title]}>{gene_name}</h2>
         <hr />
-        <DataTable data={_data} usePlugin={true} order={1, "asc"}/>
-        <h5 style={[style.title]}>{newsequence}</h5>
+        <DataTable data={_data} usePlugin={true} order={0, "asc"}/>
       </div>
     );
   },
