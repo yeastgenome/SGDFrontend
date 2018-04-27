@@ -46,7 +46,6 @@ namespace :deploy do
       execute "cd #{current_path}/../../ && echo \"Creating symlink...\"  && rm -rf SGDFrontend && ln -s SGDFrontend_app/current SGDFrontend"
     end
   end
-end
 
   desc 'Copy production_assest_url JSON file'
   task :copy_json do
