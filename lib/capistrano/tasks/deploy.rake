@@ -47,3 +47,11 @@ namespace :deploy do
     end
   end
 end
+
+  desc 'Copy production_assest_url JSON file'
+  task :copy_json do
+    on roles(:app), in: :sequence do
+      execute "echo \"Copying JSON from \" #{current_path} \" to \" #{release_path} \" ....\" && cp #{current_path}/production_asset_url.json #{release_path}"
+    end
+  end
+end
