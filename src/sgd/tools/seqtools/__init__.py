@@ -4,10 +4,15 @@ from urllib2 import Request, urlopen, URLError, HTTPError
 
 seq_url = "https://www.yeastgenome.org/backend/locus/_REPLACE_NAME_HERE_/sequence_details"
 contig_url = "https://www.yeastgenome.org/backend/contig/_REPLACE_CONTIG_NAME_HERE_"
+validate_url = "https://www.yeastgenome.org/backend/locus/"
 
 def do_seq_analysis(request):
 
     p = dict(request.params)
+
+    if p.get('check'):
+        data = validate_name(p)
+        return Response(body=json.dumps(data), content_type='application/json')
 
     if p.get('chr'):
         data = get_sequence_for_chr(p)
@@ -21,6 +26,20 @@ def do_seq_analysis(request):
     return Response(body=json.dumps(data), content_type='application/json')
 
 
+def validate_name(p):
+
+    # http://0.0.0.0:6545/run_seqtools?check=ACT1
+    name = p.get('check')
+    if name is None:
+        return -1
+    name = name.replace("SGD:", "")
+    url = validate_url.replace + name
+    res = _get_json_from_server(url)
+    if res == 404:
+        return -1
+    return 0
+
+        
 def get_sequence_for_chr(p):
 
     # http://0.0.0.0:6545/run_seqtools?chr=6&start=54696&end=53260
