@@ -7,6 +7,7 @@ const Checklist = require("../widgets/checklist.jsx");
 const Params = require("../mixins/parse_url_params.jsx");
 
 const SeqtoolsUrl = "/run_seqtools";
+const ValidateUrl = "https://www.yeastgenome.org/backend/locus/";
 
 // const LETTERS_PER_CHUNK = 10;
 // const LETTERS_PER_LINE = 60;
@@ -80,18 +81,18 @@ var SearchForm = React.createClass({
 			//	     <p><center><blockquote style={{ fontFamily: "Monospace", fontSize: 14 }}><a href={downloadUrl}>Download Full Results</a></blockquote></center></p>
 			//       </div>);			
 
-			var geneStrainPairs = Object.keys(data).sort()
+			// var geneStrainPairs = Object.keys(data).sort()
 			
-			var resultSection = "";
-			for (var i = 0; i < geneStrainPairs.length; i++) {
-			    var key = geneStrainPairs[i];
-			    var seq = data[key];
-    			    var geneStrain = key.split(":")    
-    			    resultSection += "; gene=" + geneStrain[0] + " strain=" +  geneStrain[1] + ", sequence=" + seq;  
-			}		
+			// var resultSection = "";
+			// for (var i = 0; i < geneStrainPairs.length; i++) {
+			//    var key = geneStrainPairs[i];
+			//    var seq = data[key];
+    			//    var geneStrain = key.split(":")    
+    			//    resultSection += "; gene=" + geneStrain[0] + " strain=" +  geneStrain[1] + ", sequence=" + seq;  
+			// }		
 					
-			return (<div>{resultSection}</div>);
-
+			// return (<div>{resultSection}</div>);
+			return (<div>Hello world!!</div>);
 
 		} 
 		else if (this.state.isPending) {
@@ -149,7 +150,15 @@ var SearchForm = React.createClass({
 		   e.preventDefault();
                    return 1;
 		}
-		
+		var geneList = genes.split("|");
+		for (var i = 0; i < geneList.length; i++) {
+		    var check = _validateGene(geneList[i]);
+		    alert("Gene name provided does not exist in the database: " + geneList[i]);
+		    alert(geneList[i] + ": " + check);
+                    e.preventDefault();
+                    return 1;
+		}
+
 		var up = this.refs.up.value.trim();
                 var down = this.refs.down.value.trim();
                 if (isNaN(up) || isNaN(down)) {
@@ -408,10 +417,9 @@ var SearchForm = React.createClass({
 		   paramData['genes'] = window.localStorage.getItem("genes");
 		   paramData['strains'] = window.localStorage.getItem("strains");
 		   
-		   console.log("genes="+paramData['genes']);
-		   console.log("strains="+paramData['strains']);
+		   // console.log("genes="+paramData['genes']);
+		   // console.log("strains="+paramData['strains']);
 		
-
 		   if (window.localStorage.getItem("up")) {
 		      paramData['up'] = window.localStorage.getItem("up");
 		   }
@@ -451,11 +459,28 @@ var SearchForm = React.createClass({
 		}		
    		
 	},
+	
+        _validateGene: function(name) {
+
+                var jsonUrl = ValidateUrl+ name;
+		
+		result = "";
+                $.ajax({
+                      url: jsonUrl,
+                      dataType: 'json',
+                      success: function(data) {
+                            result = data;
+                      }.bind(this),
+                      error: function(xhr, status, err) {
+                            console.error(jsonUrl, status, err.toString());
+                      }.bind(this)
+                });
+		return result;
+
+        },
 
 	_sendRequest: function(paramData) {
-
-		// http://www3.dev.yeastgenome.org/run_seqtools?genes=act1&seqtype=DNA&strains=S288C&rev=on
-                        
+        
 		$.ajax({
 			url: SeqtoolsUrl,
 			data_type: 'json',
