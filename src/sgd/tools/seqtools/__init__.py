@@ -33,7 +33,7 @@ def validate_name(p):
     if name is None:
         return { "code": -2 }
     name = name.replace("SGD:", "")
-    url = validate_url.replace + name
+    url = validate_url + name
     res = _get_json_from_server(url)
     if res == 404:
         return { "code": -1 }
