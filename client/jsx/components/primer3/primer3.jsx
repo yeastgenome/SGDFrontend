@@ -140,8 +140,28 @@ const Primer3 = React.createClass({
             });
         }
     });
-
-  let _data = {
+    // sort to be in pairs
+    rowData = rowData.sort( function(a, b) {
+      try {
+        let aNum = parseInt(a[0].match(/\d+$/)[0]);
+        let bNum = parseInt(b[0].match(/\d+$/)[0]);
+        if (aNum < bNum) {
+          return -1;
+        } else if (aNum > bNum) {
+          return 1;
+        } else if (aNum === bNum) {
+          if (a[0].match('left')) {
+            return -1;
+          } else if (b[0].match('left')) {
+            return 1;
+          }
+        }
+      }
+      catch(error) {
+        return 0;
+      }
+    });
+    let _data = {
       headers: [
           ['primer', 'start', 'len', 'product size', 'tm', 'gc%', 'any_th', 'end_th', 'hairpin', 'seq']
       ],
@@ -151,7 +171,7 @@ const Primer3 = React.createClass({
       <div>
         <h2 style={[style.title]}>{gname_str}</h2>
         <hr />
-        <DataTable data={_data} usePlugin={true} order={0, "asc"}/>
+        <DataTable data={_data} usePlugin={true} pluginOptions={{ 'aaSorting': [] }} />
       </div>
     );
   },
