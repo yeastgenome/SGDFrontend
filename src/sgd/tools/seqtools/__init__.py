@@ -31,13 +31,13 @@ def validate_name(p):
     # http://0.0.0.0:6545/run_seqtools?check=ACT1
     name = p.get('check')
     if name is None:
-        return -1
+        return { "code": -2 }
     name = name.replace("SGD:", "")
     url = validate_url.replace + name
     res = _get_json_from_server(url)
     if res == 404:
-        return -1
-    return 0
+        return { "code": -1 }
+    return { "code": 0 }
 
         
 def get_sequence_for_chr(p):
