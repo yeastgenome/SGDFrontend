@@ -22,6 +22,11 @@ _all_genes = None
 
 def add_paper(pmid, created_by="OTTO"):
     record = Medline.read(Entrez.efetch(db="pubmed", id=str(pmid), rettype='medline'))
+    rec_keys = record.keys()
+    if 'PMID' not in rec_keys:
+        raise ValueError('Unable to fetch record feom pubmed. Make sure it is a valid PMID.')
+    
+    print(record)
 
     ncbi = DBSession.query(Source).filter_by(format_name='NCBI').one_or_none()
     source_id = ncbi.source_id
@@ -249,13 +254,14 @@ def get_journal_id(record, created_by):
             return journals[0].journal_id, journals[0].med_abbr, journal_full_name, issn_print
 
     source_id = 824 # 'PubMed'
-
+    shortened_full_name = (journal_full_name[:197] + '...') if len(journal_full_name) > 200 else journal_full_name
     format_name = journal_full_name.replace(' ', '_') + journal_abbr.replace(' ', '_')
+    
     j = Journal(issn_print = issn_print,
                 issn_electronic = issn_electronic,
-                display_name = journal_full_name,
-                format_name = (format_name[:98] + '..') if len(format_name) > 100 else format_name,
-                title = journal_full_name,
+                display_name = shortened_full_name,
+                format_name = (format_name[:97] + '...') if len(format_name) > 100 else format_name,
+                title = shortened_full_name,
                 med_abbr = journal_abbr,
                 source_id = source_id,
                 obj_url = '/journal/'+format_name,

@@ -65,6 +65,7 @@ CREATE TABLE nex.colleague (
 	is_contact boolean NOT NULL,
 	is_beta_tester boolean NOT NULL,
 	display_email boolean NOT NULL,
+    is_in_triage bollean NOT NULL,
 	date_last_modified timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
 	created_by varchar(12) NOT NULL,
@@ -101,6 +102,8 @@ COMMENT ON COLUMN nex.colleague.source_id IS 'FK to SOURCE.SOURCE_ID.';
 COMMENT ON COLUMN nex.colleague.state IS 'State or region (US and Canada coded).';
 COMMENT ON COLUMN nex.colleague.suffix IS 'Name suffix (II, III, IV, Jr., Sr.).';
 COMMENT ON COLUMN nex.colleague.is_contact IS 'Whether the colleague is a contact for SGD.';
+COMMENT ON COLUMN nex.colleague.is_beta_tester IS 'Whether the colleague agreed to be a beta tester for SGD.';
+COMMENT ON COLUMN nex.colleague.is_in_triage IS 'Whether the colleague entry is being triaged in COLLEAGUETRIAGE.';
 COMMENT ON COLUMN nex.colleague.obj_url IS 'URL of the object (relative for local links or complete for external links).';
 COMMENT ON COLUMN nex.colleague.work_phone IS 'Colleague work phone number.';
 COMMENT ON COLUMN nex.colleague.address1 IS 'First line of street address.';

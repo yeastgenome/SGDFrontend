@@ -3,6 +3,7 @@ import CategoryLabel from './categoryLabel';
 import { Link } from 'react-router';
 
 import { PREVIEW_URL } from '../constants';
+import DetaiLList from './detailList';
 
 import TagList from './tagList';
 
@@ -14,7 +15,26 @@ class AnnotationSummary extends Component {
     return null;
   }
 
+  renderActivity(d) {
+    if (d.data) {
+      if (d.data.keys) {
+        return (
+          <div style={{ marginLeft: '1rem', marginBottom: '1rem' }}>
+            <DetaiLList data={d.data.keys} />
+          </div>
+        );  
+      } else if (d.data.tags) {
+        return this.renderTags(d.data);
+      }
+      
+    }
+    return null;
+  }
+
   renderBlock(d) {
+    if (d.is_curator_activity) {
+      return this.renderActivity(d);
+    }
     if (d.value) {
       return (
         <blockquote dangerouslySetInnerHTML={{ __html: d.value}} />
@@ -36,10 +56,14 @@ class AnnotationSummary extends Component {
         let curateUrl = `/curate${d.href}`.replace(/regulation|phenotype/, '');
         curateNode = <Link to={curateUrl}><i className='fa fa-edit' /> Curate</Link>;
       }
+      let linkNode = <a href={previewUrl} target='_new'>{d.name}</a>;
+      if (d.category === 'reserved_name') {
+        linkNode = <span>{d.name}</span>;
+      }
       return (
         <div key={'note' + i}>
           <p>
-            <CategoryLabel category={d.category} hideLabel /> <a href={previewUrl} target='_new'>{d.name}</a> {d.type} {this.renderUpdatedBy(d)} {curateNode}
+            <CategoryLabel category={d.category} hideLabel /> {linkNode} {d.type} {this.renderUpdatedBy(d)} {curateNode}
           </p>
           {this.renderBlock(d)}
           {this.renderTags(d)}

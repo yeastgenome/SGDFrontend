@@ -1,5 +1,5 @@
 /*eslint-disable no-undef */
-const DEFAULT_TIMEOUT = 10000;
+const DEFAULT_TIMEOUT = 60000;
 
 export default function fetchData(_url, options={}) {
   let _type = options.type || 'GET';
@@ -7,7 +7,7 @@ export default function fetchData(_url, options={}) {
   let _data = options.data || null;
   let _contentType = (typeof options.contentType === 'undefined') ? 'application/x-www-form-urlencoded; charset=UTF-8' : options.contentType;
   let _processData = (typeof options.processData === 'undefined') ? true : options.processData;
-  let _timout = options.timeout || DEFAULT_TIMEOUT;
+  let _timeout = options.timeout || DEFAULT_TIMEOUT;
   return new Promise(function (resolve, reject) {
     // *** DEPENDS ON GLOBAL $ because $ can abort ***
     $.ajax({
@@ -18,7 +18,7 @@ export default function fetchData(_url, options={}) {
       contentType: _contentType,
       type : _type,
       dataType: 'json',
-      timeout: _timout,
+      timeout: _timeout,
       success: data => {
         resolve(data);
       },

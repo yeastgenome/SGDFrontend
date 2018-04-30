@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router';
 
 import style from './style.css';
 import AnnotationSummary from '../../components/annotationSummary';
@@ -108,6 +109,7 @@ class LitTriageIndex extends Component {
         <div>
           <div className={style.litTableContainer}>
             {this.renderMessage()}
+            <Link to='curate/reference/new'>Add Reference by PMID</Link>
             {this.renderEntries()}
           </div>
         </div>
