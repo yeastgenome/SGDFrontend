@@ -13,10 +13,10 @@ import { requireAuthentication } from './containers/authenticateComponent';
 // import CurateLayout from './containers/curateHome/layout';
 import CurateHome from './containers/curateHome';
 import Search from './containers/search';
-import LocusLayout from './containers/locus/layout';
-import LocusBasic from './containers/locus/basic';
-import LocusName from './containers/locus/name';
-import LocusSummaries from './containers/locus/summaries';
+// import LocusLayout from './containers/locus/layout';
+// import LocusBasic from './containers/locus/basic';
+// import LocusName from './containers/locus/name';
+// import LocusSummaries from './containers/locus/summaries';
 import TriageIndex from './containers/triage';
 import SpreadsheetUpload from './containers/spreadsheetUpload/index';
 import Settings from './containers/settings/index';
@@ -55,12 +55,12 @@ export default (
       <Route component={requireAuthentication(Search)} path='search' />
       <Route component={PublicHome} path='login' />
       <Route component={GoogleLogin} path='google_login' />
-      <Route component={requireAuthentication(LocusLayout)} path='curate/locus/:id'>
+{/*      <Route component={requireAuthentication(LocusLayout)} path='curate/locus/:id'>
         <IndexRoute component={requireAuthentication(LocusBasic)} />
         <Route component={requireAuthentication(LocusName)} path='gene_name' />
         <Route component={requireAuthentication(LocusSummaries)} path='summaries' />
       </Route>
-      <Route component={requireAuthentication(NewReference)} path='curate/reference/new' />
+*/}      <Route component={requireAuthentication(NewReference)} path='curate/reference/new' />
       <Route component={requireAuthentication(CurateLit)} path='curate/reference/:id'>
         <IndexRoute component={requireAuthentication(CurateLitBasic)} />
         <Route component={requireAuthentication(Blank)} path='protein' />
