@@ -36,7 +36,6 @@
     "react/require-extension": 1,
     "react/require-render-return": 1,
     "react/sort-comp": 1,
-    "react/jsx-boolean-value": 1,
     "react/jsx-closing-bracket-location": 1,
     "react/jsx-curly-spacing": 1,
     "react/jsx-equals-spacing": 1,

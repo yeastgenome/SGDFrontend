@@ -221,6 +221,10 @@ BEGIN
        PERFORM nex.insertupdatelog('COLLEAGUE'::text, 'DISPLAY_EMAIL'::text, OLD.colleague_id, OLD.display_email::text, NEW.display_email::text, USER);
     END IF;
 
+    IF (OLD.is_in_triage != NEW.is_in_triage) THEN
+       PERFORM nex.insertupdatelog('COLLEAGUE'::text, 'IS_IN_TRIAGE'::text, OLD.colleague_id, OLD.is_in_triage::text, NEW.is_in_triage::text, USER);
+    END IF;
+
     IF (OLD.date_last_modified != NEW.date_last_modified) THEN
        PERFORM nex.insertupdatelog('COLLEAGUE'::text, 'DATE_LAST_MODIFIED'::text, OLD.colleague_id, OLD.date_last_modified::text, NEW.date_last_modified::text, USER);
     END IF;
@@ -243,7 +247,8 @@ BEGIN
              coalesce(OLD.work_phone,'') || '[:]' || coalesce(OLD.other_phone,'') || '[:]' ||
              coalesce(OLD.email,'') || '[:]' || OLD.is_pi || '[:]' ||
              OLD.is_contact || '[:]' || OLD.is_beta_tester || '[:]' ||
-             OLD.display_email || '[:]' || OLD.date_last_modified || '[:]' ||
+             OLD.display_email || '[:]' || OLD.is_in_triage || '[:]' || 
+             OLD.date_last_modified || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by  || '[:]' ||
 	     coalesce(OLD.colleague_note,'') || '[:]' || coalesce(OLD.research_interest,'');
 
@@ -2505,7 +2510,7 @@ BEGIN
 
         IF (NEW.locus_id is NOT NULL) THEN
 
-            PERFORM nex.insertlocuschange(NEW.locus_id, 'SGD'::text, 'Gene name'::text, NULL, NEW.display_name, USER);
+            PERFORM nex.insertnewonlylocuschange(NEW.locus_id, 'SGD'::text, 'Gene name'::text, NEW.display_name, USER);
 
        END IF;
        RETURN NEW;

@@ -39,11 +39,6 @@ models_helper = ModelsHelper()
 #         return HTTPNotFound(body=json.dumps({'error': 'Colleague not found'}))
 #     return {'sucess': True}
 
-@view_config(route_name='colleague_triage_all', renderer='json', request_method='GET')
-def colleague_triage_get_all(request):
-    colleague_triage = DBSession.query(Colleaguetriage).all()
-    return [triage.json for triage in colleague_triage]
-
 # @view_config(route_name='colleague_triage_accept', renderer='json', request_method='POST')
 # def colleague_triage_accept(request):
 #     triage_id = request.matchdict['id']
@@ -101,8 +96,10 @@ def colleague_by_format_name(request):
     format_name = request.matchdict['format_name']
     colleague = DBSession.query(Colleague).filter(Colleague.format_name == format_name).one_or_none()
     if colleague is not None:
+    	if colleague.is_in_triage:
+    		return HTTPNotFound(body=json.dumps({'error': 'Colleague not found'}))
         associated_data = models_helper.get_colleague_associated_data()
-        result = models_helper.get_colleague_data(colleague, associated_data)
+        result = colleague.to_dict()
         return result
     else:
         return HTTPNotFound(body=json.dumps({'error': 'Colleague not found'}))
