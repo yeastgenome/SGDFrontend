@@ -81,7 +81,7 @@ const Header = React.createClass({
                 <li><a className="disabled-header-a" href="/cgi-bin/GO/goTermFinder.pl">GO Term Finder</a></li>
                 <li><a className="disabled-header-a" href="/cgi-bin/GO/goSlimMapper.pl">GO Slim Mapper</a></li>
                 <li><a className="disabled-header-a" href="/nph-patmatch">Pattern Matching</a></li>
-                <li><a className="disabled-header-a" href="/cgi-bin/web-primer">Design Primers</a></li>
+                <li><a className="disabled-header-a" href="/primer3">Design Primers</a></li>
                 <li><a className="disabled-header-a" href="/cgi-bin/PATMATCH/RestrictionMapper">Restriction Mapper</a></li>
               </ul>
             </li>
@@ -213,6 +213,7 @@ const Header = React.createClass({
                   <ul className="dropdown">
                     <li><a className="disabled-header-a" href="http://wiki.yeastgenome.org/index.php/Combined_Physical_and_Genetic_Maps_of_S._cerevisiae">Physical &amp; Genetic Maps</a></li>
                     <li><a className="disabled-header-a" href="http://wiki.yeastgenome.org/index.php/Yeast_Mortimer_Maps_-_Edition_12">Genetic Maps</a></li>
+                    <li><a className="disabled-header-a" href="http://wiki.yeastgenome.org/index.php/ORFmap_Images">ORFMap Chromosomes</a></li>
                     <li><a className="disabled-header-a" href="http://wiki.yeastgenome.org/index.php/Historical_Systematic_Sequence_Information">Sequence</a></li>
                     <li><a className="disabled-header-a" href="http://wiki.yeastgenome.org/index.php/Table_of_Gene_Summary_Paragraphs">Gene Summary Paragraphs</a></li>
                   </ul>

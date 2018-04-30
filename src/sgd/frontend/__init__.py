@@ -24,9 +24,8 @@ def prep_views(chosen_frontend, config):
     config.add_route('blog_category', '/blog/category/{category}')
     config.add_route('blog_tag', '/blog/tag/{tag}')
     config.add_route('colleague_show', '/colleague/{identifier}')
-    config.add_route('downloads', '/download-data')
-    #downloads_tree view
-    config.add_route('downloads_tree', '/downloads-tree')
+    config.add_route('downloads', '/downloads')
+    
     config.add_route('new_colleague', '/new_colleague')
     config.add_route('interaction_search', '/interaction-search')
     config.add_route('download_list', '/download-list')
@@ -35,6 +34,7 @@ def prep_views(chosen_frontend, config):
     config.add_route('suggestion', '/suggestion')
     config.add_route('variant_viewer', '/variant-viewer')
     config.add_route('search', '/search')
+    config.add_route('primer3', '/primer3')
     # config.add_route('example', '/example')
     # locus pages from locus_views
     config.add_route('locus', '/locus/{identifier}')

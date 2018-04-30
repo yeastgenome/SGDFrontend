@@ -25,6 +25,10 @@ input[type="text"] {
 	@include border-radius($global-radius);
 }
 
+form textarea {
+    @include border-radius($global-radius);
+}
+
 .no-margins {
 	margin:0 !important;
 }
@@ -50,6 +54,11 @@ button.small, .button.small {
 a[href^="http"].hide-external-link-icon:after, td a[href^="http"].hide-external-link-icon:after{
     content:none !important;
    
+}
+
+//hide offsite icon for downloads page
+a[href^="http"]:after, td a[href^="http"].td-hide-icon:after{
+    content: none !important;
 }
 
 // show offsite icon for offsite links
