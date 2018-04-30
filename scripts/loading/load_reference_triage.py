@@ -27,7 +27,6 @@ log = logging.getLogger()
 log.setLevel(logging.INFO)
 
 NEX2_URI = os.environ['NEX2_URI']
-CREATED_BY = os.environ['DEFAULT_USER']
 
 def load_references():
     # create session
@@ -134,25 +133,21 @@ def insert_reference(db_session, pmid, citation, doi_url, abstract, gene_list):
                             citation = citation,
                             fulltext_url = doi_url,
                             abstract = abstract,
-                            abstract_genes = gene_list,
-                            created_by = CREATED_BY)
+                            abstract_genes = gene_list)
     elif doi_url:
         x = Referencetriage(pmid = pmid,
                             citation = citation,
                             fulltext_url = doi_url,
-                            abstract_genes = gene_list,
-                            created_by = CREATED_BY)
+                            abstract_genes = gene_list)
     elif abstract:
         x = Referencetriage(pmid = pmid,
                             citation = citation,
                             abstract = abstract,
-                            abstract_genes = gene_list,
-                            created_by = CREATED_BY)
+                            abstract_genes = gene_list)
     else:
         x = Referencetriage(pmid = pmid,
                             citation = citation,
-                            abstract_genes = gene_list,
-                            created_by = CREATED_BY)
+                            abstract_genes = gene_list)
     db_session.add(x)
     transaction.commit()
     log.info("Insert new reference: " + citation)
