@@ -465,7 +465,7 @@ var SearchForm = React.createClass({
 
                 var jsonUrl = ValidateUrl+ name;
 		
-		result = "";
+		var result = "";
                 $.ajax({
                       url: jsonUrl,
                       dataType: 'json',
