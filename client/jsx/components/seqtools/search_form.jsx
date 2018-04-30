@@ -7,7 +7,7 @@ const Checklist = require("../widgets/checklist.jsx");
 const Params = require("../mixins/parse_url_params.jsx");
 
 const SeqtoolsUrl = "/run_seqtools";
-const ValidateUrl = "https://www.yeastgenome.org/backend/locus/";
+const ValidateUrl = "/backend/locus/";
 
 // const LETTERS_PER_CHUNK = 10;
 // const LETTERS_PER_LINE = 60;
