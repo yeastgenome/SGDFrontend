@@ -153,6 +153,7 @@ var SearchForm = React.createClass({
 		var geneList = genes.split("|");
 		for (var i = 0; i < geneList.length; i++) {
 		    var check = this._validateGene(geneList[i]);
+		    console.log("check of " + geneList[i] + ": " + check);
 		    alert("Gene name provided does not exist in the database: " + geneList[i]);
 		    alert(geneList[i] + ": " + check);
                     e.preventDefault();
