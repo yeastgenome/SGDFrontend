@@ -11,20 +11,22 @@ import requests
 import re
 import traceback
 import transaction
-from datetime import datetime
+from datetime import datetime, timedelta
 from itertools import groupby
 import boto
 from boto.s3.key import Key
 import hashlib
 
-from src.curation_helpers import ban_from_cache, link_gene_names, get_curator_session
+from src.curation_helpers import ban_from_cache, get_author_etc, link_gene_names, get_curator_session
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
 
 QUERY_LIMIT = 25000
 SGD_SOURCE_ID = 834
+DIRECT_SUBMISSION_SOURCE_ID = 759
 SEPARATOR = ' '
+TAXON_ID = 274901
 
 S3_BUCKET = os.environ['S3_BUCKET']
 S3_ACCESS_KEY = os.environ['S3_ACCESS_KEY']
@@ -75,7 +77,7 @@ class CacheBase(object):
                 # purge
                 response = requests.request('PURGE', url)
                 if (response.status_code != 200):
-                    raise('Error fetching ')
+                    raise ValueError('Error fetching ')
             except Exception, e:
                 print('error fetching ' + self.display_name)
 
@@ -816,6 +818,7 @@ class Colleague(Base):
     is_contact = Column(Boolean, nullable=False)
     is_beta_tester = Column(Boolean, nullable=False)
     display_email = Column(Boolean, nullable=False)
+    is_in_triage = Column(Boolean, nullable=False)
     date_last_modified = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
@@ -842,8 +845,19 @@ class Colleague(Base):
             obj[k.keyword_id].append({'id': k.keyword_id, 'name': k.display_name})
         return obj
 
+    def to_simple_dict(self):
+        return {
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'orcid': self.orcid,
+            'email': self.email,
+            'display_email': self.display_email,
+            'receive_quarterly_newsletter': self.is_contact,
+            'willing_to_be_beta_tester': self.is_beta_tester
+        }
+
     def to_dict_basic_data(self):
-        _dict = {
+        return {
             "colleague_id": self.colleague_id,
             "email": self.email if self.display_email else None,
             "format_name": self.format_name,
@@ -857,51 +871,76 @@ class Colleague(Base):
             "address2": self.address2,
             "address3": self.address3
         }
-        return _dict
-    def to_dict(self):
-        _dict = {
-            "colleague_id": self.colleague_id,
-            "orcid": self.orcid,
-            "first_name": self.first_name,
-            "middle_name": self.middle_name,
-            "last_name": self.last_name,
-            "suffix": self.suffix,
-            "institution": self.institution,
-            "email": self.email if self.display_email else None,
-            "link": self.obj_url,
-            "profession": self.profession,
-            "state": self.state,
-            "country": self.country,
-            "position": self.job_title,
-            "postal_code": self.postal_code,
-            "city": self.city,
-            "research_interests": self.research_interest,
-            "work_phone": self.work_phone,
-            "other_phone": self.other_phone,
-            "format_name": self.format_name,
-            "name": self.display_name,
-            "address1": self.address1,
-            "address2": self.address2,
-            "address3": self.address3,
-            "colleague_note": self.colleague_note
-        }
-        coll_url = self.get_collegue_url()
-        _dict["lab_page"] = ''
-        _dict["research_page"] = ''
-        if coll_url is not None:
 
-            if coll_url.url_type == "Research summary":
-                _dict["research_page"] = coll_url.obj_url
-            if coll_url.url_type == "Lab":
-                _dict["lab_page"] = coll_url.obj_url
+    def to_dict(self):
+        websites = []
+        c_urls = DBSession.query(ColleagueUrl.obj_url, ColleagueUrl.url_type).filter(ColleagueUrl.colleague_id == self.colleague_id).all()
+        for x in c_urls:
+            websites.append({
+                'link': x[0],
+                'type': x[1]
+            })
+        # format full name
+        fullname = ''
+        if self.suffix:
+            fullname = fullname + self.suffix + ' '
+        if self.first_name:
+            fullname = fullname + self.first_name + ' '
+        if self.middle_name:
+            fullname = fullname + self.middle_name + ' '
+        if self.last_name:
+            fullname = fullname + self.last_name
+        _dict = {
+            'colleague_id': self.colleague_id,
+            'orcid': self.orcid,
+            'first_name': self.first_name,
+            'middle_name': self.middle_name,
+            'last_name': self.last_name,
+            'suffix': self.suffix,
+            'fullname': fullname,
+            'institution': self.institution,
+            'email': self.email if self.display_email else None,
+            'link': self.obj_url,
+            'profession': self.profession,
+            'position': self.job_title,
+            'research_interests': self.research_interest,
+            'work_phone': self.work_phone,
+            'phone_number': self.work_phone,
+            'other_phone': self.other_phone,
+            'format_name': self.format_name,
+            'name': self.display_name,
+            'address1': self.address1,
+            'address2': self.address2,
+            'address3': self.address3,
+            'postal_code': self.postal_code,
+            'city': self.city,
+            'state': self.state,
+            'country': self.country,
+            'colleague_note': self.colleague_note,
+            'websites': websites,
+            'display_email': self.display_email,
+            'receive_quarterly_newsletter': self.is_contact,
+            'willing_to_be_beta_tester': self.is_beta_tester,
+            'is_pi': self.is_pi
+        }
+        _dict['lab_page'] = ''
+        _dict['research_page'] = ''
 
         keyword_ids = DBSession.query(ColleagueKeyword.keyword_id).filter(ColleagueKeyword.colleague_id == self.colleague_id).all()
         if len(keyword_ids) > 0:
             ids_query = [k[0] for k in keyword_ids]
             keywords = DBSession.query(Keyword).filter(Keyword.keyword_id.in_(ids_query)).all()
-            _dict['keywords'] = [{'id': k.keyword_id, 'name': k.display_name} for k in keywords]
+            _dict['keywords'] = [k.display_name for k in keywords]
         else:
             _dict['keywords'] = []
+
+        colleague_loci = DBSession.query(ColleagueLocus, Locusdbentity.display_name).outerjoin(Locusdbentity).filter(ColleagueLocus.colleague_id == self.colleague_id).all()
+        colleague_loci = [x[1] for x in colleague_loci]
+        if len(colleague_loci):
+            associated_genes = ', '.join(colleague_loci)
+        else:
+            associated_genes = None
+        _dict['associated_genes'] = associated_genes
         return _dict
 
     def get_collegue_url(self):
@@ -909,6 +948,35 @@ class Colleague(Base):
             ColleagueUrl.colleague_id == self.colleague_id).first()
         return item
 
+class CuratorActivity(Base):
+    __tablename__ = 'curatoractivity'
+    __table_args__ = (
+        UniqueConstraint('curation_id'),
+        {u'schema': 'nex'}
+    )
+
+    curation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.link_seq'::regclass)"))
+    display_name = Column(String(500), nullable=False)
+    obj_url = Column(String(500), nullable=False)
+    activity_category = Column(String(100), nullable=False)
+    dbentity_id = Column(ForeignKey(u'nex.locusdbentity.dbentity_id', ondelete=u'CASCADE'), nullable=True)
+    message = Column(String(500), nullable=False)
+    json = Column(Text, nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    def to_dict(self):
+        return {
+            'category': self.activity_category,
+            'created_by': self.created_by,
+            'href': self.obj_url,
+            'date_created': self.date_created.strftime("%Y-%m-%d"),
+            'time_created': self.date_created.isoformat(),
+            'name': self.display_name,
+            'type': self.message,
+            'is_curator_activity': True,
+            'data': json.loads(self.json)
+        }
 
 class ColleagueKeyword(Base):
     __tablename__ = 'colleague_keyword'
@@ -1019,7 +1087,15 @@ class Colleaguetriage(Base):
     json = Column(Text, nullable=False)
     curator_comment = Column(String(500))
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
-    created_by = Column(String(12), nullable=False)
+
+    def to_dict(self):
+        data = json.loads(self.json)
+        if data is None:
+            data = {}
+        data['id'] = self.curation_id
+        data['type'] = self.triage_type
+        data['submission_date'] = self.date_created.strftime("%Y-%m-%d")
+        return data
 
 
 class Contig(Base):
@@ -1108,7 +1184,6 @@ class Contig(Base):
         return obj
 
     def to_dict(self):
-        TAXON_ID = 274901
         strains = Straindbentity.get_strains_by_taxon_id(self.taxonomy_id)
         urls = DBSession.query(ContigUrl).filter_by(contig_id=self.contig_id).all()
         # get sequences and group by feature type, exclude inactive and non S288c features
@@ -1619,6 +1694,41 @@ class Referencedbentity(Dbentity):
 
     go_blacklist = None
 
+    # takes a PMID and deleted matching entried from REFERENCETRIAGE and REFERENCEDELETED, raises error if found in REFERENCEDBENTITY
+    @classmethod
+    def clear_from_triage_and_deleted(Referencedbentity, user_pmid, username):
+        curator_session = None
+        try:
+            curator_session = get_curator_session(username)
+            exists = curator_session.query(Referencedbentity).filter(Referencedbentity.pmid==user_pmid).one_or_none()
+            if exists:
+                raise ValueError('Reference already exists.')
+            curator_session.query(Referencedeleted).filter_by(pmid=user_pmid).delete(synchronize_session=False)
+            curator_session.query(Referencetriage).filter_by(pmid=user_pmid).delete(synchronize_session=False)
+            transaction.commit()
+        except Exception, e:
+            traceback.print_exc()
+            transaction.abort()
+            raise(e)
+        finally:
+            if curator_session:
+                curator_session.close()
+
+    # See if in referencedeleted or referencetriage and return string describing error to see if curators really want to add. Returns None if no errors
+    @classmethod
+    def get_deletion_warnings(Referencedbentity, user_pmid):
+        ref_deleted = DBSession.query(Referencedeleted).filter_by(pmid=user_pmid).scalar()
+        is_in_triage = DBSession.query(Referencetriage).filter_by(pmid=user_pmid).count()
+        is_in_ref = DBSession.query(Referencedbentity).filter_by(pmid=user_pmid).count()
+        if ref_deleted:
+            return 'Warning: previously deleted: ' + ref_deleted.reason_deleted + 'by ' + ref_deleted.created_by
+        elif is_in_triage:
+            return 'Warning: in triage'
+        elif is_in_ref:
+            return 'Warning: already in database'
+        else:
+            return None
+
     @staticmethod
     def get_go_blacklist_ids():
         if Referencedbentity.go_blacklist is None:
@@ -1983,10 +2093,74 @@ class Referencedbentity(Dbentity):
                                 has_omics = True
                         curator_session.add(lit_annotation)
             transaction.commit()
+            self.sync_to_curate_activity(username)
         except Exception, e:
             traceback.print_exc()
             transaction.abort()
             curator_session.rollback()
+            raise(e)
+        finally:
+            if curator_session:
+                curator_session.close()
+
+    def sync_to_curate_activity(self, username):
+        tags_obj = self.get_tags()
+        try:
+            curator_session = get_curator_session(username)
+            existing = curator_session.query(CuratorActivity).filter(CuratorActivity.dbentity_id == self.dbentity_id).one_or_none()
+            message = 'added'
+            if existing:
+                curator_session.delete(existing)
+                message = 'updated'
+            diplay_name = self.display_name + ' PMID: ' + str(self.pmid)
+            new_curate_activity = CuratorActivity(
+                display_name = diplay_name,
+                obj_url = self.obj_url,
+                activity_category = 'reference',
+                dbentity_id = self.dbentity_id,
+                message = message,
+                json = json.dumps({ 'tags': tags_obj }),
+                created_by = username
+            )
+            curator_session.add(new_curate_activity)
+            transaction.commit()
+        except Exception as e:
+            traceback.print_exc()
+            transaction.abort()
+            raise(e)
+        finally:
+            if curator_session:
+                curator_session.close()
+
+    # does not delete annotations
+    def delete_with_children(self, username):
+        curator_session = None
+        try:
+            curator_session = get_curator_session(username)
+            self = curator_session.merge(self)
+            ref_aliases = curator_session.query(ReferenceAlias).filter(ReferenceAlias.reference_id == self.dbentity_id)
+            ref_aliases.delete(synchronize_session=False)
+            ref_authors = curator_session.query(Referenceauthor).filter(Referenceauthor.reference_id == self.dbentity_id)
+            ref_authors.delete(synchronize_session=False)
+            ref_docs = curator_session.query(Referencedocument).filter(Referencedocument.reference_id == self.dbentity_id)
+            ref_docs.delete(synchronize_session=False)
+            ref_types = curator_session.query(Referencetype).filter(Referencetype.reference_id == self.dbentity_id)
+            ref_types.delete(synchronize_session=False)
+            ref_urls = curator_session.query(ReferenceUrl).filter(ReferenceUrl.reference_id == self.dbentity_id)
+            ref_urls.delete(synchronize_session=False)
+            ref_unlinks = curator_session.query(Referenceunlink).filter(Referenceunlink.reference_id == self.dbentity_id)
+            ref_unlinks.delete(synchronize_session=False)
+            locus_refs = curator_session.query(LocusReferences).filter(LocusReferences.reference_id == self.dbentity_id)
+            locus_refs.delete(synchronize_session=False)
+            ref_files = curator_session.query(ReferenceFile).filter(ReferenceFile.reference_id == self.dbentity_id)
+            ref_files.delete(synchronize_session=False)
+            curate_act = curator_session.query(CuratorActivity).filter(CuratorActivity.dbentity_id == self.dbentity_id)
+            curate_act.delete(synchronize_session=False)
+            curator_session.delete(self)
+            transaction.commit()
+        except Exception as e:
+            traceback.print_exc()
+            transaction.abort()
             raise(e)
         finally:
             if curator_session:
@@ -2176,11 +2350,17 @@ class Locusdbentity(Dbentity):
         # get all dbentity_ids from dnasequenceannotation model
         all_dbentity_ids = DBSession.query(
             Dnasequenceannotation).filter(
-                Dnasequenceannotation.taxonomy_id == 274901,
+                Dnasequenceannotation.taxonomy_id == TAXON_ID,
                 Dnasequenceannotation.dna_type == 'GENOMIC').all()
         comp = [x.dbentity_id for x in all_dbentity_ids if x.dbentity.dbentity_status == 'Active' ]
         locus_data = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(comp),Locusdbentity.not_in_s288c == False).all()
         return locus_data
+
+    # returns true of 3 letters and a number
+    @classmethod
+    def is_valid_gene_name(Locusdbentity, potential_name):
+        gene_name_pattern = re.compile(r'\b[A-Z]{3}[0-9]+\b')
+        return gene_name_pattern.match(potential_name)
 
     def regulation_target_enrichment(self):
         target_ids = DBSession.query(Regulationannotation.target_id).filter_by(regulator_id=self.dbentity_id).all()
@@ -3450,7 +3630,7 @@ class Locusdbentity(Dbentity):
 
         # URLs (resources)
         sos = DBSession.query(Dnasequenceannotation.so_id).filter(
-            Dnasequenceannotation.dbentity_id == self.dbentity_id,Dnasequenceannotation.taxonomy_id == 274901).group_by(
+            Dnasequenceannotation.dbentity_id == self.dbentity_id,Dnasequenceannotation.taxonomy_id == TAXON_ID).group_by(
                     Dnasequenceannotation.so_id).all()
         locus_type = DBSession.query(So.display_name).filter(So.so_id.in_([so[0] for so in sos])).all()
         obj["locus_type"] = ",".join([l[0] for l in locus_type])
@@ -3932,7 +4112,7 @@ class Locusdbentity(Dbentity):
     def get_secondary_base_url(self):
         return '/webservice/locus/' + str(self.dbentity_id)
 
-    def get_summary_dict(self):
+    def to_curate_dict(self):
         phenotype_summary = DBSession.query(Locussummary).filter_by(locus_id=self.dbentity_id, summary_type='Phenotype').one_or_none()
         regulation_summary = DBSession.query(Locussummary).filter_by(locus_id=self.dbentity_id, summary_type='Regulation').one_or_none()
         if not phenotype_summary:
@@ -3953,15 +4133,257 @@ class Locusdbentity(Dbentity):
             pmids = [str(x[0]) for x in pmids]
             regulation_summary_pmids = SEPARATOR.join(pmids)
             regulation_summary = regulation_summary.text
+
+        aliases = DBSession.query(LocusAlias).filter(and_(LocusAlias.locus_id==self.dbentity_id, LocusAlias.alias_type.in_(['Uniform', 'Non-uniform', 'Retired name']))).all()
+        aliases_list = []
+        for x in aliases:
+            a_pmids = DBSession.query(LocusAliasReferences, Referencedbentity.pmid).filter(LocusAliasReferences.alias_id==x.alias_id).outerjoin(Referencedbentity).all()
+            pmids_results = [str(y[1]) for y in a_pmids]
+            aliases_list.append({
+                'alias': x.display_name,
+                'pmids': SEPARATOR.join(pmids_results),
+                'type': x.alias_type
+            })
+
+        gene_name_pmids = ''
+        if self.gene_name:
+            pmids_results = DBSession.query(LocusReferences, Referencedbentity.pmid).filter(and_(LocusReferences.locus_id==self.dbentity_id, LocusReferences.reference_class=='gene_name')).outerjoin(Referencedbentity).all()
+            pmids_results = [str(x[1]) for x in pmids_results]
+            gene_name_pmids = SEPARATOR.join(pmids_results)
+        name_description_pmids = ''
+        if self.name_description:
+            pmids_results = DBSession.query(LocusReferences, Referencedbentity.pmid).filter(and_(LocusReferences.locus_id==self.dbentity_id, LocusReferences.reference_class=='name_description')).outerjoin(Referencedbentity).all()
+            pmids_results = [str(x[1]) for x in pmids_results]
+            name_description_pmids = SEPARATOR.join(pmids_results)
+        description_pmids = ''
+        if self.description:
+            pmids_results = DBSession.query(LocusReferences, Referencedbentity.pmid).filter(and_(LocusReferences.locus_id==self.dbentity_id, LocusReferences.reference_class=='description')).outerjoin(Referencedbentity).all()
+            pmids_results = [str(x[1]) for x in pmids_results]
+            description_pmids = SEPARATOR.join(pmids_results)
+        feature_type = DBSession.query(So.display_name).outerjoin(Dnasequenceannotation).filter(Dnasequenceannotation.dbentity_id == self.dbentity_id,Dnasequenceannotation.taxonomy_id == TAXON_ID, Dnasequenceannotation.dna_type == 'GENOMIC').scalar()
+        protein_name = DBSession.query(LocusAlias.display_name).filter(LocusAlias.locus_id == self.dbentity_id, LocusAlias.alias_type == 'NCBI protein name').scalar()
+
         return {
             'name': self.display_name,
+            'sgdid': self.sgdid,
+            'systematic_name': self.systematic_name,
             'paragraphs': {
                 'phenotype_summary': phenotype_summary,
                 'phenotype_summary_pmids': phenotype_summary_pmids,
                 'regulation_summary': regulation_summary,
                 'regulation_summary_pmids': regulation_summary_pmids
+            },
+            'basic': {
+                'aliases': aliases_list,
+                'description': self.description,
+                'description_pmids': description_pmids,
+                'feature_type': feature_type,
+                'gene_name': self.gene_name,
+                'gene_name_pmids': gene_name_pmids,
+                'headline': self.headline,
+                'name_description': self.name_description,
+                'name_description_pmids': name_description_pmids,
+                'qualifier': self.qualifier,
+                'ncbi_protein_name': protein_name
             }
         }
+
+    def update_basic(self, new_info, username):
+        old_info = self.to_curate_dict()['basic']
+        if 'feature_type' in new_info.keys() and (new_info['feature_type'] == None or new_info['feature_type'] == ''):
+            raise ValueError('Feature type cannot be blank.')
+        if ('old_gene_name_alias_type' in new_info.keys()) and not new_info['old_gene_name_alias_type']:
+            raise ValueError('Please select an alias type for old gene name.')
+        # sanitize aliases
+        if 'aliases' not in new_info.keys():
+            new_info['aliases'] = old_info['aliases']
+        new_aliases = new_info['aliases']
+        for x in new_aliases:
+            if x['pmids'] is None:
+                x['pmids'] = ''
+        # list which keys need updating
+        keys_to_update = []
+        for key in new_info.keys():
+            # ignore old_gene_name_alias_type
+            if key == 'old_gene_name_alias_type':
+                continue
+            if new_info[key] != old_info[key]:
+                keys_to_update.append(key)
+        # if changing gene name, append old name as alias
+        if 'gene_name' in keys_to_update and old_info['gene_name']:
+            new_alias_type = new_info['old_gene_name_alias_type']
+            new_alias = { 'alias': old_info['gene_name'], 'pmids': old_info['gene_name_pmids'], 'type': new_alias_type }
+            new_info['aliases'].append(new_alias)
+            keys_to_update.append('aliases')
+        if len(keys_to_update) == 0:
+            raise ValueError('Nothing has been changed.')
+        else:
+            curator_session = None
+            try:
+                curator_session = get_curator_session(username)
+                self = curator_session.merge(self)
+                for key in keys_to_update:
+                    if key == 'description':
+                        self.description = new_info['description']
+                        # make headline
+                        new_headline = new_info['description'][:70]
+                        sep = ';'
+                        new_headline = new_headline.split(sep, 1)[0]
+                        self.headline = new_headline
+                    elif key == 'gene_name':
+                        new_name = new_info['gene_name']
+                        if new_name == '' or new_name is None:
+                            new_name = None
+                            self.display_name = self.systematic_name
+                        else:
+                            # see if new name already exists, and if proper name
+                            new_name_already_exists = curator_session.query(Locusdbentity).filter(Locusdbentity.gene_name == new_name).one_or_none()
+                            if new_name_already_exists:
+                                raise ValueError(new_name + ' is already a standard gene name and cannot be used.')
+                            is_valid_gene_name = Locusdbentity.is_valid_gene_name(new_name)
+                            if not is_valid_gene_name:
+                                raise ValueError(new_name + ' does not follow standards for standard gene names.')
+                            self.display_name = new_name
+                            self.gene_name = new_name
+                            # add locusnote and locusnotereference(s) for old gene_name_pmids
+                            old_pmids = convert_space_separated_pmids_to_list(old_info['gene_name_pmids'])
+                            for p in old_pmids:
+                                ref_id = curator_session.query(Referencedbentity.dbentity_id).filter(Referencedbentity.pmid == p).scalar()
+                                note_html_str = '<b>Name:</b> ' + new_name
+                                new_locusnote = Locusnote(
+                                    source_id = SGD_SOURCE_ID,
+                                    locus_id = self.dbentity_id,
+                                    note_class = 'Locus',
+                                    note_type = 'Name',
+                                    note = note_html_str,
+                                    created_by = username
+                                )
+                                curator_session.add(new_locusnote)
+                                curator_session.flush()
+                                curator_session.refresh(new_locusnote)
+                                new_locusnote_ref = LocusnoteReference(
+                                    note_id = new_locusnote.note_id,
+                                    reference_id = ref_id,
+                                    source_id = SGD_SOURCE_ID,
+                                    created_by = username
+                                )
+                                curator_session.add(new_locusnote_ref)
+                    elif key == 'name_description':
+                        self.name_description = new_info['name_description']
+                    elif key == 'qualifier':
+                        self.qualifier = new_info['qualifier']
+                    # changes outside of locusdbentity
+                    elif key == 'ncbi_protein_name':
+                        protein_alias = DBSession.query(LocusAlias).filter(LocusAlias.locus_id == self.dbentity_id, LocusAlias.alias_type == 'NCBI protein name').one_or_none()
+                        protein_alias.display_name = new_info['ncbi_protein_name']
+                    elif key == 'feature_type':
+                        new_so_id = curator_session.query(So.so_id).filter(So.display_name == new_info['feature_type']).scalar()
+                        dna_seq = curator_session.query(Dnasequenceannotation).filter(and_(Dnasequenceannotation.dbentity_id == self.dbentity_id, Dnasequenceannotation.taxonomy_id == TAXON_ID))\
+                            .update({ 'so_id': new_so_id })
+                    elif key == 'gene_name_pmids':
+                        # delete the old name gene_name PMIDS
+                        curator_session.query(LocusReferences).filter(and_(LocusReferences.locus_id==self.dbentity_id, LocusReferences.reference_class=='gene_name')).delete(synchronize_session=False)
+                        pmid_list = convert_space_separated_pmids_to_list(new_info['gene_name_pmids'])
+                        # add new entries
+                        for p in pmid_list:
+                            new_ref_id = curator_session.query(Referencedbentity.dbentity_id).filter(Referencedbentity.pmid == p).scalar()
+                            new_locus_ref = LocusReferences(
+                                reference_id = new_ref_id,
+                                locus_id = self.dbentity_id,
+                                source_id = SGD_SOURCE_ID,
+                                reference_class = 'gene_name',
+                                created_by = username
+                            )
+                            curator_session.add(new_locus_ref)
+                    elif key == 'description_pmids':
+                        # delete the old name description PMIDS
+                        curator_session.query(LocusReferences).filter(and_(LocusReferences.locus_id==self.dbentity_id, LocusReferences.reference_class=='description')).delete(synchronize_session=False)
+                        pmid_list = convert_space_separated_pmids_to_list(new_info['description_pmids'])
+                        # add new entries
+                        for p in pmid_list:
+                            new_ref_id = curator_session.query(Referencedbentity.dbentity_id).filter(Referencedbentity.pmid == p).scalar()
+                            new_locus_ref = LocusReferences(
+                                reference_id = new_ref_id,
+                                locus_id = self.dbentity_id,
+                                source_id = SGD_SOURCE_ID,
+                                reference_class = 'description',
+                                created_by = username
+                            )
+                            curator_session.add(new_locus_ref)
+                    elif key == 'name_description_pmids':
+                        # delete the old name name_description PMIDS
+                        curator_session.query(LocusReferences).filter(and_(LocusReferences.locus_id==self.dbentity_id, LocusReferences.reference_class=='name_description')).delete(synchronize_session=False)
+                        pmid_list = convert_space_separated_pmids_to_list(new_info['name_description_pmids'])
+                        # add new entries
+                        for p in pmid_list:
+                            new_ref_id = curator_session.query(Referencedbentity.dbentity_id).filter(Referencedbentity.pmid == p).scalar()
+                            new_locus_ref = LocusReferences(
+                                reference_id = new_ref_id,
+                                locus_id = self.dbentity_id,
+                                source_id = SGD_SOURCE_ID,
+                                reference_class = 'name_description',
+                                created_by = username
+                            )
+                            curator_session.add(new_locus_ref)
+                    elif key == 'aliases':
+                        # delete old aliases and references
+                        old_aliases = curator_session.query(LocusAlias).filter(and_(LocusAlias.locus_id==self.dbentity_id, LocusAlias.alias_type.in_(['Uniform', 'Non-uniform', 'Retired name']))).all()
+                        for a in old_aliases:
+                            curator_session.query(LocusAliasReferences).filter(LocusAliasReferences.alias_id == a.alias_id).delete(synchronize_session=False)
+                            curator_session.delete(a)
+                        curator_session.flush()
+                        for a in new_info['aliases']:
+                            new_alias = LocusAlias(
+                                display_name = a['alias'],
+                                locus_id = self.dbentity_id,
+                                alias_type = a['type'],
+                                has_external_id_section = False,
+                                source_id = SGD_SOURCE_ID,
+                                created_by = username
+                            )
+                            curator_session.add(new_alias)
+                            curator_session.flush()
+                            int_pmids = convert_space_separated_pmids_to_list(a['pmids'])
+                            for p in int_pmids:
+                                new_ref_id = curator_session.query(Referencedbentity.dbentity_id).filter(Referencedbentity.pmid == p).scalar()
+                                new_locus_alias_ref = LocusAliasReferences(
+                                    alias_id = new_alias.alias_id,
+                                    reference_id = new_ref_id,
+                                    source_id = SGD_SOURCE_ID,
+                                    created_by = username
+                                )
+                                curator_session.add(new_locus_alias_ref)
+                # create curator activity
+                update_dict = {}
+                for key in keys_to_update:
+                    new_val = None
+                    if key == 'aliases':
+                        new_val = ''
+                        for a in new_info[key]:
+                            new_val = new_val + a['alias'] + ' '
+                    else:
+                        new_val = new_info[key]
+                    update_dict[key] = new_val
+                new_curate_activity = CuratorActivity(
+                    display_name = self.display_name,
+                    obj_url = self.obj_url,
+                    activity_category = 'locus',
+                    dbentity_id = self.dbentity_id,
+                    message = 'updated locus information',
+                    json = json.dumps({ 'keys': update_dict }),
+                    created_by = username
+                )
+                curator_session.add(new_curate_activity)
+                transaction.commit()
+                self.ban_from_cache()
+            except Exception as e:
+                transaction.abort()
+                traceback.print_exc()
+                raise(e)
+            finally:
+                if curator_session:
+                    curator_session.remove()
+        return self.to_curate_dict()
 
     def update_summary(self, summary_type, username, text, pmid_list=[]):
         curator_session = None
@@ -4004,6 +4426,16 @@ class Locusdbentity(Dbentity):
                 )
                 curator_session.add(new_summary)
                 summary = new_summary
+            new_curate_activity = CuratorActivity(
+                display_name = self.display_name,
+                obj_url = self.obj_url,
+                activity_category = 'locus',
+                dbentity_id = self.dbentity_id,
+                message = 'updated  ' + summary_type + ' summary',
+                json = json.dumps({ 'keys': { 'summary': text } }),
+                created_by = username
+            )
+            curator_session.add(new_curate_activity)
             summary = curator_session.query(Locussummary.summary_type, Locussummary.summary_id, Locussummary.html, Locussummary.date_created).filter_by(locus_id=self.dbentity_id, summary_type=summary_type).one_or_none()
             # add LocussummaryReference(s)
             if len(pmid_list):
@@ -7481,7 +7913,6 @@ class Referencetriage(Base):
     fulltext_url = Column(String(500))
     abstract = Column(Text)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
-    created_by = Column(String(12), nullable=False)
     json = Column(Text)
     abstract_genes = Column(String(500))
 
@@ -7688,26 +8119,454 @@ class Reservedname(Base):
 
     def to_dict(self):
         obj = {
-            "display_name": self.display_name,
-            "reservation_date": self.reservation_date.strftime("%Y-%m-%d"),
-            "expiration_date": self.expiration_date.strftime("%Y-%m-%d"),
-            "locus": None,
-            "reference": None
+            'id': self.reservedname_id,
+            'display_name': self.display_name,
+            'reservation_date': self.reservation_date.strftime('%Y-%m-%d'),
+            'expiration_date': self.expiration_date.strftime('%Y-%m-%d'),
+            'locus': None,
+            'reference': None,
+            'reservation_status': 'Reserved'
         }
 
         if self.locus:
-            obj["locus"] = {
-                "display_name": self.locus.display_name,
-                "link": self.locus.obj_url
+            obj['locus'] = {
+                'display_name': self.locus.display_name,
+                'systematic_name': self.locus.systematic_name,
+                'link': self.locus.obj_url
             }
 
         if self.reference:
-            obj["reference"] = {
-                "display_name": self.reference.display_name,
-                "link": self.reference.obj_url
+            obj['reference'] = {
+                'display_name': self.reference.display_name,
+                'link': self.reference.obj_url,
+                'pmid': self.reference.pmid
             }
 
+        if self.name_description:
+            obj['name_description'] = self.name_description
+
         return obj
+
+    # extend to_dict with curator properties
+    def to_curate_dict(self):
+        obj = self.to_dict()
+        # colleague info
+        submitter = self.colleague
+        obj['submitter_name'] = submitter.first_name + ' ' + submitter.last_name
+        obj['submitter_email'] = submitter.email
+        obj['submitter_phone'] = submitter.work_phone
+        obj['notes'] = self.description
+        if obj['locus']:
+            obj['systematic_name'] = obj['locus']['systematic_name']
+        return obj
+
+    def is_ref_published(self):
+        pub_status = self.reference.publication_status
+        return (pub_status == 'Published' or pub_status == 'Epub ahead of print')
+
+    # add rows to LOCUS_REFERENCE, LOCUSNOTE, and LOCUSNOTE_REFERENCE for associated changes to locus
+    def associate_locus(self, systematic_name, username):
+        curator_session = None 
+        try:
+            curator_session = get_curator_session(username)
+            self = curator_session.merge(self)
+            locus_id = curator_session.query(Locusdbentity.dbentity_id).filter(Locusdbentity.systematic_name == systematic_name).scalar()
+            if not locus_id:
+                raise ValueError('Not a valid systematic name.')
+            has_locusreferences = curator_session.query(LocusReferences).filter(and_(LocusReferences.locus_id == locus_id, LocusReferences.reference_class == 'gene_name')).count()
+            if not has_locusreferences:
+                personal_communication_ref = curator_session.query(Referencedbentity).filter(Referencedbentity.dbentity_id == self.reference_id).one_or_none()
+                gene_name_locus_ref = LocusReferences(
+                    locus_id = locus_id,
+                    reference_id = personal_communication_ref.dbentity_id,
+                    reference_class = 'gene_name',
+                    source_id = SGD_SOURCE_ID,
+                    created_by = username
+                )
+                curator_session.add(gene_name_locus_ref)
+                name_description_locus_ref = LocusReferences(
+                    locus_id = locus_id,
+                    reference_id = personal_communication_ref.dbentity_id,
+                    reference_class = 'name_description',
+                    source_id = SGD_SOURCE_ID,
+                    created_by = username
+                )
+                curator_session.add(name_description_locus_ref)
+            # new locus_note and locusnote locusnote_reference
+            has_locusnote = curator_session.query(Locusnote).filter(and_(Locusnote.locus_id == locus_id, Locusnote.note_type == 'Name', Locusnote.note_class == 'Locus')).count()
+            if not has_locusnote:
+                note_html_str = '<b>Name:</b> ' + self.display_name
+                new_locusnote = Locusnote(
+                    source_id = SGD_SOURCE_ID,
+                    locus_id = locus_id,
+                    note_class = 'Locus',
+                    note_type = 'Name',
+                    note = note_html_str,
+                    created_by = username
+                )
+                curator_session.add(new_locusnote)
+                curator_session.flush()
+                curator_session.refresh(new_locusnote)
+                new_locusnote_ref = LocusnoteReference(
+                    note_id = new_locusnote.note_id,
+                    reference_id = self.reference_id,
+                    source_id = SGD_SOURCE_ID,
+                    created_by = username
+                )
+                curator_session.add(new_locusnote_ref)
+            transaction.commit()
+            return locus_id
+        except Exception as e:
+            transaction.abort()
+            traceback.print_exc()
+            raise(e)
+        finally:
+            if curator_session:
+                curator_session.remove()
+
+    def associate_published_reference(self, ref_id, username, new_reference_class):
+        if not self.locus_id:
+            raise ValueError('Reserved name must be associated with a locus before adding published reference.')
+        curator_session = None 
+        try:
+            curator_session = get_curator_session(username)
+            self = curator_session.merge(self)
+            # see how many reserved name use this reference exist for personal communication, save for later
+            ref_count = curator_session.query(Reservedname).filter(Reservedname.reference_id == self.reference_id).count()
+            # delete old locusreferences
+            curator_session.query(LocusReferences).filter(and_(LocusReferences.locus_id == self.locus_id, LocusReferences.reference_id == self.reference_id, LocusReferences.reference_class == new_reference_class)).delete(synchronize_session=False)
+            has_ref_name = curator_session.query(LocusReferences).filter(and_(LocusReferences.locus_id == self.locus_id, LocusReferences.reference_id == ref_id, LocusReferences.reference_class == new_reference_class)).count()
+            if not has_ref_name:
+                new_locus_ref = LocusReferences(
+                    locus_id = self.locus_id,
+                    reference_id = ref_id,
+                    reference_class = new_reference_class,
+                    source_id = SGD_SOURCE_ID,
+                    created_by = username
+                )
+                curator_session.add(new_locus_ref)
+            if new_reference_class == 'gene_name':
+                # update LocusnoteReference to have new ref id
+                curator_session.query(LocusnoteReference).filter_by(reference_id=self.reference_id).update({ 'reference_id': ref_id })
+                # finally change reference_id
+                personal_communication_ref_id = self.reference_id
+                personal_communication_ref = curator_session.query(Referencedbentity).filter(Referencedbentity.dbentity_id == personal_communication_ref_id).one_or_none()
+                self.reference_id = ref_id
+            transaction.commit()
+            # if this is only one reference for personal communication, delete it
+            if new_reference_class == 'gene_name' and ref_count == 1 and personal_communication_ref.publication_status != 'Published':
+                personal_communication_ref = curator_session.query(Referencedbentity).filter(Referencedbentity.dbentity_id == personal_communication_ref_id).one_or_none()
+                personal_communication_ref.delete_with_children(username)           
+        except Exception as e:
+            transaction.abort()
+            traceback.print_exc()
+            raise(e)
+        finally:
+            if curator_session:
+                curator_session.remove()
+
+    def standardize(self, username):
+        # a few validations
+        if not self.is_ref_published():
+            raise ValueError('Associated reference must be published before standardizing reservation.')
+        if not self.locus_id:
+            raise ValueError('Reserved name must be associated with an ORF before being standardized.')
+        if not self.name_description:
+            raise ValueError('Reserved name must have a name description before being standardized.')
+        try:
+            curator_session = get_curator_session(username)
+            self = curator_session.merge(self)
+            locus = curator_session.query(Locusdbentity).filter(Locusdbentity.dbentity_id == self.locus_id).one_or_none()
+            locus.gene_name = self.display_name
+            locus.display_name = self.display_name
+            locus.name_description = self.name_description
+            # archlocuschange update or add
+            existing_archlocus = curator_session.query(ArchLocuschange).filter(and_(ArchLocuschange.dbentity_id == self.locus_id, ArchLocuschange.change_type == 'Gene name')).all()
+            if len(existing_archlocus):
+                existing_archlocus = existing_archlocus[0]
+                existing_archlocus.date_name_standardized = datetime.now()
+            else:
+                new_archlocuschange = ArchLocuschange(
+                    dbentity_id = self.locus_id,
+                    change_type = 'Gene name',
+                    new_value = self.display_name,
+                    source_id = SGD_SOURCE_ID,
+                    date_name_standardized = datetime.now(),
+                    added_by = username
+                )
+                curator_session.add(new_archlocuschange)
+            # add curator activity
+            new_curate_activity = CuratorActivity(
+                display_name = locus.display_name,
+                obj_url = locus.obj_url,
+                activity_category = 'locus',
+                dbentity_id = locus.dbentity_id,
+                message = 'standardized gene name',
+                json = json.dumps({ 'keys': { 'gene_name': self.display_name } }),
+                created_by = username
+            )
+            curator_session.add(new_curate_activity)
+            curator_session.delete(self)
+            transaction.commit()
+            locus.ban_from_cache()
+        except Exception as e:
+            transaction.abort()
+            traceback.print_exc()
+            raise(e)
+        finally:
+            if curator_session:
+                curator_session.remove()
+        return True
+
+    def update(self, new_info, username):
+        try:
+            curator_session = get_curator_session(username)
+            self = curator_session.merge(self)
+            if new_info['systematic_name']:
+                res_systematic_name = new_info['systematic_name'].strip()
+                is_locus = curator_session.query(Locusdbentity).filter(Locusdbentity.systematic_name == res_systematic_name).one_or_none()
+                if not is_locus:
+                    raise ValueError(res_systematic_name + ' is not a valid systematic_name.')
+                if is_locus.gene_name:
+                    raise ValueError(res_systematic_name + ' already has a standard name.')
+                is_already_reserved = curator_session.query(Reservedname).filter(and_(Reservedname.locus_id == is_locus.dbentity_id, Reservedname.reservedname_id != self.reservedname_id)).one_or_none()
+                if is_already_reserved:
+                    raise ValueError(res_systematic_name + ' is already reserved for ' + is_already_reserved.display_name)
+                new_locus_id = self.associate_locus(res_systematic_name, username)
+                self = curator_session.merge(self)
+                self.locus_id = new_locus_id
+            elif self.locus_id:
+                self.locus_id = None
+            if new_info['display_name'] and new_info['display_name'] != self.display_name:
+                potential_name = new_info['display_name'].upper().strip()
+                if not Locusdbentity.is_valid_gene_name(potential_name):
+                    raise ValueError(potential_name + ' does not follow gene name conventions.')
+                exists_in_locus = curator_session.query(Locusdbentity).filter(Locusdbentity.gene_name == potential_name).one_or_none()
+                if exists_in_locus:
+                    raise ValueError(potential_name + ' is already a standard gene name.')
+                exists_in_res = curator_session.query(Reservedname).filter(Reservedname.display_name == potential_name).one_or_none()
+                if exists_in_res:
+                    raise ValueError(potential_name + ' is a reserved gene name.')
+                self.display_name = potential_name
+            if new_info['name_description']:
+                self.name_description = new_info['name_description']
+            if new_info['notes']:
+                self.description = new_info['notes']
+            return_val = self.to_curate_dict()
+            transaction.commit()
+            return return_val
+        except Exception as e:
+            transaction.abort()
+            traceback.print_exc()
+            raise(e)
+        finally:
+            if curator_session:
+                curator_session.remove()
+
+    def extend(self, username):
+        curator_session = None
+        try:
+            curator_session = get_curator_session(username)
+            self = curator_session.merge(self)
+            old_date = self.expiration_date
+            self.expiration_date = old_date + timedelta(days=365)
+            return_val = self.to_curate_dict()
+            transaction.commit()
+            return return_val
+        except Exception as e:
+            transaction.abort()
+            traceback.print_exc()
+            raise(e)
+        finally:
+            if curator_session:
+                curator_session.remove()
+        
+
+class ReservednameTriage(Base):
+    __tablename__ = 'reservednametriage'
+    __table_args__ = {u'schema': 'nex'}
+
+    curation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
+    proposed_gene_name = Column(String(100), nullable=False)
+    colleague_id = Column(ForeignKey(u'nex.colleague.colleague_id', ondelete=u'CASCADE'), index=True)
+    json = Column(Text, nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+
+    def get_author_list(self):
+        obj = json.loads(self.json)
+        authors = obj['authors']
+        author_list = []
+        for x in authors:
+            if x['first_name'] and x['last_name']:
+                a_str = x['last_name'] + ' ' + x['first_name'][:1]
+                author_list.append(a_str)
+        if len(author_list) == 0:
+            colleague = DBSession.query(Colleague).filter(Colleague.colleague_id == self.colleague_id).one_or_none()
+            author_list = [colleague.last_name + ' ' + colleague.first_name[:1]]
+        return author_list
+
+    def to_citation(self):
+        obj = json.loads(self.json)
+        author_list = self.get_author_list()
+        cit = get_author_etc(author_list) + ' ' + '(' + obj['year'] + ')'
+        if 'publication_title' in obj.keys():
+            if obj['publication_title']:
+                title = ' ' + str(obj['publication_title'])
+                cit = cit + title
+        return cit
+
+    def to_dict(self):
+        obj = json.loads(self.json)
+        return_obj = {
+            'id': self.curation_id,
+            'display_name' : self.proposed_gene_name,
+            'reservation_status': 'Unprocessed',
+            'name_description': obj['description'],
+            'notes': obj['notes'],
+            'systematic_name': obj['systematic_name'],
+            'reservation_date': self.date_created.strftime("%Y-%m-%d"),
+            'reference': {
+                'display_name': self.to_citation()
+            }
+        }
+        colleague = DBSession.query(Colleague).filter(Colleague.colleague_id == self.colleague_id).one_or_none()
+        return_obj['submitter_name'] = colleague.first_name + ' ' + colleague.last_name
+        return_obj['submitter_email'] = colleague.email
+        return_obj['submitter_phone'] = colleague.work_phone
+        return return_obj
+
+    def update(self, new_info, username):
+        try:
+            curator_session = get_curator_session(username)
+            self = curator_session.merge(self)
+            data = json.loads(self.json)
+            if new_info['systematic_name']:
+                res_systematic_name = new_info['systematic_name'].upper()
+                is_locus = curator_session.query(Locusdbentity).filter(Locusdbentity.systematic_name == res_systematic_name).one_or_none()
+                if not is_locus:
+                    raise ValueError(res_systematic_name + ' is not a valid systematic_name.')
+                is_already_reserved = curator_session.query(Reservedname).filter(Reservedname.locus_id == is_locus.dbentity_id).one_or_none()
+                if is_already_reserved:
+                    raise ValueError(res_systematic_name + ' is already reserved for ' + is_already_reserved.display_name)
+                data['systematic_name'] = res_systematic_name
+            if new_info['name_description']:
+                data['description'] = new_info['name_description']
+            if new_info['notes']:
+                data['notes'] = new_info['notes']
+            self.json = json.dumps(data)
+            return_val = self.to_dict()
+            transaction.commit()
+            return return_val
+        except Exception as e:
+            transaction.abort()
+            traceback.print_exc()
+            raise(e)
+        finally:
+            if curator_session:
+                curator_session.remove()
+
+    def promote(self, username):
+        try:
+            obj = json.loads(self.json)
+            curator_session = get_curator_session(username)
+            self = curator_session.merge(self)
+            # create personal communication
+            citation = self.to_citation()
+            # see if there is already personal communication for this and add if not yet added
+            personal_communication_ref = curator_session.query(Referencedbentity).filter(Referencedbentity.citation == citation).one_or_none()
+            if not personal_communication_ref:
+                title = None
+                if 'publication_title' in obj.keys():
+                    title = obj['publication_title']
+                if title == '':
+                    title = None
+                journal_id = None
+                if 'journal' in obj.keys():
+                    journal_name = obj['journal']
+                    existing_journal = curator_session.query(Journal).filter(Journal.display_name == journal_name).one_or_none()
+                    if existing_journal:
+                        journal_id = existing_journal.journal_id
+                personal_communication_ref = Referencedbentity(
+                    display_name = citation,
+                    source_id = DIRECT_SUBMISSION_SOURCE_ID,
+                    subclass = 'REFERENCE',
+                    dbentity_status = 'Active',
+                    method_obtained = 'Gene registry',
+                    publication_status = obj['status'],
+                    fulltext_status = 'NAP',
+                    citation = citation,
+                    year = int(obj['year']),
+                    title = title,
+                    journal_id = journal_id,
+                    created_by = username
+                )
+                curator_session.add(personal_communication_ref)
+                curator_session.flush()
+                curator_session.refresh(personal_communication_ref)
+                author_list = self.get_author_list()
+                for i, author in enumerate(author_list):
+                    new_ref_author = Referenceauthor(
+                        display_name = author,
+                        obj_url = '/author/' + author.replace(' ', '_'),
+                        source_id = DIRECT_SUBMISSION_SOURCE_ID,
+                        reference_id = personal_communication_ref.dbentity_id,
+                        author_order = i,
+                        author_type = 'Author', 
+                        created_by = username
+                    )
+                    curator_session.add(new_ref_author)
+                # add referencetype
+                new_reftype = Referencetype(
+                    display_name = 'Personal Communication to SGD',
+                    obj_url = '/referencetype/Personal_Communication_to_SGD',
+                    source_id = DIRECT_SUBMISSION_SOURCE_ID,
+                    reference_id = personal_communication_ref.dbentity_id,
+                    created_by = username
+                )
+                curator_session.add(new_reftype)
+            # see if there is a locus
+            locus_id = None
+            if 'systematic_name' in obj.keys():
+                locus_id = curator_session.query(Locusdbentity.dbentity_id).filter(Locusdbentity.systematic_name == obj['systematic_name']).scalar()
+            # actually add gene name reservation
+            new_res = Reservedname(
+                format_name = self.proposed_gene_name,
+                display_name = self.proposed_gene_name,
+                obj_url = '/reservedname/' + self.proposed_gene_name,
+                source_id = DIRECT_SUBMISSION_SOURCE_ID,
+                locus_id = locus_id,
+                reference_id = personal_communication_ref.dbentity_id,
+                colleague_id = self.colleague_id,
+                name_description = obj['description'],
+                description = obj['notes'],
+                date_created = self.date_created,
+                created_by = username
+            )
+            curator_session.add(new_res)
+            curator_session.flush()
+            curator_session.refresh(new_res)
+            new_curate_activity = CuratorActivity(
+                display_name = new_res.display_name,
+                obj_url = new_res.obj_url,
+                activity_category = 'reserved_name',
+                json = json.dumps({}),
+                message = 'gene name reservation added',
+                created_by = username
+            )
+            curator_session.add(new_curate_activity)
+            curator_session.delete(self)
+            transaction.commit()
+            if locus_id:
+                new_res.associate_locus(obj['systematic_name'], username)
+            return True
+        except Exception as e:
+            transaction.abort()
+            traceback.print_exc()
+            raise(e)
+        finally:
+            if curator_session:
+                curator_session.remove()
+        return True
 
 class Ro(Base):
     __tablename__ = 'ro'
@@ -8127,3 +8986,11 @@ def validate_tags(tags):
             }
             tags.append(new_tag)
     return tags
+
+def convert_space_separated_pmids_to_list(str_pmids):
+    if str_pmids == '' or str_pmids is None:
+        return []
+    str_pmids = ' '.join(str_pmids.split())# remove extra spaces
+    str_list = str_pmids.split(SEPARATOR)
+    int_list = [int(x) for x in str_list]
+    return int_list

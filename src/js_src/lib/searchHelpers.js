@@ -19,7 +19,8 @@ export function makeFieldDisplayName(unformattedName) {
     contig: 'Contig',
     colleague: 'Colleague',
     observable: 'Observable',
-    reserved_name: 'Reserved Gene Names'
+    reserved_name: 'Reserved Gene Names',
+    sgdid: 'SGDID'
   };
   return labels[unformattedName] || unformattedName.replace('_', ' ');
 }

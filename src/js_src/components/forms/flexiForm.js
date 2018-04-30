@@ -29,7 +29,8 @@ class FlexiForm extends Component {
       contentType: 'application/json',
       headers: {
         'X-CSRF-Token': window.CSRF_TOKEN
-      }
+      },
+      timeout: this.props.timeout
     };
     fetchData(this.props.updateUrl, formOptions).then( (data) => {
       this.setState({ isPending: false });
@@ -37,8 +38,11 @@ class FlexiForm extends Component {
       if (this.props.onSuccess) this.props.onSuccess(data);
     }).catch( (data) => {
       this.setState({ isPending: false });
-      let errorMessage = data ? data.message : 'Unable to login. Please verify your username and password are correct.';
+      let errorMessage = data ? data.message : 'There was an unknown error with your submission. With the upmost humility, we ask that you please refresh the page and try again.';
       this.props.dispatch(setError(errorMessage));
+      if (this.props.onError) {
+        this.props.onError();
+      }
     });
   }
 
@@ -48,7 +52,7 @@ class FlexiForm extends Component {
     t.form.Form.templates = semantic;
     return (
       <form className='sgd-curate-form' onSubmit={this.handleSubmit.bind(this)}>
-        <t.form.Form options={this.props.tFormOptions} ref={input => this.formInput = input} type={this.props.tFormSchema} value={this.state.data} />
+        <t.form.Form options={this.props.tFormOptions} onChange={this.props.onChange} ref={input => this.formInput = input} type={this.props.tFormSchema} value={this.state.data} />
           <div className='form-group'>
             <button type='submit' className='button'>{submitText}</button>
           </div>
@@ -61,11 +65,14 @@ FlexiForm.propTypes = {
   defaultData: React.PropTypes.object,
   dispatch: React.PropTypes.func,
   getUrl: React.PropTypes.string,
+  onError: React.PropTypes.func,
   onSuccess: React.PropTypes.func,// (data) =>
+  onChange: React.PropTypes.func,
   submitText: React.PropTypes.string,
   requestMethod: React.PropTypes.string,
   tFormSchema: React.PropTypes.func.isRequired,
   tFormOptions: React.PropTypes.object,
+  timeout: React.PropTypes.number,
   updateUrl: React.PropTypes.string.isRequired,
 };
 

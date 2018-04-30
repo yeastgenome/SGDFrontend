@@ -36,8 +36,9 @@ class PublicLayout extends Component {
   render() {
     return (
       <div>
+        {this.renderError()}
         <div className='row'>
-          <div className='small-centered small-8'>
+          <div className='small-centered small-10'>
             {this.props.children}
           </div>
         </div>

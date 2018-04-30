@@ -114,12 +114,10 @@ CREATE TABLE nex.referencetriage (
 	abstract text,
     json text,
 	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
-	created_by varchar(12) NOT NULL,
 	CONSTRAINT referencetriage_pk PRIMARY KEY (curation_id)
 ) ;
 COMMENT ON TABLE nex.referencetriage IS 'Papers obtained via the reference triage system.';
 COMMENT ON COLUMN nex.referencetriage.abstract IS 'Paper abstract.';
-COMMENT ON COLUMN nex.referencetriage.created_by IS 'Username of the person who entered the record into the database.';
 COMMENT ON COLUMN nex.referencetriage.fulltext_url IS 'URL to the fulltext of the paper.';
 COMMENT ON COLUMN nex.referencetriage.abstract_genes IS 'Comma separated list of gene or systematic names identified in the abstract.';
 COMMENT ON COLUMN nex.referencetriage.date_created IS 'Date the record was entered into the database.';
@@ -137,13 +135,11 @@ CREATE TABLE nex.colleaguetriage (
     json text NOT NULL,
     curator_comment varchar(500),
     date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
-	created_by varchar(12) NOT NULL,
 	CONSTRAINT colleaguetriage_pk PRIMARY KEY (curation_id)
 ) ;
 COMMENT ON TABLE nex.colleaguetriage IS 'New and update colleague submissions.';
 COMMENT ON COLUMN nex.colleaguetriage.colleague_id IS 'FK to COLLEAGUE.COLLEAGUE_ID.';
 COMMENT ON COLUMN nex.colleaguetriage.triage_type IS 'Type of colleague submission (New, Update, Stalled).';
-COMMENT ON COLUMN nex.colleaguetriage.created_by IS 'Username of the person who entered the record into the database.';
 COMMENT ON COLUMN nex.colleaguetriage.json IS 'JSON object of the colleague data.';
 COMMENT ON COLUMN nex.colleaguetriage.date_created IS 'Date the record was entered into the database.';
 COMMENT ON COLUMN nex.colleaguetriage.curation_id IS 'Unique identifier (serial number).';
@@ -155,19 +151,18 @@ DROP TABLE IF EXISTS nex.reservednametriage CASCADE;
 CREATE TABLE nex.reservednametriage (
     curation_id bigint NOT NULL DEFAULT nextval('curation_seq'),
     proposed_gene_name varchar(20) NOT NULL,
-    user_email varchar(100) NOT NULL,
+    colleague_id bigint NOT NULL,
     json text NOT NULL,
     date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
-    created_by varchar(12) NOT NULL,
     CONSTRAINT reservednametriage_pk PRIMARY KEY (curation_id)
 ) ;
 COMMENT ON TABLE nex.reservednametriage IS 'New gene name submissions.';
-COMMENT ON COLUMN nex.reservednametriage.user_email IS 'Email address of the user who submitted the gene name reservation.';
+COMMENT ON COLUMN nex.reservednametriage.colleague_id IS 'FK to COLLEAGUE.COLLEAGUE_ID.';
 COMMENT ON COLUMN nex.reservednametriage.proposed_gene_name IS 'Proposed gene name.';
-COMMENT ON COLUMN nex.reservednametriage.created_by IS 'Username of the person who entered the record into the database.';
 COMMENT ON COLUMN nex.reservednametriage.json IS 'JSON object of the reserved name data.';
 COMMENT ON COLUMN nex.reservednametriage.date_created IS 'Date the record was entered into the database.';
 COMMENT ON COLUMN nex.reservednametriage.curation_id IS 'Unique identifier (serial number).';
+CREATE INDEX reservednametriage_coll_fk_index ON nex.reservednametriage (colleague_id);
 
 DROP TABLE IF EXISTS nex.curatoractivity CASCADE;
 CREATE TABLE nex.curatoractivity (

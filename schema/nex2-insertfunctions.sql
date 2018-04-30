@@ -47,9 +47,9 @@ REVOKE ALL ON FUNCTION insertupdatelog (p_table text, p_column text, p_key bigin
 
 
 --
--- Automatic insert into the arch_locuschange table for gene_names and qualifiers
+-- Automatic insert of only NEW values into the arch_locuschange table for gene_names and qualifiers
 --
-CREATE OR REPLACE FUNCTION insertlocuschange (p_dbentityId bigint, p_sourceName text, p_changeType text, p_old text, p_new text, p_user name) RETURNS VOID AS $body$
+CREATE OR REPLACE FUNCTION insertnewonlylocuschange (p_dbentityId bigint, p_sourceName text, p_changeType text, p_new text, p_user name) RETURNS VOID AS $body$
 DECLARE
 
    v_source_id   nex.arch_locuschange.source_id%TYPE;
@@ -63,25 +63,49 @@ BEGIN
 
     SELECT LOCALTIMESTAMP INTO v_added_date;
 
-    IF (p_old is NULL) THEN
-        INSERT INTO nex.arch_locuschange
-            (dbentity_id, source_id, change_type, new_value, date_added_to_database, added_by)
-        VALUES
-            (p_dbentityID, v_source_id, p_changeType, p_new, v_added_date, upper(p_user));
-    ELSE
-        INSERT INTO nex.arch_locuschange
-            (dbentity_id, source_id, change_type, old_value, new_value, date_added_to_database, added_by)
-        VALUES
-            (p_dbentityID, v_source_id, p_changeType, p_old, p_new, v_added_date, upper(p_user));
-    END IF;
+    INSERT INTO nex.arch_locuschange
+        (dbentity_id, source_id, change_type, new_value, date_added_to_database, added_by)
+    VALUES
+        (p_dbentityID, v_source_id, p_changeType, p_new, v_added_date, upper(p_user));
 
 END;
 
 $body$ LANGUAGE PLPGSQL
        SECURITY DEFINER
        SET search_path = nex, pg_temp;
-GRANT EXECUTE on FUNCTION insertlocuschange (p_dbentityId bigint, p_sourceName text, p_changeType text, p_old text, p_new text, p_user name) to CURATOR;
-REVOKE ALL ON FUNCTION insertlocuschange (p_dbentityId bigint, p_sourceName text, p_changeType text, p_old text, p_new text, p_user name) FROM PUBLIC;
+GRANT EXECUTE on FUNCTION insertnewonlylocuschange (p_dbentityId bigint, p_sourceName text, p_changeType text, p_new text, p_user name) to CURATOR;
+REVOKE ALL ON FUNCTION insertnewonlylocuschange (p_dbentityId bigint, p_sourceName text, p_changeType text, p_new text, p_user name) FROM PUBLIC;
+
+
+--
+-- Automatic insert NEW and OLD values into the arch_locuschange table for gene_names and qualifiers
+--
+CREATE OR REPLACE FUNCTION insertnewoldlocuschange (p_dbentityId bigint, p_sourceName text, p_changeType text, p_old text, p_new text, p_user name) RETURNS VOID AS $body$
+DECLARE
+
+   v_source_id   nex.arch_locuschange.source_id%TYPE;
+   v_added_date nex.arch_locuschange.date_added_to_database%TYPE;
+
+BEGIN
+
+    SELECT source_id INTO v_source_id
+    FROM nex.source
+    WHERE display_name = p_sourceName;
+
+    SELECT LOCALTIMESTAMP INTO v_added_date;
+
+    INSERT INTO nex.arch_locuschange
+        (dbentity_id, source_id, change_type, old_value, new_value, date_added_to_database, added_by)
+    VALUES
+        (p_dbentityID, v_source_id, p_changeType, p_old, p_new, v_added_date, upper(p_user));
+
+END;
+
+$body$ LANGUAGE PLPGSQL
+       SECURITY DEFINER
+       SET search_path = nex, pg_temp;
+GRANT EXECUTE on FUNCTION insertnewoldlocuschange (p_dbentityId bigint, p_sourceName text, p_changeType text, p_old text, p_new text, p_user name) to CURATOR;
+REVOKE ALL ON FUNCTION insertnewoldlocuschange (p_dbentityId bigint, p_sourceName text, p_changeType text, p_old text, p_new text, p_user name) FROM PUBLIC;
 
 
 --
