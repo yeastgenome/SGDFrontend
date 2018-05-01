@@ -2318,6 +2318,12 @@ class Filedbentity(Dbentity):
         base = path_res[0][1].path
         return base + '/' + self.display_name
 
+    def get_path_id(self):
+        path_res = DBSession.query(FilePath, Path).filter(
+            FilePath.file_id == self.dbentity_id).outerjoin(Path).all()
+        path = path_res[0][1]
+        return path.path_id
+
 
 class Locusdbentity(Dbentity):
     __tablename__ = 'locusdbentity'
