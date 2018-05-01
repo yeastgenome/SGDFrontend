@@ -2321,6 +2321,8 @@ class Filedbentity(Dbentity):
     def get_path_id(self):
         path_res = DBSession.query(FilePath, Path).filter(
             FilePath.file_id == self.dbentity_id).outerjoin(Path).all()
+        if not len(path_res):
+            return None
         path = path_res[0][1]
         return path.path_id
 
