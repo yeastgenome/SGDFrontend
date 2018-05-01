@@ -2,22 +2,19 @@ deploy-assets:
 	. dev_deploy_variables.sh && grunt deployAssets
 
 dev-deploy:
-	. dev_deploy_variables.sh && cap dev deploy
+	. dev_deploy_variables.sh && grunt deployAssets && cap dev deploy
 
 qa-deploy:
-	. dev_deploy_variables.sh && cap qa deploy
-
-beta-deploy:
-	. dev_deploy_variables.sh && cap beta deploy
+	. dev_deploy_variables.sh && grunt deployAssets && cap qa deploy
 
 staging-deploy:
-	. prod_deploy_variables.sh && cap staging deploy
+	. prod_deploy_variables.sh && grunt deployAssets && cap staging deploy
 
 prod-deploy:
-	. prod_deploy_variables.sh && cap prod deploy
+	. prod_deploy_variables.sh && grunt deployAssets && cap prod deploy
 
 preview-deploy:
-	. dev_deploy_variables.sh && cap preview deploy
+	. dev_deploy_variables.sh && grunt deployAssets && cap preview deploy
 
 run-prod:
 	pserve sgdfrontend_production.ini --daemon --pid-file=/var/run/pyramid/frontend.pid

@@ -16,7 +16,8 @@ set :format, :pretty
 set :log_level, :debug
 
 namespace :deploy do
-  after :finishing, :write_config
+	after :finishing, :write_config
+	after :finishing, :copy_json
 	after :finishing, :build_aws
 	after :finishing, :restart_aws
 end
