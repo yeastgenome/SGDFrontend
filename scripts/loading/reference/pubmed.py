@@ -57,8 +57,9 @@ def get_pubmed_record(pmid_list):
 def get_titles(pmid_list):
 
     handle = Entrez.efetch(db="pubmed", id=pmid_list, rettype='Medline', retmode='text')
+
     record_txt = handle.read()
-    records = record_txt.split("\n\n")
+    records = record_txt.split("\n\n")    
     data = {}
     pmid = None
     for record in records:
