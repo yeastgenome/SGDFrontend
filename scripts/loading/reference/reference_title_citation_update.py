@@ -5,10 +5,11 @@ import time
 import sys
 reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
-from src.models import Dbentity, Referencedbentity, Journal
+from src.models import Dbentity, Referencedbentity, Journal, Referencedocument
 from scripts.loading.database_session import get_session
-from scripts.loading.reference.pubmed import get_pubmed_record_from_xml, \
+from scripts.loading.reference.pubmed2 import get_pubmed_record_from_xml, \
                                              get_abstracts, set_cite
+from scripts.loading.util import link_gene_names
 
 __author__ = 'sweng66'
 
@@ -37,6 +38,7 @@ def update_reference_data(log_file):
     nex_session = get_session()
 
     journal_id_to_abbrev = dict([(x.journal_id, x.med_abbr) for x in nex_session.query(Journal).all()])
+    reference_id_to_abstract = dict([(x.reference_id, x.text) for x in nex_session.query(Referencedocument).filter_by(document_type="Abstract").all()])
 
     fw = open(log_file,"w")
 
@@ -89,8 +91,10 @@ def update_reference_data(log_file):
             
         if len(pmids) >= MAX:
             records = get_pubmed_record_from_xml(','.join(pmids))
+            abstracts = get_abstracts(','.join(pmids))
             update_database_batch(nex_session, fw, records, 
-                                  pmid_to_reference, 
+                                  pmid_to_reference, abstracts,
+                                  reference_id_to_abstract,
                                   journal_id_to_abbrev)
 
             pmids = []
@@ -100,7 +104,8 @@ def update_reference_data(log_file):
     if len(pmids) > 0:
         records = get_pubmed_record_from_xml(','.join(pmids))
         update_database_batch(nex_session, fw, records, 
-                              pmid_to_reference, 
+                              pmid_to_reference, abstracts,
+                              reference_id_to_abstract,
                               journal_id_to_abbrev)
         
     nex_session.commit()
@@ -113,8 +118,14 @@ def update_reference_data(log_file):
     fw.close()
 
 
-def update_database_batch(nex_session, fw, records, pmid_to_reference, journal_id_to_abbrev):
+def update_database_batch(nex_session, fw, records, pmid_to_reference, abstracts, reference_id_to_abstract, journal_id_to_abbrev):
         
+    pmid_to_abstract = {}
+    for (pmid, abstract) in abstracts:
+        if pmid is None:
+            continue
+        pmid_to_abstract[int(pmid)] = abstract
+
     for record in records:            
 
         pmid = record.get('pmid')
@@ -131,8 +142,33 @@ def update_database_batch(nex_session, fw, records, pmid_to_reference, journal_i
         dbentity_id = x['dbentity_id']
 
         ### UPDATE REFERENCEDBENTITY TABLE
-        update_reference(nex_session, fw, record, pmid, x, journal_id_to_abbrev)
+        # update_reference(nex_session, fw, record, pmid, x, journal_id_to_abbrev)
+
+        abstract_db = reference_id_to_abstract.get(dbentity_id)
+        abstract = pmid_to_abstract[int(pmid)]
+        abstractTXT = record.get('abstract')
+        if abstractTXT is not None:
+            wordsFromXML = abstract.split(" ")
+            wordsFromTXT = abstractTXT.split(" ")
+            if len(wordsFromTXT) > len(wordsFromXML)+2:
+                print "XML abstract: PMID:", pmid, pmid_to_abstract[int(pmid)]
+                print "TXT abstract: PMID:", pmid, abstract
+                abstract = abstractTXT
+        update_abstract(nex_session, fw, pmid, dbentity_id, abstract,
+                        abstract_db)
         
+def update_abstract(nex_session, fw, pmid, reference_id, abstract, abstract_db):
+
+    if abstract is None or abstract == "" or len(abstract) < 10:
+        return
+    if abstract == abstract_db or abstract_db is None:
+        return
+
+    nex_session.query(Referencedocument).filter_by(reference_id=reference_id).update({'text': abstract,
+                                                                                      'html': link_gene_names(abstract, {}, nex_session)})
+    nex_session.commit()
+
+
 def update_reference(nex_session, fw, record, pmid, x, journal_id_to_abbrev):
 
     x = nex_session.query(Referencedbentity).filter_by(pmid=pmid).one_or_none()
