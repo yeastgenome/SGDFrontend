@@ -54,7 +54,35 @@ def get_pubmed_record(pmid_list):
     records_txt = handle.read()
     return records_txt.split("\n\n")
 
+def get_titles(pmid_list):
+
+    handle = Entrez.efetch(db="pubmed", id=pmid_list, rettype='Medline', retmode='text')
+    record_txt = handle.read()
+    records = record_txt.split("\n\n")
+    data = {}
+    pmid = None
+    for record in records:
+        lines = record.split("\n")
+        end = 1
+        for line in lines:
+            if "PMID- " in line:
+                pmid = int(line.replace("PMID- ", ""))
+                continue
+            if line.startswith("TI  - "):
+                data[pmid] = line.replace("TI  - ", "")
+                end = 0
+                continue
+            if end == 0 and line.startswith("      "):
+                data[pmid] += " " + line.replace("      ", "")
+                data[pmid] = data[pmid].replace("  ", " ")
+            else:
+                end = 1
+
+    return data
+
 def get_pubmed_record_from_xml(pmid_list):
+
+    pmid2title = get_titles(pmid_list)
 
     handle = Entrez.efetch(db="pubmed", id=pmid_list, rettype='xml')
     record = Entrez.read(handle)
@@ -73,7 +101,24 @@ def get_pubmed_record_from_xml(pmid_list):
             entry['volume'] = journal['JournalIssue'].get('Volume')
             if journal['JournalIssue'].get('PubDate'):
                 entry['year'] = journal['JournalIssue']['PubDate'].get('Year')
+
         entry['title'] = article.get('ArticleTitle')
+        
+        ## the titles from XML format preserve all special charaters
+        ## while the titles from medline format do not so try very best 
+        ## to use the titles from XML unless there are html tags in the 
+        ## titles - in that cases, XML format will mess up the title parsing
+        titleFromXML = entry['title']
+        titleFromTXT = pmid2title.get(entry['pmid'])
+        if titleFromTXT is not None:
+            wordsFromXML = titleFromXML.split(" ")
+            wordsFromTXT = titleFromTXT.split(" ")
+            if len(wordsFromTXT) > len(wordsFromXML)+2:
+                print "XML: PMID:", entry['pmid'], entry['title']
+                print "TXT: PMID:", entry['pmid'], titleFromTXT
+                entry['title'] = titleFromTXT
+                
+        
         if paper['MedlineCitation'].get('DateRevised'):
             dateRevised = paper['MedlineCitation']['DateRevised']
             entry['date_revised'] = dateRevised['Year'] + "-" + dateRevised['Month'] + "-" + dateRevised['Day']  
