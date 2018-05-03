@@ -473,10 +473,9 @@ var SearchForm = React.createClass({
                             result = data;
                       }.bind(this),
                       error: function(xhr, status, err) {
-                            console.error(jsonUrl, status, err.toString());
+                            console.error(SeqtoolUrl, status, err.toString());
                       }.bind(this)
                 });
-		console.log("jsonUrl="+jsonUrl);
 		console.log("Result="+result);
 		return result['code'];
 
