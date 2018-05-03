@@ -466,21 +466,21 @@ var SearchForm = React.createClass({
 	
         _validateGene: function(name) {
 
-		var checkData = {};
+		// var checkData = {};
                 $.ajax({
 			url: SeqtoolsUrl,
                       	dataType: 'json',
 		      	data: { 'check' : name },
 		      	success: function(data) {
-                              // this.setState({checkData: data});
-			      checkData = data;
+                              this.setState({checkData: data});
+			      // checkData = data;
                       	}.bind(this),
                       	error: function(xhr, status, err) {
                               console.error(SeqtoolUrl, status, err.toString());
                       	}.bind(this)
                 });
 				
-		// var checkData = this.state.checkData;
+		var checkData = this.state.checkData;
 		return checkData['code'];
 
         },
