@@ -156,6 +156,7 @@ var SearchForm = React.createClass({
 		    this._validateGene(name);
 		    var checkData = this.state.checkData
 		    var code = checkData['code']
+		    console.log("code="+code);
 		    if (code != 0) {
 		       alert("Gene name provided does not exist in the database: " + name + "code="+code);
 		    }
