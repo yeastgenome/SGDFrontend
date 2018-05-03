@@ -73,7 +73,6 @@ var SearchForm = React.createClass({
 
 			var data = this.state.resultData;
 
-			
 			// var _resultTable = this._getResultTable(data);
 
 		       	// return (<div>
@@ -160,9 +159,9 @@ var SearchForm = React.createClass({
 		    if (code != 0) {
 		       alert("Gene name provided does not exist in the database: " + name + "code="+code);
 		    }
-		    this.setState({ checkData: null}); 
-                    e.preventDefault();
-                    return 1;
+		    // this.setState({ checkData: null}); 
+                    // e.preventDefault();
+                    // return 1;
 		}
 
 		var up = this.refs.up.value.trim();
