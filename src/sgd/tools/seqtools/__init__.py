@@ -36,8 +36,8 @@ def validate_name(p):
     url = validate_url + name
     res = _get_json_from_server(url)
     if res == 404:
-        return { "code": -1 }
-    return { "code": 0 }
+        return { "code": name + "-1" }
+    return { "code": name + "0" }
 
         
 def get_sequence_for_chr(p):
