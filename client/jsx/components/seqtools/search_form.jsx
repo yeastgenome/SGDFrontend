@@ -33,6 +33,7 @@ var SearchForm = React.createClass({
 			seq: null,
 			rev: 'off',
 			resultData: {},
+			checkData: {},
 			param: param,
 			didSeqAnal: 0,
 			submitted: param['submit'],
@@ -465,21 +466,22 @@ var SearchForm = React.createClass({
 	
         _validateGene: function(name) {
 
- 		var checkResult = {};
+		var checkData = {};
                 $.ajax({
 			url: SeqtoolsUrl,
                       	dataType: 'json',
 		      	data: { 'check' : name },
 		      	success: function(data) {
-                              // this.setState({resultData: data});
-			      checkResult = data;
+                              // this.setState({checkData: data});
+			      checkData = data;
                       	}.bind(this),
                       	error: function(xhr, status, err) {
                               console.error(SeqtoolUrl, status, err.toString());
                       	}.bind(this)
                 });
-		
-		return checkResult['code'];
+				
+		// var checkData = this.state.checkData;
+		return checkData['code'];
 
         },
 
