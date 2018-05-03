@@ -481,6 +481,7 @@ var SearchForm = React.createClass({
                 });
 				
 		var checkData = this.state.checkData;
+		console.log(name + ":" + checkData['code']);
 		return checkData['code'];
 
         },
