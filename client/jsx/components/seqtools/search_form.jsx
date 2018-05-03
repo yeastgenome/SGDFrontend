@@ -152,11 +152,11 @@ var SearchForm = React.createClass({
 		var geneList = genes.split("|");
 		for (var i = 0; i < geneList.length; i++) {
 		    var name = geneList[i];
-		    this._sendRequest({ "genes": name });
+		    this._validateGene(name);
 		    var check = this.state.resultData;
-		    console.log("check of " + geneList[i] + ": " + check[name]);
+		    console.log("check of " + name + ": " + check['code']);
 		    alert("Gene name provided does not exist in the database: " + name);
-		    alert(name+ ": " + check[name]);
+		    alert(name+ ": " + check['code']);
                     e.preventDefault();
                     return 1;
 		}
@@ -464,22 +464,17 @@ var SearchForm = React.createClass({
 	
         _validateGene: function(name) {
 
-                // var jsonUrl = SeqtoolsUrl + "?check=" + name;
-
-		var result = "";
                 $.ajax({
-                      url: SeqtoolsUrl,
-                      dataType: 'json',
-		      data: { 'check' : name },
-                      success: function(data) {
-                            result = data;
-                      }.bind(this),
-                      error: function(xhr, status, err) {
-                            console.error(SeqtoolUrl, status, err.toString());
-                      }.bind(this)
+			url: SeqtoolsUrl,
+                      	dataType: 'json',
+		      	data: { 'check' : name },
+		      	success: function(data) {
+                              this.setState({resultData: data});
+                      	}.bind(this),
+                      	error: function(xhr, status, err) {
+                              console.error(SeqtoolUrl, status, err.toString());
+                      	}.bind(this)
                 });
-		console.log("Result="+result);
-		return result['code'];
 
         },
 
