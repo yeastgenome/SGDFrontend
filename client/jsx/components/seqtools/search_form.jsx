@@ -466,7 +466,7 @@ var SearchForm = React.createClass({
 
 		var result = "";
                 $.ajax({
-                      url: SeqToolsUrl,
+                      url: SeqtoolsUrl,
                       dataType: 'json',
 		      data: { 'check' : name },
                       success: function(data) {
