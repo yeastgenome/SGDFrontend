@@ -157,6 +157,7 @@ var SearchForm = React.createClass({
 		    if (check['code'] != 0) {
 		       alert("Gene name provided does not exist in the database: " + name);
 		    }
+		    this.setState({ resultData: null}); 
                     e.preventDefault();
                     return 1;
 		}
