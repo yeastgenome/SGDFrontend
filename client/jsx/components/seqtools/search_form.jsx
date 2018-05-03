@@ -479,7 +479,7 @@ var SearchForm = React.createClass({
                       	}.bind(this)
                 });
 		
-		return check['code'];
+		return checkResult['code'];
 
         },
 
