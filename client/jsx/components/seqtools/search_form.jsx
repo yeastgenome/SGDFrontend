@@ -475,7 +475,7 @@ var SearchForm = React.createClass({
                             console.error(jsonUrl, status, err.toString());
                       }.bind(this)
                 });
-		return result;
+		return result['code'];
 
         },
 
