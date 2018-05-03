@@ -462,8 +462,9 @@ var SearchForm = React.createClass({
 	
         _validateGene: function(name) {
 
-                var jsonUrl = SeqtoolsUrl + "?check=" + name;
-		
+                // var jsonUrl = SeqtoolsUrl + "?check=" + name;
+		var jsonUrl = SeqtoolsUrl + "?genes=" + name;
+
 		var result = "";
                 $.ajax({
                       url: jsonUrl,
