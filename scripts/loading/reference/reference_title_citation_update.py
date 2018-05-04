@@ -142,17 +142,19 @@ def update_database_batch(nex_session, fw, records, pmid_to_reference, abstracts
         dbentity_id = x['dbentity_id']
 
         ### UPDATE REFERENCEDBENTITY TABLE
-        # update_reference(nex_session, fw, record, pmid, x, journal_id_to_abbrev)
+        update_reference(nex_session, fw, record, pmid, x, journal_id_to_abbrev)
 
         abstract_db = reference_id_to_abstract.get(dbentity_id)
-        abstract = pmid_to_abstract[int(pmid)]
+        abstract = pmid_to_abstract.get(int(pmid))
+        if abstract is None:
+            abstract = ""
         abstractTXT = record.get('abstract')
         if abstractTXT is not None:
             wordsFromXML = abstract.split(" ")
             wordsFromTXT = abstractTXT.split(" ")
             if len(wordsFromTXT) > len(wordsFromXML)+2:
-                print "XML abstract: PMID:", pmid, pmid_to_abstract[int(pmid)]
-                print "TXT abstract: PMID:", pmid, abstract
+                print "XML abstract: PMID:", pmid, abstract
+                print "TXT abstract: PMID:", pmid, abstractTXT
                 abstract = abstractTXT
         update_abstract(nex_session, fw, pmid, dbentity_id, abstract,
                         abstract_db)
