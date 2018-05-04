@@ -151,6 +151,7 @@ var SearchForm = React.createClass({
 		}
 		this.setState({ checkData: {} });
 		this._validateGene(genes);
+		this._validateGene(genes);
 		var checkData = this.state.checkData
 		var not_found = checkData['not_found']
 		console.log("not_found="+not_found);
