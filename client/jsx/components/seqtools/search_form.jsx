@@ -470,7 +470,7 @@ var SearchForm = React.createClass({
 		      	success: function(data) {
 				// this.setState({checkData: data});
 				console.log("checkData=" + data);
-				return data['not_found']
+				return data
                       	}.bind(this),
                       	error: function(xhr, status, err) {
                               console.error(SeqtoolUrl, status, err.toString());
