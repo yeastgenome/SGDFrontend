@@ -149,12 +149,11 @@ var SearchForm = React.createClass({
 		   e.preventDefault();
                    return 1;
 		}
-		this.setState({ checkData: {} });
-		this._validateGene(genes);
-		this._validateGene(genes);
-		var checkData = this.state.checkData
-		var not_found = checkData['not_found']
-		console.log("not_found="+not_found);
+		// this.setState({ checkData: {} });
+		var not_found = this._validateGenes(genes);
+		// var checkData = this.state.checkData
+		// var not_found = checkData['not_found']
+		// console.log("not_found="+not_found);
 		if (not_found != "") {
 		   alert("These gene name(s) provided do not exist in the database: " + not_found);
 		   e.preventDefault();
@@ -462,14 +461,16 @@ var SearchForm = React.createClass({
    		
 	},
 	
-        _validateGene: function(name) {
+        _validateGenes: function(name) {
 
                 $.ajax({
 			url: SeqtoolsUrl,
                       	dataType: 'json',
 		      	data: { 'check' : name },
 		      	success: function(data) {
-				this.setState({checkData: data});
+				// this.setState({checkData: data});
+				var checkData = data
+				return checkData['not_found']
                       	}.bind(this),
                       	error: function(xhr, status, err) {
                               console.error(SeqtoolUrl, status, err.toString());
