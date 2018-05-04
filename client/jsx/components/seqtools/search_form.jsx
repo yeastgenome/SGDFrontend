@@ -160,8 +160,8 @@ var SearchForm = React.createClass({
 		       alert("Gene name provided does not exist in the database: " + name + "code="+code);
 		    }
 		    // this.setState({ checkData: null}); 
-                    // e.preventDefault();
-                    // return 1;
+                    e.preventDefault();
+                    return 1;
 		}
 
 		var up = this.refs.up.value.trim();
