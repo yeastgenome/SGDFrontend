@@ -66,8 +66,10 @@ index-redis:
 	source dev_variables.sh && python scripts/disambiguation/index_disambiguation.py
 
 
-bgi-json:
+bgi-dev:
 	source dev_variables.sh && python scripts/bgi_json/bgi.py
+bgi-prod:
+	source prod_variables.sh && python scripts/bgi_json/bgi.py
 
 upload-expression-details:
 	source dev_variables.sh && python scripts/loading/upload_expression_details.py
