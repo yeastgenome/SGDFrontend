@@ -154,14 +154,14 @@ var SearchForm = React.createClass({
 		    var name = geneList[i];
 		    this._validateGene(name);
 		    var checkData = this.state.checkData
+		    this.setState({ checkData: {} });
 		    var code = checkData['code']
 		    console.log("code="+code);
 		    if (code != 0) {
 		       alert("Gene name provided does not exist in the database: " + name + "code="+code);
-		    }
-		    // this.setState({ checkData: null}); 
-                    e.preventDefault();
-                    return 1;
+		       e.preventDefault();
+		       return 1;
+		    }               
 		}
 
 		var up = this.refs.up.value.trim();
