@@ -99,3 +99,4 @@ dump.rdb
 scripts/bgi_json/data_dump
 pycall_graph_images
 index_*.png
+*.env
