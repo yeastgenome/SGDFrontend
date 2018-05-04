@@ -11,7 +11,7 @@ def do_seq_analysis(request):
     p = dict(request.params)
 
     if p.get('check'):
-        data = validate_name(p)
+        data = validate_names(p)
         return Response(body=json.dumps(data), content_type='application/json')
 
     if p.get('chr'):
@@ -26,18 +26,24 @@ def do_seq_analysis(request):
     return Response(body=json.dumps(data), content_type='application/json')
 
 
-def validate_name(p):
+def validate_names(p):
 
-    # http://0.0.0.0:6545/run_seqtools?check=ACT1
-    name = p.get('check')
-    if name is None:
-        return { "code": -2 }
-    name = name.replace("SGD:", "")
-    url = validate_url + name
-    res = _get_json_from_server(url)
-    if res == 404:
-        return { "code": -1 }
-    return { "code": 0 }
+    # http://0.0.0.0:6545/run_seqtools?check=ACT1|XXX6
+    checkList = p.get('check')
+    if checkList is not None:
+        names = checkList.split("|")
+        badList = ""
+        for name in names:
+            gene = name
+            name = name.replace("SGD:", "")
+            url = validate_url + name
+            res = _get_json_from_server(url)
+            if res == 404:
+                if badList != "":
+                    badList += ", "
+                badList += gene
+        return { "not_found": badList }
+    return { "not_found": "" }
 
         
 def get_sequence_for_chr(p):

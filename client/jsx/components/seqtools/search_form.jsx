@@ -149,20 +149,15 @@ var SearchForm = React.createClass({
 		   e.preventDefault();
                    return 1;
 		}
-		var geneList = genes.split("|");
 		this.setState({ checkData: {} });
-		for (var i = 0; i < geneList.length; i++) {
-		    var name = geneList[i];
-		    this._validateGene(name);
-		    var checkData = this.state.checkData
-		    this.setState({ checkData: {} });
-		    var code = checkData['code']
-		    console.log("code="+code);
-		    if (code != 0) {
-		       alert("Gene name provided does not exist in the database: " + name + "code="+code);
-		       e.preventDefault();
-		       return 1;
-		    }               
+		this._validateGene(genes);
+		var checkData = this.state.checkData
+		var not_found = checkData['not_found']
+		console.log("not_found="+not_found);
+		if (not_found != "") {
+		   alert("These gene name(s) provided do not exist in the database: " + not_found);
+		   e.preventDefault();
+		   return 1;
 		}
 
 		var up = this.refs.up.value.trim();
