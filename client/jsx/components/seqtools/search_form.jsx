@@ -469,8 +469,8 @@ var SearchForm = React.createClass({
 		      	data: { 'check' : name },
 		      	success: function(data) {
 				// this.setState({checkData: data});
-				var checkData = data
-				return checkData['not_found']
+				console.log("checkData=" + data);
+				return data['not_found']
                       	}.bind(this),
                       	error: function(xhr, status, err) {
                               console.error(SeqtoolUrl, status, err.toString());
