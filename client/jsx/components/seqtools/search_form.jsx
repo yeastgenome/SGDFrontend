@@ -469,7 +469,7 @@ var SearchForm = React.createClass({
 		      	data: { 'check' : name },
 		      	success: function(data) {
 				// this.setState({checkData: data});
-				console.log("checkData=" + data);
+				console.log("not found genes=" + data);
 				return data
                       	}.bind(this),
                       	error: function(xhr, status, err) {

@@ -42,9 +42,10 @@ def validate_names(p):
                 if badList != "":
                     badList += ", "
                 badList += gene
-        return { "not_found": badList }
-    return { "not_found": "" }
-
+        # return { "not_found": badList }
+        return badList
+    # return { "not_found": "" }
+    return ""
         
 def get_sequence_for_chr(p):
 
