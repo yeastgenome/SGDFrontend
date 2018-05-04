@@ -9,10 +9,12 @@ from random import randint
 #from pycallgraph import PyCallGraph
 #from pycallgraph.output import GraphvizOutput
 from datetime import datetime
+import pdb
 
 engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
 DBSession.configure(bind=engine)
 Base.metadata.bind = engine
+
 
 # populate text file with sgdis to be used to retrieve panther data
 def get_sgdids_for_panther():
@@ -33,6 +35,7 @@ def get_panther_sgdids():
     with open('./scripts/bgi_json/data_dump/panther/panther_search_results.json') as json_data_file:
         json_data = json.load(json_data_file)
         for item in json_data:
+            pdb.set_trace()
             temp_str = ','.join(map(str, item))
             reg_pattern = r'(SGD=S\d+)|(PTHR\d+)'
             reg_result = sorted(list(set(re.findall(reg_pattern, temp_str))))
@@ -48,8 +51,9 @@ def get_panther_sgdids():
 
         return data_dict
 
+
 # pupulate json file with basic gene infromation(bgi)
-def get_bgi_data():
+def get_bgi_data(soFlag=False):
     combined_list = combine_panther_locus_list(get_panther_sgdids(), Locusdbentity.get_s288c_genes())
     result = []
     if(len(combined_list) > 0):
@@ -79,6 +83,8 @@ def get_bgi_data():
             }
             item = combined_list[item_key]["locus_obj"]
             temp_itm = ["gene"]
+            temp_itm.append("gene/references")
+            temp_itm.append("homepage")
             if(item.has_expression):
                 temp_itm.append("gene/expression")
                 temp_itm.append("gene/spell")
@@ -109,7 +115,7 @@ def get_bgi_data():
                     obj["genomeLocations"][0]["strand"] = strnd
                     obj["genomeLocations"][0]["startPosition"] = dna_seq_annotation_obj[0].start_index
                     obj["genomeLocations"][0]["chromosome"] = "chr"+chromosome[1]
-                    obj["soTermId"] = dna_seq_annotation_obj[0].so.soid
+                    obj["soTermId"] =  dna_seq_annotation_obj[0].so.soid if soFlag else "SO:0001217"
                 mod_locus_alias_data = get_locus_alias_data(locus_alias_data, item.dbentity_id, item)
 
                 for mod_item in mod_locus_alias_data:
@@ -192,6 +198,8 @@ def combine_panther_locus_list(panther_list, locus_list):
     return combined_list
 
 
+
+
 # helper method to get locus_alias data
 def get_locus_alias_data(locus_alias_list, id, item_obj):
     data_container = {}
@@ -224,14 +232,53 @@ def get_locus_alias_data(locus_alias_list, id, item_obj):
     return data_container
 
 
+def get_phenotype_data():
+    '''
+        #phenotypeStatement --> qualifier == true, then qualifier + observable otherwise just observable
+        obj = {
+        "objectId": "?",     
+        "phenotypeTermIdentifiers": [
+            {"termId": "SGD:Apo.apo_id", "termOrder":?}
+        ],
+        "phenotypeStatement": qualifier(phenotype.qualifer_id) ? qualifier (phenotype.qualifer_id) + + observable (phenotype.observable_id): observable (phenotype.observable_id),
+        "pubMedId": "PMID:14660549",
+        "dateAssigned": phenotypeannotation.date_created
+        }
+    '''
+    _data = DBSession.query(Phenotypeannotation).all()
+
+    for item in _data:
+        obj = {
+            "objectId": "",
+            "phenotypeTermIdentifiers": [],
+            "phenotypeStatement": "",
+            "pubMedId": "",
+            "dateAssigned": ""
+        }
+
+        phenotype_obj = item.phenotype.to_dict()
+        pString = phenotype_obj["qualifier"] + " " + phenotype_obj["observable"]["display_name"] if phenotype_obj[
+            "qualifier"] else phenotype_obj["observable"]["display_name"]
+        obj["objectId"] = item.dbentity.sgdid
+        obj["phenotypeTermIdentifiers"].append({"termId": "SGD: " + str(item.mutant_id), "termOrder": 1})
+        obj["phenotypeStatement"] = pString
+        obj["pubMedId"] = item.reference.pmid
+        obj["dateAssigned"] = item.date_created
+        pdb.set_trace()
+        print(item)
+
+
+
 # entry point
 if __name__ == '__main__':
-    start_time = time.time()
+    #get_panther_sgdids()
+    get_phenotype_data()
+    '''start_time = time.time()
     print "--------------start loading genes--------------"
-    get_bgi_data()
+    get_bgi_data() '''
     '''with PyCallGraph(output=GraphvizOutput()):
         get_bgi_data()'''
-    with open('./scripts/bgi_json/data_dump/log_time.txt', 'w+') as res_file:
+    '''with open('./scripts/bgi_json/data_dump/log_time.txt', 'w+') as res_file:
         time_taken = "time taken: " + ("--- %s seconds ---" % (time.time() - start_time))
         res_file.write(time_taken)
-    print "--------------done loading genes--------------"
+    print "--------------done loading genes--------------" '''
