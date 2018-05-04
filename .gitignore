@@ -34,3 +34,4 @@ asset_version.json
 .cache/
 docs/
 production_asset_url.json
+*.env
