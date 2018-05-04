@@ -150,6 +150,7 @@ var SearchForm = React.createClass({
                    return 1;
 		}
 		var geneList = genes.split("|");
+		this.setState({ checkData: {} });
 		for (var i = 0; i < geneList.length; i++) {
 		    var name = geneList[i];
 		    this._validateGene(name);
