@@ -80,18 +80,58 @@ var SearchForm = React.createClass({
 			//	     <p><center><blockquote style={{ fontFamily: "Monospace", fontSize: 14 }}><a href={downloadUrl}>Download Full Results</a></blockquote></center></p>
 			//       </div>);			
 
-			// var geneStrainPairs = Object.keys(data).sort()
+			var genes = Object.keys(data).sort();
 			
-			// var resultSection = "";
-			// for (var i = 0; i < geneStrainPairs.length; i++) {
-			//    var key = geneStrainPairs[i];
-			//    var seq = data[key];
-    			//    var geneStrain = key.split(":")    
-    			//    resultSection += "; gene=" + geneStrain[0] + " strain=" +  geneStrain[1] + ", sequence=" + seq;  
-			// }		
-					
-			// return (<div>{resultSection}</div>);
-			return (<div>Hello world!!</div>);
+			var resultSection = "";
+			for (var i = 0; i < genes.length; i++) {
+			    var gene = genes[i];
+			    var seqInfo = data[gene];
+    			    var proteinSeq4strain = {};
+			    var codingSeq4strain = {};
+			    var genomicSeq4strain = {};
+			    var display_name = "";
+			    var headline = "";
+			    var locus_type = "";
+			    var sgdid = "";
+			    var seqTypes = Object.keys(seqInfo);
+			    for (var j = 0; j < seqTypes.length; j++) {
+			    	var seqType = seqTypes[j];
+				var strainInfo = seqInfo[seqType];
+			        var strains = Object.keys(strainInfo);
+			        for (var k = 0; k < strains.length; k++) {
+				    var strain = strains[k];
+				    var strainDetails = strainInfo[strain];
+				    if (display_name == '') {
+				        display_name = strainDetails['display_name'];
+		                    }
+				    if (headline == '') {
+				        headline = strainDetails['headline'];
+			            }
+				    if (locus_type  == '') {
+				        locus_type = strainDetails['locus_type'];
+				    }
+				    if (sgdid == '') {
+                                        sgdid = strainDetails['sgdid'];
+				    }        
+				    if (seqType == 'protein') {
+				        proteinSeq4strain[strain] = strainDetails['residue'];
+				    }      
+				    else if (seqType == 'coding_dna') {
+                                    	 codingSeq4strain[strain] = strainDetails['residue'];
+                                    }
+				    else if (seqType == 'genomic_dna') {
+                                         genomicSeq4strain[strain] = strainDetails['residue'];
+                                    }
+				    
+				    resultSection += "<p>{display_name}/{ gene } {sgdid} {locus_type} {headline} {seqType} {strainDetails['residue']} </p>"
+
+				}  
+
+			    }		
+		        }
+			
+			return (<div>{resultSection}</div>);
+			// return (<div>Hello world!!</div>);
 
 		} 
 		else if (this.state.isPending) {
@@ -152,7 +192,7 @@ var SearchForm = React.createClass({
 		this.setState({ notFound: "" });
 		this._validateGenes(genes);		
 		var not_found = this.state.notFound;
-		console.log("not_found="+not_found);
+		// console.log("not_found="+not_found);
 		if (not_found != "") {
 		   	// alert("These gene name(s) do not exist in the database: " + not_found);
 		        e.preventDefault();

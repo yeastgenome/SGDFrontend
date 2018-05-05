@@ -37,14 +37,12 @@ def validate_names(p):
             gene = name
             name = name.replace("SGD:", "")
             url = validate_url + name
-            res = _get_json_from_server(url)
+            res =_check_gene_from_server(url)
             if res == 404:
                 if badList != "":
                     badList += ", "
                 badList += gene
-        # return { "not_found": badList }
         return badList
-    # return { "not_found": "" }
     return ""
         
 def get_sequence_for_chr(p):
@@ -249,6 +247,14 @@ def _reverse_complement(seq):
     bases = ''.join(bases)
     return bases
 
+def _check_gene_from_server(url):
+
+    try:
+        req = Request(url)
+        res = urlopen(req)
+        return 0
+    except HTTPError:
+        return 404
 
 def _get_json_from_server(url):
 
