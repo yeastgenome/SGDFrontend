@@ -151,12 +151,13 @@ var SearchForm = React.createClass({
 		}
 		this.setState({ notFound: "" });
 		this._validateGenes(genes);		
-		var not_found = this.state.notFound;
-		if (not_found != "") {
-		   alert("These gene name(s) provided do not exist in the database: " + not_found);
-		   e.preventDefault();
-		   return 1;
-		}
+		
+		// var not_found = this.state.notFound;
+		// if (not_found != "") {
+		//   alert("These gene name(s) do not exist in the database: " + not_found);
+		//   e.preventDefault();
+		//   return 1;
+		// }
 
 		var up = this.refs.up.value.trim();
                 var down = this.refs.down.value.trim();
@@ -467,6 +468,11 @@ var SearchForm = React.createClass({
 		      	data: { 'check' : name },
 		      	success: function(data) {
 				this.setState({notFound: data});
+				if (data != "") {
+				    alert("These gene name(s) do not exist in the database: " + not_found);
+                		    e.preventDefault();
+                		    return 1;
+				}
 				console.log("not found genes=" + data);
                       	}.bind(this),
                       	error: function(xhr, status, err) {
