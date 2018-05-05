@@ -469,7 +469,7 @@ var SearchForm = React.createClass({
 		      	success: function(data) {
 				this.setState({notFound: data});
 				if (data != "") {
-				    alert("These gene name(s) do not exist in the database: " + not_found);
+				    alert("These gene name(s) do not exist in the database: " + data);
                 		    e.preventDefault();
                 		    return 1;
 				}
