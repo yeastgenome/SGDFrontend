@@ -75,7 +75,9 @@ var SearchForm = React.createClass({
 
 			var _resultTable = this._getResultTable(data);
 
-			return <div dangerouslySetInnerHTML={{ __html: _resultTable}} />
+			// return <div dangerouslySetInnerHTML={{ __html: _resultTable}} />
+
+			return (<div>{ _resultTable } </div>);
 
 		} 
 		else if (this.state.isPending) {
