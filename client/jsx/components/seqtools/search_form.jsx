@@ -73,65 +73,9 @@ var SearchForm = React.createClass({
 
 			var data = this.state.resultData;
 
-			// var _resultTable = this._getResultTable(data);
+			var _resultTable = this._getResultTable(data);
 
-		       	// return (<div>
-			//	     <p><center>{_resultTable}</center></p>
-			//	     <p><center><blockquote style={{ fontFamily: "Monospace", fontSize: 14 }}><a href={downloadUrl}>Download Full Results</a></blockquote></center></p>
-			//       </div>);			
-
-			var genes = Object.keys(data).sort();
-			
-			var resultSection = "";
-			for (var i = 0; i < genes.length; i++) {
-			    var gene = genes[i];
-			    var seqInfo = data[gene];
-    			    var proteinSeq4strain = {};
-			    var codingSeq4strain = {};
-			    var genomicSeq4strain = {};
-			    var display_name = "";
-			    var headline = "";
-			    var locus_type = "";
-			    var sgdid = "";
-			    var seqTypes = Object.keys(seqInfo);
-			    for (var j = 0; j < seqTypes.length; j++) {
-			    	var seqType = seqTypes[j];
-				var strainInfo = seqInfo[seqType];
-			        var strains = Object.keys(strainInfo);
-			        for (var k = 0; k < strains.length; k++) {
-				    var strain = strains[k];
-				    var strainDetails = strainInfo[strain];
-				    if (display_name == '') {
-				        display_name = strainDetails['display_name'];
-		                    }
-				    if (headline == '') {
-				        headline = strainDetails['headline'];
-			            }
-				    if (locus_type  == '') {
-				        locus_type = strainDetails['locus_type'];
-				    }
-				    if (sgdid == '') {
-                                        sgdid = strainDetails['sgdid'];
-				    }        
-				    if (seqType == 'protein') {
-				        proteinSeq4strain[strain] = strainDetails['residue'];
-				    }      
-				    else if (seqType == 'coding_dna') {
-                                    	 codingSeq4strain[strain] = strainDetails['residue'];
-                                    }
-				    else if (seqType == 'genomic_dna') {
-                                         genomicSeq4strain[strain] = strainDetails['residue'];
-                                    }
-				    
-				    resultSection += "<p>{display_name}/{ gene } {sgdid} {locus_type} {headline} {seqType} {strainDetails['residue']} </p>"
-
-				}  
-
-			    }		
-		        }
-			
-			return (<div>{resultSection}</div>);
-			// return (<div>Hello world!!</div>);
+		       	return (<div><p><center>{_resultTable}</center></p></div>);
 
 		} 
 		else if (this.state.isPending) {
@@ -149,13 +93,13 @@ var SearchForm = React.createClass({
 			     return <p>Please wait... The search may take a while to run.</p>; 
 
 			}
-						
-			var descText = "<p>Try <a target='infowin' href='https://yeastmine.yeastgenome.org/yeastmine/begin.do'>Yeastmine</a> for flexible queries and fast retrieval of chromosomal features, sequences, GO annotations, interaction data and phenotype annotations. The video tutorial <a target='infowin' href='https://vimeo.com/28472349'>Template Basics</a> describes how to quickly retrieve this type of information in YeastMine. To find a comprehensive list of SGD's tutorials describing the many other features available in YeastMine and how to use them, visit SGD's <a target='infowin' href='https://sites.google.com/view/yeastgenome-help/video-tutorials/yeastmine?authuser=0'>YeastMine Video Tutorials</a> page. </p><p>This resource allows retrieval of a list of options for accessing biological information, table/map displays, and sequence analysis tools for 1. a named gene or sequence. 2. a specified chromosomal region, or 3. a raw DNA or protein sequence.</p>";
-				
+								
+			var descText = this._get_text();
+
 			var geneNodeLeft = this._getGeneNodeLeft();
-			var geneNodeRight = this._getGeneNodeRight();
-                	var chrNode = this._getChrNode();
-                	var seqNode = this._getSeqNode();
+                        var geneNodeRight = this._getGeneNodeRight();
+                        var chrNode = this._getChrNode();
+                        var seqNode = this._getSeqNode();
 
 			var _nameSection = { headers: [[<span style={{ fontSize: 20 }}>1. Search a list of genes</span>, '']],
 			    		     rows:    [[geneNodeLeft, geneNodeRight]] };
@@ -175,6 +119,62 @@ var SearchForm = React.createClass({
 			        </div>
 			</div>);
 		}
+	},
+
+	_getResultTable: function(data) {
+
+                var genes = Object.keys(data).sort();
+
+                var resultSection = "";
+                for (var i = 0; i < genes.length; i++) {
+                      var gene = genes[i];
+                      var seqInfo = data[gene];
+                      var proteinSeq4strain = {};
+                      var codingSeq4strain = {};
+                      var genomicSeq4strain = {};
+                      var display_name = "";
+                      var headline = "";
+                      var locus_type = "";
+                      var sgdid = "";
+                      var seqTypes = Object.keys(seqInfo);
+                      for (var j = 0; j < seqTypes.length; j++) {
+                             var seqType = seqTypes[j];
+                             var strainInfo = seqInfo[seqType];
+                             var strains = Object.keys(strainInfo);
+                             for (var k = 0; k < strains.length; k++) {
+                                    var strain = strains[k];
+                                    var strainDetails = strainInfo[strain];
+                                    if (display_name == '') {
+                                        display_name = strainDetails['display_name'];
+                                    }
+                                    if (headline == '') {
+                                        headline = strainDetails['headline'];
+                                    }
+                                    if (locus_type  == '') {
+                                        locus_type = strainDetails['locus_type'];
+                                    }
+                                    if (sgdid == '') {
+                                        sgdid = strainDetails['sgdid'];
+                                    }
+                                    if (seqType == 'protein') {
+                                        proteinSeq4strain[strain] = strainDetails['residue'];
+                                    }
+                                    else if (seqType == 'coding_dna') {
+                                         codingSeq4strain[strain] = strainDetails['residue'];
+                                    }
+                                    else if (seqType == 'genomic_dna') {
+                                         genomicSeq4strain[strain] = strainDetails['residue'];
+                                    }
+
+                              	    resultSection += "<p>{display_name}/{ gene } {sgdid} {locus_type} {headline} {seqType} {strainDetails['residue']} </p>"
+
+                             }
+
+                      }
+                }
+
+               	return (<div>{resultSection}</div>);
+                
 	},
 
 	_onSubmit: function (e) {
@@ -536,8 +536,13 @@ var SearchForm = React.createClass({
 
 		});
 
-	}
+	},
+	
+	_get_text: function() {
 
+	        return "<p>Try <a target='infowin' href='https://yeastmine.yeastgenome.org/yeastmine/begin.do'>Yeastmine</a> for flexible queries and fast retrieval of chromosomal features, sequences, GO annotations, interaction data and phenotype annotations. The video tutorial <a target='infowin' href='https://vimeo.com/28472349'>Template Basics</a> describes how to quickly retrieve this type of information in YeastMine. To find a comprehensive list of SGD's tutorials describing the many other features available in YeastMine and how to use them, visit SGD's <a target='infowin' href='https://sites.google.com/view/yeastgenome-help/video-tutorials/yeastmine?authuser=0'>YeastMine Video Tutorials</a> page. </p><p>This resource allows retrieval of a list of options for accessing biological information, table/map displays, and sequence analysis tools for 1. a named gene or sequence. 2. a specified chromosomal region, or 3. a raw DNA or protein sequence.</p>";
+      
+       }
 });
 
 module.exports = SearchForm;
