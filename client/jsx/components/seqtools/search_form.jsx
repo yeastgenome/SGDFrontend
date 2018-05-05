@@ -75,7 +75,7 @@ var SearchForm = React.createClass({
 
 			var _resultTable = this._getResultTable(data);
 
-		       	return (<div><p><center>{_resultTable}</center></p></div>);
+			return <div dangerouslySetInnerHTML={{ __html: _resultTable}} />
 
 		} 
 		else if (this.state.isPending) {
@@ -93,33 +93,41 @@ var SearchForm = React.createClass({
 			     return <p>Please wait... The search may take a while to run.</p>; 
 
 			}
-								
-			var descText = this._get_text();
 
-			var geneNodeLeft = this._getGeneNodeLeft();
-                        var geneNodeRight = this._getGeneNodeRight();
-                        var chrNode = this._getChrNode();
-                        var seqNode = this._getSeqNode();
-
-			var _nameSection = { headers: [[<span style={{ fontSize: 20 }}>1. Search a list of genes</span>, '']],
-			    		     rows:    [[geneNodeLeft, geneNodeRight]] };
-
-			var _chrSeqSection = { headers: [[<span style={{ fontSize: 20 }}><strong style={{ color: 'red'}}>OR</strong> 2. Search a specified chromosomal region</span>, '', '', <span style={{ fontSize: 20 }}><strong style={{ color: 'red'}}>OR</strong> 3. Analyze a raw DNA or Protein sequence</span>]],
-                                               rows:    [[chrNode, '', '', seqNode]] };
-					
-			return (<div>
-			        <div dangerouslySetInnerHTML={{ __html: descText}} />
-				<div className="row">
-				     <div className="large-12 columns">
-					   <form onSubmit={this._onSubmit} target="infowin">
-					   	 <DataTable data={_nameSection} />
-					   </form>
-					   <DataTable data={_chrSeqSection} />        
-			             </div>
-			        </div>
-			</div>);
+			return this._get_frontpage();
+			
 		}
 	},
+
+	_get_frontpage: function() {
+								
+		var descText = this._get_text();
+
+		var geneNodeLeft = this._getGeneNodeLeft();
+                var geneNodeRight = this._getGeneNodeRight();
+                var chrNode = this._getChrNode();
+               	var seqNode = this._getSeqNode();
+
+		var _nameSection = { headers: [[<span style={{ fontSize: 20 }}>1. Search a list of genes</span>, '']],
+			    	     rows:    [[geneNodeLeft, geneNodeRight]] };
+
+		var _chrSeqSection = { headers: [[<span style={{ fontSize: 20 }}><strong style={{ color: 'red'}}>OR</strong> 2. Search a specified chromosomal region</span>, '', '', <span style={{ fontSize: 20 }}><strong style={{ color: 'red'}}>OR</strong> 3. Analyze a raw DNA or Protein sequence</span>]],
+                                       rows:    [[chrNode, '', '', seqNode]] };
+					
+		return (<div>
+			<div dangerouslySetInnerHTML={{ __html: descText}} />
+			<div className="row">
+			     <div className="large-12 columns">
+			     	  <form onSubmit={this._onSubmit} target="infowin">
+				        <DataTable data={_nameSection} />
+			          </form>
+			         <DataTable data={_chrSeqSection} />        
+			     </div>
+			</div>
+		</div>);
+
+	},
+
 
 	_getResultTable: function(data) {
 
