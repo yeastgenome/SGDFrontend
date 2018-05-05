@@ -136,6 +136,8 @@ var SearchForm = React.createClass({
                 var genes = Object.keys(data).sort();
 
                 var resultSection = _.map(genes, g => { 
+		      return <p> { gene } </p>;
+
                       var seqInfo = data[g];
                       var proteinSeq4strain = {};
                       var codingSeq4strain = {};
