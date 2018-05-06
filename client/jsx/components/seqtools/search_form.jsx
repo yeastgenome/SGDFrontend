@@ -177,7 +177,7 @@ var SearchForm = React.createClass({
                              var strains = Object.keys(strainInfo);
                              _.map(strains, strain => {
                                     var strainDetails = strainInfo[strain];
-                                    if (displayName4gene[gene] == 'undefined') {
+                                    if (typeof(displayName4gene[gene]) == "undefined") {
                                         var display_name = strainDetails['display_name'];
 					if (display_name != gene) {
 					     displayName4gene[gene] = display_name + "/" + gene;
