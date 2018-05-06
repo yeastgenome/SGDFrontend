@@ -157,13 +157,25 @@ var SearchForm = React.createClass({
 		});	
 		rows.push(locusRow);
 		         
-	        // https://browse.yeastgenome.org/?loc=YAL001C
        		var browserRow = [<span style={{ fontSize: 20}}>Genome Display (S288C)</span>];
 		_.map(genes, gene => {
                     var url = "https://browse.yeastgenome.org/?loc=" + gene;
                     browserRow.push(<span style={{ fontSize: 20 }}><a href={ url } target='infowin2'>JBrowse</a></span>);
                 });
                 rows.push(browserRow);		
+
+		var alignRow = [<span style={{ fontSize: 20}}>Alignment/Variation</span>];
+		_.map(genes, gene => {
+		     var variantUrl = "https://www.yeastgenome.org/variant-viewer#/" + sgdid4gene[gene] + "?_k=kicmll";
+		     var strainUrl = "https://www.yeastgenome.org/cgi-bin/FUNGI/alignment.pl?locus=" + gene;
+		     var fungalUrl = "https://www.yeastgenome.org/cache/fungi/" + gene + ".html";
+		     // alignRow.push(<span style={{ fontSize: 20 }}><br><a href={ variantUrl } target='infowin2'>Variant Viewer</a></br><br><a href={ strainUrl } target='infowin2'>Strain Alignment</a></br><br>a href={ fungalUrl } target='infowin2'>Fungal Alignment</a></br></span>);
+		     alignRow.push(<span style={{ fontSize: 20 }}><a href={ variantUrl } target='infowin2'>Variant Viewer</a></span>);
+
+		});
+		rows.push(alignRow);
+		
+		
 
                 var _tableData = {
                         headers: [headerRow],
