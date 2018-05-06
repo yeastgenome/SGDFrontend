@@ -171,8 +171,7 @@ var SearchForm = React.createClass({
                 var hasSeq = hasProtein + hasCoding + hasGenomic;
 		    
 		if (hasSeq == 0) {
-		     var table = this._display_gene_table(headerRow, rows)
-		     return table;
+		     return this._display_gene_table(headerRow, rows)
 		}    
 
 	        // browser row
@@ -220,10 +219,8 @@ var SearchForm = React.createClass({
 		
 		// rows.push(seqDLRow);
 		
-
-
-		this._display_gene_table(headerRow, rows);		
-
+		return this._display_gene_table(headerRow, rows);		
+		
 	},
 
 	_display_gene_table: function(headerRow, rows) {
