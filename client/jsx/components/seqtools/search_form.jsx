@@ -138,14 +138,14 @@ var SearchForm = React.createClass({
 			= this._getDataFromJson(data);
 				
 		var headerRow = [<span style={{ fontSize: 20}}>Gene Name</span>];
-		headerRow = _.map(genes, gene => {
-		    return displayName4gene[gene];
+		_.map(genes, gene => {
+		    headerRow.push(displayName4gene[gene]);
 		});
 		
 		var locusRow = [<span style={{ fontSize: 20}}>Locus and Homolog Details</span>];
-		locusRow = _.map(genes, gene => {
+		_.map(genes, gene => {
 		    // var sgdid = sgdid4gene[gene];
-		    return <span style={{ fontSize: 20 }}>SGD|Alliance</span>;
+		    locusRow.push(<span style={{ fontSize: 20 }}>SGD|Alliance</span>);
 		});	
 
 		var resultSection = { headers: [[headerRow]],
