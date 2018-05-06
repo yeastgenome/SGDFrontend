@@ -144,11 +144,11 @@ var SearchForm = React.createClass({
 		
 		var locusRow = [<span style={{ fontSize: 20}}>Locus and Homolog Details</span>];
 		locusRow = _.map(genes, gene => {
-		    var sgdid = sgdid4gene[gene];
-		    return <span style={{ fontSize: 20 }}>SGD {sgdid}|Alliance {sgdid}</span>;
+		    // var sgdid = sgdid4gene[gene];
+		    return <span style={{ fontSize: 20 }}>SGD|Alliance</span>;
 		});	
 
-		var resultSection = { headers: [headerRow],
+		var resultSection = { headers: [[headerRow]],
                                       rows:    [[locusRow]] }
 
                 return <DataTable data={resultSection} />;
