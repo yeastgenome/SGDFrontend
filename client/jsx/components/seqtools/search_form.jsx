@@ -145,7 +145,7 @@ var SearchForm = React.createClass({
 		var rows = [];
 		var geneRow = [<span style={{ fontSize: 20}}>Gene Name</span>];
 		_.map(genes, gene => {
-		    geneRow.push(<span style={{ fontSize: 20 }}>displayName4gene[gene]</span>);
+		    geneRow.push(<span style={{ fontSize: 20 }}>{ displayName4gene[gene] }</span>);
 		});
 		rows.push(geneRow);
 
@@ -153,7 +153,7 @@ var SearchForm = React.createClass({
 		_.map(genes, gene => { 
 		    var sgdUrl = "/locus/" + sgdid4gene[gene];
 		    var alianceUrl = "http://www.alliancegenome.org/gene/" + sgdid4gene[gene];
-		    locusRow.push(<span style={{ fontSize: 20 }}><a href='{ sgdUrl }' target='infowin2'>SGD</a>|<a href='{ allianceUrl }' target='infowin2'>Alliance</a></span>);
+		    locusRow.push(<span style={{ fontSize: 20 }}><a href={ sgdUrl } target='infowin2'>SGD</a>|<a href={ allianceUrl } target='infowin2'>Alliance</a></span>);
 		});	
 		rows.push(locusRow);
 		                
