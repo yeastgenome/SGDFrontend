@@ -147,13 +147,10 @@ var SearchForm = React.createClass({
                       var sgdid = "";
                       var seqTypes = Object.keys(seqInfo);
 		      var seqTypeSection = _.map(seqTypes, seqType => {
-
-          	             return <p> { gene } : { seqType } </p>;
-
+          	             // return <p> { gene } : { seqType } </p>;
                              var strainInfo = seqInfo[seqType];
                              var strains = Object.keys(strainInfo);
-                             for (var k = 0; k < strains.length; k++) {
-                                    var strain = strains[k];
+			     var strainSection = _.map(strains, strain => {
                                     var strainDetails = strainInfo[strain];
                                     if (display_name == '') {
                                         display_name = strainDetails['display_name'];
@@ -179,7 +176,9 @@ var SearchForm = React.createClass({
 
                               	    return <p>{display_name}/{ gene } {sgdid} {locus_type} {headline} {seqType} {strainDetails['residue']} </p>
 
-                             }
+                             })
+			     
+			     return <div>{ strainSection }</div>;
 
                       })
 
