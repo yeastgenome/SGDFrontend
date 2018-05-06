@@ -166,7 +166,7 @@ var SearchForm = React.createClass({
                     bPaginate: false,
 		    bFilter: false,
 		    bInfo: false,
-		    bOrder: false,
+		    bSort: false,
                     oLanguage: { "sEmptyTable": "" }
                 };
 		return <DataTable data={_tableData}  usePlugin={true} pluginOptions={_dataTableOptions} />;
