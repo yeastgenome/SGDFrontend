@@ -156,7 +156,15 @@ var SearchForm = React.createClass({
 		    locusRow.push(<span style={{ fontSize: 20 }}><a href={ sgdUrl } target='infowin2'>SGD</a>|<a href={ allianceUrl } target='infowin2'>Alliance</a></span>);
 		});	
 		rows.push(locusRow);
-		                
+		         
+	        // https://browse.yeastgenome.org/?loc=YAL001C
+       		var browserRow = [<span style={{ fontSize: 20}}>Genome Display (S288C)</span>];
+		_.map(genes, gene => {
+                    var url = "https://browse.yeastgenome.org/?loc=" + gene;
+                    browserRow.push(<span style={{ fontSize: 20 }}><a href={ url } target='infowin2'>JBrowse</a></span>);
+                });
+                rows.push(browserRow);		
+
                 var _tableData = {
                         headers: [headerRow],
                         rows: rows
