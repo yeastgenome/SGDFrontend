@@ -92,7 +92,7 @@ def seq_tools(request):
     return render_to_response(TEMPLATE_ROOT + 'seqTools.jinja2', {}, request=request)
 
 @view_config(route_name='get_seq')
-def seq_tools(request):
+def get_seq(request):
     return render_to_response(TEMPLATE_ROOT + 'getSeq.jinja2', {}, request=request)
 
 @view_config(route_name='colleague_show')
