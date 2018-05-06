@@ -133,12 +133,34 @@ var SearchForm = React.createClass({
 	_getResultTable: function(data) {
 		
 		// var genes = window.localStorage.getItem("genes");
-
-				
+		
 		var [genes, displayName4gene, sgdid4gene, hasProtein4gene, hasCoding4gene, hasGenomic4gene] 
 			= this._getDataFromJson(data);
+				
+		var i = 0;
+		var headerRow = _.map(genes, gene => {
+		    if (i == 0) {
+		       	 return <span style={{ fontSize: 20}}>Gene Name</span>;
+		    }
+		    i += 1;
+		    return displayName4gene[gene];
+		});
 		
-		return <p> { displayName4gene } { sgdid4gene } {hasProtein4gene} {hasCoding4gen} {hasGenomic4gene}</p>;
+		var i = 0;
+		var locusRow = _.map(genes, gene => {
+		    if (i == 0) {
+		         return	<span style={{ fontSize: 20}}>Locus and Homolog Details</span>;
+		    } 
+		    i += 1;
+		    sgdid = sgdid4gene[gene];
+		    // return <span style={{ fontSize: 20 }}><a href="/locus{sgdid}" target="info2">SGD</a>|<a href=http://www.alliancegenome.org/gene/{sgdid}" target="info2">Alliance</a></span>;
+		    return <span style={{ fontSize: 20 }}>SGD {sgdid}|Alliance {sgdid}</span>;
+		});	
+
+		var resultSection = { headers: [headerRow],
+                                      rows:    [[locusRow]] }
+
+                return <DataTable data={resultSection} />;
 
 	},
 
@@ -200,64 +222,6 @@ var SearchForm = React.createClass({
 			  
 	},
 
-	_getResultTable2: function(data) {
-
-                var genes = Object.keys(data).sort();
-		
-                var resultSection = _.map(genes, gene => { 
-		      // return <p> { gene } </p>;		      
-                      var seqInfo = data[gene];
-                      var proteinSeq4strain = {};
-                      var codingSeq4strain = {};
-                      var genomicSeq4strain = {};
-                      var display_name = "";
-                      var headline = "";
-                      var locus_type = "";
-                      var sgdid = "";
-                      var seqTypes = Object.keys(seqInfo);
-		      var seqTypeSection = _.map(seqTypes, seqType => {
-          	             // return <p> { gene } : { seqType } </p>;
-                             var strainInfo = seqInfo[seqType];
-                             var strains = Object.keys(strainInfo);
-			     var strainSection = _.map(strains, strain => {
-                                    var strainDetails = strainInfo[strain];
-                                    if (display_name == '') {
-                                        display_name = strainDetails['display_name'];
-                                    }
-                                    if (headline == '') {
-                                        headline = strainDetails['headline'];
-                                    }
-                                    if (locus_type  == '') {
-                                        locus_type = strainDetails['locus_type'];
-                                    }
-                                    if (sgdid == '') {
-                                        sgdid = strainDetails['sgdid'];
-                                    }
-                                    if (seqType == 'protein') {
-                                        proteinSeq4strain[strain] = strainDetails['residue'];
-                                    }
-                                    else if (seqType == 'coding_dna') {
-                                         codingSeq4strain[strain] = strainDetails['residue'];
-                                    }
-                                    else if (seqType == 'genomic_dna') {
-                                         genomicSeq4strain[strain] = strainDetails['residue'];
-                                    }
-
-                              	    return <p>{display_name}/{ gene } {sgdid} {locus_type} {headline} {seqType} { strain } {strainDetails['residue']} </p>
-
-                             })
-			     
-			     return <div>{ strainSection }</div>;
-
-                      })
-
-		      return <div>{seqTypeSection}</div>;
-
-                });
-
-               	return (<div>{resultSection}</div>);
-                
-	},
 
 	_onSubmit: function (e) {
 		
