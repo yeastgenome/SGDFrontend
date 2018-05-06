@@ -170,7 +170,7 @@ var SearchForm = React.createClass({
 		     var strainUrl = "https://www.yeastgenome.org/cgi-bin/FUNGI/alignment.pl?locus=" + gene;
 		     var fungalUrl = "https://www.yeastgenome.org/cache/fungi/" + gene + ".html";
 		     // alignRow.push(<span style={{ fontSize: 20 }}><br><a href={ variantUrl } target='infowin2'>Variant Viewer</a></br><br><a href={ strainUrl } target='infowin2'>Strain Alignment</a></br><br>a href={ fungalUrl } target='infowin2'>Fungal Alignment</a></br></span>);
-		     alignRow.push(<span style={{ fontSize: 20 }}><a href={ variantUrl } target='infowin2'>Variant Viewer</a></span>);
+		     alignRow.push(<span style={{ fontSize: 20 }}><br><a href={ variantUrl } target='infowin2'>Variant Viewer</a></br><br><a href={ strainUrl } target='infowin2'>Strain Alignment</a></br></span>);
 
 		});
 		rows.push(alignRow);
