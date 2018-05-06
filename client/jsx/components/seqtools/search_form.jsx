@@ -135,10 +135,9 @@ var SearchForm = React.createClass({
 
                 var genes = Object.keys(data).sort();
 
-                var resultSection = _.map(genes, g => { 
-		      return <p> { g } </p>;
-		      
-                      var seqInfo = data[g];
+                var resultSection = _.map(genes, gene => { 
+		      // return <p> { gene } </p>;		      
+                      var seqInfo = data[gene];
                       var proteinSeq4strain = {};
                       var codingSeq4strain = {};
                       var genomicSeq4strain = {};
@@ -147,8 +146,10 @@ var SearchForm = React.createClass({
                       var locus_type = "";
                       var sgdid = "";
                       var seqTypes = Object.keys(seqInfo);
-                      for (var j = 0; j < seqTypes.length; j++) {
-                             var seqType = seqTypes[j];
+		      _.map(seqTypes, seqType => {
+
+          	             return <p> { gene } : { seqType } </p>;
+
                              var strainInfo = seqInfo[seqType];
                              var strains = Object.keys(strainInfo);
                              for (var k = 0; k < strains.length; k++) {
@@ -180,7 +181,7 @@ var SearchForm = React.createClass({
 
                              }
 
-                      }
+                      })
                 });
 
                	return (<div>{resultSection}</div>);
