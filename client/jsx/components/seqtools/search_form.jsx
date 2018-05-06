@@ -144,7 +144,7 @@ var SearchForm = React.createClass({
 		
 		var locusRow = [<span style={{ fontSize: 20}}>Locus and Homolog Details</span>];
 		locusRow = _.map(genes, gene => {
-		    sgdid = sgdid4gene[gene];
+		    var sgdid = sgdid4gene[gene];
 		    // return <span style={{ fontSize: 20 }}><a href="/locus{sgdid}" target="info2">SGD</a>|<a href=http://www.alliancegenome.org/gene/{sgdid}" target="info2">Alliance</a></span>;
 		    return <span style={{ fontSize: 20 }}>SGD {sgdid}|Alliance {sgdid}</span>;
 		});	
