@@ -165,9 +165,9 @@ var SearchForm = React.createClass({
 		var hasGenomic4gene = {};
 		_.map(genes, gene => {
                       var seqInfo = data[gene];
-                      var proteinSeq4strain = {};
-                      var codingSeq4strain = {};
-                      var genomicSeq4strain = {};
+                      // var proteinSeq4strain = {};
+                      // var codingSeq4strain = {};
+                      // var genomicSeq4strain = {};
                       var seqTypes = Object.keys(seqInfo);
 		      hasProtein4gene[gene] = 0;
 		      hasCoding4gene[gene] = 0;
@@ -177,7 +177,7 @@ var SearchForm = React.createClass({
                              var strains = Object.keys(strainInfo);
                              _.map(strains, strain => {
                                     var strainDetails = strainInfo[strain];
-                                    if (displayName4gene[gene] == 'undefinned') {
+                                    if (displayName4gene[gene] == 'undefined') {
                                         var display_name = strainDetails['display_name'];
 					if (display_name != gene) {
 					     displayName4gene[gene] = display_name + "/" + gene;
