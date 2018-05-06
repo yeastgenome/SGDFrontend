@@ -130,18 +130,80 @@ var SearchForm = React.createClass({
 
 	},
 
-	_getResultTable: function() {
+	_getResultTable: function(data) {
 		
-		var genes = window.localStorage.getItem("genes");
+		// var genes = window.localStorage.getItem("genes");
+
+				
+		var [genes, displayName4gene, sgdid4gene, hasProtein4gene, hasCoding4gene, hasGenomic4gene] 
+			= this._getDataFromJson(data);
 		
 		return <p> { genes } </p>;
 
 	},
 
+	_getDataFromJson: function(data) {
+	        
+		var genes = Object.keys(data).sort();
+		var displayName4gene = {};
+		var sgdid4gene = {};
+		var hasProtein4gene = {};
+		var hasCoding4gene = {};
+		var hasGenomic4gene = {};
+		_.map(genes, gene => {
+                      var seqInfo = data[gene];
+                      var proteinSeq4strain = {};
+                      var codingSeq4strain = {};
+                      var genomicSeq4strain = {};
+                      var seqTypes = Object.keys(seqInfo);
+		      hasProtein4gene[gene] = 0;
+		      hasCoding4gene[gene] = 0;
+		      hasGenomic4gene[gene] = 0;
+                      _.map(seqTypes, seqType => {
+                             var strainInfo = seqInfo[seqType];
+                             var strains = Object.keys(strainInfo);
+                             _.map(strains, strain => {
+                                    var strainDetails = strainInfo[strain];
+                                    if (displayName4gene[gene] == 'undefinned') {
+                                        var display_name = strainDetails['display_name'];
+					if (display_name != gene) {
+					     displayName4gene[gene] = display_name + "/" + gene;
+					}
+					else {
+					     displayName4gene[gene] = display_name;
+					}
+					sgdid4gene[gene] = strainDetails['sgdid'];
+                                    }
+				    // var headline = strainDetails['headline'];
+				    // var locus_type = strainDetails['locus_type'];
+				    
+                                    if (seqType == 'protein') {
+                                         // proteinSeq4strain[strain] = strainDetails['residue'];
+					 hasProtein4gene[gene] += 1;
+                                    }
+                                    else if (seqType == 'coding_dna') {
+                                         // codingSeq4strain[strain] = strainDetails['residue'];
+					 hasCoding4gene[gene] += 1;
+                                    }
+                                    else if (seqType == 'genomic_dna') {
+                                         // genomicSeq4strain[strain] = strainDetails['residue'];
+					 hasGenomic4gene[gene] += 1;
+                                    }
+
+                             })
+
+                      })
+
+                });
+
+		return [genes, displayName4gene, sgdid4gene, hasProtein4gene, hasCoding4gene, hasGenomic4gene];
+			  
+	},
+
 	_getResultTable2: function(data) {
 
                 var genes = Object.keys(data).sort();
-
+		
                 var resultSection = _.map(genes, gene => { 
 		      // return <p> { gene } </p>;		      
                       var seqInfo = data[gene];
