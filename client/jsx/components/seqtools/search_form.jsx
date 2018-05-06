@@ -132,8 +132,6 @@ var SearchForm = React.createClass({
 
 	_getResultTable: function(data) {
 		
-		// var genes = window.localStorage.getItem("genes");
-		
 		var [genes, displayName4gene, sgdid4gene, hasProtein4gene, hasCoding4gene, hasGenomic4gene] 
 			= this._getDataFromJson(data);
 				
@@ -149,6 +147,8 @@ var SearchForm = React.createClass({
 		});
 		rows.push(geneRow);
 
+		// gene name row
+
 		var locusRow = [<span style={{ fontSize: 20}}>Locus and Homolog Details</span>];
 		_.map(genes, gene => { 
 		    var sgdUrl = "https://www.yeastgenome.org/locus/" + sgdid4gene[gene];
@@ -156,13 +156,35 @@ var SearchForm = React.createClass({
 		    locusRow.push(<span style={{ fontSize: 20 }}><a href={ sgdUrl } target='infowin2'>SGD</a>|<a href={ allianceUrl } target='infowin2'>Alliance</a></span>);
 		});	
 		rows.push(locusRow);
-		         
+
+
+		// check to see if there is seq for any of the genes
+		    
+		var hasProtein = 0;
+                var hasCoding = 0;
+                var hasGenomic = 0;
+                _.map(genes, gene => {
+                     hasProtein += hasProtein4gene[gene];
+                     hasCoding  += hasCoding4gene[gene];
+                     hasGenomic += hasGenomic4gene[gene];
+                });
+                var hasSeq = hasProtein + hasCoding + hasGenomic;
+		    
+		if (hasSeq == 0) {
+		     var table = this._display_gene_table(headerRow, rows)
+		     return table;
+		}    
+
+	        // browser row
+
        		var browserRow = [<span style={{ fontSize: 20}}>Genome Display (S288C)</span>];
 		_.map(genes, gene => {
                     var url = "https://browse.yeastgenome.org/?loc=" + gene;
                     browserRow.push(<span style={{ fontSize: 20 }}><a href={ url } target='infowin2'>JBrowse</a></span>);
                 });
                 rows.push(browserRow);		
+
+		// alignment row
 
 		var alignRow = [<span style={{ fontSize: 20}}>Alignment/Variation</span>];
 		_.map(genes, gene => {
@@ -173,21 +195,52 @@ var SearchForm = React.createClass({
 		});
 		rows.push(alignRow);
 		
+		// sequence download row
+
+		var leftCol = <br><span style={{ fontSize: 20}}>Sequence Downloads</span></br>;
+		if (hasGenomic > 0) { // definitely has genomic
+		    leftCol += <br><span style={{ fontSize: 20}}>* DNA of Region</span></br>;
+		}
+		// if (hasCoding > 0) {
+		//    leftCol += <br><span style={{ fontSize: 20}}>* Coding Sequence of Selected ORF</span></br>;
+		// }
+		// if (hasProtein > 0) {
+		//    leftCol += <br><span style={{ fontSize: 20}}>* Protein Translation of Selected ORF</span></br>;
+                // }
+
+		var strains = window.localStorage.getItem("strains");
+		var seqDLRow = [leftCol];
+		_.map(genes, gene => {
+		    var fastaUrl = "/getSeq?format=fasta&gene=" + gene + "&strains=" + strains;
+		    var gcgUrl = "/getSeq?format=gcg&gene=" + gene + "&strains="    + strains;
+		    seqDLRow.push(<span style={{ fontSize: 20}}><br>Batch seuence file</br></span>);
+		    seqDLRow.push(<span style={{ fontSize: 20}}><br><a href={ fastaUrl } target='infowin2'>Fasta</a> | <a href={ fastaUrl } target='infowin2'>Fasta</a></br></span>); 
+		    
+		});		
 		
 
+
+		this._display_gene_table(headerRow, rows);		
+
+	},
+
+	_display_gene_table: function(headerRow, rows) {
+
                 var _tableData = {
-                        headers: [headerRow],
-                        rows: rows
+                     headers: [headerRow],
+                     rows: rows
                 };
 
                 var _dataTableOptions = {
-                    bPaginate: false,
-		    bFilter: false,
-		    bInfo: false,
-		    bSort: false,
-                    oLanguage: { "sEmptyTable": "" }
+                     bPaginate: false,
+                     bFilter: false,
+                     bInfo: false,
+                     bSort: false,
+                     oLanguage: { "sEmptyTable": "" }
                 };
-		return <DataTable data={_tableData}  usePlugin={true} pluginOptions={_dataTableOptions} />;
+
+                return <DataTable data={_tableData}  usePlugin={true} pluginOptions={_dataTableOptions} />;			     
+
 	},
 
 	_getDataFromJson: function(data) {
