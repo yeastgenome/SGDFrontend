@@ -207,17 +207,17 @@ var SearchForm = React.createClass({
 		//    leftCol += <span style={{ fontSize: 20}}><br>* Protein Translation of Selected ORF</br></span>;
                 // }
 
-		// var strains = window.localStorage.getItem("strains");
-		// var seqDLRow = [<span style={{ fontSize: 20}}><br>Sequence Downloads</br></span>];
-		// _.map(genes, gene => {
-		//    var fastaUrl = "/getSeq?format=fasta&gene=" + gene + "&strains=" + strains;
-		//    var gcgUrl = "/getSeq?format=gcg&gene=" + gene + "&strains=" + strains;
-		//    seqDLRow.push(<span style={{ fontSize: 20}}><br>Batch seuence file</br></span>);
-		//    // seqDLRow.push(<span style={{ fontSize: 20}}><br><a href={ fastaUrl } target='infowin2'>Fasta</a> | <a href={ fastaUrl } target='infowin2'>Fasta</a></br></span>); 
+		var strains = window.localStorage.getItem("strains");
+		var seqDLRow = [<span style={{ fontSize: 20}}><br>Sequence Downloads</br></span>];
+		_.map(genes, gene => {
+		    var fastaUrl = "/getSeq?format=fasta&gene=" + gene + "&strains=" + strains;
+		    var gcgUrl = "/getSeq?format=gcg&gene=" + gene + "&strains=" + strains;
+		    seqDLRow.push(<span style={{ fontSize: 20}}><br>Batch seuence file</br></span>);
+		    // seqDLRow.push(<span style={{ fontSize: 20}}><br><a href={ fastaUrl } target='infowin2'>Fasta</a> | <a href={ fastaUrl } target='infowin2'>Fasta</a></br></span>); 
 		    
-		// });
+	        });
 		
-		// rows.push(seqDLRow);
+		rows.push(seqDLRow);
 		
 		return this._display_gene_table(headerRow, rows);		
 		
