@@ -174,7 +174,7 @@ var SearchForm = React.createClass({
                                          genomicSeq4strain[strain] = strainDetails['residue'];
                                     }
 
-                              	    return <p>{display_name}/{ gene } {sgdid} {locus_type} {headline} {seqType} {strainDetails['residue']} </p>
+                              	    return <p>{display_name}/{ gene } {sgdid} {locus_type} {headline} {seqType} { strain } {strainDetails['residue']} </p>
 
                              })
 			     
