@@ -20,6 +20,7 @@ def prep_views(chosen_frontend, config):
     config.add_route('blast_sgd', '/blast-sgd')
     config.add_route('patmatch', '/nph-patmatch')
     config.add_route('seq_tools', '/seqTools')
+    config.add_route('get_seq', '/getSeq')
     config.add_route('blog_post', '/blog/{slug}')
     config.add_route('blog_index', '/blog')
     config.add_route('blog_archive', '/blog/archive/{year}')
