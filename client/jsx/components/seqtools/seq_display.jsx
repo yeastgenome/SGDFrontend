@@ -23,10 +23,8 @@ var SearchForm = React.createClass({
 			userError: null,
 			genome: 'S288C',
 			seqtype: 'DNA',
-			genes: null,
+			gene: null,
 			strains: null,
-			up: null,
-			down: null,
 			chr: null,
 			start: null,
 			end: null,
@@ -35,11 +33,8 @@ var SearchForm = React.createClass({
 			resultData: {},
 			notFound: null,
 			param: param,
-			didSeqAnal: 0,
-			submitted: param['submit'],
-			submitted2: param['submit2'], 
-			submitted3: param['submit3']
-		};
+			didSeqAnal: 0 
+                };
 	},
 
 	render: function () {	
@@ -102,9 +97,8 @@ var SearchForm = React.createClass({
 	},
 
 	_get_frontpage: function() {
-								
-		var descText = this._get_text();
 
+		var descText = this._get_text();								
 		var geneNodeLeft = this._getGeneNodeLeft();
                 var geneNodeRight = this._getGeneNodeRight();
                 var chrNode = this._getChrNode();
