@@ -137,21 +137,13 @@ var SearchForm = React.createClass({
 		var [genes, displayName4gene, sgdid4gene, hasProtein4gene, hasCoding4gene, hasGenomic4gene] 
 			= this._getDataFromJson(data);
 				
-		var i = 0;
-		var headerRow = _.map(genes, gene => {
-		    if (i == 0) {
-		       	 return <span style={{ fontSize: 20}}>Gene Name</span>;
-		    }
-		    i += 1;
+		var headerRow = [<span style={{ fontSize: 20}}>Gene Name</span>];
+		headerRow = _.map(genes, gene => {
 		    return displayName4gene[gene];
 		});
 		
-		var i = 0;
-		var locusRow = _.map(genes, gene => {
-		    if (i == 0) {
-		         return	<span style={{ fontSize: 20}}>Locus and Homolog Details</span>;
-		    } 
-		    i += 1;
+		var locusRow = [<span style={{ fontSize: 20}}>Locus and Homolog Details</span>];
+		locusRow = _.map(genes, gene => {
 		    sgdid = sgdid4gene[gene];
 		    // return <span style={{ fontSize: 20 }}><a href="/locus{sgdid}" target="info2">SGD</a>|<a href=http://www.alliancegenome.org/gene/{sgdid}" target="info2">Alliance</a></span>;
 		    return <span style={{ fontSize: 20 }}>SGD {sgdid}|Alliance {sgdid}</span>;
