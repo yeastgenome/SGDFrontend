@@ -137,21 +137,37 @@ var SearchForm = React.createClass({
 		var [genes, displayName4gene, sgdid4gene, hasProtein4gene, hasCoding4gene, hasGenomic4gene] 
 			= this._getDataFromJson(data);
 				
-		var headerRow = [<span style={{ fontSize: 20}}>Gene Name</span>];
+		var headerRow = [];
+		for (var i = 0; i <= genes.length(); i++) {
+		    headerRow.push("");
+		}
+
+		var rows = [];
+		var geneRow = [<span style={{ fontSize: 20}}>Gene Name</span>];
 		_.map(genes, gene => {
-		    headerRow.push(displayName4gene[gene]);
+		    geneRow.push(displayName4gene[gene]);
 		});
-		
+		rows.push(geneRow);
+
 		var locusRow = [<span style={{ fontSize: 20}}>Locus and Homolog Details</span>];
 		_.map(genes, gene => {
 		    // var sgdid = sgdid4gene[gene];
 		    locusRow.push(<span style={{ fontSize: 20 }}>SGD|Alliance</span>);
 		});	
+		rows.push(locusRow);
+		
+		// rows.push(["All Searches", "<", "Constrains pattern to N-terminus or 5' end", <span><br><a href={ '/nph-patmatch?seqtype=pep&pattern=<MNTD' } target='infowin'>{ '<MNTD' }</a>{ ' (pep)' }</br> <br><a href={ '/nph-patmatch?seqtype=nuc&pattern=<ATGX{6,10}RTTRTT' } target='infowin'>{ '<ATGX{6,10}RTTRTT' }</a>{ ' (nuc)' }</br></span>]);
+                
+                var _tableData = {
+                        headers: [["Search type", "Character", "Meaning", "Examples"]],
+                        rows: rows
+                };
 
-		var resultSection = { headers: [[headerRow]],
-                                      rows:    [[locusRow]] }
-
-                return <DataTable data={resultSection} />;
+                var _dataTableOptions = {
+                    bPaginate: false,
+                    oLanguage: { "sEmptyTable": "" }
+                };
+                return <DataTable data={_tableData}  usePlugin={true} pluginOptions={_dataTableOptions} />;
 
 	},
 
