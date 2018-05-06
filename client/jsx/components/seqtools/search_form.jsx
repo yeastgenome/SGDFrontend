@@ -138,7 +138,7 @@ var SearchForm = React.createClass({
 		var [genes, displayName4gene, sgdid4gene, hasProtein4gene, hasCoding4gene, hasGenomic4gene] 
 			= this._getDataFromJson(data);
 		
-		return <p> { genes } </p>;
+		return <p> { displayName4gene } { sgdid4gene } {hasProtein4gene} {hasCoding4gen} {hasGenomic4gene}</p>;
 
 	},
 
