@@ -138,7 +138,7 @@ var SearchForm = React.createClass({
 			= this._getDataFromJson(data);
 				
 		var headerRow = [];
-		for (var i = 0; i <= genes.length(); i++) {
+		for (var i = 0; i <= genes.length; i++) {
 		    headerRow.push("");
 		}
 
