@@ -151,15 +151,15 @@ var SearchForm = React.createClass({
 
 		var locusRow = [<span style={{ fontSize: 20}}>Locus and Homolog Details</span>];
 		_.map(genes, gene => {
-		    // var sgdid = sgdid4gene[gene];
-		    locusRow.push(<span style={{ fontSize: 20 }}>SGD|Alliance</span>);
+		    var sgdid = sgdid4gene[gene];
+		    locusRow.push(<span style={{ fontSize: 20 }}><a href='/locus/{sgdid}' target='infowin2'>SGD</a>|<a href='http://www.alliancegenome.org/gene/{sgdid}' target='infowin2'>Alliance</a></span>);
 		});	
 		rows.push(locusRow);
 		
 		// rows.push(["All Searches", "<", "Constrains pattern to N-terminus or 5' end", <span><br><a href={ '/nph-patmatch?seqtype=pep&pattern=<MNTD' } target='infowin'>{ '<MNTD' }</a>{ ' (pep)' }</br> <br><a href={ '/nph-patmatch?seqtype=nuc&pattern=<ATGX{6,10}RTTRTT' } target='infowin'>{ '<ATGX{6,10}RTTRTT' }</a>{ ' (nuc)' }</br></span>]);
                 
                 var _tableData = {
-                        headers: [["Search type", "Character", "Meaning", "Examples"]],
+                        headers: [headerRow],
                         rows: rows
                 };
 
