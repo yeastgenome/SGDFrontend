@@ -130,8 +130,15 @@ var SearchForm = React.createClass({
 
 	},
 
+	_getResultTable: function() {
+		
+		var genes = window.localStorage.getItem("genes");
+		
+		return <p> { genes } </p>;
 
-	_getResultTable: function(data) {
+	},
+
+	_getResultTable2: function(data) {
 
                 var genes = Object.keys(data).sort();
 
