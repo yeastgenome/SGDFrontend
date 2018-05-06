@@ -195,26 +195,33 @@ var SearchForm = React.createClass({
 		rows.push(alignRow);
 		
 		// sequence download row
-
-		// var leftCol = <span style={{ fontSize: 20}}><br>Sequence Downloads</br></span>;
-		// if (hasGenomic > 0) { // definitely has genomic
-		//    leftCol += <span style={{ fontSize: 20}}><br>* DNA of Region</br></span>;
-		// }
-		// if (hasCoding > 0) {
-		//    leftCol += <span style={{ fontSize: 20}}><br>* Coding Sequence of Selected ORF</br></span>;
-		// }
-		// if (hasProtein > 0) {
-		//    leftCol += <span style={{ fontSize: 20}}><br>* Protein Translation of Selected ORF</br></span>;
-                // }
+		
+		var seqDLRow = [];
+		if (hasCoding > 0) { 
+		     seqDLRow = [<span style={{ fontSize: 20}}><br>Sequence Downloads</br><br>* DNA of Region</br><br>* Coding Sequence of Selected ORF</br><br>* Protein Translation of Selected ORF</br></span>];
+		}
+		else {
+		     seqDLRow = [<span style={{ fontSize: 20}}><br>Sequence Downloads</br><br>* DNA of Region</br></span>];
+		}
 
 		var strains = window.localStorage.getItem("strains");
-		var seqDLRow = [<span style={{ fontSize: 20}}><br>Sequence Downloads</br></span>];
+		var rev = window.localStorage.getItem("rev");
+		var up = window.localStorage.getItem("up");
+		var down = window.localStorage.getItem("down");
 		_.map(genes, gene => {
-		    var fastaUrl = "/getSeq?format=fasta&gene=" + gene + "&strains=" + strains;
-		    var gcgUrl = "/getSeq?format=gcg&gene=" + gene + "&strains=" + strains;
-		    seqDLRow.push(<span style={{ fontSize: 20}}><br>Batch seuence file</br></span>);
-		    // seqDLRow.push(<span style={{ fontSize: 20}}><br><a href={ fastaUrl } target='infowin2'>Fasta</a> | <a href={ fastaUrl } target='infowin2'>Fasta</a></br></span>); 
-		    
+		    var genomicFastaUrl = "/getSeq?format=fasta&type=genomic&gene=" + gene + "&strains=" + strains + "&rev=" + rev + "&up=" + up + "&down=" + down;
+		    var genomicGcgUrl = "/getSeq?format=gcg&type=genomic&gene=" + gene + "&strains=" + strains + "&rev=" + rev + "&up=" + up + "&down=" + down;
+		    var codingFastaUrl = "/getSeq?format=fasta&type=coding&gene=" + gene + "&strains=" + strains;
+                    var	codingGcgUrl = "/getSeq?format=gcg&type=coding&gene=" + gene + "&strains=" + strains;
+		    var proteinFastaUrl = "/getSeq?format=fasta&type=protein&gene=" + gene + "&strains=" + strains;
+                    var	proteinGcgUrl = "/getSeq?format=gcg&type=protein&gene=" + gene + "&strains=" + strains;
+		    if (hasCoding > 0) {
+		        seqDLRow.push(<span style={{ fontSize: 20}}><br>Batch seuence file</br><br><a href={ genomicFastaUrl } target='infowin2'>Fasta</a> | <a href={ genomicGcgUrl } target='infowin2'>GCG</a></br><br><a href={ codingFastaUrl } target='infowin2'>Fasta</a> | <a href={ codingGcgUrl } target='infowin2'>GCG</a></br><br><a href={ proteinFastaUrl } target='infowin2'>Fasta</a> | <a href={ proteinGcgUrl } target='infowin2'>GCG</a></br></span>);
+		    }
+		    else {
+		    	 seqDLRow.push(<span style={{ fontSize: 20}}><br>Batch seuence file</br><br><a href={ genomicFastaUrl } target='infowin2'>Fasta</a> | <a href={ genomicGcgUrl } target='infowin2'>GCG</a></br></span>);
+		    } 
+		
 	        });
 		
 		rows.push(seqDLRow);
