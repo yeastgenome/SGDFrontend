@@ -197,22 +197,22 @@ var SearchForm = React.createClass({
 		
 		// sequence download row
 
-		var leftCol = <br><span style={{ fontSize: 20}}>Sequence Downloads</span></br>;
+		var leftCol = <span style={{ fontSize: 20}}><br>Sequence Downloads</br></span>;
 		if (hasGenomic > 0) { // definitely has genomic
-		    leftCol += <br><span style={{ fontSize: 20}}>* DNA of Region</span></br>;
+		    leftCol += <span style={{ fontSize: 20}}><br>* DNA of Region</br></span>;
 		}
 		// if (hasCoding > 0) {
-		//    leftCol += <br><span style={{ fontSize: 20}}>* Coding Sequence of Selected ORF</span></br>;
+		//    leftCol += <span style={{ fontSize: 20}}><br>* Coding Sequence of Selected ORF</br></span>;
 		// }
 		// if (hasProtein > 0) {
-		//    leftCol += <br><span style={{ fontSize: 20}}>* Protein Translation of Selected ORF</span></br>;
+		//    leftCol += <span style={{ fontSize: 20}}><br>* Protein Translation of Selected ORF</br></span>;
                 // }
 
 		var strains = window.localStorage.getItem("strains");
 		var seqDLRow = [leftCol];
 		_.map(genes, gene => {
 		    var fastaUrl = "/getSeq?format=fasta&gene=" + gene + "&strains=" + strains;
-		    var gcgUrl = "/getSeq?format=gcg&gene=" + gene + "&strains="    + strains;
+		    var gcgUrl = "/getSeq?format=gcg&gene=" + gene + "&strains=" + strains;
 		    seqDLRow.push(<span style={{ fontSize: 20}}><br>Batch seuence file</br></span>);
 		    seqDLRow.push(<span style={{ fontSize: 20}}><br><a href={ fastaUrl } target='infowin2'>Fasta</a> | <a href={ fastaUrl } target='infowin2'>Fasta</a></br></span>); 
 		    
