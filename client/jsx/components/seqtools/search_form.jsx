@@ -217,6 +217,7 @@ var SearchForm = React.createClass({
 		    seqDLRow.push(<span style={{ fontSize: 20}}><br><a href={ fastaUrl } target='infowin2'>Fasta</a> | <a href={ fastaUrl } target='infowin2'>Fasta</a></br></span>); 
 		    
 		});		
+		rows.push(seqDLRow);
 		
 
 
