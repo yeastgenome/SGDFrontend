@@ -198,9 +198,9 @@ var SearchForm = React.createClass({
 		// sequence download row
 
 		var leftCol = <span style={{ fontSize: 20}}><br>Sequence Downloads</br></span>;
-		if (hasGenomic > 0) { // definitely has genomic
-		    leftCol += <span style={{ fontSize: 20}}><br>* DNA of Region</br></span>;
-		}
+		// if (hasGenomic > 0) { // definitely has genomic
+		//    leftCol += <span style={{ fontSize: 20}}><br>* DNA of Region</br></span>;
+		// }
 		// if (hasCoding > 0) {
 		//    leftCol += <span style={{ fontSize: 20}}><br>* Coding Sequence of Selected ORF</br></span>;
 		// }
@@ -214,7 +214,7 @@ var SearchForm = React.createClass({
 		    var fastaUrl = "/getSeq?format=fasta&gene=" + gene + "&strains=" + strains;
 		    var gcgUrl = "/getSeq?format=gcg&gene=" + gene + "&strains=" + strains;
 		    seqDLRow.push(<span style={{ fontSize: 20}}><br>Batch seuence file</br></span>);
-		    seqDLRow.push(<span style={{ fontSize: 20}}><br><a href={ fastaUrl } target='infowin2'>Fasta</a> | <a href={ fastaUrl } target='infowin2'>Fasta</a></br></span>); 
+		    // seqDLRow.push(<span style={{ fontSize: 20}}><br><a href={ fastaUrl } target='infowin2'>Fasta</a> | <a href={ fastaUrl } target='infowin2'>Fasta</a></br></span>); 
 		    
 		});		
 		rows.push(seqDLRow);
