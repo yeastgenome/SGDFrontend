@@ -152,7 +152,7 @@ var SearchForm = React.createClass({
 		var locusRow = [<span style={{ fontSize: 20}}>Locus and Homolog Details</span>];
 		_.map(genes, gene => { 
 		    var sgdUrl = "/locus/" + sgdid4gene[gene];
-		    var alianceUrl = "http://www.alliancegenome.org/gene/" + sgdid4gene[gene];
+		    var allianceUrl = "http://www.alliancegenome.org/gene/" + sgdid4gene[gene];
 		    locusRow.push(<span style={{ fontSize: 20 }}><a href={ sgdUrl } target='infowin2'>SGD</a>|<a href={ allianceUrl } target='infowin2'>Alliance</a></span>);
 		});	
 		rows.push(locusRow);
