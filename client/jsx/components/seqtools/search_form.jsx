@@ -146,7 +146,7 @@ var SearchForm = React.createClass({
                       var locus_type = "";
                       var sgdid = "";
                       var seqTypes = Object.keys(seqInfo);
-		      _.map(seqTypes, seqType => {
+		      var seqTypeSection = _.map(seqTypes, seqType => {
 
           	             return <p> { gene } : { seqType } </p>;
 
@@ -182,6 +182,9 @@ var SearchForm = React.createClass({
                              }
 
                       })
+
+		      return <div>{seqTypeSection}</div>;
+
                 });
 
                	return (<div>{resultSection}</div>);
