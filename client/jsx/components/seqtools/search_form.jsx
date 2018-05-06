@@ -151,7 +151,7 @@ var SearchForm = React.createClass({
 
 		var locusRow = [<span style={{ fontSize: 20}}>Locus and Homolog Details</span>];
 		_.map(genes, gene => { 
-		    var sgdUrl = "/locus/" + sgdid4gene[gene];
+		    var sgdUrl = "https://www.yeastgenome.org/locus/" + sgdid4gene[gene];
 		    var allianceUrl = "http://www.alliancegenome.org/gene/" + sgdid4gene[gene];
 		    locusRow.push(<span style={{ fontSize: 20 }}><a href={ sgdUrl } target='infowin2'>SGD</a>|<a href={ allianceUrl } target='infowin2'>Alliance</a></span>);
 		});	
@@ -164,11 +164,11 @@ var SearchForm = React.createClass({
 
                 var _dataTableOptions = {
                     bPaginate: false,
+		    bFilter: false,
+		    bInfo: false,
                     oLanguage: { "sEmptyTable": "" }
                 };
-                // return <DataTable data={_tableData}  usePlugin={true} pluginOptions={_dataTableOptions} />;
-		return <DataTable data={_tableData} />;
-
+		return <DataTable data={_tableData}  usePlugin={true} pluginOptions={_dataTableOptions} />;
 	},
 
 	_getDataFromJson: function(data) {
