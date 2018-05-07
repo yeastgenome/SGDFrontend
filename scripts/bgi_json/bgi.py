@@ -198,8 +198,6 @@ def combine_panther_locus_list(panther_list, locus_list):
     return combined_list
 
 
-
-
 # helper method to get locus_alias data
 def get_locus_alias_data(locus_alias_list, id, item_obj):
     data_container = {}
@@ -233,19 +231,8 @@ def get_locus_alias_data(locus_alias_list, id, item_obj):
 
 
 def get_phenotype_data():
-    '''
-        #phenotypeStatement --> qualifier == true, then qualifier + observable otherwise just observable
-        obj = {
-        "objectId": "?",     
-        "phenotypeTermIdentifiers": [
-            {"termId": "SGD:Apo.apo_id", "termOrder":?}
-        ],
-        "phenotypeStatement": qualifier(phenotype.qualifer_id) ? qualifier (phenotype.qualifer_id) + + observable (phenotype.observable_id): observable (phenotype.observable_id),
-        "pubMedId": "PMID:14660549",
-        "dateAssigned": phenotypeannotation.date_created
-        }
-    '''
     _data = DBSession.query(Phenotypeannotation).all()
+    result = []
 
     for item in _data:
         obj = {
@@ -255,7 +242,6 @@ def get_phenotype_data():
             "pubMedId": "",
             "dateAssigned": ""
         }
-
         phenotype_obj = item.phenotype.to_dict()
         pString = phenotype_obj["qualifier"] + " " + phenotype_obj["observable"]["display_name"] if phenotype_obj[
             "qualifier"] else phenotype_obj["observable"]["display_name"]
@@ -263,16 +249,35 @@ def get_phenotype_data():
         obj["phenotypeTermIdentifiers"].append({"termId": "SGD: " + str(item.mutant_id), "termOrder": 1})
         obj["phenotypeStatement"] = pString
         obj["pubMedId"] = item.reference.pmid
-        obj["dateAssigned"] = item.date_created
-        pdb.set_trace()
-        print(item)
+        obj["dateAssigned"] = item.date_created.strftime(
+            "%Y-%m-%dT%H:%m:%S-00:00")
+        result.append(item)
+        #pdb.set_trace()
+        #print(item)
+    if len(result) > 0:
+        output_obj = {
+            "data": result,
+            "metaData": {
+                "dataProvider":
+                    "SGD",
+                "dateProduced":
+                    datetime.utcnow().strftime("%Y-%m-%dT%H:%m:%S-00:00"),
+                "release":
+                    "SGD 1.0.0.4 " + datetime.utcnow().strftime("%Y-%m-%d")
+            }
+        }
+        fileStr = './scripts/bgi_json/data_dump/SGD.1.0.0.4_phenotype_' + str(randint(0, 1000)) + '.json'
+        with open(fileStr, 'w+') as res_file:
+            res_file.write(json.dumps(output_obj))
 
 
 
 # entry point
 if __name__ == '__main__':
-    #get_panther_sgdids()
-    get_phenotype_data()
+    t1 = Thread(target=get_bgi_data)
+    t2 = Thread(target=get_phenotype_data)
+    t1.start()
+    t2.start()
     '''start_time = time.time()
     print "--------------start loading genes--------------"
     get_bgi_data() '''
