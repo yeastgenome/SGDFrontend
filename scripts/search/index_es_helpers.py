@@ -401,7 +401,7 @@ class IndexESHelper:
                     'name': item.display_name,
                     'href': item.obj_url,
                     'chemical': _chemical,
-                    'description': item.description
+                    'description': item.description,
                     'category': 'phenotype',
                     'keys': [],
                     'mutant_type': _mutant_type,
