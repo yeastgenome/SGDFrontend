@@ -48,9 +48,9 @@ def get_phenotype_annotations_chemicals(properties):
 
 def flattern_arr(lst):
     '''
-        flattern 2D-list into single dimension list
-            :param lst: 
-        '''
+    flattern 2D-list into single dimension list
+    :param lst: 
+    '''
     if len(lst) > 0:
         temp_arr = [item for sublist in lst for item in sublist]
         return temp_arr
@@ -454,7 +454,6 @@ class IndexESHelper:
             chemicals = set([])
             mutant = set([])
             _annotations = phenos_annotation.get(item.phenotype_id)
-
             if _annotations is not None:
                 _annotations_mod = filter(
                     lambda lst_item: type(lst_item) is not list, _annotations)
