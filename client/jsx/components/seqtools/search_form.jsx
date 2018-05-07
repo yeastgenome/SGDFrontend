@@ -229,7 +229,7 @@ var SearchForm = React.createClass({
 		_.map(genes, gene => {
 		    seqAnalRow.push(this._getStrainPulldown(strains));
 		});		
-
+		rows.push(seqAnalRow);
 
 		return this._display_gene_table(headerRow, rows);		
 		
