@@ -7,7 +7,7 @@ reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
 from src.models import Dbentity, Referencedbentity, Journal, Referencedocument
 from scripts.loading.database_session import get_session
-from scripts.loading.reference.pubmed2 import get_pubmed_record_from_xml, \
+from scripts.loading.reference.pubmed import get_pubmed_record_from_xml, \
                                              get_abstracts, set_cite
 from scripts.loading.util import link_gene_names
 

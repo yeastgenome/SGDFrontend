@@ -54,36 +54,50 @@ def get_pubmed_record(pmid_list):
     records_txt = handle.read()
     return records_txt.split("\n\n")
 
-def get_titles(pmid_list):
+def get_titles_abstracts(pmid_list):
 
     handle = Entrez.efetch(db="pubmed", id=pmid_list, rettype='Medline', retmode='text')
 
     record_txt = handle.read()
     records = record_txt.split("\n\n")    
-    data = {}
+    title = {}
+    abstract = {}
     pmid = None
     for record in records:
         lines = record.split("\n")
-        end = 1
+        title_end = 1
+        abstract_end = 1
         for line in lines:
             if "PMID- " in line:
                 pmid = int(line.replace("PMID- ", ""))
                 continue
             if line.startswith("TI  - "):
-                data[pmid] = line.replace("TI  - ", "")
-                end = 0
+                title[pmid] = line.replace("TI  - ", "")
+                title_end = 0
                 continue
-            if end == 0 and line.startswith("      "):
-                data[pmid] += " " + line.replace("      ", "")
-                data[pmid] = data[pmid].replace("  ", " ")
+            if title_end == 0 and line.startswith("      "):
+                title[pmid] += " " + line
+                # change multiplace spaces into one
+                title[pmid] = ' '.join(title[pmid].split())
             else:
-                end = 1
+                title_end = 1
+                
+            if line.startswith("AB  - "):
+                abstract[pmid] = line.replace("AB  - ", "")
+                abstract_end = 0
+                continue
+            if abstract_end == 0 and line.startswith("      "):
+                abstract[pmid] += " " + line
+                abstract[pmid] = ' '.join(abstract[pmid].split())
+            else:
+                abstract_end = 1
 
-    return data
+    return [title, abstract]
+
 
 def get_pubmed_record_from_xml(pmid_list):
 
-    pmid2title = get_titles(pmid_list)
+    [pmid2title, pmid2abstract] = get_titles_abstracts(pmid_list)
 
     handle = Entrez.efetch(db="pubmed", id=pmid_list, rettype='xml')
     record = Entrez.read(handle)
@@ -119,6 +133,9 @@ def get_pubmed_record_from_xml(pmid_list):
                 print "TXT: PMID:", entry['pmid'], titleFromTXT
                 entry['title'] = titleFromTXT
                 
+        abstract = pmid2abstract.get(entry['pmid'])
+        if abstract is not None:
+            entry['abstract'] = abstract
         
         if paper['MedlineCitation'].get('DateRevised'):
             dateRevised = paper['MedlineCitation']['DateRevised']
