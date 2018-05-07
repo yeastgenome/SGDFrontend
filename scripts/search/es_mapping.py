@@ -81,6 +81,15 @@ es_mapping = {
                         }
                     }
                 },
+                "phenotype": {
+                    "type": "string",
+                    "fields": {
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
+                    }
+                },
                 "keys": {
                     "type": "string"
                 },
