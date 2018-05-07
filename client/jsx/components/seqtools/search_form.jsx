@@ -560,7 +560,7 @@ var SearchForm = React.createClass({
 		var strainMapping = this._getStrainMapping();
 		var strain2label = {};
 		var strainList = strains.split("|");
-		var _elements = _.map(strainsList, s => {
+		var _elements = _.map(strainList, s => {
 		      var label = strainMapping[s]; 
 		      if (s == 'S288C') {
 		      	    return <option value={s} selected='selected'>{label}</option>;
