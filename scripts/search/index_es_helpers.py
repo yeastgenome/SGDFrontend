@@ -384,7 +384,7 @@ class IndexESHelper:
             annotations = item.annotations_to_dict()
             _properties = [itm['properties'] for itm in annotations]
             _chemical = get_phenotype_annotations_chemicals(
-                    flattern_arr(properties))
+                    flattern_arr(_properties))
             _mutant_type = filter_object_list(
                     [itm['mutant_type'] for itm in annotations])
             _phenotype_loci = filter_object_list(
