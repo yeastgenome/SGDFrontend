@@ -571,8 +571,7 @@ var SearchForm = React.createClass({
 		});
 		
 		return(<div>
-                       <p>Select a strain:
-                       <select ref='strain' name='strain' id='strain' onChange={this._onChange}>{_elements}</select></p>
+                       <p><select ref='strain' name='strain' id='strain' onChange={this._onChange}>{_elements}</select></p>
                 </div>);
 
 	},
