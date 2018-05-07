@@ -9,6 +9,7 @@ import json
 import collections
 from index_es_helpers import IndexESHelper
 
+
 engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
 DBSession.configure(bind=engine)
 Base.metadata.bind = engine
@@ -405,10 +406,13 @@ def index_genes():
 
 def index_phenotypes():
     phenotypes = DBSession.query(Phenotype).all()
-    _phenos_annotation = IndexESHelper.get_phenotypes_phenotypeannotation()
+    
+    _result = IndexESHelper.get_phenotypes(phenotypes)
+    
+    '''_phenos_annotation = IndexESHelper.get_phenotypes_phenotypeannotation()
     _annotation_cond = IndexESHelper.get_phenotypes_condition("chemical")
     _result = IndexESHelper.get_combined_phenotypes(
-        phenotypes, _phenos_annotation, _annotation_cond)
+        phenotypes, _phenos_annotation, _annotation_cond)'''
     bulk_data = []
     print("Indexing " + str(len(phenotypes)) + " phenotypes")
     for obj_k, obj_v in _result.items():

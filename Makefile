@@ -62,6 +62,9 @@ refresh-cache:
 index-es:
 	source dev_variables.sh && python scripts/search/index_elastic_search.py
 
+index-es-prod:
+	source prod_variables.sh && python scripts/search/index_elastic_search.py
+
 index-redis:
 	source dev_variables.sh && python scripts/disambiguation/index_disambiguation.py
 
