@@ -122,15 +122,13 @@ def get_pubmed_record_from_xml(pmid_list):
         ## the titles from XML format preserve all special charaters
         ## while the titles from medline format do not so try very best 
         ## to use the titles from XML unless there are html tags in the 
-        ## titles - in that cases, XML format will mess up the title parsing
+        ## titles - in those cases, XML format will mess up the title parsing
         titleFromXML = entry['title']
         titleFromTXT = pmid2title.get(entry['pmid'])
         if titleFromTXT is not None:
             wordsFromXML = titleFromXML.split(" ")
             wordsFromTXT = titleFromTXT.split(" ")
             if len(wordsFromTXT) > len(wordsFromXML)+2:
-                print "XML: PMID:", entry['pmid'], entry['title']
-                print "TXT: PMID:", entry['pmid'], titleFromTXT
                 entry['title'] = titleFromTXT
                 
         abstract = pmid2abstract.get(entry['pmid'])
