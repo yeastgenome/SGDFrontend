@@ -6,6 +6,7 @@ import os
 import requests
 import json
 from multiprocess import Pool
+import pdb
 
 engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
 DBSession.configure(bind=engine)
@@ -15,6 +16,38 @@ INDEX_NAME = os.environ.get('ES_INDEX_NAME', 'searchable_items_aws')
 DOC_TYPE = 'searchable_item'
 ES_URI = os.environ['WRITE_ES_URI']
 es = Elasticsearch(ES_URI, retry_on_timeout=True)
+
+
+def filter_object_list(items):
+    data = []
+    for item in items:
+        if item not in data:
+            data.append(item)
+    return data
+
+
+def get_phenotype_annotations_chemicals(properties):
+    data = []
+    if len(properties) > 0:
+        for item in properties:
+            if item["class_type"] == "CHEMICAL":
+                if item["bioitem"]:
+                    data.append(item["bioitem"])
+        return data
+    else:
+        return data
+
+
+def flattern_arr(lst):
+    """
+        flattern 2D-list into single dimension list
+            :param lst: 
+        """
+    if len(lst) > 0:
+        temp_arr = [item for sublist in lst for item in sublist]
+        return temp_arr
+    else:
+        return []
 
 
 class IndexESHelper:
@@ -345,6 +378,65 @@ class IndexESHelper:
         return obj
 
     @classmethod
+    def get_phenotypes(cls, phenotype_data):
+        if phenotype_data:
+            _dict_obj = dict.fromkeys([p.phenotype_id for p in phenotype_data])
+            for phenotype in phenotype_data:
+                annotations = phenotype.annotations_to_dict()
+                references = filter_object_list(
+                    [itm["reference"] for itm in annotations]
+                    ) if annotations else []
+                phenotype_loci = filter_object_list(
+                    [itm["locus"]
+                     for itm in annotations]) if annotations else []
+                experiments = filter_object_list(
+                    [itm["experiment"] for itm in annotations])
+                observable = {
+                    "display_name": phenotype.observable.display_name,
+                    "link": phenotype.observable.obj_url,
+                    "description": phenotype.observable.description
+                    } if phenotype.observable else None
+                qualifier = {
+                    "display_name": phenotype.qualifier.display_name,
+                    "link": phenotype.qualifier.obj_url,
+                    "description": phenotype.qualifier.description
+                    } if phenotype.qualifier else None
+                href = phenotype.obj_url
+                properties = [itm["properties"] for itm in annotations]
+                mutant_type = filter_object_list(
+                    [itm["mutant_type"] for itm in annotations]
+                    ) if annotations else []
+                chemical = get_phenotype_annotations_chemicals(
+                    flattern_arr(properties))
+                obj = {
+                    "phenotype": {
+                        "display_name": phenotype.display_name,
+                        "link": phenotype.obj_url,
+                        "description": phenotype.description
+                    },
+                    "references": references,
+                    "phenotype_loci": phenotype_loci,
+                    "experiments": experiments,
+                    "number_annotations": len(phenotype_loci),
+                    "observable": observable,
+                    "qualifier": qualifier,
+                    "href": href,
+                    "name": phenotype.display_name,
+                    "properties": properties,
+                    "mutant_type": mutant_type,
+                    "chemical": chemical,
+                    "keys": [],
+                    "format_name": phenotype.format_name,
+                    "category": "phenotype"
+                }
+                _dict_obj[phenotype.phenotype_id] = obj
+            #
+            return _dict_obj
+
+        else:
+            return None
+
+    @classmethod
     def get_combined_phenotypes(cls, phenos, phenos_annotation,
                                 phenos_annotation_cond):
         """
@@ -354,7 +446,6 @@ class IndexESHelper:
             :param phenos_annotation: join between phenotype and phenotypeanootation tables
             :param phenos_annotation_cond: join between phenotypeannotation and phenotypeannotation_cond tables
         """
-        _dict_pheno_cond = {}
         if phenos_annotation is not None:
 
             for item_key, item_v in phenos_annotation.items():
@@ -373,9 +464,8 @@ class IndexESHelper:
             loci = set([])
             chemicals = set([])
             mutant = set([])
-
-            temp_annotations = []
             _annotations = phenos_annotation.get(item.phenotype_id)
+            
             if _annotations is not None:
                 _annotations_mod = filter(
                     lambda lst_item: type(lst_item) is not list, _annotations)
@@ -387,10 +477,7 @@ class IndexESHelper:
                     loci.add(item_mod.dbentity.display_name)
                     mutant.add(item_mod.mutant.display_name)
                 if len(_annot_conds) > 0:
-                    conds_mod = [
-                        item_chemical
-                        for sublist in _annot_conds for item_chemical in sublist
-                    ]
+                    conds_mod = [item_chemical for sublist in _annot_conds for item_chemical in sublist]
                     if len(conds_mod) > 0:
                         temp_cm = [
                             chemical.condition_name for chemical in conds_mod
@@ -399,8 +486,7 @@ class IndexESHelper:
                             for cm in temp_cm:
                                 chemicals.add(cm)
             qualifier = None
-
-            if item.qualifier:
+            if item.qualifier: 
                 qualifier = item.qualifier.display_name
             obj = {
                 'name': item.display_name,
@@ -534,8 +620,7 @@ class IndexESHelper:
         else:
             return None
 
-    
+
     @classmethod
     def get_readme_file(cls, id):
         _data = DBSession.query(Filedbentity).filter_by(Filedbentity.dbentity_id == id).all()
-        
