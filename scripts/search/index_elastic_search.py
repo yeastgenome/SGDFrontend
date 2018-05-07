@@ -421,7 +421,7 @@ def index_phenotypes():
             es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
             bulk_data = []
     if len(bulk_data) > 0:
-        es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
+        es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)'''
 
 
 def index_observables():
