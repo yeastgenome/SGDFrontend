@@ -35,7 +35,6 @@ def get_panther_sgdids():
     with open('./scripts/bgi_json/data_dump/panther/panther_search_results.json') as json_data_file:
         json_data = json.load(json_data_file)
         for item in json_data:
-            pdb.set_trace()
             temp_str = ','.join(map(str, item))
             reg_pattern = r'(SGD=S\d+)|(PTHR\d+)'
             reg_result = sorted(list(set(re.findall(reg_pattern, temp_str))))
@@ -252,8 +251,6 @@ def get_phenotype_data():
         obj["dateAssigned"] = item.date_created.strftime(
             "%Y-%m-%dT%H:%m:%S-00:00")
         result.append(item)
-        #pdb.set_trace()
-        #print(item)
     if len(result) > 0:
         output_obj = {
             "data": result,
