@@ -302,7 +302,21 @@ mapping = {
 
                     }
                 },
-                "phenotype": {
+                "phenotype_loci_list": {
+                    "type": "string",
+                    "fields": {
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        },
+                        "symbol": {
+                            "type": "string",
+                            "analyzer": "symbols"
+                        }
+
+                    }
+                },
+                "pheno": {
                     "type": "string",
                     "fields": {
                         "raw": {

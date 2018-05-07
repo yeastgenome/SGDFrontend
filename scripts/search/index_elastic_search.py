@@ -405,16 +405,30 @@ def index_genes():
 
 
 def index_phenotypes():
+    bulk_data = []
     phenotypes = DBSession.query(Phenotype).all()
-    
-    _result = IndexESHelper.get_phenotypes(phenotypes)
-    
+
+    #_result = IndexESHelper.get_phenotypes(phenotypes)
+    _result = IndexESHelper.get_pheno_annotations(phenotypes)
+    for item in _result:
+        bulk_data.append({
+            '_index': INDEX_NAME,
+            '_type': DOC_TYPE,
+            'id': item.format_name
+        })
+        bulk_data.append(item)
+        if len(bulk_data) == 500:
+            es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
+            bulk_data = []
+    if len(bulk_data) > 0:
+        es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
+
     '''_phenos_annotation = IndexESHelper.get_phenotypes_phenotypeannotation()
     _annotation_cond = IndexESHelper.get_phenotypes_condition("chemical")
     _result = IndexESHelper.get_combined_phenotypes(
-        phenotypes, _phenos_annotation, _annotation_cond)'''
+        phenotypes, _phenos_annotation, _annotation_cond)
     bulk_data = []
-    print("Indexing " + str(len(phenotypes)) + " phenotypes")
+    print("Indexing " + str(len(_result)) + " phenotypes")
     for obj_k, obj_v in _result.items():
         bulk_data.append({
             'index': {
@@ -428,7 +442,7 @@ def index_phenotypes():
             es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
             bulk_data = []
     if len(bulk_data) > 0:
-        es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
+        es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)'''
 
 
 def index_observables():
