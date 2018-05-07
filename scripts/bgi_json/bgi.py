@@ -9,7 +9,7 @@ from random import randint
 #from pycallgraph import PyCallGraph
 #from pycallgraph.output import GraphvizOutput
 from datetime import datetime
-import pdb
+from threading import Thread
 
 engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
 DBSession.configure(bind=engine)
