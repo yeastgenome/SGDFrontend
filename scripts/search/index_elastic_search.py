@@ -8,6 +8,7 @@ from threading import Thread
 import json
 import collections
 from index_es_helpers import IndexESHelper
+import concurrent.futures
 
 
 engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
@@ -847,10 +848,11 @@ def index_part_2():
 
 
 if __name__ == '__main__':
-    cleanup()
-    setup()
-    index_phenotypes()
-    '''t1 = Thread(target=index_part_1)
-    t2 = Thread(target=index_part_2)
-    t1.start()
-    t2.start()'''
+    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
+        cleanup()
+        setup()
+        index_phenotypes()
+        '''t1 = Thread(target=index_part_1)
+        t2 = Thread(target=index_part_2)
+        t1.start()
+        t2.start()'''
