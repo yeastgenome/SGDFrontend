@@ -251,7 +251,7 @@ def get_phenotype_data():
             obj["objectId"] = item.dbentity.sgdid
             obj["phenotypeTermIdentifiers"].append({"termId": "SGD: " + str(item.mutant_id), "termOrder": 1})
             obj["phenotypeStatement"] = pString
-            obj["pubMedId"] = item.reference.pmid
+            obj["pubMedId"] = str(item.reference.pmid)
             obj["dateAssigned"] = item.date_created.strftime(
                 "%Y-%m-%dT%H:%m:%S-00:00")
             result.append(obj)
