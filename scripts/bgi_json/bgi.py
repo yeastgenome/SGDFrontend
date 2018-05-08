@@ -59,126 +59,127 @@ def get_bgi_data(soFlag=False):
     print("computing " + str(len(combined_list)) + " genes")
     result = []
     if(len(combined_list) > 0):
-        for item_key in combined_list:
-            obj = {
-                "crossReferences":
-                    [],
-                "primaryId":
-                    "",
-                "symbol":
-                    "",
-                "genomeLocations": [{
-                    "startPosition": 0,
-                    "chromosome": "",
-                    "assembly": "R64-2-1",
-                    "endPosition": 0,
-                    "strand": ""
-                }],
-                "soTermId":
-                    "",
-                "taxonId":
-                    "NCBITaxon:559292",
-                "synonyms":
-                    [],
-                "geneSynopsis":
-                    ""
-            }
-            item = combined_list[item_key]["locus_obj"]
-            temp_itm = ["gene"]
-            temp_itm.append("gene/references")
-            temp_itm.append("homepage")
-            if(item.has_expression):
-                temp_itm.append("gene/expression")
-                temp_itm.append("gene/spell")
-            if(item.has_interaction):
-                temp_itm.append("gene/interaction")
-
-            obj["crossReferences"].append({"id": "SGD:"+item.sgdid, "pages": temp_itm})
-            item_panther = combined_list[item_key]["panther_id"]
-            locus_alias_data = DBSession.query(LocusAlias).filter(
-                LocusAlias.locus_id == item.dbentity_id).all()
-
-            if(len(locus_alias_data) > 0):
-                dna_seq_annotation_obj = DBSession.query(
-                    Dnasequenceannotation).filter(
-                        Dnasequenceannotation.dbentity_id == item.dbentity_id,
-                        Dnasequenceannotation.taxonomy_id == 274901,
-                        Dnasequenceannotation.dna_type == "GENOMIC").all()
-
-                if(len(dna_seq_annotation_obj) > 0):
-                    strnd = ""
-                    if dna_seq_annotation_obj[0].strand == "0":
-                        strnd = "."
-                    else:
-                        strnd = dna_seq_annotation_obj[0].strand
-                    chromosome = dna_seq_annotation_obj[0].contig.display_name.split(" ")
-                    obj["genomeLocations"][0]["startPosition"] = dna_seq_annotation_obj[0].start_index
-                    obj["genomeLocations"][0]["endPosition"] = dna_seq_annotation_obj[0].end_index
-                    obj["genomeLocations"][0]["strand"] = strnd
-                    obj["genomeLocations"][0]["startPosition"] = dna_seq_annotation_obj[0].start_index
-                    obj["genomeLocations"][0]["chromosome"] = "chr"+chromosome[1]
-                    obj["soTermId"] =  dna_seq_annotation_obj[0].so.soid if soFlag else "SO:0001217"
-                mod_locus_alias_data = get_locus_alias_data(locus_alias_data, item.dbentity_id, item)
-
-                for mod_item in mod_locus_alias_data:
-                    mod_value = mod_locus_alias_data.get(mod_item)
-                    if (type(mod_value) is list):
-                        if (mod_locus_alias_data.get("aliases") is not None):
-                            obj["synonyms"] = mod_locus_alias_data.get(
-                                "aliases")
-
-                    else:
-                        if (mod_value.get("secondaryIds") is not None):
-                            temp_sec_item = mod_value.get("secondaryIds")
-                            if(len(temp_sec_item) > 0):
-                                if(item.name_description is not None):
-                                    obj["name"] = item.name_description
-                                if(len(temp_sec_item) > 1):
-                                    obj["secondaryIds"] = [str(x) for x in temp_sec_item]
-                                else:
-                                    if(len(temp_sec_item) == 1):
-                                        obj["secondaryIds"] = [str(temp_sec_item[0])]
-                        if (mod_value.get("crossReferences") is not None):
-                            temp_cross_item = mod_value.get("crossReferences")
-                            if(len(temp_cross_item) > 1):
-                                for x_ref in temp_cross_item:
-                                    obj["crossReferences"].append({"id": str(x_ref), "pages": ["generic_cross_reference"]})
-                            else:
-                                if(len(temp_cross_item) == 1):
-                                    obj["crossReferences"].append({"id": str(temp_cross_item[0]), "pages": ["generic_cross_reference"]})
-                                    #obj["crossReferences"] = [str(temp_cross_item[0])]
-                if(item_panther is not None):
-                    obj["crossReferences"].append({"id": "PANTHER:" + item_panther, "pages": ["generic_cross_reference"]})
-                    #obj["crossReferences"].append("PANTHER:" + item_panther)
-                    obj["primaryId"] = "SGD:" + item.sgdid
-                    item = combined_list[item_key]["locus_obj"]
-                    obj["geneSynopsis"] = item.description
-                    obj["symbol"] = item.gene_name if item.gene_name is not None else item.systematic_name
-                    obj["synonyms"].append(item.systematic_name)
-                    result.append(obj)
-
-                else:
-                    obj["primaryId"] = "SGD:" + item.sgdid
-                    item = combined_list[item_key]["locus_obj"]
-                    obj["geneSynopsis"] = item.description
-                    obj["symbol"] = item.gene_name if item.gene_name is not None else item.systematic_name
-                    obj["synonyms"].append(item.systematic_name)
-                    result.append(obj)
-        if(len(result) > 0):
-            output_obj = {
-                "data": result,
-                "metaData": {
-                    "dataProvider":
-                        "SGD",
-                    "dateProduced":
-                        datetime.utcnow().strftime("%Y-%m-%dT%H:%m:%S-00:00"),
-                    "release":
-                        "SGD 1.0.0.0 " + datetime.utcnow().strftime("%Y-%m-%d")
+        with concurrent.futures.ProcessPoolExecutor(max_workers=127) as executor:
+            for item_key in combined_list:
+                obj = {
+                    "crossReferences":
+                        [],
+                    "primaryId":
+                        "",
+                    "symbol":
+                        "",
+                    "genomeLocations": [{
+                        "startPosition": 0,
+                        "chromosome": "",
+                        "assembly": "R64-2-1",
+                        "endPosition": 0,
+                        "strand": ""
+                    }],
+                    "soTermId":
+                        "",
+                    "taxonId":
+                        "NCBITaxon:559292",
+                    "synonyms":
+                        [],
+                    "geneSynopsis":
+                        ""
                 }
-            }
-            fileStr = './scripts/bgi_json/data_dump/SGD.1.0.0.0_basicGeneInformation_' + str(randint(0, 1000)) + '.json'
-            with open(fileStr, 'w+') as res_file:
-                res_file.write(json.dumps(output_obj))
+                item = combined_list[item_key]["locus_obj"]
+                temp_itm = ["gene"]
+                temp_itm.append("gene/references")
+                temp_itm.append("homepage")
+                if(item.has_expression):
+                    temp_itm.append("gene/expression")
+                    temp_itm.append("gene/spell")
+                if(item.has_interaction):
+                    temp_itm.append("gene/interaction")
+
+                obj["crossReferences"].append({"id": "SGD:"+item.sgdid, "pages": temp_itm})
+                item_panther = combined_list[item_key]["panther_id"]
+                locus_alias_data = DBSession.query(LocusAlias).filter(
+                    LocusAlias.locus_id == item.dbentity_id).all()
+
+                if(len(locus_alias_data) > 0):
+                    dna_seq_annotation_obj = DBSession.query(
+                        Dnasequenceannotation).filter(
+                            Dnasequenceannotation.dbentity_id == item.dbentity_id,
+                            Dnasequenceannotation.taxonomy_id == 274901,
+                            Dnasequenceannotation.dna_type == "GENOMIC").all()
+
+                    if(len(dna_seq_annotation_obj) > 0):
+                        strnd = ""
+                        if dna_seq_annotation_obj[0].strand == "0":
+                            strnd = "."
+                        else:
+                            strnd = dna_seq_annotation_obj[0].strand
+                        chromosome = dna_seq_annotation_obj[0].contig.display_name.split(" ")
+                        obj["genomeLocations"][0]["startPosition"] = dna_seq_annotation_obj[0].start_index
+                        obj["genomeLocations"][0]["endPosition"] = dna_seq_annotation_obj[0].end_index
+                        obj["genomeLocations"][0]["strand"] = strnd
+                        obj["genomeLocations"][0]["startPosition"] = dna_seq_annotation_obj[0].start_index
+                        obj["genomeLocations"][0]["chromosome"] = "chr"+chromosome[1]
+                        obj["soTermId"] =  dna_seq_annotation_obj[0].so.soid if soFlag else "SO:0001217"
+                    mod_locus_alias_data = get_locus_alias_data(locus_alias_data, item.dbentity_id, item)
+
+                    for mod_item in mod_locus_alias_data:
+                        mod_value = mod_locus_alias_data.get(mod_item)
+                        if (type(mod_value) is list):
+                            if (mod_locus_alias_data.get("aliases") is not None):
+                                obj["synonyms"] = mod_locus_alias_data.get(
+                                    "aliases")
+
+                        else:
+                            if (mod_value.get("secondaryIds") is not None):
+                                temp_sec_item = mod_value.get("secondaryIds")
+                                if(len(temp_sec_item) > 0):
+                                    if(item.name_description is not None):
+                                        obj["name"] = item.name_description
+                                    if(len(temp_sec_item) > 1):
+                                        obj["secondaryIds"] = [str(x) for x in temp_sec_item]
+                                    else:
+                                        if(len(temp_sec_item) == 1):
+                                            obj["secondaryIds"] = [str(temp_sec_item[0])]
+                            if (mod_value.get("crossReferences") is not None):
+                                temp_cross_item = mod_value.get("crossReferences")
+                                if(len(temp_cross_item) > 1):
+                                    for x_ref in temp_cross_item:
+                                        obj["crossReferences"].append({"id": str(x_ref), "pages": ["generic_cross_reference"]})
+                                else:
+                                    if(len(temp_cross_item) == 1):
+                                        obj["crossReferences"].append({"id": str(temp_cross_item[0]), "pages": ["generic_cross_reference"]})
+                                        #obj["crossReferences"] = [str(temp_cross_item[0])]
+                    if(item_panther is not None):
+                        obj["crossReferences"].append({"id": "PANTHER:" + item_panther, "pages": ["generic_cross_reference"]})
+                        #obj["crossReferences"].append("PANTHER:" + item_panther)
+                        obj["primaryId"] = "SGD:" + item.sgdid
+                        item = combined_list[item_key]["locus_obj"]
+                        obj["geneSynopsis"] = item.description
+                        obj["symbol"] = item.gene_name if item.gene_name is not None else item.systematic_name
+                        obj["synonyms"].append(item.systematic_name)
+                        result.append(obj)
+
+                    else:
+                        obj["primaryId"] = "SGD:" + item.sgdid
+                        item = combined_list[item_key]["locus_obj"]
+                        obj["geneSynopsis"] = item.description
+                        obj["symbol"] = item.gene_name if item.gene_name is not None else item.systematic_name
+                        obj["synonyms"].append(item.systematic_name)
+                        result.append(obj)
+            if(len(result) > 0):
+                output_obj = {
+                    "data": result,
+                    "metaData": {
+                        "dataProvider":
+                            "SGD",
+                        "dateProduced":
+                            datetime.utcnow().strftime("%Y-%m-%dT%H:%m:%S-00:00"),
+                        "release":
+                            "SGD 1.0.0.0 " + datetime.utcnow().strftime("%Y-%m-%d")
+                    }
+                }
+                fileStr = './scripts/bgi_json/data_dump/SGD.1.0.0.0_basicGeneInformation_' + str(randint(0, 1000)) + '.json'
+                with open(fileStr, 'w+') as res_file:
+                    res_file.write(json.dumps(output_obj))
 
 # create single gene list containing genes with pantherids and genes without pantherids
 def combine_panther_locus_list(panther_list, locus_list):
@@ -233,13 +234,11 @@ def get_locus_alias_data(locus_alias_list, id, item_obj):
 
 
 def get_phenotype_data():
-
     _data = DBSession.query(Phenotypeannotation).all()
     result = []
     print("computing " + str(len(_data)) + " phenotypes")
-    with concurrent.futures.ProcessPoolExecutor(max_workers=125) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=127) as executor:
         for item in _data:
-            start_time = time.time()
             obj = {
                 "objectId": "",
                 "phenotypeTermIdentifiers": [],
@@ -249,9 +248,6 @@ def get_phenotype_data():
             }
             pheno_start = time.time()
             phenotype_obj = item.phenotype.to_dict()
-            p_time_taken = "time taken: " + ("--- %s seconds ---" %
-                                        (time.time() - pheno_start))
-            print "pheno to dict taken: " + p_time_taken
             pString = phenotype_obj["qualifier"] + " " + phenotype_obj["observable"]["display_name"] if phenotype_obj[
                 "qualifier"] else phenotype_obj["observable"]["display_name"]
             obj["objectId"] = item.dbentity.sgdid
@@ -285,8 +281,24 @@ def get_phenotype_data():
 
 # entry point
 if __name__ == '__main__':
-    print "--------------start loading data--------------"
+    print "--------------start computing data--------------"
+    start_time = time.time()
+    get_bgi_data()
+    time_taken = "time taken: " + ("--- %s seconds ---" % (time.time() - start_time))
+    print "------------------ bgi time taken: " + time_taken + " --------------------"
+    with open('./scripts/bgi_json/data_dump/log_time_bgi.txt', 'w+') as res_file:
+        time_taken = "time taken: " + ("--- %s seconds ---" %
+                                       (time.time() - start_time))
+        res_file.write(time_taken)
+    start_time = time.time()
     get_phenotype_data()
+    time_taken = "time taken: " + ("--- %s seconds ---" % (time.time() - start_time))
+    print "------------------ phenotype time taken: " + time_taken + " --------------------"
+    with open('./scripts/bgi_json/data_dump/log_time_pheno.txt', 'w+') as res_file:
+        time_taken = "time taken: " + ("--- %s seconds ---" %
+                                       (time.time() - start_time))
+        res_file.write(time_taken)
+
     #t1 = Thread(target=get_bgi_data)
     #t2 = Thread(target=get_phenotype_data)
     #t1.start()
