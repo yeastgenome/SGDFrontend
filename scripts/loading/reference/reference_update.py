@@ -232,8 +232,8 @@ def update_database_batch(nex_session, fw, records, pmid_to_reference, journal_i
             wordsFromXML = abstract.split(" ")
             wordsFromTXT = abstractTXT.split(" ")
             if len(wordsFromTXT) > len(wordsFromXML)+2:
-                print "XML abstract: PMID:", pmid, abstract
-                print "TXT abstract: PMID:", pmid, abstractTXT
+                # print "XML abstract: PMID:", pmid, abstract
+                # print "TXT abstract: PMID:", pmid, abstractTXT
                 abstract = abstractTXT
         update_abstract(nex_session, fw, pmid, dbentity_id, abstract, 
                         abstract_db, source_id, update_log, updated_pmids)
