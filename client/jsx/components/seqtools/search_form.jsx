@@ -592,7 +592,7 @@ var SearchForm = React.createClass({
 		this.setState({ strain: defaultStrain });
 
 		return(<div>
-                       <p><select ref='strain' name='strain' id='strain' onChange={this._onChange4strain}>{_elements}</select></p>
+                       <p><select ref='strain' name='strain' id='strain' onChange={this._onChange}>{_elements}</select></p>
                 </div>);
 
 	},
@@ -624,10 +624,10 @@ var SearchForm = React.createClass({
                 this.setState({ text: e.target.value});
         },
 
-	_onChange4strain: function(e) {
-                this.setState({ text: e.target.value,
-				strain: e.target.value });
-        },
+	// _onChange4strain: function(e) {
+        //        this.setState({ text: e.target.value});
+		// this.setState({ strain: e.target.value });
+        // },
 
 	_onChangeCB: function() {
 		if (this.state.rev == 'off') {
