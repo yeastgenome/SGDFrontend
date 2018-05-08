@@ -241,8 +241,8 @@ var SearchForm = React.createClass({
 
 	_getToolsLinks: function(gene) {
 		
-		var strain = this.state.strain;
-
+		// var strain = this.state.strain;
+		var strain = 'S288C';
 		var links = strain + ": " + gene; 
 
 		return (<div> { links} </div>);
