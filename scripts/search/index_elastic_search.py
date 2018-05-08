@@ -408,43 +408,23 @@ def index_genes():
 def index_phenotypes():
     bulk_data = []
     phenotypes = DBSession.query(Phenotype).all()
-
-    #_result = IndexESHelper.get_phenotypes(phenotypes)
-    _result = IndexESHelper.get_pheno_annotations(phenotypes)
-    print("Indexing " + str(len(_result)) + " phenotypes")
-    for item in _result:
-        bulk_data.append({
-            '_index': INDEX_NAME,
-            '_type': DOC_TYPE,
-            'id': item.format_name
-        })
-        bulk_data.append(item)
-        if len(bulk_data) == 500:
-            es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
-            bulk_data = []
-    if len(bulk_data) > 0:
-        es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
-
-    '''_phenos_annotation = IndexESHelper.get_phenotypes_phenotypeannotation()
-    _annotation_cond = IndexESHelper.get_phenotypes_condition("chemical")
-    _result = IndexESHelper.get_combined_phenotypes(
-        phenotypes, _phenos_annotation, _annotation_cond)
-    bulk_data = []
-    print("Indexing " + str(len(_result)) + " phenotypes")
-    for obj_k, obj_v in _result.items():
-        bulk_data.append({
-            'index': {
+    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
+        _result = IndexESHelper.get_pheno_annotations(phenotypes)
+        print("Indexing " + str(len(_result)) + " phenotypes")
+        for item in _result:
+            bulk_data.append({
                 '_index': INDEX_NAME,
                 '_type': DOC_TYPE,
-                '_id': obj_v["format_name"]
-            }
-        })
-        bulk_data.append(obj_v)
-        if len(bulk_data) == 500:
+                'id': item["format_name"]
+            })
+            bulk_data.append(item)
+            if len(bulk_data) == 500:
+                es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
+                bulk_data = []
+        if len(bulk_data) > 0:
             es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
-            bulk_data = []
-    if len(bulk_data) > 0:
-        es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)'''
+
+     
 
 
 def index_observables():
@@ -830,28 +810,40 @@ def index_downloads():
 
 
 def index_part_1():
-    index_downloads()
-    index_not_mapped_genes()
-    index_genes()
-    index_strains()
-    index_colleagues()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
+        index_downloads()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
+        index_not_mapped_genes()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
+        index_genes()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
+        index_strains()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
+        index_colleagues()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
+        index_chemicals()
     index_phenotypes()
-    index_chemicals()
+    
 
 
 def index_part_2():
-    index_reserved_names()
-    index_toolbar_links()
-    index_observables()
-    index_go_terms()
-    index_references()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
+        index_reserved_names()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
+        index_toolbar_links()  
+    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
+        index_observables()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
+        index_go_terms()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
+        index_references()
 
 
 if __name__ == '__main__':
-    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
-        cleanup()
-        setup()
-        index_phenotypes()
+    cleanup()
+    setup()
+    index_part_1()
+    index_part_2()
         '''t1 = Thread(target=index_part_1)
         t2 = Thread(target=index_part_2)
         t1.start()
