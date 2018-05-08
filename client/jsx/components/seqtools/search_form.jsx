@@ -626,7 +626,7 @@ var SearchForm = React.createClass({
 
 	_onChange4strain: function(e) {
                 this.setState({ text: e.target.value});
-		this.setState({ strain: e.target.value });
+		// this.setState({ strain: e.target.value });
         },
 
 	_onChangeCB: function() {
