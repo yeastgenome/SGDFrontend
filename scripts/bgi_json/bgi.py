@@ -59,7 +59,7 @@ def get_bgi_data(soFlag=False):
     print("computing " + str(len(combined_list)) + " genes")
     result = []
     if(len(combined_list) > 0):
-        with concurrent.futures.ProcessPoolExecutor(max_workers=127) as executor:
+        with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
             for item_key in combined_list:
                 obj = {
                     "crossReferences":
@@ -237,8 +237,9 @@ def get_phenotype_data():
     _data = DBSession.query(Phenotypeannotation).all()
     result = []
     print("computing " + str(len(_data)) + " phenotypes")
-    with concurrent.futures.ProcessPoolExecutor(max_workers=127) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
         for item in _data:
+            start_time = time.time()
             obj = {
                 "objectId": "",
                 "phenotypeTermIdentifiers": [],
@@ -246,21 +247,18 @@ def get_phenotype_data():
                 "pubMedId": "",
                 "dateAssigned": ""
             }
-            pheno_start = time.time()
-            phenotype_obj = item.phenotype.to_dict()
-            pString = phenotype_obj["qualifier"] + " " + phenotype_obj["observable"]["display_name"] if phenotype_obj[
-                "qualifier"] else phenotype_obj["observable"]["display_name"]
+            pString = item.phenotype.qualifier.display_name + " " + item.phenotype.observable.display_name if item.phenotype.qualifier else item.phenotype.observable.display_name
+            print "string mod to dictionary: " + time_taken
             obj["objectId"] = item.dbentity.sgdid
             obj["phenotypeTermIdentifiers"].append({"termId": "SGD: " + str(item.mutant_id), "termOrder": 1})
             obj["phenotypeStatement"] = pString
             obj["pubMedId"] = item.reference.pmid
             obj["dateAssigned"] = item.date_created.strftime(
                 "%Y-%m-%dT%H:%m:%S-00:00")
-
             result.append(item)
             time_taken = "time taken: " + ("--- %s seconds ---" %
                                         (time.time() - start_time))
-            print "time insert: " + str(time_taken)
+            print "----- time add to list: " + str(time_taken)
         if len(result) > 0:
             output_obj = {
                 "data": result,
@@ -290,13 +288,14 @@ if __name__ == '__main__':
         time_taken = "time taken: " + ("--- %s seconds ---" %
                                        (time.time() - start_time))
         res_file.write(time_taken)
-    start_time = time.time()
+    second_start_time = time.time()
     get_phenotype_data()
-    time_taken = "time taken: " + ("--- %s seconds ---" % (time.time() - start_time))
-    print "------------------ phenotype time taken: " + time_taken + " --------------------"
+    second_time_taken = "time taken: " + ("--- %s seconds ---" %
+                                   (time.time() - second_start_time))
+    print "------------------ phenotype time taken: " + second_time_taken + " --------------------"
     with open('./scripts/bgi_json/data_dump/log_time_pheno.txt', 'w+') as res_file:
-        time_taken = "time taken: " + ("--- %s seconds ---" %
-                                       (time.time() - start_time))
+        second_time_taken = "time taken: " + ("--- %s seconds ---" %
+                                              (time.time() - second_start_time))
         res_file.write(time_taken)
 
     #t1 = Thread(target=get_bgi_data)
