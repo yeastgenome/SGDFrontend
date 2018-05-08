@@ -227,15 +227,25 @@ var SearchForm = React.createClass({
 		
 		var seqAnalRow = [<span style={{ fontSize: 20}}>Sequence Analysis</span>];
 		_.map(genes, gene => {
-		    // seqAnalRow.push(this._getStrainPulldown(strains)<span style={{ fontSize: 20}}><br><a href='' target='infowin2'>BLAST</a> | <a href='' target='infowin2'>Fungal BLAST</a></br></span>);
-
-		    seqAnalRow.push(this._getStrainPulldown(strains));
-
+		    // seqAnalRow.push(this._getStrainPulldown(strains));
+		    var pulldown = this._getStrainPulldown(strains);
+		    var toolsLinks = this._getToolsLinks(gene);
+		    seqAnalRow.push(<div>{ pulldown } { toolsLinks }</div>);
 		});		
 		rows.push(seqAnalRow);
 
 		return this._display_gene_table(headerRow, rows);		
 		
+	},
+
+	_getToolsLinks: function(gene) {
+		
+	         var strain = this.refs.strain.value.trim();
+		 
+		 var links = strain + ": " + gene; 
+
+		 return (<div> { links} </div>);
+
 	},
 
 	_display_gene_table: function(headerRow, rows) {
