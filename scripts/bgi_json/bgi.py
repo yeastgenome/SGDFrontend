@@ -1,5 +1,5 @@
 from src.models import DBSession, Base, Colleague, ColleagueLocus, Dbentity, Locusdbentity, LocusUrl, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi
-from sqlalchemy import create_engine, and_
+from sqlalchemy import create_engine, and_, inspect
 import os
 import json
 import re
@@ -254,7 +254,8 @@ def get_phenotype_data():
             obj["pubMedId"] = item.reference.pmid
             obj["dateAssigned"] = item.date_created.strftime(
                 "%Y-%m-%dT%H:%m:%S-00:00")
-            result.append(item)
+            result.append(obj)
+            obj = {}
             time_taken = "time taken: " + ("--- %s seconds ---" %
                                         (time.time() - start_time))
             print "----- time add to list: " + str(time_taken)
@@ -292,22 +293,8 @@ if __name__ == '__main__':
     second_time_taken = "time taken: " + ("--- %s seconds ---" %
                                    (time.time() - second_start_time))
     print "------------------ phenotype time taken: " + second_time_taken + " --------------------"
-    with open('./scripts/bgi_json/data_dump/log_time_pheno.txt', 'w+') as res_file:
+    with open('./scripts/bgi_json/data_dump/log_time_pheno.txt', 'w+') as res_file_2:
         second_time_taken = "time taken: " + ("--- %s seconds ---" %
                                               (time.time() - second_start_time))
-        res_file.write(time_taken)
+        res_file_2.write(time_taken)
 
-    #t1 = Thread(target=get_bgi_data)
-    #t2 = Thread(target=get_phenotype_data)
-    #t1.start()
-    #t2.start()
-
-    '''start_time = time.time()
-    print "--------------start loading genes--------------"
-    get_bgi_data() '''
-    '''with PyCallGraph(output=GraphvizOutput()):
-        get_bgi_data()'''
-    '''with open('./scripts/bgi_json/data_dump/log_time.txt', 'w+') as res_file:
-        time_taken = "time taken: " + ("--- %s seconds ---" % (time.time() - start_time))
-        res_file.write(time_taken)
-    print "--------------done loading genes--------------" '''
