@@ -589,7 +589,7 @@ var SearchForm = React.createClass({
 	              }
 		});
 		
-		this.setState({ strain: defaultStrain });
+		// this.setState({ strain: defaultStrain });
 
 		return(<div>
                        <p><select ref='strain' name='strain' id='strain' onChange={this._onChange}>{_elements}</select></p>
