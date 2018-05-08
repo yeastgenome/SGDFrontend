@@ -410,6 +410,7 @@ def index_phenotypes():
 
     #_result = IndexESHelper.get_phenotypes(phenotypes)
     _result = IndexESHelper.get_pheno_annotations(phenotypes)
+    print("Indexing " + str(len(_result)) + " phenotypes")
     for item in _result:
         bulk_data.append({
             '_index': INDEX_NAME,
@@ -848,7 +849,8 @@ def index_part_2():
 if __name__ == '__main__':
     cleanup()
     setup()
-    t1 = Thread(target=index_part_1)
+    index_phenotypes()
+    '''t1 = Thread(target=index_part_1)
     t2 = Thread(target=index_part_2)
     t1.start()
-    t2.start()
+    t2.start()'''
