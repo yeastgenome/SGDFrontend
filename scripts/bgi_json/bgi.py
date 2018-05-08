@@ -10,6 +10,7 @@ from random import randint
 #from pycallgraph.output import GraphvizOutput
 from datetime import datetime
 from threading import Thread
+import concurrent.futures
 
 engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
 DBSession.configure(bind=engine)
@@ -236,54 +237,60 @@ def get_phenotype_data():
     _data = DBSession.query(Phenotypeannotation).all()
     result = []
     print("computing " + str(len(_data)) + " phenotypes")
-    for item in _data:
-        start_time = time.time()
-        obj = {
-            "objectId": "",
-            "phenotypeTermIdentifiers": [],
-            "phenotypeStatement": "",
-            "pubMedId": "",
-            "dateAssigned": ""
-        }
-        phenotype_obj = item.phenotype.to_dict()
-        pString = phenotype_obj["qualifier"] + " " + phenotype_obj["observable"]["display_name"] if phenotype_obj[
-            "qualifier"] else phenotype_obj["observable"]["display_name"]
-        obj["objectId"] = item.dbentity.sgdid
-        obj["phenotypeTermIdentifiers"].append({"termId": "SGD: " + str(item.mutant_id), "termOrder": 1})
-        obj["phenotypeStatement"] = pString
-        obj["pubMedId"] = item.reference.pmid
-        obj["dateAssigned"] = item.date_created.strftime(
-            "%Y-%m-%dT%H:%m:%S-00:00")
-
-        result.append(item)
-        time_taken = "time taken: " + ("--- %s seconds ---" %
-                                       (time.time() - start_time))
-        print "time insert: " + str(time_taken)
-    if len(result) > 0:
-        output_obj = {
-            "data": result,
-            "metaData": {
-                "dataProvider":
-                    "SGD",
-                "dateProduced":
-                    datetime.utcnow().strftime("%Y-%m-%dT%H:%m:%S-00:00"),
-                "release":
-                    "SGD 1.0.0.4 " + datetime.utcnow().strftime("%Y-%m-%d")
+    with concurrent.futures.ProcessPoolExecutor(max_workers=120) as executor:
+        for item in _data:
+            start_time = time.time()
+            obj = {
+                "objectId": "",
+                "phenotypeTermIdentifiers": [],
+                "phenotypeStatement": "",
+                "pubMedId": "",
+                "dateAssigned": ""
             }
-        }
-        fileStr = './scripts/bgi_json/data_dump/SGD.1.0.0.4_phenotype_' + str(randint(0, 1000)) + '.json'
-        with open(fileStr, 'w+') as res_file:
-            res_file.write(json.dumps(output_obj))
+            pheno_start = time.time()
+            phenotype_obj = item.phenotype.to_dict()
+            p_time_taken = "time taken: " + ("--- %s seconds ---" %
+                                        (time.time() - pheno_start))
+            print "pheno to dict taken: " + p_time_taken
+            pString = phenotype_obj["qualifier"] + " " + phenotype_obj["observable"]["display_name"] if phenotype_obj[
+                "qualifier"] else phenotype_obj["observable"]["display_name"]
+            obj["objectId"] = item.dbentity.sgdid
+            obj["phenotypeTermIdentifiers"].append({"termId": "SGD: " + str(item.mutant_id), "termOrder": 1})
+            obj["phenotypeStatement"] = pString
+            obj["pubMedId"] = item.reference.pmid
+            obj["dateAssigned"] = item.date_created.strftime(
+                "%Y-%m-%dT%H:%m:%S-00:00")
+
+            result.append(item)
+            time_taken = "time taken: " + ("--- %s seconds ---" %
+                                        (time.time() - start_time))
+            print "time insert: " + str(time_taken)
+        if len(result) > 0:
+            output_obj = {
+                "data": result,
+                "metaData": {
+                    "dataProvider":
+                        "SGD",
+                    "dateProduced":
+                        datetime.utcnow().strftime("%Y-%m-%dT%H:%m:%S-00:00"),
+                    "release":
+                        "SGD 1.0.0.4 " + datetime.utcnow().strftime("%Y-%m-%d")
+                }
+            }
+            fileStr = './scripts/bgi_json/data_dump/SGD.1.0.0.4_phenotype_' + str(randint(0, 1000)) + '.json'
+            with open(fileStr, 'w+') as res_file:
+                res_file.write(json.dumps(output_obj))
 
 
 
 # entry point
 if __name__ == '__main__':
     print "--------------start loading data--------------"
-    t1 = Thread(target=get_bgi_data)
-    t2 = Thread(target=get_phenotype_data)
-    t1.start()
-    t2.start()
+    get_phenotype_data()
+    #t1 = Thread(target=get_bgi_data)
+    #t2 = Thread(target=get_phenotype_data)
+    #t1.start()
+    #t2.start()
 
     '''start_time = time.time()
     print "--------------start loading genes--------------"
