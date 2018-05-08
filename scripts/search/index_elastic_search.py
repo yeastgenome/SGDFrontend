@@ -415,10 +415,10 @@ def index_phenotypes():
             bulk_data.append({
                 '_index': INDEX_NAME,
                 '_type': DOC_TYPE,
-                'id': item["format_name"]
+                '_id': item["format_name"]
             })
             bulk_data.append(item)
-            if len(bulk_data) == 500:
+            if len(bulk_data) == 1000:
                 es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
                 bulk_data = []
         if len(bulk_data) > 0:
@@ -810,6 +810,7 @@ def index_downloads():
 
 
 def index_part_1():
+    index_phenotypes()
     with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
         index_downloads()
     with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
@@ -822,7 +823,7 @@ def index_part_1():
         index_colleagues()
     with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
         index_chemicals()
-    index_phenotypes()
+    
     
 
 
