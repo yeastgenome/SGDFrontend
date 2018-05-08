@@ -14,10 +14,7 @@ from threading import Thread
 engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
 DBSession.configure(bind=engine)
 Base.metadata.bind = engine
-INDEX_NAME = os.environ.get('ES_INDEX_NAME', 'searchable_items_aws')
-DOC_TYPE = 'searchable_item'
-ES_URI = os.environ['WRITE_ES_URI']
-es = Elasticsearch(ES_URI, retry_on_timeout=True)
+
 
 
 # populate text file with sgdis to be used to retrieve panther data
