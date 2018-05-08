@@ -229,8 +229,8 @@ var SearchForm = React.createClass({
 		var seqAnalRow = [<span style={{ fontSize: 20}}>Sequence Analysis</span>];
 		_.map(genes, gene => {
 		    // seqAnalRow.push(this._getStrainPulldown(strains));
-		    var [pulldown, strain] = this._getStrainPulldown(strains);
-		    var toolsLinks = this._getToolsLinks(strain, gene);
+		    var pulldown = this._getStrainPulldown(strains);
+		    var toolsLinks = this._getToolsLinks(gene);
 		    seqAnalRow.push(<div>{ pulldown } { toolsLinks }</div>);
 		});		
 		rows.push(seqAnalRow);
@@ -239,11 +239,9 @@ var SearchForm = React.createClass({
 		
 	},
 
-	_getToolsLinks: function(strain, gene) {
+	_getToolsLinks: function(gene) {
 		
-		if (this.state.strain) {
-		     strain = this.state.strain;
-		}
+		var strain = this.state.strain;
 
 		var links = strain + ": " + gene; 
 
@@ -591,9 +589,11 @@ var SearchForm = React.createClass({
 	              }
 		});
 		
+		this.setState({ strain: defaultStrain });
+
 		return(<div>
                        <p><select ref='strain' name='strain' id='strain' onChange={this._onChange4strain}>{_elements}</select></p>
-                </div>, defaultStrain);
+                </div>);
 
 	},
 
