@@ -230,8 +230,8 @@ var SearchForm = React.createClass({
 		_.map(genes, gene => {
 		    // seqAnalRow.push(this._getStrainPulldown(strains));
 		    var pulldown = this._getStrainPulldown(strains);
-		    var toolsLinks = this._getToolsLinks(gene);
-		    seqAnalRow.push(<div>{ pulldown } { toolsLinks }</div>);
+		    // var toolsLinks = this._getToolsLinks(gene);
+		    seqAnalRow.push(<div> { pulldown } </div>);
 		});		
 		rows.push(seqAnalRow);
 
