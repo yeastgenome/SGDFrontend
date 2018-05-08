@@ -237,7 +237,7 @@ def get_phenotype_data():
     _data = DBSession.query(Phenotypeannotation).all()
     result = []
     print("computing " + str(len(_data)) + " phenotypes")
-    with concurrent.futures.ProcessPoolExecutor(max_workers=120) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=125) as executor:
         for item in _data:
             start_time = time.time()
             obj = {
