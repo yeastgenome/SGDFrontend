@@ -54,6 +54,7 @@ def get_panther_sgdids():
 # pupulate json file with basic gene infromation(bgi)
 def get_bgi_data(soFlag=False):
     combined_list = combine_panther_locus_list(get_panther_sgdids(), Locusdbentity.get_s288c_genes())
+    print("computing " + str(len(combined_list)) + " genes")
     result = []
     if(len(combined_list) > 0):
         for item_key in combined_list:
@@ -232,7 +233,7 @@ def get_locus_alias_data(locus_alias_list, id, item_obj):
 def get_phenotype_data():
     _data = DBSession.query(Phenotypeannotation).all()
     result = []
-
+    print("computing " + str(len(_data)) + " phenotypes")
     for item in _data:
         obj = {
             "objectId": "",
@@ -271,10 +272,12 @@ def get_phenotype_data():
 
 # entry point
 if __name__ == '__main__':
+    print "--------------start loading data--------------"
     t1 = Thread(target=get_bgi_data)
     t2 = Thread(target=get_phenotype_data)
     t1.start()
     t2.start()
+   
     '''start_time = time.time()
     print "--------------start loading genes--------------"
     get_bgi_data() '''
