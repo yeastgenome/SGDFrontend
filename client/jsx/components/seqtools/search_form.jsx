@@ -228,8 +228,8 @@ var SearchForm = React.createClass({
 		var seqAnalRow = [<span style={{ fontSize: 20}}>Sequence Analysis</span>];
 		_.map(genes, gene => {
 		    // seqAnalRow.push(this._getStrainPulldown(strains));
-		    var pulldown = this._getStrainPulldown(strains);
-		    var toolsLinks = this._getToolsLinks(gene);
+		    var [pulldown, strain] = this._getStrainPulldown(strains);
+		    var toolsLinks = this._getToolsLinks(strain, gene);
 		    seqAnalRow.push(<div>{ pulldown } { toolsLinks }</div>);
 		});		
 		rows.push(seqAnalRow);
@@ -238,13 +238,19 @@ var SearchForm = React.createClass({
 		
 	},
 
-	_getToolsLinks: function(gene) {
+	_getToolsLinks: function(strain, gene) {
 		
-	         var strain = this.refs.strain.value.trim();
-		 
-		 var links = strain + ": " + gene; 
+	        var strain2 = this.refs.strain.value.trim();
+		
+		if (strain2) {
 
-		 return (<div> { links} </div>);
+		    strain = strain2;
+
+		}
+
+		var links = strain + ": " + gene; 
+
+		return (<div> { links} </div>);
 
 	},
 
@@ -572,20 +578,25 @@ var SearchForm = React.createClass({
 
 		var strainMapping = this._getStrainMapping();
 		var strainList = strains.split("|");
+		var defaultStrain = "";
 		var _elements = _.map(strainList, s => {
 		      // var label = strainMapping[s].replace("S. cerevisia ", "").replace("strain ");
 		      var label = s; 
 		      if (s == 'S288C') {
+		            defaultStrain = 'S288C';
 		      	    return <option value={s} selected='selected'>{label}</option>;
 	              }
 		      else {
+		      	    if (defaultStrain == '') {
+			        defaultStrain = s;
+			    }
 		      	    return <option value={s}>{label}</option>;
 	              }
 		});
 		
 		return(<div>
                        <p><select ref='strain' name='strain' id='strain' onChange={this._onChange}>{_elements}</select></p>
-                </div>);
+                </div>, defaultStrain);
 
 	},
 
