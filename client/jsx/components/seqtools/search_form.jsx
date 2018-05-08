@@ -25,6 +25,7 @@ var SearchForm = React.createClass({
 			seqtype: 'DNA',
 			genes: null,
 			strains: null,
+			strain: null,
 			up: null,
 			down: null,
 			chr: null,
@@ -240,12 +241,8 @@ var SearchForm = React.createClass({
 
 	_getToolsLinks: function(strain, gene) {
 		
-	        var strain2 = this.refs.strain.value.trim();
-		
-		if (strain2) {
-
-		    strain = strain2;
-
+		if (this.state.strain) {
+		     strain = this.state.strain;
 		}
 
 		var links = strain + ": " + gene; 
@@ -595,7 +592,7 @@ var SearchForm = React.createClass({
 		});
 		
 		return(<div>
-                       <p><select ref='strain' name='strain' id='strain' onChange={this._onChange}>{_elements}</select></p>
+                       <p><select ref='strain' name='strain' id='strain' onChange={this._onChange4strain}>{_elements}</select></p>
                 </div>, defaultStrain);
 
 	},
@@ -625,6 +622,11 @@ var SearchForm = React.createClass({
 
         _onChange: function(e) {
                 this.setState({ text: e.target.value});
+        },
+
+	_onChange4strain: function(e) {
+                this.setState({ text: e.target.value});
+		this.setState({ strain: e.target.value });
         },
 
 	_onChangeCB: function() {
