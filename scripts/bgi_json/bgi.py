@@ -14,6 +14,10 @@ from threading import Thread
 engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
 DBSession.configure(bind=engine)
 Base.metadata.bind = engine
+INDEX_NAME = os.environ.get('ES_INDEX_NAME', 'searchable_items_aws')
+DOC_TYPE = 'searchable_item'
+ES_URI = os.environ['WRITE_ES_URI']
+es = Elasticsearch(ES_URI, retry_on_timeout=True)
 
 
 # populate text file with sgdis to be used to retrieve panther data
@@ -231,10 +235,12 @@ def get_locus_alias_data(locus_alias_list, id, item_obj):
 
 
 def get_phenotype_data():
+
     _data = DBSession.query(Phenotypeannotation).all()
     result = []
     print("computing " + str(len(_data)) + " phenotypes")
     for item in _data:
+        start_time = time.time()
         obj = {
             "objectId": "",
             "phenotypeTermIdentifiers": [],
@@ -251,7 +257,11 @@ def get_phenotype_data():
         obj["pubMedId"] = item.reference.pmid
         obj["dateAssigned"] = item.date_created.strftime(
             "%Y-%m-%dT%H:%m:%S-00:00")
+
         result.append(item)
+        time_taken = "time taken: " + ("--- %s seconds ---" %
+                                       (time.time() - start_time))
+        print "time insert: " + str(time_taken)
     if len(result) > 0:
         output_obj = {
             "data": result,
@@ -277,7 +287,7 @@ if __name__ == '__main__':
     t2 = Thread(target=get_phenotype_data)
     t1.start()
     t2.start()
-   
+
     '''start_time = time.time()
     print "--------------start loading genes--------------"
     get_bgi_data() '''
