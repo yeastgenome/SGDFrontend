@@ -29,3 +29,6 @@ MAILTO=sgd-programmers@lists.stanford.edu
 30 17 * * 1 /bin/bash /data/www/SGDBackend-NEX2/current/system_config/cron/go_update.sh
 30 17 * * 5 /bin/bash /data/www/SGDBackend-NEX2/current/system_config/cron/reference_update.sh
 30 17 15 * * /bin/bash /data/www/SGDBackend-NEX2/current/system_config/cron/dbxref_update.sh
+#remove line below after
+30 20 * * * /bin/bash /data/www/SGDBackend-NEX2/current/system_config/cron/compute_agr_data.sh
+
