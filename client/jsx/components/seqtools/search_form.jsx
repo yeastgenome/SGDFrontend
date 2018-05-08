@@ -227,7 +227,10 @@ var SearchForm = React.createClass({
 		
 		var seqAnalRow = [<span style={{ fontSize: 20}}>Sequence Analysis</span>];
 		_.map(genes, gene => {
+		    // seqAnalRow.push(this._getStrainPulldown(strains)<span style={{ fontSize: 20}}><br><a href='' target='infowin2'>BLAST</a> | <a href='' target='infowin2'>Fungal BLAST</a></br></span>);
+
 		    seqAnalRow.push(this._getStrainPulldown(strains));
+
 		});		
 		rows.push(seqAnalRow);
 
