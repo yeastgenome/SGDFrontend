@@ -248,7 +248,6 @@ def get_phenotype_data():
                 "dateAssigned": ""
             }
             pString = item.phenotype.qualifier.display_name + " " + item.phenotype.observable.display_name if item.phenotype.qualifier else item.phenotype.observable.display_name
-            print "string mod to dictionary: " + time_taken
             obj["objectId"] = item.dbentity.sgdid
             obj["phenotypeTermIdentifiers"].append({"termId": "SGD: " + str(item.mutant_id), "termOrder": 1})
             obj["phenotypeStatement"] = pString
