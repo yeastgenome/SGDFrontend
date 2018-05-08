@@ -424,7 +424,7 @@ def index_phenotypes():
         if len(bulk_data) > 0:
             es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
-     
+
 
 
 def index_observables():
@@ -823,15 +823,15 @@ def index_part_1():
         index_colleagues()
     with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
         index_chemicals()
-    
-    
+
+
 
 
 def index_part_2():
     with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
         index_reserved_names()
     with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
-        index_toolbar_links()  
+        index_toolbar_links()
     with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
         index_observables()
     with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
@@ -843,7 +843,10 @@ def index_part_2():
 if __name__ == '__main__':
     cleanup()
     setup()
+    index_phenotypes()
+    '''
     t1 = Thread(target=index_part_1)
     t2 = Thread(target=index_part_2)
     t1.start()
     t2.start()
+    '''
