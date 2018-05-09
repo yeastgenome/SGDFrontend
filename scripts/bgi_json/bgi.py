@@ -251,9 +251,13 @@ def get_phenotype_data():
                 "pubMedId": "",
                 "dateAssigned": ""
             }
+            #import pdb;  pdb.set_trace()
             pString = item.phenotype.qualifier.display_name + " " + item.phenotype.observable.display_name if item.phenotype.qualifier else item.phenotype.observable.display_name
-            obj["objectId"] = item.dbentity.sgdid
-            obj["phenotypeTermIdentifiers"].append({"termId": "SGD: " + str(item.mutant_id), "termOrder": 1})
+            obj["objectId"] = "SGD:" + str(item.dbentity.sgdid)
+            obj["phenotypeTermIdentifiers"].append({
+                "termId": str(item.mutant.apoid),
+                "termOrder": 1
+            })
             obj["phenotypeStatement"] = pString
             obj["pubMedId"] = str(item.reference.pmid)
             obj["dateAssigned"] = item.date_created.strftime(
@@ -284,15 +288,15 @@ def get_phenotype_data():
 # entry point
 if __name__ == '__main__':
     print "--------------start computing data--------------"
-    start_time = time.time()
+    '''start_time = time.time()
     get_bgi_data()
     time_taken = "time taken: " + ("--- %s seconds ---" % (time.time() - start_time))
     print "------------------ bgi time taken: " + time_taken + " --------------------"
     with open('./scripts/bgi_json/data_dump/log_time_bgi.txt', 'w+') as res_file:
         time_taken = "time taken: " + ("--- %s seconds ---" %
                                        (time.time() - start_time))
-        res_file.write(time_taken)
-    '''second_start_time = time.time()
+        res_file.write(time_taken)'''
+    second_start_time = time.time()
     get_phenotype_data()
     second_time_taken = "time taken: " + ("--- %s seconds ---" %
                                    (time.time() - second_start_time))
@@ -300,4 +304,4 @@ if __name__ == '__main__':
     with open('./scripts/bgi_json/data_dump/log_time_pheno.txt', 'w+') as res_file_2:
         second_time_taken = "time taken: " + ("--- %s seconds ---" %
                                               (time.time() - second_start_time))
-        res_file_2.write(time_taken)'''
+        res_file_2.write(time_taken)
