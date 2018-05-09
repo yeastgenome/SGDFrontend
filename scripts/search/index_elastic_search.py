@@ -406,9 +406,9 @@ def index_genes():
 
 
 def index_phenotypes():
-    bulk_data = []
-    phenotypes = DBSession.query(Phenotype).all()
     with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
+        bulk_data = []
+        phenotypes = DBSession.query(Phenotype).all()
         _result = IndexESHelper.get_pheno_annotations(phenotypes)
         print("Indexing " + str(len(_result)) + " phenotypes")
         for item in _result:
@@ -421,11 +421,11 @@ def index_phenotypes():
                 }
             })
             bulk_data.append(item)
-            if len(bulk_data) == 1:
+            if len(bulk_data) == 300:
                 es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
             bulk_data = []
-    if len(bulk_data) > 0:
-        es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
+        if len(bulk_data) > 0:
+            es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
 
 
