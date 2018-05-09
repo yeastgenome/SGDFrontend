@@ -59,7 +59,8 @@ def get_bgi_data(soFlag=False):
     print("computing " + str(len(combined_list)) + " genes")
     result = []
     if(len(combined_list) > 0):
-        with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
+
+        with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
             for item_key in combined_list:
                 obj = {
                     "crossReferences":
@@ -118,7 +119,10 @@ def get_bgi_data(soFlag=False):
                         obj["genomeLocations"][0]["strand"] = strnd
                         obj["genomeLocations"][0]["startPosition"] = dna_seq_annotation_obj[0].start_index
                         obj["genomeLocations"][0]["chromosome"] = "chr"+chromosome[1]
-                        obj["soTermId"] =  dna_seq_annotation_obj[0].so.soid if soFlag else "SO:0001217"
+                        if dna_seq_annotation_obj[0].so.so_id == 263757:
+                            obj["soTermId"] = "SO:0001217"
+                        else:
+                            obj["soTermId"] =  dna_seq_annotation_obj[0].so.soid
                     mod_locus_alias_data = get_locus_alias_data(locus_alias_data, item.dbentity_id, item)
 
                     for mod_item in mod_locus_alias_data:
@@ -288,7 +292,7 @@ if __name__ == '__main__':
         time_taken = "time taken: " + ("--- %s seconds ---" %
                                        (time.time() - start_time))
         res_file.write(time_taken)
-    second_start_time = time.time()
+    '''second_start_time = time.time()
     get_phenotype_data()
     second_time_taken = "time taken: " + ("--- %s seconds ---" %
                                    (time.time() - second_start_time))
@@ -296,5 +300,4 @@ if __name__ == '__main__':
     with open('./scripts/bgi_json/data_dump/log_time_pheno.txt', 'w+') as res_file_2:
         second_time_taken = "time taken: " + ("--- %s seconds ---" %
                                               (time.time() - second_start_time))
-        res_file_2.write(time_taken)
-
+        res_file_2.write(time_taken)'''
