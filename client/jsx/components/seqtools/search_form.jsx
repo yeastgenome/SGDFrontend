@@ -240,7 +240,8 @@ const SearchForm = React.createClass({
 		      var sequences = [{ 'sequence': genomicSeq,
 		      	  	      	 'header': header,
 				      	 'filename': filename,
-					 'key': header }];
+					 'key': header,
+					 'name': gene }];
 
 		      downloadTestRow.push(this._getDownloadSeqButton('S288C', gene, displayName4gene[gene], sequences)); 
 		});		
