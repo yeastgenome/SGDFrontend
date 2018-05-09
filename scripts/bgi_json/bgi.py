@@ -243,7 +243,6 @@ def get_phenotype_data():
     print("computing " + str(len(_data)) + " phenotypes")
     with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
         for item in _data:
-            start_time = time.time()
             obj = {
                 "objectId": "",
                 "phenotypeTermIdentifiers": [],
@@ -251,22 +250,33 @@ def get_phenotype_data():
                 "pubMedId": "",
                 "dateAssigned": ""
             }
-            #import pdb;  pdb.set_trace()
-            pString = item.phenotype.qualifier.display_name + " " + item.phenotype.observable.display_name if item.phenotype.qualifier else item.phenotype.observable.display_name
-            obj["objectId"] = "SGD:" + str(item.dbentity.sgdid)
-            obj["phenotypeTermIdentifiers"].append({
-                "termId": str(item.mutant.apoid),
+            pString = ''
+            if item.phenotype.qualifier:
+                pString = item.phenotype.qualifier.display_name
+                obj["phenotypeTermIdentifiers"].append({
+                "termId": str(item.phenotype.qualifier.apoid),
                 "termOrder": 1
-            })
+                })
+                if item.phenotype.observable:
+                    pString = pString + " " +item.phenotype.observable.display_name
+                    obj["phenotypeTermIdentifiers"].append({
+                    "termId": str(item.phenotype.observable.apoid),
+                    "termOrder": 2
+                    })
+
+            else:
+                if item.phenotype.observable:
+                    pString = item.phenotype.observable.display_name
+                    obj["phenotypeTermIdentifiers"].append({
+                    "termId": str(item.phenotype.observable.apoid),
+                    "termOrder": 1
+                    })
+            obj["objectId"] = "SGD:" + str(item.dbentity.sgdid)
             obj["phenotypeStatement"] = pString
-            obj["pubMedId"] = str(item.reference.pmid)
+            obj["pubMedId"] = "PMID:" + str(item.reference.pmid)
             obj["dateAssigned"] = item.date_created.strftime(
                 "%Y-%m-%dT%H:%m:%S-00:00")
             result.append(obj)
-            obj = {}
-            time_taken = "time taken: " + ("--- %s seconds ---" %
-                                        (time.time() - start_time))
-            print "----- time add to list: " + str(time_taken)
         if len(result) > 0:
             output_obj = {
                 "data": result,
@@ -276,7 +286,7 @@ def get_phenotype_data():
                     "dateProduced":
                         datetime.utcnow().strftime("%Y-%m-%dT%H:%m:%S-00:00"),
                     "release":
-                        "SGD 1.0.0.4 " + datetime.utcnow().strftime("%Y-%m-%d")
+                        "SGD 1.0.0.3 " + datetime.utcnow().strftime("%Y-%m-%d")
                 }
             }
             fileStr = './scripts/bgi_json/data_dump/SGD.1.0.0.4_phenotype_' + str(randint(0, 1000)) + '.json'
