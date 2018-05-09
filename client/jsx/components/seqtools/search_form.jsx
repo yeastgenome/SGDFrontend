@@ -5,13 +5,14 @@ import $ from 'jquery';
 const DataTable = require("../widgets/data_table.jsx");
 const Checklist = require("../widgets/checklist.jsx");
 const Params = require("../mixins/parse_url_params.jsx");
+const MultiSequenceDownload = require("./multi_sequence_download.jsx");
 
 const SeqtoolsUrl = "/run_seqtools";
 
 // const LETTERS_PER_CHUNK = 10;
 // const LETTERS_PER_LINE = 60;
 
-var SearchForm = React.createClass({
+const SearchForm = React.createClass({
 
 	getInitialState: function () {
 	        
@@ -231,12 +232,12 @@ var SearchForm = React.createClass({
 		var downloadTestRow = [<span style={{ fontSize: 20}}>Sequence Download TEST</span>];
 		_.map(genes, gene => {
 		      var s = seq4gene[gene];
-		      // var codingSeq = s['coding']['S288C'];
 		      var genomicSeq = s['genomic']['S288C'];
+		      // var codingSeq = s['coding']['S288C'];
 		      // var proteinSeq = s['protein']['S288C'];
-		      var filename = gene + '_S288C' + '.fsa';
-		      var header = gene + " S288C " + sgdid4gene[gene];
-		      downloadTestRow.push(this._getDownloadSeqButton(filename, header, genomicSeq)); 
+		      // var filename = gene + '_S288C' + '.fsa';
+		      // var header = gene + " S288C " + sgdid4gene[gene];
+		      downloadTestRow.push(this._getDownloadSeqButton('S288C', gene, displayName4gene[gene], [genomicSeq])); 
 		});		
 		rows.push(downloadTestRow);
 
@@ -272,13 +273,11 @@ var SearchForm = React.createClass({
 	},
 
 
-	_getDownloadSeqButton: function(filename, header, sequence) {
+	_getDownloadSeqButton: function(strain, format_name, display_name, sequences) {
 
-                return (<div><form ref={ filename } method="POST" action="/download_sequence" key={"hiddenNode_" + filename}>
-                            	   <input type="hidden" name="header" value={header} />
-                            	   <input type="hidden" name="sequence" value={sequence} />
-                            	   <input type="hidden" name="filename" value={filename} />
-               		</form></div>);	        		
+                return (<MultiSequenceDownload
+                        sequences={sequences} locusDisplayName={display_name}
+                        contigName={strain} locusFormatName={format_name} />);
 
 	},
 
