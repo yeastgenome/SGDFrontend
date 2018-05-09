@@ -6622,7 +6622,7 @@ class Phenotype(Base):
         if lst:
             data = []
             for item in lst:
-                if item
+                if item:
                     data.append(item)
             return data
         else: 
