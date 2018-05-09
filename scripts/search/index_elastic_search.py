@@ -9,6 +9,7 @@ import json
 import collections
 from index_es_helpers import IndexESHelper
 import concurrent.futures
+import uuid
 
 
 engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
@@ -144,7 +145,7 @@ def index_colleagues():
             'index': {
                 '_index': INDEX_NAME,
                 '_type': DOC_TYPE,
-                '_id': item_v["format_name"]
+                '_id': str(uuid.uuid4())
             }
         })
 
@@ -406,26 +407,24 @@ def index_genes():
 
 
 def index_phenotypes():
-    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
-        bulk_data = []
-        phenotypes = DBSession.query(Phenotype).all()
-        _result = IndexESHelper.get_pheno_annotations(phenotypes)
-        print("Indexing " + str(len(_result)) + " phenotypes")
-        for phenotype_item in _result:
-            #import pdb; pdb.set_trace()
-            bulk_data.append({
-                'index': {
-                    '_index': INDEX_NAME,
-                    '_type': DOC_TYPE,
-                    '_id': phenotype_item["format_name"]
-                }
-            })
-            bulk_data.append(phenotype_item)
-            if len(bulk_data) == 300:
-                es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
-            bulk_data = []
-        if len(bulk_data) > 0:
+    bulk_data = []
+    phenotypes = DBSession.query(Phenotype).all()
+    _result = IndexESHelper.get_pheno_annotations(phenotypes)
+    print("Indexing " + str(len(_result)) + " phenotypes")
+    for phenotype_item in _result:
+        bulk_data.append({
+            'index': {
+                '_index': INDEX_NAME,
+                '_type': DOC_TYPE,
+                '_id': str(uuid.uuid4())
+            }
+        })
+        bulk_data.append(phenotype_item)
+        if len(bulk_data) == 300:
             es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
+        bulk_data = []
+    if len(bulk_data) > 0:
+        es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
 
 
@@ -739,7 +738,7 @@ def index_not_mapped_genes():
                     'index': {
                         '_index': INDEX_NAME,
                         '_type': DOC_TYPE,
-                        '_id': item["FEATURE_NAME"]
+                        '_id': str(uuid.uuid4())
                     }
                 })
                 bulk_data.append(obj)
@@ -813,7 +812,8 @@ def index_downloads():
 
 
 def index_part_1():
-    index_phenotypes()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
+        index_phenotypes()
     with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
         index_downloads()
     with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
