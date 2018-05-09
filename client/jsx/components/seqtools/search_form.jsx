@@ -222,15 +222,25 @@ var SearchForm = React.createClass({
 		    else {
 		    	 seqDLRow.push(<span style={{ fontSize: 20}}><br>Batch seuence file</br><br><a href={ genomicFastaUrl } target='infowin2'>Fasta</a> | <a href={ genomicGcgUrl } target='infowin2'>GCG</a></br></span>);
 		    } 
-		
 	        });
 		rows.push(seqDLRow);
 
+		// testing section
+
 		// _getDownloadSeqButton: function(filename, header, sequence) {		
 		var downloadTestRow = [<span style={{ fontSize: 20}}>Sequence Download TEST</span>];
+		_.map(genes, gene => {
+		      var s = seq4gene[gene];
+		      // var codingSeq = s['coding']['S288C'];
+		      var genomicSeq = s['genomic']['S288C'];
+		      // var proteinSeq = s['protein']['S288C'];
+		      var filename = gene + '_S288C' + '.fsa';
+		      var header = gene + " S288C " + sgdid4gene[gene];
+		      downloadTestRow.push(this._getDownloadSeqButton(filename, header, genomicSeq)); 
+		});		
+
+		// end of testing
 		
-
-
 		var seqAnalRow = [<span style={{ fontSize: 20}}>Sequence Analysis</span>];
 		_.map(genes, gene => {
 		    seqAnalRow.push(this._getStrainPulldown(strains));
