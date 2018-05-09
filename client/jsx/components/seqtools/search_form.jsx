@@ -133,7 +133,7 @@ var SearchForm = React.createClass({
 
 	_getResultTable: function(data) {
 		
-		var [genes, displayName4gene, sgdid4gene, hasProtein4gene, hasCoding4gene, hasGenomic4gene] 
+		var [genes, displayName4gene, sgdid4gene, seq4gene, hasProtein4gene, hasCoding4gene, hasGenomic4gene] 
 			= this._getDataFromJson(data);
 				
 		var headerRow = [];
@@ -225,7 +225,12 @@ var SearchForm = React.createClass({
 		
 	        });
 		rows.push(seqDLRow);
+
+		// _getDownloadSeqButton: function(filename, header, sequence) {		
+		var downloadTestRow = [<span style={{ fontSize: 20}}>Sequence Download TEST</span>];
 		
+
+
 		var seqAnalRow = [<span style={{ fontSize: 20}}>Sequence Analysis</span>];
 		_.map(genes, gene => {
 		    seqAnalRow.push(this._getStrainPulldown(strains));
@@ -255,6 +260,17 @@ var SearchForm = React.createClass({
 		return strainPulldown;
 	},
 
+
+	_getDownloadSeqButton: function(filename, header, sequence) {
+
+                return (<form ref={ filename } method="POST" action="/download_sequence" key={"hiddenNode_" + filename}>
+                            <input type="hidden" name="header" value={header} />
+                            <input type="hidden" name="sequence" value={sequence} />
+                            <input type="hidden" name="filename" value={filename} />
+                </form>);	        		
+
+	},
+
 	_display_gene_table: function(headerRow, rows) {
 
                 var _tableData = {
@@ -282,11 +298,12 @@ var SearchForm = React.createClass({
 		var hasProtein4gene = {};
 		var hasCoding4gene = {};
 		var hasGenomic4gene = {};
+		var seq4gene = {}
 		_.map(genes, gene => {
                       var seqInfo = data[gene];
-                      // var proteinSeq4strain = {};
-                      // var codingSeq4strain = {};
-                      // var genomicSeq4strain = {};
+                      var proteinSeq4strain = {};
+                      var codingSeq4strain = {};
+                      var genomicSeq4strain = {};
                       var seqTypes = Object.keys(seqInfo);
 		      hasProtein4gene[gene] = 0;
 		      hasCoding4gene[gene] = 0;
@@ -310,25 +327,30 @@ var SearchForm = React.createClass({
 				    // var locus_type = strainDetails['locus_type'];
 				    
                                     if (seqType == 'protein') {
-                                         // proteinSeq4strain[strain] = strainDetails['residue'];
+                                         proteinSeq4strain[strain] = strainDetails['residue'];
 					 hasProtein4gene[gene] += 1;
                                     }
                                     else if (seqType == 'coding_dna') {
-                                         // codingSeq4strain[strain] = strainDetails['residue'];
+                                         codingSeq4strain[strain] = strainDetails['residue'];
 					 hasCoding4gene[gene] += 1;
                                     }
                                     else if (seqType == 'genomic_dna') {
-                                         // genomicSeq4strain[strain] = strainDetails['residue'];
+                                         genomicSeq4strain[strain] = strainDetails['residue'];
 					 hasGenomic4gene[gene] += 1;
                                     }
-
+				    
                              })
 
                       })
 
+		      seq4gene[gene] = { 'protein': proteinSeq4strain,
+		                         'coding': codingSeq4strain,
+					 'genomic': genomicSeq4strain }; 
+                                         
+
                 });
 
-		return [genes, displayName4gene, sgdid4gene, hasProtein4gene, hasCoding4gene, hasGenomic4gene];
+		return [genes, displayName4gene, sgdid4gene, seq4gene, hasProtein4gene, hasCoding4gene, hasGenomic4gene];
 			  
 	},
 
