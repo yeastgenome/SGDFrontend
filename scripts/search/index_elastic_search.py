@@ -412,14 +412,15 @@ def index_phenotypes():
         _result = IndexESHelper.get_pheno_annotations(phenotypes)
         print("Indexing " + str(len(_result)) + " phenotypes")
         for item in _result:
-            import  pdb ; pdb.set_trace()
             bulk_data.append({
-                '_index': INDEX_NAME,
-                '_type': DOC_TYPE,
-                '_id': item["format_name"]
+                'index': {
+                    '_index': INDEX_NAME,
+                    '_type': DOC_TYPE,
+                    '_id': item["format_name"]
+                }
             })
             bulk_data.append(item)
-            if len(bulk_data) == 10:
+            if len(bulk_data) == 500:
                 es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
                 bulk_data = []
         if len(bulk_data) > 0:
