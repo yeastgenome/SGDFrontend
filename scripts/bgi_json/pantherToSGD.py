@@ -15,7 +15,7 @@ def FormatPantherDataSGD():
     temp_data = []
     if content:
         for item in content
-            pdb.set_trace()
+            #pdb.set_trace()
             print(item)
 
 FormatPantherDataSGD()
