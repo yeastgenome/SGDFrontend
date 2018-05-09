@@ -236,8 +236,7 @@ var SearchForm = React.createClass({
 		      // var proteinSeq = s['protein']['S288C'];
 		      var filename = gene + '_S288C' + '.fsa';
 		      var header = gene + " S288C " + sgdid4gene[gene];
-		      downloadTestRow.push(<div>{ genomicSeq } </div>);
-		      // downloadTestRow.push(this._getDownloadSeqButton(filename, header, genomicSeq)); 
+		      downloadTestRow.push(this._getDownloadSeqButton(filename, header, genomicSeq)); 
 		});		
 		rows.push(downloadTestRow);
 
@@ -275,11 +274,11 @@ var SearchForm = React.createClass({
 
 	_getDownloadSeqButton: function(filename, header, sequence) {
 
-                return (<form ref={ filename } method="POST" action="/download_sequence" key={"hiddenNode_" + filename}>
-                            <input type="hidden" name="header" value={header} />
-                            <input type="hidden" name="sequence" value={sequence} />
-                            <input type="hidden" name="filename" value={filename} />
-                </form>);	        		
+                return (<div><form ref={ filename } method="POST" action="/download_sequence" key={"hiddenNode_" + filename}>
+                            	   <input type="hidden" name="header" value={header} />
+                            	   <input type="hidden" name="sequence" value={sequence} />
+                            	   <input type="hidden" name="filename" value={filename} />
+               		</form></div>);	        		
 
 	},
 
