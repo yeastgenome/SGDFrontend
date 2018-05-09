@@ -238,6 +238,7 @@ var SearchForm = React.createClass({
 		      var header = gene + " S288C " + sgdid4gene[gene];
 		      downloadTestRow.push(this._getDownloadSeqButton(filename, header, genomicSeq)); 
 		});		
+		rows.push(downloadTestRow);
 
 		// end of testing
 		
