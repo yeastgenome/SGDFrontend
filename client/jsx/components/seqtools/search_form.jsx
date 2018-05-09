@@ -235,9 +235,13 @@ const SearchForm = React.createClass({
 		      var genomicSeq = s['genomic']['S288C'];
 		      // var codingSeq = s['coding']['S288C'];
 		      // var proteinSeq = s['protein']['S288C'];
-		      // var filename = gene + '_S288C' + '.fsa';
-		      // var header = gene + " S288C " + sgdid4gene[gene];
-		      downloadTestRow.push(this._getDownloadSeqButton('S288C', gene, displayName4gene[gene], [genomicSeq])); 
+		      var filename = gene + '_S288C' + '.fsa';
+		      var header = gene + " S288C " + sgdid4gene[gene];
+		      var sequences = [{ 'sequence': genomicSeq,
+		      	  	      	 'header': header,
+				      	 'filename': filename }];
+
+		      downloadTestRow.push(this._getDownloadSeqButton('S288C', gene, displayName4gene[gene], sequences)); 
 		});		
 		rows.push(downloadTestRow);
 
