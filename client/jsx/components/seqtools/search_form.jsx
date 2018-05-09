@@ -240,13 +240,19 @@ var SearchForm = React.createClass({
 	},
 
 	_getToolsLinks: function(gene) {
+
+		var strainPulldown = this._getStrainPulldown(strains);
 		
-		// var strain = this.state.strain;
-		var strain = 'S288C';
-		var links = strain + ": " + gene; 
+		// return(<div>
+                //       <form method="POST" action='/blast-sgd' target="infowin">
+                //       <h3>Pick a strain: </h3>
+                //       { strainPulldown }
+		//       <p><input type='hidden' name='gene' value={gene}></input>
+                //       <p><input type="submit" ref='submit4blast' name='submit4blast' value="BLAST" className="button secondary"></input> | <<input type="submit" ref='submit4fungalblast' name='submit4fungalblast'' value="BLAST fungal Form" className="button secondary"></input></p>
+                //       </form>
+                // </div>);
 
-		return (<div> { links} </div>);
-
+		return strainPulldown;
 	},
 
 	_display_gene_table: function(headerRow, rows) {
