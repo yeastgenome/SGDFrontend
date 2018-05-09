@@ -6625,7 +6625,7 @@ class Phenotype(Base):
         if lst:
             data = []
             for item in lst:
-                if len(item) > 0:
+                if item
                     data.append(item)
             return data
         else: 
@@ -6634,7 +6634,8 @@ class Phenotype(Base):
 
     def annotations_to_dict(self):
         phenotype_annotations = DBSession.query(Phenotypeannotation).filter_by(phenotype_id=self.phenotype_id).all()
-        pheno_ids = self.clear_list_empty_values([p.annotation_id for p in phenotype_annotations])
+        temp = [p.annotation_id for p in phenotype_annotations]
+        pheno_ids = self.clear_list_empty_values(temp)
 
         conditions = DBSession.query(PhenotypeannotationCond).filter(PhenotypeannotationCond.annotation_id.in_(pheno_ids)).all()
         condition_names = self.clear_list_empty_values(list(set([c.condition_name for c in conditions])))
