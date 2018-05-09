@@ -239,7 +239,8 @@ const SearchForm = React.createClass({
 		      var header = gene + " S288C " + sgdid4gene[gene];
 		      var sequences = [{ 'sequence': genomicSeq,
 		      	  	      	 'header': header,
-				      	 'filename': filename }];
+				      	 'filename': filename,
+					 'key': header }];
 
 		      downloadTestRow.push(this._getDownloadSeqButton('S288C', gene, displayName4gene[gene], sequences)); 
 		});		
@@ -280,8 +281,10 @@ const SearchForm = React.createClass({
 	_getDownloadSeqButton: function(strain, format_name, display_name, sequences) {
 
                 return (<MultiSequenceDownload
-                        sequences={sequences} locusDisplayName={display_name}
-                        contigName={strain} locusFormatName={format_name} />);
+                        sequences={sequences} 
+			locusDisplayName={display_name}
+                        contigName={strain} 
+			locusFormatName={format_name} />);
 
 	},
 
