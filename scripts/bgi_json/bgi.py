@@ -304,4 +304,4 @@ if __name__ == '__main__':
     with open('./scripts/bgi_json/data_dump/log_time_pheno.txt', 'w+') as res_file_2:
         second_time_taken = "time taken: " + ("--- %s seconds ---" %
                                               (time.time() - second_start_time))
-        res_file_2.write(time_taken)
+        res_file_2.write(second_time_taken)
