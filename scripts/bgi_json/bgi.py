@@ -298,14 +298,14 @@ def get_phenotype_data():
 # entry point
 if __name__ == '__main__':
     print "--------------start computing data--------------"
-    '''start_time = time.time()
+    start_time = time.time()
     get_bgi_data()
     time_taken = "time taken: " + ("--- %s seconds ---" % (time.time() - start_time))
     print "------------------ bgi time taken: " + time_taken + " --------------------"
     with open('./scripts/bgi_json/data_dump/log_time_bgi.txt', 'w+') as res_file:
         time_taken = "time taken: " + ("--- %s seconds ---" %
                                        (time.time() - start_time))
-        res_file.write(time_taken)'''
+        res_file.write(time_taken)
     second_start_time = time.time()
     get_phenotype_data()
     second_time_taken = "time taken: " + ("--- %s seconds ---" %
