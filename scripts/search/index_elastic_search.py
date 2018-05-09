@@ -411,16 +411,16 @@ def index_phenotypes():
         phenotypes = DBSession.query(Phenotype).all()
         _result = IndexESHelper.get_pheno_annotations(phenotypes)
         print("Indexing " + str(len(_result)) + " phenotypes")
-        for item in _result:
+        for phenotype_item in _result:
             #import pdb; pdb.set_trace()
             bulk_data.append({
                 'index': {
                     '_index': INDEX_NAME,
                     '_type': DOC_TYPE,
-                    '_id': item["format_name"]
+                    '_id': phenotype_item["format_name"]
                 }
             })
-            bulk_data.append(item)
+            bulk_data.append(phenotype_item)
             if len(bulk_data) == 300:
                 es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
             bulk_data = []
