@@ -400,7 +400,6 @@ class IndexESHelper:
             _mutant_type = filter_object_list(
                     [itm["mutant_type"] for itm in annotations]
                     , True) if annotations else []
-
             _phenotype_loci = filter_object_list(
                     [itm["locus"]["display_name"] for itm in annotations]) if annotations else []
             _phenotypes = filter_object_list(
