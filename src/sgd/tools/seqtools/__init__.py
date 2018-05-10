@@ -1,6 +1,7 @@
 import json
 from pyramid.response import Response
 from urllib2 import Request, urlopen, URLError, HTTPError
+from src.sgd.frontend.yeastgenome import clean_cell
 
 seq_url = "https://www.yeastgenome.org/backend/locus/_REPLACE_NAME_HERE_/sequence_details"
 contig_url = "https://www.yeastgenome.org/backend/contig/_REPLACE_CONTIG_NAME_HERE_"
@@ -23,12 +24,14 @@ def do_seq_analysis(request):
         return Response(body=json.dumps(data), content_type='application/json')
 
     data = get_sequence_for_genes(p)
-    if p.get('format') is not None:
-        data = display_sequence_for_genes(p, data)
-    return Response(body=json.dumps(data), content_type='application/json')
-            
+    if p.get('format') is None:
+        return Response(body=json.dumps(data), content_type='application/json')
+    else:
+        response = display_sequence_for_genes(p, data)
+        return response
+
 def display_sequence_for_genes(p, data):
-    
+
     type = p.get('type')
     if type is None or type == 'genomic':
         type = 'genomic_dna'
@@ -38,28 +41,56 @@ def display_sequence_for_genes(p, data):
         type = 'protein'
 
     content = ""
+    filename = ""    
     for gene in data:
+        if filename != "":
+            filename += "_"
+        filename += gene
         seqtypeInfo = data[gene]
         for seqtype in seqtypeInfo:
             if seqtype != type:
                 continue
             strainInfo = seqtypeInfo[seqtype]
             for strain in strainInfo:
-                content +=  ">" + gene + " " + str(strain.get('display_name')) + " " + str(strain.get('sgdid')) + " " + str(strain.get('locus_type')) + " " + str(strain.get('headline'))
-                # if p.get('format') is not None and p['format'] == 'gcg':
-                #    content += format_gcg(strain.get('residue'))
-                # else:
-                #    content += format_fasta(strain.get('residue'))
-
-    return content
-
-def format_fasta(seq):
+                locusInfo = strainInfo[strain]
+                content +=  ">" + gene + " " + str(locusInfo.get('display_name')) + " " + str(locusInfo.get('sgdid')) + " " + str(locusInfo.get('locus_type')) + " " + str(locusInfo.get('headline')) + "\n"
+                if p.get('format') is not None and p['format'] == 'gcg':
+                    content += format_gcg(locusInfo.get('residue'))
+                else:
+                    content += format_fasta(locusInfo.get('residue'))
     
-    return seq
+    if p.get('format') is not None and p['format'] == 'gcg':
+        filename += ".gcg"
+    else:
+        filename += ".fsa"
 
-def format_gcg(seq):
+    return set_download_file(filename, content)
 
-    return seq
+
+def set_download_file(filename, content):
+    
+    response = Response(content_type='application/file')
+    if not response.charset:
+        response.charset = 'utf8'
+    headers = response.headers
+    response.text = content
+    headers['Content-Type'] = 'text/plain'
+    headers['Content-Disposition'] = str('attachment; filename=' + '"' + filename + '"')
+    headers['Content-Description'] = 'File Transfer'
+    return response
+
+
+def format_fasta(sequence):
+
+    return clean_cell("\n".join([sequence[i:i+60] for i in range(0, len(sequence), 60)]))
+
+
+def format_gcg(sequence):
+
+    return sequence
+
+    # return clean_cell("\n".join([sequence[i:i+60] for i in range(0, len(sequence), 60)]))
+
 
 def validate_names(p):
 
@@ -315,3 +346,4 @@ def _map_contig_name_for_chr(chr):
     if chr in chr_to_contig_chrom:
         return 'Chromosome_' + chr_to_contig_chrom[chr]
     return chr
+
