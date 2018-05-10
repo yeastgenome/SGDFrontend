@@ -400,16 +400,16 @@ class IndexESHelper:
             _mutant_type = filter_object_list(
                     [itm["mutant_type"] for itm in annotations]
                     , True) if annotations else []
-            
+
             _phenotype_loci = filter_object_list(
                     [itm["locus"]["display_name"] for itm in annotations]) if annotations else []
             _phenotypes = filter_object_list(
                     [itm["phenotype"]["display_name"] for itm in annotations]) if annotations else []
             for annotation in annotations:
-                
+
                 obj = {
                     "strain": _strains,
-                    "reference": _references,
+                    "references": _references,
                     "phenotype_loci": _phenotype_loci,
                     "name": item.display_name,
                     "href": item.obj_url,
@@ -423,7 +423,7 @@ class IndexESHelper:
                 _data.append(obj)
 
         return _data
-   
+
 
     @classmethod
     def get_combined_phenotypes(cls, phenos, phenos_annotation,
@@ -454,7 +454,7 @@ class IndexESHelper:
             chemicals = set([])
             mutant = set([])
             _annotations = phenos_annotation.get(item.phenotype_id)
-            
+
             if _annotations is not None:
                 _annotations_mod = filter(
                     lambda lst_item: type(lst_item) is not list, _annotations)
@@ -475,7 +475,7 @@ class IndexESHelper:
                             for cm in temp_cm:
                                 chemicals.add(cm)
             qualifier = None
-            if item.qualifier: 
+            if item.qualifier:
                 qualifier = item.qualifier.display_name
             obj = {
                 "name": item.display_name,
