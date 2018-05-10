@@ -302,6 +302,7 @@ mapping = {
 
                     }
                 },
+                
                 "chemical": {
                     "type": "string",
                     "fields": {

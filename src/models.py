@@ -17,7 +17,7 @@ import boto
 from boto.s3.key import Key
 import hashlib
 
-from src.curation_helpers import ban_from_cache, get_author_etc, link_gene_names, get_curator_session
+from src.curation_helpers import ban_from_cache, get_author_etc, link_gene_names, get_curator_session, clear_list_empty_values
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
@@ -3477,7 +3477,8 @@ class Locusdbentity(Dbentity):
         phenotype_annotations = DBSession.query(Phenotypeannotation).filter_by(dbentity_id=self.dbentity_id).all()
 
         conditions = DBSession.query(PhenotypeannotationCond).filter(PhenotypeannotationCond.annotation_id.in_([p.annotation_id for p in phenotype_annotations])).all()
-        condition_names = set([c.condition_name for c in conditions])
+        temp_lst = list(set([c.condition_name for c in conditions]))
+        condition_names = clear_list_empty_values(temp_lst)
 
         conditions_dict = {}
         for condition in conditions:
@@ -3485,8 +3486,10 @@ class Locusdbentity(Dbentity):
                 conditions_dict[condition.annotation_id].append(condition)
             else:
                 conditions_dict[condition.annotation_id] = [condition]
-
-        urls = DBSession.query(Chebi.display_name, Chebi.obj_url).filter(Chebi.display_name.in_(list(condition_names))).all()
+        if len(condition_names) > 0:
+            urls = DBSession.query(Chebi.display_name, Chebi.obj_url).filter(Chebi.display_name.in_(condition_names)).all()
+        else:
+            urls = []
         chebi_urls = {}
         for url in urls:
             chebi_urls[url[0]] = url[1]
@@ -6618,12 +6621,14 @@ class Phenotype(Base):
             obj["qualifier"] = "None"
 
         return obj
+        
 
     def annotations_to_dict(self):
         phenotype_annotations = DBSession.query(Phenotypeannotation).filter_by(phenotype_id=self.phenotype_id).all()
-
-        conditions = DBSession.query(PhenotypeannotationCond).filter(PhenotypeannotationCond.annotation_id.in_([p.annotation_id for p in phenotype_annotations])).all()
-        condition_names = set([c.condition_name for c in conditions])
+        temp = [p.annotation_id for p in phenotype_annotations]
+        pheno_ids = clear_list_empty_values(temp)
+        conditions = DBSession.query(PhenotypeannotationCond).filter(PhenotypeannotationCond.annotation_id.in_(pheno_ids)).all()
+        condition_names = clear_list_empty_values(list(set([c.condition_name for c in conditions])))
 
         conditions_dict = {}
         for condition in conditions:
@@ -6631,8 +6636,10 @@ class Phenotype(Base):
                 conditions_dict[condition.annotation_id].append(condition)
             else:
                 conditions_dict[condition.annotation_id] = [condition]
-
-        urls = DBSession.query(Chebi.display_name, Chebi.obj_url).filter(Chebi.display_name.in_(list(condition_names))).all()
+        if len(condition_names) > 0:
+            urls = DBSession.query(Chebi.display_name, Chebi.obj_url).filter(Chebi.display_name.in_(condition_names)).all()
+        else:
+            urls = []
         chebi_urls = {}
         for url in urls:
             chebi_urls[url[0]] = url[1]
