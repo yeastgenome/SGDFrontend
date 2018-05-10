@@ -22,11 +22,10 @@ const SearchForm = React.createClass({
 			isComplete: false,
 			isPending: false,
 			userError: null,
-			genome: 'S288C',
 			seqtype: 'DNA',
 			genes: null,
 			strains: null,
-			strain: null,
+			strain: 'S288C',
 			up: null,
 			down: null,
 			chr: null,
@@ -240,6 +239,13 @@ const SearchForm = React.createClass({
 		
 		var seqAnalRow = [<span style={{ fontSize: 20}}>Sequence Analysis</span>];
 		_.map(genes, gene => {
+		    var s = seq4gene[gene];
+		    _.map(strains, strain =>  {
+		    	  var seqID = gene + "_" + strain;
+			  var seq = s['genomic'][strain];
+                          window.localStorage.setItem(seqID, seq);
+	            });
+
 		    seqAnalRow.push(this._getStrainPulldown(strains));
 		    // var pulldown = this._getStrainPulldown(strains);
 		    // var toolsLinks = this._getToolsLinks(gene);
@@ -254,19 +260,29 @@ const SearchForm = React.createClass({
 	_getToolsLinks: function(gene) {
 
 		var strainPulldown = this._getStrainPulldown(strains);
-		
-		// return(<div>
-                //       <form method="POST" action='/blast-sgd' target="infowin">
-                //       <h3>Pick a strain: </h3>
-                //       { strainPulldown }
-		//       <p><input type='hidden' name='gene' value={gene}></input>
-                //       <p><input type="submit" ref='submit4blast' name='submit4blast' value="BLAST" className="button secondary"></input> | <<input type="submit" ref='submit4fungalblast' name='submit4fungalblast'' value="BLAST fungal Form" className="button secondary"></input></p>
-                //       </form>
-                // </div>);
+		var blastButton = this._getToolButton(gene, '/blast-sgd', 'BLAST');
+		var fungalBlastButton = this._getToolButton(gene, '/blast-fungal', 'Fungal BLAST');		
+		var primerButton = this._getToolButton(gene, '/primer3', 'Design Primers');
+		var restrictionButton = this._getToolButton(gene, '/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map');
 
-		return strainPulldown;
+		return(<div>
+                       { strainPulldown }		
+                </div>);
+
 	},
 
+	_getToolButton: function(name, program, button) {
+
+		var strain = this.state.strain;
+		var seqID = name + "_" + strain;
+		var seq = window.localStorage.getItem(seqID);
+
+		return (<form method="POST" action={ program }>
+                                <input type="hidden" name="seq" value={ seq }  />
+                                <input type="submit" value={ button } className="button secondary"></input>
+                        </form>);
+
+	},
 
 	_getDownloadSeqButton: function(genes, strains, type) {
 
