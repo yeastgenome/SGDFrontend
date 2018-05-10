@@ -418,9 +418,12 @@ def index_phenotypes():
         })
         bulk_data.append(phenotype_item)
 <<<<<<< HEAD
+<<<<<<< HEAD
         if len(bulk_data) == 50:
 =======
         import pdb;   pdb.set_trace()
+=======
+>>>>>>> es-bug fix
         if len(bulk_data) == 800:
 >>>>>>> .
             es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
