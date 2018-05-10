@@ -264,12 +264,14 @@ const SearchForm = React.createClass({
 		var fungalBlastButton = this._getToolButton(gene, '/blast-fungal', 'Fungal BLAST');		
 		var primerButton = this._getToolButton(gene, '/primer3', 'Design Primers');
 		var restrictionButton = this._getToolButton(gene, '/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map');
-		return(<div>
-                       { strainPulldown }
-		       { blastButton } 
-		       { fungalBlastButton }
-		       { primerButton } 
-		       { restrictionButton }
+		return(<div className="row">
+                            <div className="large-12 columns">	
+                       	    	 { strainPulldown }
+		       		 { blastButton } 
+		       		 { fungalBlastButton }
+		       		 { primerButton } 
+		       		 { restrictionButton }
+		            </div>
                 </div>);
 
 	},
