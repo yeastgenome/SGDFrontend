@@ -289,8 +289,8 @@ const SearchForm = React.createClass({
 
 	_getDownloadSeqButtonPair: function(genes, strains, type) {
 	               
-		var fastaButton = this.__getDownloadSeqButton(genes, strains, type, 'fasta');
-		var gcgButton = this.__getDownloadSeqButton(genes, strains, type, 'gcg');
+		var fastaButton = this._getDownloadSeqButton(genes, strains, type, 'fasta');
+		var gcgButton = this._getDownloadSeqButton(genes, strains, type, 'gcg');
 		
 		var _buttonSection = { headers: [['', '', '']],
 		    		      rows: [[fastaButton, ' | ', gcgButton]] }
