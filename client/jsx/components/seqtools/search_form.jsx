@@ -286,7 +286,7 @@ const SearchForm = React.createClass({
                                 <input type="hidden" name="type" value='genomic' />
                                 <input type="hidden" name="genes" value='YFL039C' />
 				<input type="hidden" name="genes" value='S288C' />
-				FASTA
+				<input type="submit" value="FASTA" className="button secondary"></input>
                         </form>);
 
 	},
