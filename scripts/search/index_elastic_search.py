@@ -392,7 +392,7 @@ def index_genes():
             'index': {
                 '_index': INDEX_NAME,
                 '_type': DOC_TYPE,
-                '_id': gene.sgdid
+                '_id': str(uuid.uuid4())
             }
         })
 
@@ -449,7 +449,7 @@ def index_observables():
             'index': {
                 '_index': INDEX_NAME,
                 '_type': DOC_TYPE,
-                '_id': 'observable_' + str(observable.apo_id)
+                '_id': str(uuid.uuid4())
             }
         })
 
@@ -495,7 +495,7 @@ def index_strains():
             index=INDEX_NAME,
             doc_type=DOC_TYPE,
             body=obj,
-            id="strain_" + str(strain.dbentity_id))
+            id=str(uuid.uuid4())
 
 
 def index_reserved_names():
@@ -524,7 +524,7 @@ def index_reserved_names():
             index=INDEX_NAME,
             doc_type=DOC_TYPE,
             body=obj,
-            id="reserved_" + reserved_name.format_name)
+            id=str(uuid.uuid4())
 
 
 def load_go_id_blacklist(list_filename):
@@ -586,7 +586,7 @@ def index_go_terms():
             'index': {
                 '_index': INDEX_NAME,
                 '_type': DOC_TYPE,
-                '_id': go.goid
+                '_id': str(uuid.uuid4())
             }
         })
 
@@ -659,7 +659,7 @@ def index_references():
             'index': {
                 '_index': INDEX_NAME,
                 '_type': DOC_TYPE,
-                '_id': reference.sgdid
+                '_id': str(uuid.uuid4())
             }
         })
         bulk_data.append(obj)
@@ -798,7 +798,7 @@ def index_downloads():
             'index': {
                 '_index': INDEX_NAME,
                 '_type': DOC_TYPE,
-                '_id': x.sgdid
+                '_id': str(uuid.uuid4())
             }
         })
 
@@ -826,8 +826,6 @@ def index_part_1():
         index_colleagues()
     with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
         index_chemicals()
-
-
 
 
 def index_part_2():
