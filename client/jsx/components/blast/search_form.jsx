@@ -1,6 +1,3 @@
-
-"use strict";
-
 var React = require("react");
 var _ = require("underscore");
 var $ = require("jquery");
@@ -32,6 +29,9 @@ var SearchForm = React.createClass({
 		     if (param['name']) {
                      	  this._getSeq(param['name'], param['type']);
 		     }
+		     else if (param['seq']) {
+		     	  this._setSeq(param['seq']); 
+		     }
                 }
 
 		// need to put the date in a config file..
@@ -48,6 +48,7 @@ var SearchForm = React.createClass({
 			sequence: null,
 			uploadedSeq: null,
 			uploadFile: null,
+			passedInSeq: null,
 			program: null,
 			database: null,
 			outFormat: null,
@@ -151,11 +152,16 @@ var SearchForm = React.createClass({
 			}
 
 		        var seqData = this.state.seqData;
+			var seq = this.state.passedInSeq;			
+			if (seq == "") {
+			    seq = seqData.seq;
+			} 
+			
                 	var configData = this.state.configData;
                 
 			var commentBoxNode = this._getCommentBoxNode();
                 	var submitNode = this._getSubmitNode();
-                	var seqBoxNode = this._getSeqBoxNode(seqData.seq);
+                	var seqBoxNode = this._getSeqBoxNode(seq);
                 	var blastProgramNode = this._getBlastProgramNode(configData);
                 	var databaseNode = this._getDatabaseNode(configData);
                 	var optionNode = this._getOptionsNode(configData);
@@ -434,8 +440,12 @@ var SearchForm = React.createClass({
                 this.setState({ text: e.target.value});
         },
 
+	_setSeq: function(seq) {
+	       this.setState({ passedInSeq: seq });
+	},
+
 	_getSeq: function(name, type) {
-        var jsonUrl = BLAST_URL + "?name=" + name;
+                var jsonUrl = BLAST_URL + "?name=" + name;
 		if (type == 'protein' || type == 'pep') {
 		   jsonUrl = jsonUrl + "&type=" + type;
 		}
