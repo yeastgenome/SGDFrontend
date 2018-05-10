@@ -248,7 +248,7 @@ const SearchForm = React.createClass({
 
 		    // seqAnalRow.push(this._getStrainPulldown(strains));
 
-		    seqAnalRow.push(this._getToolsLinks(gene));
+		    seqAnalRow.push(this._getToolsLinks(gene, strains));
 
 		});		
 		rows.push(seqAnalRow);
@@ -257,7 +257,7 @@ const SearchForm = React.createClass({
 		
 	},
 
-	_getToolsLinks: function(gene) {
+	_getToolsLinks: function(gene, strains) {
 
 		var strainPulldown = this._getStrainPulldown(strains);
 		var blastButton = this._getToolButton(gene, '/blast-sgd', 'BLAST');
