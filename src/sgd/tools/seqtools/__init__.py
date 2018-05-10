@@ -23,11 +23,10 @@ def do_seq_analysis(request):
         return Response(body=json.dumps(data), content_type='application/json')
 
     data = get_sequence_for_genes(p)
-    if p.get('format') is None:
-        return Response(body=json.dumps(data), content_type='application/json')
-    else:
-        display_sequence_for_genes(p, data)
-
+    if p.get('format') is not None:
+        data = display_sequence_for_genes(p, data)
+    return Response(body=json.dumps(data), content_type='application/json')
+            
 def display_sequence_for_genes(p, data):
     
     type = p.get('type')
@@ -38,6 +37,7 @@ def display_sequence_for_genes(p, data):
     else:
         type = 'protein'
 
+    content = ""
     for gene in data:
         seqtypeInfo = data[gene]
         for seqtype in seqtypeInfo:
@@ -45,12 +45,13 @@ def display_sequence_for_genes(p, data):
                 continue
             strainInfo = seqtypeInfo[seqtype]
             for strain in strainInfo:
-                print ">" + gene + " " + str(strain.get('display_name')) + " " + str(strain.get('sgdid')) + " " + str(strain.get('locus_type')) + " " + str(strain.get('headline'))
-                if p.get('format') is not None and p['format'] == 'gcg':
-                    print format_gcg(strain.get('residue'))
-                else:
-                    print format_fasta(strain.get('residue'))
+                content +=  ">" + gene + " " + str(strain.get('display_name')) + " " + str(strain.get('sgdid')) + " " + str(strain.get('locus_type')) + " " + str(strain.get('headline'))
+                # if p.get('format') is not None and p['format'] == 'gcg':
+                #    content += format_gcg(strain.get('residue'))
+                # else:
+                #    content += format_fasta(strain.get('residue'))
 
+    return content
 
 def format_fasta(seq):
     
