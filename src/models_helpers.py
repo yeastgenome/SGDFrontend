@@ -387,3 +387,13 @@ class ModelsHelper(object):
                 return files
 
         return None
+    
+    def clear_list_empty_values(self, lst):
+        if lst:
+            data = []
+            for item in lst:
+                if item:
+                    data.append(item)
+            return data
+        else: 
+            return lst
