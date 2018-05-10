@@ -53,13 +53,11 @@ def display_sequence_for_genes(p, data):
             strainInfo = seqtypeInfo[seqtype]
             for strain in strainInfo:
                 locusInfo = strainInfo[strain]
-                if content != "":
-                    content += "\n"
                 content +=  ">" + gene + " " + str(locusInfo.get('display_name')) + " " + str(locusInfo.get('sgdid')) + " " + str(locusInfo.get('locus_type')) + " " + str(locusInfo.get('headline')) + "\n"
                 if p.get('format') is not None and p['format'] == 'gcg':
-                    content += format_gcg(locusInfo.get('residue'))  
+                    content += format_gcg(locusInfo.get('residue')) + "\n"
                 else:
-                    content += format_fasta(locusInfo.get('residue'))  
+                    content += format_fasta(locusInfo.get('residue')) + "\n" 
     
     if p.get('format') is not None and p['format'] == 'gcg':
         filename += ".gcg"
