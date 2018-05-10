@@ -81,24 +81,7 @@ es_mapping = {
                         }
                     }
                 },
-                "phenotype_loci_list": {
-                    "type": "string",
-                    "fields": {
-                        "raw": {
-                            "type": "string",
-                            "index": "not_analyzed"
-                        }
-                    }
-                },
-                "pheno": {
-                    "type": "string",
-                    "fields": {
-                        "raw": {
-                            "type": "string",
-                            "index": "not_analyzed"
-                        }
-                    }
-                },
+                
                 "keys": {
                     "type": "string"
                 },
