@@ -76,7 +76,7 @@ class IndexESHelper:
         _abstracts = DBSession.query(Referencedbentity, Referencedocument).join(
             Referencedocument, Referencedbentity.dbentity_id ==
             Referencedocument.reference_id).filter(
-                Referencedocument.document_type == 'Abstract').all()
+                Referencedocument.document_type == "Abstract").all()
         for item in _abstracts:
             if item[0].dbentity_id not in obj:
                 obj[item[0].dbentity_id] = []
@@ -93,7 +93,7 @@ class IndexESHelper:
         _aliases = DBSession.query(Referencedbentity, ReferenceAlias).join(
             ReferenceAlias, Referencedbentity.dbentity_id ==
             ReferenceAlias.reference_id).filter(
-                ReferenceAlias.alias_type == 'Secondary SGDID').all()
+                ReferenceAlias.alias_type == "Secondary SGDID").all()
         for item in _aliases:
             if item[0].dbentity_id not in obj:
                 obj[item[0].dbentity_id] = []
@@ -319,12 +319,12 @@ class IndexESHelper:
                 for field in temp:
                     if field:
                         description_fields.append(field)
-                description = ', '.join(description_fields)
+                description = ", ".join(description_fields)
             else:
-                description = ''
-            position = 'Lab Member'
+                description = ""
+            position = "Lab Member"
             if item.is_pi == 1:
-                position = 'Head of Lab'
+                position = "Head of Lab"
             obj_temp = {
                 "name": item.last_name + ", " + item.first_name,
                 "category": "colleague",
@@ -400,7 +400,6 @@ class IndexESHelper:
             _mutant_type = filter_object_list(
                     [itm["mutant_type"] for itm in annotations]
                     , True) if annotations else []
-
             _phenotype_loci = filter_object_list(
                     [itm["locus"]["display_name"] for itm in annotations]) if annotations else []
             _phenotypes = filter_object_list(
@@ -587,7 +586,7 @@ class IndexESHelper:
             units = ["", "K", "M", "G", "T", "P", "E", "Z"]
             for item in units:
                 if abs(numBytes) < 1024.0:
-                    return '%3.1f%s%s' % (numBytes, item, suffix)
+                    return "%3.1f%s%s" % (numBytes, item, suffix)
                 numBytes /= 1024.0
             return "%.1f%s%s" % (numBytes, "Y", suffix)
         return None
@@ -598,10 +597,10 @@ class IndexESHelper:
         with open("./scripts/search/not_mapped.json", "r") as json_data:
             _data = json.load(json_data)
             for item in _data:
-                if len(item['FEATURE_NAME']) > 0:
-                    if item['FEATURE_NAME'] not in obj:
-                        obj[item['FEATURE_NAME']] = []
-                    obj[item['FEATURE_NAME']].append(item)
+                if len(item["FEATURE_NAME"]) > 0:
+                    if item["FEATURE_NAME"] not in obj:
+                        obj[item["FEATURE_NAME"]] = []
+                    obj[item["FEATURE_NAME"]].append(item)
         if len(obj) > 0:
             return obj
         else:
