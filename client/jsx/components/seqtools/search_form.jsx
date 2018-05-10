@@ -243,7 +243,7 @@ const SearchForm = React.createClass({
 					 'key': header,
 					 'name': gene }];
 
-		      downloadTestRow.push(this._getDownloadSeqButton()); 
+		      downloadTestRow.push(this._getDownloadSeqButton(gene, strains, 'genomic')); 
 		});		
 		rows.push(downloadTestRow);
 
@@ -279,13 +279,13 @@ const SearchForm = React.createClass({
 	},
 
 
-	_getDownloadSeqButton: function() {
+	_getDownloadSeqButton: function(genes, strains, type) {
 
 	        return (<form ref='test' method="POST" action="/run_seqtools" key={"hiddenNode1"}>
                                 <input type="hidden" name="format" value='fasta' />
-                                <input type="hidden" name="type" value='genomic' />
-                                <input type="hidden" name="genes" value='YFL039C' />
-				<input type="hidden" name="strains" value='S288C' />
+                                <input type="hidden" name="type" value={ type } />
+                                <input type="hidden" name="genes" value={ genes } />
+				<input type="hidden" name="strains" value={ strains } />
 				<input type="submit" value="FASTA" className="button secondary"></input>
                         </form>);
 
