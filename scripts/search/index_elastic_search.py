@@ -417,7 +417,7 @@ def index_phenotypes():
             }
         })
         bulk_data.append(phenotype_item)
-        if len(bulk_data) == 800:
+        if len(bulk_data) == 50:
             es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
             bulk_data = []
     if len(bulk_data) > 0:
