@@ -152,19 +152,11 @@ var SearchForm = React.createClass({
 			}
 
 		        var seqData = this.state.seqData;
-			var seq = this.state.passedInSeq;			
-
-			alert("passedInSeq="+seq);
-
-			if (seq == "") {
-			    seq = seqData.seq;
-			} 
-			
                 	var configData = this.state.configData;
                 
 			var commentBoxNode = this._getCommentBoxNode();
                 	var submitNode = this._getSubmitNode();
-                	var seqBoxNode = this._getSeqBoxNode(seq);
+                	var seqBoxNode = this._getSeqBoxNode(seqData.seq);
                 	var blastProgramNode = this._getBlastProgramNode(configData);
                 	var databaseNode = this._getDatabaseNode(configData);
                 	var optionNode = this._getOptionsNode(configData);
@@ -444,7 +436,7 @@ var SearchForm = React.createClass({
         },
 
 	_setSeq: function(seq) {
-	       this.setState({ passedInSeq: seq });
+	       this.setState({ seqData: { 'seq': seq } });
 	},
 
 	_getSeq: function(name, type) {
