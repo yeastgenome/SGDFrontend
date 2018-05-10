@@ -246,10 +246,10 @@ const SearchForm = React.createClass({
                           window.localStorage.setItem(seqID, seq);
 	            });
 
-		    seqAnalRow.push(this._getStrainPulldown(strains));
-		    // var pulldown = this._getStrainPulldown(strains);
-		    // var toolsLinks = this._getToolsLinks(gene);
-		    // seqAnalRow.push(<div> { pulldown } </div>);
+		    // seqAnalRow.push(this._getStrainPulldown(strains));
+
+		    seqAnalRow.push(this._getToolsLinks(gene));
+
 		});		
 		rows.push(seqAnalRow);
 
@@ -264,7 +264,6 @@ const SearchForm = React.createClass({
 		var fungalBlastButton = this._getToolButton(gene, '/blast-fungal', 'Fungal BLAST');		
 		var primerButton = this._getToolButton(gene, '/primer3', 'Design Primers');
 		var restrictionButton = this._getToolButton(gene, '/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map');
-
 		return(<div>
                        { strainPulldown }
 		       <br>{ blastButton } | { fungalBlastButton } </br>
