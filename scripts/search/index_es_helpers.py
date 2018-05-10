@@ -8,21 +8,29 @@ import json
 from multiprocess import Pool
 import pdb
 
-engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
+engine = create_engine(os.environ["NEX2_URI"], pool_recycle=3600)
 DBSession.configure(bind=engine)
 Base.metadata.bind = engine
 
-INDEX_NAME = os.environ.get('ES_INDEX_NAME', 'searchable_items_aws')
-DOC_TYPE = 'searchable_item'
-ES_URI = os.environ['WRITE_ES_URI']
+INDEX_NAME = os.environ.get("ES_INDEX_NAME", "searchable_items_aws")
+DOC_TYPE = "searchable_item"
+ES_URI = os.environ["WRITE_ES_URI"]
 es = Elasticsearch(ES_URI, retry_on_timeout=True)
 
 
-def filter_object_list(items):
+def filter_object_list(items, flag=False):
     data = []
-    for item in items:
-        if item not in data:
-            data.append(item)
+    if flag:
+        for item in items:
+            if item:
+                if item not in data:
+                    if item != "null":
+                        data.append(item)
+    else:
+        for item in items:
+            if item:
+                if item not in data:
+                    data.append(item)
     return data
 
 
@@ -30,9 +38,9 @@ def get_phenotype_annotations_chemicals(properties):
     data = []
     if len(properties) > 0:
         for item in properties:
-            if item['class_type'] == 'CHEMICAL':
-                if item['bioitem']:
-                    data.append(item['bioitem']['display_name'])
+            if item["class_type"] == "CHEMICAL":
+                if item["bioitem"]:
+                    data.append(item["bioitem"]["display_name"])
         return data
     else:
         return data
@@ -68,7 +76,7 @@ class IndexESHelper:
         _abstracts = DBSession.query(Referencedbentity, Referencedocument).join(
             Referencedocument, Referencedbentity.dbentity_id ==
             Referencedocument.reference_id).filter(
-                Referencedocument.document_type == 'Abstract').all()
+                Referencedocument.document_type == "Abstract").all()
         for item in _abstracts:
             if item[0].dbentity_id not in obj:
                 obj[item[0].dbentity_id] = []
@@ -85,7 +93,7 @@ class IndexESHelper:
         _aliases = DBSession.query(Referencedbentity, ReferenceAlias).join(
             ReferenceAlias, Referencedbentity.dbentity_id ==
             ReferenceAlias.reference_id).filter(
-                ReferenceAlias.alias_type == 'Secondary SGDID').all()
+                ReferenceAlias.alias_type == "Secondary SGDID").all()
         for item in _aliases:
             if item[0].dbentity_id not in obj:
                 obj[item[0].dbentity_id] = []
@@ -200,7 +208,7 @@ class IndexESHelper:
             Locusdbentity, Goannotation).join(
                 Goannotation,
                 Locusdbentity.dbentity_id == Goannotation.dbentity_id).filter(
-                    Goannotation.go_qualifier != 'NOT').all()
+                    Goannotation.go_qualifier != "NOT").all()
         for item in _locus_go_annotation:
             if item[0].dbentity_id not in obj:
                 obj[item[0].dbentity_id] = []
@@ -311,24 +319,24 @@ class IndexESHelper:
                 for field in temp:
                     if field:
                         description_fields.append(field)
-                description = ', '.join(description_fields)
+                description = ", ".join(description_fields)
             else:
-                description = ''
-            position = 'Lab Member'
+                description = ""
+            position = "Lab Member"
             if item.is_pi == 1:
-                position = 'Head of Lab'
+                position = "Head of Lab"
             obj_temp = {
-                'name': item.last_name + ', ' + item.first_name,
-                'category': 'colleague',
-                'href': '/colleague/' + item.format_name,
-                'description': description,
-                'first_name': item.first_name,
-                'last_name': item.last_name,
-                'institution': item.institution,
-                'position': position,
-                'country': item.country,
-                'state': item.state,
-                'format_name': item.format_name
+                "name": item.last_name + ", " + item.first_name,
+                "category": "colleague",
+                "href": "/colleague/" + item.format_name,
+                "description": description,
+                "first_name": item.first_name,
+                "last_name": item.last_name,
+                "institution": item.institution,
+                "position": position,
+                "country": item.country,
+                "state": item.state,
+                "format_name": item.format_name
             }
 
             loco = result.get(item.colleague_id)
@@ -342,7 +350,7 @@ class IndexESHelper:
                         lambda x: x.systematic_name if x.systematic_name else None,
                         loco))
                 locus = set(locus_1 + locus_2)
-            obj_temp['colleague_loci'] = sorted(
+            obj_temp["colleague_loci"] = sorted(
                 list(locus)) if len(locus) > 0 else []
             _dict_obj[item.colleague_id] = obj_temp
         return _dict_obj
@@ -383,34 +391,34 @@ class IndexESHelper:
         for item in phenos_data:
             annotations = item.annotations_to_dict()
             _references = filter_object_list(
-                    [itm['reference']['display_name'] for itm in annotations]) if annotations else []
+                    [itm["reference"]["display_name"] for itm in annotations]) if annotations else []
             _strains = filter_object_list(
-                    [itm['strain']['display_name'] for itm in annotations]) if annotations else []
-            _properties = [itm['properties'] for itm in annotations]
+                    [itm["strain"]["display_name"] for itm in annotations]) if annotations else []
+            _properties = [itm["properties"] for itm in annotations]
             _chemical = get_phenotype_annotations_chemicals(
                     flattern_arr(_properties))
             _mutant_type = filter_object_list(
-                    [itm['mutant_type'] for itm in annotations]
-                    ) if annotations else []
+                    [itm["mutant_type"] for itm in annotations]
+                    , True) if annotations else []
+            
             _phenotype_loci = filter_object_list(
-                    [itm['locus']['display_name'] for itm in annotations]) if annotations else []
+                    [itm["locus"]["display_name"] for itm in annotations]) if annotations else []
             _phenotypes = filter_object_list(
-                    [itm['phenotype']['display_name'] for itm in annotations]) if annotations else []
+                    [itm["phenotype"]["display_name"] for itm in annotations]) if annotations else []
             for annotation in annotations:
                 
                 obj = {
-                    'strain': _strains,
-                    'reference': _references,
-                    'phenotype_loci': _phenotype_loci,
-                    'name': item.display_name,
-                    'href': item.obj_url,
-                    'chemical': _chemical,
-                    'description': item.description,
-                    'phenotype': _phenotypes,
-                    'category': 'phenotype',
-                    'keys': [],
-                    'mutant_type': _mutant_type,
-                    'format_name': item.format_name
+                    "strain": _strains,
+                    "reference": _references,
+                    "phenotype_loci": _phenotype_loci,
+                    "name": item.display_name,
+                    "href": item.obj_url,
+                    "chemical": _chemical,
+                    "description": item.description,
+                    "category": "phenotype",
+                    "keys": [],
+                    "mutant_type": _mutant_type,
+                    "format_name": item.format_name
                 }
                 _data.append(obj)
 
@@ -470,19 +478,19 @@ class IndexESHelper:
             if item.qualifier: 
                 qualifier = item.qualifier.display_name
             obj = {
-                'name': item.display_name,
-                'href': item.obj_url,
-                'description': item.description,
-                'observable': item.observable.display_name,
-                'qualifier': qualifier,
-                'references': list(references),
-                'phenotype_loci': list(loci),
-                'number_annotations': len(list(loci)),
-                'chemical': list(chemicals),
-                'mutant_type': list(mutant),
-                'category': 'phenotype',
-                'keys': [],
-                'format_name': item.format_name
+                "name": item.display_name,
+                "href": item.obj_url,
+                "description": item.description,
+                "observable": item.observable.display_name,
+                "qualifier": qualifier,
+                "references": list(references),
+                "phenotype_loci": list(loci),
+                "number_annotations": len(list(loci)),
+                "chemical": list(chemicals),
+                "mutant_type": list(mutant),
+                "category": "phenotype",
+                "keys": [],
+                "format_name": item.format_name
             }
             _dict_obj[item.phenotype_id] = obj
 
@@ -573,29 +581,29 @@ class IndexESHelper:
         return obj
 
     @classmethod
-    def convertBytes(cls, numBytes, suffix='B'):
+    def convertBytes(cls, numBytes, suffix="B"):
         '''
         Convert bytes to human readable unit
         '''
         if numBytes is not None or numBytes > 0:
-            units = ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z']
+            units = ["", "K", "M", "G", "T", "P", "E", "Z"]
             for item in units:
                 if abs(numBytes) < 1024.0:
-                    return '%3.1f%s%s' % (numBytes, item, suffix)
+                    return "%3.1f%s%s" % (numBytes, item, suffix)
                 numBytes /= 1024.0
-            return '%.1f%s%s' % (numBytes, 'Y', suffix)
+            return "%.1f%s%s" % (numBytes, "Y", suffix)
         return None
 
     @classmethod
     def get_not_mapped_genes(cls):
         obj = {}
-        with open('./scripts/search/not_mapped.json', 'r') as json_data:
+        with open("./scripts/search/not_mapped.json", "r") as json_data:
             _data = json.load(json_data)
             for item in _data:
-                if len(item['FEATURE_NAME']) > 0:
-                    if item['FEATURE_NAME'] not in obj:
-                        obj[item['FEATURE_NAME']] = []
-                    obj[item['FEATURE_NAME']].append(item)
+                if len(item["FEATURE_NAME"]) > 0:
+                    if item["FEATURE_NAME"] not in obj:
+                        obj[item["FEATURE_NAME"]] = []
+                    obj[item["FEATURE_NAME"]].append(item)
         if len(obj) > 0:
             return obj
         else:
