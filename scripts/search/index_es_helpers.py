@@ -32,7 +32,7 @@ def get_phenotype_annotations_chemicals(properties):
         for item in properties:
             if item['class_type'] == 'CHEMICAL':
                 if item['bioitem']:
-                    data.append(item['bioitem'])
+                    data.append(item['bioitem']['display_name'])
         return data
     else:
         return data
@@ -382,26 +382,31 @@ class IndexESHelper:
         _data = []
         for item in phenos_data:
             annotations = item.annotations_to_dict()
+            _references = filter_object_list(
+                    [itm['reference']['display_name'] for itm in annotations]) if annotations else []
+            _strains = filter_object_list(
+                    [itm['strain']['display_name'] for itm in annotations]) if annotations else []
             _properties = [itm['properties'] for itm in annotations]
             _chemical = get_phenotype_annotations_chemicals(
                     flattern_arr(_properties))
             _mutant_type = filter_object_list(
-                    [itm['mutant_type'] for itm in annotations])
+                    [itm['mutant_type'] for itm in annotations]
+                    ) if annotations else []
             _phenotype_loci = filter_object_list(
-                    [itm['locus']
-                     for itm in annotations]) if annotations else []
+                    [itm['locus']['display_name'] for itm in annotations]) if annotations else []
+            _phenotypes = filter_object_list(
+                    [itm['phenotype']['display_name'] for itm in annotations]) if annotations else []
             for annotation in annotations:
+                
                 obj = {
-                    'strain': annotation['strain'],
-                    'properties': annotation['properties'],
-                    'reference': annotation['reference'],
-                    'pheno': annotation['phenotype'],
-                    'phenotype_loci': annotation['locus'],
-                    'phenotype_loci_list': _phenotype_loci,
+                    'strain': _strains,
+                    'reference': _references,
+                    'phenotype_loci': _phenotype_loci,
                     'name': item.display_name,
                     'href': item.obj_url,
                     'chemical': _chemical,
                     'description': item.description,
+                    'phenotype': _phenotypes,
                     'category': 'phenotype',
                     'keys': [],
                     'mutant_type': _mutant_type,
@@ -410,64 +415,7 @@ class IndexESHelper:
                 _data.append(obj)
 
         return _data
-    @classmethod
-    def get_phenotypes(cls, phenotype_data):
-        if phenotype_data:
-            _dict_obj = dict.fromkeys([p.phenotype_id for p in phenotype_data])
-            for phenotype in phenotype_data:
-                annotations = phenotype.annotations_to_dict()
-                references = filter_object_list(
-                    [itm['reference'] for itm in annotations]
-                    ) if annotations else []
-                phenotype_loci = filter_object_list(
-                    [itm['locus']
-                     for itm in annotations]) if annotations else []
-                experiments = filter_object_list(
-                    [itm['experiment'] for itm in annotations])
-                observable = {
-                    'display_name': phenotype.observable.display_name,
-                    'link': phenotype.observable.obj_url,
-                    'description': phenotype.observable.description
-                    } if phenotype.observable else None
-                qualifier = {
-                    'display_name': phenotype.qualifier.display_name,
-                    'link': phenotype.qualifier.obj_url,
-                    'description': phenotype.qualifier.description
-                    } if phenotype.qualifier else None
-                href = phenotype.obj_url
-                properties = [itm['properties'] for itm in annotations]
-                mutant_type = filter_object_list(
-                    [itm['mutant_type'] for itm in annotations]
-                    ) if annotations else []
-                chemical = get_phenotype_annotations_chemicals(
-                    flattern_arr(properties))
-                obj = {
-                    'phenotype': {
-                        'display_name': phenotype.display_name,
-                        'link': phenotype.obj_url,
-                        'description': phenotype.description
-                    },
-                    'references': references,
-                    'phenotype_loci': phenotype_loci,
-                    'experiments': experiments,
-                    'number_annotations': len(phenotype_loci),
-                    'observable': observable,
-                    'qualifier': qualifier,
-                    'href': href,
-                    'name': phenotype.display_name,
-                    'properties': properties,
-                    'mutant_type': mutant_type,
-                    'chemical': chemical,
-                    'keys': [],
-                    'format_name': phenotype.format_name,
-                    'category': 'phenotype'
-                }
-                _dict_obj[phenotype.phenotype_id] = obj
-            #
-            return _dict_obj
-
-        else:
-            return None
+   
 
     @classmethod
     def get_combined_phenotypes(cls, phenos, phenos_annotation,
