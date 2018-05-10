@@ -72,7 +72,7 @@ def set_download_file(filename, content):
     response = Response(content_type='application/file')
     headers = response.headers
     response.text = content
-    headers['Content-Type'] = 'text/plain; charset=utf-8'
+    headers['Content-Type'] = 'text/plain;charset=utf-8'
     headers['Content-Disposition'] = str('attachment; filename=' + '"' + filename + '"')
     headers['Content-Description'] = 'File Transfer'
     return response

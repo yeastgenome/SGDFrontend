@@ -283,7 +283,7 @@ const SearchForm = React.createClass({
 
 
 	        console.log("genes="+genes+", strains="+strains+ ", type=" + type);
-	        return (<form ref='test' method="POST" action="/run_seqtools" key={"hiddenNode1"}>
+	        return (<form ref={ genes } method="POST" action="/run_seqtools" key={"hiddenNode_" + genes}>
                                 <input type="hidden" name="format" value='fasta' />
                                 <input type="hidden" name="type" value={ type } />
                                 <input type="hidden" name="genes" value={ genes } />
