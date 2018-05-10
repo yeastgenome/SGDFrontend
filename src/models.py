@@ -18,6 +18,7 @@ from boto.s3.key import Key
 import hashlib
 
 from src.curation_helpers import ban_from_cache, get_author_etc, link_gene_names, get_curator_session
+from .models_helpers import ModelsHelper
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
@@ -3477,7 +3478,8 @@ class Locusdbentity(Dbentity):
         phenotype_annotations = DBSession.query(Phenotypeannotation).filter_by(dbentity_id=self.dbentity_id).all()
 
         conditions = DBSession.query(PhenotypeannotationCond).filter(PhenotypeannotationCond.annotation_id.in_([p.annotation_id for p in phenotype_annotations])).all()
-        condition_names = self.clear_list_empty_values(list(set([c.condition_name for c in conditions])))
+        temp_lst = list(set([c.condition_name for c in conditions]))
+        condition_names = ModelsHelper.clear_list_empty_values(temp_lst)
 
         conditions_dict = {}
         for condition in conditions:
@@ -6620,24 +6622,14 @@ class Phenotype(Base):
             obj["qualifier"] = "None"
 
         return obj
-    
-    def clear_list_empty_values(self, lst):
-        if lst:
-            data = []
-            for item in lst:
-                if item:
-                    data.append(item)
-            return data
-        else: 
-            return lst
         
 
     def annotations_to_dict(self):
         phenotype_annotations = DBSession.query(Phenotypeannotation).filter_by(phenotype_id=self.phenotype_id).all()
         temp = [p.annotation_id for p in phenotype_annotations]
-        pheno_ids = self.clear_list_empty_values(temp)
+        pheno_ids = ModelsHelper.clear_list_empty_values(temp)
         conditions = DBSession.query(PhenotypeannotationCond).filter(PhenotypeannotationCond.annotation_id.in_(pheno_ids)).all()
-        condition_names = self.clear_list_empty_values(list(set([c.condition_name for c in conditions])))
+        condition_names = ModelsHelper.clear_list_empty_values(list(set([c.condition_name for c in conditions])))
 
         conditions_dict = {}
         for condition in conditions:
