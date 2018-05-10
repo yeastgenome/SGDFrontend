@@ -6636,7 +6636,6 @@ class Phenotype(Base):
         phenotype_annotations = DBSession.query(Phenotypeannotation).filter_by(phenotype_id=self.phenotype_id).all()
         temp = [p.annotation_id for p in phenotype_annotations]
         pheno_ids = self.clear_list_empty_values(temp)
-
         conditions = DBSession.query(PhenotypeannotationCond).filter(PhenotypeannotationCond.annotation_id.in_(pheno_ids)).all()
         condition_names = self.clear_list_empty_values(list(set([c.condition_name for c in conditions])))
 
