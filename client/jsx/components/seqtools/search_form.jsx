@@ -243,9 +243,9 @@ const SearchForm = React.createClass({
 					 'key': header,
 					 'name': gene }];
 
-		      downloadTestRow.push(this._getDownloadSeqButton('S288C', gene, displayName4gene[gene], sequences)); 
+		      downloadTestRow.push(this._getDownloadSeqButton()); 
 		});		
-		// rows.push(downloadTestRow);
+		rows.push(downloadTestRow);
 
 		// end of testing
 		
@@ -279,15 +279,15 @@ const SearchForm = React.createClass({
 	},
 
 
-	_getDownloadSeqButton: function(strain, format_name, display_name, sequences) {
+	_getDownloadSeqButton: function() {
 
-                // return (<MultiSequenceDownload
-                //        sequences={sequences} 
-		//	locusDisplayName={display_name}
-                //        contigName={strain} 
-		//	locusFormatName={format_name} />);
-
-		return <div>SEQUENCE DOWNLOAD TEST</div>;
+	        return (<form ref={test} method="POST" action="/run_seqtools" key={"hiddenNode1"}>
+                                <input type="hidden" name="format" value='fasta' />
+                                <input type="hidden" name="type" value='genomic' />
+                                <input type="hidden" name="genes" value='YFL039C' />
+				<input type="hidden" name="genes" value='S288C' />
+				FASTA
+                        </form>);
 
 	},
 
