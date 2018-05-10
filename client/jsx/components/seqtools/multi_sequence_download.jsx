@@ -32,8 +32,8 @@ var MultiSequenceDownload = React.createClass({
 
 		var buttonNodes = _.map(this.props.sequences, (s, i) => {
 			var _onClick = e => {
-				// e.preventDefault();
-				// e.nativeEvent.stopImmediatePropagation();
+				e.preventDefault();
+				e.nativeEvent.stopImmediatePropagation();
 				this._handleClick(s.key);	
 			};
 			return <li key={"seqButton" + i}><a onClick={_onClick}>{s.name}</a></li>;

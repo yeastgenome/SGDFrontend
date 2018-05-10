@@ -211,12 +211,12 @@ const SearchForm = React.createClass({
 		var up = window.localStorage.getItem("up");
 		var down = window.localStorage.getItem("down");
 		_.map(genes, gene => {
-		    var genomicFastaUrl = "/getSeq?format=fasta&type=genomic&gene=" + gene + "&strains=" + strains + "&rev=" + rev + "&up=" + up + "&down=" + down;
-		    var genomicGcgUrl = "/getSeq?format=gcg&type=genomic&gene=" + gene + "&strains=" + strains + "&rev=" + rev + "&up=" + up + "&down=" + down;
-		    var codingFastaUrl = "/getSeq?format=fasta&type=coding&gene=" + gene + "&strains=" + strains;
-                    var	codingGcgUrl = "/getSeq?format=gcg&type=coding&gene=" + gene + "&strains=" + strains;
-		    var proteinFastaUrl = "/getSeq?format=fasta&type=protein&gene=" + gene + "&strains=" + strains;
-                    var	proteinGcgUrl = "/getSeq?format=gcg&type=protein&gene=" + gene + "&strains=" + strains;
+		    var genomicFastaUrl = SeqtoolsUrl + "?format=fasta&type=genomic&gene=" + gene + "&strains=" + strains + "&rev=" + rev + "&up=" + up + "&down=" + down;
+		    var genomicGcgUrl = SeqtoolsUrl + "?format=gcg&type=genomic&gene=" + gene + "&strains=" + strains + "&rev=" + rev + "&up=" + up + "&down=" + down;
+		    var codingFastaUrl = SeqtoolsUrl + "?format=fasta&type=coding&gene=" + gene + "&strains=" + strains;
+                    var	codingGcgUrl = SeqtoolsUrl + "?format=gcg&type=coding&gene=" + gene + "&strains=" + strains;
+		    var proteinFastaUrl = SeqtoolsUrl + "?format=fasta&type=protein&gene=" + gene + "&strains=" + strains;
+                    var	proteinGcgUrl = SeqtoolsUrl + "?format=gcg&type=protein&gene=" + gene + "&strains=" + strains;
 		    if (hasCoding > 0) {
 		        seqDLRow.push(<span style={{ fontSize: 20}}><br></br><br><a href={ genomicFastaUrl } target='infowin2'>Fasta</a> | <a href={ genomicGcgUrl } target='infowin2'>GCG</a></br><br><a href={ codingFastaUrl } target='infowin2'>Fasta</a> | <a href={ codingGcgUrl } target='infowin2'>GCG</a></br><br><a href={ proteinFastaUrl } target='infowin2'>Fasta</a> | <a href={ proteinGcgUrl } target='infowin2'>GCG</a></br></span>);
 		    }
@@ -245,7 +245,7 @@ const SearchForm = React.createClass({
 
 		      downloadTestRow.push(this._getDownloadSeqButton('S288C', gene, displayName4gene[gene], sequences)); 
 		});		
-		rows.push(downloadTestRow);
+		// rows.push(downloadTestRow);
 
 		// end of testing
 		
@@ -281,11 +281,13 @@ const SearchForm = React.createClass({
 
 	_getDownloadSeqButton: function(strain, format_name, display_name, sequences) {
 
-                return (<MultiSequenceDownload
-                        sequences={sequences} 
-			locusDisplayName={display_name}
-                        contigName={strain} 
-			locusFormatName={format_name} />);
+                // return (<MultiSequenceDownload
+                //        sequences={sequences} 
+		//	locusDisplayName={display_name}
+                //        contigName={strain} 
+		//	locusFormatName={format_name} />);
+
+		return <div>SEQUENCE DOWNLOAD TEST</div>;
 
 	},
 
