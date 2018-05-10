@@ -250,6 +250,12 @@ def get_phenotype_data():
                 "pubMedId": "",
                 "dateAssigned": ""
             }
+            pub_id= ''
+            if item.reference.pmid:
+                pub_id = "PMID:" + str(item.reference.pmid)
+            else:
+                pub_id = "SGD:" + str(item.dbentity.sgdid)
+
             pString = ''
             if item.phenotype.qualifier:
                 pString = item.phenotype.qualifier.display_name
@@ -273,7 +279,7 @@ def get_phenotype_data():
                     })
             obj["objectId"] = "SGD:" + str(item.dbentity.sgdid)
             obj["phenotypeStatement"] = pString
-            obj["pubMedId"] = "PMID:" + str(item.reference.pmid)
+            obj["pubMedId"] = pub_id
             obj["dateAssigned"] = item.date_created.strftime(
                 "%Y-%m-%dT%H:%m:%S-00:00")
             result.append(obj)
