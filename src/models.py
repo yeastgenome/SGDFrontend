@@ -3477,7 +3477,7 @@ class Locusdbentity(Dbentity):
         phenotype_annotations = DBSession.query(Phenotypeannotation).filter_by(dbentity_id=self.dbentity_id).all()
 
         conditions = DBSession.query(PhenotypeannotationCond).filter(PhenotypeannotationCond.annotation_id.in_([p.annotation_id for p in phenotype_annotations])).all()
-        condition_names = clear_list_empty_values(list(set([c.condition_name for c in conditions])))
+        condition_names = self.clear_list_empty_values(list(set([c.condition_name for c in conditions])))
 
         conditions_dict = {}
         for condition in conditions:
