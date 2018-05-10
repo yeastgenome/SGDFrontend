@@ -252,7 +252,7 @@ def get_phenotype_data():
             if item.reference.pmid:
                 obj["pubMedId"] = "PMID:" + str(item.reference.pmid)
             else:
-                obj["pubModId"] = "SGD:" + str(item.dbentity.sgdid)
+                obj["pubModId"] = "SGD:" + str(item.reference.sgdid)
             if item.phenotype.qualifier:
                 pString = item.phenotype.qualifier.display_name
                 obj["phenotypeTermIdentifiers"].append({
