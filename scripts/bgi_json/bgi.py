@@ -249,7 +249,6 @@ def get_phenotype_data():
                 "phenotypeStatement": "",
                 "dateAssigned": ""
             }
-            pub_id= ''
             if item.reference.pmid:
                 obj["pubMedId"] = "PMID:" + str(item.reference.pmid)
             else:
