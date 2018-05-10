@@ -266,7 +266,10 @@ const SearchForm = React.createClass({
 		var restrictionButton = this._getToolButton(gene, '/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map');
 
 		return(<div>
-                       { strainPulldown }		
+                       { strainPulldown }
+		       <br>{ blastButton } | { fungalBlastButton } </br>
+		       <br>{ primerButton } </br>
+		       <br>{ restrictionButton } </br>		
                 </div>);
 
 	},
