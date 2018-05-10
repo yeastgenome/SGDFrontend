@@ -211,25 +211,17 @@ const SearchForm = React.createClass({
 		var up = window.localStorage.getItem("up");
 		var down = window.localStorage.getItem("down");
 		_.map(genes, gene => {
-
-		    // push(this._getDownloadSeqButton(gene, strains, 'genomic', 'fasta'));
-		    // _getDownloadSeqButtonPair(genes, strains, type) 
-
+		    var genomicFastaUrl = SeqtoolsUrl + "?format=fasta&type=genomic&genes=" + gene + "&strains=" + strains + "&rev=" + rev + "&up=" + up + "&down=" + down;
+		    var genomicGcgUrl = SeqtoolsUrl + "?format=gcg&type=genomic&genes=" + gene + "&strains=" + strains + "&rev=" + rev + "&up=" + up + "&down=" + down;
+		    var codingFastaUrl = SeqtoolsUrl + "?format=fasta&type=coding&genes=" + gene + "&strains=" + strains;
+                    var	codingGcgUrl = SeqtoolsUrl + "?format=gcg&type=coding&genes=" + gene + "&strains=" + strains;
+		    var proteinFastaUrl = SeqtoolsUrl + "?format=fasta&type=protein&genes=" + gene + "&strains=" + strains;
+                    var	proteinGcgUrl = SeqtoolsUrl + "?format=gcg&type=protein&genes=" + gene + "&strains=" + strains;
 		    if (hasCoding > 0) {
-
-		         seqDLRow.push(this._getDownloadSeqButtonPair(genes, strains, 'genomic'));
-
-		         // seqDLRow.push(<div>{ this._getDownloadSeqButton(gene, strains, 'genomic', 'fasta') } | { this._getDownloadSeqButton(gene, strains, 'genomic', 'gcg') }</div>)
-
-		         // seqDLRow.push(<span style={{ fontSize: 20}}><br></br><br><a href={ genomicFastaUrl } target='infowin2'>Fasta</a> | <a href={ genomicGcgUrl } target='infowin2'>GCG</a></br><br><a href={ codingFastaUrl } target='infowin2'>Fasta</a> | <a href={ codingGcgUrl } target='infowin2'>GCG</a></br><br><a href={ proteinFastaUrl } target='infowin2'>Fasta</a> | <a href={ proteinGcgUrl } target='infowin2'>GCG</a></br></span>);
+		         seqDLRow.push(<span style={{ fontSize: 20}}><br></br><br><a href={ genomicFastaUrl } target='infowin2'>Fasta</a> | <a href={ genomicGcgUrl } target='infowin2'>GCG</a></br><br><a href={ codingFastaUrl } target='infowin2'>Fasta</a> | <a href={ codingGcgUrl } target='infowin2'>GCG</a></br><br><a href={ proteinFastaUrl } target='infowin2'>Fasta</a> | <a href={ proteinGcgUrl } target='infowin2'>GCG</a></br></span>);
 		    }
 		    else {
-		    	  
-			  seqDLRow.push(this._getDownloadSeqButtonPair(genes, strains, 'genomic'));
-
-		    	 // seqDLRow.push(<div>{ this._getDownloadSeqButton(gene, strains, 'genomic', 'fasta') } | { this._getDownloadSeqButton(gene, strains, 'genomic', 'gcg') }</div>)
-
-		    	 // seqDLRow.push(<span style={{ fontSize: 20}}><br>Batch seuence file</br><br><a href={ genomicFastaUrl } target='infowin2'>Fasta</a> | <a href={ genomicGcgUrl } target='infowin2'>GCG</a></br></span>);
+		    	 seqDLRow.push(<span style={{ fontSize: 20}}><br>Batch seuence file</br><br><a href={ genomicFastaUrl } target='infowin2'>Fasta</a> | <a href={ genomicGcgUrl } target='infowin2'>GCG</a></br></span>);
 		    } 
 	        });
 		rows.push(seqDLRow);
@@ -287,27 +279,15 @@ const SearchForm = React.createClass({
 	},
 
 
-	_getDownloadSeqButtonPair: function(genes, strains, type) {
-	               
-		var fastaButton = this._getDownloadSeqButton(genes, strains, type, 'fasta', 'FASTA');
-		var gcgButton = this._getDownloadSeqButton(genes, strains, type, 'gcg', 'GCG');
-		
-		// var _buttonSection = { headers: [['', '']],
-		//    		      rows: [[fastaButton, gcgButton]] }
-		var _buttonSection = { rows: [[fastaButton, gcgButton]] }
-                return (<DataTable data={_buttonSection} />);
-		                    
-	},
+	_getDownloadSeqButton: function(genes, strains, type) {
 
-	_getDownloadSeqButton: function(genes, strains, type, format, button) {
-		
-	        // return (<form ref={ genes } method="POST" action={ SeqtoolsUrl } key={"hiddenNode_" + genes}>
-		return (<form method="POST" action={ SeqtoolsUrl }>
-                                <input type="hidden" name="format" value={ format } />
+	        // return (<form ref={ genes } method="POST" action="/run_seqtools" key={"hiddenNode_" + genes}>
+		return (<form method="POST" action="/run_seqtools">
+                                <input type="hidden" name="format" value='fasta' />
                                 <input type="hidden" name="type" value={ type } />
                                 <input type="hidden" name="genes" value={ genes } />
 				<input type="hidden" name="strains" value={ strains } />
-				<input type="submit" value={ button } className="button secondary"></input>
+				<input type="submit" value="FASTA" className="button secondary"></input>
                         </form>);
 
 	},
