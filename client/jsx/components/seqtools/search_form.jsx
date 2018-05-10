@@ -285,7 +285,7 @@ const SearchForm = React.createClass({
 		var seq = window.localStorage.getItem(seqID);
 
 		var subseq = seq.substring[0,10];
-		alert("seq=" + seq);
+		alert("subseq=" + subseq);
 
 		console.log("strain="+strain);
 		console.log("seq="+subseq);
