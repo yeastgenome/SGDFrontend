@@ -275,7 +275,7 @@ def get_phenotype_data():
                     })
             obj["objectId"] = "SGD:" + str(item.dbentity.sgdid)
             obj["phenotypeStatement"] = pString
-            
+            import pdb ; pdb.set_trace()
             obj["dateAssigned"] = item.date_created.strftime(
                 "%Y-%m-%dT%H:%m:%S-00:00")
             result.append(obj)
