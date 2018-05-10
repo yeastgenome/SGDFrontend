@@ -155,7 +155,7 @@ const SearchForm = React.createClass({
 		_.map(genes, gene => { 
 		    var sgdUrl = "https://www.yeastgenome.org/locus/" + sgdid4gene[gene];
 		    var allianceUrl = "http://www.alliancegenome.org/gene/" + sgdid4gene[gene];
-		    locusRow.push(<span style={{ fontSize: 20 }}><a href={ sgdUrl } target='infowin2'>SGD</a>|<a href={ allianceUrl } target='infowin2'>Alliance</a></span>);
+		    locusRow.push(<span style={{ fontSize: 20 }}><a href={ sgdUrl } target='infowin2'>SGD</a> | <a href={ allianceUrl } target='infowin2'>Alliance</a></span>);
 		});	
 		rows.push(locusRow);
 
@@ -227,26 +227,15 @@ const SearchForm = React.createClass({
 		rows.push(seqDLRow);
 
 		// testing section
-
-		// _getDownloadSeqButton: function(filename, header, sequence) {		
-		var downloadTestRow = [<span style={{ fontSize: 20}}>Sequence Download TEST</span>];
-		_.map(genes, gene => {
-		      var s = seq4gene[gene];
-		      var genomicSeq = s['genomic']['S288C'];
-		      // var codingSeq = s['coding']['S288C'];
-		      // var proteinSeq = s['protein']['S288C'];
-		      var filename = gene + '_S288C' + '.fsa';
-		      var header = gene + " S288C " + sgdid4gene[gene];
-		      var sequences = [{ 'sequence': genomicSeq,
-		      	  	      	 'header': header,
-				      	 'filename': filename,
-					 'key': header,
-					 'name': gene }];
-
-		      downloadTestRow.push(this._getDownloadSeqButton(gene, strains, 'genomic')); 
-		});		
-		rows.push(downloadTestRow);
-
+		// var downloadTestRow = [<span style={{ fontSize: 20}}>Sequence Download TEST</span>];
+		// _.map(genes, gene => {
+		//      var s = seq4gene[gene];
+		//      var genomicSeq = s['genomic']['S288C'];
+		//      // var codingSeq = s['coding']['S288C'];
+		//      // var proteinSeq = s['protein']['S288C'];
+		//      downloadTestRow.push(this._getDownloadSeqButton(gene, strains, 'genomic')); 
+		// });		
+		// rows.push(downloadTestRow);
 		// end of testing
 		
 		var seqAnalRow = [<span style={{ fontSize: 20}}>Sequence Analysis</span>];
@@ -641,7 +630,7 @@ const SearchForm = React.createClass({
 		// this.setState({ strain: defaultStrain });
 
 		return(<div>
-                       <p><select ref='strain' name='strain' id='strain' onChange={this._onChange}>{_elements}</select></p>
+                       <p><select ref='strain' name='strain' id='strain' onChange={this._onChange4strain}>{_elements}</select></p>
                 </div>);
 
 	},
@@ -673,10 +662,10 @@ const SearchForm = React.createClass({
                 this.setState({ text: e.target.value});
         },
 
-	// _onChange4strain: function(e) {
-        //        this.setState({ text: e.target.value});
-		// this.setState({ strain: e.target.value });
-        // },
+	_onChange4strain: function(e) {
+                this.setState({ text: e.target.value,
+				strain: e.target.value });
+        },
 
 	_onChangeCB: function() {
 		if (this.state.rev == 'off') {
