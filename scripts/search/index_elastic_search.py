@@ -417,10 +417,9 @@ def index_phenotypes():
             }
         })
         bulk_data.append(phenotype_item)
-        import pdb;   pdb.set_trace()
         if len(bulk_data) == 800:
             es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
-        bulk_data = []
+            bulk_data = []
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
