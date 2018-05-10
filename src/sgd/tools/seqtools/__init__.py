@@ -23,8 +23,42 @@ def do_seq_analysis(request):
         return Response(body=json.dumps(data), content_type='application/json')
 
     data = get_sequence_for_genes(p)
-    return Response(body=json.dumps(data), content_type='application/json')
+    if p.get('format') is None:
+        return Response(body=json.dumps(data), content_type='application/json')
+    else:
+        display_sequence_for_genes(p, data)
 
+def display_sequence_for_genes(p, data):
+    
+    type = p.get('type')
+    if type is None or type == 'genomic':
+        type = 'genomic_dna'
+    elif type == 'coding':
+        type = 'coding_dna'
+    else:
+        type = 'protein'
+
+    for gene in data:
+        seqtypeInfo = data[gene]
+        for seqtype in seqtypeInfo:
+            if seqtype != type:
+                continue
+            strainInfo = seqtypeInfo[seqtype]
+            for strain in strainInfo:
+                print ">" + gene + " " + str(strain.get('display_name')) + " " + str(strain.get('sgdid')) + " " + str(strain.get('locus_type')) + " " + str(strain.get('headline'))
+                if p.get('format') is not None and p['format'] == 'gcg':
+                    print format_gcg(strain.get('residue'))
+                else:
+                    print format_fasta(strain.get('residue'))
+
+
+def format_fasta(seq):
+    
+    return seq
+
+def format_gcg(seq):
+
+    return seq
 
 def validate_names(p):
 
@@ -114,6 +148,7 @@ def _get_sequence_from_contig(contig, start, end, strand):
 def get_sequence_for_genes(p):
 
     # http://0.0.0.0:6545/run_seqtools?genes=ACT1|BUD2&strains=W303|S288C&type=nuc&up=10&down=10   
+    # http://0.0.0.0:6545/run_seqtools?format=fasta&type=genomic&genes=ACT1|BUD2&strains=W303|S288C&type=nuc&up=10&down=10
 
     genes = p.get('genes')
     strains = p.get('strains')

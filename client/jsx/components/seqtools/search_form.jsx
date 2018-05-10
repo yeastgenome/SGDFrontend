@@ -211,14 +211,14 @@ const SearchForm = React.createClass({
 		var up = window.localStorage.getItem("up");
 		var down = window.localStorage.getItem("down");
 		_.map(genes, gene => {
-		    var genomicFastaUrl = SeqtoolsUrl + "?format=fasta&type=genomic&gene=" + gene + "&strains=" + strains + "&rev=" + rev + "&up=" + up + "&down=" + down;
-		    var genomicGcgUrl = SeqtoolsUrl + "?format=gcg&type=genomic&gene=" + gene + "&strains=" + strains + "&rev=" + rev + "&up=" + up + "&down=" + down;
-		    var codingFastaUrl = SeqtoolsUrl + "?format=fasta&type=coding&gene=" + gene + "&strains=" + strains;
-                    var	codingGcgUrl = SeqtoolsUrl + "?format=gcg&type=coding&gene=" + gene + "&strains=" + strains;
-		    var proteinFastaUrl = SeqtoolsUrl + "?format=fasta&type=protein&gene=" + gene + "&strains=" + strains;
-                    var	proteinGcgUrl = SeqtoolsUrl + "?format=gcg&type=protein&gene=" + gene + "&strains=" + strains;
+		    var genomicFastaUrl = SeqtoolsUrl + "?format=fasta&type=genomic&genes=" + gene + "&strains=" + strains + "&rev=" + rev + "&up=" + up + "&down=" + down;
+		    var genomicGcgUrl = SeqtoolsUrl + "?format=gcg&type=genomic&genes=" + gene + "&strains=" + strains + "&rev=" + rev + "&up=" + up + "&down=" + down;
+		    var codingFastaUrl = SeqtoolsUrl + "?format=fasta&type=coding&genes=" + gene + "&strains=" + strains;
+                    var	codingGcgUrl = SeqtoolsUrl + "?format=gcg&type=coding&genes=" + gene + "&strains=" + strains;
+		    var proteinFastaUrl = SeqtoolsUrl + "?format=fasta&type=protein&genes=" + gene + "&strains=" + strains;
+                    var	proteinGcgUrl = SeqtoolsUrl + "?format=gcg&type=protein&genes=" + gene + "&strains=" + strains;
 		    if (hasCoding > 0) {
-		        seqDLRow.push(<span style={{ fontSize: 20}}><br></br><br><a href={ genomicFastaUrl } target='infowin2'>Fasta</a> | <a href={ genomicGcgUrl } target='infowin2'>GCG</a></br><br><a href={ codingFastaUrl } target='infowin2'>Fasta</a> | <a href={ codingGcgUrl } target='infowin2'>GCG</a></br><br><a href={ proteinFastaUrl } target='infowin2'>Fasta</a> | <a href={ proteinGcgUrl } target='infowin2'>GCG</a></br></span>);
+		         seqDLRow.push(<span style={{ fontSize: 20}}><br></br><br><a href={ genomicFastaUrl } target='infowin2'>Fasta</a> | <a href={ genomicGcgUrl } target='infowin2'>GCG</a></br><br><a href={ codingFastaUrl } target='infowin2'>Fasta</a> | <a href={ codingGcgUrl } target='infowin2'>GCG</a></br><br><a href={ proteinFastaUrl } target='infowin2'>Fasta</a> | <a href={ proteinGcgUrl } target='infowin2'>GCG</a></br></span>);
 		    }
 		    else {
 		    	 seqDLRow.push(<span style={{ fontSize: 20}}><br>Batch seuence file</br><br><a href={ genomicFastaUrl } target='infowin2'>Fasta</a> | <a href={ genomicGcgUrl } target='infowin2'>GCG</a></br></span>);
