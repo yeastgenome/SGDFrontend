@@ -405,22 +405,21 @@ class IndexESHelper:
                     [itm["locus"]["display_name"] for itm in annotations]) if annotations else []
             _phenotypes = filter_object_list(
                     [itm["phenotype"]["display_name"] for itm in annotations]) if annotations else []
-            for annotation in annotations:
-
-                obj = {
-                    "strain": _strains,
-                    "references": _references,
-                    "phenotype_loci": _phenotype_loci,
-                    "name": item.display_name,
-                    "href": item.obj_url,
-                    "chemical": _chemical,
-                    "description": item.description,
-                    "category": "phenotype",
-                    "keys": [],
-                    "mutant_type": _mutant_type,
-                    "format_name": item.format_name
-                }
-                _data.append(obj)
+        
+            obj = {
+                "strain": _strains,
+                "references": _references,
+                "phenotype_loci": _phenotype_loci,
+                "name": item.display_name,
+                "href": item.obj_url,
+                "chemical": _chemical,
+                "description": item.description,
+                "category": "phenotype",
+                "keys": [],
+                "mutant_type": _mutant_type,
+                "format_name": item.format_name
+            }
+            _data.append(obj)
 
         return _data
 
