@@ -862,7 +862,7 @@ def index_part_2():
 if __name__ == "__main__":
     cleanup()
     setup()
-    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
         index_phenotypes()
     #index_phenotypes()
     '''
