@@ -244,7 +244,9 @@ const SearchForm = React.createClass({
 		    	  var seqID = gene + "_" + strain;
 			  var seqInfo = s['genomic'];
 			  var seq = seqInfo[strain];
-			  console.log("seq here="+seqInfo);
+			  _.map(seqInfo, k => {
+			       console.log("k="+k + ", seq here=" + seqInfo[k]);
+			  });
                           window.localStorage.setItem(seqID, seq);
 	            });
 
