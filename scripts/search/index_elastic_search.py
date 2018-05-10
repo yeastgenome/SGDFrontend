@@ -22,7 +22,6 @@ ES_URI = os.environ['WRITE_ES_URI']
 es = Elasticsearch(ES_URI, retry_on_timeout=True)
 
 
-
 def delete_mapping():
     print("Deleting mapping...")
     response = requests.delete(ES_URI + INDEX_NAME + "/")
@@ -155,8 +154,6 @@ def index_colleagues():
             bulk_data = []
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
-
-
 
 
 def index_genes():
@@ -427,8 +424,6 @@ def index_phenotypes():
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
 
-
-
 def index_observables():
     observables = DBSession.query(Apo).filter_by(
         apo_namespace="observable").all()
@@ -492,10 +487,35 @@ def index_strains():
         }
 
         es.index(
-            index=INDEX_NAME,
-            doc_type=DOC_TYPE,
-            body=obj,
-            id=str(uuid.uuid4())
+            index=INDEX_NAME, doc_type=DOC_TYPE, body=obj, id=str(uuid.uuid4()))
+
+
+def index_reserved_names():
+    # only index reservednames that do not have a locus associated with them
+    reserved_names = DBSession.query(Reservedname).all()
+
+    print("Indexing " + str(len(reserved_names)) + " reserved names")
+    for reserved_name in reserved_names:
+        name = reserved_name.display_name
+        href = reserved_name.obj_url
+        keys = [reserved_name.display_name.lower()]
+        # change name if has an orf
+        if reserved_name.locus_id:
+            locus = DBSession.query(Locusdbentity).filter(
+                Locusdbentity.dbentity_id ==
+                reserved_name.locus_id).one_or_none()
+            name = name + ' / ' + locus.systematic_name
+            href = locus.obj_url
+            keys = []
+        obj = {
+            "name": name,
+            "href": href,
+            "description": reserved_name.name_description,
+            "category": "reserved_name",
+            "keys": keys
+        }
+        es.index(
+            index=INDEX_NAME, doc_type=DOC_TYPE, body=obj, id=str(uuid.uuid4()))
 
 
 def index_reserved_names():
@@ -521,10 +541,7 @@ def index_reserved_names():
             "keys": keys
         }
         es.index(
-            index=INDEX_NAME,
-            doc_type=DOC_TYPE,
-            body=obj,
-            id=str(uuid.uuid4())
+            index=INDEX_NAME, doc_type=DOC_TYPE, body=obj, id=str(uuid.uuid4()))
 
 
 def load_go_id_blacklist(list_filename):
@@ -594,7 +611,7 @@ def index_go_terms():
 
         if len(bulk_data) == 800:
             es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
-            bulk_data = []
+            bulk_data=[]
 
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
