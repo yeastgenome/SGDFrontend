@@ -240,13 +240,11 @@ const SearchForm = React.createClass({
 		var seqAnalRow = [<span style={{ fontSize: 20}}>Sequence Analysis</span>];
 		_.map(genes, gene => {
 		    var s = seq4gene[gene];
-		    _.map(strains, strain =>  {
+		    var seqInfo = s['genomic'];
+		    var selectedStrains = Object.keys(seqInfo);
+		    _.map(selectedStrains, strain =>  {
 		    	  var seqID = gene + "_" + strain;
-			  var seqInfo = s['genomic'];
 			  var seq = seqInfo[strain];
-			  _.map(seqInfo, k => {
-			       console.log("k="+k + ", seq here=" + seqInfo[k]);
-			  });
                           window.localStorage.setItem(seqID, seq);
 	            });
 
