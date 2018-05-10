@@ -281,9 +281,8 @@ const SearchForm = React.createClass({
 
 	_getDownloadSeqButton: function(genes, strains, type) {
 
-
-	        console.log("genes="+genes+", strains="+strains+ ", type=" + type);
-	        return (<form ref={ genes } method="POST" action="/run_seqtools" key={"hiddenNode_" + genes}>
+	        // return (<form ref={ genes } method="POST" action="/run_seqtools" key={"hiddenNode_" + genes}>
+		return (<form method="POST" action="/run_seqtools">
                                 <input type="hidden" name="format" value='fasta' />
                                 <input type="hidden" name="type" value={ type } />
                                 <input type="hidden" name="genes" value={ genes } />
