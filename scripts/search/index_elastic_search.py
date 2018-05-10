@@ -812,34 +812,34 @@ def index_downloads():
 
 
 def index_part_1():
-    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
         index_phenotypes()
-    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
         index_downloads()
-    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
         index_not_mapped_genes()
-    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
         index_genes()
-    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
         index_strains()
-    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
         index_colleagues()
-    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
         index_chemicals()
 
 
 
 
 def index_part_2():
-    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
         index_reserved_names()
-    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
         index_toolbar_links()
-    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
         index_observables()
-    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
         index_go_terms()
-    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
         index_references()
 
 
