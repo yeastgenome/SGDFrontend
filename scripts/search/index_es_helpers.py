@@ -424,7 +424,6 @@ class IndexESHelper:
 
         return _data
 
-
     @classmethod
     def get_combined_phenotypes(cls, phenos, phenos_annotation,
                                 phenos_annotation_cond):
