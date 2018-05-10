@@ -284,16 +284,9 @@ const SearchForm = React.createClass({
 		var seqID = name + "_" + strain;
 		var seq = window.localStorage.getItem(seqID);
 
-		var subseq = seq.substring[0,10];
-		alert("subseq=" + subseq);
-
-		console.log("strain="+strain);
-		console.log("seq="+subseq);
-
 		// <input type="submit" value={ button } className="button small secondary"></input>
 		return (<form method="POST" action={ program }>
-		                <input type="hidden" name="name" value={ name }  />
-                                <input type="hidden" name="strain" value={ strain }  />
+		                <input type="hidden" name="seq" value={ seq }  />
                                 <input type="submit" value={ button } style={{ color: 'grey', fontSize: 18 }}></input>
                         </form>);
 
