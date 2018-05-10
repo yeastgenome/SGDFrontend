@@ -289,8 +289,8 @@ const SearchForm = React.createClass({
 
 	_getDownloadSeqButtonPair: function(genes, strains, type) {
 	               
-		var fastaButton = this._getDownloadSeqButton(genes, strains, type, 'fasta');
-		var gcgButton = this._getDownloadSeqButton(genes, strains, type, 'gcg');
+		var fastaButton = this._getDownloadSeqButton(genes, strains, type, 'fasta', 'FASTA');
+		var gcgButton = this._getDownloadSeqButton(genes, strains, type, 'gcg', 'GCG');
 		
 		var _buttonSection = { headers: [['', '', '']],
 		    		      rows: [[fastaButton, ' | ', gcgButton]] }
@@ -299,7 +299,7 @@ const SearchForm = React.createClass({
 		                    
 	},
 
-	_getDownloadSeqButton: function(genes, strains, type, format) {
+	_getDownloadSeqButton: function(genes, strains, type, format, button) {
 		
 	        // return (<form ref={ genes } method="POST" action={ SeqtoolsUrl } key={"hiddenNode_" + genes}>
 		return (<form method="POST" action={ SeqtoolsUrl }>
@@ -307,7 +307,7 @@ const SearchForm = React.createClass({
                                 <input type="hidden" name="type" value={ type } />
                                 <input type="hidden" name="genes" value={ genes } />
 				<input type="hidden" name="strains" value={ strains } />
-				<input type="submit" value={ format.toUpperCase()} className="button secondary"></input>
+				<input type="submit" value={ button } className="button secondary"></input>
                         </form>);
 
 	},
