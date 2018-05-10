@@ -417,15 +417,7 @@ def index_phenotypes():
             }
         })
         bulk_data.append(phenotype_item)
-<<<<<<< HEAD
-<<<<<<< HEAD
         if len(bulk_data) == 50:
-=======
-        import pdb;   pdb.set_trace()
-=======
->>>>>>> es-bug fix
-        if len(bulk_data) == 800:
->>>>>>> .
             es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
             bulk_data = []
     if len(bulk_data) > 0:
@@ -869,16 +861,7 @@ def index_part_2():
 if __name__ == "__main__":
     cleanup()
     setup()
-<<<<<<< HEAD
-    index_phenotypes()
-    '''t1 = Thread(target=index_part_1)
-=======
-    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
-        index_phenotypes()
-    #index_phenotypes()
-    '''
     t1 = Thread(target=index_part_1)
->>>>>>> .
     t2 = Thread(target=index_part_2)
     t1.start()
     t2.start()'''
