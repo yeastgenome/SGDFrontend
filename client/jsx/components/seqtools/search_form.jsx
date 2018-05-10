@@ -243,6 +243,7 @@ const SearchForm = React.createClass({
 		    _.map(strains, strain =>  {
 		    	  var seqID = gene + "_" + strain;
 			  var seq = s['genomic'][strain];
+			  console.log("seq here="+seq);
                           window.localStorage.setItem(seqID, seq);
 	            });
 
@@ -287,7 +288,8 @@ const SearchForm = React.createClass({
 
 		// <input type="submit" value={ button } className="button small secondary"></input>
 		return (<form method="POST" action={ program }>
-                                <input type="hidden" name="seq" value={ seq }  />
+		                <input type="hidden" name="name" value={ name }  />
+                                <input type="hidden" name="strain" value={ strain }  />
                                 <input type="submit" value={ button } style={{ color: 'grey', fontSize: 18 }}></input>
                         </form>);
 
