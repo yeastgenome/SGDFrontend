@@ -45,7 +45,6 @@ var SearchForm = React.createClass({
 			sequence: null,
 			uploadedSeq: null,
 			uploadFile: null,
-			passedInSeq: param['seq'],
 			program: null,
 			database: null,
 			outFormat: null,
@@ -151,10 +150,12 @@ var SearchForm = React.createClass({
 		        var seqData = this.state.seqData;
                 	var configData = this.state.configData;
 
+			var seq = "";
+			
 			var param = this.state.param;
-			var seq = ""; 
-			if (this.state.passedInSeq) {
-			     seq = this.state.passedInSeq;
+			if (param['sequence_id']) {
+			     var seqID = param['sequence_id'];
+                             seq = window.localStorage.getItem(seqID);
 			     alert("seq length="+seq.length);
 			}
 			else {

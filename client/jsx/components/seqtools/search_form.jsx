@@ -262,10 +262,10 @@ const SearchForm = React.createClass({
 	_getToolsLinks: function(gene, strains) {
 
 		var strainPulldown = this._getStrainPulldown(strains);
-		var blastButton = this._getToolButton(gene, '/blast-sgd',          'BLAST');
-		var fungalBlastButton = this._getToolButton(gene, '/blast-fungal', 'Fungal BLAST');		
-		var primerButton = this._getToolButton(gene, '/primer3',           'Design Primers');
-		var restrictionButton = this._getToolButton(gene, '/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map');
+		var blastButton = this._getToolButton(gene, '/blast-sgd',  'BLAST');
+		var fungalBlastButton = this._getToolButton(gene, '/blast-fungal', 'Fungal BLAST');	
+		var primerButton = this._getToolButton(gene, '/primer3', 'Design Primers');
+		var restrictionButton = this._getToolButton4post(gene, '/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map');
 		return(<div className="row">
                             <div className="large-12 columns">	
                        	    	 { strainPulldown }
@@ -278,17 +278,38 @@ const SearchForm = React.createClass({
 
 	},
 
+
 	_getToolButton: function(name, program, button) {
+
+                var strain = this.state.strain;
+                var seqID = name + "_" + strain;
+                var seq = window.localStorage.getItem(seqID);
+
+                // <input type="submit" value={ button } className="button small secondary"></input>
+
+                return (<form method="GET" action={ program }>
+                                <input type="hidden" name="sequence_id" value={ seqID }  />
+                                <input type="submit" value={ button } style={{ color: 'grey', fontSize: 18 }}></input>
+                        </form>);
+
+
+
+        },
+
+	_getToolButton4post: function(name, program, button) {
 
 		var strain = this.state.strain;
 		var seqID = name + "_" + strain;
 		var seq = window.localStorage.getItem(seqID);
 
 		// <input type="submit" value={ button } className="button small secondary"></input>
+		
 		return (<form method="POST" action={ program }>
 		                <input type="hidden" name="seq" value={ seq }  />
                                 <input type="submit" value={ button } style={{ color: 'grey', fontSize: 18 }}></input>
                         </form>);
+
+		
 
 	},
 
