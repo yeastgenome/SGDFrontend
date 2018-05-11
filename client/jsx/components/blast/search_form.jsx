@@ -156,16 +156,14 @@ var SearchForm = React.createClass({
 			if (param['sequence_id']) {
 			     var seqID = param['sequence_id'];
                              seq = window.localStorage.getItem(seqID);
-			     alert("seq length="+seq.length);
 			}
 			else {
-			     alert("NO SEQ PASSED IN");
 			     seq = seqData.seq;
 			}
 			                
 			var commentBoxNode = this._getCommentBoxNode();
                 	var submitNode = this._getSubmitNode();
-                	var seqBoxNode = this._getSeqBoxNode(seqData.seq);
+                	var seqBoxNode = this._getSeqBoxNode(seq);
                 	var blastProgramNode = this._getBlastProgramNode(configData);
                 	var databaseNode = this._getDatabaseNode(configData);
                 	var optionNode = this._getOptionsNode(configData);
