@@ -78,11 +78,22 @@ const SearchForm = React.createClass({
 			   
 			     var [_geneList, _resultTable] = this._getResultTable4gene(data);
 			     var desc = this._getDesc4gene(_geneList);
+			     // <p className='paragraph-margin-bottom-10 text--font-size-20 paragraph--justified' dangerouslySetInnerHTML={{ __html: desc }} />
+
 			     return (<div>
 					   <p dangerouslySetInnerHTML={{ __html: desc }} />
-					   <p className='paragraph-margin-bottom-10 text--font-size-20 paragraph--justified' dangerouslySetInnerHTML={{ __html: desc }} />
 			                   <p>{ _resultTable } </p>
 			             </div>);
+
+			}
+			else if (this.state.submitted2) {
+
+			     return (<div>CHROMOSOME SEQ RESULT PAGE</div>);
+
+			}
+			else if (this.state.submitted2) {
+			     
+			     return (<div>SEQUENCE RESULT PAGE</div>);
 
 			}
 
