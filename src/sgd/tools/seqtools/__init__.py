@@ -51,7 +51,11 @@ def display_sequence_for_genes(p, data):
             if seqtype != type:
                 continue
             strainInfo = seqtypeInfo[seqtype]
-            for strain in strainInfo:
+            allStrains = list(strainInfo.keys())
+            if 'S288C' in strainInfo:
+                allStrains.remove('S288C')
+                allStrains = ['S288C'] + sorted(allStrains)
+            for strain in allStrains:
                 locusInfo = strainInfo[strain]
                 content +=  ">" + gene + "_" + strain + " " + str(locusInfo.get('display_name')) + " " + str(locusInfo.get('sgdid')) + " " + str(locusInfo.get('locus_type')) + " " + str(locusInfo.get('headline')) + "\n"
                 if p.get('format') is not None and p['format'] == 'gcg':
