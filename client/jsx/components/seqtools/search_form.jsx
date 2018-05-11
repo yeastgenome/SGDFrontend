@@ -77,7 +77,7 @@ const SearchForm = React.createClass({
 			if (this.state.submitted) {
 			   
 			     var [_geneList, _resultTable] = this._getResultTable4gene(data);
-			     var desc = this._getDesc4gene(geneList);
+			     var desc = this._getDesc4gene(_geneList);
     
 			     return (<div>{ _resultTable } </div>);
 			}
