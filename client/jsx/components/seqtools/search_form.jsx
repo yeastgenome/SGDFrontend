@@ -248,11 +248,7 @@ const SearchForm = React.createClass({
 			  var seq = seqInfo[strain];
                           window.localStorage.setItem(seqID, seq);
 	            });
-
-		    // seqAnalRow.push(this._getStrainPulldown(strains));
-
-		    seqAnalRow.push(this._getToolsLinks(gene, strains));
-
+		    seqAnalRow.push(this._getToolsLinks(gene, strains, ID));
 		});		
 		rows.push(seqAnalRow);
 
@@ -260,7 +256,7 @@ const SearchForm = React.createClass({
 		
 	},
 
-	_getToolsLinks: function(gene, strains) {
+	_getToolsLinks: function(gene, strains, ID) {
 
 		var strainPulldown = this._getStrainPulldown(strains);
 		var blastButton = this._getToolButton(gene, '/blast-sgd',  'BLAST', ID);
