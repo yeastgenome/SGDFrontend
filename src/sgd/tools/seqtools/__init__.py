@@ -87,20 +87,41 @@ def format_fasta(sequence):
 
 def format_gcg(sequence):
 
-    LETTERS_PER_LINE = 60
-    LETTERS_PER_CHUNK = 10
+    BASES_PER_LINE = 60
+    BASES_PER_CHUNK = 10
 
-    if len(sequence) <= LETTERS_PER_CHUNK:
-        return "1 " + sequence + str(len(sequence)) + "\n"
+    seqlen = len(sequence)
+    maxIndexLen = len(str(seqlen))
 
-    newseq = sequence[0:LETTERS_PER_CHUNK]
-    sequence = sequence[LETTERS_PER_CHUNK:]
+    if len(sequence) <= BASES_PER_CHUNK:
+        return "1 " + sequence + str(seqlen) + "\n"
 
-    while len(sequence) > LETTERS_PER_CHUNK:
-        newseq += " " + sequence[0:LETTERS_PER_CHUNK]
-        sequence = sequence[LETTERS_PER_CHUNK:]
+    ## adding spaces between 10 bases chunks
+    newseq = sequence[0:BASES_PER_CHUNK]
+    sequence = sequence[BASES_PER_CHUNK:]
+
+    while len(sequence) > BASES_PER_CHUNK:
+        newseq += " " + sequence[0:BASES_PER_CHUNK]
+        sequence = sequence[BASES_PER_CHUNK:]
     newseq += " " + sequence
 
+    ## adding newlines and index label
+    index = 1
+    sequence = newseq
+    j = BASES_PER_LINE + BASES_PER_LINE/BASES_PER_CHUNK
+    newseq = " "*maxIndexLen + "1 " + sequence[0:j]
+    if seqlen <= BASES_PER_LINE:
+        return newseq 
+    sequence = sequence[j:]        
+    while len(sequence) > j:
+        index += BASES_PER_LINE
+        newseq += " "*(maxIndexLen-len(str(index))) + str(index) + " " + sequence[0:j]
+        sequence = sequence[j:]
+
+    if sequence:
+        index += BASES_PER_LINE
+        newseq += " "*(maxIndexLen-len(str(index))) + str(index) + " " + sequence
+    
     return newseq
 
 
