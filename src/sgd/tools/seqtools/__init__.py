@@ -109,7 +109,7 @@ def format_gcg(sequence):
     index = 1
     sequence = newseq
     j = BASES_PER_LINE + BASES_PER_LINE/BASES_PER_CHUNK
-    newseq = " "*maxIndexLen + "1 " + sequence[0:j] + "\n"
+    newseq = " "*(maxIndexLen-1) + "1 " + sequence[0:j] + "\n"
     if seqlen <= BASES_PER_LINE:
         return newseq 
     sequence = sequence[j:]        
