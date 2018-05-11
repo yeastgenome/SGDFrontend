@@ -829,13 +829,13 @@ const SearchForm = React.createClass({
        	     var text = "The currently selected gene(s)/sequence(s) are ";
 	     text += "<font color='red'>" + geneList + "</font>";
 	     if (up && down) {
-	     	  text += "<b>plus " + str(up) + " basepair(s) of upstream sequence and " + str(down) + " basepair(s) od downstream sequence.</b>";
+	     	  text += "<b>plus " + up + " basepair(s) of upstream sequence and " + down + " basepair(s) od downstream sequence.</b>";
 	     }
 	     else if (up) {
-	     	  text += "<b>plus " + str(up) + " basepair(s) of upstream sequence.</b>";
+	     	  text += "<b>plus " + up + " basepair(s) of upstream sequence.</b>";
              }
 	     else if (down) {
-	          text += "<b>plus " + str(down) + " basepair(s) of downstream sequence.</b>";
+	          text += "<b>plus " + down + " basepair(s) of downstream sequence.</b>";
 	     }
 
 	     text = "<p>" + text + "</p>";
