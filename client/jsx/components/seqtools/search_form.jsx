@@ -79,9 +79,11 @@ const SearchForm = React.createClass({
 			     var [_geneList, _resultTable] = this._getResultTable4gene(data);
 			     var desc = this._getDesc4gene(_geneList);
 			     return (<div>
-					   <div dangerouslySetInnerHTML={{ __html: desc }} />
-			                   <div>{ _resultTable } </div>
+					   <p dangerouslySetInnerHTML={{ __html: desc }} />
+					   <p className='paragraph-margin-bottom-10 text--font-size-14 paragraph--justified' dangerouslySetInnerHTML={{ __html: desc }} />
+			                   <p>{ _resultTable } </p>
 			             </div>);
+
 			}
 
 		} 
@@ -845,7 +847,7 @@ const SearchForm = React.createClass({
 	     	  text += "<p>You have selected the reverse complement sequence(s) of this gene/sequence list.</p>";
 	     }   
 
-	     return "<font size='100'>" + text + "</font>";
+	     return text;
        }
 
 });
