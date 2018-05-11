@@ -88,10 +88,12 @@ const SearchForm = React.createClass({
 			}
 			else if (this.state.submitted2) {
 
-			     return (<div>CHROMOSOME SEQ RESULT PAGE</div>);
+			     var seq = data['residue'];
+
+			     return (<div>CHROMOSOME SEQ RESULT PAGE { seq } </div>);
 
 			}
-			else if (this.state.submitted2) {
+			else if (this.state.submitted3) {
 			     
 			     return (<div>SEQUENCE RESULT PAGE</div>);
 
