@@ -78,8 +78,10 @@ const SearchForm = React.createClass({
 			   
 			     var [_geneList, _resultTable] = this._getResultTable4gene(data);
 			     var desc = this._getDesc4gene(_geneList);
-    
-			     return (<div>{ _resultTable } </div>);
+			     return (<div>
+					   <div dangerouslySetInnerHTML={{ __html: desc }} />
+			                   <div>{ _resultTable } </div>
+			             </div>);
 			}
 
 		} 
