@@ -87,9 +87,21 @@ def format_fasta(sequence):
 
 def format_gcg(sequence):
 
-    return sequence
+    LETTERS_PER_LINE = 60
+    LETTERS_PER_CHUNK = 10
 
-    # return clean_cell("\n".join([sequence[i:i+60] for i in range(0, len(sequence), 60)]))
+    if len(sequence) <= LETTERS_PER_CHUNK:
+        return "1 " + sequence + str(len(sequence)) + "\n"
+
+    newseq = sequence[0:LETTERS_PER_CHUNK]
+    sequence = sequence[LETTERS_PER_CHUNK:]
+
+    while len(sequence) > LETTERS_PER_CHUNK:
+        newseq += " " + sequence[0:LETTERS_PER_CHUNK]
+        sequence = sequence[LETTERS_PER_CHUNK:]
+    newseq += " " + sequence
+
+    return newseq
 
 
 def validate_names(p):
@@ -346,4 +358,3 @@ def _map_contig_name_for_chr(chr):
     if chr in chr_to_contig_chrom:
         return 'Chromosome_' + chr_to_contig_chrom[chr]
     return chr
-

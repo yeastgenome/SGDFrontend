@@ -306,8 +306,6 @@ const SearchForm = React.createClass({
                                 <input type="submit" value={ button } style={{ color: 'grey', fontSize: 18 }}></input>
                         </form>);
 
-		
-
 	},
 
 	_getDownloadSeqButton: function(genes, strains, type) {
