@@ -153,11 +153,12 @@ var SearchForm = React.createClass({
 
 			var param = this.state.param;
 			var seq = ""; 
-			if (param['seq']) {
-			     seq = param['seq'];
+			if (this.state.passedInSeq) {
+			     seq = this.state.passedInSeq;
 			     alert("seq length="+seq.length);
 			}
 			else {
+			     alert("NO SEQ PASSED IN");
 			     seq = seqData.seq;
 			}
 			                
