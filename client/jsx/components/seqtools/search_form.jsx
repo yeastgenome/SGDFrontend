@@ -845,7 +845,7 @@ const SearchForm = React.createClass({
 	     	  text += "<p>You have selected the reverse complement sequence(s) of this gene/sequence list.</p>";
 	     }   
 
-	     return "<font size='18'>" + text + "</font>";
+	     return "<font size='22'>" + text + "</font>";
        }
 
 });
