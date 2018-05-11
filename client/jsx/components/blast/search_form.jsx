@@ -31,6 +31,8 @@ var SearchForm = React.createClass({
 		     }
 		     else if (param['seq']) {
 		     	  this._setSeq(param['seq']); 
+			  var seq = param['seq'];
+			  alert("seq length="+seq.length);
 		     }
                 }
 
