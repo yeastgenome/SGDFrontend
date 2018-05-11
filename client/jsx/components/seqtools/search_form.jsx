@@ -237,13 +237,14 @@ const SearchForm = React.createClass({
 		// rows.push(downloadTestRow);
 		// end of testing
 		
+		var ID = up + "_" + down + "_" + rev;
 		var seqAnalRow = [<span style={{ fontSize: 20}}>Sequence Analysis</span>];
 		_.map(genes, gene => {
 		    var s = seq4gene[gene];
 		    var seqInfo = s['genomic'];
 		    var selectedStrains = Object.keys(seqInfo);
 		    _.map(selectedStrains, strain =>  {
-		    	  var seqID = gene + "_" + strain;
+		    	  var seqID = gene + "_" + strain + "_" + ID;
 			  var seq = seqInfo[strain];
                           window.localStorage.setItem(seqID, seq);
 	            });
@@ -262,9 +263,9 @@ const SearchForm = React.createClass({
 	_getToolsLinks: function(gene, strains) {
 
 		var strainPulldown = this._getStrainPulldown(strains);
-		var blastButton = this._getToolButton(gene, '/blast-sgd',  'BLAST');
-		var fungalBlastButton = this._getToolButton(gene, '/blast-fungal', 'Fungal BLAST');	
-		var primerButton = this._getToolButton(gene, '/primer3', 'Design Primers');
+		var blastButton = this._getToolButton(gene, '/blast-sgd',  'BLAST', ID);
+		var fungalBlastButton = this._getToolButton(gene, '/blast-fungal', 'Fungal BLAST', ID);	
+		var primerButton = this._getToolButton(gene, '/primer3', 'Design Primers', ID);
 		var restrictionButton = this._getToolButton4post(gene, '/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map');
 		return(<div className="row">
                             <div className="large-12 columns">	
@@ -279,15 +280,15 @@ const SearchForm = React.createClass({
 	},
 
 
-	_getToolButton: function(name, program, button) {
+	_getToolButton: function(name, program, button, ID) {
 
                 var strain = this.state.strain;
-                var seqID = name + "_" + strain;
+                var seqID = name + "_" + strain + "_" + ID;
                 var seq = window.localStorage.getItem(seqID);
 
                 // <input type="submit" value={ button } className="button small secondary"></input>
 
-                return (<form method="GET" action={ program }>
+                return (<form method="GET" action={ program } target="toolwin">
                                 <input type="hidden" name="sequence_id" value={ seqID }  />
                                 <input type="submit" value={ button } style={{ color: 'grey', fontSize: 18 }}></input>
                         </form>);
@@ -304,7 +305,7 @@ const SearchForm = React.createClass({
 
 		// <input type="submit" value={ button } className="button small secondary"></input>
 		
-		return (<form method="POST" action={ program }>
+		return (<form method="POST" action={ program } target="toolwin">
 		                <input type="hidden" name="seq" value={ seq }  />
                                 <input type="submit" value={ button } style={{ color: 'grey', fontSize: 18 }}></input>
                         </form>);
