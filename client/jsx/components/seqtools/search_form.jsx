@@ -74,9 +74,13 @@ const SearchForm = React.createClass({
 
 			var data = this.state.resultData;
 
-			var _resultTable = this._getResultTable4gene(data);
-
-			return (<div>{ _resultTable } </div>);
+			if (this.state.submitted) {
+			   
+			     var [_geneList, _resultTable] = this._getResultTable4gene(data);
+			     var desc = this._getDesc4gene(geneList);
+    
+			     return (<div>{ _resultTable } </div>);
+			}
 
 		} 
 		else if (this.state.isPending) {
@@ -138,11 +142,16 @@ const SearchForm = React.createClass({
 		for (var i = 0; i <= genes.length; i++) {
 		    headerRow.push("");
 		}
-
+		var geneList = "";
 		var rows = [];
 		var geneRow = [<span style={{ fontSize: 20}}>Gene Name</span>];
 		_.map(genes, gene => {
 		    geneRow.push(<span style={{ fontSize: 20 }}>{ displayName4gene[gene] }</span>);
+		    if (geneList != "") {
+		        geneList += ", ";
+	            }
+		    geneList += displayName4gene[gene];
+
 		});
 		rows.push(geneRow);
 
@@ -250,7 +259,7 @@ const SearchForm = React.createClass({
 		});		
 		rows.push(seqAnalRow);
 
-		return this._display_gene_table(headerRow, rows);		
+		return [geneList, this._display_gene_table(headerRow, rows)];		
 		
 	},
 
@@ -306,18 +315,18 @@ const SearchForm = React.createClass({
 
 	},
 
-	_getDownloadSeqButton: function(genes, strains, type) {
-
-	        // return (<form ref={ genes } method="POST" action="/run_seqtools" key={"hiddenNode_" + genes}>
-		return (<form method="POST" action="/run_seqtools">
-                                <input type="hidden" name="format" value='fasta' />
-                                <input type="hidden" name="type" value={ type } />
-                                <input type="hidden" name="genes" value={ genes } />
-				<input type="hidden" name="strains" value={ strains } />
-				<input type="submit" value="FASTA" className="button secondary"></input>
-                        </form>);
-
-	},
+	// _getDownloadSeqButton: function(genes, strains, type) {
+        //
+	//        // return (<form ref={ genes } method="POST" action="/run_seqtools" key={"hiddenNode_" + genes}>
+	//	return (<form method="POST" action="/run_seqtools">
+        //                       <input type="hidden" name="format" value='fasta' />
+        //                        <input type="hidden" name="type" value={ type } />
+        //                        <input type="hidden" name="genes" value={ genes } />
+	//			<input type="hidden" name="strains" value={ strains } />
+	//			<input type="submit" value="FASTA" className="button secondary"></input>
+        //               </form>);
+        //
+	// },
 
 	_display_gene_table: function(headerRow, rows) {
 
@@ -807,7 +816,36 @@ const SearchForm = React.createClass({
 
 	        return "<p>Try <a target='infowin' href='https://yeastmine.yeastgenome.org/yeastmine/begin.do'>Yeastmine</a> for flexible queries and fast retrieval of chromosomal features, sequences, GO annotations, interaction data and phenotype annotations. The video tutorial <a target='infowin' href='https://vimeo.com/28472349'>Template Basics</a> describes how to quickly retrieve this type of information in YeastMine. To find a comprehensive list of SGD's tutorials describing the many other features available in YeastMine and how to use them, visit SGD's <a target='infowin' href='https://sites.google.com/view/yeastgenome-help/video-tutorials/yeastmine?authuser=0'>YeastMine Video Tutorials</a> page. </p><p>This resource allows retrieval of a list of options for accessing biological information, table/map displays, and sequence analysis tools for 1. a named gene or sequence. 2. a specified chromosomal region, or 3. a raw DNA or protein sequence.</p>";
       
+       },
+       
+       _getDesc4gene: function(geneList) {
+
+       	     var up = window.localStorage.getItem("up");
+	     var down = window.localStorage.getItem("down"); 
+	     var rev = window.localStorage.getItem("rev");
+
+       	     var text = "The currently selected gene(s)/sequence(s) are ";
+	     text += "<font color='red'>" + geneList + "</font>";
+	     if (up && down) {
+	     	  text += "<b>plus " + str(up) + " basepair(s) of upstream sequence and " + str(down) + " basepair(s) od downstream sequence.</b>";
+	     }
+	     else if (up) {
+	     	  text += "<b>plus " + str(up) + " basepair(s) of upstream sequence.</b>";
+             }
+	     else if (down) {
+	          text += "<b>plus " + str(down) + " basepair(s) of downstream sequence.</b>";
+	     }
+
+	     text = "<p>" + text + "</p>";
+
+	     if (rev) {
+	     	  
+	     	  text += "<p>You have selected the reverse complement sequence(s) of this gene/sequence list.</p>";
+	     }   
+
+	     return text;
        }
+
 });
 
 module.exports = SearchForm;
