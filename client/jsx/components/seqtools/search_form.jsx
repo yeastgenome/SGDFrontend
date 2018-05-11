@@ -262,7 +262,7 @@ const SearchForm = React.createClass({
 		var blastButton = this._getToolButton(gene, '/blast-sgd',  'BLAST', ID);
 		var fungalBlastButton = this._getToolButton(gene, '/blast-fungal', 'Fungal BLAST', ID);	
 		var primerButton = this._getToolButton(gene, '/primer3', 'Design Primers', ID);
-		var restrictionButton = this._getToolButton4post(gene, '/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map');
+		var restrictionButton = this._getToolButton4post(gene, 'https://www.yeastgenome.org/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map');
 		return(<div className="row">
                             <div className="large-12 columns">	
                        	    	 { strainPulldown }
@@ -302,7 +302,7 @@ const SearchForm = React.createClass({
 		// <input type="submit" value={ button } className="button small secondary"></input>
 		
 		return (<form method="POST" action={ program } target="toolwin">
-		                <input type="hidden" name="seq" value={ seq }  />
+		                <input type="hidden" name="sequence" value={ seq }  />
                                 <input type="submit" value={ button } style={{ color: 'grey', fontSize: 18 }}></input>
                         </form>);
 
