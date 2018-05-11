@@ -421,7 +421,7 @@ def index_phenotypes():
             es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
             bulk_data = []
     if len(bulk_data) > 0:
-        es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)'''
+        es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
 
 def index_observables():
@@ -864,4 +864,4 @@ if __name__ == "__main__":
     t1 = Thread(target=index_part_1)
     t2 = Thread(target=index_part_2)
     t1.start()
-    t2.start()'''
+    t2.start()
