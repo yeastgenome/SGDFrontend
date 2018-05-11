@@ -60,9 +60,9 @@ def display_sequence_for_genes(p, data):
                     content += format_fasta(locusInfo.get('residue')) + "\n" 
     
     if p.get('format') is not None and p['format'] == 'gcg':
-        filename += ".gcg"
+        filename += "_" + type + ".gcg"
     else:
-        filename += ".fsa"
+        filename += "_" + type + ".fsa"
 
     return set_download_file(filename, content)
 
