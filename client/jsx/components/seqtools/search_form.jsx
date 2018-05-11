@@ -77,20 +77,25 @@ const SearchForm = React.createClass({
 			if (this.state.submitted) {
 			   
 			     var [_geneList, _resultTable] = this._getResultTable4gene(data);
-			     var desc = this._getDesc4gene(_geneList);
-			     // <p className='paragraph-margin-bottom-10 text--font-size-20 paragraph--justified' dangerouslySetInnerHTML={{ __html: desc }} />
+			     var _desc = this._getDesc4gene(_geneList);
+
+			     // <p className='paragraph-margin-bottom-10 text--font-size-20 paragraph--justified' dangerouslySetInnerHTML={{ __html: _desc }} />
 
 			     return (<div>
-					   <p dangerouslySetInnerHTML={{ __html: desc }} />
+					   <p dangerouslySetInnerHTML={{ __html: _desc }} />
 			                   <p>{ _resultTable } </p>
 			             </div>);
 
 			}
 			else if (this.state.submitted2) {
-
-			     var seq = data['residue'];
-
-			     return (<div>CHROMOSOME SEQ RESULT PAGE { seq } </div>);
+			     
+			     var _resultTable = this._getResultTable4chr(data);
+			     var _desc = this._getDesc4chr(data);
+ 
+			     return (<div>
+                                           <p dangerouslySetInnerHTML={{ __html: _desc }} />
+                                           <p>{ _resultTable } </p>
+                                     </div>);
 
 			}
 			else if (this.state.submitted3) {
@@ -147,6 +152,12 @@ const SearchForm = React.createClass({
 			     </div>
 			</div>
 		</div>);
+
+	},
+
+	_getResultTable4chr: function(data) {
+	
+		return data['residue'];
 
 	},
 
@@ -859,6 +870,18 @@ const SearchForm = React.createClass({
 	     	  
 	     	  text += "<p>You have selected the reverse complement sequence(s) of this gene/sequence list.</p>";
 	     }   
+
+	     return text;
+       },
+
+       _getDesc4chr: function(data) {
+
+	     var text = "The current selection is: ";
+	     text += "<font color='red'>chromosome " + data['chr'] + " coordinates " + data['start'] + " to " + data['end'] + "</font>";
+	     if (data['rev'] || data['start'] > data['end']) {
+	     	 text = "<p>" + text + "</p>";
+		 text += "<p>You have selected the reverse complement of this sequence. The reverse complement is on the Crick strand and will be displayed 5'->3' for all Sequence Analysis and Sequence Retrieval options.</p>"; 
+	     }	     
 
 	     return text;
        }
