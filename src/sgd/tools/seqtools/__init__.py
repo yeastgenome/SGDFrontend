@@ -252,12 +252,12 @@ def get_sequence_for_genes(p):
             allSeqData['protein'] = proteinData
         if res.get('coding_dna') is not None:
             [format_name, codingData] = _extract_seq(strains, res['coding_dna'], rev)
-            allSeqData['coding_dna'] = "CODING:" + codingData
+            allSeqData['coding_dna'] = codingData
 
         if res.get('genomic_dna') is not None:
             if up == 0 and down == 0:
                 [format_name, genomicData] = _extract_seq(strains, res['genomic_dna'], rev)
-                allSeqData['genomic_dna'] = "GENOMIC:" + genomicData
+                allSeqData['genomic_dna'] = genomicData
             else:
                 [format_name, genomicData] = _extract_seq_with_up_down(strains, 
                                                                        res['genomic_dna'], 
