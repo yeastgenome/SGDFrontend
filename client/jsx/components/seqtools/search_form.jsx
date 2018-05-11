@@ -80,7 +80,7 @@ const SearchForm = React.createClass({
 			     var desc = this._getDesc4gene(_geneList);
 			     return (<div>
 					   <p dangerouslySetInnerHTML={{ __html: desc }} />
-					   <p className='paragraph-margin-bottom-10 text--font-size-14 paragraph--justified' dangerouslySetInnerHTML={{ __html: desc }} />
+					   <p className='paragraph-margin-bottom-10 text--font-size-20 paragraph--justified' dangerouslySetInnerHTML={{ __html: desc }} />
 			                   <p>{ _resultTable } </p>
 			             </div>);
 
