@@ -29,9 +29,6 @@ var SearchForm = React.createClass({
 		     if (param['name']) {
                      	  this._getSeq(param['name'], param['type']);
 		     }
-		     else if (param['seq']) {
-		     	  this._setSeq(param['seq']); 
-		     }
                 }
 
 		// need to put the date in a config file..
@@ -48,7 +45,7 @@ var SearchForm = React.createClass({
 			sequence: null,
 			uploadedSeq: null,
 			uploadFile: null,
-			passedInSeq: null,
+			passedInSeq: param['seq'],
 			program: null,
 			database: null,
 			outFormat: null,
@@ -153,7 +150,17 @@ var SearchForm = React.createClass({
 
 		        var seqData = this.state.seqData;
                 	var configData = this.state.configData;
-                
+
+			var param = this.state.param;
+			var seq = ""; 
+			if (param['seq']) {
+			     seq = param['seq'];
+			     alert("seq length="+seq.length);
+			}
+			else {
+			     seq = seqData.seq;
+			}
+			                
 			var commentBoxNode = this._getCommentBoxNode();
                 	var submitNode = this._getSubmitNode();
                 	var seqBoxNode = this._getSeqBoxNode(seqData.seq);
@@ -161,7 +168,7 @@ var SearchForm = React.createClass({
                 	var databaseNode = this._getDatabaseNode(configData);
                 	var optionNode = this._getOptionsNode(configData);
 			// need to put the date in a config file
-			var descText = "<p>HELLO WORLD Datasets updated: January 31, 2018</p><p>This form allows BLAST searches of S. cerevisiae sequence datasets. To search multiple fungal sequences, go to the <a href='/blast-fungal'>Fungal BLAST search form</a>.</p>";
+			var descText = "<p>Datasets updated: January 31, 2018</p><p>This form allows BLAST searches of S. cerevisiae sequence datasets. To search multiple fungal sequences, go to the <a href='/blast-fungal'>Fungal BLAST search form</a>.</p>";
 			
 			if (this.props.blastType == 'fungal') {
 			     descText = "<p>This form allows BLAST searches of multiple fungal sequence datasets. To restrict your search to S. cerevisiae with additional BLAST search options, go to the <a href='/blast-sgd'><i>S. cerevisiae</i> BLAST search form</a>.</p>";
@@ -434,10 +441,6 @@ var SearchForm = React.createClass({
         _onChange: function(e) {
                 this.setState({ text: e.target.value});
         },
-
-	_setSeq: function(seq) {
-	       this.setState({ seqData: { 'seq': seq } });
-	},
 
 	_getSeq: function(name, type) {
                 var jsonUrl = BLAST_URL + "?name=" + name;
