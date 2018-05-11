@@ -451,6 +451,7 @@ class IndexESHelper:
             chemicals = set([])
             mutant = set([])
             _annotations = phenos_annotation.get(item.phenotype_id)
+
             if _annotations is not None:
                 _annotations_mod = filter(
                     lambda lst_item: type(lst_item) is not list, _annotations)
