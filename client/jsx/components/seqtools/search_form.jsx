@@ -74,9 +74,7 @@ const SearchForm = React.createClass({
 
 			var data = this.state.resultData;
 
-			var _resultTable = this._getResultTable(data);
-
-			// return <div dangerouslySetInnerHTML={{ __html: _resultTable}} />
+			var _resultTable = this._getResultTable4gene(data);
 
 			return (<div>{ _resultTable } </div>);
 
@@ -131,10 +129,10 @@ const SearchForm = React.createClass({
 
 	},
 
-	_getResultTable: function(data) {
+	_getResultTable4gene: function(data) {
 		
 		var [genes, displayName4gene, sgdid4gene, seq4gene, hasProtein4gene, hasCoding4gene, hasGenomic4gene] 
-			= this._getDataFromJson(data);
+			= this._getDataFromJson4gene(data);
 				
 		var headerRow = [];
 		for (var i = 0; i <= genes.length; i++) {
@@ -340,7 +338,7 @@ const SearchForm = React.createClass({
 
 	},
 
-	_getDataFromJson: function(data) {
+	_getDataFromJson4gene: function(data) {
 	        
 		var genes = Object.keys(data).sort();
 		var displayName4gene = {};
