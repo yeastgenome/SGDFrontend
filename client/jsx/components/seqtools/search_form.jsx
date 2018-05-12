@@ -33,6 +33,8 @@ const SearchForm = React.createClass({
 			end: null,
 			seq: null,
 			rev: 'off',
+			rev2: 'off',
+			rev3: 'off',
 			resultData: {},
 			notFound: null,
 			param: param,
@@ -810,7 +812,7 @@ const SearchForm = React.createClass({
                       paramData['end'] = window.localStorage.getItem("end");
 		   }
 		   if (window.localStorage.getItem("rev2")) {
-                      paramData['rev'] = window.localStorage.getItem("rev2");
+                      paramData['rev2'] = window.localStorage.getItem("rev2");
 		   }
 		   this._sendRequest(paramData)
                    return
@@ -820,7 +822,7 @@ const SearchForm = React.createClass({
 		   paramData['seq'] = window.localStorage.getItem("seq");
                    paramData['seqtype'] = window.localStorage.getItem("seqtype");
 		   if (window.localStorage.getItem("rev3")) {
-                      paramData['rev'] = window.localStorage.getItem("rev3");
+                      paramData['rev3'] = window.localStorage.getItem("rev3");
 		   }
 		   this._sendRequest(paramData)
                    return

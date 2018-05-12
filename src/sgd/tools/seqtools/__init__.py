@@ -201,7 +201,7 @@ def get_sequence_for_chr(p):
     contig = _map_contig_name_for_chr(chr)
     seq = _get_sequence_from_contig(contig, start, end, strand)
 
-    rev = p.get('rev')
+    rev = p.get('rev2')
     if rev is None or rev == '':
         rev = 0
     else:
@@ -217,7 +217,7 @@ def manipulate_sequence(p):
 
     data = {}
     seq = p.get('seq')
-    rev = p.get('rev')
+    rev = p.get('rev3')
     if rev is not None:
         data['rev'] = 1
         seq = _reverse_complement(seq)
