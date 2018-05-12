@@ -335,7 +335,6 @@ const SearchForm = React.createClass({
                 var restrictionButton = this._getToolButtonChr4post('https://www.yeastgenome.org/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map', seq);
                 return(<div className="row">
                             <div className="large-12 columns">
-                                 { strainPulldown }
                                  { blastButton }
                                  { fungalBlastButton }
                                  { primerButton }
