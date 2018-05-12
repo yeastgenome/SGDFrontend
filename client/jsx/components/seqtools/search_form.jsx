@@ -89,7 +89,7 @@ const SearchForm = React.createClass({
 			}
 			else if (this.state.submitted3) {
 			     
-			     return (<div>data['residue']</div>);
+			     return (<div>{data['residue']}</div>);
 
 			}
 
