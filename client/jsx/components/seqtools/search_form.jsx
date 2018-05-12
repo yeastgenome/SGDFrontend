@@ -160,8 +160,7 @@ const SearchForm = React.createClass({
 		var chr = this._num_to_chr(data['chr']);
 		var start = data['start'];
 		var end = data['end'];
-				
-		// return data['residue'];
+		var rev = data['rev'];
 
 		var headerRow = [['', '']];
 
