@@ -162,7 +162,7 @@ const SearchForm = React.createClass({
 		var end = data['end'];
 		var rev = data['rev'];
 
-		var headerRow = [['', '']];
+		var headerRow = ['', ''];
 
                 var rows = [];
 
