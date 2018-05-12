@@ -40,22 +40,21 @@ def display_sequence_for_chr(p, data):
     start = data['start']
     end = data['end']
 
-    content =  ">chr" + _chrnum_to_chrom(data['chr']) + " coordinates " + str(start) + " to " + str(end) + "\n"
+    content =  ">chr" + _chrnum_to_chrom(data['chr']) + " coordinates " + start + " to " + end + "\n"
 
     if p.get('format') == 'gcg':
         content += format_gcg(data['residue']);
     else:
         content += format_fasta(data['residue']);
         
-    filename = "chr" + _chrnum_to_chrom(data['chr']) + "_" +  str(start) + "-"+ str(end)
+    filename = "chr" + _chrnum_to_chrom(data['chr']) + "_" +  start + "-"+ end
 
     if p.get('format') == 'gcg':
         filename += ".gcg"
     else:
         filename += ".fsa"
 
-    return set_download_file(filename, content)
-
+    return set_download_file(filename, unicode(content))
 
 def display_sequence_for_genes(p, data):
 
