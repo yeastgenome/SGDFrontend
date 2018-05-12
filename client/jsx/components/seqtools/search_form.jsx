@@ -180,10 +180,18 @@ const SearchForm = React.createClass({
                 var seqDLRow = [<span style={{ fontSize: 20}}><br>Sequence Downloads</br><br>* DNA of Region</br></span>];
                 var fastaUrl = SeqtoolsUrl + "?format=fasta&chr=" + data['chr'] + "&start=" + start + "&end=" + end + "&rev=" + rev;
                 var gcgUrl = SeqtoolsUrl + "?format=gcg&chr=" + data['chr'] + "&start=" + start + "&end=" + end + "&rev=" + rev;
-
                 seqDLRow.push(<span style={{ fontSize: 20}}><br></br><br><a href={ fastaUrl } target='infowin2'>Fasta</a> | <a href={ gcgUrl } target='infowin2'>GCG</a></br></span>);
- 
                 rows.push(seqDLRow);
+
+		// sequence analysis row
+
+		var seqAnalRow = [<span style={{ fontSize: 20}}>Sequence Analysis</span>];
+                var seq = data['residue'];
+		var seqID = chr + "_" + start + "_" + end + "_" + rev;
+              	window.localStorage.setItem(seqID, seq);
+                seqAnalRow.push(this._getToolsLinks4chr(seqID, seq)); 
+                rows.push(seqAnalRow);
+
 
 		return this._display_result_table(headerRow, rows);
 
@@ -319,6 +327,24 @@ const SearchForm = React.createClass({
 		
 	},
 
+	_getToolsLinks4chr: function(seqID, seq) {
+			    
+                var blastButton = this._getToolButtonChr('/blast-sgd',  'BLAST', seqID);
+                var fungalBlastButton = this._getToolButtonChr('/blast-fungal', 'Fungal BLAST', seqID);
+                var primerButton = this._getToolButtonChr('/primer3', 'Design Primers', seqID);
+                var restrictionButton = this._getToolButtonChr4post('https://www.yeastgenome.org/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map', seq);
+                return(<div className="row">
+                            <div className="large-12 columns">
+                                 { strainPulldown }
+                                 { blastButton }
+                                 { fungalBlastButton }
+                                 { primerButton }
+                                 { restrictionButton }
+                            </div>
+                </div>);
+
+	},
+
 	_getToolsLinks: function(gene, strains, ID) {
 
 		var strainPulldown = this._getStrainPulldown(strains);
@@ -338,7 +364,7 @@ const SearchForm = React.createClass({
 
 	},
 
-
+	
 	_getToolButton: function(name, program, button, ID) {
 
                 var strain = this.state.strain;
@@ -370,6 +396,26 @@ const SearchForm = React.createClass({
                         </form>);
 
 	},
+
+	_getToolButtonChr: function(program, button, seqID) {
+
+	                return (<form method="GET" action={ program } target="toolwin">
+                                <input type="hidden" name="sequence_id" value={ seqID }  />
+                                <input type="submit" value={ button } style={{ color: 'grey', fontSize: 18 }}></input>
+                        </form>);
+
+        },
+
+        _getToolButtonChr4post: function(program, button, seq) {
+
+
+                return (<form method="POST" action={ program } target="toolwin">
+                                <input type="hidden" name="sequence" value={ seq }  />
+                                <input type="submit" value={ button } style={{ color: 'grey', fontSize: 18 }}></input>
+                        </form>);
+
+        },
+
 
 	// _getDownloadSeqButton: function(genes, strains, type) {
         //
