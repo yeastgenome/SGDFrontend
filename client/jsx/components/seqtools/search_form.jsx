@@ -179,10 +179,8 @@ const SearchForm = React.createClass({
                 var seqDLRow = [<span style={{ fontSize: 20}}><br>Sequence Downloads</br><br>* DNA of Region</br></span>];
                 var fastaUrl = SeqtoolsUrl + "?format=fasta&chr=" + data['chr'] + "&start=" + start + "&end=" + end + "&rev=" + rev;
                 var gcgUrl = SeqtoolsUrl + "?format=gcg&chr=" + data['chr'] + "&start=" + start + "&end=" + end + "&rev=" + rev;
- + up + "&down=" + down;
 
-                         seqDLRow.push(<span style={{ fontSize: 20}}><br>Batch seuence file</br><br><a href={ genomicFastaUrl } target='infowin\
-2'>Fasta</a> | <a href={ genomicGcgUrl } target='infowin2'>GCG</a></br></span>);
+                seqDLRow.push(<span style={{ fontSize: 20}}><br>Batch seuence file</br><br><a href={ fastaUrl } target='infowin2'>Fasta</a> | <a href={ gcgUrl } target='infowin2'>GCG</a></br></span>);
                  
                 rows.push(seqDLRow);
 
