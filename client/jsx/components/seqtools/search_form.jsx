@@ -553,9 +553,9 @@ const SearchForm = React.createClass({
 		window.localStorage.setItem("end", end);
 
 		var rev = this.refs.rev2.value.trim();
-		if (rev == 'off') {
-		   rev = '';
-		}
+		// if (rev == 'off') {
+		//   rev = '';
+		// }
 		window.localStorage.setItem("rev2", rev);
 
         },
@@ -571,9 +571,9 @@ const SearchForm = React.createClass({
 		
 		var seqtype = this.refs.seqtype.value.trim();
                 var rev = this.refs.rev3.value.trim();
-		if (rev == 'off') {
-		   rev = '';
-		}
+		// if (rev == 'off') {
+		//   rev = '';
+		// }
 				
 		window.localStorage.setItem("seq", seq);
 		window.localStorage.setItem("seqtype", seqtype);
