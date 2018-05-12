@@ -552,11 +552,11 @@ const SearchForm = React.createClass({
 		window.localStorage.setItem("start", start);
 		window.localStorage.setItem("end", end);
 
-		var rev = this.refs.rev2.value.trim();
-		// if (rev == 'off') {
-		//   rev = '';
-		// }
-		window.localStorage.setItem("rev2", rev);
+		var rev2 = this.refs.rev2.value.trim();
+		if (rev2 == 'off') {
+		   rev2 = '';
+		}
+		window.localStorage.setItem("rev2", rev2);
 
         },
 
@@ -570,16 +570,16 @@ const SearchForm = React.createClass({
                 }
 		
 		var seqtype = this.refs.seqtype.value.trim();
-                var rev = this.refs.rev3.value.trim();
-		// if (rev == 'off') {
-		//   rev = '';
-		// }
+                var rev3 = this.refs.rev3.value.trim();
+		if (rev3 == 'off') {
+		   rev3 = '';
+		}
 				
 		window.localStorage.setItem("seq", seq);
 		window.localStorage.setItem("seqtype", seqtype);
 		
 		if (seqtype == 'DNA') {
-		   window.localStorage.setItem("rev3", rev);
+		   window.localStorage.setItem("rev3", rev3);
 		}
 		else {
 		   window.localStorage.setItem("rev3", '');
