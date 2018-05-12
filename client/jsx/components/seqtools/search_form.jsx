@@ -183,6 +183,7 @@ const SearchForm = React.createClass({
                  
                 rows.push(seqDLRow);
 
+		return this._display_gene_table(headerRow, rows);
 
 	},
 
