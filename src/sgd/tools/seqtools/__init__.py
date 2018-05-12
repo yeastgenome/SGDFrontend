@@ -413,6 +413,6 @@ def _map_contig_name_for_chr(chrnum):
     chrom = _chrnum_to_chrom(chrnum)
 
     if chrom is not None:
-        return 'Chromosome_' + chr_to_contig_chrom[chrum]
+        return 'Chromosome_' + chrom
     
     return chrnum
