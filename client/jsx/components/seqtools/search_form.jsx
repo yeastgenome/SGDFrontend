@@ -157,7 +157,35 @@ const SearchForm = React.createClass({
 
 	_getResultTable4chr: function(data) {
 	
-		return data['residue'];
+		var chr = this._num_to_chr(data['chr']);
+		var start = data['start'];
+		var end = data['end'];
+				
+		// return data['residue'];
+
+		var headerRow = [['', '']];
+
+                var rows = [];
+
+		// browser row
+
+                var browserRow = [<span style={{ fontSize: 20}}>Genome Display (S288C)</span>];
+                var url = "https://browse.yeastgenome.org/?loc=" + chr + ":" + start + ".." + end;;
+                browserRow.push(<span style={{ fontSize: 20 }}><a href={ url } target='infowin2'>JBrowse</a></span>);
+                rows.push(browserRow);
+
+		// sequence download row
+
+                var seqDLRow = [<span style={{ fontSize: 20}}><br>Sequence Downloads</br><br>* DNA of Region</br></span>];
+                var fastaUrl = SeqtoolsUrl + "?format=fasta&chr=" + data['chr'] + "&start=" + start + "&end=" + end + "&rev=" + rev;
+                var gcgUrl = SeqtoolsUrl + "?format=gcg&chr=" + data['chr'] + "&start=" + start + "&end=" + end + "&rev=" + rev;
+ + up + "&down=" + down;
+
+                         seqDLRow.push(<span style={{ fontSize: 20}}><br>Batch seuence file</br><br><a href={ genomicFastaUrl } target='infowin\
+2'>Fasta</a> | <a href={ genomicGcgUrl } target='infowin2'>GCG</a></br></span>);
+                 
+                rows.push(seqDLRow);
+
 
 	},
 
@@ -876,14 +904,28 @@ const SearchForm = React.createClass({
 
        _getDesc4chr: function(data) {
 
+       	     var chrnum = data['chr'];
+	     
 	     var text = "The current selection is: ";
-	     text += "<font color='red'>chromosome " + data['chr'] + " coordinates " + data['start'] + " to " + data['end'] + "</font>";
+	    
+	     text += "<font color='red'>chromosome " + this._num_to_chr(chrnum) + " coordinates " + data['start'] + " to " + data['end'] + "</font>";
 	     if (data['rev'] || data['start'] > data['end']) {
 	     	 text = "<p>" + text + "</p>";
 		 text += "<p>You have selected the reverse complement of this sequence. The reverse complement is on the Crick strand and will be displayed 5'->3' for all Sequence Analysis and Sequence Retrieval options.</p>"; 
 	     }	     
 
 	     return text;
+       },
+
+       _num_to_chr: function(num) {
+       		 
+		 var num2chr = { 1: 'I', 2: 'II', 3: 'III', 4: 'IV', 5: 'V', 6: 'VI',
+		     	         7: 'VII', 8: 'VIII', 9: 'IX', 10: 'X', 11: 'XI', 
+				 12: 'XII', 13: 'XIII', 14: 'XIV', 15: 'XV', 16: 'XVI',
+				 '17': 'Mito' };
+
+		return num2chr[num];
+
        }
 
 });

@@ -17,7 +17,11 @@ def do_seq_analysis(request):
 
     if p.get('chr'):
         data = get_sequence_for_chr(p)
-        return Response(body=json.dumps(data), content_type='application/json')
+        if p.get('format') is None:
+            return Response(body=json.dumps(data), content_type='application/json')
+        else:
+            response = display_sequence_for_chr(p, data)
+            return response
 
     if p.get('seq'):
         data = manipulate_sequence(p)
@@ -29,6 +33,29 @@ def do_seq_analysis(request):
     else:
         response = display_sequence_for_genes(p, data)
         return response
+
+
+def display_sequence_for_chr(p, data):
+
+    start = data['start']
+    end = data['end']
+
+    content =  ">chr" + _chrnum_to_chrom(data['chr']) + " coordinates " + str(start) + " to " + str(end) + "\n"
+
+    if p.get('format') == 'gcg':
+        content += format_gcg(data['residue']);
+    else:
+        content += format_fasta(data['residue']);
+        
+    filename = "chr" + _chrnum_to_chrom(data['chr']) + "_" +  str(start) + "-"+ str(end)
+
+    if p.get('format') == 'gcg':
+        filename += ".gcg"
+    else:
+        filename += ".fsa"
+
+    return set_download_file(filename, content)
+
 
 def display_sequence_for_genes(p, data):
 
@@ -372,14 +399,20 @@ def _get_json_from_server(url):
     except HTTPError:
         return 404
 
-             
-def _map_contig_name_for_chr(chr):
-    
-    chr_to_contig_chrom = { '1': 'I', '2': 'II', '3': 'III', '4': 'IV', '5': 'V', 
-                            '6': 'VI', '7': 'VII', '8': 'VIII', '9': 'IX', '10': 'X',
-                            '11': 'XI', '12': 'XII', '13': 'XIII', '14': 'XIV',
-                            '15': 'XV', '16': 'XVI', '17': 'Mito' }
+def _chrnum_to_chrom(chrnum):
 
-    if chr in chr_to_contig_chrom:
-        return 'Chromosome_' + chr_to_contig_chrom[chr]
-    return chr
+    chrnum_to_chrom = { '1': 'I', '2': 'II', '3': 'III', '4': 'IV', '5': 'V',
+                        '6': 'VI', '7': 'VII', '8': 'VIII', '9': 'IX', '10': 'X',
+                        '11': 'XI', '12': 'XII', '13': 'XIII', '14': 'XIV',
+                        '15': 'XV', '16': 'XVI', '17': 'Mito' }
+             
+    return chrnum_to_chrom.get(chrnum)
+
+def _map_contig_name_for_chr(chrnum):
+    
+    chrom = _chrnum_to_chrom(chrnum)
+
+    if chrom is not None:
+        return 'Chromosome_' + chr_to_contig_chrom[chrum]
+    
+    return chrnum
