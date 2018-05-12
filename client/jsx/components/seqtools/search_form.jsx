@@ -9,9 +9,6 @@ const MultiSequenceDownload = require("./multi_sequence_download.jsx");
 
 const SeqtoolsUrl = "/run_seqtools";
 
-// const LETTERS_PER_CHUNK = 10;
-// const LETTERS_PER_LINE = 60;
-
 const SearchForm = React.createClass({
 
 	getInitialState: function () {
@@ -89,8 +86,16 @@ const SearchForm = React.createClass({
 			}
 			else if (this.state.submitted3) {
 			     
-			     return (<div>{data['residue']}</div>);
+			     var _resultTable = this._getResultTable4seq(data['residue']);
+                             var _desc = this._getDesc4seq();
+			     var _complementBox = this._getComplementBox(data['residue']);
 
+                             return (<div>
+                                           <p dangerouslySetInnerHTML={{ __html: _desc }} />
+					   {_complementBox}
+                                           <p>{ _resultTable } </p>
+                                     </div>); 
+			    
 			}
 
 		} 
@@ -142,6 +147,47 @@ const SearchForm = React.createClass({
 			</div>
 		</div>);
 
+	},
+
+	_getComplementBox: function(seq) {
+
+	     var rev = window.localStorage.getItem("rev3");
+
+	     if (rev) {
+	     	  return (<div>The reverse complement of this sequence:<p><textarea value={ seq } rows='7' cols='200'></textarea></p></div>);
+	     }
+	     else {
+	     	  return (<div></div>);
+	     }
+
+	},
+
+	_getResultTable4seq: function(seq) {
+
+	        var seqtype = window.localStorage.getItem("seqtype");
+
+		var min = 1;
+   		var max = 10000;
+   		var seqID =  min + (Math.random() * (max-min));
+			     
+                var headerRow = ['', ''];
+
+                var rows = [];
+
+                // sequence analysis row
+
+                var seqAnalRow = [<span style={{ fontSize: 20}}>Sequence Analysis</span>];
+                window.localStorage.setItem(seqID, seq);
+		if (seqtype == 'DNA') {
+                     seqAnalRow.push(this._getToolsLinks4DNA(seqID, seq)); 
+		}
+		else {
+		     seqAnalRow.push(this._getToolsLinks4protein(seqID, seq));
+		}
+                rows.push(seqAnalRow);
+
+                return this._display_result_table(headerRow, rows);		   
+		   
 	},
 
 	_getResultTable4chr: function(data) {
@@ -312,6 +358,78 @@ const SearchForm = React.createClass({
 
 		return [geneList, this._display_result_table(headerRow, rows)];		
 		
+	},
+
+	_getToolsLinks4DNA: function(seqID, seq) {
+		
+		var blastButton = this._getToolButtonChr('/blast-sgd',  'BLAST', seqID);
+                var fungalBlastButton = this._getToolButtonChr('/blast-fungal', 'Fungal BLAST', seqID);
+                var primerButton = this._getToolButtonChr('/primer3', 'Design Primers', seqID);
+                var restrictionButton = this._getToolButtonChr4post('https://www.yeastgenome.org/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map', seq);
+		
+		var seqlen = seq.length;
+
+		if (seqlen > 20) {
+                     return(<div className="row">
+                                 <div className="large-12 columns">
+                                      { blastButton }
+                                      { fungalBlastButton }
+                                      { primerButton }
+                                      { restrictionButton }
+                                 </div>
+                     </div>);
+		}
+		else {
+
+		     return(<div className="row">
+                                 <div className="large-12 columns">
+                                      { blastButton }
+                                      { fungalBlastButton }
+                                      { primerButton }
+				      <form method="GET" action='/nph-patmatch' target="toolwin">
+				      	   <input type="hidden" name="seqtype" value='nuc' />
+					   <input type="hidden" name="pattern" value={ seq } />
+					   <input type="submit" value="Genome Pattern Matching" style={{ color: 'grey', fontSize: 18 }}></input>
+                                      </form>
+                                      { restrictionButton }
+                                 </div>
+                     </div>);
+
+		}
+
+	},
+
+	_getToolsLinks4protein: function(seqID, seq) {
+			    
+		var blastButton = this._getToolButtonChr('/blast-sgd',  'BLAST', seqID);
+		var fungalBlastButton = this._getToolButtonChr('/blast-fungal', 'Fungal BLAST', seqID);
+
+		var seqlen = seq.length;
+
+                if (seqlen > 20) {
+		
+		     return(<div className="row">
+                            	 <div className="large-12 columns">
+                                      { blastButton }
+                                      { fungalBlastButton }
+                                 </div>
+                     </div>);
+
+		}
+		else {
+		     
+		     return(<div className="row">
+                                 <div className="large-12 columns">
+                                      { blastButton }
+                                      { fungalBlastButton }
+				      <form method="GET" action='/nph-patmatch' target="toolwin">	
+                                           <input type="hidden" name="pattern" value={ seq } />
+                                           <input type="submit" value="Genome Pattern Matching" style={{ color: 'grey', fontSize: 18 }}></input>
+                                      </form>   
+                                 </div>
+                     </div>);
+
+		}
 	},
 
 	_getToolsLinks4chr: function(seqID, seq) {
@@ -947,6 +1065,13 @@ const SearchForm = React.createClass({
 	     }	     
 
 	     return text;
+       },
+
+       _getDesc4seq: function() {
+
+	     var seqtype = window.localStorage.getItem("seqtype");
+	     return "<p>The current raw sequence you have entered is: <font color='red'>" + seqtype + " sequence</font></p>";
+	     	  
        },
 
        _num_to_chr: function(num) {
