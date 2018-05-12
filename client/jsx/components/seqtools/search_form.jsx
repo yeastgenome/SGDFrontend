@@ -162,7 +162,7 @@ const SearchForm = React.createClass({
 		var end = data['end'];
 		var rev = data['rev'];
 
-		var headerRow = [['', '']];
+		var headerRow = [['', '', '']];
 
                 var rows = [];
 
@@ -183,7 +183,7 @@ const SearchForm = React.createClass({
                  
                 rows.push(seqDLRow);
 
-		return this._display_gene_table(headerRow, rows);
+		return this._display_result_table(headerRow, rows);
 
 	},
 
@@ -313,7 +313,7 @@ const SearchForm = React.createClass({
 		});		
 		rows.push(seqAnalRow);
 
-		return [geneList, this._display_gene_table(headerRow, rows)];		
+		return [geneList, this._display_result_table(headerRow, rows)];		
 		
 	},
 
@@ -382,7 +382,7 @@ const SearchForm = React.createClass({
         //
 	// },
 
-	_display_gene_table: function(headerRow, rows) {
+	_display_result_table: function(headerRow, rows) {
 
                 var _tableData = {
                      headers: [headerRow],
