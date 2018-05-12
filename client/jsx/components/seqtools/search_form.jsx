@@ -811,6 +811,9 @@ const SearchForm = React.createClass({
 		   }
 		   if (window.localStorage.getItem("rev")) {
                       paramData['rev'] = window.localStorage.getItem("rev2");
+
+		      alert("rev="+paramData['rev']);
+
 		   }
 		   this._sendRequest(paramData)
                    return
