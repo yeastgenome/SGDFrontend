@@ -202,11 +202,10 @@ def get_sequence_for_chr(p):
     seq = _get_sequence_from_contig(contig, start, end, strand)
 
     rev = p.get('rev2')
-    if rev == 1 or rev != '':
+    data['rev'] = rev
+    if rev == 1:
         seq = _reverse_complement(seq)
-        data['rev'] = 1
-    else:
-        data['rev'] = 0
+  
     data['residue'] = seq
         
     return data
@@ -218,11 +217,9 @@ def manipulate_sequence(p):
     data = {}
     seq = p.get('seq')
     rev = p.get('rev3')
+    data['rev'] = rev
     if rev == 1:
-        data['rev'] = 1
         seq = _reverse_complement(seq)
-    else:
-        data['rev'] = 0
 
     data['residue'] = seq
 
@@ -312,16 +309,15 @@ def _extract_seq(strains, rows, rev):
             locus = row['locus']
             format_name = locus['format_name']
             seq = row['residues']
-            if rev != 0:
+            if rev == 1:
                 seq = _reverse_complement(seq)
             
             thisData = { "display_name": locus.get('display_name'),
                          "headline": locus.get('headline'),
                          "locus_type": locus['locus_type'],
                          "sgdid": "SGD:" + locus['link'].replace("/locus/", ""),
-                         "residue": seq }
-            if rev != 0:
-                thisData['rev'] = 1
+                         "residue": seq,
+                         "rev": rev}
 
             seqData[strain_name] = thisData
 
@@ -352,7 +348,7 @@ def _extract_seq_with_up_down(strains, rows, up, down, rev):
 
             seq = _get_sequence_from_contig(contig, start, end, strand)
 
-            if rev != 0:
+            if rev == 1:
                 seq = _reverse_complement(seq)
 
             thisData = { "display_name": locus.get('display_name'),
@@ -361,9 +357,8 @@ def _extract_seq_with_up_down(strains, rows, up, down, rev):
                          "sgdid": "SGD:" + locus['link'].replace("/locus/", ""),
                          "residue": seq,
                          "up": up,
-                         "down": down }
-            if rev != 0:
-                thisData['rev'] = 1
+                         "down": down,
+                         "rev": rev }
 
             seqData[strain_name] = thisData
 

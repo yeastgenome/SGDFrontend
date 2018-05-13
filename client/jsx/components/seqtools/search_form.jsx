@@ -668,7 +668,7 @@ const SearchForm = React.createClass({
 	
 		var rev = this.refs.rev1.value.trim();         
 
-		if (rev) {
+		if (rev == 'on') {
 		   rev = 1;
 		} 		
 		else {
