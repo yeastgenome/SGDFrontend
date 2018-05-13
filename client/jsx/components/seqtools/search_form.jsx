@@ -848,7 +848,7 @@ const SearchForm = React.createClass({
 		// <p><input ref={name} name={name} id={name} type="checkbox" value={this.state.rev} onChange={this._onChangeCB}/> Use the reverse complement</p>
 
 	        return (<div>
-		       <p><input ref={name} name={name} id={name} type="checkbox" onChange={this._onChangeCB}/> Use the reverse complement</p> 
+		       <p><input ref={name} name={name} id={name} type="checkbox" onChange={this._onChange}/> Use the reverse complement</p> 
 		       </div>);
 
         },
@@ -929,15 +929,6 @@ const SearchForm = React.createClass({
                 this.setState({ text: e.target.value,
 				strain: e.target.value });
         },
-
-	_onChangeCB: function() {
-		if (this.state.rev == 'off') {
-		     this.setState({ rev: 'on' });
-		}
-		else {
-		     this.setState({ rev: 'off' });
-		}
-	},
 
 	_runSeqTools: function(searchType) {
 
