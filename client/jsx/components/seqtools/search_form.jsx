@@ -151,9 +151,10 @@ const SearchForm = React.createClass({
 
 	_getComplementBox: function(seq) {
 
-	     var rev = window.localStorage.getItem("rev3");
+	     var param = this.state.param;
+	     var rev = param['rev3'];
 
-	     if (rev) {
+	     if (rev == 'on') {
 	     	  return (<div>The reverse complement of this sequence:<p><textarea value={ seq } rows='7' cols='200'></textarea></p></div>);
 	     }
 	     else {
@@ -667,23 +668,21 @@ const SearchForm = React.createClass({
                    return 1;
 		}	
 	
-		var rev = this.refs.rev1.value.trim();         
-
-		if (rev == 'on') {
-		   rev = 1;
-		} 		
-		else {
-		   rev = 0;
-		}
+		// var rev = this.refs.rev1.value.trim();         
+		// if (rev == 'on') {
+		//   rev = 1;
+		// } 		
+		// else {
+		//   rev = 0;
+		// }
 
 		window.localStorage.clear();
                 window.localStorage.setItem("genes", genes);
                 window.localStorage.setItem("strains", strains);
-		window.localStorage.setItem("rev", rev);
 		window.localStorage.setItem("up", up);
                 window.localStorage.setItem("down", down);
-		
-		
+		// window.localStorage.setItem("rev", rev);
+
 	},
 
 	_onSubmit2: function (e) {
@@ -707,14 +706,14 @@ const SearchForm = React.createClass({
 		window.localStorage.setItem("start", start);
 		window.localStorage.setItem("end", end);
 
-		var rev2 = this.refs.rev2.value.trim();
-		if (rev2 != '') {
-		     rev2 = 1;
-		}
-		else {
-		     rev2 = 0;
-		}
-		window.localStorage.setItem("rev2", rev2);
+		// var rev2 = this.refs.rev2.value.trim();
+		// if (rev2 != '') {
+		//     rev2 = 1;
+		// }
+		// else {
+		//     rev2 = 0;
+		// }
+		// window.localStorage.setItem("rev2", rev2);
 
         },
 
@@ -728,23 +727,23 @@ const SearchForm = React.createClass({
                 }
 		
 		var seqtype = this.refs.seqtype.value.trim();
-                var rev3 = this.refs.rev3.value.trim();
-		if (rev3 != '') {
-		     rev3 = 1;
-		}
-		else {
-		     rev3 = 0;
-		}
-				
+                				
 		window.localStorage.setItem("seq", seq);
 		window.localStorage.setItem("seqtype", seqtype);
-				
-		if (seqtype == 'DNA') {
-		   window.localStorage.setItem("rev3", rev3);
-		}
-		else {
-		   window.localStorage.setItem("rev3", 0);
-		}
+		
+		// var rev3 = this.refs.rev3.value.trim();
+                // if (rev3 != '') {
+                //     rev3 = 1;
+                // }
+                // else {
+                //     rev3 = 0;
+		
+		// if (seqtype == 'DNA') {
+		//   window.localStorage.setItem("rev3", rev3);
+		// }
+		// else {
+		//   window.localStorage.setItem("rev3", 0);
+		// }
 
         },
 
@@ -1032,9 +1031,10 @@ const SearchForm = React.createClass({
        
        _getDesc4gene: function(geneList) {
 
-       	     var up = window.localStorage.getItem("up");
-	     var down = window.localStorage.getItem("down"); 
-	     var rev = window.localStorage.getItem("rev");
+	     var param = this.state.param;
+	     var rev = param['rev1'];
+	     var up = param['up'];
+	     var down = param['down'];
 
        	     var text = "The currently selected gene(s)/sequence(s) are ";
 	     text += "<font color='red'>" + geneList + "</font>";
@@ -1050,7 +1050,7 @@ const SearchForm = React.createClass({
 
 	     text = "<p>" + text + "</p>";
 
-	     if (rev == 1) {
+	     if (rev == 'on') {
 	     	  
 	     	  text += "<p>You have selected the reverse complement sequence(s) of this gene/sequence list.</p>";
 	     }   
@@ -1065,7 +1065,9 @@ const SearchForm = React.createClass({
 	     var text = "The current selection is: ";
 	    
 	     text += "<font color='red'>chromosome " + this._num_to_chr(chrnum) + " coordinates " + data['start'] + " to " + data['end'] + "</font>";
-	     if (data['rev'] == 1 || data['start'] > data['end']) {
+	     var param = this.state.param;
+
+	     if (param['rev2'] == 'on' || data['start'] > data['end']) {
 	     	 text = "<p>" + text + "</p>";
 		 text += "<p>You have selected the reverse complement of this sequence. The reverse complement is on the Crick strand and will be displayed 5'->3' for all Sequence Analysis and Sequence Retrieval options.</p>"; 
 	     }	     
