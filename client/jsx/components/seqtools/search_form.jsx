@@ -1001,6 +1001,10 @@ const SearchForm = React.createClass({
         },
 
 	_sendRequest: function(paramData) {
+
+		alert("rev="+paramData['rev']);
+		alert("rev2="+paramData['rev2']);
+		alert("rev3="+paramData['rev3']);
         
 		$.ajax({
 			url: SeqtoolsUrl,
