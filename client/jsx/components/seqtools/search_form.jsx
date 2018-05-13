@@ -20,7 +20,6 @@ const SearchForm = React.createClass({
 			isPending: false,
 			userError: null,
 			strain: 'S288C',
-			rev: 'off',
 			resultData: {},
 			notFound: null,
 			submitted: param['submit'],
@@ -667,14 +666,15 @@ const SearchForm = React.createClass({
                    return 1;
 		}	
 	
-		var rev = this.refs.rev1.value.trim();         // on or off
+		var rev = this.refs.rev1.value.trim();         
 
-		console.log("rev1="+rev);
-		
-		if (rev == 'off') {
-		   rev = '';
+		if (rev) {
+		   rev = 1;
 		} 		
-		
+		else {
+		   rev = 0;
+		}
+
 		window.localStorage.clear();
                 window.localStorage.setItem("genes", genes);
                 window.localStorage.setItem("strains", strains);
@@ -707,8 +707,11 @@ const SearchForm = React.createClass({
 		window.localStorage.setItem("end", end);
 
 		var rev2 = this.refs.rev2.value.trim();
-		if (rev2 == 'off') {
-		   rev2 = '';
+		if (rev2 != '') {
+		     rev2 = 1;
+		}
+		else {
+		     rev2 = 0;
 		}
 		window.localStorage.setItem("rev2", rev2);
 
@@ -725,18 +728,21 @@ const SearchForm = React.createClass({
 		
 		var seqtype = this.refs.seqtype.value.trim();
                 var rev3 = this.refs.rev3.value.trim();
-		if (rev3 == 'off') {
-		   rev3 = '';
+		if (rev3 != '') {
+		     rev3 = 1;
+		}
+		else {
+		     rev3 = 0;
 		}
 				
 		window.localStorage.setItem("seq", seq);
 		window.localStorage.setItem("seqtype", seqtype);
-		
+				
 		if (seqtype == 'DNA') {
 		   window.localStorage.setItem("rev3", rev3);
 		}
 		else {
-		   window.localStorage.setItem("rev3", '');
+		   window.localStorage.setItem("rev3", 0);
 		}
 
         },
