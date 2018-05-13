@@ -22,9 +22,7 @@ const SearchForm = React.createClass({
 			strain: 'S288C',
 			resultData: {},
 			notFound: null,
-			submitted: param['submit'],
-			submitted2: param['submit2'], 
-			submitted3: param['submit3']
+			param: param
 		};
 	},
 
@@ -42,24 +40,27 @@ const SearchForm = React.createClass({
 	},
 
 	componentDidMount: function () {
-	        if (this.state.submitted) {
+		var param = this.state.param;
+	        if (param['submit']) {
 	              this._runSeqTools('genes');
 	        }
-		else if (this.state.submitted2) {
+		else if (param['submit2']) {
                       this._runSeqTools('chr');
                 }
-		else if (this.state.submitted3) {
+		else if (param['submit3']) {
                       this._runSeqTools('seq');
                 }
 	},
 
 	_getFormNode: function () {
 		
+		var param = this.state.param;
+
 	        if (this.state.isComplete) {
 
 			var data = this.state.resultData;
-
-			if (this.state.submitted) {
+			
+			if (param['submit']) {
 			   
 			     var [_geneList, _resultTable] = this._getResultTable4gene(data);
 			     var _desc = this._getDesc4gene(_geneList);
@@ -72,7 +73,7 @@ const SearchForm = React.createClass({
 			             </div>);
 
 			}
-			else if (this.state.submitted2) {
+			else if (param['submit2']) {
 			     
 			     var _resultTable = this._getResultTable4chr(data);
 			     var _desc = this._getDesc4chr(data);
@@ -83,7 +84,7 @@ const SearchForm = React.createClass({
                                      </div>);
 
 			}
-			else if (this.state.submitted3) {
+			else if (param['submit3']) {
 			     
 			     var _resultTable = this._getResultTable4seq(data['residue']);
                              var _desc = this._getDesc4seq();
@@ -109,7 +110,7 @@ const SearchForm = React.createClass({
 		}
 		else {
 
-		        if (this.state.submitted || this.state.submitted2 || this.state.submitted3) {
+		        if (param['submit'] || param['submit2'] || param['submit3']) {
 			     return <p>Please wait... The search may take a while to run.</p>; 
 
 			}
