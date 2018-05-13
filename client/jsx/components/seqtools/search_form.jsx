@@ -1049,7 +1049,7 @@ const SearchForm = React.createClass({
 
 	     text = "<p>" + text + "</p>";
 
-	     if (rev) {
+	     if (rev == 1) {
 	     	  
 	     	  text += "<p>You have selected the reverse complement sequence(s) of this gene/sequence list.</p>";
 	     }   
@@ -1064,7 +1064,7 @@ const SearchForm = React.createClass({
 	     var text = "The current selection is: ";
 	    
 	     text += "<font color='red'>chromosome " + this._num_to_chr(chrnum) + " coordinates " + data['start'] + " to " + data['end'] + "</font>";
-	     if (data['rev'] || data['start'] > data['end']) {
+	     if (data['rev'] == 1 || data['start'] > data['end']) {
 	     	 text = "<p>" + text + "</p>";
 		 text += "<p>You have selected the reverse complement of this sequence. The reverse complement is on the Crick strand and will be displayed 5'->3' for all Sequence Analysis and Sequence Retrieval options.</p>"; 
 	     }	     
