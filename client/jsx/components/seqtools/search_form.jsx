@@ -669,7 +669,7 @@ const SearchForm = React.createClass({
 	
 		var rev = this.refs.rev1.value.trim();         // on or off
 
-		alert("rev1=" + rev);
+		console.log("rev1="+rev);
 		
 		if (rev == 'off') {
 		   rev = '';
@@ -839,8 +839,10 @@ const SearchForm = React.createClass({
 
 	_getReverseCompNode: function(name) {
 
+		// <p><input ref={name} name={name} id={name} type="checkbox" value={this.state.rev} onChange={this._onChangeCB}/> Use the reverse complement</p>
+
 	        return (<div>
-		       <p><input ref={name} name={name} id={name} type="checkbox" value={this.state.rev} onChange={this._onChangeCB}/> Use the reverse complement</p> 
+		       <p><input ref={name} name={name} id={name} type="checkbox" onChange={this._onChangeCB}/> Use the reverse complement</p> 
 		       </div>);
 
         },
