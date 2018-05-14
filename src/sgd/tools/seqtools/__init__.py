@@ -254,6 +254,10 @@ def get_sequence_for_genes(p):
     genes = genes.split('|')
     strains = strains.split('|')
     rev = p.get('rev')
+
+    return { "REV": rev }
+
+
     up = p.get('up')
     down = p.get('down')
     if up is None or up == '':
