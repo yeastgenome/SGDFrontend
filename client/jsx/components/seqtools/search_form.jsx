@@ -932,7 +932,7 @@ const SearchForm = React.createClass({
 		}
 
 		if (searchType == 'seq') {
-		   seq = param['seq'];
+		   var seq = param['seq'];
 		   seq = seq.replace(/\s/g, '');
 		   paramData['seq'] = seq;
                    paramData['seqtype'] = param['seqtype']
