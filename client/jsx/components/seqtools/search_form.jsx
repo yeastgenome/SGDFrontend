@@ -679,8 +679,8 @@ const SearchForm = React.createClass({
 		window.localStorage.clear();
                 window.localStorage.setItem("genes", genes);
                 window.localStorage.setItem("strains", strains);
-		window.localStorage.setItem("up", up);
-                window.localStorage.setItem("down", down);
+		// window.localStorage.setItem("up", up);
+                // window.localStorage.setItem("down", down);
 		// window.localStorage.setItem("rev", rev);
 
 	},
@@ -702,9 +702,9 @@ const SearchForm = React.createClass({
                    return 1;
                 }
 
-		window.localStorage.setItem("chr", chr);
-		window.localStorage.setItem("start", start);
-		window.localStorage.setItem("end", end);
+		// window.localStorage.setItem("chr", chr);
+		// window.localStorage.setItem("start", start);
+		// window.localStorage.setItem("end", end);
 
 		// var rev2 = this.refs.rev2.value.trim();
 		// if (rev2 != '') {
@@ -726,10 +726,10 @@ const SearchForm = React.createClass({
                    return 1;
                 }
 		
-		var seqtype = this.refs.seqtype.value.trim();
+		// var seqtype = this.refs.seqtype.value.trim();
                 				
-		window.localStorage.setItem("seq", seq);
-		window.localStorage.setItem("seqtype", seqtype);
+		// window.localStorage.setItem("seq", seq);
+		// window.localStorage.setItem("seqtype", seqtype);
 		
 		// var rev3 = this.refs.rev3.value.trim();
                 // if (rev3 != '') {
@@ -933,48 +933,48 @@ const SearchForm = React.createClass({
 	_runSeqTools: function(searchType) {
 
 		var paramData = {};
+		
+		var param = this.state.param;
 
 		if (searchType == 'genes') {
+
 		   paramData['genes'] = window.localStorage.getItem("genes");
 		   paramData['strains'] = window.localStorage.getItem("strains");
-		   
-		   // console.log("genes="+paramData['genes']);
-		   // console.log("strains="+paramData['strains']);
-		
-		   if (window.localStorage.getItem("up")) {
-		      paramData['up'] = window.localStorage.getItem("up");
+
+		   if (param['up']) {		   
+		      paramData['up'] = param['up'];
 		   }
-		   if (window.localStorage.getItem("down")) {
-		      paramData['down'] = window.localStorage.getItem("down");
+		   if (param['down']) {
+		      paramData['down'] = param['up'];
 		   }
-		   if (window.localStorage.getItem("rev")) {
-		      paramData['rev'] = window.localStorage.getItem("rev");
+		   if (param['rev1'] && param['rev1'] == 'on') {
+		      paramData['rev'] = 1
 		   }
 		   this._sendRequest(paramData)
 		   return
 		}
 		
 		if (searchType == 'chr') {
-		   paramData['chr'] = window.localStorage.getItem("chr");
-		   if (window.localStorage.getItem("start")) {
-                      paramData['start'] = window.localStorage.getItem("start");
+		   paramData['chr'] = param['chr'];
+		   if (param['start']) {
+                      paramData['start'] = param['start'];
 		   }
-		   if (window.localStorage.getItem("end")) {
-                      paramData['end'] = window.localStorage.getItem("end");
-		   }
-		   if (window.localStorage.getItem("rev2")) {
-                      paramData['rev2'] = window.localStorage.getItem("rev2");
-		   }
+		   if (param['end']) {
+                      paramData['end'] = param['end'];
+                   }
+		   if (param['rev2'] && param['rev2'] == 'on') {
+                      paramData['rev'] = 1;
+                   }
 		   this._sendRequest(paramData)
                    return
 		}
 
 		if (searchType == 'seq') {
-		   paramData['seq'] = window.localStorage.getItem("seq");
-                   paramData['seqtype'] = window.localStorage.getItem("seqtype");
-		   if (window.localStorage.getItem("rev3")) {
-                      paramData['rev3'] = window.localStorage.getItem("rev3");
-		   }
+		   paramData['seq'] = param['seq'];
+                   paramData['seqtype'] = param['seqtype']
+		   if (param['rev3'] && param['rev3'] == 'on') {
+                      paramData['rev'] = 1;
+                   }
 		   this._sendRequest(paramData)
                    return
 		}		
@@ -1001,10 +1001,6 @@ const SearchForm = React.createClass({
         },
 
 	_sendRequest: function(paramData) {
-
-		alert("rev="+paramData['rev']);
-		alert("rev2="+paramData['rev2']);
-		alert("rev3="+paramData['rev3']);
         
 		$.ajax({
 			url: SeqtoolsUrl,
