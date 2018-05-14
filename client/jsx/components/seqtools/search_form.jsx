@@ -197,7 +197,9 @@ const SearchForm = React.createClass({
 		var start = data['start'];
 		var end = data['end'];
 		var rev = data['rev'];
-
+		if (rev != 1) {
+		    rev = 0;
+		}
 		var headerRow = ['', ''];
 
                 var rows = [];
@@ -226,7 +228,6 @@ const SearchForm = React.createClass({
                 seqAnalRow.push(this._getToolsLinks4chr(seqID, seq)); 
                 rows.push(seqAnalRow);
 
-
 		return this._display_result_table(headerRow, rows);
 
 	},
@@ -235,6 +236,8 @@ const SearchForm = React.createClass({
 		
 		var [genes, displayName4gene, sgdid4gene, seq4gene, hasProtein4gene, hasCoding4gene, hasGenomic4gene] 
 			= this._getDataFromJson4gene(data);
+		
+		var param = this.state.param; 
 				
 		var headerRow = [];
 		for (var i = 0; i <= genes.length; i++) {
@@ -311,16 +314,32 @@ const SearchForm = React.createClass({
 		}
 
 		var strains = window.localStorage.getItem("strains");
-		var rev = window.localStorage.getItem("rev");
-		var up = window.localStorage.getItem("up");
-		var down = window.localStorage.getItem("down");
+		
+		var extraParams = "";		
+		up = 0;
+		down = 0;
+		rev = 0;
+		if (param['rev1'] && param['rev1'] == 'on') {
+		    extraParams = "&rev=1";
+		    rev = 1;
+		}
+		if (param['up']) {
+		    extraParams	= "&up=" + param['up'];
+		    up = param['up'];
+		}
+		if (param['down']) {
+		    extraParams = "&down=" + param['down'];
+		    down = param['down'];
+                }
+
 		_.map(genes, gene => {
-		    var genomicFastaUrl = SeqtoolsUrl + "?format=fasta&type=genomic&genes=" + gene + "&strains=" + strains + "&rev=" + rev + "&up=" + up + "&down=" + down;
-		    var genomicGcgUrl = SeqtoolsUrl + "?format=gcg&type=genomic&genes=" + gene + "&strains=" + strains + "&rev=" + rev + "&up=" + up + "&down=" + down;
-		    var codingFastaUrl = SeqtoolsUrl + "?format=fasta&type=coding&genes=" + gene + "&strains=" + strains;
-                    var	codingGcgUrl = SeqtoolsUrl + "?format=gcg&type=coding&genes=" + gene + "&strains=" + strains;
-		    var proteinFastaUrl = SeqtoolsUrl + "?format=fasta&type=protein&genes=" + gene + "&strains=" + strains;
-                    var	proteinGcgUrl = SeqtoolsUrl + "?format=gcg&type=protein&genes=" + gene + "&strains=" + strains;
+		    var queryStr = "&genes=" + gene + "&strains=" + strains; 
+		    var genomicFastaUrl = SeqtoolsUrl + "?format=fasta&type=genomic" + queryStr + extraParams;
+		    var genomicGcgUrl = SeqtoolsUrl + "?format=gcg&type=genomic" + queryStr + extraParams;
+		    var codingFastaUrl = SeqtoolsUrl + "?format=fasta&type=coding" + queryStr + extraParams;
+                    var	codingGcgUrl = SeqtoolsUrl + "?format=gcg&type=coding" + queryStr + extraParams;
+		    var proteinFastaUrl = SeqtoolsUrl + "?format=fasta&type=protein" + queryStr + extraParams;
+                    var	proteinGcgUrl = SeqtoolsUrl + "?format=gcg&type=protein" + queryStr + extraParams;
 		    if (hasCoding > 0) {
 		         seqDLRow.push(<span style={{ fontSize: 20}}><br></br><br><a href={ genomicFastaUrl } target='infowin2'>Fasta</a> | <a href={ genomicGcgUrl } target='infowin2'>GCG</a></br><br><a href={ codingFastaUrl } target='infowin2'>Fasta</a> | <a href={ codingGcgUrl } target='infowin2'>GCG</a></br><br><a href={ proteinFastaUrl } target='infowin2'>Fasta</a> | <a href={ proteinGcgUrl } target='infowin2'>GCG</a></br></span>);
 		    }
@@ -329,18 +348,6 @@ const SearchForm = React.createClass({
 		    } 
 	        });
 		rows.push(seqDLRow);
-
-		// testing section
-		// var downloadTestRow = [<span style={{ fontSize: 20}}>Sequence Download TEST</span>];
-		// _.map(genes, gene => {
-		//      var s = seq4gene[gene];
-		//      var genomicSeq = s['genomic']['S288C'];
-		//      // var codingSeq = s['coding']['S288C'];
-		//      // var proteinSeq = s['protein']['S288C'];
-		//      downloadTestRow.push(this._getDownloadSeqButton(gene, strains, 'genomic')); 
-		// });		
-		// rows.push(downloadTestRow);
-		// end of testing
 		
 		var ID = up + "_" + down + "_" + rev;
 		var seqAnalRow = [<span style={{ fontSize: 20}}>Sequence Analysis</span>];
@@ -634,9 +641,7 @@ const SearchForm = React.createClass({
 		this.setState({ notFound: "" });
 		this._validateGenes(genes);		
 		var not_found = this.state.notFound;
-		// console.log("not_found="+not_found);
 		if (not_found != "") {
-		   	// alert("These gene name(s) do not exist in the database: " + not_found);
 		        e.preventDefault();
 			return 1;
 		}
@@ -668,20 +673,9 @@ const SearchForm = React.createClass({
                    return 1;
 		}	
 	
-		// var rev = this.refs.rev1.value.trim();         
-		// if (rev == 'on') {
-		//   rev = 1;
-		// } 		
-		// else {
-		//   rev = 0;
-		// }
-
 		window.localStorage.clear();
                 window.localStorage.setItem("genes", genes);
                 window.localStorage.setItem("strains", strains);
-		// window.localStorage.setItem("up", up);
-                // window.localStorage.setItem("down", down);
-		// window.localStorage.setItem("rev", rev);
 
 	},
 
@@ -702,19 +696,6 @@ const SearchForm = React.createClass({
                    return 1;
                 }
 
-		// window.localStorage.setItem("chr", chr);
-		// window.localStorage.setItem("start", start);
-		// window.localStorage.setItem("end", end);
-
-		// var rev2 = this.refs.rev2.value.trim();
-		// if (rev2 != '') {
-		//     rev2 = 1;
-		// }
-		// else {
-		//     rev2 = 0;
-		// }
-		// window.localStorage.setItem("rev2", rev2);
-
         },
 
 	_onSubmit3: function (e) {
@@ -726,25 +707,6 @@ const SearchForm = React.createClass({
                    return 1;
                 }
 		
-		// var seqtype = this.refs.seqtype.value.trim();
-                				
-		// window.localStorage.setItem("seq", seq);
-		// window.localStorage.setItem("seqtype", seqtype);
-		
-		// var rev3 = this.refs.rev3.value.trim();
-                // if (rev3 != '') {
-                //     rev3 = 1;
-                // }
-                // else {
-                //     rev3 = 0;
-		
-		// if (seqtype == 'DNA') {
-		//   window.localStorage.setItem("rev3", rev3);
-		// }
-		// else {
-		//   window.localStorage.setItem("rev3", 0);
-		// }
-
         },
 
 	_getGeneNodeLeft: function() {
