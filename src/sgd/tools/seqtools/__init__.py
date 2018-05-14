@@ -216,7 +216,7 @@ def manipulate_sequence(p):
 
     data = {}
     seq = p.get('seq')
-    seq = seq.replace(' ', '')
+    seq = seq.replace(" ", "").replace("%D%", "")
     seq = ''.join([i for i in seq if not i.isdigit()])
     rev = p.get('rev')
     if rev is not None and rev == '1':

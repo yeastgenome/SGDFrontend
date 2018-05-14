@@ -1037,7 +1037,8 @@ const SearchForm = React.createClass({
 
        _getDesc4seq: function() {
 
-	     var seqtype = window.localStorage.getItem("seqtype");
+       	     var param = this.state.param;
+	     var seqtype = param['seqtype'];
 	     return "<p>The current raw sequence you have entered is: <font color='red'>" + seqtype + " sequence</font></p>";
 	     	  
        },
