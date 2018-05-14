@@ -3,9 +3,7 @@ import _ from 'underscore';
 import $ from 'jquery';
 
 const DataTable = require("../widgets/data_table.jsx");
-const Checklist = require("../widgets/checklist.jsx");
 const Params = require("../mixins/parse_url_params.jsx");
-const MultiSequenceDownload = require("./multi_sequence_download.jsx");
 
 const SeqtoolsUrl = "/run_seqtools";
 
