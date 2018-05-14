@@ -324,11 +324,11 @@ const SearchForm = React.createClass({
 		    rev = 1;
 		}
 		if (param['up'] && param['up'] != '') {
-		    extraParams	= "&up=" + param['up'];
+		    extraParams	+= "&up=" + param['up'];
 		    up = param['up'];
 		}
 		if (param['down'] && param['down'] != '') {
-		    extraParams = "&down=" + param['down'];
+		    extraParams += "&down=" + param['down'];
 		    down = param['down'];
                 }
 
