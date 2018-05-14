@@ -934,7 +934,7 @@ const SearchForm = React.createClass({
 
 		if (searchType == 'seq') {
 		   var seq = param['seq'];
-		   seq = seq.toUpperCase().replace(/[^A-Z]/g, '');
+		   // seq = seq.toUpperCase().replace(/[^A-Z]/g, '');
 		   paramData['seq'] = seq;
                    paramData['seqtype'] = param['seqtype']
 		   if (param['rev3'] && param['rev3'] == 'on') {
