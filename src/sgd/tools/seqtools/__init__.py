@@ -202,7 +202,7 @@ def get_sequence_for_chr(p):
     seq = _get_sequence_from_contig(contig, start, end, strand)
 
     rev = p.get('rev')
-    if rev is not None and rev == 1:
+    if rev is not None and rev == '1':
         seq = _reverse_complement(seq)
         data['rev'] = 1
 
@@ -217,7 +217,7 @@ def manipulate_sequence(p):
     data = {}
     seq = p.get('seq')
     rev = p.get('rev')
-    if rev is not None and rev == 1:
+    if rev is not None and rev == '1':
         seq = _reverse_complement(seq)
         data['rev'] = 1
 
@@ -254,6 +254,8 @@ def get_sequence_for_genes(p):
     genes = genes.split('|')
     strains = strains.split('|')
     rev = p.get('rev')
+    if rev == '1':
+        rev = 1
     up = p.get('up')
     down = p.get('down')
     if up is None or up == '':
