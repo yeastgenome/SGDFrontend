@@ -316,9 +316,9 @@ const SearchForm = React.createClass({
 		var strains = window.localStorage.getItem("strains");
 		
 		var extraParams = "";		
-		up = 0;
-		down = 0;
-		rev = 0;
+		var up = 0;
+		var down = 0;
+		var rev = 0;
 		if (param['rev1'] && param['rev1'] == 'on') {
 		    extraParams = "&rev=1";
 		    rev = 1;
