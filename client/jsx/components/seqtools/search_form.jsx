@@ -234,14 +234,9 @@ const SearchForm = React.createClass({
 
 	_getResultTable4gene: function(data) {
 		
-		var [genes, displayName4gene, sgdid4gene, seq4gene, hasProtein4gene, hasCoding4gene, hasGenomic4gene, rev] 
+		var [genes, displayName4gene, sgdid4gene, seq4gene, hasProtein4gene, hasCoding4gene, hasGenomic4gene] 
 			= this._getDataFromJson4gene(data);
 		
-
-		alert("rev for gene="+rev);
-
-		
-
 		var param = this.state.param; 
 				
 		var headerRow = [];
@@ -576,8 +571,6 @@ const SearchForm = React.createClass({
 		var hasGenomic4gene = {};
 		var seq4gene = {}
 
-		var rev = 0;
-
 		_.map(genes, gene => {
                       var seqInfo = data[gene];
                       var proteinSeq4strain = {};
@@ -616,13 +609,6 @@ const SearchForm = React.createClass({
                                     else if (seqType == 'genomic_dna') {
                                          genomicSeq4strain[strain] = strainDetails['residue'];
 					 hasGenomic4gene[gene] += 1;
-
-
-					 // testing
-					 rev = strainDetails['rev']
-
-
-
                                     }
 				    
                              })
@@ -636,7 +622,7 @@ const SearchForm = React.createClass({
 
                 });
 
-		return [genes, displayName4gene, sgdid4gene, seq4gene, hasProtein4gene, hasCoding4gene, hasGenomic4gene, rev];
+		return [genes, displayName4gene, sgdid4gene, seq4gene, hasProtein4gene, hasCoding4gene, hasGenomic4gene];
 			  
 	},
 
