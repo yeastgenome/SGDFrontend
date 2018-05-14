@@ -570,7 +570,6 @@ const SearchForm = React.createClass({
 		var hasCoding4gene = {};
 		var hasGenomic4gene = {};
 		var seq4gene = {}
-
 		_.map(genes, gene => {
                       var seqInfo = data[gene];
                       var proteinSeq4strain = {};
@@ -933,7 +932,9 @@ const SearchForm = React.createClass({
 		}
 
 		if (searchType == 'seq') {
-		   paramData['seq'] = param['seq'];
+		   seq = param['seq'];
+		   seq = seq.replace(/\s/g, '');
+		   paramData['seq'] = seq;
                    paramData['seqtype'] = param['seqtype']
 		   if (param['rev3'] && param['rev3'] == 'on') {
                       paramData['rev'] = 1;
