@@ -166,7 +166,7 @@ const SearchForm = React.createClass({
 	_getResultTable4seq: function(seq) {
 
 	        var seqtype = window.localStorage.getItem("seqtype");
-
+		
 		var min = 1;
    		var max = 10000;
    		var seqID =  min + (Math.random() * (max-min));
@@ -701,15 +701,12 @@ const SearchForm = React.createClass({
 	_onSubmit3: function (e) {
 
                 var seq = this.refs.seq.value.trim();
-		seq = seq.toUpperCase().replace(/[^A-Z]/g, '');
+		seq = seq.replace(/[^A-Z]/g, '');
                 if (seq == '') {
                    alert("Please enter a raw sequence.");
                    e.preventDefault();
                    return 1;
                 }
-
-		window.localStorage.clear();
-                window.localStorage.setItem("seq", seq);
 
         },
 
@@ -936,7 +933,9 @@ const SearchForm = React.createClass({
 		}
 
 		if (searchType == 'seq') {
-		   paramData['seq'] = window.localStorage.getItem("seq");
+		   var seq = param['seq'];
+		   seq = seq.toUpperCase().replace(/[^A-Z]/g, '');
+		   paramData['seq'] = seq;
                    paramData['seqtype'] = param['seqtype']
 		   if (param['rev3'] && param['rev3'] == 'on') {
                       paramData['rev'] = 1;
