@@ -715,7 +715,7 @@ const SearchForm = React.createClass({
 	        var reverseCompNode = this._getReverseCompNode('rev1');
 
                 return (<div style={{ textAlign: "top" }}>
-                        <h3>Enter a list of names:</h3>
+                        <a name='gene'><h3>Enter a list of names:</h3></a>
 			<p>(space-separated gene names (and/or ORF and/or SGDID). Example: ACT1 YHR023W SGD:S000000001) 
 			<textarea ref='genes' name='genes' onChange={this._onChange} rows='2' cols='50'></textarea></p>
 			<h3><b>If available,</b> add flanking basepairs</h3>
