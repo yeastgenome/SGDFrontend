@@ -701,12 +701,16 @@ const SearchForm = React.createClass({
 	_onSubmit3: function (e) {
 
                 var seq = this.refs.seq.value.trim();
+		seq = seq.toUpperCase().replace(/[^A-Z]/g, '');
                 if (seq == '') {
                    alert("Please enter a raw sequence.");
                    e.preventDefault();
                    return 1;
                 }
-		
+
+		window.localStorage.clear();
+                window.localStorage.setItem("seq", seq);
+
         },
 
 	_getGeneNodeLeft: function() {
@@ -932,10 +936,7 @@ const SearchForm = React.createClass({
 		}
 
 		if (searchType == 'seq') {
-		   var seq = param['seq'];
-		   seq = seq.replace(/\s/g, '');
-		   seq = seq.replace(/[\r\n]+/g, '');
-		   paramData['seq'] = seq;
+		   paramData['seq'] = window.localStorage.getItem("seq");
                    paramData['seqtype'] = param['seqtype']
 		   if (param['rev3'] && param['rev3'] == 'on') {
                       paramData['rev'] = 1;
