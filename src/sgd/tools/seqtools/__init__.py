@@ -371,8 +371,6 @@ def _extract_seq_with_up_down(strains, rows, up, down, rev):
 
 def _reverse_complement(seq):
 
-    return "HELLO" + seq;
-
     complement = {'A': 'T', 'C': 'G', 'G': 'C', 'T': 'A'}
     bases = list(seq)
     bases = reversed([complement.get(base,base) for base in bases])
