@@ -1,4 +1,7 @@
-from src.models import DBSession, Base, Colleague, ColleagueLocus, Locusdbentity, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi, Proteindomain, Contig, Dataset, Keyword, Ec
+from src.models import DBSession, Base, Colleague, ColleagueLocus, Locusdbentity, LocusAlias, Dnasequenceannotation, \
+    So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, \
+    Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, \
+    Referenceauthor, ReferenceAlias, Chebi, Proteindomain, Contig, Dataset, Keyword, Ec, Disease
 
 from sqlalchemy import create_engine, and_
 import os
@@ -134,6 +137,21 @@ def load_go():
         table_set(go.go_id, go.go_id, "go")
         table_set(go.display_name.replace(" ", "_").upper(), go.go_id, "go")
         table_set(str(int(numerical_id[1])), go.go_id, "go")
+
+
+def load_disease():
+    print("Loading disease into Redis...")
+
+    diseases = DBSession.query(Disease).all()
+
+    for disease in diseases:
+        numerical_id = disease.doid.split(":")
+
+        table_set(disease.format_name.upper(), disease.doid, "disease")
+        table_set(disease.doid, disease.do_id, "disease")
+        table_set(disease.display_name.replace(" ", "_").upper(), disease.doid, "disease")
+        table_set(str(int(numerical_id[3])), disease.doid, "disease")
+
 
 def load_protein_domain():
     print("Loading protein domains into Redis...")
