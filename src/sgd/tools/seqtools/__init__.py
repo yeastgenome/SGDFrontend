@@ -43,13 +43,44 @@ def run_emboss(p):
 
     emboss = p['emboss']
     seq = p.get('seq')
-
-    tmpseq = "/tmp/seq." + str(os.getpid())
+    
+    inSeqFile = "/tmp/seq." + str(os.getpid()) + ".in"
     fw = open(tmpseq, "w")
     fw.write(seq + "\n")
     fw.close()
- 
-    content = "<b>" + seq + "</b>"
+    
+    outSeqFile = "/tmp/seq." + str(os.getpid()) + ".out"
+    
+    program = "/usr/bin/" + emboss
+    cmd = ""
+    if emboss == 'restrict':
+        cmd = program + " -solofragment -sequence " + inSeqFile + " -emzyme all -sitelen 4 -outfile " + outSeqFile
+    elif emboss == 'remap':
+        cmd = program + " -sequence " + inSeqFile + " -enzyme all -sitelen 4 -outfile " + outSeqFile
+    elif emboss == 'transeq':
+        cmd = program + " " + inSeqFile + " " + outSeqFile + " -osformat2 'gcg'"
+    
+    try:
+        os.system(cmd)
+    except OSError:
+        pass
+
+    f = open(outSeqFile)
+    content = ""
+    for line in f:
+        content += line
+    f.close()    
+
+    try:
+        os.remove(inSeqFile)
+        os.remove(outSeqFile)
+    except OSError:
+        pass
+
+    return return_plain_data(content)
+    
+
+def return_plain_data(content):
 
     response = Response(content_type='application/html')
     headers = response.headers
