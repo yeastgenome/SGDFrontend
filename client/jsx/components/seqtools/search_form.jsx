@@ -101,8 +101,8 @@ const SearchForm = React.createClass({
 			}
 			else if (param['emboss']) {
 			 
-			     var _content = "<pre>" + data['content'] + "</pre>";
- 
+			     // var _content = "<pre>" + data['content'] + "</pre>";
+ 			     var _content = data['content'];
 			     return(<div>
 					<p dangerouslySetInnerHTML={{ __html: _content }} />
 			            </div>);
