@@ -2,6 +2,7 @@ import json
 from pyramid.response import Response
 from urllib2 import Request, urlopen, URLError, HTTPError
 from src.sgd.frontend.yeastgenome import clean_cell
+import os
 
 seq_url = "https://www.yeastgenome.org/backend/locus/_REPLACE_NAME_HERE_/sequence_details"
 contig_url = "https://www.yeastgenome.org/backend/contig/_REPLACE_CONTIG_NAME_HERE_"
@@ -42,8 +43,13 @@ def run_emboss(p):
 
     emboss = p['emboss']
     seq = p.get('seq')
-    
-    content = seq
+
+    tmpseq = "/tmp/seq." + str(os.getpid())
+    fw = open(tmpseq, "w")
+    fw.write(seq + "\n")
+    fw.close()
+ 
+    content = "<b>" + seq + "</b>"
 
     response = Response(content_type='application/html')
     headers = response.headers
