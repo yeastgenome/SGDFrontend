@@ -66,16 +66,16 @@ def run_emboss(p):
         return { "content": cmd }
 
     f = open(outSeqFile)
-    content = cmd + "\n\n"
+    content = ""
     for line in f:
         content += line
     f.close()    
 
-    # try:
-    #    os.remove(inSeqFile)
-    #    os.remove(outSeqFile)
-    # except OSError:
-    #    pass
+    try:
+        os.remove(inSeqFile)
+        os.remove(outSeqFile)
+    except OSError:
+        pass
 
     return { "content": content }
     
