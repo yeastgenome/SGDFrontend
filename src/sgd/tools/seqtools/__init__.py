@@ -15,6 +15,10 @@ def do_seq_analysis(request):
         data = validate_names(p)
         return Response(body=json.dumps(data), content_type='application/json')
 
+    if p.get('emboss'):
+        response = run_emboss(p)
+        return response
+
     if p.get('chr'):
         data = get_sequence_for_chr(p)
         if p.get('format') is None:
@@ -34,6 +38,21 @@ def do_seq_analysis(request):
         response = display_sequence_for_genes(p, data)
         return response
 
+def run_emboss(p):
+
+    emboss = p['emboss']
+    seq = p.get('seq')
+    
+    content = seq
+
+    response = Response(content_type='application/html')
+    headers = response.headers
+    if not response.charset:
+        response.charset = 'utf8'
+    response.text = content
+    headers['Content-Type'] = 'text/plain'
+
+    return response
 
 def display_sequence_for_chr(p, data):
 
