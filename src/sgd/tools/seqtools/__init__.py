@@ -54,7 +54,8 @@ def run_emboss(p):
     program = "/usr/bin/" + emboss
     cmd = ""
     if emboss == 'restrict':
-        cmd = program + " -solofragment -sequence " + inSeqFile + " -emzyme all -sitelen 4 -rformat table -outfile " + outSeqFile
+        # -rformat table
+        cmd = program + " -solofragment -sequence " + inSeqFile + " -emzyme all -sitelen 4 -outfile " + outSeqFile
     elif emboss == 'remap':
         cmd = program + " -sequence " + inSeqFile + " -enzyme all -sitelen 4 -outfile " + outSeqFile
     elif emboss == 'transeq':
@@ -66,7 +67,7 @@ def run_emboss(p):
         pass
 
     f = open(outSeqFile)
-    content = ""
+    content = cmd + "\n\n"
     for line in f:
         content += line
     f.close()    
