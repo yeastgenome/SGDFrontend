@@ -49,7 +49,7 @@ def run_emboss(p):
     fw.write(seq + "\n")
     fw.close()
     
-    outSeqFile = "/tmp/seq." + str(os.getpid()) + ".out"
+    outSeqFile = "/tmp/seq." + emboss + "." + str(os.getpid()) + ".out"
     
     program = "/usr/bin/" + emboss
     cmd = ""
