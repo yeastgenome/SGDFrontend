@@ -64,7 +64,7 @@ def run_emboss(p):
     try:
         os.system(cmd)
     except OSError:
-        pass
+        return { "content": cmd }
 
     f = open(outSeqFile)
     content = cmd + "\n\n"
