@@ -17,8 +17,8 @@ def do_seq_analysis(request):
         return Response(body=json.dumps(data), content_type='application/json')
 
     if p.get('emboss'):
-        response = run_emboss(p)
-        return response
+        data = run_emboss(p)
+        return Response(body=json.dumps(data), content_type='application/json')
 
     if p.get('chr'):
         data = get_sequence_for_chr(p)
@@ -61,7 +61,8 @@ def run_emboss(p):
         cmd = program + " " + inSeqFile + " " + outSeqFile + " -osformat2 'gcg'"
     
     try:
-        os.system(cmd)
+        return return_plain_data(cmd)
+        # os.system(cmd)
     except OSError:
         pass
 
@@ -77,7 +78,7 @@ def run_emboss(p):
     # except OSError:
     #    pass
 
-    return return_plain_data(content)
+    return { "content": content }
     
 
 def return_plain_data(content):
