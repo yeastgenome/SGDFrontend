@@ -48,6 +48,10 @@ const SearchForm = React.createClass({
 		else if (param['submit3']) {
                       this._runSeqTools('seq');
                 }
+		else if (param['emboss']) {
+		      this._runSeqTools('emboss');
+		}
+		      
 	},
 
 	_getFormNode: function () {
@@ -94,6 +98,11 @@ const SearchForm = React.createClass({
                                            <p>{ _resultTable } </p>
                                      </div>); 
 			    
+			}
+			else if (param['emboss']) {
+			 
+			     return(<div>EMBOSS PAGE HERE</div>);
+
 			}
 
 		} 
@@ -458,10 +467,13 @@ const SearchForm = React.createClass({
 	_getToolsLinks: function(gene, strains, ID) {
 
 		var strainPulldown = this._getStrainPulldown(strains);
-		var blastButton = this._getToolButton(gene, '/blast-sgd',  'BLAST', ID);
-		var fungalBlastButton = this._getToolButton(gene, '/blast-fungal', 'Fungal BLAST', ID);	
-		var primerButton = this._getToolButton(gene, '/primer3', 'Design Primers', ID);
+		var blastButton = this._getToolButton(gene, '/blast-sgd',  'BLAST', ID, '');
+		var fungalBlastButton = this._getToolButton(gene, '/blast-fungal', 'Fungal BLAST', ID, '');	
+		var primerButton = this._getToolButton(gene, '/primer3', 'Design Primers', ID, '');
 		var restrictionButton = this._getToolButton4post(gene, 'https://www.yeastgenome.org/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map');
+		var restrictFragmentsButton = this._getToolButton(gene, '/seqTools', 'Restriction Fragments', ID, 'restrict');
+		var sixframeButton = this._getToolButton(gene, '/seqTools', '6 Frame Translation', ID, 'remap');
+
 		return(<div className="row">
                             <div className="large-12 columns">	
                        	    	 { strainPulldown }
@@ -469,13 +481,15 @@ const SearchForm = React.createClass({
 		       		 { fungalBlastButton }
 		       		 { primerButton } 
 		       		 { restrictionButton }
+				 { restrictFragmentsButton }
+				 { sixframeButton } 
 		            </div>
                 </div>);
 
 	},
 
 	
-	_getToolButton: function(name, program, button, ID) {
+	_getToolButton: function(name, program, button, ID, emboss) {
 
                 var strain = this.state.strain;
                 var seqID = name + "_" + strain + "_" + ID;
@@ -483,12 +497,20 @@ const SearchForm = React.createClass({
 
                 // <input type="submit" value={ button } className="button small secondary"></input>
 
-                return (<form method="GET" action={ program } target="toolwin">
+		if (emboss == '') {
+                   return (<form method="GET" action={ program } target="toolwin">
                                 <input type="hidden" name="sequence_id" value={ seqID }  />
                                 <input type="submit" value={ button } style={{ color: 'grey', fontSize: 18 }}></input>
-                        </form>);
+                           </form>);
+	        }
+		else {
 
-
+		     return (<form method="GET" action={ program } target="toolwin">
+                                <input type="hidden" name="sequence_id" value={ seqID }  />
+				<input type="hidden" name="emboss" value={ emboss }  />
+                                <input type="submit" value={ button } style={{ color: 'grey', fontSize: 18 }}></input>
+                           </form>);
+		}
 
         },
 
@@ -941,7 +963,15 @@ const SearchForm = React.createClass({
 		   this._sendRequest(paramData)
                    return
 		}		
-   		
+
+		if (searchType == 'emboss') {
+		   paramData['emboss'] = param['emboss'];
+		   var seqID = param['sequence_id'];
+		   paramData['seq'] = window.localStorage.getItem(seqID);
+		   this._sendRequest(paramData)
+                   return		   
+		}		
+ 		
 	},
 	
         _validateGenes: function(name) {
