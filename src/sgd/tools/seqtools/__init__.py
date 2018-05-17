@@ -45,7 +45,7 @@ def run_emboss(p):
     seq = p.get('seq')
     
     inSeqFile = "/tmp/seq." + str(os.getpid()) + ".in"
-    fw = open(tmpseq, "w")
+    fw = open(inSeqFile, "w")
     fw.write(seq + "\n")
     fw.close()
     
@@ -71,11 +71,11 @@ def run_emboss(p):
         content += line
     f.close()    
 
-    try:
-        os.remove(inSeqFile)
-        os.remove(outSeqFile)
-    except OSError:
-        pass
+    # try:
+    #    os.remove(inSeqFile)
+    #    os.remove(outSeqFile)
+    # except OSError:
+    #    pass
 
     return return_plain_data(content)
     
