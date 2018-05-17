@@ -101,7 +101,7 @@ const SearchForm = React.createClass({
 			}
 			else if (param['emboss']) {
 			 
-			     return(<div>data['content']</div>);
+			     return(<div>{ data['content'] } </div>);
 
 			}
 
