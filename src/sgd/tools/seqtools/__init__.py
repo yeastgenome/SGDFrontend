@@ -55,6 +55,7 @@ def run_emboss(p):
     cmd = ""
     if emboss == 'restrict':
         cmd = program + " -solofragment -sequence " + inSeqFile + " -emzyme all -sitelen 4 -outfile " + outSeqFile
+        return { "content": cmd }
     elif emboss == 'remap':
         cmd = program + " -sequence " + inSeqFile + " -enzyme all -sitelen 4 -outfile " + outSeqFile
     elif emboss == 'transeq':
