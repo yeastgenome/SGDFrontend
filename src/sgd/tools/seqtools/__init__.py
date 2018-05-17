@@ -61,7 +61,7 @@ def run_emboss(p):
         cmd = program + " " + inSeqFile + " " + outSeqFile + " -osformat2 'gcg'"
     
     try:
-        return return_plain_data(cmd)
+        return { "content": cmd }
         # os.system(cmd)
     except OSError:
         pass
