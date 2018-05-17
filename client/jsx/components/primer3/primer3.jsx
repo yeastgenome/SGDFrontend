@@ -36,6 +36,24 @@ const Primer3 = React.createClass({
     }
   },
 
+  componentDidMount: function () {
+    if(this.props.queryParams.name){
+        let geneName = this.props.queryParams.name;
+        let tempVal = this.state.value;
+        tempVal.gene_name = geneName;
+        console.log(geneName)
+        this.setState({value: tempVal});
+    }
+    if(this.props.queryParams.sequence_id){
+       let seqId = this.props.queryParams.sequence_id;
+       let seq = window.localStorage.getItem(seqId);
+       let tempVal = this.state.value;
+       tempVal.sequence = seq;
+       console.log(seq)
+       this.setState({value: tempVal});
+    }
+  },
+
   onChange(value) {
     this.setState({value});
   },
@@ -83,7 +101,6 @@ const Primer3 = React.createClass({
     let data = this.state.result; //list of maps
     let gene_name = this.state.gene_name
     if (gene_name == null){ gene_name = 'Input Sequence'}
-    console.log('gene name', gene_name)
     let gname_str = 'Primer pairs for  :    ' + gene_name
     //let sequence = 'Input Sequence:   ' + this.state.sequence
     //let newsequence = addNewlines(sequence)
@@ -215,9 +232,9 @@ const Primer3 = React.createClass({
     const formLayout = locals => {
       return (
        <div>
-        <span style={{ textAlign: "center" }}><h1>Primer Design: Based on Primer3 package <a href='https://pypi.python.org/pypi/primer3-py' target='_new'><i className='fa primer-help' /></a> </h1><hr/></span>
-        <br/>
-        <span>Sequences of <a href='http://wiki.yeastgenome.org/index.php/Primer_Set_Sequences' target='_new'><i className='fa primer-seqs' />primer sets </a> available to the community</span>
+        <span style={{ textAlign: "center" }}><h1>Primer Design: Uses Primer3-py package <a href='https://sites.google.com/view/yeastgenome-help/analyze-help/primer-design' target='_new'><i className='fa primer-help'/> <img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img></a></h1><hr/></span>
+        <span>Sequences of <a href='http://wiki.yeastgenome.org/index.php/Primer_Set_Sequences' target='_new'><i className='fa primer-seqs' />primer sets </a> available to the community<hr/></span>
+         <span> Design your own primers: <a href='https://sites.google.com/view/yeastgenome-help/analyze-help/primer-design' target='_new'><i className='fa primer-help'/> <img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img></a> </span>
          <div className='row'>
           <div className='columns small-4'>{locals.inputs.gene_name}</div>
          </div>
@@ -231,7 +248,6 @@ const Primer3 = React.createClass({
           <div className='columns small-4'>{locals.inputs.input_start}</div>
           <div className='columns small-4'>{locals.inputs.input_end}</div>
           <div className='columns small-4'>{locals.inputs.maximum_product_size}</div>
-
         </div>
 
         <span><a href='http://primer3.ut.ee/primer3web_help.htm#SEQUENCE_FORCE_LEFT_START' target='_new'><i className='fa primer-help' />Force Start position of primers</a></span>
@@ -252,13 +268,14 @@ const Primer3 = React.createClass({
           <div className='columns small-4'>{locals.inputs.optimum_gc}</div>
           <div className='columns small-4'>{locals.inputs.maximum_gc}</div>
          </div>
-        <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_PRODUCT_MIN_TM' target='_new'><i className='fa primer-help' />Melting Temperature</a></span>
 
+        <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_PRODUCT_MIN_TM' target='_new'><i className='fa primer-help' />Melting Temperature</a></span>
          <div className='row'>
           <div className='columns small-4'>{locals.inputs.minimum_tm}</div>
           <div className='columns small-4'>{locals.inputs.optimum_tm}</div>
           <div className='columns small-4'>{locals.inputs.maximum_tm}</div>
         </div>
+
         <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_MAX_SELF_ANY' target='_new'><i className='fa primer-help' />Primer Annealing</a></span>
         <div className='row'>
           <div className='columns small-3'>{locals.inputs.max_self_complementarity}</div>
@@ -313,10 +330,10 @@ const Primer3 = React.createClass({
                 label: 'Maximum GC:'
             },
             input_start:{
-                label: 'Start at this 5\' location from START codon:'
+                label: 'Start of 5\' location from START codon: (-ve = upstream)'
             },
             input_end:{
-                label: 'End at this 5\' location from START codon:'
+                label: 'End of 5\' location from START codon:'
             },
             maximum_product_size:{
                 label: 'Maximum product size:'
