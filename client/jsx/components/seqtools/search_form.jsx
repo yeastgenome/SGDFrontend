@@ -416,8 +416,8 @@ const SearchForm = React.createClass({
                                       { fungalBlastButton }
                                       { primerButton }
 				      <form method="GET" action='/nph-patmatch' target="toolwin">
-				      	   <input type="hidden" name="seqtype" value='nuc' />
-					   <input type="hidden" name="pattern" value={ seq } />
+				      	   <input type="hidden" name="seqtype" value='dna' />
+					   <input type="hidden" name="seq" value={ seq } />
 					   <input type="submit" value="Genome Pattern Matching" style={{ fontSize: 18, background: 'none', border: 'none', color: '#7392b7' }}></input>
                                       </form>
                                       { restrictionButton }
@@ -452,7 +452,7 @@ const SearchForm = React.createClass({
                                       { blastButton }
                                       { fungalBlastButton }
 				      <form method="GET" action='/nph-patmatch' target="toolwin">	
-                                           <input type="hidden" name="pattern" value={ seq } />
+                                           <input type="hidden" name="seq" value={ seq } />
                                            <input type="submit" value="Genome Pattern Matching" style={{ fontSize: 18, background: 'none', border: 'none', color: '#7392b7' }}></input>
                                       </form>   
                                  </div>
