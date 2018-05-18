@@ -369,7 +369,8 @@ const SearchForm = React.createClass({
 			  var seq = seqInfo[strain];
                           window.localStorage.setItem(seqID, seq);
 	            });
-		    seqAnalRow.push(this._getToolsLinks(gene, strains, ID));
+		    // seqAnalRow.push(this._getToolsLinks(gene, strains, ID));
+		    seqAnalRow.push(this._getToolsLinks(gene, selectedStrains, ID));
 		});		
 		rows.push(seqAnalRow);
 
