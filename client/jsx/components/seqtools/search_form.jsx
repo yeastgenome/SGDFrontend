@@ -101,7 +101,10 @@ const SearchForm = React.createClass({
 			}
 			else if (param['emboss']) {
 			 
+			     var _desc = this._getDesc4emboss(param['sequence_id']);
+
 			     return(<div>
+			            <p dangerouslySetInnerHTML={{ __html: _desc }} />
 				    <pre><span style={{ fontSize: 20 }}>{ data['content'] } </span></pre>
 			            </div>);
 
@@ -1031,7 +1034,7 @@ const SearchForm = React.createClass({
        	     var text = "The currently selected gene(s)/sequence(s) are ";
 	     text += "<font color='red'>" + geneList + "</font>";
 	     if (up && down) {
-	     	  text += " <b>plus " + up + " basepair(s) of upstream sequence and " + down + " basepair(s) od downstream sequence.</b>";
+	     	  text += " <b>plus " + up + " basepair(s) of upstream sequence and " + down + " basepair(s) of downstream sequence.</b>";
 	     }
 	     else if (up) {
 	     	  text += " <b>plus " + up + " basepair(s) of upstream sequence.</b>";
@@ -1073,6 +1076,58 @@ const SearchForm = React.createClass({
 	     var seqtype = param['seqtype'];
 	     return "<p>The current raw sequence you have entered is: <font color='red'>" + seqtype + " sequence</font></p>";
 	     	  
+       },
+
+       _getDesc4emboss() {
+
+       	     var param = this.state.param;
+
+	     var emboss = param['emboss'];
+	     
+	     var text = "";
+
+	     if (emboss == 'restrict') {
+	     	 text = "Restriction Fragments";
+	     }
+	     else if (emboss == 'remap') {
+	     	 text = "6 Frame Translation";
+	     }
+	     else {
+	     	 text = "Protein Translation";
+             }  	 
+	     text = "<h2>" + text + "</h2>";
+	     
+	     var pieces = param['sequence_id'].split('_');
+
+	     var gene = pieces[0];
+	     var strain = pieces[1];
+	     var up = pieces[2];
+	     var down = pieces[3]
+	     var rev = pieces[4]; 
+
+	     text += "The currently selected gene/sequence is ";
+
+             text += "<font color='red'>" + gene + "</font>";
+
+             if (up && down) {
+                  text += " <b>plus " + up + " basepair(s) of upstream sequence and " + down + " basepair(s) of downstream sequence.</b>";
+             }
+             else if (up) {
+                  text += " <b>plus " + up + " basepair(s) of upstream sequence.</b>";
+             }
+             else if (down) {
+                  text += " <b>plus " + down + " basepair(s) of downstream sequence.</b>";
+             }
+
+             text = "<p>" + text + "</p>";
+
+             if (rev == 'on') {
+
+                  text += "<p>You have selected the reverse complement of this gene/sequence.</p>";
+             }
+
+	     return text;
+
        },
 
        _num_to_chr: function(num) {
