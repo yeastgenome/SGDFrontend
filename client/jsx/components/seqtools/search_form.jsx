@@ -483,7 +483,7 @@ const SearchForm = React.createClass({
 		var blastButton = this._getToolButton(gene, '/blast-sgd',  'BLAST', ID, '');
 		var fungalBlastButton = this._getToolButton(gene, '/blast-fungal', 'Fungal BLAST', ID, '');	
 		var primerButton = this._getToolButton(gene, '/primer3', 'Design Primers', ID, '');
-		var restrictionButton = this._getToolButton4post(gene, 'https://www.yeastgenome.org/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map');
+		var restrictionButton = this._getToolButton4post(gene, 'https://www.yeastgenome.org/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map', ID);
 		var restrictFragmentsButton = this._getToolButton(gene, '/seqTools', 'Restriction Fragments', ID, 'restrict');
 		var sixframeButton = this._getToolButton(gene, '/seqTools', '6 Frame Translation', ID, 'remap');
 
@@ -527,10 +527,10 @@ const SearchForm = React.createClass({
 
         },
 
-	_getToolButton4post: function(name, program, button) {
+	_getToolButton4post: function(name, program, button, ID) {
 
 		var strain = this.state.strain;
-		var seqID = name + "_" + strain;
+		var seqID = name + "_" + strain + "_" + ID;
 		var seq = window.localStorage.getItem(seqID);
 
 		// <input type="submit" value={ button } className="button small secondary"></input>
