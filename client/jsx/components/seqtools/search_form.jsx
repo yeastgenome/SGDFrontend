@@ -357,10 +357,10 @@ const SearchForm = React.createClass({
 		    var proteinFastaUrl = SeqtoolsUrl + "?format=fasta&type=protein" + queryStr + extraParams;
                     var	proteinGcgUrl = SeqtoolsUrl + "?format=gcg&type=protein" + queryStr + extraParams;
 		    if (hasCoding > 0) {
-		         seqDLRow.push(<span style={{ fontSize: 18}}><br></br><br><a href={ genomicFastaUrl } target='infowin2'>Fasta</a> | <a href={ genomicGcgUrl } target='infowin2'>GCG</a></br><br><a href={ codingFastaUrl } target='infowin2'>Fasta</a> | <a href={ codingGcgUrl } target='infowin2'>GCG</a></br><br><a href={ proteinFastaUrl } target='infowin2'>Fasta</a> | <a href={ proteinGcgUrl } target='infowin2'>GCG</a></br></span>);
+		         seqDLRow.push(<span style={{ fontSize: 18}}><br></br><br><a href={ genomicFastaUrl } target='infowin'>Fasta</a> | <a href={ genomicGcgUrl } target='infowin'>GCG</a></br><br><a href={ codingFastaUrl } target='infowin'>Fasta</a> | <a href={ codingGcgUrl } target='infowin'>GCG</a></br><br><a href={ proteinFastaUrl } target='infowin'>Fasta</a> | <a href={ proteinGcgUrl } target='infowin'>GCG</a></br></span>);
 		    }
 		    else {
-		    	 seqDLRow.push(<span style={{ fontSize: 18}}><br></br><br><a href={ genomicFastaUrl } target='infowin2'>Fasta</a> | <a href={ genomicGcgUrl } target='infowin2'>GCG</a></br></span>);
+		    	 seqDLRow.push(<span style={{ fontSize: 18}}><br></br><br><a href={ genomicFastaUrl } target='infowin'>Fasta</a> | <a href={ genomicGcgUrl } target='infowin'>GCG</a></br></span>);
 		    } 
 	        });
 		rows.push(seqDLRow);
