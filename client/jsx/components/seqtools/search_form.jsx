@@ -169,7 +169,7 @@ const SearchForm = React.createClass({
 	     var rev = param['rev3'];
 
 	     if (rev == 'on') {
-	     	  return (<div>The reverse complement of this sequence:<p><textarea value={ seq } rows='7' cols='200'></textarea></p></div>);
+	     	  return (<div><h3>The reverse complement of this sequence:</h3><p><textarea value={ seq } rows='7' cols='200'></textarea></p></div>);
 	     }
 	     else {
 	     	  return (<div></div>);
@@ -1088,7 +1088,7 @@ const SearchForm = React.createClass({
 	     var param = this.state.param;
 
 	     if (param['rev2'] == 'on' || data['start'] > data['end']) {
-		 text += "<h3>You have selected the reverse complement of this sequence. The reverse complement is on the Crick strand and will be displayed 5'->3' for all Sequence Analysis and Sequence Retrieval options.</h3>"; 
+		 text += "<h3>You have selected the reverse complement of this sequence. The reverse complement is on the Crick strand and will be displayed 5'->3' for all Sequence Downloads and Analysis options.</h3>"; 
 	     }	     
 
 	     return text;
