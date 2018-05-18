@@ -762,6 +762,8 @@ const SearchForm = React.createClass({
 		if (seqtype == 'DNA') {
 		   var re = /[^ATCGatcg]/;
 		   var OK = re.exec(seq);
+		   alert("OK=" + OK);
+
 		   if (OK) {
 		       alert("Looks like you are entering a PROTEIN sequence instead of DNA sequence. Please pick a right sequence type and try it again.");
 		       e.preventDefault();
