@@ -103,7 +103,7 @@ const SearchForm = React.createClass({
 			 
 			     // var _desc = this._getDesc4emboss();
 			     
-			     var _desc = "<h2>Restriction Map</h2>"
+			     var _desc = "<h2>Restriction Map</h2>";
 
 			     return(<div>
 			            <p dangerouslySetInnerHTML={{ __html: _desc }} />
