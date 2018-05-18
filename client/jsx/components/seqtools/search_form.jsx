@@ -418,7 +418,7 @@ const SearchForm = React.createClass({
 				      <form method="GET" action='/nph-patmatch' target="toolwin">
 				      	   <input type="hidden" name="seqtype" value='nuc' />
 					   <input type="hidden" name="pattern" value={ seq } />
-					   <input type="submit" value="Genome Pattern Matching" style={{ fontSize: 18, background: 'none', border: 'none', color: '#547092' }}></input>
+					   <input type="submit" value="Genome Pattern Matching" style={{ fontSize: 18, background: 'none', border: 'none', color: '#7392b7' }}></input>
                                       </form>
                                       { restrictionButton }
                                  </div>
@@ -453,7 +453,7 @@ const SearchForm = React.createClass({
                                       { fungalBlastButton }
 				      <form method="GET" action='/nph-patmatch' target="toolwin">	
                                            <input type="hidden" name="pattern" value={ seq } />
-                                           <input type="submit" value="Genome Pattern Matching" style={{ fontSize: 18, background: 'none', border: 'none', color: '#547092' }}></input>
+                                           <input type="submit" value="Genome Pattern Matching" style={{ fontSize: 18, background: 'none', border: 'none', color: '#7392b7' }}></input>
                                       </form>   
                                  </div>
                      </div>);
@@ -519,7 +519,7 @@ const SearchForm = React.createClass({
 		if (emboss == '') {
                    return (<form method="GET" action={ program } target="toolwin">
                                 <input type="hidden" name="sequence_id" value={ seqID }  />
-                                <input type="submit" value={ button } style={{ fontSize: 18, background: 'none', border: 'none', color: '#547092' }}></input>
+                                <input type="submit" value={ button } style={{ fontSize: 18, background: 'none', border: 'none', color: '#7392b7' }}></input>
                            </form>);
 	        }
 		else {
@@ -527,7 +527,7 @@ const SearchForm = React.createClass({
 		     return (<form method="GET" action={ program } target="toolwin">
                                 <input type="hidden" name="sequence_id" value={ seqID }  />
 				<input type="hidden" name="emboss" value={ emboss }  />
-                                <input type="submit" value={ button } style={{ fontSize: 18, background: 'none', border: 'none', color: '#547092' }}></input>
+                                <input type="submit" value={ button } style={{ fontSize: 18, background: 'none', border: 'none', color: '#7392b7' }}></input>
                            </form>);
 		}
 
@@ -554,13 +554,13 @@ const SearchForm = React.createClass({
 	                return (<form method="GET" action={ program } target="toolwin">
                                 <input type="hidden" name="sequence_id" value={ seqID }  />
 				<input type="hidden" name="emboss" value={ emboss }  />
-                                <input type="submit" value={ button } style={{ fontSize: 18, background: 'none', border: 'none', color: '#547092' }}></input>
+                                <input type="submit" value={ button } style={{ fontSize: 18, background: 'none', border: 'none', color: '#7392b7' }}></input>
                         </form>);
 		}
 		else {
 		     return (<form method="GET" action={ program } target="toolwin">
                              <input type="hidden" name="sequence_id" value={ seqID }  />
-                             <input type="submit" value={ button } style={{ fontSize: 18, background: 'none', border: 'none', color: '#547092' }}></input>
+                             <input type="submit" value={ button } style={{ fontSize: 18, background: 'none', border: 'none', color: '#7392b7' }}></input>
                      </form>);
 
 		}
@@ -572,7 +572,7 @@ const SearchForm = React.createClass({
 
                 return (<form method="POST" action={ program } target="toolwin">
                                 <input type="hidden" name="seq" value={ seq }  />
-                                <input type="submit" value={ button } style={{ fontSize: 18, background: 'none', border: 'none', color: '#547092' }}></input>
+                                <input type="submit" value={ button } style={{ fontSize: 18, background: 'none', border: 'none', color: '#7392b7' }}></input>
                         </form>);
 
         },
