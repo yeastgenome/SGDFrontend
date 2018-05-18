@@ -1069,8 +1069,7 @@ const SearchForm = React.createClass({
 	     text = "<h3>" + text + "</h3>";
 
 	     if (rev == 'on') {
-	     	  
-	     	  text += "<h3>You have selected the reverse complement sequence(s) of this gene/sequence list.</h3>";
+	     	  text += "<h3>You have selected the reverse complement of this gene/sequence list.</h3>";
 	     }   
 
 	     return text;
@@ -1084,21 +1083,23 @@ const SearchForm = React.createClass({
 	     var text = "The current selection is: ";
 	    
 	     text += "<font color='red'>chromosome " + this._num_to_chr(chrnum) + " coordinates " + data['start'] + " to " + data['end'] + "</font>";
+	     text = "<h3>" + text + "</h3>";
+	     
 	     var param = this.state.param;
 
 	     if (param['rev2'] == 'on' || data['start'] > data['end']) {
-	     	 text = "<p>" + text + "</p>";
-		 text += "<p>You have selected the reverse complement of this sequence. The reverse complement is on the Crick strand and will be displayed 5'->3' for all Sequence Analysis and Sequence Retrieval options.</p>"; 
+		 text += "<h3>You have selected the reverse complement of this sequence. The reverse complement is on the Crick strand and will be displayed 5'->3' for all Sequence Analysis and Sequence Retrieval options.</h3>"; 
 	     }	     
 
-	     return "<h2>" + text + "</h2>";
+	     return text;
+
        },
 
        _getDesc4seq: function() {
 
        	     var param = this.state.param;
 	     var seqtype = param['seqtype'];
-	     return "<p><h2>The current raw sequence you have entered is: <font color='red'>" + seqtype + " sequence</font></h2></p>";
+	     return "<h3>The current raw sequence you have entered is: <font color='red'>" + seqtype + " sequence</font></h3>";
 	     	  
        },
 
