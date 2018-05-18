@@ -1043,7 +1043,7 @@ const SearchForm = React.createClass({
 	
 	_get_text: function() {
 
-	        return "<p>Try <a target='infowin' href='https://yeastmine.yeastgenome.org/yeastmine/begin.do'>Yeastmine</a> for flexible queries and fast retrieval of chromosomal features, sequences, GO annotations, interaction data and phenotype annotations. The video tutorial <a target='infowin' href='https://vimeo.com/28472349'>Template Basics</a> describes how to quickly retrieve this type of information in YeastMine. To find a comprehensive list of SGD's tutorials describing the many other features available in YeastMine and how to use them, visit SGD's <a target='infowin' href='https://sites.google.com/view/yeastgenome-help/video-tutorials/yeastmine?authuser=0'>YeastMine Video Tutorials</a> page. </p><p>This resource allows retrieval of a list of options for accessing biological information, table/map displays, and sequence analysis tools for <b><a href='#gene'>1. a list of named genes or sequences.</a> <a href='#chr'>2. a specified chromosomal region</a>, or <a href='#seq'>3. a raw DNA or protein sequence.</a></b></p>";
+	        return "<p><h2>Try <a target='infowin' href='https://yeastmine.yeastgenome.org/yeastmine/begin.do'>Yeastmine</a> for flexible queries and fast retrieval of chromosomal features, sequences, GO annotations, interaction data and phenotype annotations. The video tutorial <a target='infowin' href='https://vimeo.com/28472349'>Template Basics</a> describes how to quickly retrieve this type of information in YeastMine. To find a comprehensive list of SGD's tutorials describing the many other features available in YeastMine and how to use them, visit SGD's <a target='infowin' href='https://sites.google.com/view/yeastgenome-help/video-tutorials/yeastmine?authuser=0'>YeastMine Video Tutorials</a> page. </p><p>This resource allows retrieval of a list of options for accessing biological information, table/map displays, and sequence analysis tools for <b><a href='#gene'>1. a list of named genes or sequences.</a> <a href='#chr'>2. a specified chromosomal region</a>, or <a href='#seq'>3. a raw DNA or protein sequence.</a></b></h2></p>";
       
        },
        
@@ -1073,7 +1073,7 @@ const SearchForm = React.createClass({
 	     	  text += "<p>You have selected the reverse complement sequence(s) of this gene/sequence list.</p>";
 	     }   
 
-	     return text;
+	     return "<h2>" + text + "</h2>";
        },
 
        _getDesc4chr: function(data) {
@@ -1090,14 +1090,14 @@ const SearchForm = React.createClass({
 		 text += "<p>You have selected the reverse complement of this sequence. The reverse complement is on the Crick strand and will be displayed 5'->3' for all Sequence Analysis and Sequence Retrieval options.</p>"; 
 	     }	     
 
-	     return text;
+	     return "<h2>" + text + "</h2>";
        },
 
        _getDesc4seq: function() {
 
        	     var param = this.state.param;
 	     var seqtype = param['seqtype'];
-	     return "<p>The current raw sequence you have entered is: <font color='red'>" + seqtype + " sequence</font></p>";
+	     return "<p><h2>The current raw sequence you have entered is: <font color='red'>" + seqtype + " sequence</font></h2></p>";
 	     	  
        },
 
