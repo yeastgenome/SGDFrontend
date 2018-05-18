@@ -859,10 +859,8 @@ const SearchForm = React.createClass({
 	_getStrainPulldown: function(strains) {
 
 		var strainMapping = this._getStrainMapping();
-		var strainList = strains.split("|");
 		var defaultStrain = "";
-		var _elements = _.map(strainList, s => {
-		      // var label = strainMapping[s].replace("S. cerevisia ", "").replace("strain ");
+		var _elements = _.map(strains, s => {
 		      var label = s; 
 		      if (s == 'S288C') {
 		            defaultStrain = 'S288C';
