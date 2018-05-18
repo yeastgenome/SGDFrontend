@@ -363,7 +363,7 @@ const SearchForm = React.createClass({
 		_.map(genes, gene => {
 		    var s = seq4gene[gene];
 		    var seqInfo = s['genomic'];
-		    var selectedStrains = Object.keys(seqInfo);
+		    var selectedStrains = Object.keys(seqInfo).sort();
 		    _.map(selectedStrains, strain =>  {
 		    	  var seqID = gene + "_" + strain + "_" + ID;
 			  var seq = seqInfo[strain];
@@ -860,6 +860,8 @@ const SearchForm = React.createClass({
 
 		var strainMapping = this._getStrainMapping();
 		var defaultStrain = "";
+		
+
 		var _elements = _.map(strains, s => {
 		      var label = s; 
 		      if (s == 'S288C') {
