@@ -1066,7 +1066,7 @@ const SearchForm = React.createClass({
 	          text += " <b>plus " + down + " basepair(s) of downstream sequence.</b>";
 	     }
 
-	     text = "<h3>" + text + "</h3>";
+	     text = "<h2>" + text + "</h2>";
 
 	     if (rev == 'on') {
 	     	  
