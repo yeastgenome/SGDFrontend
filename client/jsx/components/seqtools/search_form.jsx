@@ -1078,9 +1078,9 @@ const SearchForm = React.createClass({
 	     	  
        },
 
-       _getDesc4emboss() {
+       _getDesc4emboss: function() {
 
-       	     return "<h2>Restriction Map</h2>";
+       	     // return "<h2>Restriction Map</h2>";
 
        	     var param = this.state.param;
 
