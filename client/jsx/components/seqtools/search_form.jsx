@@ -1066,14 +1066,15 @@ const SearchForm = React.createClass({
 	          text += " <b>plus " + down + " basepair(s) of downstream sequence.</b>";
 	     }
 
-	     text = "<p>" + text + "</p>";
+	     text = "<h3>" + text + "</h3>";
 
 	     if (rev == 'on') {
 	     	  
 	     	  text += "<p>You have selected the reverse complement sequence(s) of this gene/sequence list.</p>";
 	     }   
 
-	     return "<h2>" + text + "</h2>";
+	     return text;
+
        },
 
        _getDesc4chr: function(data) {
