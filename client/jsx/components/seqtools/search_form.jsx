@@ -179,8 +179,10 @@ const SearchForm = React.createClass({
 
 	_getResultTable4seq: function(seq) {
 
-	        var seqtype = window.localStorage.getItem("seqtype");
-		
+	        // var seqtype = window.localStorage.getItem("seqtype");
+		var param = this.state.param;		
+		var seqtype = param['seqtype'];
+
 		var min = 1;
    		var max = 10000;
    		var seqID =  min + (Math.random() * (max-min));
@@ -385,8 +387,6 @@ const SearchForm = React.createClass({
 
 	_getToolsLinks4DNA: function(seqID, seq) {
 		
-		return <div>HELLO WORLD</div>;
-
 		var blastButton = this._getToolButtonChr('/blast-sgd',  'BLAST', seqID, '');
                 var fungalBlastButton = this._getToolButtonChr('/blast-fungal', 'Fungal BLAST', seqID, '');
                 var primerButton = this._getToolButtonChr('/primer3', 'Design Primers', seqID, '');
