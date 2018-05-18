@@ -421,8 +421,6 @@ const SearchForm = React.createClass({
 					   <input type="submit" value="Genome Pattern Matching" style={{ color: 'grey', fontSize: 18 }}></input>
                                       </form>
                                       { restrictionButton }
-				      {	translatedProteinButton	}
-                                      {	sixframeButton }
                                  </div>
                      </div>);
 
