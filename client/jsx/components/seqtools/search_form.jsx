@@ -543,7 +543,7 @@ const SearchForm = React.createClass({
 		
 		return (<form method="POST" action={ program } target="toolwin">
 		                <input type="hidden" name="seq" value={ seq }  />
-                                <input type="submit" value={ button } style={{ fontSize: 18, background: 'none', border: 'none', color: '#7a9ac1' }}></input>
+                                <input type="submit" value={ button } style={{ fontSize: 18, background: 'none', border: 'none', color: '#7392b7' }}></input>
                         </form>);
 
 	},
