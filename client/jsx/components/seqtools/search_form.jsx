@@ -1080,6 +1080,8 @@ const SearchForm = React.createClass({
 
        _getDesc4emboss() {
 
+       	     return "<h2>Restriction Map</h2>";
+
        	     var param = this.state.param;
 
 	     var emboss = param['emboss'];
@@ -1087,7 +1089,7 @@ const SearchForm = React.createClass({
 	     var text = "";
 
 	     if (emboss == 'restrict') {
-	     	 text = "Restriction Fragments";
+	     	 text = "Restriction Map";
 	     }
 	     else if (emboss == 'remap') {
 	     	 text = "6 Frame Translation";
