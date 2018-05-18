@@ -385,6 +385,8 @@ const SearchForm = React.createClass({
 
 	_getToolsLinks4DNA: function(seqID, seq) {
 		
+		return <div>HELLO WORLD</div>;
+
 		var blastButton = this._getToolButtonChr('/blast-sgd',  'BLAST', seqID, '');
                 var fungalBlastButton = this._getToolButtonChr('/blast-fungal', 'Fungal BLAST', seqID, '');
                 var primerButton = this._getToolButtonChr('/primer3', 'Design Primers', seqID, '');
