@@ -750,12 +750,24 @@ const SearchForm = React.createClass({
 	_onSubmit3: function (e) {
 
                 var seq = this.refs.seq.value.trim();
-		seq = seq.replace(/[^A-Z]/g, '');
+		seq = seq.replace(/[^A-Za-z]/g, '');	
                 if (seq == '') {
                    alert("Please enter a raw sequence.");
                    e.preventDefault();
                    return 1;
                 }
+
+		var seqtype = this.refs.seqtype.value.trim();
+		
+		if (seqtype == 'DNA') {
+		   var re = /[^ATCGatcg]/;
+		   var OK = re.exec(seq);
+		   if (OK) {
+		       alert("Looks like you are entering a PROTEIN sequence instead of DNA sequence. Please pick a right sequence type and try it again.");
+		       e.preventDefault();
+                       return 1;     
+		   }
+		}
 
         },
 
