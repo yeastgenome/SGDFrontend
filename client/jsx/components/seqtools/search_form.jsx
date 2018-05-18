@@ -457,16 +457,21 @@ const SearchForm = React.createClass({
 
 	_getToolsLinks4chr: function(seqID, seq) {
 			    
-                var blastButton = this._getToolButtonChr('/blast-sgd',  'BLAST', seqID);
-                var fungalBlastButton = this._getToolButtonChr('/blast-fungal', 'Fungal BLAST', seqID);
-                var primerButton = this._getToolButtonChr('/primer3', 'Design Primers', seqID);
+                var blastButton = this._getToolButtonChr('/blast-sgd',  'BLAST', seqID, '');
+                var fungalBlastButton = this._getToolButtonChr('/blast-fungal', 'Fungal BLAST', seqID, '');
+                var primerButton = this._getToolButtonChr('/primer3', 'Design Primers', seqID, '');
                 var restrictionButton = this._getToolButtonChr4post('https://www.yeastgenome.org/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map', seq);
+		var restrictFragmentsButton = this._getToolButtonChr('/seqTools', 'Restriction Fragments', seqID, 'restrict');
+                var sixframeButton = this._getToolButtonChr('/seqTools', '6 Frame Translation', seqID, 'remap');
+
                 return(<div className="row">
                             <div className="large-12 columns">
                                  { blastButton }
                                  { fungalBlastButton }
                                  { primerButton }
                                  { restrictionButton }
+				 { restrictFragmentsButton }
+				 { sixframeButton }
                             </div>
                 </div>);
 
@@ -531,18 +536,28 @@ const SearchForm = React.createClass({
 		// <input type="submit" value={ button } className="button small secondary"></input>
 		
 		return (<form method="POST" action={ program } target="toolwin">
-		                <input type="hidden" name="sequence" value={ seq }  />
+		                <input type="hidden" name="seq" value={ seq }  />
                                 <input type="submit" value={ button } style={{ color: 'grey', fontSize: 18 }}></input>
                         </form>);
 
 	},
 
-	_getToolButtonChr: function(program, button, seqID) {
+	_getToolButtonChr: function(program, button, seqID, emboss) {
 
+		if (emboss != '') {	
 	                return (<form method="GET" action={ program } target="toolwin">
                                 <input type="hidden" name="sequence_id" value={ seqID }  />
+				<input type="hidden" name="emboss" value={ emboss }  />
                                 <input type="submit" value={ button } style={{ color: 'grey', fontSize: 18 }}></input>
                         </form>);
+		}
+		else {
+		     return (<form method="GET" action={ program } target="toolwin">
+                             <input type="hidden" name="sequence_id" value={ seqID }  />
+                             <input type="submit" value={ button } style={{ color: 'grey', fontSize: 18 }}></input>
+                     </form>);
+
+		}
 
         },
 
@@ -550,7 +565,7 @@ const SearchForm = React.createClass({
 
 
                 return (<form method="POST" action={ program } target="toolwin">
-                                <input type="hidden" name="sequence" value={ seq }  />
+                                <input type="hidden" name="seq" value={ seq }  />
                                 <input type="submit" value={ button } style={{ color: 'grey', fontSize: 18 }}></input>
                         </form>);
 
