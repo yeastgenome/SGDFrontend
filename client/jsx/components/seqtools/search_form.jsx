@@ -101,7 +101,7 @@ const SearchForm = React.createClass({
 			}
 			else if (param['emboss']) {
 			 
-			     var _desc = this._getDesc4emboss(param['sequence_id']);
+			     var _desc = this._getDesc4emboss();
 
 			     return(<div>
 			            <p dangerouslySetInnerHTML={{ __html: _desc }} />
