@@ -101,7 +101,9 @@ const SearchForm = React.createClass({
 			}
 			else if (param['emboss']) {
 			 
-			     var _desc = this._getDesc4emboss();
+			     // var _desc = this._getDesc4emboss();
+			     
+			     var _desc = "<h2>Restriction Map</h2>"
 
 			     return(<div>
 			            <p dangerouslySetInnerHTML={{ __html: _desc }} />
