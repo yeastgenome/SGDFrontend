@@ -292,9 +292,15 @@ var SearchForm = React.createClass({
 		
 	_getSeqtypeNode: function() {
 
+	        var param = this.state.param;
+
                 var pattern_type = {'peptide': 'protein', 'nucleotide': 'dna'};
                 var _elements = [];
                 for (var key in pattern_type) {
+		     
+		     if (param['seqtype'] && param['seqtype'] == 'dna') {
+		     	  _elements.push(<option value='dna' selected="selected">{key}</option>);
+	             }		
                      if (key == 'peptide') {
                           _elements.push(<option value={pattern_type[key]} selected="selected">{key}</option>);
                      }
@@ -312,9 +318,12 @@ var SearchForm = React.createClass({
 
 	_getPatternBoxNode: function() {
 
+		var param = this.state.param;
+		var pattern = param['seq'];
+
                 return (<div>
                         <h3>sequence or pattern (<a href='#examples'>syntax</a>)</h3>
-			<textarea ref='pattern' name='pattern' onChange={this._onChange} rows='1' cols='50'></textarea>
+			<textarea ref='pattern' value={ pattern } name='pattern' onChange={this._onChange} rows='1' cols='50'></textarea>
                 </div>);
 
         },
