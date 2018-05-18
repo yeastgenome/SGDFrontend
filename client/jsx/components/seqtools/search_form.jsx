@@ -385,11 +385,13 @@ const SearchForm = React.createClass({
 
 	_getToolsLinks4DNA: function(seqID, seq) {
 		
-		var blastButton = this._getToolButtonChr('/blast-sgd',  'BLAST', seqID);
-                var fungalBlastButton = this._getToolButtonChr('/blast-fungal', 'Fungal BLAST', seqID);
-                var primerButton = this._getToolButtonChr('/primer3', 'Design Primers', seqID);
-                var restrictionButton = this._getToolButtonChr4post('https://www.yeastgenome.org/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map', seq);
-		
+		var blastButton = this._getToolButtonChr('/blast-sgd',  'BLAST', seqID, '');
+                var fungalBlastButton = this._getToolButtonChr('/blast-fungal', 'Fungal BLAST', seqID, '');
+                var primerButton = this._getToolButtonChr('/primer3', 'Design Primers', seqID, '');
+                var restrictionButton = this._getToolButtonChr4post('https://www.yeastgenome.org/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map', seq, ID);
+		var translatedProteinButton = this._getToolButtonChr('/seqTools', 'Translated Protein Sequence', seqID, 'transeq');
+                var sixframeButton = this._getToolButtonChr('/seqTools', '6 Frame Translation', seqID, 'remap');
+
 		var seqlen = seq.length;
 
 		if (seqlen > 20) {
@@ -399,6 +401,8 @@ const SearchForm = React.createClass({
                                       { fungalBlastButton }
                                       { primerButton }
                                       { restrictionButton }
+				      { translatedProteinButton }
+				      { sixframeButton }
                                  </div>
                      </div>);
 		}
@@ -415,6 +419,8 @@ const SearchForm = React.createClass({
 					   <input type="submit" value="Genome Pattern Matching" style={{ color: 'grey', fontSize: 18 }}></input>
                                       </form>
                                       { restrictionButton }
+				      {	translatedProteinButton	}
+                                      {	sixframeButton }
                                  </div>
                      </div>);
 
@@ -463,7 +469,7 @@ const SearchForm = React.createClass({
                 var restrictionButton = this._getToolButtonChr4post('https://www.yeastgenome.org/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map', seq);
 		var restrictFragmentsButton = this._getToolButtonChr('/seqTools', 'Restriction Fragments', seqID, 'restrict');
                 var sixframeButton = this._getToolButtonChr('/seqTools', '6 Frame Translation', seqID, 'remap');
-
+		
                 return(<div className="row">
                             <div className="large-12 columns">
                                  { blastButton }
