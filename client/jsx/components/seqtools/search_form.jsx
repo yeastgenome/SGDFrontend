@@ -232,7 +232,7 @@ const SearchForm = React.createClass({
                 var seqDLRow = [<span style={{ fontSize: 18}}><br>Sequence Downloads</br><br>* DNA of Region</br></span>];
                 var fastaUrl = SeqtoolsUrl + "?format=fasta&chr=" + data['chr'] + "&start=" + start + "&end=" + end + "&rev=" + rev;
                 var gcgUrl = SeqtoolsUrl + "?format=gcg&chr=" + data['chr'] + "&start=" + start + "&end=" + end + "&rev=" + rev;
-                seqDLRow.push(<span style={{ fontSize: 18}}><br></br><br><a href={ fastaUrl } target='infowin2'>Fasta</a> | <a href={ gcgUrl } target='infowin2'>GCG</a></br></span>);
+                seqDLRow.push(<span style={{ fontSize: 18}}><br></br><br><a href={ fastaUrl } target='infowin'>Fasta</a> | <a href={ gcgUrl } target='infowin'>GCG</a></br></span>);
                 rows.push(seqDLRow);
 
 		// sequence analysis row
