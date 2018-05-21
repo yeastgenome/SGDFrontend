@@ -1061,7 +1061,7 @@ const GeneSequenceResources = React.createClass({
 	     text = "<h3>" + text + "</h3>";
 
 	     if (rev == 'on') {
-	     	  text += "<h3>You have selected the reverse complement of this gene/sequence list.</h3>";
+	     	  text += "<h3><font color='red'>You have selected the reverse complement of this gene/sequence list.</font></h3>";
 	     }   
 
 	     return text;
@@ -1081,7 +1081,7 @@ const GeneSequenceResources = React.createClass({
 	     var param = this.state.param;
 
 	     if (param['rev2'] == 'on' || data['start'] > data['end']) {
-		 text += "<h3>You have selected the reverse complement of this sequence. The reverse complement is on the Crick strand and will be displayed 5'->3' for all Sequence Downloads and Analysis options.</h3>"; 
+		 text += "<h3><font color='red'>You have selected the reverse complement of this sequence. The reverse complement is on the Crick strand and will be displayed 5'->3' for all Sequence Downloads and Analysis options.</font></h3>"; 
 	     }	     
 
 	     return text;
