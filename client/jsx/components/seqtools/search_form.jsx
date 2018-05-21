@@ -6,10 +6,10 @@ import Radium from 'radium';
 const DataTable = require("../widgets/data_table.jsx");
 const Params = require("../mixins/parse_url_params.jsx");
 
-// const mystyle = {
-//      button: { fontSize: 18, background: 'none', border: 'none', color: '#7392b7' },
-//      textFont: { fontSize: 18 }
-// };
+const style = {
+      button: { fontSize: 18, background: 'none', border: 'none', color: '#7392b7' },
+      textFont: { fontSize: 18 }
+};
 
 const SeqtoolsUrl = "/run_seqtools";
 
@@ -147,10 +147,10 @@ const GeneSequenceResources = React.createClass({
                 var chrNode = this.getChrNode();
                	var seqNode = this.getSeqNode();
 
-		var _nameSection = { headers: [[<span style={{ fontSize: 18 }}><a name='gene'>1. Search a list of genes</a></span>, '']],
+		var _nameSection = { headers: [[<span style={[style.textFont]}><a name='gene'>1. Search a list of genes</a></span>, '']],
 			    	     rows:    [[geneNodeLeft, geneNodeRight]] };
 				     
-		var _chrSeqSection = { headers: [[<span style={{ fontSize: 18 }}><strong style={{ color: 'red'}}>OR</strong> <a name='chr'>2. Search a specified chromosomal region</a></span>, '', '', <span style={{ fontSize: 18 }}><strong style={{ color: 'red'}}>OR</strong> <a name='seq'>3. Analyze a raw DNA or Protein sequence</a></span>]],
+		var _chrSeqSection = { headers: [[<span style={[style.textFont]}><strong style={{ color: 'red'}}>OR</strong> <a name='chr'>2. Search a specified chromosomal region</a></span>, '', '', <span style={[style.textFont]}><strong style={{ color: 'red'}}>OR</strong> <a name='seq'>3. Analyze a raw DNA or Protein sequence</a></span>]],
                                        rows:    [[chrNode, '', '', seqNode]] };
 					
 		return (<div>
@@ -196,7 +196,7 @@ const GeneSequenceResources = React.createClass({
 
                 // sequence analysis row
 
-                var seqAnalRow = [<span style={{ fontSize: 18}}>Sequence Analysis</span>];
+                var seqAnalRow = [<span style={[style.textFont]}>Sequence Analysis</span>];
                 window.localStorage.setItem(seqID, seq);
 		if (seqtype == 'DNA') {
                      seqAnalRow.push(this.getToolsLinks4DNA(seqID, seq)); 
@@ -225,22 +225,22 @@ const GeneSequenceResources = React.createClass({
 
 		// browser row
 
-                var browserRow = [<span style={{ fontSize: 18}}>Genome Display (S288C)</span>];
+                var browserRow = [<span style={[style.textFont]}>Genome Display (S288C)</span>];
                 var url = "https://browse.yeastgenome.org/?loc=" + chr + ":" + start + ".." + end;;
-                browserRow.push(<span style={{ fontSize: 18 }}><a href={ url } target='infowin2'>JBrowse</a></span>);
+                browserRow.push(<span style={[style.textFont]}><a href={ url } target='infowin2'>JBrowse</a></span>);
                 rows.push(browserRow);
 
 		// sequence download row
 
-                var seqDLRow = [<span style={{ fontSize: 18}}><br>Sequence Downloads</br><br>* DNA of Region</br></span>];
+                var seqDLRow = [<span style={[style.textFont]}><br>Sequence Downloads</br><br>* DNA of Region</br></span>];
                 var fastaUrl = SeqtoolsUrl + "?format=fasta&chr=" + data['chr'] + "&start=" + start + "&end=" + end + "&rev=" + rev;
                 var gcgUrl = SeqtoolsUrl + "?format=gcg&chr=" + data['chr'] + "&start=" + start + "&end=" + end + "&rev=" + rev;
-                seqDLRow.push(<span style={{ fontSize: 18}}><br></br><br><a href={ fastaUrl } target='infowin'>Fasta</a> | <a href={ gcgUrl } target='infowin'>GCG</a></br></span>);
+                seqDLRow.push(<span style={[style.textFont]}><br></br><br><a href={ fastaUrl } target='infowin'>Fasta</a> | <a href={ gcgUrl } target='infowin'>GCG</a></br></span>);
                 rows.push(seqDLRow);
 
 		// sequence analysis row
 
-		var seqAnalRow = [<span style={{ fontSize: 18}}>Sequence Analysis</span>];
+		var seqAnalRow = [<span style={[style.textFont]}>Sequence Analysis</span>];
                 var seq = data['residue'];
 		var seqID = chr + "_" + start + "_" + end + "_" + rev;
               	window.localStorage.setItem(seqID, seq);
@@ -264,9 +264,9 @@ const GeneSequenceResources = React.createClass({
 		}
 		var geneList = "";
 		var rows = [];
-		var geneRow = [<span style={{ fontSize: 18}}>Gene Name</span>];
+		var geneRow = [<span style={[style.textFont]}>Gene Name</span>];
 		_.map(genes, gene => {
-		    geneRow.push(<span style={{ fontSize: 18 }}>{ displayName4gene[gene] }</span>);
+		    geneRow.push(<span style={[style.textFont]}>{ displayName4gene[gene] }</span>);
 		    if (geneList != "") {
 		        geneList += ", ";
 	            }
@@ -277,11 +277,11 @@ const GeneSequenceResources = React.createClass({
 
 		// gene name row
 
-		var locusRow = [<span style={{ fontSize: 18}}>Locus and Homolog Details</span>];
+		var locusRow = [<span style={[style.textFont]}>Locus and Homolog Details</span>];
 		_.map(genes, gene => { 
 		    var sgdUrl = "https://www.yeastgenome.org/locus/" + sgdid4gene[gene];
 		    var allianceUrl = "http://www.alliancegenome.org/gene/" + sgdid4gene[gene];
-		    locusRow.push(<span style={{ fontSize: 18 }}><a href={ sgdUrl } target='infowin2'>SGD</a> | <a href={ allianceUrl } target='infowin2'>Alliance</a></span>);
+		    locusRow.push(<span style={[style.textFont]}><a href={ sgdUrl } target='infowin2'>SGD</a> | <a href={ allianceUrl } target='infowin2'>Alliance</a></span>);
 		});	
 		rows.push(locusRow);
 
@@ -304,21 +304,21 @@ const GeneSequenceResources = React.createClass({
 
 	        // browser row
 
-       		var browserRow = [<span style={{ fontSize: 18}}>Genome Display (S288C)</span>];
+       		var browserRow = [<span style={[style.textFont]}>Genome Display (S288C)</span>];
 		_.map(genes, gene => {
                     var url = "https://browse.yeastgenome.org/?loc=" + gene;
-                    browserRow.push(<span style={{ fontSize: 18 }}><a href={ url } target='infowin2'>JBrowse</a></span>);
+                    browserRow.push(<span style={[style.textFont]}><a href={ url } target='infowin2'>JBrowse</a></span>);
                 });
                 rows.push(browserRow);		
 
 		// alignment row
 
-		var alignRow = [<span style={{ fontSize: 18}}>Alignment/Variation</span>];
+		var alignRow = [<span style={[style.textFont]}>Alignment/Variation</span>];
 		_.map(genes, gene => {
 		     var variantUrl = "https://www.yeastgenome.org/variant-viewer#/" + sgdid4gene[gene].replace("SGD:", "");
 		     var strainUrl = "https://www.yeastgenome.org/cgi-bin/FUNGI/alignment.pl?locus=" + gene;
 		     var fungalUrl = "https://www.yeastgenome.org/cache/fungi/" + gene + ".html";
-		     alignRow.push(<span style={{ fontSize: 18 }}><br><a href={ variantUrl } target='infowin2'>Variant Viewer</a></br><br><a href={ strainUrl } target='infowin2'>Strain Alignment</a></br><br><a href={ fungalUrl } target='infowin2'>Fungal Alignment</a></br></span>);
+		     alignRow.push(<span style={[style.textFont]}><br><a href={ variantUrl } target='infowin2'>Variant Viewer</a></br><br><a href={ strainUrl } target='infowin2'>Strain Alignment</a></br><br><a href={ fungalUrl } target='infowin2'>Fungal Alignment</a></br></span>);
 		});
 		rows.push(alignRow);
 		
@@ -326,10 +326,10 @@ const GeneSequenceResources = React.createClass({
 		
 		var seqDLRow = [];
 		if (hasCoding > 0) { 
-		     seqDLRow = [<span style={{ fontSize: 18}}><br>Sequence Downloads</br><br>* DNA of Region</br><br>* Coding Sequence of Selected ORF</br><br>* Protein Translation of Selected ORF</br></span>];
+		     seqDLRow = [<span style={[style.textFont]}><br>Sequence Downloads</br><br>* DNA of Region</br><br>* Coding Sequence of Selected ORF</br><br>* Protein Translation of Selected ORF</br></span>];
 		}
 		else {
-		     seqDLRow = [<span style={{ fontSize: 18}}><br>Sequence Downloads</br><br>* DNA of Region</br></span>];
+		     seqDLRow = [<span style={[style.textFont]}><br>Sequence Downloads</br><br>* DNA of Region</br></span>];
 		}
 
 		var strains = window.localStorage.getItem("strains");
@@ -421,7 +421,7 @@ const GeneSequenceResources = React.createClass({
 				      <form method="GET" action='/nph-patmatch' target="toolwin">
 				      	   <input type="hidden" name="seqtype" value='dna' />
 					   <input type="hidden" name="seq" value={ seq } />
-					   <input type="submit" value="Genome Pattern Matching" style={{ fontSize: 18, background: 'none', border: 'none', color: '#7392b7' }}></input>
+					   <input type="submit" value="Genome Pattern Matching" style={[style.button]}></input>
                                       </form>
                                       { restrictionButton }
                                  </div>
@@ -456,7 +456,7 @@ const GeneSequenceResources = React.createClass({
                                       { fungalBlastButton }
 				      <form method="GET" action='/nph-patmatch' target="toolwin">	
                                            <input type="hidden" name="seq" value={ seq } />
-                                           <input type="submit" value="Genome Pattern Matching" style={{ fontSize: 18, background: 'none', border: 'none', color: '#7392b7' }}></input>
+                                           <input type="submit" value="Genome Pattern Matching" style={[style.button]}></input>
                                       </form>   
                                  </div>
                      </div>);
@@ -522,7 +522,7 @@ const GeneSequenceResources = React.createClass({
 		if (emboss == '') {
                    return (<form method="GET" action={ program } target="toolwin">
                                 <input type="hidden" name="sequence_id" value={ seqID }  />
-                                <input type="submit" value={ button } style={{ fontSize: 18, background: 'none', border: 'none', color: '#7392b7' }}></input>
+                                <input type="submit" value={ button } style={[style.button]}></input>
                            </form>);
 	        }
 		else {
@@ -530,7 +530,7 @@ const GeneSequenceResources = React.createClass({
 		     return (<form method="GET" action={ program } target="toolwin">
                                 <input type="hidden" name="sequence_id" value={ seqID }  />
 				<input type="hidden" name="emboss" value={ emboss }  />
-                                <input type="submit" value={ button } style={{ fontSize: 18, background: 'none', border: 'none', color: '#7392b7' }}></input>
+                                <input type="submit" value={ button } style={[style.button]}></input>
                            </form>);
 		}
 
@@ -546,7 +546,7 @@ const GeneSequenceResources = React.createClass({
 		
 		return (<form method="POST" action={ program } target="toolwin">
 		                <input type="hidden" name="seq" value={ seq }  />
-                                <input type="submit" value={ button } style={{ fontSize: 18, background: 'none', border: 'none', color: '#7392b7' }}></input>
+                                <input type="submit" value={ button } style={[style.button]}></input>
                         </form>);
 
 	},
@@ -557,13 +557,13 @@ const GeneSequenceResources = React.createClass({
 	                return (<form method="GET" action={ program } target="toolwin">
                                 <input type="hidden" name="sequence_id" value={ seqID }  />
 				<input type="hidden" name="emboss" value={ emboss }  />
-                                <input type="submit" value={ button } style={{ fontSize: 18, background: 'none', border: 'none', color: '#7392b7' }}></input>
+                                <input type="submit" value={ button } style={[style.button]}></input>
                         </form>);
 		}
 		else {
 		     return (<form method="GET" action={ program } target="toolwin">
                              <input type="hidden" name="sequence_id" value={ seqID }  />
-                             <input type="submit" value={ button } style={{ fontSize: 18, background: 'none', border: 'none', color: '#7392b7' }}></input>
+                             <input type="submit" value={ button } style={[style.button]}></input>
                      </form>);
 
 		}
@@ -575,7 +575,7 @@ const GeneSequenceResources = React.createClass({
 
                 return (<form method="POST" action={ program } target="toolwin">
                                 <input type="hidden" name="seq" value={ seq }  />
-                                <input type="submit" value={ button } style={{ fontSize: 18, background: 'none', border: 'none', color: '#7392b7' }}></input>
+                                <input type="submit" value={ button } style={[style.button]}></input>
                         </form>);
 
         },
@@ -1185,7 +1185,6 @@ const GeneSequenceResources = React.createClass({
 
 });
 
-// export default Radium(GeneSequenceResources);
 
 module.exports = GeneSequenceResources;
 
