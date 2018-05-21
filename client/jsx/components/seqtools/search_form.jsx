@@ -24,9 +24,9 @@ const SearchForm = React.createClass({
 		};
 	},
 
-	render: function () {	
+	render() {	
 	
-		var formNode = this._getFormNode();
+		var formNode = this.getFormNode();
 		
 		return (<div>
 			  <span style={{ textAlign: "center" }}><h1>Gene/Sequence Resources <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/sequence-help/genesequence-resources"><img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img></a></h1>
@@ -37,24 +37,24 @@ const SearchForm = React.createClass({
 		 
 	},
 
-	componentDidMount: function () {
+	componentDidMount() {
 		var param = this.state.param;
 	        if (param['submit']) {
-	              this._runSeqTools('genes');
+	              this.runSeqTools('genes');
 	        }
 		else if (param['submit2']) {
-                      this._runSeqTools('chr');
+                      this.runSeqTools('chr');
                 }
 		else if (param['submit3']) {
-                      this._runSeqTools('seq');
+                      this.runSeqTools('seq');
                 }
 		else if (param['emboss']) {
-		      this._runSeqTools('emboss');
+		      this.runSeqTools('emboss');
 		}
 		      
 	},
 
-	_getFormNode: function () {
+	getFormNode() {
 		
 		var param = this.state.param;
 
@@ -64,10 +64,8 @@ const SearchForm = React.createClass({
 			
 			if (param['submit']) {
 			   
-			     var [_geneList, _resultTable] = this._getResultTable4gene(data);
-			     var _desc = this._getDesc4gene(_geneList);
-
-			     // <p className='paragraph-margin-bottom-10 text--font-size-20 paragraph--justified' dangerouslySetInnerHTML={{ __html: _desc }} />
+			     var [_geneList, _resultTable] = this.getResultTable4gene(data);
+			     var _desc = this.getDesc4gene(_geneList);
 
 			     return (<div>
 					   <p dangerouslySetInnerHTML={{ __html: _desc }} />
@@ -77,8 +75,8 @@ const SearchForm = React.createClass({
 			}
 			else if (param['submit2']) {
 			     
-			     var _resultTable = this._getResultTable4chr(data);
-			     var _desc = this._getDesc4chr(data);
+			     var _resultTable = this.getResultTable4chr(data);
+			     var _desc = this.getDesc4chr(data);
  
 			     return (<div>
                                            <p dangerouslySetInnerHTML={{ __html: _desc }} />
@@ -88,9 +86,9 @@ const SearchForm = React.createClass({
 			}
 			else if (param['submit3']) {
 			     
-			     var _resultTable = this._getResultTable4seq(data['residue']);
-                             var _desc = this._getDesc4seq();
-			     var _complementBox = this._getComplementBox(data['residue']);
+			     var _resultTable = this.getResultTable4seq(data['residue']);
+                             var _desc = this.getDesc4seq();
+			     var _complementBox = this.getComplementBox(data['residue']);
 
                              return (<div>
                                            <p dangerouslySetInnerHTML={{ __html: _desc }} />
@@ -101,7 +99,7 @@ const SearchForm = React.createClass({
 			}
 			else if (param['emboss']) {
 			 
-			     // var _desc = this._getDesc4emboss();
+			     // var _desc = this.getDesc4emboss();
 			     
 			     var _desc = "<h2>Restriction Map</h2>";
 
@@ -129,19 +127,19 @@ const SearchForm = React.createClass({
 
 			}
 
-			return this._get_frontpage();
+			return this.get_frontpage();
 			
 		}
 	},
 
-	_get_frontpage: function() {
+	get_frontpage() {
 								
-		var descText = this._get_text();
+		var descText = this.get_text();
 
-		var geneNodeLeft = this._getGeneNodeLeft();
-                var geneNodeRight = this._getGeneNodeRight();
-                var chrNode = this._getChrNode();
-               	var seqNode = this._getSeqNode();
+		var geneNodeLeft = this.getGeneNodeLeft();
+                var geneNodeRight = this.getGeneNodeRight();
+                var chrNode = this.getChrNode();
+               	var seqNode = this.getSeqNode();
 
 		var _nameSection = { headers: [[<span style={{ fontSize: 18 }}><a name='gene'>1. Search a list of genes</a></span>, '']],
 			    	     rows:    [[geneNodeLeft, geneNodeRight]] };
@@ -153,7 +151,7 @@ const SearchForm = React.createClass({
 			<div dangerouslySetInnerHTML={{ __html: descText}} />
 			<div className="row">
 			     <div className="large-12 columns">
-			     	  <form onSubmit={this._onSubmit} target="infowin">
+			     	  <form onSubmit={this.onSubmit} target="infowin">
 				        <DataTable data={_nameSection} />
 			          </form>
 			         <DataTable data={_chrSeqSection} />        
@@ -163,7 +161,7 @@ const SearchForm = React.createClass({
 
 	},
 
-	_getComplementBox: function(seq) {
+	getComplementBox(seq) {
 
 	     var param = this.state.param;
 	     var rev = param['rev3'];
@@ -177,9 +175,8 @@ const SearchForm = React.createClass({
 
 	},
 
-	_getResultTable4seq: function(seq) {
+	getResultTable4seq(seq) {
 
-	        // var seqtype = window.localStorage.getItem("seqtype");
 		var param = this.state.param;		
 		var seqtype = param['seqtype'];
 
@@ -196,20 +193,20 @@ const SearchForm = React.createClass({
                 var seqAnalRow = [<span style={{ fontSize: 18}}>Sequence Analysis</span>];
                 window.localStorage.setItem(seqID, seq);
 		if (seqtype == 'DNA') {
-                     seqAnalRow.push(this._getToolsLinks4DNA(seqID, seq)); 
+                     seqAnalRow.push(this.getToolsLinks4DNA(seqID, seq)); 
 		}
 		else {
-		     seqAnalRow.push(this._getToolsLinks4protein(seqID, seq));
+		     seqAnalRow.push(this.getToolsLinks4protein(seqID, seq));
 		}
                 rows.push(seqAnalRow);
 
-                return this._display_result_table(headerRow, rows);		   
+                return this.display_result_table(headerRow, rows);		   
 		   
 	},
 
-	_getResultTable4chr: function(data) {
+	getResultTable4chr(data) {
 	
-		var chr = this._num_to_chr(data['chr']);
+		var chr = this.num_to_chr(data['chr']);
 		var start = data['start'];
 		var end = data['end'];
 		var rev = data['rev'];
@@ -241,17 +238,17 @@ const SearchForm = React.createClass({
                 var seq = data['residue'];
 		var seqID = chr + "_" + start + "_" + end + "_" + rev;
               	window.localStorage.setItem(seqID, seq);
-                seqAnalRow.push(this._getToolsLinks4chr(seqID, seq)); 
+                seqAnalRow.push(this.getToolsLinks4chr(seqID, seq)); 
                 rows.push(seqAnalRow);
 
-		return this._display_result_table(headerRow, rows);
+		return this.display_result_table(headerRow, rows);
 
 	},
 
-	_getResultTable4gene: function(data) {
+	getResultTable4gene(data) {
 		
 		var [genes, displayName4gene, sgdid4gene, seq4gene, hasProtein4gene, hasCoding4gene, hasGenomic4gene] 
-			= this._getDataFromJson4gene(data);
+			= this.getDataFromJson4gene(data);
 		
 		var param = this.state.param; 
 				
@@ -296,7 +293,7 @@ const SearchForm = React.createClass({
                 var hasSeq = hasProtein + hasCoding + hasGenomic;
 		    
 		if (hasSeq == 0) {
-		     return this._display_gene_table(headerRow, rows)
+		     return this.display_gene_table(headerRow, rows)
 		}    
 
 	        // browser row
@@ -376,23 +373,23 @@ const SearchForm = React.createClass({
 			  var seq = seqInfo[strain];
                           window.localStorage.setItem(seqID, seq);
 	            });
-		    // seqAnalRow.push(this._getToolsLinks(gene, strains, ID));
-		    seqAnalRow.push(this._getToolsLinks(gene, selectedStrains, ID));
+		    // seqAnalRow.push(this.getToolsLinks(gene, strains, ID));
+		    seqAnalRow.push(this.getToolsLinks(gene, selectedStrains, ID));
 		});		
 		rows.push(seqAnalRow);
 
-		return [geneList, this._display_result_table(headerRow, rows)];		
+		return [geneList, this.display_result_table(headerRow, rows)];		
 		
 	},
 
-	_getToolsLinks4DNA: function(seqID, seq) {
+	getToolsLinks4DNA(seqID, seq) {
 		
-		var blastButton = this._getToolButtonChr('/blast-sgd',  'BLAST', seqID, '');
-                var fungalBlastButton = this._getToolButtonChr('/blast-fungal', 'Fungal BLAST', seqID, '');
-                var primerButton = this._getToolButtonChr('/primer3', 'Design Primers', seqID, '');
-                var restrictionButton = this._getToolButtonChr4post('https://www.yeastgenome.org/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map', seq, seqID);
-		var translatedProteinButton = this._getToolButtonChr('/seqTools', 'Translated Protein Sequence', seqID, 'transeq');
-                var sixframeButton = this._getToolButtonChr('/seqTools', '6 Frame Translation', seqID, 'remap');
+		var blastButton = this.getToolButtonChr('/blast-sgd',  'BLAST', seqID, '');
+                var fungalBlastButton = this.getToolButtonChr('/blast-fungal', 'Fungal BLAST', seqID, '');
+                var primerButton = this.getToolButtonChr('/primer3', 'Design Primers', seqID, '');
+                var restrictionButton = this.getToolButtonChr4post('https://www.yeastgenome.org/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map', seq, seqID);
+		var translatedProteinButton = this.getToolButtonChr('/seqTools', 'Translated Protein Sequence', seqID, 'transeq');
+                var sixframeButton = this.getToolButtonChr('/seqTools', '6 Frame Translation', seqID, 'remap');
 
 		var seqlen = seq.length;
 
@@ -428,10 +425,10 @@ const SearchForm = React.createClass({
 
 	},
 
-	_getToolsLinks4protein: function(seqID, seq) {
+	getToolsLinks4protein(seqID, seq) {
 			    
-		var blastButton = this._getToolButtonChr('/blast-sgd',  'BLAST', seqID);
-		var fungalBlastButton = this._getToolButtonChr('/blast-fungal', 'Fungal BLAST', seqID);
+		var blastButton = this.getToolButtonChr('/blast-sgd',  'BLAST', seqID);
+		var fungalBlastButton = this.getToolButtonChr('/blast-fungal', 'Fungal BLAST', seqID);
 
 		var seqlen = seq.length;
 
@@ -461,14 +458,14 @@ const SearchForm = React.createClass({
 		}
 	},
 
-	_getToolsLinks4chr: function(seqID, seq) {
+	getToolsLinks4chr(seqID, seq) {
 			    
-                var blastButton = this._getToolButtonChr('/blast-sgd',  'BLAST', seqID, '');
-                var fungalBlastButton = this._getToolButtonChr('/blast-fungal', 'Fungal BLAST', seqID, '');
-                var primerButton = this._getToolButtonChr('/primer3', 'Design Primers', seqID, '');
-                var restrictionButton = this._getToolButtonChr4post('https://www.yeastgenome.org/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map', seq);
-		var restrictFragmentsButton = this._getToolButtonChr('/seqTools', 'Restriction Fragments', seqID, 'restrict');
-                var sixframeButton = this._getToolButtonChr('/seqTools', '6 Frame Translation', seqID, 'remap');
+                var blastButton = this.getToolButtonChr('/blast-sgd',  'BLAST', seqID, '');
+                var fungalBlastButton = this.getToolButtonChr('/blast-fungal', 'Fungal BLAST', seqID, '');
+                var primerButton = this.getToolButtonChr('/primer3', 'Design Primers', seqID, '');
+                var restrictionButton = this.getToolButtonChr4post('https://www.yeastgenome.org/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map', seq);
+		var restrictFragmentsButton = this.getToolButtonChr('/seqTools', 'Restriction Fragments', seqID, 'restrict');
+                var sixframeButton = this.getToolButtonChr('/seqTools', '6 Frame Translation', seqID, 'remap');
 		
                 return(<div className="row">
                             <div className="large-12 columns">
@@ -483,15 +480,15 @@ const SearchForm = React.createClass({
 
 	},
 
-	_getToolsLinks: function(gene, strains, ID) {
+	getToolsLinks(gene, strains, ID) {
 
-		var strainPulldown = this._getStrainPulldown(strains);
-		var blastButton = this._getToolButton(gene, '/blast-sgd',  'BLAST', ID, '');
-		var fungalBlastButton = this._getToolButton(gene, '/blast-fungal', 'Fungal BLAST', ID, '');	
-		var primerButton = this._getToolButton(gene, '/primer3', 'Design Primers', ID, '');
-		var restrictionButton = this._getToolButton4post(gene, 'https://www.yeastgenome.org/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map', ID);
-		var restrictFragmentsButton = this._getToolButton(gene, '/seqTools', 'Restriction Fragments', ID, 'restrict');
-		var sixframeButton = this._getToolButton(gene, '/seqTools', '6 Frame Translation', ID, 'remap');
+		var strainPulldown = this.getStrainPulldown(strains);
+		var blastButton = this.getToolButton(gene, '/blast-sgd',  'BLAST', ID, '');
+		var fungalBlastButton = this.getToolButton(gene, '/blast-fungal', 'Fungal BLAST', ID, '');	
+		var primerButton = this.getToolButton(gene, '/primer3', 'Design Primers', ID, '');
+		var restrictionButton = this.getToolButton4post(gene, 'https://www.yeastgenome.org/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map', ID);
+		var restrictFragmentsButton = this.getToolButton(gene, '/seqTools', 'Restriction Fragments', ID, 'restrict');
+		var sixframeButton = this.getToolButton(gene, '/seqTools', '6 Frame Translation', ID, 'remap');
 
 		return(<div className="row">
                             <div className="large-12 columns">	
@@ -508,7 +505,7 @@ const SearchForm = React.createClass({
 	},
 
 	
-	_getToolButton: function(name, program, button, ID, emboss) {
+	getToolButton(name, program, button, ID, emboss) {
 
                 var strain = this.state.strain;
                 var seqID = name + "_" + strain + "_" + ID;
@@ -533,7 +530,7 @@ const SearchForm = React.createClass({
 
         },
 
-	_getToolButton4post: function(name, program, button, ID) {
+	getToolButton4post(name, program, button, ID) {
 
 		var strain = this.state.strain;
 		var seqID = name + "_" + strain + "_" + ID;
@@ -548,7 +545,7 @@ const SearchForm = React.createClass({
 
 	},
 
-	_getToolButtonChr: function(program, button, seqID, emboss) {
+	getToolButtonChr(program, button, seqID, emboss) {
 
 		if (emboss != '') {	
 	                return (<form method="GET" action={ program } target="toolwin">
@@ -567,7 +564,7 @@ const SearchForm = React.createClass({
 
         },
 
-        _getToolButtonChr4post: function(program, button, seq) {
+        getToolButtonChr4post(program, button, seq) {
 
 
                 return (<form method="POST" action={ program } target="toolwin">
@@ -578,7 +575,7 @@ const SearchForm = React.createClass({
         },
 
 
-	// _getDownloadSeqButton: function(genes, strains, type) {
+	// getDownloadSeqButton(genes, strains, type) {
         //
 	//        // return (<form ref={ genes } method="POST" action="/run_seqtools" key={"hiddenNode_" + genes}>
 	//	return (<form method="POST" action="/run_seqtools">
@@ -591,7 +588,7 @@ const SearchForm = React.createClass({
         //
 	// },
 
-	_display_result_table: function(headerRow, rows) {
+	display_result_table(headerRow, rows) {
 
                 var _tableData = {
                      headers: [headerRow],
@@ -610,7 +607,7 @@ const SearchForm = React.createClass({
 
 	},
 
-	_getDataFromJson4gene: function(data) {
+	getDataFromJson4gene(data) {
 	        
 		var genes = Object.keys(data).sort();
 		var displayName4gene = {};
@@ -675,7 +672,7 @@ const SearchForm = React.createClass({
 	},
 
 
-	_onSubmit: function (e) {
+	onSubmit(e) {
 		
 		var genes = this.refs.genes.value.trim();
 		var re = /\+/g;
@@ -688,7 +685,7 @@ const SearchForm = React.createClass({
                    return 1;
 		}
 		this.setState({ notFound: "" });
-		this._validateGenes(genes);		
+		this.validateGenes(genes);		
 		var not_found = this.state.notFound;
 		if (not_found != "") {
 		        e.preventDefault();
@@ -728,7 +725,7 @@ const SearchForm = React.createClass({
 
 	},
 
-	_onSubmit2: function (e) {
+	onSubmit2(e) {
 
                 var chr = this.refs.chr.value.trim();		
                 if (chr == 0) {
@@ -747,7 +744,7 @@ const SearchForm = React.createClass({
 
         },
 
-	_onSubmit3: function (e) {
+	onSubmit3(e) {
 
                 var seq = this.refs.seq.value.trim();
 		seq = seq.replace(/[^A-Za-z]/g, '');	
@@ -771,25 +768,25 @@ const SearchForm = React.createClass({
 
         },
 
-	_getGeneNodeLeft: function() {
+	getGeneNodeLeft() {
 			  
-	        var reverseCompNode = this._getReverseCompNode('rev1');
+	        var reverseCompNode = this.getReverseCompNode('rev1');
 
                 return (<div style={{ textAlign: "top" }}>
                         <h3>Enter a list of names:</h3>
 			<p>(space-separated gene names (and/or ORF and/or SGDID). Example: ACT1 YHR023W SGD:S000000001) 
-			<textarea ref='genes' name='genes' onChange={this._onChange} rows='2' cols='50'></textarea></p>
+			<textarea ref='genes' name='genes' onChange={this.onChange} rows='2' cols='50'></textarea></p>
 			<h3><b>If available,</b> add flanking basepairs</h3>
-			<p>Upstream: <input type='text' ref='up' name='up' onChange={this._onChange} size='50'></input>
-			Downstream: <input type='text' ref='down' name='down' onChange={this._onChange} size='50'></input></p>
+			<p>Upstream: <input type='text' ref='up' name='up' onChange={this.onChange} size='50'></input>
+			Downstream: <input type='text' ref='down' name='down' onChange={this.onChange} size='50'></input></p>
 			{ reverseCompNode }			
                 </div>);
 
         },
 	
-	_getGeneNodeRight: function() {
+	getGeneNodeRight() {
 
-                var strainNode = this._getStrainNode();
+                var strainNode = this.getStrainNode();
 
                 return (<div>
                         <h3>Pick one or more strains:</h3>
@@ -799,7 +796,7 @@ const SearchForm = React.createClass({
 
         },
 
-	_getChrNode: function() {
+	getChrNode() {
 		 		    	      
 		var chr2num = { '-- choose a chromosome --': 0, 
 		    	        'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5, 'VI': 6,
@@ -817,16 +814,16 @@ const SearchForm = React.createClass({
                        }
                 });
 		
-		var reverseCompNode = this._getReverseCompNode('rev2');
+		var reverseCompNode = this.getReverseCompNode('rev2');
 
                 return(<div>
-		       <form onSubmit={this._onSubmit2} target="infowin">
+		       <form onSubmit={this.onSubmit2} target="infowin">
                        <h3>Pick a chromosome: </h3>
-                       <p><select ref='chr' name='chr' onChange={this._onChangeGenome}>{_elements}</select></p>
+                       <p><select ref='chr' name='chr' onChange={this.onChangeGenome}>{_elements}</select></p>
 		       <p>Then enter coordinates (optional)
-		       <input type='text' ref='start' name='start' onChange={this._onChange} size='50'></input></p>
+		       <input type='text' ref='start' name='start' onChange={this.onChange} size='50'></input></p>
 		       <p>to
-                       <input type='text' ref='end' name='end' onChange={this._onChange} size='50'></input></p>
+                       <input type='text' ref='end' name='end' onChange={this.onChange} size='50'></input></p>
 		       <p>The entire chromosome sequence will be displayed if no coordinates are entered.</p>
 		       <p><b>Note</b>: Enter coordinates in ascending order for the Watson strand and descending order for the Crick strand.</p>
 		       { reverseCompNode }
@@ -836,17 +833,17 @@ const SearchForm = React.createClass({
  		 
 	},
 
-	_getSeqNode: function() {
+	getSeqNode() {
 
-		var seqtypeNode = this._getSeqtypeNode();
-		var reverseCompNode = this._getReverseCompNode('rev3');
+		var seqtypeNode = this.getSeqtypeNode();
+		var reverseCompNode = this.getReverseCompNode('rev3');
 
 		return(<div>
-		       <form onSubmit={this._onSubmit3} target="infowin">
+		       <form onSubmit={this.onSubmit3} target="infowin">
                        <h3>Type or Paste a: </h3>
 		       { seqtypeNode }
 		       <p>Sequence:
-                       <textarea ref='seq' name='seq' onChange={this._onChange} rows='7' cols='50'></textarea></p>
+                       <textarea ref='seq' name='seq' onChange={this.onChange} rows='7' cols='50'></textarea></p>
                        <p>The sequence <b>MUST</b> be provided in RAW format, no comments (numbers are okay).</p>
                        { reverseCompNode }
 		       <p><input type="submit" ref='submit3' name='submit3' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset3' name='reset3' value="Reset Form" className="button secondary"></input></p>
@@ -855,29 +852,29 @@ const SearchForm = React.createClass({
 
 	},
 
-	_getSeqtypeNode: function() {
+	getSeqtypeNode() {
 
 		var _elements = [];
                	_elements.push(<option value='DNA' selected="selected">DNA</option>);
                	_elements.push(<option value='Protein'>Protein</option>);
                 
 		return(<div>
-                      <p><select name='seqtype' ref='seqtype' onChange={this._onChange}>{_elements}</select></p>
+                      <p><select name='seqtype' ref='seqtype' onChange={this.onChange}>{_elements}</select></p>
                 </div>);
 
 	},
 
-	_getReverseCompNode: function(name) {
+	getReverseCompNode(name) {
 
-		// <p><input ref={name} name={name} id={name} type="checkbox" value={this.state.rev} onChange={this._onChangeCB}/> Use the reverse complement</p>
+		// <p><input ref={name} name={name} id={name} type="checkbox" value={this.state.rev} onChange={this.onChangeCB}/> Use the reverse complement</p>
 
 	        return (<div>
-		       <p><input ref={name} name={name} id={name} type="checkbox" onChange={this._onChange}/> Use the reverse complement</p> 
+		       <p><input ref={name} name={name} id={name} type="checkbox" onChange={this.onChange}/> Use the reverse complement</p> 
 		       </div>);
 
         },
 
-	_getStrainMapping: function() {
+	getStrainMapping() {
 			   
                 return { 'S288C':      'S. cerevisiae Reference Strain S288C',
                          'CEN.PK':     'S. cerevisiae Strain CEN.PK2-1Ca_JRIV01000000',
@@ -894,9 +891,9 @@ const SearchForm = React.createClass({
 	
 	},
 
-	_getStrainPulldown: function(strains) {
+	getStrainPulldown(strains) {
 
-		var strainMapping = this._getStrainMapping();
+		var strainMapping = this.getStrainMapping();
 		var defaultStrain = "";
 		
 
@@ -917,14 +914,14 @@ const SearchForm = React.createClass({
 		// this.setState({ strain: defaultStrain });
 
 		return(<div>
-                       <p><select ref='strain' name='strain' id='strain' onChange={this._onChange4strain}>{_elements}</select></p>
+                       <p><select ref='strain' name='strain' id='strain' onChange={this.onChange4strain}>{_elements}</select></p>
                 </div>);
 
 	},
 
-	_getStrainNode: function() {
+	getStrainNode() {
 
-	        var strain2label = this._getStrainMapping();
+	        var strain2label = this.getStrainMapping();
 
 		var strains = Object.keys(strain2label)
 
@@ -940,21 +937,21 @@ const SearchForm = React.createClass({
 
                 return(<div>
 		       <p>(Select or unselect multiple strains by pressing the Control (PC) or Command (Mac) key while clicking.)
-                       <select ref='strains' name='strains' id='strains' onChange={this._onChange} size='11' multiple>{_elements}</select></p>
+                       <select ref='strains' name='strains' id='strains' onChange={this.onChange} size='11' multiple>{_elements}</select></p>
                 </div>);
 
         },
 
-        _onChange: function(e) {
+        onChange(e) {
                 this.setState({ text: e.target.value});
         },
 
-	_onChange4strain: function(e) {
+	onChange4strain(e) {
                 this.setState({ text: e.target.value,
 				strain: e.target.value });
         },
 
-	_runSeqTools: function(searchType) {
+	runSeqTools(searchType) {
 
 		var paramData = {};
 		
@@ -974,7 +971,7 @@ const SearchForm = React.createClass({
 		   if (param['rev1'] && param['rev1'] == 'on') {
 		      paramData['rev'] = 1
 		   }
-		   this._sendRequest(paramData)
+		   this.sendRequest(paramData)
 		   return
 		}
 		
@@ -989,7 +986,7 @@ const SearchForm = React.createClass({
 		   if (param['rev2'] && param['rev2'] == 'on') {
                       paramData['rev'] = 1;
                    }
-		   this._sendRequest(paramData)
+		   this.sendRequest(paramData)
                    return
 		}
 
@@ -1001,7 +998,7 @@ const SearchForm = React.createClass({
 		   if (param['rev3'] && param['rev3'] == 'on') {
                       paramData['rev'] = 1;
                    }
-		   this._sendRequest(paramData)
+		   this.sendRequest(paramData)
                    return
 		}		
 
@@ -1009,13 +1006,13 @@ const SearchForm = React.createClass({
 		   paramData['emboss'] = param['emboss'];
 		   var seqID = param['sequence_id'];
 		   paramData['seq'] = window.localStorage.getItem(seqID);
-		   this._sendRequest(paramData)
+		   this.sendRequest(paramData)
                    return		   
 		}		
  		
 	},
 	
-        _validateGenes: function(name) {
+        validateGenes(name) {
 
                 $.ajax({
 			url: SeqtoolsUrl,
@@ -1034,7 +1031,7 @@ const SearchForm = React.createClass({
 
         },
 
-	_sendRequest: function(paramData) {
+	sendRequest(paramData) {
         
 		$.ajax({
 			url: SeqtoolsUrl,
@@ -1053,13 +1050,13 @@ const SearchForm = React.createClass({
 
 	},
 	
-	_get_text: function() {
+	get_text() {
 
 	        return "<p><h3>Try <a target='infowin' href='https://yeastmine.yeastgenome.org/yeastmine/begin.do'>Yeastmine</a> for flexible queries and fast retrieval of chromosomal features, sequences, GO annotations, interaction data and phenotype annotations. The video tutorial <a target='infowin' href='https://vimeo.com/28472349'>Template Basics</a> describes how to quickly retrieve this type of information in YeastMine. To find a comprehensive list of SGD's tutorials describing the many other features available in YeastMine and how to use them, visit SGD's <a target='infowin' href='https://sites.google.com/view/yeastgenome-help/video-tutorials/yeastmine?authuser=0'>YeastMine Video Tutorials</a> page.</h3></p><p><h3>This resource allows retrieval of a list of options for accessing biological information, table/map displays, and sequence analysis tools for <b><a href='#gene'>1. a list of named genes or sequences.</a> <a href='#chr'>2. a specified chromosomal region</a>, or <a href='#seq'>3. a raw DNA or protein sequence.</a></b></h3></p>";
       
        },
        
-       _getDesc4gene: function(geneList) {
+       getDesc4gene(geneList) {
 
 	     var param = this.state.param;
 	     var rev = param['rev1'];
@@ -1088,13 +1085,13 @@ const SearchForm = React.createClass({
 
        },
 
-       _getDesc4chr: function(data) {
+       getDesc4chr(data) {
 
        	     var chrnum = data['chr'];
 	     
 	     var text = "The current selection is: ";
 	    
-	     text += "<font color='red'>chromosome " + this._num_to_chr(chrnum) + " coordinates " + data['start'] + " to " + data['end'] + "</font>";
+	     text += "<font color='red'>chromosome " + this.num_to_chr(chrnum) + " coordinates " + data['start'] + " to " + data['end'] + "</font>";
 	     text = "<h3>" + text + "</h3>";
 	     
 	     var param = this.state.param;
@@ -1107,7 +1104,7 @@ const SearchForm = React.createClass({
 
        },
 
-       _getDesc4seq: function() {
+       getDesc4seq() {
 
        	     var param = this.state.param;
 	     var seqtype = param['seqtype'];
@@ -1115,7 +1112,7 @@ const SearchForm = React.createClass({
 	     	  
        },
 
-       _getDesc4emboss: function() {
+       getDesc4emboss() {
 
        	     return "<h2>Restriction Map</h2>";
 
@@ -1169,7 +1166,7 @@ const SearchForm = React.createClass({
 
        },
 
-       _num_to_chr: function(num) {
+       num_to_chr(num) {
        		 
 		 var num2chr = { 1: 'I', 2: 'II', 3: 'III', 4: 'IV', 5: 'V', 6: 'VI',
 		     	         7: 'VII', 8: 'VIII', 9: 'IX', 10: 'X', 11: 'XI', 
