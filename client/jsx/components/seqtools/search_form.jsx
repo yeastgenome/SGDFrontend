@@ -108,14 +108,9 @@ const GeneSequenceResources = React.createClass({
 			 
 			     var _content = this.getDesc4emboss(data['content']); 
 			     
-			     // return(<div>
-			     //	    <pre><span style={ style.textFont }>{ data['content'] } </span></pre>
-			     //       </div>);
-
-			     return (<div>
-                                           { _content }
-                                     </div>);
-
+			     return(<div>
+			     	    <pre><span style={ style.textFont }> { _content } </span></pre>
+			            </div>);
 
 			}
 
