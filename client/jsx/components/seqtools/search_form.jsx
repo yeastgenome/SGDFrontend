@@ -1113,7 +1113,7 @@ const GeneSequenceResources = React.createClass({
 	     else {
 	     	 text = "Protein Translation";
              }  	 
-	     text = "<h2>" + text + "</h2>";
+	     text = "\n" + text + "\n";
 	     
 	     var pieces = param['sequence_id'].split('_');
 
@@ -1125,27 +1125,32 @@ const GeneSequenceResources = React.createClass({
 
 	     text += "The currently selected gene/sequence is ";
 
-             text += "<font color='red'>" + gene + "</font>";
+             // text += "<font color='red'>" + gene + "</font>";
+
+	     text += gene;
 
              if (up && down) {
-                  text += " <b>plus " + up + " basepair(s) of upstream sequence and " + down + " basepair(s) of downstream sequence.</b>";
+                  // text += " <b>plus " + up + " basepair(s) of upstream sequence and " + down + " basepair(s) of downstream sequence.</b>";
+		  text += " plus " + up + " basepair(s) of upstream sequence and " + down + " basepair(s) of downstream sequence.";
              }
              else if (up) {
-                  text += " <b>plus " + up + " basepair(s) of upstream sequence.</b>";
+                  // text += " <b>plus " + up + " basepair(s) of upstream sequence.</b>";
+		  text += " plus " + up + " basepair(s) of upstream sequence.";
              }
              else if (down) {
-                  text += " <b>plus " + down + " basepair(s) of downstream sequence.</b>";
+                  // text += " <b>plus " + down + " basepair(s) of downstream sequence.</b>";
+		  text += " plus " + down + " basepair(s) of downstream sequence.";
              }
 
-             text = "<p>" + text + "</p>";
+             text += "\n";
 
              if (rev == 'on') {
 
-                  text += "<p>You have selected the reverse complement of this gene/sequence.</p>";
+                  text += "\nYou have selected the reverse complement of this gene/sequence.\n";
              }
 
 	     
-	     text += "<pre>" + content + "</pre>";
+	     text += "\n" + content;
 
 	     return text;
 
