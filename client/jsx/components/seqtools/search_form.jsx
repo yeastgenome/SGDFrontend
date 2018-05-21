@@ -113,7 +113,7 @@ const GeneSequenceResources = React.createClass({
 			     //       </div>);
 
 			     return (<div>
-                                           <p dangerouslySetInnerHTML={{ __html: _content }} />
+                                           { _content }
                                      </div>);
 
 
