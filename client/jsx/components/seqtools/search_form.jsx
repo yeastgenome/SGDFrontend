@@ -1123,7 +1123,7 @@ const GeneSequenceResources = React.createClass({
 	     var down = pieces[3]
 	     var rev = pieces[4]; 
 
-             text += " for gene/sequence: " + gene;
+             text += " for gene/sequence in strain " + strain + ": " + gene;
 
              if (up > 0 && down > 0) {
                   text += " plus " + up + " basepair(s) of upstream sequence and " + down + " basepair(s) of downstream sequence.";
