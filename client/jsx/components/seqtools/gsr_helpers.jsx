@@ -1,6 +1,6 @@
 module.exports = {
 
-	strainMapping() {
+	StrainMapping() {
 		return { 'S288C':      'S. cerevisiae Reference Strain S288C',
                          'CEN.PK':     'S. cerevisiae Strain CEN.PK2-1Ca_JRIV01000000',
                          'D273-10B':   'S. cerevisiae Strain D273-10B_JRIY00000000',
