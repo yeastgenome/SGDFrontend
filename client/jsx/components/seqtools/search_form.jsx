@@ -105,11 +105,10 @@ const GeneSequenceResources = React.createClass({
 			}
 			else if (param['emboss']) {
 			 
-			     var [_text, _revText] = this.getDesc4emboss(); 
+			     var _text = this.getDesc4emboss(); 
 		 	     
 			     return(<div>
-				    <h3>{ _text }</h3>
-				    <span style={{ color: 'red', fontSize: 18 }}>{ _revText }</span>
+				    { _text }
 			     	    <pre><span style={{ fontSize: 15 }}> { "\n" + data['content'] } </span></pre>
 			            </div>);
 
@@ -1123,26 +1122,34 @@ const GeneSequenceResources = React.createClass({
 	     var down = pieces[3]
 	     var rev = pieces[4]; 
 
-             text += " for gene/sequence in strain " + strain + ": " + gene;
+             text += " for gene/sequence in strain "; // + strain + ": " + gene;
 
+	     var updownText = "";
              if (up > 0 && down > 0) {
-                  text += " plus " + up + " basepair(s) of upstream sequence and " + down + " basepair(s) of downstream sequence.";
+                  updownText += " plus " + up + " basepair(s) of upstream sequence and " + down + " basepair(s) of downstream sequence.";
 		  
              }
              else if (up > 0) {
-                  text += " plus " + up + " basepair(s) of upstream sequence.";
+                  updownText += " plus " + up + " basepair(s) of upstream sequence.";
 	
              }
              else if (down > 0) {
-                  text += " plus " + down + " basepair(s) of downstream sequence.";
+                  updownText += " plus " + down + " basepair(s) of downstream sequence.";
              }
+
+	     var revText = "";
 
              if (rev == 1) {
 
-                  return  [text, "You have selected the reverse complement of this gene/sequence."];
+	     	  revText = "You have selected the reverse complement of this gene/sequence.";
+
+                  // return  [text, "You have selected the reverse complement of this gene/sequence."];
              }
 
-	     return [text, ""];
+	     return (<div>
+	     	     <span style={ style.textFont }>{ text }<strong style={{ color: 'red' }}>{ strain }: { gene }</strong><strong>{ updownText }</strong></span>
+		     <span style={ style.textFont }>{ revText }</span>
+		     </div>);
 
        },
 
