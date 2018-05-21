@@ -147,10 +147,10 @@ const GeneSequenceResources = React.createClass({
                 var chrNode = this.getChrNode();
                	var seqNode = this.getSeqNode();
 
-		var _nameSection = { headers: [[<span style={[style.textFont]}><a name='gene'>1. Search a list of genes</a></span>, '']],
+		var _nameSection = { headers: [[<span style={ style.textFont }><a name='gene'>1. Search a list of genes</a></span>, '']],
 			    	     rows:    [[geneNodeLeft, geneNodeRight]] };
 				     
-		var _chrSeqSection = { headers: [[<span style={[style.textFont]}><strong style={{ color: 'red'}}>OR</strong> <a name='chr'>2. Search a specified chromosomal region</a></span>, '', '', <span style={[style.textFont]}><strong style={{ color: 'red'}}>OR</strong> <a name='seq'>3. Analyze a raw DNA or Protein sequence</a></span>]],
+		var _chrSeqSection = { headers: [[<span style={ style.textFont }><strong style={{ color: 'red'}}>OR</strong> <a name='chr'>2. Search a specified chromosomal region</a></span>, '', '', <span style={[style.textFont]}><strong style={{ color: 'red'}}>OR</strong> <a name='seq'>3. Analyze a raw DNA or Protein sequence</a></span>]],
                                        rows:    [[chrNode, '', '', seqNode]] };
 					
 		return (<div>
@@ -196,7 +196,7 @@ const GeneSequenceResources = React.createClass({
 
                 // sequence analysis row
 
-                var seqAnalRow = [<span style={[style.textFont]}>Sequence Analysis</span>];
+                var seqAnalRow = [<span style={ style.textFont }>Sequence Analysis</span>];
                 window.localStorage.setItem(seqID, seq);
 		if (seqtype == 'DNA') {
                      seqAnalRow.push(this.getToolsLinks4DNA(seqID, seq)); 
@@ -225,22 +225,22 @@ const GeneSequenceResources = React.createClass({
 
 		// browser row
 
-                var browserRow = [<span style={[style.textFont]}>Genome Display (S288C)</span>];
+                var browserRow = [<span style={ style.textFont }>Genome Display (S288C)</span>];
                 var url = "https://browse.yeastgenome.org/?loc=" + chr + ":" + start + ".." + end;;
                 browserRow.push(<span style={[style.textFont]}><a href={ url } target='infowin2'>JBrowse</a></span>);
                 rows.push(browserRow);
 
 		// sequence download row
 
-                var seqDLRow = [<span style={[style.textFont]}><br>Sequence Downloads</br><br>* DNA of Region</br></span>];
+                var seqDLRow = [<span style={ style.textFont }><br>Sequence Downloads</br><br>* DNA of Region</br></span>];
                 var fastaUrl = SeqtoolsUrl + "?format=fasta&chr=" + data['chr'] + "&start=" + start + "&end=" + end + "&rev=" + rev;
                 var gcgUrl = SeqtoolsUrl + "?format=gcg&chr=" + data['chr'] + "&start=" + start + "&end=" + end + "&rev=" + rev;
-                seqDLRow.push(<span style={[style.textFont]}><br></br><br><a href={ fastaUrl } target='infowin'>Fasta</a> | <a href={ gcgUrl } target='infowin'>GCG</a></br></span>);
+                seqDLRow.push(<span style={ style.textFont }><br></br><br><a href={ fastaUrl } target='infowin'>Fasta</a> | <a href={ gcgUrl } target='infowin'>GCG</a></br></span>);
                 rows.push(seqDLRow);
 
 		// sequence analysis row
 
-		var seqAnalRow = [<span style={[style.textFont]}>Sequence Analysis</span>];
+		var seqAnalRow = [<span style={ style.textFont }>Sequence Analysis</span>];
                 var seq = data['residue'];
 		var seqID = chr + "_" + start + "_" + end + "_" + rev;
               	window.localStorage.setItem(seqID, seq);
@@ -264,7 +264,7 @@ const GeneSequenceResources = React.createClass({
 		}
 		var geneList = "";
 		var rows = [];
-		var geneRow = [<span style={[style.textFont]}>Gene Name</span>];
+		var geneRow = [<span style={ style.textFont }>Gene Name</span>];
 		_.map(genes, gene => {
 		    geneRow.push(<span style={[style.textFont]}>{ displayName4gene[gene] }</span>);
 		    if (geneList != "") {
@@ -277,11 +277,11 @@ const GeneSequenceResources = React.createClass({
 
 		// gene name row
 
-		var locusRow = [<span style={[style.textFont]}>Locus and Homolog Details</span>];
+		var locusRow = [<span style={ style.textFont }>Locus and Homolog Details</span>];
 		_.map(genes, gene => { 
 		    var sgdUrl = "https://www.yeastgenome.org/locus/" + sgdid4gene[gene];
 		    var allianceUrl = "http://www.alliancegenome.org/gene/" + sgdid4gene[gene];
-		    locusRow.push(<span style={[style.textFont]}><a href={ sgdUrl } target='infowin2'>SGD</a> | <a href={ allianceUrl } target='infowin2'>Alliance</a></span>);
+		    locusRow.push(<span style={ style.textFont }><a href={ sgdUrl } target='infowin2'>SGD</a> | <a href={ allianceUrl } target='infowin2'>Alliance</a></span>);
 		});	
 		rows.push(locusRow);
 
@@ -304,16 +304,16 @@ const GeneSequenceResources = React.createClass({
 
 	        // browser row
 
-       		var browserRow = [<span style={[style.textFont]}>Genome Display (S288C)</span>];
+       		var browserRow = [<span style={ style.textFont }>Genome Display (S288C)</span>];
 		_.map(genes, gene => {
                     var url = "https://browse.yeastgenome.org/?loc=" + gene;
-                    browserRow.push(<span style={[style.textFont]}><a href={ url } target='infowin2'>JBrowse</a></span>);
+                    browserRow.push(<span style={ style.textFont }><a href={ url } target='infowin2'>JBrowse</a></span>);
                 });
                 rows.push(browserRow);		
 
 		// alignment row
 
-		var alignRow = [<span style={[style.textFont]}>Alignment/Variation</span>];
+		var alignRow = [<span style={ style.textFont }>Alignment/Variation</span>];
 		_.map(genes, gene => {
 		     var variantUrl = "https://www.yeastgenome.org/variant-viewer#/" + sgdid4gene[gene].replace("SGD:", "");
 		     var strainUrl = "https://www.yeastgenome.org/cgi-bin/FUNGI/alignment.pl?locus=" + gene;
