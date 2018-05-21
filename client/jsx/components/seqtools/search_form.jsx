@@ -6,6 +6,11 @@ import Radium from 'radium';
 const DataTable = require("../widgets/data_table.jsx");
 const Params = require("../mixins/parse_url_params.jsx");
 
+// const mystyle = {
+//      button: { fontSize: 18, background: 'none', border: 'none', color: '#7392b7' },
+//      textFont: { fontSize: 18 }
+// };
+
 const SeqtoolsUrl = "/run_seqtools";
 
 const GeneSequenceResources = React.createClass({
@@ -1179,11 +1184,6 @@ const GeneSequenceResources = React.createClass({
        }
 
 });
-
-const mystyle = {
-      button: { fontSize: 18, background: 'none', border: 'none', color: '#7392b7' },
-      textFont: { fontSize: 18 }
-};
 
 export default Radium(GeneSequenceResources);
 
