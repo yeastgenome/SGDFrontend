@@ -1164,8 +1164,11 @@ const GeneSequenceResources = React.createClass({
                           <p style={{ fontSize: 18, color: 'red' }}>{ revText }</p>
                         </div>);
 	     }
-
-
+	     else {
+	     	 return (<div>
+		          <span style={ style.textFont }><strong>{ title }</strong> for the raw sequence.</span>
+			 </div>);
+	     }
        }
 
 });
