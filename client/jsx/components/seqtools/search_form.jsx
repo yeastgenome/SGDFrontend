@@ -32,12 +32,12 @@ const GeneSequenceResources = React.createClass({
 
 	render() {	
 	
-		var formNode = this.getFormNode();
+		var page_to_display = this.getPage();
 		
 		return (<div>
 			  <span style={{ textAlign: "center" }}><h1>Gene/Sequence Resources <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/sequence-help/genesequence-resources"><img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img></a></h1>
 			  <hr /></span>
-			  {formNode}
+			  {page_to_display}
 			</div>);
 		
 		 
@@ -60,7 +60,7 @@ const GeneSequenceResources = React.createClass({
 		      
 	},
 
-	getFormNode() {
+	getPage() {
 		
 		var param = this.state.param;
 
@@ -133,12 +133,12 @@ const GeneSequenceResources = React.createClass({
 
 			}
 
-			return this.get_frontpage();
+			return this.getFrontPage();
 			
 		}
 	},
 
-	get_frontpage() {
+	getFrontPage() {
 								
 		var descText = GSR.TopDescription();
 
