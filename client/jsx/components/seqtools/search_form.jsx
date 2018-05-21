@@ -1166,7 +1166,7 @@ const GeneSequenceResources = React.createClass({
 	     }
 	     else {
 	     	 return (<div>
-		          <span style={ style.textFont }><strong>{ title }</strong> for the raw sequence.</span>
+		          <span style={ style.textFont }><strong>{ title }</strong> for the raw DNA sequence.</span>
 			 </div>);
 	     }
        }
