@@ -106,7 +106,7 @@ const GeneSequenceResources = React.createClass({
 			else if (param['emboss']) {
 			 
 			     var [_text, _revText] = this.getDesc4emboss(); 
-			     			     
+		 	     
 			     return(<div>
 				    <h3>{ _text }</h3>
 				    <span style={{ color: 'red', fontSize: 18 }}>{ _revText }</span>

@@ -67,8 +67,15 @@ def run_emboss(p):
 
     f = open(outSeqFile)
     content = ""
+    start = 0
     for line in f:
-        content += line
+        if emboss == 'restrict' and " Start" in line:
+            start = 1
+        if emboss == 'restrict':
+            if start == 1:
+                content += line
+        else:
+            content += line
     f.close()    
 
     try:
