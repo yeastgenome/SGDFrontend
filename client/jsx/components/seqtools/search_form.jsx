@@ -106,12 +106,13 @@ const GeneSequenceResources = React.createClass({
 			else if (param['emboss']) {
 			 
 			 
-			     var _text = this.getDesc4emboss(data['content']); 
+			     var _text = this.getDesc4emboss(); 
 			     
 			     var _content = _text + "\n" + data['content'];		
 	     
 			     return(<div>
-			     	    <pre><span style={ style.textFont }> { _content } </span></pre>
+				    <span style={ style.textFont }>{ _text }</span>
+			     	    <pre><span style={ style.textFont }> { data['content'] } </span></pre>
 			            </div>);
 
 			}
@@ -1098,7 +1099,7 @@ const GeneSequenceResources = React.createClass({
 	     	  
        },
 
-       getDesc4emboss(content) {
+       getDesc4emboss() {
 
        	     var param = this.state.param;
 
@@ -1124,21 +1125,72 @@ const GeneSequenceResources = React.createClass({
 	     var down = pieces[3]
 	     var rev = pieces[4]; 
 
+	     text = "<h2>" + text + "</h2>";
+
+             text += "<font color='red'>" + gene + "</font>";
+
+             if (up > 0 && down > 0) {
+                  text += " <b>plus " + up + " basepair(s) of upstream sequence and " + down + " basepair(s) of downstream sequence.</b>";
+		  
+             }
+             else if (up > 0) {
+                  text += " <b>plus " + up + " basepair(s) of upstream sequence.</b>";
+	
+             }
+             else if (down > 0) {
+                  text += " <b>plus " + down + " basepair(s) of downstream sequence.</b>";
+             }
+
+             if (rev == 'on') {
+
+                  text += "<p>You have selected the reverse complement of this gene/sequence.</p>";
+             }
+
+	     return text;
+
+       },
+
+       getDesc4emboss2() {
+
+             var param = this.state.param;
+
+             var emboss = param['emboss'];
+
+             var text = "";
+
+             if (emboss == 'restrict') {
+                 text = "Restriction Map";
+             }
+             else if (emboss == 'remap') {
+                 text = "6 Frame Translation";
+             }
+             else {
+                 text = "Protein Translation";
+             }
+
+             var pieces = param['sequence_id'].split('_');
+
+             var gene = pieces[0];
+             var strain = pieces[1];
+             var up = pieces[2];
+             var down = pieces[3]
+             var rev = pieces[4];
+
              // text += "<font color='red'>" + gene + "</font>";
 
-	     text += " for gene/sequence: " + gene;
+             text += " for gene/sequence: " + gene;
 
              if (up > 0 && down > 0) {
                   // text += " <b>plus " + up + " basepair(s) of upstream sequence and " + down + " basepair(s) of downstream sequence.</b>";
-		  text += " plus " + up + " basepair(s) of upstream sequence and \n" + down + " basepair(s) of downstream sequence.";
+                  text += " plus " + up + " basepair(s) of upstream sequence and \n" + down + " basepair(s) of downstream sequence.";
              }
              else if (up > 0) {
                   // text += " <b>plus " + up + " basepair(s) of upstream sequence.</b>";
-		  text += " plus " + up + " basepair(s) of upstream sequence.";
+                  text += " plus " + up + " basepair(s) of upstream sequence.";
              }
              else if (down > 0) {
                   // text += " <b>plus " + down + " basepair(s) of downstream sequence.</b>";
-		  text += " plus " + down + " basepair(s) of downstream sequence.";
+                  text += " plus " + down + " basepair(s) of downstream sequence.";
              }
 
              text += "\n";
@@ -1148,12 +1200,10 @@ const GeneSequenceResources = React.createClass({
                   text += "\nYou have selected the reverse complement of this gene/sequence.\n";
              }
 
-	     
-	     // text += "\n" + content;
-
-	     return text;
+             return text;
 
        }
+
 
 });
 
