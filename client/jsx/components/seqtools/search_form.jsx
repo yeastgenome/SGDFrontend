@@ -1122,7 +1122,7 @@ const GeneSequenceResources = React.createClass({
 	     var down = pieces[3]
 	     var rev = pieces[4]; 
 
-             text = " for gene/sequence in strain "; 
+             var text = " for gene/sequence in strain "; 
 
 	     var updownText = "";
              if (up > 0 && down > 0) {
