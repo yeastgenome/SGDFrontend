@@ -1113,7 +1113,6 @@ const GeneSequenceResources = React.createClass({
 	     else {
 	     	 text = "Protein Translation";
              }  	 
-	     text = "\n" + text + "\n";
 	     
 	     var pieces = param['sequence_id'].split('_');
 
@@ -1123,21 +1122,19 @@ const GeneSequenceResources = React.createClass({
 	     var down = pieces[3]
 	     var rev = pieces[4]; 
 
-	     text += "The currently selected gene/sequence is ";
-
              // text += "<font color='red'>" + gene + "</font>";
 
 	     text += gene;
 
-             if (up && down) {
+             if (up > 0 && down > 0) {
                   // text += " <b>plus " + up + " basepair(s) of upstream sequence and " + down + " basepair(s) of downstream sequence.</b>";
-		  text += " plus " + up + " basepair(s) of upstream sequence and " + down + " basepair(s) of downstream sequence.";
+		  text += " plus " + up + " basepair(s) of upstream sequence and \n" + down + " basepair(s) of downstream sequence.";
              }
-             else if (up) {
+             else if (up > 0) {
                   // text += " <b>plus " + up + " basepair(s) of upstream sequence.</b>";
 		  text += " plus " + up + " basepair(s) of upstream sequence.";
              }
-             else if (down) {
+             else if (down > 0) {
                   // text += " <b>plus " + down + " basepair(s) of downstream sequence.</b>";
 		  text += " plus " + down + " basepair(s) of downstream sequence.";
              }
