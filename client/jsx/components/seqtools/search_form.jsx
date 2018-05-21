@@ -7,7 +7,7 @@ const Params = require("../mixins/parse_url_params.jsx");
 
 const SeqtoolsUrl = "/run_seqtools";
 
-const SearchForm = React.createClass({
+const GeneSequenceResources = React.createClass({
 
 	getInitialState: function () {
 	        
@@ -1179,4 +1179,10 @@ const SearchForm = React.createClass({
 
 });
 
-module.exports = SearchForm;
+const mystyle = {
+      button: { fontSize: 18, background: 'none', border: 'none', color: '#7392b7' },
+      textFont: { fontSize: 18 }
+};
+
+export default Radium(GeneSequenceResources);
+
