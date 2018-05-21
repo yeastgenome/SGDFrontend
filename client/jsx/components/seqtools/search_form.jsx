@@ -105,13 +105,11 @@ const GeneSequenceResources = React.createClass({
 			}
 			else if (param['emboss']) {
 			 
-			 
-			     var _text = this.getDesc4emboss(); 
-			     
-			     var _content = _text + "\n" + data['content'];		
-	     
+			     var [_text, _revText] = this.getDesc4emboss(); 
+			     			     
 			     return(<div>
-				    <p dangerouslySetInnerHTML={{ __html: _text }} />
+				    <h3>{ _text }</h3>
+				    <b>{ _revText }</b>
 			     	    <pre><span style={ style.textFont }> { data['content'] } </span></pre>
 			            </div>);
 
@@ -1125,28 +1123,28 @@ const GeneSequenceResources = React.createClass({
 	     var down = pieces[3]
 	     var rev = pieces[4]; 
 
-	     text = "<h2>" + text + "</h2>";
+	     text = "The " + text;
 
-             text += " for gene/sequence: <font color='red'>" + gene + "</font>";
+             text += " for gene/sequence: " + gene;
 
              if (up > 0 && down > 0) {
-                  text += " <b>plus " + up + " basepair(s) of upstream sequence and " + down + " basepair(s) of downstream sequence.</b>";
+                  text += " plus " + up + " basepair(s) of upstream sequence and " + down + " basepair(s) of downstream sequence.";
 		  
              }
              else if (up > 0) {
-                  text += " <b>plus " + up + " basepair(s) of upstream sequence.</b>";
+                  text += " plus " + up + " basepair(s) of upstream sequence.";
 	
              }
              else if (down > 0) {
-                  text += " <b>plus " + down + " basepair(s) of downstream sequence.</b>";
+                  text += " plus " + down + " basepair(s) of downstream sequence.";
              }
 
              if (rev == 'on') {
 
-                  text += "<p>You have selected the reverse complement of this gene/sequence.</p>";
+                  return  [text, "You have selected the reverse complement of this gene/sequence."];
              }
 
-	     return text;
+	     return [text, ""];
 
        },
 
