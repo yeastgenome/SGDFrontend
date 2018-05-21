@@ -105,16 +105,16 @@ const GeneSequenceResources = React.createClass({
 			}
 			else if (param['emboss']) {
 			 
-			     // var _resultTable = this.getResultPage4emboss(data['content']);
 			 
-			     // var _desc = this.getDesc4emboss();
+			     var _content = this.getDesc4emboss(data['content']); 
 			     
-			     var _desc = "<pre>" + data['content'] + "</pre>";
+			     // return(<div>
+			     //	    <pre><span style={ style.textFont }>{ data['content'] } </span></pre>
+			     //       </div>);
 
-			     return(<div>
-			            <p dangerouslySetInnerHTML={{ __html: _desc }} />
-				    <pre><span style={ style.textFont }>{ data['content'] } </span></pre>
-			            </div>);
+			     return (<div>
+                                           <p dangerouslySetInnerHTML={{ __html: _content }} />
+                                     </div>);
 
 
 			}
@@ -1101,9 +1101,7 @@ const GeneSequenceResources = React.createClass({
 	     	  
        },
 
-       getDesc4emboss() {
-
-       	     return "<h2>Restriction Map</h2>";
+       getDesc4emboss(content) {
 
        	     var param = this.state.param;
 
@@ -1150,6 +1148,9 @@ const GeneSequenceResources = React.createClass({
 
                   text += "<p>You have selected the reverse complement of this gene/sequence.</p>";
              }
+
+	     
+	     text = "<pre>" + content + "</pre>";
 
 	     return text;
 
