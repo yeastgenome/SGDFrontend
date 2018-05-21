@@ -68,6 +68,11 @@ class CacheBase(object):
             for base_url in cache_urls:
                 url = base_url + relative_url
                 urls.append(url)
+        # if gene, add /locus/:name
+        is_locus = ('locus' in self.__url_segment__)
+        if is_locus:
+            name_url = base_url + '/locus/' + self.get_name()
+            urls.append(name_url)
         return urls
 
     def refresh_cache(self):
