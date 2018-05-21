@@ -109,7 +109,7 @@ const GeneSequenceResources = React.createClass({
 			 
 			     // var _desc = this.getDesc4emboss();
 			     
-			     var _desc = "<h2>Restriction Map</h2>";
+			     var _desc = "<pre>" + data['content'] + "</pre>";
 
 			     return(<div>
 			            <p dangerouslySetInnerHTML={{ __html: _desc }} />
