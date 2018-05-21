@@ -140,7 +140,7 @@ const GeneSequenceResources = React.createClass({
 
 	get_frontpage() {
 								
-		var descText = this.get_text();
+		var descText = GSR.TopDescription();
 
 		var geneNodeLeft = this.getGeneNodeLeft();
                 var geneNodeRight = this.getGeneNodeRight();
@@ -212,7 +212,8 @@ const GeneSequenceResources = React.createClass({
 
 	getResultTable4chr(data) {
 	
-		var chr = this.num_to_chr(data['chr']);
+	        var num2chrMapping = GSR.NumToRoman();
+		var chr = num2chrMapping[data['chr']];
 		var start = data['start'];
 		var end = data['end'];
 		var rev = data['rev'];
@@ -1039,12 +1040,6 @@ const GeneSequenceResources = React.createClass({
 
 	},
 	
-	get_text() {
-
-	        return "<p><h3>Try <a target='infowin' href='https://yeastmine.yeastgenome.org/yeastmine/begin.do'>Yeastmine</a> for flexible queries and fast retrieval of chromosomal features, sequences, GO annotations, interaction data and phenotype annotations. The video tutorial <a target='infowin' href='https://vimeo.com/28472349'>Template Basics</a> describes how to quickly retrieve this type of information in YeastMine. To find a comprehensive list of SGD's tutorials describing the many other features available in YeastMine and how to use them, visit SGD's <a target='infowin' href='https://sites.google.com/view/yeastgenome-help/video-tutorials/yeastmine?authuser=0'>YeastMine Video Tutorials</a> page.</h3></p><p><h3>This resource allows retrieval of a list of options for accessing biological information, table/map displays, and sequence analysis tools for <b><a href='#gene'>1. a list of named genes or sequences.</a> <a href='#chr'>2. a specified chromosomal region</a>, or <a href='#seq'>3. a raw DNA or protein sequence.</a></b></h3></p>";
-      
-       },
-       
        getDesc4gene(geneList) {
 
 	     var param = this.state.param;
@@ -1079,8 +1074,9 @@ const GeneSequenceResources = React.createClass({
        	     var chrnum = data['chr'];
 	     
 	     var text = "The current selection is: ";
-	    
-	     text += "<font color='red'>chromosome " + this.num_to_chr(chrnum) + " coordinates " + data['start'] + " to " + data['end'] + "</font>";
+	     
+	     var num2chrMapping = GSR.NumToRoman();    
+	     text += "<font color='red'>chromosome " + num2chrMapping[chrnum] + " coordinates " + data['start'] + " to " + data['end'] + "</font>";
 	     text = "<h3>" + text + "</h3>";
 	     
 	     var param = this.state.param;
@@ -1153,21 +1149,9 @@ const GeneSequenceResources = React.createClass({
 
 	     return text;
 
-       },
-
-       num_to_chr(num) {
-       		 
-		 var num2chr = { 1: 'I', 2: 'II', 3: 'III', 4: 'IV', 5: 'V', 6: 'VI',
-		     	         7: 'VII', 8: 'VIII', 9: 'IX', 10: 'X', 11: 'XI', 
-				 12: 'XII', 13: 'XIII', 14: 'XIV', 15: 'XV', 16: 'XVI',
-				 '17': 'Mito' };
-
-		return num2chr[num];
-
        }
 
 });
-
 
 module.exports = GeneSequenceResources;
 
