@@ -259,7 +259,7 @@ const GeneSequenceResources = React.createClass({
 		
 		var param = this.state.param; 
 				
-		var headerRow = [];
+		var headerRow = [""];
 		for (var i = 0; i <= genes.length; i++) {
 		    headerRow.push("");
 		}
