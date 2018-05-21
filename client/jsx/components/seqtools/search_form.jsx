@@ -1116,7 +1116,7 @@ const GeneSequenceResources = React.createClass({
 	     
 	     var pieces = param['sequence_id'].split('_');
 
-	     if (piece.length == 5) {
+	     if (pieces.length == 5) {
 	     	 var gene = pieces[0];
 	     	 var strain = pieces[1];
 	     	 var up = pieces[2];
@@ -1147,7 +1147,7 @@ const GeneSequenceResources = React.createClass({
 		          <p style={{ fontSize: 18, color: 'red' }}>{ revText }</p>
 		        </div>);
 	     }
-	     else if (piece.length == 4) {
+	     else if (pieces.length == 4) {
                  var chr = pieces[0];
                  var start = pieces[1];
                  var end = pieces[2];
