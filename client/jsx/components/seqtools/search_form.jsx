@@ -1150,7 +1150,7 @@ const GeneSequenceResources = React.createClass({
              }
 
 	     
-	     text = "<pre>" + content + "</pre>";
+	     text += "<pre>" + content + "</pre>";
 
 	     return text;
 
