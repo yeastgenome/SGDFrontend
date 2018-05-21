@@ -109,7 +109,7 @@ const GeneSequenceResources = React.createClass({
 		 	     
 			     return(<div>
 				    { _text }
-			     	    <pre><span style={{ fontSize: 15 }}> { "\n" + data['content'] } </span></pre>
+			     	    <pre><span style={{ fontSize: 15 }}> { data['content'] } </span></pre>
 			            </div>);
 
 			}
