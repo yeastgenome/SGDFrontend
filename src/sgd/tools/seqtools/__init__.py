@@ -74,7 +74,7 @@ def run_emboss(p):
         if emboss == 'restrict':
             if start == 1:
                 content += line
-        elif emboss == 'transeq' and "AA_SEQUENCE" in line:
+        elif emboss == 'transeq' and ("AA_SEQUENCE" in line or "Length: " in line):
             continue
         else:
             content += line
