@@ -109,7 +109,7 @@ const GeneSequenceResources = React.createClass({
 			     			     
 			     return(<div>
 				    <h3>{ _text }</h3>
-				    <b>{ _revText }</b>
+				    <span style={{ color: 'red', fontSize: 18 }}>{ _revText }</span>
 			     	    <pre><span style={ style.textFont }> { data['content'] } </span></pre>
 			            </div>);
 
@@ -1106,10 +1106,10 @@ const GeneSequenceResources = React.createClass({
 	     var text = "";
 
 	     if (emboss == 'restrict') {
-	     	 text = "Restriction Map";
+	     	 text = "Restriction Fragments";
 	     }
 	     else if (emboss == 'remap') {
-	     	 text = "6 Frame Translation";
+	     	 text = "Six Frame Translation";
 	     }
 	     else {
 	     	 text = "Protein Translation";
@@ -1122,8 +1122,6 @@ const GeneSequenceResources = React.createClass({
 	     var up = pieces[2];
 	     var down = pieces[3]
 	     var rev = pieces[4]; 
-
-	     text = "The " + text;
 
              text += " for gene/sequence: " + gene;
 
