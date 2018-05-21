@@ -1116,98 +1116,57 @@ const GeneSequenceResources = React.createClass({
 	     
 	     var pieces = param['sequence_id'].split('_');
 
-	     var gene = pieces[0];
-	     var strain = pieces[1];
-	     var up = pieces[2];
-	     var down = pieces[3]
-	     var rev = pieces[4]; 
+	     if (piece.length == 5) {
+	     	 var gene = pieces[0];
+	     	 var strain = pieces[1];
+	     	 var up = pieces[2];
+	     	 var down = pieces[3]
+	     	 var rev = pieces[4]; 
 
-             var text = " for gene/sequence in strain "; 
+             	 var text = " for gene/sequence in strain "; 
 
-	     var updownText = "";
-             if (up > 0 && down > 0) {
-                  updownText += " plus " + up + " basepair(s) of upstream sequence and " + down + " basepair(s) of downstream sequence.";
-		  
-             }
-             else if (up > 0) {
-                  updownText += " plus " + up + " basepair(s) of upstream sequence.";
-	
-             }
-             else if (down > 0) {
-                  updownText += " plus " + down + " basepair(s) of downstream sequence.";
-             }
+	     	 var updownText = "";
+             	 if (up > 0 && down > 0) {
+                     updownText += " plus " + up + " basepair(s) of upstream sequence and " + down + " basepair(s) of downstream sequence.";
+             	 }
+             	 else if (up > 0) {
+                     updownText += " plus " + up + " basepair(s) of upstream sequence.";
+		 }
+             	 else if (down > 0) {
+                     updownText += " plus " + down + " basepair(s) of downstream sequence.";
+             	 }
 
-	     var revText = "";
+	     	 var revText = "";
+             	 if (rev == 1) {
+	     	     revText = "You have selected the reverse complement of this gene/sequence.";
+                 }
 
-             if (rev == 1) {
+	     	 return (<div>
+	     	          <span style={ style.textFont }><strong>{ title }</strong> { text } <strong style={{ color: 'red' }}>{ strain }: { gene }</strong><strong>{ updownText }</strong></span>
+		          <p></p>
+		          <p style={{ fontSize: 18, color: 'red' }}>{ revText }</p>
+		        </div>);
+	     }
+	     else if (piece.length == 4) {
+                 var chr = pieces[0];
+                 var start = pieces[1];
+                 var end = pieces[2];
+                 var rev = pieces[3]
 
-	     	  revText = "You have selected the reverse complement of this gene/sequence.";
+		 var revText = "";
+                 if (rev == 1) {
+		     revText = "You have selected the reverse complement of this sequence region.";
+		 }
+		 
+		 return (<div>
+                          <span style={ style.textFont }><strong>{ title }</strong> for <strong style={{ color: 'red' }}>Chromosome { chr } coordinates { start } to { end }</strong></span>
+                          <p></p>
+                          <p style={{ fontSize: 18, color: 'red' }}>{ revText }</p>
+                        </div>);
+	     }
 
-                  // return  [text, "You have selected the reverse complement of this gene/sequence."];
-             }
-
-	     return (<div>
-	     	     <span style={ style.textFont }><strong>{ title }</strong> { text } <strong style={{ color: 'red' }}>{ strain }: { gene }</strong><strong>{ updownText }</strong></span>
-		     <p></p>
-		     <p style={{ fontSize: 18, color: 'red' }}>{ revText }</p>
-		     </div>);
-
-       },
-
-       getDesc4emboss2() {
-
-             var param = this.state.param;
-
-             var emboss = param['emboss'];
-
-             var text = "";
-
-             if (emboss == 'restrict') {
-                 text = "Restriction Map";
-             }
-             else if (emboss == 'remap') {
-                 text = "6 Frame Translation";
-             }
-             else {
-                 text = "Protein Translation";
-             }
-
-             var pieces = param['sequence_id'].split('_');
-
-             var gene = pieces[0];
-             var strain = pieces[1];
-             var up = pieces[2];
-             var down = pieces[3]
-             var rev = pieces[4];
-
-             // text += "<font color='red'>" + gene + "</font>";
-
-             text += " for gene/sequence: " + gene;
-
-             if (up > 0 && down > 0) {
-                  // text += " <b>plus " + up + " basepair(s) of upstream sequence and " + down + " basepair(s) of downstream sequence.</b>";
-                  text += " plus " + up + " basepair(s) of upstream sequence and \n" + down + " basepair(s) of downstream sequence.";
-             }
-             else if (up > 0) {
-                  // text += " <b>plus " + up + " basepair(s) of upstream sequence.</b>";
-                  text += " plus " + up + " basepair(s) of upstream sequence.";
-             }
-             else if (down > 0) {
-                  // text += " <b>plus " + down + " basepair(s) of downstream sequence.</b>";
-                  text += " plus " + down + " basepair(s) of downstream sequence.";
-             }
-
-             text += "\n";
-
-             if (rev == 'on') {
-
-                  text += "\nYou have selected the reverse complement of this gene/sequence.\n";
-             }
-
-             return text;
 
        }
-
 
 });
 
