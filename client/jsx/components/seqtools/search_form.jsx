@@ -15,7 +15,7 @@ const SeqtoolsUrl = "/run_seqtools";
 
 const GeneSequenceResources = React.createClass({
 
-	getInitialState: function () {
+	getInitialState() {
 	        
 		var param = Params.getParams();
 		
