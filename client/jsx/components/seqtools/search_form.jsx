@@ -111,7 +111,7 @@ const GeneSequenceResources = React.createClass({
 			     var _content = _text + "\n" + data['content'];		
 	     
 			     return(<div>
-				    <span style={ style.textFont }>{ _text }</span>
+				    <p dangerouslySetInnerHTML={{ __html: _text }} />
 			     	    <pre><span style={ style.textFont }> { data['content'] } </span></pre>
 			            </div>);
 
@@ -1127,7 +1127,7 @@ const GeneSequenceResources = React.createClass({
 
 	     text = "<h2>" + text + "</h2>";
 
-             text += "<font color='red'>" + gene + "</font>";
+             text += " for gene/sequence: <font color='red'>" + gene + "</font>";
 
              if (up > 0 && down > 0) {
                   text += " <b>plus " + up + " basepair(s) of upstream sequence and " + down + " basepair(s) of downstream sequence.</b>";
