@@ -682,6 +682,7 @@ const GeneSequenceResources = React.createClass({
 	onSubmit(e) {
 		
 		var genes = this.refs.genes.value.trim();
+		genes = genes.replace(/[^A-Za-z:\-0-9]/g, ' ');
 		var re = /\+/g;
 		genes = genes.replace(re, " ");		
 		var re = / +/g;
