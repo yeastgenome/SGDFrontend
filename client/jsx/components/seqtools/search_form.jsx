@@ -1,6 +1,7 @@
 import React from 'react';
 import _ from 'underscore';
 import $ from 'jquery';
+import Radium from 'radium';
 
 const DataTable = require("../widgets/data_table.jsx");
 const Params = require("../mixins/parse_url_params.jsx");
