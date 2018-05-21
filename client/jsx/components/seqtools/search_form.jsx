@@ -1137,7 +1137,7 @@ const GeneSequenceResources = React.createClass({
                   text += " plus " + down + " basepair(s) of downstream sequence.";
              }
 
-             if (rev == 'on') {
+             if (rev == 1) {
 
                   return  [text, "You have selected the reverse complement of this gene/sequence."];
              }
