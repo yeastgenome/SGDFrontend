@@ -1185,5 +1185,7 @@ const GeneSequenceResources = React.createClass({
 
 });
 
-export default Radium(GeneSequenceResources);
+// export default Radium(GeneSequenceResources);
+
+module.exports = GeneSequenceResources;
 
