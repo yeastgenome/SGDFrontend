@@ -106,8 +106,10 @@ const GeneSequenceResources = React.createClass({
 			else if (param['emboss']) {
 			 
 			 
-			     var _content = this.getDesc4emboss(data['content']); 
+			     var _text = this.getDesc4emboss(data['content']); 
 			     
+			     var _content = _text + "\n" + data['content'];		
+	     
 			     return(<div>
 			     	    <pre><span style={ style.textFont }> { _content } </span></pre>
 			            </div>);
@@ -1124,7 +1126,7 @@ const GeneSequenceResources = React.createClass({
 
              // text += "<font color='red'>" + gene + "</font>";
 
-	     text += gene;
+	     text += " for gene/sequence: " + gene;
 
              if (up > 0 && down > 0) {
                   // text += " <b>plus " + up + " basepair(s) of upstream sequence and " + down + " basepair(s) of downstream sequence.</b>";
@@ -1147,7 +1149,7 @@ const GeneSequenceResources = React.createClass({
              }
 
 	     
-	     text += "\n" + content;
+	     // text += "\n" + content;
 
 	     return text;
 
