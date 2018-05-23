@@ -91,7 +91,7 @@ const Header = React.createClass({
                 <li><a className="disabled-header-a" href="https://browse.yeastgenome.org">Genome Browser</a></li>
                 <li><a className="disabled-header-a" href="/blast-sgd">BLAST</a></li>
                 <li><a className="disabled-header-a" href="/blast-fungal">Fungal BLAST</a></li>
-                <li><a className="disabled-header-a" href="/cgi-bin/seqTools">Gene/Sequence Resources</a></li>
+                <li><a className="disabled-header-a" href="/seqTools">Gene/Sequence Resources</a></li>
                 <li className="has-dropdown">
                   <a href="#">Reference Genome</a>
                   <ul className="dropdown">
