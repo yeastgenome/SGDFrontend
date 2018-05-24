@@ -105,6 +105,9 @@ def display_sequence_for_chr(p, data):
 
     start = p['start']
     end = p['end']
+    
+    if p['rev'] == 1:
+        (start, end) = (end, start)
 
     content =  ">chr" + _chrnum_to_chrom(data['chr']) + " coordinates " + start + " to " + end + "\n"
 
