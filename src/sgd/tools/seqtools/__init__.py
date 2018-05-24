@@ -271,6 +271,7 @@ def get_sequence_for_chr(p):
     if rev is not None and rev == '1':
         seq = _reverse_complement(seq)
         data['rev'] = 1
+        (data["start"], data["end"]) = (data["end"], data["start"])
 
     data['residue'] = seq
         
