@@ -105,9 +105,13 @@ def display_sequence_for_chr(p, data):
 
     start = p['start']
     end = p['end']
-    
+
+    start2 = start
+    end2 = end
+
     if p['rev'] == 1:
-        [start, end] = [end, start]
+        start2 = end
+        end2 = start
 
     content =  ">chr" + _chrnum_to_chrom(data['chr']) + " coordinates " + start + " to " + end + "\n"
 
@@ -116,7 +120,7 @@ def display_sequence_for_chr(p, data):
     else:
         content += format_fasta(data['residue']);
         
-    filename = "chr" + _chrnum_to_chrom(data['chr']) + "_" +  start + "-"+ end
+    filename = "chr" + _chrnum_to_chrom(data['chr']) + "_" +  start2 + "-"+ end2
 
     if p.get('format') == 'gcg':
         filename += ".gcg"
