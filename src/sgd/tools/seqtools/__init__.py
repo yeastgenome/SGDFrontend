@@ -107,9 +107,9 @@ def display_sequence_for_chr(p, data):
     end = p['end']
     
     if p['rev'] == 1:
-        (start, end) = (end, start)
+        [start, end] = [end, start]
 
-    content =  ">chr" + _chrnum_to_chrom(data['chr']) + " coordinates HELLO " + start + " to " + end + "rev=" + p['rev'] + "\n"
+    content =  ">chr" + _chrnum_to_chrom(data['chr']) + " coordinates " + start + " to " + end + "\n"
 
     if p.get('format') == 'gcg':
         content += format_gcg(data['residue']);
