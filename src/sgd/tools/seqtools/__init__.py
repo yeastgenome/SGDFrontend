@@ -103,8 +103,8 @@ def return_plain_data(content):
 
 def display_sequence_for_chr(p, data):
 
-    start = data['start']
-    end = data['end']
+    start = p['start']
+    end = p['end']
 
     content =  ">chr" + _chrnum_to_chrom(data['chr']) + " coordinates " + start + " to " + end + "\n"
 
@@ -271,8 +271,7 @@ def get_sequence_for_chr(p):
     if rev is not None and rev == '1':
         seq = _reverse_complement(seq)
         data['rev'] = 1
-        (data["start"], data["end"]) = (data["end"], data["start"])
-
+        
     data['residue'] = seq
         
     return data
