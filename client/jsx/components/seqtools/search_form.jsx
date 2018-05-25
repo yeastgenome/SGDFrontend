@@ -391,7 +391,7 @@ const GeneSequenceResources = React.createClass({
 		
 		var blastButton = this.getToolButtonChr('/blast-sgd',  'BLAST', seqID, '');
                 var fungalBlastButton = this.getToolButtonChr('/blast-fungal', 'Fungal BLAST', seqID, '');
-                var primerButton = this.getToolButtonChr('http://www6.dev.yeastgenome.org/primer3', 'Design Primers', seqID, '');
+                var primerButton = this.getToolButtonChr('https://www.dev.yeastgenome.org/primer3', 'Design Primers', seqID, '');
                 var restrictionButton = this.getToolButtonChr4post('https://www.yeastgenome.org/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map', seq, seqID);
 		var translatedProteinButton = this.getToolButtonChr('/seqTools', 'Translated Protein Sequence', seqID, 'transeq');
                 var sixframeButton = this.getToolButtonChr('/seqTools', '6 Frame Translation', seqID, 'remap');
@@ -467,7 +467,7 @@ const GeneSequenceResources = React.createClass({
 			    
                 var blastButton = this.getToolButtonChr('/blast-sgd',  'BLAST', seqID, '');
                 var fungalBlastButton = this.getToolButtonChr('/blast-fungal', 'Fungal BLAST', seqID, '');
-                var primerButton = this.getToolButtonChr('http://www6.dev.yeastgenome.org/primer3', 'Design Primers', seqID, '');
+                var primerButton = this.getToolButtonChr('https://www.dev.yeastgenome.org/primer3', 'Design Primers', seqID, '');
                 var restrictionButton = this.getToolButtonChr4post('https://www.yeastgenome.org/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map', seq);
 		var restrictFragmentsButton = this.getToolButtonChr('/seqTools', 'Restriction Fragments', seqID, 'restrict');
                 var sixframeButton = this.getToolButtonChr('/seqTools', '6 Frame Translation', seqID, 'remap');
@@ -490,7 +490,7 @@ const GeneSequenceResources = React.createClass({
 		var strainPulldown = this.getStrainPulldown(strains);
 		var blastButton = this.getToolButton(gene, '/blast-sgd',  'BLAST', ID, '');
 		var fungalBlastButton = this.getToolButton(gene, '/blast-fungal', 'Fungal BLAST', ID, '');	
-		var primerButton = this.getToolButton(gene, 'http://www6.dev.yeastgenome.org/primer3', 'Design Primers', ID, '');
+		var primerButton = this.getToolButton(gene, 'https://www.dev.yeastgenome.org/primer3', 'Design Primers', ID, '');
 		var restrictionButton = this.getToolButton4post(gene, 'https://www.yeastgenome.org/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map', ID);
 		var restrictFragmentsButton = this.getToolButton(gene, '/seqTools', 'Restriction Fragments', ID, 'restrict');
 		var sixframeButton = this.getToolButton(gene, '/seqTools', '6 Frame Translation', ID, 'remap');
