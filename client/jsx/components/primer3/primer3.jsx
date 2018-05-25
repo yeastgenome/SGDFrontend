@@ -34,6 +34,15 @@ const Primer3 = React.createClass({
     if (prevProps.queryParams.results && !this.props.queryParams.results) {
       this.setState({ result: null });
     }
+    if(this.props.queryParams.sequence_id){
+       let seqId = this.props.queryParams.sequence_id;
+       console.log(seqId)
+       let seq = window.localStorage.getItem(seqId);
+       console.log(seq)
+       let tempVal = this.state.value;
+       tempVal.sequence = seq;
+       this.setState({value: tempVal});
+    }
   },
 
   componentDidMount: function () {
