@@ -41,17 +41,16 @@ const Primer3 = React.createClass({
         let geneName = this.props.queryParams.name;
         let tempVal = this.state.value;
         tempVal.gene_name = geneName;
-        console.log(geneName)
         this.setState({value: tempVal});
     }
 
     if(this.props.queryParams.sequence_id){
        let seqId = this.props.queryParams.sequence_id;
-       console.log(seqId)
        let seq = window.localStorage.getItem(seqId);
-       console.log(seq)
        let tempVal = this.state.value;
        tempVal.sequence = seq;
+       console.log(seqId)
+       console.log(seq)
        this.setState({value: tempVal});
     }
 
