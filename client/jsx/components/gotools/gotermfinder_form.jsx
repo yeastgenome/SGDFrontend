@@ -121,8 +121,8 @@ const GoTermFinder = React.createClass({
 
 		return (<div style={{ textAlign: "top" }}>
 		        <h3><strong>Pick an ontology aspect:</strong></h3> 
-		        <p><RadioSelector name='filter' elements={_elements} initialActiveElementKey='F'/></p>
-			<p>Search using <a href='#defaultsetting'>default settings</a> or use Step 3, Step 4, and/or Step 5 below to customize your options.</p>	
+		        <p><h3><RadioSelector name='filter' elements={_elements} initialActiveElementKey='F'/></h3></p>
+			<p><h3>Search using <a href='#defaultsetting'>default settings</a> or use Step 3, Step 4, and/or Step 5 below to customize your options.</h3></p>	
 			<p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input></p>
 			</div>);
 
