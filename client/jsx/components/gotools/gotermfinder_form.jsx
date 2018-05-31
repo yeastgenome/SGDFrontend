@@ -121,7 +121,7 @@ const GoTermFinder = React.createClass({
 
 		return (<div style={{ textAlign: "top" }}>
 		        <RadioSelector name='filter' elements={_elements} initialActiveElementKey='F'/>
-			<p><br>Search using <a href='#defaultsetting'>default settings</a>or use Step 3, Step 4, </br><br>and/or Step 5 below to customize your options.</br></p>	
+			<p>Search using <a href='#defaultsetting'>default settings</a> or use Step 3, Step 4, and/or Step 5 below to customize your options.</p>	
 			<p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input></p>
 			</div>);
 
@@ -140,7 +140,7 @@ const GoTermFinder = React.createClass({
 
                 return (<div style={{ textAlign: "top" }}>
 			<h3><strong>Enter Gene/ORF names</strong> (separated by a return or a space):</h3>
-                        <p><textarea ref='genes' onChange={this._onChange} name='genes' rows='5' cols='200'></textarea></p>
+                        <p><textarea ref='genes' onChange={this._onChange} name='genes' rows='5' cols='150'></textarea></p>
 			<h3><strong style={{ color: 'red'}}>OR</strong> <strong>Upload a file of Gene/ORF names</strong> (.txt or .tab format):</h3>
                         <p><input className="btn btn-default btn-file" type="file" name='uploadFile' onChange={this.handleFile} accept="image/*;capture=camera"/></p>
                 </div>);
@@ -248,7 +248,7 @@ const GoTermFinder = React.createClass({
 
 	topDescription() {
 	
-		return "<p><h3>The GO Term Finder (<a href='http://search.cpan.org/dist/GO-TermFinder/' target='infowin'>Version 0.86</a>) searches for significant shared GO terms, or parents of those GO terms, used to describe the genes in your list to help you discover what the genes may have in common. To map annotations of a group of genes to more general terms and/or to bin them in broad categories, use the <a href='https://www.yeastgenome.org/cgi-bin/GO/goSlimMapper.pl' target='infowin'>GO Slim Mapper</a></h3>.<h3><a name='defaultsetting'>Default Settings:</a>1. All genes/features that have GO annotations in the database, 2. Manually curated and High-throughput annotation methods, and 3. Hits with p-value < 0.01 will be displayed on the results page</h3></p>";
+		return "<p><h3>The GO Term Finder (<a href='http://search.cpan.org/dist/GO-TermFinder/' target='infowin'>Version 0.86</a>) searches for significant shared GO terms, or parents of those GO terms, used to describe the genes in your list to help you discover what the genes may have in common. To map annotations of a group of genes to more general terms and/or to bin them in broad categories, use the <a href='https://www.yeastgenome.org/cgi-bin/GO/goSlimMapper.pl' target='infowin'>GO Slim Mapper</a></h3>.<h3><a name='defaultsetting'>Default Settings:</a> 1. All genes/features that have GO annotations in the database, 2. Manually curated and High-throughput annotation methods, and 3. Hits with p-value < 0.01 will be displayed on the results page</h3></p>";
 	
 	}
 
