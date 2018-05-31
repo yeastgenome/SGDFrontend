@@ -107,8 +107,7 @@ const GoTermFinder = React.createClass({
 			<div className="row">
 			     <div className="large-12 columns">
 			     	  <form onSubmit={this.onSubmit} target="infowin">
-				        <DataTable data={_geneSection} />
-					<DataTable data={_ontologySection} />
+				        <DataTable data={_defaultSection} />
 			          </form>
 			     </div>
 			</div>
