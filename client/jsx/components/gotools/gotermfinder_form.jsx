@@ -119,7 +119,7 @@ const GoTermFinder = React.createClass({
 
 	        var _elements = [ { name: "Process", key: "P" }, { name: "Function", key: "F" }, { name: "Component", key: "C" }];
 
-		return (<div>
+		return (<div style={{ textAlign: "top" }}>
 		        <RadioSelector name='filter' elements={_elements} initialActiveElementKey='F'/>
 			<p>Search using <a href='#defaultsetting'>default settings</a> or use Step 3, Step 4, and/or Step 5 below to customize your options.</p>	
 			<p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input></p>
