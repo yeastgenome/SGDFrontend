@@ -121,7 +121,7 @@ const GoTermFinder = React.createClass({
 
 		return (<div style={{ textAlign: "top" }}>
 		        <RadioSelector name='filter' elements={_elements} initialActiveElementKey='F'/>
-			<p>Search using <a href='#defaultsetting'>default settings</a> or use Step 3, Step 4, and/or Step 5 below to customize your options.</p>	
+			<p><br>Search using <a href='#defaultsetting'>default settings</a>or use Step 3, Step 4, </br><br>and/or Step 5 below to customize your options.</br></p>	
 			<p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input></p>
 			</div>);
 
@@ -139,12 +139,10 @@ const GoTermFinder = React.createClass({
                 // <p><h3>Select evidence codes to exclude: { evidenceCodes }</h3></p>
 
                 return (<div style={{ textAlign: "top" }}>
-			<h3>Enter Gene/ORF names:</h3>
-			<p>(separated by a return or a space)
-                        <textarea ref='genes' onChange={this._onChange} name='genes' rows='5' cols='50'></textarea></p>
-			<h3><strong style={{ color: 'red'}}>OR</strong> Upload a file of Gene/ORF names</h3>
-                        <p>(.txt or .tab format):
-                        <input className="btn btn-default btn-file" type="file" name='uploadFile' onChange={this.handleFile} accept="image/*;capture=camera"/></p>
+			<h3><strong>Enter Gene/ORF names</strong> (separated by a return or a space):</h3>
+                        <p><textarea ref='genes' onChange={this._onChange} name='genes' rows='5' cols='200'></textarea></p>
+			<h3><strong style={{ color: 'red'}}>OR</strong> <strong>Upload a file of Gene/ORF names</strong> (.txt or .tab format):</h3>
+                        <p><input className="btn btn-default btn-file" type="file" name='uploadFile' onChange={this.handleFile} accept="image/*;capture=camera"/></p>
                 </div>);
 
         },
