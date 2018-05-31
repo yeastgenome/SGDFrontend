@@ -248,7 +248,7 @@ const GoTermFinder = React.createClass({
 
 	topDescription() {
 	
-		return "<p><h3>The GO Term Finder (<a href='http://search.cpan.org/dist/GO-TermFinder/' target='infowin'>Version 0.86</a>) searches for significant shared GO terms, or parents of those GO terms, used to describe the genes in your list to help you discover what the genes may have in common. To map annotations of a group of genes to more general terms and/or to bin them in broad categories, use the <a href='https://www.yeastgenome.org/cgi-bin/GO/goSlimMapper.pl' target='infowin'>GO Slim Mapper</a></h3></p>.<p><h3><a name='defaultsetting'>Default Settings:</a>1. All genes/features that have GO annotations in the database, 2. Manually curated and High-throughput annotation methods, and 3. Hits with p-value < 0.01 will be displayed on the results page</h3></p>";
+		return "<p><h3>The GO Term Finder (<a href='http://search.cpan.org/dist/GO-TermFinder/' target='infowin'>Version 0.86</a>) searches for significant shared GO terms, or parents of those GO terms, used to describe the genes in your list to help you discover what the genes may have in common. To map annotations of a group of genes to more general terms and/or to bin them in broad categories, use the <a href='https://www.yeastgenome.org/cgi-bin/GO/goSlimMapper.pl' target='infowin'>GO Slim Mapper</a></h3>.<h3><a name='defaultsetting'>Default Settings:</a>1. All genes/features that have GO annotations in the database, 2. Manually curated and High-throughput annotation methods, and 3. Hits with p-value < 0.01 will be displayed on the results page</h3></p>";
 	
 	}
 
