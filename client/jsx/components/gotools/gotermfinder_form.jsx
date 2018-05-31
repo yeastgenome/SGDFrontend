@@ -97,14 +97,11 @@ const GoTermFinder = React.createClass({
 		var descText = this.topDescription();		
 
 		var geneBox = this.getGeneBox();
-		var geneUpload = this.getGeneUpload();
 		var ontology = this.getOntology();
 
-		var _geneSection = { headers: [[<span style={ style.textFont }><a name='step1'>Step 1. Query Set (Your Input)</a></span>, '']],
-                                     rows:    [[geneBox, geneUpload]] };
+		var _defaultSection = { headers: [[<span style={ style.textFont }><a name='step1'>Step 1. Query Set (Your Input)</a></span>, <span style={ style.textFont }><a name='step2'>Step 2. Choose Ontology</a></span>]],
+                                     rows:    [[geneBox, ontology]] };
 				  
-		var _ontologySection = { headers: [[<span style={ style.textFont }><a name='step2'>Step 2. Choose Ontology</a></span>]],
-                                     rows:    [[ontology]] };
 		return (<div>
 			<div dangerouslySetInnerHTML={{ __html: descText}} />
 			<div className="row">
@@ -124,7 +121,7 @@ const GoTermFinder = React.createClass({
 	        var _elements = [ { name: "Process", key: "P" }, { name: "Function", key: "F" }, { name: "Component", key: "C" }];
 
 		return (<div>
-		        <RadioSelector name='filter' elements={_elements} initialActiveElementKey='F'/>;
+		        <RadioSelector name='filter' elements={_elements} initialActiveElementKey='F'/>
 			<p>Search using <a href='#defaultsetting'>default settings</a> or use Step 3, Step 4, and/or Step 5 below to customize your options.</p>	
 			<p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input></p>
 			</div>);
@@ -139,28 +136,19 @@ const GoTermFinder = React.createClass({
 
 	getGeneBox() {
 
-		// var ontology = this.getOntology();
 		// var evidenceCodes = this.getEvidenceCodes();
-		// <p><h3>Choose one of the three ontology aspects: { ontology }</h3></p>
                 // <p><h3>Select evidence codes to exclude: { evidenceCodes }</h3></p>
 
                 return (<div style={{ textAlign: "top" }}>
 			<h3>Enter Gene/ORF names:</h3>
 			<p>(separated by a return or a space)
                         <textarea ref='genes' onChange={this._onChange} name='genes' rows='5' cols='50'></textarea></p>
-                </div>);
-
-        },
-
-	getGeneUpload() {
-
-		return (<div style={{ textAlign: "top" }}>
-                        <h3><strong style={{ color: 'red'}}>OR</strong> Upload a file of Gene/ORF names</h3> 
-			<p>(.txt or .tab format):
+			<h3><strong style={{ color: 'red'}}>OR</strong> Upload a file of Gene/ORF names</h3>
+                        <p>(.txt or .tab format):
                         <input className="btn btn-default btn-file" type="file" name='uploadFile' onChange={this.handleFile} accept="image/*;capture=camera"/></p>
                 </div>);
 
-	},
+        },
 
 	handleFile(e) {
                 var reader = new FileReader();
