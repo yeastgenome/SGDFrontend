@@ -172,7 +172,7 @@ const GoTermFinder = React.createClass({
                       });
               }.bind(this);
               reader.readAsText(fileHandle);
-        }
+        },
 
 	onSubmit(e) {
 		
