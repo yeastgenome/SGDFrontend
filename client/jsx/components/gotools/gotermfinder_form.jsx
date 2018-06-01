@@ -149,7 +149,9 @@ const GoTermFinder = React.createClass({
                 // used for computational only: IBA, IEA, IRD
 		// used for both manual and computational: IKR, IMR
 
-                var _init_active_keys = ['IEA', 'IBA', 'IRD'];
+                // var _init_active_keys = ['IEA', 'IBA', 'IRD'];
+
+		var _init_active_keys = evidenceCode;
 
 		var _elements = [];
 
@@ -158,7 +160,7 @@ const GoTermFinder = React.createClass({
 		}
 
                 return (<div>
-		       <p>Select evidence codes to exclude:
+		       <p>Select evidence codes:
                        <Checklist elements={_elements} initialActiveElementKeys={_init_active_keys} /></p>
 		       </div>);
 
