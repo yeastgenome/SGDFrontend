@@ -58,8 +58,16 @@ def search_autocomplete(request):
 
 @view_config(route_name='search', renderer='json', request_method='GET')
 def search(request):
-
     query = request.params.get('q', '')
+    query_temp_arr = query.split(' ')
+
+    if len(query_temp_arr) > 10:
+        return {
+            'total': [],
+            'results': [],
+            'aggregations': []
+        }
+
     limit = int(request.params.get('limit', 10))
     offset = int(request.params.get('offset', 0))
     category = request.params.get('category', '')
@@ -271,7 +279,7 @@ def reserved_name(request):
     if id:
         reserved_name = DBSession.query(Reservedname).filter_by(reservedname_id=id).one_or_none()
     else:
-        reserved_name = DBSession.query(Reservedname).filter_by(display_name=request.matchdict['id']).one_or_none()  
+        reserved_name = DBSession.query(Reservedname).filter_by(display_name=request.matchdict['id']).one_or_none()
     if reserved_name:
         return reserved_name.to_dict()
     else:
@@ -487,8 +495,10 @@ def go_locus_details_all(request):
 
 @view_config(route_name='locus', renderer='json', request_method='GET')
 def locus(request):
+
     id = extract_id_request(request, 'locus', param_name="sgdid")
     locus = get_locus_by_id(id)
+    import pdb;   pdb.set_trace()
     if locus:
         return locus.to_dict()
     else:
@@ -923,7 +933,7 @@ def primer3(request):
                 'PRIMER_FIRST_BASE_INDEX': 1,
                 'PRIMER_THERMODYNAMIC_OLIGO_ALIGNMENT': 1,
                 'PRIMER_THERMODYNAMIC_TEMPLATE_ALIGNMENT' : 0,
-                'PRIMER_PICK_LEFT_PRIMER':  1,
+                'PRIMER_PICK_LEFT_PRIMER': 1,
                 'PRIMER_PICK_INTERNAL_OLIGO': 0,
                 'PRIMER_PICK_RIGHT_PRIMER': 1,
                 'PRIMER_LIBERAL_BASE': 1,
