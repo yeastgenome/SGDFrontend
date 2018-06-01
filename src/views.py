@@ -498,7 +498,6 @@ def locus(request):
 
     id = extract_id_request(request, 'locus', param_name="sgdid")
     locus = get_locus_by_id(id)
-    import pdb;   pdb.set_trace()
     if locus:
         return locus.to_dict()
     else:
