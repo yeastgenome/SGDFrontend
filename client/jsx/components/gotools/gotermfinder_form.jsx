@@ -141,11 +141,7 @@ const GoTermFinder = React.createClass({
 	},
 
 	getEvidence() {
-		      
-		var codes = ['HDA', 'HGI', 'HMP', 'IBA', 'IC',  'IEA', 'IDA', 'IEP', 
-		    	     'IGI', 'IKR', 'IMP', 'IMR', 'IPI'  'IRD', 'ISA', 'ISM', 
-			     'ISO', 'ISS', 'NAS', 'ND',  'TAS']
- 
+		       
                 // used for computational only: IBA, IEA, IRD
 		// used for both manual and computational: IKR, IMR
 
