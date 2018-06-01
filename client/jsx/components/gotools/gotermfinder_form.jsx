@@ -106,6 +106,8 @@ const GoTermFinder = React.createClass({
 		var ontology = this.getOntology();
 		var gene4bgBox = this.getGene4bgBox();
 		var evidenceCode = this.getEvidence();
+		var pvalueList = this.getPvalueList();
+		var isFDR = this.getFDR();
 
 		var _defaultSection = { headers: [[<span style={ style.textFont }><a name='step1'>Step 1. Query Set (Your Input)</a></span>, <span style={ style.textFont }><a name='step2'>Step 2. Choose Ontology</a></span>]],
                                      rows:    [[geneBox, ontology]] };
@@ -115,6 +117,9 @@ const GoTermFinder = React.createClass({
 
 		var _evidenceSection = { headers: [[<span style={ style.textFont }><a name='step4'>Step 4. Refine the annotations used for calculation</a></span>]],
                                      rows:    [[evidenceCode]] };
+		
+		var _pvalueSection =  { headers: [[<span  style={ style.textFont }><a name='step5'>Step 5. Select a p-value cutoff for results and/or toggle False Discovery Rate</a></span>, '']],
+		    		        rows: [[pvalueList, isFDR]] };
 
 		return (<div>
 			<div dangerouslySetInnerHTML={{ __html: descText}} />
@@ -124,6 +129,7 @@ const GoTermFinder = React.createClass({
 				        <DataTable data={_defaultSection} />
 					<DataTable data={_backgroundSection} />
 					<DataTable data={_evidenceSection} />
+					<DataTable data={_pvalueSection} />
 			          </form>
 			     </div>
 			</div>
@@ -149,8 +155,6 @@ const GoTermFinder = React.createClass({
                 // used for computational only: IBA, IEA, IRD
 		// used for both manual and computational: IKR, IMR
 
-                // var _init_active_keys = ['IEA', 'IBA', 'IRD'];
-
 		var _init_active_keys = evidenceCode;
 
 		var _elements = [];
@@ -167,9 +171,6 @@ const GoTermFinder = React.createClass({
         },
 
 	getGeneBox() {
-
-		// var evidenceCodes = this.getEvidenceCodes();
-                // <p><h3>Select evidence codes to exclude: { evidenceCodes }</h3></p>
 
                 return (<div style={{ textAlign: "top" }}>
 			<h3><strong>Enter Gene/ORF names</strong> (separated by a return or a space):</h3>
@@ -191,6 +192,29 @@ const GoTermFinder = React.createClass({
 
         },
 
+	getPvalueList() {
+		
+		var _elements = [<option value='0.01' selected='selected'><0.01</option>)>];
+ 		_elements.push(<option value='0.05' selected='selected'><0.05</option>);
+		_elements.push(<option value='0.1' selected='selected'><0.1</option>);
+	
+		return (<div>	
+		       <h3>The default settings display hits with p-value < 0.01 Select a different p-value cutoff below: </h3>
+                       <p><select ref='pvalue' name='pvalue' onChange={this.onChange}>{_elements}</select></p>
+		       </div>);
+
+        },
+
+	getFDR() {
+
+		return (<div>
+		       <h3>Calculate false discovery rate (FDR)? </h3>
+		       <p>checkbox here</p>
+		       </div>);
+		        
+	},
+
+	
 	handleFile(e) {
                 var reader = new FileReader();
                 var fileHandle = e.target.files[0];
