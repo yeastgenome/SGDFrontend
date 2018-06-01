@@ -42,8 +42,11 @@ var Checklist = React.createClass({
 			};
 
 			var widthPercent = `${1 / this.props.elements.length * 100}%`;
+
+			// <div className="checklist-element-container" style={{ display: "inline-block", width: widthPercent }} key={"radioElement" + i}>
+
 			return (
-			        <div className="checklist-element-container" style={{ display: "inline-block", width: widthPercent }} key={"radioElement" + i}>
+			        <div className="checklist-element-container" style={{ display: "run-in", width: widthPercent }} key={"radioElement" + i}>
 					<input type="checkbox" onChange={_onClick} name={d.key} value={d.key} checked={_isActive} style={{ margin: 0 }}>
 						<label onClick={_onClick}>{d.name}</label>
 					</input>
