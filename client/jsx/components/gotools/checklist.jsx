@@ -46,7 +46,7 @@ var Checklist = React.createClass({
 			// <div className="checklist-element-container" style={{ display: "inline-block", width: widthPercent }} key={"radioElement" + i}>
 
 			return (
-			        <div className="checklist-element-container"  key={"radioElement" + i}>
+			        <div className="checklist-element-container"  style={{ display: "inline-block" }} key={"radioElement" + i}>
 					<input type="checkbox" onChange={_onClick} name={d.key} value={d.key} checked={_isActive} style={{ margin: 0 }}>
 						<label onClick={_onClick}>{d.name}</label>
 					</input>
