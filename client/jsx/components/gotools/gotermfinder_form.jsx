@@ -104,15 +104,14 @@ const GoTermFinder = React.createClass({
 
 		var geneBox = this.getGeneBox();
 		var ontology = this.getOntology();
-		var gene4bgBoxLeft = this.getGene4bgBoxLeft();
-		var gene4bgBoxRight = this.getGene4bgBoxRight();
+		var gene4bgBox = this.getGene4bgBox();
 		var evidenceCode = this.getEvidence();
 
 		var _defaultSection = { headers: [[<span style={ style.textFont }><a name='step1'>Step 1. Query Set (Your Input)</a></span>, <span style={ style.textFont }><a name='step2'>Step 2. Choose Ontology</a></span>]],
                                      rows:    [[geneBox, ontology]] };
 			  
 		var _backgroundSection = { headers: [[<span style={ style.textFont }><a name='step3'>Step 3. Specify your background set of genes</a></span>, '']],
-                                     rows:    [[gene4bgBoxLeft, gene4bgBoxRight]] };
+                                     rows:    [[gene4bgBox]] };
 
 		var _evidenceSection = { headers: [[<span style={ style.textFont }><a name='step4'>Step 4. Refine the annotations used for calculation</a></span>]],
                                      rows:    [[evidenceCode]] };
@@ -179,22 +178,14 @@ const GoTermFinder = React.createClass({
 
         },
 
-	getGene4bgBoxLeft() {
+	getGene4bgBox() {
 
                 return (<div style={{ textAlign: "top" }}>
                         <h3><strong>Use default background set</strong> (all features in the database that have GO annotations)</h3>
-                        <h3><strong style={{ color: 'red'}}>OR</strong> <strong>Upload a file of Gene/ORF names</strong> (.txt or .tab format):</h3>
-                        <p><input className="btn btn-default btn-file" type="file" name='uploadFile' onChange={this.handleFile4bg} accept="image/*;capture=camera"/></p>
-                </div>);
-
-        },
-
-	getGene4bgBoxRight() {
-
-                return (<div style={{ textAlign: "top" }}>
-                        <h3><strong style={{ color: 'red'}}>OR</strong> <strong>Enter Gene/ORF names</strong> (separated by a return or a space):</h3>
-                        <p><textarea ref='genes4bg' onChange={this._onChange} name='genes4bg' rows='4' cols='150'></textarea></p>
-                </div>);
+			<h3><strong style={{ color: 'red'}}>OR</strong> <strong>Enter Gene/ORF names</strong> (separated by a return or a space):</h3>
+                        <p><textarea ref='genes4bg' onChange={this._onChange} name='genes4bg' rows='4' cols='250'></textarea></p>
+                        <h3><strong style={{ color: 'red'}}>OR</strong> <strong>Upload a file of Gene/ORF names</strong> (.txt or .tab format): <input className="btn btn-default btn-file" type="file" name='uploadFile' onChange={this.handleFile4bg} accept="image/*;capture=camera"/></h3>
+                        </div>);
 
         },
 
