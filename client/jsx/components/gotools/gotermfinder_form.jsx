@@ -195,8 +195,8 @@ const GoTermFinder = React.createClass({
 	getPvalueList() {
 		
 		var _elements = [<option value='0.01' selected='selected'>0.01</option>];
- 		_elements.push(<option value='0.05' selected='selected'>0.05</option>);
-		_elements.push(<option value='0.1' selected='selected'>0.1</option>);
+ 		_elements.push(<option value='0.05'>0.05</option>);
+		_elements.push(<option value='0.1'>0.1</option>);
 	
 		return (<div>	
 		       <h3>The default settings display hits with p-value less than 0.01 Select a different p-value cutoff below: </h3>
