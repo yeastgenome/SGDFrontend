@@ -13,9 +13,9 @@ const style = {
 
 const GOtoolsUrl = "/run_gotools";
 
-const evidenceCode = ['HDA', 'HGI', 'HMP', 'IBA', 'IC',  'IEA', 'IDA', 'IEP',
-                      'IGI', 'IKR', 'IMP', 'IMR', 'IPI'  'IRD', 'ISA', 'ISM',
-                      'ISO', 'ISS', 'NAS', 'ND',  'TAS'];
+const evidenceCode = [ 'HDA', 'HGI', 'HMP', 'IBA', 'IC',  'IEA', 'IDA', 'IEP', 'IGI', 
+      		       'IKR', 'IMP', 'IMR', 'IPI', 'IRD', 'ISA', 'ISM', 'ISO', 'ISS', 
+		       'NAS', 'ND',  'TAS' ];
 
 const GoTermFinder = React.createClass({
 
@@ -146,14 +146,8 @@ const GoTermFinder = React.createClass({
 		    	     'IGI', 'IKR', 'IMP', 'IMR', 'IPI'  'IRD', 'ISA', 'ISM', 
 			     'ISO', 'ISS', 'NAS', 'ND',  'TAS']
  
-                // used for computational (IKR) (IMR) IBA IEA IRD
-
-		// var _elements = [ { 'key': 'HDA',
-                                    'name': 'HDA' },
-                                  { 'key': 'HGI',
-                                    'name': 'HGI' },
-                                  { 'key': 'IEA',
-                                    'name': 'IEA' } ]
+                // used for computational only: IBA, IEA, IRD
+		// used for both manual and computational: IKR, IMR
 
                 var _init_active_keys = ['IEA', 'IBA', 'IRD'];
 
