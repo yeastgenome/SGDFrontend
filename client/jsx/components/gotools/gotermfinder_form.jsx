@@ -13,6 +13,10 @@ const style = {
 
 const GOtoolsUrl = "/run_gotools";
 
+const evidenceCode = ['HDA', 'HGI', 'HMP', 'IBA', 'IC',  'IEA', 'IDA', 'IEP',
+                      'IGI', 'IKR', 'IMP', 'IMR', 'IPI'  'IRD', 'ISA', 'ISM',
+                      'ISO', 'ISS', 'NAS', 'ND',  'TAS'];
+
 const GoTermFinder = React.createClass({
 
 	getInitialState() {
@@ -25,6 +29,7 @@ const GoTermFinder = React.createClass({
 			userError: null,
 			aspect: 'F',
 			uploadedGenes: null,
+			uploadedGenes4bg: null,
 			resultData: {},
 			notFound: null,
 			param: param
@@ -101,13 +106,20 @@ const GoTermFinder = React.createClass({
 
 		var _defaultSection = { headers: [[<span style={ style.textFont }><a name='step1'>Step 1. Query Set (Your Input)</a></span>, <span style={ style.textFont }><a name='step2'>Step 2. Choose Ontology</a></span>]],
                                      rows:    [[geneBox, ontology]] };
-				  
+		
+		var gene4bgBox = this.getGene4bgBox();
+		var evidenceCode = this.getEvidence();	
+	  
+		var _advancedSection = { headers: [[<span style={ style.textFont }><a name='step3'>Step 3. Specify your background set of genes</a></span>, <span style={ style.textFont }><a name='step4'>Step 4. Refine the annotations used for calculation</a></span>]],
+                                     rows:    [[gene4bgBox, evidenceCode]] };
+
 		return (<div>
 			<div dangerouslySetInnerHTML={{ __html: descText}} />
 			<div className="row">
 			     <div className="large-12 columns">
 			     	  <form onSubmit={this.onSubmit} target="infowin">
 				        <DataTable data={_defaultSection} />
+					<DataTable data={_advancedSection} />
 			          </form>
 			     </div>
 			</div>
@@ -128,11 +140,35 @@ const GoTermFinder = React.createClass({
 
 	},
 
-	getEvEvidenceCodes() {
+	getEvidence() {
+		      
+		var codes = ['HDA', 'HGI', 'HMP', 'IBA', 'IC',  'IEA', 'IDA', 'IEP', 
+		    	     'IGI', 'IKR', 'IMP', 'IMR', 'IPI'  'IRD', 'ISA', 'ISM', 
+			     'ISO', 'ISS', 'NAS', 'ND',  'TAS']
+ 
+                // used for computational (IKR) (IMR) IBA IEA IRD
 
-	        return <div>EVIDENCE CODES</div>;
+		// var _elements = [ { 'key': 'HDA',
+                                    'name': 'HDA' },
+                                  { 'key': 'HGI',
+                                    'name': 'HGI' },
+                                  { 'key': 'IEA',
+                                    'name': 'IEA' } ]
 
-	},
+                var _init_active_keys = ['IEA', 'IBA', 'IRD'];
+
+		var _elements = [];
+
+                for (var i = 0; i < evidenceCode.length; i++) {
+		    _elements.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
+		}
+
+                return (<div>
+		       <p>Select evidence codes to exclude:
+                       <Checklist elements={_elements} initialActiveElementKeys={_init_active_keys} /></p>
+		       </div>);
+
+        },
 
 	getGeneBox() {
 
@@ -148,6 +184,17 @@ const GoTermFinder = React.createClass({
 
         },
 
+	getGene4bgBox() {
+
+                return (<div style={{ textAlign: "top" }}>
+                        <h3><strong>Enter Gene/ORF names</strong> (separated by a return or a space):</h3>
+                        <p><textarea ref='genes4bg' onChange={this._onChange} name='genes4bg' rows='4' cols='150'></textarea></p>
+                        <h3><strong style={{ color: 'red'}}>OR</strong> <strong>Upload a file of Gene/ORF names</strong> (.txt or .tab format):</h3>
+                        <p><input className="btn btn-default btn-file" type="file" name='uploadFile' onChange={this.handleFile4bg} accept="image/*;capture=camera"/></p>
+                </div>);
+
+        },
+
 	handleFile(e) {
                 var reader = new FileReader();
                 var fileHandle = e.target.files[0];
@@ -155,6 +202,18 @@ const GoTermFinder = React.createClass({
                 reader.onload = function(upload) {
                       this.setState({
                             uploadedGenes: upload.target.result
+                      });
+              }.bind(this);
+              reader.readAsText(fileHandle);
+        },
+
+	handleFile4bg(e) {
+                var reader = new FileReader();
+                var fileHandle = e.target.files[0];
+                var fileName = e.target.files[0].name;
+                reader.onload = function(upload) {
+                      this.setState({
+                            uploadedGenes4bg: upload.target.result
                       });
               }.bind(this);
               reader.readAsText(fileHandle);
