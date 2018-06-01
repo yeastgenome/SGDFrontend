@@ -61,7 +61,7 @@ def search(request):
     query = request.params.get('q', '')
     query_temp_arr = query.split(' ')
 
-    if len(query_temp_arr) > 10:
+    if len(query_temp_arr) > 3:
         return {
             'total': [],
             'results': [],
