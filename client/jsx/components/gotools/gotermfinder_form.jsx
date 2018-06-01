@@ -2,10 +2,10 @@ import React from 'react';
 import _ from 'underscore';
 import $ from 'jquery';
 
-const Checklist = require("../widgets/checklist.jsx");
 const DataTable = require("../widgets/data_table.jsx");
 const Params = require("../mixins/parse_url_params.jsx");
 const RadioSelector = require("./radio_selector.jsx");
+const Checklist = require("./checklist.jsx");
 
 const style = {
       button: { fontSize: 18, background: 'none', border: 'none', color: '#7392b7' },
