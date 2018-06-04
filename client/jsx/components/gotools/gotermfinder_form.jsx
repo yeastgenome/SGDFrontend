@@ -186,12 +186,35 @@ const GoTermFinder = React.createClass({
                 var _init_active_keys = evidenceCode;
 
                 var _elements = [];
+		var _elements2 = [];
+		var _elements3 = [];
+		var _elements4 = [];
+		var _elements5 = [];
                 for (var i = 0; i < evidenceCode.length; i++) {
-                     _elements.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
+		     if (i < 5) {
+                     	  _elements.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
+		     }
+		     else if (i < 10) {
+		     	  _elements2.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
+		     }
+		     else if (i	< 15) {
+                          _elements3.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
+                     }
+		     else if (i	< 20) {
+                          _elements4.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
+                     }
+		     else {
+		     	  _elements5.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
+                     }
+
                 }
 
                 return (<div>
                        <p><Checklist elements={_elements} initialActiveElementKeys={_init_active_keys} /></p>
+		       <p><Checklist elements={_elements2} initialActiveElementKeys={_init_active_keys} /></p>
+		       <p><Checklist elements={_elements3} initialActiveElementKeys={_init_active_keys} /></p>
+		       <p><Checklist elements={_elements4} initialActiveElementKeys={_init_active_keys} /></p>
+		       <p><Checklist elements={_elements5} initialActiveElementKeys={_init_active_keys} /></p>
                        </div>);
 
         },
