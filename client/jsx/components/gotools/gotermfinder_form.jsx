@@ -190,12 +190,15 @@ const GoTermFinder = React.createClass({
 		var _elements3 = [];
 		var _elements4 = [];
                 for (var i = 0; i < evidenceCode.length; i++) {
-		     if (i < 8) {
+		     if (i < 7) {
                      	  _elements.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
 		     }
-		     else if (i < 16) {
+		     else if (i < 14) {
 		     	  _elements2.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
 		     }
+		     else if (i	< 21) {
+                          _elements3.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
+                     }
 		     else {
 		     	  _elements4.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
                      }
