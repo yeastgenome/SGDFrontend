@@ -116,7 +116,7 @@ const GoTermFinder = React.createClass({
 		var _backgroundSection = { headers: [[<span style={ style.textFont }><a name='step3'>Step 3. Specify your background set of genes</a></span>, '']],
                                      rows:    [[gene4bgBoxLeft, gene4bgBoxRight]] };
 
-		var _evidenceSection = { headers: [[<span style={ style.textFont }><a name='step4'>Step 4. Select evidence codes used for calculation</a></span>, <span style={ style.textFont }><a name='step5'>Step 5. Select a p-value cutoff</a></span>, <span style={ style.textFont }><a name='step6'>And/or toggle False Discovery Rate</a></span>]],
+		var _evidenceSection = { headers: [[<span style={ style.textFont }><a name='step4'>Step 4. Select evidence codes for calculation</a></span>, <span style={ style.textFont }><a name='step5'>Step 5. Select a p-value cutoff</a></span>, <span style={ style.textFont }><a name='step6'>And/or toggle False Discovery Rate</a></span>]],
                                      rows:    [[evidenceCode, pvalueList, FDR]] };
 
 		return (<div>
@@ -191,13 +191,13 @@ const GoTermFinder = React.createClass({
 		var _elements3 = [];
 		var _elements4 = [];
                 for (var i = 0; i < evidenceCode.length; i++) {
-		     if (i < 7) {
+		     if (i < 6) {
                      	  _elements.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
 		     }
-		     else if (i < 14) {
+		     else if (i < 12) {
 		     	  _elements2.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
 		     }
-		     else if (i	< 21) {
+		     else if (i	< 18) {
                           _elements3.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
                      }
 		     else {
