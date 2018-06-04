@@ -188,7 +188,7 @@ const GoTermFinder = React.createClass({
                 return (<div style={{ textAlign: "top" }}>
                         <h3><strong>Use default background set</strong> <br>(all features in the database that have GO annotations)</br></h3>
 			<h3><strong style={{ color: 'red'}}>OR</strong> <strong>Enter Gene/ORF names</strong> (separated by a return or a space):</h3>
-                        <p><textarea ref='genes4bg' onChange={this._onChange} name='genes4bg' rows='4' cols='150'></textarea></p>
+                        <p><textarea ref='genes4bg' onChange={this._onChange} name='genes4bg' rows='4' cols='100'></textarea></p>
                         </div>);
 
         },
@@ -197,6 +197,7 @@ const GoTermFinder = React.createClass({
 
                 return (<div style={{ textAlign: "top" }}>
                         <h3><strong style={{ color: 'red'}}>OR</strong> <strong>Upload a file of Gene/ORF names</strong> (.txt or .tab format):</h3>
+			<p></p>
 			<p><input className="btn btn-default btn-file" type="file" name='uploadFile' onChange={this.handleFile4bg} accept="image/*;capture=camera"/></p><br></br>
                         <p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input></p>
                         </div>);
