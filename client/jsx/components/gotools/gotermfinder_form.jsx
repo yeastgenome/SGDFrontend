@@ -108,6 +108,7 @@ const GoTermFinder = React.createClass({
 		var gene4bgBoxRight = this.getGene4bgBoxRight();
 		var evidenceCode = this.getEvidence();
 		var pvalueList = this.getPvalueList();
+		var FDR = this.getFDR();
 				 
 		var _defaultSection = { headers: [[<span style={ style.textFont }><a name='step1'>Step 1. Query Set (Your Input)</a></span>, <span style={ style.textFont }><a name='step2'>Step 2. Choose Ontology</a></span>]],
                                      rows:    [[geneBox, ontology]] };
@@ -115,8 +116,8 @@ const GoTermFinder = React.createClass({
 		var _backgroundSection = { headers: [[<span style={ style.textFont }><a name='step3'>Step 3. Specify your background set of genes</a></span>, '']],
                                      rows:    [[gene4bgBoxLeft, gene4bgBoxRight]] };
 
-		var _evidenceSection = { headers: [[<span style={ style.textFont }><a name='step4'>Step 4. Select evidence codes used for calculation</a></span>, <span style={ style.textFont }><a name='step5'>Step 5. Select a p-value cutoff for the result and/or toggle False Discovery Rate</a></span>, '']],
-                                     rows:    [[evidenceCode, pvalueList, '']] };
+		var _evidenceSection = { headers: [[<span style={ style.textFont }><a name='step4'>Step 4. Select evidence codes used for calculation</a></span>, <span style={ style.textFont }><a name='step5'>Step 5. Select a p-value cutoff for the result and/or toggle False Discovery Rate</a></span>, <span style={ style.textFont }><a name='step6'>And/or toggle False Discovery Rate</a></span>]],
+                                     rows:    [[evidenceCode, pvalueList, FDR]] };
 
 		return (<div>
 			<div dangerouslySetInnerHTML={{ __html: descText}} />
@@ -224,16 +225,26 @@ const GoTermFinder = React.createClass({
                 var _FDRelements = [ { 'key': 'Yes', 'name': 'FDR'} ];
 
 		return (<div>	
-		       <h3>The default p-value cutoff is 0.01. Select a different cutoff below: </h3>
+		       <h3>The default p-value cutoff is 0.01. 
+		       <br>Select a different cutoff below:</br> </h3>
                        <p><select ref='pvalue' name='pvalue' onChange={this.onChange}>{_elements}</select></p>
-		       <h3>Calculate false discovery rate (FDR)?
-                       <Checklist elements={_FDRelements} initialActiveElementKeys={_init_active_keys} /></h3>
-                       <p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input></p>
 		       </div>);
 
         },
-	
 
+	getFDR() {
+
+		var _init_active_keys = ['Yes']
+                var _FDRelements = [ { 'key': 'Yes', 'name': 'FDR'} ];
+
+                return (<div>
+		       <h3>Calculate false discovery rate (FDR)?
+                       <Checklist elements={_FDRelements} initialActiveElementKeys={_init_active_keys} /></h3>
+                       <p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input></p>
+                       </div>);
+
+	},
+	
 	handleFile(e) {
                 var reader = new FileReader();
                 var fileHandle = e.target.files[0];
