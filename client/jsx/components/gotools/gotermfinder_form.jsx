@@ -116,7 +116,7 @@ const GoTermFinder = React.createClass({
 		var _backgroundSection = { headers: [[<span style={ style.textFont }><a name='step3'>Step 3. Specify your background set of genes</a></span>, '']],
                                      rows:    [[gene4bgBoxLeft, gene4bgBoxRight]] };
 
-		var _evidenceSection = { headers: [[<span style={ style.textFont }><a name='step4'>Step 4. Select evidence codes for calculation</a></span>, <span style={ style.textFont }><a name='step5'>Step 5. Select a p-value cutoff</a></span>, <span style={ style.textFont }><a name='step6'>And/or toggle False Discovery Rate</a></span>]],
+		var _evidenceSection = { headers: [[<span style={ style.textFont }><a name='step4'>Step 4. Pick evidence codes for calculation</a></span>, <span style={ style.textFont }><a name='step5'>Step 5. Select a p-value cutoff</a></span>, <span style={ style.textFont }><a name='step6'>And/or toggle False Discovery Rate</a></span>]],
                                      rows:    [[evidenceCode, pvalueList, FDR]] };
 
 		return (<div>
@@ -225,8 +225,7 @@ const GoTermFinder = React.createClass({
                 var _FDRelements = [ { 'key': 'Yes', 'name': 'FDR'} ];
 
 		return (<div>	
-		       <h3>The default p-value cutoff is 0.01. 
-		       <br>Select a different cutoff below:</br> </h3>
+		       <h3>The default p-value cutoff is 0.01. Pick a different value below:</h3>
                        <p><select ref='pvalue' name='pvalue' onChange={this.onChange}>{_elements}</select></p>
 		       </div>);
 
