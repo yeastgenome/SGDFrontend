@@ -225,7 +225,7 @@ const GoTermFinder = React.createClass({
                 var _FDRelements = [ { 'key': 'Yes', 'name': 'FDR'} ];
 
 		return (<div>	
-		       <h3>The default p-value cutoff is 0.01. Pick a different value below:</h3>
+		       <h3>The default p-value cutoff is 0.01. <br>Pick a different value below:</br></h3>
                        <p><select ref='pvalue' name='pvalue' onChange={this.onChange}>{_elements}</select></p>
 		       </div>);
 
