@@ -104,7 +104,8 @@ const GoTermFinder = React.createClass({
 
 		var geneBox = this.getGeneBox();
 		var ontology = this.getOntology();
-		var gene4bgBox = this.getGene4bgBox();
+		var gene4bgBoxLeft = this.getGene4bgBoxLeft();
+		var gene4bgBoxRight = this.getGene4bgBoxRight();
 		var evidenceCode = this.getEvidence();
 		var pvalueList = this.getPvalueList();
 		var isFDR = this.getFDR();
@@ -113,7 +114,7 @@ const GoTermFinder = React.createClass({
                                      rows:    [[geneBox, ontology]] };
 			  
 		var _backgroundSection = { headers: [[<span style={ style.textFont }><a name='step3'>Step 3. Specify your background set of genes</a></span>, '']],
-                                     rows:    [[gene4bgBox]] };
+                                     rows:    [[gene4bgBoxLeft, gene4bgBoxRight]] };
 
 		var _evidenceSection = { headers: [[<span style={ style.textFont }><a name='step4'>Step 4. Refine the annotations used for calculation</a></span>]],
                                      rows:    [[evidenceCode]] };
@@ -185,14 +186,14 @@ const GoTermFinder = React.createClass({
 	getGene4bgBoxLeft() {
 
                 return (<div style={{ textAlign: "top" }}>
-                        <h3><strong>Use default background set</strong> (all features in the database that have GO annotations)</h3>
+                        <h3><strong>Use default background set</strong> <br>(all features in the database that have GO annotations)</br></h3>
 			<h3><strong style={{ color: 'red'}}>OR</strong> <strong>Enter Gene/ORF names</strong> (separated by a return or a space):</h3>
                         <p><textarea ref='genes4bg' onChange={this._onChange} name='genes4bg' rows='4' cols='150'></textarea></p>
                         </div>);
 
         },
 
-	getGene4bgBox() {
+	getGene4bgBoxRight() {
 
                 return (<div style={{ textAlign: "top" }}>
                         <h3><strong style={{ color: 'red'}}>OR</strong> <strong>Upload a file of Gene/ORF names</strong> (.txt or .tab format): <input className="btn btn-default btn-file" type="file" name='uploadFile' onChange={this.handleFile4bg} accept="image/*;capture=camera"/></h3>
