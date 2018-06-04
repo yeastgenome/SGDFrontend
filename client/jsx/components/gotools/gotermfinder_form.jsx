@@ -108,19 +108,15 @@ const GoTermFinder = React.createClass({
 		var gene4bgBoxRight = this.getGene4bgBoxRight();
 		var evidenceCode = this.getEvidence();
 		var pvalueList = this.getPvalueList();
-		var isFDR = this.getFDR();
-
+		
 		var _defaultSection = { headers: [[<span style={ style.textFont }><a name='step1'>Step 1. Query Set (Your Input)</a></span>, <span style={ style.textFont }><a name='step2'>Step 2. Choose Ontology</a></span>]],
                                      rows:    [[geneBox, ontology]] };
 			  
 		var _backgroundSection = { headers: [[<span style={ style.textFont }><a name='step3'>Step 3. Specify your background set of genes</a></span>, '']],
                                      rows:    [[gene4bgBoxLeft, gene4bgBoxRight]] };
 
-		var _evidenceSection = { headers: [[<span style={ style.textFont }><a name='step4'>Step 4. Refine the annotations used for calculation</a></span>]],
-                                     rows:    [[evidenceCode]] };
-		
-		var _pvalueSection =  { headers: [[<span  style={ style.textFont }><a name='step5'>Step 5. Select a p-value cutoff for results and/or toggle False Discovery Rate</a></span>, '']],
-		    		        rows: [[pvalueList, isFDR]] };
+		var _evidenceSection = { headers: [[<span style={ style.textFont }><a name='step4'>Step 4. Refine the annotations used for calculation</a></span>], <span  style={ style.textFont }><a name='step5'>Step 5. Select a p-value cutoff and/or toggle False Discovery Rate</a></span>],
+                                     rows:    [[evidenceCode, pvalueList]] };
 
 		return (<div>
 			<div dangerouslySetInnerHTML={{ __html: descText}} />
@@ -130,7 +126,6 @@ const GoTermFinder = React.createClass({
 				        <DataTable data={_defaultSection} />
 					<DataTable data={_backgroundSection} />
 					<DataTable data={_evidenceSection} />
-					<DataTable data={_pvalueSection} />
 			          </form>
 			     </div>
 			</div>
@@ -150,27 +145,6 @@ const GoTermFinder = React.createClass({
 			</div>);
 
 	},
-
-	getEvidence() {
-		       
-                // used for computational only: IBA, IEA, IRD
-		// used for both manual and computational: IKR, IMR
-
-		var _init_active_keys = evidenceCode;
-
-		var _elements = [];
-
-                for (var i = 0; i < evidenceCode.length; i++) {
-		    _elements.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
-		}
-
-                return (<div>
-		       <p>Select evidence codes:
-                       <Checklist elements={_elements} initialActiveElementKeys={_init_active_keys} /></p>
-		       <p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input></p>
-		       </div>);
-
-        },
 
 	getGeneBox() {
 
@@ -204,6 +178,26 @@ const GoTermFinder = React.createClass({
 
         },
 
+	getEvidence() {
+
+                // used for computational only: IBA, IEA, IRD
+                // used for both manual and computational: IKR, IMR
+
+                var _init_active_keys = evidenceCode;
+
+                var _elements = [];
+
+                for (var i = 0; i < evidenceCode.length; i++) {
+                    _elements.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
+                }
+
+                return (<div>
+                       <p>Select evidence codes:
+                       <Checklist elements={_elements} initialActiveElementKeys={_init_active_keys} /></p>
+                       <p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input></p>
+                       </div>);
+
+        },
 
 	getPvalueList() {
 		
@@ -211,28 +205,19 @@ const GoTermFinder = React.createClass({
  		_elements.push(<option value='0.05'>0.05</option>);
 		_elements.push(<option value='0.1'>0.1</option>);
 	
+		var _init_active_keys = ['Yes']
+                var _FDRelements = [ { 'key': 'Yes', 'name': 'Yes'} ];
+
 		return (<div>	
 		       <h3>The default settings display hits with p-value less than 0.01.
 		       <br> Select a different p-value cutoff below:</br> </h3>
                        <p><select ref='pvalue' name='pvalue' onChange={this.onChange}>{_elements}</select></p>
+		       <h3>Calculate false discovery rate (FDR)?
+                       <Checklist elements={_FDRelements} initialActiveElementKeys={_init_active_keys} /></h3>
+                       <p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input></p>
 		       </div>);
 
         },
-
-	getFDR() {
-
-		var _init_active_keys = ['Yes']
-		var _elements = [ { 'key': 'Yes', 'name': 'Yes'} ];
-
-		return (<div>
-		       <h3>Calculate false discovery rate (FDR)? 
-		       <Checklist elements={_elements} initialActiveElementKeys={_init_active_keys} /></h3>
-		       <p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input></p>
-
-		       </div>);
-		        
-	},
-
 	
 	handleFile(e) {
                 var reader = new FileReader();
