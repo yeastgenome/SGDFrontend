@@ -116,8 +116,8 @@ const GoTermFinder = React.createClass({
 		var _backgroundSection = { headers: [[<span style={ style.textFont }><a name='step3'>Step 3. Specify your background set of genes</a></span>, '']],
                                      rows:    [[gene4bgBoxLeft, gene4bgBoxRight]] };
 
-		var _evidenceSection = { headers: [[<span style={ style.textFont }><a name='step4'>Step 4. Select a p-value cutoff and/or toggle False Discovery Rate</a></span>, '', <span style={ style.textFont }><a name='step5'>Step 5. Select evidence codes used for calculation</a></span>]],
-                                     rows:    [[pvalueList, FDR, evidenceCode]] };
+		var _evidenceSection = { headers: [[<span style={ style.textFont }><a name='step4'>Step 4. Select evidence codes used for calculation</a></span>, '', <span style={ style.textFont }><a name='step5'>Step 5. Select a p-value cutoff and/or toggle False Discovery Rate</a></span>]],
+                                     rows:    [[evidenceCode, FDR, pvalueList]] };
 
 		return (<div>
 			<div dangerouslySetInnerHTML={{ __html: descText}} />
@@ -187,23 +187,12 @@ const GoTermFinder = React.createClass({
                 var _init_active_keys = evidenceCode;
 
                 var _elements = [];
-		var _elements2 = [];
-		var _elements3 = [];
                 for (var i = 0; i < evidenceCode.length; i++) {
-		    if (i < 25) {
-                       	  _elements.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
-		    }
-		    else if (i < 50) {
-		    	  _elements2.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
-		    }
-		    else {
-		    	  _elements3.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
-		    }
+                     _elements.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
                 }
 
                 return (<div>
                        <p><Checklist elements={_elements} initialActiveElementKeys={_init_active_keys} /></p>
-                       <p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input></p>
                        </div>);
 
         },
@@ -229,6 +218,7 @@ const GoTermFinder = React.createClass({
                 return (<div>
                        <h3>Calculate false discovery rate (FDR)?
                        <Checklist elements={_FDRelements} initialActiveElementKeys={_init_active_keys} /></h3>
+		       <p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input></p>
                        </div>);
 
 	},
