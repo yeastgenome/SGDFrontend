@@ -189,10 +189,10 @@ const GoTermFinder = React.createClass({
 		var _elements2 = [];
 		var _elements3 = [];
                 for (var i = 0; i < evidenceCode.length; i++) {
-		    if (i < 7) {
+		    if (i < 25) {
                        	  _elements.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
 		    }
-		    else if (i < 14) {
+		    else if (i < 50) {
 		    	  _elements2.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
 		    }
 		    else {
@@ -201,10 +201,8 @@ const GoTermFinder = React.createClass({
                 }
 
                 return (<div>
-                       <p>Select evidence codes:
-                       <Checklist elements={_elements} initialActiveElementKeys={_init_active_keys} />
-		       <Checklist elements={_elements2} initialActiveElementKeys={_init_active_keys} />
-		       <Checklist elements={_elements3} initialActiveElementKeys={_init_active_keys} /></p>
+                       <p>Select evidence codes:</p>
+                       <p><Checklist elements={_elements} initialActiveElementKeys={_init_active_keys} /></p>
                        <p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input></p>
                        </div>);
 
