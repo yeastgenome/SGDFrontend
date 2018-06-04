@@ -210,7 +210,6 @@ const GoTermFinder = React.createClass({
 		       <p><Checklist elements={_elements2} initialActiveElementKeys={_init_active_keys} /></p>
 		       <p><Checklist elements={_elements3} initialActiveElementKeys={_init_active_keys} /></p>
 		       <p><Checklist elements={_elements4} initialActiveElementKeys={_init_active_keys} /></p>
-		       <p><Checklist elements={_elements5} initialActiveElementKeys={_init_active_keys} /></p>
                        </div>);
 
         },
