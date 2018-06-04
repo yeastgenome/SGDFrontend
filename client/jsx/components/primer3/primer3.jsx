@@ -42,17 +42,13 @@ const Primer3 = React.createClass({
     if(this.props.queryParams.sequence_id){
        var seqId = this.props.queryParams.sequence_id;
        var seq = window.localStorage.getItem(seqId);
-       if(seq) {
-        this.setState(prevState => {
-            return JSON.parse(seq)
-            })
-       }
-//       let tempVal = this.state.value;
-//       tempVal.sequence = seq;
-//       console.log(seqId)
-//       console.log(seq)
-//       this.setState({value: tempVal});
+       console.log(seqId)
+       console.log(seq)
+       let tempVal = this.state.value;
+       tempVal.sequence = seq;
+       this.setState({sequence: seq});
     }
+
     if(this.props.queryParams.name){
         let geneName = this.props.queryParams.name;
         let tempVal = this.state.value;
@@ -242,15 +238,17 @@ const Primer3 = React.createClass({
         <span style={{ textAlign: "center" }}><h1>Primer Design: Uses Primer3-py package <a href='https://sites.google.com/view/yeastgenome-help/analyze-help/primer-design' target='_new'><i className='fa primer-help'/> <img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img></a></h1><hr/></span>
         <span>Sequences of <a href='http://wiki.yeastgenome.org/index.php/Primer_Set_Sequences' target='_new'><i className='fa primer-seqs' />primer sets </a> available to the community<hr/></span>
          <span> Design your own primers: <a href='https://sites.google.com/view/yeastgenome-help/analyze-help/primer-design' target='_new'><i className='fa primer-help'/> <img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img></a> </span>
+         <p><b> Please input gene name OR sequence</b></p>
          <div className='row'>
           <div className='columns small-4'>{locals.inputs.gene_name}</div>
          </div>
-         <p><b> Please input gene name OR sequence</b></p>
+         <p><b> OR </b></p>
          <div className='row'>
           <div className='columns small-8'>{locals.inputs.sequence}</div>
          </div>
 
-        <span><a href='http://primer3.ut.ee/primer3web_help.htm#SEQUENCE_TARGET' target='_new'><i className='fa primer-help' />Target Region</a></span>
+        <span><a href='http://primer3.ut.ee/primer3web_help.htm#SEQUENCE_TARGET' target='_new'><i className='fa primer-help' />Target Region</a> </span>
+        <p> (NOTE: primers will be chosen from the flanking regions just <b> outside </b> of this defined region) </p>
          <div className='row'>
           <div className='columns small-4'>{locals.inputs.input_start}</div>
           <div className='columns small-4'>{locals.inputs.input_end}</div>
@@ -265,7 +263,7 @@ const Primer3 = React.createClass({
         <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_MIN_SIZE' target='_new'><i className='fa primer-help' />Primer Length</a></span>
          <div className='row'>
           <div className='columns small-4'>{locals.inputs.minimum_length}</div>
-          <div className='columns small-3'>{locals.inputs.optimum_primer_length}</div>
+          <div className='columns small-4'>{locals.inputs.optimum_primer_length}</div>
           <div className='columns small-4'>{locals.inputs.maximum_length}</div>
          </div>
 
@@ -304,7 +302,7 @@ const Primer3 = React.createClass({
 
             sequence: {
                 type: 'textarea',
-                label: 'Enter the DNA Sequence (comments should be removed)'
+                label: 'Enter the DNA Sequence (NOTE: Paste in DNA sequence only; all headers, comments, numbers and leading spaces or carriage returns should be removedNOTE: Paste in DNA sequence only; all headers, comments, numbers and leading spaces or carriage returns should be removed)'
             },
             max_self_complementarity: {
                 label: 'Max Self Complementarity:'
@@ -328,25 +326,34 @@ const Primer3 = React.createClass({
                 label: 'Maximum Tm:'
             },
             optimum_gc: {
-                label: 'Optimum percent GC content:'
+                label: 'Optimum percent GC:'
             },
             minimum_gc: {
-                label: 'Minimum GC:'
+                label: 'Minimum percent GC:'
             },
             maximum_gc: {
-                label: 'Maximum GC:'
+                label: 'Maximum percent GC:'
+            },
+            minimum_length:{
+                label: 'Minimum primer length:'
+            },
+            optimum_primer_length:{
+                label: 'Optimum primer length:'
+            },
+            maximum_length:{
+                label: 'Maximum primer length:'
             },
             input_start:{
-                label: 'Start of 5\' location from START codon: (-ve = upstream)'
+                label: 'Start: bp from DNA sequence start OR gene START codon, where neg # = upstream:'
             },
             input_end:{
-                label: 'End of 5\' location from START codon:'
+                label: 'End: bp from DNA sequence start OR from gene START codon:'
             },
             maximum_product_size:{
-                label: 'Maximum product size:'
+                label: 'Maximum product size in bp, cannot be less than target size (Optional):'
             },
             end_point:{
-                label: 'Forces the endpoints on 5\' and 3\' locations to above included regions:'
+                label: 'Forces the 3\' endpoints of the left and right primers to Target Start and End respectively:'
             }
        },
        template: formLayout
