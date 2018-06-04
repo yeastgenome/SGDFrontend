@@ -201,8 +201,8 @@ const GoTermFinder = React.createClass({
                 }
 
                 return (<div>
-                       <p>Select evidence codes:</p>
-                       <p><Checklist elements={_elements} initialActiveElementKeys={_init_active_keys} /></p>
+                       <h3><p>Select evidence codes:
+                       <Checklist elements={_elements} initialActiveElementKeys={_init_active_keys} /></p></h3>
                        <p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input></p>
                        </div>);
 
