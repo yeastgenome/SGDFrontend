@@ -115,8 +115,8 @@ const GoTermFinder = React.createClass({
 		var _backgroundSection = { headers: [[<span style={ style.textFont }><a name='step3'>Step 3. Specify your background set of genes</a></span>, '']],
                                      rows:    [[gene4bgBoxLeft, gene4bgBoxRight]] };
 
-		var _evidenceSection = { headers: [[<span style={ style.textFont }><a name='step4'>Step 4. Select evidence codes used for calculation</a></span>, <span style={ style.textFont }><a name='step5'>Step 5. Select a p-value cutoff for the result and/or toggle False Discovery Rate</a></span>]],
-                                     rows:    [[evidenceCode, pvalueList]] };
+		var _evidenceSection = { headers: [[<span style={ style.textFont }><a name='step4'>Step 4. Select evidence codes used for calculation</a></span>, <span style={ style.textFont }><a name='step5'>Step 5. Select a p-value cutoff for the result and/or toggle False Discovery Rate</a></span>, '']],
+                                     rows:    [[evidenceCode, pvalueList, '']] };
 
 		return (<div>
 			<div dangerouslySetInnerHTML={{ __html: descText}} />
