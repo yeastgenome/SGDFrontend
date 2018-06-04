@@ -209,8 +209,7 @@ const GoTermFinder = React.createClass({
                 var _FDRelements = [ { 'key': 'Yes', 'name': 'FDR'} ];
 
 		return (<div>	
-		       <h3>The default settings display hits with p-value less than 0.01.
-		       <br> Select a different p-value cutoff below:</br> </h3>
+		       <h3>The default settings display hits with p-value less than 0.01. Select a different p-value cutoff below: </h3>
                        <p><select ref='pvalue' name='pvalue' onChange={this.onChange}>{_elements}</select></p>
 		       <h3>Calculate false discovery rate (FDR)?
                        <Checklist elements={_FDRelements} initialActiveElementKeys={_init_active_keys} /></h3>
