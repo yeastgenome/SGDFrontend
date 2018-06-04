@@ -187,7 +187,7 @@ const GoTermFinder = React.createClass({
                         <h3><strong>Use default background set</strong> (all features in the database that have GO annotations)</h3>
 			<h3><strong style={{ color: 'red'}}>OR</strong> <strong>Enter Gene/ORF names</strong> (separated by a return or a space):</h3>
                         <p><textarea ref='genes4bg' onChange={this._onChange} name='genes4bg' rows='4' cols='250'></textarea></p>
-                        <h3><strong style={{ color: 'red'}}>OR</strong> <strong>Upload a file of Gene/ORF names</strong> (.txt or .tab format): <input className="btn btn-default btn-file" type="file" name='uploadFile' onChange={this.handleFile4bg} accept="image/*;capture=camera"/></h3>
+                        <h3><strong style={{ color: 'red'}}>OR</strong> <strong>Upload a file of Gene/ORF names</strong> (.txt or .tab format): <input className="btn btn-default btn-file" type="file" name='uploadFile' onChange={this.handleFile4bg} accept="image/*;capture=camera"/><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input></h3>
                         </div>);
 
         },
@@ -209,7 +209,7 @@ const GoTermFinder = React.createClass({
 
 		return (<div>
 		       <h3>Calculate false discovery rate (FDR)? </h3>
-		       <p>checkbox here</p>
+		       <p>checkbox here<input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input></p>
 		       </div>);
 		        
 	},
