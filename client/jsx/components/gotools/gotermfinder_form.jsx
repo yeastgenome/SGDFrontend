@@ -115,7 +115,7 @@ const GoTermFinder = React.createClass({
 		var _backgroundSection = { headers: [[<span style={ style.textFont }><a name='step3'>Step 3. Specify your background set of genes</a></span>, '']],
                                      rows:    [[gene4bgBoxLeft, gene4bgBoxRight]] };
 
-		var _evidenceSection = { headers: [[<span style={ style.textFont }><a name='step4'>Step 4. Refine the annotations used for calculation</a></span>], <span  style={ style.textFont }><a name='step5'>Step 5. Select a p-value cutoff and/or toggle False Discovery Rate</a></span>],
+		var _evidenceSection = { headers: [[<span style={ style.textFont }><a name='step4'>Step 4. Refine the annotations used for calculation</a></span>, <span style={ style.textFont }><a name='step5'>Step 5. Select a p-value cutoff and/or toggle False Discovery Rate</a></span>]],
                                      rows:    [[evidenceCode, pvalueList]] };
 
 		return (<div>
@@ -206,7 +206,7 @@ const GoTermFinder = React.createClass({
 		_elements.push(<option value='0.1'>0.1</option>);
 	
 		var _init_active_keys = ['Yes']
-                var _FDRelements = [ { 'key': 'Yes', 'name': 'Yes'} ];
+                var _FDRelements = [ { 'key': 'Yes', 'name': 'FDR'} ];
 
 		return (<div>	
 		       <h3>The default settings display hits with p-value less than 0.01.
