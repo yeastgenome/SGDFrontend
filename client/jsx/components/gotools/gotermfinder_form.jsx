@@ -166,6 +166,7 @@ const GoTermFinder = React.createClass({
                 return (<div>
 		       <p>Select evidence codes:
                        <Checklist elements={_elements} initialActiveElementKeys={_init_active_keys} /></p>
+		       <p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input></p>
 		       </div>);
 
         },
@@ -209,9 +210,12 @@ const GoTermFinder = React.createClass({
 
 	getFDR() {
 
+		var _init_active_keys = ['Yes']
+		var _elements = [ { 'key': 'Yes', 'name': 'Yes'} ];
+
 		return (<div>
-		       <h3>Calculate false discovery rate (FDR)? </h3>
-		       <p>checkbox here</p>
+		       <h3>Calculate false discovery rate (FDR)? 
+		       <Checklist elements={_elements} initialActiveElementKeys={_init_active_keys} /></h3>
 		       <p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input></p>
 
 		       </div>);
