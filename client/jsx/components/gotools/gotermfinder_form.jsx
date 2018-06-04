@@ -188,7 +188,7 @@ const GoTermFinder = React.createClass({
                 return (<div style={{ textAlign: "top" }}>
                         <h3><strong>Use default background set</strong> <br>(all features in the database that have GO annotations)</br></h3>
 			<h3><strong style={{ color: 'red'}}>OR</strong> <strong>Enter Gene/ORF names</strong> (separated by a return or a space):</h3>
-                        <p><textarea ref='genes4bg' onChange={this._onChange} name='genes4bg' rows='4' cols='100'></textarea></p>
+                        <p><textarea ref='genes4bg' onChange={this._onChange} name='genes4bg' rows='4' cols='90'></textarea></p>
                         </div>);
 
         },
