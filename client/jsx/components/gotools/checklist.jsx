@@ -50,13 +50,8 @@ var Checklist = React.createClass({
 			);		
 		});
 
-		return (
-			<div>
-				<form className="checklist" action="">
-					{inputs}
-				</form>
-			</div>
-		);
+		return (<div>{inputs}</div>);
+
 	}
 
 });
