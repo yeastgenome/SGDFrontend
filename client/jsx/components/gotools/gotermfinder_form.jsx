@@ -184,7 +184,8 @@ const GoTermFinder = React.createClass({
                 // used for computational only: IBA, IEA, IRD
                 // used for both manual and computational: IKR, IMR
 
-                var _init_active_keys = evidenceCode;
+                // var _init_active_keys = evidenceCode;
+		var _init_active_keys = [];
                 var _elements = [];
                 for (var i = 0; i < evidenceCode.length; i++) {
                        _elements.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
@@ -194,11 +195,11 @@ const GoTermFinder = React.createClass({
                 _pvalueElements.push(<option value='0.05'>0.05</option>);
                 _pvalueElements.push(<option value='0.1'>0.1</option>);
 
-                var _init_active_keys = ['Yes']
+                var _init_active_keys = ['FDR']
                 var _FDRelements = [ { 'key': 'FDR', 'name': 'FDR'} ];
 
                 return (<div>
-		       <h3>Pick evidence codes used for calculation:</h3>
+		       <h3>Pick evidence codes to exclude for calculation:</h3>
                        <p><Checklist elements={_elements} initialActiveElementKeys={_init_active_keys} /></p>
 		       <h3>The default p-value cutoff is 0.01. <br>Pick a different value below:</br></h3>
                        <p><select ref='pvalue' name='pvalue' onChange={this.onChange}>{_pvalueElements}</select></p>
