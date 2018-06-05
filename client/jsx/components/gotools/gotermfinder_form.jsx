@@ -186,13 +186,19 @@ const GoTermFinder = React.createClass({
 
                 var _init_active_keys = evidenceCode;
                 var _elements = [];
+		var _elements2 = [];
                 for (var i = 0; i < evidenceCode.length; i++) {
-                       _elements.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
-                }
+		       if (i < 11) {
+                       	    _elements.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
+		       }
+		       else {
+		       	    _elements2.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
+                       }
+		}
 		
-		var _elements2 = [<option value='0.01' selected='selected'>0.01</option>];
-                _elements2.push(<option value='0.05'>0.05</option>);
-                _elements2.push(<option value='0.1'>0.1</option>);
+		var _pvalueElements = [<option value='0.01' selected='selected'>0.01</option>];
+                _pvalueElements.push(<option value='0.05'>0.05</option>);
+                _pvalueElements.push(<option value='0.1'>0.1</option>);
 
                 var _init_active_keys = ['Yes']
                 var _FDRelements = [ { 'key': 'FDR', 'name': 'FDR'} ];
