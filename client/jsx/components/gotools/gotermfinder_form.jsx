@@ -200,10 +200,8 @@ const GoTermFinder = React.createClass({
                 return (<div>
 		       <h3>Pick evidence codes used for calculation:</h3>
                        <p><Checklist elements={_elements} initialActiveElementKeys={_init_active_keys} /></p>
-		       <h3>The default p-value cutoff is 0.01. Pick a different value below:
-                       <select ref='pvalue' name='pvalue' onChange={this.onChange}>{_elements2}</select></h3>
-		       <h3>Calculate false discovery rate (FDR)?
-                       <Checklist elements={_FDRelements} initialActiveElementKeys={_init_active_keys} /></h3>
+		       <h3>The default p-value cutoff is 0.01. Pick a different value below:<select ref='pvalue' name='pvalue' onChange={this.onChange}>{_elements2}</select></h3>
+		       <h3>Calculate false discovery rate (FDR)?<Checklist elements={_FDRelements} initialActiveElementKeys={_init_active_keys} /></h3>
                        <p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input></p>
                        </div>);
 
