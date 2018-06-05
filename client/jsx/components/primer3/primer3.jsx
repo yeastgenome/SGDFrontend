@@ -36,6 +36,17 @@ const Primer3 = React.createClass({
     }
   },
 
+  componentWillMount() {
+    if(this.props.queryParams.sequence_id){
+       var seqId = this.props.queryParams.sequence_id;
+       var seq = window.localStorage.getItem(seqId);
+       console.log(seqId)
+       console.log(seq)
+       let tempVal = this.state.value;
+       tempVal.sequence = seq;
+       this.setState({sequence: seq});
+    }
+  },
 
   componentDidMount() {
     if(this.props.queryParams.name){
@@ -44,6 +55,16 @@ const Primer3 = React.createClass({
         tempVal.gene_name = geneName;
         this.setState({value: tempVal});
     }
+    if(this.props.queryParams.sequence_id){
+       var seqId = this.props.queryParams.sequence_id;
+       var seq = window.localStorage.getItem(seqId);
+       console.log(seqId)
+       console.log(seq)
+       let tempVal = this.state.value;
+       tempVal.sequence = seq;
+       this.setState({sequence: seq});
+    }
+
   },
 
   onChange(value) {
@@ -223,14 +244,6 @@ const Primer3 = React.createClass({
     });
 
     const formLayout = locals => {
-
-      var param = this.state.param;
-        if (param['sequence_id']) {
-            var seqID = param['sequence_id'];
-            seq = window.localStorage.getItem(seqID);
-            local.inputs.sequence = seq
-        }
-
       return (
        <div>
         <span style={{ textAlign: "center" }}><h1>Primer Design: Uses Primer3-py package <a href='https://sites.google.com/view/yeastgenome-help/analyze-help/primer-design' target='_new'><i className='fa primer-help'/> <img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img></a></h1><hr/></span>
