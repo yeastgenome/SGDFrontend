@@ -38,17 +38,6 @@ const Primer3 = React.createClass({
 
 
   componentDidMount() {
-
-    if(this.props.queryParams.sequence_id){
-       var seqId = this.props.queryParams.sequence_id;
-       var seq = window.localStorage.getItem(seqId);
-       console.log(seqId)
-       console.log(seq)
-       let tempVal = this.state.value;
-       tempVal.sequence = seq;
-       this.setState({sequence: seq});
-    }
-
     if(this.props.queryParams.name){
         let geneName = this.props.queryParams.name;
         let tempVal = this.state.value;
@@ -206,6 +195,7 @@ const Primer3 = React.createClass({
 
     const PrimerFormSchema = t.struct({
 
+
        gene_name: t.maybe(t.String),
        sequence: t.maybe(t.String),
        input_start: t.Number,
@@ -233,6 +223,14 @@ const Primer3 = React.createClass({
     });
 
     const formLayout = locals => {
+
+        var param = this.state.param;
+			if (param['sequence_id']) {
+			     var seqID = param['sequence_id'];
+                             seq = window.localStorage.getItem(seqID);
+                             local.inputs.sequence = seq
+			}
+
       return (
        <div>
         <span style={{ textAlign: "center" }}><h1>Primer Design: Uses Primer3-py package <a href='https://sites.google.com/view/yeastgenome-help/analyze-help/primer-design' target='_new'><i className='fa primer-help'/> <img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img></a></h1><hr/></span>
