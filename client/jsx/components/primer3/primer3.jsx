@@ -224,12 +224,12 @@ const Primer3 = React.createClass({
 
     const formLayout = locals => {
 
-        var param = this.state.param;
-			if (param['sequence_id']) {
-			     var seqID = param['sequence_id'];
-                             seq = window.localStorage.getItem(seqID);
-                             local.inputs.sequence = seq
-			}
+      var param = this.state.param;
+        if (param['sequence_id']) {
+            var seqID = param['sequence_id'];
+            seq = window.localStorage.getItem(seqID);
+            local.inputs.sequence = seq
+        }
 
       return (
        <div>
