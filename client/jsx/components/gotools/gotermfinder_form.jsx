@@ -116,8 +116,8 @@ const GoTermFinder = React.createClass({
 		var _backgroundSection = { headers: [[<span style={ style.textFont }><a name='step3'>Step 3. Specify your background set of genes</a></span>, '']],
                                      rows:    [[gene4bgBoxLeft, gene4bgBoxRight]] };
 
-		var _evidenceSection = { headers: [[<span style={ style.textFont }><a name='step4'>Step 4. Optional Input Options</a></span>, '']],
-		    		         rows: [[evidenceCode, pvalueList]] };
+		var _evidenceSection = { headers: [[<span style={ style.textFont }><a name='step4'>Step 4. Optional Input Options</a></span>]],
+		    		         rows: [[evidenceCode]] };
 
 		return (<div>
 			<div dangerouslySetInnerHTML={{ __html: descText}} />
@@ -186,14 +186,8 @@ const GoTermFinder = React.createClass({
 
                 var _init_active_keys = evidenceCode;
                 var _elements = [];
-		var _elements2 = [];
                 for (var i = 0; i < evidenceCode.length; i++) {
-		       if (i < 11) {
-                       	    _elements.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
-		       }
-		       else {
-		       	    _elements2.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
-                       }
+                       _elements.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
 		}
 		
 		var _pvalueElements = [<option value='0.01' selected='selected'>0.01</option>];
@@ -206,6 +200,11 @@ const GoTermFinder = React.createClass({
                 return (<div>
 		       <h3>Pick evidence codes used for calculation:</h3>
                        <p><Checklist elements={_elements} initialActiveElementKeys={_init_active_keys} /></p>
+		       <h3>The default p-value cutoff is 0.01. <br>Pick a different value below:</br></h3>
+                       <p><select ref='pvalue' name='pvalue' onChange={this.onChange}>{_elements}</select></p>
+                       <h3>Calculate false discovery rate (FDR)?
+                       <Checklist elements={_FDRelements} initialActiveElementKeys={_init_active_keys} /></h3>
+                       <p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input></p>
                        </div>);
 
         },
