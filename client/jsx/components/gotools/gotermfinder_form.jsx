@@ -116,8 +116,11 @@ const GoTermFinder = React.createClass({
 		var _backgroundSection = { headers: [[<span style={ style.textFont }><a name='step3'>Step 3. Specify your background set of genes</a></span>, '']],
                                      rows:    [[gene4bgBoxLeft, gene4bgBoxRight]] };
 
-		var _evidenceSection = { headers: [[<span style={ style.textFont }><a name='step4'>Step 4. Pick evidence codes for calculation</a></span>, <span style={ style.textFont }><a name='step5'>Step 5. Select a p-value cutoff for the result</a></span>, <span style={ style.textFont }><a name='step6'>And/or toggle False Discovery Rate</a></span>, '']],
-                                     rows:    [[evidenceCode, pvalueList, FDR, '']] };
+//		var _evidenceSection = { headers: [[<span style={ style.textFont }><a name='step4'>Step 4. Pick evidence codes for calculation</a></span>, <span style={ style.textFont }><a name='step5'>Step 5. Select a p-value cutoff for the result</a></span>, <span style={ style.textFont }><a name='step6'>And/or toggle False Discovery Rate</a></span>, '']],
+//                                     rows:    [[evidenceCode, pvalueList, FDR, '']] };
+
+		var _evidenceSection = { headers: [[<span style={ style.textFont }><a name='step4'>Step 4. Optional Input Options</a></span>, '', '']],
+		    		     rows: [[evidenceCode, '', '']] };
 
 		return (<div>
 			<div dangerouslySetInnerHTML={{ __html: descText}} />
@@ -185,32 +188,21 @@ const GoTermFinder = React.createClass({
                 // used for both manual and computational: IKR, IMR
 
                 var _init_active_keys = evidenceCode;
-
                 var _elements = [];
-		var _elements2 = [];
-		var _elements3 = [];
-		var _elements4 = [];
                 for (var i = 0; i < evidenceCode.length; i++) {
-		     if (i < 6) {
-                     	  _elements.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
-		     }
-		     else if (i < 12) {
-		     	  _elements2.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
-		     }
-		     else if (i	< 18) {
-                          _elements3.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
-                     }
-		     else {
-		     	  _elements4.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
-                     }
-
+                       _elements.push({ 'key': evidenceCode[i], 'name': evidenceCode[i] });
                 }
+		
+		// var _elements2 = [<option value='0.01' selected='selected'>0.01</option>];
+                // _elements2.push(<option value='0.05'>0.05</option>);
+                // _elements2.push(<option value='0.1'>0.1</option>);
+
+                var _init_active_keys = ['Yes']
+                var _FDRelements = [ { 'key': 'Yes', 'name': 'FDR'} ];
 
                 return (<div>
+		       <h3>Pick evidence codes used for calculation:</h3>
                        <p><Checklist elements={_elements} initialActiveElementKeys={_init_active_keys} /></p>
-		       <p><Checklist elements={_elements2} initialActiveElementKeys={_init_active_keys} /></p>
-		       <p><Checklist elements={_elements3} initialActiveElementKeys={_init_active_keys} /></p>
-		       <p><Checklist elements={_elements4} initialActiveElementKeys={_init_active_keys} /></p>
                        </div>);
 
         },
