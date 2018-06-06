@@ -88,9 +88,8 @@ def search(request):
                     'total': 1,
                     'results': [fake_search_obj],
                     'aggregations': []
-
                 }
-                
+
     limit = int(request.params.get('limit', 10))
     offset = int(request.params.get('offset', 0))
     category = request.params.get('category', '')
