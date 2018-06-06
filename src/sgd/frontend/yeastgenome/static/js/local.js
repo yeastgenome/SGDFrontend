@@ -31,6 +31,17 @@ function post_json_to_url(link, data, onSuccess, onFailure) {
     }).fail(onFailure);
 }
 
+function get_json_to_url(link, data, onSuccess, onFailure) {
+    $.ajax({url: link,
+        type: 'get',
+        data: JSON.stringify(data),
+        contentType: 'application/json',
+        processData: false,
+        dataType: "json",
+        success: onSuccess
+    }).fail(onFailure);
+}
+
 function download_citations(citation_div, list_name) {
     var reference_ids = [];
     var entries = document.getElementById(citation_div).children;
@@ -304,7 +315,7 @@ function create_show_child_button(child_button_id, table, data, details_all_link
                 table.fnSettings().oLanguage.sEmptyTable = '<center><img src="/static/img/dark-slow-wheel.gif"></center>';
                 table.fnClearTable();
 
-                post_json_to_url(details_all_link, {},
+                get_json_to_url(details_all_link, {},
                     function(data) {
                         table.fnSettings().oLanguage.sEmptyTable = original_empty_message;
                         indirect_data = []
