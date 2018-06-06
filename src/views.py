@@ -74,17 +74,15 @@ def search(request):
 
     # see if we can search for a simple gene name in db without using ES
     if is_quick_flag == 'true':
-        stripped_query = query.strip()
+        t_query = query.strip().upper()
         sys_pattern = re.compile(r'(?i)^y.{2,}')
-        is_sys_name_match = sys_pattern.match(stripped_query)
-        if Locusdbentity.is_valid_gene_name(stripped_query.upper()) or is_sys_name_match:
-            maybe_gene_match = DBSession.query(Locusdbentity).filter(or_(Locusdbentity.gene_name == stripped_query.upper(), Locusdbentity.systematic_name == stripped_query)).one_or_none()
-            if maybe_gene_match:
+        is_sys_name_match = sys_pattern.match(t_query)
+        if Locusdbentity.is_valid_gene_name(t_query) or is_sys_name_match:
+            maybe_gene_url = DBSession.query(Locusdbentity.obj_url).filter(or_(Locusdbentity.gene_name == t_query, Locusdbentity.systematic_name == t_query)).scalar()
+            if maybe_gene_url:
                 fake_search_obj = {
-                    'name': maybe_gene_match.get_name(),
-                    'href': maybe_gene_match.obj_url,
+                    'href': maybe_gene_url,
                     'is_quick': True
-
                 }
                 return {
                     'total': 1,
@@ -92,9 +90,7 @@ def search(request):
                     'aggregations': []
 
                 }
-
-    print('we searchin')
-
+                
     limit = int(request.params.get('limit', 10))
     offset = int(request.params.get('offset', 0))
     category = request.params.get('category', '')
