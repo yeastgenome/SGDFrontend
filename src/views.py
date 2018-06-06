@@ -59,7 +59,11 @@ def search_autocomplete(request):
 @view_config(route_name='search', renderer='json', request_method='GET')
 def search(request):
     query = request.params.get('q', '')
-    query_temp_arr = query.split(' ')
+    is_quick_flag = request.params.get('is_quick', False)
+    query_temp_arr = query.strip().split(' ')
+    flag = False
+    name_flag = False
+    sys_flag = False
 
     if len(query_temp_arr) > 3:
         return {
@@ -67,6 +71,41 @@ def search(request):
             'results': [],
             'aggregations': []
         }
+
+
+    if len(query_temp_arr) == 1 and is_quick_flag == 'true':
+        if Locusdbentity.is_valid_gene_name(query_temp_arr[0].upper()):
+            flag = True
+            name_flag = True
+        else:
+            pattern = re.compile(r'(?i)^y.{2,}')
+            matched = pattern.match(query_temp_arr[0])
+            if matched:
+                flag = True
+                sys_flag = True
+    if flag:
+        if name_flag:
+            gene_item = DBSession.query(Locusdbentity).filter(
+                Locusdbentity.gene_name == query_temp_arr[0].upper()).all()
+        if sys_flag:
+            gene_item = DBSession.query(Locusdbentity).filter(
+                Locusdbentity.systematic_name == query_temp_arr[0]
+                .upper()).all()
+
+        if(gene_item):
+            temp = gene_item[0].to_dict()
+            mod_name = temp["display_name"] + " / " + temp["format_name"] if temp[
+                "format_name"] else temp["display_name"]
+            obj = {
+                'name': mod_name,
+                'description': temp["description"],
+                'category': 'locus',
+                'locus_type': temp["locus_type"],
+                'href': temp["link"],
+                'is_quick': True
+                }
+            return {'total': [1], 'results': [obj], 'aggregations': []}
+
 
     limit = int(request.params.get('limit', 10))
     offset = int(request.params.get('offset', 0))
