@@ -72,40 +72,28 @@ def search(request):
             'aggregations': []
         }
 
+    # see if we can search for a simple gene name in db without using ES
+    if is_quick_flag == 'true':
+        stripped_query = query.strip()
+        sys_pattern = re.compile(r'(?i)^y.{2,}')
+        is_sys_name_match = sys_pattern.match(stripped_query)
+        if Locusdbentity.is_valid_gene_name(stripped_query.upper()) or is_sys_name_match:
+            maybe_gene_match = DBSession.query(Locusdbentity).filter(or_(Locusdbentity.gene_name == stripped_query.upper(), Locusdbentity.systematic_name == stripped_query)).one_or_none()
+            if maybe_gene_match:
+                fake_search_obj = {
+                    'name': maybe_gene_match.get_name(),
+                    'href': maybe_gene_match.obj_url,
+                    'is_quick': True
 
-    if len(query_temp_arr) == 1 and is_quick_flag == 'true':
-        if Locusdbentity.is_valid_gene_name(query_temp_arr[0].upper()):
-            flag = True
-            name_flag = True
-        else:
-            pattern = re.compile(r'(?i)^y.{2,}')
-            matched = pattern.match(query_temp_arr[0])
-            if matched:
-                flag = True
-                sys_flag = True
-    if flag:
-        if name_flag:
-            gene_item = DBSession.query(Locusdbentity).filter(
-                Locusdbentity.gene_name == query_temp_arr[0].upper()).all()
-        if sys_flag:
-            gene_item = DBSession.query(Locusdbentity).filter(
-                Locusdbentity.systematic_name == query_temp_arr[0]
-                .upper()).all()
-
-        if(gene_item):
-            temp = gene_item[0].to_dict()
-            mod_name = temp["display_name"] + " / " + temp["format_name"] if temp[
-                "format_name"] else temp["display_name"]
-            obj = {
-                'name': mod_name,
-                'description': temp["description"],
-                'category': 'locus',
-                'locus_type': temp["locus_type"],
-                'href': temp["link"],
-                'is_quick': True
                 }
-            return {'total': [1], 'results': [obj], 'aggregations': []}
+                return {
+                    'total': 1,
+                    'results': [fake_search_obj],
+                    'aggregations': []
 
+                }
+
+    print('we searchin')
 
     limit = int(request.params.get('limit', 10))
     offset = int(request.params.get('offset', 0))
