@@ -25,7 +25,7 @@ server {
     }
 
     location / {
-        access_log /var/log/nginx/sgd-frontend-access.log;
+        access_log /var/log/nginx/sgd-frontend-access.log client_ip;
         error_log /var/log/nginx/sgd-frontend-error.log;
 
         add_header Strict-Transport-Security "max-age=120; includeSubDomains" always;
@@ -57,7 +57,7 @@ server {
     }
 
     location /webservice/ {
-        access_log /var/log/nginx/sgd-backend-access.log;
+        access_log /var/log/nginx/sgd-backend-access.log client_ip;
         error_log /var/log/nginx/sgd-backend-error.log;
 
         add_header Strict-Transport-Security "max-age=120; includeSubDomains" always;
