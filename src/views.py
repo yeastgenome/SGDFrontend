@@ -59,7 +59,6 @@ def search_autocomplete(request):
 @view_config(route_name='search', renderer='json', request_method='GET')
 def search(request):
     query = request.params.get('q', '')
-    query_temp_arr = query.split(' ')
     is_quick_flag = request.params.get('is_quick', False)
     query_temp_arr = query.strip().split(' ')
     flag = False
