@@ -263,7 +263,8 @@ const GoTermFinder = React.createClass({
 
 		console.log("Genes=" + genes);
 		console.log("Genes4bg=" + genes4bg);
-
+		
+		alert("BAD");
 		e.preventDefault();
                 return 1;
 
