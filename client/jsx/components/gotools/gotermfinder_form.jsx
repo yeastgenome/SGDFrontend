@@ -105,20 +105,14 @@ const GoTermFinder = React.createClass({
 		var submitReset = this.submitReset();
 		var geneBox = this.getGeneBox();
 		var ontology = this.getOntology();
-		var gene4bgBoxLeft = this.getGene4bgBoxLeft();
-		var gene4bgBoxRight = this.getGene4bgBoxRight();
-		var evidenceCode = this.getEvidence();
-		var pvalueList = this.getPvalueList();
-		var FDR = this.getFDR();
+		var gene4bgBox = this.getGene4bgBox();
+		var optionalInput = this.getOptionalInput();
 				 
 		var _defaultSection = { headers: [[<span style={ style.textFont }><a name='step1'>Step 1. Query Set (Your Input)</a></span>, <span style={ style.textFont }><a name='step2'>Step 2. Choose Ontology</a></span>]],
                                      rows:    [[geneBox, ontology]] };
 			  
-		var _backgroundSection = { headers: [[<span style={ style.textFont }><a name='step3'>Step 3. Specify your background set of genes</a></span>, '']],
-                                     rows:    [[gene4bgBoxLeft, gene4bgBoxRight]] };
-
-		var _evidenceSection = { headers: [[<span style={ style.textFont }><a name='step4'>Step 4. Optional Input Options</a></span>]],
-		    		         rows: [[evidenceCode]] };
+		var _backgroundSection = { headers: [[<span style={ style.textFont }><a name='step3'>Step 3. Specify your background set of genes</a></span>, <span style={ style.textFont }><a name='step4'>Step 4. Optional Input</a></span>]],
+                                     rows:    [[gene4bgBox, optionalInput]] };
 
 		return (<div>
 			<div dangerouslySetInnerHTML={{ __html: descText}} />
@@ -128,7 +122,6 @@ const GoTermFinder = React.createClass({
 				  	{ submitReset }
 				        <DataTable data={_defaultSection} />
 					<DataTable data={_backgroundSection} />
-					<DataTable data={_evidenceSection} />
 					{ submitReset }
 			          </form>
 			     </div>
@@ -152,6 +145,7 @@ const GoTermFinder = React.createClass({
 		return (<div style={{ textAlign: "top" }}>
 		        <h3><strong>Pick an ontology aspect:</strong></h3> 
 		        <p><h3><RadioSelector name='aspect' elements={_elements} initialActiveElementKey='F'/></h3></p>
+			<p></p>
 			<p><h3>Search using <a href='#defaultsetting'>default settings</a> or use Step 3, Step 4, and/or Step 5 below to customize your options.</h3></p>	
 			</div>);
 
@@ -161,35 +155,27 @@ const GoTermFinder = React.createClass({
 
                 return (<div style={{ textAlign: "top" }}>
 			<h3><strong>Enter Gene/ORF names</strong> (separated by a return or a space):</h3>
-                        <p><textarea ref='genes' onChange={this._onChange} name='genes' rows='3' cols='150'></textarea></p>
+                        <p><textarea ref='genes' onChange={this._onChange} name='genes' rows='2' cols='150'></textarea></p>
 			<h3><strong style={{ color: 'red'}}>OR</strong> <strong>Upload a file of Gene/ORF names</strong> (.txt or .tab format):</h3>
                         <p><input className="btn btn-default btn-file" type="file" name='uploadFile' onChange={this.handleFile} accept="image/*;capture=camera"/></p>
                 </div>);
 
         },
 
-	getGene4bgBoxLeft() {
+	getGene4bgBox() {
 
                 return (<div style={{ textAlign: "top" }}>
                         <h3><strong>Use default background set</strong> <br>(all features in the database that have GO annotations)</br></h3>
 			<h3><strong style={{ color: 'red'}}>OR</strong> <strong>Enter Gene/ORF names</strong> (separated by a return or a space):</h3>
                         <p><textarea ref='genes4bg' onChange={this._onChange} name='genes4bg' rows='4' cols='90'></textarea></p>
+			<h3><strong style={{ color: 'red'}}>OR</strong> <strong>Upload a file of Gene/ORF names</strong> (.txt or .tab format):</h3>
+                        <p></p>
+                        <p><input className="btn btn-default btn-file" type="file" name='uploadFile' onChange={this.handleFile4bg} accept="image/*;capture=camera"/></p>
                         </div>);
 
         },
 
-	getGene4bgBoxRight() {
-
-                return (<div style={{ textAlign: "top" }}>
-                        <h3><strong style={{ color: 'red'}}>OR</strong> <strong>Upload a file of Gene/ORF names</strong> (.txt or .tab format):</h3>
-			<p></p>
-			<p><input className="btn btn-default btn-file" type="file" name='uploadFile' onChange={this.handleFile4bg} accept="image/*;capture=camera"/></p><br></br>
-                        <p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input></p>
-                        </div>);
-
-        },
-
-	getEvidence() {
+	getOptionalInput() {
 
                 // used for computational only: IBA, IEA, IRD
                 // used for both manual and computational: IKR, IMR
@@ -215,42 +201,9 @@ const GoTermFinder = React.createClass({
                        <p><select ref='pvalue' name='pvalue' onChange={this.onChange}>{_pvalueElements}</select></p>
                        <h3>Calculate false discovery rate (FDR)?
                        <Checklist elements={_FDRelements} initialActiveElementKeys={_init_active_keys} /></h3>
-                       <p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input></p>
                        </div>);
 
         },
-
-	getPvalueList() {
-		
-		var _elements = [<option value='0.01' selected='selected'>0.01</option>];
- 		_elements.push(<option value='0.05'>0.05</option>);
-		_elements.push(<option value='0.1'>0.1</option>);
-	
-		var _init_active_keys = ['Yes']
-                var _FDRelements = [ { 'key': 'Yes', 'name': 'FDR'} ];
-
-		return (<div>	
-		       <h3>The default p-value cutoff is 0.01. <br>Pick a different value below:</br></h3>
-                       <p><select ref='pvalue' name='pvalue' onChange={this.onChange}>{_elements}</select></p>
-		       <h3>Calculate false discovery rate (FDR)?
-                       <Checklist elements={_FDRelements} initialActiveElementKeys={_init_active_keys} /></h3>
-                       <p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input></p>
-		       </div>);
-
-        },
-
-	getFDR() {
-
-		var _init_active_keys = ['Yes']
-                var _FDRelements = [ { 'key': 'Yes', 'name': 'FDR'} ];
-
-                return (<div>
-		       <h3>Calculate false discovery rate (FDR)?
-                       <Checklist elements={_FDRelements} initialActiveElementKeys={_init_active_keys} /></h3>
-                       <p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input></p>
-                       </div>);
-
-	},
 	
 	handleFile(e) {
                 var reader = new FileReader();
