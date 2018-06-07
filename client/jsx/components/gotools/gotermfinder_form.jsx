@@ -245,17 +245,23 @@ const GoTermFinder = React.createClass({
 		var genes = this.refs.genes.value.trim();
 		if (genes == '') {
 		     genes = this.state.uploadedGenes;
+		     this.setState({
+                            uploadedGenes: ''
+                     });
 		}
 		genes = this.processGeneList(genes);
                 if (genes == '') {
-                   alert("Please enter two or more gene names.");
-                   e.preventDefault();
-                   return 1;
+                     alert("Please enter two or more gene names.");
+                     e.preventDefault();
+                     return 1;
                 }
 
 		var genes4bg = this.refs.genes4bg.value.trim();
                 if (genes4bg == '') {
                      genes4bg = this.state.uploadedGenes4bg;
+		     this.setState({
+                            uploadedGenes4bg: ''
+                     });
                 }
                 if (genes4bg != '') {
                      genes4bg = this.processGeneList(genes4bg);
