@@ -244,7 +244,7 @@ const GoTermFinder = React.createClass({
 
 		var genes = this.refs.genes.value.trim();
 		if (genes == '') {
-		     genes4bg = this.state.uploadedGenes;
+		     genes = this.state.uploadedGenes;
 		}
 		genes = this.processGeneList(genes);
                 if (genes == '') {
