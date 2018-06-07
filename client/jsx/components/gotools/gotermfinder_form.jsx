@@ -271,6 +271,9 @@ const GoTermFinder = React.createClass({
 		alert("Genes=" + genes);
 		alert("Genes4bg=" + genes4bg);
 
+		e.preventDefault();
+                return 1;
+
 		// var strainList = document.getElementById('strains');
                 // var strains = '';
 		// for (var i = 0; i < strainList.options.length; i++) {
