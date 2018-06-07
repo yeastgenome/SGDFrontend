@@ -144,7 +144,7 @@ const GoTermFinder = React.createClass({
 
 		return (<div style={{ textAlign: "top" }}>
 		        <h3><strong>Pick an ontology aspect:</strong></h3> 
-		        <p><h3><RadioSelector name='aspect' elements={_elements} initialActiveElementKey='F'/></h3></p>
+		        <p><h3><RadioSelector id='aspect' name='aspect' elements={_elements} initialActiveElementKey='F'/></h3></p>
 			<p></p>
 			<p><h3>Search using <a href='#defaultsetting'>default settings</a> or use Step 3, Step 4, and/or Step 5 below to customize your options.</h3></p>	
 			</div>);
@@ -266,14 +266,13 @@ const GoTermFinder = React.createClass({
                 if (genes4bg != '') {
                      genes4bg = this.processGeneList(genes4bg);
                 }
-
-		alert("Genes=" + genes);
-		alert("Genes4bg=" + genes4bg);
-
-		e.preventDefault();
-                return 1;
-
 				
+		var aspect = this.refs.aspect.value.trim();
+
+		alert("aspect="+aspect);
+		e.preventDefault();
+		return 1;
+
 		// var strainList = document.getElementById('strains');
                 // var strains = '';
 		// for (var i = 0; i < strainList.options.length; i++) {
