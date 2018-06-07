@@ -169,7 +169,7 @@ const GoTermFinder = React.createClass({
 			<strong style={{ color: 'red'}}>OR</strong> <strong>Enter Gene/ORF names</strong> (separated by a return or a space):
                         <textarea ref='genes4bg' onChange={this._onChange} name='genes4bg' rows='4' cols='90'></textarea>
 			<strong style={{ color: 'red'}}>OR</strong> <strong>Upload a file of Gene/ORF names</strong> (.txt or .tab format):
-                        <p><input className="btn btn-default btn-file" type="file" name='uploadFile' onChange={this.handleFile4bg} accept="image/*;capture=camera"/></h3>
+                        <input className="btn btn-default btn-file" type="file" name='uploadFile' onChange={this.handleFile4bg} accept="image/*;capture=camera"/></h3>
                         </div>);
 
         },
