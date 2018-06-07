@@ -268,11 +268,12 @@ const GoTermFinder = React.createClass({
                 }
 				
 		var aspect = this.refs.aspect.value.trim();
+		console.log("aspect="+aspect);
 
-		alert("aspect="+aspect);
-		e.preventDefault();
-		return 1;
-
+		// for (var i = 0; i < evidenceCodes.length; i++) {
+		     
+		// }
+		
 		// var strainList = document.getElementById('strains');
                 // var strains = '';
 		// for (var i = 0; i < strainList.options.length; i++) {
