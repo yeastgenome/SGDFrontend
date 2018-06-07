@@ -273,11 +273,7 @@ const GoTermFinder = React.createClass({
 		e.preventDefault();
                 return 1;
 
-	},
-
-	onSubmit2(e) {
-		 
-		
+				
 		// var strainList = document.getElementById('strains');
                 // var strains = '';
 		// for (var i = 0; i < strainList.options.length; i++) {
@@ -297,8 +293,8 @@ const GoTermFinder = React.createClass({
                 //   return 1;
 		// }	
 	
-		window.localStorage.clear();
-                window.localStorage.setItem("genes", genes);
+		// window.localStorage.clear();
+                // window.localStorage.setItem("genes", genes);
                 // window.localStorage.setItem("aspect", aspect);
 
 	},
