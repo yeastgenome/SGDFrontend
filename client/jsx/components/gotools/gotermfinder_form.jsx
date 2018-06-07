@@ -140,7 +140,7 @@ const GoTermFinder = React.createClass({
 	submitReset() {
 
 		return (<div>
-		       input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input>
+		       <input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input>
 		       </div>);
 
 	},
