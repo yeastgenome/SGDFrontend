@@ -102,6 +102,7 @@ const GoTermFinder = React.createClass({
 
 		var descText = this.topDescription();		
 
+		var submitReset = this.submitReset();
 		var geneBox = this.getGeneBox();
 		var ontology = this.getOntology();
 		var gene4bgBoxLeft = this.getGene4bgBoxLeft();
@@ -124,13 +125,23 @@ const GoTermFinder = React.createClass({
 			<div className="row">
 			     <div className="large-12 columns">
 			     	  <form onSubmit={this.onSubmit} target="infowin">
+				  	{ submitReset }
 				        <DataTable data={_defaultSection} />
 					<DataTable data={_backgroundSection} />
 					<DataTable data={_evidenceSection} />
+					{ submitReset }
 			          </form>
 			     </div>
 			</div>
 		</div>);
+
+	},
+
+	submitReset() {
+
+		return (<div>
+		       input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input>
+		       </div>);
 
 	},
 
@@ -142,7 +153,6 @@ const GoTermFinder = React.createClass({
 		        <h3><strong>Pick an ontology aspect:</strong></h3> 
 		        <p><h3><RadioSelector name='aspect' elements={_elements} initialActiveElementKey='F'/></h3></p>
 			<p><h3>Search using <a href='#defaultsetting'>default settings</a> or use Step 3, Step 4, and/or Step 5 below to customize your options.</h3></p>	
-			<p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input></p>
 			</div>);
 
 	},
@@ -151,7 +161,7 @@ const GoTermFinder = React.createClass({
 
                 return (<div style={{ textAlign: "top" }}>
 			<h3><strong>Enter Gene/ORF names</strong> (separated by a return or a space):</h3>
-                        <p><textarea ref='genes' onChange={this._onChange} name='genes' rows='4' cols='150'></textarea></p>
+                        <p><textarea ref='genes' onChange={this._onChange} name='genes' rows='3' cols='150'></textarea></p>
 			<h3><strong style={{ color: 'red'}}>OR</strong> <strong>Upload a file of Gene/ORF names</strong> (.txt or .tab format):</h3>
                         <p><input className="btn btn-default btn-file" type="file" name='uploadFile' onChange={this.handleFile} accept="image/*;capture=camera"/></p>
                 </div>);
