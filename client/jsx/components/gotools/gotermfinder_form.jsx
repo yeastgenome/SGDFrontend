@@ -196,7 +196,7 @@ const GoTermFinder = React.createClass({
                 return (<div>
 		       <h3><strong>Pick evidence codes to exclude for calculation:</strong></h3>
                        <p><Checklist elements={_elements} initialActiveElementKeys={_init_active_keys} /></p>
-		       <h3><strong>Pick a p-value below:<strong> (default is 0.01)</h3>
+		       <h3><strong>Pick a p-value below</strong> (default is 0.01):</h3>
                        <p><select ref='pvalue' name='pvalue' onChange={this.onChange}>{_pvalueElements}</select></p>
                        <h3>Calculate false discovery rate (FDR)?
                        <Checklist elements={_FDRelements} initialActiveElementKeys={_init_active_keys} /></h3>
