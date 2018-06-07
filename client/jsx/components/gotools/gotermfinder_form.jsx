@@ -228,28 +228,48 @@ const GoTermFinder = React.createClass({
               reader.readAsText(fileHandle);
         },
 
+	checkGeneList(genes) {
+	        
+                genes = genes.replace(/[^A-Za-z:\-0-9]/g, ' ');
+                var re = /\+/g;
+                genes = genes.replace(re, " ");
+                var re = / +/g;
+                genes = genes.replace(re, "|");
+                if (genes == '') {
+                   alert("Please enter two or more gene names.");
+                   e.preventDefault();
+                   return 1;
+                }
+
+		return genes;
+
+	},
+
 	onSubmit(e) {
 		
 		var genes = this.refs.genes.value.trim();
                 if (genes == '') {
-                    genes = this.state.uploadedGenes;
+                     genes = this.state.uploadedGenes;
                 }
-		genes = genes.replace(/[^A-Za-z:\-0-9]/g, ' ');
-		var re = /\+/g;
-		genes = genes.replace(re, " ");		
-		var re = / +/g;
-		genes = genes.replace(re, "|");
-		if (genes == '') {
-		   alert("Please enter two or more gene names.");
-		   e.preventDefault();
-                   return 1;
+		
+		genes = checkGeneList(genes);
+		if (genes == 1) {
+		     return 1;
+		} 
+		
+		var genes4bg = this.refs.genes4bg.value.trim();
+                if (genes4bg == '') {
+                     genes4bg = this.state.uploadedGenes4bg;
+                }
+		if (genes4bg != '') {
+		     genes4bg = checkGeneList(genes);     
+		     if (genes4bg == 1) {
+		     	   genes4bg == '';
+		     }
 		}
 
-		// var not_found = this.state.notFound;
-		// if (not_found != "") {
-		//        e.preventDefault();
-		//	return 1;
-		// }
+		alert("Genes=" + genes);
+		alert("Genes4bg=" + genes4bg);
 
 		// var strainList = document.getElementById('strains');
                 // var strains = '';
