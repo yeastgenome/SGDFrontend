@@ -302,14 +302,12 @@ const GoTermFinder = React.createClass({
 		
 		var param = this.state.param;
 
-		if (searchType == 'genes') {
+		paramData['genes'] = window.localStorage.getItem("genes");
+		paramData['aspect'] = window.localStorage.getItem("aspect");
+		// add other parameters eg p-value, exclude evidence list etc 
+		this.sendRequest(paramData)
+		return
 
-		   paramData['genes'] = window.localStorage.getItem("genes");
-		   paramData['aspect'] = window.localStorage.getItem("aspect");
-		   // add other parameters eg p-value, exclude evidence list etc 
-		   this.sendRequest(paramData)
-		   return
-		}
 		 		
 	},
 	
