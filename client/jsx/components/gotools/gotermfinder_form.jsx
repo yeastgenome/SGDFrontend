@@ -261,8 +261,8 @@ const GoTermFinder = React.createClass({
 		     genes4bg = processGeneList(genes);     
 		}
 
-		alert("Genes=" + genes);
-		alert("Genes4bg=" + genes4bg);
+		console.log("Genes=" + genes);
+		console.log("Genes4bg=" + genes4bg);
 
 		e.preventDefault();
                 return 1;
