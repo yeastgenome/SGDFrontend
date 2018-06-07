@@ -269,7 +269,7 @@ const GoTermFinder = React.createClass({
                 genes4bg = this.processGeneList(genes4bg);
                 	
 	
-		var aspect = this.refs.aspect.value.trim();
+		var aspect = this.refs.Function.value.trim();
 		console.log("aspect="+aspect);
 
 		// for (var i = 0; i < evidenceCodes.length; i++) {
