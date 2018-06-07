@@ -255,26 +255,22 @@ const GoTermFinder = React.createClass({
                    return 1;
                 }
 
+		var genes4bg = this.refs.genes4bg.value.trim();
+                if (genes4bg == '') {
+                     genes4bg = this.state.uploadedGenes4bg;
+                }
+                if (genes4bg != '') {
+                     genes4bg = this.processGeneList(genes);
+                }
+
+		alert("Genes=" + genes);
+		alert("Genes4bg=" + genes4bg);
+
 	},
 
 	onSubmit2(e) {
 		 
-		 alert("Please enter two or more gene names.");
-                 e.preventDefault();
-                 return 1;
-
-
-		var genes = this.refs.genes.value.trim();
-                if (genes == '') {
-                     genes = this.state.uploadedGenes;
-                }		
-		genes = processGeneList(genes);
-		if (genes == '') {
-                     alert("Please enter two or more gene names.");
-                     e.preventDefault();
-                     return 1;
-                }
-		
+				
 		var genes4bg = this.refs.genes4bg.value.trim();
                 if (genes4bg == '') {
                      genes4bg = this.state.uploadedGenes4bg;
@@ -283,7 +279,6 @@ const GoTermFinder = React.createClass({
 		     genes4bg = processGeneList(genes);     
 		}
 
-		console.log("Genes=" + genes);
 		console.log("Genes4bg=" + genes4bg);
 		
 		alert("BAD");
