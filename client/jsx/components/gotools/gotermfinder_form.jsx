@@ -266,25 +266,14 @@ const GoTermFinder = React.createClass({
 		alert("Genes=" + genes);
 		alert("Genes4bg=" + genes4bg);
 
+		e.preventDefault();
+                return 1;
+
 	},
 
 	onSubmit2(e) {
 		 
-				
-		var genes4bg = this.refs.genes4bg.value.trim();
-                if (genes4bg == '') {
-                     genes4bg = this.state.uploadedGenes4bg;
-                }
-		if (genes4bg != '') {
-		     genes4bg = processGeneList(genes);     
-		}
-
-		console.log("Genes4bg=" + genes4bg);
 		
-		alert("BAD");
-		e.preventDefault();
-                return 1;
-
 		// var strainList = document.getElementById('strains');
                 // var strains = '';
 		// for (var i = 0; i < strainList.options.length; i++) {
