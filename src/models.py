@@ -1,4 +1,4 @@
-from sqlalchemy import Column, BigInteger, UniqueConstraint, Float, Boolean, SmallInteger, Integer, DateTime, ForeignKey, Index, Numeric, String, Text, text, FetchedValue, func, or_, and_, distinct
+from sqlalchemy import Column, BigInteger, UniqueConstraint, Float, Boolean, SmallInteger, Integer, DateTime, ForeignKey, Index, Numeric, String, Text, text, FetchedValue, func, or_, and_, distinct, inspect
 from sqlalchemy.orm import scoped_session, sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
 from zope.sqlalchemy import ZopeTransactionExtension
@@ -17,7 +17,7 @@ import boto
 from boto.s3.key import Key
 import hashlib
 
-from src.curation_helpers import ban_from_cache, get_author_etc, link_gene_names, get_curator_session
+from src.curation_helpers import ban_from_cache, get_author_etc, link_gene_names, get_curator_session, clear_list_empty_values
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
@@ -68,6 +68,11 @@ class CacheBase(object):
             for base_url in cache_urls:
                 url = base_url + relative_url
                 urls.append(url)
+        # if gene, add /locus/:name
+        is_locus = ('locus' in self.__url_segment__)
+        if is_locus:
+            name_url = base_url + '/locus/' + self.get_name()
+            urls.append(name_url)
         return urls
 
     def refresh_cache(self):
@@ -2273,7 +2278,7 @@ class Filedbentity(Dbentity):
                 self.year
         }
         return obj
-    
+
 
     def upload_file_to_s3(self, file, filename):
         # get s3_url and upload
@@ -2284,7 +2289,7 @@ class Filedbentity(Dbentity):
         k.key = s3_path
         # make content-type 'text/plain' if it's a README
         if self.readme_file_id is None:
-            k.content_type = 'text/plain'        
+            k.content_type = 'text/plain'
         k.set_contents_from_file(file, rewind=True)
         k.make_public()
         file_s3 = bucket.get_key(k.key)
@@ -3477,7 +3482,8 @@ class Locusdbentity(Dbentity):
         phenotype_annotations = DBSession.query(Phenotypeannotation).filter_by(dbentity_id=self.dbentity_id).all()
 
         conditions = DBSession.query(PhenotypeannotationCond).filter(PhenotypeannotationCond.annotation_id.in_([p.annotation_id for p in phenotype_annotations])).all()
-        condition_names = set([c.condition_name for c in conditions])
+        temp_lst = list(set([c.condition_name for c in conditions]))
+        condition_names = clear_list_empty_values(temp_lst)
 
         conditions_dict = {}
         for condition in conditions:
@@ -3485,8 +3491,10 @@ class Locusdbentity(Dbentity):
                 conditions_dict[condition.annotation_id].append(condition)
             else:
                 conditions_dict[condition.annotation_id] = [condition]
-
-        urls = DBSession.query(Chebi.display_name, Chebi.obj_url).filter(Chebi.display_name.in_(list(condition_names))).all()
+        if len(condition_names) > 0:
+            urls = DBSession.query(Chebi.display_name, Chebi.obj_url).filter(Chebi.display_name.in_(condition_names)).all()
+        else:
+            urls = []
         chebi_urls = {}
         for url in urls:
             chebi_urls[url[0]] = url[1]
@@ -6597,6 +6605,9 @@ class Phenotype(Base):
     qualifier = relationship(u'Apo', primaryjoin='Phenotype.qualifier_id == Apo.apo_id')
     source = relationship(u'Source')
 
+    def to_main_dict(self):
+        return { c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs }
+
     def to_dict(self):
         obj = {
             "id": self.phenotype_id,
@@ -6615,12 +6626,14 @@ class Phenotype(Base):
             obj["qualifier"] = "None"
 
         return obj
+        
 
     def annotations_to_dict(self):
         phenotype_annotations = DBSession.query(Phenotypeannotation).filter_by(phenotype_id=self.phenotype_id).all()
-
-        conditions = DBSession.query(PhenotypeannotationCond).filter(PhenotypeannotationCond.annotation_id.in_([p.annotation_id for p in phenotype_annotations])).all()
-        condition_names = set([c.condition_name for c in conditions])
+        temp = [p.annotation_id for p in phenotype_annotations]
+        pheno_ids = clear_list_empty_values(temp)
+        conditions = DBSession.query(PhenotypeannotationCond).filter(PhenotypeannotationCond.annotation_id.in_(pheno_ids)).all()
+        condition_names = clear_list_empty_values(list(set([c.condition_name for c in conditions])))
 
         conditions_dict = {}
         for condition in conditions:
@@ -6628,8 +6641,10 @@ class Phenotype(Base):
                 conditions_dict[condition.annotation_id].append(condition)
             else:
                 conditions_dict[condition.annotation_id] = [condition]
-
-        urls = DBSession.query(Chebi.display_name, Chebi.obj_url).filter(Chebi.display_name.in_(list(condition_names))).all()
+        if len(condition_names) > 0:
+            urls = DBSession.query(Chebi.display_name, Chebi.obj_url).filter(Chebi.display_name.in_(condition_names)).all()
+        else:
+            urls = []
         chebi_urls = {}
         for url in urls:
             chebi_urls[url[0]] = url[1]
@@ -6690,6 +6705,12 @@ class Phenotypeannotation(Base):
     reporter = relationship(u'Reporter')
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
+
+    def to_main_dict(self):
+        return {
+            c.key: getattr(self, c.key)
+            for c in inspect(self).mapper.column_attrs
+        }
 
     @staticmethod
     def count_strains(phenotype_ids=None, annotations=None):
@@ -7668,7 +7689,7 @@ class Complexdbentity(Dbentity):
     intact_id = Column(String(40), nullable=False)
     systematic_name = Column(String(500), nullable=False)
     eco_id = Column(ForeignKey(u'nex.eco.eco_id', ondelete=u'CASCADE'), nullable=False, index=True)
-    description = Column(Text, nullable=True)   
+    description = Column(Text, nullable=True)
     properties = Column(Text, nullable=True)
 
     eco = relationship(u'Eco')
@@ -7699,9 +7720,9 @@ class ComplexGo(Base):
         {u'schema': 'nex'}
     )
 
-    complex_go_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.link_seq'::regclass)"))    
+    complex_go_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.link_seq'::regclass)"))
     complex_id = Column(ForeignKey(u'nex.complexdbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
-    go_id = Column(ForeignKey(u'nex.go.go_id', ondelete=u'CASCADE'), nullable=False, index=True)    
+    go_id = Column(ForeignKey(u'nex.go.go_id', ondelete=u'CASCADE'), nullable=False, index=True)
     source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
@@ -8174,7 +8195,7 @@ class Reservedname(Base):
 
     # add rows to LOCUS_REFERENCE, LOCUSNOTE, and LOCUSNOTE_REFERENCE for associated changes to locus
     def associate_locus(self, systematic_name, username):
-        curator_session = None 
+        curator_session = None
         try:
             curator_session = get_curator_session(username)
             self = curator_session.merge(self)
@@ -8235,7 +8256,7 @@ class Reservedname(Base):
     def associate_published_reference(self, ref_id, username, new_reference_class):
         if not self.locus_id:
             raise ValueError('Reserved name must be associated with a locus before adding published reference.')
-        curator_session = None 
+        curator_session = None
         try:
             curator_session = get_curator_session(username)
             self = curator_session.merge(self)
@@ -8264,7 +8285,7 @@ class Reservedname(Base):
             # if this is only one reference for personal communication, delete it
             if new_reference_class == 'gene_name' and ref_count == 1 and personal_communication_ref.publication_status != 'Published':
                 personal_communication_ref = curator_session.query(Referencedbentity).filter(Referencedbentity.dbentity_id == personal_communication_ref_id).one_or_none()
-                personal_communication_ref.delete_with_children(username)           
+                personal_communication_ref.delete_with_children(username)
         except Exception as e:
             transaction.abort()
             traceback.print_exc()
@@ -8388,7 +8409,7 @@ class Reservedname(Base):
         finally:
             if curator_session:
                 curator_session.remove()
-        
+
 
 class ReservednameTriage(Base):
     __tablename__ = 'reservednametriage'
@@ -8519,7 +8540,7 @@ class ReservednameTriage(Base):
                         source_id = DIRECT_SUBMISSION_SOURCE_ID,
                         reference_id = personal_communication_ref.dbentity_id,
                         author_order = i,
-                        author_type = 'Author', 
+                        author_type = 'Author',
                         created_by = username
                     )
                     curator_session.add(new_ref_author)
