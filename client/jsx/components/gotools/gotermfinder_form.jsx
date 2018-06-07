@@ -165,12 +165,11 @@ const GoTermFinder = React.createClass({
 	getGene4bgBox() {
 
                 return (<div style={{ textAlign: "top" }}>
-                        <h3><strong>Use default background set</strong> <br>(all features in the database that have GO annotations)</br></h3>
-			<h3><strong style={{ color: 'red'}}>OR</strong> <strong>Enter Gene/ORF names</strong> (separated by a return or a space):</h3>
-                        <p><textarea ref='genes4bg' onChange={this._onChange} name='genes4bg' rows='4' cols='90'></textarea></p>
-			<h3><strong style={{ color: 'red'}}>OR</strong> <strong>Upload a file of Gene/ORF names</strong> (.txt or .tab format):</h3>
-                        <p></p>
-                        <p><input className="btn btn-default btn-file" type="file" name='uploadFile' onChange={this.handleFile4bg} accept="image/*;capture=camera"/></p>
+                        <h3><strong>Use default background set</strong> (all features in the database that have GO annotations)
+			<strong style={{ color: 'red'}}>OR</strong> <strong>Enter Gene/ORF names</strong> (separated by a return or a space):
+                        <textarea ref='genes4bg' onChange={this._onChange} name='genes4bg' rows='4' cols='90'></textarea>
+			<strong style={{ color: 'red'}}>OR</strong> <strong>Upload a file of Gene/ORF names</strong> (.txt or .tab format):
+                        <p><input className="btn btn-default btn-file" type="file" name='uploadFile' onChange={this.handleFile4bg} accept="image/*;capture=camera"/></h3>
                         </div>);
 
         },
