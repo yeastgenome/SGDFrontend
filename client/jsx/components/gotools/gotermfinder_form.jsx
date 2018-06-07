@@ -269,10 +269,10 @@ const GoTermFinder = React.createClass({
                 genes4bg = this.processGeneList(genes4bg);
                 	
 		var aspect = '';
-		if (document.getElementById('Function').checked) {
-		   	aspect = 'Function';	
-		     	console.log("aspect="+aspect);
-		}
+		// if (document.getElementById('Function').checked) {
+		//   	aspect = 'Function';	
+		//     	console.log("aspect="+aspect);
+		// }
 		if (document.getElementById('F').checked) {
 		   	aspect = 'F';		
                         console.log("aspect="+aspect);
@@ -302,9 +302,10 @@ const GoTermFinder = React.createClass({
                 //   return 1;
 		// }	
 	
-		// window.localStorage.clear();
-                // window.localStorage.setItem("genes", genes);
-                // window.localStorage.setItem("aspect", aspect);
+		window.localStorage.clear();
+                window.localStorage.setItem("genes", genes);
+		window.localStorage.setItem("genes4bg", genes4bg);
+                window.localStorage.setItem("aspect", aspect);
 
 	},
 
