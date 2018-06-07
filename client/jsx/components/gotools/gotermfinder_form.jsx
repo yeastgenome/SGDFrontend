@@ -241,7 +241,23 @@ const GoTermFinder = React.createClass({
 	},
 
 	onSubmit(e) {
-		  ###
+
+		var genes = this.refs.genes.value.trim();
+                genes = genes.replace(/[^A-Za-z:\-0-9]/g, ' ');
+		      var re = /\+/g;
+                genes = genes.replace(re, " ");
+                var re = / +/g;
+                genes = genes.replace(re, "|");
+                if (genes == '') {
+                   alert("Please enter one or more gene names.");
+                   e.preventDefault();
+                   return 1;
+                }
+
+	},
+
+	onSubmit2(e) {
+		 
 		 alert("Please enter two or more gene names.");
                  e.preventDefault();
                  return 1;
