@@ -154,9 +154,9 @@ const GoTermFinder = React.createClass({
 	getGeneBox() {
 
                 return (<div style={{ textAlign: "top" }}>
-			<h3><strong>Enter Gene/ORF names</strong> (separated by a return or a space):</h3>
-                        <p><textarea ref='genes' onChange={this._onChange} name='genes' rows='2' cols='150'></textarea></p>
-			<h3><strong style={{ color: 'red'}}>OR</strong> <strong>Upload a file of Gene/ORF names</strong> (.txt or .tab format):
+			<h3><strong>Enter Gene/ORF names</strong> (separated by a return or a space):
+                        <textarea ref='genes' onChange={this._onChange} name='genes' rows='2' cols='150'></textarea>
+			<strong style={{ color: 'red'}}>OR</strong> <strong>Upload a file of Gene/ORF names</strong> (.txt or .tab format):
                         <input className="btn btn-default btn-file" type="file" name='uploadFile' onChange={this.handleFile} accept="image/*;capture=camera"/></h3>
                 </div>);
 
