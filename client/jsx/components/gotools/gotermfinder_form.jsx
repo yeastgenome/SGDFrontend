@@ -29,8 +29,8 @@ const GoTermFinder = React.createClass({
 			isPending: false,
 			userError: null,
 			aspect: 'F',
-			uploadedGenes: null,
-			uploadedGenes4bg: null,
+			uploadedGenes: '',
+			uploadedGenes4bg: '',
 			resultData: {},
 			notFound: null,
 			param: param
@@ -229,7 +229,10 @@ const GoTermFinder = React.createClass({
         },
 
 	processGeneList(genes) {
-	        
+
+		if (genes == '') {
+		     return '';
+		}	 	        
                 genes = genes.replace(/[^A-Za-z:\-0-9]/g, ' ');
                 var re = /\+/g;
                 genes = genes.replace(re, " ");
@@ -263,10 +266,9 @@ const GoTermFinder = React.createClass({
                             uploadedGenes4bg: ''
                      });
                 }
-                if (genes4bg != '') {
-                     genes4bg = this.processGeneList(genes4bg);
-                }
-				
+                genes4bg = this.processGeneList(genes4bg);
+                	
+	
 		var aspect = this.refs.aspect.value.trim();
 		console.log("aspect="+aspect);
 
