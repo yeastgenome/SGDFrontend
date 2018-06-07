@@ -59,7 +59,11 @@ def search_autocomplete(request):
 @view_config(route_name='search', renderer='json', request_method='GET')
 def search(request):
     query = request.params.get('q', '')
-    query_temp_arr = query.split(' ')
+    is_quick_flag = request.params.get('is_quick', False)
+    query_temp_arr = query.strip().split(' ')
+    flag = False
+    name_flag = False
+    sys_flag = False
 
     if len(query_temp_arr) > 3:
         return {
@@ -67,6 +71,24 @@ def search(request):
             'results': [],
             'aggregations': []
         }
+
+    # see if we can search for a simple gene name in db without using ES
+    if is_quick_flag == 'true':
+        t_query = query.strip().upper()
+        sys_pattern = re.compile(r'(?i)^y.{2,}')
+        is_sys_name_match = sys_pattern.match(t_query)
+        if Locusdbentity.is_valid_gene_name(t_query) or is_sys_name_match:
+            maybe_gene_url = DBSession.query(Locusdbentity.obj_url).filter(or_(Locusdbentity.gene_name == t_query, Locusdbentity.systematic_name == t_query)).scalar()
+            if maybe_gene_url:
+                fake_search_obj = {
+                    'href': maybe_gene_url,
+                    'is_quick': True
+                }
+                return {
+                    'total': 1,
+                    'results': [fake_search_obj],
+                    'aggregations': []
+                }
 
     limit = int(request.params.get('limit', 10))
     offset = int(request.params.get('offset', 0))
