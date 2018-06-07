@@ -260,7 +260,7 @@ const GoTermFinder = React.createClass({
                      genes4bg = this.state.uploadedGenes4bg;
                 }
                 if (genes4bg != '') {
-                     genes4bg = this.processGeneList(genes);
+                     genes4bg = this.processGeneList(genes4bg);
                 }
 
 		alert("Genes=" + genes);
