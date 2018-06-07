@@ -242,6 +242,12 @@ const GoTermFinder = React.createClass({
 
 	onSubmit(e) {
 		
+
+		 alert("Please enter two or more gene names.");
+                 e.preventDefault();
+                 return 1;
+
+
 		var genes = this.refs.genes.value.trim();
                 if (genes == '') {
                      genes = this.state.uploadedGenes;
