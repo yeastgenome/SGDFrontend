@@ -281,9 +281,9 @@ const Primer3 = React.createClass({
         <span><b>Primer Annealing</b></span>
         <div className='row'>
           <div className='columns small-3'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_MAX_SELF_ANY' target='_new'> Max Self Complementarity:</a></span> {locals.inputs.max_self_complementarity} </div>
-          <div className='columns small-3'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_MAX_SELF_END' target='_new'> Max 3prime Self Complementarity:</a></span> {locals.inputs.max_three_prime_self_complementarity} </div>
+          <div className='columns small-3'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_MAX_SELF_END' target='_new'> Max 3' Self Complementarity:</a></span> {locals.inputs.max_three_prime_self_complementarity} </div>
           <div className='columns small-3'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_PAIR_MAX_COMPL_ANY' target='_new'> Max Pair Complementarity: </a></span> {locals.inputs.max_pair_complementarity} </div>
-          <div className='columns small-3'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_PAIR_MAX_COMPL_END' target='_new'> Max 3prime Pair Complementarity:</a></span> {locals.inputs.max_three_prime_pair_complementarity} </div>
+          <div className='columns small-3'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_PAIR_MAX_COMPL_END' target='_new'> Max 3' Pair Complementarity:</a></span> {locals.inputs.max_three_prime_pair_complementarity} </div>
         </div>
 
         </div>
