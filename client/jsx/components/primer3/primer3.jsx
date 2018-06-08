@@ -300,7 +300,7 @@ const Primer3 = React.createClass({
 
             sequence: {
                 type: 'textarea',
-                label: 'Enter the DNA Sequence (NOTE: Paste in DNA sequence only; all headers, comments, numbers and leading spaces or carriage returns should be removed)'
+                label: 'Enter the DNA Sequence (NOTE: Paste in DNA sequence only; all headers, comments, numbers and spaces should be removed)'
             },
             input_start:{
                 label: 'Start: bp from DNA sequence start OR gene START codon, where neg # = upstream:'
