@@ -257,33 +257,33 @@ const Primer3 = React.createClass({
           <div className='columns small-6'>{locals.inputs.end_point}</div>
          </div>
 
-        <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_MIN_SIZE' target='_new'><i className='fa primer-help' />Primer Length</a></span>
+        <span><b>Primer Length</b></span>
          <div className='row'>
-          <div className='columns small-4'>{locals.inputs.minimum_length}</div>
-          <div className='columns small-4'>{locals.inputs.optimum_primer_length}</div>
-          <div className='columns small-4'>{locals.inputs.maximum_length}</div>
+             <div className='columns small-4'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_MIN_SIZE' target='_new'> Minimum primer length:</a></span> {locals.inputs.minimum_length} </div>
+             <div className='columns small-4'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_OPT_SIZE' target='_new'> Optimum primer length:</a></span> {locals.inputs.optimum_primer_length} </div>
+             <div className='columns small-4'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_MAX_SIZE' target='_new'> Maximum primer length:</a></span> {locals.inputs.maximum_length} </div>
          </div>
 
-        <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_MIN_GC' target='_new'><i className='fa primer-help' />Primer Composition</a></span>
+        <span><b>Primer Composition</b></span>
          <div className='row'>
-          <div className='columns small-4'>{locals.inputs.minimum_gc}</div>
-          <div className='columns small-4'>{locals.inputs.optimum_gc}</div>
-          <div className='columns small-4'>{locals.inputs.maximum_gc}</div>
+            <div className='columns small-4'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_MIN_GC' target='_new'> Minimum percent GC:</a></span> {locals.inputs.minimum_gc} </div>
+            <div className='columns small-4'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_OPT_GC_PERCENT' target='_new'> Optimum percent GC:</a></span> {locals.inputs.optimum_gc} </div>
+            <div className='columns small-4'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_MAX_GC' target='_new'> Maximum percent GC:</a></span> {locals.inputs.maximum_gc} </div>
          </div>
 
-        <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_PRODUCT_MIN_TM' target='_new'><i className='fa primer-help' />Melting Temperature</a></span>
+        <span><b>Melting Temperature</b></span>
          <div className='row'>
-          <div className='columns small-4'>{locals.inputs.minimum_tm}</div>
-          <div className='columns small-4'>{locals.inputs.optimum_tm}</div>
-          <div className='columns small-4'>{locals.inputs.maximum_tm}</div>
+            <div className='columns small-4'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_MIN_TM' target='_new'> Minimum Tm:</a></span> {locals.inputs.minimum_tm} </div>
+            <div className='columns small-4'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_OPT_TM' target='_new'> Optimum Tm:</a></span> {locals.inputs.optimum_tm} </div>
+            <div className='columns small-4'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_MAX_TM' target='_new'> Maximum Tm:</a></span> {locals.inputs.maximum_tm} </div>
         </div>
 
-        <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_MAX_SELF_ANY' target='_new'><i className='fa primer-help' />Primer Annealing</a></span>
+        <span><b>Primer Annealing</b></span>
         <div className='row'>
-          <div className='columns small-3'>{locals.inputs.max_self_complementarity}</div>
-          <div className='columns small-3'>{locals.inputs.max_three_prime_self_complementarity}</div>
-          <div className='columns small-3'>{locals.inputs.max_pair_complementarity}</div>
-          <div className='columns small-3'>{locals.inputs.max_three_prime_pair_complementarity}</div>
+          <div className='columns small-3'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_MAX_SELF_ANY' target='_new'> Max Self Complementarity:</a></span> {locals.inputs.max_self_complementarity} </div>
+          <div className='columns small-3'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_MAX_SELF_END' target='_new'> Max 3prime Self Complementarity:</a></span> {locals.inputs.max_three_prime_self_complementarity} </div>
+          <div className='columns small-3'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_PAIR_MAX_COMPL_ANY' target='_new'> Max Pair Complementarity: </a></span> {locals.inputs.max_pair_complementarity} </div>
+          <div className='columns small-3'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_PAIR_MAX_COMPL_END' target='_new'> Max 3prime Pair Complementarity:</a></span> {locals.inputs.max_three_prime_pair_complementarity} </div>
         </div>
 
         </div>
@@ -291,6 +291,7 @@ const Primer3 = React.createClass({
     };
 
     var options = {
+        auto: 'none',
         fields: {
             gene_name:{
                 label: 'Locus: Enter a standard gene name or systematic ORF name (i.e. ACT1, YKR054C)',
@@ -299,46 +300,7 @@ const Primer3 = React.createClass({
 
             sequence: {
                 type: 'textarea',
-                label: 'Enter the DNA Sequence (NOTE: Paste in DNA sequence only; all headers, comments, numbers and leading spaces or carriage returns should be removedNOTE: Paste in DNA sequence only; all headers, comments, numbers and leading spaces or carriage returns should be removed)'
-            },
-            max_self_complementarity: {
-                label: 'Max Self Complementarity:'
-            },
-            max_three_prime_self_complementarity: {
-                label: 'Max 3\' Self Complementarity:'
-            },
-            max_pair_complementarity: {
-                label: 'Max Pair Complementarity:'
-            },
-            max_three_prime_pair_complementarity: {
-                label: 'Max 3\' Pair Complementarity:'
-            },
-            optimum_tm: {
-                label: 'Optimum Tm:'
-            },
-            minimum_tm: {
-                label: 'Minimum Tm:'
-            },
-            maximum_tm: {
-                label: 'Maximum Tm:'
-            },
-            optimum_gc: {
-                label: 'Optimum percent GC:'
-            },
-            minimum_gc: {
-                label: 'Minimum percent GC:'
-            },
-            maximum_gc: {
-                label: 'Maximum percent GC:'
-            },
-            minimum_length:{
-                label: 'Minimum primer length:'
-            },
-            optimum_primer_length:{
-                label: 'Optimum primer length:'
-            },
-            maximum_length:{
-                label: 'Maximum primer length:'
+                label: 'Enter the DNA Sequence (NOTE: Paste in DNA sequence only; all headers, comments, numbers and leading spaces or carriage returns should be removed)'
             },
             input_start:{
                 label: 'Start: bp from DNA sequence start OR gene START codon, where neg # = upstream:'
