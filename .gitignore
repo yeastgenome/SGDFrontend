@@ -96,7 +96,7 @@ dump.rdb
 .vscode/*
 
 #data files
-scripts/bgi_json/data_dump
+scripts/bgi_json/*dump
 pycall_graph_images
 index_*.png
 
