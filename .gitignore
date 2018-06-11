@@ -96,11 +96,9 @@ dump.rdb
 .vscode/*
 
 #data files
-scripts/bgi_json/data_dump
+scripts/bgi_json/*dump
 pycall_graph_images
 index_*.png
-db.env
-redis.env
-sgdb.env
-src/Untitled-1.json
-src/Untitled-2.py
+
+*.env
+src/Untitled*

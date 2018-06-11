@@ -59,7 +59,11 @@ def search_autocomplete(request):
 @view_config(route_name='search', renderer='json', request_method='GET')
 def search(request):
     query = request.params.get('q', '')
-    query_temp_arr = query.split(' ')
+    is_quick_flag = request.params.get('is_quick', False)
+    query_temp_arr = query.strip().split(' ')
+    flag = False
+    name_flag = False
+    sys_flag = False
 
     if len(query_temp_arr) > 3:
         return {
@@ -67,6 +71,24 @@ def search(request):
             'results': [],
             'aggregations': []
         }
+
+    # see if we can search for a simple gene name in db without using ES
+    if is_quick_flag == 'true':
+        t_query = query.strip().upper()
+        sys_pattern = re.compile(r'(?i)^y.{2,}')
+        is_sys_name_match = sys_pattern.match(t_query)
+        if Locusdbentity.is_valid_gene_name(t_query) or is_sys_name_match:
+            maybe_gene_url = DBSession.query(Locusdbentity.obj_url).filter(or_(Locusdbentity.gene_name == t_query, Locusdbentity.systematic_name == t_query)).scalar()
+            if maybe_gene_url:
+                fake_search_obj = {
+                    'href': maybe_gene_url,
+                    'is_quick': True
+                }
+                return {
+                    'total': 1,
+                    'results': [fake_search_obj],
+                    'aggregations': []
+                }
 
     limit = int(request.params.get('limit', 10))
     offset = int(request.params.get('offset', 0))
@@ -820,27 +842,33 @@ def primer3(request):
 
     if 'gene_name' in p_keys:
         gene_name = params.get('gene_name')
-        if gene_name is None:
-            if 'sequence' in p_keys:
-                sequence = params.get('sequence')
-                if sequence is None:
-                    return HTTPBadRequest(body=json.dumps({'error': 'No gene name OR sequence provided'}))
-                decodeseq = sequence
-                sequence = str(sequence.replace('\r', '').replace('\n', ''))
-                input = 'seq'
+    if 'sequence' in p_keys:
+        sequence = params.get('sequence')
+
+    if gene_name is not None and sequence is not None:
+        return HTTPBadRequest(body=json.dumps({'error': 'Both gene name AND sequence provided'}))
+
+    if gene_name is None and sequence is None:
+            return HTTPBadRequest(body=json.dumps({'error': 'No gene name OR sequence provided'}))
+
+    if gene_name is None:
+        decodeseq = sequence
+        sequence = str(sequence.replace('\r', '').replace('\n', ''))
+        input = 'seq'
+    else:
+        gene_name = gene_name.upper()
+        locus = DBSession.query(Locusdbentity).filter(or_(Locusdbentity.gene_name == gene_name, Locusdbentity.systematic_name == gene_name)).one_or_none()
+        if locus is None:
+            return HTTPBadRequest(body=json.dumps({'error': 'Gene name provided does not exist in the database:  ' + gene_name}))
+        tax_id = DBSession.query(Straindbentity.taxonomy_id).filter(Straindbentity.strain_type =='Reference').one_or_none()
+        dna = DBSession.query(Dnasequenceannotation.residues).filter(and_(Dnasequenceannotation.taxonomy_id == tax_id, Dnasequenceannotation.dbentity_id == locus.dbentity_id, Dnasequenceannotation.dna_type =='1KB')).one_or_none()
+        if dna is None:
+            return HTTPBadRequest(body=json.dumps({'error': 'Sequence for provided gene name does not exist in the database:  ' + gene_name}))
         else:
-            locus = DBSession.query(Locusdbentity).filter(or_(Locusdbentity.gene_name == gene_name.upper(),Locusdbentity.systematic_name == gene_name)).one_or_none()
-            if locus is None:
-                return HTTPBadRequest(body=json.dumps({'error': 'Gene name provided does not exist in the database:  ' + gene_name}))
-            tax_id = DBSession.query(Straindbentity.taxonomy_id).filter(Straindbentity.strain_type =='Reference').one_or_none()
-            dna = DBSession.query(Dnasequenceannotation.residues).filter(and_(Dnasequenceannotation.taxonomy_id == tax_id, Dnasequenceannotation.dbentity_id == locus.dbentity_id, Dnasequenceannotation.dna_type =='1KB')).one_or_none()
-            if dna is None:
-                return HTTPBadRequest(body=json.dumps({'error': 'Sequence for provided gene name does not exist in the database:  ' + gene_name}))
-            else:
-                decodeseq = dna
-                sequence = str(dna)
-                sequence = sequence[3:-3]
-                input = 'name'
+            decodeseq = dna
+            sequence = str(dna)
+            sequence = sequence[3:-3]
+            input = 'name'
 
     if 'maximum_tm' in p_keys:
         maximum_tm = params.get('maximum_tm')
@@ -892,10 +920,9 @@ def primer3(request):
     if maximum_product_size:
         range_start = target_extend_by
         range_stop = maximum_product_size
-        if(range_stop < range_start):
-            interval_range = [[range_stop, range_start]]
-        else:
-            interval_range = [[range_start, range_stop]]
+        if maximum_product_size < target_extend_by:
+            return HTTPBadRequest(body=json.dumps({'error': 'Maximum product size cannot be less than target size.'}))
+        interval_range = [[range_start, range_stop]]
     elif(target_extend_by > 800):
         interval_range = [[target_extend_by, target_extend_by+300]]
 
@@ -907,17 +934,6 @@ def primer3(request):
     elif end_point == 'NO':
         force_left_start = -1000000
         force_right_start = -1000000
-
-    print sequence
-    print len(sequence)
-    print input_start
-    print input_end
-    print target_start
-    print target_extend_by
-    print interval_range
-    print sequence_target
-    print force_right_start
-    print force_left_start
 
     try:
         result = bindings.designPrimers(
