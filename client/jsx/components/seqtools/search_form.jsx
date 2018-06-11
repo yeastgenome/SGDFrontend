@@ -391,6 +391,7 @@ const GeneSequenceResources = React.createClass({
 		
 		var blastButton = this.getToolButtonChr('/blast-sgd',  'BLAST', seqID, '');
                 var fungalBlastButton = this.getToolButtonChr('/blast-fungal', 'Fungal BLAST', seqID, '');
+
                 var primerButton = this.getToolButtonChr('/primer3', 'Design Primers', seqID, '');
                 var restrictionButton = this.getToolButtonChr4post('https://www.yeastgenome.org/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map', seq, seqID);
 		var translatedProteinButton = this.getToolButtonChr('/seqTools', 'Translated Protein Sequence', seqID, 'transeq');
