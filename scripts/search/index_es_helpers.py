@@ -6,31 +6,72 @@ import os
 import requests
 import json
 from multiprocess import Pool
+import pdb
 
-engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
+engine = create_engine(os.environ["NEX2_URI"], pool_recycle=3600)
 DBSession.configure(bind=engine)
 Base.metadata.bind = engine
 
-INDEX_NAME = os.environ.get('ES_INDEX_NAME', 'searchable_items_aws')
-DOC_TYPE = 'searchable_item'
-ES_URI = os.environ['WRITE_ES_URI']
+INDEX_NAME = os.environ.get("ES_INDEX_NAME", "searchable_items_aws")
+DOC_TYPE = "searchable_item"
+ES_URI = os.environ["WRITE_ES_URI"]
 es = Elasticsearch(ES_URI, retry_on_timeout=True)
 
 
+def filter_object_list(items, flag=False):
+    data = []
+    if flag:
+        for item in items:
+            if item:
+                if item not in data:
+                    if item != "null":
+                        data.append(item)
+    else:
+        for item in items:
+            if item:
+                if item not in data:
+                    data.append(item)
+    return data
+
+
+def get_phenotype_annotations_chemicals(properties):
+    data = []
+    if len(properties) > 0:
+        for item in properties:
+            if item["class_type"] == "CHEMICAL":
+                if item["bioitem"]:
+                    data.append(item["bioitem"]["display_name"])
+        return data
+    else:
+        return data
+
+
+def flattern_arr(lst):
+    '''
+    flattern 2D-list into single dimension list
+    :param lst: 
+    '''
+    if len(lst) > 0:
+        temp_arr = [item for sublist in lst for item in sublist]
+        return temp_arr
+    else:
+        return []
+
+
 class IndexESHelper:
-    """
+    '''
     Elastic search index script helper methods
-    """
+    '''
 
     def __init__(self):
         pass
 
     @classmethod
     def get_ref_abstracts(cls):
-        """
+        '''
         Get join between Referencedbentity and Referencedocument
             :param cls: 
-        """
+        '''
         obj = {}
         _abstracts = DBSession.query(Referencedbentity, Referencedocument).join(
             Referencedocument, Referencedbentity.dbentity_id ==
@@ -44,10 +85,10 @@ class IndexESHelper:
 
     @classmethod
     def get_ref_aliases(cls):
-        """
+        '''
         Get join between Referencedbentity and ReferenceAlias
             :param cls: not required
-        """
+        '''
         obj = {}
         _aliases = DBSession.query(Referencedbentity, ReferenceAlias).join(
             ReferenceAlias, Referencedbentity.dbentity_id ==
@@ -61,10 +102,10 @@ class IndexESHelper:
 
     @classmethod
     def get_ref_authors(cls):
-        """
+        '''
         Get join between Referencedbentity and Referenceauthor
             :param cls: not required
-        """
+        '''
         obj = {}
         _authors = DBSession.query(Referencedbentity, Referenceauthor).join(
             Referenceauthor, Referencedbentity.dbentity_id ==
@@ -77,10 +118,10 @@ class IndexESHelper:
 
     @classmethod
     def get_locus_dbentity_summary(cls):
-        """
+        '''
         Get join between locusdbentity and locussummary
             :param cls: not required
-        """
+        '''
         obj = {}
         _locus_summary = DBSession.query(Locusdbentity, Locussummary).join(
             Locussummary,
@@ -94,11 +135,11 @@ class IndexESHelper:
 
     @classmethod
     def get_locus_dbentity_alias(cls, filter_container=[]):
-        """
+        '''
         Get join between locusdbentity and locusalias
             :param cls: not required
             :param filter_container: optional 
-        """
+        '''
         obj = {}
         _locus_aliases_protein = []
         if (len(filter_container) > 0):
@@ -120,9 +161,9 @@ class IndexESHelper:
 
     @classmethod
     def get_phenotypes_phenotypeannotation(cls, filter_container=[]):
-        """
+        '''
         Get join between phenotype and phenotypeannotation
-        """
+        '''
         obj = {}
         _phenotypes = []
         if len(filter_container) > 0:
@@ -141,10 +182,10 @@ class IndexESHelper:
 
     @classmethod
     def get_locus_phenotypeannotation(cls):
-        """
+        '''
         Get a join between locusdbentity and phenotypeannotation
             :param cls: not required
-        """
+        '''
         obj = {}
         _locus_phenotype = DBSession.query(
             Locusdbentity, Phenotypeannotation).join(
@@ -158,16 +199,16 @@ class IndexESHelper:
 
     @classmethod
     def get_locus_go_annotation(cls):
-        """
+        '''
         Get a join between locusdbentity and goannotation
             :param cls: not required
-        """
+        '''
         obj = {}
         _locus_go_annotation = DBSession.query(
             Locusdbentity, Goannotation).join(
                 Goannotation,
                 Locusdbentity.dbentity_id == Goannotation.dbentity_id).filter(
-                    Goannotation.go_qualifier != 'NOT').all()
+                    Goannotation.go_qualifier != "NOT").all()
         for item in _locus_go_annotation:
             if item[0].dbentity_id not in obj:
                 obj[item[0].dbentity_id] = []
@@ -176,10 +217,10 @@ class IndexESHelper:
 
     @classmethod
     def get_colleague_locus(cls):
-        """
+        '''
         Get join between colleague and colleaguelocus
             :param:cls: not required
-        """
+        '''
         obj = {}
         _colleague_locus = DBSession.query(
             Colleague, ColleagueLocus).join(ColleagueLocus).filter(
@@ -193,10 +234,10 @@ class IndexESHelper:
 
     @classmethod
     def get_colleague_locusdbentity(cls):
-        """
+        '''
         Get join between colleague and locusdbentity
             :param:cls: not required
-        """
+        '''
         obj = {}
 
         _colleague_locus = DBSession.query(
@@ -211,22 +252,22 @@ class IndexESHelper:
 
     @classmethod
     def get_go_goannotation(cls):
-        """
+        '''
         Get join between Go and GoAnnotation
             param: cls: not required
-        """
+        '''
         obj = {}
         _go_goannotation = DBSession.query(Go, Goannotation).join(
             Goannotation, Go.go_id == Goannotation.go_id).all()
 
     @classmethod
     def get_locus_names(cls, id_lst, dict_obj):
-        """
+        '''
         Get items from given list by id
             param: cls: not required
             param: id: id to match key in dictionary
             param: dict_obj: dictionary object 
-        """
+        '''
         temp = []
         for item_id in id_lst:
             tmp = dict_obj.get(item_id)
@@ -240,12 +281,12 @@ class IndexESHelper:
     @classmethod
     def combine_locusdbentity_colleague(cls, colleagues, locus_obj,
                                         colleague_obj):
-        """
+        '''
         Combine locus_obj and colleague_obj
             :param cls: not required
             :param locus_obj: dictionary
             :param colleague_obj: dictionary
-        """
+        '''
         p = Pool(4)
         obj = {}
         result = {}
@@ -285,17 +326,17 @@ class IndexESHelper:
             if item.is_pi == 1:
                 position = "Head of Lab"
             obj_temp = {
-                'name': item.last_name + ", " + item.first_name,
-                'category': 'colleague',
-                'href': '/colleague/' + item.format_name,
-                'description': description,
-                'first_name': item.first_name,
-                'last_name': item.last_name,
-                'institution': item.institution,
-                'position': position,
-                'country': item.country,
-                'state': item.state,
-                'format_name': item.format_name
+                "name": item.last_name + ", " + item.first_name,
+                "category": "colleague",
+                "href": "/colleague/" + item.format_name,
+                "description": description,
+                "first_name": item.first_name,
+                "last_name": item.last_name,
+                "institution": item.institution,
+                "position": position,
+                "country": item.country,
+                "state": item.state,
+                "format_name": item.format_name
             }
 
             loco = result.get(item.colleague_id)
@@ -309,17 +350,17 @@ class IndexESHelper:
                         lambda x: x.systematic_name if x.systematic_name else None,
                         loco))
                 locus = set(locus_1 + locus_2)
-            obj_temp['colleague_loci'] = sorted(
+            obj_temp["colleague_loci"] = sorted(
                 list(locus)) if len(locus) > 0 else []
             _dict_obj[item.colleague_id] = obj_temp
         return _dict_obj
 
     @classmethod
     def get_phenotypes_condition(cls, condition_str=None):
-        """
+        '''
         Get join between phenotypeannotation and phenotype condition
             :param cls: not required
-        """
+        '''
         obj = {}
         if condition_str is not None:
             _phenotypes_condition = DBSession.query(
@@ -345,16 +386,52 @@ class IndexESHelper:
         return obj
 
     @classmethod
+    def get_pheno_annotations(cls, phenos_data):
+        _data = []
+        for item in phenos_data:
+            annotations = item.annotations_to_dict()
+            _references = filter_object_list(
+                    [itm["reference"]["display_name"] for itm in annotations]) if annotations else []
+            _strains = filter_object_list(
+                    [itm["strain"]["display_name"] for itm in annotations]) if annotations else []
+            _properties = [itm["properties"] for itm in annotations]
+            _chemical = get_phenotype_annotations_chemicals(
+                    flattern_arr(_properties))
+            _mutant_type = filter_object_list(
+                    [itm["mutant_type"] for itm in annotations]
+                    , True) if annotations else []
+            _phenotype_loci = filter_object_list(
+                    [itm["locus"]["display_name"] for itm in annotations]) if annotations else []
+            _phenotypes = filter_object_list(
+                    [itm["phenotype"]["display_name"] for itm in annotations]) if annotations else []
+        
+            obj = {
+                "strain": _strains,
+                "references": _references,
+                "phenotype_loci": _phenotype_loci,
+                "name": item.display_name,
+                "href": item.obj_url,
+                "chemical": _chemical,
+                "description": item.description,
+                "category": "phenotype",
+                "keys": [],
+                "mutant_type": _mutant_type,
+                "format_name": item.format_name
+            }
+            _data.append(obj)
+
+        return _data
+
+    @classmethod
     def get_combined_phenotypes(cls, phenos, phenos_annotation,
                                 phenos_annotation_cond):
-        """
+        '''
         get composed dictionary from the params
             :param cls: not required
             :param phenos: from phenotypes table
             :param phenos_annotation: join between phenotype and phenotypeanootation tables
             :param phenos_annotation_cond: join between phenotypeannotation and phenotypeannotation_cond tables
-        """
-        _dict_pheno_cond = {}
+        '''
         if phenos_annotation is not None:
 
             for item_key, item_v in phenos_annotation.items():
@@ -373,9 +450,8 @@ class IndexESHelper:
             loci = set([])
             chemicals = set([])
             mutant = set([])
-
-            temp_annotations = []
             _annotations = phenos_annotation.get(item.phenotype_id)
+
             if _annotations is not None:
                 _annotations_mod = filter(
                     lambda lst_item: type(lst_item) is not list, _annotations)
@@ -387,10 +463,7 @@ class IndexESHelper:
                     loci.add(item_mod.dbentity.display_name)
                     mutant.add(item_mod.mutant.display_name)
                 if len(_annot_conds) > 0:
-                    conds_mod = [
-                        item_chemical
-                        for sublist in _annot_conds for item_chemical in sublist
-                    ]
+                    conds_mod = [item_chemical for sublist in _annot_conds for item_chemical in sublist]
                     if len(conds_mod) > 0:
                         temp_cm = [
                             chemical.condition_name for chemical in conds_mod
@@ -399,23 +472,22 @@ class IndexESHelper:
                             for cm in temp_cm:
                                 chemicals.add(cm)
             qualifier = None
-
             if item.qualifier:
                 qualifier = item.qualifier.display_name
             obj = {
-                'name': item.display_name,
-                'href': item.obj_url,
-                'description': item.description,
-                'observable': item.observable.display_name,
-                'qualifier': qualifier,
-                'references': list(references),
-                'phenotype_loci': list(loci),
-                'number_annotations': len(list(loci)),
-                'chemical': list(chemicals),
-                'mutant_type': list(mutant),
-                'category': 'phenotype',
-                'keys': [],
-                'format_name': item.format_name
+                "name": item.display_name,
+                "href": item.obj_url,
+                "description": item.description,
+                "observable": item.observable.display_name,
+                "qualifier": qualifier,
+                "references": list(references),
+                "phenotype_loci": list(loci),
+                "number_annotations": len(list(loci)),
+                "chemical": list(chemicals),
+                "mutant_type": list(mutant),
+                "category": "phenotype",
+                "keys": [],
+                "format_name": item.format_name
             }
             _dict_obj[item.phenotype_id] = obj
 
@@ -423,10 +495,10 @@ class IndexESHelper:
 
     @classmethod
     def flattern_list(cls, lst):
-        """
+        '''
         flattern 2D-list into single dimension list
             :param lst: 
-        """
+        '''
         if len(lst) > 0:
             temp_arr = [item for sublist in lst for item in sublist]
             return temp_arr
@@ -444,9 +516,9 @@ class IndexESHelper:
 
     @classmethod
     def get_chebi_annotations(cls, chebi_data):
-        """
+        '''
         Get a join between chebi and phenotypeannotationcondition
-        """
+        '''
         obj = {}
         _dict_chebi = {}
         chebi_names = list(set([x.display_name for x in chebi_data]))
@@ -506,23 +578,23 @@ class IndexESHelper:
         return obj
 
     @classmethod
-    def convertBytes(cls, numBytes, suffix='B'):
+    def convertBytes(cls, numBytes, suffix="B"):
         '''
         Convert bytes to human readable unit
         '''
         if numBytes is not None or numBytes > 0:
-            units = ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z']
+            units = ["", "K", "M", "G", "T", "P", "E", "Z"]
             for item in units:
                 if abs(numBytes) < 1024.0:
                     return "%3.1f%s%s" % (numBytes, item, suffix)
                 numBytes /= 1024.0
-            return "%.1f%s%s" % (numBytes, 'Y', suffix)
+            return "%.1f%s%s" % (numBytes, "Y", suffix)
         return None
 
     @classmethod
     def get_not_mapped_genes(cls):
         obj = {}
-        with open('./scripts/search/not_mapped.json', "r") as json_data:
+        with open("./scripts/search/not_mapped.json", "r") as json_data:
             _data = json.load(json_data)
             for item in _data:
                 if len(item["FEATURE_NAME"]) > 0:
@@ -534,8 +606,7 @@ class IndexESHelper:
         else:
             return None
 
-    
+
     @classmethod
     def get_readme_file(cls, id):
         _data = DBSession.query(Filedbentity).filter_by(Filedbentity.dbentity_id == id).all()
-        
