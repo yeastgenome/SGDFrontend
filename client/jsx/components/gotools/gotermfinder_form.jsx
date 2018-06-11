@@ -269,39 +269,16 @@ const GoTermFinder = React.createClass({
                 genes4bg = this.processGeneList(genes4bg);
                 	
 		var aspect = '';
-		// if (document.getElementById('Function').checked) {
-		//   	aspect = 'Function';	
-		//     	console.log("aspect="+aspect);
-		// }
-		if (document.getElementById('F').checked) {
-		   	aspect = 'F';		
-                        console.log("aspect="+aspect);
+		if (document.getElementById('C').checked) {
+		   	aspect = 'C';		
 		}      
-		
+		else if (document.getElementById('P').checked) {
+                        aspect = 'P';
+                }
+		else {
+			aspect = 'F';
+		}
 
-		// for (var i = 0; i < evidenceCodes.length; i++) {
-		     
-		// }
-		
-		// var strainList = document.getElementById('strains');
-                // var strains = '';
-		// for (var i = 0; i < strainList.options.length; i++) {
-                //     if (strainList.options[i].selected) {
-                //         if (strains) {
-                //              strains = strains + '|' + strainList.options[i].value;
-		//	 }
-                //         else {
-                //              strains = strainList.options[i].value;
-                //         }
-                //     }
-                // }
-
-		// if (strains == '') {
-		//   alert("Please pick one or more strains.");
-                //   e.preventDefault();
-                //   return 1;
-		// }	
-	
 		window.localStorage.clear();
                 window.localStorage.setItem("genes", genes);
 		window.localStorage.setItem("genes4bg", genes4bg);
@@ -316,12 +293,34 @@ const GoTermFinder = React.createClass({
 	runGoTools() {
 
 		var paramData = {};
-		
-		var param = this.state.param;
 
 		paramData['genes'] = window.localStorage.getItem("genes");
+		if (window.localStorage.getItem("genes4bg") != '') {
+		     paramData['genes4bg'] = window.localStorage.getItem("genes4bg");
+		}
 		paramData['aspect'] = window.localStorage.getItem("aspect");
-		// add other parameters eg p-value, exclude evidence list etc 
+
+		var param = this.state.param;
+		
+		paramData['pvalue'] = param['pvalue'];
+
+		if (param['FDR']) {
+		     paramData['FDR'] = 1;
+		}
+
+		var evidenceToExclude = ""; 
+		for (var i = 0; evidenceCodes.length; i++) {
+		     if (param[evidenceCodes[i]]) {
+		         if (evidenceToExclude != "") {
+			    	evidenceToExclude += "|";
+			 }
+			 evidenceToExclude += evidenceCodes[i];
+		     }
+		}
+		if (evidenceToExclude != "") {
+		     paramData['evidenceToExclude'] = evidenceToExclude
+		}
+
 		this.sendRequest(paramData)
 		return
 
