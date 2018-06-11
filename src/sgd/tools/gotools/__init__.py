@@ -20,17 +20,28 @@ def do_gosearch(request):
  
 def run_gotermfinder(p):
     
-    genes = p.get('genes')
-    aspect = p.get('aspect')
-    if genes is None or genes == '':
+    genes = p.get('genes', '')
+    aspect = p.get('aspect', 'F')
+    if genes == '':
         return { " ERROR": "NO GENE NAME PASSED IN" }
-    if aspect is None or aspect == '':
-        aspect = 'F'
-
+    genes4bg = p.get('genes4bg', '')
+    pvalue = p.get('pvalue', '0.01')
+    FDR = p.get('FDR', 0)
+    evidenceToExclude = p.get('evidenceToExclude', '')
+        
     ## add code later to handle pvalue + exclude evidence list etc
-    url = gotools_url + "?aspect=" + aspect + "&genes=" + genes 
+    # url = gotools_url + "?aspect=" + aspect + "&genes=" + genes 
 
-    res = _get_json_from_server(url)
+    import urllib
+
+    paramData = urllib.urlencode({ 'genes': genes,
+                                   'genes4bg': genes4bg,
+                                   'aspect': aspect,
+                                   'pvalue': pvalue,
+                                   'FDR': FDR,
+                                   'evidenceToExclude': evidenceToExclude });
+    
+    res = _get_json_from_server(gotools_url, paramData)
 
     htmlUrl = res['html']
     rootUrl = res['rootUrl']
@@ -57,10 +68,10 @@ def run_gotermfinder(p):
              "table_page": res['html'] }
              
 
-def _get_json_from_server(url):
+def _get_json_from_server(url, paramData):
     
     try:
-        req = Request(url)
+        req = Request(url=url, data=paramData)
         res = urlopen(req)
         data = json.loads(res.read())
         return data
