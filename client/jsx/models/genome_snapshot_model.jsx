@@ -70,10 +70,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 				return c.features[i].value;
 			});
 
-			row.unshift({
-				value: f.name.replace(/_/g, ' '),
-				href: `/locus/${f.name}`
-			});
+			row.unshift(f.name.replace(/_/g, ' '));
 			return row;
 		});
 
@@ -162,8 +159,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 		var headers = _.map(response.rows, c => {
 			return {
 				name: c.replace(/_/g, ' '),
-				value: 0,
-				link: QUALIFICATION_STATUSES.indexOf(c) >= 0 ? null : `/locus/${c}`
+				value: 0
 			};
 		});
 		var combined = _.reduce(chroms, (prev, c) => {

@@ -36,6 +36,23 @@ const Primer3 = React.createClass({
     }
   },
 
+  componentDidMount() {
+    if(this.props.queryParams.name){
+        let geneName = this.props.queryParams.name;
+        let tempVal = this.state.value;
+        tempVal.gene_name = geneName;
+        this.setState({value: tempVal});
+    }
+    if(this.props.queryParams.sequence_id){
+       var seqId = this.props.queryParams.sequence_id;
+       var seq = window.localStorage.getItem(seqId);
+       let tempVal = this.state.value;
+       tempVal.sequence = seq;
+       this.setState({sequence: seq});
+    }
+
+  },
+
   onChange(value) {
     this.setState({value});
   },
@@ -83,7 +100,6 @@ const Primer3 = React.createClass({
     let data = this.state.result; //list of maps
     let gene_name = this.state.gene_name
     if (gene_name == null){ gene_name = 'Input Sequence'}
-    console.log('gene name', gene_name)
     let gname_str = 'Primer pairs for  :    ' + gene_name
     //let sequence = 'Input Sequence:   ' + this.state.sequence
     //let newsequence = addNewlines(sequence)
@@ -186,6 +202,7 @@ const Primer3 = React.createClass({
 
     const PrimerFormSchema = t.struct({
 
+
        gene_name: t.maybe(t.String),
        sequence: t.maybe(t.String),
        input_start: t.Number,
@@ -215,23 +232,24 @@ const Primer3 = React.createClass({
     const formLayout = locals => {
       return (
        <div>
-        <span style={{ textAlign: "center" }}><h1>Primer Design: Based on Primer3 package <a href='https://pypi.python.org/pypi/primer3-py' target='_new'><i className='fa primer-help' /></a> </h1><hr/></span>
-        <br/>
-        <span>Sequences of <a href='http://wiki.yeastgenome.org/index.php/Primer_Set_Sequences' target='_new'><i className='fa primer-seqs' />primer sets </a> available to the community</span>
+        <span style={{ textAlign: "center" }}><h1>Primer Design: Uses Primer3-py package <a href='https://sites.google.com/view/yeastgenome-help/analyze-help/primer-design' target='_new'><i className='fa primer-help'/> <img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img></a></h1><hr/></span>
+        <span>Sequences of <a href='http://wiki.yeastgenome.org/index.php/Primer_Set_Sequences' target='_new'><i className='fa primer-seqs' />primer sets </a> available to the community<hr/></span>
+         <span> Design your own primers: <a href='https://sites.google.com/view/yeastgenome-help/analyze-help/primer-design' target='_new'><i className='fa primer-help'/> <img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img></a> </span>
+         <p><b> Please input gene name OR sequence</b></p>
          <div className='row'>
           <div className='columns small-4'>{locals.inputs.gene_name}</div>
          </div>
-         <p><b> Please input gene name OR sequence</b></p>
+         <p><b> OR </b></p>
          <div className='row'>
           <div className='columns small-8'>{locals.inputs.sequence}</div>
          </div>
 
-        <span><a href='http://primer3.ut.ee/primer3web_help.htm#SEQUENCE_TARGET' target='_new'><i className='fa primer-help' />Target Region</a></span>
+        <span><a href='http://primer3.ut.ee/primer3web_help.htm#SEQUENCE_TARGET' target='_new'><i className='fa primer-help' />Target Region</a> </span>
+        <p> (NOTE: primers will be chosen from the flanking regions just <b> outside </b> of this defined region) </p>
          <div className='row'>
           <div className='columns small-4'>{locals.inputs.input_start}</div>
           <div className='columns small-4'>{locals.inputs.input_end}</div>
           <div className='columns small-4'>{locals.inputs.maximum_product_size}</div>
-
         </div>
 
         <span><a href='http://primer3.ut.ee/primer3web_help.htm#SEQUENCE_FORCE_LEFT_START' target='_new'><i className='fa primer-help' />Force Start position of primers</a></span>
@@ -239,32 +257,33 @@ const Primer3 = React.createClass({
           <div className='columns small-6'>{locals.inputs.end_point}</div>
          </div>
 
-        <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_MIN_SIZE' target='_new'><i className='fa primer-help' />Primer Length</a></span>
+        <span><b>Primer Length</b></span>
          <div className='row'>
-          <div className='columns small-4'>{locals.inputs.minimum_length}</div>
-          <div className='columns small-3'>{locals.inputs.optimum_primer_length}</div>
-          <div className='columns small-4'>{locals.inputs.maximum_length}</div>
+             <div className='columns small-4'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_MIN_SIZE' target='_new'> Minimum primer length:</a></span> {locals.inputs.minimum_length} </div>
+             <div className='columns small-4'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_OPT_SIZE' target='_new'> Optimum primer length:</a></span> {locals.inputs.optimum_primer_length} </div>
+             <div className='columns small-4'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_MAX_SIZE' target='_new'> Maximum primer length:</a></span> {locals.inputs.maximum_length} </div>
          </div>
 
-        <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_MIN_GC' target='_new'><i className='fa primer-help' />Primer Composition</a></span>
+        <span><b>Primer Composition</b></span>
          <div className='row'>
-          <div className='columns small-4'>{locals.inputs.minimum_gc}</div>
-          <div className='columns small-4'>{locals.inputs.optimum_gc}</div>
-          <div className='columns small-4'>{locals.inputs.maximum_gc}</div>
+            <div className='columns small-4'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_MIN_GC' target='_new'> Minimum percent GC:</a></span> {locals.inputs.minimum_gc} </div>
+            <div className='columns small-4'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_OPT_GC_PERCENT' target='_new'> Optimum percent GC:</a></span> {locals.inputs.optimum_gc} </div>
+            <div className='columns small-4'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_MAX_GC' target='_new'> Maximum percent GC:</a></span> {locals.inputs.maximum_gc} </div>
          </div>
-        <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_PRODUCT_MIN_TM' target='_new'><i className='fa primer-help' />Melting Temperature</a></span>
 
+        <span><b>Melting Temperature</b></span>
          <div className='row'>
-          <div className='columns small-4'>{locals.inputs.minimum_tm}</div>
-          <div className='columns small-4'>{locals.inputs.optimum_tm}</div>
-          <div className='columns small-4'>{locals.inputs.maximum_tm}</div>
+            <div className='columns small-4'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_MIN_TM' target='_new'> Minimum Tm:</a></span> {locals.inputs.minimum_tm} </div>
+            <div className='columns small-4'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_OPT_TM' target='_new'> Optimum Tm:</a></span> {locals.inputs.optimum_tm} </div>
+            <div className='columns small-4'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_MAX_TM' target='_new'> Maximum Tm:</a></span> {locals.inputs.maximum_tm} </div>
         </div>
-        <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_MAX_SELF_ANY' target='_new'><i className='fa primer-help' />Primer Annealing</a></span>
+
+        <span><b>Primer Annealing</b></span>
         <div className='row'>
-          <div className='columns small-3'>{locals.inputs.max_self_complementarity}</div>
-          <div className='columns small-3'>{locals.inputs.max_three_prime_self_complementarity}</div>
-          <div className='columns small-3'>{locals.inputs.max_pair_complementarity}</div>
-          <div className='columns small-3'>{locals.inputs.max_three_prime_pair_complementarity}</div>
+          <div className='columns small-3'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_MAX_SELF_ANY' target='_new'> Max Self Complementarity:</a></span> {locals.inputs.max_self_complementarity} </div>
+          <div className='columns small-3'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_MAX_SELF_END' target='_new'> Max 3' Self Complementarity:</a></span> {locals.inputs.max_three_prime_self_complementarity} </div>
+          <div className='columns small-3'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_PAIR_MAX_COMPL_ANY' target='_new'> Max Pair Complementarity: </a></span> {locals.inputs.max_pair_complementarity} </div>
+          <div className='columns small-3'> <span><a href='http://primer3.ut.ee/primer3web_help.htm#PRIMER_PAIR_MAX_COMPL_END' target='_new'> Max 3' Pair Complementarity:</a></span> {locals.inputs.max_three_prime_pair_complementarity} </div>
         </div>
 
         </div>
@@ -272,6 +291,7 @@ const Primer3 = React.createClass({
     };
 
     var options = {
+        auto: 'none',
         fields: {
             gene_name:{
                 label: 'Locus: Enter a standard gene name or systematic ORF name (i.e. ACT1, YKR054C)',
@@ -280,49 +300,19 @@ const Primer3 = React.createClass({
 
             sequence: {
                 type: 'textarea',
-                label: 'Enter the DNA Sequence (comments should be removed)'
-            },
-            max_self_complementarity: {
-                label: 'Max Self Complementarity:'
-            },
-            max_three_prime_self_complementarity: {
-                label: 'Max 3\' Self Complementarity:'
-            },
-            max_pair_complementarity: {
-                label: 'Max Pair Complementarity:'
-            },
-            max_three_prime_pair_complementarity: {
-                label: 'Max 3\' Pair Complementarity:'
-            },
-            optimum_tm: {
-                label: 'Optimum Tm:'
-            },
-            minimum_tm: {
-                label: 'Minimum Tm:'
-            },
-            maximum_tm: {
-                label: 'Maximum Tm:'
-            },
-            optimum_gc: {
-                label: 'Optimum percent GC content:'
-            },
-            minimum_gc: {
-                label: 'Minimum GC:'
-            },
-            maximum_gc: {
-                label: 'Maximum GC:'
+                label: 'Enter the DNA Sequence (NOTE: Paste in DNA sequence only; all headers, comments, numbers and spaces should be removed)'
             },
             input_start:{
-                label: 'Start at this 5\' location from START codon:'
+                label: 'Start: bp from DNA sequence start OR gene START codon, where neg # = upstream:'
             },
             input_end:{
-                label: 'End at this 5\' location from START codon:'
+                label: 'End: bp from DNA sequence start OR from gene START codon:'
             },
             maximum_product_size:{
-                label: 'Maximum product size:'
+                label: 'Maximum product size in bp, cannot be less than target size (Optional):'
             },
             end_point:{
-                label: 'Forces the endpoints on 5\' and 3\' locations to above included regions:'
+                label: 'Forces the 3\' endpoints of the left and right primers to Target Start and End respectively:'
             }
        },
        template: formLayout

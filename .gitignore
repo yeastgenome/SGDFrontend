@@ -33,3 +33,5 @@ asset_version.json
 .vscode/settings.json
 .cache/
 docs/
+production_asset_url.json
+*.env

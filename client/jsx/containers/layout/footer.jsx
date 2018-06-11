@@ -12,13 +12,15 @@ const Footer = React.createClass({
     return (
       <footer id="layout-document-footer" className="page-footer">
         <div className="row">
-          <div className="small-6 large-4 columns">
+          <div className="small-6 large-6 columns">
             <ul id="footer-links">
               <li className="sgd-link"><a href="http://www.yeastgenome.org">SGD</a></li>
               <li><a target="_blank" className="hide-external-link-icon" href="https://sites.google.com/view/yeastgenome-help/about"><span>About</span></a></li>
               <li><a href="http://www.yeastgenome.org/blog"><span>Blog</span></a></li>
               <li><a target="_blank" className="hide-external-link-icon" href="https://sites.google.com/view/yeastgenome-help/"><span>Help</span></a></li>
-              <li><a href="http://www.stanford.edu/site/terms.html"><span>Terms of Use</span></a></li>
+              <li><a target="_blank" className="hide-external-link-icon" href="http://www.stanford.edu/site/terms"><span>Terms of Use</span></a></li>
+              <li><a target="_blank" className="hide-external-link-icon" href="http://www.stanford.edu/site/privacy"><span>Privacy Policy</span></a></li>
+              <li><a rel="license" target="_blank" className="hide-external-link-icon" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style={{ borderWidth: 0 }} src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a></li>
               <li id="social-footer">
                 <ul className="social-links">
                   <li><a href="/cgi-bin/suggestion" target="_blank" id="email-footer" className="webicon mail small">Email Us</a></li>
@@ -32,7 +34,7 @@ const Footer = React.createClass({
             </ul>
             <div id="copyright">&copy; Stanford University, Stanford, CA 94305.</div>
           </div>
-          <div className="small-6 large-8 columns">
+          <div className="small-6 large-6 columns">
             <ul className="logo-list">
               <li>
                 <a href="http://www.alliancegenome.org">
