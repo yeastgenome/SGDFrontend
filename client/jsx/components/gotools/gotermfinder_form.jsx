@@ -309,12 +309,12 @@ const GoTermFinder = React.createClass({
 		}
 
 		var evidenceToExclude = ""; 
-		for (var i = 0; evidenceCodes.length; i++) {
-		     if (param[evidenceCodes[i]]) {
+		for (var i = 0; evidenceCode.length; i++) {
+		     if (param[evidenceCode[i]]) {
 		         if (evidenceToExclude != "") {
 			    	evidenceToExclude += "|";
 			 }
-			 evidenceToExclude += evidenceCodes[i];
+			 evidenceToExclude += evidenceCode[i];
 		     }
 		}
 		if (evidenceToExclude != "") {
