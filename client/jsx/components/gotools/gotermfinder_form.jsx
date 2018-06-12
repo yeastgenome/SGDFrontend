@@ -235,6 +235,7 @@ const GoTermFinder = React.createClass({
 		}	 	        
 		console.log("genes before="+genes);
 		genes = genes.replace(/%0D%0A/g, ' ');
+		genes =	genes.replace(/+/g, ' ');
 		console.log("genes after="+genes);
                 genes = genes.replace(/[^A-Za-z:\-0-9]/g, ' ');
                 var re = /\+/g;
@@ -261,6 +262,16 @@ const GoTermFinder = React.createClass({
                      e.preventDefault();
                      return 1;
                 }
+
+
+
+		// start testing
+		e.preventDefault();
+                return 1;
+		// end testing
+
+
+
 
 		var genes4bg = this.refs.genes4bg.value.trim();
                 if (genes4bg == '') {
