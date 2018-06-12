@@ -45,9 +45,6 @@ def standardize_name(infile, logfile):
         orf_name = pieces[0]
         gene_name = pieces[1]
 
-        # if gene_name in ['MIY1', 'MCO13', 'COI1', 'CCW22', 'NRE1']:
-        #    continue
-
         created_by = gene_to_created_by.get(gene_name)
 
         if created_by is None:
@@ -121,6 +118,10 @@ def standardize_name(infile, logfile):
 def delete_locus_reference(nex_session, fw, locus_id, reference_class):
 
     x = nex_session.query(LocusReferences).filter_by(locus_id=locus_id, reference_class=reference_class).one_or_none()
+    
+    if x is None:
+        return
+
     nex_session.delete(x)
 
     fw.write("Old locus_reference row for locus_id = " + str(locus_id) + " has been deleted\n")
