@@ -262,6 +262,18 @@ const GoTermFinder = React.createClass({
                      return 1;
                 }
 
+
+
+
+		// testing start here
+		e.preventDefault();
+                return 1;
+		// testing end here
+
+
+
+
+
 		var genes4bg = this.refs.genes4bg.value.trim();
                 if (genes4bg == '') {
                      genes4bg = this.state.uploadedGenes4bg;
