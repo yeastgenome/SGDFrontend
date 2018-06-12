@@ -64,18 +64,18 @@ const GoTermFinder = React.createClass({
 	        if (this.state.isComplete) {
 
 			var data = this.state.resultData;
-			
-			if (param['submit']) {
-			   
-			     var [_geneList, _resultTable] = this.getResultTable4gene(data);
-			     var _desc = this.getDesc4gene(_geneList);
+			var resultTable = data['html'];
+			var graph = data['image_html'];
+			var termPageUrl = data['term_page'];
+			var tabPageUrl = data['tab_page'];
+			var imageUrl = data['image_page'];
+			var resulTableUrl = data['table_page'];
 
-			     return (<div>
-					   <p dangerouslySetInnerHTML={{ __html: _desc }} />
-			                   <p>{ _resultTable } </p>
-			             </div>);
+			return (<div>
+			       <p dangerouslySetInnerHTML={{ __html: resultTable }} />
 
-			}
+			</div>);
+
 
 		} 
 		else if (this.state.isPending) {
