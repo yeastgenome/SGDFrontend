@@ -233,9 +233,6 @@ const GoTermFinder = React.createClass({
 		if (genes == '') {
 		     return '';
 		}	 	        
-		// console.log("genes before="+genes);
-		// genes = genes.replace(/%0D%0A/g, ' ');
-		// console.log("genes after="+genes);
                 genes = genes.replace(/[^A-Za-z:\-0-9]/g, ' ');
                 var re = /\+/g;
                 genes = genes.replace(re, " ");
@@ -261,18 +258,6 @@ const GoTermFinder = React.createClass({
                      e.preventDefault();
                      return 1;
                 }
-
-
-		console.log("genes=" + genes);
-
-		// testing start here
-		e.preventDefault();
-                return 1;
-		// testing end here
-
-
-
-
 
 		var genes4bg = this.refs.genes4bg.value.trim();
                 if (genes4bg == '') {
@@ -310,6 +295,7 @@ const GoTermFinder = React.createClass({
 		var paramData = {};
 
 		paramData['genes'] = window.localStorage.getItem("genes");
+
 		if (window.localStorage.getItem("genes4bg") != '') {
 		     paramData['genes4bg'] = window.localStorage.getItem("genes4bg");
 		}
@@ -343,7 +329,13 @@ const GoTermFinder = React.createClass({
 	},
 	
 	sendRequest(paramData) {
-        
+
+		console.log("genes="+paramData['genes']);
+        	console.log("genes4bg="+paramData['genes4bg']);
+		console.log("pvalue="+paramData['pvalue']);
+		console.log("FDR="+paramData['FDR']);
+		console.log("evidenceToExclude="+paramData['evidenceToExclude']);
+
 		$.ajax({
 			url: GOtoolsUrl,
 			data_type: 'json',
