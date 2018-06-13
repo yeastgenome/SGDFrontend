@@ -910,6 +910,14 @@ GRANT SELECT,INSERT,UPDATE,DELETE ON nex.posttranslationannotation TO curator;
 GRANT SELECT ON nex.posttranslationannotation TO PUBLIC;
 GRANT SELECT ON nex.posttranslationannotation TO DBSELECT;
 
+-- Set privilege on TABLE PROTEINABUNDANCEANNOTATION                                                                                       
+ALTER TABLE nex.proteinabundanceannotation OWNER TO nex;
+GRANT ALL ON nex.proteinabundanceannotation TO nex;
+REVOKE ALL ON nex.proteinabundanceannotation FROM PUBLIC;
+GRANT SELECT,INSERT,UPDATE,DELETE ON nex.proteinabundanceannotation TO curator;
+GRANT SELECT ON nex.proteinabundanceannotation TO PUBLIC;
+GRANT SELECT ON nex.proteinabundanceannotation TO DBSELECT;
+
 -- Set privilege on TABLE PROTEINDOMAIN
 ALTER TABLE nex.proteindomain OWNER TO nex;
 GRANT ALL ON nex.proteindomain TO nex;
