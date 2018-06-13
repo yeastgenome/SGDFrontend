@@ -580,6 +580,110 @@ ALTER TABLE nex.edam_url ADD CONSTRAINT edam_url_uk UNIQUE (edam_id,display_name
 ALTER TABLE nex.edam_url ADD CONSTRAINT edamurl_ck CHECK (URL_TYPE IN ('BioPortal', 'Ontobee', 'OLS'));
 CREATE INDEX edam_url_source_fk_index ON nex.edam_url (source_id);
 
+
+DROP TABLE IF EXISTS nex.efo CASCADE;
+CREATE TABLE nex.efo (
+    efo_id bigint NOT NULL DEFAULT nextval('object_seq'),
+    format_name varchar(100) NOT NULL,
+    display_name varchar(500) NOT NULL,
+    obj_url varchar(500) NOT NULL,
+    source_id bigint NOT NULL,
+    efoid varchar(20) NOT NULL,
+    is_obsolete boolean NOT NULL,
+    description varchar(2000),
+    date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
+    created_by varchar(12) NOT NULL,
+    CONSTRAINT efo_pk PRIMARY KEY (efo_id)
+) ;
+COMMENT ON TABLE nex.efo IS 'Experimental Factor ontology (EFI) developed by the EBI.';
+COMMENT ON COLUMN nex.efo.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.efo.description IS 'Description or comment.';
+COMMENT ON COLUMN nex.efo.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.efo.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.efo.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.efo.format_name IS 'Unique name to create download files.';
+COMMENT ON COLUMN nex.efo.efo_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.efo.is_obsolete IS 'Whether the ontology term is obsolete.';
+COMMENT ON COLUMN nex.efo.efoid IS 'Experimental Factor ontology identifier (e.g., EFO:0007024).';
+COMMENT ON COLUMN nex.efo.display_name IS 'Public display name.';
+ALTER TABLE nex.efo ADD CONSTRAINT efo_uk UNIQUE (format_name);
+CREATE UNIQUE INDEX efoid_uk_index ON nex.efo (efoid);
+CREATE INDEX efo_source_fk_index ON nex.efo (source_id);
+
+DROP TABLE IF EXISTS nex.efo_alias CASCADE;
+CREATE TABLE nex.efo_alias (
+    alias_id bigint NOT NULL DEFAULT nextval('alias_seq'),
+    display_name varchar(500) NOT NULL,
+    source_id bigint NOT NULL,
+    efo_id bigint NOT NULL,
+    alias_type varchar(40) NOT NULL,
+    date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
+    created_by varchar(12) NOT NULL,
+    CONSTRAINT efo_alias_pk PRIMARY KEY (alias_id)
+) ;
+COMMENT ON TABLE nex.efo_alias IS 'Other names or synonyms for a EFO term.';
+COMMENT ON COLUMN nex.efo_alias.alias_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.efo_alias.alias_type IS 'Type of alias (EXACT).';
+COMMENT ON COLUMN nex.efo_alias.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.efo_alias.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.efo_alias.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.efo_alias.efo_id IS 'FK to EFO.EFO_ID.';
+COMMENT ON COLUMN nex.efo_alias.display_name IS 'Public display name.';
+ALTER TABLE nex.efo_alias ADD CONSTRAINT efo_alias_uk UNIQUE (efo_id,display_name,alias_type);
+ALTER TABLE nex.efo_alias ADD CONSTRAINT efoalias_type_ck CHECK (ALIAS_TYPE IN ('EXACT'));
+CREATE INDEX efoalias_source_fk_index ON nex.efo_alias (source_id);
+
+DROP TABLE IF EXISTS nex.efo_relation CASCADE;
+CREATE TABLE nex.efo_relation (
+    relation_id bigint NOT NULL DEFAULT nextval('relation_seq'),
+    source_id bigint NOT NULL,
+    parent_id bigint NOT NULL,
+    child_id bigint NOT NULL,
+    ro_id bigint NOT NULL,
+    date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
+    created_by varchar(12) NOT NULL,
+    CONSTRAINT efo_relation_pk PRIMARY KEY (relation_id)
+) ;
+COMMENT ON TABLE nex.efo_relation IS 'Relationship between two Experimental Factor ontology terms.';
+COMMENT ON COLUMN nex.efo_relation.relation_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.efo_relation.ro_id IS 'FK to RO.RO_ID.';
+COMMENT ON COLUMN nex.efo_relation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.efo_relation.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.efo_relation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.efo_relation.child_id IS 'FK to EFO.EFO_ID.';
+COMMENT ON COLUMN nex.efo_relation.parent_id IS 'FK to EFO.EFO_ID.';
+ALTER TABLE nex.efo_relation ADD CONSTRAINT efo_relation_uk UNIQUE (parent_id,child_id,ro_id);
+CREATE INDEX eforelation_ro_fk_index ON nex.efo_relation (ro_id);
+CREATE INDEX eforelation_child_fk_index ON nex.efo_relation (child_id);
+CREATE INDEX eforelation_source_fk_index ON nex.efo_relation (source_id);
+
+DROP TABLE IF EXISTS nex.efo_url CASCADE;
+CREATE TABLE nex.efo_url (
+    url_id bigint NOT NULL DEFAULT nextval('url_seq'),
+    display_name varchar(500) NOT NULL,
+    obj_url varchar(500) NOT NULL,
+    source_id bigint NOT NULL,
+    efo_id bigint NOT NULL,
+    url_type varchar(40) NOT NULL,
+    date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
+    created_by varchar(12) NOT NULL,
+    CONSTRAINT efo_url_pk PRIMARY KEY (url_id)
+) ;
+COMMENT ON TABLE nex.efo_url IS 'URLs associated with the Experimental Factor ontology.';
+COMMENT ON COLUMN nex.efo_url.display_name IS 'Public display name (OLS, Ontobee).';
+COMMENT ON COLUMN nex.efo_url.efo_id IS 'FK to EFO.EFO_ID.';
+COMMENT ON COLUMN nex.efo_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
+COMMENT ON COLUMN nex.efo_url.url_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.efo_url.url_type IS 'Type of URL (OLS, Ontobee).';
+COMMENT ON COLUMN nex.efo_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.efo_url.created_by IS 'Username of the person who entered the record into the database.';
+COMMENT ON COLUMN nex.efo_url.date_created IS 'Date the record was entered into the database.';
+ALTER TABLE nex.efo_url ADD CONSTRAINT efo_url_uk UNIQUE (efo_id,display_name,obj_url);
+ALTER TABLE nex.efo_url ADD CONSTRAINT efourl_type_ck CHECK (URL_TYPE IN ('OLS', 'Ontobee'));
+ALTER TABLE nex.efo_url ADD CONSTRAINT efourl_display_name_ck CHECK (DISPLAY_NAME IN ('OLS', 'Ontobee'));
+CREATE INDEX efourl_source_fk_index ON nex.efo_url (source_id);
+
+
 DROP TABLE IF EXISTS nex.go CASCADE;
 CREATE TABLE nex.go (
 	go_id bigint NOT NULL DEFAULT nextval('object_seq'),

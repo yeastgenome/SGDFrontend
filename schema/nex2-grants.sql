@@ -518,6 +518,38 @@ GRANT SELECT,INSERT,UPDATE,DELETE ON nex.edam_url TO curator;
 GRANT SELECT ON nex.edam_url TO PUBLIC;
 GRANT SELECT ON nex.edam_url TO DBSELECT;
 
+-- Set privilege on TABLE EFO                                                    
+ALTER TABLE nex.efo OWNER TO nex;
+GRANT ALL ON nex.efo TO nex;
+REVOKE ALL ON nex.efo FROM PUBLIC;
+GRANT SELECT,INSERT,UPDATE,DELETE ON nex.efo TO curator;
+GRANT SELECT ON nex.efo TO PUBLIC;
+GRANT SELECT ON nex.efo TO DBSELECT;
+
+-- Set privilege on TABLE EFO_ALIAS                                              
+ALTER TABLE nex.efo_alias OWNER TO nex;
+GRANT ALL ON nex.efo_alias TO nex;
+REVOKE ALL ON nex.efo_alias FROM PUBLIC;
+GRANT SELECT,INSERT,UPDATE,DELETE ON nex.efo_alias TO curator;
+GRANT SELECT ON nex.efo_alias TO PUBLIC;
+GRANT SELECT ON nex.efo_alias TO DBSELECT;
+
+-- Set privilege on TABLE EFO_RELATION
+ALTER TABLE nex.efo_relation OWNER TO nex;
+GRANT ALL ON nex.efo_relation TO nex;
+REVOKE ALL ON nex.efo_relation FROM PUBLIC;
+GRANT SELECT,INSERT,UPDATE,DELETE ON nex.efo_relation TO curator;
+GRANT SELECT ON nex.efo_relation TO PUBLIC;
+GRANT SELECT ON nex.efo_relation TO DBSELECT;
+
+-- Set privilege on TABLE EFO_URL
+ALTER TABLE nex.efo_url OWNER TO nex;
+GRANT ALL ON nex.efo_url TO nex;
+REVOKE ALL ON nex.efo_url FROM PUBLIC;
+GRANT SELECT,INSERT,UPDATE,DELETE ON nex.efo_url TO curator;
+GRANT SELECT ON nex.efo_url TO PUBLIC;
+GRANT SELECT ON nex.efo_url TO DBSELECT;
+
 -- Set privilege on TABLE ENZYMEANNOTATION
 ALTER TABLE nex.enzymeannotation OWNER TO nex;
 GRANT ALL ON nex.enzymeannotation TO nex;

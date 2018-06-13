@@ -1846,6 +1846,346 @@ BEFORE INSERT OR UPDATE ON nex.edam_url FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_edamurl_biur();
 
 
+CREATE OR REPLACE FUNCTION trigger_fct_efo_audr() RETURNS trigger AS $BODY$
+DECLARE
+    v_row       nex.deletelog.deleted_row%TYPE;
+BEGIN
+  IF (TG_OP = 'UPDATE') THEN
+
+    IF (OLD.format_name != NEW.format_name) THEN
+        PERFORM nex.insertupdatelog('EFO'::text, 'FORMAT_NAME'::text, OLD.efo_id, OLD.format_name, NEW.format_name, USER);
+    END IF;
+
+    IF (OLD.display_name != NEW.display_name) THEN
+    PERFORM nex.insertupdatelog('EFO'::text, 'DISPLAY_NAME'::text, OLD.efo_id, OLD.display_name, NEW.display_name, USER);
+    END IF;
+
+    IF (OLD.obj_url != NEW.obj_url) THEN
+        PERFORM nex.insertupdatelog('EFO'::text, 'OBJ_URL'::text, OLD.efo_id, OLD.obj_url, NEW.obj_url, USER);
+    END IF;
+
+     IF (OLD.source_id != NEW.source_id) THEN
+        PERFORM nex.insertupdatelog('EFO'::text, 'SOURCE_ID'::text, OLD.efo_id, OLD.source_id::text, NEW.source_id::text, USER);
+    END IF;
+
+    IF (OLD.efoid != NEW.efoid) THEN
+        PERFORM nex.insertupdatelog('EFO'::text, 'EFOID'::text, OLD.efo_id, OLD.efoid, NEW.efoid, USER);
+    END IF;
+
+    IF (OLD.is_obsolete != NEW.is_obsolete) THEN
+        PERFORM nex.insertupdatelog('EFO'::text, 'IS_OBSOLETE'::text, OLD.efo_id, OLD.is_obsolete::text, NEW.is_obsolete::text, USER);
+    END IF;
+
+    IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.de\
+scription != NEW.description)) THEN
+        PERFORM nex.insertupdatelog('EFO'::text, 'DESCRIPTION'::text, OLD.efo_id, OLD.description, NEW.description, USER);
+    END IF;
+
+     RETURN NEW;
+
+  ELSIF (TG_OP = 'DELETE') THEN
+
+    v_row := OLD.efo_id || '[:]' || OLD.format_name || '[:]' ||
+             OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
+             OLD.source_id || '[:]' || OLD.efoid || '[:]' ||
+             coalesce(OLD.description,'') || '[:]' ||
+             OLD.date_created || '[:]' || OLD.created_by;
+
+             PERFORM nex.insertdeletelog('EFO'::text, OLD.efo_id, v_row, USER);
+
+     RETURN OLD;
+  END IF;
+
+END;
+$BODY$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER efo_audr
+AFTER UPDATE OR DELETE ON nex.efo FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_efo_audr();
+
+DROP TRIGGER IF EXISTS efo_biur ON nex.efo CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_efo_biur() RETURNS trigger AS $BODY$
+BEGIN
+  IF (TG_OP = 'INSERT') THEN
+
+       NEW.created_by := UPPER(NEW.created_by);
+              PERFORM nex.checkuser(NEW.created_by);
+
+       RETURN NEW;
+
+  ELSIF (TG_OP = 'UPDATE') THEN
+
+    IF (NEW.efo_id != OLD.efo_id) THEN
+        RAISE EXCEPTION 'Primary key cannot be updated';
+    END IF;
+
+    IF (NEW.date_created != OLD.date_created) THEN
+        RAISE EXCEPTION 'Audit columns cannot be updated.';
+    END IF;
+
+    IF (NEW.created_by != OLD.created_by) THEN
+        RAISE EXCEPTION 'Audit columns cannot be updated.';
+    END IF;
+
+    RETURN NEW;
+  END IF;
+
+END;
+$BODY$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER efo_biur
+BEFORE INSERT OR UPDATE ON nex.efo FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_efo_biur();
+
+DROP TRIGGER IF EXISTS efoalias_audr ON nex.efo_alias CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_efoalias_audr() RETURNS trigger AS $BODY$
+DECLARE
+    v_row       nex.deletelog.deleted_row%TYPE;
+BEGIN
+    IF (TG_OP = 'UPDATE') THEN
+
+      IF (OLD.display_name != NEW.display_name)THEN
+          PERFORM nex.insertupdatelog('EFO_ALIAS'::text, 'DISPLAY_NAME'::text, OLD.alias_id, OLD.display_name, NEW.display_name, USER);
+      END IF;
+
+      IF (OLD.source_id != NEW.source_id) THEN
+      PERFORM nex.insertupdatelog('EFO_ALIAS'::text, 'SOURCE_ID'::text, OLD.alias_id, OLD.source_id::text, NEW.source_id::text, USER);
+     END IF;
+
+      IF (OLD.efo_id != NEW.efo_id) THEN
+     PERFORM nex.insertupdatelog('EFO_ALIAS'::text, 'EFO_ID'::text, OLD.alias_id, OLD.efo_id::text, NEW.efo_id::text, USER);
+      END IF;
+
+     IF (OLD.alias_type != NEW.alias_type) THEN
+     PERFORM nex.insertupdatelog('EFO_ALIAS'::text, 'ALIAS_TYPE'::text, OLD.alias_id, OLD.alias_type, NEW.alias_type, USER);
+     END IF;
+
+     RETURN NEW;
+
+  ELSIF (TG_OP = 'DELETE') THEN
+
+     v_row := OLD.alias_id || '[:]' || OLD.display_name || '[:]' ||
+              OLD.source_id || '[:]' || OLD.efo_id || '[:]' ||
+              OLD.alias_type || '[:]' ||
+              OLD.date_created || '[:]' || OLD.created_by;
+
+              PERFORM nex.insertdeletelog('EFO_ALIAS'::text, OLD.alias_id, v_row, USER);
+
+     RETURN OLD;
+  END IF;
+
+END;
+$BODY$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER efoalias_audr
+AFTER UPDATE OR DELETE ON nex.efo_alias FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_efoalias_audr();
+
+DROP TRIGGER IF EXISTS efoalias_biur ON nex.efo_alias CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_efoalias_biur() RETURNS trigger AS $BODY$
+BEGIN
+  IF (TG_OP = 'INSERT') THEN
+
+       NEW.created_by := UPPER(NEW.created_by);
+       PERFORM nex.checkuser(NEW.created_by);
+
+       RETURN NEW;
+
+  ELSIF (TG_OP = 'UPDATE') THEN
+
+    IF (NEW.alias_id != OLD.alias_id) THEN
+        RAISE EXCEPTION 'Primary key cannot be updated';
+    END IF;
+
+    IF (NEW.date_created != OLD.date_created) THEN
+	RAISE EXCEPTION 'Audit columns cannot be updated.';
+    END IF;
+
+    IF (NEW.created_by != OLD.created_by) THEN
+	RAISE EXCEPTION 'Audit columns cannot be updated.';
+    END IF;
+
+    RETURN NEW;
+  END IF;
+
+END;
+$BODY$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER efoalias_biur
+BEFORE INSERT OR UPDATE ON nex.efo_alias FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_efoalias_biur();
+
+DROP TRIGGER IF EXISTS eforelation_audr ON nex.efo_relation CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_eforelation_audr() RETURNS trigger AS $BODY$
+DECLARE
+    v_row       nex.deletelog.deleted_row%TYPE;
+BEGIN
+  IF (TG_OP = 'UPDATE') THEN
+
+     IF (OLD.source_id != NEW.source_id) THEN
+        PERFORM nex.insertupdatelog('EFO_RELATION'::text, 'SOURCE_ID'::text, OLD.relation_id, OLD.source_id::text, NEW.source_id::text, USER);
+    END IF;
+
+     IF (OLD.parent_id != NEW.parent_id) THEN
+        PERFORM nex.insertupdatelog('EFO_RELATION'::text, 'PARENT_ID'::text, OLD.relation_id, OLD.parent_id::text, NEW.parent_id::text, USER);
+    END IF;
+
+     IF (OLD.child_id != NEW.child_id) THEN
+        PERFORM nex.insertupdatelog('EFO_RELATION'::text, 'CHILD_ID'::text, OLD.relation_id, OLD.child_id::text, NEW.child_id::text, USER);
+    END IF;
+
+    IF (OLD.ro_id != NEW.ro_id) THEN
+        PERFORM nex.insertupdatelog('EFO_RELATION'::text, 'RO_ID'::text, OLD.relation_id, OLD.ro_id::text, NEW.ro_id::text, USER);
+    END IF;
+
+    RETURN NEW;
+
+  ELSIF (TG_OP = 'DELETE') THEN
+
+    v_row := OLD.relation_id || '[:]' || OLD.source_id || '[:]' ||
+             OLD.parent_id || '[:]' ||
+             OLD.child_id || '[:]' || OLD.ro_id || '[:]' ||
+             OLD.date_created || '[:]' || OLD.created_by;
+
+             PERFORM nex.insertdeletelog('EFO_RELATION'::text, OLD.relation_id, v_row, USER);
+
+     RETURN OLD;
+  END IF;
+
+END;
+$BODY$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER eforelation_audr
+AFTER UPDATE OR DELETE ON nex.efo_relation FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_eforelation_audr();
+
+DROP TRIGGER IF EXISTS eforelation_biur ON nex.efo_relation CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_eforelation_biur() RETURNS trigger AS $BODY$
+BEGIN
+  IF (TG_OP = 'INSERT') THEN
+
+       NEW.created_by := UPPER(NEW.created_by);
+       PERFORM nex.checkuser(NEW.created_by);
+
+       RETURN NEW;
+
+  ELSIF (TG_OP = 'UPDATE') THEN
+
+    IF (NEW.relation_id != OLD.relation_id) THEN
+        RAISE EXCEPTION 'Primary key cannot be updated';
+    END IF;
+
+    IF (NEW.date_created != OLD.date_created) THEN
+        RAISE EXCEPTION 'Audit columns cannot be updated.';
+    END IF;
+
+    IF (NEW.created_by != OLD.created_by) THEN
+        RAISE EXCEPTION 'Audit columns cannot be updated.';
+    END IF;
+
+    RETURN NEW;
+  END IF;
+
+END;
+$BODY$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER eforelation_biur
+BEFORE INSERT OR UPDATE ON nex.efo_relation FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_eforelation_biur();
+
+DROP TRIGGER IF EXISTS efourl_audr ON nex.efo_url CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_efourl_audr() RETURNS trigger AS $BODY$
+DECLARE
+    v_row       nex.deletelog.deleted_row%TYPE;
+BEGIN
+  IF (TG_OP = 'UPDATE') THEN
+
+    IF (OLD.display_name != NEW.display_name) THEN
+        PERFORM nex.insertupdatelog('EFO_URL'::text, 'DISPLAY_NAME'::text, OLD.url_id, OLD.display_name, NEW.display_name, USER);
+    END IF;
+
+    IF (OLD.obj_url != NEW.obj_url) THEN
+        PERFORM nex.insertupdatelog('EFO_URL'::text, 'OBJ_URL'::text, OLD.url_id, OLD.obj_url, NEW.obj_url, USER);
+    END IF;
+
+     IF (OLD.source_id != NEW.source_id) THEN
+        PERFORM nex.insertupdatelog('EFO_URL'::text, 'SOURCE_ID'::text, OLD.url_id, OLD.source_id::text, NEW.source_id::text, USER);
+    END IF;
+
+    IF (OLD.efo_id != NEW.efo_id) THEN
+        PERFORM nex.insertupdatelog('EFO_URL'::text, 'EFO_ID'::text, OLD.url_id, OLD.efo_id::text, NEW.efo_id::text, USER);
+    END IF;
+
+    IF (OLD.url_type != NEW.url_type) THEN
+        PERFORM nex.insertupdatelog('EFO_URL'::text, 'URL_TYPE'::text, OLD.url_id, OLD.url_type, NEW.url_type, USER);
+    END IF;
+
+    RETURN NEW;
+
+  ELSIF (TG_OP = 'DELETE') THEN
+
+    v_row := OLD.url_id || '[:]' || OLD.display_name || '[:]' ||
+             OLD.obj_url || '[:]' || OLD.source_id || '[:]' ||
+             OLD.efo_id || '[:]' || OLD.url_type || '[:]' ||
+             OLD.date_created || '[:]' || OLD.created_by;
+
+             PERFORM nex.insertdeletelog('EFO_URL'::text, OLD.url_id, v_row, USER);
+
+     RETURN OLD;
+  END IF;
+
+END;
+$BODY$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER efourl_audr
+AFTER UPDATE OR DELETE ON nex.efo_url FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_efourl_audr();
+
+DROP TRIGGER IF EXISTS efourl_biur ON nex.efo_url CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_efourl_biur() RETURNS trigger AS $BODY$
+BEGIN
+  IF (TG_OP = 'INSERT') THEN
+
+       NEW.created_by := UPPER(NEW.created_by);
+       PERFORM nex.checkuser(NEW.created_by);
+
+       RETURN NEW;
+  ELSIF (TG_OP = 'UPDATE') THEN
+
+    IF (NEW.url_id != OLD.url_id) THEN
+        RAISE EXCEPTION 'Primary key cannot be updated';
+    END IF;
+
+    IF (NEW.date_created != OLD.date_created) THEN
+        RAISE EXCEPTION 'Audit columns cannot be updated.';
+    END IF;
+
+    IF (NEW.created_by != OLD.created_by) THEN
+        RAISE EXCEPTION 'Audit columns cannot be updated.';
+    END IF;
+
+    RETURN NEW;
+  END IF;
+
+END;
+$BODY$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER efourl_biur
+BEFORE INSERT OR UPDATE ON nex.efo_url FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_efourl_biur();
+
+
+
+
+
+
+
+
+
+
+
+
+
 DROP TRIGGER IF EXISTS go_audr ON nex.go CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_go_audr() RETURNS trigger AS $BODY$
 DECLARE
