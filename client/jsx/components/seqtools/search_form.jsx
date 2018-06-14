@@ -56,8 +56,7 @@ const GeneSequenceResources = React.createClass({
                 }
 		else if (param['emboss']) {
 		      this.runSeqTools('emboss');
-		}
-		      
+		}      
 	},
 
 	getPage() {
@@ -698,13 +697,14 @@ const GeneSequenceResources = React.createClass({
 		   e.preventDefault();
                    return 1;
 		}
-		this.setState({ notFound: "" });
-		this.validateGenes(genes);		
-		var not_found = this.state.notFound;
-		if (not_found != "") {
-		        e.preventDefault();
-			return 1;
-		}
+
+		// this.setState({ notFound: "" });
+		// this.validateGenes(genes);		
+		// var not_found = this.state.notFound;
+		// if (not_found != "") {
+		//        e.preventDefault();
+		//	return 1;
+		// }
 
 		var up = this.refs.up.value.trim();
                 var down = this.refs.down.value.trim();
@@ -733,7 +733,7 @@ const GeneSequenceResources = React.createClass({
                    return 1;
 		}	
 	
-		// window.localStorage.clear();
+		window.localStorage.clear();
                 window.localStorage.setItem("genes", genes);
                 window.localStorage.setItem("strains", strains);
 
