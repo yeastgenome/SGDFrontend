@@ -737,6 +737,9 @@ const GeneSequenceResources = React.createClass({
                 window.localStorage.setItem("genes", genes);
                 window.localStorage.setItem("strains", strains);
 
+		var param = this.state.param;
+		param['submit'] = 'On';
+
 	},
 
 	onSubmit2(e) {
