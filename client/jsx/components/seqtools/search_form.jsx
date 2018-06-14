@@ -377,7 +377,7 @@ const GeneSequenceResources = React.createClass({
 		    	  var seqID = gene + "_" + strain + "_" + ID;
 			  var seq = seqInfo[strain];
 
-			  console.log("seqID="+seqID);
+			  console.log("seqID="+seqID + ", seq=" + seq);
 
                           window.localStorage.setItem(seqID, seq);
 	            });
