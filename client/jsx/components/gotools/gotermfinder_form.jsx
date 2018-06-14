@@ -311,7 +311,7 @@ const GoTermFinder = React.createClass({
 
 		var evidenceToExclude = ""; 
 		for (var i = 0; evidenceCode.length; i++) {
-		     if (if (typeof(evidenceCode[i]) == "undefined") {
+		     if (typeof(evidenceCode[i]) == "undefined") {
 		         break;
 		     }
 		     if (param[evidenceCode[i]]) {
