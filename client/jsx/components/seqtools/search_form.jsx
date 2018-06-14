@@ -71,7 +71,8 @@ const GeneSequenceResources = React.createClass({
 			
 			     if (data['ERROR']) {
 			     	
-				  return (<div>{ data['ERROR'] }</div>); 
+				  return (<div><span style={ style.textFont }>{ data['ERROR'] }</span></div>); 
+
 			     }
    
 			     var [_geneList, _resultTable] = this.getResultTable4gene(data);
