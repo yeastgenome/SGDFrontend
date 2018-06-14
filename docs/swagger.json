@@ -1,0 +1,453 @@
+{  
+   "swagger":"2.0",
+   "info":{  
+      "description":"The Saccharomyces Genome Database (SGD) provides comprehensive integrated biological information for the budding yeast Saccharomyces cerevisiae along with search and analysis tools to explore these data, enabling the discovery of functional relationships between sequence and gene products in fungi and higher organisms.",
+      "version":"18.6.0",
+      "title":"The Saccharomyces Genome Database",
+      "termsOfService":"https://www.stanford.edu/site/terms/",
+      "contact":{  
+         "email":"sgd-helpdesk@lists.stanford.edu"
+      },
+      "license":{  
+         "name":"Apache 2.0",
+         "url":"http://www.apache.org/licenses/LICENSE-2.0.html"
+      }
+   },
+   "basePath":"/backend",
+   "tags":[  
+   ],
+   "schemes":[  
+      "https"
+   ],
+   "paths":{  
+      "/locus/{locusId}":{  
+         "get":{  
+            "tags":[  
+               "gene"
+            ],
+            "summary":"get basic information about a locus",
+            "produces":[  
+               "application/json"
+            ],
+            "parameters":[  
+               {  
+                  "name":"locusId",
+                  "in":"path",
+                  "description":"ID of locus to return",
+                  "required":true,
+                  "type":"string"
+               }
+            ],
+            "responses":{  
+               "200":{  
+                  "description":"phenotypes, GO annotations, interactions, references, and basic information about a gene",
+                  "schema":{  
+                     "type":"object"
+                  }
+               }
+            }
+         }
+      },
+      "/locus/{locusId}/sequence_details":{  
+         "get":{  
+            "summary":"get sequence for genomic, coding, protein, and +/- 1KB sequence",
+            "produces":[  
+               "application/json"
+            ],
+            "parameters":[  
+               {  
+                  "name":"locusId",
+                  "in":"path",
+                  "description":"ID of locus to return",
+                  "required":true,
+                  "type":"string"
+               }
+            ],
+            "responses":{  
+               "200":{  
+                  "description":"sequence for genomic, coding, protein, and +/- 1KB sequence",
+                  "schema":{  
+                     "type":"object"
+                  }
+               }
+            }
+         }
+      },
+      "/locus/{locusId}/neighbor_sequence_details":{  
+         "get":{  
+            "summary":"get sequences for neighboring loci in the strains for which they are available",
+            "produces":[  
+               "application/json"
+            ],
+            "parameters":[  
+               {  
+                  "name":"locusId",
+                  "in":"path",
+                  "description":"ID of locus to return",
+                  "required":true,
+                  "type":"string"
+               }
+            ],
+            "responses":{  
+               "200":{  
+                  "description":"sequences for neighboring loci in the strains for which they are available",
+                  "schema":{  
+                     "type":"object"
+                  }
+               }
+            }
+         }
+      },
+      "/locus/{locusId}/posttranslational_details":{  
+         "get":{  
+            "summary":"posttranslational protein data",
+            "produces":[  
+               "application/json"
+            ],
+            "parameters":[  
+               {  
+                  "name":"locusId",
+                  "in":"path",
+                  "description":"ID of locus to return",
+                  "required":true,
+                  "type":"string"
+               }
+            ],
+            "responses":{  
+               "200":{  
+                  "description":"posttranslational protein data",
+                  "schema":{  
+                     "type":"array",
+                     "items": {
+                        "$ref": "#/definitions/posttranslational_detail"
+                     }
+                  }
+               }
+            }
+         }
+      },
+      "/locus/{locusId}/protein_experiment_details":{  
+         "get":{  
+            "summary":"metadata and data values for protein experiments",
+            "produces":[  
+               "application/json"
+            ],
+            "parameters":[  
+               {  
+                  "name":"locusId",
+                  "in":"path",
+                  "description":"ID of locus to return",
+                  "required":true,
+                  "type":"string"
+               }
+            ],
+            "responses":{  
+               "200":{  
+                  "description":"metadata and data values for protein experiments",
+                  "schema":{  
+                     "type":"array",
+                     "items": {
+                        "$ref": "#/definitions/protein_experiment"
+                     }
+                  }
+               }
+            }
+         }
+      },
+      "/locus/{locusId}/protein_domain_details":{  
+         "get":{  
+            "summary":"protein domains, their sources, and their positions relative to protein sequence",
+            "produces":[  
+               "application/json"
+            ],
+            "parameters":[  
+               {  
+                  "name":"locusId",
+                  "in":"path",
+                  "description":"ID of locus to return",
+                  "required":true,
+                  "type":"string"
+               }
+            ],
+            "responses":{  
+               "200":{  
+                  "description":"protein domains, their sources, and their positions relative to protein sequence",
+                  "schema":{  
+                     "type":"array",
+                     "items": {
+                        "$ref": "#/definitions/protein_domain"
+                    }
+                  }
+               }
+            }
+         }
+      },
+      "/locus/{locusId}/go_details":{  
+         "get":{  
+            "summary":"GO (gene ontology) annotations and the references used to make them",
+            "produces":[  
+               "application/json"
+            ],
+            "parameters":[  
+               {  
+                  "name":"locusId",
+                  "in":"path",
+                  "description":"ID of locus to return",
+                  "required":true,
+                  "type":"string"
+               }
+            ],
+            "responses":{  
+               "200":{  
+                  "description":"GO (gene ontology) annotations and the references used to make them",
+                  "schema":{  
+                     "type":"array",
+                     "items": {
+                        "$ref": "#/definitions/go_annotation"
+                    }
+                  }
+               }
+            }
+         }
+      },
+      "/locus/{locusId}/phenotype_details":{  
+         "get":{  
+            "summary":"phenotype annotations and the references used to make them",
+            "produces":[  
+               "application/json"
+            ],
+            "parameters":[  
+               {  
+                  "name":"locusId",
+                  "in":"path",
+                  "description":"ID of locus to return",
+                  "required":true,
+                  "type":"string"
+               }
+            ],
+            "responses":{  
+               "200":{  
+                  "description":"phenotype annotations and the references used to make them",
+                  "schema":{  
+                     "type":"array",
+                     "items": {
+                        "$ref": "#/definitions/phenotype_annotation"
+                     }
+                  }
+               }
+            }
+         }
+      },
+      "/locus/{locusId}/interaction_details":{  
+         "get":{  
+            "summary":"interaction annotations and the references used to make them",
+            "produces":[  
+               "application/json"
+            ],
+            "parameters":[  
+               {  
+                  "name":"locusId",
+                  "in":"path",
+                  "description":"ID of locus to return",
+                  "required":true,
+                  "type":"string"
+               }
+            ],
+            "responses":{  
+               "200":{  
+                  "description":"interaction annotations and the references used to make them",
+                  "schema":{  
+                     "type":"array",
+                     "items": {
+                        "$ref": "#/definitions/interaction_annotation"
+                     }
+                  }
+               }
+            }
+         }
+      },
+      "/locus/{locusId}/regulation_details":{  
+         "get":{  
+            "summary":"regulation annotations and the references used to make them",
+            "produces":[  
+               "application/json"
+            ],
+            "parameters":[  
+               {  
+                  "name":"locusId",
+                  "in":"path",
+                  "description":"ID of locus to return",
+                  "required":true,
+                  "type":"string"
+               }
+            ],
+            "responses":{  
+               "200":{  
+                  "description":"regulation annotations and the references used to make them",
+                  "schema":{  
+                     "type":"array",
+                     "items": {
+                        "$ref": "#/definitions/regulation_annotation"
+                     }
+                  }
+               }
+            }
+         }
+      },
+      "/locus/{locusId}/literature_details":{  
+         "get":{  
+            "summary":"references which refer to a gene, organized by subject of relevance",
+            "produces":[  
+               "application/json"
+            ],
+            "parameters":[  
+               {  
+                  "name":"locusId",
+                  "in":"path",
+                  "description":"ID of locus to return",
+                  "required":true,
+                  "type":"string"
+               }
+            ],
+            "responses":{  
+               "200":{  
+                  "description":"references which refer to a gene, organized by subject of relevance",
+                  "schema":{  
+                     "type":"object"
+                  }
+               }
+            }
+         }
+      },
+      "/phenotype/{phenotypeName}":{  
+         "get":{  
+            "summary":"basic information about a phenotype",
+            "produces":[  
+               "application/json"
+            ],
+            "parameters":[  
+               {  
+                  "name":"phenotypeName",
+                  "in":"path",
+                  "description":"name of the phenotype to return",
+                  "required":true,
+                  "type":"string"
+               }
+            ],
+            "responses":{  
+               "200":{  
+                  "description":"basic information about a phenotype",
+                  "schema":{  
+                     "type":"object"
+                  }
+               }
+            }
+         }
+      },
+      "/phenotype/{phenotypeName}/locus_details":{  
+         "get":{  
+            "summary":"a list of genes annotated to a phenotype with some information about the experiment and strain background",
+            "produces":[  
+               "application/json"
+            ],
+            "parameters":[  
+               {  
+                  "name":"phenotypeName",
+                  "in":"path",
+                  "description":"name of the phenotype to return",
+                  "required":true,
+                  "type":"string"
+               }
+            ],
+            "responses":{  
+               "200":{  
+                  "description":"a list of genes annotated to a phenotype with some information about the experiment and strain background",
+                  "schema":{  
+                     "type":"object"
+                  }
+               }
+            }
+         }
+      },
+      "/go/{goId}":{  
+         "get":{  
+            "summary":"basic information about a GO term",
+            "produces":[  
+               "application/json"
+            ],
+            "parameters":[  
+               {  
+                  "name":"goId",
+                  "in":"path",
+                  "description":"id of a GO (gene ontology) term",
+                  "required":true,
+                  "type":"string"
+               }
+            ],
+            "responses":{  
+               "200":{  
+                  "description":"basic information about a GO term",
+                  "schema":{  
+                     "type":"object"
+                  }
+               }
+            }
+         }
+      },
+      "/go/{goId}/locus_details":{  
+         "get":{  
+            "summary":"a list of genes annotated to a GO term",
+            "produces":[  
+               "application/json"
+            ],
+            "parameters":[  
+               {  
+                  "name":"goId",
+                  "in":"path",
+                  "description":"id of a GO (gene ontology) term",
+                  "required":true,
+                  "type":"string"
+               }
+            ],
+            "responses":{  
+               "200":{  
+                  "description":"a list of genes annotated to a GO term",
+                  "schema":{  
+                     "type":"array",
+                     "items": {
+                        "$ref": "#/definitions/go_annotation"
+                     }
+                  }
+               }
+            }
+         }
+      }
+   },
+   "definitions": {
+      "protein_domain": {
+         "type": "object"
+      },
+      "posttranslational_detail": {
+         "type": "object"
+      },
+      "phenotype_annotation": {
+         "type": "object"
+      },
+      "go_annotation": {
+         "type": "object"
+      },
+      "protein_experiment": {
+         "type": "object"
+      },
+      "interaction_annotation": {
+         "type": "object"
+      },
+      "regulation_annotation": {
+         "type": "object"
+      }
+   },
+   "externalDocs":{  
+      "description":"Find out more about Swagger",
+      "url":"http://swagger.io"
+   }
+}
