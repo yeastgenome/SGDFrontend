@@ -330,6 +330,7 @@ const GoTermFinder = React.createClass({
 	
 	sendRequest(paramData) {
 
+		console.log("GotoolsUrl="+GOtoolsUrl);
 		console.log("genes="+paramData['genes']);
         	console.log("genes4bg="+paramData['genes4bg']);
 		console.log("pvalue="+paramData['pvalue']);
