@@ -68,7 +68,12 @@ const GeneSequenceResources = React.createClass({
 			var data = this.state.resultData;
 			
 			if (param['submit']) {
-			   
+			
+			     if (data['ERROR']) {
+			     	
+				  return (<div>{ data['ERROR'] }</div>); 
+			     }
+   
 			     var [_geneList, _resultTable] = this.getResultTable4gene(data);
 			     var _desc = this.getDesc4gene(_geneList);
 
@@ -698,13 +703,13 @@ const GeneSequenceResources = React.createClass({
                    return 1;
 		}
 
-		this.setState({ notFound: "" });
-		this.validateGenes(genes);		
-		var not_found = this.state.notFound;
-		if (not_found != "") {
-		        e.preventDefault();
-			return 1;
-		}
+		// this.setState({ notFound: "" });
+		// this.validateGenes(genes);		
+		// var not_found = this.state.notFound;
+		// if (not_found != "") {
+		//        e.preventDefault();
+		//	return 1;
+		// }
 
 		var up = this.refs.up.value.trim();
                 var down = this.refs.down.value.trim();
@@ -736,9 +741,6 @@ const GeneSequenceResources = React.createClass({
 		window.localStorage.clear();
                 window.localStorage.setItem("genes", genes);
                 window.localStorage.setItem("strains", strains);
-
-		var param = this.state.param;
-		param['submit'] = 'On';
 
 	},
 
