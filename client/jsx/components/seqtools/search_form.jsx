@@ -733,7 +733,7 @@ const GeneSequenceResources = React.createClass({
                    return 1;
 		}	
 	
-		window.localStorage.clear();
+		// window.localStorage.clear();
                 window.localStorage.setItem("genes", genes);
                 window.localStorage.setItem("strains", strains);
 
