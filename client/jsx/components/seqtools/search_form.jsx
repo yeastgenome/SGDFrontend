@@ -45,7 +45,8 @@ const GeneSequenceResources = React.createClass({
 
 	componentDidMount() {
 		var param = this.state.param;
-	        if (param['submit'] || this.state.notFound == 'Good') {
+	        if (param['submit']) {
+		     //  if (this.state.notFound == 'Good') {
 	              this.runSeqTools('genes');
 	        }
 		else if (param['submit2']) {
@@ -78,9 +79,9 @@ const GeneSequenceResources = React.createClass({
 			             </div>);
 
 			}
-			// else if (this.state.notFound == 'Good') {
-			//     this.runSeqTools('genes');			     
-			// }
+			else if (this.state.notFound == 'Good') {
+			     this.runSeqTools('genes');			     
+			}
 			else if (param['submit2']) {
 			     
 			     var _resultTable = this.getResultTable4chr(data);
