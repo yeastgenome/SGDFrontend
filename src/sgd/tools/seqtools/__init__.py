@@ -317,6 +317,9 @@ def get_sequence_for_genes(p):
     # http://0.0.0.0:6545/run_seqtools?genes=ACT1|BUD2&strains=W303|S288C&type=nuc&up=10&down=10   
     # http://0.0.0.0:6545/run_seqtools?format=fasta&type=genomic&genes=ACT1|BUD2&strains=W303|S288C&type=nuc&up=10&down=10
 
+    badGeneList = validate_names(p)
+    if badGeneList != '':
+        return { "ERROR": "These genes are not in the database: " + badGeneList }
     genes = p.get('genes')
     strains = p.get('strains')
     if strains is None or strains == '':
