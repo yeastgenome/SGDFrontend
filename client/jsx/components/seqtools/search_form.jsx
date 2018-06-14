@@ -376,9 +376,6 @@ const GeneSequenceResources = React.createClass({
 		    _.map(selectedStrains, strain =>  {
 		    	  var seqID = gene + "_" + strain + "_" + ID;
 			  var seq = seqInfo[strain];
-
-			  console.log("seqID="+seqID + ", seq=" + seq);
-
                           window.localStorage.setItem(seqID, seq);
 	            });
 		    // seqAnalRow.push(this.getToolsLinks(gene, strains, ID));
@@ -516,7 +513,11 @@ const GeneSequenceResources = React.createClass({
 	
 	getToolButton(name, program, button, ID, emboss) {
 
-                var strain = this.state.strain;
+                var strain = this.refs.strain.value.trim();
+		if (strain == '') {
+		    strain = this.state.strain;
+		}
+
                 var seqID = name + "_" + strain + "_" + ID;
                 var seq = window.localStorage.getItem(seqID);
 
