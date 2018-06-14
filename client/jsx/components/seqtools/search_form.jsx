@@ -955,12 +955,12 @@ const GeneSequenceResources = React.createClass({
 
 		if (searchType == 'genes') {
 
-		   this.setState({ notFound: "" });
-                   this.validateGenes(genes);
-                   var not_found = this.state.notFound;
-                   if (not_found != "") {
-                       return 1;
-                   }
+		   // this.setState({ notFound: "" });
+                   // this.validateGenes(genes);
+                   // var not_found = this.state.notFound;
+                   // if (not_found != "") {
+                   //    return 1;
+                   // }
 
 		   paramData['genes'] = window.localStorage.getItem("genes");
 		   paramData['strains'] = window.localStorage.getItem("strains");
