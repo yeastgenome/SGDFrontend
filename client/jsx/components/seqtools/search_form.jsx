@@ -46,7 +46,6 @@ const GeneSequenceResources = React.createClass({
 	componentDidMount() {
 		var param = this.state.param;
 	        if (param['submit']) {
-		     //  if (this.state.notFound == 'Good') {
 	              this.runSeqTools('genes');
 	        }
 		else if (param['submit2']) {
@@ -58,7 +57,7 @@ const GeneSequenceResources = React.createClass({
 		else if (param['emboss']) {
 		      this.runSeqTools('emboss');
 		}      
-	},	
+	},
 
 	getPage() {
 		
@@ -79,9 +78,6 @@ const GeneSequenceResources = React.createClass({
 			             </div>);
 
 			}
-			// else if (this.state.notFound == 'Good') {
-			//      this.runSeqTools('genes');			     
-			// }
 			else if (param['submit2']) {
 			     
 			     var _resultTable = this.getResultTable4chr(data);
@@ -690,33 +686,6 @@ const GeneSequenceResources = React.createClass({
 
 	onSubmit(e) {
 		
-		var up = this.refs.up.value.trim();
-                var down = this.refs.down.value.trim();
-                if (isNaN(up) || isNaN(down)) {
-                   alert("Please enter a number for up & downstream basepairs.");
-                   e.preventDefault();
-                   return 1;
-                }
-
-                var strainList = document.getElementById('strains');
-                var strains = '';
-                for (var i = 0; i < strainList.options.length; i++) {
-                     if (strainList.options[i].selected) {
-                         if (strains) {
-                              strains = strains + '|' + strainList.options[i].value;
-                         }
-                         else {
-                              strains = strainList.options[i].value;
-                         }
-                     }
-                }
-
-                if (strains == '') {
-                   alert("Please pick one or more strains.");
-                   e.preventDefault();
-                   return 1;
-                }
-
 		var genes = this.refs.genes.value.trim();
 		genes = genes.replace(/[^A-Za-z:\-0-9]/g, ' ');
 		var re = /\+/g;
@@ -729,19 +698,45 @@ const GeneSequenceResources = React.createClass({
                    return 1;
 		}
 
+		// this.setState({ notFound: "" });
+		// this.validateGenes(genes);		
+		// var not_found = this.state.notFound;
+		// if (not_found != "") {
+		//        e.preventDefault();
+		//	return 1;
+		// }
+
+		var up = this.refs.up.value.trim();
+                var down = this.refs.down.value.trim();
+                if (isNaN(up) || isNaN(down)) {
+                   alert("Please enter a number for up & downstream basepairs.");
+		   e.preventDefault();
+                   return 1;
+		}
+
+		var strainList = document.getElementById('strains');
+                var strains = '';
+		for (var i = 0; i < strainList.options.length; i++) {
+                     if (strainList.options[i].selected) {
+                         if (strains) {
+                              strains = strains + '|' + strainList.options[i].value;
+			 }
+                         else {
+                              strains = strainList.options[i].value;
+                         }
+                     }
+                }
+
+		if (strains == '') {
+		   alert("Please pick one or more strains.");
+                   e.preventDefault();
+                   return 1;
+		}	
+	
 		window.localStorage.clear();
                 window.localStorage.setItem("genes", genes);
                 window.localStorage.setItem("strains", strains);
 
-		// check to make sure all gene names entered are valid
-		this.setState({ notFound: "Good" });
-		this.validateGenes(genes);		
-		var not_found = this.state.notFound;
-		if (not_found != "Good") {
-		        e.preventDefault();
-			return 1;
-		}
-		
 	},
 
 	onSubmit2(e) {
@@ -960,6 +955,13 @@ const GeneSequenceResources = React.createClass({
 
 		if (searchType == 'genes') {
 
+		   this.setState({ notFound: "" });
+                   this.validateGenes(genes);
+                   var not_found = this.state.notFound;
+                   if (not_found != "") {
+                       return 1;
+                   }
+
 		   paramData['genes'] = window.localStorage.getItem("genes");
 		   paramData['strains'] = window.localStorage.getItem("strains");
 
@@ -1022,7 +1024,7 @@ const GeneSequenceResources = React.createClass({
 		      	success: function(data) {
 				this.setState({notFound: data});
 				if (data != "") {
-				    alert("These gene name(s) do not exist in the database: " + data);
+				    alert("These gene name(s) do not exist in the database: " + data + ". Please go back, fix the gene name(s) and submit again.");
 				}
                       	}.bind(this),
                       	error: function(xhr, status, err) {
