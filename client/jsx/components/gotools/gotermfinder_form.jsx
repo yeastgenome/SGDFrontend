@@ -315,7 +315,7 @@ const GoTermFinder = React.createClass({
 		         break;
 		     }
 		     
-		     alert("evidenceCode[i]="+evidenceCode[i]);
+		     alert("evidenceCode[i]="+param[evidenceCode[i]]);
 		     continue;
 
 		     if (param[evidenceCode[i]]) {
