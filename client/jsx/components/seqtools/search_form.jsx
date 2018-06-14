@@ -45,7 +45,7 @@ const GeneSequenceResources = React.createClass({
 
 	componentDidMount() {
 		var param = this.state.param;
-	        if (param['submit']) {
+	        if (param['submit'] || this.state.notFound == 'Good') {
 	              this.runSeqTools('genes');
 	        }
 		else if (param['submit2']) {
@@ -57,7 +57,7 @@ const GeneSequenceResources = React.createClass({
 		else if (param['emboss']) {
 		      this.runSeqTools('emboss');
 		}      
-	},
+	},	
 
 	getPage() {
 		
@@ -78,6 +78,9 @@ const GeneSequenceResources = React.createClass({
 			             </div>);
 
 			}
+			// else if (this.state.notFound == 'Good') {
+			//     this.runSeqTools('genes');			     
+			// }
 			else if (param['submit2']) {
 			     
 			     var _resultTable = this.getResultTable4chr(data);
@@ -730,16 +733,14 @@ const GeneSequenceResources = React.createClass({
                 window.localStorage.setItem("strains", strains);
 
 		// check to make sure all gene names entered are valid
-		this.setState({ notFound: "" });
+		this.setState({ notFound: "Good" });
 		this.validateGenes(genes);		
 		var not_found = this.state.notFound;
-		if (not_found != "") {
+		if (not_found != "Good") {
 		        e.preventDefault();
 			return 1;
 		}
 		
-		this.runSeqTools('genes');		
-
 	},
 
 	onSubmit2(e) {
