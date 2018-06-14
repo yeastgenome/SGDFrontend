@@ -335,6 +335,12 @@ const GoTermFinder = React.createClass({
 	
 	sendRequest(paramData) {
 
+		console.log("GOtoosUrl="+GOtoolsUrl);
+		console.log("genes="+paramData['genes']);
+		console.log("evidenceToExclude="+paramData['evidenceToExclude']);
+		console.log("pvalue="+paramData['pvalue']);
+		console.log("FDR="+paramData['FDR']);
+
 		$.ajax({
 			url: GOtoolsUrl,
 			data_type: 'json',
