@@ -326,8 +326,6 @@ const GoTermFinder = React.createClass({
 		if (evidenceToExclude != "") {
 		     paramData['evidenceToExclude'] = evidenceToExclude
 		}
-
-		alert("evidenceToExclude="+paramData['evidenceToExclude']);
 		
 		this.sendRequest(paramData)
 		return
@@ -336,16 +334,6 @@ const GoTermFinder = React.createClass({
 	},
 	
 	sendRequest(paramData) {
-
-		console.log("GotoolsUrl="+GOtoolsUrl);
-		console.log("genes="+paramData['genes']);
-        	console.log("genes4bg="+paramData['genes4bg']);
-		console.log("pvalue="+paramData['pvalue']);
-		console.log("FDR="+paramData['FDR']);
-		console.log("evidenceToExclude="+paramData['evidenceToExclude']);
-
-		return
-
 
 		$.ajax({
 			url: GOtoolsUrl,
