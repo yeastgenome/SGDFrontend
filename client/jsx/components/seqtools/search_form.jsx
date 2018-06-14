@@ -23,7 +23,7 @@ const GeneSequenceResources = React.createClass({
 			isComplete: false,
 			isPending: false,
 			userError: null,
-			strain: 'S288C',
+			strain: '',
 			resultData: {},
 			notFound: null,
 			param: param
@@ -513,11 +513,11 @@ const GeneSequenceResources = React.createClass({
 	
 	getToolButton(name, program, button, ID, emboss) {
 
-		var strain = document.getElementById('strain');
-		if (strain != '') {
-		     strain = this.state.strain;
+		
+		var strain = this.state.strain;
+		if (strain == '') {
+		     strain = window.localStorage.getItem("strain");
 		}
-
                 var seqID = name + "_" + strain + "_" + ID;
                 var seq = window.localStorage.getItem(seqID);
 
@@ -543,6 +543,9 @@ const GeneSequenceResources = React.createClass({
 	getToolButton4post(name, program, button, ID) {
 
 		var strain = this.state.strain;
+		if (strain == '') {
+		     strain = window.localStorage.getItem("strain");   
+		}
 		var seqID = name + "_" + strain + "_" + ID;
 		var seq = window.localStorage.getItem(seqID);
 
@@ -904,7 +907,7 @@ const GeneSequenceResources = React.createClass({
 	              }
 		});
 		
-		// this.setState({ strain: defaultStrain });
+		window.localStorage.setItem("strain", defaultStrain);
 
 		return(<div>
                        <p><select ref='strain' name='strain' id='strain' onChange={this.onChange4strain}>{_elements}</select></p>
