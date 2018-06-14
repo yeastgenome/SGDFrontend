@@ -23,7 +23,7 @@ const GeneSequenceResources = React.createClass({
 			isComplete: false,
 			isPending: false,
 			userError: null,
-			strain: 'S288C',
+			strain: '',
 			resultData: {},
 			notFound: null,
 			param: param
@@ -56,8 +56,7 @@ const GeneSequenceResources = React.createClass({
                 }
 		else if (param['emboss']) {
 		      this.runSeqTools('emboss');
-		}
-		      
+		}      
 	},
 
 	getPage() {
@@ -69,7 +68,13 @@ const GeneSequenceResources = React.createClass({
 			var data = this.state.resultData;
 			
 			if (param['submit']) {
-			   
+			
+			     if (data['ERROR']) {
+			     	
+				  return (<div><span style={ style.textFont }>{ data['ERROR'] }</span></div>); 
+
+			     }
+   
 			     var [_geneList, _resultTable] = this.getResultTable4gene(data);
 			     var _desc = this.getDesc4gene(_geneList);
 
@@ -513,7 +518,11 @@ const GeneSequenceResources = React.createClass({
 	
 	getToolButton(name, program, button, ID, emboss) {
 
-                var strain = this.state.strain;
+		
+		var strain = this.state.strain;
+		if (strain == '') {
+		     strain = window.localStorage.getItem("strain");
+		}
                 var seqID = name + "_" + strain + "_" + ID;
                 var seq = window.localStorage.getItem(seqID);
 
@@ -539,6 +548,9 @@ const GeneSequenceResources = React.createClass({
 	getToolButton4post(name, program, button, ID) {
 
 		var strain = this.state.strain;
+		if (strain == '') {
+		     strain = window.localStorage.getItem("strain");   
+		}
 		var seqID = name + "_" + strain + "_" + ID;
 		var seq = window.localStorage.getItem(seqID);
 
@@ -691,13 +703,14 @@ const GeneSequenceResources = React.createClass({
 		   e.preventDefault();
                    return 1;
 		}
-		this.setState({ notFound: "" });
-		this.validateGenes(genes);		
-		var not_found = this.state.notFound;
-		if (not_found != "") {
-		        e.preventDefault();
-			return 1;
-		}
+
+		// this.setState({ notFound: "" });
+		// this.validateGenes(genes);		
+		// var not_found = this.state.notFound;
+		// if (not_found != "") {
+		//        e.preventDefault();
+		//	return 1;
+		// }
 
 		var up = this.refs.up.value.trim();
                 var down = this.refs.down.value.trim();
@@ -886,7 +899,6 @@ const GeneSequenceResources = React.createClass({
 		var strainMapping = GSR.StrainMapping();
 		var defaultStrain = "";
 		
-
 		var _elements = _.map(strains, s => {
 		      var label = s; 
 		      if (s == 'S288C') {
@@ -901,7 +913,7 @@ const GeneSequenceResources = React.createClass({
 	              }
 		});
 		
-		// this.setState({ strain: defaultStrain });
+		window.localStorage.setItem("strain", defaultStrain);
 
 		return(<div>
                        <p><select ref='strain' name='strain' id='strain' onChange={this.onChange4strain}>{_elements}</select></p>
