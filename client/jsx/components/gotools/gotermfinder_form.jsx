@@ -336,6 +336,9 @@ const GoTermFinder = React.createClass({
 		console.log("FDR="+paramData['FDR']);
 		console.log("evidenceToExclude="+paramData['evidenceToExclude']);
 
+		return
+
+
 		$.ajax({
 			url: GOtoolsUrl,
 			data_type: 'json',
