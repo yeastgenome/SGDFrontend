@@ -686,6 +686,33 @@ const GeneSequenceResources = React.createClass({
 
 	onSubmit(e) {
 		
+		var up = this.refs.up.value.trim();
+                var down = this.refs.down.value.trim();
+                if (isNaN(up) || isNaN(down)) {
+                   alert("Please enter a number for up & downstream basepairs.");
+                   e.preventDefault();
+                   return 1;
+                }
+
+                var strainList = document.getElementById('strains');
+                var strains = '';
+                for (var i = 0; i < strainList.options.length; i++) {
+                     if (strainList.options[i].selected) {
+                         if (strains) {
+                              strains = strains + '|' + strainList.options[i].value;
+                         }
+                         else {
+                              strains = strainList.options[i].value;
+                         }
+                     }
+                }
+
+                if (strains == '') {
+                   alert("Please pick one or more strains.");
+                   e.preventDefault();
+                   return 1;
+                }
+
 		var genes = this.refs.genes.value.trim();
 		genes = genes.replace(/[^A-Za-z:\-0-9]/g, ' ');
 		var re = /\+/g;
@@ -698,44 +725,20 @@ const GeneSequenceResources = React.createClass({
                    return 1;
 		}
 
-		// this.setState({ notFound: "" });
-		// this.validateGenes(genes);		
-		// var not_found = this.state.notFound;
-		// if (not_found != "") {
-		//        e.preventDefault();
-		//	return 1;
-		// }
-
-		var up = this.refs.up.value.trim();
-                var down = this.refs.down.value.trim();
-                if (isNaN(up) || isNaN(down)) {
-                   alert("Please enter a number for up & downstream basepairs.");
-		   e.preventDefault();
-                   return 1;
-		}
-
-		var strainList = document.getElementById('strains');
-                var strains = '';
-		for (var i = 0; i < strainList.options.length; i++) {
-                     if (strainList.options[i].selected) {
-                         if (strains) {
-                              strains = strains + '|' + strainList.options[i].value;
-			 }
-                         else {
-                              strains = strainList.options[i].value;
-                         }
-                     }
-                }
-
-		if (strains == '') {
-		   alert("Please pick one or more strains.");
-                   e.preventDefault();
-                   return 1;
-		}	
-	
 		window.localStorage.clear();
                 window.localStorage.setItem("genes", genes);
                 window.localStorage.setItem("strains", strains);
+
+		// check to make sure all gene names entered are valid
+		this.setState({ notFound: "" });
+		this.validateGenes(genes);		
+		var not_found = this.state.notFound;
+		if (not_found != "") {
+		        e.preventDefault();
+			return 1;
+		}
+		
+		this.runSeqTools('genes');		
 
 	},
 
