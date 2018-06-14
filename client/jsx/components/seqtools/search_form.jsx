@@ -698,13 +698,13 @@ const GeneSequenceResources = React.createClass({
                    return 1;
 		}
 
-		// this.setState({ notFound: "" });
-		// this.validateGenes(genes);		
-		// var not_found = this.state.notFound;
-		// if (not_found != "") {
-		//        e.preventDefault();
-		//	return 1;
-		// }
+		this.setState({ notFound: "" });
+		this.validateGenes(genes);		
+		var not_found = this.state.notFound;
+		if (not_found != "") {
+		        e.preventDefault();
+			return 1;
+		}
 
 		var up = this.refs.up.value.trim();
                 var down = this.refs.down.value.trim();
@@ -955,13 +955,6 @@ const GeneSequenceResources = React.createClass({
 
 		if (searchType == 'genes') {
 
-		   // this.setState({ notFound: "" });
-                   // this.validateGenes(genes);
-                   // var not_found = this.state.notFound;
-                   // if (not_found != "") {
-                   //    return 1;
-                   // }
-
 		   paramData['genes'] = window.localStorage.getItem("genes");
 		   paramData['strains'] = window.localStorage.getItem("strains");
 
@@ -1024,7 +1017,7 @@ const GeneSequenceResources = React.createClass({
 		      	success: function(data) {
 				this.setState({notFound: data});
 				if (data != "") {
-				    alert("These gene name(s) do not exist in the database: " + data + ". Please go back, fix the gene name(s) and submit again.");
+				    alert("These gene name(s) do not exist in the database: " + data);
 				}
                       	}.bind(this),
                       	error: function(xhr, status, err) {
