@@ -79,9 +79,9 @@ const GeneSequenceResources = React.createClass({
 			             </div>);
 
 			}
-			else if (this.state.notFound == 'Good') {
-			     this.runSeqTools('genes');			     
-			}
+			// else if (this.state.notFound == 'Good') {
+			//      this.runSeqTools('genes');			     
+			// }
 			else if (param['submit2']) {
 			     
 			     var _resultTable = this.getResultTable4chr(data);
