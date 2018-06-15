@@ -391,7 +391,7 @@ const GoTermFinder = React.createClass({
 		
 	},
 
-	tableSaveOptions(htmlUrl, termsUrl, tabUrl, inputUrl, inputUrl) {
+	tableSaveOptions(htmlUrl, termsUrl, tabUrl, inputUrl) {
 		return "<h3>Save Options: <a href=" + htmlUrl + " target='infowin2'>HTML Table</a> | <a href=" + termsUrl + " target='infowin2'>Plain Text</a> | <a href=" + tabUrl + " target='infowin2'>Tab-delimited</a> | <a href=" + inputUrl + " target='infowin2'>Your Input List of Genes</a></h3>";			   
 		
 	},
