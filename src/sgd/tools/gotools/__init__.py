@@ -55,6 +55,7 @@ def run_gotermfinder(p):
     imageHtml = response.read()
     imageHtml = imageHtml.replace("<html><body>", "").replace("</body></html>", "")
     imageHtml = imageHtml.replace("<img src='./", "<img src='" + rootUrl + "/")
+    imageHtml = "<b><Nodes" + imageHtml.split("</font><br><br><b>Nodes")[1]
     
     response = urlopen(htmlUrl)
     html = response.read() 
