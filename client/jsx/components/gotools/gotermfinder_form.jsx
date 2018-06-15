@@ -387,7 +387,7 @@ const GoTermFinder = React.createClass({
 
 	getResultText() {
 		
-		return "<h3>This page displays the significant shared GO terms (or parents of GO terms) used to describe your set of genes, based on the criteria you selected to define the background set of genes and which annotations are used in the significance calculations. View Results: <a href='#graph'>Graphic</a> | <a href='#table'>Table</a></h3>
+		return "<h3>This page displays the significant shared GO terms (or parents of GO terms) used to describe your set of genes, based on the criteria you selected to define the background set of genes and which annotations are used in the significance calculations. View Results: <a href='#graph'>Graphic</a> | <a href='#table'>Table</a></h3>";
 		
 	},
 
