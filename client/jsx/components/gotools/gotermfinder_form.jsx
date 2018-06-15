@@ -394,7 +394,7 @@ const GoTermFinder = React.createClass({
 	tableSaveOptions(htmlUrl, termsUrl, tabUrl, inputUrl, inputUrl) {
 		return "<h3>Save Options: <a href=" + htmlUrl + " target='infowin2'>HTML Table</a> | <a href=" + termsUrl + " target='infowin2'>Plain Text</a> | <a href=" + tabUrl + " target='infowin2'>Tab-delimited</a> | <a href=" + inputUrl + " target='infowin2'>Your Input List of Genes</a></h3>";			   
 		
-	}
+	},
 
 	graphSaveOptions(pngUrl, pngHtmlUrl, svgUrl, psUrl, inputUrl) {
 		return "<h3>Save Options: <a href=" + pngUrl + " target='infowin2'>PNG</a> | <a href=" + pngHtmlUrl + " target='infowin2'>PNG With HyperLinks</a> | <a href=" + svgUrl + " target='infowin2'>SVG</a> | <a href=" + psUrl + " target='infowin2'>PostScript</a> | <a href=" + inputUrl + " target='infowin2'>Your Input List of Genes</a></h3>";
