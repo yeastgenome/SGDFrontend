@@ -73,7 +73,7 @@ const GoTermFinder = React.createClass({
 
 			return (<div>
 			       <p dangerouslySetInnerHTML={{ __html: resultTable }} />
-
+			       <p dangerouslySetInnerHTML={{ __html: graph }} />
 			</div>);
 
 
