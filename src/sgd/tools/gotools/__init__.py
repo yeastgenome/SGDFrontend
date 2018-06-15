@@ -43,6 +43,9 @@ def run_gotermfinder(p):
     
     res = _get_json_from_server(gotools_url, paramData)
 
+    if res.get('output'):
+        return { "output": res['output'] }
+
     htmlUrl = res['html']
     rootUrl = res['rootUrl']
     imageHtmlUrl = res['imageHtml']

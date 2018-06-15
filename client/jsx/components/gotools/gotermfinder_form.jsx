@@ -64,6 +64,11 @@ const GoTermFinder = React.createClass({
 	        if (this.state.isComplete) {
 
 			var data = this.state.resultData;
+			var output = data['output'];
+			if (typeof(output) != "undefined") {
+			     return (<div><span style={ style.textFont }>{ output }</span></div>);
+			}
+
 			var resultTable = data['html'];
 			var graph = data['image_html'];
 			var termPageUrl = data['term_page'];
