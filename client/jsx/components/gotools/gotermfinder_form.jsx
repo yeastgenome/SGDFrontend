@@ -334,6 +334,7 @@ const GoTermFinder = React.createClass({
 
 		if (evidence != "" && selected > 0) {
 		     paramData['evidence'] = evidence;
+		     console.log("evidence="+evidence);
 		}
 		
 		this.sendRequest(paramData)
