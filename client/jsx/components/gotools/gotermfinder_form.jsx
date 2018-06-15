@@ -84,12 +84,14 @@ const GoTermFinder = React.createClass({
 			var tableSaveOptions = this.tableSaveOptions(tableUrl, termsUrl, tabUrl, inputUrl);
 			var graphSaveOptions = this.graphSaveOptions(pngUrl, pngHtmlUrl, svgUrl, psUrl, inputUrl);
 
-			resultTable = "<br><a name='table'>" + "<h2><center>Search Results in HTML Table Format</center></h2><br>" + tableSaveOptions + resultTable;
-			graph = "<a name='graph'>" + "<h2><center>Search Results in GO View Tree Image Format</center></h2><br>" + graphSaveOptions + graph;
+			tableSaveOptions = "<br><a name='table'>" + "<h2><center>Search Results in HTML Table Format</center></h2><br>" + tableSaveOptions;
+			graphSaveOptions = "<a name='graph'>" + "<h2><center>Search Results in GO View Tree Image Format</center></h2><br>" + graphSaveOptions;
 
 			return (<div>
 			       <p dangerouslySetInnerHTML={{ __html: resultText }} />
+			       <p dangerouslySetInnerHTML={{ __html: graphSaveOptions }} />
 			       <p dangerouslySetInnerHTML={{ __html: graph }} />
+			       <p dangerouslySetInnerHTML={{ __html: tableSaveOptions }} />
 			       <p dangerouslySetInnerHTML={{ __html: resultTable }} />
 			</div>);
 
