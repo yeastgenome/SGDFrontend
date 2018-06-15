@@ -71,7 +71,7 @@ const GoTermFinder = React.createClass({
 			var imageUrl = data['image_page'];
 			var resulTableUrl = data['table_page'];
 			
-			var resultText = this.getResultText();
+			var resultText = this.getResultText(tabPageUrl, termPageUrl);
 
 			resultTable = "<a name='table'>" + resultTable;
 			graph = "<a name='graph'>" + graph;
@@ -372,10 +372,10 @@ const GoTermFinder = React.createClass({
 	
 	},
 
-	getResultText() {
+	getResultText(tabUrl, termsUrl) {
 		
-		return "<h3>This page displays the significant shared GO terms (or parents of GO terms) used to describe your set of genes, based on the criteria you selected to define the background set of genes and which annotations are used in the significance calculations. View Results: <a href='#graph'>Graphic</a> | <a href='#table'>Table</a></h3>";
-
+		return "<h3>This page displays the significant shared GO terms (or parents of GO terms) used to describe your set of genes, based on the criteria you selected to define the background set of genes and which annotations are used in the significance calculations. View Results: <a href='#graph'>Graphic</a> | <a href='#table'>Table</a> | <a href=" + tabUrl + " target='infowin2'>Tab-delimited Result Page</a> | <a href=" + termsUrl + " target='infowin2'>Terms Page</a>" + "</h3>";
+		
 	}
 
 });
