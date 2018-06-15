@@ -70,10 +70,16 @@ const GoTermFinder = React.createClass({
 			var tabPageUrl = data['tab_page'];
 			var imageUrl = data['image_page'];
 			var resulTableUrl = data['table_page'];
+			
+			var resultText = this.getResultText();
+
+			resultTable = "<a name='table'>" + resultTable;
+			graph = "<a name='graph'>" + graph;
 
 			return (<div>
-			       <p dangerouslySetInnerHTML={{ __html: resultTable }} />
+			       <p dangerouslySetInnerHTML={{ __html: resultText}} />
 			       <p dangerouslySetInnerHTML={{ __html: graph }} />
+			       <p dangerouslySetInnerHTML={{ __html: resultTable }} />
 			</div>);
 
 
@@ -364,6 +370,12 @@ const GoTermFinder = React.createClass({
 		// 2. Manually curated and High-throughput annotation methods, 
 		return "<p><h3>The GO Term Finder (<a href='http://search.cpan.org/dist/GO-TermFinder/' target='infowin'>Version 0.86</a>) searches for significant shared GO terms, or parents of those GO terms, used to describe the genes in your list to help you discover what the genes may have in common. To map annotations of a group of genes to more general terms and/or to bin them in broad categories, use the <a href='https://www.yeastgenome.org/cgi-bin/GO/goSlimMapper.pl' target='infowin'>GO Slim Mapper</a></h3>.<h3><a name='defaultsetting'>Default Settings:</a> 1. All genes/features that have GO annotations in the database, 2. All annotations in the database (manually curated, high-throughput, and computational annotations), and 3. Hits with p-value < 0.01 will be displayed on the results page</h3></p>";
 	
+	},
+
+	getResultText() {
+		
+		return "<h3>This page displays the significant shared GO terms (or parents of GO terms) used to describe your set of genes, based on the criteria you selected to define the background set of genes and which annotations are used in the significance calculations. View Results: <a href='graph'>Graphic</a> | <a href='table'>Table</a></h3>";
+
 	}
 
 });
