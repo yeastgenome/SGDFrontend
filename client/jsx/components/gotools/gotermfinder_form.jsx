@@ -329,12 +329,11 @@ const GoTermFinder = React.createClass({
 		     if (evidence != "") {
 			 evidence += "|";
 		     }
-		     evidence += code;
+		     evidence += evidenceCode[i];
 		}
 
 		if (evidence != "" && selected > 0) {
 		     paramData['evidence'] = evidence;
-		     console.log("evidence="+evidence);
 		}
 		
 		this.sendRequest(paramData)
