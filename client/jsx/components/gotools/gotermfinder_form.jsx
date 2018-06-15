@@ -309,27 +309,29 @@ const GoTermFinder = React.createClass({
 		     paramData['FDR'] = 1;
 		}
 
-		var evidenceToExclude = ""; 
+		var evidence = ""; 
+		var selected = 0;
 		for (var i = 0; evidenceCode.length; i++) {
 		     if (typeof(evidenceCode[i]) == "undefined") {
 		         break;
 		     }
 		     var code = param[evidenceCode[i]];
-		     if (typeof(code) == "undefined") {
+		     if (typeof(code) != "undefined") {
+		     	 selected += 1; 
 		     	 continue;
 		     }		     
-		     if (evidenceToExclude != "") {
-			 evidenceToExclude += "|";
+		     if (evidence != "") {
+			 evidence += "|";
 		     }
-		     evidenceToExclude += code;
+		     evidence += code;
 		}
-		if (evidenceToExclude != "") {
-		     paramData['evidenceToExclude'] = evidenceToExclude
+
+		if (evidence != "" && selected > 0) {
+		     paramData['evidence'] = evidence;
 		}
 		
 		this.sendRequest(paramData)
 		return
-
 		 		
 	},
 	
@@ -337,7 +339,7 @@ const GoTermFinder = React.createClass({
 
 		console.log("GOtoosUrl="+GOtoolsUrl);
 		console.log("genes="+paramData['genes']);
-		console.log("evidenceToExclude="+paramData['evidenceToExclude']);
+		console.log("evidence="+paramData['evidence']);
 		console.log("pvalue="+paramData['pvalue']);
 		console.log("FDR="+paramData['FDR']);
 

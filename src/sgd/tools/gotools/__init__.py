@@ -27,7 +27,7 @@ def run_gotermfinder(p):
     genes4bg = p.get('genes4bg', '')
     pvalue = p.get('pvalue', '0.01')
     FDR = p.get('FDR', 0)
-    evidenceToExclude = p.get('evidenceToExclude', '')
+    evidence = p.get('evidence', '')
         
     ## add code later to handle pvalue + exclude evidence list etc
     # url = gotools_url + "?aspect=" + aspect + "&genes=" + genes 
@@ -39,7 +39,7 @@ def run_gotermfinder(p):
                                    'aspect': aspect,
                                    'pvalue': pvalue,
                                    'FDR': FDR,
-                                   'evidenceToExclude': evidenceToExclude });
+                                   'evidenceToExclude': evidence });
     
     res = _get_json_from_server(gotools_url, paramData)
 
