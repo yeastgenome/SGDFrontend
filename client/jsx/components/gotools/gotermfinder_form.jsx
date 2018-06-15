@@ -71,19 +71,27 @@ const GoTermFinder = React.createClass({
 
 			var resultTable = data['html'];
 			var graph = data['image_html'];
-			var termPageUrl = data['term_page'];
-			var tabPageUrl = data['tab_page'];
-			var imageUrl = data['image_page'];
-			var resulTableUrl = data['table_page'];
-			
-			var resultText = this.getResultText(tabPageUrl, termPageUrl);
+			var termsUrl = data['term_page'];
+			var tabUrl = data['tab_page'];
+			var pngUrl = data['png_page'];
+			var pngHtmlUrl = data['image_page'];
+			var svgUrl = data['svg_page'];
+			var psUrl = data['ps_page'];
+			var tableUrl = data['table_page'];
+			var inputUrl = data['input_page'];
+	
+			var resultText = this.getResultText();
+			var tableSaveOptions = this.tableSaveOptions(tableUrl, termsUrl, tabUrl, inputUrl);
+			var graphSaveOptions = this.graphSaveOptions(pngUrl, pngHtmlUrl, svgUrl, psUrl, inputUrl);
 
-			resultTable = "<a name='table'>" + resultTable;
-			graph = "<a name='graph'>" + graph;
+			resultTable = "<a name='table'>" + "<h2><center>Search Results in HTML Table Format</center></h2>" + resultTable;
+			graph = "<a name='graph'>" + "<h2><center>Search Results in GO View Tree Image Format</center></h2>" + graph;
 
 			return (<div>
-			       <p dangerouslySetInnerHTML={{ __html: resultText}} />
+			       <p dangerouslySetInnerHTML={{ __html: resultText }} />
+			       <p dangerouslySetInnerHTML={{ __html: graphSaveOptions }} />			       
 			       <p dangerouslySetInnerHTML={{ __html: graph }} />
+			       <p dangerouslySetInnerHTML={{ __html: tableSaveOptions }} />
 			       <p dangerouslySetInnerHTML={{ __html: resultTable }} />
 			</div>);
 
@@ -377,10 +385,20 @@ const GoTermFinder = React.createClass({
 	
 	},
 
-	getResultText(tabUrl, termsUrl) {
+	getResultText() {
 		
-		return "<h3>This page displays the significant shared GO terms (or parents of GO terms) used to describe your set of genes, based on the criteria you selected to define the background set of genes and which annotations are used in the significance calculations. View Results: <a href='#graph'>Graphic</a> | <a href='#table'>Table</a> | <a href=" + tabUrl + " target='infowin2'>Tab-delimited Result Page</a> | <a href=" + termsUrl + " target='infowin2'>Terms Page</a>" + "</h3>";
+		return "<h3>This page displays the significant shared GO terms (or parents of GO terms) used to describe your set of genes, based on the criteria you selected to define the background set of genes and which annotations are used in the significance calculations. View Results: <a href='#graph'>Graphic</a> | <a href='#table'>Table</a></h3>
 		
+	},
+
+	tableSaveOptions(htmlUrl, termsUrl, tabUrl, inputUrl, inputUrl) {
+		return "<h3>Save Options: <a href=" + htmlUrl + " target='infowin2'>HTML Table</a> | <a href=" + termsUrl + " target='infowin2'>Plain Text</a> | <a href=" + tabUrl + " target='infowin2'>Tab-delimited</a> | <a href=" + inputUrl + " target='infowin2'>Your Input List of Genes</a></h3>";			   
+		
+	}
+
+	graphSaveOptions(pngUrl, pngHtmlUrl, svgUrl, psUrl, inputUrl) {
+		return "<h3>Save Options: <a href=" + pngUrl + " target='infowin2'>PNG</a> | <a href=" + pngHtmlUrl + " target='infowin2'>PNG With HyperLinks</a> | <a href=" + svgUrl + " target='infowin2'>SVG</a> | <a href=" + psUrl + " target='infowin2'>PostScript</a> | <a href=" + inputUrl + " target='infowin2'>Your Input List of Genes</a></h3>";
+     		
 	}
 
 });

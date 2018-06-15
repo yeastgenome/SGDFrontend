@@ -50,10 +50,6 @@ def run_gotermfinder(p):
     rootUrl = res['rootUrl']
     imageHtmlUrl = res['imageHtml']
 
-    # <center><img src='./11519.png' usemap='#goPathImage'></center><p>
-    # <html><body>
-    # </body></html>
-
     response = urlopen(imageHtmlUrl)
     imageHtml = response.read()
     imageHtml = imageHtml.replace("<html><body>", "").replace("</body></html>", "")
@@ -71,7 +67,11 @@ def run_gotermfinder(p):
              "tab_page": res['tab'],
              "term_page": res['terms'],
              "image_page": res['imageHtml'],
-             "table_page": res['html'] }
+             "table_page": res['html'],
+             "svg_page": res['svg'],
+             "png_page": res['png'],
+             "ps_page": res['ps'],
+             "input_page": res['input'] }
              
 
 def _get_json_from_server(url, paramData):
