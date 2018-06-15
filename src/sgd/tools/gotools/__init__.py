@@ -39,7 +39,7 @@ def run_gotermfinder(p):
                                    'aspect': aspect,
                                    'pvalue': pvalue,
                                    'FDR': FDR,
-                                   'evidenceToExclude': evidence });
+                                   'evidence': evidence });
     
     res = _get_json_from_server(gotools_url, paramData)
 
