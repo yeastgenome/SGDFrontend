@@ -60,8 +60,7 @@ def run_gotermfinder(p):
     html = response.read() 
     html = html.replace("<html><body>", "").replace("</body></html>", "")
     html = html.replace("color=red", "color=maroon")
-    
-    
+      
     return { "html": html,
              "image_html": imageHtml,
              "tab_page": res['tab'],
