@@ -115,8 +115,10 @@ def display_sequence_for_chr(p, data):
         content += format_gcg(data['residue']);
     else:
         content += format_fasta(data['residue']);
-        
-    filename = "chr" + _chrnum_to_chrom(data['chr']) + "_" +  start + "-" + end
+
+    filename = "chr" + _chrnum_to_chrom(data['chr'])
+    if start != 'undefined':
+        filename = filename + "_" +  start + "-" + end
 
     if p.get('format') == 'gcg':
         filename += ".gcg"
@@ -235,6 +237,7 @@ def validate_names(p):
         badList = ""
         for name in names:
             gene = name
+            name = name.upper()
             name = name.replace("SGD:", "")
             url = validate_url + name
             res =_check_gene_from_server(url)
@@ -255,12 +258,12 @@ def get_sequence_for_chr(p):
     strand = '+'
     start = p.get('start')
     end = p.get('end')
-    if start is not None:
+    if start is not None and start != 'undefined':
         data["start"] = start
         start = int(start)
     else:
         start = 1
-    if end is not None:
+    if end is not None and end != 'undefined':
         data["end"] =end
         end = int(end)
     else:
@@ -290,6 +293,10 @@ def manipulate_sequence(p):
     seq = seq.replace(" ", "")
 
     seq = ''.join([i for i in seq if not i.isdigit()])
+    if p.get('seqtype') == 'Protein':
+        data['residue'] = seq
+        return data
+
     rev = p.get('rev')
     if rev is not None and rev == '1':
         seq = _reverse_complement(seq)
@@ -344,7 +351,7 @@ def get_sequence_for_genes(p):
     data = {}
 
     for name in genes:
-
+        name = name.upper()
         name = name.replace("SGD:", "")
         url = seq_url.replace("_REPLACE_NAME_HERE_", name)
         res = _get_json_from_server(url)        

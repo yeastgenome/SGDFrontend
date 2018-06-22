@@ -153,7 +153,7 @@ const GeneSequenceResources = React.createClass({
 		var _nameSection = { headers: [[<span style={ style.textFont }><a name='gene'>1. Search a list of genes</a></span>, '']],
 			    	     rows:    [[geneNodeLeft, geneNodeRight]] };
 				     
-		var _chrSeqSection = { headers: [[<span style={ style.textFont }><strong style={{ color: 'red'}}>OR</strong> <a name='chr'>2. Search a specified chromosomal region</a></span>, '', '', <span style={ style.textFont }><strong style={{ color: 'red'}}>OR</strong> <a name='seq'>3. Analyze a raw DNA or Protein sequence</a></span>]],
+		var _chrSeqSection = { headers: [[<span style={ style.textFont }><strong style={{ color: 'red'}}>OR</strong> <a name='chr'>2. Search a specified chromosomal region of S288C genome</a></span>, '', '', <span style={ style.textFont }><strong style={{ color: 'red'}}>OR</strong> <a name='seq'>3. Analyze a raw DNA or Protein sequence</a></span>]],
                                        rows:    [[chrNode, '', '', seqNode]] };
 					
 		return (<div>
@@ -175,7 +175,7 @@ const GeneSequenceResources = React.createClass({
 	     var param = this.state.param;
 	     var rev = param['rev3'];
 
-	     if (rev == 'on') {
+	     if (rev == 'on' && param['seqtype'] == 'DNA') {
 	     	  return (<div><h3>The reverse complement of this sequence:</h3><p><textarea value={ seq } rows='7' cols='200'></textarea></p></div>);
 	     }
 	     else {
@@ -230,7 +230,7 @@ const GeneSequenceResources = React.createClass({
 		// browser row
 
                 var browserRow = [<span style={ style.textFont }>Genome Display (S288C)</span>];
-                var url = "https://browse.yeastgenome.org/?loc=" + chr + ":" + start + ".." + end;;
+                var url = "https://browse.yeastgenome.org/?loc=" + chr + ":" + start + ".." + end;
                 browserRow.push(<span style={ style.textFont }><a href={ url } target='infowin2'>JBrowse</a></span>);
                 rows.push(browserRow);
 
@@ -767,7 +767,7 @@ const GeneSequenceResources = React.createClass({
 	onSubmit3(e) {
 
                 var seq = this.refs.seq.value.trim();
-		seq = seq.replace(/[^A-Za-z]/g, '');	
+		seq = seq.replace(/[^A-Za-z]/g, "");	
                 if (seq == '') {
                    alert("Please enter a raw sequence.");
                    e.preventDefault();
@@ -784,6 +784,14 @@ const GeneSequenceResources = React.createClass({
 		       e.preventDefault();
                        return 1;     
 		   }
+		}
+		else {
+		   if (seq.match(/^[ATCGatcg]+$/g) !== null) {
+		       alert("Looks like you are entering a DNA sequence instead of PROTEIN sequence. Please pick a right sequence type and try it again.");
+                       e.preventDefault();
+                       return 1;
+		   }
+		   
 		}
 
         },
@@ -886,12 +894,17 @@ const GeneSequenceResources = React.createClass({
 
 	getReverseCompNode(name) {
 
-		// <p><input ref={name} name={name} id={name} type="checkbox" value={this.state.rev} onChange={this.onChangeCB}/> Use the reverse complement</p>
+		if (name == 'rev3') {	
+		    return (<div>
+                       	      <p><input ref={name} name={name} id={name} type="checkbox" onChange={this.onChange}/> Use the reverse complement (for DNA sequence only)</p>
+		            </div>);
+		}
+		else {	
+	             return (<div>
+		       	      <p><input ref={name} name={name} id={name} type="checkbox" onChange={this.onChange}/> Use the reverse complement</p> 
+		             </div>);
 
-	        return (<div>
-		       <p><input ref={name} name={name} id={name} type="checkbox" onChange={this.onChange}/> Use the reverse complement</p> 
-		       </div>);
-
+	        }
         },
 
 	getStrainPulldown(strains) {
@@ -938,7 +951,7 @@ const GeneSequenceResources = React.createClass({
                 });
 
                 return(<div>
-		       <p>(Select or unselect multiple strains by pressing the Control (PC) or Command (Mac) key while clicking.)
+		       <p>(Select or unselect multiple strains by pressing<br></br>the Control (PC) or Command (Mac) key while clicking.)
                        <select ref='strains' name='strains' id='strains' onChange={this.onChange} size='11' multiple>{_elements}</select></p>
                 </div>);
 
@@ -994,10 +1007,12 @@ const GeneSequenceResources = React.createClass({
 
 		if (searchType == 'seq') {
 		   var seq = param['seq'];
+		   seq = seq.replace(/%0D/g, '');
+		   seq = seq.replace(/%0A/g, '');
 		   seq = seq.toUpperCase().replace(/[^A-Z]/g, '');
 		   paramData['seq'] = seq;
                    paramData['seqtype'] = param['seqtype']
-		   if (param['rev3'] && param['rev3'] == 'on') {
+		   if (paramData['seqtype'] == 'DNA' && param['rev3'] && param['rev3'] == 'on') {
                       paramData['rev'] = 1;
                    }
 		   this.sendRequest(paramData)
@@ -1088,7 +1103,12 @@ const GeneSequenceResources = React.createClass({
 	     var text = "The current selection is: ";
 	     
 	     var num2chrMapping = GSR.NumToRoman();    
-	     text += "<font color='red'>chromosome " + num2chrMapping[chrnum] + " coordinates " + data['start'] + " to " + data['end'] + "</font>";
+	     if (typeof(data['start']) == "undefined") {
+	     	  text += "<font color='red'>chromosome " + num2chrMapping[chrnum] + "</font>";
+	     }
+	     else {
+	     	  text += "<font color='red'>chromosome " + num2chrMapping[chrnum] + " coordinates " + data['start'] + " to " + data['end'] + "</font>";
+             }
 	     text = "<h3>" + text + "</h3>";
 	     
 	     var param = this.state.param;
