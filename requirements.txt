@@ -13,7 +13,6 @@ enum34==1.1.2
 factory-boy==2.6.0
 fake-factory==0.5.3
 Flask==0.10.1
-flower==0.8.3
 funcsigs==0.4
 futures==3.0.3
 httplib2==0.9.2
@@ -71,3 +70,4 @@ psycopg2==2.7.3.2
 elasticsearch==2.3.0
 biopython==1.68
 multiprocess==0.70.5
+primer3-py==0.5.5

@@ -431,6 +431,8 @@ def get_author_etc(author_list):
 
 def get_pubmed_record(pmid):
 
+    [titleTXT, abstractTXT] = get_title_abstract(pmid)
+
     handle = Entrez.efetch(db="pubmed", id=pmid, rettype='xml')
     record = Entrez.read(handle)
     paper = record['PubmedArticle'][0]
@@ -466,7 +468,19 @@ def get_pubmed_record(pmid):
         entry['volume'] = journal['JournalIssue'].get('Volume')
         if journal['JournalIssue'].get('PubDate'):
             entry['year'] = journal['JournalIssue']['PubDate'].get('Year')
+
     entry['title'] = article.get('ArticleTitle')
+    ## the titles from XML format preserve all special charaters                                               
+    ## while the titles from medline format do not so try very best                                            
+    ## to use the titles from XML unless there are html tags in the                                            
+    ## titles - in those cases, XML format will mess up the title parsing                                       
+    titleXML = entry['title']
+    if titleTXT is not None:
+        wordsFromXML = titleXML.split(" ")
+        wordsFromTXT = titleTXT.split(" ")
+        if len(wordsFromTXT) > len(wordsFromXML)+2:
+            entry['title'] = titleTXT
+
     if paper['MedlineCitation'].get('DateRevised'):
         dateRevised = paper['MedlineCitation']['DateRevised']
         entry['date_revised'] = dateRevised['Year'] + "-" + dateRevised['Month'] + "-" + dateRevised['Day']
@@ -487,6 +501,13 @@ def get_pubmed_record(pmid):
                 abstract = abstract + " " + text
             entry['abstract'] = abstract.strip()
 
+            abstractXML = entry['abstract']
+            if abstractTXT is not None:
+                wordsFromXML = abstractXML.split(" ")
+                wordsFromTXT = abstractTXT.split(" ")
+                if len(wordsFromTXT) > len(wordsFromXML)+2:
+                    entry['abstract'] = abstractTXT
+
     if article.get('AuthorList'):
         authors = []
         for author in article['AuthorList']:
@@ -506,6 +527,47 @@ def get_pubmed_record(pmid):
                 entry['doi'] = str(item)
 
     return entry
+
+
+def get_title_abstract(pmid):
+
+    handle = Entrez.efetch(db="pubmed", id=pmid, rettype='Medline', retmode='text')
+
+    record_txt = handle.read()
+    records = record_txt.split("\n\n")
+    title = None
+    abstract = None
+    record = records[0]
+    lines = record.split("\n")
+    title_end = 1
+    abstract_end = 1
+    for line in lines:
+        if "PMID- " in line:
+            pmid = int(line.replace("PMID- ", ""))
+            continue
+        if line.startswith("TI  - "):
+            title = line.replace("TI  - ", "")
+            title_end = 0
+            continue
+        if title_end == 0 and line.startswith("      "):
+            title += " " + line
+            # change multiplace spaces into one                                                                
+            title = ' '.join(title.split())
+        else:
+            title_end = 1
+
+        if line.startswith("AB  - "):
+            abstract = line.replace("AB  - ", "")
+            abstract_end = 0
+            continue
+        if abstract_end == 0 and line.startswith("      "):
+            abstract += " " + line
+            abstract = ' '.join(abstract.split())
+        else:
+            abstract_end = 1
+
+    return [title, abstract]
+
 
 def month_to_number(month):
 

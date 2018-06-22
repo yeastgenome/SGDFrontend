@@ -81,6 +81,7 @@ es_mapping = {
                         }
                     }
                 },
+                
                 "keys": {
                     "type": "string"
                 },
