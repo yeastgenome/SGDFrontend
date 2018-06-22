@@ -230,7 +230,11 @@ const GeneSequenceResources = React.createClass({
 		// browser row
 
                 var browserRow = [<span style={ style.textFont }>Genome Display (S288C)</span>];
-                var url = "https://browse.yeastgenome.org/?loc=" + chr + ":" + start + ".." + end;
+		
+		var url = "https://browse.yeastgenome.org/?loc=" + chr;
+		if (typeof(start) != "undefined") {
+                   url += ":" + start + ".." + end;
+		}
                 browserRow.push(<span style={ style.textFont }><a href={ url } target='infowin2'>JBrowse</a></span>);
                 rows.push(browserRow);
 
