@@ -28,7 +28,6 @@ def prep_views(chosen_frontend, config):
     config.add_route('colleague_show', '/colleague/{identifier}')
     config.add_route('downloads', '/downloads')
     
-    config.add_route('new_colleague', '/new_colleague')
     config.add_route('interaction_search', '/interaction-search')
     config.add_route('download_list', '/download-list')
     config.add_route('snapshot', '/genomesnapshot')
@@ -56,6 +55,7 @@ def prep_views(chosen_frontend, config):
 
     # public CI
     config.add_route('new_gene_name_reservation', 'reserved_name/new')
+    config.add_route('new_colleague', 'colleague_update')
         
     config.add_route('author', '/author/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('author', request)(getattr(chosen_frontend, 'author')(request.matchdict['identifier'])),
