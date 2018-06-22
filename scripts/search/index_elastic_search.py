@@ -8,16 +8,18 @@ from threading import Thread
 import json
 import collections
 from index_es_helpers import IndexESHelper
+import concurrent.futures
+import uuid
 
-engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
+
+engine = create_engine(os.environ["NEX2_URI"], pool_recycle=3600)
 DBSession.configure(bind=engine)
 Base.metadata.bind = engine
 
-INDEX_NAME = os.environ.get('ES_INDEX_NAME', 'searchable_items_aws')
-DOC_TYPE = 'searchable_item'
-ES_URI = os.environ['WRITE_ES_URI']
+INDEX_NAME = os.environ.get("ES_INDEX_NAME", "searchable_items_aws")
+DOC_TYPE = "searchable_item"
+ES_URI = os.environ["WRITE_ES_URI"]
 es = Elasticsearch(ES_URI, retry_on_timeout=True)
-
 
 
 def delete_mapping():
@@ -42,11 +44,11 @@ def index_toolbar_links():
     links = [
         ("Gene List", "https://yeastmine.yeastgenome.org/yeastmine/bag.do",
          []), ("Yeastmine", "https://yeastmine.yeastgenome.org",
-               'yeastmine'), ("Submit Data", "/cgi-bin/submitData.pl",
+               "yeastmine"), ("Submit Data", "/cgi-bin/submitData.pl",
                               []), ("SPELL", "https://spell.yeastgenome.org",
-                                    'spell'), ("BLAST", "/blast-sgd", 'blast'),
+                                    "spell"), ("BLAST", "/blast-sgd", "blast"),
         ("Fungal BLAST", "/blast-fungal",
-         'blast'), ("Pattern Matching", "/nph-patmatch",
+         "blast"), ("Pattern Matching", "/nph-patmatch",
                     []), ("Design Primers", "/cgi-bin/web-primer", []),
         ("Restriction Mapper", "/cgi-bin/PATMATCH/RestrictionMapper",
          []), ("Genome Browser", "/browse",
@@ -54,7 +56,7 @@ def index_toolbar_links():
                                    "/cgi-bin/seqTools", []),
         ("Download Genome",
          "https://downloads.yeastgenome.org/sequence/S288C_reference/genome_releases/",
-         'download'), ("Genome Snapshot", "/genomesnapshot",
+         "download"), ("Genome Snapshot", "/genomesnapshot",
                        []), ("Chromosome History",
                              "/cgi-bin/chromosomeHistory.pl", []),
         ("Systematic Sequencing Table", "/cache/chromosomes.shtml",
@@ -66,19 +68,19 @@ def index_toolbar_links():
         ("Synteny Viewer", "/cgi-bin/FUNGI/FungiMap",
          []), ("Fungal Alignment", "/cgi-bin/FUNGI/showAlign",
                []), ("PDB Search", "/cgi-bin/protein/get3d",
-                     'pdb'), ("GO Term Finder", "/cgi-bin/GO/goTermFinder.pl",
-                              'go'), ("GO Slim Mapper",
-                                      "/cgi-bin/GO/goSlimMapper.pl", 'go'),
+                     "pdb"), ("GO Term Finder", "/cgi-bin/GO/goTermFinder.pl",
+                              "go"), ("GO Slim Mapper",
+                                      "/cgi-bin/GO/goSlimMapper.pl", "go"),
         ("GO Slim Mapping File",
          "https://downloads.yeastgenome.org/curation/literature/go_slim_mapping.tab",
-         'go'), ("Expression", "https://spell.yeastgenome.org/#",
+         "go"), ("Expression", "https://spell.yeastgenome.org/#",
                  []), ("Biochemical Pathways",
                        "http://pathway.yeastgenome.org/",
                        []), ("Browse All Phenotypes", "/ontology/phenotype/ypo",
                              []), ("Interactions", "/interaction-search", []),
         ("YeastGFP", "https://yeastgfp.yeastgenome.org/",
-         'yeastgfp'), ("Full-text Search", "http://textpresso.yeastgenome.org/",
-                       'texxtpresso'), ("New Yeast Papers", "/reference/recent",
+         "yeastgfp"), ("Full-text Search", "http://textpresso.yeastgenome.org/",
+                       "texxtpresso"), ("New Yeast Papers", "/reference/recent",
                                         []),
         ("Genome-wide Analysis Papers", "/cache/genome-wide-analysis.html",
          []), ("Find a Colleague", "/cgi-bin/colleague/colleagueInfoSearch",
@@ -111,20 +113,20 @@ def index_toolbar_links():
         ("Sequence",
          "http://wiki.yeastgenome.org/index.php/Historical_Systematic_Sequence_Information",
          []), ("Wiki", "http://wiki.yeastgenome.org/index.php/Main_Page",
-               'wiki'), ("Resources",
+               "wiki"), ("Resources",
                          "http://wiki.yeastgenome.org/index.php/External_Links",
                          [])
     ]
 
-    print('Indexing ' + str(len(links)) + ' toolbar links')
+    print("Indexing " + str(len(links)) + " toolbar links")
 
     for l in links:
         obj = {
-            'name': l[0],
-            'href': l[1],
-            'description': None,
-            'category': 'resource',
-            'keys': l[2]
+            "name": l[0],
+            "href": l[1],
+            "description": None,
+            "category": "resource",
+            "keys": l[2]
         }
         es.index(index=INDEX_NAME, doc_type=DOC_TYPE, body=obj, id=l[1])
 
@@ -139,10 +141,10 @@ def index_colleagues():
     bulk_data = []
     for item_k, item_v in _combined_list.items():
         bulk_data.append({
-            'index': {
-                '_index': INDEX_NAME,
-                '_type': DOC_TYPE,
-                '_id': item_v["format_name"]
+            "index": {
+                "_index": INDEX_NAME,
+                "_type": DOC_TYPE,
+                "_id": str(uuid.uuid4())
             }
         })
 
@@ -152,8 +154,6 @@ def index_colleagues():
             bulk_data = []
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
-
-
 
 
 def index_genes():
@@ -181,9 +181,9 @@ def index_genes():
     all_genes = DBSession.query(Locusdbentity).filter(
         Locusdbentity.dbentity_id.in_(list(dbentity_ids))).all()
 
-    # make list of merged/deleted genes so they don't redirect when they show up as an alias
+    # make list of merged/deleted genes so they don"t redirect when they show up as an alias
     merged_deleted_r = DBSession.query(Locusdbentity.format_name).filter(
-        Locusdbentity.dbentity_status.in_(['Merged', 'Deleted'])).all()
+        Locusdbentity.dbentity_status.in_(["Merged", "Deleted"])).all()
     merged_deleted = [d[0] for d in merged_deleted_r]
 
     feature_types_db = DBSession.query(
@@ -222,7 +222,7 @@ def index_genes():
 
     bulk_data = []
 
-    print('Indexing ' + str(len(all_genes)) + ' genes')
+    print("Indexing " + str(len(all_genes)) + " genes")
     ##### test newer methods ##########
     _summary = IndexESHelper.get_locus_dbentity_summary()
     _protein = IndexESHelper.get_locus_dbentity_alias(["NCBI protein name"])
@@ -252,7 +252,7 @@ def index_genes():
         if protein is not None:
             protein = protein[0].display_name
 
-        # TEMP don't index due to schema schange
+        # TEMP don"t index due to schema schange
         # sequence_history = DBSession.query(Locusnoteannotation.note).filter_by(dbentity_id=gene.dbentity_id, note_type="Sequence").all()
         # gene_history = DBSession.query(Locusnoteannotation.note).filter_by(dbentity_id=gene.dbentity_id, note_type="Locus").all()
 
@@ -267,16 +267,16 @@ def index_genes():
                 Phenotype.phenotype_id.in_(phenotype_ids)).all()
         else:
             phenotypes = []
-        #go_ids = DBSession.query(Goannotation.go_id).filter(and_(Goannotation.go_qualifier != 'NOT', Goannotation.dbentity_id == gene.dbentity_id)).all()
+        #go_ids = DBSession.query(Goannotation.go_id).filter(and_(Goannotation.go_qualifier != "NOT", Goannotation.dbentity_id == gene.dbentity_id)).all()
         go_ids = _goids.get(gene.dbentity_id)
         if go_ids is not None:
             go_ids = [x.go_id for x in go_ids]
         else:
             go_ids = []
         go_annotations = {
-            'cellular component': set([]),
-            'molecular function': set([]),
-            'biological process': set([])
+            "cellular component": set([]),
+            "molecular function": set([]),
+            "biological process": set([])
         }
         if len(go_ids) > 0:
             #go_ids = [g[0] for g in go_ids]
@@ -284,7 +284,7 @@ def index_genes():
                 Go.display_name,
                 Go.go_namespace).filter(Go.go_id.in_(go_ids)).all()
             for g in go:
-                go_annotations[g[1]].add(g[0] + ' (direct)')
+                go_annotations[g[1]].add(g[0] + " (direct)")
         go_slim_ids = DBSession.query(Goslimannotation.goslim_id).filter(
             Goslimannotation.dbentity_id == gene.dbentity_id).all()
         if len(go_slim_ids) > 0:
@@ -322,7 +322,7 @@ def index_genes():
         _keys = [gene.gene_name, gene.systematic_name, gene.sgdid
                 ] + alias_quick_direct_keys
         # Add SGD:<gene SGDID> to list of keywords for quick search
-        _keys.append('SGD:{}'.format(gene.sgdid))
+        _keys.append("SGD:{}".format(gene.sgdid))
         # If this gene has a reservedname associated with it, add that reservedname to
         # the list of keywords used for the quick search of this gene
         reservedname = DBSession.query(Reservedname).filter_by(locus_id=gene.dbentity_id).one_or_none()
@@ -333,63 +333,63 @@ def index_genes():
                 keys.append(k.lower())
 
         obj = {
-            'name':
+            "name":
                 _name,
-            'href':
+            "href":
                 gene.obj_url,
-            'description':
+            "description":
                 gene.description,
-            'category':
-                'locus',
-            'feature_type':
+            "category":
+                "locus",
+            "feature_type":
                 feature_types[dbentity_ids_to_so[gene.dbentity_id]],
-            'name_description':
+            "name_description":
                 gene.name_description,
-            'summary':
+            "summary":
                 summary,
-            'phenotypes': [p[0] for p in phenotypes],
-            'aliases':
+            "phenotypes": [p[0] for p in phenotypes],
+            "aliases":
                 aliases,
-            'cellular_component':
+            "cellular_component":
                 list(go_annotations["cellular component"] - set([
                     "cellular component", "cellular component (direct)",
                     "cellular_component", "cellular_component (direct)"
                 ])),
-            'biological_process':
+            "biological_process":
                 list(go_annotations["biological process"] - set([
                     "biological process (direct)", "biological process",
                     "biological_process (direct)", "biological_process"
                 ])),
-            'molecular_function':
+            "molecular_function":
                 list(go_annotations["molecular function"] - set([
                     "molecular function (direct)", "molecular function",
                     "molecular_function (direct)", "molecular_function"
                 ])),
-            'ec_number':
+            "ec_number":
                 ec_numbers.get(gene.dbentity_id),
-            'protein':
+            "protein":
                 protein,
-            'tc_number':
+            "tc_number":
                 tc_numbers.get(gene.dbentity_id),
-            'secondary_sgdid':
+            "secondary_sgdid":
                 secondary_sgdids.get(gene.dbentity_id),
-            'status':
+            "status":
                 gene.dbentity_status,
-            # TEMP don't index due to schema change
-            # 'sequence_history': [s[0] for s in sequence_history],
-            # 'gene_history': [g[0] for g in gene_history],
-            'bioentity_id':
+            # TEMP don"t index due to schema change
+            # "sequence_history": [s[0] for s in sequence_history],
+            # "gene_history": [g[0] for g in gene_history],
+            "bioentity_id":
                 gene.dbentity_id,
-            'keys':
+            "keys":
                 list(keys),
-            'is_quick_flag': str(is_quick_flag)
+            "is_quick_flag": str(is_quick_flag)
         }
 
         bulk_data.append({
-            'index': {
-                '_index': INDEX_NAME,
-                '_type': DOC_TYPE,
-                '_id': gene.sgdid
+            "index": {
+                "_index": INDEX_NAME,
+                "_type": DOC_TYPE,
+                "_id": str(uuid.uuid4())
             }
         })
 
@@ -404,23 +404,20 @@ def index_genes():
 
 
 def index_phenotypes():
-    phenotypes = DBSession.query(Phenotype).all()
-    _phenos_annotation = IndexESHelper.get_phenotypes_phenotypeannotation()
-    _annotation_cond = IndexESHelper.get_phenotypes_condition("chemical")
-    _result = IndexESHelper.get_combined_phenotypes(
-        phenotypes, _phenos_annotation, _annotation_cond)
     bulk_data = []
-    print("Indexing " + str(len(phenotypes)) + " phenotypes")
-    for obj_k, obj_v in _result.items():
+    phenotypes = DBSession.query(Phenotype).all()
+    _result = IndexESHelper.get_pheno_annotations(phenotypes)
+    print("Indexing " + str(len(_result)) + " phenotypes")
+    for phenotype_item in _result:
         bulk_data.append({
-            'index': {
-                '_index': INDEX_NAME,
-                '_type': DOC_TYPE,
-                '_id': obj_v["format_name"]
+            "index": {
+                "_index": INDEX_NAME,
+                "_type": DOC_TYPE,
+                "_id": str(uuid.uuid4())
             }
         })
-        bulk_data.append(obj_v)
-        if len(bulk_data) == 500:
+        bulk_data.append(phenotype_item)
+        if len(bulk_data) == 50:
             es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
             bulk_data = []
     if len(bulk_data) > 0:
@@ -444,10 +441,10 @@ def index_observables():
         }
 
         bulk_data.append({
-            'index': {
-                '_index': INDEX_NAME,
-                '_type': DOC_TYPE,
-                '_id': 'observable_' + str(observable.apo_id)
+            "index": {
+                "_index": INDEX_NAME,
+                "_type": DOC_TYPE,
+                "_id": str(uuid.uuid4())
             }
         })
 
@@ -490,10 +487,35 @@ def index_strains():
         }
 
         es.index(
-            index=INDEX_NAME,
-            doc_type=DOC_TYPE,
-            body=obj,
-            id="strain_" + str(strain.dbentity_id))
+            index=INDEX_NAME, doc_type=DOC_TYPE, body=obj, id=str(uuid.uuid4()))
+
+
+def index_reserved_names():
+    # only index reservednames that do not have a locus associated with them
+    reserved_names = DBSession.query(Reservedname).all()
+
+    print("Indexing " + str(len(reserved_names)) + " reserved names")
+    for reserved_name in reserved_names:
+        name = reserved_name.display_name
+        href = reserved_name.obj_url
+        keys = [reserved_name.display_name.lower()]
+        # change name if has an orf
+        if reserved_name.locus_id:
+            locus = DBSession.query(Locusdbentity).filter(
+                Locusdbentity.dbentity_id ==
+                reserved_name.locus_id).one_or_none()
+            name = name + " / " + locus.systematic_name
+            href = locus.obj_url
+            keys = []
+        obj = {
+            "name": name,
+            "href": href,
+            "description": reserved_name.name_description,
+            "category": "reserved_name",
+            "keys": keys
+        }
+        es.index(
+            index=INDEX_NAME, doc_type=DOC_TYPE, body=obj, id=str(uuid.uuid4()))
 
 
 def index_reserved_names():
@@ -508,7 +530,7 @@ def index_reserved_names():
         # change name if has an orf
         if reserved_name.locus_id:
             locus = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id == reserved_name.locus_id).one_or_none()
-            name = name + ' / ' + locus.systematic_name
+            name = name + " / " + locus.systematic_name
             href = locus.obj_url
             keys = []
         obj = {
@@ -519,21 +541,18 @@ def index_reserved_names():
             "keys": keys
         }
         es.index(
-            index=INDEX_NAME,
-            doc_type=DOC_TYPE,
-            body=obj,
-            id="reserved_" + reserved_name.format_name)
+            index=INDEX_NAME, doc_type=DOC_TYPE, body=obj, id=str(uuid.uuid4()))
 
 
 def load_go_id_blacklist(list_filename):
     go_id_blacklist = set()
-    for l in open(list_filename, 'r'):
+    for l in open(list_filename, "r"):
         go_id_blacklist.add(l[:-1])
     return go_id_blacklist
 
 
 def index_go_terms():
-    go_id_blacklist = load_go_id_blacklist('scripts/search/go_id_blacklist.lst')
+    go_id_blacklist = load_go_id_blacklist("scripts/search/go_id_blacklist.lst")
 
     gos = DBSession.query(Go).all()
 
@@ -552,13 +571,13 @@ def index_go_terms():
         annotations = DBSession.query(Goannotation).filter_by(
             go_id=go.go_id).all()
         for annotation in annotations:
-            if annotation.go_qualifier != 'NOT':
+            if annotation.go_qualifier != "NOT":
                 go_loci.add(annotation.dbentity.display_name)
             references.add(annotation.reference.display_name)
 
-        numerical_id = go.goid.split(':')[1]
+        numerical_id = go.goid.split(":")[1]
         key_values = [
-            go.goid, 'GO:' + str(int(numerical_id)), numerical_id,
+            go.goid, "GO:" + str(int(numerical_id)), numerical_id,
             str(int(numerical_id))
         ]
 
@@ -576,15 +595,15 @@ def index_go_terms():
             "go_loci": sorted(list(go_loci)),
             "number_annotations": len(annotations),
             "references": list(references),
-            "category": go.go_namespace.replace(' ', '_'),
+            "category": go.go_namespace.replace(" ", "_"),
             "keys": list(keys)
         }
 
         bulk_data.append({
-            'index': {
-                '_index': INDEX_NAME,
-                '_type': DOC_TYPE,
-                '_id': go.goid
+            "index": {
+                "_index": INDEX_NAME,
+                "_type": DOC_TYPE,
+                "_id": str(uuid.uuid4())
             }
         })
 
@@ -592,7 +611,7 @@ def index_go_terms():
 
         if len(bulk_data) == 800:
             es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
-            bulk_data = []
+            bulk_data=[]
 
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
@@ -606,7 +625,7 @@ def index_references():
     _aliases = IndexESHelper.get_ref_aliases()
 
     bulk_data = []
-    print('Indexing ' + str(len(_references)) + ' references')
+    print("Indexing " + str(len(_references)) + " references")
 
     for reference in _references:
         reference_loci = []
@@ -641,23 +660,23 @@ def index_references():
             if k is not None:
                 keys.add(str(k).lower())
         obj = {
-            'name': reference.citation,
-            'href': reference.obj_url,
-            'description': abstract,
-            'author': authors,
-            'journal': journal,
-            'year': str(reference.year),
-            'reference_loci': reference_loci,
-            'secondary_sgdid': sec_sgdid,
-            'category': 'reference',
-            'keys': list(keys)
+            "name": reference.citation,
+            "href": reference.obj_url,
+            "description": abstract,
+            "author": authors,
+            "journal": journal,
+            "year": str(reference.year),
+            "reference_loci": reference_loci,
+            "secondary_sgdid": sec_sgdid,
+            "category": "reference",
+            "keys": list(keys)
         }
 
         bulk_data.append({
-            'index': {
-                '_index': INDEX_NAME,
-                '_type': DOC_TYPE,
-                '_id': reference.sgdid
+            "index": {
+                "_index": INDEX_NAME,
+                "_type": DOC_TYPE,
+                "_id": str(uuid.uuid4())
             }
         })
         bulk_data.append(obj)
@@ -684,10 +703,10 @@ def index_chemicals():
                 "keys": []
             }
             bulk_data.append({
-                'index': {
-                    '_index': INDEX_NAME,
-                    '_type': DOC_TYPE,
-                    '_id': 'chemical_' + str(item_key)
+                "index": {
+                    "_index": INDEX_NAME,
+                    "_type": DOC_TYPE,
+                    "_id": "chemical_" + str(item_key)
                 }
             })
 
@@ -716,27 +735,27 @@ def setup():
 def index_not_mapped_genes():
     url = "https://downloads.yeastgenome.org/curation/literature/genetic_loci.tab"
     bulk_data = []
-    with open('./scripts/search/not_mapped.json',
+    with open("./scripts/search/not_mapped.json",
               "r") as json_data:
         _data = json.load(json_data)
-        print('indexing ' + str(len(_data)) + ' not physically mapped genes')
+        print("indexing " + str(len(_data)) + " not physically mapped genes")
         for item in _data:
             temp_aliases = []
             if len(item["FEATURE_NAME"]) > 0:
                 obj = {
-                    'name': item["FEATURE_NAME"],
-                    'href': url,
-                    'category': 'locus',
-                    'feature_type': ["Unmapped Genetic Loci"],
-                    'aliases': item["ALIASES"].split('|'),
-                    'description': item["DESCRIPTION"],
-                    'is_quick_flag': "False"
+                    "name": item["FEATURE_NAME"],
+                    "href": url,
+                    "category": "locus",
+                    "feature_type": ["Unmapped Genetic Loci"],
+                    "aliases": item["ALIASES"].split("|"),
+                    "description": item["DESCRIPTION"],
+                    "is_quick_flag": "False"
                 }
                 bulk_data.append({
-                    'index': {
-                        '_index': INDEX_NAME,
-                        '_type': DOC_TYPE,
-                        '_id': item["FEATURE_NAME"]
+                    "index": {
+                        "_index": INDEX_NAME,
+                        "_type": DOC_TYPE,
+                        "_id": str(uuid.uuid4())
                     }
                 })
                 bulk_data.append(obj)
@@ -754,10 +773,10 @@ def index_downloads():
     files = DBSession.query(Filedbentity).filter(Filedbentity.is_public == True,
                                                  Filedbentity.s3_url != None,
                                                  Filedbentity.readme_file_id != None).all()
-    print('indexing ' + str(len(files)) + ' download files')
+    print("indexing " + str(len(files)) + " download files")
     for x in files:
         keyword = []
-        status = ''
+        status = ""
         temp = dbentity_file_obj.get(x.dbentity_id)
         if temp:
             keyword = temp
@@ -767,36 +786,36 @@ def index_downloads():
             else:
                 status = "Archived"
         obj = {
-            'name':
+            "name":
                 x.display_name,
-            'href':
+            "href":
                 x.s3_url,
-            'category':
-                'download',
-            'description':
+            "category":
+                "download",
+            "description":
                 x.description,
-            'keyword':
+            "keyword":
                 keyword,
-            'format':
+            "format":
                 str(x.format.display_name),
-            'status':
+            "status":
                 str(status),
-            'file_size':
+            "file_size":
                 str(IndexESHelper.convertBytes(x.file_size))
                 if x.file_size is not None else x.file_size,
-            'year':
+            "year":
                 str(x.year),
-            'readme_url':
+            "readme_url":
                 x.readme_file[0].s3_url,
-            'topic': x.topic.display_name,
-            'data': x.data.display_name,
-            'path_id': x.get_path_id()
+            "topic": x.topic.display_name,
+            "data": x.data.display_name,
+            "path_id": x.get_path_id()
         }
         bulk_data.append({
-            'index': {
-                '_index': INDEX_NAME,
-                '_type': DOC_TYPE,
-                '_id': x.sgdid
+            "index": {
+                "_index": INDEX_NAME,
+                "_type": DOC_TYPE,
+                "_id": str(uuid.uuid4())
             }
         })
 
@@ -810,29 +829,39 @@ def index_downloads():
 
 
 def index_part_1():
-    index_downloads()
-    index_not_mapped_genes()
-    index_genes()
-    index_strains()
-    index_colleagues()
-    index_phenotypes()
-    index_chemicals()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
+        index_phenotypes()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
+        index_downloads()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
+        index_not_mapped_genes()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
+        index_genes()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
+        index_strains()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
+        index_colleagues()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
+        index_chemicals()
 
 
 def index_part_2():
-    index_reserved_names()
-    index_toolbar_links()
-    index_observables()
-    index_go_terms()
-    index_references()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
+        index_reserved_names()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
+        index_toolbar_links()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
+        index_observables()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
+        index_go_terms()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
+        index_references()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     cleanup()
     setup()
-    index_downloads()
-    '''
     t1 = Thread(target=index_part_1)
     t2 = Thread(target=index_part_2)
     t1.start()
-    t2.start()'''
+    t2.start()

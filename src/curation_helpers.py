@@ -102,3 +102,13 @@ def get_author_etc(author_list):
 def validate_orcid(user_orcid):
     pattern = re.compile("^\w{4}-\w{4}-\w{4}-\w{4}$")
     return pattern.match(user_orcid) != None
+
+def clear_list_empty_values(lst):
+    if lst:
+        data = []
+        for item in lst:
+            if item:
+                data.append(item)
+        return data
+    else:
+        return lst

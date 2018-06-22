@@ -6,12 +6,16 @@ upstream backend {
 	server 127.0.0.1:6543;
 }
 
+log_format client_ip '$http_x_forwarded_for - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"';
+
 server {
     listen 8080;
 
     server_name _;
 
     include /etc/nginx/conf.d/proxies;
+    
+    port_in_redirect off;
 
     location /healthcheck {
         proxy_redirect off;
@@ -25,7 +29,7 @@ server {
     }
 
     location / {
-        access_log /var/log/nginx/sgd-frontend-access.log;
+        access_log /var/log/nginx/sgd-frontend-access.log client_ip;
         error_log /var/log/nginx/sgd-frontend-error.log;
 
         add_header Strict-Transport-Security "max-age=120; includeSubDomains" always;
@@ -57,7 +61,7 @@ server {
     }
 
     location /webservice/ {
-        access_log /var/log/nginx/sgd-backend-access.log;
+        access_log /var/log/nginx/sgd-backend-access.log client_ip;
         error_log /var/log/nginx/sgd-backend-error.log;
 
         add_header Strict-Transport-Security "max-age=120; includeSubDomains" always;
