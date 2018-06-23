@@ -231,7 +231,7 @@ const GeneSequenceResources = React.createClass({
 
                 var browserRow = [<span style={ style.textFont }>Genome Display (S288C)</span>];
 		
-		var url = "https://browse.yeastgenome.org/?loc=" + chr;
+		var url = "https://browse.yeastgenome.org/?loc=chr" + chr;
 		if (typeof(start) != "undefined") {
                    url += ":" + start + ".." + end;
 		}
@@ -261,7 +261,7 @@ const GeneSequenceResources = React.createClass({
 
 	getResultTable4gene(data) {
 		
-		var [genes, displayName4gene, sgdid4gene, seq4gene, hasProtein4gene, hasCoding4gene, hasGenomic4gene] 
+		var [genes, displayName4gene, sgdid4gene, seq4gene, hasProtein4gene, hasCoding4gene, hasGenomic4gene, chrCoords4gene] 
 			= this.getDataFromJson4gene(data);
 		
 		var param = this.state.param; 
@@ -314,7 +314,12 @@ const GeneSequenceResources = React.createClass({
 
        		var browserRow = [<span style={ style.textFont }>Genome Display (S288C)</span>];
 		_.map(genes, gene => {
-                    var url = "https://browse.yeastgenome.org/?loc=" + gene;
+		    var chrCoords = chrCoords4gene[gene];
+		    var chr = chrCoords['chr'];
+		    var start = chrCoords['start'];
+		    var end = chrCoords['end'];
+                    // var url = "https://browse.yeastgenome.org/?loc=" + gene;
+		    var url = "https://browse.yeastgenome.org/?loc=chr" + chr + ":" + start + ".." + end + "&tracks=All%20Annotated%20Sequence%20Features%2CProtein-Coding-Genes%2CDNA&highlight="; 
                     browserRow.push(<span style={ style.textFont }><a href={ url } target='infowin2'>JBrowse</a></span>);
                 });
                 rows.push(browserRow);		
@@ -638,6 +643,7 @@ const GeneSequenceResources = React.createClass({
 		var hasCoding4gene = {};
 		var hasGenomic4gene = {};
 		var seq4gene = {}
+		var chrCoords4gene = {}
 		_.map(genes, gene => {
                       var seqInfo = data[gene];
                       var proteinSeq4strain = {};
@@ -648,9 +654,13 @@ const GeneSequenceResources = React.createClass({
 		      hasCoding4gene[gene] = 0;
 		      hasGenomic4gene[gene] = 0;
                       _.map(seqTypes, seqType => {
-                             var strainInfo = seqInfo[seqType];
-                             var strains = Object.keys(strainInfo);
-                             _.map(strains, strain => {
+			     if (seqType == 'chr_coords') {
+			     	chrCoords4gene[gene] = seqInfo[seqType];
+			     }
+			     else {
+                             	var strainInfo = seqInfo[seqType];
+                             	var strains = Object.keys(strainInfo);
+                             	_.map(strains, strain => {
                                     var strainDetails = strainInfo[strain];
                                     if (typeof(displayName4gene[gene]) == "undefined") {
                                         var display_name = strainDetails['display_name'];
@@ -677,8 +687,8 @@ const GeneSequenceResources = React.createClass({
                                          genomicSeq4strain[strain] = strainDetails['residue'];
 					 hasGenomic4gene[gene] += 1;
                                     }
-				    
-                             })
+				})    
+                             }
 
                       })
 
@@ -689,7 +699,7 @@ const GeneSequenceResources = React.createClass({
 
                 });
 
-		return [genes, displayName4gene, sgdid4gene, seq4gene, hasProtein4gene, hasCoding4gene, hasGenomic4gene];
+		return [genes, displayName4gene, sgdid4gene, seq4gene, hasProtein4gene, hasCoding4gene, hasGenomic4gene, chrCoords4gene];
 			  
 	},
 

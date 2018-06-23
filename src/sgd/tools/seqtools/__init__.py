@@ -362,6 +362,9 @@ def get_sequence_for_genes(p):
 
         allSeqData = {}
         format_name = None
+        start = None
+        end = None
+        chr = None
         if res.get('protein') is not None:
             [format_name, proteinData] = _extract_seq(strains, res['protein'], 0)
             allSeqData['protein'] = proteinData
@@ -379,10 +382,29 @@ def get_sequence_for_genes(p):
                                                                        up, down, rev)
                 allSeqData['genomic_dna'] = genomicData
 
+            [start, end, chr] = _extract_chr_coordinates(res['genomic_dna'])
+            allSeqData['chr_coords'] = { "start": start, 
+                                         "end": end, 
+                                         "chr": chr }
         if format_name is not None:
             data[format_name] = allSeqData
 
     return data
+
+
+def _extract_chr_coordinates(rows):
+    
+    start = None
+    end = None
+    chr = None
+    for row in rows:
+        strain = row['strain']
+        strain_name = strain['display_name']
+        if strain_name == 'S288C':
+            start = row['start']
+            end = row['end']
+            chr = row['contig']['display_name'].replace("Chromosome ", "")
+    return [start, end, chr]
 
 
 def _extract_seq(strains, rows, rev):
