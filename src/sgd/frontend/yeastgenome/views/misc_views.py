@@ -190,6 +190,14 @@ def suggestion(request):
 def variant_viewer(request):
     return render_to_response(TEMPLATE_ROOT + 'variant_viewer.jinja2', {}, request=request)
 
+@view_config(route_name='new_gene_name_reservation') 
+def new_gene_name_reservation(request):
+    return render_to_response(TEMPLATE_ROOT + 'iframe.jinja2', { 'ci_url': 'new_reservation' }, request=request)
+
+@view_config(route_name='new_colleague')
+def new_colleague(request):
+    return render_to_response(TEMPLATE_ROOT + 'iframe.jinja2', { 'ci_url': 'new_colleague' }, request=request)
+
 @view_config(route_name='primer3')
 def primer3(request):
     return render_to_response(TEMPLATE_ROOT + 'primer3.jinja2', {}, request=request)
