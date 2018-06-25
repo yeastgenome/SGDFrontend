@@ -13,8 +13,8 @@ import { PREVIEW_URL } from '../../constants.js';
 
 const BASE_CURATE_URL = '/curate/locus';
 const SECTIONS = [
-  'basic',
-  'gene_name',
+  // 'basic',
+  // 'gene_name',
   'summaries'
 ];
 
@@ -39,7 +39,7 @@ class LocusLayout extends Component {
     let current = this.props.pathname.replace(baseUrl, '');
     let nodes = SECTIONS.map( (d) => {
       let relative;
-      if (d === 'basic') {
+      if (d === 'summaries') {
         relative = '';
       } else {
         relative = `/${d}`;

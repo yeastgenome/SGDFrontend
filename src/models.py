@@ -8300,8 +8300,6 @@ class Reservedname(Base):
             raise ValueError('Associated reference must be published before standardizing reservation.')
         if not self.locus_id:
             raise ValueError('Reserved name must be associated with an ORF before being standardized.')
-        if not self.name_description:
-            raise ValueError('Reserved name must have a name description before being standardized.')
         try:
             curator_session = get_curator_session(username)
             self = curator_session.merge(self)
