@@ -279,7 +279,11 @@ def get_sequence_for_chr(p):
     if rev is not None and rev == '1':
         seq = _reverse_complement(seq)
         data['rev'] = 1
-        
+
+    if end == 10000000:
+        data['start'] = 1
+        data['end'] = len(seq)
+
     data['residue'] = seq
         
     return data
