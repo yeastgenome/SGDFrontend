@@ -460,7 +460,7 @@ def new_gene_name_reservation(request):
                 last_name = a['last_name']
                 if not (first_name.isalpha() and last_name.isalpha()):
                     return HTTPBadRequest(body=json.dumps({ 'message': 'Author names must contain only letters.' }), content_type='text/json')
-    res_required_fields = ['new_gene_name', 'description']
+    res_required_fields = ['new_gene_name']
     # validate reservations themselves
     for res in data['reservations']:
         for x in res_required_fields:
@@ -712,8 +712,6 @@ def reserved_name_standardize(request):
         res = DBSession.query(Reservedname).filter(Reservedname.reservedname_id == req_id).one_or_none()
         if not res.locus_id:
             raise ValueError('Reserved name must be associated with an ORF before being standardized.')
-        if not res.name_description:
-            raise ValueError('Reserved name must have a name description before being standardized.')
         res.associate_published_reference(gene_name_ref.dbentity_id, username, 'gene_name')
         # maybe associate name desc
         if has_name_desc:
