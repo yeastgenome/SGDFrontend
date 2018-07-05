@@ -266,7 +266,7 @@ COMMENT ON COLUMN nex.locussummary.created_by IS 'Username of the person who ent
 COMMENT ON COLUMN nex.locussummary.date_created IS 'Date the record was entered into the database.';
 COMMENT ON COLUMN nex.locussummary.html IS 'Summary HTML mark-up.';
 ALTER TABLE nex.locussummary ADD CONSTRAINT locussummary_uk UNIQUE (locus_id,summary_type,summary_order);
-ALTER TABLE nex.locussummary ADD CONSTRAINT locussummary_type_ck CHECK (SUMMARY_TYPE IN ('Gene','Function','Phenotype','Regulation'));
+ALTER TABLE nex.locussummary ADD CONSTRAINT locussummary_type_ck CHECK (SUMMARY_TYPE IN ('Gene','Function','Phenotype','Regulation','Disease','Interaction','Sequence','Protein'));
 CREATE INDEX locussummary_source_fk_index ON nex.locussummary (source_id);
 
 DROP TABLE IF EXISTS nex.locussummary_reference CASCADE; 
