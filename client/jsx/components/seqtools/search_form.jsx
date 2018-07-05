@@ -160,14 +160,19 @@ const GeneSequenceResources = React.createClass({
 
 		var geneNodeLeft = this.getGeneNodeLeft();
                 var geneNodeRight = this.getGeneNodeRight();
-                var chrNode = this.getChrNode();
-               	var seqNode = this.getSeqNode();
+                var chrNodeLeft = this.getChrNodeLeft();
+               	var chrNodeRight = this.getChrNodeRight();
+		var seqNodeLeft = this.getSeqNodeLeft();
+		var seqNodeRight = this.getSeqNodeRight();
 
 		var _nameSection = { headers: [[<span style={ style.textFont }><a name='gene'>1. Search a list of genes</a></span>, '']],
 			    	     rows:    [[geneNodeLeft, geneNodeRight]] };
 				     
-		var _chrSeqSection = { headers: [[<span style={ style.textFont }><strong style={{ color: 'red'}}>OR</strong> <a name='chr'>2. Search a specified chromosomal region of S288C genome</a></span>, '', '', <span style={ style.textFont }><strong style={{ color: 'red'}}>OR</strong> <a name='seq'>3. Analyze a raw DNA or Protein sequence</a></span>]],
-                                       rows:    [[chrNode, '', '', seqNode]] };
+		var _chrSection = { headers: [[<span style={ style.textFont }><strong style={{ color: 'red'}}>OR</strong> <a name='chr'>2. Search a specified chromosomal region of S288C genome</a></span>, '']],
+                                     rows:    [[chrNodeLeft, chrNodeRight]] };
+
+		var _seqSection = { headers: [[<span style={ style.textFont }><strong style={{ color: 'red'}}>OR</strong> <a name='seq'>3. Analyze a raw DNA or Protein sequence</a></span>, '']],
+                                     rows:    [[seqNodeLeft, seqNodeRight]] };
 					
 		return (<div>
 			<div dangerouslySetInnerHTML={{ __html: descText}} />
@@ -176,8 +181,12 @@ const GeneSequenceResources = React.createClass({
 			     	  <form onSubmit={this.onSubmit} target="infowin">
 				        <DataTable data={_nameSection} />
 			          </form>
-				  <p></p>
-			          <DataTable data={_chrSeqSection} />        
+				  <form onSubmit={this.onSubmit2} target="infowin">
+                                        <DataTable data={_chrSection} />
+                                  </form>
+				  <form onSubmit={this.onSubmit3} target="infowin">
+                                        <DataTable data={_seqSection} />
+                                  </form>
 			     </div>
 			</div>
 		</div>);
@@ -973,7 +982,7 @@ const GeneSequenceResources = React.createClass({
 
         },
 
-	getChrNode() {
+	getChrNodeLeft() {
 		 		    	      
 		var chr2num = { '-- choose a chromosome --': 0, 
 		    	        'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5, 'VI': 6,
@@ -991,43 +1000,54 @@ const GeneSequenceResources = React.createClass({
                        }
                 });
 		
-		var reverseCompNode = this.getReverseCompNode('rev2');
-
                 return(<div>
-		       <form onSubmit={this.onSubmit2} target="infowin">
                        <h3>Pick a chromosome: </h3>
                        <p><select ref='chr' name='chr' onChange={this.onChangeGenome}>{_elements}</select></p>
 		       <p>Then enter coordinates (optional)
-		       <input type='text' ref='start' name='start' onChange={this.onChange} size='50'></input></p>
-		       <p>to
-                       <input type='text' ref='end' name='end' onChange={this.onChange} size='50'></input></p>
-		       <p>The entire chromosome sequence will be displayed if no coordinates are entered.</p>
-		       <p><b>Note</b>: Enter coordinates in ascending order for the Watson strand and descending order for the Crick strand.</p>
-		       { reverseCompNode }
-		       <p><input type="submit" ref='submit2' name='submit2' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset2' name='reset2' value="Reset Form" className="button secondary"></input></p>
-		       </form>
+		       <input type='text' ref='start' name='start' onChange={this.onChange} size='130'></input>
+		       to
+                       <input type='text' ref='end' name='end' onChange={this.onChange} size='130'></input>
+		       The entire chromosome sequence will be displayed if no coordinates are entered. </p>       
                 </div>);
  		 
 	},
 
-	getSeqNode() {
+	getChrNodeRight() {
+
+		var reverseCompNode = this.getReverseCompNode('rev2');
+
+	        return (<div>
+                       <p><b>Note</b>: Enter coordinates in ascending order for the Watson strand and descending order for the Crick strand.</p>
+                       { reverseCompNode }
+                       <p><input type="submit" ref='submit2' name='submit2' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset2' name='reset2' value="Reset Form" className="button secondary"></input></p>
+                </div>);
+		  
+	},
+
+	getSeqNodeLeft() {
 
 		var seqtypeNode = this.getSeqtypeNode();
-		var reverseCompNode = this.getReverseCompNode('rev3');
 
 		return(<div>
-		       <form onSubmit={this.onSubmit3} target="infowin">
                        <h3>Type or Paste a: </h3>
 		       { seqtypeNode }
 		       <p>Sequence:
-                       <textarea ref='seq' name='seq' onChange={this.onChange} rows='7' cols='50'></textarea></p>
-                       <p>The sequence <b>MUST</b> be provided in RAW format, no comments (numbers are okay).</p>
-                       { reverseCompNode }
-		       <p><input type="submit" ref='submit3' name='submit3' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset3' name='reset3' value="Reset Form" className="button secondary"></input></p>
-		       </form>
+                       <textarea ref='seq' name='seq' onChange={this.onChange} rows='3' cols='95'></textarea></p>
                 </div>);    
 
 	},
+
+	getSeqNodeRight() {
+
+		var reverseCompNode = this.getReverseCompNode('rev3');
+
+                return(<div>
+		       <p>The sequence <b>MUST</b> be provided in RAW format, no comments (numbers are okay).</p>
+		       { reverseCompNode }
+		       <p><input type="submit" ref='submit3' name='submit3' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset3' name='reset3' value="Reset Form" className="button secondary"></input></p>
+                </div>);
+
+        },
 
 	getSeqtypeNode() {
 
