@@ -1120,7 +1120,7 @@ const GeneSequenceResources = React.createClass({
                 });
 
                 return(<div>
-		       <p>(Select or unselect multiple strains by pressing<br></br>the Control (PC) or Command (Mac) key while clicking.)
+		       <p>(Select or unselect multiple strains by pressing the Control (PC) or Command (Mac) key while clicking.)
                        <select ref='strains' name='strains' id='strains' onChange={this.onChange} size='11' multiple>{_elements}</select></p>
                 </div>);
 
