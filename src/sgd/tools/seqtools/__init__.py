@@ -27,7 +27,7 @@ def do_seq_analysis(request):
         else:
             response = display_sequence_for_chr(p, data)
             return response
-
+           
     if p.get('seq'):
         data = manipulate_sequence(p)
         return Response(body=json.dumps(data), content_type='application/json')
@@ -38,6 +38,7 @@ def do_seq_analysis(request):
     else:
         response = display_sequence_for_genes(p, data)
         return response
+        
 
 def run_emboss(p):
 
@@ -138,12 +139,11 @@ def display_sequence_for_genes(p, data):
         type = 'protein'
 
     content = ""
-    filename = ""    
-    for gene in data:
-        if filename != "":
-            filename += "_"
-        filename += gene
-        seqtypeInfo = data[gene]
+    geneCount = len(data);
+    filename = ""
+    for key in data:
+        [gene, queryGene] = key.split("|"); 
+        seqtypeInfo = data[key]
         for seqtype in seqtypeInfo:
             if seqtype != type:
                 continue
@@ -159,13 +159,24 @@ def display_sequence_for_genes(p, data):
                     content += format_gcg(locusInfo.get('residue')) + "\n"
                 else:
                     content += format_fasta(locusInfo.get('residue')) + "\n" 
+                if filename == '':
+                    if geneCount == 1:
+                        filename = gene
+                    else:
+                        filename = gene + "_etc_" + str(os.getpid())
     
+    if filename == "":
+        filename = str(os.getpid())
+
     if p.get('format') is not None and p['format'] == 'gcg':
         filename += "_" + type + ".gcg"
     else:
         filename += "_" + type + ".fsa"
 
-    return set_download_file(filename, content)
+    if content == "":
+        content = "No sequence available." 
+
+    return set_download_file(filename, unicode(content))
 
 
 def set_download_file(filename, content):
@@ -341,6 +352,7 @@ def get_sequence_for_genes(p):
     if genes is None:
         return { "ERROR": "NO GENE NAME PASSED IN" }
     genes = genes.split('|')
+    strains = strains.replace("%20", "|").replace("+", "|").replace(" ", "|")
     strains = strains.split('|')
     rev = p.get('rev')
     if rev == '1':
@@ -355,13 +367,18 @@ def get_sequence_for_genes(p):
     data = {}
 
     for name in genes:
+        gene = name
         name = name.upper()
         name = name.replace("SGD:", "")
         url = seq_url.replace("_REPLACE_NAME_HERE_", name)
         res = _get_json_from_server(url)        
 
         if res == 404:
-            data[name] = {}
+            # data[name] = {}
+            continue
+        
+        if len(res.get('genomic_dna')) == 0:
+            # data[name] = {}
             continue
 
         allSeqData = {}
@@ -386,12 +403,13 @@ def get_sequence_for_genes(p):
                                                                        up, down, rev)
                 allSeqData['genomic_dna'] = genomicData
 
-            [start, end, chr] = _extract_chr_coordinates(res['genomic_dna'])
+            [start, end, chr, type] = _extract_chr_coordinates(res['genomic_dna'])
             allSeqData['chr_coords'] = { "start": start, 
                                          "end": end, 
-                                         "chr": chr }
+                                         "chr": chr,
+                                         "locus_type": type }
         if format_name is not None:
-            data[format_name] = allSeqData
+            data[format_name + "|" + gene] = allSeqData
 
     return data
 
@@ -401,6 +419,7 @@ def _extract_chr_coordinates(rows):
     start = None
     end = None
     chr = None
+    locus_type = None
     for row in rows:
         strain = row['strain']
         strain_name = strain['display_name']
@@ -408,7 +427,9 @@ def _extract_chr_coordinates(rows):
             start = row['start']
             end = row['end']
             chr = row['contig']['display_name'].replace("Chromosome ", "")
-    return [start, end, chr]
+            locus = row['locus']
+            locus_type = locus['locus_type']
+    return [start, end, chr, locus_type]
 
 
 def _extract_seq(strains, rows, rev):
