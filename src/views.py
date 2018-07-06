@@ -18,7 +18,7 @@ import logging
 import json
 
 
-from .models import DBSession, ESearch, Colleague, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, Dataset, DatasetKeyword, Contig, Proteindomain, Ec, Dnasequenceannotation, Straindbentity
+from .models import DBSession, ESearch, Colleague, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, Dataset, DatasetKeyword, Contig, Proteindomain, Ec, Dnasequenceannotation, Straindbentity, Complexdbentity
 from .helpers import extract_id_request, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id, primer3_parser
 from .search_helpers import build_autocomplete_search_body_request, format_autocomplete_results, build_search_query, build_es_search_body_request, build_es_aggregation_body_request, format_search_results, format_aggregation_results, build_sequence_objects_search_query
 from .models_helpers import ModelsHelper
@@ -1096,8 +1096,6 @@ def primer3(request):
     except Exception as e:
         return HTTPBadRequest(body=json.dumps({'error': str(e) }))
 
-
-
 @view_config(route_name='ecnumber_locus_details', renderer='json', request_method='GET')
 def ecnumber_locus_details(request):
     id = extract_id_request(request, 'ec')
@@ -1106,6 +1104,20 @@ def ecnumber_locus_details(request):
 
     if ec:
         return ec.locus_details()
+    else:
+        return HTTPNotFound()
+
+@view_config(route_name='protein_complex_details', renderer='json', request_method='GET')
+def protein_complex_details(request):
+
+    # id = extract_id_request(request, 'proteincomplex')
+    # complex = DBSession.query(Complexdbentity).filter_by(dbentity_id=id).one_or_none()
+    
+    complexAC = request.matchdict['id']
+    complex = DBSession.query(Complexdbentity).filter_by(format_name=complexAC).one_or_none()  
+
+    if complex:
+        return complex.protein_complex_details()
     else:
         return HTTPNotFound()
 
