@@ -292,7 +292,12 @@ function create_show_child_button(child_button_id, table, data, details_all_link
     var indirect_data = null;
 
     for (var i=0; i < data.length; i++) {
-        direct_data.push(data_to_table(data[i], i));
+         if (typeof annotationTypeFilter === 'string') {
+             if (data[i].annotation_type === annotationTypeFilter) direct_data.push(data_to_table(data[i], i));
+         } else {
+             direct_data.push(data_to_table(data[i], i));
+         }
+        //direct_data.push(data_to_table(data[i], i));
     }
 
     var child_button = $("#" + child_button_id);
