@@ -255,9 +255,10 @@ def update_database_load_file_to_s3(nex_session, gaf_file, is_public, source_to_
     gzip_file = gzip_file.replace("scripts/dumping/curation/data/", "")
 
     # nex_session.query(Dbentity).filter_by(display_name=gzip_file, dbentity_status='Active').update({"dbentity_status": 'Archived'})
-    nex_session.query(Dbentity).filter(Dbentity.display_name.like('gene_association%')).filter(Dbentity.dbentity_status=='Active').update({"dbentity_status":'Archived'}, synchronize_session='fetch')
-    
-    nex_session.commit()
+
+    if is_public == 1:
+        nex_session.query(Dbentity).filter(Dbentity.display_name.like('gene_association.sgd%')).filter(Dbentity.dbentity_status=='Active').update({"dbentity_status":'Archived'}, synchronize_session='fetch')
+        nex_session.commit()
 
     data_id = edam_to_id.get('EDAM:2048')   ## data:2048 Report
     topic_id = edam_to_id.get('EDAM:0085')  ## topic:0085 Functional genomics

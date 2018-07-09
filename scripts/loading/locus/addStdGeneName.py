@@ -15,24 +15,15 @@ log.setLevel(logging.INFO)
 
 # CREATED_BY = os.environ['DEFAULT_USER']
 
-def standardize_name(infile, logfile):
+def add_standard_name(infile, logfile):
 
     nex_session = get_session()
 
     name_to_locus_id = dict([(x.systematic_name, x.dbentity_id) for x in nex_session.query(Locusdbentity).all()])
     pmid_to_reference = dict([(x.pmid, x.dbentity_id) for x in nex_session.query(Referencedbentity).all()])
-    reference_id_to_pub_status = dict([(x.dbentity_id, x.publication_status) for x in nex_session.query(Referencedbentity).all()])
-    gene_to_created_by = dict([(x.display_name, x.created_by) for x in nex_session.query(Reservedname).all()])
     sgd = nex_session.query(Source).filter_by(display_name='SGD').one_or_none()
     source_id = sgd.source_id
     
-    locus_id_gene_to_note_id = {}
-    for x in nex_session.query(Locusnote).filter_by(note_class='Locus', note_type='Name').all():
-        gene = x.note.replace("<b>Name:</b> ", "")
-        locus_id_gene_to_note_id[(x.locus_id, gene)] = x.note_id
-
-    # log.info("Fixing...\n") 
-
     fw = open(logfile, "w")    
     f = open(infile)
 
@@ -45,12 +36,6 @@ def standardize_name(infile, logfile):
         orf_name = pieces[0]
         gene_name = pieces[1]
 
-        created_by = gene_to_created_by.get(gene_name)
-
-        if created_by is None:
-            print "The gene name: ", gene_name, " is not in Reservedname table."
-            continue
-
         pmid_4_gene_name = None
         pmid_4_name_desc = None
         if pieces[2]:
@@ -58,8 +43,9 @@ def standardize_name(infile, logfile):
         name_desc = pieces[3].replace('"', '')
         if pieces[4]:
             pmid_4_name_desc = int(pieces[4])
-        # date_standardized = reformat_date(pieces[5])
+
         date_standardized = pieces[5]
+        created_by = pieces[6]
 
         locus_id = name_to_locus_id[orf_name]       
         if pmid_4_gene_name and pmid_4_gene_name not in pmid_to_reference:
@@ -74,10 +60,7 @@ def standardize_name(infile, logfile):
         # 3. update locusdbentity.name_description = name_description in the file 
         update_locusdbentity(nex_session, fw, locus_id, gene_name, name_desc)
 
-        # 4.1 Delete the old row in LOCUS_REFERENCE table reference_class = 'name_description' 
-        delete_locus_reference(nex_session, fw, locus_id, 'name_description')
-
-        # 4.2 Add rows to LOCUS_REFERENCE where reference_class = 'gene_name' and 'name_description'
+        # 4. Add rows to LOCUS_REFERENCE where reference_class = 'gene_name' and 'name_description'
         insert_locus_reference(nex_session, fw, locus_id, 
                                pmid_to_reference.get(pmid_4_gene_name), 
                                'gene_name', source_id, created_by,
@@ -88,22 +71,11 @@ def standardize_name(infile, logfile):
                                    pmid_to_reference.get(pmid_4_name_desc),
                                    'name_description', source_id, created_by, 
                                    date_standardized)
-
-        # 5. Update ARCH_LOCUSCHANGE.date_name_standardized = date_standardized in the file
-        #    for the given locus_id, with change_type = 'Gene name' and new_value = [NEW GENE NAME] 
-        update_arch_locuschange(nex_session, fw, locus_id, gene_name, date_standardized)
-            
-        # 6. Delete the row from RESERVEDNAME
-        delete_reservedname_row(nex_session, fw, gene_name)
     
-        # 7. update the papers in the locusnote to point to new papers in LOCUSNOTE_REFERENCE
-        note_id = locus_id_gene_to_note_id.get((locus_id, gene_name))
-        if note_id is None:
-            print "No note for gene_name: ", gene_name
-            continue
+        # 5. insert row into locusnote and locusnote_reference tables
 
-        delete_old_locusnote_reference(nex_session, fw, note_id, gene_name)
-
+        note_id = insert_locusnote(nex_session, fw, locus_id, gene_name, source_id, created_by, date_standardized)
+        
         insert_locusnote_reference(nex_session, fw, note_id, pmid_to_reference.get(pmid_4_gene_name), 
                                    source_id, created_by, date_standardized)
         
@@ -113,6 +85,26 @@ def standardize_name(infile, logfile):
 
     fw.close()
     f.close()
+
+
+def insert_locusnote(nex_session, fw, locus_id, gene_name, source_id, created_by, date_standardized):
+
+    x = Locusnote(locus_id = locus_id,
+                  source_id = source_id,
+                  note_class = 'Locus',
+                  note_type = 'Name',
+                  note = '<b>Name:</b> ' + gene_name,
+                  created_by = created_by,
+                  date_created = date_standardized)
+
+    nex_session.add(x)
+    nex_session.flush()
+    nex_session.refresh(x)
+    note_id = x.note_id
+
+    fw.write("Insert Locusnote row for locus_id = " + str(locus_id) + " and note = <b>Name:</b> " + gene_name + "\n") 
+    
+    return note_id
 
 
 def delete_locus_reference(nex_session, fw, locus_id, reference_class):
@@ -246,14 +238,15 @@ def reformat_date(this_date):
 if __name__ == '__main__':
 
     infile = None
+    created_by = None
     if len(sys.argv) >= 2:
          infile = sys.argv[1]
     else:
-        print "Usage:         python standardizeReservedName.py datafile"
-        print "Usage example: python standardizeReservedName.py scripts/loading/locus/data/reservedNames2standardize110817.txt"
+        print "Usage:         python addStdGeneName.py datafile CURATOR_NAME"
+        print "Usage example: python addStdGeneName.py scripts/loading/locus/data/addStdName061118.txt"
         exit()
     
-    logfile = "scripts/loading/locus/logs/standardizeReservedName.log"
+    logfile = "scripts/loading/locus/logs/AddStdGeneName.log"
     
-    standardize_name(infile, logfile)
+    add_standard_name(infile, logfile)
                                                   
