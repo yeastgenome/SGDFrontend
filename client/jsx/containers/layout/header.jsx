@@ -194,7 +194,7 @@ const Header = React.createClass({
                 <li className="has-dropdown">
                   <a href="#">Nomenclature</a>
                   <ul className="dropdown">
-                    <li><a className="s-disabled" href="/cgi-bin/registry/geneRegistry">Submit a Gene Registration</a></li>
+                    <li><a className="disabled-header-a" href="/reserved_name/new">Submit a Gene Registration</a></li>
                     <li><a className="disabled-header-a"target="_blank" href="https://sites.google.com/view/yeastgenome-help/community-help/gene-registry">Gene Registry</a></li>
                     <li><a className="disabled-header-a"target="_blank" href="https://sites.google.com/view/yeastgenome-help/community-help/nomenclature-conventions">Nomenclature Conventions</a></li>
                     <li><a className="disabled-header-a" href="/cgi-bin/geneHunter">Global Gene Hunter</a></li>
