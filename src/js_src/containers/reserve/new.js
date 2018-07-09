@@ -124,7 +124,7 @@ class GeneNameReservation extends Component {
                 label: 'Proposed Gene Name *'
               },
               description: {
-                label: 'Description of Gene Name Acronym *'
+                label: 'Description of Gene Name Acronym'
               },
               systematic_name: {
                 label: 'ORF Name (strongly encouraged)'

@@ -6,12 +6,16 @@ upstream backend {
 	server 127.0.0.1:6543;
 }
 
+log_format client_ip '$http_x_forwarded_for - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"';
+
 server {
     listen 8080;
 
     server_name _;
 
     include /etc/nginx/conf.d/proxies;
+    
+    port_in_redirect off;
 
     location /healthcheck {
         proxy_redirect off;
