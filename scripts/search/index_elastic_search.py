@@ -53,7 +53,7 @@ def index_toolbar_links():
         ("Restriction Mapper", "/cgi-bin/PATMATCH/RestrictionMapper",
          []), ("Genome Browser", "/browse",
                              []), ("Gene/Sequence Resources",
-                                   "/cgi-bin/seqTools", []),
+                                   "/seqTools", []),
         ("Download Genome",
          "https://downloads.yeastgenome.org/sequence/S288C_reference/genome_releases/",
          "download"), ("Genome Snapshot", "/genomesnapshot",
