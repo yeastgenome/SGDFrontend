@@ -5,6 +5,7 @@ from pyramid.view import notfound_view_config
 from src.sgd.frontend.yeastgenome import send_message
 from src.sgd.tools.blast import do_blast
 from src.sgd.tools.patmatch import do_patmatch
+from src.sgd.tools.seqtools import do_seq_analysis
 
 def prep_views(chosen_frontend, config):
     # some logic (NOT all) has been moved to views to be more 'pyramid-y'
@@ -18,6 +19,7 @@ def prep_views(chosen_frontend, config):
     config.add_route('blast_fungal', '/blast-fungal')
     config.add_route('blast_sgd', '/blast-sgd')
     config.add_route('patmatch', '/nph-patmatch')
+    config.add_route('seq_tools', '/seqTools')
     config.add_route('blog_post', '/blog/{slug}')
     config.add_route('blog_index', '/blog')
     config.add_route('blog_archive', '/blog/archive/{year}')
@@ -26,7 +28,6 @@ def prep_views(chosen_frontend, config):
     config.add_route('colleague_show', '/colleague/{identifier}')
     config.add_route('downloads', '/downloads')
     
-    config.add_route('new_colleague', '/new_colleague')
     config.add_route('interaction_search', '/interaction-search')
     config.add_route('download_list', '/download-list')
     config.add_route('snapshot', '/genomesnapshot')
@@ -51,6 +52,10 @@ def prep_views(chosen_frontend, config):
     config.add_route('references_this_week', '/reference/recent')
     config.add_route('reference', '/reference/{identifier}')
     config.add_route('phenotype', '/phenotype/{identifier}')
+
+    # public CI
+    config.add_route('new_gene_name_reservation', 'reserved_name/new')
+    config.add_route('new_colleague', 'colleague_update')
         
     config.add_route('author', '/author/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('author', request)(getattr(chosen_frontend, 'author')(request.matchdict['identifier'])),
@@ -224,6 +229,9 @@ def prep_views(chosen_frontend, config):
 
     config.add_route('do_patmatch', '/run_patmatch')
     config.add_view(do_patmatch, route_name='do_patmatch')
+
+    config.add_route('do_seq_analysis', '/run_seqtools')
+    config.add_view(do_seq_analysis, route_name='do_seq_analysis')
 
 
 def prepare_frontend(frontend_type, **configs):

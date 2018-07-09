@@ -1,6 +1,3 @@
-
-"use strict";
-
 var React = require("react");
 var _ = require("underscore");
 var $ = require("jquery");
@@ -152,10 +149,21 @@ var SearchForm = React.createClass({
 
 		        var seqData = this.state.seqData;
                 	var configData = this.state.configData;
-                
+
+			var seq = "";
+			
+			var param = this.state.param;
+			if (param['sequence_id']) {
+			     var seqID = param['sequence_id'];
+                             seq = window.localStorage.getItem(seqID);
+			}
+			else {
+			     seq = seqData.seq;
+			}
+			                
 			var commentBoxNode = this._getCommentBoxNode();
                 	var submitNode = this._getSubmitNode();
-                	var seqBoxNode = this._getSeqBoxNode(seqData.seq);
+                	var seqBoxNode = this._getSeqBoxNode(seq);
                 	var blastProgramNode = this._getBlastProgramNode(configData);
                 	var databaseNode = this._getDatabaseNode(configData);
                 	var optionNode = this._getOptionsNode(configData);
@@ -292,8 +300,10 @@ var SearchForm = React.createClass({
                 var database = data.database;
 		var datagroup = data.datagroup;
                 var _databaseDef = data.databasedef;
-		if (this.state.seqType == 'protein') {
-		       _databaseDef = ['YeastORF'];
+		
+		var param = this.state.param;
+		if (param['type'] == 'protein') {
+		       _databaseDef = ['YeastORF.fsa'];
 		}
                 var i = 0;
                 var _elements = _.map(database, d => {
@@ -435,7 +445,7 @@ var SearchForm = React.createClass({
         },
 
 	_getSeq: function(name, type) {
-        var jsonUrl = BLAST_URL + "?name=" + name;
+                var jsonUrl = BLAST_URL + "?name=" + name;
 		if (type == 'protein' || type == 'pep') {
 		   jsonUrl = jsonUrl + "&type=" + type;
 		}

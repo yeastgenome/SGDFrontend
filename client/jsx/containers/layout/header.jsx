@@ -91,7 +91,7 @@ const Header = React.createClass({
                 <li><a className="disabled-header-a" href="https://browse.yeastgenome.org">Genome Browser</a></li>
                 <li><a className="disabled-header-a" href="/blast-sgd">BLAST</a></li>
                 <li><a className="disabled-header-a" href="/blast-fungal">Fungal BLAST</a></li>
-                <li><a className="disabled-header-a" href="/cgi-bin/seqTools">Gene/Sequence Resources</a></li>
+                <li><a className="disabled-header-a" href="/seqTools">Gene/Sequence Resources</a></li>
                 <li className="has-dropdown">
                   <a href="#">Reference Genome</a>
                   <ul className="dropdown">
@@ -179,7 +179,7 @@ const Header = React.createClass({
                   <a href="#">Colleague Information</a>
                   <ul className="dropdown">
                     <li><a className="disabled-header-a" href="/search?category=colleague&page=0">Find a Colleague</a></li>
-                    <li><a className="s-disabled" href="/cgi-bin/colleague/colleagueSearch">Add or Update Info</a></li>
+                    <li><a href="/colleague_update">Add or Update Info</a></li>
                     <li><a className="disabled-header-a" href="/search?category=colleague&page=0">Find a Yeast Lab</a></li>
                   </ul>
                 </li>
@@ -194,7 +194,7 @@ const Header = React.createClass({
                 <li className="has-dropdown">
                   <a href="#">Nomenclature</a>
                   <ul className="dropdown">
-                    <li><a className="s-disabled" href="/cgi-bin/registry/geneRegistry">Submit a Gene Registration</a></li>
+                    <li><a className="disabled-header-a" href="/reserved_name/new">Submit a Gene Registration</a></li>
                     <li><a className="disabled-header-a"target="_blank" href="https://sites.google.com/view/yeastgenome-help/community-help/gene-registry">Gene Registry</a></li>
                     <li><a className="disabled-header-a"target="_blank" href="https://sites.google.com/view/yeastgenome-help/community-help/nomenclature-conventions">Nomenclature Conventions</a></li>
                     <li><a className="disabled-header-a" href="/cgi-bin/geneHunter">Global Gene Hunter</a></li>
