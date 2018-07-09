@@ -34,7 +34,10 @@ function create_dataset_conditions_table(data) {
 
         var options = {};
         options["bPaginate"] = true;
-        options["oLanguage"] = {"sEmptyTable": "No data for " + data['geo_id']};
+        if(dataset['geo_id'] != null)
+            options["oLanguage"] = {"sEmptyTable": "No data for " + data['geo_id']};
+        else
+            options["oLanguage"] = {"sEmptyTable": "No data for " + data['link'].split("/")[data['link'].split("/").length-1]};
         options["aaData"] = datatable;
         options["scrollX"] = true;
     }
