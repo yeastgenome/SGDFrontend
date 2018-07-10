@@ -1,9 +1,16 @@
 $(document).ready(function() {
-    $.getJSON('/backend/dataset/' + dataset['geo_id'], function(data) {
-        var dataset_table = create_dataset_conditions_table(data);
+    if(dataset['geo_id'] != null) {
+        $.getJSON('/backend/dataset/' + dataset['geo_id'], function(data) {
+            var dataset_table = create_dataset_conditions_table(data);
+            $("#dataset_conditions_table_analyze").hide();
+            $("#dataset_conditions_table_download").hide();
+        });
+    }
+    else {
+        var dataset_table = create_dataset_conditions_table(dataset);
         $("#dataset_conditions_table_analyze").hide();
         $("#dataset_conditions_table_download").hide();
-    });
+    }
 });
 
 function create_dataset_conditions_table(data) {
@@ -27,7 +34,10 @@ function create_dataset_conditions_table(data) {
 
         var options = {};
         options["bPaginate"] = true;
-        options["oLanguage"] = {"sEmptyTable": "No data for " + data['geo_id']};
+        if(dataset['geo_id'] != null)
+            options["oLanguage"] = {"sEmptyTable": "No data for " + data['geo_id']};
+        else
+            options["oLanguage"] = {"sEmptyTable": "No data for " + data['link'].split("/")[data['link'].split("/").length-1]};
         options["aaData"] = datatable;
         options["scrollX"] = true;
     }
