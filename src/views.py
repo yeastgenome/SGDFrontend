@@ -1117,7 +1117,7 @@ def protein_complex_details(request):
 
     complex = DBSession.query(Complexdbentity).filter_by(format_name=complexAC).one_or_none()  
 
-    return [complex.display_name]
+    return [complex]
 
     if complex:
         return complex.protein_complex_details()
