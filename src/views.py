@@ -1109,15 +1109,15 @@ def ecnumber_locus_details(request):
 
 @view_config(route_name='protein_complex_details', renderer='json', request_method='GET')
 def protein_complex_details(request):
-
-    # id = extract_id_request(request, 'proteincomplex')
-    # complex = DBSession.query(Dbentity).filter_by(dbentity_id=id).one_or_none()
     
     complexAC = request.matchdict['id']
 
-    complex = DBSession.query(Dbentity).filter_by(format_name=complexAC).one_or_none()  
+    ### these two work 
+    # complex = DBSession.query(Dbentity).filter_by(format_name=complexAC).one_or_none()  
+    # return [complex.display_name]
 
-    return [complex.display_name]
+    complex = DBSession.query(Complexdbentity).filter_by(format_name=complexAC).one_or_none() 
+    return [complex.display_name] 
 
     if complex:
         return complex.protein_complex_details()
