@@ -4630,39 +4630,8 @@ class Disease(Base):
 
     source = relationship(u'Source')
 
-    def to_dict(self):
-        annotations_count = DBSession.query(Diseaseannotation.dbentity_id, func.count(Diseaseannotation.dbentity_id)).filter_by(disease_id=self.disease_id).group_by(Diseaseannotation.dbentity_id).count()
 
-        obj = {
-            "display_name": self.display_name.replace("_"," "),
-            "urls": [],
-            "disease_id": self.disease_id,
-            "description": self.description,
-            "aliases": [],
-            "id": self.go_id,
-            "link": self.obj_url,
-            "locus_count": annotations_count,
-        }
-
-        urls = DBSession.query(DiseaseUrl).filter_by(disease_id=self.disease_id).all()
-
-        for url in urls:
-            obj["urls"].append({
-                "display_name": url.display_name,
-                "link": url.obj_url,
-                "category": url.url_type
-            })
-
-        synonyms = DBSession.query(DiseaseAlias).filter_by(disease_id=self.disease_id).all()
-        for synonym in synonyms:
-            obj["aliases"].append(synonym.display_name)
-
-        obj["locus_count"] = DBSession.query(Diseaseannotation.dbentity_id, func.count(Diseaseannotation.dbentity_id)).filter_by(disease_id=self.disease_id).group_by(Diseaseannotation.dbentity_id).count()
-
-        return obj
-
-
-class DiseaseAlias(Base):
+class DiseaseAlia(Base):
     __tablename__ = 'disease_alias'
     __table_args__ = (
         UniqueConstraint('disease_id', 'display_name', 'alias_type'),
