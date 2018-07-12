@@ -1111,13 +1111,11 @@ def ecnumber_locus_details(request):
 def protein_complex_details(request):
 
     # id = extract_id_request(request, 'proteincomplex')
-    # complex = DBSession.query(Complexdbentity).filter_by(dbentity_id=id).one_or_none()
+    # complex = DBSession.query(Dbentity).filter_by(dbentity_id=id).one_or_none()
     
     complexAC = request.matchdict['id']
 
-    return [complexAC]
-
-    complex = DBSession.query(Complexdbentity).filter_by(format_name=complexAC).one_or_none()  
+    complex = DBSession.query(Dbentity).filter_by(format_name=complexAC).one_or_none()  
 
     if complex:
         return complex.protein_complex_details()
