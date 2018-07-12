@@ -7691,8 +7691,22 @@ class Complexdbentity(Dbentity):
     eco_id = Column(ForeignKey(u'nex.eco.eco_id', ondelete=u'CASCADE'), nullable=False, index=True)
     description = Column(Text, nullable=True)
     properties = Column(Text, nullable=True)
+    complex_accession = Column(String(40), nullable=False)
 
     eco = relationship(u'Eco')
+
+    def protein_complex_details(self):
+        
+        data = {}
+        data['complex_name'] = self.display_name
+        data['complex_accession'] = self.format_name
+        data['systematic_name'] = self.systematic_name
+        data['source'] = self.source.display_name
+        
+        ## add more data here: alias, description (function), properties, go, reference, subunits etc
+
+        return data
+
 
 class ComplexAlias(Base):
     __tablename__ = 'complex_alias'
@@ -7713,6 +7727,7 @@ class ComplexAlias(Base):
     complex = relationship(u'Complexdbentity')
     source = relationship(u'Source')
 
+
 class ComplexGo(Base):
     __tablename__ = 'complex_go'
     __table_args__ = (
@@ -7731,6 +7746,7 @@ class ComplexGo(Base):
     source = relationship(u'Source')
     go = relationship(u'Go')
 
+
 class ComplexReference(Base):
     __tablename__ = 'complex_reference'
     __table_args__ = (
@@ -7748,7 +7764,6 @@ class ComplexReference(Base):
     complex = relationship(u'Complexdbentity')
     source = relationship(u'Source')
     reference = relationship(u'Referencedbentity')
-
 
 class Complexbindingannotation(Base):
     __tablename__ = 'complexbindingannotation'
@@ -7777,6 +7792,7 @@ class Complexbindingannotation(Base):
     taxonomy = relationship(u'Taxonomy')
     complex = relationship(u'Complexdbentity')
 
+
 class Interactor(Base):
     __tablename__ = 'interactor'
     __table_args__ = {u'schema': 'nex'}
@@ -7786,16 +7802,14 @@ class Interactor(Base):
     display_name = Column(String(500), nullable=False, index=True)
     obj_url = Column(String(500), nullable=False)
     source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
-    intact_id = Column(String(20), nullable=False)
     locus_id = Column(ForeignKey(u'nex.locusdbentity.dbentity_id', ondelete=u'CASCADE'), nullable=True, index=True)
     description = Column(String(500))
     type_id = Column(ForeignKey(u'nex.psimi.psimi_id', ondelete=u'CASCADE'), nullable=False, index=True)
     role_id = Column(ForeignKey(u'nex.psimi.psimi_id', ondelete=u'CASCADE'), nullable=False, index=True)
     stoichiometry = Column(Integer)
-    protein_residues = Column(Text, nullable=False)
+    residues = Column(Text, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
-
 
 class ReferenceAlias(Base):
     __tablename__ = 'reference_alias'
