@@ -403,6 +403,176 @@
     </section>
     {% endif %}
 
+<!-- Disease
+================================================== -->
+    {% if tabs['disease_tab'] %}
+    <section id="go">
+        <a href="/locus/{{ locus.sgdid }}/go" class="details-link">Gene Ontology Details <i class="fa fa-chevron-circle-right"></i></a>
+        <h2>Disease Ontology
+            <a href="#" data-dropdown="go_info"><i class="fa fa-info-circle"></i></a>
+
+            <p id="go_info" class="f-dropdown content medium" data-dropdown-content>
+                GO Annotations consist of four mandatory components: a gene product, a term from one of the three
+                <a href="http://geneontology.org/">Gene Ontology (GO)</a> controlled vocabularies
+                (<a href='/ontology/go/molecular_function'>Molecular Function</a>,
+                <a href='/ontology/go/biological_process'>Biological Process</a>, and
+                <a href='/ontology/go/cellular_component'>Cellular Component</a>), a reference, and an
+                evidence code. SGD has manually curated and high-throughput GO Annotations, both derived from the
+                literature, as well as computational, or predicted, annotations. Click "Gene Ontology Details" to view
+                all GO information and evidence for this locus as well as biological processes it shares with other genes.
+            </p>
+        </h2>
+        <hr />
+        <div>
+
+            {% if locus['go_overview']['paragraph'] %}
+                <dl class="key-value">
+                    <dt>Summary</dt>
+                    <dd>{{ locus['go_overview']['paragraph']|safe }}</dd>
+                </dl>
+            {% endif %}
+
+            {% if locus.go_overview.manual_molecular_function_terms|length + locus.go_overview.manual_biological_process_terms|length + locus.go_overview.manual_cellular_component_terms|length + locus.go_overview.htp_molecular_function_terms|length + locus.go_overview.htp_biological_process_terms|length + locus.go_overview.htp_cellular_component_terms|length + locus.go_overview.computational_annotation_count == 0 %}
+                <p>No Gene Ontology data available.</p>
+            {% else %}
+
+                {% if 'computational_annotation_count' not in locus.go_overview or locus.go_overview.computational_annotation_count > 0 %}
+                    <p><a href="/locus/{{ locus.sgdid }}/go#comp">View computational annotations</a></p>
+                {% endif %}
+
+                {% if locus.go_overview.manual_molecular_function_terms|length + locus.go_overview.htp_molecular_function_terms|length > 0 %}
+                <div class="panel">
+                    <h3>Molecular Function</h3>
+                    <dl class="key-value">
+                        {% if locus.go_overview.manual_molecular_function_terms|length > 0 %}
+                        <dt>Manually Curated</dt>
+                        <dd><ul style="list-style-type:disc">
+                            {% for entry in locus.go_overview.manual_molecular_function_terms %}
+                                <li>
+                                    {% if 'qualifiers' in entry %}
+                                        {% for qualifier in entry.qualifiers if qualifier in ['NOT', 'colocalizes with', 'contributes to'] %}
+                                            {{ qualifier }}{% if not loop.last %}, {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                    <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a> {% if entry.term.display_name == 'cellular component' or entry.term.display_name == 'biological process' or entry.term.display_name == 'molecular function' %}unknown{% endif %}
+                                    {% for code in entry.evidence_codes %}
+                                        {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
+                                    {% endfor %}
+                                </li>
+                            {% endfor %}
+                        </ul></dd>
+                        {% endif %}
+
+                        {% if locus.go_overview.htp_molecular_function_terms|length > 0 %}
+                        <dt>High-Throughput</dt>
+                        <dd><ul style="list-style-type:disc">
+                            {% for entry in locus.go_overview.htp_molecular_function_terms %}
+                                <li>
+                                    {% if 'qualifiers' in entry %}
+                                        {% for qualifier in entry.qualifiers if qualifier in ['NOT', 'colocalizes with', 'contributes to'] %}
+                                            {{ qualifier }}{% if not loop.last %}, {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                    <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a> {% if entry.term.display_name == 'cellular component' or entry.term.display_name == 'biological process' or entry.term.display_name == 'molecular function' %}unknown{% endif %}
+                                    {% for code in entry.evidence_codes %}
+                                        {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
+                                    {% endfor %}
+                                </li>
+                            {% endfor %}
+                        </ul></dd>
+                        {% endif %}
+                    </dl>
+                </div>
+                {% endif %}
+
+                {% if locus.go_overview.manual_biological_process_terms|length + locus.go_overview.htp_biological_process_terms|length > 0 %}
+                <div class="panel">
+                    <h3>Biological Process</h3>
+                    <dl class="key-value">
+                        {% if locus.go_overview.manual_biological_process_terms|length > 0 %}
+                        <dt>Manually Curated</dt>
+                        <dd><ul style="list-style-type:disc">
+                            {% for entry in locus.go_overview.manual_biological_process_terms %}
+                                <li>
+                                    {% if 'qualifiers' in entry %}
+                                        {% for qualifier in entry.qualifiers if qualifier in ['NOT', 'colocalizes with', 'contributes to'] %}
+                                            {{ qualifier }}{% if not loop.last %}, {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                    <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a> {% if entry.term.display_name == 'cellular component' or entry.term.display_name == 'biological process' or entry.term.display_name == 'molecular function' %}unknown{% endif %}
+                                    {% for code in entry.evidence_codes %}
+                                        {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
+                                    {% endfor %}
+                                </li>
+                            {% endfor %}
+                        </ul></dd>
+                        {% endif %}
+
+                        {% if locus.go_overview.htp_biological_process_terms|length > 0 %}
+                        <dt>High-Throughput</dt>
+                        <dd><ul style="list-style-type:disc">
+                            {% for entry in locus.go_overview.htp_biological_process_terms %}
+                                <li>
+                                    <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a> {% if entry.term.display_name == 'cellular component' or entry.term.display_name == 'biological process' or entry.term.display_name == 'molecular function' %}unknown{% endif %}
+                                    {% for code in entry.evidence_codes %}
+                                        {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
+                                    {% endfor %}
+                                </li>
+                            {% endfor %}
+                        </ul></dd>
+                        {% endif %}
+                    </dl>
+                </div>
+                {% endif %}
+
+                {% if locus.go_overview.manual_cellular_component_terms|length + locus.go_overview.htp_cellular_component_terms|length > 0 %}
+                <div class="panel">
+                    <h3>Cellular Component</h3>
+                    <dl class="key-value">
+                        {% if locus.go_overview.manual_cellular_component_terms|length > 0 %}
+                        <dt>Manually Curated</dt>
+                        <dd><ul style="list-style-type:disc">
+                            {% for entry in locus.go_overview.manual_cellular_component_terms %}
+                                <li>
+                                    {% if 'qualifiers' in entry %}
+                                        {% for qualifier in entry.qualifiers if qualifier in ['NOT', 'colocalizes with', 'contributes to'] %}
+                                            {{ qualifier }}{% if not loop.last %}, {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                    <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a> {% if entry.term.display_name == 'cellular component' or entry.term.display_name == 'biological process' or entry.term.display_name == 'molecular function' %}unknown{% endif %}
+                                    {% for code in entry.evidence_codes %}
+                                        {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
+                                    {% endfor %}
+                                </li>
+                            {% endfor %}
+                        </ul></dd>
+                        {% endif %}
+
+                        {% if locus.go_overview.htp_cellular_component_terms|length > 0 %}
+                        <dt>High-Throughput</dt>
+                        <dd><ul style="list-style-type:disc">
+                            {% for entry in locus.go_overview.htp_cellular_component_terms %}
+                                <li>
+                                    {% if 'qualifiers' in entry %}
+                                        {% for qualifier in entry.qualifiers if qualifier in ['NOT', 'colocalizes with', 'contributes to'] %}
+                                            {{ qualifier }}{% if not loop.last %}, {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                    <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a> {% if entry.term.display_name == 'cellular component' or entry.term.display_name == 'biological process' or entry.term.display_name == 'molecular function' %}unknown{% endif %}
+                                    {% for code in entry.evidence_codes %}
+                                        {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
+                                    {% endfor %}
+                                </li>
+                            {% endfor %}
+                        </ul></dd>
+                        {% endif %}
+                    </dl>
+                </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </section>
+    {% endif %}
 <!-- Pathway
 ================================================== -->
     {% if locus.pathways|length > 0 %}
