@@ -7760,11 +7760,11 @@ class Complexdbentity(Dbentity):
                                                  "role": interactor.role.display_name,
                                                  "stoichiometry": interactor.stoichiometry 
                                                 },
-                                 "binding_interactor": { "format_name": interactor.format_name,
-                                                         "display_name": interactor.display_name,
-                                                         "type": interactor.type.display_name,
-                                                         "role": interactor.role.display_name,
-                                                         "stoichiometry": interactor.stoichiometry
+                                 "binding_interactor": { "format_name": binding_interactor.format_name,
+                                                         "display_name": binding_interactor.display_name,
+                                                         "type": binding_interactor.type.display_name,
+                                                         "role": binding_interactor.role.display_name,
+                                                         "stoichiometry": binding_interactor.stoichiometry
                                                 }
                                })
 
