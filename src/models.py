@@ -7768,7 +7768,7 @@ class Complexdbentity(Dbentity):
             #                                    }
             #                   })
 
-        data['annotation'] = annotation
+        data['annotation'] = annotations
 
         return data
 
