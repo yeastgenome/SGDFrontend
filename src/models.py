@@ -4040,106 +4040,57 @@ class Locusdbentity(Dbentity):
 
     def disease_overview_to_dict(self):
         obj = {
-            "manual_molecular_function_terms": [],
-            "manual_biological_process_terms": [],
-            "manual_cellular_component_terms": [],
-            "htp_molecular_function_terms": [],
-            "htp_biological_process_terms": [],
-            "htp_cellular_component_terms": [],
+            "manual_disease_terms": [],
+            "htp_disease_terms": [],
             "computational_annotation_count": 0,
-            "go_slim": [],
             "date_last_reviewed": None
         }
 
-        go_slims = DBSession.query(Goslimannotation).filter_by(dbentity_id=self.dbentity_id).all()
-        for go_slim in go_slims:
-            go_slim_dict = go_slim.to_dict()
-            if go_slim_dict:
-                obj["go_slim"].append(go_slim_dict)
-
-        go = {
-            "cellular component": {},
-            "molecular function": {},
-            "biological process": {}
+        do = {
+            "manually curated": {},
+            "high-throughput": {}
         }
 
-        go_annotations_mc = DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id,
-                                                                    annotation_type="manually curated").all()
-        for annotation in go_annotations_mc:
+        do_annotations_mc = DBSession.query(Diseaseannotation).filter_by(dbentity_id=self.dbentity_id).all()
+        for annotation in do_annotations_mc:
             if obj["date_last_reviewed"] is None or annotation.date_assigned.strftime("%Y-%m-%d") > obj[
                 "date_last_reviewed"]:
                 obj["date_last_reviewed"] = annotation.date_assigned.strftime("%Y-%m-%d")
 
             json = annotation.to_dict_lsp()
 
-            namespace = json["namespace"]
+            namespace = json["annotation_type"]
             term = json["term"]["display_name"]
 
-            if term in go[namespace]:
+            if term in do[namespace]:
                 for ec in json["evidence_codes"]:
-                    if ec["display_name"] not in [e["display_name"] for e in go[namespace][term]["evidence_codes"]]:
-                        go[namespace][term]["evidence_codes"].append(ec)
+                    if ec["display_name"] not in [e["display_name"] for e in do[namespace][term]["evidence_codes"]]:
+                        do[namespace][term]["evidence_codes"].append(ec)
             else:
-                go[namespace][term] = json
+                do[namespace][term] = json
 
-        for namespace in go.keys():
-            terms = sorted(go[namespace].keys(), key=lambda k: k.lower())
-            if namespace == "cellular component":
+        for namespace in do.keys():
+            terms = sorted(do[namespace].keys(), key=lambda k: k.lower())
+            if namespace == "manually curated":
                 for term in terms:
-                    obj["manual_cellular_component_terms"].append(self.modify_go_display_name(go[namespace][term]))
-            elif namespace == "molecular function":
+                    obj["manual_disease_terms"].append(self.modify_go_display_name(do[namespace][term]))
+            elif namespace == "high-throughput":
                 for term in terms:
-                    obj["manual_molecular_function_terms"].append(self.modify_go_display_name(go[namespace][term]))
-            elif namespace == "biological process":
-                for term in terms:
-                    obj["manual_biological_process_terms"].append(self.modify_go_display_name(go[namespace][term]))
+                    obj["htp_disease_terms"].append(self.modify_go_display_name(do[namespace][term]))
 
-        obj["computational_annotation_count"] = DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id,
+        obj["computational_annotation_count"] = DBSession.query(Diseaseannotation).filter_by(dbentity_id=self.dbentity_id,
                                                                                         annotation_type="computational").count()
 
-        go = {
-            "cellular component": {},
-            "molecular function": {},
-            "biological process": {}
-        }
-
-        go_annotations_htp = DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id,
-                                                                     annotation_type="high-throughput").all()
-        for annotation in go_annotations_htp:
-            json = annotation.to_dict_lsp()
-
-            namespace = json["namespace"]
-            term = json["term"]["display_name"]
-
-            if term in go[namespace]:
-                for ec in json["evidence_codes"]:
-                    if ec["display_name"] not in [e["display_name"] for e in go[namespace][term]["evidence_codes"]]:
-                        go[namespace][term]["evidence_codes"].append(ec)
-            else:
-                go[namespace][term] = json
-
-        for namespace in go.keys():
-            terms = sorted(go[namespace].keys(), key=lambda k: k.lower())
-
-            if namespace == "cellular component":
-                obj["htp_cellular_component_terms"] = [go[namespace][term] for term in terms]
-            elif namespace == "molecular function":
-                obj["htp_molecular_function_terms"] = [go[namespace][term] for term in terms]
-            elif namespace == "biological process":
-                obj["htp_biological_process_terms"] = [go[namespace][term] for term in terms]
-
-        go_summary = DBSession.query(Locussummary.html).filter_by(locus_id=self.dbentity_id,
-                                                                  summary_type="Function").one_or_none()
-        if go_summary:
-            obj["paragraph"] = go_summary[0]
+        do_summary = DBSession.query(Locussummary.html).filter_by(locus_id=self.dbentity_id,
+                                                                  summary_type="Disease").one_or_none()
+        if do_summary:
+            obj["paragraph"] = do_summary[0]
 
         return obj
 
     def modify_go_display_name(self,item):
-        item["term"]["display_name"] = item["term"]["display_name"].replace(
-            "_", " ")
+        item["term"]["display_name"] = item["term"]["display_name"].replace("_", " ")
         return item
-
 
     def get_go_count(self):
         return DBSession.query(Goannotation).filter_by(dbentity_id=self.dbentity_id).count()
@@ -4829,6 +4780,41 @@ class Diseaseannotation(Base):
     reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
+
+    def to_dict_lsp(self):
+        obj = {
+            "annotation_type": self.annotation_type,
+            "qualifiers": [self.disease_qualifier],
+            "term": {
+                "link": self.disease.obj_url,
+                "display_name": self.disease.display_name.replace("_", " ")
+            },
+            "evidence_codes": []
+        }
+
+        alias = DBSession.query(EcoAlias).filter_by(eco_id=self.eco_id).all()
+
+        experiment_name = alias[0].display_name
+        for alia in alias:
+            if len(experiment_name) > len(alia.display_name):
+                experiment_name = alia.display_name
+
+        alias_url = DBSession.query(EcoUrl).filter_by(eco_id=self.eco_id).all()
+
+        experiment_url = None
+        for url in alias_url:
+            if url.display_name == "DO":
+                experiment_url = url.obj_url
+                break
+        if experiment_url == None and len(alias_url) > 1:
+            experiment_url = alias_url[1].obj_url
+
+        obj["evidence_codes"] = [{
+            "display_name": experiment_name,
+            "link": experiment_url
+        }]
+
+        return obj
 
 
 class Diseasesubset(Base):
