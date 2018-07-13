@@ -1,0 +1,242 @@
+{% extends "global_layout.jinja2" %}
+
+{% block title %}{{ locus.display_name }} Disease Ontology{% endblock %}
+
+{% block head %}
+<script>
+    var locus = {{ locus_js|safe }}
+</script>
+{% endblock %}
+
+
+{% block body %}
+
+<!-- Tabs
+================================================== -->
+<!-- Includes tabs.html into template -->
+{% include "tabs.jinja2" %}
+<script>document.getElementById("disease_tab").className += " active";</script>
+
+<div class="row">
+
+<!-- Navbar
+================================================== -->
+    <!-- Includes navbar.html into template -->
+    {% include "navbar.jinja2" %}
+
+    <div class="small-12 medium-10 columns content-column">
+
+        <script>
+            add_navbar_title('<span>{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span>');
+            add_navbar_element("Gene Ontology Overview", "overview");
+            add_navbar_element("Manually Curated", "manual");
+            add_navbar_element("High-throughput", "htp");
+            add_navbar_element("Computational", "comp");
+            add_navbar_element("Shared Annotations", "network");
+        </script>
+
+<!-- Overview
+================================================== -->
+<section id="overview" data-magellan-destination="overview">
+    <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/function-help/gene-ontology-go" name="top" class="documentation-link">Gene Ontology Help <i class="fa fa-question-circle"></i></a>
+    <h1>{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %} Gene Ontology
+        <a href="#" data-dropdown="summary_help"><i class="fa fa-info-circle"></i></a>
+
+            <p id="summary_help" class="f-dropdown content medium" data-dropdown-content>
+                GO Annotations consist of four mandatory components: a gene product, a term from one of
+                the three Gene Ontology (GO) controlled vocabularies (Molecular Function, Biological
+                Process, and Cellular Component), a reference, and an evidence code.
+                SGD has manually curated and high-throughput GO Annotations, both derived from the
+                literature, as well as computational, or predicted, annotations.
+            </p>
+    </h1>
+    <hr />
+
+    {% if locus['go_overview']['paragraph'] %}
+        <dl class="key-value">
+            <dt>Summary</dt>
+            <dd>{{ locus['go_overview']['paragraph'] }}</dd>
+        </dl>
+    {% endif %}
+
+    <!-- Includes go_overview.html into template -->
+    {% include "go_overview.jinja2" %}
+
+    <ul class="button-group radius">
+        <li><a id="go_download_all" class="small button secondary"><i class="fa fa-download"></i> Download All Annotations (.txt)</a></li>
+    </ul>
+</section>
+
+<!-- Manually Curated
+================================================== -->
+    <section id="manual" data-magellan-destination="manual">
+        <h2>Manually Curated
+            <a href="#" data-dropdown="drop_manual"><i class="fa fa-info-circle"></i></a>
+
+            <p id="drop_manual" class="f-dropdown content medium" data-dropdown-content>
+                <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/sgd-general-help/glossary">Manually curated</a> GO annotations reflect our best
+                understanding of the basic <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/sgd-general-help/glossary">molecular
+                function</a>, <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/sgd-general-help/glossary">biological process</a>, and
+                <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/sgd-general-help/glossary">cellular component</a> for this gene product.
+                Manually curated annotations are assigned by SGD curators based on published papers when
+                available, or by curatorial statements if necessary. Curators periodically review all
+                manually curated GO annotations for accuracy and completeness. The "Date Last Reviewed"
+                indicates when these annotations were last reviewed.
+            </p>
+        </h2>
+        <hr />
+        <p><strong>Date Last Reviewed:</strong> {{locus.go_overview.date_last_reviewed}}</p>
+
+        <div class="spaced-container">
+            <p style="display:none" id="manual_message">There are no manually curated annotations
+            for {{ locus.display_name }}.</p>
+            <div id="mc_bp_go">
+                <h3>Biological Process <span id="mc_bp_go_table_header" class="round secondary label"></span></h3>
+
+                <!-- Includes go_table into template -->
+                {% set table_id = "mc_bp_go_table" %}
+                {% include "go_table.jinja2" %}
+            </div>
+        </div>
+
+        <div id="mc_mf_go" class="spaced-container">
+            <h3>Molecular Function <span id="mc_mf_go_table_header" class="round secondary label"></span></h3>
+
+            <!-- Includes go_table into template -->
+            {% set table_id = "mc_mf_go_table" %}
+            {% include "go_table.jinja2" %}
+        </div>
+
+        <div id="mc_cc_go" class="spaced-container">
+            <h3>Cellular Component <span id="mc_cc_go_table_header" class="round secondary label"></span></h3>
+
+            <!-- Includes go_table into template -->
+            {% set table_id = "mc_cc_go_table" %}
+            {% include "go_table.jinja2" %}
+        </div>
+    </section>
+
+<!-- High-throughput
+================================================== -->
+    <section id="htp" data-magellan-destination="htp">
+        <h2>High-throughput
+            <a href="#" data-dropdown="drop_htp"><i class="fa fa-info-circle"></i></a>
+
+        <p id="drop_htp" class="f-dropdown content medium" data-dropdown-content>
+            GO annotations from high-throughput experiments are
+            based on a variety of large scale high-throughput experiments, including
+            genome-wide experiments. Many of these annotations are made based on GO annotations (or
+            mappings to GO annotations) assigned by the authors, rather than SGD curators. While SGD
+            curators read these publications and often work closely with authors to incorporate the
+            information, each individual annotation may not necessarily be reviewed by a curator. GO
+            annotations from high-throughput experiments will be assigned only when this type of
+            data is available, and thus may not be assigned to terms from all three controlled
+            vocabularies of the Gene Ontology.
+        </p>
+        </h2>
+        <hr />
+
+         <p id="htp_message" style="display:none">There are no high-throughput annotations
+        for {{ locus.display_name }}.</p>
+
+        <div id="htp_bp_go">
+            <h3>Biological Process <span id="htp_bp_go_table_header" class="round secondary label"></span></h3>
+
+            <!-- Includes go_table into template -->
+            {% set table_id = "htp_bp_go_table" %}
+            {% include "go_table.jinja2" %}
+        </div>
+
+        <div id="htp_mf_go">
+            <h3>Molecular Function <span id="htp_mf_go_table_header" class="round secondary label"></span></h3>
+
+            <!-- Includes go_table into template -->
+            {% set table_id = "htp_mf_go_table" %}
+            {% include "go_table.jinja2" %}
+        </div>
+
+        <div id="htp_cc_go">
+            <h3>Cellular Component <span id="htp_cc_go_table_header" class="round secondary label"></span></h3>
+
+            <!-- Includes go_table into template -->
+            {% set table_id = "htp_cc_go_table" %}
+            {% include "go_table.jinja2" %}
+        </div>
+    </section>
+
+<!-- Computational
+================================================== -->
+    <section id="comp" data-magellan-destination="comp">
+        <h2>Computational
+            <a href="#" data-dropdown="drop_comp"><i class="fa fa-info-circle"></i></a>
+
+        <p id="drop_comp" class="f-dropdown content medium" data-dropdown-content>
+            Computational GO Annotations are
+            predictions. These annotations are NOT reviewed by a curator. Currently, all
+            computational GO annotations for <em>S. cerevisiae</em> are assigned by an external
+            source (for example, the <a href="http://www.ebi.ac.uk/GOA">Gene Ontology Annotation
+            (GOA)</a> project of the <a href="http://www.ebi.ac.uk/">European Bioinformatics
+            Institute (EBI)</a>).
+        </p>
+        </h2>
+        <hr />
+
+        <p id="comp_message" style="display:none">There are no computational annotations
+        for {{ locus.display_name }}.</p>
+
+        <div id="comp_bp_go" class="spaced-container">
+            <h3>Biological Process <span id="comp_bp_go_table_header" class="round secondary label"> </span></h3>
+
+            <!-- Includes go_table into template -->
+            {% set table_id = "comp_bp_go_table" %}
+            {% include "go_table.jinja2" %}
+        </div>
+
+        <div id="comp_mf_go" class="spaced-container">
+            <h3>Molecular Function <span id="comp_mf_go_table_header" class="round secondary label"></span></h3>
+
+            <!-- Includes go_table into template -->
+            {% set table_id = "comp_mf_go_table" %}
+            {% include "go_table.jinja2" %}
+        </div>
+
+        <div id="comp_cc_go" class="spaced-container">
+            <h3>Cellular Component <span id="comp_cc_go_table_header" class="round secondary label"></span></h3>
+
+            <!-- Includes go_table into template -->
+            {% set table_id = "comp_cc_go_table" %}
+            {% include "go_table.jinja2" %}
+        </div>
+    </section>
+
+<!-- Network Visualization
+================================================== -->
+    <section id="network" data-magellan-destination="network">
+        <h2>Shared Annotations
+            <a href="#" data-dropdown="network_info"><i class="fa fa-info-circle"></i></a>
+
+            <p id="network_info" class="f-dropdown content medium" data-dropdown-content>
+                This diagram displays manually curated and high-throughput GO terms (green squares) that are shared between the given gene (yellow circle) and other genes (gray
+                circles) based on the number of GO terms shared (adjustable using the slider at the bottom).
+            </p>
+        </h2>
+        <hr />
+        <div class="">
+            {% set network_id = "cy" %}
+            {% include "go_network.jinja2" %}
+        </div>
+    </section>
+
+    </div>
+</div>
+{% endblock body %}
+
+{% block scripts %}
+<script src="{{asset_root}}/js/build/nouislider.min.js"></script>
+{# don't host arbor.js on CDN because it makes webworker files that don't work on the cloud :( #}
+<script src="/static/js/build/arbor.js"></script>
+<script src="{{asset_root}}/js/build/cytoscape.min.js"></script>
+<script src="{{asset_root}}/js/cytoscape.js"></script>
+<script src="{{asset_root}}/js/evidence.js"></script>
+<script src="{{asset_root}}/js/go_details.js"></script>
+{% endblock scripts %}
