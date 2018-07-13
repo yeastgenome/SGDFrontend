@@ -7704,7 +7704,7 @@ class Complexdbentity(Dbentity):
         data['source'] = self.source.display_name
 
         ## complex_aliases = DBSession.query(ComplexAlias).filter_by(complex_id=self.dbentity_id).order_by(ComplexAlias.alias_type, ComplexAlias.display_name).all()
-        # alias_objs = DBSession.query(ComplexAlias).filter_by(complex_id=self.dbentity_id).all()
+        alias_objs = DBSession.query(ComplexAlias).filter_by(complex_id=self.dbentity_id).all()
 
         aliases = []
         # if alias_objs:
