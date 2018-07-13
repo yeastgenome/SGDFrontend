@@ -7707,6 +7707,8 @@ class Complexdbentity(Dbentity):
         data['properties'] = self.properties
         data['eco'] = self.eco.format_name
 
+        ## aliases
+
         alias_objs = DBSession.query(ComplexAlias).filter_by(complex_id=self.dbentity_id).order_by(ComplexAlias.alias_type, ComplexAlias.display_name).all()
 
         aliases = []
@@ -7715,6 +7717,8 @@ class Complexdbentity(Dbentity):
                 aliases.append({ "alias_type": ca.alias_type,
                                  "display_name": ca.display_name });
         data['aliases'] = aliases
+
+        ## go
 
         go_objs = DBSession.query(ComplexGo).filter_by(complex_id=self.dbentity_id).all()
 
@@ -7728,12 +7732,15 @@ class Complexdbentity(Dbentity):
         
         ref_objs = DBSession.query(ComplexReference).filter_by(complex_id=self.dbentity_id).all()
 
+        ## reference
+
         refs = []
         if ref_objs:
             for cr in ref_objs:
-                refs.append({ "pmid": cr.reference.pmid,
-                              "year", cr.reference.year,
-                              "citation": cr.reference.citation })
+                refs.append("REF HERE")
+                # refs.append({ "pmid": cr.reference.pmid,
+                #              "year", cr.reference.year,
+                #              "citation": cr.reference.citation })
 
         data['reference'] = refs
 
