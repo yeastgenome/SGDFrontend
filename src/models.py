@@ -7707,10 +7707,9 @@ class Complexdbentity(Dbentity):
 
         aliases = []
         if alias_objs:
-            aliases.append("found alias")
-        #    for ca in alias_objs:
-        #        aliases.append({ "alias_type": ca.alias_type,
-        #                          "display_name": ca,display_name });
+            for ca in alias_objs:
+                aliases.append({ "alias_type": ca.alias_type,
+                                 "display_name": ca.display_name });
         data['aliases'] = aliases
 
         ## add more data here: alias, description (function), properties, go, reference, subunits etc
