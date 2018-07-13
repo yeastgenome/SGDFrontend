@@ -7726,7 +7726,20 @@ class Complexdbentity(Dbentity):
 
         data['go'] = go
         
-        ## add more data here: go, reference, subunits etc
+        ref_objs = DBSession.query(ComplexReference).filter_by(complex_id=self.dbentity_id).all()
+
+        refs = []
+        if ref_objs:
+            for cr in ref_objs:
+                refs.append({ "PMID": cr.reference.pmid,,
+                              "year", cr.reference.year,
+                              "citation": cr.reference.citation })
+
+        data['reference'] = refs
+
+
+
+        ## add more data here: reference, subunits etc
 
         return data
 
