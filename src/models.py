@@ -7751,22 +7751,22 @@ class Complexdbentity(Dbentity):
         for annot in annot_objs:
             interactor = annot.interactor
             binding_interactor = annot.binding_interactor
-            annotations.append({ "psimi": annot.psimi.display_name,
-                                 "range_start": annot.range_start,
-                                 "range_end": annot.range_end,
-                                 "interactor": { "format_name": interactor.format_name,
-                                                 "display_name": interactor.display_name,
-                                                 "type": interactor.type.display_name,
-                                                 "role": interactor.role.display_name,
-                                                 "stoichiometry": interactor.stoichiometry 
-                                                },
-                                 "binding_interactor": { "format_name": interactor.format_name,
-                                                         "display_name": interactor.display_name,
-                                                         "type": interactor.type.display_name,
-                                                         "role": interactor.role.display_name,
-                                                         "stoichiometry": interactor.stoichiometry
-                                                }
-                               })
+            # annotations.append({ "psimi": annot.psimi.display_name,
+            #                     "range_start": annot.range_start,
+            #                     "range_end": annot.range_end,
+            #                     "interactor": { "format_name": interactor.format_name,
+            #                                     "display_name": interactor.display_name,
+            #                                     "type": interactor.type.display_name,
+            #                                     "role": interactor.role.display_name,
+            #                                     "stoichiometry": interactor.stoichiometry 
+            #                                    },
+            #                     "binding_interactor": { "format_name": interactor.format_name,
+            #                                             "display_name": interactor.display_name,
+            #                                             "type": interactor.type.display_name,
+            #                                             "role": interactor.role.display_name,
+            #                                             "stoichiometry": interactor.stoichiometry
+            #                                    }
+            #                   })
 
         data['annotation'] = annotation
 
