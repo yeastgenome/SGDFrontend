@@ -7741,14 +7741,9 @@ class Complexdbentity(Dbentity):
                 refs.append({ "pmid": reference.pmid,
                               "citation": reference.citation })
 
-                # "year", reference.year,
-                #              "citation": reference.citation })
-
         data['reference'] = refs
 
-
-
-        ## add more data here: reference, subunits etc
+        ## add more data here: subunits etc (from interactor and proteincomplexannotation tables)
 
         return data
 
