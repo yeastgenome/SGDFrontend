@@ -7705,7 +7705,7 @@ class Complexdbentity(Dbentity):
         data['source'] = self.source.display_name
         data['description'] = self.description
         data['properties'] = self.properties
-        data['eco'] = self.eco.display_name
+        data['eco'] = self.eco.format_name
 
         alias_objs = DBSession.query(ComplexAlias).filter_by(complex_id=self.dbentity_id).order_by(ComplexAlias.alias_type, ComplexAlias.display_name).all()
 
@@ -7716,6 +7716,16 @@ class Complexdbentity(Dbentity):
                                  "display_name": ca.display_name });
         data['aliases'] = aliases
 
+        go_objs = DBSession.query(ComplexGo).filter_by(complex_id=self.dbentity_id).all()
+
+        go = []
+        if go_objs:
+            for cg in alias_objs:
+                go.append({ "goid": cg.go.goid,
+                            "go_term": cg.go.display_name })
+
+        data['go'] = go
+        
         ## add more data here: go, reference, subunits etc
 
         return data
