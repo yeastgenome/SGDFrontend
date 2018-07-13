@@ -7743,9 +7743,37 @@ class Complexdbentity(Dbentity):
 
         data['reference'] = refs
 
-        ## add more data here: subunits etc (from interactor and proteincomplexannotation tables)
+        ## subunits
+
+        annot_objs = DBSession.query(Complexbindingannotation).filter_by(complex_id=self.dbentity_id).all()
+        
+        annotations = []
+        for annot in annot_objs:
+            interactor = annot.interactor
+            binding_interactor = annot.binding_interactor
+            annotations.append({ "psimi": annot.psimi.display_name,
+                                 "range_start": annot.range_start,
+                                 "range_end": annot.range_end,
+                                 "interactor": { "format_name": interactor.format_name,
+                                                 "display_name": interactor.display_name,
+                                                 "type": interactor.type.display_name,
+                                                 "role": interactor.role.display_name,
+                                                 "stoichiometry": interactor.stoichiometry 
+                                                },
+                                 "binding_interactor": { "format_name": interactor.format_name,
+                                                         "display_name": interactor.display_name,
+                                                         "type": interactor.type.display_name,
+                                                         "role": interactor.role.display_name,
+                                                         "stoichiometry": interactor.stoichiometry
+                                                }
+                               })
+
+        data['annotation'] = annotation
 
         return data
+
+
+
 
 
 class ComplexAlias(Base):
@@ -7831,6 +7859,7 @@ class Complexbindingannotation(Base):
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
     complex = relationship(u'Complexdbentity')
+    psimi = relationship(u'Psimi')
 
 
 class Interactor(Base):
@@ -7850,6 +7879,11 @@ class Interactor(Base):
     residues = Column(Text, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
+
+    locus = relationship(u'Locusdbentity')
+    type = relationship(u'Psimi', foreign_keys=[type_id])
+    role = relationship(u'Psimi', foreign_keys=[role_id])
+    
 
 class ReferenceAlias(Base):
     __tablename__ = 'reference_alias'
