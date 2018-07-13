@@ -35,7 +35,7 @@ def change_name(infile, logfile):
         orf_name = pieces[0]
         new_gene_name = pieces[1]
         old_gene_name = pieces[2]
-        pmid = int(pieces[3])
+        # pmid = int(pieces[3])
         name_desc = pieces[4]
         date_created = pieces[5]
         created_by = pieces[6]
@@ -45,10 +45,15 @@ def change_name(infile, logfile):
             print "The ORF name:", orf_name, " is not in the database."
             continue
 
-        reference_id = pmid_to_reference_id.get(pmid)
-        if reference_id is None:
-            print "The PMID:", pmid, " is not in the database."
-            continue
+        pmids = pieces[3].split("|")
+        reference_id_list = []
+        for pmid in pmids:
+            pmid = int(pmid)
+            reference_id = pmid_to_reference_id.get(pmid)
+            if reference_id is None:
+                print "The PMID:", pmid, " is not in the database."
+                continue
+            reference_id_list.append(reference_id)
             
         # 1. update dbentity.display_name = new gene_name in the file
         update_dbentity(nex_session, fw, locus_id, new_gene_name)
@@ -76,13 +81,13 @@ def change_name(infile, logfile):
         #    update locusdbentity.name_description = name_description in the file 
         update_locusdbentity(nex_session, fw, locus_id, new_gene_name, name_desc)
                   
-        # 6. add rows to LOCUS_REFERENCE for the new paper where 
+        # 6. add rows to LOCUS_REFERENCE for the new papers where 
         #    reference_class = 'gene_name' and 'name_description'
-        insert_locus_reference(nex_session, fw, locus_id, reference_id, 
+        insert_locus_reference(nex_session, fw, locus_id, reference_id_list, 
                                'gene_name', source_id, created_by, date_created) 
 
         if name_desc:
-            insert_locus_reference(nex_session, fw, locus_id, reference_id,
+            insert_locus_reference(nex_session, fw, locus_id, reference_id_list,
                                   'name_description', source_id, created_by, 
                                    date_created)
 
@@ -94,7 +99,7 @@ def change_name(infile, logfile):
         note_id = insert_locusnote(nex_session, fw, locus_id, new_gene_name, source_id, created_by, date_created)
 
         # 9. insert reference into locusnote_reference 
-        insert_locusnote_reference(nex_session, fw, note_id, reference_id, 
+        insert_locusnote_reference(nex_session, fw, note_id, reference_id_list, 
                                    source_id, created_by, date_created)
         
         
@@ -175,31 +180,33 @@ def insert_locusnote(nex_session, fw, locus_id, gene_name, source_id, created_by
     return x.note_id
 
 
-def insert_locusnote_reference(nex_session, fw, note_id, reference_id, source_id, created_by, date_created):
+def insert_locusnote_reference(nex_session, fw, note_id, reference_id_list, source_id, created_by, date_created):
     
-    x = LocusnoteReference(note_id = note_id,
-                           reference_id = reference_id,
-                           source_id = source_id,
-                           created_by = created_by,
-                           date_created = date_created)
+    for reference_id in reference_id_list:
+        x = LocusnoteReference(note_id = note_id,
+                               reference_id = reference_id,
+                               source_id = source_id,
+                               created_by = created_by,
+                               date_created = date_created)
 
-    nex_session.add(x)
+        nex_session.add(x)
 
-    fw.write("Insert Locusnote_reference row for note_id = " + str(note_id) + ", reference_id = " + str(reference_id) + ", created_by = " + created_by + ", date_created = " + date_created + "\n")
+        fw.write("Insert Locusnote_reference row for note_id = " + str(note_id) + ", reference_id = " + str(reference_id) + ", created_by = " + created_by + ", date_created = " + date_created + "\n")
 
 
-def insert_locus_reference(nex_session, fw, locus_id, reference_id, reference_class, source_id, created_by, date_created):
+def insert_locus_reference(nex_session, fw, locus_id, reference_id_list, reference_class, source_id, created_by, date_created):
     
-    x = LocusReferences(locus_id = locus_id,
-                        reference_id = reference_id,
-                        reference_class = reference_class,
-                        source_id = source_id,
-                        created_by = created_by,
-                        date_created = date_created)
+    for reference_id in reference_id_list:
+        x = LocusReferences(locus_id = locus_id,
+                            reference_id = reference_id,
+                            reference_class = reference_class,
+                            source_id = source_id,
+                            created_by = created_by,
+                            date_created = date_created)
 
-    nex_session.add(x)
+        nex_session.add(x)
 
-    fw.write("Insert Locus_reference row for locus_id = " + str(locus_id) + ", reference_id = " + str(reference_id) + ", reference_class = " + reference_class + ", created_by = " + created_by + ", date_created = " + date_created + "\n")
+        fw.write("Insert Locus_reference row for locus_id = " + str(locus_id) + ", reference_id = " + str(reference_id) + ", reference_class = " + reference_class + ", created_by = " + created_by + ", date_created = " + date_created + "\n")
  
 
 def update_locusdbentity(nex_session, fw, locus_id, gene_name, name_desc):
