@@ -7720,7 +7720,7 @@ class Complexdbentity(Dbentity):
 
         go = []
         if go_objs:
-            for cg in alias_objs:
+            for cg in go_objs:
                 go.append({ "goid": cg.go.goid,
                             "go_term": cg.go.display_name })
 
