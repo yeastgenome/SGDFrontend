@@ -7703,11 +7703,11 @@ class Complexdbentity(Dbentity):
         data['systematic_name'] = self.systematic_name
         data['source'] = self.source.display_name
 
-        ## complex_aliases = DBSession.query(ComplexAlias).filter_by(complex_id=self.dbentity_id).order_by(ComplexAlias.alias_type, ComplexAlias.display_name).all()
         alias_objs = DBSession.query(ComplexAlias).filter_by(complex_id=self.dbentity_id).order_by(ComplexAlias.alias_type, ComplexAlias.display_name).all()
 
         aliases = []
-        # if alias_objs:
+        if alias_objs:
+            aliases.append("found alias")
         #    for ca in alias_objs:
         #        aliases.append({ "alias_type": ca.alias_type,
         #                          "display_name": ca,display_name });
