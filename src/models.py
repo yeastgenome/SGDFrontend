@@ -7731,7 +7731,7 @@ class Complexdbentity(Dbentity):
         refs = []
         if ref_objs:
             for cr in ref_objs:
-                refs.append({ "PMID": cr.reference.pmid,,
+                refs.append({ "pmid": cr.reference.pmid,
                               "year", cr.reference.year,
                               "citation": cr.reference.citation })
 
