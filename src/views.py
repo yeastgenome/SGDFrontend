@@ -1115,10 +1115,9 @@ def protein_complex_details(request):
     complex = DBSession.query(Complexdbentity).filter_by(format_name=complexAC).one_or_none() 
 
     if complex is not None:
-        # return [complex.display_name]
         return complex.protein_complex_details()
     else:
-        return HTTPNotFound()
+        return {}
 
 # check for basic rad54 response
 @view_config(route_name='healthcheck', renderer='json', request_method='GET')
