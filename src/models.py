@@ -7698,8 +7698,8 @@ class Complexdbentity(Dbentity):
     def protein_complex_details(self):
         
         data = {}
-        data['complex_name'] = self.display_name
-        data['complex_accession'] = self.format_name
+        # data['complex_name'] = self.display_name
+        # data['complex_accession'] = self.format_name
         data['systematic_name'] = self.systematic_name
         data['source'] = self.source.display_name
         
