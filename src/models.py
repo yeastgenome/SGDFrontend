@@ -3053,6 +3053,112 @@ class Locusdbentity(Dbentity):
             "edges": edges
         }
 
+    def disease_graph(self):
+        main_gene_disease_annotations = DBSession.query(Diseaseannotation).filter_by(dbentity_id=self.dbentity_id).all()
+        main_gene_do_ids = [a.disease_id for a in main_gene_disease_annotations]
+
+        genes_sharing_do = DBSession.query(Diseaseannotation).filter(
+            (Diseaseannotation.disease_id.in_(main_gene_do_ids)) & (Diseaseannotation.dbentity_id != self.dbentity_id)).all()
+        genes_to_do = {}
+        for annotation in genes_sharing_do:
+            gene = annotation.dbentity_id
+            do = annotation.disease_id
+            if gene in genes_to_do:
+                genes_to_do[gene].add(do)
+            else:
+                genes_to_do[gene] = set([do])
+
+        list_genes_to_do = sorted([(g, genes_to_do[g]) for g in genes_to_do], key=lambda x: len(x[1]), reverse=True)
+
+        edges = []
+        nodes = {}
+
+        edges_added = set([])
+
+        nodes[self.format_name] = {
+            "data": {
+                "name": self.display_name.replace("_", " "),
+                "id": self.format_name,
+                "link": self.obj_url,
+                "type": "BIOENTITY",
+                "category": "FOCUS"
+            }
+        }
+
+        min_cutoff = 99999999
+        max_cutoff = 0
+
+        i = 0
+        while i < len(list_genes_to_do) and len(nodes) <= 20 and len(edges) <= 50:
+            dbentity = DBSession.query(Dbentity.display_name, Dbentity.format_name, Dbentity.obj_url).filter_by(
+                dbentity_id=list_genes_to_do[i][0]).one_or_none()
+
+            do_ids = list_genes_to_do[i][1]
+
+            if len(do_ids) > max_cutoff:
+                max_cutoff = len(do_ids)
+
+            if len(do_ids) < min_cutoff:
+                min_cutoff = len(do_ids)
+
+            if dbentity[1] not in nodes:
+                nodes[dbentity[1]] = {
+                    "data": {
+                        "name": dbentity[0],
+                        "id": dbentity[1],
+                        "link": dbentity[2],
+                        "type": "BIOENTITY",
+                        "gene_count": len(do_ids)
+                    }
+                }
+
+            for do_id in do_ids:
+                do = DBSession.query(Disease).filter_by(disease_id=do_id).one_or_none()
+
+                if do.format_name not in nodes:
+                    nodes[do.format_name] = {
+                        "data": {
+                            "name": do.display_name.replace("_", " "),
+                            "id": do.format_name,
+                            "link": do.obj_url,
+                            "type": "DO",
+                            "gene_count": len(do_ids)
+                        }
+                    }
+
+                if (do.format_name + " " + dbentity[1]) not in edges_added:
+                    edges.append({
+                        "data": {
+                            "source": do.format_name,
+                            "target": dbentity[1]
+                        }
+                    })
+                    edges_added.add(do.format_name + " " + dbentity[1])
+
+                if (do.format_name + " " + self.format_name) not in edges_added:
+                    edges.append({
+                        "data": {
+                            "source": do.format_name,
+                            "target": self.format_name
+                        }
+                    })
+                    edges_added.add(do.format_name + " " + self.format_name)
+
+            i += 1
+
+        nodes[self.format_name]["data"]["gene_count"] = max_cutoff
+
+        if len(list_genes_to_do) == 0:
+            min_cutoff = max_cutoff
+
+        return {
+            "min_cutoff": min_cutoff,
+            "max_cutoff": max_cutoff,
+            "nodes": [nodes[n] for n in nodes],
+            "edges": edges
+        }
+
+
     def interaction_graph_secondary_edges(self, Interaction, edge_type, nodes, edges):
         secondary_nodes = set(nodes.keys()) - set([self.dbentity_id])
 
@@ -4693,6 +4799,146 @@ class Disease(Base):
 
     source = relationship(u'Source')
 
+    # Allowed relationships (ro_ids) for graphs
+    # 169782 'is_a', 169466 'regulates', 169299 'part of', 169468 'positively regulates', 169467 'negatively regulates'
+    allowed_relationships = (169782, 169466, 169299, 169468, 169467)
+
+    def to_dict(self):
+        annotations_count = DBSession.query(Diseaseannotation.dbentity_id, func.count(Diseaseannotation.dbentity_id)).filter_by(disease_id=self.disease_id).group_by(Diseaseannotation.dbentity_id).count()
+
+        children_relation = DBSession.query(DiseaseRelation).filter_by(parent_id=self.disease_id).all()
+        if len(children_relation) > 0:
+            children_annotations = len(set([c.child_id for c in children_relation]))
+        else:
+            children_annotations = 0
+
+        obj = {
+            "display_name": self.display_name.replace("_"," "),
+            "urls": [],
+            "disease_id": self.disease_id,
+            "description": self.description,
+            "aliases": [],
+            "id": self.disease_id,
+            "link": self.obj_url,
+            "descendant_locus_count": 0,
+            "locus_count": annotations_count,
+            "descendant_locus_count": annotations_count + children_annotations
+        }
+
+        urls = DBSession.query(DiseaseUrl).filter_by(disease_id=self.disease_id).all()
+
+        for url in urls:
+            obj["urls"].append({
+                "display_name": url.display_name,
+                "link": url.obj_url,
+                "category": url.url_type
+            })
+
+        synonyms = DBSession.query(DiseaseAlia).filter_by(disease_id=self.disease_id).all()
+        for synonym in synonyms:
+            obj["aliases"].append(synonym.display_name)
+
+        obj["locus_count"] = DBSession.query(Diseaseannotation.dbentity_id, func.count(Diseaseannotation.dbentity_id)).filter_by(disease_id=self.disease_id).group_by(Diseaseannotation.dbentity_id).count()
+
+        return obj
+
+    def ontology_graph(self):
+        annotations = DBSession.query(Diseaseannotation.dbentity_id, func.count(Diseaseannotation.dbentity_id)).filter_by(disease_id=self.disease_id).group_by(Diseaseannotation.dbentity_id).count()
+
+        nodes = [{
+            "data": {
+                "link": self.obj_url,
+                "sub_type": "FOCUS",
+                "name": self.display_name.replace("_"," ") + " (" + str(annotations) + ")",
+                "id": str(self.go_id)
+            }
+        }]
+
+        edges = []
+        all_children = []
+
+        children_relation = DBSession.query(DiseaseRelation).filter(and_(DiseaseRelation.parent_id == self.disease_id, DiseaseRelation.ro_id.in_(Go.allowed_relationships))).all()
+
+        for child_relation in children_relation[:6]:
+            child_node = child_relation.to_graph(nodes, edges, add_child=True)
+            all_children.append({
+                "display_name": child_node.display_name,
+                "link": child_node.obj_url
+            })
+
+        for child_relation in children_relation[7:]:
+            child_node = child_relation.child
+            all_children.append({
+                "display_name": child_node.display_name,
+                "link": child_node.obj_url
+            })
+
+        if len(children_relation) - 7 > 0:
+            nodes.append({
+                "data": {
+                    "name": str(len(children_relation) - 7) + " more children",
+                    "sub_type": "",
+                    "link": None,
+                    "id": "NodeMoreChildren"
+                }
+            })
+            edges.append({
+                "data": {
+                    "name": "",
+                    "target": "NodeMoreChildren",
+                    "source": str(self.disease_id)
+                }
+            })
+
+        parent_relations = self.parent_tree()
+        for relation in parent_relations:
+            relation.to_graph(nodes, edges, add_parent=True)
+
+        graph = {
+            "edges": edges,
+            "nodes": nodes,
+            "all_children": sorted(all_children, key=lambda f: str(f["display_name"]).lower())
+        }
+
+        return graph
+
+    def parent_tree(self, max_level=3):
+        relations = []
+
+        level = 0
+        parents_relation = DBSession.query(DiseaseRelation).filter(and_(DiseaseRelation.child_id == self.disease_id, DiseaseRelation.ro_id.in_(Go.allowed_relationships))).all()
+
+        # breath-first-search stopping at level 3
+        parents_at_level = len(parents_relation)
+        while len(parents_relation) > 0:
+            parent_relation = parents_relation[0]
+            relations.append(parent_relation)
+
+            del parents_relation[0]
+
+            if level < max_level:
+                new_parents = DBSession.query(DiseaseRelation).filter(and_(DiseaseRelation.child_id == parent_relation.parent.disease_id, DiseaseRelation.ro_id.in_(Disease.allowed_relationships))).all()
+
+                parents_relation_ids = [p.relation_id for p in parents_relation]
+                for p in new_parents:
+                    if p.relation_id not in parents_relation_ids:
+                        parents_relation.append(p)
+
+                parents_at_level -= 1
+                if parents_at_level == 0:
+                    level += 1
+                    parents_at_level = len(parents_relation)
+
+        return relations
+
+
+    def annotations_to_dict(self):
+        annotations = DBSession.query(Diseaseannotation).filter_by(disease_id=self.disease_id).all()
+
+        annotations_dict = []
+        for a in annotations:
+            annotations_dict += a.to_dict(disease=self)
+
 
 class DiseaseAlia(Base):
     __tablename__ = 'disease_alias'
@@ -4816,6 +5062,91 @@ class Diseaseannotation(Base):
 
         return obj
 
+    # a Do annotation can be duplicated based on the Dosupportingevidence group id
+    # so its to_dict method must return an array of dictionaries
+    def to_dict(self, disease=None):
+        if disease == None:
+            disease = self.disease
+
+        alias = DBSession.query(EcoAlias).filter_by(eco_id=self.eco_id).all()
+        experiment_name = alias[0].display_name
+
+        for alia in alias:
+            if len(experiment_name) > len(alia.display_name):
+                experiment_name = alia.display_name
+
+        alias_url = DBSession.query(EcoUrl).filter_by(eco_id=self.eco_id).all()
+
+        experiment_url = None
+        for url in alias_url:
+            if url.display_name == "OntoBee":
+                experiment_url = url.obj_url
+                break
+        if experiment_url == None and len(alias_url) > 1:
+            experiment_url = alias_url[1].obj_url
+
+        disease_obj = {
+            "id": self.annotation_id,
+            "annotation_type": self.annotation_type,
+            "date_created": self.date_created.strftime("%Y-%m-%d"),
+            "qualifier": self.disease_qualifier,
+            "locus": {
+                "display_name": self.dbentity.display_name,
+                "link": self.dbentity.obj_url,
+                "id": self.dbentity.dbentity_id,
+                "format_name": self.dbentity.format_name
+            },
+            "disease": {
+                "display_name": disease.display_name.replace("_", " "),
+                "link": disease.obj_url,
+                "disease_id": disease.doid,
+                "id": disease.disease_id
+            },
+            "reference": {
+                "display_name": self.reference.display_name,
+                "link": self.reference.obj_url,
+                "pubmed_id": self.reference.pmid
+            },
+            "source": {
+                "display_name": self.source.display_name
+            },
+            "experiment": {
+                "display_name": experiment_name,
+                "link": experiment_url
+            },
+            "properties": []
+        }
+
+
+        supporting_evidences = DBSession.query(Diseasesupportingevidence).filter_by(annotation_id=self.annotation_id).all()
+        se_groups = {}
+        for se in supporting_evidences:
+            evidence_dict = se.to_dict()
+            if evidence_dict:
+                if se.group_id not in se_groups:
+                    se_groups[se.group_id] = [evidence_dict]
+                else:
+                    se_groups[se.group_id].append(evidence_dict)
+
+        disease_obj_extensions = []
+        if len(disease_obj_extensions) == 0:
+            disease_obj_extensions = [disease_obj]
+
+        final_obj = []
+        for group_id in se_groups:
+            for c in disease_obj_extensions:
+                obj = copy.deepcopy(c)
+                obj["properties"] += se_groups[group_id]
+                final_obj.append(obj)
+
+        if len(final_obj) == 0:
+            if len(disease_obj_extensions) == 0:
+                final_obj = [disease_obj]
+            else:
+                final_obj = disease_obj_extensions
+
+        return final_obj
+
 
 class Diseasesubset(Base):
     __tablename__ = 'diseasesubset'
@@ -4877,6 +5208,33 @@ class Diseasesupportingevidence(Base):
     created_by = Column(String(12), nullable=False)
 
     annotation = relationship(u'Diseaseannotation')
+
+    def to_dict(self):
+        source_id = self.dbxref_id.split(":")
+
+        # the frontend expects a capitalized "role" to place the evidence in the right column of the annotation table
+
+        if source_id[0] == "SGD":
+            sgdid = source_id[1]
+            dbentity = DBSession.query(Dbentity).filter_by(sgdid=sgdid).one_or_none()
+            return {
+                "bioentity": {
+                    "display_name": dbentity.display_name,
+                    "link": dbentity.obj_url,
+                    "class_type": dbentity.subclass
+                },
+                "role": self.evidence_type.capitalize()
+            }
+        else:
+            return {
+                "bioentity": {
+                    "display_name": source_id[1],
+                    "link": self.obj_url
+                },
+                "role": self.evidence_type.capitalize()
+            }
+
+        return None
 
 
 class Dnasequenceannotation(Base):

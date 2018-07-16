@@ -55,6 +55,10 @@ def main(global_config, **settings):
     config.add_route('go_locus_details', '/go/{id}/locus_details', request_method='GET')
     config.add_route('go_locus_details_all', '/go/{id}/locus_details_all', request_method='GET')
 
+    config.add_route('disease', '/disease/{format_name}', request_method='GET')
+    config.add_route('disease_ontology_graph', '/disease/{id}/ontology_graph', request_method='GET')
+    config.add_route('disease_locus_details', '/disease/{id}/locus_details', request_method='GET')
+
     config.add_route('locus', '/locus/{sgdid}', request_method='GET')
     config.add_route('locus_tabs', '/locus/{id}/tabs', request_method='GET')
     config.add_route('locus_phenotype_details', '/locus/{id}/phenotype_details', request_method='GET')
@@ -63,6 +67,8 @@ def main(global_config, **settings):
     config.add_route('locus_literature_graph', '/locus/{id}/literature_graph', request_method='GET')
     config.add_route('locus_go_details', '/locus/{id}/go_details', request_method='GET')
     config.add_route('locus_go_graph', '/locus/{id}/go_graph', request_method='GET')
+    config.add_route('locus_disease_details', '/locus/{id}/disease_details', request_method='GET')
+    config.add_route('locus_disease_graph', '/locus/{id}/disease_graph', request_method='GET')
     config.add_route('locus_interaction_details', '/locus/{id}/interaction_details', request_method='GET')
     config.add_route('locus_interaction_graph', '/locus/{id}/interaction_graph', request_method='GET')
     # TEMP disable
@@ -97,7 +103,6 @@ def main(global_config, **settings):
     config.add_route('ecnumber_locus_details', '/ecnumber/{id}/locus_details', request_method='GET')
 
     config.add_route('primer3', '/primer3', request_method='POST')
-    config.add_route('disease', '/disease/{format_name}', request_method='GET')
     
     # curator interfaces
     config.add_route('account', '/account')
