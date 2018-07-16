@@ -837,16 +837,6 @@ def ecnumber(request):
     else:
         return HTTPNotFound()
 
-@view_config(route_name='disease', renderer='json', request_method='GET')
-def disease(request):
-    id = extract_id_request(request, 'disease', param_name="format_name")
-    disease = get_disease_by_id(id)
-    if disease:
-        return disease.to_dict()
-    else:
-        return HTTPNotFound()
-
-
 
 @view_config(route_name='primer3', renderer='json', request_method='POST')
 def primer3(request):
