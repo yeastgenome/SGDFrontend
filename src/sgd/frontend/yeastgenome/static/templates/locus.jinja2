@@ -440,12 +440,10 @@
                 {% if locus.disease_overview.manual_disease_terms|length > 0 %}
                 <div class="panel">
                     <h3>Manually Curated</h3>
-                    <dl class="key-value">
-                    <dt>DO Terms</dt>
-                    <dd><ul style="list-style-type:disc">
+                    <ul style="list-style-type:disc">
                             {% for entry in locus.disease_overview.manual_disease_terms %}
                                 <li>
-                                    {% if 'qualifiers' in entry %}
+                                {% if 'qualifiers' in entry %}
                                         {% for qualifier in entry.qualifiers if qualifier in ['NOT', 'colocalizes with', 'contributes to'] %}
                                             {{ qualifier }}{% if not loop.last %}, {% endif %}
                                         {% endfor %}
@@ -453,19 +451,18 @@
                                     <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
                                     {% for code in entry.evidence_codes %}
                                         {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
-                                    {% endfor %}
+                                {% endfor %}
                                 </li>
                             {% endfor %}
-                    </ul></dd>
-                    </dl>
+                    </ul>
                 </div>
                 {% endif %}
+
 
                 {% if locus.disease_overview.htp_disease_terms|length > 0 %}
                 <div class="panel">
                     <h3>High-Throughput</h3>
-                    <dl class="key-value">
-                        <ul style="list-style-type:disc">
+                    <ul style="list-style-type:disc">
                             {% for entry in locus.disease_overview.htp_disease_terms %}
                                 <li>
                                     {% if 'qualifiers' in entry %}
@@ -479,10 +476,10 @@
                                     {% endfor %}
                                 </li>
                             {% endfor %}
-                        </ul>
-                    </dl>
+                    </ul>
                 </div>
                 {% endif %}
+
             {% endif %}
         </div>
     </section>
