@@ -112,9 +112,6 @@ class YeastgenomeFrontend(FrontendInterface):
     def go_ontology(self, biocon_repr):
         return self.get_obj('ontology', None, obj_url=self.backend_url + '/go/' + biocon_repr)
 
-    def disease(self, biocon_repr):
-        return self.get_obj('do_term', None, obj_url=self.backend_url + '/disease/' + biocon_repr)
-
     def do_ontology(self, biocon_repr):
         return self.get_obj('ontology', None, obj_url=self.backend_url + '/do/' + biocon_repr)
     
