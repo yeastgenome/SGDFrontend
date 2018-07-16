@@ -4273,7 +4273,7 @@ class Locusdbentity(Dbentity):
             'regulation_tab': ['regulation_details', 'regulation_graph'],
             'sequence_tab': ['neighbor_sequence_details', 'sequence_details'],
             'history_tab': [],
-            'disease_tab': ['go_details', 'go_graph'],
+            'disease_tab': ['disease_details', 'disease_graph'],
         }
         base_url = self.get_base_url() + '/'
         backend_base_segment = self.get_secondary_base_url() + '/'
