@@ -12,12 +12,12 @@ module.exports = class TabsModel {
 		options.rawTabsData = options.rawTabsData || {
 			protein_tab: false,
 			go_tab: false,
+			disease_tab: false,
 			phenotype_tab: false,
 			interaction_tab: false,
 			regulation_tab: false,
 			expression_tab: false,
-			literature_tab: false,
-			disease_tab: false
+			literature_tab: false
 		};
 		this.attributes = options;
 	}
@@ -57,13 +57,13 @@ module.exports = class TabsModel {
 			(this.attributes.rawTabsData.sequence_section ? { name: "Sequence", target: "sequence" } : null),
 			(this.attributes.rawTabsData.protein_tab ? { name: "Protein", target: "protein" } : null),
 			(this.attributes.rawTabsData.go_tab ? { name: "Gene Ontology", target: "go" } : null),
+			(this.attributes.rawTabsData.disease_tab ? { name: "Disease", target: "disease" } : null),
 			(this.attributes.hasPathways ?  { name: "Pathways", target: "pathway" } : null),
 			(this.attributes.rawTabsData.phenotype_tab ? { name: "Phenotype", target: "phenotype" } : null),
 			(this.attributes.rawTabsData.interaction_tab ? { name: "Interaction", target: "interaction" } : null),
 			(this.attributes.rawTabsData.regulation_tab ? { name: "Regulation", target: "regulation" } : null),
 			(this.attributes.rawTabsData.expression_tab ? { name: "Expression", target: "expression" } : null),
 			(this.attributes.hasParagraph ? { name: "Summary Paragraph", target: "paragraph" } : null),
-			(this.attributes.rawTabsData.disease_tab ? { name: "Disease", target: "disease" } : null),
 			(this.attributes.rawTabsData.literature_tab ? { name: "Literature", target: "literature" } : null),
 			(this.attributes.hasHistory ?  { name: "History", target: "history" } : null),
 			(this.attributes.hasReferences ?  { name: "References", target: "reference" } : null),
