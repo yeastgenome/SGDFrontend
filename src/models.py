@@ -3930,6 +3930,10 @@ class Locusdbentity(Dbentity):
         x, y, z = calc_venn_measurements(obj["num_gen_interactors"], obj["num_phys_interactors"], obj["num_both_interactors"])
         obj["gen_circle_size"], obj["phys_circle_size"], obj["circle_distance"] = x, y, z
 
+        interaction_summary = DBSession.query(Locussummary.html).filter_by(locus_id=self.dbentity_id, summary_type="Interaction").one_or_none()
+        if interaction_summary:
+            obj["paragraph"] = interaction_summary[0]
+
         return obj
 
     def go_overview_to_dict(self):
