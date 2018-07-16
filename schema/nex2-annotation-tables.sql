@@ -665,6 +665,61 @@ CREATE INDEX posttranslationanno_modifier_fk_index ON nex.posttranslationannotat
 CREATE INDEX posttranslationanno_source_fk_index ON nex.posttranslationannotation (source_id);
 CREATE INDEX posttranslationanno_psimod_fk_index ON nex.posttranslationannotation (psimod_id);
 
+DROP TABLE IF EXISTS nex.proteinabundanceannotation CASCADE;
+CREATE TABLE nex.proteinabundanceannotation (
+    annotation_id bigint NOT NULL DEFAULT nextval('annotation_seq'),
+    dbentity_id bigint NOT NULL,
+    source_id bigint NOT NULL,
+    taxonomy_id bigint NOT NULL,
+    reference_id bigint NOT NULL,
+    original_reference_id bigint NOT NULL,
+    data_value integer NOT NULL,
+    data_unit varchar(20) NOT NULL,
+    assay_id bigint NOT NULL,
+    media_id bigint NOT NULL,
+    fold_change numeric,
+    chemical_id bigint,
+    concentration_value numeric,
+    concentration_unit varchar(20),
+    time_value integer,
+    time_unit varchar(20),
+    process_id bigint,
+    date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
+    created_by varchar(12) NOT NULL,
+    CONSTRAINT proteinabundanceannotation_pk PRIMARY KEY (annotation_id)
+) ;
+COMMENT ON TABLE nex.proteinabundanceannotation IS 'Protein abundance scores normalized across 21 experiments by Ho et al. (2018) PMID:29361465.';
+COMMENT ON COLUMN nex.proteinabundanceannotation.annotation_id IS 'Unique identifier (serial number).';
+COMMENT ON COLUMN nex.proteinabundanceannotation.reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.proteinabundanceannotation.original_reference_id IS 'FK to REFERENCEBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.proteinabundanceannotation.taxonomy_id IS 'FK to TAXONOMY.TAXONOMY_ID.';
+COMMENT ON COLUMN nex.proteinabundanceannotation.source_id IS 'FK to SOURCE.SOURCE_ID.';
+COMMENT ON COLUMN nex.proteinabundanceannotation.dbentity_id IS 'FK to LOCUSDBENTITY.DBENTITY_ID.';
+COMMENT ON COLUMN nex.proteinabundanceannotation.data_value IS 'Normalized protein abundance data value.';
+COMMENT ON COLUMN nex.proteinabundanceannotation.data_unit IS 'Units of the protein abundance data value (molecules/cell).';
+COMMENT ON COLUMN nex.proteinabundanceannotation.assay_id IS 'FK to ECO.ECO_ID.';
+COMMENT ON COLUMN nex.proteinabundanceannotation.media_id IS 'FK to EFO.EFO_ID.';
+COMMENT ON COLUMN nex.proteinabundanceannotation.fold_change IS 'Fold change from data value after treatment.';
+COMMENT ON COLUMN nex.proteinabundanceannotation.chemical_id IS 'FK to CHEBI.CHEBI_ID.';
+COMMENT ON COLUMN nex.proteinabundanceannotation.concentration_value IS 'Chemical concentration data value.';
+COMMENT ON COLUMN nex.proteinabundanceannotation.concentration_unit IS 'Units of the chemical concentration data value.';
+COMMENT ON COLUMN nex.proteinabundanceannotation.time_value IS 'Treatment time value.';
+COMMENT ON COLUMN nex.proteinabundanceannotation.time_unit IS 'Units of treatment time value (d,hr,min).';
+COMMENT ON COLUMN nex.proteinabundanceannotation.process_id IS 'FK to GO.GO_ID.';
+COMMENT ON COLUMN nex.proteinabundanceannotation.date_created IS 'Date the record was entered into the database.';
+COMMENT ON COLUMN nex.proteinabundanceannotation.created_by IS 'Username of the person who entered the record into the database.';
+ALTER TABLE nex.proteinabundanceannotation ADD CONSTRAINT proteinabundanceannotation_uk UNIQUE (dbentity_id,original_reference_id,taxonomy_id,assay_id,media_id,chemical_id,process_id);
+ALTER TABLE nex.proteinabundanceannotation ADD CONSTRAINT proteinabundanceanno_dataunit_ck CHECK (DATA_UNIT IN ('molecules/cell'));
+ALTER TABLE nex.proteinabundanceannotation ADD CONSTRAINT proteinabundanceanno_timeunit_ck CHECK (TIME_UNIT IN ('d','hr','min'));
+CREATE INDEX proteinabundanceanno_ref_fk_index ON nex.proteinabundanceannotation (reference_id);
+CREATE INDEX proteinabundanceanno_origref_fk_index ON nex.proteinabundanceannotation (original_reference_id);
+CREATE INDEX proteinabundanceanno_tax_fk_index ON nex.proteinabundanceannotation (taxonomy_id);
+CREATE INDEX proteinabundanceanno_source_fk_index ON nex.proteinabundanceannotation (source_id);
+CREATE INDEX proteinabundanceanno_assay_fk_index ON nex.proteinabundanceannotation (assay_id);
+CREATE INDEX proteinabundanceanno_media_fk_index ON nex.proteinabundanceannotation (media_id);
+CREATE INDEX proteinabundanceanno_chemical_fk_index ON nex.proteinabundanceannotation (chemical_id);
+CREATE INDEX proteinabundanceanno_process_fk_index ON nex.proteinabundanceannotation (process_id);
+
 DROP TABLE IF EXISTS nex.proteindomainannotation CASCADE;
 CREATE TABLE nex.proteindomainannotation (
 	annotation_id bigint NOT NULL DEFAULT nextval('annotation_seq'),
