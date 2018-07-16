@@ -561,15 +561,6 @@ def locus_go_graph(request):
     else:
         return HTTPNotFound()
 
-@view_config(route_name='locus_disease_graph', renderer='json', request_method='GET')
-def locus_disease_graph(request):
-    id = extract_id_request(request, 'locus')
-    locus = get_locus_by_id(id)
-    if locus:
-        return locus.disease_graph()
-    else:
-        return HTTPNotFound()
-
 
 @view_config(route_name='locus_expression_graph', renderer='json', request_method='GET')
 def locus_expression_graph(request):
@@ -630,14 +621,6 @@ def locus_go_details(request):
     else:
         return HTTPNotFound()
 
-@view_config(route_name='locus_disease_details', renderer='json', request_method='GET')
-def locus_disease_details(request):
-    id = extract_id_request(request, 'locus')
-    locus = get_locus_by_id(id)
-    if locus:
-        return locus.disease_to_dict()
-    else:
-        return HTTPNotFound()
 
 @view_config(route_name='locus_interaction_details', renderer='json', request_method='GET')
 def locus_interaction_details(request):

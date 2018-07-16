@@ -3113,7 +3113,7 @@ class Locusdbentity(Dbentity):
                 }
 
             for do_id in do_ids:
-                do = DBSession.query(Disease).filter_by(disease_id=do_id).one_or_none()
+                do = DBSession.query(Disease).filter_by(disease_id=disease_id).one_or_none()
 
                 if do.format_name not in nodes:
                     nodes[do.format_name] = {
@@ -3126,29 +3126,29 @@ class Locusdbentity(Dbentity):
                         }
                     }
 
-                if (do.format_name + " " + dbentity[1]) not in edges_added:
+                if (go.format_name + " " + dbentity[1]) not in edges_added:
                     edges.append({
                         "data": {
-                            "source": do.format_name,
+                            "source": go.format_name,
                             "target": dbentity[1]
                         }
                     })
-                    edges_added.add(do.format_name + " " + dbentity[1])
+                    edges_added.add(go.format_name + " " + dbentity[1])
 
-                if (do.format_name + " " + self.format_name) not in edges_added:
+                if (go.format_name + " " + self.format_name) not in edges_added:
                     edges.append({
                         "data": {
-                            "source": do.format_name,
+                            "source": go.format_name,
                             "target": self.format_name
                         }
                     })
-                    edges_added.add(do.format_name + " " + self.format_name)
+                    edges_added.add(go.format_name + " " + self.format_name)
 
             i += 1
 
         nodes[self.format_name]["data"]["gene_count"] = max_cutoff
 
-        if len(list_genes_to_do) == 0:
+        if len(list_genes_to_go) == 0:
             min_cutoff = max_cutoff
 
         return {
@@ -5062,91 +5062,6 @@ class Diseaseannotation(Base):
 
         return obj
 
-    # a Do annotation can be duplicated based on the Dosupportingevidence group id
-    # so its to_dict method must return an array of dictionaries
-    def to_dict(self, disease=None):
-        if disease == None:
-            disease = self.disease
-
-        alias = DBSession.query(EcoAlias).filter_by(eco_id=self.eco_id).all()
-        experiment_name = alias[0].display_name
-
-        for alia in alias:
-            if len(experiment_name) > len(alia.display_name):
-                experiment_name = alia.display_name
-
-        alias_url = DBSession.query(EcoUrl).filter_by(eco_id=self.eco_id).all()
-
-        experiment_url = None
-        for url in alias_url:
-            if url.display_name == "OntoBee":
-                experiment_url = url.obj_url
-                break
-        if experiment_url == None and len(alias_url) > 1:
-            experiment_url = alias_url[1].obj_url
-
-        disease_obj = {
-            "id": self.annotation_id,
-            "annotation_type": self.annotation_type,
-            "date_created": self.date_created.strftime("%Y-%m-%d"),
-            "qualifier": self.disease_qualifier,
-            "locus": {
-                "display_name": self.dbentity.display_name,
-                "link": self.dbentity.obj_url,
-                "id": self.dbentity.dbentity_id,
-                "format_name": self.dbentity.format_name
-            },
-            "disease": {
-                "display_name": disease.display_name.replace("_", " "),
-                "link": disease.obj_url,
-                "disease_id": disease.doid,
-                "id": disease.disease_id
-            },
-            "reference": {
-                "display_name": self.reference.display_name,
-                "link": self.reference.obj_url,
-                "pubmed_id": self.reference.pmid
-            },
-            "source": {
-                "display_name": self.source.display_name
-            },
-            "experiment": {
-                "display_name": experiment_name,
-                "link": experiment_url
-            },
-            "properties": []
-        }
-
-
-        supporting_evidences = DBSession.query(Diseasesupportingevidence).filter_by(annotation_id=self.annotation_id).all()
-        se_groups = {}
-        for se in supporting_evidences:
-            evidence_dict = se.to_dict()
-            if evidence_dict:
-                if se.group_id not in se_groups:
-                    se_groups[se.group_id] = [evidence_dict]
-                else:
-                    se_groups[se.group_id].append(evidence_dict)
-
-        disease_obj_extensions = []
-        if len(disease_obj_extensions) == 0:
-            disease_obj_extensions = [disease_obj]
-
-        final_obj = []
-        for group_id in se_groups:
-            for c in disease_obj_extensions:
-                obj = copy.deepcopy(c)
-                obj["properties"] += se_groups[group_id]
-                final_obj.append(obj)
-
-        if len(final_obj) == 0:
-            if len(disease_obj_extensions) == 0:
-                final_obj = [disease_obj]
-            else:
-                final_obj = disease_obj_extensions
-
-        return final_obj
-
 
 class Diseasesubset(Base):
     __tablename__ = 'diseasesubset'
@@ -5208,33 +5123,6 @@ class Diseasesupportingevidence(Base):
     created_by = Column(String(12), nullable=False)
 
     annotation = relationship(u'Diseaseannotation')
-
-    def to_dict(self):
-        source_id = self.dbxref_id.split(":")
-
-        # the frontend expects a capitalized "role" to place the evidence in the right column of the annotation table
-
-        if source_id[0] == "SGD":
-            sgdid = source_id[1]
-            dbentity = DBSession.query(Dbentity).filter_by(sgdid=sgdid).one_or_none()
-            return {
-                "bioentity": {
-                    "display_name": dbentity.display_name,
-                    "link": dbentity.obj_url,
-                    "class_type": dbentity.subclass
-                },
-                "role": self.evidence_type.capitalize()
-            }
-        else:
-            return {
-                "bioentity": {
-                    "display_name": source_id[1],
-                    "link": self.obj_url
-                },
-                "role": self.evidence_type.capitalize()
-            }
-
-        return None
 
 
 class Dnasequenceannotation(Base):
