@@ -44,6 +44,7 @@ def prep_views(chosen_frontend, config):
     config.add_route('sequence_details', '/locus/{identifier}/sequence')
     config.add_route('protein_details', '/locus/{identifier}/protein')
     config.add_route('go_details', '/locus/{identifier}/go')
+    config.add_route('disease_details', '/locus/{identifier}/disease')
     config.add_route('phenotype_details', '/locus/{identifier}/phenotype')
     config.add_route('interaction_details', '/locus/{identifier}/interaction')
     config.add_route('regulation_details', '/locus/{identifier}/regulation')
