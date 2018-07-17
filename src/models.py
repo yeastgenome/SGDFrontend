@@ -4782,8 +4782,6 @@ class Diseaseannotation(Base):
     taxonomy = relationship(u'Taxonomy')
 
     def to_dict_lsp(self):
-        import pdb
-        pdb.set_trace()
         obj = {
             "annotation_type": self.annotation_type,
             "qualifiers": [self.disease_qualifier],
