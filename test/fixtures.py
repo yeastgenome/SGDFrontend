@@ -1211,6 +1211,7 @@ class GoFactory(factory.alchemy.SQLAlchemyModelFactory):
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
+
 class DiseaseFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = Disease
@@ -1227,7 +1228,6 @@ class DiseaseFactory(factory.alchemy.SQLAlchemyModelFactory):
     created_by = "TOTO"
     is_obsolete = "false"
 
-
 class DiseaseannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = Diseaseannotation
@@ -1240,12 +1240,12 @@ class DiseaseannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
     reference_id = 1
     disease_id = 1
     eco_id = 1
-    annotation_type = "type"
+    annotation_type = "manually curated"
     disease_qualifier = "qualifier"
     date_assigned = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    disease = factory.SubFactory(DiseaseFactory)
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
-
 
 class DatasetsampleFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:

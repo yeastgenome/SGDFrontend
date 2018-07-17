@@ -228,6 +228,9 @@ def locus_side_effect(*args, **kwargs):
         goannot = factory.GoannotationFactory()
         goannot.go = go
         return MockQuery(goannot)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Disease'>":
+        do = factory.DiseaseFactory()
+        return MockQuery(do)
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Diseaseannotation'>":
         do = factory.DiseaseFactory()
         doannot = factory.DiseaseannotationFactory()
