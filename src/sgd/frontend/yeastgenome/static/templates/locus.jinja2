@@ -582,6 +582,13 @@
         </h2>
         <hr />
         <div class="">
+            {% if locus['interaction_overview']['paragraph'] %}
+                <dl class="key-value">
+                    <dt>Summary</dt>
+                    <dd>{{ locus['interaction_overview']['paragraph']|safe }}</dd>
+                </dl>
+            {% endif %}
+
             {% if locus.interaction_overview.total_interactions == 0 %}
                 <p>No interaction data available.</p>
             {% else %}
