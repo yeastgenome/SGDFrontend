@@ -9,7 +9,7 @@ from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRela
     Goslimannotation, Goslim, Expressionannotation, Datasetsample, DatasetUrl, DatasetFile, ReferenceAlias, Dnasequenceannotation, Dnasubsequence,\
     So, ContigUrl, LocusAlias, LocusAliasReferences, LocusReferences, LocussummaryReference, LocusUrl, Posttranslationannotation,\
     Psimod, Proteinexptannotation, Proteindomainannotation, Proteindomain, ProteindomainUrl, Ec, EcAlias, EcUrl, LocusRelation, LocusRelationReference, \
-    Locusnote, LocusnoteReference, Pathwayannotation, Pathwaydbentity, PathwayUrl, Bindingmotifannotation
+    Locusnote, LocusnoteReference, Pathwayannotation, Pathwaydbentity, PathwayUrl, Bindingmotifannotation, Disease, Diseaseannotation
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -1211,6 +1211,41 @@ class GoFactory(factory.alchemy.SQLAlchemyModelFactory):
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
+
+class DiseaseFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Disease
+        sqlalchemy_session = DBSession
+
+    disease_id = 1
+    format_name = "format name"
+    display_name = "display name"
+    obj_url = "obj url"
+    source_id = 1
+    doid = 1
+    description = "description"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+    is_obsolete = "false"
+
+class DiseaseannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Diseaseannotation
+        sqlalchemy_session = DBSession
+
+    annotation_id = 1
+    dbentity_id = 1
+    source_id = 1
+    taxonomy_id = 1
+    reference_id = 1
+    disease_id = 1
+    eco_id = 1
+    annotation_type = "manually curated"
+    disease_qualifier = "qualifier"
+    date_assigned = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    disease = factory.SubFactory(DiseaseFactory)
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
 
 class DatasetsampleFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
