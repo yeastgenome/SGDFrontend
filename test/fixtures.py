@@ -9,7 +9,7 @@ from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRela
     Goslimannotation, Goslim, Expressionannotation, Datasetsample, DatasetUrl, DatasetFile, ReferenceAlias, Dnasequenceannotation, Dnasubsequence,\
     So, ContigUrl, LocusAlias, LocusAliasReferences, LocusReferences, LocussummaryReference, LocusUrl, Posttranslationannotation,\
     Psimod, Proteinexptannotation, Proteindomainannotation, Proteindomain, ProteindomainUrl, Ec, EcAlias, EcUrl, LocusRelation, LocusRelationReference, \
-    Locusnote, LocusnoteReference, Pathwayannotation, Pathwaydbentity, PathwayUrl, Bindingmotifannotation
+    Locusnote, LocusnoteReference, Pathwayannotation, Pathwaydbentity, PathwayUrl, Bindingmotifannotation, Disease, Diseaseannotation
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -1213,7 +1213,7 @@ class GoFactory(factory.alchemy.SQLAlchemyModelFactory):
 
 class DiseaseFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
-        model = Go
+        model = Disease
         sqlalchemy_session = DBSession
 
     disease_id = 1
@@ -1230,7 +1230,7 @@ class DiseaseFactory(factory.alchemy.SQLAlchemyModelFactory):
 
 class DiseaseannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
-        model = Goannotation
+        model = Diseaseannotation
         sqlalchemy_session = DBSession
 
     annotation_id = 1
