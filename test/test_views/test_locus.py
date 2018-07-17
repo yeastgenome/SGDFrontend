@@ -47,6 +47,7 @@ class LocusTest(unittest.TestCase):
         response = locus_go_details(request)
         self.assertEqual(response, locus.go_to_dict())
 
+
     @mock.patch('src.views.extract_id_request', return_value="S000114259")
     @mock.patch('src.models.DBSession.query')
     def test_should_return_valid_locus_interaction_details(self, mock_search, mock_redis):
