@@ -69,7 +69,9 @@ def format_autocomplete_results(es_response, field='name'):
             }
             if 'institution' in hit['_source'].keys():
                 obj['institution'] = hit['_source']['institution']
-                obj['format_name'] = hit['_id']
+            if obj['category'] == 'colleague':
+                format_name = hit['_source']['href'].replace('/colleague/', '')
+                obj['format_name'] = format_name
 
             if hit['_source'].get('gene_symbol') and hit['_source']['category'] == "locus":
                 obj['name'] = hit['_source']['gene_symbol'].upper()
