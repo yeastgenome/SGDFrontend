@@ -385,6 +385,7 @@ def update_complex_alias(nex_session, fw, complex_id, aliases, source_id, aliase
     for alias in aliases_in_db:
         if alias in aliases:
             continue
+        (alias_type, display_name) = alias
         x = nex_session.query(ComplexAlias).filter_by(complex_id=complex_id, alias_type=alias_type, display_name=display_name).one_or_none()
         nex_session.delete(x)
 
@@ -502,7 +503,7 @@ def update_dbentity(nex_session, fw, complexAC, display_name, source_id, display
     if display_name_in_db == display_name:
         return
     
-    nex_session.query(Dbentity).filter_by(format_name=intact_id).update({"display_name": display_name})    
+    nex_session.query(Dbentity).filter_by(format_name=complexAC).update({"display_name": display_name})    
 
     fw.write("Update dbentity.display_name to " + display_name + " for format_name = " + complexAC + "\n")
     
@@ -529,7 +530,7 @@ def update_complexdbentity(nex_session, fw, intact_id, complexAC, systematicName
 
     nex_session.query(Complexdbentity).filter_by(format_name=intact_id).update(update_hash)
 
-    fw.write("Update dbentity.display_name to " + display_name + " for format_name = " + intact_id + "\n")
+    fw.write("Update complexdbentity row for format_name = " + intact_id + "\n")
 
 
 def get_json(url):
