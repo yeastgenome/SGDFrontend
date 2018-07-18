@@ -1258,19 +1258,18 @@ const GeneSequenceResources = React.createClass({
 	
 	getExtraParams(param) {
 
-	     var extraParams = "";
+	        var extraParams = "";
+                if (param['rev1'] && param['rev1'] == 'on') {
+                    extraParams = "&rev=1";
+                }
+                if (param['up'] && param['up'] != '') {
+                    extraParams += "&up=" + param['up'];
+                }
+                if (param['down'] && param['down'] != '') {
+                    extraParams += "&down=" + param['down'];
+                }
 
-	     if (typeof(param['rev1']) != "undefined") {
-                 extraParams += "&rev1=" + param['rev'];
-             }
-             if (typeof(param['up']) != "undefined") {
-                 extraParams += "&up=" + param['up'];
-             }
-             if (typeof(param['down']) != "undefined") {
-                 extraParams += "&down=" + param['down'];
-             }
-
-	     return extraParams;	     
+	        return extraParams;	     
 
 	},
 
