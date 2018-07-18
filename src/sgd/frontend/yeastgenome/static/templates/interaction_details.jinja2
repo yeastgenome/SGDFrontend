@@ -51,6 +51,12 @@
             </p>
         </h1>
         <hr />
+        {% if locus['interaction_overview']['paragraph'] %}
+            <dl class="key-value">
+                <dt>Summary</dt>
+                <dd>{{ locus['interaction_overview']['paragraph']|safe }}</dd>
+            </dl>
+        {% endif %}
         <p>
             Source: All physical and genetic interaction annotations listed in SGD are curated by <a href="http://thebiogrid.org">BioGRID</a>.
         </p>
