@@ -22,6 +22,7 @@ def prep_views(chosen_frontend, config):
     config.add_route('patmatch', '/nph-patmatch')
     config.add_route('seq_tools', '/seqTools')
     config.add_route('gotermfinder', '/goTermFinder')
+    config.add_route('complex', '/complex/{identifier}')
     config.add_route('blog_post', '/blog/{slug}')
     config.add_route('blog_index', '/blog')
     config.add_route('blog_archive', '/blog/archive/{year}')

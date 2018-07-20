@@ -145,6 +145,15 @@ def phenotype(request):
         return not_found(request)
     return render_to_response(TEMPLATE_ROOT + 'phenotype.jinja2', pheno_obj, request=request)
 
+@view_config(route_name='complex')
+def complex(request):
+    complexAC = request.matchdict['identifier']
+    complex_obj = get_obj(complexAC, 'complex')
+    if complex_obj is None:
+        return not_found(request)
+    return render_to_response(TEMPLATE_ROOT + 'complex.jinja2', complex_obj, request=request)
+    
+
 # If is_quick, try to redirect to gene page.  If not, or no suitable response, then just show results in script tag and let client js do the rest.
 @view_config(route_name='search')
 def search(request):
