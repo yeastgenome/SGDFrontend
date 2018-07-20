@@ -60,8 +60,13 @@ wp_categories = [
     {
         'name': 'Yeast and Human Disease',
         'slug': 'yeast-and-human-disease'
+    },
+    {
+        'name': 'Announcements',
+        'slug': 'announcements'
     }
 ]
+
 
 def get_archive_years():
     now = datetime.now()
