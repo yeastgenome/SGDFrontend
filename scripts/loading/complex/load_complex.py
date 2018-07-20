@@ -255,6 +255,11 @@ def load_complex():
             format_name = p['identifier']
             display_name = p.get('name')
             obj_url = p.get('identifierLink')
+            if obj_url is None:
+                if format_name.startswith("EBI-"):
+                    obj_url = "https://www.ebi.ac.uk/complexportal/complex/search?query=" + format_name
+                if format_name.startswith("NP_"):
+                    obj_url = "https://www.ncbi.nlm.nih.gov/protein/" + format_name
             desc = p.get('description')
             locus_id = gene_name_to_locus_id.get(display_name)
             type_id = format_name_to_psimi_id.get(p.get('interactorTypeMI'))
