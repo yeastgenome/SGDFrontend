@@ -61,6 +61,10 @@ def load_complexbindingannotation():
 
     for complexAC in complexAC_to_dbentity:
 
+
+        print "Getting info for ", complexAC
+
+
         d =  complexAC_to_dbentity[complexAC]
         source_id = d.source_id
         complex_id = d.dbentity_id
