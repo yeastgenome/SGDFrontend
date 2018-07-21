@@ -21,9 +21,14 @@
     <div class="small-12 medium-10 columns content-column">
 
         <script>
-            add_navbar_title('Protein Complex: <span class="gene_name">{{ complex.complex_name }}</span>')
+            add_navbar_title('Complex: <span class="gene_name">{{ complex.complex_name }}</span>')
             add_navbar_element('Overview', 'overview');
-            add_navbar_element('Annotations', 'annotations');
+            add_navbar_element('Go Annotations', 'annotations');
+	    add_navbar_element('Schematic of complex', 'Schematic_complex');
+	    add_navbar_element('Subunits of complex', 'subunits');
+	    add_navbar_element('Network Diagrams', 'diagram');
+	    add_navbar_element('References', 'references');
+	    add_navbar_element('Source', 'source');
         </script>
 
 <!-- Summary
