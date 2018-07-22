@@ -7736,11 +7736,7 @@ class Complexdbentity(Dbentity):
 
         refs = []
         if ref_objs:
-            for cr in ref_objs:
-                reference = cr.reference
-                refs.append(reference.to_dict_citation)
-
-        data['references'] = refs
+            data["references"] = [ref.reference.to_dict_citation() for ref in ref_objs]
 
         ## subunits
 
