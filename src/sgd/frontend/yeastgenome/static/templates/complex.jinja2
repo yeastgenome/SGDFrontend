@@ -113,17 +113,11 @@
 
 <!-- Cross-References
 ================================================== -->
-	{% for alias in complex.aliases if (alias.alias_type != 'Synonym' and alias.alias_type != 'PDB') %}
-	    {% if loop.first %} 
-	       <section id="cross_reference" data-magellan-destination="cross_reference">
-                   <div class="page-header">
+	<section id="cross_reference" data-magellan-destination="cross_reference">
+              <div class="page-header">
                          <h2>Cross-References</h2>
                          <hr />
-	      {% set hasCrossRef = 1 %}
-
-	    {% endif %}
-
-	{% endfor %}
+	
 		         {% for alias in complex.aliases if (alias.alias_type != 'Synonym' and alias.alias_type != 'PDB') %}
 			     {% if alias.alias_type == 'IntEnz' %}
                      	          {{alias.alias_type}}: <a href=https://www.ebi.ac.uk/intenz/query?cmd=Search&q={{ alias.display_name }} target="_blank">{{ alias.display_name }}</a>
@@ -136,10 +130,9 @@
 			     {% if not loop.last %} | {% else %} {% endif %}
 	
 		         {% endfor %}
-	 {% if hasCrossRef == 1 %}
-                   </div>
-             </section>
-	 {% endif %}    
+	      </div>
+        </section>
+	
        
 <!-- Source
 ================================================== -->
