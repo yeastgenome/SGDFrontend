@@ -7724,12 +7724,8 @@ class Complexdbentity(Dbentity):
 
         go = []
         if go_objs:
-            for cg in go_objs:
-                go.append({ "goid": cg.go.goid,
-                            "go_term": cg.go.display_name })
-
-        data['go'] = go
-        
+            data['go'] = [g.go.to_dict() for g in go_objs]
+                    
         ref_objs = DBSession.query(ComplexReference).filter_by(complex_id=self.dbentity_id).all()
 
         ## reference
