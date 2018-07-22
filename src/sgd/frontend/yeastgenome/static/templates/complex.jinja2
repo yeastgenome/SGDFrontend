@@ -114,7 +114,13 @@
                          <h2>References</h2>
                          <hr />
 			 {% for reference in complex.references %}
-    			    	{{reference.citation}}<br></br>
+			       {% if loop.first %}
+			       	    <ul>
+			       {% endif %}
+    			    	<li>{{reference.citation}}
+			       {% if loop.last %}
+			       	    </ul>
+			       {% endif	%}
 			 {% endfor %}
 
 		</div>			 
