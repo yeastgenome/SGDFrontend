@@ -109,12 +109,16 @@
 
 <!-- References
 ================================================== -->
-	{% set references = complex.references %}
-        {% include "biblio_references.jinja2" %}
 	<section id="reference" data-magellan-destination="reference">
 	        <div class="page-header">
                          <h2>References</h2>
                          <hr />
+			 {% for reference in complex.references %}
+    			    <span data-tooltip aria-haspopup="true" class="has-tip" title="{{ reference.display_name }}">
+			    </span>
+
+			{% endfor %}
+
 		</div>			 
 	</section>
 
