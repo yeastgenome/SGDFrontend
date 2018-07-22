@@ -7742,7 +7742,6 @@ class Complexdbentity(Dbentity):
                 refs.append({ "display_name": reference.display_name,
                               "pubmed_id": reference.pmid,
                               "citation": reference.citation,
-                              "year": reference.year,
                               "id": reference.dbentity_id,
                               "link": reference.obj_url
                               })
