@@ -114,10 +114,8 @@
                          <h2>References</h2>
                          <hr />
 			 {% for reference in complex.references %}
-    			    <span data-tooltip aria-haspopup="true" class="has-tip" title="{{ reference.display_name }}">
-			    </span>
-
-			{% endfor %}
+    			    	{{reference.citation}}<br></br>
+			 {% endfor %}
 
 		</div>			 
 	</section>
