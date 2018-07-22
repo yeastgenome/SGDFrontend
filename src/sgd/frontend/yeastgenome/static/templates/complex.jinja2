@@ -106,17 +106,13 @@
 ================================================== -->
 
 
-
 <!-- References
 ================================================== -->
-{% set references = complex.reference %}
-{% include "biblio_references.jinja2" %}
 
 
 <!-- Cross-References
 ================================================== -->
-	
-	    <section id="cross_reference" data-magellan-destination="cross_reference">
+	<section id="cross_reference" data-magellan-destination="cross_reference">
                    <div class="page-header">
                          <h2>Cross-References</h2>
                          <hr />
@@ -130,11 +126,11 @@
                      	          {{alias.alias_type}}: <a href=http://www.ebi.ac.uk/pdbe/entry/emdb/{{ alias.display_name }} target="_blank">{{ alias.display_name }}</a>
    			     {% endif %}
 
-			     {% if not loop.last %} | {% else %}{% endif %}
+			     {% if not loop.last %} | {% else %} {% endif %}
 	
 		         {% endfor %}
                    </div>
-            </section>
+        </section>
 	
        
 
