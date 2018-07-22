@@ -13,8 +13,6 @@
 
 <div class="row">
 
-{% set hasCrossRef = 0 %}
-
 <!-- Navbar
 ================================================== -->
     <!-- Includes navbar.html into template -->
@@ -40,7 +38,7 @@
 	    {% for alias in complex.aliases if (alias.alias_type != 'Synonym' and alias.alias_type != 'PDB') %}
 	        {% if loop.first %}
 	              add_navbar_element('Cross-References', 'cross_reference');
-		      {% hasCrossRef = 1 %}
+		      {% set hasCrossRef = True %}
 		{% endif %}
 		
 	    {% endfor %}
@@ -117,7 +115,7 @@
 
 <!-- Cross-References
 ================================================== -->
-	{% if hasCrossRef == 1 %}					   
+	{% if hasCrossRef %}					   
 	    <section id="cross_reference" data-magellan-destination="cross_reference">
                    <div class="page-header">
                          <h2>Cross-References</h2>
