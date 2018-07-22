@@ -118,11 +118,11 @@
 		 <hr />				   
 		 {% for alias in complex.aliases if (alias.alias_type != 'Synonym' and alias.alias_type != 'PDB') %}
 		      {% if alias.alias_type == 'IntEnz' %}
-                      	 {{alias.alias_type}}: <a href=https://www.ebi.ac.uk/intenz/query?cmd=Search&q={{ alias.display_name }} target="_blank">{{ alias.display_name }}</a>
+                      	 {{alias.alias_type}}: <a href=https://www.ebi.ac.uk/intenz/query?cmd=Search&q={{ alias.display_name }} target="_blank">{{ alias.display_name }}</a><br></br>
 		      {% endif %}
 
 		      {% if alias.alias_type ==	'EMDB' %}
-                         {{alias.alias_type}}: <a href=http://www.ebi.ac.uk/pdbe/entry/emdb/EMD-{{ alias.display_name }} target="_blank">EMD-{{ alias.display_name }}</a>
+                         {{alias.alias_type}}: <a href=http://www.ebi.ac.uk/pdbe/entry/emdb/EMD-{{ alias.display_name }} target="_blank">EMD-{{ alias.display_name }}</a><br></br>
    		      {% endif %}
 
 		      
