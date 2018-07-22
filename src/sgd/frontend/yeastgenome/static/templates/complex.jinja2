@@ -23,7 +23,7 @@
         <script>
             add_navbar_title('Complex: <span class="gene_name">{{ complex.complex_name }}</span>')
             add_navbar_element('Overview', 'overview');
-	    add_navbar_element('Summary Paragraph', 'summary');
+	    add_navbar_element('Summary Paragraph', 'paragraph');
 	    add_navbar_element('Schematic of complex', 'schematic_complex');
 	    add_navbar_element('Subunits of complex', 'subunits');
 	    add_navbar_element('Go Annotations', 'annotations');
@@ -63,7 +63,7 @@
 
 <!-- summary paragraph
 ================================================== -->
-        <section id="summary" data-magellan-destination="summary">
+        <section id="paragraph" data-magellan-destination="paragraph">
             <div class="page-header">
 	    	 <h2>Summary Paragraph</h2>
                  <hr />
@@ -99,6 +99,16 @@
 
 <!-- Cross-References
 ================================================== -->
+	<section id="cross_reference" data-magellan-destination="cross_reference">
+            <div class="page-header">
+                 <h2>Cross-References</h2>				   
+
+			{% for alias in complex.aliases if alias.alias_type != 'Synonym' %}
+                              {{alias.alias_type}}: {{ alias.display_name }}<br></br>
+                        {% endfor %}
+            </div>
+        </section>
+
 
 
 <!-- Source
