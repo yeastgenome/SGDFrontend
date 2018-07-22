@@ -23,11 +23,12 @@
         <script>
             add_navbar_title('Complex: <span class="gene_name">{{ complex.complex_name }}</span>')
             add_navbar_element('Overview', 'overview');
-            add_navbar_element('Go Annotations', 'annotations');
 	    add_navbar_element('Schematic of complex', 'Schematic_complex');
 	    add_navbar_element('Subunits of complex', 'subunits');
+	    add_navbar_element('Go Annotations', 'annotations');
 	    add_navbar_element('Network Diagrams', 'diagram');
 	    add_navbar_element('References', 'references');
+	    add_navbar_element('Cross-References', 'cross_references');
 	    add_navbar_element('Source', 'source');
         </script>
 
@@ -37,6 +38,19 @@
             <div class="page-header">
                 <h1>Protein Complex: {{ complex.complex_name }}</h1>
                 <hr />
+
+		<div class="">
+                    <dl class="key-value">
+                        <dt>ComplexAc</dt>
+                        <dd><a href=https://www.ebi.ac.uk/complexportal/complex/{{ complex.complex_accession }} target="_blank">{{ complex.complex_accession }}</a></dd>
+
+                        <dt>Intact ID</dt>
+                        <dd><a href=https://www.ebi.ac.uk/complexportal/complex/search?query={{ complex.complex_accession }} target="_blank">{{ complex.intact_id }}</a></dd>
+			
+			
+
+                </div>
+
             </div>
         </section>
 
