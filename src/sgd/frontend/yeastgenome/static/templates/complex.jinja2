@@ -48,6 +48,11 @@
                         <dd><a href=https://www.ebi.ac.uk/complexportal/complex/search?query={{ complex.complex_accession }} target="_blank">{{ complex.intact_id }}</a></dd>
 			
 			
+		{% for alias in complex.aliases if alias.alias_type == 'Synonym' %}
+                    {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
+                    {{ alias.display_name }}
+                    {% if not loop.last %},{% else %}</dd>{% endif %}
+                {% endfor %}
 
                 </div>
 
