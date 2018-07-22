@@ -51,7 +51,7 @@
 		{% for alias in complex.aliases if alias.alias_type == 'Synonym' %}
                     {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
                     {{ alias.display_name }}
-                    {% if not loop.last %},{% else %}</dd>{% endif %}
+                    {% if not loop.last %};{% else %}</dd>{% endif %}
                 {% endfor %}
 
                 </div>
