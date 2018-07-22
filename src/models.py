@@ -7738,15 +7738,38 @@ class Complexdbentity(Dbentity):
         if ref_objs:
             for cr in ref_objs:
                 reference = cr.reference
-                
+                url_objs = DBSession.query(ReferenceUrl).filter_by(reference_id=reference.dbentity_id).all()
+                doi = {}
+                pmc = {}
+                pubmed = {}
+                for u in url_objs:
+                    if u.display_name.startswith('DOI'):
+                        doi['display_name'] = u.display_name
+                        doi['link'] = u.obj_url
+                    if u.display_name.startswith('PMC'):
+                        pmc['display_name'] = u.display_name
+                        pmc['link'] = u.obj_url
+                    if u.display_name.startswith('PubMed'):
+                        pubmed['display_name'] = u.display_name
+                        pubmed['link'] = u.obj_url
+                urls = []
+                if display_name in doi:
+                    urls.append(doi)
+                if display_name in pmc:
+                    urls.append(pmc)
+                if display_name in pubmed:
+                    urls.append(pubmed)
+
                 refs.append({ "display_name": reference.display_name,
                               "pubmed_id": reference.pmid,
                               "citation": reference.citation,
+                              "year": reference.year,
                               "id": reference.dbentity_id,
-                              "link": reference.obj_url
+                              "link": reference.obj_url,
+                              "urls": urls
                               })
 
-        data['reference'] = refs
+        data['references'] = refs
 
         ## subunits
 
