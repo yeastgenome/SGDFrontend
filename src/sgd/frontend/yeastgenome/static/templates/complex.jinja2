@@ -104,7 +104,7 @@
                  <h2>Cross-References</h2>
 		 <hr />				   
 		 {% for alias in complex.aliases if alias.alias_type != 'Synonym' %}
-                      {{alias.alias_type}}: {{ alias.display_name }}<br></br>
+                      {{alias.alias_type}}: <a href=https://www.ebi.ac.uk/intenz/query?cmd=Search&q={{ alias.display_name }} target="_blank">{{ alias.display_name }}</a><br></br>
                  {% endfor %}
             </div>
         </section>
