@@ -24,16 +24,25 @@
             add_navbar_title('Complex: <span class="gene_name">{{ complex.complex_name }}</span>')
             add_navbar_element('Overview', 'overview');
 	    add_navbar_element('Summary Paragraph', 'paragraph');
+
 	    add_navbar_element('Schematic of complex', 'schematic_complex');
+
 	    add_navbar_element('Subunits of complex', 'subunits');
+
 	    add_navbar_element('Go Annotations', 'annotations');
+
 	    add_navbar_element('Network Diagrams', 'diagram');
+
 	    add_navbar_element('References', 'reference');
+
 	    {% for alias in complex.aliases if alias.alias_type != 'Synonym' %}
 	        {% if loop.first %}
 	              add_navbar_element('Cross-References', 'cross_reference');
 		{% endif %}
+	    {% endfor %}
+
 	    add_navbar_element('Source', 'source');
+
         </script>
 
 <!-- Overview
