@@ -130,7 +130,7 @@
                      	          {{alias.alias_type}}: <a href=http://www.ebi.ac.uk/pdbe/entry/emdb/{{ alias.display_name }} target="_blank">{{ alias.display_name }}</a>
    			     {% endif %}
 
-			     {% if not loop.last %} | {% else %}</dd>{% endif %}
+			     {% if not loop.last %} | {% else %}{% endif %}
 	
 		         {% endfor %}
                    </div>
