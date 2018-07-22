@@ -23,7 +23,8 @@
         <script>
             add_navbar_title('Complex: <span class="gene_name">{{ complex.complex_name }}</span>')
             add_navbar_element('Overview', 'overview');
-	    add_navbar_element('Schematic of complex', 'Schematic_complex');
+	    add_navbar_element('Summary Paragraph', 'summary');
+	    add_navbar_element('Schematic of complex', 'schematic_complex');
 	    add_navbar_element('Subunits of complex', 'subunits');
 	    add_navbar_element('Go Annotations', 'annotations');
 	    add_navbar_element('Network Diagrams', 'diagram');
@@ -32,7 +33,7 @@
 	    add_navbar_element('Source', 'source');
         </script>
 
-<!-- Summary
+<!-- Overview
 ================================================== -->
         <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
@@ -66,9 +67,47 @@
             </div>
         </section>
 
+<!-- summary paragraph
+================================================== -->
+        <section id="summary" data-magellan-destination="summary">
+            <div class="page-header">
+              {{ complex.description }}<p></p>{{ complex.properties }}
+	    </div>
+	</section>
+
+
+<!-- schematic of the complex & crystal structure from PDB
+================================================== -->
 
 
 
+
+
+<!-- table with subunits and headlines, stoichiometry
+================================================== -->
+
+
+
+<!-- table with GO annotations for the complex
+================================================== -->
+
+
+
+<!-- Network diagrams
+================================================== -->
+
+
+
+<!-- References
+================================================== -->
+
+
+<!-- Cross-References
+================================================== -->
+
+
+<!-- Source
+================================================== -->
 
 
     </div>
