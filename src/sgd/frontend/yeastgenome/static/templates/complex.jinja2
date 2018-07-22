@@ -67,7 +67,7 @@
             <div class="page-header">
 	    	 <h2>Summary Paragraph</h2>
                  <hr />
-              	 <h3>{{ complex.description }}<p></p>{{ complex.properties }}</h3>
+              	 {{ complex.description }}<p></p>{{ complex.properties }}
 	    </div>
 	</section>
 
@@ -103,7 +103,13 @@
 
 <!-- Source
 ================================================== -->
-
+	<section id="source" data-magellan-destination="source">
+            <div class="page-header">
+                 <h2>Source</h2>
+                 <hr />
+                 {{ complex.source}}
+            </div>
+        </section>
 
     </div>
 </div>
