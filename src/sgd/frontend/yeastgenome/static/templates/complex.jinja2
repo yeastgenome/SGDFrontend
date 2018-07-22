@@ -58,10 +58,10 @@
 		<div class="">
                     <dl class="key-value">
                         <dt>ComplexAc</dt>
-                        <dd><a href=https://www.ebi.ac.uk/complexportal/complex/{{ complex.complex_accession }} target="_blank">{{ complex.complex_accession }}</a></dd>
+                        <dd><a href=https://www.ebi.ac.uk/complexportal/complex/{{ complex.complex_accession }} target="_infowin">{{ complex.complex_accession }}</a></dd>
 
                         <dt>Intact ID</dt>
-                        <dd><a href=https://www.ebi.ac.uk/complexportal/complex/search?query={{ complex.complex_accession }} target="_blank">{{ complex.intact_id }}</a></dd>
+                        <dd><a href=https://www.ebi.ac.uk/complexportal/complex/search?query={{ complex.complex_accession }} target="_infowin">{{ complex.intact_id }}</a></dd>
 			
 			<dt>Systematic Name</dt>
 			<dd>{{ complex.systematic_name }}</dd>
@@ -113,14 +113,23 @@
 	        <div class="page-header">
                          <h2>References</h2>
                          <hr />
+
 			 {% for reference in complex.references %}
+
 			       {% if loop.first %}
 			       	    <ul>
 			       {% endif %}
-    			    	<li>{{reference.citation}}
+
+    			    	<li>{{ reference.citation }} PMID: {{ reference.pmid}}<br>
+				  <a href={{ reference.link }} target="_infowin">SGD Paper</a> 
+				  {% for r in reference.urls %}
+				      <a href={{ r.link }} target="_infowin">{{ r.display_name }}</a>
+				  {% endfor %}
+				
 			       {% if loop.last %}
 			       	    </ul>
 			       {% endif	%}
+
 			 {% endfor %}
 
 		</div>			 
@@ -135,11 +144,11 @@
 	
 		         {% for alias in complex.aliases if (alias.alias_type != 'Synonym' and alias.alias_type != 'PDB') %}
 			     {% if alias.alias_type == 'IntEnz' %}
-                     	          {{alias.alias_type}}: <a href=https://www.ebi.ac.uk/intenz/query?cmd=Search&q={{ alias.display_name }} target="_blank">{{ alias.display_name }}</a>
+                     	          {{alias.alias_type}}: <a href=https://www.ebi.ac.uk/intenz/query?cmd=Search&q={{ alias.display_name }} target="_infowin">{{ alias.display_name }}</a>
 			     {% endif %}
 
 			     {% if alias.alias_type == 'EMDB' %}
-                     	          {{alias.alias_type}}: <a href=http://www.ebi.ac.uk/pdbe/entry/emdb/{{ alias.display_name }} target="_blank">{{ alias.display_name }}</a>
+                     	          {{alias.alias_type}}: <a href=http://www.ebi.ac.uk/pdbe/entry/emdb/{{ alias.display_name }} target="_infowin">{{ alias.display_name }}</a>
    			     {% endif %}
 
 			     {% if not loop.last %} | {% else %} {% endif %}
