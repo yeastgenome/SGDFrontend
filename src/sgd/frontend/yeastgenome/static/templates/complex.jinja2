@@ -109,7 +109,14 @@
 
 <!-- References
 ================================================== -->
-
+	{% set references = complex.references %}
+        {% include "biblio_references.jinja2" %}
+	<section id="reference" data-magellan-destination="reference">
+	        <div class="page-header">
+                         <h2>References</h2>
+                         <hr />
+		</div>			 
+	</section>
 
 <!-- Cross-References
 ================================================== -->
