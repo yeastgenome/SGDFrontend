@@ -38,7 +38,9 @@
 	    {% for alias in complex.aliases if (alias.alias_type != 'Synonym' and alias.alias_type != 'PDB') %}
 	        {% if loop.first %}
 	              add_navbar_element('Cross-References', 'cross_reference');
+		      {% set hasCrossRef = 1 %}
 		{% endif %}
+		
 	    {% endfor %}
 
 	    add_navbar_element('Source', 'source');
@@ -107,29 +109,32 @@
 
 <!-- References
 ================================================== -->
-
+{% set references = complex.reference %}
+{% include "biblio_references.jinja2" %}
 
 
 <!-- Cross-References
 ================================================== -->
-	<section id="cross_reference" data-magellan-destination="cross_reference">
-            <div class="page-header">
-                 <h2>Cross-References</h2>
-		 <hr />				   
-		 {% for alias in complex.aliases if (alias.alias_type != 'Synonym' and alias.alias_type != 'PDB') %}
-		      {% if alias.alias_type == 'IntEnz' %}
-                      	 {{alias.alias_type}}: <a href=https://www.ebi.ac.uk/intenz/query?cmd=Search&q={{ alias.display_name }} target="_blank">{{ alias.display_name }}</a>
-		      {% endif %}
+	{% if hasCrossRef == 1 %}
+	     <section id="cross_reference" data-magellan-destination="cross_reference">
+            	    <div class="page-header">
+                    	 <h2>Cross-References</h2>
+		    	 <hr />				   
+		         {% for alias in complex.aliases if (alias.alias_type != 'Synonym' and alias.alias_type != 'PDB') %}
+		               {% if alias.alias_type == 'IntEnz' %}
+                      	            {{alias.alias_type}}: <a href=https://www.ebi.ac.uk/intenz/query?cmd=Search&q={{ alias.display_name }} target="_blank">{{ alias.display_name }}</a>
+		               {% endif %}
 
-		      {% if alias.alias_type ==	'EMDB' %}
-                         {{alias.alias_type}}: <a href=http://www.ebi.ac.uk/pdbe/entry/emdb/{{ alias.display_name }} target="_blank">{{ alias.display_name }}</a>
-   		      {% endif %}
+		               {% if alias.alias_type ==	'EMDB' %}
+                                    {{alias.alias_type}}: <a href=http://www.ebi.ac.uk/pdbe/entry/emdb/{{ alias.display_name }} target="_blank">{{ alias.display_name }}</a>
+   		               {% endif %}
 
-		      {% if not loop.last %} | {% else %}</dd>{% endif %}
+		      	       {% if not loop.last %} | {% else %}</dd>{% endif %}
 
-                 {% endfor %}
-            </div>
-        </section>
+                         {% endfor %}
+                    </div>
+             </section>
+       {% endif %}
 
 <!-- Source
 ================================================== -->
