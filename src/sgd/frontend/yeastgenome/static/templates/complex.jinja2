@@ -111,27 +111,25 @@
 ================================================== -->
 	<section id="reference" data-magellan-destination="reference">
 	        <div class="page-header">
-                         <h2>References</h2>
-                         <hr />
+                     <h2>References</h2>
+                     <hr />
+		     <ul class="unstyled">
+			  {% for ref in complex.references %}
 
-			 {% for reference in complex.references %}
+    			    	<li><a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
+                                <span>{{ ref.citation|e|replace(ref.display_name, '') }}</span> 
+				{% if ref.pubmed_id != none %}
+                                    <small>PMID: {{ ref.pubmed_id|e }}</small>
+                                {% endif %}
+				<ul class="ref-links">
+                                    <li><a href="{{ ref.link|e }}">SGD Paper</a></li>
+                                    {% for url in ref.urls %}
+                                        <li><a target="_infowin" href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
+                                    {% endfor %}
+				</ul>
 
-			       {% if loop.first %}
-			       	    <ul>
-			       {% endif %}
-
-    			    	<li>{{ reference.citation }} PMID: {{ reference.pmid}}<br>
-				  <a href={{ reference.link }} target="_infowin">SGD Paper</a> 
-				  {% for r in reference.urls %}
-				      <a href={{ r.link }} target="_infowin">{{ r.display_name }}</a>
-				  {% endfor %}
-				
-			       {% if loop.last %}
-			       	    </ul>
-			       {% endif	%}
-
-			 {% endfor %}
-
+			  {% endfor %}
+		     </ul>
 		</div>			 
 	</section>
 
