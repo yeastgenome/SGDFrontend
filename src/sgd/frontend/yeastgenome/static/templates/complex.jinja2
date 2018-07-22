@@ -115,19 +115,19 @@
                      <hr />
 		     <ul class="unstyled">
 			  {% for ref in complex.references %}
-
-    			    	<li><a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
-                                <span>{{ ref.citation|e|replace(ref.display_name, '') }}</span> 
-				{% if ref.pubmed_id != none %}
-                                    <small>PMID: {{ ref.pubmed_id|e }}</small>
-                                {% endif %}
-				<ul class="ref-links">
-                                    <li><a href="{{ ref.link|e }}">SGD Paper</a></li>
-                                    {% for url in ref.urls %}
-                                        <li><a target="_infowin" href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
-                                    {% endfor %}
-				</ul>
-
+			       <li>
+				    <a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
+                                    <span>{{ ref.citation|e|replace(ref.display_name, '') }}</span> 
+				    {% if ref.pubmed_id != none %}
+                                       <small>PMID: {{ ref.pubmed_id|e }}</small>
+                                    {% endif %}
+				    <ul class="ref-links">
+                                    	<li><a href="{{ ref.link|e }}">SGD Paper</a></li>
+                                    	{% for url in ref.urls %}
+                                            <li><a target="_infowin" href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
+                                        {% endfor %}
+				    </ul>
+			       </li>
 			  {% endfor %}
 		     </ul>
 		</div>			 
