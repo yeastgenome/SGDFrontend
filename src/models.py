@@ -7738,8 +7738,14 @@ class Complexdbentity(Dbentity):
         if ref_objs:
             for cr in ref_objs:
                 reference = cr.reference
-                refs.append({ "pmid": reference.pmid,
-                              "citation": reference.citation })
+                
+                refs.append({ "display_name": reference.display_name,
+                              "pubmed_id": reference.pmid,
+                              "citation": reference.citation,
+                              "year": reference.year,
+                              "id": reference.dbentity_id,
+                              "link": reference.obj_url
+                              })
 
         data['reference'] = refs
 
