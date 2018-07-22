@@ -28,8 +28,8 @@
 	    add_navbar_element('Subunits of complex', 'subunits');
 	    add_navbar_element('Go Annotations', 'annotations');
 	    add_navbar_element('Network Diagrams', 'diagram');
-	    add_navbar_element('References', 'references');
-	    add_navbar_element('Cross-References', 'cross_references');
+	    add_navbar_element('References', 'reference');
+	    add_navbar_element('Cross-References', 'cross_reference');
 	    add_navbar_element('Source', 'source');
         </script>
 
@@ -101,15 +101,13 @@
 ================================================== -->
 	<section id="cross_reference" data-magellan-destination="cross_reference">
             <div class="page-header">
-                 <h2>Cross-References</h2>				   
-
-			{% for alias in complex.aliases if alias.alias_type != 'Synonym' %}
-                              {{alias.alias_type}}: {{ alias.display_name }}<br></br>
-                        {% endfor %}
+                 <h2>Cross-References</h2>
+		 <hr />				   
+		 {% for alias in complex.aliases if alias.alias_type != 'Synonym' %}
+                      {{alias.alias_type}}: {{ alias.display_name }}<br></br>
+                 {% endfor %}
             </div>
         </section>
-
-
 
 <!-- Source
 ================================================== -->
