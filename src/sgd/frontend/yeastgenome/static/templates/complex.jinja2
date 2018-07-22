@@ -122,7 +122,7 @@
 		      {% endif %}
 
 		      {% if alias.alias_type ==	'EMDB' %}
-                         {{alias.alias_type}}: <a href=http://www.ebi.ac.uk/pdbe/entry/emdb/EMD-{{ alias.display_name }} target="_blank">EMD-{{ alias.display_name }}</a>
+                         {{alias.alias_type}}: <a href=http://www.ebi.ac.uk/pdbe/entry/emdb/{{ alias.display_name }} target="_blank">{{ alias.display_name }}</a>
    		      {% endif %}
 
 		      {% if not loop.last %} | {% else %}</dd>{% endif %}
