@@ -35,7 +35,7 @@
 
 	    add_navbar_element('References', 'reference');
 
-	    {% for alias in complex.aliases if (alias.alias_type != 'Synonym' && alias.alias_type != 'PDB') %}
+	    {% for alias in complex.aliases if (alias.alias_type != 'Synonym' and alias.alias_type != 'PDB') %}
 	        {% if loop.first %}
 	              add_navbar_element('Cross-References', 'cross_reference');
 		{% endif %}
@@ -109,13 +109,14 @@
 ================================================== -->
 
 
+
 <!-- Cross-References
 ================================================== -->
 	<section id="cross_reference" data-magellan-destination="cross_reference">
             <div class="page-header">
                  <h2>Cross-References</h2>
 		 <hr />				   
-		 {% for alias in complex.aliases if (alias.alias_type != 'Synonym' && alias.alias_type != 'PDB') %}
+		 {% for alias in complex.aliases if (alias.alias_type != 'Synonym' and alias.alias_type != 'PDB') %}
 		      {% if alias.alias_type == 'IntEnz' %}
                       	 {{alias.alias_type}}: <a href=https://www.ebi.ac.uk/intenz/query?cmd=Search&q={{ alias.display_name }} target="_blank">{{ alias.display_name }}</a>
 		      {% endif %}
@@ -124,6 +125,7 @@
                          {{alias.alias_type}}: <a href=http://www.ebi.ac.uk/pdbe/entry/emdb/EMD-{{ alias.display_name }} target="_blank">EMD-{{ alias.display_name }}</a>
    		      {% endif %}
 
+		      
                  {% endfor %}
             </div>
         </section>
