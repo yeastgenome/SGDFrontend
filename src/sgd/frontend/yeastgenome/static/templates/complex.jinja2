@@ -29,7 +29,10 @@
 	    add_navbar_element('Go Annotations', 'annotations');
 	    add_navbar_element('Network Diagrams', 'diagram');
 	    add_navbar_element('References', 'reference');
-	    add_navbar_element('Cross-References', 'cross_reference');
+	    {% for alias in complex.aliases if alias.alias_type != 'Synonym' %}
+	        {% if loop.first %}
+	              add_navbar_element('Cross-References', 'cross_reference');
+		{% endif %}
 	    add_navbar_element('Source', 'source');
         </script>
 
