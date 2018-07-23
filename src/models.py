@@ -7734,9 +7734,8 @@ class Complexdbentity(Dbentity):
         refs = []
         if ref_objs:
             refs = [ref.reference.to_dict_citation() for ref in ref_objs]
-
-        # data["references"] = sorted(sorted(refs, key=lambda r: r.display_name), key=lambda r: r.year, reverse=True)
-        data["references"] = refs
+        refs2 = sorted(refs, key=lambda r: r['display_name'])
+        data["references"] = sorted(refs2, key=lambda r: r['year'], reverse=True) 
 
         ## subunits
 
