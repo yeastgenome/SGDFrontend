@@ -24,14 +24,11 @@
             add_navbar_title('Complex: <span class="gene_name">{{ complex.complex_name }}</span>')
             add_navbar_element('Overview', 'overview');
 	    add_navbar_element('Summary Paragraph', 'paragraph');
-
-	    add_navbar_element('Schematic of complex', 'schematic_complex');
-
-	    add_navbar_element('Subunits of complex', 'subunits');
-
-	    add_navbar_element('Go Annotations', 'annotations');
-
-	    add_navbar_element('Network Diagrams', 'diagram');
+	    add_navbar_element('Complex Diagram', 'diagram');
+	    add_navbar_element('PDB Structure', 'structure');	    
+	    add_navbar_element('Subunits', 'subunit');
+	    add_navbar_element('Go Annotations', 'annotation');
+	    add_navbar_element('Network Diagram', 'diagram');
 
 	    add_navbar_element('References', 'reference');
 
@@ -52,7 +49,7 @@
 ================================================== -->
         <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
-                <h1>Protein Complex: {{ complex.complex_name }}</h1>
+                <h1>Complex: {{ complex.complex_name }}</h1>
                 <hr />
 
 		<div class="">
@@ -86,25 +83,73 @@
 	    </div>
 	</section>
 
-<!-- schematic of the complex & crystal structure from PDB
+<!-- complex diagram
 ================================================== -->
+	<section id="diagram" data-magellan-destination="diagram">
+                <div class="page-header">
+                     <h2>Complex Diagram</h2>
+                     <hr />
+		     		    
+		     DIAGRAM HERE		    
+
+		</div>
+        </section>
 
 
+<!-- PDB structure
+================================================== -->
+        <section id="structure" data-magellan-destination="structure">
+		 <div class="page-header">
+                     <h2>PDB Structure</h2>
+                     <hr />
+
+		     Structure HERE
+
+                </div>
+        </section>
 
 
 
 <!-- table with subunits and headlines, stoichiometry
 ================================================== -->
 
+         <section id="subunit" data-magellan-destination="subunit">
+                 <div class="page-header">
+                     <h2>Subunits</h2>
+                     <hr />
+
+                     Subunits HERE
+
+                </div>
+        </section>
 
 
 <!-- table with GO annotations for the complex
 ================================================== -->
+						   
+	<section id="annotation" data-magellan-destination="annotation">
+                 <div class="page-header">
+                     <h2>Go Annotations</h2>
+                     <hr />
+
+                     Go annotation HERE
+
+                </div>
+        </section>
 
 
-
-<!-- Network diagrams
+<!-- Network diagram
 ================================================== -->
+
+	<section id="network" data-magellan-destination="network">
+                 <div class="page-header">
+                     <h2>Network Diagram</h2>
+                     <hr />
+
+                     Network diagram HERE
+
+                </div>
+        </section>
 
 
 <!-- References
