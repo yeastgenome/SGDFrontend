@@ -68,6 +68,10 @@ wp_categories = [
 ]
 
 
+def get_wp_categories():
+    return sorted(wp_categories, key=lambda k: k['name'])
+
+
 def get_archive_years():
     now = datetime.now()
     this_year = now.year
@@ -75,6 +79,7 @@ def get_archive_years():
     for i in range(7):
         archive_years.append(this_year - i)
     return archive_years
+
 
 def get_recent_blog_posts():
     wp_url = BLOG_BASE_URL + '?number=5'
@@ -126,6 +131,7 @@ def get_meetings():
     except Exception, e:
         meetings = []
     return meetings
+
 
 def add_simple_date_to_post(raw):
     simple_date = parser.parse(raw['date']).strftime("%B %d, %Y")
