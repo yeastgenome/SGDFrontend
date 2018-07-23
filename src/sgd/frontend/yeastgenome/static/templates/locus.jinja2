@@ -48,7 +48,9 @@
                 {% endif %}
 
                 {% if locus.format_name != locus.display_name %}
-                    {%if (locus.locus_type != 'ORF' and 'reserved_name' in locus) or (locus.locus_type == 'ORF' and 'reserved_name' not in locus )%}
+                
+                    {% set locus_types = ['ORF','ncRNA_gene','rRNA_gene','snRNA_gene','snoRNA_gene','telomerase_RNA_gene','tRNA_gene','pseudogene','transposable_element_gene'] %}
+                    {%if (locus.locus_type != 'ORF' and 'reserved_name' in locus) or (locus.locus_type in locus_types and 'reserved_name' not in locus )%}
                         <dt>Standard Name</dt>
                         <dd>{{ locus.display_name }}
                             {% if 'gene_name' in locus.qualities %}
@@ -59,6 +61,7 @@
                     {% endif %}
                    
                 {% endif %}
+                
 
                 <dt>Systematic Name</dt>
                 <dd>{{ locus.format_name }}</dd>
