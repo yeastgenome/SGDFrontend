@@ -7722,10 +7722,23 @@ class Complexdbentity(Dbentity):
 
         go_objs = DBSession.query(ComplexGo).filter_by(complex_id=self.dbentity_id).all()
 
-        go = []
+        process = []
+        function = []
+        component = []
         if go_objs:
-            data['go'] = [g.go.to_dict() for g in go_objs]
-                    
+            # data['go'] = [g.go.to_dict() for g in go_objs]
+            for g in in go_objs:
+                go = g.go.to_dict()
+                if go['go_aspect'] == 'molecular function':
+                    function.append(go)
+                elif go['go_aspect'] == 'cellular component':
+                    component.append(go)
+                else:
+                    process.append(go)
+
+        data['process'] = sorted(process, key=lambda p: p['display_name'])
+        data['function'] = sorted(function, key=lambda f: f['display_name'])
+        data['component'] = sorted(component, key=lambda c: c['display_name'])
 
         ## reference
 
