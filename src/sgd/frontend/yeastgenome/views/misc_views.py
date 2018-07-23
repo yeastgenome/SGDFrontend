@@ -4,7 +4,7 @@ from pyramid.view import view_config
 from pyramid.renderers import render_to_response
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPInternalServerError, HTTPMovedPermanently
 from src.sgd.frontend import config
-from src.sgd.frontend.yeastgenome.views.cms_helpers import BLOG_BASE_URL, BLOG_PAGE_SIZE, add_simple_date_to_post, get_archive_years, get_meetings, get_recent_blog_posts, wp_categories
+from src.sgd.frontend.yeastgenome.views.cms_helpers import BLOG_BASE_URL, BLOG_PAGE_SIZE, add_simple_date_to_post, get_wp_categories, get_archive_years, get_meetings, get_recent_blog_posts, wp_categories
 import urllib
 import datetime
 import json
@@ -67,7 +67,7 @@ def blog_list(request):
     posts = json.loads(response.text)['posts']
     for post in posts:
         post = add_simple_date_to_post(post)
-    return render_to_response(TEMPLATE_ROOT + 'blog_list.jinja2', { 'posts': posts, 'categories': wp_categories, 'next_url': next_url, 'years': get_archive_years() }, request=request)
+    return render_to_response(TEMPLATE_ROOT + 'blog_list.jinja2', { 'posts': posts, 'categories': get_wp_categories(), 'next_url': next_url, 'years': get_archive_years() }, request=request)
 
 @view_config(route_name='blog_post')
 def blog_post(self, request):
@@ -77,7 +77,7 @@ def blog_post(self, request):
     if response.status_code == 404:
         return not_found(request)
     post = add_simple_date_to_post(json.loads(response.text))
-    return render_to_response(TEMPLATE_ROOT + 'blog_post.jinja2', { 'post': post, 'categories': wp_categories, 'years': get_archive_years() }, request=request)
+    return render_to_response(TEMPLATE_ROOT + 'blog_post.jinja2', { 'post': post, 'categories': get_wp_categories(), 'years': get_archive_years() }, request=request)
 
 @view_config(route_name='blast_sgd')
 def blast_sgd(request):
