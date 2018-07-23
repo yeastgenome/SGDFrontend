@@ -58,7 +58,7 @@
                         <dd><a href=https://www.ebi.ac.uk/complexportal/complex/{{ complex.complex_accession }} target="_infowin">{{ complex.complex_accession }}</a></dd>
 
                         <dt>Intact ID</dt>
-                        <dd><a href=https://www.ebi.ac.uk/complexportal/complex/search?query={{ complex.complex_accession }} target="_infowin">{{ complex.intact_id }}</a></dd>
+                        <dd><a href=https://www.ebi.ac.uk/complexportal/complex/search?query={{ complex.intact_id }} target="_infowin">{{ complex.intact_id }}</a></dd>
 			
 			<dt>Systematic Name</dt>
 			<dd>{{ complex.systematic_name }}</dd>
@@ -118,8 +118,11 @@
                  <div class="page-header">
                      <h2>Subunits</h2>
                      <hr />
-
-                     Subunits HERE
+		     
+		     {% for subunit in complex.subunit %}
+		     	  <a href={{ subunit.link }} target=>"_infowin">{{ subunit.display_name }}</a>
+			  {{ subunit.description }} {{ suunit.stoichiometry}}
+		     {% endfor %}
 
                 </div>
         </section>
