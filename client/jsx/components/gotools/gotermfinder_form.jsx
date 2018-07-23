@@ -109,7 +109,7 @@ const GoTermFinder = React.createClass({
 		else {
 
 		        if (param['submit']) {
-			     return <p>Please wait... The search may take a while to run.</p>; 
+			     return <p>Please wait while we retrieve the requested information.</p>; 
 			}
 
 			return this.getFrontPage();
