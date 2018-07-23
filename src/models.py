@@ -7754,28 +7754,50 @@ class Complexdbentity(Dbentity):
 
         annot_objs = DBSession.query(Complexbindingannotation).filter_by(complex_id=self.dbentity_id).all()
         
-        annotations = []
+        unique_interactors = []
+        found = {}
         for annot in annot_objs:
             interactor = annot.interactor
             binding_interactor = annot.binding_interactor
-            annotations.append({ "psimi": annot.psimi.display_name,
-                                 "range_start": annot.range_start,
-                                 "range_end": annot.range_end,
-                                 "interactor": { "format_name": interactor.format_name,
-                                                 "display_name": interactor.display_name,
-                                                 "type": interactor.type.display_name,
-                                                 "role": interactor.role.display_name,
-                                                 "stoichiometry": interactor.stoichiometry 
-                                                },
-                                 "binding_interactor": { "format_name": binding_interactor.format_name,
-                                                         "display_name": binding_interactor.display_name,
-                                                         "type": binding_interactor.type.display_name,
-                                                         "role": binding_interactor.role.display_name,
-                                                         "stoichiometry": binding_interactor.stoichiometry
-                                                }
-                               })
+            if interactor.format_name not in found:
+                unique_interactors.append(interactor)
+                found[interactor.format_name] = 1
+            if binding_interactor.format_name not in found:
+                unique_interactors.append(binding_interactor)
+                found[binding_interactor.format_name] =1
 
-        data['annotation'] = annotations
+        annotations = []
+        for interactor in unique_interactors:
+            display_name = interactor.display_name
+            description = interactor.description
+            sgdid = None
+            if interactor.locus_id:
+                display_name = interactor.locus.display_name
+                sgdid = interactor.locus.sgdid
+                description = interactor.locus.headline
+            annotations.append({ "display_name": display_name,
+                                 "description": description,
+                                 "sgdid": sgdid,
+                                 "stoichiometry": interactor.stoichiometry })
+                             
+        data['annotation'] = sorted(annotations, key=lambda a: a['display_name'])
+
+            # annotations.append({ "psimi": annot.psimi.display_name,
+            #                     "range_start": annot.range_start,
+            #                     "range_end": annot.range_end,
+            #                     "interactor": { "format_name": interactor.format_name,
+            #                                     "display_name": interactor.display_name,
+            #                                     "type": interactor.type.display_name,
+            #                                     "role": interactor.role.display_name,
+            #                                     "stoichiometry": interactor.stoichiometry 
+            #                                    },
+            #                     "binding_interactor": { "format_name": binding_interactor.format_name,
+            #                                             "display_name": binding_interactor.display_name,
+            #                                             "type": binding_interactor.type.display_name,
+            #                                             "role": binding_interactor.role.display_name,
+            #                                             "stoichiometry": binding_interactor.stoichiometry
+            #                                    }
+            #                   })
 
         return data
 
