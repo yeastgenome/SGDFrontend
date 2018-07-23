@@ -7766,21 +7766,24 @@ class Complexdbentity(Dbentity):
                 unique_interactors.append(binding_interactor)
                 found[binding_interactor.format_name] =1
 
-        annotations = []
+        subunits = []
         for interactor in unique_interactors:
             display_name = interactor.display_name
             description = interactor.description
+            link = interactor.obj_url
             sgdid = None
             if interactor.locus_id:
                 display_name = interactor.locus.display_name
                 sgdid = interactor.locus.sgdid
                 description = interactor.locus.headline
-            annotations.append({ "display_name": display_name,
-                                 "description": description,
-                                 "sgdid": sgdid,
-                                 "stoichiometry": interactor.stoichiometry })
+                link = interactor.locus.obj_url
+            subunits.append({ "display_name": display_name,
+                              "description": description,
+                              "sgdid": sgdid,
+                              "link": link,
+                              "stoichiometry": interactor.stoichiometry })
                              
-        data['annotation'] = sorted(annotations, key=lambda a: a['display_name'])
+        data['subunit'] = sorted(subunitss, key=lambda a: a['display_name'])
 
             # annotations.append({ "psimi": annot.psimi.display_name,
             #                     "range_start": annot.range_start,
