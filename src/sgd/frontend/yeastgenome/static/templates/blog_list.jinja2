@@ -34,6 +34,9 @@
 				Categories:
 				{% for key, value in post['categories'].iteritems() %}
 					<span> <a href="/blog/category/{{ value['slug'] }}">{{ value['name'] }}</a></span>
+					{% if not loop.last %}
+    					, 
+					{% endif %}
 				{% endfor %}
 			</p>
 			{% if post['tags'] %}
