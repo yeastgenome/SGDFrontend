@@ -123,6 +123,9 @@
 		     	  <a href={{ subunit.link }} target="_infowin">{{ subunit.display_name }}</a>
 			  {{ subunit.description }} {{ subunit.stoichiometry}}
 		     {% endfor %}
+		    
+		     {% set table_id = "complex_subunit_table" %}
+            	     {% include "complex_subunit_table.jinja2" %}	
 
                 </div>
         </section>
