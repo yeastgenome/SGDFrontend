@@ -7736,9 +7736,11 @@ class Complexdbentity(Dbentity):
                 else:
                     process.append(go)
 
-        data['process'] = sorted(process, key=lambda p: p['display_name'])
-        data['function'] = sorted(function, key=lambda f: f['display_name'])
-        data['component'] = sorted(component, key=lambda c: c['display_name'])
+        # data['process'] = sorted(process, key=lambda p: p['display_name'])
+        # data['function'] = sorted(function, key=lambda f: f['display_name'])
+        # data['component'] = sorted(component, key=lambda c: c['display_name'])
+        
+        data['process'] = process
 
         ## reference
 
@@ -7778,9 +7780,6 @@ class Complexdbentity(Dbentity):
         data['annotation'] = annotations
 
         return data
-
-
-
 
 
 class ComplexAlias(Base):
