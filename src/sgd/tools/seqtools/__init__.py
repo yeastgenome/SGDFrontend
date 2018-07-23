@@ -121,9 +121,6 @@ def display_sequence_for_chr(p, data):
     if start != 'undefined':
         filename = filename + "_" +  start + "-" + end
         
-    if p['rev'] == '1':
-        filename = filename + "_rev_comp"
-
     if p.get('format') == 'gcg':
         filename += ".gcg"
     else:
@@ -170,9 +167,6 @@ def display_sequence_for_genes(p, data):
     
     if filename == "":
         filename = str(os.getpid())
-
-    if p['rev'] == '1' and type = 'genomic_dna':
-        filename = filename + "_rev_comp"
 
     if p.get('format') is not None and p['format'] == 'gcg':
         filename += "_" + type + ".gcg"
