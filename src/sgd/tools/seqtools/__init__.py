@@ -171,7 +171,7 @@ def display_sequence_for_genes(p, data):
     if filename == "":
         filename = str(os.getpid())
 
-    if p['rev'] == '1':
+    if p['rev'] == '1' and type = 'genomic_dna':
         filename = filename + "_rev_comp"
 
     if p.get('format') is not None and p['format'] == 'gcg':
