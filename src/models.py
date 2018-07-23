@@ -2350,7 +2350,7 @@ class Locusdbentity(Dbentity):
     has_history = Column(Boolean, nullable=False)
     has_literature = Column(Boolean, nullable=False)
     has_go = Column(Boolean, nullable=False)
-    has_disease = Column(Boolean, nullable=False)
+    # has_disease = Column(Boolean, nullable=False)# TEMP
     has_phenotype = Column(Boolean, nullable=False)
     has_interaction = Column(Boolean, nullable=False)
     has_expression = Column(Boolean, nullable=False)
@@ -4127,7 +4127,7 @@ class Locusdbentity(Dbentity):
             "sequence_tab": self.has_sequence,
             "history_tab": self.has_history,
             "protein_tab": self.has_protein,
-            "disease_tab": self.has_disease
+            "disease_tab": False# TEMP #self.has_disease
         }
 
     # make some tabs false if the data is small, to return a smaller set of URLs for tab priming
