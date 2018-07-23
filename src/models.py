@@ -7783,7 +7783,7 @@ class Complexdbentity(Dbentity):
                               "link": link,
                               "stoichiometry": interactor.stoichiometry })
                              
-        data['subunit'] = sorted(subunitss, key=lambda a: a['display_name'])
+        data['subunit'] = sorted(subunits, key=lambda a: a['display_name'])
 
             # annotations.append({ "psimi": annot.psimi.display_name,
             #                     "range_start": annot.range_start,
