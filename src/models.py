@@ -7726,13 +7726,15 @@ class Complexdbentity(Dbentity):
         if go_objs:
             data['go'] = [g.go.to_dict() for g in go_objs]
                     
-        ref_objs = DBSession.query(ComplexReference).filter_by(complex_id=self.dbentity_id).all()
 
         ## reference
 
+        ref_objs = DBSession.query(ComplexReference).filter_by(complex_id=self.dbentity_id).all()
+
         refs = []
         if ref_objs:
-            data["references"] = [ref.reference.to_dict_citation() for ref in ref_objs]
+            refs = [ref.reference.to_dict_citation() for ref in ref_objs]
+        data["references"] = sorted(sorted(refs, key=lambda r: r.display_name), key=lambda r: r.year, reverse=True)
 
         ## subunits
 
