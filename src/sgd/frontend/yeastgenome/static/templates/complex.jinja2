@@ -107,7 +107,7 @@
 		     <table border=0><tr>
 
 		     {% for pdb in complex.pdbs %}
-		     	  <td><a href=https://www.rcsb.org/structure/4oo1{{ pdb.display_name }} target="_infowin">{{ pdb.display_name }}</td>
+		     	  <td><a href=https://www.rcsb.org/structure/{{ pdb.display_name }} target="_infowin">{{ pdb.display_name }}</td>
                           <td><a href=https://www.rcsb.org/3d-view/{{ pdb.display_name }} target="_infowin"><img src={{ pdb.image_link }} alt={{pdb.display_name}} width=150 height=150></a></td>
                      {% endfor %}
 		     
