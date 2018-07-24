@@ -7769,11 +7769,14 @@ class Complexdbentity(Dbentity):
         unique_interactors = []
         found = {}
         edges = []
+        foundEdges = {}
         for annot in annot_objs:
             interactor = annot.interactor
             binding_interactor = annot.binding_interactor
-            edges.append( { "data": { "source": interactor.format_name,
-                                      "target": binding_interactor.format_name } })
+            if (interactor.format_name, binding_interactor.format_name) not in foundEdges and (binding_interactor.format_name, interactor.format_name) not in foundEdges:
+                edges.append( { "data": { "source": interactor.format_name,
+                                          "target": binding_interactor.format_name } })
+                foundEdges[(interactor.format_name,binding_interactor.format_name)] = 1
             if interactor.format_name not in found:
                 unique_interactors.append(interactor)
                 found[interactor.format_name] = 1
