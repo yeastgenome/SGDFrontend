@@ -7717,16 +7717,16 @@ class Complexdbentity(Dbentity):
         if alias_objs:
             for ca in alias_objs:
                 if ca.alias_type == 'Synonym':
-                    aliases.append(ca.display_name);
+                    aliases.append(ca.display_name)
                 elif ca.alias_type == 'PDB':
                     image_link = "https://cdn.rcsb.org/images/rutgers/" + ca.display_name[1:3] + "/" + ca.display_name + "/" + ca.display_name + ".pdb-80.jpg"
-                    pdbs.append({ "display_name": ca.display_name, "image_link": image_link });
+                    pdbs.append({ "display_name": ca.display_name, "image_link": image_link })
                 else:
                     crossRefs.append({ "alias_type": ca.alias_type,
-                                       "display_name": ca.display_name });
+                                       "display_name": ca.display_name })
 
         data['aliases'] = sorted(aliases)
-        data['pdbs'] = sorted(pdb, key=lambda p: p['display_name'])
+        data['pdbs'] = sorted(pdbs, key=lambda p: p['display_name'])
         crossRefs2 = sorted(crossRefs, key=lambda c: c['display_name'])
         data["cross_references"] = sorted(crossRefs2, key=lambda c: c['alias_type'])
 
