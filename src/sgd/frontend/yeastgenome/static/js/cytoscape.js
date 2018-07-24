@@ -25,7 +25,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 		phenotypeOntology: 0,
 		goOntology: 0,
 		observable: 0,
-		complex: 150,
+		complex: 0,
 	};
 	var _legendOffset = _legendOffsets[legendType];
 	$(".sgd-cyto-canvas-container").parent().height(height + offset + _legendOffset);
@@ -89,6 +89,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 		ctx.fillText(text, textX, textY);
 	};
 
+	
 	var mainText = "Current Locus";
 	var secondText = "Other Locus";
 	if (legendType === "goOntology") {
