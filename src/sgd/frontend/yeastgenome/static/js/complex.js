@@ -2,7 +2,24 @@
 $(document).ready(function() {
 
 	$.getJSON('/backend/complex/' + complex['complex_accession'], function(data) {
+
 	  	var complex_table = create_complex_table(data);
+
+		if(data != null && data["graph"]["nodes"].length > 1) {
+
+		    var graph = create_cytoscape_vis("cy", layout, graph_style, data["graph"], null, true, "complex");
+		    //  create_cy_download_button(graph, "cy_download", data['display_name'] + '_complex_graph')
+
+		    if(true) {
+			    $("#discrete_filter").show();
+		     }
+		     else {
+			    $("#discrete_filter").hide();
+		     }
+		}
+		else {
+		    hide_section("diagram");
+		}
 	});
 
 });
