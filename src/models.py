@@ -7768,9 +7768,12 @@ class Complexdbentity(Dbentity):
         
         unique_interactors = []
         found = {}
+        edges = []
         for annot in annot_objs:
             interactor = annot.interactor
             binding_interactor = annot.binding_interactor
+            edges.append( { "data": { "source": interactor.format_name,
+                                      "target": binding_interactor.format_name } })
             if interactor.format_name not in found:
                 unique_interactors.append(interactor)
                 found[interactor.format_name] = 1
@@ -7779,6 +7782,7 @@ class Complexdbentity(Dbentity):
                 found[binding_interactor.format_name] =1
 
         subunits = []
+        nodes = []
         for interactor in unique_interactors:
             display_name = interactor.display_name
             description = interactor.description
@@ -7794,9 +7798,14 @@ class Complexdbentity(Dbentity):
                               "sgdid": sgdid,
                               "link": link,
                               "stoichiometry": interactor.stoichiometry })
-                             
+            nodes.append({ "data": { "name": display_name,
+                                     "id": interactor.format_name,
+                                     "link": link,
+                                     "type": "BIOENTITY" } })
+                 
         data['subunit'] = sorted(subunits, key=lambda a: a['display_name'])
-
+        data['graph'] = { "edges": edges, "nodes": nodes }
+        
             # annotations.append({ "psimi": annot.psimi.display_name,
             #                     "range_start": annot.range_start,
             #                     "range_end": annot.range_end,
