@@ -1,9 +1,7 @@
 
 $(document).ready(function() {
 
-	console.log("id="+ complex['id']);
-	console.log("ac="+complex['complex_accession']);
-	$.getJSON('/backend/complex/' + complex['id'], function(data) {
+	$.getJSON('/backend/complex/' + complex['complex_accession'], function(data) {
 	  	var complex_table = create_complex_table(data);
 	});
 
