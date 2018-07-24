@@ -29,7 +29,6 @@ function create_complex_table(data) {
 
     var options = {};
     options["bPaginate"] = false;
-    options["aaSorting"] = true;
     options["bDestroy"] = true;
     options["aoColumns"] = [
 			  null,
