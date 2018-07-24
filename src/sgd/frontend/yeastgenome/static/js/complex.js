@@ -7,6 +7,8 @@ $(document).ready(function() {
 
 		if(data != null && data["graph"]["nodes"].length > 1) {
 
+		    console.log("nodes="+ data["graph"]);
+
 		    var graph = create_cytoscape_vis("cy", layout, graph_style, data["graph"], null, true, "complex");
 		    //  create_cy_download_button(graph, "cy_download", data['display_name'] + '_complex_graph')
 
@@ -60,3 +62,49 @@ function create_complex_table(data) {
 
 }
 
+var graph_style = cytoscape.stylesheet()
+    .selector('node')
+    .css({
+	    'content': 'data(name)',
+	    'font-family': 'helvetica',
+	    'font-size': 14,
+	    'text-outline-width': 3,
+	    'text-outline-color': '#888',
+	    'text-valign': 'center',
+	    'color': '#fff',
+	    'width': 30,
+	    'height': 30,
+	    'border-color': '#fff'
+        })
+    .selector('edge')
+    .css({
+	    'width': 2
+        })
+    .selector("node[sub_type='FOCUS']")
+    .css({
+	    'background-color': "#fade71",
+	    'text-outline-color': '#fff',
+	    'color': '#888'
+        })
+    .selector("edge[class_type = 'GENETIC']")
+    .css({
+	    'line-color': "#7FBF7B"
+        })
+    .selector("edge[class_type = 'PHYSICAL']")
+    .css({
+	    'line-color': "#AF8DC3"
+        });
+
+var layout = {
+    "name": "arbor",
+    "liveUpdate": true,
+    "ungrabifyWhileSimulating": true,
+    "nodeMass":function(data) {
+	if(data.sub_type == 'FOCUS') {
+	    return 10;
+	}
+	else {
+	    return 1;
+	}
+    }
+};
