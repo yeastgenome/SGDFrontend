@@ -32,7 +32,7 @@
 
 	    add_navbar_element('References', 'reference');
 
-	    {% for alias in complex.aliases if (alias.alias_type != 'Synonym' and alias.alias_type != 'PDB') %}
+	    {% for crossRef in complex.cross_references %}
 	        {% if loop.first %}
 	              add_navbar_element('Cross-References', 'cross_reference');
 		{% endif %}
@@ -63,9 +63,9 @@
 			<dt>Systematic Name</dt>
 			<dd>{{ complex.systematic_name }}</dd>
 
-		        {% for alias in complex.aliases if alias.alias_type == 'Synonym' %}
+		        {% for alias in complex.aliases %}
                               {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
-                              {{ alias.display_name }}
+                              {{ alias }}
                        	      {% if not loop.last %};{% else %}</dd>{% endif %}
                 	{% endfor %}
 		     </dl>
@@ -104,9 +104,9 @@
                      <h2>PDB Structure</h2>
                      <hr />
 
-		     {% for alias in complex.aliases if alias.alias_type == 'PDB' %}
+		     {% for pdb in complex.pdbs %}
                               
-                              {{ alias.display_name }}
+                              {{ pdb.display_name }} {{ pdb.image_link }} 
 
                      {% endfor %}
 
@@ -217,7 +217,7 @@
                          <h2>Cross-References</h2>
                          <hr />
 	
-		         {% for alias in complex.aliases if (alias.alias_type != 'Synonym' and alias.alias_type != 'PDB') %}
+		         {% for alias in complex.cross_references %}
 			     {% if alias.alias_type == 'IntEnz' %}
                      	          {{alias.alias_type}}: <a href=https://www.ebi.ac.uk/intenz/query?cmd=Search&q={{ alias.display_name }} target="_infowin">{{ alias.display_name }}</a>
 			     {% endif %}
