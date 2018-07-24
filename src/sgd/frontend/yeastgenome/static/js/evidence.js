@@ -137,6 +137,17 @@ function protein_experiment_data_to_table(evidence) {
     return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], experiment, evidence['data_value'] + ' ' + evidence['data_unit'], reference];
 }
 
+
+function complex_subunit_data_to_table(evidence) {
+    var subunit = create_link(evidence['display_name'], evidence['link'], false);
+    var description = evidence['description'];
+    var stoichiometry = evidence['stoichiometry'];
+     
+    return [subunit, description, stoichiometry];
+
+}
+
+
 function sublabel_data_to_table(evidence, locus, strand, data_id) {
     var coord_version = evidence['coord_version'];
     var seq_version = evidence['seq_version'];
