@@ -24,7 +24,8 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 		expression: 75,
 		phenotypeOntology: 0,
 		goOntology: 0,
-		observable: 0
+		observable: 0,
+		complex: 150,
 	};
 	var _legendOffset = _legendOffsets[legendType];
 	$(".sgd-cyto-canvas-container").parent().height(height + offset + _legendOffset);
@@ -42,7 +43,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 		}
     };
     
-	$('#' + div_id).cytoscape(options);
+    $('#' + div_id).cytoscape(options);
     var cy = $('#' + div_id).cytoscape("get");
 
     var legendY = height + 35;
@@ -116,7 +117,8 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 		drawLegendNode(ctx, "Reference", nextLegendX, legendY, '#C591F5', true, true);
 	} else if (legendType === "observable") {
 		drawLegendNode(ctx, "Ontology", nextLegendX, legendY, "#757575", true, true);
-	}
+	} 
+	
 
     cy.zoomingEnabled(false);
     if(f != null) {
