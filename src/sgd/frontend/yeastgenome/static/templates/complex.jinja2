@@ -103,11 +103,13 @@
 		 <div class="page-header">
                      <h2>PDB Structure</h2>
                      <hr />
+		     
+		     <div class="row">
 
 		     {% for pdb in complex.pdbs %}
-                              
-                              {{ pdb.display_name }} {{ pdb.image_link }} 
-
+                          <div class="column">
+                              <img src={{ pdb.image_link }} alt={{pdb.display_name}} style="width=100%">	
+			  </div>
                      {% endfor %}
 
                 </div>
