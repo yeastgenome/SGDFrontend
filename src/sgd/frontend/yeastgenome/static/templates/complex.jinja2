@@ -103,10 +103,15 @@
 		 <div class="page-header">
                      <h2>PDB Structure</h2>
                      <hr />
-		    
+		     
+		     <table>
+
 		     {% for pdb in complex.pdbs %}
-                          <a href=http://www.ebi.ac.uk/pdbe/entry/pdb/{{ pdb.display_name }} target="_infowin"><img src={{ pdb.image_link }} alt={{pdb.display_name}} width=250 height=250></a>
+		     	  <tr><td>{{ pdb.display_name }}</td>
+                          <td><a href=http://www.ebi.ac.uk/pdbe/entry/pdb/{{ pdb.display_name }} target="_infowin"><img src={{ pdb.image_link }} alt={{pdb.display_name}} width=150 height=150></a></td></tr>
                      {% endfor %}
+		     
+		     </table>
 
                 </div>
         </section>
