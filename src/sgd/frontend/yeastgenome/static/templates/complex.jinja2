@@ -103,13 +103,9 @@
 		 <div class="page-header">
                      <h2>PDB Structure</h2>
                      <hr />
-		     
-		     <div class="row">
-
+		    
 		     {% for pdb in complex.pdbs %}
-                          <div class="column">
-                              <img src={{ pdb.image_link }} alt={{pdb.display_name}} style="width=500%">	
-			  </div>
+                          <a href="http://www.ebi.ac.uk/pdbe/entry/pdb/{{ pdb.display_name }} target="_infowin"><img src={{ pdb.image_link }} alt={{pdb.display_name}} style="width=250"></a>
                      {% endfor %}
 
                 </div>
