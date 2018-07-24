@@ -106,8 +106,8 @@
 
 		     {% for alias in complex.aliases if alias.alias_type == 'PDB' %}
                               
-                              {{ alias.display_name }}: {{ alias.display_name|slice:"1:3" }}
-                              https://cdn.rcsb.org/images/rutgers/{{ alias.display_name|slice:"1:3" }}/{{alias.display_name }}/{{alias.display_name }}.pdb-80.jpg
+                              {{ alias.display_name }}
+
                      {% endfor %}
 
                 </div>
