@@ -104,14 +104,14 @@
                      <h2>PDB Structure</h2>
                      <hr />
 		     
-		     <table>
+		     <table><tr>
 
 		     {% for pdb in complex.pdbs %}
-		     	  <tr><td>{{ pdb.display_name }}</td>
-                          <td><a href=http://www.ebi.ac.uk/pdbe/entry/pdb/{{ pdb.display_name }} target="_infowin"><img src={{ pdb.image_link }} alt={{pdb.display_name}} width=150 height=150></a></td></tr>
+		     	  <td><<a href=http://www.ebi.ac.uk/pdbe/entry/pdb/{{ pdb.display_name }} target="_infowin">{{ pdb.display_name }}</td>
+                          <td><a href=https://www.rcsb.org/3d-view/{{ pdb.display_name }} target="_infowin"><img src={{ pdb.image_link }} alt={{pdb.display_name}} width=150 height=150></a></td>
                      {% endfor %}
 		     
-		     </table>
+		     </tr></table>
 
                 </div>
         </section>
