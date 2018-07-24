@@ -12,7 +12,6 @@ function create_complex_table(data) {
     var datatable = [];
     var subunits = {};
     for (var i = 0; i < evidence.length; i++) {
-	console.log("evidence="+evidence[i]['display_name']);
 	datatable.push(complex_subunit_data_to_table(evidence[i]));
 	subunits[evidence[i]["display_name"]] = true;
     }
@@ -41,5 +40,6 @@ function create_complex_table(data) {
   };
 
   return create_table("complex_table", options);
+
 }
 
