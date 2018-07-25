@@ -8,7 +8,7 @@ $(document).ready(function() {
 		if(data != null && data["graph"]["nodes"].length > 1) {
 
 		    var graph = create_cytoscape_vis("cy", layout, graph_style, data["graph"], null, true, "complex");
-		    create_cy_download_button(graph, "cy_download", complex['display_name'] + '_complex_graph')
+		    create_cy_download_button(graph, "cy_download", complex['complex_name'] + '_complex_graph')
 
 		    // if(true) {
 		    //	    $("#discrete_filter").show();
