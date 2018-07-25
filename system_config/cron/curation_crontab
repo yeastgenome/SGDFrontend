@@ -27,6 +27,9 @@ MAILTO=sgd-programmers@lists.stanford.edu
 30 17 * * * /bin/bash /data/www/SGDBackend-NEX2/current/system_config/cron/refresh_cache.sh
 0 18 * * FRI /bin/bash /data/www/SGDBackend-NEX2/current/system_config/cron/load_reference_triage.sh
 30 17 * * 1 /bin/bash /data/www/SGDBackend-NEX2/current/system_config/cron/go_update.sh
-30 17 * * 5 /bin/bash /data/www/SGDBackend-NEX2/current/system_config/cron/reference_update.sh
+30 19 * * 1 /bin/cp /data/www/SGDBackend-NEX2/current/scripts/dumping/curation/data/gene_association* /data/www/GO/
+29 17 * * 5 /bin/bash /data/www/SGDBackend-NEX2/current/system_config/cron/reference_update.sh
 30 17 15 * * /bin/bash /data/www/SGDBackend-NEX2/current/system_config/cron/dbxref_update.sh
+~
+
 
