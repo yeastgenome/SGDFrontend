@@ -7,17 +7,14 @@ $(document).ready(function() {
 
 		if(data != null && data["graph"]["nodes"].length > 1) {
 
-		    console.log("nodes="+ data["graph"]);
-
 		    var graph = create_cytoscape_vis("cy", layout, graph_style, data["graph"], null, true, "complex");
-		    //  create_cy_download_button(graph, "cy_download", data['display_name'] + '_complex_graph')
 
-		    if(true) {
-			    $("#discrete_filter").show();
-		     }
-		     else {
-			    $("#discrete_filter").hide();
-		     }
+		    // if(true) {
+		    //	    $("#discrete_filter").show();
+		    // }
+		    // else {
+		    //	    $("#discrete_filter").hide();
+		    // }
 		}
 		else {
 		    hide_section("diagram");
