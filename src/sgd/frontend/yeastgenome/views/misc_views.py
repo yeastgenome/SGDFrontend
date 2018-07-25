@@ -228,7 +228,7 @@ def get_obj(identifier, obj_type):
         obj_type + '_js': json.dumps(obj)
     }
 
-# helper method that goes through responses, and returns a redirect URL if is_quick is true for just 1, otherwise returns false
+# helper method that gogoes through responses, and returns a redirect URL if is_quick is true for just 1, otherwise returns false
 def get_redirect_url_from_results(results):
     quick_results = [x for x in results if x.get('is_quick')]
     if len(quick_results) == 1:
