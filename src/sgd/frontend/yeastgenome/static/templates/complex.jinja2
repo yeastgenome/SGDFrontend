@@ -25,22 +25,27 @@
             add_navbar_element('Overview', 'overview');
 	    add_navbar_element('Summary Paragraph', 'paragraph');
 	    add_navbar_element('Complex Diagram', 'diagram');
-	    add_navbar_element('PDB Structure', 'structure');	    
+
+	    {% if complex.pdbs|length > 0 %}
+		  add_navbar_element('PDB Structure', 'structure');
+            {% endif %}
+
 	    add_navbar_element('Subunits', 'subunit');
-	    add_navbar_element('Go Annotations', 'annotation');
+
+	    {% if complex.process|length > 0 or if complex.function|length > 0 or if complex.component|length > 0 %}	    	    	    
+	          add_navbar_element('Go Annotations', 'annotation');
+            {% endif %}
+
 	    add_navbar_element('Network Diagram', 'network');
 
-	    add_navbar_element('References', 'reference');
+	    {% if complex.references|length > 0 %}
+	          add_navbar_element('References', 'reference');
+	    {% endif %}
 
-	    {% for crossRef in complex.cross_references %}
-	        {% if loop.first %}
-	              add_navbar_element('Cross-References', 'cross_reference');
-		{% endif %}
-
-		{% set hasCrossRef = True %}	
-
-	    {% endfor %}
-
+	    {% if complex.cross_references|length > 0 %}
+	          add_navbar_element('Cross-References', 'cross_reference');
+	    {% endif %}
+		
 	    add_navbar_element('Source', 'source');
 
         </script>
@@ -180,7 +185,7 @@
                      <h2>Network Diagram</h2>
                      <hr />
 
-                     Network diagram HERE
+                     What should we display here?
 
                 </div>
         </section>
