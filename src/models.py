@@ -7774,7 +7774,7 @@ class Complexdbentity(Dbentity):
             interactor = annot.interactor
             binding_interactor = annot.binding_interactor
             # if (interactor.format_name, binding_interactor.format_name) not in foundEdges and (binding_interactor.format_name, interactor.format_name) not in foundEdges:
-            if if (interactor.format_name, binding_interactor.format_name) not in foundEdges:
+            if (interactor.format_name, binding_interactor.format_name) not in foundEdges:
                 edges.append( { "data": { "source": interactor.format_name,
                                           "class_type": "complex",
                                           "target": binding_interactor.format_name } })
