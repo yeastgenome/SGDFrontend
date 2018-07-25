@@ -140,7 +140,7 @@
 
 <!-- table with GO annotations for the complex
 ================================================== -->
-						   
+	{% if complex.process|length > 0 or complex.function|length > 0 or complex.component|length > 0%}					   
 	<section id="annotation" data-magellan-destination="annotation">
                  <div class="page-header">
                      <h2>Go Annotations</h2>
@@ -176,6 +176,7 @@
                      </div>
                 </div>
         </section>
+	{% endif %}
 
 
 <!-- Network diagram
