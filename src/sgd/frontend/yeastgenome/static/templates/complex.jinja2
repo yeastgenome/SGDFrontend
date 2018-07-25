@@ -26,9 +26,9 @@
 	    add_navbar_element('Summary Paragraph', 'paragraph');
 	    add_navbar_element('Complex Diagram', 'diagram');
 
-
+	    {% if complex.pdbs|length > 0 %}
 		  add_navbar_element('PDB Structure', 'structure');
-
+	    {% endif %}
 
 	    add_navbar_element('Subunits', 'subunit');
 
