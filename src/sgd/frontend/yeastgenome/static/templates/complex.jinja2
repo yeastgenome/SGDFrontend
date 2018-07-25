@@ -32,9 +32,9 @@
 
 	    add_navbar_element('Subunits', 'subunit');
 
-
+	    {% if complex.process|length > 0 or complex.function|length > 0%}
 	          add_navbar_element('Go Annotations', 'annotation');
-
+            {% endif %}
 		
 	    add_navbar_element('Network Diagram', 'network');
 
