@@ -264,11 +264,11 @@ def load_complex():
             locus_id = gene_name_to_locus_id.get(display_name)
             type_id = format_name_to_psimi_id.get(p.get('interactorTypeMI'))
             role_id = format_name_to_psimi_id.get(p.get('bioRoleMI'))
-            stoichiometry = p.get('stochiometry')
-            if stoichiometry is not None and stoichiometry == 'null':
-                stoichiometry = None
-            elif stoichiometry is not None and "maxValue" in stoichiometry:
-                stoichiometry = int(stoichiometry.split("maxValue: ")[1])
+            # stoichiometry = p.get('stochiometry')
+            # if stoichiometry is not None and stoichiometry == 'null':
+            #    stoichiometry = None
+            # elif stoichiometry is not None and "maxValue" in stoichiometry:
+            #    stoichiometry = int(stoichiometry.split("maxValue: ")[1])
 
             seq = seq4id.get(format_name)
             
@@ -286,9 +286,9 @@ def load_complex():
             elif format_name in format_name_to_interactor:
                 i = format_name_to_interactor[format_name]
                 interactor_to_id[format_name] = i.interactor_id
-                update_interactor(nex_session, fw, format_name, display_name, obj_url, locus_id, desc, type_id, role_id, stoichiometry, seq, i)
+                update_interactor(nex_session, fw, format_name, display_name, obj_url, locus_id, desc, type_id, role_id, seq, i)
             else:
-                interactor_id = insert_interactor(nex_session, fw, format_name, display_name, obj_url, desc, source_id, locus_id, type_id, role_id, stoichiometry, seq)
+                interactor_id = insert_interactor(nex_session, fw, format_name, display_name, obj_url, desc, source_id, locus_id, type_id, role_id, seq)
                 interactor_added[format_name] = interactor_id
                 interactor_to_id[format_name] = interactor_id
                        
@@ -299,9 +299,9 @@ def load_complex():
     nex_session.commit()
 
             
-def insert_interactor(nex_session, fw, format_name, display_name, obj_url, desc, source_id, locus_id, type_id, role_id, stoichiometry, seq):
+def insert_interactor(nex_session, fw, format_name, display_name, obj_url, desc, source_id, locus_id, type_id, role_id, seq):
 
-    print "INSERT INTERACTOR:", format_name, display_name, obj_url, desc, source_id, locus_id, type_id, role_id, stoichiometry, seq
+    print "INSERT INTERACTOR:", format_name, display_name, obj_url, desc, source_id, locus_id, type_id, role_id, seq
     
     if seq is None:
         seq = ""
@@ -313,7 +313,6 @@ def insert_interactor(nex_session, fw, format_name, display_name, obj_url, desc,
                    type_id = type_id,
                    role_id = role_id,
                    description = desc,
-                   stoichiometry = stoichiometry,
                    residues = seq,
                    source_id = source_id,
                    created_by = CREATED_BY)
@@ -327,9 +326,9 @@ def insert_interactor(nex_session, fw, format_name, display_name, obj_url, desc,
     return x.interactor_id
 
 
-def update_interactor(nex_session, fw, format_name, display_name, obj_url, locus_id, desc, type_id, role_id, stoichiometry, seq, x):
+def update_interactor(nex_session, fw, format_name, display_name, obj_url, locus_id, desc, type_id, role_id, seq, x):
     
-    print "UPDATE INTERACTOR:", format_name, display_name, obj_url, locus_id, desc, type_id, role_id, stoichiometry, seq
+    print "UPDATE INTERACTOR:", format_name, display_name, obj_url, locus_id, desc, type_id, role_id, seq
 
     update_hash= {}
     if display_name and display_name != x.display_name:
@@ -344,8 +343,8 @@ def update_interactor(nex_session, fw, format_name, display_name, obj_url, locus
         update_hash['type_id'] = type_id
     if role_id and role_id != x.role_id:
         update_hash['role_id'] = role_id
-    if stoichiometry and stoichiometry != x.stoichiometry:
-        update_hash['stoichiometry'] = stoichiometry
+    # if stoichiometry and stoichiometry != x.stoichiometry:
+    #     update_hash['stoichiometry'] = stoichiometry
     if seq and str(seq) != str(x.residues):
         update_hash['residues'] = seq
 
