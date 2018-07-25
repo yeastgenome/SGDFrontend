@@ -12,7 +12,7 @@ from sqlalchemy.exc import IntegrityError, InternalError, StatementError
 import traceback
 import requests
 
-from .models import DBSession, Dbuser, Go, Referencedbentity, Keyword, Locusdbentity, FilePath, Edam, Filedbentity, FileKeyword, ReferenceFile
+from .models import DBSession, Dbuser, Go, Referencedbentity, Keyword, Locusdbentity, FilePath, Edam, Filedbentity, FileKeyword, ReferenceFile, Disease
 
 import logging
 log = logging.getLogger(__name__)
@@ -60,6 +60,9 @@ def get_locus_by_id(id):
 def get_go_by_id(id):
     return dbentity_safe_query(id, Go)
 
+def get_disease_by_id(id):
+    return dbentity_safe_query(id, Disease)
+
 
 # try a query 3 times, fix basic DB connection problems
 def dbentity_safe_query(id, entity_class):
@@ -72,6 +75,8 @@ def dbentity_safe_query(id, entity_class):
                     dbentity_id=id).one_or_none()
             elif entity_class is Go:
                 dbentity = DBSession.query(Go).filter_by(go_id=id).one_or_none()
+            elif entity_class is Disease:
+                dbentity = DBSession.query(Disease).filter_by(disease_id=id).one_or_none()
             break
         # close connection that has idle-in-transaction
         except InternalError:

@@ -4842,6 +4842,7 @@ class Disease(Base):
 
         return obj
 
+
     def ontology_graph(self):
         annotations = DBSession.query(Diseaseannotation.dbentity_id, func.count(Diseaseannotation.dbentity_id)).filter_by(disease_id=self.disease_id).group_by(Diseaseannotation.dbentity_id).count()
 
@@ -4938,6 +4939,63 @@ class Disease(Base):
         annotations_dict = []
         for a in annotations:
             annotations_dict += a.to_dict(disease=self)
+
+    def annotations_and_children_to_dict(self):
+        annotations_dict = []
+
+        annotations = DBSession.query(Diseaseannotation).filter_by(disease_id=self.disease_id).all()
+        for a in annotations:
+            annotations_dict += a.to_dict(disease=self)
+
+        children_relation = DBSession.query(DiseaseRelation).filter(
+            and_(DiseaseRelation.parent_id == self.disease_id, DiseaseRelation.ro_id.in_(Disease.allowed_relationships))).all()
+        children = [c.child for c in children_relation]
+        children_ids = [c.child_id for c in children_relation]
+
+        for child in children:
+            annotations = DBSession.query(Diseaseannotation).filter_by(disease_id=child.disease_id).all()
+
+            for a in annotations:
+                annotations_dict += a.to_dict(disease=child)
+
+            children_relation = DBSession.query(DiseaseRelation).filter(
+                and_(DiseaseRelation.parent_id == child.disease_id, DiseaseRelation.ro_id.in_(Disease.allowed_relationships))).all()
+            for c in children_relation:
+                if c.child_id not in children_ids:
+                    children.append(c.child)
+                    children_ids.append(c.child_id)
+
+        return annotations_dict
+
+    def get_base_url(self):
+        return self.obj_url
+
+    def get_secondary_cache_urls(self, is_quick=False):
+        url1 = self.get_secondary_base_url() + '/locus_details'
+        return [url1]
+
+    def can_skip_cache(self):
+        annotation_count = annotations = DBSession.query(Diseaseannotation).filter_by(disease_id=self.disease_id).count()
+        return annotation_count < 100
+
+    def get_secondary_base_url(self):
+        return '/webservice/do/' + str(self.disease_id)
+
+    def get_all_cache_urls(self, is_quick=False):
+        if is_quick and self.can_skip_cache():
+            return []
+        base_target_url = self.get_base_url()
+        target_urls = [base_target_url]
+        if is_quick:
+            target_urls = []
+        details_urls = self.get_secondary_cache_urls(is_quick)
+        target_urls = target_urls + details_urls
+        urls = []
+        for relative_url in target_urls:
+            for base_url in cache_urls:
+                url = base_url + relative_url
+                urls.append(url)
+        return urls
 
 
 class DiseaseAlia(Base):
