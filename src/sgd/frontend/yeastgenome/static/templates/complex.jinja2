@@ -32,19 +32,19 @@
 
 	    add_navbar_element('Subunits', 'subunit');
 
-	    {% if complex.process|length > 0 or complex.function|length > 0% or complex.component|length > 0}
+
 	          add_navbar_element('Go Annotations', 'annotation');
-            {% endif %}
+
 		
 	    add_navbar_element('Network Diagram', 'network');
 
-
+	    {% if complex.references|length > 0 %}
 	          add_navbar_element('References', 'reference');
+	    {% endif %}
 
-
-
+	    {% if complex.references|length > 0 %}
 	          add_navbar_element('Cross-References', 'cross_reference');
-
+	    {% endif %}
 		
 	    add_navbar_element('Source', 'source');
 
