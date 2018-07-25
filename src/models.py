@@ -5117,7 +5117,6 @@ class Diseaseannotation(Base):
             "properties": []
         }
 
-
         supporting_evidences = DBSession.query(Diseasesupportingevidence).filter_by(annotation_id=self.annotation_id).all()
         se_groups = {}
         for se in supporting_evidences:
@@ -5128,22 +5127,17 @@ class Diseaseannotation(Base):
                 else:
                     se_groups[se.group_id].append(evidence_dict)
 
-        disease_obj_extensions = []
-        if len(disease_obj_extensions) == 0:
-            disease_obj_extensions = [disease_obj]
-
         final_obj = []
         for group_id in se_groups:
-            for c in disease_obj_extensions:
-                obj = copy.deepcopy(c)
-                obj["properties"] += se_groups[group_id]
-                final_obj.append(obj)
+            obj = copy.deepcopy(disease_obj)
+            obj["properties"] += se_groups[group_id]
+            final_obj.append(obj)
 
         if len(final_obj) == 0:
-            if len(disease_obj_extensions) == 0:
+            if len(disease_obj) == 0:
                 final_obj = [disease_obj]
             else:
-                final_obj = disease_obj_extensions
+                final_obj = disease_obj
 
         return final_obj
 
