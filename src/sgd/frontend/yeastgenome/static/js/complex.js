@@ -84,13 +84,9 @@ var graph_style = cytoscape.stylesheet()
 	    'text-outline-color': '#fff',
 	    'color': '#888'
         })
-    .selector("edge[class_type = 'GENETIC']")
+    .selector("edge[class_type = 'complex']")
     .css({
 	    'line-color': "#7FBF7B"
-        })
-    .selector("edge[class_type = 'PHYSICAL']")
-    .css({
-	    'line-color': "#AF8DC3"
         });
 
 var layout = {
