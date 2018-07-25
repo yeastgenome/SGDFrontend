@@ -6,7 +6,7 @@ from datetime import datetime
 import sys
 reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF-8')
-from src.models import Psimi, Taxonomy, Dbentity, Complexbindingannotation, Interactor, ComplexReference 
+from src.models import Psimi, Taxonomy, Dbentity, Complexbindingannotation, Interactor
 from scripts.loading.database_session import get_session
 from scripts.loading.reference.promote_reference_triage import add_paper
 
@@ -37,25 +37,16 @@ def load_complexbindingannotation():
 
     complexAC_to_dbentity = dict([(x.format_name, x) for x in nex_session.query(Dbentity).filter_by(subclass='COMPLEX').all()])
     interactor_to_id = dict([(x.format_name, x.interactor_id) for x in nex_session.query(Interactor).all()])
-
-    complex_id_to_reference_id_list = {}
-    for x in nex_session.query(ComplexReference).all():
-        reference_id_list = []
-        if x.complex_id in complex_id_to_reference_id_list:
-            reference_id_list = complex_id_to_reference_id_list[x.complex_id]
-        reference_id_list.append(x.reference_id)
-        complex_id_to_reference_id_list[x.complex_id] = reference_id_list
  
     fw = open(log_file, "w")
 
-    key_to_annotations = {}
+    key_to_annotation = {}
     for x in nex_session.query(Complexbindingannotation).all():
-        annotations = []
-        key = (x.complex_id, x.interactor_id, x.binding_interactor_id)
-        if key in key_to_annotations:
-            annotations = key_to_annotations[key]
-        annotations.append((x.reference_id, x.binding_type_id, x.range_start, x.range_end))
-        key_to_annotations[key] = annotations
+        binding_interactor_id = x.binding_interactor_id
+        if binding_interactor_id is None:
+            binding_interactor_id = -1
+        key = (x.complex_id, x.interactor_id, binding_interactor_id)
+        key_to_annotation[key] = (x.binding_type_id, x.range_start, x.range_end, x.stoichiometry)
 
     loaded = {}
 
@@ -84,130 +75,120 @@ def load_complexbindingannotation():
                 print "The interactor: ", interactor, " is not in the database."
                 continue
                 
+            stoichiometry = p.get('stochiometry')
+            if stoichiometry is not None and stoichiometry == 'null':
+                stoichiometry = None
+            elif stoichiometry is not None and "maxValue" in stoichiometry:
+                stoichiometry = int(stoichiometry.split("maxValue: ")[1])
+
+            bindingInteractors = []
+
             linkedFeatures = p.get('linkedFeatures')
-            if linkedFeatures is None:
-                continue
+            if linkedFeatures is None or len(linkedFeatures) == 0:
+                # no binding interactor
+                bindingInteractors.append(-1, None, None, None)
+            else:
+                for lf in linkedFeatures:
+                    binding_interactor = lf.get('participantId')
+                    if binding_interactor is None:
+                        continue
+                    binding_interactor_id = interactor_to_id.get(binding_interactor)
+                    if binding_interactor_id is None:
+                        print "The binding interactor: ", binding_interactor, " is not in the database."
+                        continue
+                    binding_type = lf.get('featureTypeMI')
+                    if binding_type is None:
+                        print "No binding type for ", complexAC, interactor, binding_interactor
+                        continue
+                    binding_type_id = format_name_to_psimi_id.get(binding_type)
+                    if binding_type_id is None:
+                        print "The binding_type:", binding_type, " is not in the PSIMI table."
+                        continue
 
-            for lf in linkedFeatures:
-
-                binding_interactor = lf.get('participantId')
-                if binding_interactor is None:
-                    continue
-                binding_interactor_id = interactor_to_id.get(binding_interactor)
-                if binding_interactor_id is None:
-                    print "The binding interactor: ", binding_interactor, " is not in the database."
-                    continue
-                binding_type = lf.get('featureTypeMI')
-                if binding_type is None:
-                    print "No binding type for ", complexAC, interactor, binding_interactor
-                    continue
-                binding_type_id = format_name_to_psimi_id.get(binding_type)
-                if binding_type_id is None:
-                    print "The binding_type:", binding_type, " is not in the PSIMI table."
-                    continue
-
-                ranges = lf.get('ranges')
+                    ranges = lf.get('ranges')
                 
-                (range_start, range_end) = cleanup_ranges(ranges)
+                    (range_start, range_end) = cleanup_ranges(ranges)
 
-                print "ranges:", ranges, range_start, range_end
+                    print "ranges:", ranges, range_start, range_end
+                    
+                    bindingInteractors.append(binding_interactor_id, binding_type_id, range_start, range_end)
 
-                reference_id_list = complex_id_to_reference_id_list.get(complex_id)
-                if reference_id_list is None:
-                    reference_id_list = []
+            for b in bindingInteractors:
+
+                (binding_interactor_id, binding_type_id, range_start, range_end) = b
 
                 key = (complex_id, interactor_id, binding_interactor_id)
 
-                annotations_in_db = key_to_annotations.get(key)
+                loaded[key] = 1
 
-                if annotations_in_db is None:
+                annotation_in_db = key_to_annotation.get(key)
 
-                    if len(reference_id_list) == 0:
-                        reference_id_list.append(None)
+                if annotation_in_db is None:
 
-                    for reference_id in reference_id_list:
-                        insert_annotation(nex_session, fw, complex_id, interactor_id, binding_interactor_id, binding_type_id, range_start, range_end, reference_id, source_id, taxonomy_id, loaded)
+                    insert_annotation(nex_session, fw, complex_id, interactor_id, binding_interactor_id, binding_type_id, range_start, range_end, stoichiometry, source_id, taxonomy_id)
                     continue
 
-                update_annotations(nex_session, fw, complex_id, interactor_id, binding_interactor_id, binding_type_id, range_start, range_end, reference_id_list, annotations_in_db, source_id, taxonomy_id, loaded)
+                update_annotation(nex_session, fw, complex_id, interactor_id, binding_interactor_id, binding_type_id, range_start, range_end, stoichiometry, annotation_in_db, source_id, taxonomy_id)
 
+        nex_session.rollback()
+        # nex_session.commit()  
 
-        # nex_session.rollback()
-        nex_session.commit()  
+    for key in key_to_annotation:
+        if key not in loaded:
+            (complex_id, interactor_id, binding_interactor_id) = key
+            if binding_interactor_id == -1:
+                nex_session.query(Complexbindingannotation).filter_by(complex_id=complex_id, interactor_id=interactor_id).delete()
+                fw.write("The Complexbindingannotation for complex_id=" + str(complex_id) + ", interactor_id=" + str(interactor_id) + ", binding_interactor_id=None has been deleted.\n")
+            else:
+                nex_session.query(Complexbindingannotation).filter_by(complex_id=complex_id, interactor_id=interactor_id, binding_interactor_id=binding_interactor_id).delete()
+                fw.write("The Complexbindingannotation for complex_id=" + str(complex_id) + ", interactor_id=" + str(interactor_id) + ", binding_interactor_id=" + str(binding_interactor_id) + " has been deleted.\n")
+
+    nex_session.rollback()
+    # nex_session.commit()  
 
  
-def insert_annotation(nex_session, fw, complex_id, interactor_id, binding_interactor_id, binding_type_id, range_start, range_end, reference_id, source_id, taxonomy_id, loaded):
+def insert_annotation(nex_session, fw, complex_id, interactor_id, binding_interactor_id, binding_type_id, range_start, range_end, stoichiometry, source_id, taxonomy_id):
 
-    loading_key = (complex_id, interactor_id, binding_interactor_id, reference_id)
-    if loading_key in loaded:
-        return
-    loaded[loading_key] = 1
-    
     x = Complexbindingannotation(complex_id = complex_id,
                                  interactor_id = interactor_id,
                                  binding_interactor_id = binding_interactor_id,
                                  binding_type_id = binding_type_id,
                                  source_id = source_id,
                                  taxonomy_id = taxonomy_id,
-                                 reference_id = reference_id, 
+                                 reference_id = None,
                                  range_start = range_start,
                                  range_end = range_end,
+                                 stoichiometry = stoichiometry,
                                  created_by = CREATED_BY)
     nex_session.add(x)
 
-    fw.write("Add a new Complexbindingannotation row for complex_id=" + str(complex_id) + ", interactor_id=" + str(interactor_id) + ", binding_interactor_id="+ str(binding_interactor_id) + " and reference_id=" + str(reference_id) + "\n")
+    fw.write("Add a new Complexbindingannotation row for complex_id=" + str(complex_id) + ", interactor_id=" + str(interactor_id) + ", binding_interactor_id="+ str(binding_interactor_id) + "\n")
     
 
-def update_annotations(nex_session, fw, complex_id, interactor_id, binding_interactor_id, binding_type_id, range_start, range_end, reference_id_list, annotations_in_db, source_id, taxonomy_id, loaded):
+def update_annotation(nex_session, fw, complex_id, interactor_id, binding_interactor_id, binding_type_id, range_start, range_end, stoichiometry, annotation_in_db, source_id, taxonomy_id):
 
-    if len(reference_id_list) == 0:
-        reference_id_list.append(-1)
+    (binding_type_id_db, range_start_db, range_end_db, stoichiometry_db) = annotation_in_db
 
-    reference_id_to_details_in_db = {}
-    for annot in annotations_in_db:
-        (reference_id_db, binding_type_id_db, range_start_db, range_end_db) = annot
-        if reference_id_db is None:
-            reference_id_db = -1
-        if reference_id_db not in reference_id_list:
-            if reference_id_db != -1:
-                nex_session.query(Complexbindingannotation).filter_by(complex_id=complex_id, interactor_id=interactor_id, binding_interactor_id=binding_interactor_id, reference_id=reference_id_db).delete()
-                fw.write("The Complexbindingannotation for complex_id=" + str(complex_id) + ", interactor_id=" + str(interactor_id) + ", binding_interactor_id=" + str(binding_interactor_id) + ", and reference_id=" + str(reference_id_db) + " has been deleted.\n")
-            else:
-                nex_session.query(Complexbindingannotation).filter_by(complex_id=complex_id, interactor_id=interactor_id, binding_interactor_id=binding_interactor_id).delete()
-                fw.write("The Complexbindingannotation for complex_id=" + str(complex_id) + ", interactor_id=" + str(interactor_id) + ", binding_interactor_id=" + str(binding_interactor_id) + " has been deleted.\n")
-            continue
-        reference_id_to_details_in_db[reference_id_db] = (binding_type_id_db, range_start_db, range_end_db)
+    update_hash = {}
+    if binding_type_id != binding_type_id_db:
+        update_hash['binding_type_id'] = binding_type_id
+    if range_start != range_start_db:
+        update_hash['range_start'] = range_start
+    if range_end != range_end_db:
+        update_hash['range_end'] = range_end
+    if stoichiometry and stoichiometry != stoichiometry_db:
+        update_hash['stoichiometry'] = stoichiometry
     
-    for reference_id in reference_id_list:
-        if reference_id in reference_id_to_details_in_db:
-            (binding_type_id_db, range_start_db, range_end_db) = reference_id_to_details_in_db[reference_id]
-            
-            print "range in DB", range_start_db, range_end_db, " new range:", range_start, range_end
+    if not update_hash:
+        continue
 
-            update_hash = {}
-            if binding_type_id != binding_type_id_db:
-                update_hash['binding_type_id'] = binding_type_id
-            if range_start != range_start_db:
-                update_hash['range_start'] = range_start
-            if range_end != range_end_db:
-                update_hash['range_end'] = range_end
-            
-            if not update_hash:
-                continue
-
-            if reference_id == -1:
-                nex_session.query(Complexbindingannotation).filter_by(complex_id=complex_id, interactor_id=interactor_id, binding_interactor_id=binding_interactor_id).update(update_hash)
-                fw.write("The Complexbindingannotation for complex_id=" + str(complex_id) + ", interactor_id=" + str(interactor_id) + ", binding_interactor_id=" + str(binding_interactor_id) + ", and reference_id=" + str(reference_id) + " has been updated.\n")
-            else:
-                nex_session.query(Complexbindingannotation).filter_by(complex_id=complex_id, interactor_id=interactor_id, binding_interactor_id=binding_interactor_id, reference_id=reference_id).update(update_hash)
-                fw.write("The Complexbindingannotation for complex_id=" + str(complex_id) + ", interactor_id=" + str(interactor_id) + ", binding_interactor_id=" + str(binding_interactor_id) + " has been updated.\n")
-            
-        else:
-            if reference_id == -1:
-                reference_id = None
-            insert_annotation(nex_session, fw, complex_id, interactor_id, binding_interactor_id, binding_type_id, range_start, range_end, reference_id, source_id, taxonomy_id, loaded)
-            
-
+    if binding_interactor_id == -1:
+        nex_session.query(Complexbindingannotation).filter_by(complex_id=complex_id, interactor_id=interactor_id).update(update_hash)
+        fw.write("The Complexbindingannotation for complex_id=" + str(complex_id) + ", interactor_id=" + str(interactor_id) + ", binding_interactor_id=None has been updated.\n")
+    else:
+        nex_session.query(Complexbindingannotation).filter_by(complex_id=complex_id, interactor_id=interactor_id, binding_interactor_id=binding_interactor_id).update(update_hash)
+        fw.write("The Complexbindingannotation for complex_id=" + str(complex_id) + ", interactor_id=" + str(interactor_id) + ", binding_interactor_id=" + str(binding_interactor_id) + " has been updated.\n")
+   
 
 def cleanup_ranges(ranges):
 

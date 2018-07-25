@@ -7906,6 +7906,7 @@ class Complexbindingannotation(Base):
     binding_type_id = Column(ForeignKey(u'nex.psimi.psimi_id', ondelete=u'CASCADE'), nullable=False, index=True)
     range_start = Column(Integer)
     range_end = Column(Integer)
+    stoichiometry = Column(Integer) 
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
 
@@ -7931,7 +7932,7 @@ class Interactor(Base):
     description = Column(String(500))
     type_id = Column(ForeignKey(u'nex.psimi.psimi_id', ondelete=u'CASCADE'), nullable=False, index=True)
     role_id = Column(ForeignKey(u'nex.psimi.psimi_id', ondelete=u'CASCADE'), nullable=False, index=True)
-    stoichiometry = Column(Integer)
+    # stoichiometry = Column(Integer)
     residues = Column(Text, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
