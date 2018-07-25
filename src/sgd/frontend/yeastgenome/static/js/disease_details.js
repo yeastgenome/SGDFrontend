@@ -56,29 +56,30 @@ $(document).ready(function() {
 function create_disease_table(prefix, message, filter, data) {
     var options = {};
     options["aoColumns"] = [
-            {"bSearchable":false, "bVisible":false}, //evidence_id
-            {"bSearchable":false, "bVisible":false}, //analyze_id
-            {"bSearchable":false, "bVisible":false}, //gene
-            {"bSearchable":false, "bVisible":false}, //gene systematic name
-            null, //gene ontology term
-            {"bSearchable":false, "bVisible":false}, //gene ontology term id
-            null, //qualifier
-            null, //evidence
-            {"bSearchable":false, "bVisible":false}, //method
-            null, //source
-            null, //assigned on
-            null, //annotation_extension
-            null // reference
-            ];
+        {"bSearchable":false, "bVisible":false}, // evidence_id
+        {"bSearchable":false, "bVisible":false}, // some other id
+        null, // gene
+        {"bSearchable":false, "bVisible":false}, //gene systematic name
+        null, //disease name
+        {"bSearchable":false, "bVisible":false}, // doid
+        {"bSearchable":false, "bVisible":false}, // null, empty
+        null, // assay
+        null, // method manual or htp
+        null, // source
+        null, // date
+        null, // with
+        null// reference
+    ];
     options["bPaginate"] = true;
     options["aaSorting"] = [[5, "asc"]];
 
+    var datatable = [];
     if("Error" in data) {
         options["oLanguage"] = {"sEmptyTable": data["Error"]};
         options["aaData"] = [];
     }
     else {
-        var datatable = [];
+        
         var diseases = {};
         for (var i=0; i < data.length; i++) {
             if(filter(data[i])) {
@@ -97,9 +98,8 @@ function create_disease_table(prefix, message, filter, data) {
         }
     }
 
-	$("#" + prefix + "_disease_table_analyze").hide();
-
-    return create_table(prefix + "_disease_table", options);
+	$("#" + prefix + "_table_analyze").hide();
+    return create_table(prefix + "_table", options);
 }
 
 function slider_filter(new_cutoff) {
