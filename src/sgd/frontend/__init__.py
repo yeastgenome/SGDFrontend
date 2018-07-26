@@ -169,6 +169,16 @@ def prep_views(chosen_frontend, config):
                     renderer=chosen_frontend.get_renderer('go_ontology'),
                     route_name='go_ontology')
 
+    config.add_route('disease', '/disease/{identifier}')
+    config.add_view(lambda request: chosen_frontend.response_wrapper('disease', request)(getattr(chosen_frontend, 'disease')(biocon_repr=request.matchdict['identifier'].lower())),
+                    renderer=chosen_frontend.get_renderer('disease'),
+                    route_name='disease')
+
+    config.add_route('disease_ontology', '/ontology/disease/{identifier}')
+    config.add_view(lambda request: chosen_frontend.response_wrapper('disease_ontology', request)(getattr(chosen_frontend, 'disease_ontology')(biocon_repr=request.matchdict['identifier'].lower())),
+                    renderer=chosen_frontend.get_renderer('disease_ontology'),
+                    route_name='disease_ontology')
+
     config.add_route('chemical', '/chemical/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('chemical', request)(getattr(chosen_frontend, 'chemical')(chemical_repr=request.matchdict['identifier'].lower())),
                     renderer=chosen_frontend.get_renderer('chemical'),

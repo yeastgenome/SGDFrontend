@@ -1,11 +1,11 @@
 $(document).ready(function() {
-	$.getJSON('/backend/do/' + do_term['id'] + '/locus_details', function(data) {
+	$.getJSON('/backend/disease/' + disease['id'] + '/locus_details', function(data) {
 	  	create_disease_table(data);
 	});
 
-	$.getJSON('/backend/do/' + do_term['id'] + '/ontology_graph', function(data) {
-  		var cy = create_cytoscape_vis("cy", layout, graph_style, data, null, false, "doOntology");
-        create_cy_download_button(cy, "cy_download", do_term['display_name'] + '_ontology')
+	$.getJSON('/backend/disease/' + disease['id'] + '/ontology_graph', function(data) {
+  		var cy = create_cytoscape_vis("cy", layout, graph_style, data, null, false, "diseaseOntology");
+        create_cy_download_button(cy, "cy_download", disease['display_name'] + '_ontology')
 
         if(data['all_children'] != null && data['all_children'].length > 0) {
             var children_div = document.getElementById("children");
@@ -56,25 +56,24 @@ function create_disease_table(data) {
 	for (var i=0; i < data.length; i++) {
         var type = data[i].annotation_type;
         if (type === 'manually curated') {
-            manualDatatable.push(go_data_to_table(data[i], i));
+            manualDatatable.push(disease_data_to_table(data[i], i));
             manualGenes[data[i]["locus"]["id"]] = true;
         } else if (type === 'high-throughput') {
-            htpDatatable.push(go_data_to_table(data[i], i));
+            htpDatatable.push(disease_data_to_table(data[i], i));
             htpGenes[data[i]["locus"]["id"]] = true;
         } else if (type === 'computational') {
-            computationalDatatable.push(go_data_to_table(data[i], i));
+            computationalDatatable.push(disease_data_to_table(data[i], i));
             computationalGenes[data[i]["locus"]["id"]] = true;
         }
 	}
-    set_up_header('manual_go_table', manualDatatable.length, 'entry', 'entries', Object.keys(manualGenes).length, 'gene', 'genes');
-    set_up_header('htp_go_table', htpDatatable.length, 'entry', 'entries', Object.keys(htpGenes).length, 'gene', 'genes');
-    set_up_header('computational_go_table', computationalDatatable.length, 'entry', 'entries', Object.keys(computationalGenes).length, 'gene', 'genes');
+    set_up_header('manual_disease_table', manualDatatable.length, 'entry', 'entries', Object.keys(manualGenes).length, 'gene', 'genes');
+    set_up_header('htp_disease_table', htpDatatable.length, 'entry', 'entries', Object.keys(htpGenes).length, 'gene', 'genes');
+    set_up_header('computational_disease_table', computationalDatatable.length, 'entry', 'entries', Object.keys(computationalGenes).length, 'gene', 'genes');
 
 	var options = {};
 	options["bPaginate"] = true;
 	options["aaSorting"] = [[3, "asc"]];
-	options["bDestroy"] = true;
-    options["aoColumns"] = [
+        options["aoColumns"] = [
         {"bSearchable":false, "bVisible":false}, // evidence_id
         {"bSearchable":false, "bVisible":false}, // some other id
         null, // gene
@@ -89,9 +88,10 @@ function create_disease_table(data) {
         null, // with
         null// reference
     ];
-    create_or_hide_table(manualDatatable, options, "manual_disease_table", do_term["display_name"], do_term["link"], do_term["id"], "manually curated", data);
-    create_or_hide_table(htpDatatable, options, "htp_disease_table", go_term["display_name"], do_term["link"], do_term["id"], "high-throughput", data);
-    create_or_hide_table(computationalDatatable, options, "computational_disease_table", do_term["display_name"], do_term["link"], do_term["id"], "computational", data);
+
+    create_or_hide_table(manualDatatable, options, "manual_disease_table", disease["display_name"], disease["link"], disease["id"], "manually curated", data);
+    create_or_hide_table(htpDatatable, options, "htp_disease_table", disease["display_name"], disease["link"], disease["id"], "high-throughput", data);
+    create_or_hide_table(computationalDatatable, options, "computational_disease_table", disease["display_name"], disease["link"], disease["id"], "computational", data);
 }
 
 function create_or_hide_table(tableData, options, tableIdentifier, doName, doLink, doId, annotationType, originalData) {
@@ -99,10 +99,10 @@ function create_or_hide_table(tableData, options, tableIdentifier, doName, doLin
         var localOptions =  $.extend({ aaData: tableData, oLanguage: { sEmptyTable: 'No genes annotated directly to ' + doName } }, options);
         var table = create_table(tableIdentifier, localOptions);
         create_analyze_button(tableIdentifier + "_analyze", table, "<a href='" + doLink + "' class='gene_name'>" + doName + "</a> genes", true);
-        create_download_button(tableIdentifier + "_download", table, goName + "_annotations");
+        create_download_button(tableIdentifier + "_download", table, doName + "_annotations");
 
-        if(do_term['descendant_locus_count'] > do_term['locus_count']) {
-            create_show_child_button(tableIdentifier + "_show_children", table, originalData, "/backend/do/" + goId + "/locus_details_all", go_data_to_table, function(table_data) {
+        if(disease['descendant_locus_count'] > disease['locus_count']) {
+            create_show_child_button(tableIdentifier + "_show_children", table, originalData, "/backend/disease/" + doId + "/locus_details_all", disease_data_to_table, function(table_data) {
                 var genes = {};
                 for (var i=0; i < table_data.length; i++) {
                     genes[table_data[i][1]] = true;

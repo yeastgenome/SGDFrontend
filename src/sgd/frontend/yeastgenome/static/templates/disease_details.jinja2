@@ -1,6 +1,6 @@
 {% extends "global_layout.jinja2" %}
 
-{% block title %}{{ locus.display_name }} Disease Ontology{% endblock %}
+{% block title %}{{ locus.display_name }} Disease {% endblock %}
 
 {% block head %}
 <script>
@@ -28,7 +28,7 @@
 
         <script>
             add_navbar_title('<span>{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span>');
-            add_navbar_element("Disease Ontology Overview", "overview");
+            add_navbar_element("Disease Overview", "overview");
             add_navbar_element("Manually Curated", "manual");
             add_navbar_element("High-throughput", "htp");
             add_navbar_element("Computational", "comp");
@@ -38,8 +38,8 @@
 <!-- Overview
 ================================================== -->
 <section id="overview" data-magellan-destination="overview">
-    <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/function-help/gene-ontology-go" name="top" class="documentation-link">Disease Ontology Help <i class="fa fa-question-circle"></i></a>
-    <h1>{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %} Disease Ontology
+    <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/function-help/gene-ontology-go" name="top" class="documentation-link">Disease Help <i class="fa fa-question-circle"></i></a>
+    <h1>{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %} Disease
         <a href="#" data-dropdown="summary_help"><i class="fa fa-info-circle"></i></a>
 
             <p id="summary_help" class="f-dropdown content medium" data-dropdown-content>

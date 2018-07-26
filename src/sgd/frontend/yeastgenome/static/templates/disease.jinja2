@@ -1,0 +1,127 @@
+{% extends "global_layout.jinja2" %}
+
+{% block title %}{{ disease.display_name }}{% endblock %}
+
+{% block head %}
+<script>
+    var disease = {{ disease_js|safe }};
+</script>
+{% endblock %}
+
+{% block body %}
+
+<div class="row">
+
+    <!-- Includes navbar.html into template -->
+    {% include "navbar.jinja2" %}
+
+    <div class="small-12 medium-10 columns content-column">
+
+        <script>
+            add_navbar_title('Disease Ontology Term: <span class="gene_name">{{ disease.display_name }}</span>')
+            add_navbar_element('Overview', 'overview');
+            add_navbar_element('Ontology Diagram', 'ontology');
+            add_navbar_element('Annotations', 'annotations');
+        </script>
+
+<!-- Summary
+================================================== -->
+        <section id="overview" data-magellan-destination="overview">
+            <div class="page-header">
+                <h1>Disease Ontology Term: {{ disease.display_name }}</h1>
+                <hr />
+
+                <div class="">
+                    <dl class="key-value">
+                        <dt>DO ID</dt>
+                        <dd>
+                            {% for url in disease.urls if url.category == 'DO' %}
+                               <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>
+                            {% endfor %}
+                            {% if disease.urls|length == 0 %}
+                               <span>{{ disease.disease_id }}</span>
+                            {% endif %}
+                        </dd>
+
+                        <dt>Description</dt>
+                        <dd>{{ disease.description }}</dd>
+
+                        {% if disease.aliases|length > 0 %}
+                            <dt>Synonyms</dt>
+                            <dd>
+                                {% for alias in disease.aliases %}
+                                    <span>{{ alias|e }}</span>{% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            </dd>
+                        {% endif %}
+                    </dl>
+                    {% for url in disease.urls if url.category == 'OntoBee' %}
+                        <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+<!-- Network Visualization
+================================================== -->
+        <section id="ontology" data-magellan-destination="ontology">
+            <div class="page-header">
+                <h2>Ontology Diagram</h2>
+                <hr />
+                <div class="">
+                    {% set network_id = "cy" %}
+                    {% include "disease_ontology_network.jinja2" %}
+
+                    <div id="children_wrapper">
+                        <br>
+                        <strong>Child Terms:</strong>
+                        <p>
+                            <span id="children"></span>
+                            <a id="children_see_more_button" onclick="$('#children_see_more').show();$('#children_see_more_button').hide();$('#children_see_less_button').show();"> ... <i class="fa fa-arrow-circle-right"></i> Show all</a>
+                            <span id="children_see_more" hidden></span>
+                            <a id="children_see_less_button" onclick="$('#children_see_more').hide();$('#children_see_more_button').show();$('#children_see_less_button').hide();" hidden> <i class="fa fa-arrow-circle-left"></i> Show fewer</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+<!-- Annotations
+================================================== -->
+        <section id="annotations" data-magellan-destination="annotations">
+            <div class="page-header">
+                <h2>Annotations</h2>
+                <hr />
+                <h3>Manually Curated <span id="manual_disease_table_header" class="round secondary label"></span></h3>
+                <div class="spaced-container">
+                    <!-- Includes disease_table into template -->
+                    {% set table_id = "manual_disease_table" %}
+                    {% include "disease_table.jinja2" %}
+                </div>
+                <h3>High-throughput <span id="htp_disease_table_header" class="round secondary label"></span></h3>
+                <div class="spaced-container">
+                    <!-- Includes disease_table into template -->
+                    {% set table_id = "htp_disease_table" %}
+                    {% include "disease_table.jinja2" %}
+                </div>
+                <h3>Computational <span id="computational_disease_table_header" class="round secondary label"></span></h3>
+                <div class="spaced-container">
+                    <!-- Includes disease_table into template -->
+                    {% set table_id = "computational_disease_table" %}
+                    {% include "disease_table.jinja2" %}
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+{% endblock body %}
+
+{% block scripts %}
+<script src="{{asset_root}}/js/build/cytoscape.min.js"></script>
+{# don't host arbor.js on CDN because it makes webworker files that don't work on the cloud :( #}
+<script src="/static/js/build/arbor.js"></script>
+<script src="{{asset_root}}/js/cytoscape.js"></script>
+<script src="{{asset_root}}/js/evidence.js"></script>
+<script src="{{asset_root}}/js/disease.js"></script>
+{% endblock scripts %}

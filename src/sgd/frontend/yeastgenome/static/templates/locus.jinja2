@@ -402,88 +402,6 @@
         </div>
     </section>
     {% endif %}
-
-<!-- Disease
-================================================== -->
-    {% if tabs['disease_tab'] %}
-    <section id="disease">
-        <a href="/locus/{{ locus.sgdid }}/disease" class="details-link">Disease Ontology Details <i class="fa fa-chevron-circle-right"></i></a>
-        <h2>Disease Ontology
-            <a href="#" data-dropdown="disease_info"><i class="fa fa-info-circle"></i></a>
-
-            <p id="disease_info" class="f-dropdown content medium" data-dropdown-content>
-                DO Annotations consist of three mandatory components: a gene product, a term from one of the three
-                <a href="http://http://disease-ontology.org//">Disease Ontology (DO)</a> controlled vocabularies and an
-                evidence code. SGD has manually curated and high-throughput DO Annotations, both derived from the
-                literature, as well as computational, or predicted, annotations. Click "Disease Ontology Details" to view
-                all Disease information and evidence for this locus as well as diseases it shares with other genes.
-            </p>
-        </h2>
-        <hr />
-        <div>
-
-            {% if locus['disease_overview']['paragraph'] %}
-                <dl class="key-value">
-                    <dt>Summary</dt>
-                    <dd>{{ locus['disease_overview']['paragraph']|safe }}</dd>
-                </dl>
-            {% endif %}
-
-            {% if locus.disease_overview.manual_disease_terms|length + locus.disease_overview.htp_disease_terms|length == 0 %}
-                <p>No Disease Ontology data available.</p>
-            {% else %}
-
-                {% if 'computational_annotation_count' not in locus.disease_overview or locus.disease_overview.computational_annotation_count > 0 %}
-                    <p><a href="/locus/{{ locus.sgdid }}/go#comp">View computational annotations</a></p>
-                {% endif %}
-
-                {% if locus.disease_overview.manual_disease_terms|length > 0 %}
-                <div class="panel">
-                    <h3>Manually Curated</h3>
-                    <ul style="list-style-type:disc">
-                            {% for entry in locus.disease_overview.manual_disease_terms %}
-                                <li>
-                                {% if 'qualifiers' in entry %}
-                                        {% for qualifier in entry.qualifiers if qualifier in ['NOT', 'colocalizes with', 'contributes to'] %}
-                                            {{ qualifier }}{% if not loop.last %}, {% endif %}
-                                        {% endfor %}
-                                    {% endif %}
-                                    <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
-                                    {% for code in entry.evidence_codes %}
-                                        {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
-                                {% endfor %}
-                                </li>
-                            {% endfor %}
-                    </ul>
-                </div>
-                {% endif %}
-
-
-                {% if locus.disease_overview.htp_disease_terms|length > 0 %}
-                <div class="panel">
-                    <h3>High-Throughput</h3>
-                    <ul style="list-style-type:disc">
-                            {% for entry in locus.disease_overview.htp_disease_terms %}
-                                <li>
-                                    {% if 'qualifiers' in entry %}
-                                        {% for qualifier in entry.qualifiers if qualifier in ['NOT', 'colocalizes with', 'contributes to'] %}
-                                            {{ qualifier }}{% if not loop.last %}, {% endif %}
-                                        {% endfor %}
-                                    {% endif %}
-                                    <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
-                                    {% for code in entry.evidence_codes %}
-                                        {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
-                                    {% endfor %}
-                                </li>
-                            {% endfor %}
-                    </ul>
-                </div>
-                {% endif %}
-
-            {% endif %}
-        </div>
-    </section>
-    {% endif %}
 <!-- Pathway
 ================================================== -->
     {% if locus.pathways|length > 0 %}
@@ -704,7 +622,87 @@
         </div>
     </section>
         {% endif %}
+<!-- Disease
+================================================== -->
+    {% if tabs['disease_tab'] %}
+    <section id="disease">
+        <a href="/locus/{{ locus.sgdid }}/disease" class="details-link">Disease Details <i class="fa fa-chevron-circle-right"></i></a>
+        <h2>Disease
+            <a href="#" data-dropdown="disease_info"><i class="fa fa-info-circle"></i></a>
 
+            <p id="disease_info" class="f-dropdown content medium" data-dropdown-content>
+                DO Annotations consist of three mandatory components: a gene product, a term from one of the three
+                <a href="http://http://disease-ontology.org//">Disease Ontology (DO)</a> controlled vocabularies and an
+                evidence code. SGD has manually curated DO Annotations, both derived from the
+                literature, as well as computational, or predicted, annotations. Click "Disease Ontology Details" to view
+                all Disease information and evidence for this locus as well as diseases it shares with other genes.
+            </p>
+        </h2>
+        <hr />
+        <div>
+
+            {% if locus['disease_overview']['paragraph'] %}
+                <dl class="key-value">
+                    <dt>Summary</dt>
+                    <dd>{{ locus['disease_overview']['paragraph']|safe }}</dd>
+                </dl>
+            {% endif %}
+
+            {% if locus.disease_overview.manual_disease_terms|length + locus.disease_overview.htp_disease_terms|length == 0 %}
+                <p>No Disease Ontology data available.</p>
+            {% else %}
+
+                {% if 'computational_annotation_count' not in locus.disease_overview or locus.disease_overview.computational_annotation_count > 0 %}
+                    <p><a href="/locus/{{ locus.sgdid }}/go#comp">View computational annotations</a></p>
+                {% endif %}
+
+                {% if locus.disease_overview.manual_disease_terms|length > 0 %}
+                <div class="panel">
+                    <h3>Manually Curated</h3>
+                    <ul style="list-style-type:disc">
+                            {% for entry in locus.disease_overview.manual_disease_terms %}
+                                <li>
+                                {% if 'qualifiers' in entry %}
+                                        {% for qualifier in entry.qualifiers if qualifier in ['NOT', 'colocalizes with', 'contributes to'] %}
+                                            {{ qualifier }}{% if not loop.last %}, {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                    <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
+                                    {% for code in entry.evidence_codes %}
+                                        {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
+                                {% endfor %}
+                                </li>
+                            {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+
+                {% if locus.disease_overview.htp_disease_terms|length > 0 %}
+                <div class="panel">
+                    <h3>High-Throughput</h3>
+                    <ul style="list-style-type:disc">
+                            {% for entry in locus.disease_overview.htp_disease_terms %}
+                                <li>
+                                    {% if 'qualifiers' in entry %}
+                                        {% for qualifier in entry.qualifiers if qualifier in ['NOT', 'colocalizes with', 'contributes to'] %}
+                                            {{ qualifier }}{% if not loop.last %}, {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                    <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
+                                    {% for code in entry.evidence_codes %}
+                                        {% if loop.first %}({% endif %}<a href="{{ code.link }}">{{ code.display_name }}</a>{% if not loop.last %}, {% else %}){% endif %}
+                                    {% endfor %}
+                                </li>
+                            {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+            {% endif %}
+        </div>
+    </section>
+    {% endif %}
 <!-- Literature
 ================================================== -->
     {% if tabs['literature_tab'] %}

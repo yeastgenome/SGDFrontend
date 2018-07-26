@@ -1,14 +1,14 @@
 
 $(document).ready(function() {
-	$.getJSON('/backend/do/' + ontology['id'] + '/ontology_graph', function(data) {
-  		var cy = create_cytoscape_vis("cy", layout, graph_style, data, null, false, "doOntology");
-        create_cy_download_button(cy, "cy_download", ontology['display_name'] + '_do_ontology_graph')
+	$.getJSON('/backend/disease/' + ontology['id'] + '/ontology_graph', function(data) {
+  		var cy = create_cytoscape_vis("cy", layout, graph_style, data, null, false, "diseaseOntology");
+        create_cy_download_button(cy, "cy_download", ontology['display_name'] + '_disease_ontology_graph')
 	});
 
-    $.getJSON('/backend/do/' + ontology['id'] + '/locus_details', function(data) {
-	  	var do_table = create_disease_table(data);
-	  	create_analyze_button("do_table_analyze", do_table, "<a href='" + ontology['link'] + "' class='gene_name'>" + ontology['display_name'] + "</a> genes", true);
-  	    create_download_button("do_table_download", do_table, ontology['display_name'] + "_annotations");
+    $.getJSON('/backend/disease/' + ontology['id'] + '/locus_details', function(data) {
+	  	var disease_table = create_disease_table(data);
+	  	create_analyze_button("disease_table_analyze", disease_table, "<a href='" + ontology['link'] + "' class='gene_name'>" + ontology['display_name'] + "</a> genes", true);
+  	    create_download_button("disease_table_download", disease_table, ontology['display_name'] + "_annotations");
 	});
 
 });
@@ -17,11 +17,11 @@ function create_disease_table(data) {
 	var datatable = [];
 	var genes = {};
 	for (var i=0; i < data.length; i++) {
-        datatable.push(do_data_to_table(data[i], i));
+        datatable.push(disease_data_to_table(data[i], i));
 		genes[data[i]["locus"]["id"]] = true;
 	}
 
-    set_up_header('do_table', datatable.length, 'entry', 'entries', Object.keys(genes).length, 'gene', 'genes');
+    set_up_header('disease_table', datatable.length, 'entry', 'entries', Object.keys(genes).length, 'gene', 'genes');
 
 	var options = {};
 	options["bPaginate"] = true;
@@ -45,7 +45,7 @@ function create_disease_table(data) {
     ];
     options["aaData"] = datatable;
 
-    return create_table("do_table", options);
+    return create_table("disease_table", options);
 }
 
 var graph_style = cytoscape.stylesheet()
