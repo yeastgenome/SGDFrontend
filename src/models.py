@@ -7762,6 +7762,9 @@ class Complexdbentity(Dbentity):
         refs2 = sorted(refs, key=lambda r: r['display_name'])
         data["references"] = sorted(refs2, key=lambda r: r['year'], reverse=True) 
 
+
+        return data
+
         ## subunits
 
         annot_objs = DBSession.query(Complexbindingannotation).filter_by(complex_id=self.dbentity_id).all()
