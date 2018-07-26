@@ -7774,11 +7774,14 @@ class Complexdbentity(Dbentity):
         for annot in annot_objs:
             interactor = annot.interactor
             binding_interactor = annot.binding_interactor
+
             # if (interactor.format_name, binding_interactor.format_name) not in foundEdges and (binding_interactor.format_name, interactor.format_name) not in foundEdges:
             # if (interactor.format_name, binding_interactor.format_name) not in foundEdges:
+
             edges.append( { "data": { "source": interactor.format_name,
                                       "class_type": "complex",
                                       "target": binding_interactor.format_name } })
+
             foundEdges[(interactor.format_name, binding_interactor.format_name)] = 1
             
             if interactor.format_name in stoichiometry4interactor:
@@ -7810,7 +7813,7 @@ class Complexdbentity(Dbentity):
             subunits.append({ "display_name": display_name,
                               "description": description,
                               "sgdid": sgdid,
-                              "stoichiometry": stoichiometry4interactor[interactor.format_name],
+                              "stoichiometry": stoichiometry4interactor.get(interactor.format_name),
                               "link": link })
         
             nodes.append({ "data": { "name": display_name,
