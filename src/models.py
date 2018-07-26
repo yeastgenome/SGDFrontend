@@ -3143,9 +3143,9 @@ class Locusdbentity(Dbentity):
                 add = annotation.dbentity1_id
 
             if add in genes_to_interactions:
-                genes_to_interactions[add].add(annotation.reference_id)
+                genes_to_interactions[add].add(annotation.annotation_id)
             else:
-                genes_to_interactions[add] = set([annotation.reference_id])
+                genes_to_interactions[add] = set([annotation.annotation_id])
 
         list_genes_to_interactions = sorted([(g, genes_to_interactions[g]) for g in genes_to_interactions], key=lambda x: len(x[1]), reverse=True)
 
