@@ -7769,33 +7769,22 @@ class Complexdbentity(Dbentity):
         unique_interactors = []
         found = {}
         edges = []
-        # foundEdges = {}
         stoichiometry4interactor = {}
         for annot in annot_objs:
             interactor = annot.interactor
             binding_interactor = annot.binding_interactor
 
-            # if (interactor.format_name, binding_interactor.format_name) not in foundEdges and (binding_interactor.format_name, interactor.format_name) not in foundEdges:
-            # if (interactor.format_name, binding_interactor.format_name) not in foundEdges:
-
-            edges.append( { "data": { "source": interactor.format_name,
-                                      "class_type": "complex",
-                                      "target": binding_interactor.format_name } })
-
-            ## foundEdges[(interactor.format_name, binding_interactor.format_name)] = 1
+            if binding_interactor is not None:
+                edges.append( { "data": { "source": interactor.format_name,
+                                          "class_type": "complex",
+                                          "target": binding_interactor.format_name } })
 
             stoichiometry4interactor[interactor.format_name] = annot.stoichiometry  
-
-            # format_name = interactor.format_name
-            # if format_name in stoichiometry4interactor and stoichiometry4interactor[format_name] is not None:
-            #    stoichiometry4interactor[format_name] = stoichiometry4interactor[format_name] + annot.stoichiometry
-            # else:
-            #    stoichiometry4interactor[format_name] = annot.stoichiometry
 
             if interactor.format_name not in found:
                 unique_interactors.append(interactor)
                 found[interactor.format_name] = 1
-            if binding_interactor.format_name not in found:
+            if binding_interactor is not None and binding_interactor.format_name not in found:
                 unique_interactors.append(binding_interactor)
                 found[binding_interactor.format_name] =1
 
