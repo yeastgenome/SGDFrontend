@@ -4940,6 +4940,8 @@ class Disease(Base):
         for a in annotations:
             annotations_dict += a.to_dict(disease=self)
 
+        return annotations_dict
+
     def annotations_and_children_to_dict(self):
         annotations_dict = []
 
@@ -5170,7 +5172,7 @@ class Diseaseannotation(Base):
 
         experiment_url = None
         for url in alias_url:
-            if url.display_name == "OntoBee":
+            if url.display_name == "DO":
                 experiment_url = url.obj_url
                 break
         if experiment_url == None and len(alias_url) > 1:
