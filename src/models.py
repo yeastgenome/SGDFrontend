@@ -7707,6 +7707,11 @@ class Complexdbentity(Dbentity):
         data['properties'] = self.properties
         data['eco'] = self.eco.format_name
 
+
+        return data
+
+
+
         ## aliases
 
         alias_objs = DBSession.query(ComplexAlias).filter_by(complex_id=self.dbentity_id).order_by(ComplexAlias.alias_type, ComplexAlias.display_name).all()
@@ -7762,8 +7767,6 @@ class Complexdbentity(Dbentity):
         refs2 = sorted(refs, key=lambda r: r['display_name'])
         data["references"] = sorted(refs2, key=lambda r: r['year'], reverse=True) 
 
-
-        return data
 
         ## subunits
 
