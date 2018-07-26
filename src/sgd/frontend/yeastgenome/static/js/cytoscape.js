@@ -98,8 +98,11 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 	} else if (legendType === "phenotypeOntology" || legendType === "observable") {
 		mainText = "Current Observable";
 		secondText = "Other Observable";
+	} else if (legendType === "complex") {
+	        mainText = "protein";
+	        secondText = "small molecule";
 	}
-
+	
 	var secondColor = (legendType === "goOntology") ? "#458FD3" :  "#757575";
 
 	if (legendType === "observable") secondColor = "#FF6A00";
@@ -108,9 +111,9 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 	
 	var startX = (legendType === "phenotypeOntology" || legendType === "observable") ? 74 : 53;
 
-	if (legendType != 'complex') {
-	    drawLegendNode(ctx, mainText, startX, legendY, '#F9DA56', true, false);
-	}
+
+	drawLegendNode(ctx, mainText, startX, legendY, '#F9DA56', true, false);
+	    
 
         var secondX = (legendType === "phenotypeOntology" || legendType === "observable") ? 230 : 160;
 	    
@@ -120,8 +123,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
     
         var nextLegendX = (legendType === "phenotypeOntology" || legendType === "observable") ? 360 : 245;
 	    
-        if (legendType === "protein") {
-		
+        if (legendType === "protein") {	
 	        drawLegendNode(ctx, "Domain", nextLegendX, legendY, '#3366cc', false, true);	
 	} else if (legendType === "go") {
 		drawLegendNode(ctx, "GO Term", nextLegendX, legendY, '#6CB665', false, true);
