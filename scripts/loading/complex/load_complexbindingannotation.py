@@ -86,7 +86,7 @@ def load_complexbindingannotation():
             linkedFeatures = p.get('linkedFeatures')
             if linkedFeatures is None or len(linkedFeatures) == 0:
                 # no binding interactor
-                bindingInteractors.append(-1, None, None, None)
+                bindingInteractors.append((-1, None, None, None))
             else:
                 for lf in linkedFeatures:
                     binding_interactor = lf.get('participantId')
@@ -111,13 +111,16 @@ def load_complexbindingannotation():
 
                     print "ranges:", ranges, range_start, range_end
                     
-                    bindingInteractors.append(binding_interactor_id, binding_type_id, range_start, range_end)
+                    bindingInteractors.append((binding_interactor_id, binding_type_id, range_start, range_end))
 
             for b in bindingInteractors:
 
                 (binding_interactor_id, binding_type_id, range_start, range_end) = b
 
                 key = (complex_id, interactor_id, binding_interactor_id)
+
+                if key in loaded:
+                    continue
 
                 loaded[key] = 1
 
@@ -130,8 +133,8 @@ def load_complexbindingannotation():
 
                 update_annotation(nex_session, fw, complex_id, interactor_id, binding_interactor_id, binding_type_id, range_start, range_end, stoichiometry, annotation_in_db, source_id, taxonomy_id)
 
-        nex_session.rollback()
-        # nex_session.commit()  
+        # nex_session.rollback()
+        nex_session.commit()  
 
     for key in key_to_annotation:
         if key not in loaded:
@@ -143,11 +146,14 @@ def load_complexbindingannotation():
                 nex_session.query(Complexbindingannotation).filter_by(complex_id=complex_id, interactor_id=interactor_id, binding_interactor_id=binding_interactor_id).delete()
                 fw.write("The Complexbindingannotation for complex_id=" + str(complex_id) + ", interactor_id=" + str(interactor_id) + ", binding_interactor_id=" + str(binding_interactor_id) + " has been deleted.\n")
 
-    nex_session.rollback()
-    # nex_session.commit()  
+    # nex_session.rollback()
+    nex_session.commit()  
 
  
 def insert_annotation(nex_session, fw, complex_id, interactor_id, binding_interactor_id, binding_type_id, range_start, range_end, stoichiometry, source_id, taxonomy_id):
+
+    if binding_interactor_id == -1:
+        binding_interactor_id = None
 
     x = Complexbindingannotation(complex_id = complex_id,
                                  interactor_id = interactor_id,
@@ -180,7 +186,7 @@ def update_annotation(nex_session, fw, complex_id, interactor_id, binding_intera
         update_hash['stoichiometry'] = stoichiometry
     
     if not update_hash:
-        continue
+        return
 
     if binding_interactor_id == -1:
         nex_session.query(Complexbindingannotation).filter_by(complex_id=complex_id, interactor_id=interactor_id).update(update_hash)
