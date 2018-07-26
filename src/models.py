@@ -7784,11 +7784,13 @@ class Complexdbentity(Dbentity):
 
             ## foundEdges[(interactor.format_name, binding_interactor.format_name)] = 1
 
-            format_name = interactor.format_name
-            if format_name in stoichiometry4interactor and stoichiometry4interactor[format_name] is not None:
-                stoichiometry4interactor[format_name] = stoichiometry4interactor[format_name] + annot.stoichiometry
-            else:
-                stoichiometry4interactor[format_name] = annot.stoichiometry
+            stoichiometry4interactor[interactor.format_name] = annot.stoichiometry  
+
+            # format_name = interactor.format_name
+            # if format_name in stoichiometry4interactor and stoichiometry4interactor[format_name] is not None:
+            #    stoichiometry4interactor[format_name] = stoichiometry4interactor[format_name] + annot.stoichiometry
+            # else:
+            #    stoichiometry4interactor[format_name] = annot.stoichiometry
 
             if interactor.format_name not in found:
                 unique_interactors.append(interactor)
