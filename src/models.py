@@ -7795,7 +7795,7 @@ class Complexdbentity(Dbentity):
             description = interactor.description
             link = interactor.obj_url
             sgdid = None
-            type = "small molecule"
+            type = "small-molecule"
             if interactor.locus_id:
                 display_name = interactor.locus.display_name
                 sgdid = interactor.locus.sgdid
