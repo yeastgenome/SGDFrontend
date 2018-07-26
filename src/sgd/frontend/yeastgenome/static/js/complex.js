@@ -74,6 +74,10 @@ var graph_style = cytoscape.stylesheet()
 	    'height': 30,
 	    'border-color': '#fff'
         })
+    .selector("node[type = 'protein']")
+    .css({
+	    'color': '#7FBF7B' 
+        })
     .selector('edge')
     .css({
 	    'width': 2
@@ -82,7 +86,7 @@ var graph_style = cytoscape.stylesheet()
     .css({
 	    'background-color': "#fade71",
 	    'text-outline-color': '#fff',
-	    'color': '##7FBF7B'
+	    'color': '#fff'
         })
     .selector("edge[class_type = 'complex']")
     .css({
