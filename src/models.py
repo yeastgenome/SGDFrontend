@@ -7769,17 +7769,23 @@ class Complexdbentity(Dbentity):
         unique_interactors = []
         found = {}
         edges = []
-        foundEdges = {}
+        # foundEdges = {}
+        stoichiometry4interactor = {}
         for annot in annot_objs:
             interactor = annot.interactor
             binding_interactor = annot.binding_interactor
-            if (interactor.format_name, binding_interactor.format_name) not in foundEdges and (binding_interactor.format_name, interactor.format_name) not in foundEdges:
+            # if (interactor.format_name, binding_interactor.format_name) not in foundEdges and (binding_interactor.format_name, interactor.format_name) not in foundEdges:
             # if (interactor.format_name, binding_interactor.format_name) not in foundEdges:
-                edges.append( { "data": { "source": interactor.format_name,
-                                          "class_type": "complex",
-                                          "target": binding_interactor.format_name } })
-                foundEdges[(interactor.format_name, binding_interactor.format_name)] = 1
-                
+            edges.append( { "data": { "source": interactor.format_name,
+                                      "class_type": "complex",
+                                      "target": binding_interactor.format_name } })
+            foundEdges[(interactor.format_name, binding_interactor.format_name)] = 1
+            
+            if interactor.format_name in stoichiometry4interactor:
+                stoichiometry4interactor[interactor.format_name] = stoichiometry4interactor[interactor.format_name] + annot.stoichiometry
+            else:
+                stoichiometry4interactor[interactor.format_name] = annot.stoichiometry
+
             if interactor.format_name not in found:
                 unique_interactors.append(interactor)
                 found[interactor.format_name] = 1
@@ -7794,20 +7800,23 @@ class Complexdbentity(Dbentity):
             description = interactor.description
             link = interactor.obj_url
             sgdid = None
+            type = "small molecule"
             if interactor.locus_id:
                 display_name = interactor.locus.display_name
                 sgdid = interactor.locus.sgdid
                 description = interactor.locus.headline
                 link = interactor.locus.obj_url
+                type = "protein"
             subunits.append({ "display_name": display_name,
                               "description": description,
                               "sgdid": sgdid,
-                              "link": link,
-                              "stoichiometry": interactor.stoichiometry })
+                              "stoichiometry": stoichiometry4interactor[interactor.format_name],
+                              "link": link })
+        
             nodes.append({ "data": { "name": display_name,
                                      "id": interactor.format_name,
                                      "link": link,
-                                     "type": "BIOENTITY" } })
+                                     "type": type } })
                  
         data['subunit'] = sorted(subunits, key=lambda a: a['display_name'])
         data['graph'] = { "edges": edges, "nodes": nodes }
