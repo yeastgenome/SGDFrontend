@@ -82,7 +82,7 @@ var graph_style = cytoscape.stylesheet()
     .css({
 	    'background-color': "#fade71",
 	    'text-outline-color': '#fff',
-	    'color': '#888'
+	    'color': '##7FBF7B'
         })
     .selector("edge[class_type = 'complex']")
     .css({
