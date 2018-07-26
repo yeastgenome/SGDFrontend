@@ -127,7 +127,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 	        drawLegendNode(ctx, "Domain", nextLegendX, legendY, '#3366cc', false, true);	
 	} else if (legendType === "go") {
 		drawLegendNode(ctx, "GO Term", nextLegendX, legendY, '#6CB665', false, true);
-	} else if (legendType === "phenotype" || legendType === "complex" ) {
+	} else if (legendType === "phenotype") {
 		drawLegendNode(ctx, "Phenotype", nextLegendX, legendY, '#C591F5', false, true);
 	} else if (legendType === "literature") {
 		drawLegendNode(ctx, "Reference", nextLegendX, legendY, '#C591F5', true, true);
