@@ -517,8 +517,10 @@ def go_locus_details_all(request):
 
 @view_config(route_name='disease', renderer='json', request_method='GET')
 def disease(request):
-    id = extract_id_request(request, 'disease', param_name="format_name")
-    disease = get_disease_by_id(id)
+    #id = extract_id_request(request, 'disease', param_name="format_name")
+    #disease = get_disease_by_id(id)
+    disease_id = request.matchdict['id'].upper()
+    disease = DBSession.query(Disease).filter_by(doid=disease_id).one_or_none()
     if disease:
         return disease.to_dict()
     else:
@@ -526,8 +528,10 @@ def disease(request):
 
 @view_config(route_name='disease_ontology_graph', renderer='json', request_method='GET')
 def disease_ontology_graph(request):
-    id = extract_id_request(request, 'disease')
-    disease = get_disease_by_id(id)
+    # id = extract_id_request(request, 'disease')
+    # disease = get_disease_by_id(id)
+    disease_id = request.matchdict['id'].upper()
+    disease = DBSession.query(Disease).filter_by(disease_id=disease_id).one_or_none()
     if disease:
         return disease.ontology_graph()
     else:
@@ -535,17 +539,21 @@ def disease_ontology_graph(request):
 
 @view_config(route_name='disease_locus_details', renderer='json', request_method='GET')
 def disease_locus_details(request):
-    id = extract_id_request(request, 'disease')
-    disease = get_disease_by_id(id)
+    # id = extract_id_request(request, 'disease')
+    # disease = get_disease_by_id(id)
+    disease_id = request.matchdict['id'].upper()
+    disease = DBSession.query(Disease).filter_by(disease_id=disease_id).one_or_none()
     if disease:
         return disease.annotations_to_dict()
     else:
         return HTTPNotFound()
 
 @view_config(route_name='disease_locus_details_all', renderer='json', request_method='GET')
-def do_locus_details_all(request):
-    id = extract_id_request(request, 'disease')
-    disease = get_disease_by_id(id)
+def disease_locus_details_all(request):
+    # id = extract_id_request(request, 'disease')
+    # disease = get_disease_by_id(id)
+    disease_id = request.matchdict['id'].upper()
+    disease = DBSession.query(Disease).filter_by(disease_id=disease_id).one_or_none()
     if disease:
         return disease.annotations_and_children_to_dict()
     else:

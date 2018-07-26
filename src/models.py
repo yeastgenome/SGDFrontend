@@ -4851,7 +4851,7 @@ class Disease(Base):
                 "link": self.obj_url,
                 "sub_type": "FOCUS",
                 "name": self.display_name.replace("_"," ") + " (" + str(annotations) + ")",
-                "id": str(self.go_id)
+                "id": str(self.disease_id)
             }
         }]
 
@@ -4979,7 +4979,7 @@ class Disease(Base):
         return annotation_count < 100
 
     def get_secondary_base_url(self):
-        return '/webservice/do/' + str(self.disease_id)
+        return '/webservice/disease/' + str(self.disease_id)
 
     def get_all_cache_urls(self, is_quick=False):
         if is_quick and self.can_skip_cache():
@@ -5036,6 +5036,39 @@ class DiseaseRelation(Base):
     parent = relationship(u'Disease', primaryjoin='DiseaseRelation.parent_id == Disease.disease_id')
     ro = relationship(u'Ro')
     source = relationship(u'Source')
+
+    def to_graph(self, nodes, edges, add_parent=False, add_child=False):
+        adding_nodes = []
+        if add_parent:
+            adding_nodes.append(self.parent)
+
+        if add_child:
+            adding_nodes.append(self.child)
+
+        for node in adding_nodes:
+            annotations = DBSession.query(Diseaseannotation.dbentity_id, func.count(Diseaseannotation.dbentity_id)).filter_by(disease_id=node.disease_id).group_by(Diseaseannotation.dbentity_id).count()
+
+            type = "development"
+            name = node.display_name + " (" + str(annotations) + ")"
+
+            nodes.append({
+                "data": {
+                    "link": node.obj_url,
+                    "sub_type": type,
+                    "name": name,
+                    "id": str(node.disease_id)
+                }
+            })
+
+        edges.append({
+            "data": {
+                "name": self.ro.display_name,
+                "target": str(self.child.disease_id),
+                "source": str(self.parent.disease_id)
+            }
+        })
+
+        return self.child
 
 
 class DiseaseUrl(Base):

@@ -55,10 +55,10 @@ def main(global_config, **settings):
     config.add_route('go_locus_details', '/go/{id}/locus_details', request_method='GET')
     config.add_route('go_locus_details_all', '/go/{id}/locus_details_all', request_method='GET')
 
-    config.add_route('disease', '/do/{format_name}', request_method='GET')
-    config.add_route('disease_ontology_graph', '/do/{id}/ontology_graph', request_method='GET')
-    config.add_route('disease_locus_details', '/do/{id}/locus_details', request_method='GET')
-    config.add_route('disease_locus_details_all', '/do/{id}/locus_details_all', request_method='GET')
+    config.add_route('disease', '/disease/{id}', request_method='GET')
+    config.add_route('disease_ontology_graph', '/disease/{id}/ontology_graph', request_method='GET')
+    config.add_route('disease_locus_details', '/disease/{id}/locus_details', request_method='GET')
+    config.add_route('disease_locus_details_all', '/disease/{id}/locus_details_all', request_method='GET')
 
     config.add_route('locus', '/locus/{sgdid}', request_method='GET')
     config.add_route('locus_tabs', '/locus/{id}/tabs', request_method='GET')
