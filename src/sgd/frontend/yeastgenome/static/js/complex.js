@@ -74,10 +74,6 @@ var graph_style = cytoscape.stylesheet()
 	    'height': 30,
 	    'border-color': '#fff'
         })
-    .selector("node[type = 'protein']")
-    .css({
-	    'text-outline-color': 'yellow' 
-        })
     .selector('edge')
     .css({
 	    'width': 2
