@@ -3055,8 +3055,6 @@ class Locusdbentity(Dbentity):
 
     def disease_graph(self):
         main_gene_disease_annotations = DBSession.query(Diseaseannotation, Diseasesupportingevidence.dbxref_id, Diseasesupportingevidence.obj_url).outerjoin(Diseasesupportingevidence).filter(Diseaseannotation.dbentity_id==self.dbentity_id).all()
-        for x in main_gene_disease_annotations:
-            print(x[0].dbentity_id, x[1], x[2])
         main_gene_do_ids = [a[0].disease_id for a in main_gene_disease_annotations]
 
         genes_sharing_do_annotations = DBSession.query(Diseaseannotation, Diseasesupportingevidence.dbxref_id, Diseasesupportingevidence.obj_url).outerjoin(Diseasesupportingevidence).filter(
@@ -3071,124 +3069,125 @@ class Locusdbentity(Dbentity):
         for x in genes_sharing_do_annotations:
             all_gene_ids.add(x[0].dbentity_id)
             all_disease_ids.add(x[0].disease_id)
-        print(list(all_gene_ids))
-        print(list(all_disease_ids))
-        gene_names = DBSession.query(Locusdbentity.dbentity_id, Locusdbentity.display_name).filter(Locusdbentity.dbentity_id.in_(all_gene_ids)).all()
-        print(gene_names)
+        # get names up front
+        gene_names = DBSession.query(Locusdbentity.dbentity_id, Locusdbentity.display_name, Locusdbentity.format_name, Locusdbentity.obj_url).filter(Locusdbentity.dbentity_id.in_(all_gene_ids)).all()
+        gene_ids_to_names = {}
+        gene_ids_to_format_names = {}
+        gene_ids_to_urls = {}
+        for x in gene_names:
+            gene_ids_to_names[x[0]] = x[1]
+            gene_ids_to_format_names[x[0]] = x[2]
+            gene_ids_to_urls[x[0]] = x[3]
+        disease_names = DBSession.query(Disease.disease_id, Disease.display_name, Disease.obj_url).filter(Disease.disease_id.in_(all_disease_ids)).all()
+        disease_ids_to_names = {}
+        disease_ids_to_urls = {}
+        for x in disease_names:
+            disease_ids_to_names[x[0]] = x[1]
+            disease_ids_to_urls[x[0]] = x[2]
 
-        all_node_ids = set([self.dbentity_id])
+        all_node_ids = [self.dbentity_id]
+        all_edge_slugs = []
         nodes = [{
             "name": self.display_name.replace("_", " "),
             "id": self.format_name,
             "href": self.obj_url,
-            "category": self.display_name.replace("_", " "),
+            "category": self.display_name.replace("_", " ")
         }]
         edges = []
         # add focus_gene -> human_gene -> disease nodes and edges
-        for x in main_gene_disease_annotations:
+        for x in genes_sharing_do_annotations:
+            disease_annotation = x[0]
             human_gene_id = x[1]
+            human_gene_url = x[2]
+            yeast_gene_id = disease_annotation.dbentity_id
+            if yeast_gene_id not in all_node_ids:
+                format_name = gene_ids_to_format_names[yeast_gene_id]
+                nodes.append({
+                    "name": gene_ids_to_names[yeast_gene_id],
+                    "id": format_name,
+                    "href": gene_ids_to_urls[yeast_gene_id],
+                    "category": 'Yeast Gene'
+                })
+                all_node_ids.append(yeast_gene_id)
+            edge_slug = format_name + '.' + human_gene_id
+            if edge_slug not in all_edge_slugs:
+                edges.append({
+                    'source': format_name,
+                    'target': human_gene_id
+                })
+                all_edge_slugs.append(edge_slug)
 
-
-
-        return {}
-        for annotation in genes_sharing_do:
-            gene = annotation.dbentity_id
-            do = annotation.disease_id
-            if gene in genes_to_do:
-                genes_to_do[gene].add(do)
-            else:
-                genes_to_do[gene] = set([do])
-
-        list_genes_to_do = sorted([(g, genes_to_do[g]) for g in genes_to_do], key=lambda x: len(x[1]), reverse=True)
-
-        edges = []
-        nodes = {}
-
-        edges_added = set([])
-
-        nodes[self.format_name] = {
-            "data": {
-                "name": self.display_name.replace("_", " "),
-                "id": self.format_name,
-                "link": self.obj_url,
-                "type": "BIOENTITY",
-                "category": "FOCUS"
-            }
-        }
-
-        min_cutoff = 99999999
-        max_cutoff = 0
-
-        i = 0
-        while i < len(list_genes_to_do) and len(nodes) <= 20 and len(edges) <= 50:
-            dbentity = DBSession.query(Dbentity.display_name, Dbentity.format_name, Dbentity.obj_url).filter_by(
-                dbentity_id=list_genes_to_do[i][0]).one_or_none()
-
-            do_ids = list_genes_to_do[i][1]
-
-            if len(do_ids) > max_cutoff:
-                max_cutoff = len(do_ids)
-
-            if len(do_ids) < min_cutoff:
-                min_cutoff = len(do_ids)
-
-            if dbentity[1] not in nodes:
-                nodes[dbentity[1]] = {
-                    "data": {
-                        "name": dbentity[0],
-                        "id": dbentity[1],
-                        "link": dbentity[2],
-                        "type": "BIOENTITY",
-                        "gene_count": len(do_ids)
-                    }
-                }
-
-            for do_id in do_ids:
-                do = DBSession.query(Disease).filter_by(disease_id=do_id).one_or_none()
-
-                if do.format_name not in nodes:
-                    nodes[do.format_name] = {
-                        "data": {
-                            "name": do.display_name.replace("_", " "),
-                            "id": do.format_name,
-                            "link": do.obj_url,
-                            "type": "DO",
-                            "gene_count": len(do_ids)
-                        }
-                    }
-
-                if (do.format_name + " " + dbentity[1]) not in edges_added:
-                    edges.append({
-                        "data": {
-                            "source": do.format_name,
-                            "target": dbentity[1]
-                        }
-                    })
-                    edges_added.add(do.format_name + " " + dbentity[1])
-
-                if (do.format_name + " " + self.format_name) not in edges_added:
-                    edges.append({
-                        "data": {
-                            "source": do.format_name,
-                            "target": self.format_name
-                        }
-                    })
-                    edges_added.add(do.format_name + " " + self.format_name)
-
-            i += 1
-
-        nodes[self.format_name]["data"]["gene_count"] = max_cutoff
-
-        if len(list_genes_to_do) == 0:
-            min_cutoff = max_cutoff
+            if human_gene_id not in all_node_ids:
+                nodes.append({
+                    "name": human_gene_id,
+                    "id": human_gene_id,
+                    "href": human_gene_url,
+                    "category": 'Human Gene'
+                })
+                all_node_ids.append(human_gene_id)
+            edge_slug = self.format_name + '.' + human_gene_id
+            if edge_slug not in all_edge_slugs:
+                edges.append({
+                    'source': self.format_name,
+                    'target': human_gene_id
+                })
+                all_edge_slugs.append(edge_slug)
+            d_id = disease_annotation.disease_id
+            if d_id not in all_node_ids:
+                nodes.append({
+                    "name": disease_ids_to_names[d_id],
+                    "id": d_id,
+                    "href": disease_ids_to_urls[d_id],
+                    "category": 'Disease'
+                })
+                all_node_ids.append(d_id)
+            edge_slug = human_gene_id + '.' + str(d_id)
+            if edge_slug not in all_edge_slugs:
+                edges.append({
+                    'source': human_gene_id,
+                    'target': d_id
+                })
+                all_edge_slugs.append(edge_slug)
+        for x in main_gene_disease_annotations:
+            disease_annotation = x[0]
+            human_gene_id = x[1]
+            human_gene_url = x[2]
+            if human_gene_id not in all_node_ids:
+                nodes.append({
+                    "name": human_gene_id,
+                    "id": human_gene_id,
+                    "href": human_gene_url,
+                    "category": 'Human Gene'
+                })
+                all_node_ids.append(human_gene_id)
+            edge_slug = self.format_name + '.' + human_gene_id
+            if edge_slug not in all_edge_slugs:
+                edges.append({
+                    'source': self.format_name,
+                    'target': human_gene_id
+                })
+                all_edge_slugs.append(edge_slug)
+            d_id = disease_annotation.disease_id
+            if d_id not in all_node_ids:
+                nodes.append({
+                    "name": disease_ids_to_names[d_id],
+                    "id": d_id,
+                    "href": disease_ids_to_urls[d_id],
+                    "category": 'Disease'
+                })
+                all_node_ids.append(d_id)
+            edge_slug = human_gene_id + '.' + str(d_id)
+            if edge_slug not in all_edge_slugs:
+                edges.append({
+                    'source': human_gene_id,
+                    'target': d_id
+                })
+                all_edge_slugs.append(edge_slug)
 
         return {
-            "min_cutoff": min_cutoff,
-            "max_cutoff": max_cutoff,
-            "nodes": [nodes[n] for n in nodes],
-            "edges": edges
+            'nodes': nodes,
+            'edges': edges
         }
-
 
     def interaction_graph_secondary_edges(self, Interaction, edge_type, nodes, edges):
         secondary_nodes = set(nodes.keys()) - set([self.dbentity_id])
