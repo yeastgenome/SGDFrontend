@@ -3054,12 +3054,43 @@ class Locusdbentity(Dbentity):
         }
 
     def disease_graph(self):
-        main_gene_disease_annotations = DBSession.query(Diseaseannotation).filter_by(dbentity_id=self.dbentity_id).all()
-        main_gene_do_ids = [a.disease_id for a in main_gene_disease_annotations]
+        main_gene_disease_annotations = DBSession.query(Diseaseannotation, Diseasesupportingevidence.dbxref_id, Diseasesupportingevidence.obj_url).outerjoin(Diseasesupportingevidence).filter(Diseaseannotation.dbentity_id==self.dbentity_id).all()
+        for x in main_gene_disease_annotations:
+            print(x[0].dbentity_id, x[1], x[2])
+        main_gene_do_ids = [a[0].disease_id for a in main_gene_disease_annotations]
 
-        genes_sharing_do = DBSession.query(Diseaseannotation).filter(
+        genes_sharing_do_annotations = DBSession.query(Diseaseannotation, Diseasesupportingevidence.dbxref_id, Diseasesupportingevidence.obj_url).outerjoin(Diseasesupportingevidence).filter(
             (Diseaseannotation.disease_id.in_(main_gene_do_ids)) & (Diseaseannotation.dbentity_id != self.dbentity_id)).all()
         genes_to_do = {}
+        # get all gene and disease names
+        all_gene_ids = set([])
+        all_disease_ids = set([])
+        for x in main_gene_disease_annotations:
+            all_gene_ids.add(x[0].dbentity_id)
+            all_disease_ids.add(x[0].disease_id)
+        for x in genes_sharing_do_annotations:
+            all_gene_ids.add(x[0].dbentity_id)
+            all_disease_ids.add(x[0].disease_id)
+        print(list(all_gene_ids))
+        print(list(all_disease_ids))
+        gene_names = DBSession.query(Locusdbentity.dbentity_id, Locusdbentity.display_name).filter(Locusdbentity.dbentity_id.in_(all_gene_ids)).all()
+        print(gene_names)
+
+        all_node_ids = set([self.dbentity_id])
+        nodes = [{
+            "name": self.display_name.replace("_", " "),
+            "id": self.format_name,
+            "href": self.obj_url,
+            "category": self.display_name.replace("_", " "),
+        }]
+        edges = []
+        # add focus_gene -> human_gene -> disease nodes and edges
+        for x in main_gene_disease_annotations:
+            human_gene_id = x[1]
+
+
+
+        return {}
         for annotation in genes_sharing_do:
             gene = annotation.dbentity_id
             do = annotation.disease_id
@@ -4939,6 +4970,7 @@ class Disease(Base):
         annotations_dict = []
         for a in annotations:
             annotations_dict += a.to_dict(disease=self)
+        return annotations_dict
 
     def annotations_and_children_to_dict(self):
         annotations_dict = []
