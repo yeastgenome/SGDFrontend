@@ -3143,9 +3143,9 @@ class Locusdbentity(Dbentity):
                 add = annotation.dbentity1_id
 
             if add in genes_to_interactions:
-                genes_to_interactions[add].add(annotation.annotation_id)
+                genes_to_interactions[add].add(annotation.reference_id)
             else:
-                genes_to_interactions[add] = set([annotation.annotation_id])
+                genes_to_interactions[add] = set([annotation.reference_id])
 
         list_genes_to_interactions = sorted([(g, genes_to_interactions[g]) for g in genes_to_interactions], key=lambda x: len(x[1]), reverse=True)
 
@@ -3550,6 +3550,7 @@ class Locusdbentity(Dbentity):
         return obj
 
     def to_dict(self):
+        #import pdb; pdb.set_trace()
         obj = {
             "id": self.dbentity_id,
             "display_name": self.display_name,
@@ -3576,7 +3577,8 @@ class Locusdbentity(Dbentity):
             },
             "literature_overview": self.literature_overview_to_dict(),
             "disease_overview": self.disease_overview_to_dict(),
-            "ecnumbers": []
+            "ecnumbers": [],
+            "gene_name": self.gene_name
         }
 
         if self.genetic_position:
@@ -6830,7 +6832,6 @@ class Phenotypeannotation(Base):
             number_conditions[t[0]] = t[1]
 
         counts_dict = {}
-       
         for annotation in annotations:
             add = 1
 
@@ -6847,7 +6848,6 @@ class Phenotypeannotation(Base):
             counts.append((taxonomy, counts_dict[taxonomy]))
 
         for count in counts:
-            
             strains = Straindbentity.get_strains_by_taxon_id(count[0])
 
             if len(strains) > 1:
@@ -6856,7 +6856,7 @@ class Phenotypeannotation(Base):
                 strains_result.append([strains[0].display_name, count[1]])
             else:
                 continue
-        import pdb; pdb.set_trace
+
         return sorted(strains_result, key=lambda strain: (-1 * strain[1], strain[0]))
 
     @staticmethod
@@ -6903,7 +6903,6 @@ class Phenotypeannotation(Base):
                 "experiment_categories": [["Mutant Type", "classical genetics", "large-scale survey"]] +  Phenotypeannotation.count_experiment_categories(phenotype_ids=phenotype_ids)
             }
         else:
-            import pdb; pdb.set_trace()
             return {
                 "strains": [["Strain", "Annotations"]] + Phenotypeannotation.count_strains(annotations=phenotype_annotations),
                 "experiment_categories": [["Mutant Type", "classical genetics", "large-scale survey"]] +  Phenotypeannotation.count_experiment_categories(annotations=phenotype_annotations)
