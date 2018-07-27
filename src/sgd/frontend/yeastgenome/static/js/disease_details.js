@@ -43,10 +43,13 @@ $(document).ready(function() {
 
   	$.getJSON('/backend/locus/' + locus['id'] + '/disease_graph', function(data) {
         if(data['nodes'].length > 1) {
-            var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, false, "go");
-            var slider = create_slider("slider", graph, data['min_cutoff'], data['max_cutoff'], slider_filter, data['max_cutoff']+1);
-            create_cy_download_button(graph, "cy_download", locus['display_name'] + '_disease_graph')
-  		}
+            var _categoryColors = {
+                'FOCUS': 'black',
+                'Yeast Gene': '#1f77b4',
+                'Human Gene': '#1A9E77',
+                'Disease': '#D95F02'
+            };
+            views.network.render(data, _categoryColors);  		}
 		else {
 			hide_section("network");
 		}
@@ -105,50 +108,3 @@ function create_disease_table(prefix, message, filter, data) {
 function slider_filter(new_cutoff) {
     return "node[gene_count >= " + new_cutoff + "], edge";
 }
-
-
-var graph_style = cytoscape.stylesheet()
-	.selector('node')
-	.css({
-		'content': 'data(name)',
-		'font-family': 'helvetica',
-		'font-size': 14,
-		'text-outline-width': 3,
-		'text-outline-color': '#888',
-		'text-valign': 'center',
-		'color': '#fff',
-		'width': 30,
-		'height': 30,
-		'border-color': '#fff'
-	})
-	.selector('edge')
-	.css({
-		'width': 2
-	})
-	.selector("node[sub_type='FOCUS']")
-	.css({
-		'background-color': "#fade71",
-		'text-outline-color': '#fff',
-		'color': '#888'
-	})
-    .selector("node[type='GO']")
-	.css({
-		'shape': 'rectangle',
-		'text-outline-color': '#fff',
-		'color': '#888',
-		'background-color': "#7FBF7B"
-	});
-
-var layout = {
-	"name": "arbor",
-	"liveUpdate": true,
-	"ungrabifyWhileSimulating": true,
-	"nodeMass":function(data) {
-		if(data.sub_type == 'FOCUS') {
-			return 10;
-		}
-		else {
-			return 1;
-		}
-	}
-};

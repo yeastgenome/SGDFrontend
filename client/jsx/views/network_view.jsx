@@ -5,11 +5,8 @@ import d3 from 'd3';
 
 import Graph from 'react-sigma-graph';
 
-// const Graph = require("../components/viz/graph.jsx");
-
 var networkView = {};
-networkView.render = function renderNetworkView (graphData) {
-    var _colorScale = d3.scale.ordinal().domain(['REGULATOR', 'TARGET', 'FOCUS']).range(["#6CB665", "#9F75B8", "#1f77b4"]);
+networkView.render = function renderNetworkView (graphData, categoryColors) {
     var tempDate = new Date();
     var month = tempDate.getMonth() + 1;
     var formattedMonth = ('0' + month).slice(-2);
@@ -21,7 +18,7 @@ networkView.render = function renderNetworkView (graphData) {
     	'TARGET': '#9F75B8',
     	'FOCUS': '#1f77b4'
     };
-    ReactDOM.render(<Graph categoryColors={_categoryColors} data={graphData} headerText={_HeaderText} stage={0} />, document.getElementById('j-network'));
+    ReactDOM.render(<Graph categoryColors={categoryColors} data={graphData} headerText={_HeaderText} />, document.getElementById('j-network'));
 };
 
 module.exports = networkView;
