@@ -109,8 +109,9 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 	var startX = (legendType === "phenotypeOntology" || legendType === "observable") ? 74 : 53;
 
 
-	drawLegendNode(ctx, mainText, startX, legendY, '#F9DA56', true, false);
-	    
+	if (legendType != "complex") {
+	    drawLegendNode(ctx, mainText, startX, legendY, '#F9DA56', true, false);
+	}    
 
         var secondX = (legendType === "phenotypeOntology" || legendType === "observable") ? 230 : 160;
 	    
