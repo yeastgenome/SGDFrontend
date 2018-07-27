@@ -3113,7 +3113,8 @@ class Locusdbentity(Dbentity):
             if edge_slug not in all_edge_slugs:
                 edges.append({
                     'source': format_name,
-                    'target': human_gene_id
+                    'target': human_gene_id,
+                    'label': 'ortholog'
                 })
                 all_edge_slugs.append(edge_slug)
 
@@ -3125,13 +3126,14 @@ class Locusdbentity(Dbentity):
                     "category": 'Human Gene'
                 })
                 all_node_ids.append(human_gene_id)
-            edge_slug = self.format_name + '.' + human_gene_id
-            if edge_slug not in all_edge_slugs:
-                edges.append({
-                    'source': self.format_name,
-                    'target': human_gene_id
-                })
-                all_edge_slugs.append(edge_slug)
+            # edge_slug = self.format_name + '.' + human_gene_id
+            # if edge_slug not in all_edge_slugs:
+            #     edges.append({
+            #         'source': self.format_name,
+            #         'target': human_gene_id,
+            #         'label': 'ortholog'
+            #     })
+            #     all_edge_slugs.append(edge_slug)
             d_id = disease_annotation.disease_id
             if d_id not in all_node_ids:
                 nodes.append({
@@ -3164,7 +3166,8 @@ class Locusdbentity(Dbentity):
             if edge_slug not in all_edge_slugs:
                 edges.append({
                     'source': self.format_name,
-                    'target': human_gene_id
+                    'target': human_gene_id,
+                    'label': 'ortholog'
                 })
                 all_edge_slugs.append(edge_slug)
             d_id = disease_annotation.disease_id
