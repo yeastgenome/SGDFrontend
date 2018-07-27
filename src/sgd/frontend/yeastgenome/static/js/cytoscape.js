@@ -98,9 +98,6 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 	} else if (legendType === "phenotypeOntology" || legendType === "observable") {
 		mainText = "Current Observable";
 		secondText = "Other Observable";
-	} else if (legendType === "complex") {
-	        mainText = "protein";
-	        secondText = "small-molecule";
 	}
 	
 	var secondColor = (legendType === "goOntology") ? "#458FD3" :  "#757575";
@@ -117,7 +114,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 
         var secondX = (legendType === "phenotypeOntology" || legendType === "observable") ? 230 : 160;
 	    
-        if (legendType !== "literature") {
+        if (legendType !== "literature" && legendType !== "complex") {
 	    drawLegendNode(ctx, secondText, secondX, legendY, secondColor, true, true);
 	}
     

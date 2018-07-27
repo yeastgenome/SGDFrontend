@@ -74,6 +74,10 @@ var graph_style = cytoscape.stylesheet()
 	    'height': 30,
 	    'border-color': '#fff'
         })
+    .selector("node[type='small-molecule']")
+    .css({
+	    'text-outline-color': "#338AFF",
+	})
     .selector('edge')
     .css({
 	    'width': 2
@@ -86,7 +90,7 @@ var graph_style = cytoscape.stylesheet()
         })
     .selector("edge[class_type = 'complex']")
     .css({
-	    'line-color': "#7FBF7B"
+	    'line-color': "#74FF33" 
         });
 
 var layout = {
