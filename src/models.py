@@ -3576,8 +3576,7 @@ class Locusdbentity(Dbentity):
             },
             "literature_overview": self.literature_overview_to_dict(),
             "disease_overview": self.disease_overview_to_dict(),
-            "ecnumbers": [],
-            "gene_name": self.gene_name
+            "ecnumbers": []
         }
 
         if self.genetic_position:
@@ -6831,6 +6830,7 @@ class Phenotypeannotation(Base):
             number_conditions[t[0]] = t[1]
 
         counts_dict = {}
+       
         for annotation in annotations:
             add = 1
 
@@ -6847,6 +6847,7 @@ class Phenotypeannotation(Base):
             counts.append((taxonomy, counts_dict[taxonomy]))
 
         for count in counts:
+            
             strains = Straindbentity.get_strains_by_taxon_id(count[0])
 
             if len(strains) > 1:
@@ -6855,7 +6856,7 @@ class Phenotypeannotation(Base):
                 strains_result.append([strains[0].display_name, count[1]])
             else:
                 continue
-
+        import pdb; pdb.set_trace
         return sorted(strains_result, key=lambda strain: (-1 * strain[1], strain[0]))
 
     @staticmethod
@@ -6902,6 +6903,7 @@ class Phenotypeannotation(Base):
                 "experiment_categories": [["Mutant Type", "classical genetics", "large-scale survey"]] +  Phenotypeannotation.count_experiment_categories(phenotype_ids=phenotype_ids)
             }
         else:
+            import pdb; pdb.set_trace()
             return {
                 "strains": [["Strain", "Annotations"]] + Phenotypeannotation.count_strains(annotations=phenotype_annotations),
                 "experiment_categories": [["Mutant Type", "classical genetics", "large-scale survey"]] +  Phenotypeannotation.count_experiment_categories(annotations=phenotype_annotations)
