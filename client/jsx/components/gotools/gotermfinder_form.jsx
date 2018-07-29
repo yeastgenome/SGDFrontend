@@ -66,7 +66,10 @@ const GoTermFinder = React.createClass({
 			var data = this.state.resultData;
 			var output = data['output'];
 			if (typeof(output) != "undefined") {
-			     return (<div><span style={ style.textFont }>{ output }</span></div>);
+			     // return (<div><span style={ style.textFont }>{ output }</span></div>);
+			     return (<div>
+			     	     <p dangerouslySetInnerHTML={{ __html: output }} />
+			     	     </div>);
 			}
 
 			var resultTable = data['html'];
@@ -84,8 +87,8 @@ const GoTermFinder = React.createClass({
 			var tableSaveOptions = this.tableSaveOptions(tableUrl, termsUrl, tabUrl, inputUrl);
 			var graphSaveOptions = this.graphSaveOptions(pngUrl, pngHtmlUrl, svgUrl, psUrl, inputUrl);
 
-			tableSaveOptions = "<br><a name='table'>" + "<h2><center>Search Results in HTML Table Format</center></h2><br>" + tableSaveOptions;
-			graphSaveOptions = "<a name='graph'>" + "<h2><center>Search Results in GO View Tree Image Format</center></h2><br>" + graphSaveOptions;
+			tableSaveOptions = "<br><h2 id='table'><center>Search Results in HTML Table Format</center></h2><br>" + tableSaveOptions;
+			graphSaveOptions = "<h2 id='graph'><center>Search Results in GO View Tree Image Format</center></h2><br>" + graphSaveOptions;
 
 			return (<div>
 			       <p dangerouslySetInnerHTML={{ __html: resultText }} />
@@ -173,9 +176,10 @@ const GoTermFinder = React.createClass({
 	getGeneBox() {
 
                 return (<div style={{ textAlign: "top" }}>
-			<h3><strong>Enter Gene/ORF names</strong> (separated by a return or a space):
+			<h3><strong>Enter Gene/ORF names</strong> (separated by a return or a space):</h3>
                         <textarea ref='genes' onChange={this._onChange} name='genes' rows='2' cols='90'></textarea>
-			<strong style={{ color: 'red'}}>OR</strong> <strong>Upload a file of Gene/ORF names</strong> (.txt or .tab format):
+			Note: If you have a big gene list (>100), save it as a file and upload it below.
+			<h3><strong style={{ color: 'red'}}>OR</strong> <strong>Upload a file of Gene/ORF names</strong> (.txt or .tab format):
                         <input className="btn btn-default btn-file" type="file" name='uploadFile' onChange={this.handleFile} accept="image/*;capture=camera"/></h3>
                 </div>);
 
@@ -184,9 +188,10 @@ const GoTermFinder = React.createClass({
 	getGene4bgBox() {
 
                 return (<div style={{ textAlign: "top" }}>
-                        <h3><strong>Use default background set</strong> (all features in the database that have GO annotations)</h3>
-			<h3><strong style={{ color: 'red'}}>OR</strong> <strong>Enter Gene/ORF names</strong> (separated by a return or a space):
-                        <textarea ref='genes4bg' onChange={this._onChange} name='genes4bg' rows='4' cols='163'></textarea></h3>
+                        <h3><strong>Use default background set</strong> (all features in the database that have GO annotations)
+			<strong style={{ color: 'red'}}>OR</strong> <strong>Enter Gene/ORF names</strong> (separated by a return or a space):</h3>
+                        <textarea ref='genes4bg' onChange={this._onChange} name='genes4bg' rows='4' cols='163'></textarea>
+			Note: If you have a big background list (>100), save it as a file and upload it below.
 			<h3><strong style={{ color: 'red'}}>OR</strong> <strong>Upload a file of Gene/ORF names</strong> (.txt or .tab format):
                         <input className="btn btn-default btn-file" type="file" name='uploadFile' onChange={this.handleFile4bg} accept="image/*;capture=camera"/></h3>
                         </div>);
@@ -381,7 +386,7 @@ const GoTermFinder = React.createClass({
 	topDescription() {
 		
 		// 2. Manually curated and High-throughput annotation methods, 
-		return "<p><h3>The GO Term Finder (<a href='http://search.cpan.org/dist/GO-TermFinder/' target='infowin'>Version 0.86</a>) searches for significant shared GO terms, or parents of those GO terms, used to describe the genes in your list to help you discover what the genes may have in common. To map annotations of a group of genes to more general terms and/or to bin them in broad categories, use the <a href='https://www.yeastgenome.org/cgi-bin/GO/goSlimMapper.pl' target='infowin'>GO Slim Mapper</a></h3>.<h3><a name='defaultsetting'>Default Settings:</a> 1. All genes/features that have GO annotations in the database, 2. All annotations in the database (manually curated, high-throughput, and computational annotations), and 3. Hits with p-value < 0.01 will be displayed on the results page</h3></p>";
+		return "<p><h3>The GO Term Finder (<a href='http://search.cpan.org/dist/GO-TermFinder/' target='infowin'>Version 0.86</a>) searches for significant shared GO terms, or parents of those GO terms, used to describe the genes in your list to help you discover what the genes may have in common. To map annotations of a group of genes to more general terms and/or to bin them in broad categories, use the <a href='https://www.yeastgenome.org/cgi-bin/GO/goSlimMapper.pl' target='infowin'>GO Slim Mapper</a>.</h3><h3 id='defaultsetting'>Default Settings: 1. All genes/features that have GO annotations in the database, 2. All annotations in the database (manually curated, high-throughput, and computational annotations), and 3. Hits with p-value < 0.01 will be displayed on the results page.</h3></p>";
 	
 	},
 
