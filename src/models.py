@@ -7735,10 +7735,10 @@ class Complexdbentity(Dbentity):
         network_nodes =[]
         network_edges =[]
 
-        network_nodes.append({ "data": { "name": self.display_name,
-                                         "id": self.format_name,
-                                         "link": self.link,
-                                         "type": "Complex" }})
+        # network_nodes.append({ "data": { "name": self.display_name,
+        #                                 "id": self.format_name,
+        #                                 "link": self.link,
+        #                                 "type": "Complex" }})
 
         go_objs = DBSession.query(ComplexGo).filter_by(complex_id=self.dbentity_id).all()
 
@@ -7756,13 +7756,13 @@ class Complexdbentity(Dbentity):
                 else:
                     process.append(go)
                 
-                network_nodes.append({ "data": { "name": go.display_name,
-                                                 "id": go.goid,
-                                                 "link": go.link,
-                                                 "type": "Go" } })
-                network_edges.append({ "data": { "source": self.format_name,
-                                                 "class_type": "complex_go",
-                                                 "target": go.goid } })
+                # network_nodes.append({ "data": { "name": go.display_name,
+                #                                 "id": go.goid,
+                #                                 "link": go.link,
+                #                                 "type": "Go" } })
+                # network_edges.append({ "data": { "source": self.format_name,
+                #                                 "class_type": "complex_go",
+                #                                 "target": go.goid } })
 
                 # goComplexes = DBSession.query(ComplexGo).filter_by(go_id=g.go_id).all()
 
