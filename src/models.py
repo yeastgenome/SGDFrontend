@@ -7764,18 +7764,18 @@ class Complexdbentity(Dbentity):
                                                  "class_type": "complex_go",
                                                  "target": go.goid } })
 
-                goComplexes = DBSession.query(ComplexGo).filter_by(go_id=g.go_id).all()
+                # goComplexes = DBSession.query(ComplexGo).filter_by(go_id=g.go_id).all()
 
-                for g2 in goComplexes:
-                    complex = g2.complex
-                    if complex.format_name != self.format_name:
-                        network_nodes.append({ "data": { "name": complex.display_name,
-                                                         "id": complex.format_name,
-                                                         "link": complex.link,
-                                                         "type": "Gomplex" } })
-                        network_edges.append( { "data": { "source": complex.format_name,
-                                                          "class_type": "complex_go",
-                                                          "target": go.goid } })
+                # for g2 in goComplexes:
+                #    complex = g2.complex
+                #    if complex.format_name != self.format_name:
+                #        network_nodes.append({ "data": { "name": complex.display_name,
+                #                                         "id": complex.format_name,
+                #                                         "link": complex.link,
+                #                                         "type": "Gomplex" } })
+                #        network_edges.append( { "data": { "source": complex.format_name,
+                #                                          "class_type": "complex_go",
+                #                                          "target": go.goid } })
                     
 
         data['process'] = sorted(process, key=lambda p: p['display_name'])
@@ -7842,57 +7842,37 @@ class Complexdbentity(Dbentity):
                                      "id": interactor.format_name,
                                      "link": link,
                                      "type": type } })
-            network_nodes.append({ "data": { "name": display_name,
-                                             "id": interactor.format_name,
-                                             "link": link,
-                                             "type": "Gene" } })
+            # network_nodes.append({ "data": { "name": display_name,
+            #                                 "id": interactor.format_name,
+            #                                 "link": link,
+            #                                 "type": "Gene" } })
 
-            network_edges.append( { "data": { "source": self.format_name,
-                                              "class_type": "complex_gene",
-                                              "target": interactor.format_name } })
+            # network_edges.append( { "data": { "source": self.format_name,
+            #                                  "class_type": "complex_gene",
+            #                                  "target": interactor.format_name } })
 
-            annot_objs2 = DBSession.query(Complexbindingannotation).filter_by(interactor_id=interactor.interactor_id).all()
-            found = {}
-            for annot in annot_objs2:
-                complex = annot.complex
-                if complex.format_name == self.format_name:
-                    continue
-                if complex.format_name in found:
-                    continue
-                found[complex.format_name] = 1
+            # annot_objs2 = DBSession.query(Complexbindingannotation).filter_by(interactor_id=interactor.interactor_id).all()
+            # found = {}
+            # for annot in annot_objs2:
+            #    complex = annot.complex
+            #    if complex.format_name == self.format_name:
+            #        continue
+            #    if complex.format_name in found:
+            #        continue
+            #    found[complex.format_name] = 1
 
-                network_nodes.append({ "data": { "name": complex.display_name,
-                                                 "id": complex.format_name,
-                                                 "link": complex.link,
-                                                 "type": "Gomplex" } })
-                network_edges.append( { "data": { "source": complex.format_name,
-                                                  "class_type": "complex_gene",
-                                                  "target": interactor.format_name } })
+            #    network_nodes.append({ "data": { "name": complex.display_name,
+            #                                     "id": complex.format_name,
+            #                                     "link": complex.link,
+            #                                     "type": "Gomplex" } })
+            #    network_edges.append( { "data": { "source": complex.format_name,
+            #                                      "class_type": "complex_gene",
+            #                                      "target": interactor.format_name } })
             
                  
         data['subunit'] = sorted(subunits, key=lambda a: a['display_name'])
         data['graph'] = { "edges": edges, "nodes": nodes }
-
-        # get network graph data for shared genes and/or go annotations
-
-        
-        
-            # annotations.append({ "psimi": annot.psimi.display_name,
-            #                     "range_start": annot.range_start,
-            #                     "range_end": annot.range_end,
-            #                     "interactor": { "format_name": interactor.format_name,
-            #                                     "display_name": interactor.display_name,
-            #                                     "type": interactor.type.display_name,
-            #                                     "role": interactor.role.display_name,
-            #                                     "stoichiometry": interactor.stoichiometry 
-            #                                    },
-            #                     "binding_interactor": { "format_name": binding_interactor.format_name,
-            #                                             "display_name": binding_interactor.display_name,
-            #                                             "type": binding_interactor.type.display_name,
-            #                                             "role": binding_interactor.role.display_name,
-            #                                             "stoichiometry": binding_interactor.stoichiometry
-            #                                    }
-            #                   })
+        data['network_graph'] = { "edges": network_edges, "nodes": network_nodes }
 
         return data
 
