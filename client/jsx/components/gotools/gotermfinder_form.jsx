@@ -66,8 +66,8 @@ const GoTermFinder = React.createClass({
 			var data = this.state.resultData;
 			var output = data['output'];
 			if (typeof(output) != "undefined") {
-			     // return (<div><span style={ style.textFont }>{ output }</span></div>);
 			     return (<div>
+			     	     <h3>There is an issue for this search. Please take a look at the following message and try to fix your query and resubmit again.</h3>
 			     	     <p dangerouslySetInnerHTML={{ __html: output }} />
 			     	     </div>);
 			}
