@@ -7732,6 +7732,14 @@ class Complexdbentity(Dbentity):
 
         ## go
 
+        network_nodes =[]
+        network_edges =[]
+
+        network_nodes.append({ "data": { "name": self.display_name,
+                                         "id": self.format_name,
+                                         "link": self.link,
+                                         "type": "Complex" }})
+
         go_objs = DBSession.query(ComplexGo).filter_by(complex_id=self.dbentity_id).all()
 
         process = []
@@ -7747,6 +7755,28 @@ class Complexdbentity(Dbentity):
                     component.append(go)
                 else:
                     process.append(go)
+                
+                network_nodes.append({ "data": { "name": go.display_name,
+                                                 "id": go.goid,
+                                                 "link": go.link,
+                                                 "type": "Go" } })
+                network_edges.append({ "data": { "source": self.format_name,
+                                                 "class_type": "complex_go",
+                                                 "target": go.goid } })
+
+                goComplexes = DBSession.query(ComplexGo).filter_by(go_id=g.go_id).all()
+
+                for g2 in goComplexes:
+                    complex = g2.complex
+                    if complex.format_name != self.format_name:
+                        network_nodes.append({ "data": { "name": complex.display_name,
+                                                         "id": complex.format_name,
+                                                         "link": complex.link,
+                                                         "type": "Gomplex" } })
+                        network_edges.append( { "data": { "source": complex.format_name,
+                                                          "class_type": "complex_go",
+                                                          "target": go.goid } })
+                    
 
         data['process'] = sorted(process, key=lambda p: p['display_name'])
         data['function'] = sorted(function, key=lambda f: f['display_name'])
@@ -7812,9 +7842,40 @@ class Complexdbentity(Dbentity):
                                      "id": interactor.format_name,
                                      "link": link,
                                      "type": type } })
+            network_nodes.append({ "data": { "name": display_name,
+                                             "id": interactor.format_name,
+                                             "link": link,
+                                             "type": "Gene" } })
+
+            network_edges.append( { "data": { "source": self.format_name,
+                                              "class_type": "complex_gene",
+                                              "target": interactor.format_name } })
+
+            annot_objs2 = DBSession.query(Complexbindingannotation).filter_by(interactor_id=interactor.interactor_id).all()
+            found = {}
+            for annot in annot_objs2:
+                complex = annot.complex
+                if complex.format_name == self.format_name:
+                    continue
+                if complex.format_name in found:
+                    continue
+                found[complex.format_name] = 1
+
+                network_nodes.append({ "data": { "name": complex.display_name,
+                                                 "id": complex.format_name,
+                                                 "link": complex.link,
+                                                 "type": "Gomplex" } })
+                network_edges.append( { "data": { "source": complex.format_name,
+                                                  "class_type": "complex_gene",
+                                                  "target": interactor.format_name } })
+            
                  
         data['subunit'] = sorted(subunits, key=lambda a: a['display_name'])
         data['graph'] = { "edges": edges, "nodes": nodes }
+
+        # get network graph data for shared genes and/or go annotations
+
+        
         
             # annotations.append({ "psimi": annot.psimi.display_name,
             #                     "range_start": annot.range_start,
