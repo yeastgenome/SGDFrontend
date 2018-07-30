@@ -95,6 +95,62 @@
         </div>
     </section>
 
+<!-- High-throughput
+================================================== -->
+    <section id="htp" data-magellan-destination="htp">
+        <h2>High-throughput
+            <a href="#" data-dropdown="drop_manual"><i class="fa fa-info-circle"></i></a>
+
+            <p id="drop_manual" class="f-dropdown content medium" data-dropdown-content>
+                <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/sgd-general-help/glossary">Manually curated</a> DO annotations reflect our best
+                understanding of the basic xxx for this gene product.
+                Manually curated annotations are assigned by SGD curators based on published papers when
+                available, or by curatorial statements if necessary. Curators periodically review all
+                manually curated DO annotations for accuracy and completeness. The "Date Last Reviewed"
+                indicates when these annotations were last reviewed.
+            </p>
+        </h2>
+        <hr />
+        <p><strong>Date Last Reviewed:</strong> {{locus.disease_overview.date_last_reviewed}}</p>
+
+        <div class="spaced-container">
+            <p style="display:none" id="htp_message">There are no high-throughput annotations
+            for {{ locus.display_name }}.</p>
+            <div id="htp_disease_go">
+                <!-- Includes disease_table into template -->
+                {% set table_id = "htp_disease_table" %}
+                {% include "disease_table.jinja2" %}
+            </div>
+        </div>
+    </section>
+
+<!-- Computational
+================================================== -->
+    <section id="comp" data-magellan-destination="comp">
+        <h2>Computational
+            <a href="#" data-dropdown="drop_comp"><i class="fa fa-info-circle"></i></a>
+
+        <p id="drop_comp" class="f-dropdown content medium" data-dropdown-content>
+            Computational GO Annotations are
+            predictions. These annotations are NOT reviewed by a curator. Currently, all
+            computational GO annotations for <em>S. cerevisiae</em> are assigned by an external
+            source (for example, the <a href="http://www.ebi.ac.uk/GOA">Gene Ontology Annotation
+            (GOA)</a> project of the <a href="http://www.ebi.ac.uk/">European Bioinformatics
+            Institute (EBI)</a>).
+        </p>
+        </h2>
+        <hr />
+
+        <p id="comp_message" style="display:none">There are no computational annotations for {{ locus.display_name }}.</p>
+
+       <div id="comp_disease_go" class="spaced-container">
+            <!-- Includes go_table into template -->
+            {% set table_id = "comp_disease_table" %}
+            {% include "disease_table.jinja2" %}
+       </div>
+
+    </section>
+
 <!-- Network Visualization
 ================================================== -->
     <section id="network" data-magellan-destination="network">

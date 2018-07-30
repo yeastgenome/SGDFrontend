@@ -55,9 +55,9 @@
                             </dd>
                         {% endif %}
                     </dl>
-                    {% for url in disease.urls if url.category == 'OntoBee' %}
-                        <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>
-                    {% endfor %}
+                    {% set alliance_url = ["https://www.alliancegenome.org/disease/", disease.urls[0].display_name ] %}
+                    <a href="{{ alliance_url|join }}" target="_blank">{{ "View DO Annotations in model organisms in Alliance Genome Resources" }}</a>
+
                 </div>
             </div>
         </section>
