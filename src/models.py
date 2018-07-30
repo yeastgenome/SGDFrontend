@@ -3576,7 +3576,8 @@ class Locusdbentity(Dbentity):
             },
             "literature_overview": self.literature_overview_to_dict(),
             "disease_overview": self.disease_overview_to_dict(),
-            "ecnumbers": []
+            "ecnumbers": [],
+            "gene_name": self.gene_name
         }
 
         if self.genetic_position:
