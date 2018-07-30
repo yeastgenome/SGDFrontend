@@ -3143,9 +3143,9 @@ class Locusdbentity(Dbentity):
                 add = annotation.dbentity1_id
 
             if add in genes_to_interactions:
-                genes_to_interactions[add].add(annotation.reference_id)
+                genes_to_interactions[add].add(annotation.annotation_id)
             else:
-                genes_to_interactions[add] = set([annotation.reference_id])
+                genes_to_interactions[add] = set([annotation.annotation_id])
 
         list_genes_to_interactions = sorted([(g, genes_to_interactions[g]) for g in genes_to_interactions], key=lambda x: len(x[1]), reverse=True)
 
@@ -4129,7 +4129,7 @@ class Locusdbentity(Dbentity):
             "sequence_tab": self.has_sequence,
             "history_tab": self.has_history,
             "protein_tab": self.has_protein,
-            "disease_tab": False# TEMP #self.has_disease
+            "disease_tab": False # TEMP #self.has_disease
         }
 
     # make some tabs false if the data is small, to return a smaller set of URLs for tab priming
@@ -6730,7 +6730,7 @@ class Phenotype(Base):
             obj["qualifier"] = "None"
 
         return obj
-        
+
 
     def annotations_to_dict(self):
         phenotype_annotations = DBSession.query(Phenotypeannotation).filter_by(phenotype_id=self.phenotype_id).all()
