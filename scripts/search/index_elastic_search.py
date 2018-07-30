@@ -1,4 +1,4 @@
-from src.models import DBSession, Base, Colleague, ColleagueLocus, Dbentity, Locusdbentity, Filedbentity, FileKeyword, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi
+from src.models import DBSession, Base, Colleague, ColleagueLocus, Dbentity, Disease, Locusdbentity, Filedbentity, FileKeyword, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi
 from sqlalchemy import create_engine, and_
 from elasticsearch import Elasticsearch
 from mapping import mapping
@@ -827,6 +827,34 @@ def index_downloads():
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
+def index_diseases():
+    bulk_data = []
+    diseases = DBSession.query(Disease).all()
+    print("indexing " + str(len(diseases)) + " diseases")
+    for x in diseases:
+        keyword = []
+        obj = {
+            "name": x.display_name,
+            "href": x.obj_url,
+            "category": "disease",
+            "description": x.description,
+        }
+        bulk_data.append({
+            "index": {
+                "_index": INDEX_NAME,
+                "_type": DOC_TYPE,
+                "_id": str(uuid.uuid4())
+            }
+        })
+
+        bulk_data.append(obj)
+        if len(bulk_data) == 50:
+            es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
+            bulk_data = []
+
+    if len(bulk_data) > 0:
+        es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
+
 
 def index_part_1():
     with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
@@ -843,7 +871,8 @@ def index_part_1():
         index_colleagues()
     with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
         index_chemicals()
-
+    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
+        index_diseases()
 
 def index_part_2():
     with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
