@@ -32,6 +32,7 @@ asset_version.json
 *.rdb
 .vscode/settings.json
 .cache/
+.vs
 docs/
 production_asset_url.json
 *.env
