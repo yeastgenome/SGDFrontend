@@ -4828,10 +4828,15 @@ class Disease(Base):
         urls = DBSession.query(DiseaseUrl).filter_by(disease_id=self.disease_id).all()
 
         for url in urls:
+            new_display_name = url.obj_url.split('=')[1]
+            alliance_url = "https://www.alliancegenome.org/disease/"+new_display_name
+            alliance_display_name = "View DO Annotations in model organisms in Alliance Genome Resources"
             obj["urls"].append({
-                "display_name": url.display_name,
+                "display_name": new_display_name,
                 "link": url.obj_url,
-                "category": url.url_type
+                "category": url.url_type,
+                "alliance_display_name": alliance_display_name,
+                "alliance_url": alliance_url
             })
 
         synonyms = DBSession.query(DiseaseAlia).filter_by(disease_id=self.disease_id).all()
@@ -5300,7 +5305,6 @@ class Diseasesupportingevidence(Base):
         source_id = self.dbxref_id.split(":")
 
         # the frontend expects a capitalized "role" to place the evidence in the right column of the annotation table
-
         if source_id[0] == "SGD":
             sgdid = source_id[1]
             dbentity = DBSession.query(Dbentity).filter_by(sgdid=sgdid).one_or_none()
@@ -5315,7 +5319,7 @@ class Diseasesupportingevidence(Base):
         else:
             return {
                 "bioentity": {
-                    "display_name": source_id[1],
+                    "display_name": self.dbxref_id,
                     "link": self.obj_url
                 },
                 "role": self.evidence_type.capitalize()
