@@ -7771,7 +7771,7 @@ class Complexdbentity(Dbentity):
                     if complex.format_name != self.format_name:
                         network_nodes.append({ "data": { "name": complex.display_name,
                                                          "id": complex.format_name,
-                                                         "link": complex.link,
+                                                         "link": complex.obj_url,
                                                          "type": "Gomplex" } })
                         network_edges.append( { "data": { "source": complex.format_name,
                                                           "class_type": "complex_go",
