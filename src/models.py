@@ -7764,20 +7764,19 @@ class Complexdbentity(Dbentity):
                                                  "class_type": "complex_go",
                                                  "target": go['go_id'] } })
 
-                # goComplexes = DBSession.query(ComplexGo).filter_by(go_id=g.go_id).all()
+                goComplexes = DBSession.query(ComplexGo).filter_by(go_id=g.go_id).all()
 
-                # for g2 in goComplexes:
-                #    complex = g2.complex
-                #    if complex.format_name != self.format_name:
-                #        network_nodes.append({ "data": { "name": complex.display_name,
-                #                                         "id": complex.format_name,
-                #                                         "link": complex.link,
-                #                                         "type": "Gomplex" } })
-                #        network_edges.append( { "data": { "source": complex.format_name,
-                #                                          "class_type": "complex_go",
-                #                                          "target": go['goid'] } })
+                for g2 in goComplexes:
+                    complex = g2.complex
+                    if complex.format_name != self.format_name:
+                        network_nodes.append({ "data": { "name": complex.display_name,
+                                                         "id": complex.format_name,
+                                                         "link": complex.link,
+                                                         "type": "Gomplex" } })
+                        network_edges.append( { "data": { "source": complex.format_name,
+                                                          "class_type": "complex_go",
+                                                          "target": go['go_id'] } })
                     
-
         data['process'] = sorted(process, key=lambda p: p['display_name'])
         data['function'] = sorted(function, key=lambda f: f['display_name'])
         data['component'] = sorted(component, key=lambda c: c['display_name'])
