@@ -6,7 +6,6 @@ import os
 import requests
 import json
 from multiprocess import Pool
-import pdb
 
 engine = create_engine(os.environ["NEX2_URI"], pool_recycle=3600)
 DBSession.configure(bind=engine)

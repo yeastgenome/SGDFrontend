@@ -3550,7 +3550,6 @@ class Locusdbentity(Dbentity):
         return obj
 
     def to_dict(self):
-        #import pdb; pdb.set_trace()
         obj = {
             "id": self.dbentity_id,
             "display_name": self.display_name,
