@@ -7756,7 +7756,8 @@ class Complexdbentity(Dbentity):
                 else:
                     process.append(go)
                 
-                network_nodes.append({ "data": { "name": go['display_name'],
+                # go['display_name'],
+                network_nodes.append({ "data": { "name": go['go_id'],
                                                  "id": go['go_id'],
                                                  "link": go['link'],
                                                  "type": "Go" } })
@@ -7766,10 +7767,12 @@ class Complexdbentity(Dbentity):
 
                 goComplexes = DBSession.query(ComplexGo).filter_by(go_id=g.go_id).all()
 
+                # complex.display_name,
+
                 for g2 in goComplexes:
                     complex = g2.complex
                     if complex.format_name != self.format_name:
-                        network_nodes.append({ "data": { "name": complex.display_name,
+                        network_nodes.append({ "data": { "name": complex.format_name,
                                                          "id": complex.format_name,
                                                          "link": complex.obj_url,
                                                          "type": "Gomplex" } })
