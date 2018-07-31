@@ -7745,6 +7745,10 @@ class Complexdbentity(Dbentity):
         process = []
         function = []
         component = []
+        
+        foundComplex = {}
+        countGoCount = {}
+
         if go_objs:
             data['go'] = [g.go.to_dict() for g in go_objs]
             for g in go_objs:
@@ -7769,13 +7773,16 @@ class Complexdbentity(Dbentity):
 
                 # complex.display_name,
 
+                
                 for g2 in goComplexes:
                     complex = g2.complex
                     if complex.format_name != self.format_name:
-                        network_nodes.append({ "data": { "name": complex.format_name,
-                                                         "id": complex.format_name,
-                                                         "link": complex.obj_url,
-                                                         "type": "Gomplex" } })
+                        if complex.format_name not in foundComplex:
+                            network_nodes.append({ "data": { "name": complex.format_name,
+                                                             "id": complex.format_name,
+                                                             "link": complex.obj_url,
+                                                             "type": "Gomplex" } })
+                            foundComplex[complex.format_name] = 1
                         network_edges.append( { "data": { "source": complex.format_name,
                                                           "class_type": "complex_go",
                                                           "target": go['go_id'] } })
