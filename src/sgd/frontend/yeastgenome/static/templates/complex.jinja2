@@ -182,13 +182,21 @@
 <!-- Network diagram
 ================================================== -->
 
+	<section id="diagram" data-magellan-destination="diagram">
+                <div class="page-header">
+                     <h2>Complex Diagram</h2>
+                     <hr />
+                     {% set network_id = "cy" %}
+                     {% include "complex_diagram.jinja2" %}
+                </div>
+        </section>
+
 	<section id="network" data-magellan-destination="network">
                  <div class="page-header">
                      <h2>Network Diagram</h2>
                      <hr />
-
-                     What should we display here?
-
+		     {% set network_id = "cy2" %}
+                     {% include "complex_network_diagram.jinja2" %}
                 </div>
         </section>
 
