@@ -26,6 +26,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 		goOntology: 0,
 		observable: 0,
 		complex: 0,
+		complex_network: 0,
 	};
 	var _legendOffset = _legendOffsets[legendType];
 	$(".sgd-cyto-canvas-container").parent().height(height + offset + _legendOffset);
@@ -98,6 +99,9 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 	} else if (legendType === "phenotypeOntology" || legendType === "observable") {
 		mainText = "Current Observable";
 		secondText = "Other Observable";
+	} else if (legendType === "complex_network") {
+	        mainText = "Current Complex";
+	        secondText = "Other Complex";
 	}
 	
 	var secondColor = (legendType === "goOntology") ? "#458FD3" :  "#757575";
