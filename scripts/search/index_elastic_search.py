@@ -900,7 +900,7 @@ def index_part_1():
     with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
         index_chemicals()
     with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
-        index_disease_terms()()
+        index_disease_terms()
 
 def index_part_2():
     with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
