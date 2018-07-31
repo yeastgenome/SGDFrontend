@@ -7776,14 +7776,20 @@ class Complexdbentity(Dbentity):
                     complex = g2.complex
                     if complex.format_name != self.format_name:
                         if complex.format_name in foundComplex:
+                            if foundComplex[complex.format_name] != 1:
+                                network_edges.append( foundComplex[complex.format_name] )
+                                foundComplex[complex.format_name] = 1
                             network_nodes.append({ "data": { "name": complex.format_name,
                                                              "id": complex.format_name,
                                                              "link": complex.obj_url,
                                                              "type": "Gomplex" } })
                             network_edges.append( { "data": { "source": complex.format_name,
-                                                          "class_type": "complex_go",
-                                                          "target": go['go_id'] } })
-                        foundComplex[complex.format_name] = 1
+                                                              "class_type": "complex_go",
+                                                              "target": go['go_id'] } })
+                    else:
+                        foundComplex[complex.format_name] = { "data": { "source": complex.format_name,
+                                                                        "class_type": "complex_go",
+                                                                        "target": go['go_id'] } }
 
         data['process'] = sorted(process, key=lambda p: p['display_name'])
         data['function'] = sorted(function, key=lambda f: f['display_name'])
