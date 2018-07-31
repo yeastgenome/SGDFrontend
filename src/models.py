@@ -4861,13 +4861,18 @@ class Disease(Base):
         urls = DBSession.query(DiseaseUrl).filter_by(disease_id=self.disease_id).all()
 
         for url in urls:
+            new_display_name = url.obj_url.split('=')[1]
+            alliance_url = "https://www.alliancegenome.org/disease/"+new_display_name
+            alliance_display_name = "View DO Annotations in model organisms in Alliance Genome Resources"
             obj["urls"].append({
-                "display_name": url.display_name,
+                "display_name": new_display_name,
                 "link": url.obj_url,
-                "category": url.url_type
+                "category": url.url_type,
+                "alliance_display_name": alliance_display_name,
+                "alliance_url": alliance_url
             })
 
-        synonyms = DBSession.query(DiseaseAlia).filter_by(disease_id=self.disease_id).all()
+        synonyms = DBSession.query(DiseaseAlias).filter_by(disease_id=self.disease_id).all()
         for synonym in synonyms:
             obj["aliases"].append(synonym.display_name)
 
@@ -4974,6 +4979,8 @@ class Disease(Base):
             annotations_dict += a.to_dict(disease=self)
         return annotations_dict
 
+        return annotations_dict
+
     def annotations_and_children_to_dict(self):
         annotations_dict = []
 
@@ -5032,7 +5039,7 @@ class Disease(Base):
         return urls
 
 
-class DiseaseAlia(Base):
+class DiseaseAlias(Base):
     __tablename__ = 'disease_alias'
     __table_args__ = (
         UniqueConstraint('disease_id', 'display_name', 'alias_type'),
@@ -5204,7 +5211,7 @@ class Diseaseannotation(Base):
 
         experiment_url = None
         for url in alias_url:
-            if url.display_name == "OntoBee":
+            if url.display_name == "DO":
                 experiment_url = url.obj_url
                 break
         if experiment_url == None and len(alias_url) > 1:
@@ -5332,7 +5339,6 @@ class Diseasesupportingevidence(Base):
         source_id = self.dbxref_id.split(":")
 
         # the frontend expects a capitalized "role" to place the evidence in the right column of the annotation table
-
         if source_id[0] == "SGD":
             sgdid = source_id[1]
             dbentity = DBSession.query(Dbentity).filter_by(sgdid=sgdid).one_or_none()
@@ -5347,7 +5353,7 @@ class Diseasesupportingevidence(Base):
         else:
             return {
                 "bioentity": {
-                    "display_name": source_id[1],
+                    "display_name": self.dbxref_id,
                     "link": self.obj_url
                 },
                 "role": self.evidence_type.capitalize()

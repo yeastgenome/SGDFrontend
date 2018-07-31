@@ -1,4 +1,4 @@
-from src.models import DBSession, Base, Colleague, ColleagueLocus, Dbentity, Disease, Locusdbentity, Filedbentity, FileKeyword, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi
+from src.models import DBSession, Base, Colleague, ColleagueLocus, Dbentity, Locusdbentity, Filedbentity, FileKeyword, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi, Disease, Diseaseannotation, DiseaseAlias
 from sqlalchemy import create_engine, and_
 from elasticsearch import Elasticsearch
 from mapping import mapping
@@ -163,7 +163,7 @@ def index_genes():
     # feature_type comes from DNASequenceAnnotation as well
     gene_ids_so = DBSession.query(
         Dnasequenceannotation.dbentity_id, Dnasequenceannotation.so_id).filter(
-            Dnasequenceannotation.taxonomy_id == 274901).all()
+            Dna_mppsequenceannotation.taxonomy_id == 274901).all()
     dbentity_ids_to_so = {}
     dbentity_ids = set([])
     so_ids = set([])
@@ -616,6 +616,63 @@ def index_go_terms():
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
+def index_disease_terms():
+    dos = DBSession.query(Disease).all()
+
+    print("Indexing " + str(len(dos)) + " DO terms")
+
+    bulk_data = []
+    for do in dos:
+        synonyms = DBSession.query(DiseaseAlias.display_name).filter_by(disease_id=do.disease_id).all()
+        references = set([])
+        do_loci = set([])
+        annotations = DBSession.query(Diseaseannotation).filter_by(disease_id=do.disease_id).all()
+        for annotation in annotations:
+            if annotation.disease_qualifier != "NOT":
+                do_loci.add(annotation.dbentity.display_name)
+            references.add(annotation.reference.display_name)
+        if do.doid != 'derives_from':
+            numerical_id = do.doid.split(":")[1]
+        key_values = [
+            do.doid, "DO:" + str(int(numerical_id)), numerical_id,
+            str(int(numerical_id))
+        ]
+
+        keys = set([])
+        for k in key_values:
+            if k is not None:
+                keys.add(k.lower())
+
+        obj = {
+            "name": do.display_name,
+            "category": "disease",
+            "href": do.obj_url,
+            "description": do.description,
+            "synonyms": [s[0] for s in synonyms],
+            "doid": do.doid,
+            "do_loci": sorted(list(do_loci)),
+            "number_annotations": len(annotations),
+            "references": list(references),
+            "keys": list(keys)
+        }
+
+        bulk_data.append({
+            "index": {
+                "_index": INDEX_NAME,
+                "_type": DOC_TYPE,
+                "_id": str(uuid.uuid4())
+            }
+        })
+
+        bulk_data.append(obj)
+
+        if len(bulk_data) == 800:
+            es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
+            bulk_data=[]
+
+    if len(bulk_data) > 0:
+        es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
+
 
 def index_references():
     _ref_loci = IndexESHelper.get_dbentity_locus_note()
@@ -827,35 +884,6 @@ def index_downloads():
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
-def index_diseases():
-    bulk_data = []
-    diseases = DBSession.query(Disease).all()
-    print("indexing " + str(len(diseases)) + " diseases")
-    for x in diseases:
-        keyword = []
-        obj = {
-            "name": x.display_name,
-            "href": x.obj_url,
-            "category": "disease",
-            "description": x.description,
-        }
-        bulk_data.append({
-            "index": {
-                "_index": INDEX_NAME,
-                "_type": DOC_TYPE,
-                "_id": str(uuid.uuid4())
-            }
-        })
-
-        bulk_data.append(obj)
-        if len(bulk_data) == 50:
-            es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
-            bulk_data = []
-
-    if len(bulk_data) > 0:
-        es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
-
-
 def index_part_1():
     with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
         index_phenotypes()
@@ -872,7 +900,7 @@ def index_part_1():
     with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
         index_chemicals()
     with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
-        index_diseases()
+        index_disease_terms()()
 
 def index_part_2():
     with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
