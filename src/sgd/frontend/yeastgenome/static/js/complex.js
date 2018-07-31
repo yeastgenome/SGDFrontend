@@ -11,13 +11,17 @@ $(document).ready(function() {
 		    create_cy_download_button(graph, "cy_download", complex['complex_name'] + '_complex_graph')
 
 		}
-		else if (data != null && data["network_graph"]["nodes"].length > 1) {
+		else {                                                                                                   
+                    hide_section("diagram");                                                                              
+                } 
+		
+		if (data != null && data["network_graph"]["nodes"].length > 1) {
 		    console.log("network_graph"+data["network_graph"]["nodes"].length)
 		    var graph2 = create_cytoscape_vis("cy2", layout, graph_style, data["network_graph"], null, true, "complex_network");
                     create_cy_download_button(graph2, "cy2_download", complex['complex_name'] + '_complex_network_graph')
 		}
 		else {
-		    hide_section("diagram");
+		    hide_section("network");
 		}
 	});
 
