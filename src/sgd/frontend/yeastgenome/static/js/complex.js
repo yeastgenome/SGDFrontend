@@ -10,12 +10,10 @@ $(document).ready(function() {
 		    var graph = create_cytoscape_vis("cy", layout, graph_style, data["graph"], null, true, "complex");
 		    create_cy_download_button(graph, "cy_download", complex['complex_name'] + '_complex_graph')
 
-		    // if(true) {
-		    //	    $("#discrete_filter").show();
-		    // }
-		    // else {
-		    //	    $("#discrete_filter").hide();
-		    // }
+		}
+		else if (data != null && data["network_graph"]["nodes"].length > 1) {
+		    var graph2 = create_cytoscape_vis("cy2", layout, graph_style, data["network_graph"], null, true, "complex_network");
+                    create_cy_download_button(graph2, "cy2_download", complex['complex_name'] + '_complex_network_graph')
 		}
 		else {
 		    hide_section("diagram");
@@ -78,6 +76,18 @@ var graph_style = cytoscape.stylesheet()
     .css({
 	    'text-outline-color': "#338AFF",
 	})
+    .selector("node[type='Gene']")
+    .css({
+            'text-outline-color': "#FF8933",
+        })
+    .selector("node[type='Go']")
+    .css({
+            'text-outline-color': "#A133FF",
+        })
+    .selector("node[type='Complex']")
+    .css({
+            'text-outline-color': "#33FFD4",
+        })
     .selector('edge')
     .css({
 	    'width': 2
@@ -87,6 +97,14 @@ var graph_style = cytoscape.stylesheet()
 	    'background-color': "#fade71",
 	    'text-outline-color': '#fff',
 	    'color': '#fff'
+        })
+    .selector("edge[class_type = 'complex_go']")
+    .css({
+            'line-color': "#7233FF"
+        })
+    .selector("edge[class_type = 'complex_gene']")
+    .css({
+            'line-color': "#74FF33"
         })
     .selector("edge[class_type = 'complex']")
     .css({
