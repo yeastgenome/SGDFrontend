@@ -7792,10 +7792,10 @@ class Complexdbentity(Dbentity):
                             network_edges.append( { "data": { "source": complex.format_name,
                                                               "class_type": "complex_go",
                                                               "target": go['go_id'] } })
-                    else:
-                        foundComplex[complex.format_name] = { "data": { "source": complex.format_name,
-                                                                        "class_type": "complex_go",
-                                                                        "target": go['go_id'] } }
+                        else:
+                            foundComplex[complex.format_name] = { "data": { "source": complex.format_name,
+                                                                            "class_type": "complex_go",
+                                                                            "target": go['go_id'] } }
 
         data['process'] = sorted(process, key=lambda p: p['display_name'])
         data['function'] = sorted(function, key=lambda f: f['display_name'])
