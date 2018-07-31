@@ -163,7 +163,7 @@ def index_genes():
     # feature_type comes from DNASequenceAnnotation as well
     gene_ids_so = DBSession.query(
         Dnasequenceannotation.dbentity_id, Dnasequenceannotation.so_id).filter(
-            Dna_sequenceannotation.taxonomy_id == 274901).all()
+            Dnasequenceannotation.taxonomy_id == 274901).all()
     dbentity_ids_to_so = {}
     dbentity_ids = set([])
     so_ids = set([])
