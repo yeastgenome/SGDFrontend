@@ -27,7 +27,7 @@ $(document).ready(function() {
                 comp_count = comp_count + 1;
             }
         }
-        var headers = ["Evidence ID", "Analyze ID", "", "Gene", "Gene Format Name", "Disease Ontology Term", "Disease Ontology Term ID", "Qualifier", "Method", "Evidence", "Source", "Assigned On", "Reference", "Relationships"];
+        var headers = ["Evidence ID", "Analyze ID", "", "Gene", "Gene Format Name", "Disease Ontology Term", "Disease Ontology Term ID", "With", "Method", "Evidence", "Source", "Assigned On", "Reference", "Relationships"];
         create_download_button_no_table("disease_download_all", headers, transformed_data, locus['display_name'] + "_disease_annotations")
 
         if(mc_count == 0) {

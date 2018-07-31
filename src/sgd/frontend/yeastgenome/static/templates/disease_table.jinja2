@@ -18,6 +18,15 @@
     <th>Method</th>
     <th>Source</th>
     <th>Assigned On</th>
-    <th>Qualifier</th>
+    <th>With</th>
     <th>Reference</th>
+{% endblock %}
+
+
+
+{% block additional_buttons %}
+    <ul class="button-group radius">
+        <li><a disabled="true" id="{{ table_id }}_show_children" class="small button secondary" style="display:none">Add
+            Annotations to Child Terms</a></li>
+    </ul>
 {% endblock %}
