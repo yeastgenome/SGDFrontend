@@ -7747,7 +7747,6 @@ class Complexdbentity(Dbentity):
         component = []
         
         foundComplex = {}
-        countGoCount = {}
 
         if go_objs:
             data['go'] = [g.go.to_dict() for g in go_objs]
@@ -7772,21 +7771,20 @@ class Complexdbentity(Dbentity):
                 goComplexes = DBSession.query(ComplexGo).filter_by(go_id=g.go_id).all()
 
                 # complex.display_name,
-
                 
                 for g2 in goComplexes:
                     complex = g2.complex
                     if complex.format_name != self.format_name:
-                        if complex.format_name not in foundComplex:
+                        if complex.format_name in foundComplex:
                             network_nodes.append({ "data": { "name": complex.format_name,
                                                              "id": complex.format_name,
                                                              "link": complex.obj_url,
                                                              "type": "Gomplex" } })
-                            foundComplex[complex.format_name] = 1
-                        network_edges.append( { "data": { "source": complex.format_name,
+                            network_edges.append( { "data": { "source": complex.format_name,
                                                           "class_type": "complex_go",
                                                           "target": go['go_id'] } })
-                    
+                            foundComplex[complex.format_name] = 1
+
         data['process'] = sorted(process, key=lambda p: p['display_name'])
         data['function'] = sorted(function, key=lambda f: f['display_name'])
         data['component'] = sorted(component, key=lambda c: c['display_name'])
