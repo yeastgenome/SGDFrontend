@@ -7841,14 +7841,14 @@ class Complexdbentity(Dbentity):
                                      "id": interactor.format_name,
                                      "link": link,
                                      "type": type } })
-            # network_nodes.append({ "data": { "name": display_name,
-            #                                 "id": interactor.format_name,
-            #                                 "link": link,
-            #                                 "type": "Gene" } })
+            network_nodes.append({ "data": { "name": display_name,
+                                             "id": interactor.format_name,
+                                             "link": link,
+                                             "type": "Gene" } })
 
-            # network_edges.append( { "data": { "source": self.format_name,
-            #                                  "class_type": "complex_gene",
-            #                                  "target": interactor.format_name } })
+            network_edges.append( { "data": { "source": self.format_name,
+                                              "class_type": "complex_gene",
+                                              "target": interactor.format_name } })
 
             # annot_objs2 = DBSession.query(Complexbindingannotation).filter_by(interactor_id=interactor.interactor_id).all()
             # found = {}
