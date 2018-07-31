@@ -7850,23 +7850,23 @@ class Complexdbentity(Dbentity):
                                               "class_type": "complex_gene",
                                               "target": interactor.format_name } })
 
-            # annot_objs2 = DBSession.query(Complexbindingannotation).filter_by(interactor_id=interactor.interactor_id).all()
-            # found = {}
-            # for annot in annot_objs2:
-            #    complex = annot.complex
-            #    if complex.format_name == self.format_name:
-            #        continue
-            #    if complex.format_name in found:
-            #        continue
-            #    found[complex.format_name] = 1
+            annot_objs2 = DBSession.query(Complexbindingannotation).filter_by(interactor_id=interactor.interactor_id).all()
+            found = {}
+            for annot in annot_objs2:
+                complex = annot.complex
+                if complex.format_name == self.format_name:
+                    continue
+                if complex.format_name in found:
+                    continue
+                found[complex.format_name] = 1
 
-            #    network_nodes.append({ "data": { "name": complex.display_name,
-            #                                     "id": complex.format_name,
-            #                                     "link": complex.link,
-            #                                     "type": "Gomplex" } })
-            #    network_edges.append( { "data": { "source": complex.format_name,
-            #                                      "class_type": "complex_gene",
-            #                                      "target": interactor.format_name } })
+                network_nodes.append({ "data": { "name": complex.display_name,
+                                                 "id": complex.format_name,
+                                                 "link": complex.obj_url,
+                                                 "type": "Gomplex" } })
+                network_edges.append( { "data": { "source": complex.format_name,
+                                                  "class_type": "complex_gene",
+                                                  "target": interactor.format_name } })
             
                  
         data['subunit'] = sorted(subunits, key=lambda a: a['display_name'])
