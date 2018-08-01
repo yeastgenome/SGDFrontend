@@ -18,7 +18,7 @@ $(document).ready(function() {
 		if (data != null && data["network_graph"]["nodes"].length > 1) {
 		    
 		    var graph2 = create_cytoscape_vis("cy2", layout, graph_style, data["network_graph"], null, true, "complex_network");
-		    // create_cy_download_button(graph2, "cy2_download", complex['complex_accession'] + '_complex_network_graph')
+		    create_cy_download_button(graph2, "cy2_download", complex['complex_accession'] + '_complex_network_graph')
 		}
 		else {
 		    hide_section("network");
@@ -100,8 +100,8 @@ var graph_style = cytoscape.stylesheet()
     .selector("node[sub_type='FOCUS']")
     .css({
 	    'background-color': "#FF3391",
-	    'text-outline-color': '#fff',
-	    'color': '#fff'
+	    'text-outline-color': '#FF3391',
+	    'color': '#FF3391'
         })
     .selector("edge[class_type = 'complex_go']")
     .css({
