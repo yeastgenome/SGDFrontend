@@ -8,7 +8,7 @@ $(document).ready(function() {
 		if(data != null && data["graph"]["nodes"].length > 1) {
 
 		    var graph = create_cytoscape_vis("cy", layout, graph_style, data["graph"], null, true, "complex");
-		    create_cy_download_button(graph, "cy_download", complex['complex_name'] + '_complex_graph')
+		    create_cy_download_button(graph, "cy_download", complex['complex_accession'] + '_complex_graph')
 
 		}
 		else {                                                                                                   
@@ -18,7 +18,7 @@ $(document).ready(function() {
 		if (data != null && data["network_graph"]["nodes"].length > 1) {
 		    // console.log("network_graph"+data["network_graph"]["nodes"].length)
 		    var graph2 = create_cytoscape_vis("cy2", layout, graph_style, data["network_graph"], null, true, "complex_network");
-                    create_cy_download_button(graph2, "cy2_download", complex['complex_name'] + '_complex_network_graph')
+                    create_cy_download_button(graph2, "cy2_download", complex['complex_accession'] + '_complex_network_graph')
 		}
 		else {
 		    hide_section("network");
