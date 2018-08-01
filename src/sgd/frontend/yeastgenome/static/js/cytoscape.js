@@ -135,9 +135,9 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 		drawLegendNode(ctx, "Reference", nextLegendX, legendY, '#C591F5', true, true);
 	} else if (legendType === "observable") {
 		drawLegendNode(ctx, "Ontology", nextLegendX, legendY, "#757575", true, true);
-	} else if (legendType === "complex_network") {
-	    drawLegendNode(ctx, "Ontology", nextLegendX, legendY, "#757575", true, true);
-	}
+	} // else if (legendType === "complex_network") {
+	  //  drawLegendNode(ctx, "Ontology", nextLegendX, legendY, "#757575", true, true);
+	// }
 	
 
     cy.zoomingEnabled(false);
