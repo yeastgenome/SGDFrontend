@@ -99,7 +99,7 @@ var graph_style = cytoscape.stylesheet()
         })
     .selector("node[sub_type='FOCUS']")
     .css({
-	    'background-color': "#fade71",
+	    'background-color': "#FF3391",
 	    'text-outline-color': '#fff',
 	    'color': '#fff'
         })
