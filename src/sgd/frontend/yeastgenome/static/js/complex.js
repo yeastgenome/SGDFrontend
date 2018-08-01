@@ -100,8 +100,8 @@ var graph_style = cytoscape.stylesheet()
     .selector("node[sub_type='FOCUS']")
     .css({
 	    'background-color': "#FF3391",
-	    'text-outline-color': '#FF3391',
-	    'color': '#FF3391'
+	    'text-outline-color': '#fff',
+	    'color': '#fff'
         })
     .selector("edge[class_type = 'complex_go']")
     .css({
