@@ -193,6 +193,8 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 
 function create_cy_download_button(cy, button_id, file_name) {
 
+    console.log("cy="+cy+", button=" +button_id + ", file_name=" + file_name);
+
     $("#" + button_id).click(function() {
 
     	// get hidden canvas
