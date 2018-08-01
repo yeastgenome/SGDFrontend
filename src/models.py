@@ -7760,7 +7760,7 @@ class Complexdbentity(Dbentity):
                     process.append(go)
                 
                 # go['display_name'],
-                network_nodes.append({ "data": { "name": go['go_id'],
+                network_nodes.append({ "data": { "name": go['display_name'],
                                                  "id": go['go_id'],
                                                  "link": go['link'],
                                                  "type": "Go" } })
@@ -7777,18 +7777,18 @@ class Complexdbentity(Dbentity):
                     if complex.format_name != self.format_name:
                         if complex.format_name in foundComplex:
                             if foundComplex[complex.format_name] != 1:
-                                network_nodes.append({ "data": { "name": complex.format_name,
-                                                             "id": complex.format_name,
-                                                             "link": "/complex/" + complex.format_name,
-                                                             "type": "Gomplex" } })
+                                network_nodes.append({ "data": { "name": complex.display_name,
+                                                                 "id": complex.format_name,
+                                                                 "link": "/complex/" + complex.format_name,
+                                                                 "type": "Gomplex" } })
                                 network_edges.append( foundComplex[complex.format_name] )
 
                                 foundComplex[complex.format_name] = 1
                             
-                            network_nodes.append({ "data": { "name": complex.format_name,
-                                                                 "id": complex.format_name,
-                                                                 "link": "/complex/" + complex.format_name,
-                                                                 "type": "Gomplex" } })
+                            network_nodes.append({ "data": { "name": complex.display_name,
+                                                             "id": complex.format_name,
+                                                             "link": "/complex/" + complex.format_name,
+                                                             "type": "Gomplex" } })
 
                             network_edges.append( { "data": { "source": complex.format_name,
                                                               "class_type": "complex_go",
@@ -7885,15 +7885,15 @@ class Complexdbentity(Dbentity):
                 
                 if complex.format_name in foundComplex:
                     if foundComplex[complex.format_name] != 1:
-                        network_nodes.append({ "data": { "name": complex.format_name,
-                                                             "id": complex.format_name,
-                                                             "link": complex.obj_url,
-                                                             "type": "Gomplex" } })
+                        network_nodes.append({ "data": { "name": complex.display_name,
+                                                         "id": complex.format_name,
+                                                         "link": "/complex/" + complex.format_name,
+                                                         "type": "Gomplex" } })
                         network_edges.append( foundComplex[complex.format_name] )
 
                         foundComplex[complex.format_name] = 1
 
-                    network_nodes.append({ "data": { "name": complex.format_name,
+                    network_nodes.append({ "data": { "name": complex.display_name,
                                                  "id": complex.format_name,
                                                  "link": "/complex/" + complex.format_name,
                                                  "type": "Gomplex" } })
