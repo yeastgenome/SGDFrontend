@@ -26,6 +26,10 @@
 	    add_navbar_element('Summary Paragraph', 'paragraph');
 	    add_navbar_element('Complex Diagram', 'diagram');
 
+	    {% if complex.pdbs|length > 0 %}
+		  add_navbar_element('PDB Structure', 'structure');
+	    {% endif %}
+
 	    add_navbar_element('Subunits', 'subunit');
 
 	    {% if complex.process|length > 0 or complex.function|length > 0 or complex.component|length > 0%}
@@ -38,7 +42,7 @@
 	          add_navbar_element('References', 'reference');
 	    {% endif %}
 
-	    {% if complex.cross_references|length > 0 or complex.pdbs|length > 0 %}
+	    {% if complex.references|length > 0 %}
 	          add_navbar_element('Cross-References', 'cross_reference');
 	    {% endif %}
 		
@@ -95,6 +99,37 @@
             	     {% include "complex_diagram.jinja2" %}
 		</div>
         </section>
+
+<!-- PDB structure
+================================================== -->
+	{% if complex.pdbs|length > 0 %}
+        <section id="structure" data-magellan-destination="structure">
+		 <div class="page-header">
+                     <h2>PDB Structure</h2>
+                     <hr />
+		     
+		     <table border=0><tr>
+
+		     {% for pdb in complex.pdbs %}
+		     	  <td><a href=https://www.rcsb.org/structure/{{ pdb.display_name }} target="_infowin">{{ pdb.display_name }}</td>
+                          <td><a href=https://www.rcsb.org/3d-view/{{ pdb.display_name }} target="_infowin"><img src={{ pdb.image_link }} alt={{pdb.display_name}} width=150 height=150></a></td>
+                     {% endfor %}
+		     
+		     </tr></table>
+		     
+		     <script type="text/javascript">
+		     	     MMTF.fetch(
+				  "3PQR",
+                                  // onLoad callback
+                                  function( mmtfData ){ console.log( mmtfData ) },
+                                  // onError callback
+                                  function( error ){ console.error( error ) }
+                             );		     	     
+		     </script>
+
+                </div>
+        </section>
+	{% endif %}
 
 
 <!-- table with subunits and headlines, stoichiometry
@@ -202,10 +237,6 @@
                          <h2>Cross-References</h2>
                          <hr />
 	
-		         {% for pdb in complex.pdbs %}
-			     PDB: <a href=https://www.rcsb.org/3d-view/{{pdb.display_name}} target="_infowin">{{pdb.display_name}}</a> | 
-			 {% endfor %}
-
 		         {% for alias in complex.cross_references %}
 			     {% if alias.alias_type == 'IntEnz' %}
                      	          {{alias.alias_type}}: <a href=https://www.ebi.ac.uk/intenz/query?cmd=Search&q={{ alias.display_name }} target="_infowin">{{ alias.display_name }}</a>
@@ -246,4 +277,6 @@
 <script src="{{asset_root}}/js/cytoscape.js"></script>
 <script src="{{asset_root}}/js/evidence.js"></script>
 <script src="{{asset_root}}/js/complex.js"></script>
+<script src="{{asset_root}}/js/mmtf/mmtf.js"></script>
+<script src="{{asset_root}}/js/pdb.js"></script>
 {% endblock scripts %}
