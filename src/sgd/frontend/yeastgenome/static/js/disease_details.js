@@ -70,7 +70,7 @@ function create_disease_table(prefix, message, filter, data) {
             {"bSearchable":false, "bVisible":false}, //method
             null, //source
             null, //assigned on
-            null, //annotation_extension
+            {"bSearchable":false, "bVisible":false}, //annotation_extension
             null // reference
     ];
     options["bPaginate"] = true;
