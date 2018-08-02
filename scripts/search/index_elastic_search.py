@@ -1,4 +1,4 @@
-from src.models import DBSession, Base, Colleague, ColleagueLocus, Dbentity, Locusdbentity, Filedbentity, FileKeyword, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi, Disease, Diseaseannotation, DiseaseAlia
+from src.models import DBSession, Base, Colleague, ColleagueLocus, Dbentity, Locusdbentity, Filedbentity, FileKeyword, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi, Disease, Diseaseannotation, DiseaseAlias
 from sqlalchemy import create_engine, and_
 from elasticsearch import Elasticsearch
 from mapping import mapping
@@ -163,7 +163,7 @@ def index_genes():
     # feature_type comes from DNASequenceAnnotation as well
     gene_ids_so = DBSession.query(
         Dnasequenceannotation.dbentity_id, Dnasequenceannotation.so_id).filter(
-            Dna_mppsequenceannotation.taxonomy_id == 274901).all()
+            Dnasequenceannotation.taxonomy_id == 274901).all()
     dbentity_ids_to_so = {}
     dbentity_ids = set([])
     so_ids = set([])
@@ -617,19 +617,13 @@ def index_go_terms():
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
 def index_disease_terms():
-    disease_id_blacklist = load_go_id_blacklist("scripts/search/do_id_blacklist.lst")
-
     dos = DBSession.query(Disease).all()
 
-    print("Indexing " + str(len(dos) - len(disease_id_blacklist)) + " DO terms")
+    print("Indexing " + str(len(dos)) + " DO terms")
 
     bulk_data = []
     for do in dos:
-        if do.disease_id in disease_id_blacklist:
-            continue
-
-        synonyms = DBSession.query(DiseaseAlia.display_name).filter_by(disease_id=do.disease_id).all()
-
+        synonyms = DBSession.query(DiseaseAlias.display_name).filter_by(disease_id=do.disease_id).all()
         references = set([])
         do_loci = set([])
         annotations = DBSession.query(Diseaseannotation).filter_by(disease_id=do.disease_id).all()
@@ -651,6 +645,7 @@ def index_disease_terms():
 
         obj = {
             "name": do.display_name,
+            "category": "disease",
             "href": do.obj_url,
             "description": do.description,
             "synonyms": [s[0] for s in synonyms],
@@ -889,7 +884,6 @@ def index_downloads():
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
-
 def index_part_1():
     with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
         index_phenotypes()
@@ -905,7 +899,8 @@ def index_part_1():
         index_colleagues()
     with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
         index_chemicals()
-
+    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
+        index_disease_terms()
 
 def index_part_2():
     with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
@@ -921,10 +916,9 @@ def index_part_2():
 
 
 if __name__ == "__main__":
-    #cleanup()
-    #setup()
-    index_disease_terms()
-    # t1 = Thread(target=index_part_1)
-    # t2 = Thread(target=index_part_2)
-    # t1.start()
-    # t2.start()
+    cleanup()
+    setup()
+    t1 = Thread(target=index_part_1)
+    t2 = Thread(target=index_part_2)
+    t1.start()
+    t2.start()
