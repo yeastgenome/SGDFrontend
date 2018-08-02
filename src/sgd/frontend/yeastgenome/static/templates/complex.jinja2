@@ -203,7 +203,7 @@
                          <hr />
 	
 		         {% for pdb in complex.pdbs %}
-			     PDB: <a href=https://www.rcsb.org/3d-view/{{pdb}} target="_infowin">{{pdb}}</a> | 
+			     PDB: <a href=https://www.rcsb.org/3d-view/{{pdb.display_name}} target="_infowin">{{pdb.display_name}}</a> | 
 			 {% endfor %}
 
 		         {% for alias in complex.cross_references %}
