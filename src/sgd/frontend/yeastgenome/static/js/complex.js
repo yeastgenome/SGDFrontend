@@ -18,7 +18,7 @@ $(document).ready(function() {
 		if (data != null && data["network_graph"]["nodes"].length > 1) {
 		    
 		    var graph2 = create_cytoscape_vis("cy2", layout, graph_style, data["network_graph"], null, true, "complex_network");
-		    create_network_download_button(graph2, "cy2_download", complex['complex_accession'] + '_complex_network_graph')
+		    create_cy_download_button(graph2, "cy_download", complex['complex_accession'] + '_complex_network_graph')
 		}
 		else {
 		    hide_section("network");
@@ -63,36 +63,6 @@ function create_complex_table(data) {
 
 }
 
-function create_network_download_button(cy, button_id, file_name) {
-
-    $("#" + button_id).click(function() {
-
-	    // get hidden canvas                                                                                    
-         
-	    var $hiddenCanvas = $("#j-sgd-hidden-cyto-canvas")[0];
-	    var hiddenCtx = $hiddenCanvas.getContext("2d");
-
-	    // get custom canvas, write to hidden canvas                                                               
-      
-	    var $customCanvas = $("#j-sgd-visible-cyto-canvas")[0];
-	    var customImage = new Image();
-	    customImage.onload = function () {
-                hiddenCtx.drawImage(this, 0, 0);
-                // write cyto hidden canvas     
-                                                                         
-                var cytoImage = new Image();
-
-                cytoImage.onload = function () {
-		    hiddenCtx.drawImage(this, 0, 16);
-		    post_to_url('/download_image', { "display_name":file_name, 'data': $hiddenCanvas.toDataURL("image/png") });
-                }
-                cytoImage.src = cy.png();
-	    }
-	    customImage.src = $customCanvas.toDataURL();
-
-	});
-    $("#" + button_id).attr('disabled', false);
-}
 
 var graph_style = cytoscape.stylesheet()
     .selector('node')
