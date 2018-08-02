@@ -7719,8 +7719,7 @@ class Complexdbentity(Dbentity):
                 if ca.alias_type == 'Synonym':
                     aliases.append(ca.display_name)
                 elif ca.alias_type == 'PDB':
-                    image_link = "https://cdn.rcsb.org/images/rutgers/" + ca.display_name[1:3] + "/" + ca.display_name + "/" + ca.display_name + ".pdb-80.jpg"
-                    pdbs.append({ "display_name": ca.display_name.upper(), "image_link": image_link })
+                    pdbs.append({ "display_name": ca.display_name.upper() })
                 else:
                     crossRefs.append({ "alias_type": ca.alias_type,
                                        "display_name": ca.display_name })
