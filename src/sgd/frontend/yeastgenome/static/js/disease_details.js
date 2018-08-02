@@ -55,20 +55,20 @@ $(document).ready(function() {
 
 function create_disease_table(prefix, message, filter, data) {
     var options = {};
-    options["aoColumns"] = [
-        {"bSearchable":false, "bVisible":false}, // evidence_id
-        {"bSearchable":false, "bVisible":false}, // some other id
-        null, // gene
-        {"bSearchable":false, "bVisible":false}, //gene systematic name
-        null, //disease name
-        {"bSearchable":false, "bVisible":false}, // doid
-        {"bSearchable":false, "bVisible":false}, // null, empty
-        null, // assay
-        null, // method manual or htp
-        null, // source
-        null, // date
-        null, // with
-        null// reference
+     options["aoColumns"] = [
+            {"bSearchable":false, "bVisible":false}, //evidence_id
+            {"bSearchable":false, "bVisible":false}, //analyze_id
+            {"bSearchable":false, "bVisible":false}, //gene
+            {"bSearchable":false, "bVisible":false}, //gene systematic name
+            null, //disease ontology term
+            {"bSearchable":false, "bVisible":false}, // disease ontology term id
+            null, //qualifier
+            null, //evidence
+            {"bSearchable":false, "bVisible":false}, //method
+            null, //source
+            null, //assigned on
+            null, //annotation_extension
+            null // reference
     ];
     options["bPaginate"] = true;
     options["aaSorting"] = [[5, "asc"]];

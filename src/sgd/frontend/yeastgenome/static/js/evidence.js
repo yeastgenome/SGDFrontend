@@ -469,7 +469,22 @@ function disease_data_to_table(evidence, index) {
         }
 
 
-	  	if(obj != null) {
+        if(condition['role'] == 'With' || condition['role'] == 'From') {
+  			var new_with_entry;
+            if(obj['link'] == null) {
+                new_with_entry = obj['display_name'];
+            }
+            else {
+                new_with_entry = create_link(obj['display_name'], obj['link'], obj['class_type'] != 'GO' && obj['class_type'] != 'LOCUS');
+            }
+	  		if(with_entry == null) {
+	  			with_entry = new_with_entry
+	  		}
+	  		else {
+	  			with_entry = with_entry + ', ' + new_with_entry
+	  		}
+	  	}
+	  	else if(obj != null) {
 
 	  		var new_rel_entry = condition['role'] + ' ';
             if(obj['link'] == null) {
@@ -486,11 +501,12 @@ function disease_data_to_table(evidence, index) {
   			}
 	  	}
 
-
   	}
-  	if(with_entry != null) {
+    console.log(evidence['experiment']['display_name'])
+  	if(with_entry != null && evidence['experiment']['display_name'] != 'IMP') {
   		evidence_code = evidence_code + ' with ' + with_entry;
   	}
+
 
     var qualifier = evidence['qualifier'];
     if(qualifier == 'involved in' || qualifier == 'enables' || qualifier == 'part of') {

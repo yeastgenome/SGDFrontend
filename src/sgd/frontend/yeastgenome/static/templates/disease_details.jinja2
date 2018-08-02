@@ -69,7 +69,7 @@
 <!-- Manually Curated
 ================================================== -->
     <section id="manual" data-magellan-destination="manual">
-        <h2>Manually Curated </span>
+        <h2>Manually Curated <span id="mc_disease_table_header" class="round secondary label"> </span>
             <a href="#" data-dropdown="drop_manual"><i class="fa fa-info-circle"></i></a>
 
             <p id="drop_manual" class="f-dropdown content medium" data-dropdown-content>
@@ -84,7 +84,7 @@
         <hr />
         <p><strong>Date Last Reviewed:</strong> {{locus.disease_overview.date_last_reviewed}}</p>
 
-        <div class="spaced-container" id="mc_disease_go" span id="mc_disease_table_header" class="round secondary label">
+        <div class="spaced-container" id="mc_disease_do">
             <p style="display:none" id="manual_message">There are no manually curated annotations
             for {{ locus.display_name }}.</p>
                 <!-- Includes disease_table into template -->
@@ -110,7 +110,7 @@
         </h2>
         <hr />
 
-        <div class="spaced-container" id="htp_disease_go" span id="htp_disease_table_header" class="round secondary label">
+        <div class="spaced-container" id="htp_disease_do" span id="htp_disease_table_header" class="round secondary label">
             <p style="display:none" id="htp_message">There are no high-throughput annotations
             for {{ locus.display_name }}.</p>
                 <!-- Includes disease_table into template -->
@@ -136,7 +136,7 @@
         </h2>
         <hr />
 
-       <div class="spaced-container" id="comp_disease_go" span id="comp_disease_table_header" class="round secondary label">
+       <div class="spaced-container" id="comp_disease_do" span id="comp_disease_table_header" class="round secondary label">
             <p id="comp_message" style="display:none">There are no computational annotations for {{ locus.display_name }}.</p>
             <!-- Includes go_table into template -->
             {% set table_id = "comp_disease_table" %}
