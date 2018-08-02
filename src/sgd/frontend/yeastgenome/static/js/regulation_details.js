@@ -65,23 +65,12 @@ $(document).ready(function() {
 
     $.getJSON('/backend/locus/' + locus['id'] + '/regulation_graph', function(data) {
         if(data != null && data["nodes"].length > 1) {
-
-            views.network.render(data);
-
-            // var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true, "regulation");
-            // create_cy_download_button(graph, "cy_download", locus['display_name'] + '_regulation_graph')
-            // var message = 'Showing regulatory relationships supported by at least <strong>' + data['min_evidence_count'] + '</strong> experiment';
-            // if(data['min_evidence_count'] == 1) {
-            //     message = message + '.';
-            // }
-            // else {
-            //     message = message + 's.';
-            // }
-            // $("#legend").html(message);
-
-            // create_discrete_filter("all_radio", graph, null, function(){return "node, edge"}, 1);
-            // create_discrete_filter("positive_radio", graph, null, function(){return "node, edge[action = 'expression activated']"}, 1);
-            // create_discrete_filter("negative_radio", graph, null, function(){return "node, edge[action = 'expression repressed']"}, 1);
+            var _categoryColors = {
+                'REGULATOR': '#6CB665',
+                'TARGET': '#9F75B8',
+                'FOCUS': '#1f77b4'
+            };
+            views.network.render(data, _categoryColors);
         }
         else {
             hide_section("network");
@@ -257,65 +246,3 @@ function create_regulator_table(data) {
         all: _all,
     };
 }
-
-var graph_style = cytoscape.stylesheet()
-    .selector('node')
-    .css({
-        'content': 'data(name)',
-        'font-family': 'helvetica',
-        'font-size': 14,
-        'text-outline-width': 3,
-        'text-outline-color': '#888',
-        'text-valign': 'center',
-        'color': '#fff',
-        'width': 30,
-        'height': 30,
-        'border-color': '#fff'
-    })
-    .selector('edge')
-    .css({
-        'width': 2,
-        'target-arrow-shape': 'triangle',
-        'line-color': '#848484',
-        'target-arrow-color': '#848484'
-    })
-    .selector("node[sub_type='FOCUS']")
-    .css({
-        'background-color': "#fade71",
-        'text-outline-color': '#fff',
-        'color': '#888'
-    })
-    .selector("node[sub_type='REGULATOR']")
-    .css({
-        'background-color': "#AF8DC3",
-        'text-outline-color': '#888',
-        'color': '#fff'
-    })
-    .selector("node[sub_type='TARGET']")
-    .css({
-        'background-color': "#7FBF7B",
-        'text-outline-color': '#888',
-        'color': '#fff'
-    })
-    .selector("edge[action='expression repressed']")
-    .css({
-        'target-arrow-shape': 'tee'
-    })
-    .selector("edge[action='expression null']")
-    .css({
-        'target-arrow-shape': 'none'
-    });
-
-var layout = {
-    "name": "arbor",
-    "liveUpdate": true,
-    "ungrabifyWhileSimulating": true,
-    "nodeMass":function(data) {
-        if(data.sub_type == 'FOCUS') {
-            return 10;
-        }
-        else {
-            return 1;
-        }
-    }
-};
