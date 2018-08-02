@@ -215,9 +215,8 @@ function create_cy_download_button(cy, button_id, file_name) {
     	}
     	customImage.src = $customCanvas.toDataURL();
     	
-	// comment out the following two lines
-	hiddenCtx.drawImage(cytoImage, 0, 16);
-    	post_to_url('/download_image', { "display_name":file_name, 'data': $hiddenCanvas.toDataURL("image/png") });
+	// hiddenCtx.drawImage(cytoImage, 0, 16);
+    	// post_to_url('/download_image', { "display_name":file_name, 'data': $hiddenCanvas.toDataURL("image/png") });
 
     });
     $("#" + button_id).attr('disabled', false);
