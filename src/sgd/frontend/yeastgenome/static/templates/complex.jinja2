@@ -116,10 +116,12 @@
 		          {% set count = count + 1 %}
 		     	  <td><a href=https://www.rcsb.org/structure/{{ pdb.display_name }} target="_infowin">{{ pdb.display_name }}</td>
                           <td><a href=https://www.rcsb.org/3d-view/{{ pdb.display_name }} target="_infowin"><img src=https://www.ncbi.nlm.nih.gov/Structure/mmdb/mmdbimage.fcgi?&uid={{ pdb.display_name }}&small=t alt={{pdb.display_name}} width=150 height=150></a></td>
-			  {% if count == 4 %}
+		<!--	  {% if count == 4 %}
 			      </tr><tr>
 			      { % set count = 0 %}
-			  {% endif %}
+			  {% endif %} 
+		-->
+
                      {% endfor %}
 		     
 		     </tr></table>
