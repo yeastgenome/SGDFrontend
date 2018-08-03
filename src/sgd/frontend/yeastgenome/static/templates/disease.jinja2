@@ -32,11 +32,14 @@
                 <hr />
 
                 <div class="">
+
                     <dl class="key-value">
                         <dt>DO ID</dt>
                         <dd>
                             {% for url in disease.urls if url.category == 'DO' %}
                                <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>
+                               <br>
+                               <a href="{{ alliance_url|join }}" target="_blank">{{ "View DO Annotations in model organisms in Alliance Genome Resources" }}</a>
                             {% endfor %}
                             {% if disease.urls|length == 0 %}
                                <span>{{ disease.disease_id }}</span>
@@ -55,8 +58,6 @@
                             </dd>
                         {% endif %}
                     </dl>
-                    {% set alliance_url = ["https://www.alliancegenome.org/disease/", disease.urls[0].display_name ] %}
-                    <a href="{{ alliance_url|join }}" target="_blank">{{ "View DO Annotations in model organisms in Alliance Genome Resources" }}</a>
 
                 </div>
             </div>

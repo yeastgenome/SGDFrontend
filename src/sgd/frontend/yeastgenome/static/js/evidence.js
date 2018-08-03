@@ -502,11 +502,10 @@ function disease_data_to_table(evidence, index) {
 	  	}
 
   	}
-    console.log(evidence['experiment']['display_name'])
+
   	if(with_entry != null && evidence['experiment']['display_name'] != 'IMP') {
   		evidence_code = evidence_code + ' with ' + with_entry;
   	}
-
 
     var qualifier = evidence['qualifier'];
     if(qualifier == 'involved in' || qualifier == 'enables' || qualifier == 'part of') {

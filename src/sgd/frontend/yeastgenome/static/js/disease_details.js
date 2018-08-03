@@ -1,13 +1,13 @@
 $(document).ready(function() {
 
   	$.getJSON('/backend/locus/' + locus['id'] + '/disease_details', function(data) {
-  	    var mc_disease_table = create_disease_table("mc_disease", "No manually curated terms for " + locus['display_name'], function(x) {return x["annotation_type"] == "manually curated"}, data);
+  	    var mc_disease_table = create_disease_table("mc", "No manually curated terms for " + locus['display_name'], function(x) {return x["annotation_type"] == "manually curated"}, data);
         create_download_button("mc_disease_table_download", mc_disease_table, locus['display_name'] + "_manual_disease_do");
 
-        var htp_disease_table = create_disease_table("htp_disease", "No high-throughput terms for " + locus['display_name'], function(x) {return x["annotation_type"] == "high-throughput"}, data);
+        var htp_disease_table = create_disease_table("htp", "No high-throughput terms for " + locus['display_name'], function(x) {return x["annotation_type"] == "high-throughput"}, data);
         create_download_button("htp_disease_table_download", htp_disease_table, locus['display_name'] + "_htp_disease_do");
 
-        var comp_disease_table = create_disease_table("comp_disease", "No computational terms for " + locus['display_name'], function(x) {return x["annotation_type"] == "computational"}, data);
+        var comp_disease_table = create_disease_table("comp", "No computational terms for " + locus['display_name'], function(x) {return x["annotation_type"] == "computational"}, data);
         create_download_button("comp_disease_table_download", comp_disease_table, locus['display_name'] + "_computational_disease_do");
 
 
@@ -90,19 +90,19 @@ function create_disease_table(prefix, message, filter, data) {
                 diseases[data[i]['disease']['id']] = true;
             }
         }
+
         set_up_header(prefix + '_disease_table', datatable.length, 'entry', 'entries', Object.keys(diseases).length, 'Disease Ontology term', 'Disease Ontology terms');
 
         options["oLanguage"] = {"sEmptyTable": message};
         options["aaData"] = datatable;
 
         if(Object.keys(diseases).length == 0) {
-            $("#" + prefix + "_disease").hide();
+            $("#" + prefix + "_do").hide();
             $("#" + prefix + "_subsection").hide();
         }
     }
-
-	$("#" + prefix + "_table_analyze").hide();
-    return create_table(prefix + "_table", options);
+	$("#" + prefix + "_disease_table_analyze").hide();
+    return create_table(prefix + "_disease_table", options);
 }
 
 function slider_filter(new_cutoff) {
