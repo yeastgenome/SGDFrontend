@@ -92,17 +92,20 @@ var graph_style = cytoscape.stylesheet()
         })
     .selector("node[type='Complex']")
     .css({
-            'text-outline-color': "#33FFD4",
+            'text-outline-color': "#0E9F36",
         })
     .selector('edge')
     .css({
 	    'width': 2
+	    'target-arrow-shape': 'triangle',
+	    'line-color': '#848484',
+	    'target-arrow-color': '#848484'
         })
     .selector("node[sub_type='FOCUS']")
     .css({
-	    'background-color': "#FF3391",
+	    'background-color': "#fade71",
 	    'text-outline-color': '#fff',
-	    'color': '#fff'
+	    'color': '#888'
         })
     .selector("edge[class_type = 'complex_go']")
     .css({
