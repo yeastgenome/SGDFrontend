@@ -21,7 +21,7 @@ $(document).ready(function() {
 		    create_cy_download_button(graph2, "cy2_download", complex['complex_accession'] + '_complex_network_graph')
 		    
 		    create_discrete_filter("union_radio", graph, slider, all_filter, 10);
-		    create_discrete_filter("subunit_radio", graph, slider, subunit_filter, 10]);
+		    create_discrete_filter("subunit_radio", graph, slider, subunit_filter, 10);
 		    create_discrete_filter("go_radio", graph, slider, go_filter, 10);
 		    $("#discrete_filter").show();
 
