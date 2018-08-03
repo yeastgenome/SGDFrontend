@@ -19,6 +19,12 @@ $(document).ready(function() {
 		    
 		    var graph2 = create_cytoscape_vis("cy2", layout, graph_style, data["network_graph"], null, true, "complex_network");
 		    create_cy_download_button(graph2, "cy2_download", complex['complex_accession'] + '_complex_network_graph')
+		    
+		    create_discrete_filter("union_radio", graph, slider, all_filter, 10);
+		    create_discrete_filter("subunit_radio", graph, slider, subunit_filter, 10]);
+		    create_discrete_filter("go_radio", graph, slider, go_filter, 10);
+		    $("#discrete_filter").show();
+
 		}
 		else {
 		    hide_section("network");
@@ -63,6 +69,18 @@ function create_complex_table(data) {
 
 }
 
+
+function all_filter() {
+    return "node, edge";
+}
+
+function subunit_filter() {
+    return "node, edge[class_type = 'complex_gene']";
+}
+
+function go_filter() {
+    return "node, edge[class_type = 'complex_go']";
+}
 
 var graph_style = cytoscape.stylesheet()
     .selector('node')
