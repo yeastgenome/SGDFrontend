@@ -96,7 +96,7 @@ var graph_style = cytoscape.stylesheet()
         })
     .selector('edge')
     .css({
-	    'width': 2
+	    'width': 2,
 	    'target-arrow-shape': 'triangle',
 	    'line-color': '#848484',
 	    'target-arrow-color': '#848484'
