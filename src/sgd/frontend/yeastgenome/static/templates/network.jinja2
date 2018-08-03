@@ -12,14 +12,8 @@
         {% block help %}{% endblock %}
     </p>
 
-    {% block network_name %}
-         {% if network_name %}
-    	     <div id="{{ network_id }}" name={{ network_name }} style="width:100%;height:700px"></div>
-	 {% else %}
-	     <div id="{{ network_id }}" name="cy" style="width:100%;height:700px"></div>
-	 {% endif %}
-    {% endblock %}
-
+    <div id="{{ network_id }}" name="{{ network_id }}" style="width:100%;height:700px"></div>
+	
     {% block legend %}{% endblock %}
 
 </div>
@@ -30,7 +24,7 @@
     {% block buttons %}
          {% if download_button_id %}
     	       <ul class="button-group radius">
-               	   <li><a disabled="true" id={{ download_button_id }} class="small button secondary" disabled="true"><i
+               	   <li><a disabled="true" id="{{ download_button_id }}" class="small button secondary" disabled="true"><i
                    	  class="fa fa-download"></i> Download (.png)</a></li>
     	       </ul>
 	 {% else %}	
