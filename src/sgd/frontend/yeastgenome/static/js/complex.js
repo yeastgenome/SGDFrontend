@@ -92,6 +92,11 @@ var graph_style = cytoscape.stylesheet()
         })
     .selector("node[type='Complex']")
     .css({
+            'text-outline-color': "#86908C",
+            'background-color':"#0E9F36"
+        })
+    .selector("node[type='Current_complex']")
+    .css({
             'text-outline-color': "#0E9F36",
 	    'background-color': "#0E9F36"
         })
