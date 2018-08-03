@@ -7737,7 +7737,7 @@ class Complexdbentity(Dbentity):
         network_nodes.append({ "data": { "name": self.display_name,
                                          "id": self.format_name,
                                          "link": "/complex/" + self.format_name,
-                                         "type": "Complex" }})
+                                         "type": "Current_complex" }})
 
         go_objs = DBSession.query(ComplexGo).filter_by(complex_id=self.dbentity_id).all()
 
@@ -7779,7 +7779,7 @@ class Complexdbentity(Dbentity):
                                 network_nodes.append({ "data": { "name": complex.display_name,
                                                                  "id": complex.format_name,
                                                                  "link": "/complex/" + complex.format_name,
-                                                                 "type": "Gomplex" } })
+                                                                 "type": "Complex" } })
                                 network_edges.append( foundComplex[complex.format_name] )
 
                                 foundComplex[complex.format_name] = 1
@@ -7787,7 +7787,7 @@ class Complexdbentity(Dbentity):
                             network_nodes.append({ "data": { "name": complex.display_name,
                                                              "id": complex.format_name,
                                                              "link": "/complex/" + complex.format_name,
-                                                             "type": "Gomplex" } })
+                                                             "type": "Complex" } })
 
                             network_edges.append( { "data": { "source": complex.format_name,
                                                               "class_type": "complex_go",
@@ -7887,7 +7887,7 @@ class Complexdbentity(Dbentity):
                         network_nodes.append({ "data": { "name": complex.display_name,
                                                          "id": complex.format_name,
                                                          "link": "/complex/" + complex.format_name,
-                                                         "type": "Gomplex" } })
+                                                         "type": "Complex" } })
                         network_edges.append( foundComplex[complex.format_name] )
 
                         foundComplex[complex.format_name] = 1
@@ -7895,7 +7895,7 @@ class Complexdbentity(Dbentity):
                     network_nodes.append({ "data": { "name": complex.display_name,
                                                  "id": complex.format_name,
                                                  "link": "/complex/" + complex.format_name,
-                                                 "type": "Gomplex" } })
+                                                 "type": "Complex" } })
                     network_edges.append( { "data": { "source": complex.format_name,
                                                   "class_type": "complex_gene",
                                                   "target": interactor.format_name } })
