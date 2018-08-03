@@ -1,8 +1,17 @@
 {% extends "network.jinja2" %}
 
 {% block help %}
-    Click on a complex, a gene, or a go node to go to its specific page within SGD; drag any of the object nodes around within the visualization for easier viewing; click “Reset” to automatically redraw the network diagram.
+    Click on a complex, a gene, or a go node to go to its specific page within SGD; drag any of the object nodes around within the visualization for easier viewing; filter by node type ( complex subunit or go term ) using the radio buttons; click “Reset” to automatically redraw the network diagram.
+{% endblock %}
 
+{% block legend %}
+    <div id="discrete_filter" hidden>
+        <label class="network-label"><strong>Filter by Node Type</strong></label>
+        <input type="radio" name="group1" id="union_radio" checked><label for="union_radio">All</label>
+        <input type="radio" name="group1" id="subunit_radio"><label for="subunit_radio">Share Complex Subunit</label>
+        <input type="radio" name="group1" id="go_radio"><label for="go_radio">Share Go Annotation</label>
+    </div>
+    <br>
 {% endblock %}
 
 
