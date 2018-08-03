@@ -12,16 +12,34 @@
         {% block help %}{% endblock %}
     </p>
 
-    <div id="{{ network_id }}" name="cy" style="width:100%;height:700px"></div>
+    {% block network_name %}
+         {% if network_name %}
+    	     <div id="{{ network_id }}" name={{ network_name }} style="width:100%;height:700px"></div>
+	 {% else %}
+	     <div id="{{ network_id }}" name="cy" style="width:100%;height:700px"></div>
+	 {% endif %}
+    {% endblock %}
 
     {% block legend %}{% endblock %}
 
 </div>
 
+
 <div class="button-bar">
-    <ul class="button-group radius">
-        <li><a disabled="true" id="cy_download" class="small button secondary" disabled="true"><i
-                class="fa fa-download"></i> Download (.png)</a></li>
-    </ul>
+
+    {% block buttons %}
+         {% if download_button_id %}
+    	       <ul class="button-group radius">
+               	   <li><a disabled="true" id={{ download_button_id }} class="small button secondary" disabled="true"><i
+                   	  class="fa fa-download"></i> Download (.png)</a></li>
+    	       </ul>
+	 {% else %}	
+	       <ul class="button-group radius">
+                   <li><a disabled="true" id="cy_download" class="small button secondary" disabled="true"><i
+                          class="fa fa-download"></i> Download (.png)</a></li>
+               </ul>
+	 {% endif %}
+    {% endblock %}
+
     {% block additional_buttons %}{% endblock %}
 </div>
