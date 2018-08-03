@@ -27,9 +27,21 @@
 </div>
 
 <div class="button-bar">
-    <ul class="button-group radius">
-        <li><a disabled="true" id="cy_download" class="small button secondary" disabled="true"><i
-                class="fa fa-download"></i> Download (.png)</a></li>
-    </ul>
+
+    {% block download_buttons %}
+          {% if download_button_id %}
+		<ul class="button-group radius">
+            	    <li><a disabled="true" id="{{ download_button_id }}" class="small button secondary" disabled="true"><i
+                    	   class="fa fa-download"></i> Download (.png)</a></li>
+    		</ul>
+	  {% else %}
+	      	<ul class="button-group radius">
+                    <li><a disabled="true" id="cy_download" class="small button secondary" disabled="true"><i
+                           class="fa fa-download"></i> Download (.png)</a></li>
+                </ul>  
+	  {% endif %} 
+
+    {% endblock %}
+	
     {% block additional_buttons %}{% endblock %}
 </div>
