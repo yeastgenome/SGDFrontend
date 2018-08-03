@@ -12,7 +12,11 @@
         {% block help %}{% endblock %}
     </p>
 
-    <div id="{{ network_id }}" name="cy" style="width:100%;height:700px"></div>
+    {% if network_name %}
+       <div id="{{ network_id }}" name="{{ network_name }}" style="width:100%;height:700px"></div>
+    {% else %}
+       <div id="{{ network_id }}" name="cy" style="width:100%;height:700px"></div>
+    {% endif %}
 
     {% block legend %}{% endblock %}
 
