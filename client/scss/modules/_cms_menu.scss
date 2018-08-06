@@ -89,3 +89,12 @@
 {
   display: block;
 }
+
+.sgd-homepage-imgimg {
+  opacity: 1;
+  transition: opacity 0.3s;
+}
+
+.sgd-homepage-imgimg[data-src] {
+  opacity: 0;
+}
