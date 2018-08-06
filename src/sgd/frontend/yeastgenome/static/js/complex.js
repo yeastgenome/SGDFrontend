@@ -151,7 +151,7 @@ var graph_style = cytoscape.stylesheet()
         })
     .selector("edge[class_type = 'complex_gene']")
     .css({
-            'line-color': "#74FF33"
+            'line-color': "#FF8933"
         })
     .selector("edge[class_type = 'complex']")
     .css({
