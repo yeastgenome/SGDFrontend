@@ -113,6 +113,12 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 	if (legendType != "complex" && legendType !== "complex_network") {
 	    drawLegendNode(ctx, mainText, startX, legendY, '#F9DA56', true, false);
 	}    
+	else if (legendType === "complex") {
+	    drawLegendNode(ctx, "protein", startX, legendY, '#86908C', true, false);
+	    drawLegendNode(ctx, "small-molecule", startX+80, legendY, '#86908C', true, false);
+	    drawLegendNode(ctx, "sub-complex", startX+220, legendY, '#FF8933', true, false);
+	}
+
 
         var secondX = (legendType === "phenotypeOntology" || legendType === "observable") ? 230 : 160;
 	    
