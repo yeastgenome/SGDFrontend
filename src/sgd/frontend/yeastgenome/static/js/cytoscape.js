@@ -120,10 +120,10 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 	    drawLegendNode(ctx, "other-subunit", startX+400, legendY, '#35F30D', true, false);
 	}
 	else if (legendType === "complex_network") {
-	    drawLegendNode(ctx, "current-complex", startX, legendY, '#0E9F36', true, false);
+	    drawLegendNode(ctx, "current-complex", startX+20, legendY, '#0E9F36', true, false);
 	    drawLegendNode(ctx, "complex", startX+160, legendY, '#86908C', true, false);
 	    drawLegendNode(ctx, "complex-subunit", startX+290, legendY, '#FF8933', true, false);
-	    drawLegendNode(ctx, "go-term", startX+450, legendY, '#A133FF', true, false);
+	    drawLegendNode(ctx, "go-term", startX+430, legendY, '#A133FF', true, false);
 	}
 	else {
 	    drawLegendNode(ctx, mainText, startX, legendY, '#F9DA56', true, false);
