@@ -20,10 +20,10 @@ $(document).ready(function() {
 		    var graph2 = create_cytoscape_vis("cy2", layout, graph_style, data["network_graph"], null, true, "complex_network");
 		    create_cy_download_button(graph2, "cy2_download", complex['complex_accession'] + '_complex_network_graph')
 		    
-		    // create_filter_bar("union_radio", graph, all_filter);
-		    // create_filter_bar("subunit_radio", graph, subunit_filter);
-		    // create_filter_bar("go_radio", graph, go_filter);
-		    // $("#filter_bar").show();
+		    create_filter_bar("union_radio", graph, all_filter);
+		    create_filter_bar("subunit_radio", graph, subunit_filter);
+		    create_filter_bar("go_radio", graph, go_filter);
+		    $("#filter_bar").show();
 
 		}
 		else {
