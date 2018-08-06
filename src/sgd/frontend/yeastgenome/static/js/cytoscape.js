@@ -115,8 +115,8 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 
 	if (legendType === "complex_diagram") {
 	    drawLegendNode(ctx, "protein", startX, legendY, '#86908C', true, false);   
-	    drawLegendNode(ctx, "small-molecule", startX+180, legendY, '#86908C', true, false);
-	    drawLegendNode(ctx, "sub-complex", startX+320, legendY, '#FF8933', true, false);
+	    drawLegendNode(ctx, "small-molecule", startX+130, legendY, '#338AFF', true, false);
+	    drawLegendNode(ctx, "sub-complex", startX+280, legendY, '#FF8933', true, false);
 	}
 	else if (legendType === "complex_network") {
 	    drawLegendNode(ctx, "complex", startX, legendY, '#86908C', true, false);
