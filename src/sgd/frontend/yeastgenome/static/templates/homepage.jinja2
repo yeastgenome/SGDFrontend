@@ -226,5 +226,12 @@ anti-Fpr3 antibody courtesy of Jeremy Thorner, Ph.D., UC Berkeley</span>
     ];
     var randomQueryUrl = queryUrls[Math.floor(queryUrls.length * Math.random())];
     document.getElementById('j-try-btn').href = randomQueryUrl;
+    // lazy load images a la https://davidwalsh.name/lazyload-image-fade
+    [].forEach.call(document.querySelectorAll('img[data-src]'), function(img) {
+            img.setAttribute('src', img.getAttribute('data-src'));
+            img.onload = function() {
+            img.removeAttribute('data-src');
+        };
+    });
 </script>
 {% endblock scripts %}
