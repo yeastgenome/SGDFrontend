@@ -107,6 +107,15 @@ var graph_style = cytoscape.stylesheet()
     .css({
 	    'text-outline-color': "#338AFF",
 	})
+    .selector("node[type='subcomplex']")
+    .css({
+            'text-outline-color': "#FF8933",
+        })
+    .selector("node[type='other_subunit']")
+    .css({
+            'text-outline-color': "#A133FF",
+        })
+
     .selector("node[type='Gene']")
     .css({
             'text-outline-color': "#FF8933",
