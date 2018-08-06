@@ -2,6 +2,8 @@
 function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, legendType) {
 	// legend type defaults to false (only loci)
 	legendType = legendType || false;
+	
+	var canvas_id = (legendType === "complex_network") ? "2" :  "";
 
 	var cytoscape_div = $("#" + div_id);
 	var height = Math.min(.75*$(window).height(), 600);
@@ -9,10 +11,10 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 	var offset = 75;
 	cytoscape_div.height(height);
 
-	$(".j-sgd-cyto-canvas")
+	$(".j-sgd-cyto-canvas"+canvas_id)
 		.attr("width", width)
 		.attr("height", height + offset);
-	$(".j-sgd-cyto-canvas").css("margin-top", '2rem');;
+	$(".j-sgd-cyto-canvas"+canvas_id).css("margin-top", '2rem');;
 
 	var _legendOffsets = {
 		protein: 0,
@@ -29,7 +31,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 		complex_network: 0,
 	};
 	var _legendOffset = _legendOffsets[legendType];
-	$(".sgd-cyto-canvas-container").parent().height(height + offset + _legendOffset);
+	$(".sgd-cyto-canvas-container"+canvas_id).parent().height(height + offset + _legendOffset);
 
 	options = {
 		showOverlay: false,
@@ -48,12 +50,10 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 
     var cy = $('#' + div_id).cytoscape("get");
 
-    console.log("div_id="+div_id);
-
     var legendY = height + 35;
 
     // add date
-    var $canvas = $("#j-sgd-visible-cyto-canvas")[0]
+        var $canvas = $("#j-sgd-visible-cyto-canvas"+canvas_id)[0]
 	var ctx = $canvas.getContext("2d");
 	var fontSize = 12;
 	ctx.font = fontSize + "pt Helvetica";
