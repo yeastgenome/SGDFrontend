@@ -105,11 +105,11 @@ var graph_style = cytoscape.stylesheet()
         })
     .selector("node[type='small-molecule']")
     .css({
-	    'background-color': "#338AFF",
+	    'background-color': "0D85F3",
 	})
     .selector("node[type='subcomplex']")
     .css({
-	    'background-color': "#FF8933",
+	    'background-color': "F3750D",
         })
     .selector("node[type='other_subunit']")
     .css({
