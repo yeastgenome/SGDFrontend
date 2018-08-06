@@ -103,7 +103,7 @@ var graph_style = cytoscape.stylesheet()
 	    'height': 30,
 	    'border-color': '#fff'
         })
-    .selector("node[type='small-molecule']")
+    .selector("node[type='small_molecule']")
     .css({
 	    'background-color': "#0D7CF3",
 	})
