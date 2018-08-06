@@ -118,23 +118,19 @@ var graph_style = cytoscape.stylesheet()
 
     .selector("node[type='Gene']")
     .css({
-            'text-outline-color': "#FF8933",
 	    'background-color': "#FF8933",
         })
     .selector("node[type='Go']")
     .css({
-            'text-outline-color': "#A133FF",
 	    'background-color': "#A133FF",
         })
     .selector("node[type='Complex']")
     .css({
-            'text-outline-color': "#86908C",
             'background-color': "#86908C",
         })
     .selector("node[type='Current_complex']")
     .css({
-            'text-outline-color': "#0E9F36",
-	    'background-color': "#86908C",
+	    'background-color': "#0E9F36",
         })
     .selector('edge')
     .css({
