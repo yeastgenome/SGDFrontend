@@ -271,6 +271,10 @@ BEGIN
         PERFORM nex.insertupdatelog('LOCUSDBENTITY'::text, 'HAS_PROTEIN'::text, OLD.dbentity_id, OLD.has_protein::text, NEW.has_protein::text, USER);
     END IF;
 
+    IF (OLD.has_disease != NEW.has_disease) THEN
+        PERFORM nex.insertupdatelog('LOCUSDBENTITY'::text, 'HAS_DISEASE'::text, OLD.dbentity_id, OLD.has_disease::text, NEW.has_disease::text, USER);
+    END IF;
+
     IF (OLD.has_sequence_section != NEW.has_sequence_section) THEN
         PERFORM nex.insertupdatelog('LOCUSDBENTITY'::text, 'HAS_SEQUENCE_SECTION'::text, OLD.dbentity_id, OLD.has_sequence_section::text, NEW.has_sequence_section::text, USER);
     END IF;
@@ -292,6 +296,7 @@ BEGIN
              OLD.has_go || '[:]' || OLD.has_phenotype || '[:]' ||
              OLD.has_interaction || '[:]' || OLD.has_expression || '[:]' ||
              OLD.has_regulation || '[:]' || OLD.has_protein || '[:]' ||
+             OLD.has_disease || '[:]' ||
              OLD.has_sequence_section || '[:]' || OLD.not_in_s288c;
 
             PERFORM nex.insertdeletelog('LOCUSDBENTITY'::text, OLD.dbentity_id, v_row, USER);
