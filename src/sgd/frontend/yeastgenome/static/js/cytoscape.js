@@ -3,8 +3,6 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 	// legend type defaults to false (only loci)
 	legendType = legendType || false;
 
-	console.log(legendType + ": " + div_id); 
-
 	var cytoscape_div = $("#" + div_id);
 	var height = Math.min(.75*$(window).height(), 600);
 	var width = $('#' + div_id).width();
@@ -113,9 +111,11 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 
 
 	if (legendType === "complex_diagram") {
+	    console.log("diagram=" + ctx);
 	    drawLegendNode(ctx, "protein", startX, legendY, '#86908C', true, false);   
 	}
 	else if (legendType === "complex_network") {
+	    console.log("network=" + ctx);
 	    drawLegendNode(ctx, "complex", startX+80, legendY, '#86908C', true, false);
 	}
 	else {
