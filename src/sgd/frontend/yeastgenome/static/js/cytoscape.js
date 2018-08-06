@@ -117,13 +117,13 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 	    drawLegendNode(ctx, "protein", startX-20, legendY, '#86908C', true, false);   
 	    drawLegendNode(ctx, "small-molecule", startX+90, legendY, '#338AFF', true, false);
 	    drawLegendNode(ctx, "sub-complex", startX+220, legendY, '#FF8933', true, false);
-	    drawLegendNode(ctx, "other-subunit", startX+340, legendY, '#35F30D', true, false);
+	    drawLegendNode(ctx, "other-subunit", startX+345, legendY, '#35F30D', true, false);
 	}
 	else if (legendType === "complex_network") {
-	    drawLegendNode(ctx, "current-complex", startX+20, legendY, '#0E9F36', true, false);
-	    drawLegendNode(ctx, "complex", startX+150, legendY, '#86908C', true, false);
-	    drawLegendNode(ctx, "complex-subunit", startX+270, legendY, '#FF8933', true, false);
-	    drawLegendNode(ctx, "go-term", startX+390, legendY, '#A133FF', true, false);
+	    drawLegendNode(ctx, "current-complex", startX+10, legendY, '#0E9F36', true, false);
+	    drawLegendNode(ctx, "complex", startX+130, legendY, '#86908C', true, false);
+	    drawLegendNode(ctx, "complex-subunit", startX+250, legendY, '#FF8933', true, false);
+	    drawLegendNode(ctx, "go-term", startX+370, legendY, '#A133FF', true, false);
 	}
 	else {
 	    drawLegendNode(ctx, mainText, startX, legendY, '#F9DA56', true, false);
