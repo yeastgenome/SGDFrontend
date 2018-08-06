@@ -7,7 +7,7 @@ $(document).ready(function() {
 
 		if(data != null && data["graph"]["nodes"].length > 1) {
 
-		    var graph = create_cytoscape_vis("cy", layout, graph_style, data["graph"], null, true, "complex");
+		    var graph = create_cytoscape_vis("cy", layout, graph_style, data["graph"], null, true, "complex_diagram");
 		    create_cy_download_button(graph, "cy_download", complex['complex_accession'] + '_subunit_graph')
 
 		}

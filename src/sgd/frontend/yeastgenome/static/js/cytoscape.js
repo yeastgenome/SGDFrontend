@@ -25,7 +25,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 		phenotypeOntology: 0,
 		goOntology: 0,
 		observable: 0,
-		complex: 0,
+		complex_diagram: 0,
 		complex_network: 0,
 	};
 	var _legendOffset = _legendOffsets[legendType];
@@ -110,7 +110,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 	var startX = (legendType === "phenotypeOntology" || legendType === "observable") ? 74 : 53;
 
 
-	if (legendType === "complex") {
+	if (legendType === "complex_diagram") {
 	    drawLegendNode(ctx, "protein", startX, legendY, '#86908C', true, false);   
 	}
 	else if (legendType === "complex_network") {
@@ -120,7 +120,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 	    drawLegendNode(ctx, mainText, startX, legendY, '#F9DA56', true, false);
 	}
 
-	// else if (legendType === "complex") {
+	// else if (legendType === "complex_diagram") {
 	//    drawLegendNode(ctx, "protein", startX, legendY, '#86908C', true, true);
 	//    drawLegendNode(ctx, "small-molecule", startX+80, legendY, '#86908C', true, true);
 	//    drawLegendNode(ctx, "sub-complex", startX+220, legendY, '#FF8933', true, true);
@@ -129,7 +129,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 
         var secondX = (legendType === "phenotypeOntology" || legendType === "observable") ? 230 : 160;
 	    
-        if (legendType !== "literature" && legendType !== "complex" && legendType !== "complex_network") {
+        if (legendType !== "literature" && legendType !== "complex_diagram" && legendType !== "complex_network") {
 	    drawLegendNode(ctx, secondText, secondX, legendY, secondColor, true, true);
 	}
     
