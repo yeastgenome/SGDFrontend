@@ -7845,7 +7845,7 @@ class Complexdbentity(Dbentity):
             description = interactor.description
             link = interactor.obj_url
             sgdid = None
-            type = "other_subunit"
+            type = "othersubunit"
             if interactor.locus_id:
                 display_name = interactor.locus.display_name
                 sgdid = interactor.locus.sgdid
@@ -7855,7 +7855,7 @@ class Complexdbentity(Dbentity):
             elif interactor.format_name.startswith('CPX-'):
                 type = 'subcomplex'
             elif interactor.format_name.startswith('CHEBI:%'):
-                type = "small_molecule"
+                type = "smallmolecule"
             subunits.append({ "display_name": display_name,
                               "description": description,
                               "sgdid": sgdid,
