@@ -90,11 +90,13 @@
   display: block;
 }
 
-.sgd-homepage-imgimg {
+img.sgd-homepage-img {
   opacity: 1;
   transition: opacity 0.3s;
 }
 
-.sgd-homepage-imgimg[data-src] {
+img.sgd-homepage-img[data-src] {
   opacity: 0;
+  width: 100%;
+  height: 100%;
 }
