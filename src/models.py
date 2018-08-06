@@ -7852,6 +7852,8 @@ class Complexdbentity(Dbentity):
                 description = interactor.locus.headline
                 link = interactor.locus.obj_url
                 type = "protein"
+            elif interactor.format_name.startswith('CPX-'):
+                type = 'subcomplex'
             subunits.append({ "display_name": display_name,
                               "description": description,
                               "sgdid": sgdid,
