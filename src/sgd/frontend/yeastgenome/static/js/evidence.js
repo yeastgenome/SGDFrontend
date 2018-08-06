@@ -435,3 +435,67 @@ function go_data_to_table(evidence, index) {
     relationship_entry = relationship_entry || ''; // prevent null value so that GO table can sort
   	return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], biocon, evidence['go']['go_id'], qualifier, evidence['go']['go_aspect'], evidence_code, evidence['annotation_type'], evidence['source']['display_name'], evidence['date_created'], relationship_entry, reference];
 }
+
+function disease_data_to_table(evidence, index) {
+	var bioent = create_link(evidence['locus']['display_name'], evidence['locus']['link']);
+	var biocon = create_link(evidence['disease']['display_name'], evidence['disease']['link']);
+  	var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
+    if(evidence['reference']['pubmed_id'] != null) {
+        reference = reference + ' <small>PMID:' + evidence['reference']['pubmed_id'] + '</small>';
+    }
+
+    var evidence_code = null;
+    if(evidence['experiment'] != null) {
+        evidence_code = create_link(evidence['experiment']['display_name'], evidence['experiment']['link']);;
+    }
+    else {
+        evidence_code = evidence['do_evidence'];
+    }
+
+  	var with_entry = null;
+	var relationship_entry = null;
+
+  	for(var j=0; j < evidence['properties'].length; j++) {
+  		var condition = evidence['properties'][j];
+        var obj = null;
+        if('bioitem' in condition) {
+            obj = condition['bioitem'];
+        }
+        else if('bioentity' in condition) {
+            obj = condition['bioentity'];
+        }
+        else if('bioconcept' in condition) {
+            obj = condition['bioconcept'];
+        }
+
+
+	  	if(obj != null) {
+
+	  		var new_rel_entry = condition['role'] + ' ';
+            if(obj['link'] == null) {
+                new_rel_entry = new_rel_entry + obj['display_name'];
+            }
+            else {
+                new_rel_entry = new_rel_entry + create_link(obj['display_name'], obj['link']);
+            }
+	  		if(relationship_entry == null) {
+  				relationship_entry = new_rel_entry
+  			}
+  			else {
+  				relationship_entry = relationship_entry + ', ' + new_rel_entry
+  			}
+	  	}
+
+
+  	}
+  	if(with_entry != null) {
+  		evidence_code = evidence_code + ' with ' + with_entry;
+  	}
+
+    var qualifier = evidence['qualifier'];
+    if(qualifier == 'involved in' || qualifier == 'enables' || qualifier == 'part of') {
+        qualifier = '';
+    }
+    relationship_entry = relationship_entry || ''; // prevent null value so that GO table can sort
+  	return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], biocon, evidence['disease']['disease_id'], qualifier, evidence_code, evidence['annotation_type'], evidence['source']['display_name'], evidence['date_created'], relationship_entry, reference];
+}

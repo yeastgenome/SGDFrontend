@@ -6,6 +6,7 @@ from src.sgd.frontend.yeastgenome import send_message
 from src.sgd.tools.blast import do_blast
 from src.sgd.tools.patmatch import do_patmatch
 from src.sgd.tools.seqtools import do_seq_analysis
+from src.sgd.tools.gotools import do_gosearch
 
 def prep_views(chosen_frontend, config):
     # some logic (NOT all) has been moved to views to be more 'pyramid-y'
@@ -20,6 +21,7 @@ def prep_views(chosen_frontend, config):
     config.add_route('blast_sgd', '/blast-sgd')
     config.add_route('patmatch', '/nph-patmatch')
     config.add_route('seq_tools', '/seqTools')
+    config.add_route('gotermfinder', '/goTermFinder')
     config.add_route('blog_post', '/blog/{slug}')
     config.add_route('blog_index', '/blog')
     config.add_route('blog_archive', '/blog/archive/{year}')
@@ -42,6 +44,7 @@ def prep_views(chosen_frontend, config):
     config.add_route('sequence_details', '/locus/{identifier}/sequence')
     config.add_route('protein_details', '/locus/{identifier}/protein')
     config.add_route('go_details', '/locus/{identifier}/go')
+    config.add_route('disease_details', '/locus/{identifier}/disease')
     config.add_route('phenotype_details', '/locus/{identifier}/phenotype')
     config.add_route('interaction_details', '/locus/{identifier}/interaction')
     config.add_route('regulation_details', '/locus/{identifier}/regulation')
@@ -232,6 +235,9 @@ def prep_views(chosen_frontend, config):
 
     config.add_route('do_seq_analysis', '/run_seqtools')
     config.add_view(do_seq_analysis, route_name='do_seq_analysis')
+
+    config.add_route('do_gosearch', '/run_gotools')
+    config.add_view(do_gosearch, route_name='do_gosearch')
 
 
 def prepare_frontend(frontend_type, **configs):

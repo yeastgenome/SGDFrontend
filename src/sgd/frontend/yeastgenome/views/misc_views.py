@@ -91,6 +91,10 @@ def patmatch(request):
 def seq_tools(request):
     return render_to_response(TEMPLATE_ROOT + 'seqTools.jinja2', {}, request=request)
 
+@view_config(route_name='gotermfinder')
+def gotermfinder(request):
+    return render_to_response(TEMPLATE_ROOT + 'goTermFinder.jinja2', {}, request=request)
+
 @view_config(route_name='colleague_show')
 def colleague_show(request):
     return render_to_response(TEMPLATE_ROOT + 'misc.jinja2', {}, request=request)
