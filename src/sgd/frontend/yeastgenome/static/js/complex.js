@@ -19,6 +19,12 @@ $(document).ready(function() {
 		    
 		    var graph2 = create_cytoscape_vis("cy2", layout, graph_style, data["network_graph"], null, true, "complex_network");
 		    create_cy_download_button(graph2, "cy2_download", complex['complex_accession'] + '_complex_network_graph')
+		    
+		    // create_filter_bar("union_radio", graph, all_filter);
+		    // create_filter_bar("subunit_radio", graph, subunit_filter);
+		    // create_filter_bar("go_radio", graph, go_filter);
+		    // $("#filter_bar").show();
+
 		}
 		else {
 		    hide_section("network");
@@ -63,6 +69,25 @@ function create_complex_table(data) {
 
 }
 
+function create_filter_bar(radio_id, graph, target_filter) {
+    var radio = $("#" + radio_id);
+    radio.click(function() {
+	    graph.filters['discrete'] = target_filter();
+	    graph.applyFilters();
+	});
+}
+
+function all_filter() {
+    return "node, edge";
+}
+
+function subunit_filter() {
+    return "node, edge[class_type = 'complex_gene']";
+}
+
+function go_filter() {
+    return "node, edge[class_type = 'complex_go']";
+}
 
 var graph_style = cytoscape.stylesheet()
     .selector('node')
@@ -85,24 +110,35 @@ var graph_style = cytoscape.stylesheet()
     .selector("node[type='Gene']")
     .css({
             'text-outline-color': "#FF8933",
+	    'background-color': "#FF8933",
         })
     .selector("node[type='Go']")
     .css({
             'text-outline-color': "#A133FF",
+	    'background-color': "#A133FF",
         })
     .selector("node[type='Complex']")
     .css({
-            'text-outline-color': "#33FFD4",
+            'text-outline-color': "#86908C",
+            'background-color': "#86908C",
+        })
+    .selector("node[type='Current_complex']")
+    .css({
+            'text-outline-color': "#0E9F36",
+	    'background-color': "#86908C",
         })
     .selector('edge')
     .css({
-	    'width': 2
+	    'width': 2,
+	    'target-arrow-shape': 'triangle',
+	    'line-color': '#848484',
+	    'target-arrow-color': '#848484'
         })
     .selector("node[sub_type='FOCUS']")
     .css({
-	    'background-color': "#FF3391",
+	    'background-color': "#fade71",
 	    'text-outline-color': '#fff',
-	    'color': '#fff'
+	    'color': '#888'
         })
     .selector("edge[class_type = 'complex_go']")
     .css({
