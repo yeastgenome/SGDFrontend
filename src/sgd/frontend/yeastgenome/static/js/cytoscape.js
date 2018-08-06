@@ -111,12 +111,10 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 
 
 	if (legendType === "complex_diagram") {
-	    console.log("diagram=");
-	    drawLegendNode(ctx, "protein", startX, legendY, '#86908C', true, false);   
+	    drawLegendNode('cy', "protein", startX, legendY, '#86908C', true, false);   
 	}
 	else if (legendType === "complex_network") {
-	    console.log("network=");
-	    drawLegendNode(ctx, "complex", startX+80, legendY, '#86908C', true, false);
+	    drawLegendNode('cy2', "complex", startX, legendY, '#86908C', true, false);
 	}
 	else {
 	    drawLegendNode(ctx, mainText, startX, legendY, '#F9DA56', true, false);
