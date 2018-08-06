@@ -45,7 +45,10 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
     };
     
     $('#' + div_id).cytoscape(options);
+
     var cy = $('#' + div_id).cytoscape("get");
+
+    console.log("div_id="+div_id);
 
     var legendY = height + 35;
 
@@ -111,10 +114,10 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 
 
 	if (legendType === "complex_diagram") {
-	    drawLegendNode('cy', "protein", startX, legendY, '#86908C', true, false);   
+	    drawLegendNode(ctx, "protein", startX, legendY, '#86908C', true, false);   
 	}
 	else if (legendType === "complex_network") {
-	    drawLegendNode('cy2', "complex", startX, legendY, '#86908C', true, false);
+	    drawLegendNode(ctx, "complex", startX, legendY, '#86908C', true, false);
 	}
 	else {
 	    drawLegendNode(ctx, mainText, startX, legendY, '#F9DA56', true, false);
