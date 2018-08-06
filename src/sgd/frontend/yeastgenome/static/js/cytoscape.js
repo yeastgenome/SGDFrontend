@@ -110,9 +110,16 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 	var startX = (legendType === "phenotypeOntology" || legendType === "observable") ? 74 : 53;
 
 
-	// if (legendType != "complex" && legendType !== "complex_network") {
+	if (legendType === "complex") {
+	    drawLegendNode(ctx, "protein", startX, legendY, '#86908C', true, false);   
+	}
+	else if (legendType === "complex_network") {
+	    drawLegendNode(ctx, "complex", startX, legendY, '#86908C', true, false);
+	}
+	else {
 	    drawLegendNode(ctx, mainText, startX, legendY, '#F9DA56', true, false);
-	// }    
+	}
+
 	// else if (legendType === "complex") {
 	//    drawLegendNode(ctx, "protein", startX, legendY, '#86908C', true, true);
 	//    drawLegendNode(ctx, "small-molecule", startX+80, legendY, '#86908C', true, true);
