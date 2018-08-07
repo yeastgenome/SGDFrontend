@@ -5,13 +5,12 @@
 {% endblock %}
 
 {% block legend %}
-    <div id="filter_bar" hidden>
+    <div id="discrete_filter" hidden>
         <label class="network-label"><strong>Filter by Node Type</strong></label>
         <input type="radio" name="group1" id="union_radio" checked><label for="union_radio">All</label>
         <input type="radio" name="group1" id="subunit_radio"><label for="subunit_radio">Share Complex Subunit</label>
         <input type="radio" name="group1" id="go_radio"><label for="go_radio">Share Go Annotation</label>
     </div>
-    <br>
 {% endblock %}
 
 {% block additional_buttons %}{% endblock %}

@@ -20,11 +20,15 @@ $(document).ready(function() {
 		    var graph2 = create_cytoscape_vis("cy2", layout, graph_style, data["network_graph"], null, true, "complex_network");
 		    create_cy_download_button(graph2, "cy2_download", complex['complex_accession'] + '_complex_network_graph')
 		    
-		    create_filter_bar("union_radio", graph, all_filter);
-		    create_filter_bar("subunit_radio", graph, subunit_filter);
-		    create_filter_bar("go_radio", graph, go_filter);
-		    $("#filter_bar").show();
-
+		    if (true) {	
+			create_discrete_filter_bar("union_radio", graph, all_filter);
+			create_discrete_filter_bar("subunit_radio", graph, subunit_filter);
+			create_discrete_filter_bar("go_radio", graph, go_filter);
+			$("#discrete_filter").show();
+		    }
+		    else {
+			$("#discrete_filter").hide();
+		    }
 		}
 		else {
 		    hide_section("network");
@@ -69,7 +73,7 @@ function create_complex_table(data) {
 
 }
 
-function create_filter_bar(radio_id, graph, target_filter) {
+function create_discrete_filter_bar(radio_id, graph, target_filter) {
     var radio = $("#" + radio_id);
     radio.click(function() {
 	    graph.filters['discrete'] = target_filter();
