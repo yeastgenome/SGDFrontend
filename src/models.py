@@ -7737,7 +7737,8 @@ class Complexdbentity(Dbentity):
         network_nodes.append({ "data": { "name": self.display_name,
                                          "id": self.format_name,
                                          "link": "/complex/" + self.format_name,
-                                         "type": "Current_complex" }})
+                                         "type": "Current_complex",
+                                         "sub_type": 'FOCUS' }})
 
         go_objs = DBSession.query(ComplexGo).filter_by(complex_id=self.dbentity_id).all()
 
