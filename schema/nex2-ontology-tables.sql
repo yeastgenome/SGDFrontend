@@ -293,7 +293,6 @@ COMMENT ON COLUMN nex.disease_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
 COMMENT ON COLUMN nex.disease_url.created_by IS 'Username of the person who entered the record into the database.';
 COMMENT ON COLUMN nex.disease_url.date_created IS 'Date the record was entered into the database.';
 ALTER TABLE nex.disease_url ADD CONSTRAINT disease_url_uk UNIQUE (disease_id,display_name,obj_url);
-ALTER TABLE nex.disease_url ADD CONSTRAINT diseaseurl_display_name_ck CHECK (DISPLAY_NAME IN ('DO', 'BioPortal', 'OLS', 'Ontobee'));
 ALTER TABLE nex.disease_url ADD CONSTRAINT diseaseurl_type_ck CHECK (URL_TYPE IN ('DO', 'BioPortal', 'OLS', 'Ontobee'));
 CREATE INDEX diseaseurl_source_fk_index ON nex.disease_url (source_id);
 
