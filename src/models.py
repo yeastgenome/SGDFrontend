@@ -4861,7 +4861,7 @@ class Disease(Base):
         urls = DBSession.query(DiseaseUrl).filter_by(disease_id=self.disease_id).all()
 
         for url in urls:
-            new_display_name = url.obj_url.split('=')[1]
+            new_display_name = url.obj_url.split('=')[1]  #these 3 lines will need to be re-checked when DO loading is fixed to address this
             alliance_url = "https://www.alliancegenome.org/disease/"+new_display_name
             alliance_display_name = "View DO Annotations in model organisms in Alliance Genome Resources"
             obj["urls"].append({
