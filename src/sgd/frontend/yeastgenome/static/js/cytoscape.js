@@ -90,7 +90,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 
 	var mainText = "Current Locus";
 	var secondText = "Other Locus";
-	if (legendType === "goOntology") {
+	if (legendType === "goOntology" || legendType === "diseaseOntology") {
 		mainText = "Current Term";
 		secondText = "Other Term";
 	} else if (legendType === "phenotypeOntology" || legendType === "observable") {

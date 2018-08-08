@@ -38,8 +38,6 @@
                         <dd>
                             {% for url in disease.urls if url.category == 'DO' %}
                                <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>
-                               <br>
-                               <a href="{{ url.alliance_url}}" target="_blank">{{url.alliance_display_name}}</a>
                             {% endfor %}
                             {% if disease.urls|length == 0 %}
                                <span>{{ disease.disease_id }}</span>
@@ -58,6 +56,11 @@
                             </dd>
                         {% endif %}
                     </dl>
+                    <dt>View DO Annotations for yeast and other model organisms at the
+                    {% for url in disease.urls if url.category == 'Alliance' %}
+                        <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>
+                    {% endfor %}
+                    </dt>
 
                 </div>
             </div>

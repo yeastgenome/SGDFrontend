@@ -2,13 +2,13 @@ $(document).ready(function() {
 
   	$.getJSON('/backend/locus/' + locus['id'] + '/disease_details', function(data) {
   	    var mc_disease_table = create_disease_table("mc", "No manually curated terms for " + locus['display_name'], function(x) {return x["annotation_type"] == "manually curated"}, data);
-        create_download_button("mc_disease_table_download", mc_disease_table, locus['display_name'] + "_mc_disease_do");
+        create_download_button("mc_disease_table_download", mc_disease_table, locus['display_name'] + "_mc_disease");
 
         var htp_disease_table = create_disease_table("htp", "No high-throughput terms for " + locus['display_name'], function(x) {return x["annotation_type"] == "high-throughput"}, data);
-        create_download_button("htp_disease_table_download", htp_disease_table, locus['display_name'] + "_htp_disease_do");
+        create_download_button("htp_disease_table_download", htp_disease_table, locus['display_name'] + "_htp_disease");
 
         var comp_disease_table = create_disease_table("comp", "No computational terms for " + locus['display_name'], function(x) {return x["annotation_type"] == "computational"}, data);
-        create_download_button("comp_disease_table_download", comp_disease_table, locus['display_name'] + "_comp_disease_do");
+        create_download_button("comp_disease_table_download", comp_disease_table, locus['display_name'] + "_comp_disease");
 
 
         var transformed_data = [];
@@ -76,13 +76,12 @@ function create_disease_table(prefix, message, filter, data) {
     options["bPaginate"] = true;
     options["aaSorting"] = [[5, "asc"]];
 
-    var datatable = [];
     if("Error" in data) {
         options["oLanguage"] = {"sEmptyTable": data["Error"]};
         options["aaData"] = [];
     }
     else {
-        
+        var datatable = [];
         var diseases = {};
         for (var i=0; i < data.length; i++) {
             if(filter(data[i])) {
@@ -96,13 +95,18 @@ function create_disease_table(prefix, message, filter, data) {
         options["oLanguage"] = {"sEmptyTable": message};
         options["aaData"] = datatable;
 
+        console.log("#" + prefix + "_disease_table")
+        console.log(Object.keys(diseases).length)
+
         if(Object.keys(diseases).length == 0) {
             $("#" + prefix + "_disease").hide();
             $("#" + prefix + "_subsection").hide();
+        }else{
+             $("#" + prefix + "_disease_table_analyze").hide();
+            return create_table(prefix + "_disease_table", options);
         }
     }
-	$("#" + prefix + "_disease_table_analyze").hide();
-    return create_table(prefix + "_disease_table", options);
+
 }
 
 function slider_filter(new_cutoff) {
