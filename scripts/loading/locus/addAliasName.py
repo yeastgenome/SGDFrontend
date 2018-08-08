@@ -52,10 +52,14 @@ def change_name(infile, logfile):
         alias_id = insert_locus_alias(nex_session, fw, locus_id, alias_name, 
                                       alias_type, source_id, date_created, created_by)
 
-     
         insert_locusalias_reference(nex_session, fw, alias_id, reference_id,
                                     source_id, date_created, created_by)
 
+        note_id = insert_locusnote(nex_session, fw, locus_id, alias_name, source_id,                                                   
+                                   created_by, date_created)                                                                                
+    
+        insert_locusnote_reference(nex_session, fw, note_id, reference_id,                                                              
+                                   source_id, created_by, date_created)      
         
     # nex_session.rollback()
     nex_session.commit()
@@ -94,6 +98,39 @@ def insert_locusalias_reference(nex_session, fw, alias_id, reference_id, source_
     nex_session.add(x)
 
     fw.write("Insert Locusalias_reference row for alias_id = " + str(alias_id) + ", reference_id = " + str(reference_id) + ", created_by = " +created_by + ", date_created = " + date_created + "\n")
+
+
+def insert_locusnote(nex_session, fw, locus_id, gene_name, source_id, created_by, date_created):
+
+    x = Locusnote(locus_id = locus_id,
+                  note_class = 'Locus',
+                  note_type = 'Name',
+                  note = '<b>Name:</b> ' + gene_name,
+                  source_id = source_id,
+                  created_by = created_by,
+                  date_created = date_created)
+
+    nex_session.add(x)
+    nex_session.flush()
+    nex_session.refresh(x)
+
+    fw.write("Insert Locusnote row for locus_id = " + str(locus_id) + ", gene_name = " + gene_name + ", created_by = " + created_by + ", date_created = " + date_created + "\n")
+
+    return x.note_id
+
+
+def insert_locusnote_reference(nex_session, fw, note_id, reference_id, source_id, created_by, date_created):
+
+    x = LocusnoteReference(note_id = note_id,
+                           reference_id = reference_id,
+                           source_id = source_id,
+                           created_by = created_by,
+                           date_created = date_created)
+
+    nex_session.add(x)
+
+    fw.write("Insert Locusnote_reference row for note_id = " + str(note_id) + ", reference_id = " + str(reference_id) + ", created_by = " + created_by + ", date_created = " + date_created + "\n")
+
 
 
 if __name__ == '__main__':
