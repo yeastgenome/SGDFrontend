@@ -46,6 +46,10 @@ BEGIN
         PERFORM nex.insertupdatelog('APO'::text, 'IS_OBSOLETE'::text, OLD.apo_id, OLD.is_obsolete::text, NEW.is_obsolete::text, USER);
     END IF;
 
+    IF (OLD.is_in_slim != NEW.is_in_slim) THEN
+        PERFORM nex.insertupdatelog('APO'::text, 'IS_IN_SLIM'::text, OLD.apo_id, OLD.is_in_slim, NEW.is_in_slim, USER);
+    END IF;
+
     IF (((OLD.description IS NULL) AND (NEW.description IS NOT NULL)) OR ((OLD.description IS NOT NULL) AND (NEW.description IS NULL)) OR (OLD.description != NEW.description)) THEN
         PERFORM nex.insertupdatelog('APO'::text, 'DESCRIPTION'::text, OLD.apo_id, OLD.description, NEW.description, USER);
     END IF;
@@ -58,7 +62,8 @@ BEGIN
              OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
              OLD.source_id || '[:]' || OLD.apo_id || '[:]' || 
              OLD.apo_namespace || '[:]' || coalesce(OLD.namespace_group,'') || '[:]' || 
-             OLD.is_obsolete || '[:]' || coalesce(OLD.description,'') || '[:]' ||
+             OLD.is_obsolete || '[:]' ||
+             OLD.is_in_slim || '[:]' || coalesce(OLD.description,'') || '[:]' ||
              OLD.date_created || '[:]' || OLD.created_by;
 
     PERFORM nex.insertdeletelog('APO'::text, OLD.apo_id, v_row, USER);
