@@ -7822,26 +7822,48 @@ class Complexdbentity(Dbentity):
         edges = []
         nodes = []
         stoichiometry4interactor = {}
+        found_binding = {}
+        found_node = {}
         for annot in annot_objs:
             interactor = annot.interactor
             binding_interactor = annot.binding_interactor
-
-
-
-            # nodes.append({ "data": { "name": display_name,
-            #                         "id": interactor.format_name,
-            #                         "link": link,
-            #                         "type": type } })
-
-            if binding_interactor is not None:
-                edges.append( { "data": { "source": interactor.format_name,
-                                          "class_type": "complex",
-                                          "target": binding_interactor.format_name } })
             
-            if interactor.format_name in stoichiometry4interactor and stoichiometry4interactor[interactor.format_name]:    
-                stoichiometry4interactor[interactor.format_name] = stoichiometry4interactor[interactor.format_name] + annot.stoichiometry
-            else:
-                stoichiometry4interactor[interactor.format_name] = annot.stoichiometry  
+            display_name = interactor.display_name
+            link = interactor.obj_url
+            sgdid = None
+            type = "othersubunit"
+            if interactor.locus_id:
+                display_name = interactor.locus.display_name
+                sgdid = interactor.locus.sgdid
+                description = interactor.locus.headline
+                link = interactor.locus.obj_url
+                type = "protein"
+            elif interactor.format_name.startswith('CPX-'):
+                type = 'subcomplex'
+            elif interactor.format_name.startswith('CHEBI:'):
+                type = "smallmolecule"
+
+            count = 1
+            if annot.stoichiometry and annot.stoichiometry > 1:
+                count = annot.stoichiometry
+            
+            for i in (1, count+1):
+                node_id = interactor.format_name + "_" + str(i)
+                if node_id not in found_node:
+                    nodes.append({ "data": { "name": display_name,           
+                                             "id": node_id,
+                                             "link": link,
+                                             "type": type } })
+                    found_node[node_id] = 1
+
+                if binding_interactor is not None:
+                    if (node_id, binding_interactor.format_name) not in found_binding and (binding_interactor.format_name, node_id) not in found_binding: 
+                        edges.append( { "data": { "source": node_id,
+                                                  "class_type": "complex",
+                                                  "target": binding_interactor.format_name } })
+                        found_binding[(node_id, binding_interactor.format_name)] = 1
+        
+            stoichiometry4interactor[interactor.format_name] = annot.stoichiometry  
 
             if interactor.format_name not in found:
                 unique_interactors.append(interactor)
@@ -7873,10 +7895,10 @@ class Complexdbentity(Dbentity):
                               "stoichiometry": stoichiometry4interactor.get(interactor.format_name),
                               "link": link })
         
-            nodes.append({ "data": { "name": display_name,
-                                     "id": interactor.format_name,
-                                     "link": link,
-                                     "type": type } })
+            # nodes.append({ "data": { "name": display_name,
+            #                         "id": interactor.format_name,
+            #                         "link": link,
+            #                         "type": type } })
 
             network_nodes.append({ "data": { "name": display_name,
                                              "id": interactor.format_name,
