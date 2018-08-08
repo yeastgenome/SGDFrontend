@@ -42,7 +42,7 @@
 	          add_navbar_element('References', 'reference');
 	    {% endif %}
 
-	    {% if complex.cross_references|length > 0 %}
+	    {% if complex.references|length > 0 %}
 	          add_navbar_element('Cross-References', 'cross_reference');
 	    {% endif %}
 		
@@ -198,7 +198,6 @@
                      <hr />
 		     {% set network_id = "cy2" %}
 		     {% set network_name = "cy2" %}
-		     {% set canvas_id = '2' %}
 		     {% set download_button_id = "cy2_download" %}
                      {% include "complex_network_diagram.jinja2" %}
                 </div>
