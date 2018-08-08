@@ -43,10 +43,10 @@
         <a href="#" data-dropdown="summary_help"><i class="fa fa-info-circle"></i></a>
 
             <p id="summary_help" class="f-dropdown content medium" data-dropdown-content>
-                DO Annotations consist of four mandatory components: a gene product, a term from
-                the Disease Ontology (DO) controlled vocabulary, a reference, and an evidence code.
-                SGD has manually curated and high-throughput DO Annotations, both derived from the
-                literature, as well as computational, or predicted, annotations.
+                Disease Annotations consist of three mandatory components: a gene product, a term from the
+                <a href="http://http://disease-ontology.org//">Disease Ontology (DO)</a> controlled vocabulary and an
+                evidence code. SGD provides manually curated DO Annotations derived from the
+                literature.
             </p>
     </h1>
     <hr />
@@ -69,27 +69,30 @@
 <!-- Manually Curated
 ================================================== -->
     <section id="manual" data-magellan-destination="manual">
-        <h2>Manually Curated
+        <h2>Manually Curated <span id="mc_disease_table_header" class="round secondary label"></span>
             <a href="#" data-dropdown="drop_manual"><i class="fa fa-info-circle"></i></a>
 
             <p id="drop_manual" class="f-dropdown content medium" data-dropdown-content>
-                <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/sgd-general-help/glossary">Manually curated</a> DO annotations reflect our best
-                understanding of the basic xxx for this gene product.
+                <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/sgd-general-help/glossary">Manually curated</a> Disease annotations reflect our best
+                understanding of disease in human genes?? for this gene product.
                 Manually curated annotations are assigned by SGD curators based on published papers when
                 available, or by curatorial statements if necessary. Curators periodically review all
-                manually curated DO annotations for accuracy and completeness. The "Date Last Reviewed"
+                manually curated Disease annotations for accuracy and completeness. The "Date Last Reviewed"
                 indicates when these annotations were last reviewed.
             </p>
         </h2>
         <hr />
-        <p><strong>Date Last Reviewed:</strong> {{locus.disease_overview.date_last_reviewed}}</p>
+
+        <p><strong>Date Last Reviewed:</strong> {{locus.go_overview.date_last_reviewed}}</p>
 
         <div class="spaced-container">
-            <p style="display:none" id="manual_message">There are no manually curated annotations for {{ locus.display_name }}.</p>
-                <span id="mc_disease_table_header" class="round secondary label"></span>
-                <!-- Includes disease_table into template -->
+            <p style="display:none" id="manual_message">There are no manually curated annotations
+            for {{ locus.display_name }}.</p>
+            <div id="mc_bp_go">
+                <!-- Includes go_table into template -->
                 {% set table_id = "mc_disease_table" %}
                 {% include "disease_table.jinja2" %}
+            </div>
         </div>
     </section>
 <!-- High-throughput
@@ -98,12 +101,12 @@
         <h2>High-throughput
             <a href="#" data-dropdown="drop_manual"><i class="fa fa-info-circle"></i></a>
 
-            <p id="drop_manual" class="f-dropdown content medium" data-dropdown-content>
-                <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/sgd-general-help/glossary">Manually curated</a> DO annotations reflect our best
-                understanding of the basic xxx for this gene product.
-                Manually curated annotations are assigned by SGD curators based on published papers when
+             <p id="drop_manual" class="f-dropdown content medium" data-dropdown-content>
+                <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/sgd-general-help/glossary">Manually curated</a> Disease annotations reflect our best
+                understanding of disease in human genes?? for this gene product.
+                Highthrough-put annotations are assigned by SGD curators based on published papers when
                 available, or by curatorial statements if necessary. Curators periodically review all
-                manually curated DO annotations for accuracy and completeness. The "Date Last Reviewed"
+                manually curated Disease annotations for accuracy and completeness. The "Date Last Reviewed"
                 indicates when these annotations were last reviewed.
             </p>
         </h2>

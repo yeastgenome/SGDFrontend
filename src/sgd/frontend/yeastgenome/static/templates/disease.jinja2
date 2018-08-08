@@ -39,7 +39,7 @@
                             {% for url in disease.urls if url.category == 'DO' %}
                                <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>
                                <br>
-                               <a href="{{ alliance_url|join }}" target="_blank">{{ "View DO Annotations in model organisms in Alliance Genome Resources" }}</a>
+                               <a href="{{ url.alliance_url}}" target="_blank">{{url.alliance_display_name}}</a>
                             {% endfor %}
                             {% if disease.urls|length == 0 %}
                                <span>{{ disease.disease_id }}</span>

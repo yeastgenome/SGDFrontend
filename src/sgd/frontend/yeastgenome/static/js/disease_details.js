@@ -2,13 +2,13 @@ $(document).ready(function() {
 
   	$.getJSON('/backend/locus/' + locus['id'] + '/disease_details', function(data) {
   	    var mc_disease_table = create_disease_table("mc", "No manually curated terms for " + locus['display_name'], function(x) {return x["annotation_type"] == "manually curated"}, data);
-        create_download_button("mc_disease_table_download", mc_disease_table, locus['display_name'] + "_manual_disease_do");
+        create_download_button("mc_disease_table_download", mc_disease_table, locus['display_name'] + "_mc_disease_do");
 
         var htp_disease_table = create_disease_table("htp", "No high-throughput terms for " + locus['display_name'], function(x) {return x["annotation_type"] == "high-throughput"}, data);
         create_download_button("htp_disease_table_download", htp_disease_table, locus['display_name'] + "_htp_disease_do");
 
         var comp_disease_table = create_disease_table("comp", "No computational terms for " + locus['display_name'], function(x) {return x["annotation_type"] == "computational"}, data);
-        create_download_button("comp_disease_table_download", comp_disease_table, locus['display_name'] + "_computational_disease_do");
+        create_download_button("comp_disease_table_download", comp_disease_table, locus['display_name'] + "_comp_disease_do");
 
 
         var transformed_data = [];
@@ -97,7 +97,7 @@ function create_disease_table(prefix, message, filter, data) {
         options["aaData"] = datatable;
 
         if(Object.keys(diseases).length == 0) {
-            $("#" + prefix + "_do").hide();
+            $("#" + prefix + "_disease").hide();
             $("#" + prefix + "_subsection").hide();
         }
     }
