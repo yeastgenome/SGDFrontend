@@ -101,10 +101,11 @@ function create_disease_table(prefix, message, filter, data) {
         if(Object.keys(diseases).length == 0) {
             $("#" + prefix + "_disease").hide();
             $("#" + prefix + "_subsection").hide();
-        }else{
-             $("#" + prefix + "_disease_table_analyze").hide();
-            return create_table(prefix + "_disease_table", options);
         }
+
+        $("#" + prefix + "_disease_table_analyze").hide();
+        return create_table(prefix + "_disease_table", options);
+
     }
 
 }
