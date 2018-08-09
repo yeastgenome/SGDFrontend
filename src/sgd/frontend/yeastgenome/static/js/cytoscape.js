@@ -24,7 +24,8 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 		expression: 75,
 		phenotypeOntology: 0,
 		goOntology: 0,
-		observable: 0
+		observable: 0,
+		diseaseOntology: 10
 	};
 	var _legendOffset = _legendOffsets[legendType];
 	$(".sgd-cyto-canvas-container").parent().height(height + offset + _legendOffset);
@@ -97,7 +98,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 		mainText = "Current Observable";
 		secondText = "Other Observable";
 	}
-	var secondColor = (legendType === "goOntology") ? "#458FD3" :  "#757575";
+	var secondColor = (legendType === "goOntology" || legendType === "diseaseOntology") ? "#458FD3" :  "#757575";
 	if (legendType === "observable") secondColor = "#FF6A00";
 
 	// draw legend
