@@ -861,7 +861,7 @@ def link_gene_complex_names(text, to_ignore, nex_session):
         i = i + len(word) + 1
     new_chunks.append(text[chunk_start: i])
     try:
-        return ' '.join(new_chunks)
+        return str(' '.join(new_chunks))
     except:
         return text
 
