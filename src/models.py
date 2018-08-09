@@ -22,6 +22,7 @@ from src.curation_helpers import ban_from_cache, get_author_etc, link_gene_names
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
 
+ALLIANCE_API_BASE_URL = "https://www.alliancegenome.org/api/gene/"
 QUERY_LIMIT = 25000
 SGD_SOURCE_ID = 834
 DIRECT_SUBMISSION_SOURCE_ID = 759
@@ -2730,7 +2731,23 @@ class Locusdbentity(Dbentity):
             for annotation in do_annotation.to_dict():
                 if annotation not in obj:
                     obj.append(annotation)
-
+        # get human gene symbols from Alliance API
+        human_gene_ids_to_symbols = {}
+        for x in obj:
+            try:
+                for y in x['properties']:
+                    if 'bioentity' in y.keys():
+                        entry = y['bioentity']
+                        hgnc_id = entry['display_name']
+                        if hgnc_id in human_gene_ids_to_symbols.keys():
+                            entry['display_name'] = human_gene_ids_to_symbols[hgnc_id]
+                        else:
+                            url = ALLIANCE_API_BASE_URL + hgnc_id
+                            symbol = requests.request('GET', url).json()['symbol']                            
+                            entry['display_name'] = symbol
+                            human_gene_ids_to_symbols[hgnc_id] = symbol
+            except Exception as e:
+                traceback.print_exc()
         return obj
 
     def literature_graph(self):
@@ -3054,7 +3071,6 @@ class Locusdbentity(Dbentity):
         }
 
     def disease_graph(self):
-        ALLIANCE_API_BASE_URL = "https://www.alliancegenome.org/api/gene/"
         main_gene_disease_annotations = DBSession.query(Diseaseannotation, Diseasesupportingevidence.dbxref_id, Diseasesupportingevidence.obj_url).outerjoin(Diseasesupportingevidence).filter(Diseaseannotation.dbentity_id==self.dbentity_id).all()
         main_gene_do_ids = [a[0].disease_id for a in main_gene_disease_annotations]
 
