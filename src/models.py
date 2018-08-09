@@ -3054,6 +3054,7 @@ class Locusdbentity(Dbentity):
         }
 
     def disease_graph(self):
+        ALLIANCE_API_BASE_URL = "https://www.alliancegenome.org/api/gene/"
         main_gene_disease_annotations = DBSession.query(Diseaseannotation, Diseasesupportingevidence.dbxref_id, Diseasesupportingevidence.obj_url).outerjoin(Diseasesupportingevidence).filter(Diseaseannotation.dbentity_id==self.dbentity_id).all()
         main_gene_do_ids = [a[0].disease_id for a in main_gene_disease_annotations]
 
@@ -3062,16 +3063,20 @@ class Locusdbentity(Dbentity):
         genes_to_do = {}
         # get all gene and disease names
         all_gene_ids = set([])
+        all_human_gene_ids = set([])
         all_disease_ids = set([])
         for x in main_gene_disease_annotations:
             all_gene_ids.add(x[0].dbentity_id)
             all_disease_ids.add(x[0].disease_id)
+            all_human_gene_ids.add(x[1])
         for x in genes_sharing_do_annotations:
             all_gene_ids.add(x[0].dbentity_id)
             all_disease_ids.add(x[0].disease_id)
+            all_human_gene_ids.add(x[1])
         # get names up front
         gene_names = DBSession.query(Locusdbentity.dbentity_id, Locusdbentity.display_name, Locusdbentity.format_name, Locusdbentity.obj_url).filter(Locusdbentity.dbentity_id.in_(all_gene_ids)).all()
         gene_ids_to_names = {}
+        human_gene_ids_to_names = {}
         gene_ids_to_format_names = {}
         gene_ids_to_urls = {}
         for x in gene_names:
@@ -3084,7 +3089,14 @@ class Locusdbentity(Dbentity):
         for x in disease_names:
             disease_ids_to_names[x[0]] = x[1]
             disease_ids_to_urls[x[0]] = x[2]
-
+        # get human gene symbols from Alliance API
+        for x in all_human_gene_ids:
+            try:
+                url = ALLIANCE_API_BASE_URL + x
+                symbol = requests.request('GET', url).json()['symbol']
+                human_gene_ids_to_names[x] = symbol
+            except Exception as e:
+                human_gene_ids_to_names[x] = x
         all_node_ids = [self.dbentity_id]
         all_edge_slugs = []
         nodes = [{
@@ -3119,7 +3131,7 @@ class Locusdbentity(Dbentity):
 
             if human_gene_id not in all_node_ids:
                 nodes.append({
-                    "name": human_gene_id,
+                    "name": human_gene_ids_to_names[human_gene_id],
                     "id": human_gene_id,
                     "href": human_gene_url,
                     "category": "Human Gene"
@@ -3147,7 +3159,7 @@ class Locusdbentity(Dbentity):
             human_gene_url = x[2]
             if human_gene_id not in all_node_ids:
                 nodes.append({
-                    "name": human_gene_id,
+                    "name": human_gene_ids_to_names[human_gene_id],
                     "id": human_gene_id,
                     "href": human_gene_url,
                     "category": 'Human Gene'
