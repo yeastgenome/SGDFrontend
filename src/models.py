@@ -7704,8 +7704,8 @@ class Complexdbentity(Dbentity):
         data['intact_id'] = self.intact_id
         data['systematic_name'] = self.systematic_name
         data['source'] = self.source.display_name
-        data['description'] = link_gene_names(self.description, {self.format_name: 1}, DBSession),
-        data['properties'] = link_gene_names(self.properties, {self.format_name: 1}, DBSession),
+        data['description'] = str(link_gene_names(self.description, {self.format_name: 1}, DBSession)),
+        data['properties'] = str(link_gene_names(self.properties, {self.format_name: 1}, DBSession)),
         data['eco'] = self.eco.format_name
 
         ## aliases
