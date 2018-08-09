@@ -3,8 +3,10 @@ $(document).ready(function() {
 
 	$.getJSON('/backend/complex/' + complex['complex_accession'], function(data) {
 
-	  	var complex_table = create_complex_table(data);
+		document.getElementById("summary_paragraph").innerHTML = data['description'] + "<p></p>" + data['properties']
 
+	  	var complex_table = create_complex_table(data);
+		
 		if(data != null && data["graph"]["nodes"].length > 1) {
 
 		    var graph = create_cytoscape_vis("cy", layout, graph_style, data["graph"], null, true, "complex_diagram");
