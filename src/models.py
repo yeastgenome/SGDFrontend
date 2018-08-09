@@ -7848,7 +7848,9 @@ class Complexdbentity(Dbentity):
                 count = annot.stoichiometry
             
             for i in (1, count):
-                node_id = interactor.format_name + "_" + str(i)
+                node_id = interactor.format_name 
+                if i > 1:
+                    node_id = node_id + "_" + str(i)
                 if node_id not in found_node:
                     nodes.append({ "data": { "name": display_name,           
                                              "id": node_id,
