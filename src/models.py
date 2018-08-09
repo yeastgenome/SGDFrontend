@@ -2351,7 +2351,7 @@ class Locusdbentity(Dbentity):
     has_history = Column(Boolean, nullable=False)
     has_literature = Column(Boolean, nullable=False)
     has_go = Column(Boolean, nullable=False)
-    has_disease = Column(Boolean, nullable=False)
+    # has_disease = Column(Boolean, nullable=False)# TEMP
     has_phenotype = Column(Boolean, nullable=False)
     has_interaction = Column(Boolean, nullable=False)
     has_expression = Column(Boolean, nullable=False)
@@ -3732,7 +3732,8 @@ class Locusdbentity(Dbentity):
             },
             "literature_overview": self.literature_overview_to_dict(),
             "disease_overview": self.disease_overview_to_dict(),
-            "ecnumbers": []
+            "ecnumbers": [],
+            "gene_name": self.gene_name
         }
 
         if self.genetic_position:
@@ -4101,6 +4102,10 @@ class Locusdbentity(Dbentity):
         x, y, z = calc_venn_measurements(obj["num_gen_interactors"], obj["num_phys_interactors"], obj["num_both_interactors"])
         obj["gen_circle_size"], obj["phys_circle_size"], obj["circle_distance"] = x, y, z
 
+        interaction_summary = DBSession.query(Locussummary.html).filter_by(locus_id=self.dbentity_id, summary_type="Interaction").one_or_none()
+        if interaction_summary:
+            obj["paragraph"] = interaction_summary[0]
+
         return obj
 
     def go_overview_to_dict(self):
@@ -4279,7 +4284,7 @@ class Locusdbentity(Dbentity):
             "sequence_tab": self.has_sequence,
             "history_tab": self.has_history,
             "protein_tab": self.has_protein,
-            "disease_tab": self.has_disease
+            "disease_tab": False# TEMP #self.has_disease
         }
 
     # make some tabs false if the data is small, to return a smaller set of URLs for tab priming
@@ -4324,7 +4329,7 @@ class Locusdbentity(Dbentity):
             'regulation_tab': ['regulation_details', 'regulation_graph'],
             'sequence_tab': ['neighbor_sequence_details', 'sequence_details'],
             'history_tab': [],
-            'disease_tab': ['disease_details', 'disease_graph'],
+            'disease_tab': ['disease_details', 'disease_graph']
         }
         base_url = self.get_base_url() + '/'
         backend_base_segment = self.get_secondary_base_url() + '/'
@@ -4849,7 +4854,7 @@ class Disease(Base):
     is_obsolete = Column(Boolean, nullable=False)
 
     source = relationship(u'Source')
-
+    
     # Allowed relationships (ro_ids) for graphs
     # 169782 'is_a', 169466 'regulates', 169299 'part of', 169468 'positively regulates', 169467 'negatively regulates'
     allowed_relationships = (169782, 169466, 169299, 169468, 169467)
@@ -5220,7 +5225,7 @@ class Diseaseannotation(Base):
         }]
 
         return obj
-
+    
     # a Do annotation can be duplicated based on the Dosupportingevidence group id
     # so its to_dict method must return an array of dictionaries
     def to_dict(self, disease=None):
@@ -5300,7 +5305,6 @@ class Diseaseannotation(Base):
 
         return final_obj
 
-
 class Diseasesubset(Base):
     __tablename__ = 'diseasesubset'
     __table_args__ = {u'schema': 'nex'}
@@ -5361,7 +5365,7 @@ class Diseasesupportingevidence(Base):
     created_by = Column(String(12), nullable=False)
 
     annotation = relationship(u'Diseaseannotation')
-
+    
     def to_dict(self):
         source_id = self.dbxref_id.split(":")
 
@@ -5387,7 +5391,6 @@ class Diseasesupportingevidence(Base):
             }
 
         return None
-
 
 class Dnasequenceannotation(Base):
     __tablename__ = 'dnasequenceannotation'

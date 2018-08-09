@@ -138,21 +138,6 @@ def load_go():
         table_set(go.display_name.replace(" ", "_").upper(), go.go_id, "go")
         table_set(str(int(numerical_id[1])), go.go_id, "go")
 
-
-def load_disease():
-    print("Loading disease into Redis...")
-
-    diseases = DBSession.query(Disease).all()
-
-    for disease in diseases:
-        numerical_id = disease.doid.split(":")
-
-        table_set(disease.format_name.upper(), disease.doid, "disease")
-        table_set(disease.doid, disease.do_id, "disease")
-        table_set(disease.display_name.replace(" ", "_").upper(), disease.doid, "disease")
-        table_set(str(int(numerical_id[3])), disease.doid, "disease")
-
-
 def load_protein_domain():
     print("Loading protein domains into Redis...")
 
