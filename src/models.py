@@ -4988,10 +4988,24 @@ class Disease(Base):
         annotations = DBSession.query(Diseaseannotation).filter_by(disease_id=self.disease_id).all()
 
         annotations_dict = []
+        human_gene_ids_to_symbols = {}
         for a in annotations:
-            annotations_dict += a.to_dict(disease=self)
-        return annotations_dict
-
+            annotation = a.to_dict(disease=self)
+            try:
+                for y in annotation[0]['properties']:
+                    if 'bioentity' in y.keys():
+                        entry = y['bioentity']
+                        hgnc_id = entry['display_name']
+                        if hgnc_id in human_gene_ids_to_symbols.keys():
+                            entry['display_name'] = human_gene_ids_to_symbols[hgnc_id]
+                        else:
+                            url = ALLIANCE_API_BASE_URL + hgnc_id
+                            symbol = requests.request('GET', url).json()['symbol']                            
+                            entry['display_name'] = symbol
+                            human_gene_ids_to_symbols[hgnc_id] = symbol
+            except Exception as e:
+                traceback.print_exc()
+            annotations_dict.append(annotation)
         return annotations_dict
 
     def annotations_and_children_to_dict(self):
