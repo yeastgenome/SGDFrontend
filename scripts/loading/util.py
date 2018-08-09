@@ -834,32 +834,36 @@ def link_gene_complex_names(text, to_ignore, nex_session):
             dbentity_name = dbentity_name[1:]
 
         dbentity_name = dbentity_name.upper()
+        
+        break
 
-        locusObj = None
-        complexObj = None
-        if dbentity_name.startswith('CPX-'):
-            if dbentity_name not in to_ignore: 
-                from src.models import Complexdbentity
-                complexObj = nex_session.query(Locusdbentity).filter_by(complex_accession=dbentity_name).first()
-        else:
-            locusObj = get_dbentity_by_name(dbentity_name.upper(), to_ignore, nex_session)
-               
-        if locusObj is not None or complexObj is not None:
-            new_chunks.append(text[chunk_start: i])
-            chunk_start = i + len(word) + 1
-            if locusObj is not None:
-                new_chunk = "<a href='" + locusObj.obj_url + "'>" + dbentity_name + "</a>"
-            else:
-                new_chunk = "<a href='/complex/" + dbentity_name + "'>" + dbentity_name + "</a>"
-            if word[-2] == ')':
-                new_chunk = new_chunk + word[-2]
-            if word.endswith('.') or word.endswith(',') or word.endswith('?') or word.endswith('-') or word.endswith(')'):
-                new_chunk = new_chunk + word[-1]
-            if word.startswith('('):
-                new_chunk = word[0] + new_chunk
-            new_chunks.append(new_chunk)
-        i = i + len(word) + 1
-    new_chunks.append(text[chunk_start: i])
+    
+
+        # locusObj = None
+        # complexObj = None
+        # if dbentity_name.startswith('CPX-'):
+        #    if dbentity_name not in to_ignore: 
+        #        from src.models import Complexdbentity
+        #        complexObj = nex_session.query(Complexdbentity).filter_by(complex_accession=dbentity_name).first()
+        # else:
+        #    locusObj = get_dbentity_by_name(dbentity_name.upper(), to_ignore, nex_session)
+            
+        # if locusObj is not None or complexObj is not None:
+        #    new_chunks.append(text[chunk_start: i])
+        #    chunk_start = i + len(word) + 1
+        #    if locusObj is not None:
+        #        new_chunk = "<a href='" + locusObj.obj_url + "'>" + dbentity_name + "</a>"
+        #    else:
+        #        new_chunk = "<a href='/complex/" + dbentity_name + "'>" + dbentity_name + "</a>"
+        #    if word[-2] == ')':
+        #        new_chunk = new_chunk + word[-2]
+        #    if word.endswith('.') or word.endswith(',') or word.endswith('?') or word.endswith('-') or word.endswith(')'):
+        #        new_chunk = new_chunk + word[-1]
+        #    if word.startswith('('):
+        #        new_chunk = word[0] + new_chunk
+        #    new_chunks.append(new_chunk)
+        # i = i + len(word) + 1
+    # new_chunks.append(text[chunk_start: i])
     try:
         return ' '.join(new_chunks)
     except:
