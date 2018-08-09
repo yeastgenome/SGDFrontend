@@ -3112,9 +3112,8 @@ class Locusdbentity(Dbentity):
             edge_slug = format_name + '.' + human_gene_id
             if edge_slug not in all_edge_slugs:
                 edges.append({
-                    'source': format_name,
-                    'target': human_gene_id,
-                    'label': 'ortholog'
+                    "source": format_name,
+                    "target": human_gene_id,
                 })
                 all_edge_slugs.append(edge_slug)
 
@@ -3123,31 +3122,23 @@ class Locusdbentity(Dbentity):
                     "name": human_gene_id,
                     "id": human_gene_id,
                     "href": human_gene_url,
-                    "category": 'Human Gene'
+                    "category": "Human Gene"
                 })
                 all_node_ids.append(human_gene_id)
-            # edge_slug = self.format_name + '.' + human_gene_id
-            # if edge_slug not in all_edge_slugs:
-            #     edges.append({
-            #         'source': self.format_name,
-            #         'target': human_gene_id,
-            #         'label': 'ortholog'
-            #     })
-            #     all_edge_slugs.append(edge_slug)
             d_id = disease_annotation.disease_id
             if d_id not in all_node_ids:
                 nodes.append({
                     "name": disease_ids_to_names[d_id],
                     "id": d_id,
                     "href": disease_ids_to_urls[d_id],
-                    "category": 'Disease'
+                    "category": "Disease"
                 })
                 all_node_ids.append(d_id)
-            edge_slug = human_gene_id + '.' + str(d_id)
+            edge_slug = human_gene_id + "." + str(d_id)
             if edge_slug not in all_edge_slugs:
                 edges.append({
-                    'source': human_gene_id,
-                    'target': d_id
+                    "source": human_gene_id,
+                    "target": d_id
                 })
                 all_edge_slugs.append(edge_slug)
         for x in main_gene_disease_annotations:
