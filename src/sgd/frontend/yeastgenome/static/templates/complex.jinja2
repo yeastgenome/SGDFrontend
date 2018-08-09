@@ -23,7 +23,6 @@
         <script>
             add_navbar_title('Complex: <span class="gene_name">{{ complex.complex_name }}</span>')
             add_navbar_element('Overview', 'overview');
-	    add_navbar_element('Summary Paragraph', 'paragraph');
 	    add_navbar_element('Complex Diagram', 'diagram');
 
 	    {% if complex.pdbs|length > 0 %}
@@ -76,18 +75,10 @@
 		     </dl>
                 </div>
 
+		{{ complex.description }}<p></p>{{ complex.properties }}
+
             </div>
         </section>
-
-<!-- summary paragraph
-================================================== -->
-        <section id="paragraph" data-magellan-destination="paragraph">
-            <div class="page-header">
-	    	 <h2>Summary Paragraph</h2>
-                 <hr />
-              	 {{ complex.description }}<p></p>{{ complex.properties }}
-	    </div>
-	</section>
 
 <!-- complex diagram
 ================================================== -->
