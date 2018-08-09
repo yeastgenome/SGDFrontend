@@ -32,7 +32,7 @@
 	    add_navbar_element('Subunits', 'subunit');
 
 	    {% if complex.process|length > 0 or complex.function|length > 0 or complex.component|length > 0%}
-	          add_navbar_element('Go Annotations', 'annotation');
+	          add_navbar_element('Gene Ontology', 'annotation');
             {% endif %}
 		
 	    add_navbar_element('Network Diagram', 'network');
@@ -142,7 +142,7 @@
 	{% if complex.process|length > 0 or complex.function|length > 0 or complex.component|length > 0%}					   
 	<section id="annotation" data-magellan-destination="annotation">
                  <div class="page-header">
-                     <h2>Go Annotations</h2>
+                     <h2>Gene Ontology</h2>
                      <hr />
 
 		     <div class="">
