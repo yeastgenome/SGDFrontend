@@ -76,7 +76,7 @@ function create_disease_table(data) {
     options["aoColumns"] = [
             {"bSearchable":false, "bVisible":false}, //evidence_id
             {"bSearchable":false, "bVisible":false}, //analyze_id
-            {"bSearchable":false, "bVisible":false}, //gene
+            null, //gene
             {"bSearchable":false, "bVisible":false}, //gene systematic name
             null, //disease ontology term
             {"bSearchable":false, "bVisible":false}, // disease ontology term id

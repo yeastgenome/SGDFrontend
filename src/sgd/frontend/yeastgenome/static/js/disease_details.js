@@ -95,9 +95,6 @@ function create_disease_table(prefix, message, filter, data) {
         options["oLanguage"] = {"sEmptyTable": message};
         options["aaData"] = datatable;
 
-        console.log("#" + prefix + "_disease_table")
-        console.log(Object.keys(diseases).length)
-
         if(Object.keys(diseases).length == 0) {
             $("#" + prefix + "_disease").hide();
             $("#" + prefix + "_subsection").hide();
