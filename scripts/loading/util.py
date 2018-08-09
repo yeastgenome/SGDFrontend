@@ -841,8 +841,8 @@ def link_gene_complex_names(text, to_ignore, nex_session):
             if dbentity_name not in to_ignore: 
                 from src.models import Complexdbentity
                 complexObj = nex_session.query(Complexdbentity).filter_by(complex_accession=dbentity_name).first()
-        # else:
-        #    locusObj = get_dbentity_by_name(dbentity_name.upper(), to_ignore, nex_session)
+        else:
+            locusObj = get_dbentity_by_name(dbentity_name.upper(), to_ignore, nex_session)
             
         # if locusObj is not None or complexObj is not None:
         #    new_chunks.append(text[chunk_start: i])
