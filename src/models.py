@@ -5005,7 +5005,7 @@ class Disease(Base):
                             human_gene_ids_to_symbols[hgnc_id] = symbol
             except Exception as e:
                 traceback.print_exc()
-            annotations_dict.append(annotation)
+            annotations_dict += annotation
         return annotations_dict
 
     def annotations_and_children_to_dict(self):
