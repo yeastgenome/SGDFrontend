@@ -844,13 +844,13 @@ def link_gene_complex_names(text, to_ignore, nex_session):
         else:
             locusObj = get_dbentity_by_name(dbentity_name.upper(), to_ignore, nex_session)
             
-        # if locusObj is not None or complexObj is not None:
-        #    new_chunks.append(text[chunk_start: i])
-        #    chunk_start = i + len(word) + 1
-        #    if locusObj is not None:
-        #        new_chunk = "<a href='" + locusObj.obj_url + "'>" + dbentity_name + "</a>"
-        #    else:
-        #        new_chunk = "<a href='/complex/" + dbentity_name + "'>" + dbentity_name + "</a>"
+        if locusObj is not None or complexObj is not None:
+            new_chunks.append(text[chunk_start: i])
+            chunk_start = i + len(word) + 1
+            if locusObj is not None:
+                new_chunk = "<a href='" + locusObj.obj_url + "'>" + dbentity_name + "</a>"
+            else:
+                new_chunk = "<a href='/complex/" + dbentity_name + "'>" + dbentity_name + "</a>"
         #    if word[-2] == ')':
         #        new_chunk = new_chunk + word[-2]
         #    if word.endswith('.') or word.endswith(',') or word.endswith('?') or word.endswith('-') or word.endswith(')'):
