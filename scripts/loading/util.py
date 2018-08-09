@@ -834,17 +834,13 @@ def link_gene_complex_names(text, to_ignore, nex_session):
             dbentity_name = dbentity_name[1:]
 
         dbentity_name = dbentity_name.upper()
-        
-        break
-
-    
-
-        # locusObj = None
-        # complexObj = None
-        # if dbentity_name.startswith('CPX-'):
-        #    if dbentity_name not in to_ignore: 
-        #        from src.models import Complexdbentity
-        #        complexObj = nex_session.query(Complexdbentity).filter_by(complex_accession=dbentity_name).first()
+           
+        locusObj = None
+        complexObj = None
+        if dbentity_name.startswith('CPX-'):
+            if dbentity_name not in to_ignore: 
+                from src.models import Complexdbentity
+                complexObj = nex_session.query(Complexdbentity).filter_by(complex_accession=dbentity_name).first()
         # else:
         #    locusObj = get_dbentity_by_name(dbentity_name.upper(), to_ignore, nex_session)
             
