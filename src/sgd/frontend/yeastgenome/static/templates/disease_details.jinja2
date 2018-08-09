@@ -86,14 +86,13 @@
         <p><strong>Date Last Reviewed:</strong> {{locus.go_overview.date_last_reviewed}}</p>
 
         <div class="spaced-container">
-            <p style="display:none" id="manual_message">There are no manually curated annotations
-            for {{ locus.display_name }}.</p>
             <div id="mc_disease">
                 <!-- Includes mc_table into template -->
                 {% set table_id = "mc_disease_table" %}
                 {% include "disease_table.jinja2" %}
             </div>
         </div>
+        <p style="display:none" id="manual_message">There are no manually curated annotations for {{ locus.display_name }}.</p>
     </section>
 <!-- High-throughput
 ================================================== -->
@@ -112,12 +111,12 @@
         </h2>
         <hr />
 
-        <div class="spaced-container" id="htp_disease"
-            <p id="htp_message" style="display:none">There are no high-throughput annotations for {{ locus.display_name }}.</p>
-                <!-- Includes htp_table into template -->
-                {% set table_id = "htp_disease_table" %}
-                {% include "disease_table.jinja2" %}
+        <div class="spaced-container" id="htp_disease">
+            <!-- Includes htp_table into template -->
+            {% set table_id = "htp_disease_table" %}
+            {% include "disease_table.jinja2" %}
         </div>
+        <p id="htp_message" style="display:none">There are no high-throughput annotations for {{ locus.display_name }}.</p>
     </section>
 
 <!-- Computational
@@ -137,13 +136,12 @@
         </h2>
         <hr />
 
-       <div class="spaced-container" id="comp_disease"
-            <p id="comp_message" style="display:none">There are no computational annotations for {{ locus.display_name }}.</p>
+       <div class="spaced-container" id="comp_disease">
             <!-- Includes comp_table into template -->
             {% set table_id = "comp_disease_table" %}
             {% include "disease_table.jinja2" %}
        </div>
-
+       <p id="comp_message" style="display:none">There are no computational annotations for {{ locus.display_name }}.</p>
     </section>
 
 <!-- Network Visualization
