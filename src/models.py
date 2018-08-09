@@ -7847,7 +7847,7 @@ class Complexdbentity(Dbentity):
             if annot.stoichiometry and annot.stoichiometry > 1:
                 count = annot.stoichiometry
             
-            for i in (1, count+1):
+            for i in (1, count):
                 node_id = interactor.format_name + "_" + str(i)
                 if node_id not in found_node:
                     nodes.append({ "data": { "name": display_name,           
@@ -7862,7 +7862,7 @@ class Complexdbentity(Dbentity):
                                                   "class_type": "complex",
                                                   "target": binding_interactor.format_name } })
                         found_binding[(node_id, binding_interactor.format_name)] = 1
-        
+                        
             stoichiometry4interactor[interactor.format_name] = annot.stoichiometry  
 
             if interactor.format_name not in found:
