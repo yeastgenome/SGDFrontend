@@ -18,6 +18,7 @@ from boto.s3.key import Key
 import hashlib
 
 from src.curation_helpers import ban_from_cache, get_author_etc, link_gene_names, get_curator_session, clear_list_empty_values
+from scripts.loading.util import link_gene_complex_names
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
@@ -7703,8 +7704,8 @@ class Complexdbentity(Dbentity):
         data['intact_id'] = self.intact_id
         data['systematic_name'] = self.systematic_name
         data['source'] = self.source.display_name
-        data['description'] = self.description
-        data['properties'] = self.properties
+        data['description'] = link_gene_complex_names(self.description, {self.format_name: 1}, DBSession),
+        data['properties'] = link_gene_complex_names(self.properties, {self.format_name: 1}, DBSession),
         data['eco'] = self.eco.format_name
 
         ## aliases
