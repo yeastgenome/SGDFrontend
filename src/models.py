@@ -3156,9 +3156,8 @@ class Locusdbentity(Dbentity):
             edge_slug = self.format_name + '.' + human_gene_id
             if edge_slug not in all_edge_slugs:
                 edges.append({
-                    'source': self.format_name,
-                    'target': human_gene_id,
-                    'label': 'ortholog'
+                    "source": self.format_name,
+                    "target": human_gene_id,
                 })
                 all_edge_slugs.append(edge_slug)
             d_id = disease_annotation.disease_id
@@ -3167,20 +3166,20 @@ class Locusdbentity(Dbentity):
                     "name": disease_ids_to_names[d_id],
                     "id": d_id,
                     "href": disease_ids_to_urls[d_id],
-                    "category": 'Disease'
+                    "category": "Disease"
                 })
                 all_node_ids.append(d_id)
-            edge_slug = human_gene_id + '.' + str(d_id)
+            edge_slug = human_gene_id + "." + str(d_id)
             if edge_slug not in all_edge_slugs:
                 edges.append({
-                    'source': human_gene_id,
-                    'target': d_id
+                    "source": human_gene_id,
+                    "target": d_id
                 })
                 all_edge_slugs.append(edge_slug)
 
         return {
-            'nodes': nodes,
-            'edges': edges
+            "nodes": nodes,
+            "edges": edges
         }
 
     def interaction_graph_secondary_edges(self, Interaction, edge_type, nodes, edges):
