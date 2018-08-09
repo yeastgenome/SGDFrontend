@@ -851,15 +851,15 @@ def link_gene_complex_names(text, to_ignore, nex_session):
                 new_chunk = "<a href='" + locusObj.obj_url + "'>" + dbentity_name + "</a>"
             else:
                 new_chunk = "<a href='/complex/" + dbentity_name + "'>" + dbentity_name + "</a>"
-        #    if word[-2] == ')':
-        #        new_chunk = new_chunk + word[-2]
-        #    if word.endswith('.') or word.endswith(',') or word.endswith('?') or word.endswith('-') or word.endswith(')'):
-        #        new_chunk = new_chunk + word[-1]
-        #    if word.startswith('('):
-        #        new_chunk = word[0] + new_chunk
-        #    new_chunks.append(new_chunk)
-        # i = i + len(word) + 1
-    # new_chunks.append(text[chunk_start: i])
+            if word[-2] == ')':
+                new_chunk = new_chunk + word[-2]
+            if word.endswith('.') or word.endswith(',') or word.endswith('?') or word.endswith('-') or word.endswith(')'):
+                new_chunk = new_chunk + word[-1]
+            if word.startswith('('):
+                new_chunk = word[0] + new_chunk
+            new_chunks.append(new_chunk)
+        i = i + len(word) + 1
+    new_chunks.append(text[chunk_start: i])
     try:
         return ' '.join(new_chunks)
     except:
