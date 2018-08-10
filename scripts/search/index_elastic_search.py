@@ -53,7 +53,7 @@ def index_toolbar_links():
         ("Restriction Mapper", "/cgi-bin/PATMATCH/RestrictionMapper",
          []), ("Genome Browser", "/browse",
                              []), ("Gene/Sequence Resources",
-                                   "/cgi-bin/seqTools", []),
+                                   "/seqTools", []),
         ("Download Genome",
          "https://downloads.yeastgenome.org/sequence/S288C_reference/genome_releases/",
          "download"), ("Genome Snapshot", "/genomesnapshot",
@@ -885,37 +885,29 @@ def index_downloads():
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
 def index_part_1():
-    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
-        index_phenotypes()
-    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
-        index_downloads()
-    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
-        index_not_mapped_genes()
-    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
-        index_genes()
-    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
-        index_strains()
-    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
-        index_colleagues()
-    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
-        index_chemicals()
-    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
-        index_disease_terms()
+    index_phenotypes()
+    index_downloads()
+    index_not_mapped_genes()
+    index_genes()
+    index_strains()
+    index_colleagues()
+    index_chemicals()
+    index_disease_terms()
 
 def index_part_2():
-    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
-        index_reserved_names()
-    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
-        index_toolbar_links()
-    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
-        index_observables()
-    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
-        index_go_terms()
-    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
-        index_references()
+    index_reserved_names()
+    index_toolbar_links()
+    index_observables()
+    index_go_terms()
+    index_references()
 
 
 if __name__ == "__main__":
+    '''
+        To run multi-processing add this: 
+        with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
+            index_references()
+    '''
     cleanup()
     setup()
     t1 = Thread(target=index_part_1)
