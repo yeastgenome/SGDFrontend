@@ -1,4 +1,4 @@
-from src.models import DBSession, Base, Colleague, ColleagueLocus, Dbentity, Locusdbentity, Filedbentity, FileKeyword, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi
+from src.models import DBSession, Base, Colleague, ColleagueLocus, Dbentity, Locusdbentity, Filedbentity, FileKeyword, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi, Disease, Diseaseannotation, DiseaseAlias
 from sqlalchemy import create_engine, and_
 from elasticsearch import Elasticsearch
 from mapping import mapping
@@ -616,6 +616,63 @@ def index_go_terms():
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
+def index_disease_terms():
+    dos = DBSession.query(Disease).all()
+
+    print("Indexing " + str(len(dos)) + " DO terms")
+
+    bulk_data = []
+    for do in dos:
+        synonyms = DBSession.query(DiseaseAlias.display_name).filter_by(disease_id=do.disease_id).all()
+        references = set([])
+        do_loci = set([])
+        annotations = DBSession.query(Diseaseannotation).filter_by(disease_id=do.disease_id).all()
+        for annotation in annotations:
+            if annotation.disease_qualifier != "NOT":
+                do_loci.add(annotation.dbentity.display_name)
+            references.add(annotation.reference.display_name)
+        if do.doid != 'derives_from':
+            numerical_id = do.doid.split(":")[1]
+        key_values = [
+            do.doid, "DO:" + str(int(numerical_id)), numerical_id,
+            str(int(numerical_id))
+        ]
+
+        keys = set([])
+        for k in key_values:
+            if k is not None:
+                keys.add(k.lower())
+
+        obj = {
+            "name": do.display_name,
+            "category": "disease",
+            "href": do.obj_url,
+            "description": do.description,
+            "synonyms": [s[0] for s in synonyms],
+            "doid": do.doid,
+            "do_loci": sorted(list(do_loci)),
+            "number_annotations": len(annotations),
+            "references": list(references),
+            "keys": list(keys)
+        }
+
+        bulk_data.append({
+            "index": {
+                "_index": INDEX_NAME,
+                "_type": DOC_TYPE,
+                "_id": str(uuid.uuid4())
+            }
+        })
+
+        bulk_data.append(obj)
+
+        if len(bulk_data) == 800:
+            es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
+            bulk_data=[]
+
+    if len(bulk_data) > 0:
+        es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
+
 
 def index_references():
     _ref_loci = IndexESHelper.get_dbentity_locus_note()
@@ -827,7 +884,6 @@ def index_downloads():
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
-
 def index_part_1():
     index_phenotypes()
     index_downloads()
@@ -836,7 +892,7 @@ def index_part_1():
     index_strains()
     index_colleagues()
     index_chemicals()
-
+    index_disease_terms()
 
 def index_part_2():
     index_reserved_names()

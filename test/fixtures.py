@@ -1211,7 +1211,6 @@ class GoFactory(factory.alchemy.SQLAlchemyModelFactory):
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
-
 class DiseaseFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = Disease
@@ -1246,6 +1245,7 @@ class DiseaseannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
     disease = factory.SubFactory(DiseaseFactory)
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
+
 
 class DatasetsampleFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
