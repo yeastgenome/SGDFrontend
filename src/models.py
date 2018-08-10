@@ -7749,6 +7749,9 @@ class Complexdbentity(Dbentity):
         
         foundComplex = {}
 
+        # how many evidence shared by a given complex with the current one
+        evidenceCount = {}
+
         if go_objs:
             data['go'] = [g.go.to_dict() for g in go_objs]
             for g in go_objs:
@@ -7778,6 +7781,7 @@ class Complexdbentity(Dbentity):
                     if complex.format_name != self.format_name:
                         if complex.format_name in foundComplex:
                             if foundComplex[complex.format_name] != 1:
+                                evidenceCount[complex.format_name] = evidenceCount[complex.format_name] + 1
                                 network_nodes.append({ "data": { "name": complex.display_name,
                                                                  "id": complex.format_name,
                                                                  "link": "/complex/" + complex.format_name,
@@ -7786,6 +7790,7 @@ class Complexdbentity(Dbentity):
 
                                 foundComplex[complex.format_name] = 1
                             
+                            evidenceCount[complex.format_name] = evidenceCount[complex.format_name] + 1
                             network_nodes.append({ "data": { "name": complex.display_name,
                                                              "id": complex.format_name,
                                                              "link": "/complex/" + complex.format_name,
@@ -7796,6 +7801,7 @@ class Complexdbentity(Dbentity):
                                                               "target": go['go_id'] } })
 
                         else:
+                            evidenceCount[complex.format_name] = 1
                             foundComplex[complex.format_name] = { "data": { "source": complex.format_name,
                                                                             "class_type": "complex_go",
                                                                             "target": go['go_id'] } }
@@ -7912,11 +7918,6 @@ class Complexdbentity(Dbentity):
                               "stoichiometry": stoichiometry4interactor.get(interactor.format_name),
                               "link": link })
         
-            # nodes.append({ "data": { "name": display_name,
-            #                         "id": interactor.format_name,
-            #                         "link": link,
-            #                         "type": type } })
-
             network_nodes.append({ "data": { "name": display_name,
                                              "id": interactor.format_name,
                                              "link": link,
@@ -7938,6 +7939,7 @@ class Complexdbentity(Dbentity):
                 
                 if complex.format_name in foundComplex:
                     if foundComplex[complex.format_name] != 1:
+                        evidenceCount[complex.format_name] = evidenceCount[complex.format_name] + 1
                         network_nodes.append({ "data": { "name": complex.display_name,
                                                          "id": complex.format_name,
                                                          "link": "/complex/" + complex.format_name,
@@ -7946,23 +7948,40 @@ class Complexdbentity(Dbentity):
 
                         foundComplex[complex.format_name] = 1
 
+                    evidenceCount[complex.format_name] = evidenceCount[complex.format_name] + 1
                     network_nodes.append({ "data": { "name": complex.display_name,
-                                                 "id": complex.format_name,
-                                                 "link": "/complex/" + complex.format_name,
-                                                 "type": "Complex" } })
+                                                     "id": complex.format_name,
+                                                     "link": "/complex/" + complex.format_name,
+                                                     "type": "Complex" } })
                     network_edges.append( { "data": { "source": complex.format_name,
-                                                  "class_type": "complex_gene",
-                                                  "target": interactor.format_name } })
+                                                      "class_type": "complex_gene",
+                                                      "target": interactor.format_name } })
             
                 else:
+                    evidenceCount[complex.format_name] = 1
                     foundComplex[complex.format_name] = { "data": { "source": complex.format_name,
                                                                     "class_type": "complex_gene",
                                                                     "target": interactor.format_name } }
 
+        network_nodes_with_evidence_count = {}         
+        min_evidence_cutoff = 2;
+        max_evidence_cutoff = 2;
+
+        for x in network_nodes:
+            data = x['data']
+            node_id = data['id']
+            if evidenceCount[node_id] > max_evidence_cutoff:
+                max_evidence_cutoff = evidenceCount[node_id]
+            data['evidence'] = evidenceCount[node_id]
+            network_nodes_with_evidence_count.append("data": data)
+            
 
         data['subunit'] = sorted(subunits, key=lambda a: a['display_name'])
         data['graph'] = { "edges": edges, "nodes": nodes }
-        data['network_graph'] = { "edges": network_edges, "nodes": network_nodes }
+        data['network_graph'] = { "edges": network_edges, 
+                                  "max_evidence_cutoff": max_evidence_cutoff,
+                                  "min_evidence_cutoff": min_evidence_cutoff, 
+                                  "nodes": network_nodes }
 
         return data
 
