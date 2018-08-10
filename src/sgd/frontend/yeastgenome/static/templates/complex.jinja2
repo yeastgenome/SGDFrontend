@@ -42,11 +42,9 @@
 	    {% endif %}
 
 	    {% if complex.cross_references|length > 0 %}
-	          add_navbar_element('Cross-References', 'cross_reference');
+	          add_navbar_element('External Identifiers', 'cross_reference');
 	    {% endif %}
 		
-	    add_navbar_element('Source', 'source');
-
         </script>
 
 <!-- Overview
@@ -58,6 +56,24 @@
 
 		<div class="">
                     <dl class="key-value">
+			{% set source_link = "" %}
+			{% if complex.source == 'SGD' %}
+			    {% set source_link = 'https://www.yeastgenome.org' %}
+			{% else if complex.source == 'UniProt' %}
+                            {% set source_link = 'https://www.uniprot.org/' %}
+			{% else if complex.source == 'IntAct' %}
+                            {% set source_link = 'https://www.ebi.ac.uk/intact/' %}
+			{% else if complex.source == 'MINT' %}
+                            {% set source_link = 'https://mint.bio.uniroma2.it/' %}
+			{% else if complex.source == 'PRO' %}
+                            {% set source_link = 'http://www.obofoundry.org/ontology/pr.html' %}
+			{% endif %}
+			<dt>Source</dt>
+			{% if source_link %}
+			      <dd><a href={{ source_link }} target="_infowin">{{complex.source }}</a></dd>
+			{% else %}
+			      <dd>{{complex.source }}</dd>
+			{% endif %}
                         <dt>ComplexAc</dt>
                         <dd><a href=https://www.ebi.ac.uk/complexportal/complex/{{ complex.complex_accession }} target="_infowin">{{ complex.complex_accession }}</a></dd>
 
@@ -227,7 +243,7 @@
 	{% if complex.cross_references|length > 0 %}
 	<section id="cross_reference" data-magellan-destination="cross_reference">
               <div class="page-header">
-                         <h2>Cross-References</h2>
+                         <h2>External Identifiers</h2>
                          <hr />
 	
 		         {% for alias in complex.cross_references %}
