@@ -28,7 +28,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 		goOntology: 0,
 		observable: 0,
 		complex_diagram: 0,
-		complex_network: 100,
+		complex_network: 120,
 	};
 	var _legendOffset = _legendOffsets[legendType];
 	$(".sgd-cyto-canvas-container"+canvas_id).parent().height(height + offset + _legendOffset);
