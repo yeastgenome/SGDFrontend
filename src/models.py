@@ -7848,12 +7848,11 @@ class Complexdbentity(Dbentity):
             count = 1
             if annot.stoichiometry and annot.stoichiometry > 1:
                 count = annot.stoichiometry
-            
-            for i in (1, count):
-                node_id = interactor.format_name 
-                if i > 1:
-                    node_id = node_id + "_" + str(i)
 
+            for i in range(count):
+                node_id = interactor.format_name 
+                if i > 0:
+                    node_id = node_id + "_" + str(i)
                 names = []
                 if interactor.format_name in name_list:
                     names = name_list[interactor.format_name]
