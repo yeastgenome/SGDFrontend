@@ -112,8 +112,11 @@ class YeastgenomeFrontend(FrontendInterface):
     def go_ontology(self, biocon_repr):
         return self.get_obj('ontology', None, obj_url=self.backend_url + '/go/' + biocon_repr)
 
-    def do_ontology(self, biocon_repr):
-        return self.get_obj('ontology', None, obj_url=self.backend_url + '/do/' + biocon_repr)
+    def disease(self, biocon_repr):
+        return self.get_obj('disease', None, obj_url=self.backend_url + '/disease/' + biocon_repr)
+
+    def disease_ontology(self, biocon_repr):
+        return self.get_obj('ontology', None, obj_url=self.backend_url + '/disease/' + biocon_repr)
     
     def chemical(self, chemical_repr):
         return self.get_obj('chemical', chemical_repr)
@@ -184,6 +187,15 @@ class YeastgenomeFrontend(FrontendInterface):
                     return HTTPFound('/go/' + params.values()[0])
                 else:
                     return HTTPFound('/go/GO:' + str(int(params.values()[0])).zfill(7))
+        elif page == 'disease':
+            if len(params) > 0:
+                return HTTPFound('/locus/' + params.values()[0] + '/disease')
+        elif page == 'do_term':
+            if len(params) > 0:
+                if params.values()[0].startswith('DO:'):
+                    return HTTPFound('/disease/' + params.values()[0])
+                else:
+                    return HTTPFound('/disease/DO:' + str(int(params.values()[0])).zfill(7))
         elif page == 'reference':
             if 'author' in params:
                 return HTTPFound('/author/' + params.values()[0].replace(' ', '_'))

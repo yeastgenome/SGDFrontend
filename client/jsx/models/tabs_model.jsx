@@ -60,6 +60,7 @@ module.exports = class TabsModel {
 			(this.attributes.rawTabsData.disease_tab ? { name: "Disease", target: "disease" } : null),
 			(this.attributes.hasPathways ?  { name: "Pathways", target: "pathway" } : null),
 			(this.attributes.rawTabsData.phenotype_tab ? { name: "Phenotype", target: "phenotype" } : null),
+			(this.attributes.rawTabsData.disease_tab ? { name: "Disease", target: "disease" } : null),
 			(this.attributes.rawTabsData.interaction_tab ? { name: "Interaction", target: "interaction" } : null),
 			(this.attributes.rawTabsData.regulation_tab ? { name: "Regulation", target: "regulation" } : null),
 			(this.attributes.rawTabsData.expression_tab ? { name: "Expression", target: "expression" } : null),

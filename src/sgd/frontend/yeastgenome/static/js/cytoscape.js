@@ -24,6 +24,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 		expression: 75,
 		phenotypeOntology: 0,
 		goOntology: 0,
+		diseaseOntology: 0,
 		observable: 0
 	};
 	var _legendOffset = _legendOffsets[legendType];
@@ -90,7 +91,7 @@ function create_cytoscape_vis(div_id, layout, style, data, f, hide_singletons, l
 
 	var mainText = "Current Locus";
 	var secondText = "Other Locus";
-	if (legendType === "goOntology") {
+	if (legendType === "goOntology" || legendType === "diseaseOntology") {
 		mainText = "Current Term";
 		secondText = "Other Term";
 	} else if (legendType === "phenotypeOntology" || legendType === "observable") {
