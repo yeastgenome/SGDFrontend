@@ -7825,6 +7825,7 @@ class Complexdbentity(Dbentity):
         stoichiometry4interactor = {}
         found_binding = {}
         found_node = {}
+        name_list = {}
         for annot in annot_objs:
             interactor = annot.interactor
             binding_interactor = annot.binding_interactor
@@ -7852,6 +7853,14 @@ class Complexdbentity(Dbentity):
                 node_id = interactor.format_name 
                 if i > 1:
                     node_id = node_id + "_" + str(i)
+
+                names = []
+                if interactor.format_name in name_list:
+                    names = name_list[interactor.format_name]
+                if node_id not in names:
+                    names.append(node_id)
+                name_list[interactor.format_name] = names
+
                 if node_id not in found_node:
                     nodes.append({ "data": { "name": display_name,           
                                              "id": node_id,
@@ -7860,11 +7869,17 @@ class Complexdbentity(Dbentity):
                     found_node[node_id] = 1
 
                 if binding_interactor is not None:
-                    if (node_id, binding_interactor.format_name) not in found_binding and (binding_interactor.format_name, node_id) not in found_binding: 
-                        edges.append( { "data": { "source": node_id,
-                                                  "class_type": "complex",
-                                                  "target": binding_interactor.format_name } })
-                        found_binding[(node_id, binding_interactor.format_name)] = 1
+                    binding_node_ids = []
+                    if binding_interactor.format_name in name_list:
+                        binding_node_ids = name_list[binding_interactor.format_name]
+                    else:
+                        binding_node_ids = [binding_interactor.format_name]
+                    for binding_node_id in binding_node_ids:
+                        if (node_id, binding_node_id) not in found_binding and (binding_node_id, node_id) not in found_binding: 
+                            edges.append( { "data": { "source": node_id,
+                                                      "class_type": "complex",
+                                                      "target": binding_node_id } })
+                            found_binding[(node_id, binding_node_id)] = 1
                         
             stoichiometry4interactor[interactor.format_name] = annot.stoichiometry  
 
