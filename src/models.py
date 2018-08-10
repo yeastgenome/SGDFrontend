@@ -7966,12 +7966,12 @@ class Complexdbentity(Dbentity):
         min_evidence_cutoff = 2;
         max_evidence_cutoff = 2;
 
-        for x in network_nodes:
-            data = x['data']
-            node_id = data['id']
-            if evidenceCount[node_id] > max_evidence_cutoff:
-                max_evidence_cutoff = evidenceCount[node_id]
-            data['evidence'] = evidenceCount[node_id]
+        # for x in network_nodes:
+        #    data = x['data']
+        #    node_id = data['id']
+        #    if evidenceCount[node_id] > max_evidence_cutoff:
+        #        max_evidence_cutoff = evidenceCount[node_id]
+        #    data['evidence'] = evidenceCount[node_id]
         
         data['subunit'] = sorted(subunits, key=lambda a: a['display_name'])
         data['graph'] = { "edges": edges, "nodes": nodes }
