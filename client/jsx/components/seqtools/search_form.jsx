@@ -17,6 +17,7 @@ const MAX_GENE_TO_SHOW = 4;
 const MAX_GENE = 50;
 const MAX_SEQ_LENGTH_FOR_TOOLS = 20000;
 
+
 const GeneSequenceResources = React.createClass({
 
 	getInitialState() {
@@ -387,7 +388,7 @@ const GeneSequenceResources = React.createClass({
 		var up = 0;
 		var down = 0;
 		var rev = 0;
-		if (param['rev1'] && param['rev1'] == 'on') {
+		if ((param['rev1'] && param['rev1'] == 'on') || (param['rev'] && param['rev'] == '1')) {
 		    extraParams = "&rev=1";
 		    rev = 1;
 		}
@@ -1257,19 +1258,18 @@ const GeneSequenceResources = React.createClass({
 	
 	getExtraParams(param) {
 
-	     var extraParams = "";
+	        var extraParams = "";
+                if (param['rev1'] && param['rev1'] == 'on') {
+                    extraParams = "&rev=1";
+                }
+                if (param['up'] && param['up'] != '') {
+                    extraParams += "&up=" + param['up'];
+                }
+                if (param['down'] && param['down'] != '') {
+                    extraParams += "&down=" + param['down'];
+                }
 
-	     if (typeof(param['rev1']) != "undefined") {
-                 extraParams += "&rev1=" + param['rev'];
-             }
-             if (typeof(param['up']) != "undefined") {
-                 extraParams += "&up=" + param['up'];
-             }
-             if (typeof(param['down']) != "undefined") {
-                 extraParams += "&down=" + param['down'];
-             }
-
-	     return extraParams;	     
+	        return extraParams;	     
 
 	},
 

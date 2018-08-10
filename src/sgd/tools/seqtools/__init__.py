@@ -120,7 +120,7 @@ def display_sequence_for_chr(p, data):
     filename = "chr" + _chrnum_to_chrom(data['chr'])
     if start != 'undefined':
         filename = filename + "_" +  start + "-" + end
-
+        
     if p.get('format') == 'gcg':
         filename += ".gcg"
     else:
