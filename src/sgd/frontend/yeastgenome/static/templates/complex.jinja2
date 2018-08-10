@@ -59,13 +59,13 @@
 			{% set source_link = "" %}
 			{% if complex.source == 'SGD' %}
 			    {% set source_link = 'https://www.yeastgenome.org' %}
-			{% elseif complex.source == 'UniProt' %}
+			{% elif complex.source == 'UniProt' %}
                             {% set source_link = 'https://www.uniprot.org/' %}
-			{% elseif complex.source == 'IntAct' %}
+			{% elif complex.source == 'IntAct' %}
                             {% set source_link = 'https://www.ebi.ac.uk/intact/' %}
-			{% elseif complex.source == 'MINT' %}
+			{% elif complex.source == 'MINT' %}
                             {% set source_link = 'https://mint.bio.uniroma2.it/' %}
-			{% elseif complex.source == 'PRO' %}
+			{% elif complex.source == 'PRO' %}
                             {% set source_link = 'http://www.obofoundry.org/ontology/pr.html' %}
 			{% endif %}
 			<dt>Source</dt>
