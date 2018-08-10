@@ -38,7 +38,7 @@
 <!-- Overview
 ================================================== -->
 <section id="overview" data-magellan-destination="overview">
-    <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/function-help/gene-ontology-go" name="top" class="documentation-link">Disease Help <i class="fa fa-question-circle"></i></a>
+    <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/function-help/disease-ontology-do" name="top" class="documentation-link">Disease Help <i class="fa fa-question-circle"></i></a>
     <h1>{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %} Disease
         <a href="#" data-dropdown="summary_help"><i class="fa fa-info-circle"></i></a>
 
@@ -73,8 +73,8 @@
             <a href="#" data-dropdown="drop_manual"><i class="fa fa-info-circle"></i></a>
 
             <p id="drop_manual" class="f-dropdown content medium" data-dropdown-content>
-                <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/sgd-general-help/glossary">Manually curated</a> Disease annotations reflect our best
-                understanding of disease in human genes?? for this gene product.
+                <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/sgd-general-help/glossary">Manually curated</a> DO annotations reflect our best
+                understanding of disease association for this gene product.
                 Manually curated annotations are assigned by SGD curators based on published papers when
                 available, or by curatorial statements if necessary. Curators periodically review all
                 manually curated Disease annotations for accuracy and completeness. The "Date Last Reviewed"
@@ -98,15 +98,15 @@
 ================================================== -->
     <section id="htp" data-magellan-destination="htp">
         <h2>High-throughput <span id="htp_disease_table_header" class="round secondary label"></span>
-            <a href="#" data-dropdown="drop_manual"><i class="fa fa-info-circle"></i></a>
+            <a href="#" data-dropdown="drop_htp"><i class="fa fa-info-circle"></i></a>
 
-             <p id="drop_manual" class="f-dropdown content medium" data-dropdown-content>
-                <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/sgd-general-help/glossary">Manually curated</a> Disease annotations reflect our best
-                understanding of disease in human genes?? for this gene product.
-                Highthrough-put annotations are assigned by SGD curators based on published papers when
-                available, or by curatorial statements if necessary. Curators periodically review all
-                manually curated Disease annotations for accuracy and completeness. The "Date Last Reviewed"
-                indicates when these annotations were last reviewed.
+             <p id="drop_htp" class="f-dropdown content medium" data-dropdown-content>
+                DO annotations from high-throughput experiments are
+                based on a variety of large scale high-throughput experiments, including
+                genome-wide experiments. Many of these annotations are made based on DO annotations (or
+                mappings to DO annotations) assigned by the authors, rather than SGD curators. While SGD
+                curators read these publications and often work closely with authors to incorporate the
+                information, each individual annotation may not necessarily be reviewed by a curator.
             </p>
         </h2>
         <hr />
@@ -126,12 +126,11 @@
             <a href="#" data-dropdown="drop_comp"><i class="fa fa-info-circle"></i></a>
 
         <p id="drop_comp" class="f-dropdown content medium" data-dropdown-content>
-            Computational GO Annotations are
+            Computational DO Annotations are
             predictions. These annotations are NOT reviewed by a curator. Currently, all
-            computational GO annotations for <em>S. cerevisiae</em> are assigned by an external
-            source (for example, the <a href="http://www.ebi.ac.uk/GOA">Gene Ontology Annotation
-            (GOA)</a> project of the <a href="http://www.ebi.ac.uk/">European Bioinformatics
-            Institute (EBI)</a>).
+            computational DO annotations for <em>S. cerevisiae</em> are assigned by an external
+            source (for example, the <a href="https://www.alliancegenome.org/">Alliance of Genome Resources
+            (Alliance)</a>.
         </p>
         </h2>
         <hr />
@@ -151,7 +150,7 @@
             <a href="#" data-dropdown="network_info"><i class="fa fa-info-circle"></i></a>
 
             <p id="network_info" class="f-dropdown content medium" data-dropdown-content>
-                This diagram displays manually curated and high-throughput DO terms (green squares) that are shared between the given gene (yellow circle) and other genes (gray
+                This diagram displays manually curated and high-throughput DO terms (orange circles) that are shared between the given gene (black circle) and other genes (green
                 circles) based on the number of DO terms shared (adjustable using the slider at the bottom).
             </p>
         </h2>
