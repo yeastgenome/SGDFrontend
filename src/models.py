@@ -7963,19 +7963,16 @@ class Complexdbentity(Dbentity):
                                                                     "class_type": "complex_gene",
                                                                     "target": interactor.format_name } }
 
-        network_nodes_with_evidence_count = {}         
         min_evidence_cutoff = 2;
         max_evidence_cutoff = 2;
 
         for x in network_nodes:
             data = x['data']
             node_id = data['id']
-        #    if evidenceCount[node_id] > max_evidence_cutoff:
-        #        max_evidence_cutoff = evidenceCount[node_id]
-        #    data['evidence'] = evidenceCount[node_id]
-        #    network_nodes_with_evidence_count.append("data": data)
-            
-
+            if evidenceCount[node_id] > max_evidence_cutoff:
+                max_evidence_cutoff = evidenceCount[node_id]
+            data['evidence'] = evidenceCount[node_id]
+        
         data['subunit'] = sorted(subunits, key=lambda a: a['display_name'])
         data['graph'] = { "edges": edges, "nodes": nodes }
         data['network_graph'] = { "edges": network_edges, 
