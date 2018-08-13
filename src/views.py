@@ -18,8 +18,8 @@ import logging
 import json
 
 
-from .models import DBSession, ESearch, Colleague, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, Dataset, DatasetKeyword, Contig, Proteindomain, Ec, Dnasequenceannotation, Straindbentity, Complexdbentity
-from .helpers import extract_id_request, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id, primer3_parser
+from .models import DBSession, ESearch, Colleague, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, Dataset, DatasetKeyword, Contig, Proteindomain, Ec, Dnasequenceannotation, Straindbentity, Complexdbentity, Disease
+from .helpers import extract_id_request, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id, get_disease_by_id, primer3_parser
 from .search_helpers import build_autocomplete_search_body_request, format_autocomplete_results, build_search_query, build_es_search_body_request, build_es_aggregation_body_request, format_search_results, format_aggregation_results, build_sequence_objects_search_query
 from .models_helpers import ModelsHelper
 
@@ -515,6 +515,50 @@ def go_locus_details_all(request):
     else:
         return HTTPNotFound()
 
+@view_config(route_name='disease', renderer='json', request_method='GET')
+def disease(request):
+    #id = extract_id_request(request, 'disease', param_name="format_name")
+    #disease = get_disease_by_id(id)
+    disease_id = request.matchdict['id'].upper()
+    disease = DBSession.query(Disease).filter_by(doid=disease_id).one_or_none()
+    if disease:
+        return disease.to_dict()
+    else:
+        return HTTPNotFound()
+
+@view_config(route_name='disease_ontology_graph', renderer='json', request_method='GET')
+def disease_ontology_graph(request):
+    # id = extract_id_request(request, 'disease')
+    # disease = get_disease_by_id(id)
+    disease_id = request.matchdict['id'].upper()
+    disease = DBSession.query(Disease).filter_by(disease_id=disease_id).one_or_none()
+    if disease:
+        return disease.ontology_graph()
+    else:
+        return HTTPNotFound()
+
+@view_config(route_name='disease_locus_details', renderer='json', request_method='GET')
+def disease_locus_details(request):
+    # id = extract_id_request(request, 'disease')
+    # disease = get_disease_by_id(id)
+    disease_id = request.matchdict['id'].upper()
+    disease = DBSession.query(Disease).filter_by(disease_id=disease_id).one_or_none()
+    if disease:
+        return disease.annotations_to_dict()
+    else:
+        return HTTPNotFound()
+
+@view_config(route_name='disease_locus_details_all', renderer='json', request_method='GET')
+def disease_locus_details_all(request):
+    # id = extract_id_request(request, 'disease')
+    # disease = get_disease_by_id(id)
+    disease_id = request.matchdict['id'].upper()
+    disease = DBSession.query(Disease).filter_by(disease_id=disease_id).one_or_none()
+    if disease:
+        return disease.annotations_and_children_to_dict()
+    else:
+        return HTTPNotFound()
+
 @view_config(route_name='locus', renderer='json', request_method='GET')
 def locus(request):
 
@@ -560,6 +604,16 @@ def locus_go_graph(request):
         return locus.go_graph()
     else:
         return HTTPNotFound()
+
+@view_config(route_name='locus_disease_graph', renderer='json', request_method='GET')
+def locus_disease_graph(request):
+    id = extract_id_request(request, 'locus')
+    locus = get_locus_by_id(id)
+    if locus:
+        return locus.disease_graph()
+    else:
+        return HTTPNotFound()
+
 
 @view_config(route_name='locus_expression_graph', renderer='json', request_method='GET')
 def locus_expression_graph(request):
@@ -617,6 +671,15 @@ def locus_go_details(request):
     locus = get_locus_by_id(id)
     if locus:
         return locus.go_to_dict()
+    else:
+        return HTTPNotFound()
+
+@view_config(route_name='locus_disease_details', renderer='json', request_method='GET')
+def locus_disease_details(request):
+    id = extract_id_request(request, 'locus')
+    locus = get_locus_by_id(id)
+    if locus:
+        return locus.disease_to_dict()
     else:
         return HTTPNotFound()
 
@@ -834,6 +897,7 @@ def ecnumber(request):
         return ec.to_dict()
     else:
         return HTTPNotFound()
+
 
 @view_config(route_name='primer3', renderer='json', request_method='POST')
 def primer3(request):

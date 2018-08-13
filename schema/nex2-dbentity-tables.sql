@@ -61,6 +61,7 @@ CREATE TABLE nex.locusdbentity (
 	has_expression boolean NOT NULL,
 	has_regulation boolean NOT NULL,
 	has_protein boolean NOT NULL,
+    has_disease boolean NOT NULL,
 	has_sequence_section boolean NOT NULL,
     not_in_s288c boolean NOT NULL,
 	CONSTRAINT locusdbentity_pk PRIMARY KEY (dbentity_id)
@@ -72,6 +73,7 @@ COMMENT ON COLUMN nex.locusdbentity.gene_name IS 'Registered gene name consistin
 COMMENT ON COLUMN nex.locusdbentity.headline IS 'An abbreviated version of the LOCUSDBENTITY.DESCRIPTION.';
 COMMENT ON COLUMN nex.locusdbentity.has_summary IS 'Has a Locus web page.';
 COMMENT ON COLUMN nex.locusdbentity.has_phenotype IS 'Has a Phenotype tab page.';
+COMMENT ON COLUMN nex.locusdbentity.has_disease IS 'Has a Disease tab page.';
 COMMENT ON COLUMN nex.locusdbentity.dbentity_id IS 'Unique identifier (serial number).';
 COMMENT ON COLUMN nex.locusdbentity.has_regulation IS 'Has a Regulation tab page.';
 COMMENT ON COLUMN nex.locusdbentity.has_go IS 'Has a Gene Ontology tab page.';
@@ -264,7 +266,7 @@ COMMENT ON COLUMN nex.locussummary.created_by IS 'Username of the person who ent
 COMMENT ON COLUMN nex.locussummary.date_created IS 'Date the record was entered into the database.';
 COMMENT ON COLUMN nex.locussummary.html IS 'Summary HTML mark-up.';
 ALTER TABLE nex.locussummary ADD CONSTRAINT locussummary_uk UNIQUE (locus_id,summary_type,summary_order);
-ALTER TABLE nex.locussummary ADD CONSTRAINT locussummary_type_ck CHECK (SUMMARY_TYPE IN ('Gene','Function','Phenotype','Regulation'));
+ALTER TABLE nex.locussummary ADD CONSTRAINT locussummary_type_ck CHECK (SUMMARY_TYPE IN ('Gene','Function','Phenotype','Regulation','Disease','Interaction','Sequence','Protein'));
 CREATE INDEX locussummary_source_fk_index ON nex.locussummary (source_id);
 
 DROP TABLE IF EXISTS nex.locussummary_reference CASCADE; 
