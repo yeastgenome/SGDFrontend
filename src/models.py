@@ -7999,10 +7999,6 @@ class Complexdbentity(Dbentity):
         data['subunit'] = sorted(subunits, key=lambda a: a['display_name'])
         data['graph'] = { "edges": edges, "nodes": nodes }
         data['network_graph'] = { "edges": network_edges, 
-                                  "max_evidence_cutoff": max_evidence_cutoff,
-                                  "min_evidence_cutoff": min_evidence_cutoff,
-                                  "max_go_cutoff": max_go_cutoff,
-                                  "max_subunit_cutoff": max_subunit_cutoff,
                                   "nodes": network_nodes }
 
         return data
