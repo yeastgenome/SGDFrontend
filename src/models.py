@@ -7987,16 +7987,15 @@ class Complexdbentity(Dbentity):
             else:
                 y['evidence'] = 2
 
-            if y['class_type'] == 'complex_go':
+            if y['type'] == 'complex':
                 if node_id in goCount:
                     y['go'] = goCount[node_id]
                 else:
                     y['go'] = 2
-            if y['class_type'] == 'complex_gene':
                 if node_id in subunitCount:
                     y['subunit'] = subunitCount[node_id]
                 else:
-                    y['subunit'] = 1
+                    y['subunit'] = 2
         data['subunit'] = sorted(subunits, key=lambda a: a['display_name'])
         data['graph'] = { "edges": edges, "nodes": nodes }
         data['network_graph'] = { "edges": network_edges, 
