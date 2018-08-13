@@ -8343,11 +8343,12 @@ class Complexdbentity(Dbentity):
         network_nodes =[]
         network_edges =[]
 
-        network_nodes.append({ "data": { "name": self.display_name,
-                                         "id": self.format_name,
-                                         "link": "/complex/" + self.format_name,
-                                         "type": "Current_complex",
-                                         "sub_type": 'FOCUS' }})
+        network_nodes.append({
+            "name": self.display_name,
+            "id": self.format_name,
+            "href": "/complex/" + self.format_name,
+            "category": "FOCUS",
+        })
 
         go_objs = DBSession.query(ComplexGo).filter_by(complex_id=self.dbentity_id).all()
 
@@ -8369,13 +8370,16 @@ class Complexdbentity(Dbentity):
                     process.append(go)
                 
                 # go['display_name'],
-                network_nodes.append({ "data": { "name": go['display_name'],
-                                                 "id": go['go_id'],
-                                                 "link": go['link'],
-                                                 "type": "Go" } })
-                network_edges.append({ "data": { "source": self.format_name,
-                                                 "class_type": "complex_go",
-                                                 "target": go['go_id'] } })
+                network_nodes.append({
+                    "name": go["display_name"],
+                    "id": go["go_id"],
+                    "href": go["link"],
+                    "category": go["go_aspect"]
+                })
+                network_edges.append({
+                    "source": self.format_name,   
+                    "target": go["go_id"]
+                })
 
                 goComplexes = DBSession.query(ComplexGo).filter_by(go_id=g.go_id).all()
 
@@ -8386,27 +8390,33 @@ class Complexdbentity(Dbentity):
                     if complex.format_name != self.format_name:
                         if complex.format_name in foundComplex:
                             if foundComplex[complex.format_name] != 1:
-                                network_nodes.append({ "data": { "name": complex.display_name,
-                                                                 "id": complex.format_name,
-                                                                 "link": "/complex/" + complex.format_name,
-                                                                 "type": "Complex" } })
+                                network_nodes.append({
+                                    "name": complex.display_name,
+                                    "id": complex.format_name,
+                                    "href": "/complex/" + complex.format_name,
+                                    "category": "Complex"
+                                })
                                 network_edges.append( foundComplex[complex.format_name] )
 
                                 foundComplex[complex.format_name] = 1
                             
-                            network_nodes.append({ "data": { "name": complex.display_name,
-                                                             "id": complex.format_name,
-                                                             "link": "/complex/" + complex.format_name,
-                                                             "type": "Complex" } })
+                            network_nodes.append({
+                                "name": complex.display_name,
+                                "id": complex.format_name,
+                                "href": "/complex/" + complex.format_name,
+                                "category": "Complex"
+                            })
 
-                            network_edges.append( { "data": { "source": complex.format_name,
-                                                              "class_type": "complex_go",
-                                                              "target": go['go_id'] } })
+                            network_edges.append({ 
+                                "source": complex.format_name,
+                                "target": go['go_id']
+                            })
 
                         else:
-                            foundComplex[complex.format_name] = { "data": { "source": complex.format_name,
-                                                                            "class_type": "complex_go",
-                                                                            "target": go['go_id'] } }
+                            foundComplex[complex.format_name] = {
+                                "source": complex.format_name,
+                                "target": go['go_id']
+                            }
 
         data['process'] = sorted(process, key=lambda p: p['display_name'])
         data['function'] = sorted(function, key=lambda f: f['display_name'])
@@ -8441,7 +8451,7 @@ class Complexdbentity(Dbentity):
             display_name = interactor.display_name
             link = interactor.obj_url
             sgdid = None
-            type = "othersubunit"
+            type = "other subunit"
             if interactor.locus_id:
                 display_name = interactor.locus.display_name
                 sgdid = interactor.locus.sgdid
@@ -8451,7 +8461,7 @@ class Complexdbentity(Dbentity):
             elif interactor.format_name.startswith('CPX-'):
                 type = 'subcomplex'
             elif interactor.format_name.startswith('CHEBI:'):
-                type = "smallmolecule"
+                type = "small molecule"
 
             count = 1
             if annot.stoichiometry and annot.stoichiometry > 1:
@@ -8469,10 +8479,12 @@ class Complexdbentity(Dbentity):
                 name_list[interactor.format_name] = names
 
                 if node_id not in found_node:
-                    nodes.append({ "data": { "name": display_name,           
-                                             "id": node_id,
-                                             "link": link,
-                                             "type": type } })
+                    nodes.append({
+                        "name": display_name,           
+                        "id": node_id,
+                        "href": link,
+                        "category": type
+                    })
                     found_node[node_id] = 1
 
                 if binding_interactor is not None:
@@ -8483,9 +8495,11 @@ class Complexdbentity(Dbentity):
                         binding_node_ids = [binding_interactor.format_name]
                     for binding_node_id in binding_node_ids:
                         if (node_id, binding_node_id) not in found_binding and (binding_node_id, node_id) not in found_binding: 
-                            edges.append( { "data": { "source": node_id,
-                                                      "class_type": "complex",
-                                                      "target": binding_node_id } })
+                            edges.append({
+                                "source": node_id,
+                                "target": binding_node_id,
+                                "category": "complex"
+                            })
                             found_binding[(node_id, binding_node_id)] = 1
                         
             stoichiometry4interactor[interactor.format_name] = annot.stoichiometry  
@@ -8503,7 +8517,7 @@ class Complexdbentity(Dbentity):
             description = interactor.description
             link = interactor.obj_url
             sgdid = None
-            type = "othersubunit"
+            type = "other subunit"
             if interactor.locus_id:
                 display_name = interactor.locus.display_name
                 sgdid = interactor.locus.sgdid
@@ -8513,7 +8527,7 @@ class Complexdbentity(Dbentity):
             elif interactor.format_name.startswith('CPX-'):
                 type = 'subcomplex'
             elif interactor.format_name.startswith('CHEBI:'):
-                type = "smallmolecule"
+                type = "small molecule"
             subunits.append({ "display_name": display_name,
                               "description": description,
                               "sgdid": sgdid,
@@ -8525,14 +8539,17 @@ class Complexdbentity(Dbentity):
             #                         "link": link,
             #                         "type": type } })
 
-            network_nodes.append({ "data": { "name": display_name,
-                                             "id": interactor.format_name,
-                                             "link": link,
-                                             "type": "Gene" } })
+            network_nodes.append({
+                "name": display_name,
+                "id": interactor.format_name,
+                "href": link,
+                "category": "Gene"
+            })
 
-            network_edges.append( { "data": { "source": self.format_name,
-                                              "class_type": "complex_gene",
-                                              "target": interactor.format_name } })
+            network_edges.append({
+                "source": self.format_name,
+                "target": interactor.format_name
+            })
 
             annot_objs2 = DBSession.query(Complexbindingannotation).filter_by(interactor_id=interactor.interactor_id).all()
             found = {}
@@ -8546,26 +8563,32 @@ class Complexdbentity(Dbentity):
                 
                 if complex.format_name in foundComplex:
                     if foundComplex[complex.format_name] != 1:
-                        network_nodes.append({ "data": { "name": complex.display_name,
-                                                         "id": complex.format_name,
-                                                         "link": "/complex/" + complex.format_name,
-                                                         "type": "Complex" } })
+                        network_nodes.append({
+                            "name": complex.display_name,
+                            "id": complex.format_name,
+                            "href": "/complex/" + complex.format_name,
+                            "category": "Complex"
+                        })
                         network_edges.append( foundComplex[complex.format_name] )
 
                         foundComplex[complex.format_name] = 1
 
-                    network_nodes.append({ "data": { "name": complex.display_name,
-                                                 "id": complex.format_name,
-                                                 "link": "/complex/" + complex.format_name,
-                                                 "type": "Complex" } })
-                    network_edges.append( { "data": { "source": complex.format_name,
-                                                  "class_type": "complex_gene",
-                                                  "target": interactor.format_name } })
+                    network_nodes.append({
+                        "name": complex.display_name,
+                        "id": complex.format_name,
+                        "href": "/complex/" + complex.format_name,
+                        "category": "Complex"
+                    })
+                    network_edges.append({
+                        "source": complex.format_name,
+                        "target": interactor.format_name
+                    })
             
                 else:
-                    foundComplex[complex.format_name] = { "data": { "source": complex.format_name,
-                                                                    "class_type": "complex_gene",
-                                                                    "target": interactor.format_name } }
+                    foundComplex[complex.format_name] = {
+                        "source": complex.format_name,
+                        "target": interactor.format_name
+                    }
 
 
         data['subunit'] = sorted(subunits, key=lambda a: a['display_name'])
