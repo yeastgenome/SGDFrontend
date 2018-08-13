@@ -1,0 +1,22 @@
+<span id='summary_message' style='display:none'>0 DO Terms curated.</span>
+
+<dl class="key-value" id="protein_overview">
+    {% for slim in locus.disease_overview.do_slim %}
+        {% if loop.first %}
+            <dt>
+                DO Slim Terms
+                <a href="#" data-dropdown="go_slim_help"><i class="fa fa-info-circle"></i></a>
+
+                <p id="go_slim_help" class="f-dropdown content medium" data-dropdown-content>
+                    The yeast DO Slim terms are higher level terms that best represent the major <i>S. cerevisiae</i> biological
+                        processes, functions, and cellular components. The DO Slim terms listed here are the broader parent
+                        terms for the specific terms to which this gene product is annotated.
+                </p>
+            </dt>
+            <dd>
+        {% endif %}
+
+        <span><a href="{{ slim.link|e }}">{{ slim.display_name|e }}</a></span>{% if not loop.last %}, {% else %}</dd>{% endif %}
+
+    {% endfor %}
+</dl>

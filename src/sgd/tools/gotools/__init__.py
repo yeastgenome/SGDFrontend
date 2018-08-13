@@ -5,7 +5,9 @@ import os
 
 # http://0.0.0.0:6545/run_gotools?aspect=C&genes=COR5|CYT1|Q0105|QCR2|S000001929|S000002937|S000003809|YEL024W|YEL039C|YGR183C|YHR001W-A
 
-gotools_url = "http://gotermfinder.dev.yeastgenome.org/cgi-bin/gotermfinder"
+# gotools_url = "http://gotermfinder.yeastgenome.org/cgi-bin/gotermfinder"
+
+gotools_url = "http://gotermfinder.dev.yeastgenome.org/cgi-bin/gotermfinder" 
 
 # http://gotermfinder.dev.yeastgenome.org/cgi-bin/gotermfinder?aspect=F&genes=COR5|CYT1|Q0105|QCR2|S000001929|S000002937|S000003809|YEL024W|YEL039C|YGR183C|YHR001W-A
 
@@ -60,7 +62,9 @@ def run_gotermfinder(p):
     html = response.read() 
     html = html.replace("<html><body>", "").replace("</body></html>", "")
     html = html.replace("color=red", "color=maroon")
-      
+    html = html.replace('<a name="table" />', '')
+    html = html.replace("infowin", "_extwin")
+
     return { "html": html,
              "image_html": imageHtml,
              "tab_page": res['tab'],
