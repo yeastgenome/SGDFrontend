@@ -7950,10 +7950,10 @@ class Complexdbentity(Dbentity):
                         foundComplex[complex.format_name] = 1
 
                     evidenceCount[complex.format_name] = evidenceCount[complex.format_name] + 1
-                    # if complex.format_name in subunitCount:
-                    #    subunitCount[complex.format_name] = subunitCount[complex.format_name] + 1
-                    # else:
-                    #    subunitCount[complex.format_name] = 1
+                    if complex.format_name in subunitCount:
+                        subunitCount[complex.format_name] = subunitCount[complex.format_name] + 1
+                    else:
+                        subunitCount[complex.format_name] = 1
                     network_nodes.append({ "data": { "name": complex.display_name,
                                                      "id": complex.format_name,
                                                      "link": "/complex/" + complex.format_name,
