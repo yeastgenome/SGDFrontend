@@ -7781,8 +7781,6 @@ class Complexdbentity(Dbentity):
                     if complex.format_name != self.format_name:
                         if complex.format_name in foundComplex:
                             if foundComplex[complex.format_name] != 1:
-                                # evidenceCount[complex.format_name] = evidenceCount[complex.format_name] + 1
-                                # goCount[complex.format_name] = goCount[complex.format_name] + 1
                                 network_nodes.append({ "data": { "name": complex.display_name,
                                                                  "id": complex.format_name,
                                                                  "link": "/complex/" + complex.format_name,
@@ -7792,7 +7790,7 @@ class Complexdbentity(Dbentity):
                                 foundComplex[complex.format_name] = 1
                             
                             evidenceCount[complex.format_name] = evidenceCount[complex.format_name] + 1
-                            goCount[complex.format_name] = goCount[complex.format_name] + 1
+                            # goCount[complex.format_name] = goCount[complex.format_name] + 1
                             network_nodes.append({ "data": { "name": complex.display_name,
                                                              "id": complex.format_name,
                                                              "link": "/complex/" + complex.format_name,
@@ -7952,10 +7950,10 @@ class Complexdbentity(Dbentity):
                         foundComplex[complex.format_name] = 1
 
                     evidenceCount[complex.format_name] = evidenceCount[complex.format_name] + 1
-                    if complex.format_name in subunitCount:
-                        subunitCount[complex.format_name] = subunitCount[complex.format_name] + 1
-                    else:
-                        subunitCount[complex.format_name] = 1
+                    # if complex.format_name in subunitCount:
+                    #    subunitCount[complex.format_name] = subunitCount[complex.format_name] + 1
+                    # else:
+                    #    subunitCount[complex.format_name] = 1
                     network_nodes.append({ "data": { "name": complex.display_name,
                                                      "id": complex.format_name,
                                                      "link": "/complex/" + complex.format_name,
@@ -7971,10 +7969,10 @@ class Complexdbentity(Dbentity):
                                                                     "class_type": "complex_gene",
                                                                     "target": interactor.format_name } }
 
-        min_evidence_cutoff = 2;
-        max_evidence_cutoff = 2;
-        max_go_cutoff = 2;
-        max_subunit_cutoff = 2;
+        min_evidence_cutoff = 2
+        max_evidence_cutoff = 2
+        max_go_cutoff = 2
+        max_subunit_cutoff = 2
         for x in network_nodes:
             y = x['data']
             node_id = y['id']
@@ -7997,6 +7995,8 @@ class Complexdbentity(Dbentity):
         data['network_graph'] = { "edges": network_edges, 
                                   "max_evidence_cutoff": max_evidence_cutoff,
                                   "min_evidence_cutoff": min_evidence_cutoff, 
+                                  "max_go_cutoff": max_go_cutoff,
+                                  "max_subunit_cutoff": max_subunit_cutoff,
                                   "nodes": network_nodes }
 
         return data
