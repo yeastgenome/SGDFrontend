@@ -7978,10 +7978,10 @@ class Complexdbentity(Dbentity):
             node_id = y['id']
             if node_id in evidenceCount and evidenceCount[node_id] > max_evidence_cutoff:
                 max_evidence_cutoff = evidenceCount[node_id]
-            # if node_id in goCount and goCount[node_id] > max_go_cutoff:
-            #    max_go_cutoff = goCount[node_id]
-            # if node_id in subunitCount and subunitCount[node_id] > max_subunit_cutoff:
-            #    max_subunit_cutoff = subunitCount[node_id]
+            if node_id in goCount and goCount[node_id] > max_go_cutoff:
+                max_go_cutoff = goCount[node_id]
+            if node_id in subunitCount and subunitCount[node_id] > max_subunit_cutoff:
+                max_subunit_cutoff = subunitCount[node_id]
             if node_id in evidenceCount:
                 y['evidence'] = evidenceCount[node_id]
             else:
