@@ -7977,18 +7977,18 @@ class Complexdbentity(Dbentity):
             node_id = y['id']
             if node_id in evidenceCount and evidenceCount[node_id] > max_evidence_cutoff:
                 max_evidence_cutoff = evidenceCount[node_id]
-            if node_id in goCount and goCount[node_id] > max_go_cutoff:
-                max_go_cutoff = goCount[node_id]
-            if node_id in subunitCount and subunitCount[node_id] > max_subunit_cutoff:
-                max_subunit_cutoff = subunitCount[node_id]
+            # if node_id in goCount and goCount[node_id] > max_go_cutoff:
+            #    max_go_cutoff = goCount[node_id]
+            # if node_id in subunitCount and subunitCount[node_id] > max_subunit_cutoff:
+            #    max_subunit_cutoff = subunitCount[node_id]
             if node_id in evidenceCount:
                 y['evidence'] = evidenceCount[node_id]
             else:
                 y['evidence'] = 2
-            if y['class_type'] == 'complex_go':
-                y['go'] = goCount[node_id]
-            if y['class_type'] == 'complex_gene':
-                y['subunit'] = subunitCount[node_id]
+            # if y['class_type'] == 'complex_go':
+            #    y['go'] = goCount[node_id]
+            # if y['class_type'] == 'complex_gene':
+            #    y['subunit'] = subunitCount[node_id]
         data['subunit'] = sorted(subunits, key=lambda a: a['display_name'])
         data['graph'] = { "edges": edges, "nodes": nodes }
         data['network_graph'] = { "edges": network_edges, 
