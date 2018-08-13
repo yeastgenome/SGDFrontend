@@ -20,12 +20,13 @@ $(document).ready(function() {
 		if (data != null && data["network_graph"]["nodes"].length > 1) {
 		    
 		    var graph2 = create_cytoscape_vis("cy2", layout, graph_style, data["network_graph"], null, true, "complex_network");
+		    var = create_slider("slider", graph2, data["network_graph"]["min_evidence_cutoff"], data["network_graph"]["max_evidence_cutoff"], function slider_filter(new_cutoff) {return "node, edge[evidence >= " + new_cutoff + "]";});
 		    create_cy_download_button(graph2, "cy2_download", complex['complex_accession'] + '_complex_network_graph')
 		    
 		    if (true) {	
-			create_discrete_filter_bar("union_radio", graph, all_filter);
-			create_discrete_filter_bar("subunit_radio", graph, subunit_filter);
-			create_discrete_filter_bar("go_radio", graph, go_filter);
+			create_discrete_filter_bar("union_radio", graph, all_filter, data["network_graph"]["max_evidence_cutoff"]);
+			create_discrete_filter_bar("subunit_radio", graph, subunit_filter, data["network_graph"]["max_subunit_cutoff"]);
+			create_discrete_filter_bar("go_radio", graph, go_filter, , data["network_graph"]["max_go_cutoff"]);
 			$("#discrete_filter").show();
 		    }
 		    else {
