@@ -7802,7 +7802,7 @@ class Complexdbentity(Dbentity):
 
                         else:
                             evidenceCount[complex.format_name] = 1
-                            goCount[complex.format_name] = 1
+                            # goCount[complex.format_name] = 1
                             foundComplex[complex.format_name] = { "data": { "source": complex.format_name,
                                                                             "class_type": "complex_go",
                                                                             "target": go['go_id'] } }
@@ -7940,7 +7940,7 @@ class Complexdbentity(Dbentity):
                 found[complex.format_name] = 1
                 
                 if complex.format_name in foundComplex:
-                    if subunitCount[complex.format_name] == 1:
+                    if complex.format_name in subunitCount and subunitCount[complex.format_name] == 1:
                         network_nodes.append({ "data": { "name": complex.display_name,
                                                          "id": complex.format_name,
                                                          "link": "/complex/" + complex.format_name,
