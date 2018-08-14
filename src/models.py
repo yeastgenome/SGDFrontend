@@ -8401,7 +8401,7 @@ class Complexdbentity(Dbentity):
                                         "name": complex.display_name,
                                         "id": complex.format_name,
                                         "href": "/complex/" + complex.format_name,
-                                        "category": "Complex"
+                                        "category": "complex"
                                     })
                                     network_nodes_ids[complex.format_name] = True
                                 network_edges.append( foundComplex[complex.format_name] )
@@ -8413,7 +8413,7 @@ class Complexdbentity(Dbentity):
                                     "name": complex.display_name,
                                     "id": complex.format_name,
                                     "href": "/complex/" + complex.format_name,
-                                    "category": "Complex"
+                                    "category": "complex"
                                 })
                                 network_nodes_ids[complex.format_name] = True
 
