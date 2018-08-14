@@ -20,10 +20,13 @@ $(document).ready(function() {
         
         if (data != null && data["network_graph"]["nodes"].length > 1) {
             var _categoryColors = {
-                'protein': '#1f77b4',
-                'small molecule': '#1A9E77',
-                'sub-complex': '#E6AB03',
-                'small molecule': '#17becf',
+                'FOCUS': 'black',
+                'molecular function': '#8c564b',
+                'biological process': '#2ca02c',
+                'cellular component': '#9467bd',
+                'gene': '#1f77b4',
+                'complex': '#E6AB03',
+                'small molecule': '#1A9E77',                
                 'other subunit': '#ffbb78'
             };
             views.network.render(data["network_graph"], _categoryColors, "j-complex-network");            
