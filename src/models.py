@@ -8352,6 +8352,7 @@ class Complexdbentity(Dbentity):
             "href": "/complex/" + self.format_name,
             "category": "FOCUS",
         })
+        network_nodes_ids[self.format_name] = True
 
         go_objs = DBSession.query(ComplexGo).filter_by(complex_id=self.dbentity_id).all()
 
@@ -8548,14 +8549,14 @@ class Complexdbentity(Dbentity):
             #                         "link": link,
             #                         "type": type } })
 
-            if complex.format_name not in network_nodes_ids:
+            if interactor.format_name not in network_nodes_ids:
                 network_nodes.append({
                     "name": display_name,
                     "id": interactor.format_name,
                     "href": link,
                     "category": "Gene"
                 })
-                network_nodes_ids[complex.format_name] = True
+                network_nodes_ids[interactor.format_name] = True
 
             network_edges.append({
                 "source": self.format_name,
@@ -8566,16 +8567,17 @@ class Complexdbentity(Dbentity):
             found = {}
             for annot in annot_objs2:
                 complex = annot.complex
-                print(ccomples.format_name)
-                if complex.format_name == self.format_name:
-                    continue
+                # print(complex.format_name, self.format_name, found)
+                # if complex.format_name == self.format_name:
+                #     continue
                 if complex.format_name in found:
                     continue
                 found[complex.format_name] = 1
-                
                 if complex.format_name in foundComplex:
                     if foundComplex[complex.format_name] != 1:
+                       
                         if complex.format_name not in network_nodes_ids:
+                            print(complex.format_name)
                             network_nodes.append({
                                 "name": complex.display_name,
                                 "id": complex.format_name,
@@ -8609,7 +8611,7 @@ class Complexdbentity(Dbentity):
 
         data['subunit'] = sorted(subunits, key=lambda a: a['display_name'])
         data['graph'] = { "edges": edges, "nodes": nodes }
-        data['network_graph'] = { "edges": network_edges, "nodes": nodes }
+        data['network_graph'] = { "edges": network_edges, "nodes": network_nodes }
 
         return data
 
