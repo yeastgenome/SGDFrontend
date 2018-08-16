@@ -3122,6 +3122,41 @@ class Locusdbentity(Dbentity):
             "category": self.display_name.replace("_", " ")
         }]
         edges = []
+        for x in main_gene_disease_annotations:
+            disease_annotation = x[0]
+            human_gene_id = x[1]
+            human_gene_url = x[2]
+            if human_gene_id not in all_node_ids:
+                nodes.append({
+                    "name": human_gene_ids_to_names[human_gene_id],
+                    "id": human_gene_id,
+                    "href": human_gene_url,
+                    "category": 'Human Gene'
+                })
+                all_node_ids.append(human_gene_id)
+            edge_slug = self.format_name + '.' + human_gene_id
+            if edge_slug not in all_edge_slugs:
+                edges.append({
+                    "source": self.format_name,
+                    "target": human_gene_id,
+                })
+                all_edge_slugs.append(edge_slug)
+            d_id = disease_annotation.disease_id
+            if d_id not in all_node_ids:
+                nodes.append({
+                    "name": disease_ids_to_names[d_id],
+                    "id": d_id,
+                    "href": disease_ids_to_urls[d_id],
+                    "category": "Disease"
+                })
+                all_node_ids.append(d_id)
+            edge_slug = human_gene_id + "." + str(d_id)
+            if edge_slug not in all_edge_slugs:
+                edges.append({
+                    "source": human_gene_id,
+                    "target": d_id
+                })
+                all_edge_slugs.append(edge_slug)
         # add focus_gene -> human_gene -> disease nodes and edges
         for x in genes_sharing_do_annotations:
             disease_annotation = x[0]
@@ -3169,42 +3204,6 @@ class Locusdbentity(Dbentity):
                     "target": d_id
                 })
                 all_edge_slugs.append(edge_slug)
-        for x in main_gene_disease_annotations:
-            disease_annotation = x[0]
-            human_gene_id = x[1]
-            human_gene_url = x[2]
-            if human_gene_id not in all_node_ids:
-                nodes.append({
-                    "name": human_gene_ids_to_names[human_gene_id],
-                    "id": human_gene_id,
-                    "href": human_gene_url,
-                    "category": 'Human Gene'
-                })
-                all_node_ids.append(human_gene_id)
-            edge_slug = self.format_name + '.' + human_gene_id
-            if edge_slug not in all_edge_slugs:
-                edges.append({
-                    "source": self.format_name,
-                    "target": human_gene_id,
-                })
-                all_edge_slugs.append(edge_slug)
-            d_id = disease_annotation.disease_id
-            if d_id not in all_node_ids:
-                nodes.append({
-                    "name": disease_ids_to_names[d_id],
-                    "id": d_id,
-                    "href": disease_ids_to_urls[d_id],
-                    "category": "Disease"
-                })
-                all_node_ids.append(d_id)
-            edge_slug = human_gene_id + "." + str(d_id)
-            if edge_slug not in all_edge_slugs:
-                edges.append({
-                    "source": human_gene_id,
-                    "target": d_id
-                })
-                all_edge_slugs.append(edge_slug)
-
         return {
             "nodes": nodes,
             "edges": edges
