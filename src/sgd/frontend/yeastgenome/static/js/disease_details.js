@@ -46,7 +46,7 @@ $(document).ready(function() {
             var _categoryColors = {
                 'FOCUS': 'black',
                 'Yeast Gene': '#1f77b4',
-                'Human Gene': '#1A9E77',
+                'Human Gene': '#17becf',
                 'Disease': '#D95F02'
             };
             views.network.render(data, _categoryColors);  		}
