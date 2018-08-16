@@ -1,0 +1,165 @@
+{% extends "global_layout.jinja2" %}
+
+{% block title %}{{ locus.display_name }} Disease {% endblock %}
+
+{% block head %}
+<script>
+    var locus = {{ locus_js|safe }}
+</script>
+{% endblock %}
+
+
+{% block body %}
+
+<!-- Tabs
+================================================== -->
+<!-- Includes tabs.html into template -->
+{% include "tabs.jinja2" %}
+<script>document.getElementById("disease_tab").className += " active";</script>
+
+<div class="row">
+
+<!-- Navbar
+================================================== -->
+    <!-- Includes navbar.html into template -->
+    {% include "navbar.jinja2" %}
+
+    <div class="small-12 medium-10 columns content-column">
+
+        <script>
+            add_navbar_title('<span>{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span>');
+            add_navbar_element("Disease Overview", "overview");
+            add_navbar_element("Manually Curated", "manual");
+            add_navbar_element("High-throughput", "htp");
+            add_navbar_element("Computational", "comp");
+            add_navbar_element("Shared Annotations", "network");
+        </script>
+
+<!-- Overview
+================================================== -->
+<section id="overview" data-magellan-destination="overview">
+    <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/function-help/disease-ontology-do" name="top" class="documentation-link">Disease Help <i class="fa fa-question-circle"></i></a>
+    <h1>{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %} Disease
+        <a href="#" data-dropdown="summary_help"><i class="fa fa-info-circle"></i></a>
+
+            <p id="summary_help" class="f-dropdown content medium" data-dropdown-content>
+                Disease Annotations consist of three mandatory components: a gene product, a term from the
+                <a href="http://http://disease-ontology.org//">Disease Ontology (DO)</a> controlled vocabulary and an
+                evidence code. SGD provides manually curated DO Annotations derived from the
+                literature.
+            </p>
+    </h1>
+    <hr />
+
+    {% if locus['disease_overview']['paragraph'] %}
+        <dl class="key-value">
+            <dt>Summary</dt>
+            <dd>{{ locus['disease_overview']['paragraph'] }}</dd>
+        </dl>
+    {% endif %}
+
+    <!-- Includes disease_overview.html into template -->
+    {% include "disease_overview.jinja2" %}
+
+    <ul class="button-group radius">
+        <li><a id="disease_download_all" class="small button secondary"><i class="fa fa-download"></i> Download All Annotations (.txt)</a></li>
+    </ul>
+</section>
+
+<!-- Manually Curated
+================================================== -->
+    <section id="manual" data-magellan-destination="manual">
+        <h2>Manually Curated <span id="mc_disease_table_header" class="round secondary label"></span>
+            <a href="#" data-dropdown="drop_manual"><i class="fa fa-info-circle"></i></a>
+
+            <p id="drop_manual" class="f-dropdown content medium" data-dropdown-content>
+                <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/sgd-general-help/glossary">Manually curated</a> DO annotations reflect our best
+                understanding of disease association for this gene product.
+                Manually curated annotations are assigned by SGD curators based on published papers when
+                available, or by curatorial statements if necessary. Curators periodically review all
+                manually curated Disease annotations for accuracy and completeness.
+            </p>
+        </h2>
+        <hr />
+
+        <div class="spaced-container">
+            <div id="mc_disease">
+                <!-- Includes mc_table into template -->
+                {% set table_id = "mc_disease_table" %}
+                {% include "disease_table.jinja2" %}
+            </div>
+        </div>
+        <p style="display:none" id="manual_message">There are no manually curated annotations for {{ locus.display_name }}.</p>
+    </section>
+<!-- High-throughput
+================================================== -->
+    <section id="htp" data-magellan-destination="htp">
+        <h2>High-throughput <span id="htp_disease_table_header" class="round secondary label"></span>
+            <a href="#" data-dropdown="drop_htp"><i class="fa fa-info-circle"></i></a>
+
+             <p id="drop_htp" class="f-dropdown content medium" data-dropdown-content>
+                DO annotations from high-throughput experiments are
+                based on a variety of large scale high-throughput experiments, including
+                genome-wide experiments. Many of these annotations are made based on DO annotations (or
+                mappings to DO annotations) assigned by the authors, rather than SGD curators. While SGD
+                curators read these publications and often work closely with authors to incorporate the
+                information, each individual annotation may not necessarily be reviewed by a curator.
+            </p>
+        </h2>
+        <hr />
+
+        <div class="spaced-container" id="htp_disease">
+            <!-- Includes htp_table into template -->
+            {% set table_id = "htp_disease_table" %}
+            {% include "disease_table.jinja2" %}
+        </div>
+        <p id="htp_message" style="display:none">There are no high-throughput annotations for {{ locus.display_name }}.</p>
+    </section>
+
+<!-- Computational
+================================================== -->
+    <section id="comp" data-magellan-destination="comp">
+        <h2>Computational <span id="comp_disease_table_header" class="round secondary label"></span>
+            <a href="#" data-dropdown="drop_comp"><i class="fa fa-info-circle"></i></a>
+
+        <p id="drop_comp" class="f-dropdown content medium" data-dropdown-content>
+            Computational DO Annotations are
+            predictions. These annotations are NOT reviewed by a curator. Currently, all
+            computational DO annotations for <em>S. cerevisiae</em> are assigned by an external
+            source (for example, the <a href="https://www.alliancegenome.org/">Alliance of Genome Resources
+            (Alliance)</a>.
+        </p>
+        </h2>
+        <hr />
+
+       <div class="spaced-container" id="comp_disease">
+            <!-- Includes comp_table into template -->
+            {% set table_id = "comp_disease_table" %}
+            {% include "disease_table.jinja2" %}
+       </div>
+       <p id="comp_message" style="display:none">There are no computational annotations for {{ locus.display_name }}.</p>
+    </section>
+
+<!-- Network Visualization
+================================================== -->
+    <section id="network" data-magellan-destination="network">
+        <h2>Shared Annotations
+            <a href="#" data-dropdown="network_info"><i class="fa fa-info-circle"></i></a>
+
+            <p id="network_info" class="f-dropdown content medium" data-dropdown-content>
+                This diagram displays manually curated and high-throughput DO terms (orange circles) that are shared between the given gene (black circle) and yeast genes (dark blue
+                circles).
+            </p>
+        </h2>
+        <hr />
+        <div id="j-network"><div class="sgd-loader-container"><div class="sgd-loader"></div></div></div>
+    </section>
+
+    </div>
+</div>
+{% endblock body %}
+
+{% block scripts %}
+<script src="{{asset_root}}/js/evidence.js"></script>
+<script src="{{asset_root}}/js/disease_details.js"></script>
+{% endblock scripts %}

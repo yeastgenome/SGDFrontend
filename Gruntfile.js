@@ -210,7 +210,7 @@ module.exports = function(grunt) {
 
 
     // production helper tasks
-    grunt.registerTask("dynamicJs:production", ["browserify:production", "uglify:dynamicJs"]);
+    grunt.registerTask("dynamicJs:production", ["browserify:production"]);
     grunt.registerTask("static", ["replace", "concat", "bowercopy:build"]);
 
     // dev helper task

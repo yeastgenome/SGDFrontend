@@ -50,6 +50,10 @@ def protein_details(request):
 def go_details(request):
     return render_locus_page(request, 'go_details')
 
+@view_config(route_name='disease_details')
+def disease_details(request):
+    return render_locus_page(request, 'disease_details')
+
 @view_config(route_name='phenotype_details')
 def phenotype_details(request):
     return render_locus_page(request, 'phenotype_details')
