@@ -58,7 +58,7 @@
         </dl>
     {% endif %}
 
-    <!-- Includes go_overview.html into template -->
+    <!-- Includes disease_overview.html into template -->
     {% include "disease_overview.jinja2" %}
 
     <ul class="button-group radius">
@@ -77,13 +77,10 @@
                 understanding of disease association for this gene product.
                 Manually curated annotations are assigned by SGD curators based on published papers when
                 available, or by curatorial statements if necessary. Curators periodically review all
-                manually curated Disease annotations for accuracy and completeness. The "Date Last Reviewed"
-                indicates when these annotations were last reviewed.
+                manually curated Disease annotations for accuracy and completeness.
             </p>
         </h2>
         <hr />
-
-        <p><strong>Date Last Reviewed:</strong> {{locus.go_overview.date_last_reviewed}}</p>
 
         <div class="spaced-container">
             <div id="mc_disease">
