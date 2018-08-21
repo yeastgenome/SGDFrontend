@@ -2368,7 +2368,7 @@ class Locusdbentity(Dbentity):
                 Dnasequenceannotation.taxonomy_id == TAXON_ID,
                 Dnasequenceannotation.dna_type == 'GENOMIC').all()
         comp = [x.dbentity_id for x in all_dbentity_ids if x.dbentity.dbentity_status == 'Active' ]
-        locus_data = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(comp),Locusdbentity.not_in_s288c == False).all()
+        locus_data = DBSession.query(Locusdbentity).filter(Locusdbentity.dbentity_id.in_(comp),Locusdbentity.not_in_s288c == False).limit(10).all()
         return locus_data
 
     # returns true of 3 letters and a number
