@@ -1,4 +1,4 @@
-from src.models import DBSession, Base, Colleague, ColleagueLocus, Dbentity, Locusdbentity, LocusUrl, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi
+from src.models import DBSession, Base, Colleague, ColleagueLocus, Dbentity, Eco, Locusdbentity, LocusUrl, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi
 from sqlalchemy import create_engine, and_, inspect
 import os
 import json
@@ -296,24 +296,129 @@ def get_phenotype_data():
                 res_file.write(json.dumps(output_obj))
 
 
+def get_expression_data():
+    CC = 'cellular component'
+    desired_eco_ids = DBSession.query(Eco.eco_id).filter(Eco.format_name.in_(['ECO:0000314','ECO:0007005', 'ECO:0000353'])).all()
+    pmid_to_mmo = {
+        14562095: 'MMO:0000662',
+        26928762: 'MMO:0000662',
+        16823961: 'MMO:0000534',
+        24769239: 'MMO:0000534',
+        22842922: 'MMO:0000662',
+        14576278: 'MMO:0000534',
+        11914276: 'MMO:0000662',
+        22932476: 'MMO:0000662',
+        24390141: 'MMO:0000662',
+        16622836: 'MMO:0000664',
+        26777405: 'MMO:0000662',
+        12150911: 'MMO:0000662',
+        14690591: 'MMO:0000662',
+        10684247: 'MMO:0000534',
+        16702403: 'MMO:0000662',
+        16407407: 'MMO:0000534',
+        19053807: 'MMO:0000662',
+        23212245: 'MMO:0000534',
+        12068309: 'MMO:0000662',
+        9448009: 'MMO:0000662',
+        11983894: 'MMO:0000534',
+        19040720: 'MMO:0000534',
+        15282802: 'MMO:0000662',
+        24868093: 'MMO:0000662',
+        10449419: 'MMO:0000534',
+        12392552: 'MMO:0000534',
+        8915539: 'MMO:0000647',
+        10377396: 'MMO:0000534'
+    }
+    # genes = Locusdbentity.get_s288c_genes()
+    genes = DBSession.query(Locusdbentity).filter(Locusdbentity.sgdid == 'S000000152').all()
+    result = []
+    print("computing " + str(len(genes)) + " expression data points")
+    dbentity_id_to_mmo = {}
+    for gene in genes:
+        go_annotations = DBSession.query(Goannotation, Go).outerjoin(Go).filter(and_(\
+            Goannotation.dbentity_id==gene.dbentity_id,\
+            Goannotation.annotation_type != 'computational',\
+            Goannotation.eco_id.in_(desired_eco_ids),\
+            Go.go_namespace == CC,\
+            Go.display_name!= CC\
+        )).all()
+        # unique list of cellular components
+        ccs = set([])
+        mmos = set([])
+        for x in go_annotations:
+            ref_id = x[0].reference_id
+            mmo = None
+            if ref_id in dbentity_id_to_mmo.keys():
+                mmo = dbentity_id_to_mmo[ref_id]
+            else:
+                pmid = DBSession.query(Referencedbentity.pmid).filter(Referencedbentity.dbentity_id == ref_id).scalar()
+                if pmid not in pmid_to_mmo.keys():
+                    print('no MMO for PMID ' + str(pmid))
+                    continue
+                mmo = pmid_to_mmo[pmid]
+                dbentity_id_to_mmo[ref_id] = mmo
+            ccs.add(x[1].format_name)
+            mmos.add(mmo)
+        ccs = list(ccs)
+        mmos = list(mmos)
+        print(ccs, mmos)
+        obj = {
+            "geneId": "SGD:" + str(gene.sgdid),
+            "whenExpressed": { "stageName": "N/A" }
+        }
+        # if item.reference.pmid:
+        #     obj["pubMedId"] = "PMID:" + str(item.reference.pmid)
+        # else:
+        #     obj["pubModId"] = "SGD:" + str(item.reference.sgdid)
+        # obj["dateAssigned"] = item.date_created.strftime(
+        #     "%Y-%m-%dT%H:%m:%S-00:00")
+        result.append(obj)
+
+        if len(result) > 0:
+            output_obj = {
+                "data": result,
+                "metaData": {
+                    "dataProvider":
+                        "SGD",
+                    "dateProduced":
+                        datetime.utcnow().strftime("%Y-%m-%dT%H:%m:%S-00:00"),
+                    "release":
+                        "SGD 1.0.0.6 " + datetime.utcnow().strftime("%Y-%m-%d")
+                }
+            }
+            fileStr = './scripts/bgi_json/data_dump/SGD.1.0.0.6_expression_' + str(randint(0, 1000)) + '.json'
+            with open(fileStr, 'w+') as res_file:
+                res_file.write(json.dumps(output_obj))
+
 
 # entry point
 if __name__ == '__main__':
     print "--------------start computing data--------------"
-    start_time = time.time()
-    get_bgi_data()
-    time_taken = "time taken: " + ("--- %s seconds ---" % (time.time() - start_time))
-    print "------------------ bgi time taken: " + time_taken + " --------------------"
-    with open('./scripts/bgi_json/data_dump/log_time_bgi.txt', 'w+') as res_file:
-        time_taken = "time taken: " + ("--- %s seconds ---" %
-                                       (time.time() - start_time))
-        res_file.write(time_taken)
-    second_start_time = time.time()
-    get_phenotype_data()
-    second_time_taken = "time taken: " + ("--- %s seconds ---" %
-                                   (time.time() - second_start_time))
-    print "------------------ phenotype time taken: " + second_time_taken + " --------------------"
-    with open('./scripts/bgi_json/data_dump/log_time_pheno.txt', 'w+') as res_file_2:
-        second_time_taken = "time taken: " + ("--- %s seconds ---" %
-                                              (time.time() - second_start_time))
-        res_file_2.write(second_time_taken)
+    # start_time = time.time()
+    # get_bgi_data()
+    # time_taken = "time taken: " + ("--- %s seconds ---" % (time.time() - start_time))
+    # print "------------------ bgi time taken: " + time_taken + " --------------------"
+    # with open('./scripts/bgi_json/data_dump/log_time_bgi.txt', 'w+') as res_file:
+    #     time_taken = "time taken: " + ("--- %s seconds ---" %
+    #                                    (time.time() - start_time))
+    #     res_file.write(time_taken)
+    # second_start_time = time.time()
+    # get_phenotype_data()
+    # second_time_taken = "time taken: " + ("--- %s seconds ---" %
+    #                                (time.time() - second_start_time))
+    # print "------------------ phenotype time taken: " + second_time_taken + " --------------------"
+    # with open('./scripts/bgi_json/data_dump/log_time_pheno.txt', 'w+') as res_file_2:
+    #     second_time_taken = "time taken: " + ("--- %s seconds ---" %
+    #                                           (time.time() - second_start_time))
+    #     res_file_2.write(second_time_taken)
+
+
+    third_start_time = time.time()
+    get_expression_data()
+    third_time_taken = "time taken: " + ("--- %s seconds ---" %
+                                   (time.time() - third_start_time))
+    print "------------------ phenotype time taken: " + third_time_taken + " --------------------"
+    with open('./scripts/bgi_json/data_dump/log_time_expresson.txt', 'w+') as res_file_3:
+        third_time_taken = "time taken: " + ("--- %s seconds ---" %
+                                              (time.time() - third_start_time))
+        res_file_3.write(third_time_taken)
