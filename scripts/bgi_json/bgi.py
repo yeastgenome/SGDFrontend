@@ -299,6 +299,7 @@ def get_phenotype_data():
 def get_expression_data():
     CC = 'cellular component'
     desired_eco_ids = DBSession.query(Eco.eco_id).filter(Eco.format_name.in_(['ECO:0000314','ECO:0007005', 'ECO:0000353'])).all()
+    DEFAULT_MMO = 'MMO:0000642'
     pmid_to_mmo = {
         14562095: 'MMO:0000662',
         26928762: 'MMO:0000662',
@@ -342,48 +343,48 @@ def get_expression_data():
             Go.go_namespace == CC,\
             Go.display_name!= CC\
         )).all()
-        # unique list of cellular components
-        ccs = set([])
-        mmos = set([])
         for x in go_annotations:
-            ref_id = x[0].reference_id
+            annotation = x[0]
+            ref_id = annotation.reference_id
+            go = x[1]
+            ref = DBSession.query(Referencedbentity.pmid, Referencedbentity.sgdid).filter(Referencedbentity.dbentity_id == ref_id).one_or_none()
+            pmid = ref[0]
+            sgdid = ref[1]
             mmo = None
             if ref_id in dbentity_id_to_mmo.keys():
                 mmo = dbentity_id_to_mmo[ref_id]
             else:
-                pmid = DBSession.query(Referencedbentity.pmid).filter(Referencedbentity.dbentity_id == ref_id).scalar()
                 if pmid not in pmid_to_mmo.keys():
-                    print('no MMO for PMID ' + str(pmid))
-                    continue
-                mmo = pmid_to_mmo[pmid]
+                    mmo = DEFAULT_MMO
+                else:
+                    mmo = pmid_to_mmo[pmid]
                 dbentity_id_to_mmo[ref_id] = mmo
-            ccs.add(x[1].format_name)
-            mmos.add(mmo)
-        ccs = list(ccs)
-        mmos = list(mmos)
-        print(ccs, mmos)
-        obj = {
-            "geneId": "SGD:" + str(gene.sgdid),
-            "whenExpressed": { "stageName": "N/A" }
-        }
-        # if item.reference.pmid:
-        #     obj["pubMedId"] = "PMID:" + str(item.reference.pmid)
-        # else:
-        #     obj["pubModId"] = "SGD:" + str(item.reference.sgdid)
-        # obj["dateAssigned"] = item.date_created.strftime(
-        #     "%Y-%m-%dT%H:%m:%S-00:00")
-        result.append(obj)
-
+            obj = {
+                "geneId": "SGD:" + str(gene.sgdid),
+                "evidence": {
+                    "modPublicationId":"SGD:" + sgdid,
+                    "pubMedId": "PMID:" + str(pmid)
+                },
+                "whenExpressed": { "stageName": "N/A" },
+                "whereExpressed": {
+                    "cellularComponentTermId": go.format_name
+                },
+                "assay": mmo,
+                "dateAssigned": annotation.date_created.strftime("%Y-%m-%dT%H:%m:%S-00:00")
+            }
+            result.append(obj)
         if len(result) > 0:
             output_obj = {
                 "data": result,
                 "metaData": {
-                    "dataProvider":
-                        "SGD",
-                    "dateProduced":
-                        datetime.utcnow().strftime("%Y-%m-%dT%H:%m:%S-00:00"),
-                    "release":
-                        "SGD 1.0.0.6 " + datetime.utcnow().strftime("%Y-%m-%d")
+                    "dataProvider": {
+                        "crossReference": {
+                            "id": "SGD",
+                            "pages": [ "homepage" ]
+                        },
+                        "type": "curated" 
+                    },
+                    "dateProduced": datetime.utcnow().strftime("%Y-%m-%dT%H:%m:%S-00:00")
                 }
             }
             fileStr = './scripts/bgi_json/data_dump/SGD.1.0.0.6_expression_' + str(randint(0, 1000)) + '.json'
