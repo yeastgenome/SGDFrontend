@@ -176,10 +176,13 @@ const GoTermFinder = React.createClass({
 	getGeneBox() {
 
 		var genes = window.localStorage.getItem("geneList");
-		if (genes == '') {
-		   var param = this.state.param;
-		   genes = param['genes']
-	        }
+		
+		console.log("geneList="+geneList)
+
+		// if (genes == '') {
+		//   var param = this.state.param;
+		//   genes = param['genes']
+	        // }
 
 		if (genes) {
 
