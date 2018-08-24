@@ -19,6 +19,7 @@ CREATE TABLE nex.apo (
 	apoid varchar(20) NOT NULL,
 	apo_namespace varchar(20) NOT NULL,
 	namespace_group varchar(40),
+	is_in_slim boolean NOT NULL,
     is_obsolete boolean NOT NULL,
 	description varchar(1000),
 	date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
@@ -34,6 +35,7 @@ COMMENT ON COLUMN nex.apo.date_created IS 'Date the record was entered into the 
 COMMENT ON COLUMN nex.apo.apo_namespace IS 'Aspect or vocabulary groupings (observable, qualifier, experiment_type, mutant_type).';
 COMMENT ON COLUMN nex.apo.display_name IS 'Public display name.';
 COMMENT ON COLUMN nex.apo.is_obsolete IS 'Whether the ontology term is obsolete.';
+COMMENT ON COLUMN nex.apo.is_in_slim IS 'Whether the ontology term is in the slim.';
 COMMENT ON COLUMN nex.apo.namespace_group IS 'A way to group terms within a namespace together.';
 COMMENT ON COLUMN nex.apo.format_name IS 'Unique name to create download files.';
 COMMENT ON COLUMN nex.apo.obj_url IS 'URL of the object (relative for local links or complete for external links).';
