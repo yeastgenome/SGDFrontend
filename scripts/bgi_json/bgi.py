@@ -330,8 +330,7 @@ def get_expression_data():
         8915539: 'MMO:0000647',
         10377396: 'MMO:0000534'
     }
-    # genes = Locusdbentity.get_s288c_genes()
-    genes = DBSession.query(Locusdbentity).filter(Locusdbentity.sgdid == 'S000000152').all()
+    genes = Locusdbentity.get_s288c_genes()
     result = []
     print("computing " + str(len(genes)) + " expression data points")
     dbentity_id_to_mmo = {}
@@ -373,23 +372,23 @@ def get_expression_data():
                 "dateAssigned": annotation.date_created.strftime("%Y-%m-%dT%H:%m:%S-00:00")
             }
             result.append(obj)
-        if len(result) > 0:
-            output_obj = {
-                "data": result,
-                "metaData": {
-                    "dataProvider": {
-                        "crossReference": {
-                            "id": "SGD",
-                            "pages": [ "homepage" ]
-                        },
-                        "type": "curated" 
+    if len(result) > 0:
+        output_obj = {
+            "data": result,
+            "metaData": {
+                "dataProvider": {
+                    "crossReference": {
+                        "id": "SGD",
+                        "pages": [ "homepage" ]
                     },
-                    "dateProduced": datetime.utcnow().strftime("%Y-%m-%dT%H:%m:%S-00:00")
-                }
+                    "type": "curated" 
+                },
+                "dateProduced": datetime.utcnow().strftime("%Y-%m-%dT%H:%m:%S-00:00")
             }
-            fileStr = './scripts/bgi_json/data_dump/SGD.1.0.0.6_expression_' + str(randint(0, 1000)) + '.json'
-            with open(fileStr, 'w+') as res_file:
-                res_file.write(json.dumps(output_obj))
+        }
+        fileStr = './scripts/bgi_json/data_dump/SGD.1.0.0.6_expression_' + str(randint(0, 1000)) + '.json'
+        with open(fileStr, 'w+') as res_file:
+            res_file.write(json.dumps(output_obj))
 
 
 # entry point
