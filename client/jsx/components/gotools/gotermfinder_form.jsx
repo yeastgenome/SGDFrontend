@@ -175,13 +175,17 @@ const GoTermFinder = React.createClass({
 
 	getGeneBox() {
 
-		var param = this.state.param;
+		var genes = window.localStorage.getItem("genes");
+		if (genes == '') {
+		   var param = this.state.param;
+		   genes = param['genes']
+	        }
 
-		if (param['genes']) {
+		if (genes) {
 
                    return (<div style={{ textAlign: "top" }}>
 			   <h3><strong>Enter Gene/ORF names</strong> (separated by a return or a space):</h3>
-                           <textarea ref='genes' onChange={this._onChange} name='genes' rows='2' cols='90' value={ param['genes'] }></textarea>
+                           <textarea ref='genes' onChange={this._onChange} name='genes' rows='2' cols='90' value={ genes }></textarea>
 			   Note: If you have a big gene list (>100), save it as a file and upload it below.
 			   <h3><strong style={{ color: 'red'}}>OR</strong> <strong>Upload a file of Gene/ORF names</strong> (.txt or .tab format):
                            <input className="btn btn-default btn-file" type="file" name='uploadFile' onChange={this.handleFile} accept="image/*;capture=camera"/></h3>
