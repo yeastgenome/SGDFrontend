@@ -54,7 +54,7 @@ const GoTermFinder = React.createClass({
 		var param = this.state.param;
 	        if (param['submit']) {
 	              this.runGoTools();
-	        }		      
+	        }				      
 	},
 
 	getPage() {
@@ -175,13 +175,29 @@ const GoTermFinder = React.createClass({
 
 	getGeneBox() {
 
-                return (<div style={{ textAlign: "top" }}>
-			<h3><strong>Enter Gene/ORF names</strong> (separated by a return or a space):</h3>
-                        <textarea ref='genes' onChange={this._onChange} name='genes' rows='2' cols='90'></textarea>
-			Note: If you have a big gene list (>100), save it as a file and upload it below.
-			<h3><strong style={{ color: 'red'}}>OR</strong> <strong>Upload a file of Gene/ORF names</strong> (.txt or .tab format):
-                        <input className="btn btn-default btn-file" type="file" name='uploadFile' onChange={this.handleFile} accept="image/*;capture=camera"/></h3>
-                </div>);
+		var param = this.state.param;
+
+		if (param['genes']) {
+
+                   return (<div style={{ textAlign: "top" }}>
+			   <h3><strong>Enter Gene/ORF names</strong> (separated by a return or a space):</h3>
+                           <textarea ref='genes' onChange={this._onChange} name='genes' rows='2' cols='90' value={ param['genes'] }></textarea>
+			   Note: If you have a big gene list (>100), save it as a file and upload it below.
+			   <h3><strong style={{ color: 'red'}}>OR</strong> <strong>Upload a file of Gene/ORF names</strong> (.txt or .tab format):
+                           <input className="btn btn-default btn-file" type="file" name='uploadFile' onChange={this.handleFile} accept="image/*;capture=camera"/></h3>
+                   </div>);
+		}
+		else {
+
+		   return (<div style={{ textAlign: "top" }}>
+                           <h3><strong>Enter Gene/ORF names</strong> (separated by a return or a space):</h3>
+                           <textarea ref='genes' onChange={this._onChange} name='genes' rows='2' cols='90'></textarea>
+                           Note: If you have a big gene list (>100), save it as a file and upload it below.
+                           <h3><strong style={{ color: 'red'}}>OR</strong> <strong>Upload a file of Gene/ORF names</strong> (.txt or .tab format):
+                           <input className="btn btn-default btn-file" type="file" name='uploadFile' onChange={this.handleFile} accept="image/*;capture=camera"/></h3>
+		   </div>);
+		
+		} 
 
         },
 
