@@ -3840,6 +3840,8 @@ class Locusdbentity(Dbentity):
         # pathways
         pathwayannotations = DBSession.query(Pathwayannotation).filter_by(dbentity_id=self.dbentity_id).distinct(Pathwayannotation.pathway_id).all()
         obj["pathways"] = [a.to_dict() for a in pathwayannotations]
+        
+        obj["complexes"] = self.complex_details()
 
         # reserved name
         reservedname = DBSession.query(Reservedname).filter_by(locus_id=self.dbentity_id).one_or_none()
