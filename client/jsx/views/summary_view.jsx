@@ -24,6 +24,7 @@ summaryView.render = function () {
     hasHistory: hasHistory,
     hasParagraph: locusData.paragraph,
     hasPathways: locusData.pathways.length,
+    hasComplexes: locusData.complexes.length,
     hasResources: hasResources,
     hasReferences: hasReferences,
     rawTabsData: bootstrappedData.tabs,
