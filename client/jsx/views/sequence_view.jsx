@@ -5,6 +5,9 @@ const NavBar = require("../components/widgets/navbar.jsx");
 const AsyncSequenceView = require("../components/sequence/async_sequence_view.jsx");
 const TabsModel = require("../models/tabs_model.jsx");
 
+const AsyncVariantViewer = require("../components/variant_viewer/async_variant_viewer.jsx");
+const VariantViewerStore = require("../stores/variant_viewer_store.jsx");
+
 var sequenceView = {};
 sequenceView.render = function () {
 
@@ -39,6 +42,13 @@ sequenceView.render = function () {
       detailsCallback={_detailsCallback} locusSGDID={bootstrappedData.sgdid}
     />,
     document.getElementById("sequence-viz")
+  );
+
+  // variant viewer
+  var variantViewerStore = new VariantViewerStore();
+  ReactDOM.render(
+    <AsyncVariantViewer hideTitle sgdid={bootstrappedData.sgdid} store={variantViewerStore} />,
+    document.getElementById("vv-sequence-viz")
   );
 };
 

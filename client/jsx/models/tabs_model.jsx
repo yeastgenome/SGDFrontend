@@ -40,12 +40,14 @@ module.exports = class TabsModel {
 	_getSequenceTabs () {
 		var altElement = this.attributes.hasAltStrains ? { name: "Alternative Reference Strains", target: "alternative" } : null;
 		var otherElement = this.attributes.hasOtherStrains ? { name: "Other Strains", target: "other" } : null;
+		var vvElement = this.attributes.hasAltStrains ? { name: "Variants", target: "variants" } : null;
 
 		return [
 			{ name: "Sequence Overview", target: "overview" },
 			{ name: "Reference Strain: S288C", target: "reference" },
 			altElement,
 			otherElement,
+			vvElement,
 			{ name: "History", target: "history" },
 			{ name: "Resources", target: "resources" }
 		];
