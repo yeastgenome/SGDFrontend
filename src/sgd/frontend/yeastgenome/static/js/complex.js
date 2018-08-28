@@ -31,7 +31,18 @@ $(document).ready(function() {
                 'small molecule': '#1A9E77',                
                 'other subunit': '#ffbb78'
             };
-            views.network.render(data["network_graph"], _categoryColors, "j-complex-network");            
+            var filters = {
+                'All': function(d) { return true; },
+                'GO Terms': function(d) {
+                    var acceptedCats = ['FOCUS', 'molecular function', 'biological process', 'cellular component'];
+                    return acceptedCats.indexOf(d.category);
+                },
+                'Complex and Subunits': function(d) {
+                    var acceptedCats = ['FOCUS', 'complex', 'small molecule', 'other subunit', 'gene'];
+                    return acceptedCats.indexOf(d.category);
+                },
+            }
+            views.network.render(data["network_graph"], _categoryColors, "j-complex-network", filters);            
         } else {
             hide_section("network");
         }
