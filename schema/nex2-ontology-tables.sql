@@ -671,17 +671,17 @@ CREATE TABLE nex.efo_url (
     CONSTRAINT efo_url_pk PRIMARY KEY (url_id)
 ) ;
 COMMENT ON TABLE nex.efo_url IS 'URLs associated with the Experimental Factor ontology.';
-COMMENT ON COLUMN nex.efo_url.display_name IS 'Public display name (OLS, Ontobee).';
+COMMENT ON COLUMN nex.efo_url.display_name IS 'Public display name (OLS, BioPortal).';
 COMMENT ON COLUMN nex.efo_url.efo_id IS 'FK to EFO.EFO_ID.';
 COMMENT ON COLUMN nex.efo_url.obj_url IS 'URL of the object (relative for local links or complete for external links).';
 COMMENT ON COLUMN nex.efo_url.url_id IS 'Unique identifier (serial number).';
-COMMENT ON COLUMN nex.efo_url.url_type IS 'Type of URL (OLS, Ontobee).';
+COMMENT ON COLUMN nex.efo_url.url_type IS 'Type of URL (OLS, BioPortal).';
 COMMENT ON COLUMN nex.efo_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
 COMMENT ON COLUMN nex.efo_url.created_by IS 'Username of the person who entered the record into the database.';
 COMMENT ON COLUMN nex.efo_url.date_created IS 'Date the record was entered into the database.';
 ALTER TABLE nex.efo_url ADD CONSTRAINT efo_url_uk UNIQUE (efo_id,display_name,obj_url);
 ALTER TABLE nex.efo_url ADD CONSTRAINT efourl_type_ck CHECK (URL_TYPE IN ('OLS', 'BioPortal'));
-ALTER TABLE nex.efo_url ADD CONSTRAINT efourl_display_name_ck CHECK (DISPLAY_NAME IN ('OLS', 'Ontobee'));
+ALTER TABLE nex.efo_url ADD CONSTRAINT efourl_display_name_ck CHECK (DISPLAY_NAME IN ('OLS', 'BioPortal'));
 CREATE INDEX efourl_source_fk_index ON nex.efo_url (source_id);
 
 
