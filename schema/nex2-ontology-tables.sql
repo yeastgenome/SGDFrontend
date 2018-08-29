@@ -679,7 +679,7 @@ COMMENT ON COLUMN nex.efo_url.source_id IS 'FK to SOURCE.SOURCE_ID.';
 COMMENT ON COLUMN nex.efo_url.created_by IS 'Username of the person who entered the record into the database.';
 COMMENT ON COLUMN nex.efo_url.date_created IS 'Date the record was entered into the database.';
 ALTER TABLE nex.efo_url ADD CONSTRAINT efo_url_uk UNIQUE (efo_id,display_name,obj_url);
-ALTER TABLE nex.efo_url ADD CONSTRAINT efourl_type_ck CHECK (URL_TYPE IN ('OLS', 'Ontobee'));
+ALTER TABLE nex.efo_url ADD CONSTRAINT efourl_type_ck CHECK (URL_TYPE IN ('OLS', 'BioPortal'));
 ALTER TABLE nex.efo_url ADD CONSTRAINT efourl_display_name_ck CHECK (DISPLAY_NAME IN ('OLS', 'Ontobee'));
 CREATE INDEX efourl_source_fk_index ON nex.efo_url (source_id);
 
