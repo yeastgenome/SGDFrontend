@@ -12,7 +12,7 @@ const ColleaguesShow = React.createClass({
           isReadOnly={true} isCurator={false} 
           colleagueDisplayName={this.props.routeParams.formatName}
         />
-        <a className='button secondary small disabled'>Update Colleague</a>
+        <a className='button secondary small' href='/colleague_update'>Update Colleague</a>
       </div>
     );
   }
