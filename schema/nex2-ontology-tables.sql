@@ -590,7 +590,7 @@ CREATE TABLE nex.efo (
     source_id bigint NOT NULL,
     efoid varchar(20) NOT NULL,
     is_obsolete boolean NOT NULL,
-    description varchar(2000),
+    description varchar(4000),
     date_created timestamp NOT NULL DEFAULT LOCALTIMESTAMP,
     created_by varchar(12) NOT NULL,
     CONSTRAINT efo_pk PRIMARY KEY (efo_id)
