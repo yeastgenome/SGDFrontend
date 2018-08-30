@@ -196,11 +196,17 @@ def variant_viewer(request):
 
 @view_config(route_name='new_gene_name_reservation') 
 def new_gene_name_reservation(request):
-    return render_to_response(TEMPLATE_ROOT + 'iframe.jinja2', { 'ci_url': 'new_reservation' }, request=request)
+    ci_base = 'https://curate.yeastgenome.org'
+    if config.backend_url != 'https://www.yeastgenome.org/webservice':
+        ci_base = 'https://curate.qa.yeastgenome.org'
+    return render_to_response(TEMPLATE_ROOT + 'iframe.jinja2', { 'ci_url': 'new_reservation', 'ci_base': ci_base }, request=request)
 
 @view_config(route_name='new_colleague')
 def new_colleague(request):
-    return render_to_response(TEMPLATE_ROOT + 'iframe.jinja2', { 'ci_url': 'new_colleague' }, request=request)
+    ci_base = 'https://curate.yeastgenome.org'
+    if config.backend_url != 'https://www.yeastgenome.org/webservice':
+        ci_base = 'https://curate.qa.yeastgenome.org'
+    return render_to_response(TEMPLATE_ROOT + 'iframe.jinja2', { 'ci_url': 'new_colleague', 'ci_base': ci_base }, request=request)
 
 @view_config(route_name='primer3')
 def primer3(request):
