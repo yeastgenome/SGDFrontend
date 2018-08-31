@@ -13,7 +13,7 @@ $(document).ready(function() {
                 'small molecule': '#1A9E77',
                 'sub-complex': '#E6AB03',
                 'small molecule': '#17becf',
-                'other subunit': '#ffbb78'
+                'other subunit': '#d62728'
             };
             views.network.render(data["graph"], _categoryColors, "j-complex");
         } else {                                                                                                   
@@ -29,17 +29,17 @@ $(document).ready(function() {
                 'gene': '#1f77b4',
                 'complex': '#E6AB03',
                 'small molecule': '#1A9E77',                
-                'other subunit': '#ffbb78'
+                'other subunit': '#d62728'
             };
             var filters = {
                 'All': function(d) { return true; },
                 'GO Terms': function(d) {
-                    var acceptedCats = ['FOCUS', 'molecular function', 'biological process', 'cellular component'];
-                    return acceptedCats.indexOf(d.category);
+                    var acceptedCats = ['FOCUS', 'molecular function', 'biological process', 'cellular component', 'complex'];
+                    return acceptedCats.includes(d.category);
                 },
                 'Complex and Subunits': function(d) {
                     var acceptedCats = ['FOCUS', 'complex', 'small molecule', 'other subunit', 'gene'];
-                    return acceptedCats.indexOf(d.category);
+                    return acceptedCats.includes(d.category);
                 },
             }
             views.network.render(data["network_graph"], _categoryColors, "j-complex-network", filters);            
