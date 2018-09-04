@@ -153,7 +153,7 @@ const Search = React.createClass({
           <div className='columns small-6'>{actionProgressNode}</div>
           <div className='columns small-6 text-right'>{this._renderViewAs()}</div>
         </div>
-        <p style={{ fontSize: '0.7rem' }}>Genetic loci that are not mapped to the genome sequence will be excluded from the analysis list.</p>
+        <p>Genetic loci that are not mapped to the genome sequence will be excluded from the analysis list.</p>
       </div>
     );
   },
