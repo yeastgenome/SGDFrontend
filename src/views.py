@@ -247,20 +247,21 @@ def genomesnapshot(request):
     genome_snapshot['go_slim_relationships'] = go_slim_relationships
     distinct_so_ids = DBSession.query(distinct(Dnasequenceannotation.so_id)).filter_by(taxonomy_id=TAXON_ID).all()
     rows = DBSession.query(So.so_id, So.display_name).filter(So.so_id.in_(distinct_so_ids)).all()
-    contigs = DBSession.query(Contig).filter(Contig.display_name.like("Chromosome%")).order_by(Contig.contig_id).all()
+    contigs = DBSession.query(Contig).filter(or_(Contig.display_name.like("%micron%"), Contig.display_name.like("Chromosome%"))).order_by(Contig.contig_id).all()
     columns = [contig.to_dict_sequence_widget() for contig in contigs]
     genome_snapshot['columns'] = columns
     data = list()
+    active_db_entity_ids = DBSession.query(Dbentity.dbentity_id).filter(Dbentity.dbentity_status=='Active')
     for row in rows:
         row_data = list()
         # Insert display_name of each row as first item in each 'data' list item.
         # Data needs to be sorted in descending order of number of features
         row_data.append(row.display_name)
         for column in columns:
-            count = DBSession.query(Dnasequenceannotation).filter(and_(Dnasequenceannotation.so_id==row.so_id, Dnasequenceannotation.contig_id==column['id'], Dnasequenceannotation.dna_type==GENOMIC)).count()
+            count = DBSession.query(Dnasequenceannotation).filter(and_(Dnasequenceannotation.so_id==row.so_id, Dnasequenceannotation.contig_id==column['id'], Dnasequenceannotation.dna_type==GENOMIC, Dnasequenceannotation.dbentity_id.in_(active_db_entity_ids))).count()
             row_data.append(count)
         data.append(row_data)
-     # sort the list of lists 'data' in descending order based on sum of values in each list except first item(display_name)
+    # sort the list of lists 'data' in descending order based on sum of values in each list except first item(display_name)
     data = sorted(data, key=lambda item: sum(item[1:]), reverse=True)
     data_row = list()
     for item in data:
