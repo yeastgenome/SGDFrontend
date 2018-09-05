@@ -131,6 +131,7 @@ class Apo(Base):
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
     is_obsolete = Column(Boolean, nullable=False)
+    is_in_slim = Column(Boolean, nullable=False)
 
     source = relationship(u'Source')
 
@@ -184,6 +185,25 @@ class Apo(Base):
             "overview": Phenotypeannotation.create_count_overview([p[2] for p in phenotypes]),
             "locus_count": annotations_count,
             "descendant_locus_count": annotations_count + children_annotation_count
+        }
+
+    def to_snapshot_dict(self):
+        phenotypes = DBSession.query(Phenotype.obj_url, Phenotype.qualifier_id, Phenotype.phenotype_id).filter_by(observable_id=self.apo_id).all()
+        annotations_count = DBSession.query(Phenotypeannotation.dbentity_id, func.count(Phenotypeannotation.dbentity_id)).filter(Phenotypeannotation.phenotype_id.in_([p[2] for p in phenotypes])).group_by(Phenotypeannotation.dbentity_id).count()
+        children_relation = DBSession.query(ApoRelation).filter_by(parent_id=self.apo_id).all()
+        if len(children_relation) > 0:
+            children_phenotype_ids = DBSession.query(Phenotype.phenotype_id).filter(Phenotype.observable_id.in_([c.child_id for c in children_relation])).all()
+            children_annotation_count = DBSession.query(Phenotypeannotation.dbentity_id, func.count(Phenotypeannotation.dbentity_id)).filter(Phenotypeannotation.phenotype_id.in_([i[0] for i in children_phenotype_ids])).group_by(Phenotypeannotation.dbentity_id).count()
+        else:
+            children_annotation_count = 0
+        return {
+            "id": self.apo_id,
+            "display_name": self.display_name,
+            "format_name": self.format_name,
+            "link": self.obj_url,
+            "direct_annotation_gene_count": annotations_count,
+            "descendant_annotation_gene_count": annotations_count + children_annotation_count,
+            "is_root": False
         }
 
     def annotations_to_dict(self):
@@ -1152,7 +1172,13 @@ class Contig(Base):
             "link": self.obj_url,
             "id": self.contig_id,
             "length": len(self.residues),
-            "format_name": self.format_name
+            "format_name": self.format_name,
+            "strain": {
+                "display_name": "S288C",
+                "link": "/strain/S288C/overview",
+                "id": 1,
+                "format_name": "S288C"
+            }
         }
 
     def to_dict_strain_table(self, chromosome_cache={}):
@@ -3141,6 +3167,41 @@ class Locusdbentity(Dbentity):
             "category": self.display_name.replace("_", " ")
         }]
         edges = []
+        for x in main_gene_disease_annotations:
+            disease_annotation = x[0]
+            human_gene_id = x[1]
+            human_gene_url = x[2]
+            if human_gene_id not in all_node_ids:
+                nodes.append({
+                    "name": human_gene_ids_to_names[human_gene_id],
+                    "id": human_gene_id,
+                    "href": human_gene_url,
+                    "category": 'Human Gene'
+                })
+                all_node_ids.append(human_gene_id)
+            edge_slug = self.format_name + '.' + human_gene_id
+            if edge_slug not in all_edge_slugs:
+                edges.append({
+                    "source": self.format_name,
+                    "target": human_gene_id,
+                })
+                all_edge_slugs.append(edge_slug)
+            d_id = disease_annotation.disease_id
+            if d_id not in all_node_ids:
+                nodes.append({
+                    "name": disease_ids_to_names[d_id],
+                    "id": d_id,
+                    "href": disease_ids_to_urls[d_id],
+                    "category": "Disease"
+                })
+                all_node_ids.append(d_id)
+            edge_slug = human_gene_id + "." + str(d_id)
+            if edge_slug not in all_edge_slugs:
+                edges.append({
+                    "source": human_gene_id,
+                    "target": d_id
+                })
+                all_edge_slugs.append(edge_slug)
         # add focus_gene -> human_gene -> disease nodes and edges
         for x in genes_sharing_do_annotations:
             disease_annotation = x[0]
@@ -3188,42 +3249,6 @@ class Locusdbentity(Dbentity):
                     "target": d_id
                 })
                 all_edge_slugs.append(edge_slug)
-        for x in main_gene_disease_annotations:
-            disease_annotation = x[0]
-            human_gene_id = x[1]
-            human_gene_url = x[2]
-            if human_gene_id not in all_node_ids:
-                nodes.append({
-                    "name": human_gene_ids_to_names[human_gene_id],
-                    "id": human_gene_id,
-                    "href": human_gene_url,
-                    "category": 'Human Gene'
-                })
-                all_node_ids.append(human_gene_id)
-            edge_slug = self.format_name + '.' + human_gene_id
-            if edge_slug not in all_edge_slugs:
-                edges.append({
-                    "source": self.format_name,
-                    "target": human_gene_id,
-                })
-                all_edge_slugs.append(edge_slug)
-            d_id = disease_annotation.disease_id
-            if d_id not in all_node_ids:
-                nodes.append({
-                    "name": disease_ids_to_names[d_id],
-                    "id": d_id,
-                    "href": disease_ids_to_urls[d_id],
-                    "category": "Disease"
-                })
-                all_node_ids.append(d_id)
-            edge_slug = human_gene_id + "." + str(d_id)
-            if edge_slug not in all_edge_slugs:
-                edges.append({
-                    "source": human_gene_id,
-                    "target": d_id
-                })
-                all_edge_slugs.append(edge_slug)
-
         return {
             "nodes": nodes,
             "edges": edges
@@ -4121,6 +4146,10 @@ class Locusdbentity(Dbentity):
 
         x, y, z = calc_venn_measurements(obj["num_gen_interactors"], obj["num_phys_interactors"], obj["num_both_interactors"])
         obj["gen_circle_size"], obj["phys_circle_size"], obj["circle_distance"] = x, y, z
+
+        interaction_summary = DBSession.query(Locussummary.html).filter_by(locus_id=self.dbentity_id, summary_type="Interaction").one_or_none()
+        if interaction_summary:
+            obj["paragraph"] = interaction_summary[0]
 
         return obj
 
@@ -5021,7 +5050,7 @@ class Disease(Base):
                             entry['display_name'] = human_gene_ids_to_symbols[hgnc_id]
                         else:
                             url = ALLIANCE_API_BASE_URL + hgnc_id
-                            symbol = requests.request('GET', url).json()['symbol']                            
+                            symbol = requests.request('GET', url).json()['symbol']
                             entry['display_name'] = symbol
                             human_gene_ids_to_symbols[hgnc_id] = symbol
             except Exception as e:
@@ -5030,11 +5059,29 @@ class Disease(Base):
         return annotations_dict
 
     def annotations_and_children_to_dict(self):
-        annotations_dict = []
 
         annotations = DBSession.query(Diseaseannotation).filter_by(disease_id=self.disease_id).all()
+
+        annotations_dict = []
+        human_gene_ids_to_symbols = {}
+
         for a in annotations:
-            annotations_dict += a.to_dict(disease=self)
+            annotation = a.to_dict(disease=self)
+            try:
+                for y in annotation[0]['properties']:
+                    if 'bioentity' in y.keys():
+                        entry = y['bioentity']
+                        hgnc_id = entry['display_name']
+                        if hgnc_id in human_gene_ids_to_symbols.keys():
+                            entry['display_name'] = human_gene_ids_to_symbols[hgnc_id]
+                        else:
+                            url = ALLIANCE_API_BASE_URL + hgnc_id
+                            symbol = requests.request('GET', url).json()['symbol']
+                            entry['display_name'] = symbol
+                            human_gene_ids_to_symbols[hgnc_id] = symbol
+            except Exception as e:
+                traceback.print_exc()
+            annotations_dict += annotation
 
         children_relation = DBSession.query(DiseaseRelation).filter(
             and_(DiseaseRelation.parent_id == self.disease_id, DiseaseRelation.ro_id.in_(Disease.allowed_relationships))).all()
@@ -5045,7 +5092,22 @@ class Disease(Base):
             annotations = DBSession.query(Diseaseannotation).filter_by(disease_id=child.disease_id).all()
 
             for a in annotations:
-                annotations_dict += a.to_dict(disease=child)
+                annotation = a.to_dict(disease=child)
+                try:
+                    for y in annotation[0]['properties']:
+                        if 'bioentity' in y.keys():
+                            entry = y['bioentity']
+                            hgnc_id = entry['display_name']
+                            if hgnc_id in human_gene_ids_to_symbols.keys():
+                                entry['display_name'] = human_gene_ids_to_symbols[hgnc_id]
+                            else:
+                                url = ALLIANCE_API_BASE_URL + hgnc_id
+                                symbol = requests.request('GET', url).json()['symbol']
+                                entry['display_name'] = symbol
+                                human_gene_ids_to_symbols[hgnc_id] = symbol
+                except Exception as e:
+                    traceback.print_exc()
+                annotations_dict += annotation
 
             children_relation = DBSession.query(DiseaseRelation).filter(
                 and_(DiseaseRelation.parent_id == child.disease_id, DiseaseRelation.ro_id.in_(Disease.allowed_relationships))).all()
@@ -6542,6 +6604,17 @@ class Goslim(Base):
         else:
             return None
 
+    def to_snapshot_dict(self):
+        direct_annotation_gene_count = DBSession.query(Goannotation).filter_by(go_id=self.go_id).count()
+        return {
+            "descendant_annotation_gene_count": self.genome_count,
+            "format_name": self.display_name if self.display_name in ['molecular_function', 'biological_process', 'cellular_component'] else self.obj_url.split('/')[2],
+            "display_name": self.display_name.replace('_', ' '),
+            "link": self.obj_url,
+            "direct_annotation_gene_count": direct_annotation_gene_count,
+            "id": self.go_id,
+            "is_root": True if self.display_name in ['molecular_function', 'biological_process', 'cellular_component'] else False
+        }
 
 class Goslimannotation(Base):
     __tablename__ = 'goslimannotation'
