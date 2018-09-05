@@ -290,7 +290,7 @@ class YeastgenomeFrontend(FrontendInterface):
         return response
     
     def analyze(self, list_name, bioent_ids):
-        bioent_ids = list(set([int(x) for x in bioent_ids]))
+        bioent_ids = list(set([int(x) for x in bioent_ids if x is not None]))
             
         bioents = get_json(self.backend_url + '/bioentity_list', data={'bioent_ids': bioent_ids})
     

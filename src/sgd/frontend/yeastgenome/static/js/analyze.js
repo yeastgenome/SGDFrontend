@@ -64,21 +64,25 @@ function set_up_tools(table, go_term_finder_id, go_slim_mapper_id, spell_id, yea
 	document.getElementById(go_term_finder_id).onclick = function f() {
 		var bioent_format_names = '';
 
-		var data = table._('tr', {"filter": "applied"});
+		var data = table._("tr", {"filter": "applied"});
 		for (var i=0,len=data.length; i<len; i++) { 
 			var sys_name = data[i][2];
-			bioent_format_names = bioent_format_names + sys_name + ' ';
+			bioent_format_names = bioent_format_names + sys_name + " ";
 		}
-		post_to_url("http://yeastgenome.org/cgi-bin/GO/goTermFinder.pl", {
-			"loci" : bioent_format_names
-		});
+		var localStorageGeneList = data.reduce(function(acc, d) {
+			var sysName = d[2];
+			return acc + sysName + " ";
+		}, "");
+		window.localStorage.setItem("geneList", localStorageGeneList);
+		var url = '/goTermFinder';
+		location.assign(url);
 	};
 	document.getElementById(go_slim_mapper_id).onclick = function f() {
-		var bioent_format_names = '';
-		var data = table._('tr', {"filter": "applied"});
+		var bioent_format_names = "";
+		var data = table._("tr", {"filter": "applied"});
 		for (var i=0,len=data.length; i<len; i++) { 
 			var sys_name = data[i][2];
-			bioent_format_names = bioent_format_names + sys_name + ' ';
+			bioent_format_names = bioent_format_names + sys_name + " ";
 		}
 		post_to_url("http://yeastgenome.org/cgi-bin/GO/goSlimMapper.pl", {
 			"loci" : bioent_format_names
@@ -86,7 +90,7 @@ function set_up_tools(table, go_term_finder_id, go_slim_mapper_id, spell_id, yea
 	};
 	document.getElementById(spell_id).onclick = function f() {
 		var bioent_format_names = [];
-		var data = table._('tr', {"filter": "applied"});
+		var data = table._("tr", {"filter": "applied"});
 		for (var i=0,len=data.length; i<len; i++) { 
 			var sys_name = data[i][2];
 			bioent_format_names.push(sys_name);
