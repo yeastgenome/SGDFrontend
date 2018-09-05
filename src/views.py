@@ -17,11 +17,11 @@ import datetime
 import logging
 import json
 
-
-from .models import DBSession, ESearch, Colleague, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, Dataset, DatasetKeyword, Contig, Proteindomain, Ec, Dnasequenceannotation, Straindbentity, Disease
+from .models import DBSession, ESearch, Colleague, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, Dataset, DatasetKeyword, Contig, Proteindomain, Ec, Dnasequenceannotation, Straindbentity, Disease, Goslim, So, ApoRelation, GoRelation
 from .helpers import extract_id_request, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id, get_disease_by_id, primer3_parser
 from .search_helpers import build_autocomplete_search_body_request, format_autocomplete_results, build_search_query, build_es_search_body_request, build_es_aggregation_body_request, format_search_results, format_aggregation_results, build_sequence_objects_search_query
 from .models_helpers import ModelsHelper
+from .models import SGD_SOURCE_ID, TAXON_ID
 
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.ERROR)
@@ -220,6 +220,66 @@ def search(request):
             category_filters
         )
     }
+
+@view_config(route_name='genomesnapshot', renderer='json', request_method='GET')
+def genomesnapshot(request):
+    GENOMIC = 'GENOMIC'
+    genome_snapshot = dict()
+    phenotype_slim_data = DBSession.query(Apo).filter(and_(Apo.source_id==SGD_SOURCE_ID, Apo.apo_namespace=='observable', Apo.is_in_slim==True)).all()
+    phenotype_slim_terms = [phenotype_slim.to_snapshot_dict() for phenotype_slim in phenotype_slim_data]
+    genome_snapshot['phenotype_slim_terms'] = phenotype_slim_terms
+    phenotype_slim_relationships = list()
+    phenotype_slim_relationships.append(["Child", "Parent"])
+    for phenotype in phenotype_slim_terms:
+        parent = DBSession.query(ApoRelation).filter(ApoRelation.child_id==phenotype['id']).one_or_none()
+        phenotype_slim_relationships.append([phenotype['id'], parent.parent_id])
+    genome_snapshot['phenotype_slim_relationships'] = phenotype_slim_relationships
+    go_slim_data = DBSession.query(Goslim).filter_by(slim_name='Yeast GO-Slim').all()
+    go_slim_terms = [go_slim.to_snapshot_dict() for go_slim in go_slim_data]
+    genome_snapshot['go_slim_terms'] = go_slim_terms
+    go_slim_relationships = list()
+    go_slim_relationships.append(["Child", "Parent"])
+    for go_slim in go_slim_terms:
+        if go_slim['is_root'] is False:
+            go_namespace = DBSession.query(Go.go_namespace).filter(Go.go_id==go_slim['id']).scalar()
+            parent = DBSession.query(Go).filter(Go.display_name==go_namespace.replace('_', ' ')).one_or_none()
+            go_slim_relationships.append([go_slim['id'], parent.go_id])
+    genome_snapshot['go_slim_relationships'] = go_slim_relationships
+    distinct_so_ids = DBSession.query(distinct(Dnasequenceannotation.so_id)).filter_by(taxonomy_id=TAXON_ID).all()
+    rows = DBSession.query(So.so_id, So.display_name).filter(So.so_id.in_(distinct_so_ids)).all()
+    contigs = DBSession.query(Contig).filter(Contig.display_name.like("Chromosome%")).order_by(Contig.contig_id).all()
+    columns = [contig.to_dict_sequence_widget() for contig in contigs]
+    genome_snapshot['columns'] = columns
+    data = list()
+    for row in rows:
+        row_data = list()
+        # Insert display_name of each row as first item in each 'data' list item.
+        # Data needs to be sorted in descending order of number of features
+        row_data.append(row.display_name)
+        for column in columns:
+            count = DBSession.query(Dnasequenceannotation).filter(and_(Dnasequenceannotation.so_id==row.so_id, Dnasequenceannotation.contig_id==column['id'], Dnasequenceannotation.dna_type==GENOMIC)).count()
+            row_data.append(count)
+        data.append(row_data)
+     # sort the list of lists 'data' in descending order based on sum of values in each list except first item(display_name)
+    data = sorted(data, key=lambda item: sum(item[1:]), reverse=True)
+    data_row = list()
+    for item in data:
+        # Pop the display name of each row and add it to row data
+        data_row.append(item.pop(0))
+    # sub-categories for 'ORF' data row
+    sub_categories = ['Verified', 'Dubious', 'Uncharacterized']
+    data_row.extend(sub_categories)
+    orf_so_id = DBSession.query(So.so_id).filter(So.display_name=='ORF').one_or_none()
+    for category in sub_categories:
+        row_data = list()
+        for column in columns:
+            db_entity_ids = DBSession.query(Dnasequenceannotation.dbentity_id).filter(and_(Dnasequenceannotation.so_id==orf_so_id, Dnasequenceannotation.dna_type==GENOMIC, Dnasequenceannotation.contig_id==column['id']))
+            count = DBSession.query(Locusdbentity).filter(and_(Locusdbentity.dbentity_id.in_(db_entity_ids), Locusdbentity.qualifier==category)).count()
+            row_data.append(count)
+        data.append(row_data)
+    genome_snapshot['data'] = data
+    genome_snapshot['rows'] = data_row
+    return genome_snapshot
 
 @view_config(route_name='formats', renderer='json', request_method='GET')
 def formats(request):
