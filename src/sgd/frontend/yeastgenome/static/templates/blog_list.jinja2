@@ -33,16 +33,21 @@
 			<p>
 				Categories:
 				{% for key, value in post['categories'].iteritems() %}
-					<span> <a href="/blog/category/{{ value['slug'] }}">{{ value['name'] }}</a></span>
+					{% if not loop.last %}
+						<span><a href="/blog/category/{{ value['slug'] }}">{{ value['name'] }}</a>, </span>
+					{% else %}
+						<span><a href="/blog/category/{{ value['slug'] }}">{{ value['name'] }}</a></span>
+					{% endif %}
 				{% endfor %}
 			</p>
 			{% if post['tags'] %}
 				<p>
 					Tags:
 					{% for key, value in post['tags'].iteritems() %}
-						<span> <a href="/blog/tag/{{ value['slug'] }}">{{ value['name'] }}</a></span>
 						{% if not loop.last %}
-							<span>,</span>
+							<span><a href="/blog/tag/{{ value['slug'] }}">{{ value['name'] }}</a>, </span>
+						{% else%}
+							<span><a href="/blog/tag/{{ value['slug'] }}">{{ value['name'] }}</a></span>
 						{% endif %}
 					{% endfor %}
 				</p>
