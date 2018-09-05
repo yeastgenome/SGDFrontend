@@ -30,7 +30,7 @@ snapshotView.render = function () {
 
 	// init the model and fetch data
 	var genomeModel = new GenomeSnapshotModel({
-		url: 'https://s3-us-west-2.amazonaws.com/sgd-prod-assets/snapshot.json'// TEMP hardcoded
+		url: '/backend/genomesnapshot'
 	});
 	genomeModel.fetch( (err, nestedData) => {
 
