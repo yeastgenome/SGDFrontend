@@ -46,18 +46,32 @@
                         <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/community-help/gene-registry">Gene Naming Guidelines</a>
                         agreed upon by the yeast community.</i></dd>
                 {% endif %}
-
+                {% set locus_types = ['ORF','ncRNA_gene','rRNA_gene','snRNA_gene','snoRNA_gene','telomerase_RNA_gene','tRNA_gene','pseudogene','transposable_element_gene'] %}
                 {% if locus.format_name != locus.display_name %}
-                    {%if (locus.locus_type != 'ORF' and 'reserved_name' in locus) or (locus.locus_type == 'ORF' and 'reserved_name' not in locus )%}
-                        <dt>Standard Name</dt>
-                        <dd>{{ locus.display_name }}
-                            {% if 'gene_name' in locus.qualities %}
-                                {% set references = locus.qualities.gene_name.references %}
-                                {% include "biblio_references.jinja2" %}
-                            {% endif %}
-                        </dd>
+                    {% if locus.gene_name is not none %}
+                        {% if (locus.locus_type != 'ORF' and 'reserved_name' in locus) or (locus.locus_type=='ORF' and 'reserved_name' not in locus ) or (locus.locus_type in locus_types) %}
+                            <dt>Standard Name</dt>
+                            <dd>{{ locus.display_name }}
+                                {% if 'gene_name' in locus.qualities %}
+                                    {% set references = locus.qualities.gene_name.references %}
+                                    {% include "biblio_references.jinja2" %}
+                                {% endif %}
+                            </dd>
+                        {% endif %}
                     {% endif %}
-                   
+                {% endif %}
+                {% if (locus.format_name == locus.display_name)  and (locus.locus_type in locus_types) %}
+                    {% if locus.gene_name is not none %}
+                        {% if (locus.locus_type != 'ORF' and 'reserved_name' in locus) or (locus.locus_type=='ORF' and 'reserved_name' not in locus ) or (locus.locus_type in locus_types) %}
+                            <dt>Standard Name</dt>
+                            <dd>{{ locus.display_name }}
+                                {% if 'gene_name' in locus.qualities %}
+                                    {% set references = locus.qualities.gene_name.references %}
+                                    {% include "biblio_references.jinja2" %}
+                                {% endif %}
+                            </dd>
+                        {% endif %}
+                    {% endif %}
                 {% endif %}
 
                 <dt>Systematic Name</dt>
