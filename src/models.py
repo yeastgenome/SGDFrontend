@@ -3883,7 +3883,7 @@ class Locusdbentity(Dbentity):
         # pathways
         pathwayannotations = DBSession.query(Pathwayannotation).filter_by(dbentity_id=self.dbentity_id).distinct(Pathwayannotation.pathway_id).all()
         obj["pathways"] = [a.to_dict() for a in pathwayannotations]
-        
+
         obj["complexes"] = self.complex_details()
 
         # reserved name
@@ -8398,7 +8398,7 @@ class Complexdbentity(Dbentity):
     eco = relationship(u'Eco')
 
     def protein_complex_details(self):
-        
+
         data = {}
         data['complex_name'] = self.display_name
         data['complex_accession'] = self.format_name
@@ -8428,7 +8428,6 @@ class Complexdbentity(Dbentity):
                 else:
                     crossRefs.append({ "alias_type": ca.alias_type,
                                        "display_name": ca.display_name })
-
         data['aliases'] = sorted(aliases)
         data['pdbs'] = sorted(pdbs, key=lambda p: p['display_name'])
         crossRefs2 = sorted(crossRefs, key=lambda c: c['display_name'])
@@ -8438,7 +8437,7 @@ class Complexdbentity(Dbentity):
 
         network_nodes =[]
         network_edges =[]
-
+        
         network_nodes.append({
             "name": self.display_name,
             "id": self.format_name,
@@ -8452,9 +8451,9 @@ class Complexdbentity(Dbentity):
         process = []
         function = []
         component = []
-        
-        foundComplex = {}
 
+        foundComplex = {}
+        
         if go_objs:
             data['go'] = [g.go.to_dict() for g in go_objs]
             for g in go_objs:
@@ -8465,7 +8464,7 @@ class Complexdbentity(Dbentity):
                     component.append(go)
                 else:
                     process.append(go)
-                
+
                 # go['display_name'],
                 if go["go_id"] not in network_nodes_ids:
                     network_nodes.append({
@@ -8476,14 +8475,14 @@ class Complexdbentity(Dbentity):
                     })
                     network_nodes_ids[go["go_id"]] = True
                 network_edges.append({
-                    "source": self.format_name,   
+                    "source": self.format_name,
                     "target": go["go_id"]
                 })
 
                 goComplexes = DBSession.query(ComplexGo).filter_by(go_id=g.go_id).all()
 
                 # complex.display_name,
-                
+
                 for g2 in goComplexes:
                     complex = g2.complex
                     if complex.format_name != self.format_name:
@@ -8500,7 +8499,7 @@ class Complexdbentity(Dbentity):
                                 network_edges.append( foundComplex[complex.format_name] )
 
                                 foundComplex[complex.format_name] = 1
-                            
+
                             if complex.format_name not in network_nodes_ids:
                                 network_nodes.append({
                                     "name": complex.display_name,
@@ -8510,7 +8509,7 @@ class Complexdbentity(Dbentity):
                                 })
                                 network_nodes_ids[complex.format_name] = True
 
-                            network_edges.append({ 
+                            network_edges.append({
                                 "source": complex.format_name,
                                 "target": go['go_id']
                             })
@@ -8524,7 +8523,7 @@ class Complexdbentity(Dbentity):
         data['process'] = sorted(process, key=lambda p: p['display_name'])
         data['function'] = sorted(function, key=lambda f: f['display_name'])
         data['component'] = sorted(component, key=lambda c: c['display_name'])
-        
+
         ## reference
 
         ref_objs = DBSession.query(ComplexReference).filter_by(complex_id=self.dbentity_id).all()
@@ -8533,12 +8532,12 @@ class Complexdbentity(Dbentity):
         if ref_objs:
             refs = [ref.reference.to_dict_citation() for ref in ref_objs]
         refs2 = sorted(refs, key=lambda r: r['display_name'])
-        data["references"] = sorted(refs2, key=lambda r: r['year'], reverse=True) 
+        data["references"] = sorted(refs2, key=lambda r: r['year'], reverse=True)
 
         ## subunits
 
         annot_objs = DBSession.query(Complexbindingannotation).filter_by(complex_id=self.dbentity_id).all()
-        
+
         unique_interactors = []
         found = {}
         edges = []
@@ -8550,7 +8549,7 @@ class Complexdbentity(Dbentity):
         for annot in annot_objs:
             interactor = annot.interactor
             binding_interactor = annot.binding_interactor
-            
+
             display_name = interactor.display_name
             link = interactor.obj_url
             sgdid = None
@@ -8571,7 +8570,7 @@ class Complexdbentity(Dbentity):
                 count = annot.stoichiometry
 
             for i in range(count):
-                node_id = interactor.format_name 
+                node_id = interactor.format_name
                 if i > 0:
                     node_id = node_id + "_" + str(i)
                 names = []
@@ -8583,7 +8582,7 @@ class Complexdbentity(Dbentity):
 
                 if node_id not in found_node:
                     nodes.append({
-                        "name": display_name,           
+                        "name": display_name,
                         "id": node_id,
                         "href": link,
                         "category": type
@@ -8597,16 +8596,15 @@ class Complexdbentity(Dbentity):
                     else:
                         binding_node_ids = [binding_interactor.format_name]
                     for binding_node_id in binding_node_ids:
-                        if (node_id, binding_node_id) not in found_binding and (binding_node_id, node_id) not in found_binding: 
+                        if (node_id, binding_node_id) not in found_binding and (binding_node_id, node_id) not in found_binding:
                             edges.append({
                                 "source": node_id,
                                 "target": binding_node_id,
                                 "category": "complex"
                             })
                             found_binding[(node_id, binding_node_id)] = 1
-                        
-            stoichiometry4interactor[interactor.format_name] = annot.stoichiometry  
 
+            stoichiometry4interactor[interactor.format_name] = annot.stoichiometry
             if interactor.format_name not in found:
                 unique_interactors.append(interactor)
                 found[interactor.format_name] = 1
@@ -8636,7 +8634,7 @@ class Complexdbentity(Dbentity):
                               "sgdid": sgdid,
                               "stoichiometry": stoichiometry4interactor.get(interactor.format_name),
                               "link": link })
-        
+
             # nodes.append({ "data": { "name": display_name,
             #                         "id": interactor.format_name,
             #                         "link": link,
@@ -8668,7 +8666,7 @@ class Complexdbentity(Dbentity):
                 found[complex.format_name] = 1
                 if complex.format_name in foundComplex:
                     if foundComplex[complex.format_name] != 1:
-                       
+
                         if complex.format_name not in network_nodes_ids:
                             print(complex.format_name)
                             network_nodes.append({
@@ -8679,6 +8677,7 @@ class Complexdbentity(Dbentity):
                             })
                             network_nodes_ids[complex.format_name] = True
                         network_edges.append( foundComplex[complex.format_name] )
+
 
                         foundComplex[complex.format_name] = 1
 
@@ -8694,7 +8693,7 @@ class Complexdbentity(Dbentity):
                         "source": complex.format_name,
                         "target": interactor.format_name
                     })
-            
+
                 else:
                     foundComplex[complex.format_name] = {
                         "source": complex.format_name,
@@ -8706,8 +8705,7 @@ class Complexdbentity(Dbentity):
         data['graph'] = { "edges": edges, "nodes": nodes }
         data['network_graph'] = { "edges": network_edges, "nodes": network_nodes }
 
-        return data
-
+        return data        
 
 class ComplexAlias(Base):
     __tablename__ = 'complex_alias'
@@ -8728,7 +8726,6 @@ class ComplexAlias(Base):
     complex = relationship(u'Complexdbentity')
     source = relationship(u'Source')
 
-
 class ComplexGo(Base):
     __tablename__ = 'complex_go'
     __table_args__ = (
@@ -8746,7 +8743,6 @@ class ComplexGo(Base):
     complex = relationship(u'Complexdbentity')
     source = relationship(u'Source')
     go = relationship(u'Go')
-
 
 class ComplexReference(Base):
     __tablename__ = 'complex_reference'
@@ -8766,6 +8762,7 @@ class ComplexReference(Base):
     source = relationship(u'Source')
     reference = relationship(u'Referencedbentity')
 
+
 class Complexbindingannotation(Base):
     __tablename__ = 'complexbindingannotation'
     __table_args__ = (
@@ -8783,7 +8780,7 @@ class Complexbindingannotation(Base):
     binding_type_id = Column(ForeignKey(u'nex.psimi.psimi_id', ondelete=u'CASCADE'), nullable=False, index=True)
     range_start = Column(Integer)
     range_end = Column(Integer)
-    stoichiometry = Column(Integer) 
+    stoichiometry = Column(Integer)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
 
@@ -8794,7 +8791,6 @@ class Complexbindingannotation(Base):
     taxonomy = relationship(u'Taxonomy')
     complex = relationship(u'Complexdbentity')
     psimi = relationship(u'Psimi')
-
 
 class Interactor(Base):
     __tablename__ = 'interactor'
@@ -8809,7 +8805,6 @@ class Interactor(Base):
     description = Column(String(500))
     type_id = Column(ForeignKey(u'nex.psimi.psimi_id', ondelete=u'CASCADE'), nullable=False, index=True)
     role_id = Column(ForeignKey(u'nex.psimi.psimi_id', ondelete=u'CASCADE'), nullable=False, index=True)
-    # stoichiometry = Column(Integer)
     residues = Column(Text, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
@@ -8817,7 +8812,7 @@ class Interactor(Base):
     locus = relationship(u'Locusdbentity')
     type = relationship(u'Psimi', foreign_keys=[type_id])
     role = relationship(u'Psimi', foreign_keys=[role_id])
-    
+
 
 class ReferenceAlias(Base):
     __tablename__ = 'reference_alias'
