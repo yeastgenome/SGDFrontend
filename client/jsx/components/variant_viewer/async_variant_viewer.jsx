@@ -9,13 +9,17 @@ var RadioSelector = require("../widgets/radio_selector.jsx");
 
 var AsyncVariantViewer = React.createClass({
 	propTypes: {
+		hideTitle: React.PropTypes.bool,
 		sgdid: React.PropTypes.string.isRequired,
 		store: React.PropTypes.object.isRequired,
 		parentIsProtein: React.PropTypes.bool
 	},
 
 	getDefaultProps: function () {
-		return { parentIsProtein: false };
+		return {
+			hideTitle: false,
+			parentIsProtein: false
+		};
 	},
 
 	getInitialState: function () {
@@ -70,14 +74,20 @@ var AsyncVariantViewer = React.createClass({
 		var _onSelect = key => { this.setState({ childIsProtein: (key === "protein") }); };
 		var _init = this.state.childIsProtein ? "protein" : "dna";
 		var radioNode = <RadioSelector elements={_elements} onSelect={_onSelect} initialActiveElementKey={_init} />;
+		var titleNode = (
+			<div style={[style.textWrapper]}>
+				<h1 style={[style.textElement]}>
+					{nameNode}
+				</h1>
+				<p style={[style.textElement, style.description]}>{data.description}</p>
+			</div>
+		);
+		if (this.props.hideTitle) {
+			titleNode = null;
+		}
 		return (
 			<div style={[style.headerWrapper]}>
-				<div style={[style.textWrapper]}>
-					<h1 style={[style.textElement]}>
-						{nameNode}
-					</h1>
-					<p style={[style.textElement, style.description]}>{data.description}</p>
-				</div>
+				{titleNode}
 				<div style={[style.radio]}>
 					{radioNode}
 				</div>
