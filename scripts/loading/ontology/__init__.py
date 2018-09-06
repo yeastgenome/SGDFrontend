@@ -280,6 +280,7 @@ def read_owl(filename, ontology, is_sgd_term=None):
         # </rdfs:subClassOf>
 
         if id is not None and '_' in line and ('<rdfs:subClassOf rdf:resource=' in line or '<rdfs:subPropertyOf rdf:resource=' in line):
+
             pieces = line.replace('/>', '').split('/')
             if ontology == 'EDAM':
                 parent_id = pieces.pop().replace('"', '').split('_')[1]
@@ -311,6 +312,8 @@ def read_owl(filename, ontology, is_sgd_term=None):
             continue
         
         # </rdfs:subClassOf>
+        if "<rdfs:subClassOf" in line and "#ObsoleteClass" in line:
+            is_obsolete_id = 1
         if id is not None and "</rdfs:subClassOf>" in line and subclassStart == 1 and parentId is not None:
             if (parentId, parentRo) not in other_parents:
                 other_parents.append((parentId, parentRo))
@@ -338,8 +341,14 @@ def read_owl(filename, ontology, is_sgd_term=None):
                 continue
             alias_name = alias_name.replace("&apos;", "'").replace("&lt;", "<").replace("&gt;", ">")
             aliases.append((alias_name, alias_type))
+        elif "<efo:alternative_term>" in line:
+            alias_name = line.replace("<efo:alternative_term>", "").replace("</efo:alternative_term>", "")
+            alias_name = alias_name.replace("&apos;", "'").replace("&lt;", "<").replace("&gt;", ">")
+            if len(alias_name) <= 500:
+                aliases.append((alias_name, "EXACT"))
 
-        # <oboInOwl:hasOBONamespace rdf:datatype="http://www.w3.org/2001/XMLSchema#string">biological_process</oboInOwl:hasOBONamespace>                                                                            
+        # <oboInOwl:hasOBONamespace rdf:datatype="http://www.w3.org/2001/XMLSchema#string">biological_process</oboInOwl:hasOBONamespace>        
+                                                                    
         if ontology != 'EDAM' and '<oboInOwl:hasOBONamespace' in line:
             namespace = line.split('>')[1].split('<')[0]
 
@@ -353,7 +362,7 @@ def read_owl(filename, ontology, is_sgd_term=None):
         # <owl:deprecated rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</owl:deprecated>                  
         # <owl:deprecated>true</owl:deprecated>
 
-        if 'obsolete_since' in line or '<owl:deprecated' in line:
+        if 'obsolete_since' in line or '<owl:deprecated' in line or 'reason_for_obsolescence' in line:
             is_obsolete_id = 1
         if ontology == 'APO' and '<oboInOwl:inSubset rdf:resource=' in line and '#SGD' in line and is_sgd_term is not None:
             is_sgd_term[id] = 1
