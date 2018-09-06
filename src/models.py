@@ -18,7 +18,7 @@ from boto.s3.key import Key
 import hashlib
 
 from src.curation_helpers import ban_from_cache, get_author_etc, link_gene_names, get_curator_session, clear_list_empty_values
-from scripts.loading.util import link_gene_complex_names, link_gene_names
+from scripts.loading.util import link_gene_complex_names
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
