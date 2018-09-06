@@ -1,32 +1,45 @@
+import urllib
+import logging
+import os
 from datetime import datetime
 import sys
 reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('utf-8')
-sys.path.insert(0, '../../../src/')
-from models import Source, Disease, DiseaseUrl, DiseaseAlia, DiseaseRelation, Ro
-sys.path.insert(0, '../')
-from config import CREATED_BY
-from database_session import get_nex_session as get_session
-from ontology import read_owl  
+from src.models import Source, Disease, DiseaseUrl, DiseaseAlia, DiseaseRelation, Ro, Edam, Dbentity, Filedbentity
+from src.helpers import upload_file
+from scripts.loading.database_session import get_session
+from scripts.loading.ontology import read_owl
                  
 __author__ = 'sweng66'
 
 ## Created on May 2017
 ## This script is used to update Disease ontology in NEX2.
 
-ontology_file = 'data/doid.owl'
-log_file = 'logs/doid.log'
+
+log_file = 'scripts/loading/ontology/logs/doid.log'
 ontology = 'DOID'
 src = 'DO'
 
-def load_ontology():
+CREATED_BY = os.environ['DEFAULT_USER']
+
+logging.basicConfig(format='%(message)s')
+log = logging.getLogger()
+log.setLevel(logging.INFO)
+
+log.info("Disease Ontology Loading Report:\n")
+
+def load_ontology(ontology_file):
 
     nex_session = get_session()
+
+    log.info(str(datetime.now()))
+    log.info("Getting data from database...")
 
     source_to_id = dict([(x.display_name, x.source_id) for x in nex_session.query(Source).all()])
     doid_to_disease =  dict([(x.doid, x) for x in nex_session.query(Disease).all()])
     term_to_ro_id = dict([(x.display_name, x.ro_id) for x in nex_session.query(Ro).all()])
-    
+    edam_to_id = dict([(x.format_name, x.edam_id) for x in nex_session.query(Edam).all()])
+
     disease_id_to_alias = {}
     for x in nex_session.query(DiseaseAlia).all():
         aliases = []
@@ -47,9 +60,15 @@ def load_ontology():
     ####################################
     fw = open(log_file, "w")
     
+    log.info(str(datetime.now()))
+    log.info("Reading data from owl file...")
+
     is_sgd_term = {}
     data = read_owl(ontology_file, ontology)
     
+    log.info(str(datetime.now()))
+    log.info("Loading data into database...")
+
     [update_log, to_delete_list] = load_new_data(nex_session, data, 
                                                  source_to_id, 
                                                  doid_to_disease, 
@@ -58,12 +77,21 @@ def load_ontology():
                                                  disease_id_to_parent,
                                                  fw)
     
+    log.info("Uploading file to S3...")
+
+    update_database_load_file_to_s3(nex_session, ontology_file, source_to_id, edam_to_id)
+
+    log.info("Writing loading summary...")
+
     write_summary_and_send_email(fw, update_log, to_delete_list)
     
     nex_session.close()
 
     fw.close()
 
+    log.info(str(datetime.now()))
+    log.info("Done!\n\n")
+    
 
 def load_new_data(nex_session, data, source_to_id, doid_to_disease, ro_id, disease_id_to_alias, disease_id_to_parent, fw):
 
@@ -89,6 +117,22 @@ def load_new_data(nex_session, data, source_to_id, doid_to_disease, ro_id, disea
                 nex_session.flush()
                 update_log['updated'] = update_log['updated'] + 1
                 fw.write("The is_obsolete for " + x['id'] + " has been updated from " + y.is_obsolete + " to " + 'False' + "\n")
+
+
+
+
+
+
+
+            ## only for this testing time
+            insert_url(nex_session, source_to_id['Alliance'], 'Alliance', 'Alliance of Genome Resources', disease_id,
+                       'https://www.alliancegenome.org/disease/' + x['id'],
+                       fw)
+
+
+
+
+
 
             if x['term'] != y.display_name:
                 ## update term
@@ -119,17 +163,21 @@ def load_new_data(nex_session, data, source_to_id, doid_to_disease, ro_id, disea
 
             ## add three URLs
             link_id = x['id'].replace(':', '_')
-            insert_url(nex_session, source_to_id['DO'], 'DO', disease_id,
+            insert_url(nex_session, source_to_id['DO'], 'DO', x['id'], disease_id,
                        'http://www.disease-ontology.org/?id=' + x['id'],
                        fw)
-            insert_url(nex_session, source_to_id['BioPortal'], 'BioPortal', disease_id,
+            insert_url(nex_session, source_to_id['BioPortal'], 'BioPortal', 'BioPortal', disease_id,
                        'http://bioportal.bioontology.org/ontologies/DOID/?p=classes&conceptid=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2F' + link_id,
                        fw)
-            insert_url(nex_session, source_to_id['OLS'], 'OLS', disease_id,
+            insert_url(nex_session, source_to_id['OLS'], 'OLS', 'OLS', disease_id,
                        'http://www.ebi.ac.uk/ols/ontologies/doid/terms?iri=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2F' + link_id,
                        fw)
-            insert_url(nex_session, source_to_id['Ontobee'], 'Ontobee', disease_id, 
+            insert_url(nex_session, source_to_id['Ontobee'], 'Ontobee', 'Ontobee', disease_id, 
                        'http://www.ontobee.org/ontology/DOID?iri=http://purl.obolibrary.org/obo/'+link_id,
+                       fw)
+
+            insert_url(nex_session, source_to_id['Alliance'], 'Alliance', 'Alliance of Genome Resources', disease_id,
+                       'https://www.alliancegenome.org/disease/' + x['id'],
                        fw)
 
             ## add RELATIONS                                                                      
@@ -218,11 +266,13 @@ def update_relations(nex_session, child_id, curr_parent_ids, new_parents, source
             nex_session.delete(to_delete)
             fw.write("The old parent: parent_id = " + str(parent_id) + " has been deleted for disease_id = " + str(child_id)+ "\n")
 
-def insert_url(nex_session, source_id, display_name, disease_id, url, fw):
+
+def insert_url(nex_session, source_id, url_type, display_name, disease_id, url, fw):
 
     # print "Added new URL: " + url + " for disease_id = " + str(disease_id) + "\n"
+    
     x = DiseaseUrl(display_name = display_name,
-               url_type = display_name,
+               url_type = url_type,
                source_id = source_id,
                disease_id = disease_id,
                obj_url = url,
@@ -280,9 +330,61 @@ def write_summary_and_send_email(fw, update_log, to_delete_list):
     print summary
 
 
+def update_database_load_file_to_s3(nex_session, ontology_file, source_to_id, edam_to_id):
+
+    gzip_file = ontology_file + ".gz"
+    import gzip
+    import shutil
+    with open(ontology_file, 'rb') as f_in, gzip.open(gzip_file, 'wb') as f_out:
+        shutil.copyfileobj(f_in, f_out)
+
+    local_file = open(gzip_file)
+
+    import hashlib
+    go_md5sum = hashlib.md5(local_file.read()).hexdigest()
+    go_row = nex_session.query(Filedbentity).filter_by(md5sum = go_md5sum).one_or_none()
+
+    if go_row is not None:
+        return
+
+    nex_session.query(Dbentity).filter_by(display_name=gzip_file, dbentity_status='Active').update({"dbentity_status": 'Archived'})
+    nex_session.commit()
+
+    data_id = edam_to_id.get('EDAM:2353')   ## data:2353 Ontology data
+    topic_id = edam_to_id.get('EDAM:0089')  ## topic:0089 Ontology and terminology
+    format_id = edam_to_id.get('EDAM:3262') ## format:3262 OWL/XML
+
+    from sqlalchemy import create_engine
+    from src.models import DBSession
+    engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
+    DBSession.configure(bind=engine)
+
+    upload_file(CREATED_BY, local_file,
+                filename=gzip_file,
+                file_extension='gz',
+                description='Disease Ontology in OWL RDF/XML format',
+                display_name=gzip_file,
+                data_id=data_id,
+                format_id=format_id,
+                topic_id=topic_id,
+                status='Active',
+                is_public='0',
+                is_in_spell='0',
+                is_in_browser='0',
+                file_date=datetime.now(),
+                source_id=source_to_id['SGD'])
+
+
+
 if __name__ == "__main__":
-        
-    load_ontology()
+
+    url_path = 'https://raw.githubusercontent.com/DiseaseOntology/HumanDiseaseOntology/master/src/ontology/'
+    do_owl_file = 'doid.owl'
+
+    urllib.urlretrieve(url_path + do_owl_file, do_owl_file)
+
+    load_ontology(do_owl_file)
+
 
 
     

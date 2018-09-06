@@ -18,6 +18,7 @@ from boto.s3.key import Key
 import hashlib
 
 from src.curation_helpers import ban_from_cache, get_author_etc, link_gene_names, get_curator_session, clear_list_empty_values
+from scripts.loading.util import link_gene_complex_names
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
@@ -2559,6 +2560,24 @@ class Locusdbentity(Dbentity):
             })
         return obj
 
+    def complex_details(self):
+        interactor = DBSession.query(Interactor).filter_by(locus_id = self.dbentity_id).one_or_none()
+        if interactor is None:
+            return []
+        complexes = DBSession.query(Complexbindingannotation).filter_by(interactor_id = interactor.interactor_id).all()
+        data = []
+
+        found = {}
+        for x in complexes:
+            complex = x.complex
+            if complex.format_name in found:
+                continue
+            found[complex.format_name] = 1
+            data.append({ "format_name": complex.format_name,
+                          "display_name": complex.display_name })
+        data = sorted(data, key=lambda c: c['display_name'])
+        return data
+
     def posttranslational_details(self):
         annotations = DBSession.query(Posttranslationannotation).filter_by(dbentity_id=self.dbentity_id).order_by(Posttranslationannotation.site_index).all()
 
@@ -3864,6 +3883,8 @@ class Locusdbentity(Dbentity):
         # pathways
         pathwayannotations = DBSession.query(Pathwayannotation).filter_by(dbentity_id=self.dbentity_id).distinct(Pathwayannotation.pathway_id).all()
         obj["pathways"] = [a.to_dict() for a in pathwayannotations]
+
+        obj["complexes"] = self.complex_details()
 
         # reserved name
         reservedname = DBSession.query(Reservedname).filter_by(locus_id=self.dbentity_id).one_or_none()
@@ -8372,8 +8393,319 @@ class Complexdbentity(Dbentity):
     eco_id = Column(ForeignKey(u'nex.eco.eco_id', ondelete=u'CASCADE'), nullable=False, index=True)
     description = Column(Text, nullable=True)
     properties = Column(Text, nullable=True)
+    complex_accession = Column(String(40), nullable=False)
 
     eco = relationship(u'Eco')
+
+    def protein_complex_details(self):
+
+        data = {}
+        data['complex_name'] = self.display_name
+        data['complex_accession'] = self.format_name
+        data['intact_id'] = self.intact_id
+        data['systematic_name'] = self.systematic_name
+        data['source'] = self.source.display_name
+        data['description'] = link_gene_complex_names(self.description, {self.format_name: 1}, DBSession),
+        data['properties'] = link_gene_complex_names(self.properties, {self.format_name: 1}, DBSession),
+        data['eco'] = self.eco.format_name
+
+        nodes_ids = {}
+        network_nodes_ids = {}
+
+        ## aliases
+
+        alias_objs = DBSession.query(ComplexAlias).filter_by(complex_id=self.dbentity_id).order_by(ComplexAlias.alias_type, ComplexAlias.display_name).all()
+
+        aliases = []
+        pdbs = []
+        crossRefs = []
+        if alias_objs:
+            for ca in alias_objs:
+                if ca.alias_type == 'Synonym':
+                    aliases.append(ca.display_name)
+                elif ca.alias_type == 'PDB':
+                    pdbs.append({ "display_name": ca.display_name.upper() })
+                else:
+                    crossRefs.append({ "alias_type": ca.alias_type,
+                                       "display_name": ca.display_name })
+        data['aliases'] = sorted(aliases)
+        data['pdbs'] = sorted(pdbs, key=lambda p: p['display_name'])
+        crossRefs2 = sorted(crossRefs, key=lambda c: c['display_name'])
+        data["cross_references"] = sorted(crossRefs2, key=lambda c: c['alias_type'])
+
+        ## go
+
+        network_nodes =[]
+        network_edges =[]
+        
+        network_nodes.append({
+            "name": self.display_name,
+            "id": self.format_name,
+            "href": "/complex/" + self.format_name,
+            "category": "FOCUS",
+        })
+        network_nodes_ids[self.format_name] = True
+
+        go_objs = DBSession.query(ComplexGo).filter_by(complex_id=self.dbentity_id).all()
+
+        process = []
+        function = []
+        component = []
+
+        foundComplex = {}
+        
+        if go_objs:
+            data['go'] = [g.go.to_dict() for g in go_objs]
+            for g in go_objs:
+                go = g.go.to_dict()
+                if go['go_aspect'] == 'molecular function':
+                    function.append(go)
+                elif go['go_aspect'] == 'cellular component':
+                    component.append(go)
+                else:
+                    process.append(go)
+
+                # go['display_name'],
+                if go["go_id"] not in network_nodes_ids:
+                    network_nodes.append({
+                        "name": go["display_name"],
+                        "id": go["go_id"],
+                        "href": go["link"],
+                        "category": go["go_aspect"]
+                    })
+                    network_nodes_ids[go["go_id"]] = True
+                network_edges.append({
+                    "source": self.format_name,
+                    "target": go["go_id"]
+                })
+
+                goComplexes = DBSession.query(ComplexGo).filter_by(go_id=g.go_id).all()
+
+                # complex.display_name,
+
+                for g2 in goComplexes:
+                    complex = g2.complex
+                    if complex.format_name != self.format_name:
+                        if complex.format_name in foundComplex:
+                            if foundComplex[complex.format_name] != 1:
+                                if complex.format_name not in network_nodes_ids:
+                                    network_nodes.append({
+                                        "name": complex.display_name,
+                                        "id": complex.format_name,
+                                        "href": "/complex/" + complex.format_name,
+                                        "category": "complex"
+                                    })
+                                    network_nodes_ids[complex.format_name] = True
+                                network_edges.append( foundComplex[complex.format_name] )
+
+                                foundComplex[complex.format_name] = 1
+
+                            if complex.format_name not in network_nodes_ids:
+                                network_nodes.append({
+                                    "name": complex.display_name,
+                                    "id": complex.format_name,
+                                    "href": "/complex/" + complex.format_name,
+                                    "category": "complex"
+                                })
+                                network_nodes_ids[complex.format_name] = True
+
+                            network_edges.append({
+                                "source": complex.format_name,
+                                "target": go['go_id']
+                            })
+
+                        else:
+                            foundComplex[complex.format_name] = {
+                                "source": complex.format_name,
+                                "target": go['go_id']
+                            }
+
+        data['process'] = sorted(process, key=lambda p: p['display_name'])
+        data['function'] = sorted(function, key=lambda f: f['display_name'])
+        data['component'] = sorted(component, key=lambda c: c['display_name'])
+
+        ## reference
+
+        ref_objs = DBSession.query(ComplexReference).filter_by(complex_id=self.dbentity_id).all()
+
+        refs = []
+        if ref_objs:
+            refs = [ref.reference.to_dict_citation() for ref in ref_objs]
+        refs2 = sorted(refs, key=lambda r: r['display_name'])
+        data["references"] = sorted(refs2, key=lambda r: r['year'], reverse=True)
+
+        ## subunits
+
+        annot_objs = DBSession.query(Complexbindingannotation).filter_by(complex_id=self.dbentity_id).all()
+
+        unique_interactors = []
+        found = {}
+        edges = []
+        nodes = []
+        stoichiometry4interactor = {}
+        found_binding = {}
+        found_node = {}
+        name_list = {}
+        for annot in annot_objs:
+            interactor = annot.interactor
+            binding_interactor = annot.binding_interactor
+
+            display_name = interactor.display_name
+            link = interactor.obj_url
+            sgdid = None
+            type = "other subunit"
+            if interactor.locus_id:
+                display_name = interactor.locus.display_name
+                sgdid = interactor.locus.sgdid
+                description = interactor.locus.headline
+                link = interactor.locus.obj_url
+                type = "protein"
+            elif interactor.format_name.startswith('CPX-'):
+                type = 'subcomplex'
+            elif interactor.format_name.startswith('CHEBI:'):
+                type = "small molecule"
+
+            count = 1
+            if annot.stoichiometry and annot.stoichiometry > 1:
+                count = annot.stoichiometry
+
+            for i in range(count):
+                node_id = interactor.format_name
+                if i > 0:
+                    node_id = node_id + "_" + str(i)
+                names = []
+                if interactor.format_name in name_list:
+                    names = name_list[interactor.format_name]
+                if node_id not in names:
+                    names.append(node_id)
+                name_list[interactor.format_name] = names
+
+                if node_id not in found_node:
+                    nodes.append({
+                        "name": display_name,
+                        "id": node_id,
+                        "href": link,
+                        "category": type
+                    })
+                    found_node[node_id] = 1
+
+                if binding_interactor is not None:
+                    binding_node_ids = []
+                    if binding_interactor.format_name in name_list:
+                        binding_node_ids = name_list[binding_interactor.format_name]
+                    else:
+                        binding_node_ids = [binding_interactor.format_name]
+                    for binding_node_id in binding_node_ids:
+                        if (node_id, binding_node_id) not in found_binding and (binding_node_id, node_id) not in found_binding:
+                            edges.append({
+                                "source": node_id,
+                                "target": binding_node_id,
+                                "category": "complex"
+                            })
+                            found_binding[(node_id, binding_node_id)] = 1
+
+            stoichiometry4interactor[interactor.format_name] = annot.stoichiometry
+            if interactor.format_name not in found:
+                unique_interactors.append(interactor)
+                found[interactor.format_name] = 1
+            if binding_interactor is not None and binding_interactor.format_name not in found:
+                unique_interactors.append(binding_interactor)
+                found[binding_interactor.format_name] =1
+
+        subunits = []
+        for interactor in unique_interactors:
+            display_name = interactor.display_name
+            description = interactor.description
+            link = interactor.obj_url
+            sgdid = None
+            type = "other subunit"
+            if interactor.locus_id:
+                display_name = interactor.locus.display_name
+                sgdid = interactor.locus.sgdid
+                description = interactor.locus.headline
+                link = interactor.locus.obj_url
+                type = "protein"
+            elif interactor.format_name.startswith('CPX-'):
+                type = 'subcomplex'
+            elif interactor.format_name.startswith('CHEBI:'):
+                type = "small molecule"
+            subunits.append({ "display_name": display_name,
+                              "description": description,
+                              "sgdid": sgdid,
+                              "stoichiometry": stoichiometry4interactor.get(interactor.format_name),
+                              "link": link })
+
+            # nodes.append({ "data": { "name": display_name,
+            #                         "id": interactor.format_name,
+            #                         "link": link,
+            #                         "type": type } })
+
+            if interactor.format_name not in network_nodes_ids:
+                network_nodes.append({
+                    "name": display_name,
+                    "id": interactor.format_name,
+                    "href": link,
+                    "category": "gene"
+                })
+                network_nodes_ids[interactor.format_name] = True
+
+            network_edges.append({
+                "source": self.format_name,
+                "target": interactor.format_name
+            })
+
+            annot_objs2 = DBSession.query(Complexbindingannotation).filter_by(interactor_id=interactor.interactor_id).all()
+            found = {}
+            for annot in annot_objs2:
+                complex = annot.complex
+                # print(complex.format_name, self.format_name, found)
+                # if complex.format_name == self.format_name:
+                #     continue
+                if complex.format_name in found:
+                    continue
+                found[complex.format_name] = 1
+                if complex.format_name in foundComplex:
+                    if foundComplex[complex.format_name] != 1:
+
+                        if complex.format_name not in network_nodes_ids:
+                            print(complex.format_name)
+                            network_nodes.append({
+                                "name": complex.display_name,
+                                "id": complex.format_name,
+                                "href": "/complex/" + complex.format_name,
+                                "category": "complex"
+                            })
+                            network_nodes_ids[complex.format_name] = True
+                        network_edges.append( foundComplex[complex.format_name] )
+
+
+                        foundComplex[complex.format_name] = 1
+
+                    if complex.format_name not in network_nodes_ids:
+                        network_nodes.append({
+                            "name": complex.display_name,
+                            "id": complex.format_name,
+                            "href": "/complex/" + complex.format_name,
+                            "category": "complex"
+                        })
+                        network_nodes_ids[complex.format_name] = True
+                    network_edges.append({
+                        "source": complex.format_name,
+                        "target": interactor.format_name
+                    })
+
+                else:
+                    foundComplex[complex.format_name] = {
+                        "source": complex.format_name,
+                        "target": interactor.format_name
+                    }
+
+
+        data['subunit'] = sorted(subunits, key=lambda a: a['display_name'])
+        data['graph'] = { "edges": edges, "nodes": nodes }
+        data['network_graph'] = { "edges": network_edges, "nodes": network_nodes }
+
+        return data        
 
 class ComplexAlias(Base):
     __tablename__ = 'complex_alias'
@@ -8448,6 +8780,7 @@ class Complexbindingannotation(Base):
     binding_type_id = Column(ForeignKey(u'nex.psimi.psimi_id', ondelete=u'CASCADE'), nullable=False, index=True)
     range_start = Column(Integer)
     range_end = Column(Integer)
+    stoichiometry = Column(Integer)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
 
@@ -8457,6 +8790,7 @@ class Complexbindingannotation(Base):
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
     complex = relationship(u'Complexdbentity')
+    psimi = relationship(u'Psimi')
 
 class Interactor(Base):
     __tablename__ = 'interactor'
@@ -8467,15 +8801,17 @@ class Interactor(Base):
     display_name = Column(String(500), nullable=False, index=True)
     obj_url = Column(String(500), nullable=False)
     source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
-    intact_id = Column(String(20), nullable=False)
     locus_id = Column(ForeignKey(u'nex.locusdbentity.dbentity_id', ondelete=u'CASCADE'), nullable=True, index=True)
     description = Column(String(500))
     type_id = Column(ForeignKey(u'nex.psimi.psimi_id', ondelete=u'CASCADE'), nullable=False, index=True)
     role_id = Column(ForeignKey(u'nex.psimi.psimi_id', ondelete=u'CASCADE'), nullable=False, index=True)
-    stoichiometry = Column(Integer)
-    protein_residues = Column(Text, nullable=False)
+    residues = Column(Text, nullable=False)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
+
+    locus = relationship(u'Locusdbentity')
+    type = relationship(u'Psimi', foreign_keys=[type_id])
+    role = relationship(u'Psimi', foreign_keys=[role_id])
 
 
 class ReferenceAlias(Base):
