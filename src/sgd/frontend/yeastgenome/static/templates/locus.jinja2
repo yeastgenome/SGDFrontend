@@ -21,7 +21,7 @@
 {% include "tabs.jinja2" %}
 
 <div class="row">
-	
+     
     <div id="navbar-container" class="large-2 columns hide-for-small-down">
     </div>
 
@@ -416,6 +416,26 @@
         </div>
     </section>
     {% endif %}
+
+
+<!-- Complex
+================================================== -->
+    {% if locus.complexes|length > 0 %}
+    <section id="complex">
+        <h2>Complex</h2>
+        <hr />
+	{{ locus.complex_details }}
+
+	<div class="panel">
+            <ul>
+                {% for c in locus.complexes %}
+                    <li><a href="/complex/{{ c.format_name }}">{{ c.display_name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+    {% endif %}
+    
 <!-- Pathway
 ================================================== -->
     {% if locus.pathways|length > 0 %}

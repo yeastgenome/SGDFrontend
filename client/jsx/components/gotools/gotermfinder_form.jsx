@@ -176,7 +176,6 @@ const GoTermFinder = React.createClass({
 	getGeneBox() {
 
 		var genes = window.localStorage.getItem("geneList");
-		
 		if (genes) {
 
                    return (<div style={{ textAlign: "top" }}>
