@@ -172,6 +172,9 @@ def locus_side_effect(*args, **kwargs):
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Bindingmotifannotation'>":
         bind = factory.BindingmotifannotationFactory()
         return MockQuery(bind)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Complexbindingannotation'>":
+        bind = factory.ComplexbindingannotationFactory()
+        return MockQuery(bind)
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Go'>":
         go = factory.GoFactory()
         return MockQuery(go)
@@ -198,6 +201,9 @@ def locus_side_effect(*args, **kwargs):
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Apo'>":
         apo = factory.ApoFactory()
         return MockQuery(apo)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Interactor'>":
+        interactor = factory.InteractorFactory()
+        return MockQuery(interactor)
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.PhenotypeannotationCond'>":
         phenocond = factory.PhenotypeannotationCondFactory()
         return MockQuery(phenocond)
