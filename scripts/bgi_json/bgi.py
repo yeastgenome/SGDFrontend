@@ -93,7 +93,7 @@ def get_bgi_data(soFlag=False):
                     temp_itm.append("gene/expression")
                     temp_itm.append("gene/spell")
                 if(item.has_interaction):
-                    temp_itm.append("gene/interaction")
+                    temp_itm.append("gene/interactions")
 
                 obj["crossReferences"].append({"id": "SGD:"+item.sgdid, "pages": temp_itm})
                 item_panther = combined_list[item_key]["panther_id"]
@@ -147,13 +147,13 @@ def get_bgi_data(soFlag=False):
                                 temp_cross_item = mod_value.get("crossReferences")
                                 if(len(temp_cross_item) > 1):
                                     for x_ref in temp_cross_item:
-                                        obj["crossReferences"].append({"id": str(x_ref), "pages": ["generic_cross_reference"]})
+                                        obj["crossReferences"].append({"id": str(x_ref)})
                                 else:
                                     if(len(temp_cross_item) == 1):
-                                        obj["crossReferences"].append({"id": str(temp_cross_item[0]), "pages": ["generic_cross_reference"]})
+                                        obj["crossReferences"].append({"id": str(temp_cross_item[0])})
                                         #obj["crossReferences"] = [str(temp_cross_item[0])]
                     if(item_panther is not None):
-                        obj["crossReferences"].append({"id": "PANTHER:" + item_panther, "pages": ["generic_cross_reference"]})
+                        obj["crossReferences"].append({"id": "PANTHER:" + item_panther})
                         #obj["crossReferences"].append("PANTHER:" + item_panther)
                         obj["primaryId"] = "SGD:" + item.sgdid
                         item = combined_list[item_key]["locus_obj"]
@@ -173,15 +173,18 @@ def get_bgi_data(soFlag=False):
                 output_obj = {
                     "data": result,
                     "metaData": {
-                        "dataProvider":
-                            "SGD",
-                        "dateProduced":
-                            datetime.utcnow().strftime("%Y-%m-%dT%H:%m:%S-00:00"),
-                        "release":
-                            "SGD 1.0.0.6 " + datetime.utcnow().strftime("%Y-%m-%d")
+                        "dataProvider": {
+                            "crossReference": {
+                                "id":"SGD",
+                                "pages": ["homepage"]
+                            },
+                            "type": "curated"
+                        },
+                        "dateProduced": datetime.utcnow().strftime("%Y-%m-%dT%H:%m:%S-00:00"),
+                        "release": "SGD 1.0.0.6 " + datetime.utcnow().strftime("%Y-%m-%d")
                     }
                 }
-                fileStr = './scripts/bgi_json/data_dump/SGD.1.0.0.6_basicGeneInformation_' + str(randint(0, 1000)) + '.json'
+                fileStr = './scripts/bgi_json/data_dump/SGD_1.0.0.6_basicGeneInformation_' + str(randint(0, 1000)) + '.json'
                 with open(fileStr, 'w+') as res_file:
                     res_file.write(json.dumps(output_obj))
 
@@ -283,15 +286,18 @@ def get_phenotype_data():
             output_obj = {
                 "data": result,
                 "metaData": {
-                    "dataProvider":
-                        "SGD",
-                    "dateProduced":
-                        datetime.utcnow().strftime("%Y-%m-%dT%H:%m:%S-00:00"),
-                    "release":
-                        "SGD 1.0.0.6 " + datetime.utcnow().strftime("%Y-%m-%d")
+                    "dataProvider": {
+                        "crossReference": {
+                            "id":"SGD",
+                            "pages": ["homepage"]
+                        },
+                        "type": "curated"
+                    },
+                    "dateProduced": datetime.utcnow().strftime("%Y-%m-%dT%H:%m:%S-00:00"),
+                    "release": "SGD 1.0.0.6 " + datetime.utcnow().strftime("%Y-%m-%d")
                 }
             }
-            fileStr = './scripts/bgi_json/data_dump/SGD.1.0.0.6_phenotype_' + str(randint(0, 1000)) + '.json'
+            fileStr = './scripts/bgi_json/data_dump/SGD_1.0.0.6_phenotype_' + str(randint(0, 1000)) + '.json'
             with open(fileStr, 'w+') as res_file:
                 res_file.write(json.dumps(output_obj))
 
@@ -386,7 +392,7 @@ def get_expression_data():
                 "dateProduced": datetime.utcnow().strftime("%Y-%m-%dT%H:%m:%S-00:00")
             }
         }
-        fileStr = './scripts/bgi_json/data_dump/SGD.1.0.0.6_expression_' + str(randint(0, 1000)) + '.json'
+        fileStr = './scripts/bgi_json/data_dump/SGD_1.0.0.6_expression_' + str(randint(0, 1000)) + '.json'
         with open(fileStr, 'w+') as res_file:
             res_file.write(json.dumps(output_obj))
 
