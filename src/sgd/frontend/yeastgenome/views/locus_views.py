@@ -24,6 +24,16 @@ def render_locus_page(request, template_name):
     locus_obj = get_locus_obj(request.matchdict['identifier'])
     if locus_obj == None:
         return not_found(request)
+    # determine whether to show standard gene name
+    l_type = locus_obj['locus']['locus_type']
+    d_name = locus_obj['locus']['display_name']
+    f_name = locus_obj['locus']['format_name']
+    r_name = 'reserved_name' in locus_obj['locus'].keys()
+    other_locus_types = ['rRNA_gene','snRNA_gene','snoRNA_gene','telomerase_RNA_gene','tRNA_gene','pseudogene','transposable_element_gene']
+    display_standard_name = False
+    if (((d_name != f_name) and ((l_type == 'ORF' and not r_name) or (l_type != 'ORF' and r_name))) or (l_type in other_locus_types)):
+        display_standard_name = True
+    locus_obj['locus']['display_standard_name'] = display_standard_name
     return render_to_response(TEMPLATE_ROOT + template_name + '.jinja2', locus_obj, request=request)
 
 @view_config(route_name='locus')
