@@ -54,6 +54,17 @@ $(document).ready(function() {
         hide_section("phenotype");
     }
 
+    if(reference['counts']['disease'] > 0) {
+        $.getJSON('/backend/reference/' + reference['sgdid'] + '/disease_details', function(data) {
+            var disease_table = create_disease_table(data);
+            create_download_button("disease_table_download", disease_table, reference['display_name'] + "_diseases");
+            create_analyze_button("disease_table_analyze", disease_table, reference['display_name'] + " disease genes", true);
+        });
+    }
+    else {
+        hide_section("disease");
+    }
+
     if(reference['counts']["regulation"] > 0) {
         $.getJSON('/backend/reference/' + reference['sgdid'] + '/regulation_details', function(data) {
             var regulation_table = create_regulation_table(data);
@@ -235,6 +246,38 @@ function create_phenotype_table(data) {
     }
 
     return create_table("phenotype_table", options);
+}
+
+function create_disease_table(data) {
+    if("Error" in data) {
+        var options = {};
+        options["bPaginate"] = true;
+        options["aaSorting"] = [[5, "asc"]];
+        options["aoColumns"] = [ {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, {"bSearchable":false, "bVisible":false}, null, null, {"bSearchable":false, "bVisible":false}, null];
+        //options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, {"bSearchable":false, "bVisible":false}, null, null, null, {'sWidth': '250px'}, {"bSearchable":false, "bVisible":false}];
+        options["oLanguage"] = {"sEmptyTable": data["Error"]};
+        options["aaData"] = [];
+    }
+    else {
+        var datatable = [];
+        var genes = {};
+        for (var i=0; i < data.length; i++) {
+            datatable.push(disease_data_to_table(data[i], i));
+            genes[data[i]['locus']['id']] = true;
+        }
+
+        set_up_header('disease_table', datatable.length, 'entry', 'entries', Object.keys(genes).length, 'gene', 'genes');
+
+        var options = {};
+        options["bPaginate"] = true;
+        options["aaSorting"] = [[5, "asc"]];
+        options["aoColumns"] = [ {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, {"bSearchable":false, "bVisible":false}, null, null, {"bSearchable":false, "bVisible":false}, null];
+        //options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, {"bSearchable":false, "bVisible":false}, null, null, null, {'sWidth': '250px'}, {"bSearchable":false, "bVisible":false}];
+        options["oLanguage"] = {"sEmptyTable": "No disease data for " + reference['display_name']};
+        options["aaData"] = datatable;
+    }
+
+    return create_table("disease_table", options);
 }
 
 function create_regulation_table(data) {
