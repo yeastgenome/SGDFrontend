@@ -252,10 +252,6 @@ def get_phenotype_data():
                 "phenotypeStatement": "",
                 "dateAssigned": ""
             }
-            if item.reference.pmid:
-                obj["pubMedId"] = "PMID:" + str(item.reference.pmid)
-            else:
-                obj["pubModId"] = "SGD:" + str(item.reference.sgdid)
             if item.phenotype.qualifier:
                 pString = item.phenotype.qualifier.display_name
                 obj["phenotypeTermIdentifiers"].append({
@@ -278,6 +274,10 @@ def get_phenotype_data():
                     })
             obj["objectId"] = "SGD:" + str(item.dbentity.sgdid)
             obj["phenotypeStatement"] = pString
+            obj["evidence"] = {
+                "modPublicationId": "SGD:" + str(item.reference.sgdid),
+                "pubMedId": "PMID:" + str(item.reference.pmid)
+            }
             obj["dateAssigned"] = item.date_created.strftime(
                 "%Y-%m-%dT%H:%m:%S-00:00")
             result.append(obj)
@@ -401,13 +401,13 @@ def get_expression_data():
 if __name__ == '__main__':
     print "--------------start computing data--------------"
     start_time = time.time()
-    get_bgi_data()
-    time_taken = "time taken: " + ("--- %s seconds ---" % (time.time() - start_time))
-    print "------------------ bgi time taken: " + time_taken + " --------------------"
-    with open('./scripts/bgi_json/data_dump/log_time_bgi.txt', 'w+') as res_file:
-        time_taken = "time taken: " + ("--- %s seconds ---" %
-                                       (time.time() - start_time))
-        res_file.write(time_taken)
+    # get_bgi_data()
+    # time_taken = "time taken: " + ("--- %s seconds ---" % (time.time() - start_time))
+    # print "------------------ bgi time taken: " + time_taken + " --------------------"
+    # with open('./scripts/bgi_json/data_dump/log_time_bgi.txt', 'w+') as res_file:
+    #     time_taken = "time taken: " + ("--- %s seconds ---" %
+    #                                    (time.time() - start_time))
+    #     res_file.write(time_taken)
     second_start_time = time.time()
     get_phenotype_data()
     second_time_taken = "time taken: " + ("--- %s seconds ---" %
@@ -419,12 +419,12 @@ if __name__ == '__main__':
         res_file_2.write(second_time_taken)
 
 
-    third_start_time = time.time()
-    get_expression_data()
-    third_time_taken = "time taken: " + ("--- %s seconds ---" %
-                                   (time.time() - third_start_time))
-    print "------------------ phenotype time taken: " + third_time_taken + " --------------------"
-    with open('./scripts/bgi_json/data_dump/log_time_expresson.txt', 'w+') as res_file_3:
-        third_time_taken = "time taken: " + ("--- %s seconds ---" %
-                                              (time.time() - third_start_time))
-        res_file_3.write(third_time_taken)
+    # third_start_time = time.time()
+    # get_expression_data()
+    # third_time_taken = "time taken: " + ("--- %s seconds ---" %
+    #                                (time.time() - third_start_time))
+    # print "------------------ phenotype time taken: " + third_time_taken + " --------------------"
+    # with open('./scripts/bgi_json/data_dump/log_time_expresson.txt', 'w+') as res_file_3:
+    #     third_time_taken = "time taken: " + ("--- %s seconds ---" %
+    #                                           (time.time() - third_start_time))
+    #     res_file_3.write(third_time_taken)
