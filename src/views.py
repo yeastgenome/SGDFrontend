@@ -437,6 +437,16 @@ def reference_phenotype_details(request):
     else:
         return HTTPNotFound()
 
+@view_config(route_name='reference_disease_details', renderer='json', request_method='GET')
+def reference_disease_details(request):
+    id = extract_id_request(request, 'reference')
+    reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=id).one_or_none()
+
+    if reference:
+        return reference.disease_to_dict()
+    else:
+        return HTTPNotFound()
+
 @view_config(route_name='reference_regulation_details', renderer='json', request_method='GET')
 def reference_regulation_details(request):
     id = extract_id_request(request, 'reference')
