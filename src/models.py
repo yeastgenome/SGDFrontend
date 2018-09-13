@@ -1937,6 +1937,7 @@ class Referencedbentity(Dbentity):
             "interaction": DBSession.query(Physinteractionannotation).filter_by(reference_id=self.dbentity_id).count() + DBSession.query(Geninteractionannotation).filter_by(reference_id=self.dbentity_id).count(),
             "go": DBSession.query(Goannotation).filter_by(reference_id=self.dbentity_id).count(),
             "phenotype": DBSession.query(Phenotypeannotation).filter_by(reference_id=self.dbentity_id).count(),
+            "disease": DBSession.query(Diseaseannotation).filter_by(reference_id=self.dbentity_id).count(),
             "regulation": DBSession.query(Regulationannotation).filter_by(reference_id=self.dbentity_id).count()
         }
 
@@ -1992,6 +1993,14 @@ class Referencedbentity(Dbentity):
         obj = []
         for phenotype in phenotypes:
             obj += phenotype.to_dict(reference=self)
+        return obj
+
+    def disease_to_dict(self):
+        diseases = DBSession.query(Diseaseannotation).filter_by(reference_id=self.dbentity_id).all()
+
+        obj = []
+        for disease in diseases:
+            obj += disease.to_dict(reference=self)
         return obj
 
     def regulation_to_dict(self):
@@ -5326,9 +5335,12 @@ class Diseaseannotation(Base):
 
     # a Do annotation can be duplicated based on the Dosupportingevidence group id
     # so its to_dict method must return an array of dictionaries
-    def to_dict(self, disease=None):
+    def to_dict(self, disease=None, reference=None):
         if disease == None:
             disease = self.disease
+            
+        if reference == None:
+            reference = self.reference
 
         alias = DBSession.query(EcoAlias).filter_by(eco_id=self.eco_id).all()
         experiment_name = alias[0].display_name
