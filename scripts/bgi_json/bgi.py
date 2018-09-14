@@ -94,6 +94,8 @@ def get_bgi_data(soFlag=False):
                     temp_itm.append("gene/spell")
                 if(item.has_interaction):
                     temp_itm.append("gene/interactions")
+                if(item.has_disease):
+                    temp_itm.append("gene/disease")
 
                 obj["crossReferences"].append({"id": "SGD:"+item.sgdid, "pages": temp_itm})
                 item_panther = combined_list[item_key]["panther_id"]
@@ -181,10 +183,10 @@ def get_bgi_data(soFlag=False):
                             "type": "curated"
                         },
                         "dateProduced": datetime.utcnow().strftime("%Y-%m-%dT%H:%m:%S-00:00"),
-                        "release": "SGD 1.0.0.6 " + datetime.utcnow().strftime("%Y-%m-%d")
+                        "release": "SGD 1.0.0.7 " + datetime.utcnow().strftime("%Y-%m-%d")
                     }
                 }
-                fileStr = './scripts/bgi_json/data_dump/SGD_1.0.0.6_basicGeneInformation_' + str(randint(0, 1000)) + '.json'
+                fileStr = './scripts/bgi_json/data_dump/SGD_1.0.0.7_basicGeneInformation.' + str(randint(0, 1000)) + '.json'
                 with open(fileStr, 'w+') as res_file:
                     res_file.write(json.dumps(output_obj))
 
@@ -294,10 +296,10 @@ def get_phenotype_data():
                         "type": "curated"
                     },
                     "dateProduced": datetime.utcnow().strftime("%Y-%m-%dT%H:%m:%S-00:00"),
-                    "release": "SGD 1.0.0.6 " + datetime.utcnow().strftime("%Y-%m-%d")
+                    "release": "SGD 1.0.0.7 " + datetime.utcnow().strftime("%Y-%m-%d")
                 }
             }
-            fileStr = './scripts/bgi_json/data_dump/SGD_1.0.0.6_phenotype_' + str(randint(0, 1000)) + '.json'
+            fileStr = './scripts/bgi_json/data_dump/SGD_1.0.0.7_phenotype.' + str(randint(0, 1000)) + '.json'
             with open(fileStr, 'w+') as res_file:
                 res_file.write(json.dumps(output_obj))
 
@@ -389,10 +391,11 @@ def get_expression_data():
                     },
                     "type": "curated" 
                 },
-                "dateProduced": datetime.utcnow().strftime("%Y-%m-%dT%H:%m:%S-00:00")
+                "dateProduced": datetime.utcnow().strftime("%Y-%m-%dT%H:%m:%S-00:00"),
+                "release": "SGD 1.0.0.7 " + datetime.utcnow().strftime("%Y-%m-%d")
             }
         }
-        fileStr = './scripts/bgi_json/data_dump/SGD_1.0.0.6_expression_' + str(randint(0, 1000)) + '.json'
+        fileStr = './scripts/bgi_json/data_dump/SGD_1.0.0.7_expression.' + str(randint(0, 1000)) + '.json'
         with open(fileStr, 'w+') as res_file:
             res_file.write(json.dumps(output_obj))
 
@@ -401,30 +404,30 @@ def get_expression_data():
 if __name__ == '__main__':
     print "--------------start computing data--------------"
     start_time = time.time()
-    # get_bgi_data()
-    # time_taken = "time taken: " + ("--- %s seconds ---" % (time.time() - start_time))
-    # print "------------------ bgi time taken: " + time_taken + " --------------------"
-    # with open('./scripts/bgi_json/data_dump/log_time_bgi.txt', 'w+') as res_file:
-    #     time_taken = "time taken: " + ("--- %s seconds ---" %
-    #                                    (time.time() - start_time))
-    #     res_file.write(time_taken)
-    second_start_time = time.time()
-    get_phenotype_data()
-    second_time_taken = "time taken: " + ("--- %s seconds ---" %
-                                   (time.time() - second_start_time))
-    print "------------------ phenotype time taken: " + second_time_taken + " --------------------"
-    with open('./scripts/bgi_json/data_dump/log_time_pheno.txt', 'w+') as res_file_2:
-        second_time_taken = "time taken: " + ("--- %s seconds ---" %
-                                              (time.time() - second_start_time))
-        res_file_2.write(second_time_taken)
+    get_bgi_data()
+    time_taken = "time taken: " + ("--- %s seconds ---" % (time.time() - start_time))
+    print "------------------ bgi time taken: " + time_taken + " --------------------"
+    with open('./scripts/bgi_json/data_dump/log_time_bgi.txt', 'w+') as res_file:
+        time_taken = "time taken: " + ("--- %s seconds ---" %
+                                       (time.time() - start_time))
+        res_file.write(time_taken)
+    # second_start_time = time.time()
+    # get_phenotype_data()
+    # second_time_taken = "time taken: " + ("--- %s seconds ---" %
+    #                                (time.time() - second_start_time))
+    # print "------------------ phenotype time taken: " + second_time_taken + " --------------------"
+    # with open('./scripts/bgi_json/data_dump/log_time_pheno.txt', 'w+') as res_file_2:
+    #     second_time_taken = "time taken: " + ("--- %s seconds ---" %
+    #                                           (time.time() - second_start_time))
+    #     res_file_2.write(second_time_taken)
 
 
-    # third_start_time = time.time()
-    # get_expression_data()
-    # third_time_taken = "time taken: " + ("--- %s seconds ---" %
-    #                                (time.time() - third_start_time))
-    # print "------------------ phenotype time taken: " + third_time_taken + " --------------------"
-    # with open('./scripts/bgi_json/data_dump/log_time_expresson.txt', 'w+') as res_file_3:
-    #     third_time_taken = "time taken: " + ("--- %s seconds ---" %
-    #                                           (time.time() - third_start_time))
-    #     res_file_3.write(third_time_taken)
+    third_start_time = time.time()
+    get_expression_data()
+    third_time_taken = "time taken: " + ("--- %s seconds ---" %
+                                   (time.time() - third_start_time))
+    print "------------------ phenotype time taken: " + third_time_taken + " --------------------"
+    with open('./scripts/bgi_json/data_dump/log_time_expresson.txt', 'w+') as res_file_3:
+        third_time_taken = "time taken: " + ("--- %s seconds ---" %
+                                              (time.time() - third_start_time))
+        res_file_3.write(third_time_taken)
