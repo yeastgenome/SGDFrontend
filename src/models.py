@@ -3735,6 +3735,7 @@ class Locusdbentity(Dbentity):
             "id": self.dbentity_id,
             "display_name": self.display_name,
             "format_name": self.format_name,
+            "gene_name": self.gene_name,
             "link": self.obj_url,
             "sgdid": self.sgdid,
             "qualities": [],
