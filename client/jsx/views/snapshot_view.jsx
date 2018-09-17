@@ -11,11 +11,8 @@ var BarChart = require("../components/viz/bar_chart.jsx");
 
 var snapshotView = {};
 snapshotView.render = function () {
-	// TEMP date when hardcoded data was made
-	// render date
-	// var currentDate = new Date()
-	// $(".date-container").text(` (as of ${currentDate.getMonth()+1}/${currentDate.getDate()}/${currentDate.getFullYear()})`);
-	$(".date-container").text(' (as of 8/30/2017)');
+	var currentDate = new Date()
+	$(".date-container").text(` (as of ${currentDate.getMonth()+1}/${currentDate.getDate()}/${currentDate.getFullYear()})`);
 
 	// render nav bar
 	var navElements = [
