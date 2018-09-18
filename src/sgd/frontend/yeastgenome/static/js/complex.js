@@ -42,7 +42,7 @@ $(document).ready(function() {
                     return acceptedCats.includes(d.category);
                 },
             }
-            views.network.render(data["network_graph"], _categoryColors, "j-complex-network", filters);            
+            views.network.render(data["network_graph"], _categoryColors, "j-complex-network", filters, true);            
         } else {
             hide_section("network");
         }

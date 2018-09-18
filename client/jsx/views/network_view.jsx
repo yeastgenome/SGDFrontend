@@ -6,7 +6,7 @@ import d3 from 'd3';
 import Graph from 'react-sigma-graph';
 
 var networkView = {};
-networkView.render = function renderNetworkView (graphData, categoryColors, targetId, filters) {
+networkView.render = function renderNetworkView (graphData, categoryColors, targetId, filters, ignoreFloaters) {
     targetId = targetId || 'j-network';
     var tempDate = new Date();
     var month = tempDate.getMonth() + 1;
@@ -19,7 +19,7 @@ networkView.render = function renderNetworkView (graphData, categoryColors, targ
     	'TARGET': '#9F75B8',
     	'FOCUS': '#1f77b4'
     };
-    ReactDOM.render(<Graph categoryColors={categoryColors} data={graphData} filters={filters} headerText={_HeaderText} />, document.getElementById(targetId));
+    ReactDOM.render(<Graph categoryColors={categoryColors} data={graphData} filters={filters} headerText={_HeaderText} ignoreFloaters={ignoreFloaters} />, document.getElementById(targetId));
 };
 
 module.exports = networkView;
