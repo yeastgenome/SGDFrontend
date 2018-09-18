@@ -5,9 +5,6 @@ const NavBar = require("../components/widgets/navbar.jsx");
 const AsyncSequenceView = require("../components/sequence/async_sequence_view.jsx");
 const TabsModel = require("../models/tabs_model.jsx");
 
-const AsyncVariantViewer = require("../components/variant_viewer/async_variant_viewer.jsx");
-const VariantViewerStore = require("../stores/variant_viewer_store.jsx");
-
 var sequenceView = {};
 sequenceView.render = function () {
 
@@ -19,7 +16,7 @@ sequenceView.render = function () {
     var _tabModel = new TabsModel({
       tabType: "sequence",
       hasAltStrains: hasAltStrains,
-      hasOtherStrains: hasOtherStrains
+      hasOtherStrains: hasOtherStrains,
     });
     var _navTitleText = _tabModel.getNavTitle(bootstrappedData.displayName, bootstrappedData.formatName);
     ReactDOM.render(
@@ -35,20 +32,14 @@ sequenceView.render = function () {
 
   // async sequence view, fetches data, renders main strain, alt strains, and other strains (if present)
   // once data is fetched, update the navbar
+  var _showVariants = bootstrappedData.featureType === 'ORF';
   ReactDOM.render(
     <AsyncSequenceView
       locusId={bootstrappedData.locusId} locusDisplayName={bootstrappedData.displayName}
       locusFormatName={bootstrappedData.formatName} locusHistoryData={bootstrappedData.locusHistory}
-      detailsCallback={_detailsCallback} locusSGDID={bootstrappedData.sgdid}
+      detailsCallback={_detailsCallback} locusSGDID={bootstrappedData.sgdid} showVariants={_showVariants}
     />,
     document.getElementById("sequence-viz")
-  );
-
-  // variant viewer
-  var variantViewerStore = new VariantViewerStore();
-  ReactDOM.render(
-    <AsyncVariantViewer hideTitle sgdid={bootstrappedData.sgdid} store={variantViewerStore} />,
-    document.getElementById("vv-sequence-viz")
   );
 };
 

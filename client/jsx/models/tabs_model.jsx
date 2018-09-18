@@ -46,8 +46,8 @@ module.exports = class TabsModel {
 			{ name: "Sequence Overview", target: "overview" },
 			{ name: "Reference Strain: S288C", target: "reference" },
 			altElement,
-			otherElement,
 			vvElement,
+			otherElement,
 			{ name: "History", target: "history" },
 			{ name: "Resources", target: "resources" }
 		];

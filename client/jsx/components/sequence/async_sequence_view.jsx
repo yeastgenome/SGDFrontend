@@ -7,6 +7,8 @@ const SequenceDetailsModel = require('../../models/sequence_details_model.jsx');
 const SequenceNeighborsModel = require('../../models/sequence_neighbors_model.jsx');
 const SequenceComposite = require('./sequence_composite.jsx');
 const SequenceToggler = require('./sequence_toggler.jsx');
+const AsyncVariantViewer = require("../variant_viewer/async_variant_viewer.jsx");
+const VariantViewerStore = require("../../stores/variant_viewer_store.jsx");
 
 /*
   Fetches data from model and renders locus diagram (or loader while fetching).
@@ -22,6 +24,7 @@ var AsyncSequenceView = React.createClass({
       locusHistoryData: null,
       locusFormatName: null,
       showAltStrains: true,
+      showVariants: false,
       showOtherStrains: true,
       showHistory: true,
       locusId: null,
@@ -38,12 +41,14 @@ var AsyncSequenceView = React.createClass({
   render: function () {
     var mainStrainNode = this._getMainStrainNode();
     var altStrainsNode = this._getAltStrainsNode();
+    var variantNode = this._getVariantsNode();
     var otherStrainsNode = this._getOtherStrainsNode();
     var historyNode = this._getHistoryNode();
 
     return (<div>
       {mainStrainNode}
       {altStrainsNode}
+      {variantNode}
       {otherStrainsNode}
       {historyNode}
     </div>);
@@ -114,6 +119,18 @@ var AsyncSequenceView = React.createClass({
 
     return node;
   },
+
+  _getVariantsNode: function () {
+    if (!this.props.showVariants) return null;
+    var variantViewerStore = new VariantViewerStore();
+    return (
+      <section id='variants'>
+        <h2>Variants</h2>
+        <hr />
+        <AsyncVariantViewer hideTitle sgdid={this.props.locusSGDID} store={variantViewerStore} />
+      </section>
+    );
+  },  
 
   _getOtherStrainsNode: function () {
     var node = null

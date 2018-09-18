@@ -16,7 +16,8 @@
         locusId: "{{ locus.id }}",
         locusLink: "{{ locus.link }}",
         locusHistory: {{ history_js|safe }},
-        sgdid: "{{locus.sgdid}}"
+        sgdid: "{{locus.sgdid}}",
+        featureType: "{{locus.locus_type}}"
     };
 </script>
 {% endblock %}
@@ -62,12 +63,6 @@
             <div class="sgd-loader-container"><div class="sgd-loader"></div></div>
         </div>
     </div>
-
-    <section id="variants">
-        <h2>Variants</h2>
-        <hr />
-        <div id="vv-sequence-viz"></div>
-    </section>
 
         <!-- Resources
 ================================================== -->
