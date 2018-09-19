@@ -91,7 +91,7 @@ module.exports = class GenomeSnapshotModel extends BaseModel {
 
 			// get total number of features for this chromosome
 			var totalFeatures = _.reduce(tableRows, (_memo, row) => {
-				if (typeof row[0] !== "string") _memo += row[i];
+				if (typeof row[0] === "string" && row[0] !== "Verified ORF" && row[0] !== "Uncharacterized ORF" && row[0] != "Dubious ORF") _memo += row[i];
 				return _memo;
 			}, 0);
 
