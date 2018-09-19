@@ -922,6 +922,7 @@ def index_complex_names():
             "name": c.display_name,
             "href": "/complex/" + c.complex_accession,
             "description": c.description + "; " + c.properties,
+            "category": "complex",
             "synonyms": [s[0] for s in synonyms],
             "systematic_name": c.systematic_name,
             "intact_id": c.intact_id,
