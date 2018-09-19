@@ -411,15 +411,15 @@ if __name__ == '__main__':
         time_taken = "time taken: " + ("--- %s seconds ---" %
                                        (time.time() - start_time))
         res_file.write(time_taken)
-    # second_start_time = time.time()
-    # get_phenotype_data()
-    # second_time_taken = "time taken: " + ("--- %s seconds ---" %
-    #                                (time.time() - second_start_time))
-    # print "------------------ phenotype time taken: " + second_time_taken + " --------------------"
-    # with open('./scripts/bgi_json/data_dump/log_time_pheno.txt', 'w+') as res_file_2:
-    #     second_time_taken = "time taken: " + ("--- %s seconds ---" %
-    #                                           (time.time() - second_start_time))
-    #     res_file_2.write(second_time_taken)
+    second_start_time = time.time()
+    get_phenotype_data()
+    second_time_taken = "time taken: " + ("--- %s seconds ---" %
+                                   (time.time() - second_start_time))
+    print "------------------ phenotype time taken: " + second_time_taken + " --------------------"
+    with open('./scripts/bgi_json/data_dump/log_time_pheno.txt', 'w+') as res_file_2:
+        second_time_taken = "time taken: " + ("--- %s seconds ---" %
+                                              (time.time() - second_start_time))
+        res_file_2.write(second_time_taken)
 
 
     third_start_time = time.time()
