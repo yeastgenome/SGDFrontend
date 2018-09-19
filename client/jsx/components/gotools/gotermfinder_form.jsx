@@ -232,7 +232,8 @@ const GoTermFinder = React.createClass({
                 var _init_active_keys = ['FDR']
                 var _FDRelements = [ { 'key': 'FDR', 'name': 'FDR'} ];
 
-		var evidenceCodeLink = "<a href=http://geneontology.org/page/guide-go-evidence-codes target='infowin3'>evidence code\s</a>"; 
+		var evidenceCodeLink = this.getEvidenceLink();
+
                 return (<div>
 		       <h3><strong>Pick { evidenceCodeLink } to exclude for calculation:</strong></h3>
                        <p><Checklist elements={_elements} initialActiveElementKeys={_init_active_keys} /></p>
@@ -243,6 +244,10 @@ const GoTermFinder = React.createClass({
                        </div>);
 
         },
+
+	getEvidenceLink() {
+	        return <a href=http://geneontology.org/page/guide-go-evidence-codes target='infowin3'>evidence codes</a>
+	},
 	
 	handleFile(e) {
                 var reader = new FileReader();
