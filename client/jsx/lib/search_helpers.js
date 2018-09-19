@@ -16,6 +16,7 @@ export function getCategoryDisplayName (key) {
     resource: 'Resource',
     contig: 'Contig',
     colleague: 'Colleague',
+    complex: 'Complex',
     observable: 'Observable',
     reserved_name: 'Reserved Gene Names',
     chemical: 'Chemical',
