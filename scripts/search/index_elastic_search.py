@@ -1,4 +1,4 @@
-from src.models import DBSession, Base, Colleague, ColleagueLocus, Dbentity, Locusdbentity, Filedbentity, FileKeyword, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi, Disease, Diseaseannotation, DiseaseAlias
+from src.models import DBSession, Base, Colleague, ColleagueLocus, Dbentity, Locusdbentity, Filedbentity, FileKeyword, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi, Disease, Diseaseannotation, DiseaseAlias, Complexdbentity, ComplexAlias, ComplexReference, Complexbindingannotation
 from sqlalchemy import create_engine, and_
 from elasticsearch import Elasticsearch
 from mapping import mapping
@@ -883,6 +883,71 @@ def index_downloads():
 
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
+        
+
+def index_complex_names():
+    
+    complexes = DBSession.query(Complexdbentity).all()
+    
+    print("Indexing " + str(len(complexes)) + " complex names")
+    
+    bulk_data = []
+
+    for c in complexes:
+         
+        synonyms = DBSession.query(ComplexAlias.display_name).filter_by(complex_id=c.dbentity_id).all()
+
+        references = set([])
+        refs = DBSession.query(ComplexReference).filter_by(complex_id=c.dbentity_id).all()
+        for ref in refs:
+            references.add(ref.reference.display_name)
+          
+        complex_loci = set([]) 
+        annotations = DBSession.query(Complexbindingannotation).filter_by(complex_id=c.dbentity_id).all()
+        for a in annotations:
+            interactor = a.interactor
+            if interactor.locus_id is not None:
+                complex_loci.add(interactor.locus.display_name)
+
+        key_values = [
+            c.intact_id, c.complex_accession, c.sgdid
+        ]
+
+        keys = set([])
+        for k in key_values:
+            if k is not None:
+                keys.add(k.lower())
+
+        obj = {
+            "name": c.display_name,
+            "href": "/complex/" + c.complex_accession,
+            "description": c.description + "; " + c.properties,
+            "category": "complex",
+            "synonyms": [s[0] for s in synonyms],
+            "systematic_name": c.systematic_name,
+            "intact_id": c.intact_id,
+            "complex_accession": c.complex_accession,
+            "complex_loci": sorted(list(complex_loci)),
+            "references": list(references),
+            "keys": list(keys)
+        }
+
+        bulk_data.append({
+            "index": {
+                "_index": INDEX_NAME,
+                "_type": DOC_TYPE,
+                "_id": str(uuid.uuid4())
+            }
+        })
+
+        bulk_data.append(obj)
+
+        if len(bulk_data) == 800:
+            es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
+            bulk_data=[]
+
+    if len(bulk_data) > 0:
+        es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
 def index_part_1():
     index_phenotypes()
@@ -899,6 +964,7 @@ def index_part_2():
     index_toolbar_links()
     index_observables()
     index_go_terms()
+    index_complex_names()
     index_references()
 
 
@@ -914,3 +980,4 @@ if __name__ == "__main__":
     t2 = Thread(target=index_part_2)
     t1.start()
     t2.start()
+    
