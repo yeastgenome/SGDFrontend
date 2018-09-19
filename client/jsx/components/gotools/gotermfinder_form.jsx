@@ -235,7 +235,7 @@ const GoTermFinder = React.createClass({
 		var evidenceCodeLink = "Pick <a href=http://geneontology.org/page/guide-go-evidence-codes target='infowin3'>evidence codes</a> to exclude for calculation:";
 
                 return (<div>
-		       <h3><strong><p dangerouslySetInnerHTML={{ __html: resultText }} /></strong></h3>
+		       <h3><strong><p dangerouslySetInnerHTML={{ __html: evidenceCodeLink }} /></strong></h3>
                        <p><Checklist elements={_elements} initialActiveElementKeys={_init_active_keys} /></p>
 		       <h3><strong>Pick a p-value below</strong> (default is 0.01):</h3>
                        <p><select ref='pvalue' name='pvalue' onChange={this.onChange}>{_pvalueElements}</select></p>
