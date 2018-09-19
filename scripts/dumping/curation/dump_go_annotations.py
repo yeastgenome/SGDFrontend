@@ -210,11 +210,11 @@ def dump_data():
 
     log.info("Uploading GAF file to S3...")
 
-    update_database_load_file_to_s3(nex_session, gaf_file, '1', source_to_id, edam_to_id, datestamp)
+    update_database_load_file_to_s3(nex_session, gaf_file, 1, source_to_id, edam_to_id, datestamp)
 
     log.info("Uploading GAF file for yeastmine to S3...")
 
-    update_database_load_file_to_s3(nex_session, gaf_file4yeastmine, '0', source_to_id, edam_to_id, datestamp)
+    update_database_load_file_to_s3(nex_session, gaf_file4yeastmine, 0, source_to_id, edam_to_id, datestamp)
 
     nex_session.close()
 
