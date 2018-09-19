@@ -244,10 +244,6 @@ const GoTermFinder = React.createClass({
                        </div>);
 
         },
-
-	getEvidenceLink() {
-	        return <a href=http://geneontology.org/page/guide-go-evidence-codes target='infowin3'>evidence codes</a>
-	},
 	
 	handleFile(e) {
                 var reader = new FileReader();
