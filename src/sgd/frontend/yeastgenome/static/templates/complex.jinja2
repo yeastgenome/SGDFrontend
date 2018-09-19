@@ -51,14 +51,7 @@
 ================================================== -->
         <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
-                <h1>Complex: {{ complex.complex_name }}
-		     <a href="#" data-dropdown="summary_help"><i class="fa fa-info-circle"></i></a>
-            	     <p id="summary_help" class="f-dropdown content medium" data-dropdown-content>
-
-		     	OVERVIEW HELP HERE
-
-            	     </p>
-		</h1>
+                <h1>Complex: {{ complex.complex_name }}</h1>
                 <hr />
 
         <div class="">
@@ -75,7 +68,7 @@
             {% elif complex.source == 'PRO' %}
                             {% set source_link = 'http://www.obofoundry.org/ontology/pr.html' %}
             {% endif %}
-            <dt>Curated by</dt>
+            <dt>Source</dt>
             {% if source_link %}
                   <dd><a href={{ source_link }} target="_infowin">{{complex.source }}</a></dd>
             {% else %}
@@ -83,6 +76,9 @@
             {% endif %}
                         <dt>ComplexAc</dt>
                         <dd><a href=https://www.ebi.ac.uk/complexportal/complex/{{ complex.complex_accession }} target="_infowin">{{ complex.complex_accession }}</a></dd>
+
+                        <dt>Intact ID</dt>
+                        <dd><a href=https://www.ebi.ac.uk/complexportal/complex/search?query={{ complex.intact_id }} target="_infowin">{{ complex.intact_id }}</a></dd>
             
             <dt>Systematic Name</dt>
             <dd>{{ complex.systematic_name }}</dd>
@@ -104,14 +100,7 @@
 ================================================== -->
     <section id="diagram" data-magellan-destination="diagram">
         <div class="page-header">
-            <h2>Complex Diagram
-	    	<a href="#" data-dropdown="complex_diagram"><i class="fa fa-info-circle"></i></a>
-                <p id="complex_diagram" class="f-dropdown content medium" data-dropdown-content>
-
-                     COMPLEX DIAGRAM HELP HERE
-
-                </p>
-	    </h2>
+            <h2>Complex Diagram</h2>
             <hr />
             <div id="j-complex"></div>
         </div>
@@ -122,14 +111,7 @@
     {% if complex.pdbs|length > 0 %}
         <section id="structure" data-magellan-destination="structure">
          <div class="page-header">
-                     <h2>PDB Structure
-		     	 <a href="#" data-dropdown="pdb_structure"><i class="fa fa-info-circle"></i></a>
-                	 <p id="pdb_structure" class="f-dropdown content medium" data-dropdown-content>
-
-                     	     PDB Structure HELP HERE
-
-                     	  </p>    
-		     </h2>
+                     <h2>PDB Structure</h2>
                      <hr />
 
              <table border=0><tr>
@@ -160,14 +142,7 @@
 
          <section id="subunit" data-magellan-destination="subunit">
                  <div class="page-header">
-                     <h2>Subunits
-			   <a href="#" data-dropdown="complex_table"><i class="fa fa-info-circle"></i></a>
-                     	   <p id="complex_table" class="f-dropdown content medium" data-dropdown-content>
-
-                              	Subunit Table HELP HERE
-
-                     	   </p>
-		     </h2>
+                     <h2>Subunits</h2>
                      <hr />
              
              {% set table_id = "complex_table" %}
@@ -182,14 +157,7 @@
     {% if complex.process|length > 0 or complex.function|length > 0 or complex.component|length > 0%}                      
     <section id="annotation" data-magellan-destination="annotation">
                  <div class="page-header">
-                     <h2>Gene Ontology
-		     	    <a href="#" data-dropdown="go_help"><i class="fa fa-info-circle"></i></a>
-                     	    <p id="go_help" class="f-dropdown content medium" data-dropdown-content>
-
-                               	 GO INFO HELP HERE
-
-                     	    </p>  
-		     </h2>
+                     <h2>Gene Ontology</h2>
                      <hr />
 
              <div class="">
@@ -229,14 +197,7 @@
 ================================================== -->
     <section id="network" data-magellan-destination="network">
         <div class="page-header">
-            <h2>Network Diagram
-	          <a href="#" data-dropdown="network_diagram"><i class="fa fa-info-circle"></i></a>
-                  <p id="network_diagram" class="f-dropdown content medium" data-dropdown-content>
-
-                        NETWORK DIAGRAM HELP HERE
-
-                  </p>
-	    </h2>
+            <h2>Network Diagram</h2>
             <hr />
             <div id="j-complex-network"></div>
         </div>
@@ -248,14 +209,7 @@
     {% if complex.references|length > 0 %}
     <section id="reference" data-magellan-destination="reference">
             <div class="page-header">
-                     <h2>References
-			   <a href="#" data-dropdown="reference_help"><i class="fa fa-info-circle"></i></a>
-                     	   <p id="reference_help" class="f-dropdown content medium" data-dropdown-content>
-
-                               REFERENCE HELP HERE
-
-                     	   </p>
-		     </h2>
+                     <h2>References</h2>
                      <hr />
              <ul class="unstyled">
               {% for ref in complex.references %}
@@ -283,14 +237,7 @@
     {% if complex.cross_references|length > 0 %}
     <section id="cross_reference" data-magellan-destination="cross_reference">
               <div class="page-header">
-                         <h2>External Identifiers
-			     <a href="#" data-dropdown="cross_ref_help"><i class="fa fa-info-circle"></i></a>
-                     	     <p id=cross_ref_help" class="f-dropdown content medium" data-dropdown-content>
-
-                             	CROSS REF HELP HERE
-
-                             </p>
-			 </h2>
+                         <h2>External Identifiers</h2>
                          <hr />
     
                  {% for alias in complex.cross_references %}
