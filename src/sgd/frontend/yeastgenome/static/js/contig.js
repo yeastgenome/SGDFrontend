@@ -22,7 +22,7 @@ $(document).ready(function() {
         create_download_button("chromosomal_coord_table_download", feature_table, contig['display_name'] + '_features');
         create_analyze_button("chromosomal_coord_table_analyze", feature_table, "<a href='" + contig['link'] + "' class='gene_name'>" + contig['display_name'] + "</a> genes", true);
 
-        if (data['genomic_dna'].length) {
+        if (data['genomic_dna'].length > 1) {
             set_up_sequence("feature_div", data['genomic_dna']);        
         }
   	});
@@ -123,12 +123,6 @@ function set_up_sequence(chart_id, data) {
     for (var i=0; i < data.length; i++) {
         var start = data[i]['start'];
         var end = data[i]['end'];
-
-
-	console.log("start="+start);
-	console.log("end="+end);
-
-
         var direction = strand_to_direction(data[i]['strand']);
         display_name_to_format_name[data[i]['locus']['display_name']] = data[i]['locus']['format_name'];
         if(direction == "5'") {
