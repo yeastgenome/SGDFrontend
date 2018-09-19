@@ -168,7 +168,7 @@ const GoTermFinder = React.createClass({
 		        <h3><strong>Pick an ontology aspect:</strong></h3> 
 		        <p><h3><RadioSelector id='aspect' name='aspect' elements={_elements} initialActiveElementKey='F'/></h3></p>
 			<p></p>
-			<p><h3>Search using <a href='#defaultsetting'>default settings</a> or use Step 3, Step 4, and/or Step 5 below to customize your options.</h3></p>	
+			<p><h3>Search using <a href='#defaultsetting'>default settings</a> or use Step 3 and/or Step 4 below to customize your options.</h3></p>	
 			</div>);
 
 	},
@@ -204,7 +204,7 @@ const GoTermFinder = React.createClass({
 
                 return (<div style={{ textAlign: "top" }}>
                         <h3><strong>Use default background set</strong> (all features in the database that have GO annotations)
-			<strong style={{ color: 'red'}}>OR</strong> <strong>Enter Gene/ORF names</strong> (separated by a return or a space):</h3>
+			<strong style={{ color: 'red'}}> OR</strong> <strong>Enter Gene/ORF names</strong> (separated by a return or a space):</h3>
                         <textarea ref='genes4bg' onChange={this._onChange} name='genes4bg' rows='4' cols='163'></textarea>
 			Note: If you have a big background list (>100), save it as a file and upload it below.
 			<h3><strong style={{ color: 'red'}}>OR</strong> <strong>Upload a file of Gene/ORF names</strong> (.txt or .tab format):
@@ -233,7 +233,7 @@ const GoTermFinder = React.createClass({
                 var _FDRelements = [ { 'key': 'FDR', 'name': 'FDR'} ];
 
                 return (<div>
-		       <h3><strong>Pick evidence codes to exclude for calculation:</strong></h3>
+		       <h3><strong>Pick <a href=http://geneontology.org/page/guide-go-evidence-codes target='infowin3'>evidence codes</a> to exclude for calculation:</strong></h3>
                        <p><Checklist elements={_elements} initialActiveElementKeys={_init_active_keys} /></p>
 		       <h3><strong>Pick a p-value below</strong> (default is 0.01):</h3>
                        <p><select ref='pvalue' name='pvalue' onChange={this.onChange}>{_pvalueElements}</select></p>
