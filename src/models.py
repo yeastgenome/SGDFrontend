@@ -3167,6 +3167,7 @@ class Locusdbentity(Dbentity):
             "category": self.display_name.replace("_", " ")
         }]
         edges = []
+        import pdb
         for x in main_gene_disease_annotations:
             disease_annotation = x[0]
             human_gene_id = x[1]
@@ -3180,6 +3181,7 @@ class Locusdbentity(Dbentity):
                 })
                 all_node_ids.append(human_gene_id)
             edge_slug = self.format_name + '.' + human_gene_id
+            # pdb.set_trace()
             if edge_slug not in all_edge_slugs:
                 edges.append({
                     "source": self.format_name,
@@ -3202,6 +3204,15 @@ class Locusdbentity(Dbentity):
                     "target": d_id
                 })
                 all_edge_slugs.append(edge_slug)
+            # add edge to connect directly focus -> disease
+            direct_edge_slug = self.format_name + '.' + str(d_id)
+            if direct_edge_slug not in all_edge_slugs:
+                edges.append({
+                    "source": self.format_name,
+                    "target": d_id,
+                })
+                all_edge_slugs.append(direct_edge_slug)
+
         # add focus_gene -> human_gene -> disease nodes and edges
         for x in genes_sharing_do_annotations:
             disease_annotation = x[0]
@@ -3224,7 +3235,7 @@ class Locusdbentity(Dbentity):
                     "target": human_gene_id,
                 })
                 all_edge_slugs.append(edge_slug)
-
+            
             if human_gene_id not in all_node_ids:
                 nodes.append({
                     "name": human_gene_ids_to_names[human_gene_id],
@@ -3246,6 +3257,13 @@ class Locusdbentity(Dbentity):
             if edge_slug not in all_edge_slugs:
                 edges.append({
                     "source": human_gene_id,
+                    "target": d_id
+                })
+                all_edge_slugs.append(edge_slug)
+            edge_slug = format_name + "." + str(d_id)
+            if edge_slug not in all_edge_slugs:
+                edges.append({
+                    "source": format_name,
                     "target": d_id
                 })
                 all_edge_slugs.append(edge_slug)
