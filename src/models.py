@@ -3167,7 +3167,6 @@ class Locusdbentity(Dbentity):
             "category": self.display_name.replace("_", " ")
         }]
         edges = []
-        import pdb
         for x in main_gene_disease_annotations:
             disease_annotation = x[0]
             human_gene_id = x[1]
@@ -3181,7 +3180,6 @@ class Locusdbentity(Dbentity):
                 })
                 all_node_ids.append(human_gene_id)
             edge_slug = self.format_name + '.' + human_gene_id
-            # pdb.set_trace()
             if edge_slug not in all_edge_slugs:
                 edges.append({
                     "source": self.format_name,
