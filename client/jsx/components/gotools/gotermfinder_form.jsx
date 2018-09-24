@@ -133,7 +133,7 @@ const GoTermFinder = React.createClass({
 		var _defaultSection = { headers: [[<span style={ style.textFont }><a name='step1'>Step 1. Query Set (Your Input)</a></span>, <span style={ style.textFont }><a name='step2'>Step 2. Choose Ontology</a></span>]],
                                      rows:    [[geneBox, ontology]] };
 			  
-		var _backgroundSection = { headers: [[<span style={ style.textFont }><a name='step3'>Step 3. Specify your background set of genes</a></span>, <span style={ style.textFont }><a name='step4'>Step 4. Optional Input</a></span>]],
+		var _backgroundSection = { headers: [[<span style={ style.textFont }><a name='step3'>Step 3. (Optional) Specify your background set of genes</a></span>, <span style={ style.textFont }><a name='step4'>Step 4. Optional Input</a></span>]],
                                      rows:    [[gene4bgBox, optionalInput]] };
 
 		return (<div>
@@ -168,7 +168,7 @@ const GoTermFinder = React.createClass({
 		        <h3><strong>Pick an ontology aspect:</strong></h3> 
 		        <p><h3><RadioSelector id='aspect' name='aspect' elements={_elements} initialActiveElementKey='F'/></h3></p>
 			<p></p>
-			<p><h3>Search using <a href='#defaultsetting'>default settings</a> or use Step 3 and/or Step 4 below to customize your options.</h3></p>	
+			<p><h3>Search using default settings or use Step 3 and/or Step 4 below to customize your options.</h3></p>	
 			</div>);
 
 	},
@@ -203,7 +203,7 @@ const GoTermFinder = React.createClass({
 	getGene4bgBox() {
 
                 return (<div style={{ textAlign: "top" }}>
-                        <h3><strong>Use default background set</strong> (all features in the database that have GO annotations)
+                        <h3>Leave empty to use default background set (all features in the database that have GO annotations)
 			<strong style={{ color: 'red'}}> OR</strong> <strong>Enter Gene/ORF names</strong> (separated by a return or a space):</h3>
                         <textarea ref='genes4bg' onChange={this._onChange} name='genes4bg' rows='4' cols='163'></textarea>
 			Note: If you have a big background list (>100), save it as a file and upload it below.
@@ -403,7 +403,7 @@ const GoTermFinder = React.createClass({
 	topDescription() {
 		
 		// 2. Manually curated and High-throughput annotation methods, 
-		return "<p><h3>The GO Term Finder (<a href='http://search.cpan.org/dist/GO-TermFinder/' target='infowin'>Version 0.86</a>) searches for significant shared GO terms, or parents of those GO terms, used to describe the genes in your list to help you discover what the genes may have in common. To map annotations of a group of genes to more general terms and/or to bin them in broad categories, use the <a href='https://www.yeastgenome.org/cgi-bin/GO/goSlimMapper.pl' target='infowin'>GO Slim Mapper</a>.</h3><h3 id='defaultsetting'>Default Settings: 1. All genes/features that have GO annotations in the database, 2. All annotations in the database (manually curated, high-throughput, and computational annotations), and 3. Hits with p-value < 0.01 will be displayed on the results page.</h3></p>";
+		return "<p><h3>The GO Term Finder (<a href='http://search.cpan.org/dist/GO-TermFinder/' target='infowin'>Version 0.86</a>) searches for significant shared GO terms, or parents of those GO terms, used to describe the genes in your list to help you discover what the genes may have in common. To map annotations of a group of genes to more general terms and/or to bin them in broad categories, use the <a href='https://www.yeastgenome.org/cgi-bin/GO/goSlimMapper.pl' target='infowin'>GO Slim Mapper</a>.</h3><h3 id='defaultsetting'>For this form, Steps 1 and 2 are required, and Steps 3 and 4 are optional. If using only Steps 1 and 2, the search will be done using these default settings: 1. All genes/features with GO annotations in the database, 2. All annotations in the database (manually curated, high-throughput, and computational), and 3. All hits with p-value < 0.01 will be displayed on results page..</h3></p>";
 	
 	},
 
