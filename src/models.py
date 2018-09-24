@@ -8429,7 +8429,7 @@ class Complexdbentity(Dbentity):
         nodes_ids = {}
         network_nodes_ids = {}
 
-        ## aliases
+        ## aliases                                                                                                                                    
 
         alias_objs = DBSession.query(ComplexAlias).filter_by(complex_id=self.dbentity_id).order_by(ComplexAlias.alias_type, ComplexAlias.display_name).all()
 
@@ -8450,11 +8450,10 @@ class Complexdbentity(Dbentity):
         crossRefs2 = sorted(crossRefs, key=lambda c: c['display_name'])
         data["cross_references"] = sorted(crossRefs2, key=lambda c: c['alias_type'])
 
-        ## go
-
+        ## go                                                                                                                                                                                        
         network_nodes =[]
         network_edges =[]
-        
+
         network_nodes.append({
             "name": self.display_name,
             "id": self.format_name,
@@ -8482,67 +8481,66 @@ class Complexdbentity(Dbentity):
                 else:
                     process.append(go)
 
-                # go['display_name'],
-                if go["go_id"] not in network_nodes_ids:
-                    network_nodes.append({
-                        "name": go["display_name"],
-                        "id": go["go_id"],
-                        "href": go["link"],
-                        "category": go["go_aspect"]
-                    })
-                    network_nodes_ids[go["go_id"]] = True
-                network_edges.append({
-                    "source": self.format_name,
-                    "target": go["go_id"]
-                })
-
                 goComplexes = DBSession.query(ComplexGo).filter_by(go_id=g.go_id).all()
 
-                # complex.display_name,
+                if len(goComplexes) > 1:
+                    if go["go_id"] not in network_nodes_ids:
+                        network_nodes.append({
+                                "name": go["display_name"],
+                                "id": go["go_id"],
+                                "href": go["link"],
+                                "category": 'GO',
+                        })
+                        network_nodes_ids[go["go_id"]] = True
+                    network_edges.append({
+                            "source": self.format_name,
+                            "target": go["go_id"]
+                    })
 
                 for g2 in goComplexes:
                     complex = g2.complex
-                    if complex.format_name != self.format_name:
-                        if complex.format_name in foundComplex:
-                            if foundComplex[complex.format_name] != 1:
-                                if complex.format_name not in network_nodes_ids:
-                                    network_nodes.append({
+                    if complex.format_name == self.format_name:
+                        continue
+                    if complex.format_name in foundComplex:
+                        if foundComplex[complex.format_name] != 1:
+                            if complex.format_name not in network_nodes_ids:
+                                network_nodes.append({
                                         "name": complex.display_name,
                                         "id": complex.format_name,
                                         "href": "/complex/" + complex.format_name,
                                         "category": "complex"
-                                    })
-                                    network_nodes_ids[complex.format_name] = True
-                                network_edges.append( foundComplex[complex.format_name] )
+                                })
+                                network_nodes_ids[complex.format_name] = True
+                            network_edges.append( foundComplex[complex.format_name] )
 
-                                foundComplex[complex.format_name] = 1
+                            foundComplex[complex.format_name] = 1
 
-                            if complex.format_name not in network_nodes_ids:
-                                network_nodes.append({
+                        if complex.format_name not in network_nodes_ids:
+                            network_nodes.append({
                                     "name": complex.display_name,
                                     "id": complex.format_name,
                                     "href": "/complex/" + complex.format_name,
                                     "category": "complex"
-                                })
-                                network_nodes_ids[complex.format_name] = True
-
-                            network_edges.append({
-                                "source": complex.format_name,
-                                "target": go['go_id']
                             })
+                            network_nodes_ids[complex.format_name] = True
 
-                        else:
-                            foundComplex[complex.format_name] = {
+                        network_edges.append({
                                 "source": complex.format_name,
                                 "target": go['go_id']
-                            }
+                        })
+
+                    else:
+                        foundComplex[complex.format_name] = {
+                                "source": complex.format_name,
+                                "target": go['go_id']
+                        }
+
 
         data['process'] = sorted(process, key=lambda p: p['display_name'])
         data['function'] = sorted(function, key=lambda f: f['display_name'])
         data['component'] = sorted(component, key=lambda c: c['display_name'])
 
-        ## reference
-
+        ## reference                                                                                                                                                                                                                             
         ref_objs = DBSession.query(ComplexReference).filter_by(complex_id=self.dbentity_id).all()
 
         refs = []
@@ -8551,8 +8549,7 @@ class Complexdbentity(Dbentity):
         refs2 = sorted(refs, key=lambda r: r['display_name'])
         data["references"] = sorted(refs2, key=lambda r: r['year'], reverse=True)
 
-        ## subunits
-
+        ## subunits                                                                                                                                                                                                                              
         annot_objs = DBSession.query(Complexbindingannotation).filter_by(complex_id=self.dbentity_id).all()
 
         unique_interactors = []
@@ -8652,37 +8649,34 @@ class Complexdbentity(Dbentity):
                               "stoichiometry": stoichiometry4interactor.get(interactor.format_name),
                               "link": link })
 
-            # nodes.append({ "data": { "name": display_name,
-            #                         "id": interactor.format_name,
-            #                         "link": link,
-            #                         "type": type } })
-
-            if interactor.format_name not in network_nodes_ids:
-                network_nodes.append({
-                    "name": display_name,
-                    "id": interactor.format_name,
-                    "href": link,
-                    "category": "gene"
-                })
-                network_nodes_ids[interactor.format_name] = True
-
-            network_edges.append({
-                "source": self.format_name,
-                "target": interactor.format_name
-            })
-
             annot_objs2 = DBSession.query(Complexbindingannotation).filter_by(interactor_id=interactor.interactor_id).all()
+
             found = {}
             for annot in annot_objs2:
                 complex = annot.complex
-                # print(complex.format_name, self.format_name, found)
-                # if complex.format_name == self.format_name:
-                #     continue
                 if complex.format_name in found:
                     continue
                 found[complex.format_name] = 1
+
                 if complex.format_name in foundComplex:
+
                     if foundComplex[complex.format_name] != 1:
+
+                        ###                                                                                                                                                                                                                      
+                        if interactor.format_name not in network_nodes_ids:
+                            network_nodes.append({
+                                "name": display_name,
+                                "id": interactor.format_name,
+                                "href": link,
+                                "category": "subunit"
+                            })
+                            network_nodes_ids[interactor.format_name] = True
+
+                            network_edges.append({
+                                "source": self.format_name,
+                                "target": interactor.format_name
+                            })
+                        ###                                                                                                                                                                                                                      
 
                         if complex.format_name not in network_nodes_ids:
                             print(complex.format_name)
@@ -8694,7 +8688,6 @@ class Complexdbentity(Dbentity):
                             })
                             network_nodes_ids[complex.format_name] = True
                         network_edges.append( foundComplex[complex.format_name] )
-
 
                         foundComplex[complex.format_name] = 1
 
@@ -8722,7 +8715,8 @@ class Complexdbentity(Dbentity):
         data['graph'] = { "edges": edges, "nodes": nodes }
         data['network_graph'] = { "edges": network_edges, "nodes": network_nodes }
 
-        return data        
+        return data
+
 
 class ComplexAlias(Base):
     __tablename__ = 'complex_alias'
