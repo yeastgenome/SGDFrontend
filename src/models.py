@@ -8483,26 +8483,38 @@ class Complexdbentity(Dbentity):
 
                 goComplexes = DBSession.query(ComplexGo).filter_by(go_id=g.go_id).all()
 
-                if len(goComplexes) > 1:
-                    if go["go_id"] not in network_nodes_ids:
-                        network_nodes.append({
-                                "name": go["display_name"],
-                                "id": go["go_id"],
-                                "href": go["link"],
-                                "category": 'GO',
-                        })
-                        network_nodes_ids[go["go_id"]] = True
-                    network_edges.append({
-                            "source": self.format_name,
-                            "target": go["go_id"]
+                if len(goComplexes) == 1:
+                    continue
+                    
+                if go["go_id"] not in network_nodes_ids:
+                    network_nodes.append({
+                            "name": go["display_name"],
+                            "id": go["go_id"],
+                            "href": go["link"],
+                            "category": 'GO',
                     })
-
+                    network_nodes_ids[go["go_id"]] = True
+                
                 for g2 in goComplexes:
                     complex = g2.complex
                     if complex.format_name == self.format_name:
                         continue
                     if complex.format_name in foundComplex:
                         if foundComplex[complex.format_name] != 1:
+                            preGoid = foundComplex[complex.format_name]
+                            ## this is 2nd time we see this complex, we want to keep this complex
+                            ## in the network so need to link "self" to preGoid as well as current goid
+                            network_edges.append({
+                                    "source": self.format_name,
+                                    "target": preGoid
+                            })
+                            network_edges.append({
+                                    "source": self.format_name,
+                                    "target": go["go_id"]
+                            })
+                            
+                            ### also need to add this complex to the network
+
                             if complex.format_name not in network_nodes_ids:
                                 network_nodes.append({
                                         "name": complex.display_name,
@@ -8511,36 +8523,39 @@ class Complexdbentity(Dbentity):
                                         "category": "complex"
                                 })
                                 network_nodes_ids[complex.format_name] = True
-                            network_edges.append( foundComplex[complex.format_name] )
-
-                            foundComplex[complex.format_name] = 1
-
-                        if complex.format_name not in network_nodes_ids:
-                            network_nodes.append({
-                                    "name": complex.display_name,
-                                    "id": complex.format_name,
-                                    "href": "/complex/" + complex.format_name,
-                                    "category": "complex"
+                            
+                            ### link this complex to preGoid as well as this goid
+                            network_edges.append({
+                                    "source": complex.format_name,
+                                    "target": preGoid
                             })
-                            network_nodes_ids[complex.format_name] = True
-
-                        network_edges.append({
+                            network_edges.append({
+                                    "source": complex.format_name,
+                                    "target": go["go_id"]
+                            })
+                            foundComplex[complex.format_name] = 1
+                        else:
+                            ## this 3rd or 4th.. time see this complex
+                            ## simply link this complex to current goid
+                            network_edges.append({
                                 "source": complex.format_name,
                                 "target": go['go_id']
-                        })
+                            })
+                            network_edges.append({
+                                "source": self.format_name,
+                                "target": go['go_id']
+                            })
 
                     else:
-                        foundComplex[complex.format_name] = {
-                                "source": complex.format_name,
-                                "target": go['go_id']
-                        }
+                        foundComplex[complex.format_name] = go['go_id']
 
 
         data['process'] = sorted(process, key=lambda p: p['display_name'])
         data['function'] = sorted(function, key=lambda f: f['display_name'])
         data['component'] = sorted(component, key=lambda c: c['display_name'])
 
-        ## reference                                                                                                                                                                                                                             
+        ## reference
+
         ref_objs = DBSession.query(ComplexReference).filter_by(complex_id=self.dbentity_id).all()
 
         refs = []
@@ -8651,6 +8666,23 @@ class Complexdbentity(Dbentity):
 
             annot_objs2 = DBSession.query(Complexbindingannotation).filter_by(interactor_id=interactor.interactor_id).all()
 
+            unique_complexes = {}
+            for annot in annot_objs2:
+                complex = annot.complex
+                unique_complexes[complex.display_name] = 1
+                
+            if len(unique_complexes) == 1:
+                continue
+
+            if interactor.format_name not in network_nodes_ids:
+                network_nodes.append({
+                       "name": display_name,
+                       "id": interactor.format_name,
+                       "href": link,
+                       "category": "subunit"
+                })
+                network_nodes_ids[interactor.format_name] = True
+
             found = {}
             for annot in annot_objs2:
                 complex = annot.complex
@@ -8661,22 +8693,20 @@ class Complexdbentity(Dbentity):
                 if complex.format_name in foundComplex:
 
                     if foundComplex[complex.format_name] != 1:
-
-                        ###                                                                                                                                                                                                                      
-                        if interactor.format_name not in network_nodes_ids:
-                            network_nodes.append({
-                                "name": display_name,
-                                "id": interactor.format_name,
-                                "href": link,
-                                "category": "subunit"
-                            })
-                            network_nodes_ids[interactor.format_name] = True
-
-                            network_edges.append({
+                        preTarget = foundComplex[complex.format_name]
+                        ## this is 2nd time we can see this complex, we want to keep this complex 
+                        ## in the network so need to link "self" complex to preTarget (either goid or 
+                        ## subunit) as well as this subunit (interactor) 
+                        network_edges.append({
+                                "source": self.format_name,
+                                "target": preTarget
+                        })
+                        network_edges.append({
                                 "source": self.format_name,
                                 "target": interactor.format_name
-                            })
-                        ###                                                                                                                                                                                                                      
+                        })
+
+                        ### also need to add this complex to the network 
 
                         if complex.format_name not in network_nodes_ids:
                             print(complex.format_name)
@@ -8687,29 +8717,29 @@ class Complexdbentity(Dbentity):
                                 "category": "complex"
                             })
                             network_nodes_ids[complex.format_name] = True
-                        network_edges.append( foundComplex[complex.format_name] )
+                            
+                        
 
-                        foundComplex[complex.format_name] = 1
-
-                    if complex.format_name not in network_nodes_ids:
-                        network_nodes.append({
-                            "name": complex.display_name,
-                            "id": complex.format_name,
-                            "href": "/complex/" + complex.format_name,
-                            "category": "complex"
+                        ### link this complex to preTarget (either goid or subunit) as well 
+                        ### as this subunit
+                        network_edges.append({
+                                "source": complex.format_name,
+                                "target": preTarget
                         })
-                        network_nodes_ids[complex.format_name] = True
-                    network_edges.append({
-                        "source": complex.format_name,
-                        "target": interactor.format_name
-                    })
-
+                        network_edges.append({
+                                "source": complex.format_name,
+                                "target": interactor.format_name
+                        })
+                        foundComplex[complex.format_name] = 1
+                    else:
+                        ## this 3rd or 4th.. time see this complex
+                        ## simply link this complex to current subunit
+                        network_edges.append({
+                                "source": complex.format_name,
+                                "target": interactor.format_name
+                        })
                 else:
-                    foundComplex[complex.format_name] = {
-                        "source": complex.format_name,
-                        "target": interactor.format_name
-                    }
-
+                    foundComplex[complex.format_name] = interactor.format_name
 
         data['subunit'] = sorted(subunits, key=lambda a: a['display_name'])
         data['graph'] = { "edges": edges, "nodes": nodes }
