@@ -35,7 +35,7 @@
               add_navbar_element('Gene Ontology', 'annotation');
             {% endif %}
         
-        add_navbar_element('Network Diagram', 'network');
+        add_navbar_element('Shared Annotations', 'network');
 
         {% if complex.references|length > 0 %}
               add_navbar_element('References', 'reference');
@@ -51,7 +51,12 @@
 ================================================== -->
         <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
-                <h1>Complex: {{ complex.complex_name }}</h1>
+                <h1>Complex: {{ complex.complex_name }}
+		     <a href="#" data-dropdown="summary_help"><i class="fa fa-info-circle"></i></a>
+                     <p id="summary_help" class="f-dropdown content medium" data-dropdown-content>
+                        Macromolecular complex annotations are derived from physical molecular interaction evidence extracted from the literature and cross-referenced in the entry, or by curator inference from information on homologs in closely related species or by inference from scientific background.
+                     </p>
+		</h1>
                 <hr />
 
         <div class="">
@@ -68,7 +73,7 @@
             {% elif complex.source == 'PRO' %}
                             {% set source_link = 'http://www.obofoundry.org/ontology/pr.html' %}
             {% endif %}
-            <dt>Source</dt>
+            <dt>Curated by</dt>
             {% if source_link %}
                   <dd><a href={{ source_link }} target="_infowin">{{complex.source }}</a></dd>
             {% else %}
@@ -76,9 +81,6 @@
             {% endif %}
                         <dt>ComplexAc</dt>
                         <dd><a href=https://www.ebi.ac.uk/complexportal/complex/{{ complex.complex_accession }} target="_infowin">{{ complex.complex_accession }}</a></dd>
-
-                        <dt>Intact ID</dt>
-                        <dd><a href=https://www.ebi.ac.uk/complexportal/complex/search?query={{ complex.intact_id }} target="_infowin">{{ complex.intact_id }}</a></dd>
             
             <dt>Systematic Name</dt>
             <dd>{{ complex.systematic_name }}</dd>
@@ -100,7 +102,12 @@
 ================================================== -->
     <section id="diagram" data-magellan-destination="diagram">
         <div class="page-header">
-            <h2>Complex Diagram</h2>
+            <h2>Complex Diagram
+	    	<a href="#" data-dropdown="complex_diagram_help"><i class="fa fa-info-circle"></i></a>
+		<p id="complex_diagram_help" class="f-dropdown content medium" data-dropdown-content>
+		      This diagram displays the protein subunits (blue) of the complex and how they interact with each other. Interactions with other relevant participants such as small molecules (purple), sub-complexes (yellow), and other subunits (red) are also shown. If a participant appears in the diagram with no lines connected to it, then its specific interactions with other participants are currently unknown.
+                </p>
+	    </h2>
             <hr />
             <div id="j-complex"></div>
         </div>
@@ -111,8 +118,14 @@
     {% if complex.pdbs|length > 0 %}
         <section id="structure" data-magellan-destination="structure">
          <div class="page-header">
-                     <h2>PDB Structure</h2>
-                     <hr />
+                 <h2>PDB Structure
+		 	<a href="#" data-dropdown="pdb_help"><i class="fa fa-info-circle"></i></a>
+                        <p id="pdb_help" class="f-dropdown content medium" data-dropdown-content>
+                            When available from the Protein Data Bank (PDB), the physical structure of the macromolecular complex is displayed. Click on the image or link for further information about the physical structure.
+                        </p>
+
+		 </h2>
+                 <hr />
 
              <table border=0><tr>
 
@@ -142,7 +155,13 @@
 
          <section id="subunit" data-magellan-destination="subunit">
                  <div class="page-header">
-                     <h2>Subunits</h2>
+                     <h2>Subunits
+
+			<a href="#" data-dropdown="subunit_help"><i class="fa fa-info-circle"></i></a>
+                        <p id="subunit_help" class="f-dropdown content medium" data-dropdown-content>
+			    This table lists all participants of the complex (proteins, small molecules, nucleic acids, etc.) and their respective stoichiometry. A brief description is also provided for each participant in the table.     
+                        </p>
+		     </h2>
                      <hr />
              
              {% set table_id = "complex_table" %}
@@ -157,7 +176,12 @@
     {% if complex.process|length > 0 or complex.function|length > 0 or complex.component|length > 0%}                      
     <section id="annotation" data-magellan-destination="annotation">
                  <div class="page-header">
-                     <h2>Gene Ontology</h2>
+                     <h2>Gene Ontology
+		     	  <a href="#" data-dropdown="go_help"><i class="fa fa-info-circle"></i></a>
+                 	  <p id="go_help" class="f-dropdown content medium" data-dropdown-content>
+          		      Gene Ontology (GO) terms that describe the function of a complex, the biological process in which it participates, or its cellular location. Click on a term for its definition and other objects annotated to that term.
+			  </p>
+		     </h2>
                      <hr />
 
              <div class="">
@@ -197,7 +221,13 @@
 ================================================== -->
     <section id="network" data-magellan-destination="network">
         <div class="page-header">
-            <h2>Network Diagram</h2>
+            <h2>Shared Annotations
+	         <a href="#" data-dropdown="network_help"><i class="fa fa-info-circle"></i></a>
+                 <p id="network_help" class="f-dropdown content medium" data-dropdown-content>
+                     This diagram displays Gene Ontology terms (green) and subunits (blue) that are shared between the given macromolecular complex (black) and other yeast complexes (yellow). The shared GO terms or subunits can be visualized separately using the radio button at the bottom of the graph.
+                 </p>
+
+	    </h2>
             <hr />
             <div id="j-complex-network"></div>
         </div>
@@ -209,7 +239,13 @@
     {% if complex.references|length > 0 %}
     <section id="reference" data-magellan-destination="reference">
             <div class="page-header">
-                     <h2>References</h2>
+                     <h2>References
+			   <a href="#" data-dropdown="reference_help"><i class="fa fa-info-circle"></i></a>
+                           <p id="reference_help" class="f-dropdown content medium" data-dropdown-content>
+			        List of references used specifically to curate the information on this page.
+                           </p>
+
+		     </h2>
                      <hr />
              <ul class="unstyled">
               {% for ref in complex.references %}
