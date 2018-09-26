@@ -21,7 +21,7 @@
 {% include "tabs.jinja2" %}
 
 <div class="row">
-	
+     
     <div id="navbar-container" class="large-2 columns hide-for-small-down">
     </div>
 
@@ -398,6 +398,31 @@
         </div>
     </section>
     {% endif %}
+
+
+<!-- Complex
+================================================== -->
+    {% if locus.complexes|length > 0 %}
+    <section id="complex">
+        <h2>Complex
+		<a href="#" data-dropdown="summary_help"><i class="fa fa-info-circle"></i></a>
+                <p id="summary_help" class="f-dropdown content medium" data-dropdown-content>
+		     Macromolecular complex annotations are imported from the <a href='https://www.ebi.ac.uk/complexportal/home' target='infowin2'>Complex Portal</a>. These annotations have been derived from physical molecular interaction evidence extracted from the literature and cross-referenced in the entry, or by curator inference from information on homologs in closely related species or by inference from scientific background.
+	        </p>
+	</h2>
+        <hr />
+	{{ locus.complex_details }}
+
+	<div class="panel">
+            <ul>
+                {% for c in locus.complexes %}
+                    <li><a href="/complex/{{ c.format_name }}">{{ c.display_name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+    {% endif %}
+    
 <!-- Pathway
 ================================================== -->
     {% if locus.pathways|length > 0 %}

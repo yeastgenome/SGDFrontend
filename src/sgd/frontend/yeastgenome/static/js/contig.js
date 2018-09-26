@@ -22,7 +22,7 @@ $(document).ready(function() {
         create_download_button("chromosomal_coord_table_download", feature_table, contig['display_name'] + '_features');
         create_analyze_button("chromosomal_coord_table_analyze", feature_table, "<a href='" + contig['link'] + "' class='gene_name'>" + contig['display_name'] + "</a> genes", true);
 
-        if (data['genomic_dna'].length) {
+        if (data['genomic_dna'].length > 1) {
             set_up_sequence("feature_div", data['genomic_dna']);        
         }
   	});

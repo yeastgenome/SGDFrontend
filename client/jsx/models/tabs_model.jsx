@@ -12,8 +12,8 @@ module.exports = class TabsModel {
 		options.rawTabsData = options.rawTabsData || {
 			protein_tab: false,
 			go_tab: false,
-			phenotype_tab: false,
 			disease_tab: false,
+			phenotype_tab: false,
 			interaction_tab: false,
 			regulation_tab: false,
 			expression_tab: false,
@@ -40,11 +40,13 @@ module.exports = class TabsModel {
 	_getSequenceTabs () {
 		var altElement = this.attributes.hasAltStrains ? { name: "Alternative Reference Strains", target: "alternative" } : null;
 		var otherElement = this.attributes.hasOtherStrains ? { name: "Other Strains", target: "other" } : null;
+		var vvElement = this.attributes.hasAltStrains ? { name: "Variants", target: "variants" } : null;
 
 		return [
 			{ name: "Sequence Overview", target: "overview" },
 			{ name: "Reference Strain: S288C", target: "reference" },
 			altElement,
+			vvElement,
 			otherElement,
 			{ name: "History", target: "history" },
 			{ name: "Resources", target: "resources" }
@@ -57,6 +59,7 @@ module.exports = class TabsModel {
 			(this.attributes.rawTabsData.sequence_section ? { name: "Sequence", target: "sequence" } : null),
 			(this.attributes.rawTabsData.protein_tab ? { name: "Protein", target: "protein" } : null),
 			(this.attributes.rawTabsData.go_tab ? { name: "Gene Ontology", target: "go" } : null),
+			(this.attributes.hasComplexes ? { name: "Complex", target: "complex" } : null),
 			(this.attributes.hasPathways ?  { name: "Pathways", target: "pathway" } : null),
 			(this.attributes.rawTabsData.phenotype_tab ? { name: "Phenotype", target: "phenotype" } : null),
 			(this.attributes.rawTabsData.disease_tab ? { name: "Disease", target: "disease" } : null),

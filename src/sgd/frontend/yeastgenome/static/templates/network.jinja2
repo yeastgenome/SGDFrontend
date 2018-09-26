@@ -1,8 +1,18 @@
 <div class="panel">
-    <div class="sgd-cyto-canvas-container">
-        <canvas id="j-sgd-visible-cyto-canvas" class="j-sgd-cyto-canvas" style="position: absolute; z-index: 0;"></canvas>
-        <canvas id="j-sgd-hidden-cyto-canvas" class="j-sgd-cyto-canvas" style="position: absolute; display: none;"></canvas>
-    </div>
+    {% block canvas_id %}
+        {% if canvas_id %}
+            <div class="sgd-cyto-canvas-container{{ canvas_id }}">
+	          <canvas id="j-sgd-visible-cyto-canvas{{ canvas_id }}" class="j-sgd-cyto-canvas{{ canvas_id }}" style="position: absolute; z-index: 0;"></canvas>
+                  <canvas id="j-sgd-hidden-cyto-canvas{{ canvas_id }}" class="j-sgd-cyto-canvas{{ canvas_id}}" style="position: absolute; display: none;"></canvas>
+    	    </div>
+	{% else %}
+	    <div class="sgd-cyto-canvas-container">
+                  <canvas id="j-sgd-visible-cyto-canvas" class="j-sgd-cyto-canvas" style="position: absolute; z-index: 0;"></canvas>
+                  <canvas id="j-sgd-hidden-cyto-canvas" class="j-sgd-cyto-canvas" style="position: absolute; display: none;"></canvas>
+            </div>
+	{% endif %}
+    {% endblock %}
+    
 
     <a id="{{ network_id }}_recenter" class="small button secondary radius">Reset</a>
 
@@ -12,16 +22,36 @@
         {% block help %}{% endblock %}
     </p>
 
-    <div id="{{ network_id }}" name="cy" style="width:100%;height:700px"></div>
+    {% block network_name %}
+
+       {% if network_name %}
+       	  <div id="{{ network_id }}" name="{{ network_name }}" style="width:100%;height:700px"></div>
+       {% else %}
+       	  <div id="{{ network_id }}" name="cy" style="width:100%;height:700px"></div>
+       {% endif %}
+
+    {% endblock %}
 
     {% block legend %}{% endblock %}
 
 </div>
 
 <div class="button-bar">
-    <ul class="button-group radius">
-        <li><a disabled="true" id="cy_download" class="small button secondary" disabled="true"><i
-                class="fa fa-download"></i> Download (.png)</a></li>
-    </ul>
+
+    {% block download_buttons %}
+          {% if download_button_id %}
+		<ul class="button-group radius">
+            	    <li><a disabled="true" id="{{ download_button_id }}" class="small button secondary" disabled="true"><i
+                    	   class="fa fa-download"></i> Download (.png)</a></li>
+    		</ul>
+	  {% else %}
+	      	<ul class="button-group radius">
+                    <li><a disabled="true" id="cy_download" class="small button secondary" disabled="true"><i
+                           class="fa fa-download"></i> Download (.png)</a></li>
+                </ul>  
+	  {% endif %} 
+
+    {% endblock %}
+	
     {% block additional_buttons %}{% endblock %}
 </div>

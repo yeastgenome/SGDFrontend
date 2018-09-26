@@ -16,7 +16,7 @@ sequenceView.render = function () {
     var _tabModel = new TabsModel({
       tabType: "sequence",
       hasAltStrains: hasAltStrains,
-      hasOtherStrains: hasOtherStrains
+      hasOtherStrains: hasOtherStrains,
     });
     var _navTitleText = _tabModel.getNavTitle(bootstrappedData.displayName, bootstrappedData.formatName);
     ReactDOM.render(
@@ -32,11 +32,12 @@ sequenceView.render = function () {
 
   // async sequence view, fetches data, renders main strain, alt strains, and other strains (if present)
   // once data is fetched, update the navbar
+  var _showVariants = bootstrappedData.featureType === 'ORF';
   ReactDOM.render(
     <AsyncSequenceView
       locusId={bootstrappedData.locusId} locusDisplayName={bootstrappedData.displayName}
       locusFormatName={bootstrappedData.formatName} locusHistoryData={bootstrappedData.locusHistory}
-      detailsCallback={_detailsCallback} locusSGDID={bootstrappedData.sgdid}
+      detailsCallback={_detailsCallback} locusSGDID={bootstrappedData.sgdid} showVariants={_showVariants}
     />,
     document.getElementById("sequence-viz")
   );
