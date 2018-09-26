@@ -17,7 +17,7 @@ import datetime
 import logging
 import json
 
-from .models import DBSession, ESearch, Colleague, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, Dataset, DatasetKeyword, Contig, Proteindomain, Ec, Dnasequenceannotation, Straindbentity, Disease, Goslim, So, ApoRelation, GoRelation
+from .models import DBSession, ESearch, Colleague, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, Dataset, DatasetKeyword, Contig, Proteindomain, Ec, Dnasequenceannotation, Straindbentity, Disease, Complexdbentity, Goslim, So, ApoRelation, GoRelation
 from .helpers import extract_id_request, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id, get_disease_by_id, primer3_parser
 from .search_helpers import build_autocomplete_search_body_request, format_autocomplete_results, build_search_query, build_es_search_body_request, build_es_aggregation_body_request, format_search_results, format_aggregation_results, build_sequence_objects_search_query
 from .models_helpers import ModelsHelper
@@ -247,20 +247,21 @@ def genomesnapshot(request):
     genome_snapshot['go_slim_relationships'] = go_slim_relationships
     distinct_so_ids = DBSession.query(distinct(Dnasequenceannotation.so_id)).filter_by(taxonomy_id=TAXON_ID).all()
     rows = DBSession.query(So.so_id, So.display_name).filter(So.so_id.in_(distinct_so_ids)).all()
-    contigs = DBSession.query(Contig).filter(Contig.display_name.like("Chromosome%")).order_by(Contig.contig_id).all()
+    contigs = DBSession.query(Contig).filter(or_(Contig.display_name.like("%micron%"), Contig.display_name.like("Chromosome%"))).order_by(Contig.contig_id).all()
     columns = [contig.to_dict_sequence_widget() for contig in contigs]
     genome_snapshot['columns'] = columns
     data = list()
+    active_db_entity_ids = DBSession.query(Dbentity.dbentity_id).filter(Dbentity.dbentity_status=='Active')
     for row in rows:
         row_data = list()
         # Insert display_name of each row as first item in each 'data' list item.
         # Data needs to be sorted in descending order of number of features
         row_data.append(row.display_name)
         for column in columns:
-            count = DBSession.query(Dnasequenceannotation).filter(and_(Dnasequenceannotation.so_id==row.so_id, Dnasequenceannotation.contig_id==column['id'], Dnasequenceannotation.dna_type==GENOMIC)).count()
+            count = DBSession.query(Dnasequenceannotation).filter(and_(Dnasequenceannotation.so_id==row.so_id, Dnasequenceannotation.contig_id==column['id'], Dnasequenceannotation.dna_type==GENOMIC, Dnasequenceannotation.dbentity_id.in_(active_db_entity_ids))).count()
             row_data.append(count)
         data.append(row_data)
-     # sort the list of lists 'data' in descending order based on sum of values in each list except first item(display_name)
+    # sort the list of lists 'data' in descending order based on sum of values in each list except first item(display_name)
     data = sorted(data, key=lambda item: sum(item[1:]), reverse=True)
     data_row = list()
     for item in data:
@@ -1220,8 +1221,6 @@ def primer3(request):
     except Exception as e:
         return HTTPBadRequest(body=json.dumps({'error': str(e) }))
 
-
-
 @view_config(route_name='ecnumber_locus_details', renderer='json', request_method='GET')
 def ecnumber_locus_details(request):
     id = extract_id_request(request, 'ec')
@@ -1232,6 +1231,18 @@ def ecnumber_locus_details(request):
         return ec.locus_details()
     else:
         return HTTPNotFound()
+
+@view_config(route_name='complex', renderer='json', request_method='GET')
+def complex(request):
+    
+    complexAC = request.matchdict['id']
+
+    complex = DBSession.query(Complexdbentity).filter_by(format_name=complexAC).one_or_none() 
+
+    if complex is not None:
+        return complex.protein_complex_details()
+    else:
+        return {}
 
 # check for basic rad54 response
 @view_config(route_name='healthcheck', renderer='json', request_method='GET')

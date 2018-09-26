@@ -1,12 +1,12 @@
 import datetime
 import factory
-from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRelation, ColleagueKeyword, Keyword, Dbuser, Dbentity, Edam, \
+from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRelation, ColleagueKeyword, Complexdbentity, Complexbindingannotation, Keyword, Dbuser, Dbentity, Edam, \
     Referencedbentity, Journal, Book, FileKeyword, Filedbentity, FilePath, Referencedocument, Chebi, ChebiUrl, Phenotypeannotation, \
     PhenotypeannotationCond, Locusdbentity, Locussummary, Taxonomy, Phenotype, Apo, Allele, Reporter, Obi, Reservedname, Straindbentity, StrainUrl, \
     Strainsummary, StrainsummaryReference, Dataset, DatasetReference, DatasetKeyword, Referencetype, ReferenceRelation, ReferenceUrl, Referenceauthor, \
     Physinteractionannotation, Geninteractionannotation, Goannotation, Regulationannotation, Literatureannotation, Contig, EcoAlias, EcoUrl, Goextension, \
     Gosupportingevidence, Eco, Ro, Go, GoRelation, GoUrl, GoAlias, ApoRelation, Referencetriage, Proteinsequenceannotation, ProteinsequenceDetail, \
-    Goslimannotation, Goslim, Expressionannotation, Datasetsample, DatasetUrl, DatasetFile, ReferenceAlias, Dnasequenceannotation, Dnasubsequence,\
+    Goslimannotation, Interactor, Goslim, Expressionannotation, Datasetsample, DatasetUrl, DatasetFile, ReferenceAlias, Dnasequenceannotation, Dnasubsequence,\
     So, ContigUrl, LocusAlias, LocusAliasReferences, LocusReferences, LocussummaryReference, LocusUrl, Posttranslationannotation,\
     Psimod, Proteinexptannotation, Proteindomainannotation, Proteindomain, ProteindomainUrl, Ec, EcAlias, EcUrl, LocusRelation, LocusRelationReference, \
     Locusnote, LocusnoteReference, Pathwayannotation, Pathwaydbentity, PathwayUrl, Bindingmotifannotation, Disease, Diseaseannotation
@@ -63,6 +63,40 @@ class ColleagueFactory(factory.alchemy.SQLAlchemyModelFactory):
     date_last_modified = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
+
+class ComplexFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Complexdbentity
+        sqlalchemy_session = DBSession
+
+    dbentity_id = 1
+    intact_id = 1
+    systematic_name = "lorem"
+    eco_id = 1
+    description = "lorem"
+    properties = "lorem"
+    complex_accession = "lorem"
+
+
+class ComplexbindingannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Complexbindingannotation
+        sqlalchemy_session = DBSession
+
+    annotation_id = 1
+    complex_id = 1
+    interactor_id = 1
+    binding_interactor_id = 1
+    source_id = 1
+    reference_id = 1
+    taxonomy_id = 1
+    binding_type_id = 1
+    range_start = 1
+    range_end = 1
+    stoichiometry = 1
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+    complex = factory.SubFactory(ComplexFactory)
 
 class KeywordFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
@@ -1625,6 +1659,25 @@ class LocusnoteFactory(factory.alchemy.SQLAlchemyModelFactory):
     note_class = "note class"
     note_type = "note type"
     note = "note"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class InteractorFactory(factory.alchemy.SQLAlchemyModelFactory):
+
+    class Meta:
+        model = Interactor
+        sqlalchemy_session = DBSession
+
+    interactor_id = 1
+    format_name = "lorem"
+    display_name = "lorem"
+    obj_url = "/interactor/1"
+    source_id = 1
+    locus_id = 1
+    description = "loreum ipsum"
+    type_id = 1
+    role_id = 1
+    residues = "ACTG"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
