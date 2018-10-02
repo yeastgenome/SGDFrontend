@@ -2561,9 +2561,11 @@ class Locusdbentity(Dbentity):
         return obj
 
     def complex_details(self):
-        interactor = DBSession.query(Interactor).filter_by(locus_id = self.dbentity_id).one_or_none()
-        if interactor is None:
+        # interactor = DBSession.query(Interactor).filter_by(locus_id = self.dbentity_id).one_or_none()
+        interactors = DBSession.query(Interactor).filter_by(locus_id = self.dbentity_id).all()   
+        if interactors is None:
             return []
+        interactor = interactors[0]
         complexes = DBSession.query(Complexbindingannotation).filter_by(interactor_id = interactor.interactor_id).all()
         data = []
 
