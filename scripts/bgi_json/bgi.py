@@ -1,4 +1,4 @@
-from src.models import DBSession, Base, Colleague, ColleagueLocus, Dbentity, Locusdbentity, LocusUrl, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi
+from src.models import DBSession, Base, Colleague, ColleagueLocus, Dbentity, Eco, Locusdbentity, LocusUrl, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi
 from sqlalchemy import create_engine, and_, inspect
 import os
 import json
@@ -93,7 +93,9 @@ def get_bgi_data(soFlag=False):
                     temp_itm.append("gene/expression")
                     temp_itm.append("gene/spell")
                 if(item.has_interaction):
-                    temp_itm.append("gene/interaction")
+                    temp_itm.append("gene/interactions")
+                if(item.has_disease):
+                    temp_itm.append("gene/disease")
 
                 obj["crossReferences"].append({"id": "SGD:"+item.sgdid, "pages": temp_itm})
                 item_panther = combined_list[item_key]["panther_id"]
@@ -147,13 +149,13 @@ def get_bgi_data(soFlag=False):
                                 temp_cross_item = mod_value.get("crossReferences")
                                 if(len(temp_cross_item) > 1):
                                     for x_ref in temp_cross_item:
-                                        obj["crossReferences"].append({"id": str(x_ref), "pages": ["generic_cross_reference"]})
+                                        obj["crossReferences"].append({"id": str(x_ref)})
                                 else:
                                     if(len(temp_cross_item) == 1):
-                                        obj["crossReferences"].append({"id": str(temp_cross_item[0]), "pages": ["generic_cross_reference"]})
+                                        obj["crossReferences"].append({"id": str(temp_cross_item[0])})
                                         #obj["crossReferences"] = [str(temp_cross_item[0])]
                     if(item_panther is not None):
-                        obj["crossReferences"].append({"id": "PANTHER:" + item_panther, "pages": ["generic_cross_reference"]})
+                        obj["crossReferences"].append({"id": "PANTHER:" + item_panther})
                         #obj["crossReferences"].append("PANTHER:" + item_panther)
                         obj["primaryId"] = "SGD:" + item.sgdid
                         item = combined_list[item_key]["locus_obj"]
@@ -173,15 +175,18 @@ def get_bgi_data(soFlag=False):
                 output_obj = {
                     "data": result,
                     "metaData": {
-                        "dataProvider":
-                            "SGD",
-                        "dateProduced":
-                            datetime.utcnow().strftime("%Y-%m-%dT%H:%m:%S-00:00"),
-                        "release":
-                            "SGD 1.0.0.0 " + datetime.utcnow().strftime("%Y-%m-%d")
+                        "dataProvider": {
+                            "crossReference": {
+                                "id":"SGD",
+                                "pages": ["homepage"]
+                            },
+                            "type": "curated"
+                        },
+                        "dateProduced": datetime.utcnow().strftime("%Y-%m-%dT%H:%m:%S-00:00"),
+                        "release": "SGD 1.0.0.7 " + datetime.utcnow().strftime("%Y-%m-%d")
                     }
                 }
-                fileStr = './scripts/bgi_json/data_dump/SGD.1.0.0.0_basicGeneInformation_' + str(randint(0, 1000)) + '.json'
+                fileStr = './scripts/bgi_json/data_dump/SGD_1.0.0.7_basicGeneInformation.' + str(randint(0, 1000)) + '.json'
                 with open(fileStr, 'w+') as res_file:
                     res_file.write(json.dumps(output_obj))
 
@@ -249,10 +254,6 @@ def get_phenotype_data():
                 "phenotypeStatement": "",
                 "dateAssigned": ""
             }
-            if item.reference.pmid:
-                obj["pubMedId"] = "PMID:" + str(item.reference.pmid)
-            else:
-                obj["pubModId"] = "SGD:" + str(item.reference.sgdid)
             if item.phenotype.qualifier:
                 pString = item.phenotype.qualifier.display_name
                 obj["phenotypeTermIdentifiers"].append({
@@ -275,6 +276,10 @@ def get_phenotype_data():
                     })
             obj["objectId"] = "SGD:" + str(item.dbentity.sgdid)
             obj["phenotypeStatement"] = pString
+            obj["evidence"] = {
+                "modPublicationId": "SGD:" + str(item.reference.sgdid),
+                "pubMedId": "PMID:" + str(item.reference.pmid)
+            }
             obj["dateAssigned"] = item.date_created.strftime(
                 "%Y-%m-%dT%H:%m:%S-00:00")
             result.append(obj)
@@ -283,18 +288,116 @@ def get_phenotype_data():
             output_obj = {
                 "data": result,
                 "metaData": {
-                    "dataProvider":
-                        "SGD",
-                    "dateProduced":
-                        datetime.utcnow().strftime("%Y-%m-%dT%H:%m:%S-00:00"),
-                    "release":
-                        "SGD 1.0.0.3 " + datetime.utcnow().strftime("%Y-%m-%d")
+                    "dataProvider": {
+                        "crossReference": {
+                            "id":"SGD",
+                            "pages": ["homepage"]
+                        },
+                        "type": "curated"
+                    },
+                    "dateProduced": datetime.utcnow().strftime("%Y-%m-%dT%H:%m:%S-00:00"),
+                    "release": "SGD 1.0.0.7 " + datetime.utcnow().strftime("%Y-%m-%d")
                 }
             }
-            fileStr = './scripts/bgi_json/data_dump/SGD.1.0.0.4_phenotype_' + str(randint(0, 1000)) + '.json'
+            fileStr = './scripts/bgi_json/data_dump/SGD_1.0.0.7_phenotype.' + str(randint(0, 1000)) + '.json'
             with open(fileStr, 'w+') as res_file:
                 res_file.write(json.dumps(output_obj))
 
+
+def get_expression_data():
+    CC = 'cellular component'
+    desired_eco_ids = DBSession.query(Eco.eco_id).filter(Eco.format_name.in_(['ECO:0000314','ECO:0007005', 'ECO:0000353'])).all()
+    DEFAULT_MMO = 'MMO:0000642'
+    pmid_to_mmo = {
+        14562095: 'MMO:0000662',
+        26928762: 'MMO:0000662',
+        16823961: 'MMO:0000534',
+        24769239: 'MMO:0000534',
+        22842922: 'MMO:0000662',
+        14576278: 'MMO:0000534',
+        11914276: 'MMO:0000662',
+        22932476: 'MMO:0000662',
+        24390141: 'MMO:0000662',
+        16622836: 'MMO:0000664',
+        26777405: 'MMO:0000662',
+        12150911: 'MMO:0000662',
+        14690591: 'MMO:0000662',
+        10684247: 'MMO:0000534',
+        16702403: 'MMO:0000662',
+        16407407: 'MMO:0000534',
+        19053807: 'MMO:0000662',
+        23212245: 'MMO:0000534',
+        12068309: 'MMO:0000662',
+        9448009: 'MMO:0000662',
+        11983894: 'MMO:0000534',
+        19040720: 'MMO:0000534',
+        15282802: 'MMO:0000662',
+        24868093: 'MMO:0000662',
+        10449419: 'MMO:0000534',
+        12392552: 'MMO:0000534',
+        8915539: 'MMO:0000647',
+        10377396: 'MMO:0000534'
+    }
+    genes = Locusdbentity.get_s288c_genes()
+    result = []
+    print("computing " + str(len(genes)) + " expression data points")
+    dbentity_id_to_mmo = {}
+    for gene in genes:
+        go_annotations = DBSession.query(Goannotation, Go).outerjoin(Go).filter(and_(\
+            Goannotation.dbentity_id==gene.dbentity_id,\
+            Goannotation.annotation_type != 'computational',\
+            Goannotation.eco_id.in_(desired_eco_ids),\
+            Go.go_namespace == CC,\
+            Go.display_name!= CC\
+        )).all()
+        for x in go_annotations:
+            annotation = x[0]
+            ref_id = annotation.reference_id
+            go = x[1]
+            ref = DBSession.query(Referencedbentity.pmid, Referencedbentity.sgdid).filter(Referencedbentity.dbentity_id == ref_id).one_or_none()
+            pmid = ref[0]
+            sgdid = ref[1]
+            mmo = None
+            if ref_id in dbentity_id_to_mmo.keys():
+                mmo = dbentity_id_to_mmo[ref_id]
+            else:
+                if pmid not in pmid_to_mmo.keys():
+                    mmo = DEFAULT_MMO
+                else:
+                    mmo = pmid_to_mmo[pmid]
+                dbentity_id_to_mmo[ref_id] = mmo
+            obj = {
+                "geneId": "SGD:" + str(gene.sgdid),
+                "evidence": {
+                    "modPublicationId":"SGD:" + sgdid,
+                    "pubMedId": "PMID:" + str(pmid)
+                },
+                "whenExpressed": { "stageName": "N/A" },
+                "whereExpressed": {
+                    "cellularComponentTermId": go.format_name
+                },
+                "assay": mmo,
+                "dateAssigned": annotation.date_created.strftime("%Y-%m-%dT%H:%m:%S-00:00")
+            }
+            result.append(obj)
+    if len(result) > 0:
+        output_obj = {
+            "data": result,
+            "metaData": {
+                "dataProvider": {
+                    "crossReference": {
+                        "id": "SGD",
+                        "pages": [ "homepage" ]
+                    },
+                    "type": "curated" 
+                },
+                "dateProduced": datetime.utcnow().strftime("%Y-%m-%dT%H:%m:%S-00:00"),
+                "release": "SGD 1.0.0.7 " + datetime.utcnow().strftime("%Y-%m-%d")
+            }
+        }
+        fileStr = './scripts/bgi_json/data_dump/SGD_1.0.0.7_expression.' + str(randint(0, 1000)) + '.json'
+        with open(fileStr, 'w+') as res_file:
+            res_file.write(json.dumps(output_obj))
 
 
 # entry point
@@ -317,3 +420,14 @@ if __name__ == '__main__':
         second_time_taken = "time taken: " + ("--- %s seconds ---" %
                                               (time.time() - second_start_time))
         res_file_2.write(second_time_taken)
+
+
+    third_start_time = time.time()
+    get_expression_data()
+    third_time_taken = "time taken: " + ("--- %s seconds ---" %
+                                   (time.time() - third_start_time))
+    print "------------------ phenotype time taken: " + third_time_taken + " --------------------"
+    with open('./scripts/bgi_json/data_dump/log_time_expresson.txt', 'w+') as res_file_3:
+        third_time_taken = "time taken: " + ("--- %s seconds ---" %
+                                              (time.time() - third_start_time))
+        res_file_3.write(third_time_taken)
