@@ -2561,22 +2561,25 @@ class Locusdbentity(Dbentity):
         return obj
 
     def complex_details(self):
-        interactor = DBSession.query(Interactor).filter_by(locus_id = self.dbentity_id).one_or_none()
-        if interactor is None:
+        # interactor = DBSession.query(Interactor).filter_by(locus_id = self.dbentity_id).one_or_none()
+        interactors = DBSession.query(Interactor).filter_by(locus_id = self.dbentity_id).all()   
+        if len(interactors) == 0:
             return []
-        complexes = DBSession.query(Complexbindingannotation).filter_by(interactor_id = interactor.interactor_id).all()
-        data = []
+        else:
+            interactor = interactors[0]
+            complexes = DBSession.query(Complexbindingannotation).filter_by(interactor_id = interactor.interactor_id).all()
+            data = []
 
-        found = {}
-        for x in complexes:
-            complex = x.complex
-            if complex.format_name in found:
-                continue
-            found[complex.format_name] = 1
-            data.append({ "format_name": complex.format_name,
-                          "display_name": complex.display_name })
-        data = sorted(data, key=lambda c: c['display_name'])
-        return data
+            found = {}
+            for x in complexes:
+                complex = x.complex
+                if complex.format_name in found:
+                    continue
+                found[complex.format_name] = 1
+                data.append({ "format_name": complex.format_name,
+                              "display_name": complex.display_name })
+            data = sorted(data, key=lambda c: c['display_name'])
+            return data
 
     def posttranslational_details(self):
         annotations = DBSession.query(Posttranslationannotation).filter_by(dbentity_id=self.dbentity_id).order_by(Posttranslationannotation.site_index).all()
