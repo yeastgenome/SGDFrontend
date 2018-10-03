@@ -236,7 +236,7 @@ BEGIN
     v_row := OLD.colleague_id || '[:]' || OLD.format_name || '[:]' ||
              OLD.display_name || '[:]' || OLD.obj_url || '[:]' ||
              OLD.source_id || '[:]' || coalesce(OLD.bud_id,0) || '[:]' ||
-             coalesce(OLD.orcid,0) || '[:]' || OLD.first_name || '[:]' ||
+             coalesce(OLD.orcid,'') || '[:]' || OLD.first_name || '[:]' ||
              coalesce(OLD.middle_name,'') || '[:]' || OLD.last_name || '[:]' ||
              coalesce(OLD.suffix,'') || '[:]' || coalesce(OLD.other_last_name,'') || '[:]' ||
              coalesce(OLD.profession,'') || '[:]' || coalesce(OLD.job_title,'') || '[:]' ||
