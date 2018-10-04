@@ -210,11 +210,11 @@ def dump_data():
 
     log.info("Uploading GAF file to S3...")
 
-    update_database_load_file_to_s3(nex_session, gaf_file, 1, source_to_id, edam_to_id, datestamp)
+    update_database_load_file_to_s3(nex_session, gaf_file, '1', source_to_id, edam_to_id, datestamp)
 
     log.info("Uploading GAF file for yeastmine to S3...")
 
-    update_database_load_file_to_s3(nex_session, gaf_file4yeastmine, 0, source_to_id, edam_to_id, datestamp)
+    update_database_load_file_to_s3(nex_session, gaf_file4yeastmine, '0', source_to_id, edam_to_id, datestamp)
 
     nex_session.close()
 
@@ -256,7 +256,7 @@ def update_database_load_file_to_s3(nex_session, gaf_file, is_public, source_to_
 
     # nex_session.query(Dbentity).filter_by(display_name=gzip_file, dbentity_status='Active').update({"dbentity_status": 'Archived'})
 
-    if is_public == 1:
+    if is_public == '1':
         nex_session.query(Dbentity).filter(Dbentity.display_name.like('gene_association.sgd%')).filter(Dbentity.dbentity_status=='Active').update({"dbentity_status":'Archived'}, synchronize_session='fetch')
         nex_session.commit()
 
