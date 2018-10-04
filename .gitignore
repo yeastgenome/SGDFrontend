@@ -103,3 +103,4 @@ index_*.png
 
 *.env
 src/Untitled*
+dev_variables_old.sh
