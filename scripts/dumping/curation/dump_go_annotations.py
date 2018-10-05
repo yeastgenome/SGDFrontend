@@ -266,7 +266,7 @@ def update_database_load_file_to_s3(nex_session, gaf_file, is_public, source_to_
 
     ### upload a current GAF file to S3 with a static URL for Go Community ###
     if is_public == '1':
-        upload_gaf_to_s3(local_file, "gene_association.sgd.gz")
+        upload_gaf_to_s3(local_file, "latest/gene_association.sgd.gz")
     ##########################################################################
 
     local_file = open(gzip_file)
