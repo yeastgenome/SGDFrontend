@@ -2,6 +2,10 @@ from datetime import datetime
 import logging
 import os
 import sys
+import boto
+from boto.s3.key import Key
+import transaction
+
 from src.models import Dbentity, Locusdbentity, Referencedbentity, Taxonomy, \
                        Go, Ro, EcoAlias, Source, Goannotation, Goextension, \
                        Gosupportingevidence, LocusAlias, Edam, Path, FilePath, \
@@ -14,6 +18,10 @@ __author__ = 'sweng66'
 logging.basicConfig(format='%(message)s')
 log = logging.getLogger()
 log.setLevel(logging.INFO)
+
+S3_ACCESS_KEY = os.environ['S3_ACCESS_KEY']
+S3_SECRET_KEY = os.environ['S3_SECRET_KEY']
+S3_BUCKET = os.environ['S3_BUCKET']
 
 CREATED_BY = os.environ['DEFAULT_USER']
 
@@ -231,6 +239,17 @@ def write_header(fw, datestamp):
     fw.write("!Funding: NHGRI at US NIH, grant number 5-P41-HG001315\n")
     fw.write("!\n")
 
+def upload_gaf_to_s3(file, filename):
+
+    s3_path = filename
+    conn = boto.connect_s3(S3_ACCESS_KEY, S3_SECRET_KEY)
+    bucket = conn.get_bucket(S3_BUCKET)
+    k = Key(bucket)
+    k.key = s3_path
+    k.set_contents_from_file(file, rewind=True)
+    k.make_public()
+    transaction.commit()
+
 def update_database_load_file_to_s3(nex_session, gaf_file, is_public, source_to_id, edam_to_id, datestamp):
 
     # gene_association.sgd.20171204.gz
@@ -242,6 +261,13 @@ def update_database_load_file_to_s3(nex_session, gaf_file, is_public, source_to_
     import shutil
     with open(gaf_file, 'rb') as f_in, gzip.open(gzip_file, 'wb') as f_out:
         shutil.copyfileobj(f_in, f_out)
+
+    local_file = open(gzip_file)
+
+    ### upload a current GAF file to S3 with a static URL for Go Community ###
+    if is_public == '1':
+        upload_gaf_to_s3(local_file, "latest/gene_association.sgd.gz")
+    ##########################################################################
 
     local_file = open(gzip_file)
 
@@ -314,6 +340,7 @@ def update_database_load_file_to_s3(nex_session, gaf_file, is_public, source_to_
     nex_session.add(x)
     nex_session.commit()
 
+    log.info("Done uploading " + gaf_file)
 
 if __name__ == '__main__':
     
