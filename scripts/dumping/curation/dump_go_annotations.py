@@ -252,11 +252,11 @@ def upload_gaf_to_s3(file, filename):
 
 def update_database_load_file_to_s3(nex_session, gaf_file, is_public, source_to_id, edam_to_id, datestamp):
 
-    # gene_association.sgd.20171204.gz
-    # gene_association.sgd-yeastmine.20171204.gz
+    # gene_association.sgd.20171204.gaf.gz
+    # gene_association.sgd-yeastmine.20171204.gaf.gz
  
     # datestamp = str(datetime.now()).split(" ")[0].replace("-", "")
-    gzip_file = gaf_file + "." + datestamp + ".gz"
+    gzip_file = gaf_file + "." + datestamp + ".gaf.gz"
     import gzip
     import shutil
     with open(gaf_file, 'rb') as f_in, gzip.open(gzip_file, 'wb') as f_out:
@@ -266,7 +266,7 @@ def update_database_load_file_to_s3(nex_session, gaf_file, is_public, source_to_
 
     ### upload a current GAF file to S3 with a static URL for Go Community ###
     if is_public == '1':
-        upload_gaf_to_s3(local_file, "latest/gene_association.sgd.gz")
+        upload_gaf_to_s3(local_file, "latest/gene_association.sgd.gaf.gz")
     ##########################################################################
 
     local_file = open(gzip_file)
