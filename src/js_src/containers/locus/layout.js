@@ -13,7 +13,7 @@ import { PREVIEW_URL } from '../../constants.js';
 
 const BASE_CURATE_URL = '/curate/locus';
 const SECTIONS = [
-  // 'basic',
+  'basic',
   // 'gene_name',
   'summaries'
 ];
