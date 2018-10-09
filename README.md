@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/yeastgenome/SGDBackend-Nex2.svg)](https://travis-ci.org/yeastgenome/SGDBackend-Nex2)
 
-[![Coverage Status](https://coveralls.io/repos/github/yeastgenome/SGDBackend-Nex2/badge.svg?branch=master)](https://coveralls.io/github/yeastgenome/SGDBackend-Nex2?branch=5178_coveralls)
+[![Coverage Status](https://coveralls.io/repos/github/yeastgenome/SGDBackend-Nex2/badge.svg?branch=master)](https://coveralls.io/github/yeastgenome/SGDBackend-Nex2?branch=master)
 
 A restful web service for the Saccharomyces Genome Database (SGD) NEX 2, as well as an authenticated curation interface.
 
