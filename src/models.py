@@ -8401,6 +8401,120 @@ class PsimiAlias(Base):
     psimi = relationship(u'Psimi')
     source = relationship(u'Source')
 
+class Efo(Base):
+    __tablename__ = 'efo'
+    __table_args__ = {u'schema': 'nex'}
+
+    efo_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
+    format_name = Column(String(100), nullable=False, unique=True)
+    display_name = Column(String(500), nullable=False)
+    obj_url = Column(String(500), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    efoid = Column(String(20), nullable=False, unique=True)
+    description = Column(String(2000))
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+    is_obsolete = Column(Boolean, nullable=False)
+
+    source = relationship(u'Source')
+
+
+class EfoRelation(Base):
+    __tablename__ = 'efo_relation'
+    __table_args__ = (
+        UniqueConstraint('parent_id', 'child_id', 'ro_id'),
+        {u'schema': 'nex'}
+    )
+
+    relation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.relation_seq'::regclass)"))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    parent_id = Column(ForeignKey(u'nex.efo.efo_id', ondelete=u'CASCADE'), nullable=False)
+    child_id = Column(ForeignKey(u'nex.efo.efo_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    ro_id = Column(ForeignKey(u'nex.ro.ro_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    child = relationship(u'Efo', primaryjoin='EfoRelation.child_id == Efo.efo_id')
+    parent = relationship(u'Efo', primaryjoin='EfoRelation.parent_id == Efo.efo_id')
+    ro = relationship(u'Ro')
+    source = relationship(u'Source')
+
+class EfoUrl(Base):
+    __tablename__ = 'efo_url'
+    __table_args__ = (
+        UniqueConstraint('efo_id', 'display_name', 'obj_url'),
+        {u'schema': 'nex'}
+    )
+
+    url_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.url_seq'::regclass)"))
+    display_name = Column(String(500), nullable=False)
+    obj_url = Column(String(500), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    efo_id = Column(ForeignKey(u'nex.efo.efo_id', ondelete=u'CASCADE'), nullable=False)
+    url_type = Column(String(40), nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    efo = relationship(u'Efo')
+    source = relationship(u'Source')
+
+class EfoAlias(Base):
+    __tablename__ = 'efo_alias'
+    __table_args__ = (
+        UniqueConstraint('alias_id', 'display_name', 'alias_type'),
+        {u'schema': 'nex'}
+    )
+
+    alias_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.alias_seq'::regclass)"))
+    display_name = Column(String(500), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False,index=True)
+    efo_id = Column(ForeignKey(u'nex.efo.efo_id', ondelete=u'CASCADE'), nullable=False)
+    alias_type = Column(String(40), nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    efo = relationship(u'Efo')
+    source = relationship(u'Source')
+
+
+class Proteinabundanceannotation(Base):
+    __tablename__ = 'proteinabundanceannotation'
+    __table_args__ = (
+        UniqueConstraint('dbentity_id', 'original_reference_id', 'assay_id', 'media_id', 'taxonomy_id', 'chemical_id', 'process_id'),
+        {u'schema': 'nex'}
+    )
+
+    annotation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.annotation_seq'::regclass)"))
+    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    original_reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    assay_id = Column(ForeignKey(u'nex.eco.eco_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    media_id = Column(ForeignKey(u'nex.efo.efo_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    data_value = Column(Integer)
+    data_unit = Column(String)
+    fold_change = Column(Float)
+    chemical_id = Column(ForeignKey(u'nex.chebi.chebi_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    process_id = Column(ForeignKey(u'nex.go.go_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    concentration_value = Column(Float)
+    concentration_unit = Column(String)
+    time_value = Column(Integer)
+    time_unit = Column(String)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+    
+
+    eco = relationship(u'Eco')
+    efo = relationship(u'Efo')
+    dbentity = relationship(u'Dbentity')
+    reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
+    original_reference = relationship(u'Referencedbentity', foreign_keys=[original_reference_id])
+    chebi = relationship(u'Chebi')
+    go = relationship(u'Go')
+    source = relationship(u'Source')
+    taxonomy = relationship(u'Taxonomy')
+
 
 class Complexdbentity(Dbentity):
     __tablename__ = 'complexdbentity'
