@@ -158,8 +158,7 @@ def load_new_data(nex_session, data, source_to_id, efoid_to_efo, ro_id, roid_to_
 
             link_id = x['id'].replace(':', '_')
             insert_url(nex_session, source_to_id['OLS'], 'OLS', efo_id,
-                       "https://www.ebi.ac.uk/ols/ontologies/efo/properties?iri=http%3A%2F%2Fwww.ebi.ac.uk%2Fefo%2F" + link_id, fw)
-
+                       "http://www.ebi.ac.uk/efo/" + link_id, fw)
 
             ## add RELATIONS
             for parent_efoid in x['parents']:
