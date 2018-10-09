@@ -8476,6 +8476,46 @@ class EfoAlias(Base):
     efo = relationship(u'Efo')
     source = relationship(u'Source')
 
+
+class Proteinabundanceannotation(Base):
+    __tablename__ = 'proteinabundanceannotation'
+    __table_args__ = (
+        UniqueConstraint('dbentity_id', 'original_reference_id', 'assay_id', 'media_id', 'taxonomy_id', 'chemical_id', 'process_id'),
+        {u'schema': 'nex'}
+    )
+
+    annotation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.annotation_seq'::regclass)"))
+    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    original_reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    assay_id = Column(ForeignKey(u'nex.eco.eco_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    media_id = Column(ForeignKey(u'nex.efo.efo_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    data_value = Column(Integer)
+    data_unit = Column(String)
+    fold_change = Column(Float)
+    chemical_id = Column(ForeignKey(u'nex.chebi.chebi_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    process_id = Column(ForeignKey(u'nex.go.go_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    concentration_value = Column(Float)
+    concentration_unit = Column(String)
+    time_value = Column(Integer)
+    time_unit = Column(String)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+    
+
+    eco = relationship(u'Eco')
+    efo = relationship(u'Efo')
+    dbentity = relationship(u'Dbentity')
+    reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
+    original_reference = relationship(u'Referencedbentity', foreign_keys=[original_reference_id])
+    chebi = relationship(u'Chebi')
+    go = relationship(u'Go')
+    source = relationship(u'Source')
+    taxonomy = relationship(u'Taxonomy')
+
+
 class Complexdbentity(Dbentity):
     __tablename__ = 'complexdbentity'
     __table_args__ = {u'schema': 'nex'}
