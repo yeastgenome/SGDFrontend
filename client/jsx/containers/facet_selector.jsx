@@ -268,6 +268,9 @@ const FacetList = Radium(
       // no more to show, show nothing
       if (visibleLength === DEFAULT_FACET_LENGTH && valLength <= visibleLength)
         return null;
+      /*else if (valLength == 1){
+        return null;
+      }*/
       let text, _onClick;
       // currently showing all, allow collapse
       if (visibleLength === null) {
@@ -284,7 +287,27 @@ const FacetList = Radium(
         };
         text = 'Show more';
         // medium length, show all
-      } else {
+      }
+      else if (valLength < DEFAULT_FACET_LENGTH) {
+        _onClick = e => {
+          e.preventDefault();
+          this.setState({
+            visibleLength: valLength
+          });
+        }
+      }
+    
+      else if (valLength === MEDIUM_FACET_LENGTH) {
+        _onClick = e => {
+          e.preventDefault();
+          this.setState({
+            visibleLength: DEFAULT_FACET_LENGTH
+          });
+        };
+        text = `Show ${DEFAULT_FACET_LENGTH}`;
+
+      }
+       else {
         _onClick = e => {
           e.preventDefault();
           this.setState({ visibleLength: null });
