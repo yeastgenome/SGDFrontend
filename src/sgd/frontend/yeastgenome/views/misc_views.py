@@ -59,7 +59,7 @@ def blog_list(request):
         year = url_params['year']
         start_date = year + '-01-01'
         end_date = year + '-12-31'
-        url_suffix = '?before=' + end_date + '&after=' + start_date
+        url_suffix = '?before=' + end_date + '&after=' + start_date + '&' + offset_expression
     else:
         url_suffix = '?' + offset_expression
     wp_url = BLOG_BASE_URL + url_suffix
@@ -152,7 +152,7 @@ def complex(request):
     if complex_obj is None:
         return not_found(request)
     return render_to_response(TEMPLATE_ROOT + 'complex.jinja2', complex_obj, request=request)
-    
+
 
 # If is_quick, try to redirect to gene page.  If not, or no suitable response, then just show results in script tag and let client js do the rest.
 @view_config(route_name='search')
@@ -203,7 +203,7 @@ def suggestion(request):
 def variant_viewer(request):
     return render_to_response(TEMPLATE_ROOT + 'variant_viewer.jinja2', {}, request=request)
 
-@view_config(route_name='new_gene_name_reservation') 
+@view_config(route_name='new_gene_name_reservation')
 def new_gene_name_reservation(request):
     ci_base = 'https://curate.yeastgenome.org'
     # if config.backend_url != 'https://www.yeastgenome.org/webservice':
@@ -220,7 +220,7 @@ def new_colleague(request):
 @view_config(route_name='primer3')
 def primer3(request):
     return render_to_response(TEMPLATE_ROOT + 'primer3.jinja2', {}, request=request)
-    
+
 @view_config(route_name='home')
 def home(request):
     blog_posts = get_recent_blog_posts()
