@@ -1264,7 +1264,7 @@ def alignment(request):
                 if ".png" in file.previous_file_name:
                     data['protein_images_url'] = s3_url
                 else:
-                    data['protein_align_url'] = .s3_url
+                    data['protein_align_url'] = s3_url
         return data
     else:
         return {}
