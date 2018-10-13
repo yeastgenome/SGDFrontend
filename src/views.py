@@ -1250,23 +1250,21 @@ def alignment(request):
     locus = request.matchdict['id']
 
     files = DBSession.query(Filedbentity).filter(Filedbentity.previous_file_name.like(locus+'%')).all()
-
-    return { "data": str(files) }
-
     
     if len(files) > 0:
         data = {}
         for file in files:
-            if "_dna" in file.previous_file_name:
-                if ".png" in file.previous_file_name:
-                    data['dna_images_url'] = file.s3_url
-                else:
-                    data['dna_align_url'] = file.s3_url
-            else:
-                if ".png" in file.previous_file_name:
-                    data['protein_images_url'] = file.s3_url
-                else:
-                    data['protein_align_url'] = file.s3_url
+            data['data'] = file.previous_file_name
+            // if "_dna" in file.previous_file_name:
+            //    if ".png" in file.previous_file_name:
+            //        data['dna_images_url'] = file.s3_url
+            //    else:
+            //        data['dna_align_url'] = file.s3_url
+            // else:
+            //    if ".png" in file.previous_file_name:
+            //        data['protein_images_url'] = file.s3_url
+            //    else:
+            //        data['protein_align_url'] = file.s3_url
         return data
     else:
         return {}
