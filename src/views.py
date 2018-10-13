@@ -1255,15 +1255,16 @@ def alignment(request):
         data = {}
         for file in files:
             if "_dna" in file.previous_file_name:
+                s3_url = file.s3_url.split("?versionId=")[0]
                 if ".png" in file.previous_file_name:
-                    data['dna_images_url'] = file.s3_url
+                    data['dna_images_url'] = s3_url
                 else:
-                    data['dna_align_url'] = file.s3_url
+                    data['dna_align_url'] = s3_url
             else:
                 if ".png" in file.previous_file_name:
-                    data['protein_images_url'] = file.s3_url
+                    data['protein_images_url'] = s3_url
                 else:
-                    data['protein_align_url'] = file.s3_url
+                    data['protein_align_url'] = .s3_url
         return data
     else:
         return {}
