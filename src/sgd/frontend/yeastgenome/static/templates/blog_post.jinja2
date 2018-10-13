@@ -1,6 +1,6 @@
 {% extends "lite_layout.jinja2" %}
 
-{% block title %}{{ post['title'] }}{% endblock %}
+{% block title  %}{{ post['title'] | safe }}{% endblock %}
 
 {% block body %}
 
@@ -23,7 +23,7 @@
 	</div>
 	<div class="columns small-12 medium-10">
 		<h1>New & Noteworthy</h1>
-		<h2>{{ post['title'] }}</h2>
+		<h2>{{ post['title'] | safe }}</h2>
 		<div class="addthis_toolbox addthis_default_style">
 			<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a><a class="addthis_button_tweet"></a>
 		</div>
