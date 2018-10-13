@@ -1249,10 +1249,11 @@ def alignment(request):
 
     locus = request.matchdict['id']
 
-    return { "data": "hello world" }
-
     files = DBSession.query(Filedbentity).filter(Filedbentity.previous_file_name.like(locus+'%')).all()
 
+    return { "data": str(files) }
+
+    
     if len(files) > 0:
         data = {}
         for file in files:
