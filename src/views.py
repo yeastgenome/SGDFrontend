@@ -1249,10 +1249,6 @@ def alignment(request):
 
     locus = request.matchdict['id']
 
-    nex_session.query(Dbentity).filter(Dbentity.display_name.like('gene_association.\
-sgd%')).filter(Dbentity.dbentity_status=='Active').update({"dbentity_status":'Archived'}\
-, synchronize_session='fetch')
-
     files = DBSession.query(Filedbentity).filter(Filedbentity.previous_file_name.like(locus+'%')).all()
 
     if len(files) > 0:
