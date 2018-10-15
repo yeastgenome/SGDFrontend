@@ -24,7 +24,7 @@
 	<div class="columns small-12 medium-10">
 		<h1>New & Noteworthy</h1>
 		{% for post in posts %}
-			<h2><a href="/blog/{{ post['slug'] }}">{{ post['title'] }}</a></h2>
+			<h2><a href="/blog/{{ post['slug'] }}">{{ post['title'] | safe }}</a></h2>
 			<p>{{ post['simple_date'] }}</p>
 			<div class="addthis_toolbox addthis_default_style">
 				<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a><a class="addthis_button_tweet"></a>
