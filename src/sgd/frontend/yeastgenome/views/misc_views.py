@@ -50,7 +50,7 @@ def blog_list(request):
         page = int(page)
     next_url = request.path + '?page=' + str(page + 1)
     offset = str((page - 1) * BLOG_PAGE_SIZE)
-    offset_expression = 'offset=' + offset + 'number=' + str(BLOG_PAGE_SIZE)
+    offset_expression = 'offset=' + offset + '&' + 'number=' + str(BLOG_PAGE_SIZE)
     if url_params.has_key('category'):
         url_suffix = '?category=' + url_params['category'] + '&' + offset_expression
     elif url_params.has_key('tag'):
