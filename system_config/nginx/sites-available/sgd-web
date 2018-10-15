@@ -14,7 +14,7 @@ server {
     server_name _;
 
     include /etc/nginx/conf.d/proxies;
-    
+
     port_in_redirect off;
 
     location /healthcheck {
@@ -48,16 +48,11 @@ server {
         proxy_pass http://frontend/;
         proxy_redirect          off;
 
-        # force traffic from client to LB to use https
-        if ($http_x_forwarded_proto != "https") {
-                return 301 https://$host$request_uri;
-        }
-
         # remove trailing slashes
-        rewrite ^/(.*)/$ https://$host/$1 permanent;
+        rewrite ^/(.*)/$ /$1 permanent;
 
-        gzip            on;
-        gzip_types    text/html text/plain application/javascript application/x-javascript text/javascript text/xml text/css application/json;
+        gzip          on;
+        gzip_types    text/plain application/javascript application/x-javascript text/javascript text/xml text/css application/json;
     }
 
     location /webservice/ {
@@ -73,27 +68,10 @@ server {
         proxy_send_timeout      300s;
         proxy_read_timeout      300s;
 
-        set $test  "" ;
-
-        # force traffic from client to LB to use https
-        # unless connection is from localhost
-        if ($http_x_forwarded_proto != "https") {
-                set $test  "http" ;
-        }
-
-        if ($remote_addr != "127.0.0.1") {
-                set $test  "${test}-not-local" ;
-        }
-
-        if ($test = "http-not-local") {
-                return 301 https://$host$request_uri;
-        }
-
         # remove trailing slashes
-        rewrite ^/(.*)/$ https://$host/$1 permanent;
+        rewrite ^/(.*)/$ /$1 permanent;
 
-        gzip            on;
-        gzip_types    text/html text/plain application/javascript application/x-javascript text/javascript text/xml text/css application/json;
+        gzip          on;
+        gzip_types    text/plain application/javascript application/x-javascript text/javascript text/xml text/css application/json;
     }
 }
-                 
