@@ -5338,7 +5338,7 @@ class Diseaseannotation(Base):
     def to_dict(self, disease=None, reference=None):
         if disease == None:
             disease = self.disease
-            
+
         if reference == None:
             reference = self.reference
 
