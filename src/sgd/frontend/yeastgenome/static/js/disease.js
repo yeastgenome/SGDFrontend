@@ -157,18 +157,6 @@ var graph_style = cytoscape.stylesheet()
 		'height': 30,
         'shape': 'rectangle'
 	});
-//	.selector("node[sub_type='HAS_CHILDREN']")
-//	.css(
-//		{'background-color': "#165782"
-//	})
-//	.selector("node[sub_type='HAS_DESCENDANTS']")
-//	.css(
-//		{'background-color': "#43a0df"
-//	})
-//	.selector("node[sub_type='NO_DESCENDANTS']")
-//	.css(
-//		{'background-color': "#c9e4f6"
-//	});
 
 var layout = {
     "name": "breadthfirst",
