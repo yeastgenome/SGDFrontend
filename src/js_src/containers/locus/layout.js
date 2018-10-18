@@ -1,3 +1,4 @@
+/*eslint-disable */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
@@ -38,12 +39,8 @@ class LocusLayout extends Component {
     let baseUrl = `${BASE_CURATE_URL}/${this.props.params.id}`;
     let current = this.props.pathname.replace(baseUrl, '');
     let nodes = SECTIONS.map( (d) => {
-      let relative;
-      if (d === 'summaries') {
-        relative = '';
-      } else {
-        relative = `/${d}`;
-      }
+      let relative = d ? `/${d}` : '';
+      current = !current? relative : current; 
       let isActive = (current === relative);
       let url = `${baseUrl}${relative}`;
       let _className = isActive ? style.activeNavLink : style.navLink;
