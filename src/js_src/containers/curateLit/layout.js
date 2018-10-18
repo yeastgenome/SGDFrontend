@@ -70,7 +70,6 @@ class CurateLitLayout extends Component {
     let baseUrl = `${BASE_CURATE_URL}/${this.props.params.id}`;
     let current = this.props.pathname.replace(baseUrl, '');
   
-    debugger;
     return SECTIONS.map( (d) => {
       let relative;
       if (d === 'tags') {
