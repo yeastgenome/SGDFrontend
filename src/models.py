@@ -1996,11 +1996,31 @@ class Referencedbentity(Dbentity):
         return obj
 
     def disease_to_dict(self):
-        diseases = DBSession.query(Diseaseannotation).filter_by(reference_id=self.dbentity_id).all()
+        do_annotations = DBSession.query(Diseaseannotation).filter_by(reference_id=self.dbentity_id).all()
 
         obj = []
-        for disease in diseases:
-            obj += disease.to_dict(reference=self)
+
+        for do_annotation in do_annotations:
+            for annotation in do_annotation.to_dict():
+                if annotation not in obj:
+                    obj.append(annotation)
+        # get human gene symbols from Alliance API
+        human_gene_ids_to_symbols = {}
+        for x in obj:
+            try:
+                for y in x['properties']:
+                    if 'bioentity' in y.keys():
+                        entry = y['bioentity']
+                        hgnc_id = entry['display_name']
+                        if hgnc_id in human_gene_ids_to_symbols.keys():
+                            entry['display_name'] = human_gene_ids_to_symbols[hgnc_id]
+                        else:
+                            url = ALLIANCE_API_BASE_URL + hgnc_id
+                            symbol = requests.request('GET', url).json()['symbol']
+                            entry['display_name'] = symbol
+                            human_gene_ids_to_symbols[hgnc_id] = symbol
+            except Exception as e:
+                traceback.print_exc()
         return obj
 
     def regulation_to_dict(self):
