@@ -2800,10 +2800,11 @@ class Locusdbentity(Dbentity):
         return obj
 
     def disease_to_dict(self):
+        #path_res = DBSession.query(FilePath, Path).filter(FilePath.file_id == self.dbentity_id).outerjoin(Path).all()
+        #do_annotations = DBSession.query(Diseaseannotation, Diseasesupportingevidence).filter(Diseaseannotation.dbentity_id == self.dbentity_id).outerjoin(Diseasesupportingevidence).all()
         do_annotations = DBSession.query(Diseaseannotation).filter_by(dbentity_id=self.dbentity_id).all()
 
         obj = []
-
         for do_annotation in do_annotations:
             for annotation in do_annotation.to_dict():
                 if annotation not in obj:
@@ -3148,10 +3149,10 @@ class Locusdbentity(Dbentity):
         }
 
     def disease_graph(self):
-        main_gene_disease_annotations = DBSession.query(Diseaseannotation, Diseasesupportingevidence.dbxref_id, Diseasesupportingevidence.obj_url).outerjoin(Diseasesupportingevidence).filter(Diseaseannotation.dbentity_id==self.dbentity_id).all()
+        main_gene_disease_annotations = DBSession.query(Diseaseannotation, Diseasesupportingevidence.dbxref_id, Diseasesupportingevidence.obj_url).join(Diseasesupportingevidence).filter(Diseaseannotation.dbentity_id==self.dbentity_id).all()
         main_gene_do_ids = [a[0].disease_id for a in main_gene_disease_annotations]
 
-        genes_sharing_do_annotations = DBSession.query(Diseaseannotation, Diseasesupportingevidence.dbxref_id, Diseasesupportingevidence.obj_url).outerjoin(Diseasesupportingevidence).filter(
+        genes_sharing_do_annotations = DBSession.query(Diseaseannotation, Diseasesupportingevidence.dbxref_id, Diseasesupportingevidence.obj_url).join(Diseasesupportingevidence).filter(
             (Diseaseannotation.disease_id.in_(main_gene_do_ids)) & (Diseaseannotation.dbentity_id != self.dbentity_id)).all()
         genes_to_do = {}
         # get all gene and disease names
@@ -5421,6 +5422,15 @@ class Diseaseannotation(Base):
                 else:
                     se_groups[se.group_id].append(evidence_dict)
 
+        go_obj_evidence = []
+        for group_id in se_groups:
+            obj = copy.deepcopy(disease_obj)
+            obj["properties"] = se_groups[group_id]
+            go_obj_evidence.append(obj)
+
+        if len(go_obj_evidence) == 0:
+            go_obj_evidence = [disease_obj]
+
         final_obj = []
         for group_id in se_groups:
             obj = copy.deepcopy(disease_obj)
@@ -5428,10 +5438,10 @@ class Diseaseannotation(Base):
             final_obj.append(obj)
 
         if len(final_obj) == 0:
-            if len(disease_obj) == 0:
+            if len(go_obj_evidence) == 0:
                 final_obj = [disease_obj]
             else:
-                final_obj = disease_obj
+                final_obj = go_obj_evidence
 
         return final_obj
 
