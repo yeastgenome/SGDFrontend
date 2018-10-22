@@ -106,7 +106,7 @@ const Header = React.createClass({
                   <a href="#">Strains and Species</a>
                   <ul className="dropdown">
                     <li><a className="disabled-header-a" href="/variant-viewer#/?_k=3yu0l3">Variant Viewer</a></li>
-                    <li><a className="disabled-header-a" href="/cgi-bin/FUNGI/alignment.pl">Align Strain Sequences</a></li>
+                    <li><a className="disabled-header-a" href="/showAlignment">Align Strain Sequences</a></li>
                     <li><a className="disabled-header-a" href="/cgi-bin/FUNGI/FungiMap">Synteny Viewer</a></li>
                   </ul>
                 </li>

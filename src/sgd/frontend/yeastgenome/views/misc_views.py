@@ -95,6 +95,10 @@ def seq_tools(request):
 def gotermfinder(request):
     return render_to_response(TEMPLATE_ROOT + 'goTermFinder.jinja2', {}, request=request)
 
+@view_config(route_name='strain_alignment')
+def strain_alignment(request):
+    return render_to_response(TEMPLATE_ROOT + 'strainAlignment.jinja2', {}, request=request)
+
 @view_config(route_name='colleague_show')
 def colleague_show(request):
     return render_to_response(TEMPLATE_ROOT + 'misc.jinja2', {}, request=request)
