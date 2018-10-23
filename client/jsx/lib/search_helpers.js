@@ -20,7 +20,8 @@ export function getCategoryDisplayName (key) {
     observable: 'Observable',
     reserved_name: 'Reserved Gene Names',
     chemical: 'Chemical',
-    disease: 'Disease'
+    disease: 'Disease',
+    blog: 'Blogs'
   };
   return labels[key] || key.replace('_', ' ');
 };
