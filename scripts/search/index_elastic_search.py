@@ -950,22 +950,36 @@ def index_complex_names():
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
 
 def index_part_1():
-    index_phenotypes()
-    index_downloads()
-    index_not_mapped_genes()
-    index_genes()
-    index_strains()
-    index_colleagues()
-    index_chemicals()
-    index_disease_terms()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
+        index_phenotypes()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
+        index_downloads()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
+        index_not_mapped_genes()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
+        index_genes()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
+        index_strains()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
+        index_colleagues()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
+        index_chemicals()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
+        index_disease_terms()
 
 def index_part_2():
-    index_reserved_names()
-    index_toolbar_links()
-    index_observables()
-    index_go_terms()
-    index_complex_names()
-    index_references()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
+        index_reserved_names()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
+        index_toolbar_links()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
+        index_observables()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
+        index_go_terms()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
+        index_complex_names()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
+        index_references()
 
 
 if __name__ == "__main__":
