@@ -1937,6 +1937,7 @@ class Referencedbentity(Dbentity):
             "interaction": DBSession.query(Physinteractionannotation).filter_by(reference_id=self.dbentity_id).count() + DBSession.query(Geninteractionannotation).filter_by(reference_id=self.dbentity_id).count(),
             "go": DBSession.query(Goannotation).filter_by(reference_id=self.dbentity_id).count(),
             "phenotype": DBSession.query(Phenotypeannotation).filter_by(reference_id=self.dbentity_id).count(),
+            "disease": DBSession.query(Diseaseannotation).filter_by(reference_id=self.dbentity_id).count(),
             "regulation": DBSession.query(Regulationannotation).filter_by(reference_id=self.dbentity_id).count()
         }
 
@@ -1992,6 +1993,34 @@ class Referencedbentity(Dbentity):
         obj = []
         for phenotype in phenotypes:
             obj += phenotype.to_dict(reference=self)
+        return obj
+
+    def disease_to_dict(self):
+        do_annotations = DBSession.query(Diseaseannotation).filter_by(reference_id=self.dbentity_id).all()
+
+        obj = []
+
+        for do_annotation in do_annotations:
+            for annotation in do_annotation.to_dict():
+                if annotation not in obj:
+                    obj.append(annotation)
+        # get human gene symbols from Alliance API
+        human_gene_ids_to_symbols = {}
+        for x in obj:
+            try:
+                for y in x['properties']:
+                    if 'bioentity' in y.keys():
+                        entry = y['bioentity']
+                        hgnc_id = entry['display_name']
+                        if hgnc_id in human_gene_ids_to_symbols.keys():
+                            entry['display_name'] = human_gene_ids_to_symbols[hgnc_id]
+                        else:
+                            url = ALLIANCE_API_BASE_URL + hgnc_id
+                            symbol = requests.request('GET', url).json()['symbol']
+                            entry['display_name'] = symbol
+                            human_gene_ids_to_symbols[hgnc_id] = symbol
+            except Exception as e:
+                traceback.print_exc()
         return obj
 
     def regulation_to_dict(self):
@@ -2771,10 +2800,11 @@ class Locusdbentity(Dbentity):
         return obj
 
     def disease_to_dict(self):
+        #path_res = DBSession.query(FilePath, Path).filter(FilePath.file_id == self.dbentity_id).outerjoin(Path).all()
+        #do_annotations = DBSession.query(Diseaseannotation, Diseasesupportingevidence).filter(Diseaseannotation.dbentity_id == self.dbentity_id).outerjoin(Diseasesupportingevidence).all()
         do_annotations = DBSession.query(Diseaseannotation).filter_by(dbentity_id=self.dbentity_id).all()
 
         obj = []
-
         for do_annotation in do_annotations:
             for annotation in do_annotation.to_dict():
                 if annotation not in obj:
@@ -3119,10 +3149,10 @@ class Locusdbentity(Dbentity):
         }
 
     def disease_graph(self):
-        main_gene_disease_annotations = DBSession.query(Diseaseannotation, Diseasesupportingevidence.dbxref_id, Diseasesupportingevidence.obj_url).outerjoin(Diseasesupportingevidence).filter(Diseaseannotation.dbentity_id==self.dbentity_id).all()
+        main_gene_disease_annotations = DBSession.query(Diseaseannotation, Diseasesupportingevidence.dbxref_id, Diseasesupportingevidence.obj_url).join(Diseasesupportingevidence).filter(Diseaseannotation.dbentity_id==self.dbentity_id).all()
         main_gene_do_ids = [a[0].disease_id for a in main_gene_disease_annotations]
 
-        genes_sharing_do_annotations = DBSession.query(Diseaseannotation, Diseasesupportingevidence.dbxref_id, Diseasesupportingevidence.obj_url).outerjoin(Diseasesupportingevidence).filter(
+        genes_sharing_do_annotations = DBSession.query(Diseaseannotation, Diseasesupportingevidence.dbxref_id, Diseasesupportingevidence.obj_url).join(Diseasesupportingevidence).filter(
             (Diseaseannotation.disease_id.in_(main_gene_do_ids)) & (Diseaseannotation.dbentity_id != self.dbentity_id)).all()
         genes_to_do = {}
         # get all gene and disease names
@@ -5326,9 +5356,12 @@ class Diseaseannotation(Base):
 
     # a Do annotation can be duplicated based on the Dosupportingevidence group id
     # so its to_dict method must return an array of dictionaries
-    def to_dict(self, disease=None):
+    def to_dict(self, disease=None, reference=None):
         if disease == None:
             disease = self.disease
+
+        if reference == None:
+            reference = self.reference
 
         alias = DBSession.query(EcoAlias).filter_by(eco_id=self.eco_id).all()
         experiment_name = alias[0].display_name
@@ -5389,6 +5422,15 @@ class Diseaseannotation(Base):
                 else:
                     se_groups[se.group_id].append(evidence_dict)
 
+        go_obj_evidence = []
+        for group_id in se_groups:
+            obj = copy.deepcopy(disease_obj)
+            obj["properties"] = se_groups[group_id]
+            go_obj_evidence.append(obj)
+
+        if len(go_obj_evidence) == 0:
+            go_obj_evidence = [disease_obj]
+
         final_obj = []
         for group_id in se_groups:
             obj = copy.deepcopy(disease_obj)
@@ -5396,10 +5438,10 @@ class Diseaseannotation(Base):
             final_obj.append(obj)
 
         if len(final_obj) == 0:
-            if len(disease_obj) == 0:
+            if len(go_obj_evidence) == 0:
                 final_obj = [disease_obj]
             else:
-                final_obj = disease_obj
+                final_obj = go_obj_evidence
 
         return final_obj
 

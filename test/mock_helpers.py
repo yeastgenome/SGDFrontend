@@ -843,6 +843,9 @@ def locus_reference_side_effect(*args, **kwargs):
     elif len(args) == 1 and str(args[0]) == "Goannotation.reference_id":
         go = factory.GoannotationFactory()
         return MockQuery((go.reference_id,))
+    elif len(args) == 1 and str(args[0]) == "Diseaseannotation.reference_id":
+        do = factory.DiseaseannotationFactory()
+        return MockQuery((do.reference_id,))
     elif len(args) == 1 and str(args[0]) == "ReferenceAlias.reference_id":
         refalias = factory.ReferenceAliasFactory()
         return MockQuery(refalias.reference_id)
@@ -1051,6 +1054,19 @@ def reference_side_effect(*args, **kwargs):
                 phenoannot.phenotype = pheno
                 phenoannot.dbentity = db
                 return MockQuery(phenoannot)
+            elif len(args) == 1 and str(args[0]) == "<class 'src.models.Diseaseannotation'>":
+                source = factory.SourceFactory()
+                journal = factory.JournalFactory()
+                book = factory.BookFactory()
+                refdbentity = factory.ReferencedbentityFactory()
+                refdbentity.journal = journal
+                disease = factory.DiseaseFactory()
+                db = factory.DbentityFactory()
+                diseaseannot = factory.PhenotypeannotationFactory()
+                diseaseannot.reference = refdbentity
+                diseaseannot.disease = disease
+                diseaseannot.dbentity = db
+                return MockQuery(diseaseannot)
             elif len(args) == 1 and str(args[0]) == "<class 'src.models.PhenotypeannotationCond'>":
                 cond = factory.PhenotypeannotationCondFactory()
                 return MockQuery(cond)
