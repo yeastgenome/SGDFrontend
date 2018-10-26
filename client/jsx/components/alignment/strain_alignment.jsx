@@ -36,14 +36,14 @@ const StrainAlignment = React.createClass({
                      var displayName = data['displayName'];
 
 		     return (<div>
-                          <span style={{ textAlign: "center" }}><h1> { displayName } <i>S. cerevisiae</i> Strain Sequence Alignment<a target="_blank" href="https://sites.google.com/view/yeastgenome-help/analyze-help/strain_alignment?authuser=0"><img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img></a></h1>
+                          <span style={{ textAlign: "center" }}><h1> { displayName } <i>S. cerevisiae</i> Strain Sequence Alignment<a target="_blank" href="https://sites.google.com/view/yeastgenome-help/sequence-help/align-strain-sequences"><img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img></a></h1>
                           </span>
                           {page_to_display}
                         </div>);
 		}
 		else {
 		     return (<div>
-		             <span style={{ textAlign: "center" }}><h1>Search for Sequence Alignment pages at SGD<a target="_blank" href="https://sites.google.com/view/yeastgenome-help/analyze-help/strain_alignment?authuser=0"><img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img></a></h1>
+		             <span style={{ textAlign: "center" }}><h1>Search for Sequence Alignment pages at SGD<a target="_blank" href="https://sites.google.com/view/yeastgenome-help/sequence-help/align-strain-sequences"><img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img></a></h1>
 			  </span>
                           {page_to_display}
 			 </div>);
