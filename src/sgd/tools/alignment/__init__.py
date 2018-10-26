@@ -310,8 +310,9 @@ def format_alignment(orfName, type, alignment):
 
     rows = ""
     for id in strains:
-        row = "<tr><th align='left'><a href='#'" + id + ">" + id + "</a></th>"
-        row = row + "<td><td>&nbsp;</td>"
+
+        row = "<tr><th align='left'><a href='#" + id + "'>" + id + "</a></th>"
+        row = row + "<td>&nbsp;</td>"
         seq = id2seqChar[id]
         seqStr = "".join(seq).replace("-", "")
         start = id2lenSoFar.get(id, 0) + 1
