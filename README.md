@@ -9,6 +9,17 @@ SGDBackend, then creates the pages of the website.
 
 Prerequisities, node.js > 4.2.0 and python 2.7.x. o manage python dependencies, configure a virtualenv for this project. See [virtualenv guide](http://docs.python-guide.org/en/latest/dev/virtualenvs/).
 
+
+### Node packages issues and versions
+You may run into issues with node version. Currently the build is using Node v6.10.2. Make sure you're on this version. We're working migrate packages management to yarn and webpack so all these legacy version issues might be resolved once we make that switch. See requirements below:
+
+1. Ruby version, point to ruby-2.3
+2. Node version, point to v6.10.2
+3. Bower version, point to v1.8.4(latest). Run the following commands:
+        $ npm install -g bower
+        $ bower install
+
+
 To build the application and install dependencies.
 
     $ make build
@@ -76,3 +87,8 @@ First, download ngrok (add URL) and start your ngrok server [https://ngrok.com/d
 Then, run
 
     $ make ghost-local
+
+
+
+
+```
