@@ -151,7 +151,7 @@ const StrainAlignment = React.createClass({
 		   
                return(<div>
 		      <h3>Pick sequence type:</h3>
-                      <select name='type' ref='type' onChange={this.onChange}>{_elements}</select>
+                      <select name='type' ref='type' onChange={this.onChange2}>{_elements}</select>
                 </div>);
 	},
 
