@@ -1265,6 +1265,8 @@ def alignment(request):
         data = {}
         for file in files:
             s3_url = file.s3_url.split("?versionId=")[0]
+            if file.previous_file_name not in [locus+".png", locus+".align", locus+"_dna.png", locus+"_dna.align"]:
+                continue
             if '_dna' in file.previous_file_name:
                 if ".png" in file.previous_file_name:
                     data['dna_images_url'] = s3_url
