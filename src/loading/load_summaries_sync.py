@@ -7,9 +7,10 @@ import transaction
 import os
 import re
 from sqlalchemy import create_engine, and_, not_
-from src.models import DBSession, Locussummary, LocussummaryReference, Locusdbentity, Referencedbentity, Source
-from src.helpers import link_gene_names
-                             
+from src.models import DBSession, Locussummary, LocussummaryReference,\
+     Locusdbentity, Referencedbentity, Source
+from src.helpers import link_gene_names, tvs_file_to_dict
+
 __author__ = 'tshepp'
 
 '''
@@ -33,12 +34,79 @@ logger.setLevel(level=logging.INFO)
 # has correct columns in header
 # checks IDs to make sure real IDs
 def validate_file_content_and_process(file_content, nex_session, username):
-    header_literal = ['# Feature', 'Summary Type (phenotype, regulation)', 'Summary', 'PMIDs']
-    accepted_summary_types = ['Phenotype', 'Regulation']
+    ''' check file content, process and save to db
+
+    Parameters
+    ----------
+    file_content: csv-reader object
+                  cvs-reader reads a tvs file and returns an object
+    nex_session: database_session object
+    username: str
+              authorized user to make CRUD operations
+
+    Returns
+    -------
+    dictionary
+        number of entries
+        number of updates
+        database entries(dictionary)
+
+    Note:
+    Accepted summary types: Phenotype, Regulation, Disease, Interaction
+                            Sequence, Protein
+    '''
+
+    header_literal = [
+            '# Feature', 'Summary Type (phenotype, regulation)',
+            'Summary', 'PMIDs'
+            ]
+    #accepted_summary_types = ['Phenotype', 'Regulation']
+    accepted_summary_types = [
+        'Phenotype', 'Regulation', 'Disease',
+        'Interaction', 'Sequence', 'Protein'
+        ]
+
     file_gene_ids = []
     file_pmids = []
     copied = []
     already_used_genes = []
+
+    try:
+        for item in file_content:
+            is_header_match = sorted(header_literal) == sorted(item)
+            if not is_header_match:
+                raise ValueError(
+                    'File header does not match expected format. Please make your file match the template file linked below.'
+                )
+            else:
+                gene_id = item.get('# Feature', '')
+                summary_type = item.get(
+                    'Summary Type (phenotype, regulation)', '')
+                summary_text = item.get('Summary', '')
+                pmids = item.get('PMIDs').replace(' ', '')
+                file_gene_ids.append(gene_id.strip())
+                gene_id_with_summary = gene_id + summary_type
+                if gene_id_with_summary in already_used_genes:
+                    raise ValueError(
+                        'The same gene summary cannot be updated twice in the same\
+                        file: '
+                                + str(gene_id))
+                already_used_genes.append(gene_id_with_summary)
+                if summary_type not in accepted_summary_types:
+                    raise ValueError('Unaccepted summary type. Must be one of ' +
+                                    ', '.join(accepted_summary_types))
+                if len(pmids) > 0:
+                    pmids = re.split('\||,', pmids)
+                    for pmid in pmids:
+                        file_pmids.append(str(pmid))
+            if (len(item) != len(header_literal)):
+                raise ValueError('Row has incorrect number of columns.')
+            copied.append(item)
+    except IndexError:
+        raise ValueError(
+            'The file is not a valid TSV with the correct number of columns. Check the file and try again.'
+        )
+    '''
     try:
         for i, val in enumerate(file_content):
             # match header
@@ -69,7 +137,9 @@ def validate_file_content_and_process(file_content, nex_session, username):
             copied.append(val)
     except IndexError:
         raise ValueError('The file is not a valid TSV with the correct number of columns. Check the file and try again.')
+    '''
     nex_session.execute('SET LOCAL ROLE ' + username)
+    
     # check that gene names are valid
     valid_genes = nex_session.query(Locusdbentity.format_name).filter(Locusdbentity.format_name.in_(file_gene_ids)).all()
     valid_genes = [ str(d[0]) for d in valid_genes ]
@@ -81,59 +151,62 @@ def validate_file_content_and_process(file_content, nex_session, username):
     temp_matching_refs = [ str(d.pmid) for d in matching_refs ]
     invalid_refs = [d for d in file_pmids if d not in temp_matching_refs]
     if len(invalid_refs):
-        raise ValueError('Invalid PMID: ' + ', '.join(invalid_refs) + '. Must be a pipe-separated list of PMIDs from SGD.')
+        # raise ValueError('Invalid PMID: ' + ', '.join(invalid_refs) + '. Must be a pipe-separated list of PMIDs from SGD.')
+        print len(invalid_refs)
     # update
     receipt_entries = []
     locus_names_ids = nex_session.query(Locusdbentity.display_name, Locusdbentity.sgdid).all()
     inserts = 0
     updates = 0
-    for i, val in enumerate(copied):
-        if i != 0:
-            file_id = val[0]
-            file_summary_type = val[1]
-            file_summary_val = val[2]
-            file_summy_html = link_gene_names(file_summary_val, locus_names_ids)
+    
+    for item in copied:
+        if item:
+            file_id = item.get('# Feature', '')   #val[0]
+            file_summary_type = item.get(
+                    'Summary Type (phenotype, regulation)', '') #val[1]
+            file_summary_val = item.get('Summary', '') #val[2]
+            file_summary_html = link_gene_names(file_summary_val, locus_names_ids)
             gene = nex_session.query(Locusdbentity).filter_by(format_name=file_id).one_or_none()
             summaries = nex_session.query(Locussummary.summary_type, Locussummary.summary_id, Locussummary.html, Locussummary.date_created).filter_by(locus_id=gene.dbentity_id, summary_type=file_summary_type).all()
             # update
             summary = None
             if len(summaries):
                 summary = summaries[0]
-                nex_session.query(Locussummary).filter_by(summary_id=summary.summary_id).update({ 'text': file_summary_val, 'html': file_summy_html })
+                nex_session.query(Locussummary).filter_by(summary_id=summary.summary_id).update({'text': file_summary_val, 'html': file_summary_html})
                 updates += 1
             else:
                 new_summary = Locussummary(
-                    locus_id = gene.dbentity_id, 
-                    summary_type = file_summary_type, 
-                    text = file_summary_val, 
-                    html = file_summy_html, 
-                    created_by = username,
-                    source_id = SGD_SOURCE_ID
+                    locus_id=gene.dbentity_id,
+                    summary_type=file_summary_type,
+                    text=file_summary_val,
+                    html=file_summary_html,
+                    created_by=username,
+                    source_id=SGD_SOURCE_ID
                 )
                 nex_session.add(new_summary)
                 inserts += 1
             summary = nex_session.query(Locussummary.summary_type, Locussummary.summary_id, Locussummary.html, Locussummary.date_created).filter_by(locus_id=gene.dbentity_id, summary_type=file_summary_type).all()[0]
             # add LocussummaryReference(s)
-            if len(val) == 4:
-                pmids = val[3].replace(' ', '')
-                if len(pmids):
+            if item:
+                pmids = item.get('PMIDs').replace(' ', '')
+                if len(pmids) > 0:
                     pmids = re.split('\||,', pmids)
-                    for _i, p in enumerate(pmids):
-                        matching_ref = [x for x in matching_refs if x.pmid == int(p)][0]
+                    for idx, pmid in enumerate(pmids):
+                        matching_ref = [x for x in matching_refs if x.pmid == int(pmid)][0]
                         summary_id = summary.summary_id
                         reference_id = matching_ref.dbentity_id
-                        order = _i + 1
+                        order = _idx + 1
                         # look for matching LocussummaryReference
                         matching_locussummary_refs = nex_session.query(LocussummaryReference).filter_by(summary_id=summary_id, reference_id=reference_id).all()
                         if len(matching_locussummary_refs):
                             nex_session.query(LocussummaryReference).filter_by(summary_id=summary_id,reference_id=reference_id).update({ 'reference_order': order })
                         else:
                             new_locussummaryref = LocussummaryReference(
-                                summary_id = summary_id, 
-                                reference_id = reference_id, 
-                                reference_order = order, 
-                                source_id = SGD_SOURCE_ID, 
-                                created_by = username
+                                summary_id=summary_id,
+                                reference_id=reference_id,
+                                reference_order=order,
+                                source_id=SGD_SOURCE_ID,
+                                created_by=username
                             )
                             nex_session.add(new_locussummaryref)
 

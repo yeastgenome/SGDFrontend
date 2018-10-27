@@ -19,6 +19,7 @@ def parse_tsv_annotations(db_session, tsv_file, filename, template_type, usernam
         traceback.print_exc()
         db_session.close()
         raise ValueError('File format not accepted. Please upload a valid TSV file.')
+    
     try:
 	    upload_file(
             username, tsv_file,
@@ -30,13 +31,16 @@ def parse_tsv_annotations(db_session, tsv_file, filename, template_type, usernam
             format_name='TSV',
             file_extension='tsv',
             topic_id=250482
-        )
+)
     except IntegrityError:
         db_session.rollback()
         db_session.close()
     	raise ValueError('That file has already been uploaded and cannot be reused. Please change the file contents and try again.')
+    
     tsv_file.seek(0)
-    raw_file_content = csv.reader(tsv_file, delimiter='\t', dialect=csv.excel_tab)
-    annotations = load_summaries(db_session, raw_file_content, username)
+    # raw_file_content = csv.reader(tsv_file, delimiter='\t', dialect=csv.excel_tab)
+    # annotations = load_summaries(db_session, raw_file_content, username)
+    file_dict = tvs_file_to_dict(tsv_file)
+    annotations = load_summaries_by_file_dict(db_session, file_dict, username)
     db_session.close()
     return annotations
