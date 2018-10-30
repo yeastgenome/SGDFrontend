@@ -252,9 +252,8 @@ function create_disease_table(data) {
     if("Error" in data) {
         var options = {};
         options["bPaginate"] = true;
-        options["aaSorting"] = [[5, "asc"]];
-        options["aoColumns"] = [ {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, {"bSearchable":false, "bVisible":false}, null, null, {"bSearchable":false, "bVisible":false}, null];
-        //options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, {"bSearchable":false, "bVisible":false}, null, null, null, {'sWidth': '250px'}, {"bSearchable":false, "bVisible":false}];
+        options["aaSorting"] = [[3, "asc"]];
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false},{"bSearchable":false, "bVisible":false},null,{"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false},null,null, {"bSearchable":false, "bVisible":false},null, null,{"bSearchable":false, "bVisible":false},null];
         options["oLanguage"] = {"sEmptyTable": data["Error"]};
         options["aaData"] = [];
     }
@@ -270,9 +269,8 @@ function create_disease_table(data) {
 
         var options = {};
         options["bPaginate"] = true;
-        options["aaSorting"] = [[5, "asc"]];
-        options["aoColumns"] = [ {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, {"bSearchable":false, "bVisible":false}, null, null, {"bSearchable":false, "bVisible":false}, null];
-        //options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, {"bSearchable":false, "bVisible":false}, null, null, null, {'sWidth': '250px'}, {"bSearchable":false, "bVisible":false}];
+        options["aaSorting"] = [[3, "asc"]];
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false},{"bSearchable":false, "bVisible":false},null,{"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false},null,null, {"bSearchable":false, "bVisible":false},null, null,{"bSearchable":false, "bVisible":false},null];
         options["oLanguage"] = {"sEmptyTable": "No disease data for " + reference['display_name']};
         options["aaData"] = datatable;
     }
