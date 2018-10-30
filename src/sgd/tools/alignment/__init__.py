@@ -4,13 +4,8 @@ from urllib2 import Request, urlopen, URLError, HTTPError
 from src.sgd.frontend.yeastgenome import clean_cell
 import os
 
-# usage for this tools: 
-# http://www3.dev.yeastgenome.org/get_alignment?locus=YBR011C
-# http://www3.dev.yeastgenome.org/get_alignment?locus=YBR011C&type=dna
-# https://www3-lb.dev.yeastgenome.org/get_alignment?locus=YBR011C
-# https://www3-lb.dev.yeastgenome.org/get_alignment?locus=YBR011C&type=dna
-
-alignment_url = "http://www3.dev.yeastgenome.org/backend/alignment/"
+# alignment_url = "https://www.yeastgenome.org/backend/alignment/"
+alignment_url = "/backend/alignment/"  
 
 gene_url = "https://www.yeastgenome.org/backend/locus/"
 
