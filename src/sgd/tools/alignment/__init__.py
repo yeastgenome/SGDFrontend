@@ -8,8 +8,9 @@ import socket
 # alignment_url = "https://www.yeastgenome.org/backend/alignment/"
 
 hostname = socket.gethostname()
-
-alignment_url = hostname + "/backend/alignment/"  
+if "https://" not in hostname:
+    hostname = "https://" + hostname
+alignment_url = hostname + "/backend/alignment/"
 
 gene_url = "https://www.yeastgenome.org/backend/locus/"
 
