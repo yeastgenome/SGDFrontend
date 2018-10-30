@@ -5,10 +5,10 @@ from src.sgd.frontend.yeastgenome import clean_cell
 import os
 import socket
 
-# alignment_url = "https://www.yeastgenome.org/backend/alignment/"
-
 hostname = socket.gethostname()
-if "https://" not in hostname:
+if len(hostname.split('.')[0]) == 4:
+    hostname = "http://" + hostname
+else:
     hostname = "https://" + hostname
 alignment_url = hostname + "/backend/alignment/"
 
