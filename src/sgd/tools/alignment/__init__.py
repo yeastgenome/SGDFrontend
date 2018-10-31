@@ -3,14 +3,8 @@ from pyramid.response import Response
 from urllib2 import Request, urlopen, URLError, HTTPError
 from src.sgd.frontend.yeastgenome import clean_cell
 import os
-import socket
 
-hostname = socket.gethostname()
-if len(hostname.split('.')[0]) == 4:
-    hostname = "http://" + hostname
-else:
-    hostname = "https://" + hostname
-alignment_url = hostname + "/backend/alignment/"
+alignment_url = "https://www.yeastgenome.org/backend/alignment/"
 
 gene_url = "https://www.yeastgenome.org/backend/locus/"
 
