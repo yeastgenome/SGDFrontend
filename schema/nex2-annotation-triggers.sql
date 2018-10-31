@@ -1896,6 +1896,139 @@ BEFORE INSERT OR UPDATE ON nex.posttranslationannotation FOR EACH ROW
 EXECUTE PROCEDURE trigger_fct_posttranslationannotation_biur();
 
 
+DROP TRIGGER IF EXISTS proteinabundanceannotation_audr ON nex.proteinabundanceannotation CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_proteinabundanceannotation_audr() RETURNS trigger AS $BODY$
+DECLARE
+    v_row       nex.deletelog.deleted_row%TYPE;
+BEGIN
+  IF (TG_OP = 'UPDATE') THEN
+
+    IF (OLD.dbentity_id != NEW.dbentity_id) THEN
+        PERFORM nex.insertupdatelog('PROTEINABUNDANCEANNOTATION'::text, 'DBENTITY_ID'::text, OLD.annotation_id, OLD.dbentity_id::text, NEW.dbentity_id::text, USER);
+    END IF;
+
+     IF (OLD.source_id != NEW.source_id) THEN
+        PERFORM nex.insertupdatelog('PROTEINABUNDANCEANNOTATION'::text, 'SOURCE_ID'::text, OLD.annotation_id, OLD.source_id::text, NEW.source_id::text, USER);
+    END IF;
+
+    IF (OLD.taxonomy_id != NEW.taxonomy_id) THEN
+        PERFORM nex.insertupdatelog('PROTEINABUNDANCEANNOTATION'::text, 'TAXONOMY_ID'::text, OLD.annotation_id, OLD.taxonomy_id::text, NEW.taxonomy_id::text, USER);
+    END IF;
+
+    IF (OLD.reference_id != NEW.reference_id) THEN
+        PERFORM nex.insertupdatelog('PROTEINABUNDANCEANNOTATION'::text, 'REFERENCE_ID'::text, OLD.annotation_id, OLD.reference_id::text, NEW.reference_id::text, USER);
+    END IF;
+
+    IF (OLD.original_reference_id != NEW.original_reference_id) THEN
+        PERFORM nex.insertupdatelog('PROTEINABUNDANCEANNOTATION'::text, 'ORIGINAL_REFERENCE_ID'::text, OLD.annotation_id, OLD.original_reference_id::text, NEW.original_reference_id::text, USER);
+    END IF;
+
+    IF (OLD.data_value != NEW.data_value) THEN
+        PERFORM nex.insertupdatelog('PROTEINABUNDANCEANNOTATION'::text, 'DATA_VALUE'::text, OLD.annotation_id, OLD.data_value::text, NEW.data_value::text, USER);
+    END IF;
+
+    IF (OLD.data_unit != NEW.data_unit) THEN
+        PERFORM nex.insertupdatelog('PROTEINABUNDANCEANNOTATION'::text, 'DATA_UNIT'::text, OLD.annotation_id, OLD.data_unit, NEW.data_unit, USER);
+    END IF;
+
+    IF (OLD.assay_id != NEW.assay_id) THEN
+        PERFORM nex.insertupdatelog('PROTEINABUNDANCEANNOTATION'::text, 'ASSAY_ID'::text, OLD.annotation_id, OLD.assay_id::text, NEW.assay_id::text, USER);
+    END IF;
+
+    IF (OLD.media_id != NEW.media_id) THEN
+        PERFORM nex.insertupdatelog('PROTEINABUNDANCEANNOTATION'::text, 'MEDIA_ID'::text, OLD.annotation_id, OLD.media_id::text, NEW.media_id::text, USER);
+    END IF;
+
+    IF (((OLD.fold_change IS NULL) AND (NEW.fold_change IS NOT NULL)) OR ((OLD.fold_change IS NOT NULL) AND (NEW.fold_change IS NULL)) OR (OLD.fold_change != NEW.fold_change)) THEN
+       PERFORM nex.insertupdatelog('PROTEINABUNDANCEANNOTATION'::text, 'FOLD_CHANGE'::text, OLD.annotation_id, OLD.fold_change::text, NEW.fold_change::text, USER);
+    END IF;
+
+    IF (((OLD.chemical_id IS NULL) AND (NEW.chemical_id IS NOT NULL)) OR ((OLD.chemical_id IS NOT NULL) AND (NEW.chemical_id IS NULL)) OR (OLD.chemical_id != NEW.chemical_id)) THEN
+       PERFORM nex.insertupdatelog('PROTEINABUNDANCEANNOTATION'::text, 'CHEMICAL_ID'::text, OLD.annotation_id, OLD.chemical_id::text, NEW.chemical_id::text, USER);
+    END IF;
+
+    IF (((OLD.concentration_value IS NULL) AND (NEW.concentration_value IS NOT NULL)) OR ((OLD.concentration_value IS NOT NULL) AND (NEW.concentration_value IS NULL)) OR (OLD.concentration_value != NEW.concentration_value)) THEN
+       PERFORM nex.insertupdatelog('PROTEINABUNDANCEANNOTATION'::text, 'CONCENTRATION_VALUE'::text, OLD.annotation_id, OLD.concentration_value::text, NEW.concentration_value::text, USER);
+    END IF;
+
+    IF (((OLD.concentration_unit IS NULL) AND (NEW.concentration_unit IS NOT NULL)) OR ((OLD.concentration_unit IS NOT NULL) AND (NEW.concentration_unit IS NULL)) OR (OLD.concentration_unit != NEW.concentration_unit)) THEN
+       PERFORM nex.insertupdatelog('PROTEINABUNDANCEANNOTATION'::text, 'CONCENTRATION_UNIT'::text, OLD.annotation_id, OLD.concentration_unit, NEW.concentration_unit, USER);
+    END IF;
+
+    IF (((OLD.time_value IS NULL) AND (NEW.time_value IS NOT NULL)) OR ((OLD.time_value IS NOT NULL) AND (NEW.time_value IS NULL)) OR (OLD.time_value != NEW.time_value)) THEN
+       PERFORM nex.insertupdatelog('PROTEINABUNDANCEANNOTATION'::text, 'TIME_VALUE'::text, OLD.annotation_id, OLD.time_value::text, NEW.time_value::text, USER);
+    END IF;
+
+    IF (((OLD.time_unit IS NULL) AND (NEW.time_unit IS NOT NULL)) OR ((OLD.time_unit IS NOT NULL) AND (NEW.time_unit IS NULL)) OR (OLD.time_unit != NEW.time_unit)) THEN
+       PERFORM nex.insertupdatelog('PROTEINABUNDANCEANNOTATION'::text, 'TIME_UNIT'::text, OLD.annotation_id, OLD.time_unit, NEW.time_unit, USER);
+    END IF;
+
+    IF (((OLD.process_id IS NULL) AND (NEW.process_id IS NOT NULL)) OR ((OLD.process_id IS NOT NULL) AND (NEW.process_id IS NULL)) OR (OLD.process_id != NEW.process_id)) THEN
+       PERFORM nex.insertupdatelog('PROTEINABUNDANCEANNOTATION'::text, 'PROCESS_ID'::text, OLD.annotation_id, OLD.process_id::text, NEW.process_id::text, USER);
+    END IF;
+
+    RETURN NEW;
+
+  ELSIF (TG_OP = 'DELETE') THEN
+
+    v_row := OLD.annotation_id || '[:]' || OLD.dbentity_id || '[:]' ||
+             OLD.source_id || '[:]' || OLD.taxonomy_id || '[:]' ||
+             OLD.reference_id || '[:]' || OLD.original_reference_id || '[:]' ||
+             OLD.data_value || '[:]' || OLD.data_unit || '[:]' ||
+             OLD.assay_id || '[:]' || OLD.media_id || '[:]' ||
+             coalesce(OLD.fold_change,0) || '[:]' || coalesce(OLD.chemical_id,0) || '[:]' ||
+             coalesce(OLD.concentration_value,0) || '[:]' || coalesce(OLD.concentration_unit,'') || '[:]' ||
+             coalesce(OLD.time_value,0) || '[:]' || coalesce(OLD.time_unit,'') || '[:]' ||
+             coalesce(OLD.process_id,0) ||
+             OLD.date_created || '[:]' || OLD.created_by;
+
+           PERFORM nex.insertdeletelog('PROTEINABUNDANCEANNOTATION'::text, OLD.annotation_id, v_row, USER);
+
+    RETURN OLD;
+  END IF;
+
+END;
+$BODY$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER proteinabundanceannotation_audr
+AFTER UPDATE OR DELETE ON nex.proteinabundanceannotation FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_proteinabundanceannotation_audr();
+
+DROP TRIGGER IF EXISTS proteinabundanceannotation_biur ON nex.proteinabundanceannotation CASCADE;
+CREATE OR REPLACE FUNCTION trigger_fct_proteinabundanceannotation_biur() RETURNS trigger AS $BODY$
+BEGIN
+  IF (TG_OP = 'INSERT') THEN
+
+       NEW.created_by := UPPER(NEW.created_by);
+       PERFORM nex.checkuser(NEW.created_by);
+
+       RETURN NEW;
+
+  ELSIF (TG_OP = 'UPDATE') THEN
+
+    IF (NEW.annotation_id != OLD.annotation_id) THEN
+        RAISE EXCEPTION 'Primary key cannot be updated';
+    END IF;
+
+    IF (NEW.date_created != OLD.date_created) THEN
+        RAISE EXCEPTION 'Audit columns cannot be updated.';
+    END IF;
+
+    IF (NEW.created_by != OLD.created_by) THEN
+        RAISE EXCEPTION 'Audit columns cannot be updated.';
+    END IF;
+
+    RETURN NEW;
+  END IF;
+
+END;
+$BODY$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER proteinabundanceannotation_biur
+BEFORE INSERT OR UPDATE ON nex.proteinabundanceannotation FOR EACH ROW
+EXECUTE PROCEDURE trigger_fct_proteinabundanceannotation_biur();
+
+
 DROP TRIGGER IF EXISTS proteindomainannotation_audr ON nex.proteindomainannotation CASCADE;
 CREATE OR REPLACE FUNCTION trigger_fct_proteindomainannotation_audr() RETURNS trigger AS $BODY$
 DECLARE

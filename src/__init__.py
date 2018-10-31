@@ -37,6 +37,7 @@ def main(global_config, **settings):
     config.add_route('reference_interaction_details', '/reference/{id}/interaction_details', request_method='GET')
     config.add_route('reference_go_details', '/reference/{id}/go_details', request_method='GET')
     config.add_route('reference_phenotype_details', '/reference/{id}/phenotype_details', request_method='GET')
+    config.add_route('reference_disease_details', '/reference/{id}/disease_details', request_method='GET')
     config.add_route('reference_regulation_details', '/reference/{id}/regulation_details', request_method='GET')
     config.add_route('reference_list', '/reference_list')
 
@@ -107,7 +108,8 @@ def main(global_config, **settings):
     config.add_route('ecnumber_locus_details', '/ecnumber/{id}/locus_details', request_method='GET')
 
     config.add_route('complex', '/complex/{id}', request_method='GET')
-    # config.add_route('protein_complex_details', '/protein/{id}/complex_details', request_method='GET') 
+
+    config.add_route('alignment', '/alignment/{id}', request_method='GET')
 
     config.add_route('primer3', '/primer3', request_method='POST')
     

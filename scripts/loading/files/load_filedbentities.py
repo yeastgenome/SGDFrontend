@@ -21,7 +21,8 @@ import traceback
         $ source dev_variables.sh && CREATED_BY=TSHEPP INPUT_FILE_NAME=/Users/travis/Desktop/meta_csvs/literature_file_metadata.csv python scripts/loading/files/load_filedbentities.py
 '''
 
-DATA_DIR = '/data.s3/html'
+# DATA_DIR = '/data.s3/html'
+DATA_DIR = '/data.s3/'
 HOSTNAME = 'bun.stanford.edu'
 INPUT_FILE_NAME = os.environ.get('INPUT_FILE_NAME')
 LOCAL_FILE_DIRECTORY = os.environ.get('LOCAL_FILE_DIRECTORY')
@@ -191,6 +192,12 @@ def load_csv_filedbentities():
             if val[0] == '':
                 logging.info('Found a blank value, DONE!')
                 return
+            
+            ### added by Shuai
+            if len(val) < 14:
+                print val
+                return
+            ### 
             raw_date = val[13]
             if len(raw_date):
                 temp = format_csv_date_string(val[13])

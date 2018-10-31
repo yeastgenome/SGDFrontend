@@ -85,6 +85,20 @@ ALTER TABLE nex.edam_url ADD CONSTRAINT edamurl_edam_fk FOREIGN KEY (edam_id) RE
 ALTER TABLE nex.edam_url ADD CONSTRAINT edamurl_source_fk FOREIGN KEY (source_id) REFERENCES source(source_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
 
 
+ALTER TABLE nex.efo ADD CONSTRAINT efo_source_fk FOREIGN KEY (source_id) REFERENCES source(source_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
+
+ALTER TABLE nex.efo_alias ADD CONSTRAINT efoalias_source_fk FOREIGN KEY (source_id) REFERENCES source(source_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE nex.efo_alias ADD CONSTRAINT efoalias_efo_fk FOREIGN KEY (efo_id) REFERENCES efo(efo_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
+
+ALTER TABLE nex.efo_relation ADD CONSTRAINT eforelation_parent_fk FOREIGN KEY (parent_id) REFERENCES efo(efo_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE nex.efo_relation ADD CONSTRAINT eforelation_ro_fk FOREIGN KEY (ro_id) REFERENCES ro(ro_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE nex.efo_relation ADD CONSTRAINT eforelation_child_fk FOREIGN KEY (child_id) REFERENCES efo(efo_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE nex.efo_relation ADD CONSTRAINT eforelation_source_fk FOREIGN KEY (source_id) REFERENCES source(source_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
+
+ALTER TABLE nex.efo_url ADD CONSTRAINT efourl_efo_fk FOREIGN KEY (efo_id) REFERENCES efo(efo_id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE nex.efo_url ADD CONSTRAINT efourl_source_fk FOREIGN KEY (source_id) REFERENCES source(source_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
+
+
 ALTER TABLE nex.go ADD CONSTRAINT go_source_fk FOREIGN KEY (source_id) REFERENCES source(source_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
 
 ALTER TABLE nex.go_alias ADD CONSTRAINT goalias_source_fk FOREIGN KEY (source_id) REFERENCES source(source_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
@@ -515,6 +529,17 @@ ALTER TABLE nex.posttranslationannotation ADD CONSTRAINT posttranslationanno_sou
 ALTER TABLE nex.posttranslationannotation ADD CONSTRAINT posttranslationanno_organism_fk FOREIGN KEY (taxonomy_id) REFERENCES taxonomy(taxonomy_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
 ALTER TABLE nex.posttranslationannotation ADD CONSTRAINT posttranslationanno_dbentity_fk FOREIGN KEY (dbentity_id) REFERENCES dbentity(dbentity_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
 ALTER TABLE nex.posttranslationannotation ADD CONSTRAINT posttranslationanno_ref_fk FOREIGN KEY (reference_id) REFERENCES referencedbentity(dbentity_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
+
+ALTER TABLE nex.proteinabundanceannotation ADD CONSTRAINT proteinabundanceanno_ref_fk FOREIGN KEY (reference_id) REFERENCES referencedbentity(dbentity_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE nex.proteinabundanceannotation ADD CONSTRAINT proteinabundanceanno_origref_fk FOREIGN KEY (original_reference_id) REFERENCES referencedbentity(dbentity_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE nex.proteinabundanceannotation ADD CONSTRAINT proteinabundanceanno_source_fk FOREIGN KEY (source_id) REFERENCES source(source_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE nex.proteinabundanceannotation ADD CONSTRAINT proteinabundanceanno_dbentity_fk FOREIGN KEY (dbentity_id) REFERENCES locusdbentity(dbentity_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE nex.proteinabundanceannotation ADD CONSTRAINT proteinabundanceanno_tax_fk FOREIGN KEY (taxonomy_id) REFERENCES taxonomy(taxonomy_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE nex.proteinabundanceannotation ADD CONSTRAINT proteinabundanceanno_assay_fk FOREIGN KEY (assay_id) REFERENCES eco(eco_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE nex.proteinabundanceannotation ADD CONSTRAINT proteinabundanceanno_media_fk FOREIGN KEY (media_id) REFERENCES efo(efo_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE nex.proteinabundanceannotation ADD CONSTRAINT proteinabundanceanno_chemical_fk FOREIGN KEY (chemical_id) REFERENCES chebi(chebi_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE nex.proteinabundanceannotation ADD CONSTRAINT proteinabundanceanno_process_fk FOREIGN KEY (process_id) REFERENCES go(go_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
+
 
 ALTER TABLE nex.proteindomainannotation ADD CONSTRAINT proteindomainanno_dbentity_fk FOREIGN KEY (dbentity_id) REFERENCES dbentity(dbentity_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;
 ALTER TABLE nex.proteindomainannotation ADD CONSTRAINT proteindomainanno_domain_fk FOREIGN KEY (proteindomain_id) REFERENCES proteindomain(proteindomain_id) ON DELETE RESTRICT NOT DEFERRABLE INITIALLY IMMEDIATE;

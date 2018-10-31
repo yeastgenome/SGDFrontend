@@ -42,6 +42,9 @@ nosetests.xml
 coverage.xml
 *,cover
 
+# coverall
+coverage/
+
 # Translations
 *.mo
 *.pot
@@ -61,10 +64,10 @@ target/
 # Config files
 config.py
 gpad_config.py
-dev_variables.sh
-prod_variables.sh
-test_variables.sh
-dev_aws_variables.sh
+dev_variables*
+prod_variables*
+test_variables*
+dev_aws_variables*
 
 #temp files
 # logs
@@ -103,3 +106,4 @@ index_*.png
 
 *.env
 src/Untitled*
+dev_variables*

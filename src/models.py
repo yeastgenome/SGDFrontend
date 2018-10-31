@@ -1937,6 +1937,7 @@ class Referencedbentity(Dbentity):
             "interaction": DBSession.query(Physinteractionannotation).filter_by(reference_id=self.dbentity_id).count() + DBSession.query(Geninteractionannotation).filter_by(reference_id=self.dbentity_id).count(),
             "go": DBSession.query(Goannotation).filter_by(reference_id=self.dbentity_id).count(),
             "phenotype": DBSession.query(Phenotypeannotation).filter_by(reference_id=self.dbentity_id).count(),
+            "disease": DBSession.query(Diseaseannotation).filter_by(reference_id=self.dbentity_id).count(),
             "regulation": DBSession.query(Regulationannotation).filter_by(reference_id=self.dbentity_id).count()
         }
 
@@ -1992,6 +1993,34 @@ class Referencedbentity(Dbentity):
         obj = []
         for phenotype in phenotypes:
             obj += phenotype.to_dict(reference=self)
+        return obj
+
+    def disease_to_dict(self):
+        do_annotations = DBSession.query(Diseaseannotation).filter_by(reference_id=self.dbentity_id).all()
+
+        obj = []
+
+        for do_annotation in do_annotations:
+            for annotation in do_annotation.to_dict():
+                if annotation not in obj:
+                    obj.append(annotation)
+        # get human gene symbols from Alliance API
+        human_gene_ids_to_symbols = {}
+        for x in obj:
+            try:
+                for y in x['properties']:
+                    if 'bioentity' in y.keys():
+                        entry = y['bioentity']
+                        hgnc_id = entry['display_name']
+                        if hgnc_id in human_gene_ids_to_symbols.keys():
+                            entry['display_name'] = human_gene_ids_to_symbols[hgnc_id]
+                        else:
+                            url = ALLIANCE_API_BASE_URL + hgnc_id
+                            symbol = requests.request('GET', url).json()['symbol']
+                            entry['display_name'] = symbol
+                            human_gene_ids_to_symbols[hgnc_id] = symbol
+            except Exception as e:
+                traceback.print_exc()
         return obj
 
     def regulation_to_dict(self):
@@ -2771,10 +2800,11 @@ class Locusdbentity(Dbentity):
         return obj
 
     def disease_to_dict(self):
+        #path_res = DBSession.query(FilePath, Path).filter(FilePath.file_id == self.dbentity_id).outerjoin(Path).all()
+        #do_annotations = DBSession.query(Diseaseannotation, Diseasesupportingevidence).filter(Diseaseannotation.dbentity_id == self.dbentity_id).outerjoin(Diseasesupportingevidence).all()
         do_annotations = DBSession.query(Diseaseannotation).filter_by(dbentity_id=self.dbentity_id).all()
 
         obj = []
-
         for do_annotation in do_annotations:
             for annotation in do_annotation.to_dict():
                 if annotation not in obj:
@@ -3119,10 +3149,10 @@ class Locusdbentity(Dbentity):
         }
 
     def disease_graph(self):
-        main_gene_disease_annotations = DBSession.query(Diseaseannotation, Diseasesupportingevidence.dbxref_id, Diseasesupportingevidence.obj_url).outerjoin(Diseasesupportingevidence).filter(Diseaseannotation.dbentity_id==self.dbentity_id).all()
+        main_gene_disease_annotations = DBSession.query(Diseaseannotation, Diseasesupportingevidence.dbxref_id, Diseasesupportingevidence.obj_url).join(Diseasesupportingevidence).filter(Diseaseannotation.dbentity_id==self.dbentity_id).all()
         main_gene_do_ids = [a[0].disease_id for a in main_gene_disease_annotations]
 
-        genes_sharing_do_annotations = DBSession.query(Diseaseannotation, Diseasesupportingevidence.dbxref_id, Diseasesupportingevidence.obj_url).outerjoin(Diseasesupportingevidence).filter(
+        genes_sharing_do_annotations = DBSession.query(Diseaseannotation, Diseasesupportingevidence.dbxref_id, Diseasesupportingevidence.obj_url).join(Diseasesupportingevidence).filter(
             (Diseaseannotation.disease_id.in_(main_gene_do_ids)) & (Diseaseannotation.dbentity_id != self.dbentity_id)).all()
         genes_to_do = {}
         # get all gene and disease names
@@ -5326,9 +5356,12 @@ class Diseaseannotation(Base):
 
     # a Do annotation can be duplicated based on the Dosupportingevidence group id
     # so its to_dict method must return an array of dictionaries
-    def to_dict(self, disease=None):
+    def to_dict(self, disease=None, reference=None):
         if disease == None:
             disease = self.disease
+
+        if reference == None:
+            reference = self.reference
 
         alias = DBSession.query(EcoAlias).filter_by(eco_id=self.eco_id).all()
         experiment_name = alias[0].display_name
@@ -5389,6 +5422,15 @@ class Diseaseannotation(Base):
                 else:
                     se_groups[se.group_id].append(evidence_dict)
 
+        go_obj_evidence = []
+        for group_id in se_groups:
+            obj = copy.deepcopy(disease_obj)
+            obj["properties"] = se_groups[group_id]
+            go_obj_evidence.append(obj)
+
+        if len(go_obj_evidence) == 0:
+            go_obj_evidence = [disease_obj]
+
         final_obj = []
         for group_id in se_groups:
             obj = copy.deepcopy(disease_obj)
@@ -5396,10 +5438,10 @@ class Diseaseannotation(Base):
             final_obj.append(obj)
 
         if len(final_obj) == 0:
-            if len(disease_obj) == 0:
+            if len(go_obj_evidence) == 0:
                 final_obj = [disease_obj]
             else:
-                final_obj = disease_obj
+                final_obj = go_obj_evidence
 
         return final_obj
 
@@ -8400,6 +8442,120 @@ class PsimiAlias(Base):
 
     psimi = relationship(u'Psimi')
     source = relationship(u'Source')
+
+class Efo(Base):
+    __tablename__ = 'efo'
+    __table_args__ = {u'schema': 'nex'}
+
+    efo_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.object_seq'::regclass)"))
+    format_name = Column(String(100), nullable=False, unique=True)
+    display_name = Column(String(500), nullable=False)
+    obj_url = Column(String(500), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    efoid = Column(String(20), nullable=False, unique=True)
+    description = Column(String(2000))
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+    is_obsolete = Column(Boolean, nullable=False)
+
+    source = relationship(u'Source')
+
+
+class EfoRelation(Base):
+    __tablename__ = 'efo_relation'
+    __table_args__ = (
+        UniqueConstraint('parent_id', 'child_id', 'ro_id'),
+        {u'schema': 'nex'}
+    )
+
+    relation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.relation_seq'::regclass)"))
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    parent_id = Column(ForeignKey(u'nex.efo.efo_id', ondelete=u'CASCADE'), nullable=False)
+    child_id = Column(ForeignKey(u'nex.efo.efo_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    ro_id = Column(ForeignKey(u'nex.ro.ro_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    child = relationship(u'Efo', primaryjoin='EfoRelation.child_id == Efo.efo_id')
+    parent = relationship(u'Efo', primaryjoin='EfoRelation.parent_id == Efo.efo_id')
+    ro = relationship(u'Ro')
+    source = relationship(u'Source')
+
+class EfoUrl(Base):
+    __tablename__ = 'efo_url'
+    __table_args__ = (
+        UniqueConstraint('efo_id', 'display_name', 'obj_url'),
+        {u'schema': 'nex'}
+    )
+
+    url_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.url_seq'::regclass)"))
+    display_name = Column(String(500), nullable=False)
+    obj_url = Column(String(500), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    efo_id = Column(ForeignKey(u'nex.efo.efo_id', ondelete=u'CASCADE'), nullable=False)
+    url_type = Column(String(40), nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    efo = relationship(u'Efo')
+    source = relationship(u'Source')
+
+class EfoAlias(Base):
+    __tablename__ = 'efo_alias'
+    __table_args__ = (
+        UniqueConstraint('alias_id', 'display_name', 'alias_type'),
+        {u'schema': 'nex'}
+    )
+
+    alias_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.alias_seq'::regclass)"))
+    display_name = Column(String(500), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False,index=True)
+    efo_id = Column(ForeignKey(u'nex.efo.efo_id', ondelete=u'CASCADE'), nullable=False)
+    alias_type = Column(String(40), nullable=False)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+
+    efo = relationship(u'Efo')
+    source = relationship(u'Source')
+
+
+class Proteinabundanceannotation(Base):
+    __tablename__ = 'proteinabundanceannotation'
+    __table_args__ = (
+        UniqueConstraint('dbentity_id', 'original_reference_id', 'assay_id', 'media_id', 'taxonomy_id', 'chemical_id', 'process_id'),
+        {u'schema': 'nex'}
+    )
+
+    annotation_id = Column(BigInteger, primary_key=True, server_default=text("nextval('nex.annotation_seq'::regclass)"))
+    dbentity_id = Column(ForeignKey(u'nex.dbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False)
+    source_id = Column(ForeignKey(u'nex.source.source_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    taxonomy_id = Column(ForeignKey(u'nex.taxonomy.taxonomy_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    original_reference_id = Column(ForeignKey(u'nex.referencedbentity.dbentity_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    assay_id = Column(ForeignKey(u'nex.eco.eco_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    media_id = Column(ForeignKey(u'nex.efo.efo_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    data_value = Column(Integer)
+    data_unit = Column(String)
+    fold_change = Column(Float)
+    chemical_id = Column(ForeignKey(u'nex.chebi.chebi_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    process_id = Column(ForeignKey(u'nex.go.go_id', ondelete=u'CASCADE'), nullable=False, index=True)
+    concentration_value = Column(Float)
+    concentration_unit = Column(String)
+    time_value = Column(Integer)
+    time_unit = Column(String)
+    date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
+    created_by = Column(String(12), nullable=False)
+    
+
+    eco = relationship(u'Eco')
+    efo = relationship(u'Efo')
+    dbentity = relationship(u'Dbentity')
+    reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
+    original_reference = relationship(u'Referencedbentity', foreign_keys=[original_reference_id])
+    chebi = relationship(u'Chebi')
+    go = relationship(u'Go')
+    source = relationship(u'Source')
+    taxonomy = relationship(u'Taxonomy')
 
 
 class Complexdbentity(Dbentity):

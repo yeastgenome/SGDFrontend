@@ -17,7 +17,7 @@ import datetime
 import logging
 import json
 
-from .models import DBSession, ESearch, Colleague, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, Dataset, DatasetKeyword, Contig, Proteindomain, Ec, Dnasequenceannotation, Straindbentity, Disease, Complexdbentity, Goslim, So, ApoRelation, GoRelation
+from .models import DBSession, ESearch, Colleague, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, Dataset, DatasetKeyword, Contig, Proteindomain, Ec, Dnasequenceannotation, Straindbentity, Disease, Complexdbentity, Filedbentity, Goslim, So, ApoRelation, GoRelation
 from .helpers import extract_id_request, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id, get_disease_by_id, primer3_parser
 from .search_helpers import build_autocomplete_search_body_request, format_autocomplete_results, build_search_query, build_es_search_body_request, build_es_aggregation_body_request, format_search_results, format_aggregation_results, build_sequence_objects_search_query
 from .models_helpers import ModelsHelper
@@ -434,6 +434,16 @@ def reference_phenotype_details(request):
 
     if reference:
         return reference.phenotype_to_dict()
+    else:
+        return HTTPNotFound()
+
+@view_config(route_name='reference_disease_details', renderer='json', request_method='GET')
+def reference_disease_details(request):
+    id = extract_id_request(request, 'reference')
+    reference = DBSession.query(Referencedbentity).filter_by(dbentity_id=id).one_or_none()
+
+    if reference:
+        return reference.disease_to_dict()
     else:
         return HTTPNotFound()
 
@@ -1241,6 +1251,33 @@ def complex(request):
 
     if complex is not None:
         return complex.protein_complex_details()
+    else:
+        return {}
+
+@view_config(route_name='alignment', renderer='json', request_method='GET')
+def alignment(request):
+
+    locus = request.matchdict['id']
+
+    files = DBSession.query(Filedbentity).filter(Filedbentity.previous_file_name.like(locus+'%')).all()
+    
+    if len(files) > 0:
+        data = {}
+        for file in files:
+            s3_url = file.s3_url.split("?versionId=")[0]
+            if file.previous_file_name not in [locus+".png", locus+".align", locus+"_dna.png", locus+"_dna.align"]:
+                continue
+            if '_dna' in file.previous_file_name:
+                if ".png" in file.previous_file_name:
+                    data['dna_images_url'] = s3_url
+                else:
+                    data['dna_align_url'] = s3_url
+            else:
+                if ".png" in file.previous_file_name:
+                    data['protein_images_url'] = s3_url
+                else:
+                    data['protein_align_url'] = s3_url
+        return data
     else:
         return {}
 
