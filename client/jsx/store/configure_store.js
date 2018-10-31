@@ -6,6 +6,9 @@ import searchReducer from "../reducers/search_reducer.js";
 
 // add history to reducer and thunk to dispatch functions as actions
 const ConfigureStore = (initialState, history) => {
+  const devTools = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  let addDevTools = (process.env.NODE_ENV === 'dev' || 'development') ? devTools : {};
+
   const reducerObj = {
     searchResults: searchReducer,
     routing: routeReducer
@@ -16,7 +19,7 @@ const ConfigureStore = (initialState, history) => {
     applyMiddleware(reduxPromise),
     applyMiddleware(thunk),
     applyMiddleware(syncHistory(history))
-  )(createStore)(reducer, initialState);
+  )(createStore)(reducer, initialState, addDevTools);
   return store;
 };
 

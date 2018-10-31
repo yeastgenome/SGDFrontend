@@ -36,6 +36,7 @@
             add_navbar_element('Interaction Annotations', 'interaction');
             add_navbar_element('Gene Ontology Annotations', 'go');
             add_navbar_element('Phenotype Annotations', 'phenotype');
+            add_navbar_element('Disease Annotations', 'disease');
             add_navbar_element('Regulation Annotations', 'regulation');
             add_navbar_element('Expression Datasets', 'expression');
         </script>
@@ -172,6 +173,16 @@
             <!-- Includes phenotype_table into template -->
             {% set table_id = "phenotype_table" %}
             {% include "phenotype_table.jinja2" %}
+        </section>
+
+<!-- Disease
+================================================== -->
+        <section id="disease" data-magellan-destination="disease">
+            <h2>Disease Annotations <span id="disease_table_header" class="round secondary label"></span></h2>
+            <hr />
+            <!-- Includes disease_table into template -->
+            {% set table_id = "disease_table" %}
+            {% include "disease_table.jinja2" %}
         </section>
 
 <!-- Regulation

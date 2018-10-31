@@ -7,6 +7,9 @@ dev-deploy:
 qa-deploy:
 	. dev_deploy_variables.sh && grunt deployAssets && cap qa deploy
 
+qa-deploy-test:
+	. dev_deploy_variables.sh && grunt deployAssetsTest && cap qa deploy
+
 staging-deploy:
 	. prod_deploy_variables.sh && grunt deployAssets && cap staging deploy
 

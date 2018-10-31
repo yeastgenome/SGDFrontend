@@ -9,6 +9,7 @@ module.exports = {
                          'RM11-1a':    'S. cerevisiae Strain RM11-1A_JRIP00000000',
                          'SEY6210':    'S. cerevisiae Strain SEY6210_JRIW00000000',
                          'Sigma1278b': 'S. cerevisiae Strain Sigma1278b-10560-6B_JRIQ00000000',
+			 "SK1":	       'S. cerevisiae Strain SK1_NCSL00000000',
                          'W303':       'S. cerevisiae Strain W303_JRIU00000000',
                          'X2180-1A':   'S. cerevisiae Strain X2180-1A_JRIX00000000',
                          'Y55':        'S. cerevisiae Strain Y55_JRIF00000000'

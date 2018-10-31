@@ -3,6 +3,8 @@ from pyramid.response import Response
 from src.sgd.frontend import config
 from urllib2 import Request, urlopen, URLError
 
+compute_url = "https://blast.yeastgenome.org/"
+
 def do_blast(request):
 
 
@@ -27,7 +29,7 @@ def _run_blast(p):
 
     paramData = _construct_blast_parameters(p)
 
-    url = config.compute_url + "cgi-bin/aws-blast"
+    url = compute_url + "cgi-bin/aws-blast"
 
     req = Request(url=url, data=paramData)
 
@@ -111,7 +113,7 @@ def _get_seq(name, type):
 
 def _get_config(conf):
 
-    url = config.compute_url + "blast/" + conf + ".json"
+    url = compute_url + "blast/" + conf + ".json"
     data = _get_json_from_server(url)
     
     return data

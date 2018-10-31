@@ -7,6 +7,8 @@ from src.sgd.tools.blast import do_blast
 from src.sgd.tools.patmatch import do_patmatch
 from src.sgd.tools.seqtools import do_seq_analysis
 from src.sgd.tools.gotools import do_gosearch
+from src.sgd.tools.alignment import get_s3_data
+
 
 def prep_views(chosen_frontend, config):
     # some logic (NOT all) has been moved to views to be more 'pyramid-y'
@@ -22,6 +24,7 @@ def prep_views(chosen_frontend, config):
     config.add_route('patmatch', '/nph-patmatch')
     config.add_route('seq_tools', '/seqTools')
     config.add_route('gotermfinder', '/goTermFinder')
+    config.add_route('strain_alignment', '/strainAlignment')
     config.add_route('complex', '/complex/{identifier}')
     config.add_route('blog_post', '/blog/{slug}')
     config.add_route('blog_index', '/blog')
@@ -249,6 +252,9 @@ def prep_views(chosen_frontend, config):
 
     config.add_route('do_gosearch', '/run_gotools')
     config.add_view(do_gosearch, route_name='do_gosearch')
+
+    config.add_route('get_s3_data', '/get_alignment')
+    config.add_view(get_s3_data, route_name='get_s3_data')
 
 
 def prepare_frontend(frontend_type, **configs):
