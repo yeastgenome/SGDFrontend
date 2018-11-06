@@ -176,7 +176,7 @@ var SearchForm = React.createClass({
 				
 			return (<div>
 			        <div dangerouslySetInnerHTML={{ __html: descText}} />
-				<form onSubmit={this._onSubmit} target="search_result">
+				<form onSubmit={this._onSubmit} target="blast_result_win">
 					<div className="row">
                         		     <div className="large-12 columns">
                                		     	  { commentBoxNode }
@@ -350,7 +350,7 @@ var SearchForm = React.createClass({
                                       <tr><th>Word Length (W value):</th><td>{wordLengthMenu}</td><td>Default = 11 for BLASTN, 3 for all others</td></tr>
                                       <tr><th>Expect threshold (E threshold):</th><td>{thresholdMenu}</td><td><br></br></td></tr>
                                       <tr><th>Number of best alignments to show:</th><td>{alignToShowMenu}</td><td><br></br></td></tr>
-                                      <tr><th>Filter options:</th><td>{filterMenu}</td><td>DUST file for BLASTN, SEQ filter for all others</td></tr>    
+                                      <tr><th>Filter options:</th><td>{filterMenu}</td><td>DUST file for BLASTN, SEG filter for all others</td></tr>    
                                   </tbody>
                             </table>
                        </div>

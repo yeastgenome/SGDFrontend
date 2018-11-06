@@ -169,9 +169,11 @@ def _get_blast_options(p):
     if filter == 'on':
         if program != 'blastn':
             options = options + " -seg yes"
-        else:
-            options = options + " -dust '20 64 1'"
-    
+    else:
+        if program == 'blastn':
+            # options = options + " -dust '20 64 1'"
+            options = options + " -dust 'no'"
+ 
     return options;
 
              
