@@ -229,7 +229,11 @@
 
 	    </h2>
             <hr />
-            <div id="j-complex-network"></div>
+	    {% if complex.network_graph.edges|length > 0 %}
+                <div id="j-complex-network"></div>
+	    {% else %}
+	        No shared annotations
+	    {% endif %}
         </div>
     </section>
 
