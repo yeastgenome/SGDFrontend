@@ -350,6 +350,24 @@ mapping = {
 
                     }
                 },
+                "do_id": {
+                    "type": "string",
+                    "analyzer": "symbols"
+                },
+                "do_loci": {
+                    "type": "string",
+                    "fields": {
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        },
+                        "symbol": {
+                            "type": "string",
+                            "analyzer": "symbols"
+                        }
+
+                    }
+                },
                 "author": {
                     "type": "string",
                     "analyzer": "symbols",

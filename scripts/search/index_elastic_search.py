@@ -629,6 +629,8 @@ def index_disease_terms():
         annotations = DBSession.query(Diseaseannotation).filter_by(disease_id=do.disease_id).all()
         for annotation in annotations:
             if annotation.disease_qualifier != "NOT":
+                print 'adding ...'
+                print annotation.dbentity.display_name
                 do_loci.add(annotation.dbentity.display_name)
             references.add(annotation.reference.display_name)
         if do.doid != 'derives_from':
@@ -642,7 +644,7 @@ def index_disease_terms():
         for k in key_values:
             if k is not None:
                 keys.add(k.lower())
-
+        print do.doid
         obj = {
             "name": do.display_name,
             "category": "disease",
@@ -957,13 +959,14 @@ def index_part_1():
     index_strains()
     index_colleagues()
     index_chemicals()
-    index_disease_terms()
+
 
 def index_part_2():
     index_reserved_names()
     index_toolbar_links()
     index_observables()
     index_go_terms()
+    index_disease_terms()
     index_complex_names()
     index_references()
 
@@ -976,8 +979,9 @@ if __name__ == "__main__":
     '''
     cleanup()
     setup()
-    t1 = Thread(target=index_part_1)
-    t2 = Thread(target=index_part_2)
-    t1.start()
-    t2.start()
+    index_disease_terms()
+    # t1 = Thread(target=index_part_1)
+    # t2 = Thread(target=index_part_2)
+    # t1.start()
+    # t2.start()
     
