@@ -115,6 +115,15 @@ es_mapping = {
                         }
                     }
                 },
+                "do_loci": {
+                    "type": "string",
+                    "fields": {
+                        "raw": {
+                            "type": "string",
+                            "index": "not_analyzed"
+                        }
+                    }
+                },
                 "strain": {
                     "type": "string",
                     "fields": {
@@ -334,6 +343,9 @@ es_mapping = {
                     }
                 },
                 "go_id": {
+                    "type": "string"
+                },
+                "do_id": {
                     "type": "string"
                 },
                 "number_annotations": {
