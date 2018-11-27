@@ -5,11 +5,13 @@ import sys
 import boto
 from boto.s3.key import Key
 import transaction
+from urllib2 import urlopen
+from urllib import urlretrieve
 
 from src.models import Dbentity, Locusdbentity, Referencedbentity, Taxonomy, \
                        Go, Ro, EcoAlias, Source, Goannotation, Goextension, \
                        Gosupportingevidence, LocusAlias, Edam, Path, FilePath, \
-                       Filedbentity
+                       Filedbentity, ReferenceAlias
 from scripts.loading.database_session import get_session
 from src.helpers import upload_file
 
@@ -27,6 +29,8 @@ CREATED_BY = os.environ['DEFAULT_USER']
 
 gaf_file = "scripts/dumping/curation/data/gene_association.sgd"
 gaf_file4yeastmine = "scripts/dumping/curation/data/gene_association.sgd-yeastmine"
+go_central_url = "http://release.geneontology.org/"
+gaf_from_go = "sgd.gaf.gz"
 
 namespace_to_code = { "biological process": 'P',
                       "molecular function": 'F',
@@ -80,6 +84,7 @@ def dump_data():
     id_to_taxon = dict([(x.taxonomy_id, x.taxid) for x in nex_session.query(Taxonomy).all()])
     id_to_ro = dict([(x.ro_id, x.display_name) for x in nex_session.query(Ro).all()])
     edam_to_id = dict([(x.format_name, x.edam_id) for x in nex_session.query(Edam).all()])
+    id_to_go_ref = dict([(x.reference_id, x.display_name) for x in nex_session.query(ReferenceAlias).filter(ReferenceAlias.display_name.like('GO_REF:%')).all()])
 
     id_to_eco = {}
     for x in nex_session.query(EcoAlias).all():
@@ -153,9 +158,14 @@ def dump_data():
         (goid, go_term, go_aspect) = id_to_go[x.go_id]
         row[GOID] = goid
 
-        reference = "SGD_REF:" + id_to_sgdid[x.reference_id]
-        if id_to_pmid.get(x.reference_id) is not None:
-            reference = reference + "|" + "PMID:" + str(id_to_pmid.get(x.reference_id))
+        # reference = "SGD_REF:" + id_to_sgdid[x.reference_id]
+        # if id_to_pmid.get(x.reference_id) is not None:
+        #    reference = reference + "|" + "PMID:" + str(id_to_pmid.get(x.reference_id))
+        reference = ""
+        if id_to_pmid.get(x.reference_id) is not None: 
+            reference = "PMID:" + str(id_to_pmid.get(x.reference_id))
+        else:
+            reference = id_to_go_ref[x.reference_id]
         row[REFERENCE] = reference
 
         go_qualifier = ""
@@ -166,6 +176,8 @@ def dump_data():
         row[ASPECT] = namespace_to_code[go_aspect]
 
         eco_code = id_to_eco[x.eco_id]
+        if eco_code == 'IMR':
+            eco_code = "IKR"
         row[EVIDENCE] = eco_code
 
         source = id_to_source[x.source_id]
@@ -226,6 +238,12 @@ def dump_data():
 
     nex_session.close()
 
+    ## download sgd gaf from go central and upload it to S3
+    download_sgd_gaf_from_go_central()
+    local_file = open(gaf_from_go)
+    upload_gaf_to_s3(local_file, "latest/" + gaf_from_go)
+    ## done
+
     log.info(str(datetime.now()))
     log.info("Done!")
 
@@ -238,6 +256,33 @@ def write_header(fw, datestamp):
     fw.write("!Contact Email: sgd-helpdesk@lists.stanford.edu\n")
     fw.write("!Funding: NHGRI at US NIH, grant number 5-P41-HG001315\n")
     fw.write("!\n")
+
+def read_from_go_central(url, matchSubDir=None):
+    
+    response = urlopen(url)
+    html = response.read()
+    lines = html.split("\n");
+    current_sub = ""
+    current_url = ""
+    for line in lines:
+        if line == "" or "<a href" not in line:
+            continue
+        line = line.strip().replace('"', '').replace("<a href=", "").replace("</a>", "")
+
+        items = line.split(">")
+        if matchSubDir is not None and matchSubDir == items[1]:
+            return items[0]
+        else:
+            current_url = items[0]
+    return current_url
+
+def download_sgd_gaf_from_go_central():
+
+    dated_url = read_from_go_central(go_central_url)
+    annots_url = read_from_go_central(dated_url, "annotations")
+    sgd_gaf_url = read_from_go_central(annots_url, gaf_from_go)
+
+    urlretrieve(sgd_gaf_url, gaf_from_go)
 
 def upload_gaf_to_s3(file, filename):
 
