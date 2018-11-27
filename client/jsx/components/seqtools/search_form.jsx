@@ -462,7 +462,7 @@ const GeneSequenceResources = React.createClass({
                 var fungalBlastButton = this.getToolButtonChr('/blast-fungal', 'Fungal BLAST', seqID, '');
 
                 var primerButton = this.getToolButtonChr('/primer3', 'Design Primers', seqID, '');
-                var restrictionButton = this.getToolButtonChr4post('https://www.yeastgenome.org/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map', seq, seqID);
+                var restrictionButton = this.getToolButtonChr('/restrictionMapper', 'Genome Restriction Map', seqID, '');
 		var translatedProteinButton = this.getToolButtonChr('/seqTools', 'Translated Protein Sequence', seqID, 'transeq');
                 var sixframeButton = this.getToolButtonChr('/seqTools', '6 Frame Translation', seqID, 'remap');
 
@@ -554,7 +554,7 @@ const GeneSequenceResources = React.createClass({
 		if (seq.length <= MAX_SEQ_LENGTH_FOR_TOOLS) {
 
 		     var primerButton = this.getToolButtonChr('/primer3', 'Design Primers', seqID, '');
-                     var restrictionButton = this.getToolButtonChr4post('https://www.yeastgenome.org/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map', seq);
+                     var restrictionButton = this.getToolButtonChr('/restrictionMapper', 'Genome Restriction Map', seqID, '');
                      var restrictFragmentsButton = this.getToolButtonChr('/seqTools', 'Restriction Fragments', seqID, 'restrict');
                      var sixframeButton = this.getToolButtonChr('/seqTools', '6 Frame Translation', seqID, 'remap');
 
@@ -587,7 +587,7 @@ const GeneSequenceResources = React.createClass({
 		var blastButton = this.getToolButton(gene, '/blast-sgd',  'BLAST', ID, '');
 		var fungalBlastButton = this.getToolButton(gene, '/blast-fungal', 'Fungal BLAST', ID, '');	
 		var primerButton = this.getToolButton(gene, '/primer3', 'Design Primers', ID, '');
-		var restrictionButton = this.getToolButton4post(gene, 'https://www.yeastgenome.org/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map', ID);
+		var restrictionButton = this.getToolButton(gene, '/restrictionMapper', 'Genome Restriction Map', ID, '');
 		var restrictFragmentsButton = this.getToolButton(gene, '/seqTools', 'Restriction Fragments', ID, 'restrict');
 		var sixframeButton = this.getToolButton(gene, '/seqTools', '6 Frame Translation', ID, 'remap');
 
@@ -634,24 +634,6 @@ const GeneSequenceResources = React.createClass({
 		}
 
         },
-
-	getToolButton4post(name, program, button, ID) {
-
-		var strain = this.state.strain;
-		if (strain == '') {
-		     strain = window.localStorage.getItem("strain");   
-		}
-		var seqID = name + "_" + strain + "_" + ID;
-		var seq = window.localStorage.getItem(seqID);
-
-		// <input type="submit" value={ button } className="button small secondary"></input>
-		
-		return (<form method="POST" action={ program } target="toolwin">
-		                <input type="hidden" name="seq" value={ seq }  />
-                                <input type="submit" value={ button } style={ style.button }></input>
-                        </form>);
-
-	},
 
 	getToolButtonRawSeq(program, button, seqID, seqtype) {
 
