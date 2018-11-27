@@ -9,7 +9,7 @@ import re
 from sqlalchemy import create_engine, and_, not_
 from src.models import DBSession, Locussummary, LocussummaryReference,\
      Locusdbentity, Referencedbentity, Source
-from src.helpers import link_gene_names, tvs_file_to_dict
+from src.helpers import link_gene_names, tsv_file_to_dict
 
 __author__ = 'tshepp'
 

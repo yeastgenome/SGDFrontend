@@ -11,6 +11,7 @@ from pyramid.httpexceptions import HTTPForbidden, HTTPBadRequest, HTTPNotFound
 from sqlalchemy.exc import IntegrityError, InternalError, StatementError
 import traceback
 import requests
+import csv
 
 from .models import DBSession, Dbuser, Go, Referencedbentity, Keyword, Locusdbentity, FilePath, Edam, Filedbentity, FileKeyword, ReferenceFile, Disease
 
@@ -444,3 +445,30 @@ def primer3_parser(primer3_results):
             print(k)
 
     return list(map(primer_pairs.get, sorted(primer_pairs.keys()))), notes
+
+
+def tsv_file_to_dict(tsv_file):
+    # import pdb ; pdb.set_trace()
+    ''' parse file to list of dictionaries
+
+    Paramaters
+    ----------
+    file: tsv_file object
+
+    Returns
+    -------
+    list
+        dictionary: each file row becomes a dictionary with column header
+                    as keys.
+
+    '''
+    list_dictionary = []
+    if(tsv_file):
+        csv_obj = csv.DictReader(tsv_file, dialect='excel-tab')
+        for item in csv_obj:
+            list_dictionary.append(
+                {k: v for k, v in item.items() if k is not None}
+                )
+        return list_dictionary
+    else:
+        return list_dictionary
