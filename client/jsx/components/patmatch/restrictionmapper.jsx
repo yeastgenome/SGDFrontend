@@ -250,7 +250,9 @@ const RestrictionMapper = React.createClass({
 		}		
 
 		if (searchType == 'name') {
-		   paramData['name'] = param['gene'];
+		   var gene = param['gene'];
+		   gene = gene.replace("SGD:", "");
+		   paramData['name'] = gene;
 		   this.sendRequest(paramData)
                    return		   
 		}		
