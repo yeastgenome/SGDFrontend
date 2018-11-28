@@ -171,7 +171,7 @@ const RestrictionMapper = React.createClass({
 
 		return(<div>
                        <textarea ref='seq' name='seq' value={sequence} onChange={this.onChange} rows='5' cols='75'></textarea>
-		       Only DNA sequences containing A, G, C, and T (plus spaces and numbers) are allowed
+		       Only DNA sequences containing A, G, C, and T are allowed. Any other characters will be removed automatically before analysis. 
                 </div>);    
 
 	},
@@ -190,7 +190,7 @@ const RestrictionMapper = React.createClass({
                 });
 
                 return(<div>
-                       <span style={ style.textFont }><strong>Step2: Choose Restriction Enzyme: </strong></span>
+                       <span style={ style.textFont }><strong>Step2: Choose Restriction Enzyme Set: </strong></span>
                        <p><select ref='type' name='type' onChange={this.onChange}>{_elements}</select>
 		       <font color='red'>Note</font>: To find enzymes that do not cut, choose 'all' and see the resulting list at bottom.</p>
                 </div>);
@@ -264,7 +264,8 @@ const RestrictionMapper = React.createClass({
 		   var seq = param['seq'];
 		   seq = seq.replace(/%0D/g, '');
 		   seq = seq.replace(/%0A/g, '');
-		   seq = seq.toUpperCase().replace(/[^A-Z]/g, '');
+		   // seq = seq.toUpperCase().replace(/[^A-Z]/g, '');
+		   seq = seq.toUpperCase().replace(/[^ATCG]/g, '');
 		   paramData['seq'] = seq;
 		   this.sendRequest(paramData)
                    return
