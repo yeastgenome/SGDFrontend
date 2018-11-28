@@ -114,7 +114,7 @@ const RestrictionMapper = React.createClass({
 		var enzymeNode = this.getEnzymeNode();
 		var submitNode = this.getSubmitNode();
 
-		var searchSection = { headers: [[<span style={ style.textFont }><strong>Step 1: Enter a Sequence Name</strong></span>, <span style={ style.textFontRed }><strong>OR</strong></span>, <span style={ style.textFont }><strong>Type or Paste a DNA Sequence</strong></span>]],
+		var searchSection = { headers: [[<span style={ style.textFont }><strong>Step 1: Enter a Gene Name</strong></span>, <span style={ style.textFontRed }><strong>OR</strong></span>, <span style={ style.textFont }><strong>Type or Paste a DNA Sequence</strong></span>]],
 			    	     rows:    [[geneNode, '', seqNode], [enzymeNode, '', submitNode]] };
 				     					
 		return (<div>
@@ -134,7 +134,9 @@ const RestrictionMapper = React.createClass({
 	getGeneNode() {
 			  
                 return (<div style={{ textAlign: "top" }}>
-			<p>Enter a standard gene name (or ORF or SGDID). <br></br>Example: SIR2 YHR023W SGD:S000000001. 
+			<p>Enter a single standard gene name (or ORF or SGDID); note that other feature <br></br>
+			   types (such as RNAs, CENs or ARSs) are not supported. Example: SIR2, YHR023W,<br></br>
+			   or SGD:S000000001.
 			<input type='text' name='gene' ref='gene' onChange={this._onChange}  size='50'></input>
 			</p>
                 </div>);
@@ -151,6 +153,7 @@ const RestrictionMapper = React.createClass({
 
 		return(<div>
                        <textarea ref='seq' name='seq' value={sequence} onChange={this.onChange} rows='5' cols='75'></textarea>
+		       Only DNA sequences containing A, G, C, and T (plus spaces and numbers) are allowed
                 </div>);    
 
 	},
