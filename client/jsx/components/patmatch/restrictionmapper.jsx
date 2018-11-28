@@ -69,12 +69,14 @@ const RestrictionMapper = React.createClass({
 			var seqLength = data['seqLength'];
 			
 			if (seqLength == 0) {
+			    var message = "";
 			    if (param['gene']) {
-			         return (<div><strong>Please enter a single valid gene name.</strong></div>);
+			         message = "Please enter a single valid gene name.";
 			    }
 			    else {
-			    	 return	(<div><strong>Please enter a valid DNA sequence.</strong></div>);
+			    	 message = "Please enter a valid DNA sequence.";
 			    }
+			    return <div><span style={ style.textFont }>{ message }</span></div>
 			}
 
 			var desc = this.getDesc(data['seqName'], seqLength, data['chrCoords']);
@@ -110,11 +112,15 @@ const RestrictionMapper = React.createClass({
 		}
 		else {
 
+		        if (param['gene'] && param['seq']) {
+			    return <div><span style={ style.textFont }>Enter either a gene name or a DNA sequence.</span></div>
+			}
+
 		        if (param['gene'] || param['seq']) {
 			     return <p>Please wait while we retrieve the requested information.</p>; 
 
 			}
-
+			
 			return this.getFrontPage();
 			
 		}
