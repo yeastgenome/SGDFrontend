@@ -58,6 +58,10 @@ const RestrictionMapper = React.createClass({
 		
 		var param = this.state.param;
 
+		if (param['gene'] && param['seq']) {
+                     return <div><span style={ style.textFont }>Enter either a gene name or a DNA sequence.</span></div>
+                }
+
 	        if (this.state.isComplete) {
 
 			var data = this.state.resultData;
@@ -111,11 +115,6 @@ const RestrictionMapper = React.createClass({
 			
 		}
 		else {
-
-		        if (param['gene'] && param['seq']) {
-			    return <div><span style={ style.textFont }>Enter either a gene name or a DNA sequence.</span></div>
-			}
-
 		        if (param['gene'] || param['seq']) {
 			     return <p>Please wait while we retrieve the requested information.</p>; 
 
