@@ -307,7 +307,7 @@ const RestrictionMapper = React.createClass({
 		     return "<center><h3>The unnamed sequence (sequence length: " + seqLength + ")</h3></center>";
 		}
 		else {
-		     return "<center><h3>The coding sequence for <font color='red'>" + seqName + "</font>, " + chrCoords + " (sequence length: " + seqLength + ")</h3></center>";
+		     return "<center><h3>The genomic sequence for <font color='red'>" + seqName + "</font>, " + chrCoords + " (sequence length: " + seqLength + ")</h3></center>";
 		}
 	}
 	
