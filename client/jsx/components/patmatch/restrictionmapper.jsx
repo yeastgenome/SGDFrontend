@@ -67,6 +67,16 @@ const RestrictionMapper = React.createClass({
 			}
 			var cuts = data['data'];
 			var seqLength = data['seqLength'];
+			
+			if (seqLength == 0) {
+			    if (param['gene']) {
+			         return (<div><strong>Please enter a single valid gene name.</strong></div>);
+			    }
+			    else {
+			    	 return	(<div><strong>Please enter a valid DNA sequence.</strong></div>);
+			    }
+			}
+
 			var desc = this.getDesc(data['seqName'], seqLength, data['chrCoords']);
 			 
 			var graphNode = (<RestBarChart 
