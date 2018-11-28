@@ -152,9 +152,9 @@ const RestrictionMapper = React.createClass({
 	getGeneNode() {
 			  
                 return (<div style={{ textAlign: "top" }}>
-			<p>Enter a single standard gene name (or ORF or SGDID); note that other feature <br></br>
-			   types (such as RNAs, CENs or ARSs) are not supported. Example: SIR2, YHR023W,<br></br>
-			   or SGD:S000000001.
+			<p>Enter a single standard gene name (or ORF or SGDID); note that other<br></br>
+			   feature types (such as RNAs, CENs or ARSs) are not supported. Example: <br></br>
+			   SIR2, YHR023W, or SGD:S000000001.
 			<input type='text' name='gene' ref='gene' onChange={this._onChange}  size='50'></input>
 			</p>
                 </div>);
