@@ -61,7 +61,10 @@ const RestrictionMapper = React.createClass({
 	        if (this.state.isComplete) {
 
 			var data = this.state.resultData;
-			var notCutEnzymeTable = this.getNotCutEnzymeTable(data['notCutEnzyme']);
+			var notCutEnzymeTable = "";
+			if (param['type'] == 'all') {
+			     notCutEnzymeTable = this.getNotCutEnzymeTable(data['notCutEnzyme']);
+			}
 			var cuts = data['data'];
 			var seqLength = data['seqLength'];
 			var desc = this.getDesc(data['seqName'], seqLength, data['chrCoords']);
