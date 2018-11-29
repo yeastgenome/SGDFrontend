@@ -136,7 +136,7 @@ const RestrictionMapper = React.createClass({
 			    	     rows:    [[geneNode, '', seqNode], [enzymeNode, '', submitNode]] };
 				     					
 		return (<div>
-			<div><span style={ style.textFont }>This form allows you to perform restriction site analysis by entering a gene name (note: the S288C genomic sequence of the gene will be used), or by pasting in a DNA sequence. For alternate strains, non-gene features, and/or specific chromosomal coordinates, please use our <a href='/seqTools' target='gsr_win'>Gene/Sequence Resources</a> tool, selecting the 'Restriction Site Mapper' link from the GSR results page."</span></div>
+			<div><span style={ style.textFont }>This form allows you to perform restriction site analysis by entering a gene name (note: the S288C genomic sequence of the gene will be used), or by pasting in a DNA sequence. For alternate strains, non-gene features, and/or specific chromosomal coordinates, please use our <a href='/seqTools' target='gsr_win'>Gene/Sequence Resources</a> tool, selecting the <strong>Restriction Site Mapper</strong> link from the GSR results page.</span></div>
 			<p></p>
 			<div className="row">
 			     <div className="large-12 columns">
@@ -153,9 +153,9 @@ const RestrictionMapper = React.createClass({
 			  
                 return (<div style={{ textAlign: "top" }}>
 			<p>Enter a single standard gene name (or ORF or SGDID);<br></br>
-			   note that other feature types (such as RNAs, CENs or<br></br>
-			   ARSs) are not supported. Example: SIR2, YHR023W, or <br></br>
-			   SGD:S000000001.
+			   for non-gene features (such as RNAs, CENs or ARSs)<br></br>
+			   use the GSR tool as described above. Example: SIR2,<br></br>
+			   YHR023W, or SGD:S000000001.
 			<input type='text' name='gene' ref='gene' onChange={this._onChange}  size='50'></input>
 			</p>
                 </div>);
