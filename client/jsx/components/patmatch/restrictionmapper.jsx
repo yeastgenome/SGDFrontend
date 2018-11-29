@@ -37,7 +37,7 @@ const RestrictionMapper = React.createClass({
 		var page_to_display = this.getPage();
 		
 		return (<div>
-			  <span style={{ textAlign: "center" }}><h1>Yeast Genome Restriction Analysis<a target="_blank" href="https://sites.google.com/view/yeastgenome-help/analyze-help/restriction-mapper?authuser=0"><img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img></a></h1>
+			  <span style={{ textAlign: "center" }}><h1>Restriction Site Mapper<a target="_blank" href="https://sites.google.com/view/yeastgenome-help/analyze-help/restriction-mapper?authuser=0"><img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img></a></h1>
 			  <hr /></span>
 			  {page_to_display}
 			</div>);
@@ -136,7 +136,7 @@ const RestrictionMapper = React.createClass({
 			    	     rows:    [[geneNode, '', seqNode], [enzymeNode, '', submitNode]] };
 				     					
 		return (<div>
-			<div><span style={ style.textFont }>This form allows you to perform a restriction analysis by entering a sequence name or arbitrary DNA sequence.</span></div>
+			<div><span style={ style.textFont }>This form allows you to perform restriction site analysis by entering a gene name (note: the S288C genomic sequence of the gene will be used), or by pasting in a DNA sequence. For alternate strains, non-gene features, and/or specific chromosomal coordinates, please use our <a href='/seqTools' target='gsr_win'>Gene Sequence Resources</a> tool, selecting the 'Restriction Site Mapper' link from the GSR results page."</span></div>
 			<p></p>
 			<div className="row">
 			     <div className="large-12 columns">
@@ -171,7 +171,7 @@ const RestrictionMapper = React.createClass({
 
 		return(<div>
                        <textarea ref='seq' name='seq' value={sequence} onChange={this.onChange} rows='5' cols='75'></textarea>
-		       Only DNA sequences containing A, G, C, and T are allowed. Any other characters will be removed automatically before analysis. 
+		       Only DNA sequences containing A, G, C, and T are allowed. Any other characters will be removed automatically before analysis. Also Pasted-in DNA sequences must be less than ~8kb in length.
                 </div>);    
 
 	},
