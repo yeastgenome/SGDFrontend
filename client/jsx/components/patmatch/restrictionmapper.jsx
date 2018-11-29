@@ -136,7 +136,7 @@ const RestrictionMapper = React.createClass({
 			    	     rows:    [[geneNode, '', seqNode], [enzymeNode, '', submitNode]] };
 				     					
 		return (<div>
-			<div><span style={ style.textFont }>This form allows you to perform restriction site analysis by entering a gene name (note: the S288C genomic sequence of the gene will be used), or by pasting in a DNA sequence. For alternate strains, non-gene features, and/or specific chromosomal coordinates, please use our <a href='/seqTools' target='gsr_win'>Gene Sequence Resources</a> tool, selecting the 'Restriction Site Mapper' link from the GSR results page."</span></div>
+			<div><span style={ style.textFont }>This form allows you to perform restriction site analysis by entering a gene name (note: the S288C genomic sequence of the gene will be used), or by pasting in a DNA sequence. For alternate strains, non-gene features, and/or specific chromosomal coordinates, please use our <a href='/seqTools' target='gsr_win'>Gene/Sequence Resources</a> tool, selecting the 'Restriction Site Mapper' link from the GSR results page."</span></div>
 			<p></p>
 			<div className="row">
 			     <div className="large-12 columns">
