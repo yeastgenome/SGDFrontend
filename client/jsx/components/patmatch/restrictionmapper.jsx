@@ -47,18 +47,23 @@ const RestrictionMapper = React.createClass({
 	componentDidMount() {
 		var param = this.state.param;
 	        if (param['gene']) {
-	              this.runRestTools('name');
+	              this.runRestTools('gene', param['gene']);
 	        }
-		else if (param['seq']) {
-                      this.runRestTools('seq');
+		else if (param['seq_id'] && window.localStorage.getItem(param['seq_id'])) {
+                      this.runRestTools('seq', window.localStorage.getItem(param['seq_id']));
                 }
 	},
 
 	getPage() {
 		
 		var param = this.state.param;
+		var seq_id = param['seq_id'];
+		var seq = "";
+		if (seq_id) {
+		   seq = window.localStorage.getItem(seq_id);
+		}
 
-		if (param['gene'] && param['seq']) {
+		if (param['gene'] && seq) {
                      return <div><span style={ style.textFont }>Enter either a gene name or a DNA sequence.</span></div>
                 }
 
@@ -115,7 +120,8 @@ const RestrictionMapper = React.createClass({
 			
 		}
 		else {
-		        if (param['gene'] || param['seq']) {
+		        if (param['gene'] || seq) {
+			   
 			     return <p>Please wait while we retrieve the requested information.</p>; 
 
 			}
@@ -167,13 +173,32 @@ const RestrictionMapper = React.createClass({
 		var param = this.state.param;
 
 		var seqID = param['sequence_id'];
-	
-		var sequence = window.localStorage.getItem(seqID);
 
-		return(<div>
-                       <textarea ref='seq' name='seq' value={sequence} onChange={this.onChange} rows='5' cols='75'></textarea>
-		       Only DNA sequences containing A, G, C, and T are allowed. Any other characters will be removed automatically before analysis. Also Pasted-in DNA sequences must be less than ~8kb in length.
-                </div>);    
+		var sequence = "";
+		if (seqID) {
+		    sequence = window.localStorage.getItem(seqID);
+		}
+		var min = 1;
+                var max = 10000;
+		var localSeqID = min + (Math.random() * (max-min)); 
+
+		//  <textarea ref='seq' name='seq' value={sequence} onChange={this.onChange} rows='5' cols='75'></textarea>
+
+		if (sequence) {
+		       return(<div>
+				<textarea ref='seq' value={sequence} onChange={this.onChange} rows='5' cols='75'></textarea>
+				<input type='hidden' name='seq_id' ref='seq_id' value={localSeqID}></input>
+		       		Only DNA sequences containing A, G, C, and T are allowed. Any other characters will be removed automatically before analysis. 
+                       </div>);
+		}
+		else {
+		       return(<div>
+                                <textarea ref='seq' onChange={this.onChange} rows='5' cols='75'></textarea>
+                                <input type='hidden' name='seq_id' ref='seq_id' value={localSeqID}></input>
+                                Only DNA sequences containing A, G, C, and T are allowed. Any other characters will be removed automatically before analysis. 
+                       </div>);
+
+		}    
 
 	},
 
@@ -253,32 +278,41 @@ const RestrictionMapper = React.createClass({
                 this.setState({ text: e.target.value});
         },
 
-	runRestTools(searchType) {
+	onSubmit(e) {
+		 var seq_id = this.refs.seq_id.value.trim();;
+		 var seq = this.refs.seq.value.trim();
+		 seq = seq.replace(/%0D/g, '');
+                 seq = seq.replace(/%0A/g, '');
+                 seq = seq.toUpperCase().replace(/[^ATCG]/g, '');
+		 if (seq) {
+		    window.localStorage.setItem(seq_id, seq);
+		 }
+	},
 
+	runRestTools(searchType, value) {
+
+		
 		var paramData = {};
-		
 		var param = this.state.param;
-		
 		paramData['type'] = param['type'];
 
+		if (searchType == 'gene') {
+                   var gene = value;
+                   gene = gene.replace("SGD:", "");
+                   gene = gene.replace("SGD%3A", "");
+                   paramData['name'] = gene;
+                   this.sendRequest(paramData)
+                   return
+                }
+
 		if (searchType == 'seq') {
-		   var seq = param['seq'];
-		   seq = seq.replace(/%0D/g, '');
-		   seq = seq.replace(/%0A/g, '');
-		   // seq = seq.toUpperCase().replace(/[^A-Z]/g, '');
-		   seq = seq.toUpperCase().replace(/[^ATCG]/g, '');
-		   paramData['seq'] = seq;
+		   // var seq = param['seq'];
+		   // seq = seq.replace(/%0D/g, '');
+		   // seq = seq.replace(/%0A/g, '');
+		   // seq = seq.toUpperCase().replace(/[^ATCG]/g, '');
+		   paramData['seq'] = value;
 		   this.sendRequest(paramData)
                    return
-		}		
-
-		if (searchType == 'name') {
-		   var gene = param['gene'];
-		   gene = gene.replace("SGD:", "");
-		   gene	= gene.replace("SGD%3A", "");
-		   paramData['name'] = gene;
-		   this.sendRequest(paramData)
-                   return		   
 		}		
  		
 	},
