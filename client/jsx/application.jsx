@@ -18,6 +18,7 @@ var views = {
   blast_sgd: require('./views/blast_sgd_view.jsx'),
   blast_fungal: require('./views/blast_fungal_view.jsx'),
   patmatch: require('./views/patmatch_view.jsx'),
+  restrictionmapper: require('./views/restrictionmapper_view.jsx'),
   seqTools: require('./views/seqTools_view.jsx'),
   goTermFinder: require('./views/gotermfinder_view.jsx'),
   strainAlignment: require('./views/strain_alignment_view.jsx'),
