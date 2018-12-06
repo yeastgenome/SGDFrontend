@@ -173,8 +173,10 @@ const RestrictionMapper = React.createClass({
 		var param = this.state.param;
 
 		var seqID = param['sequence_id'];
-		seqID = seqID.replace("%28", "(");
-		seqID = seqID.replace("%29", ")");
+		if (seqID) {
+		   seqID = seqID.replace("%28", "(");
+		   seqID = seqID.replace("%29", ")");
+		}
 		var sequence = "";
 		if (seqID) {
 		    sequence = window.localStorage.getItem(seqID);
