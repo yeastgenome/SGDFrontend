@@ -173,7 +173,8 @@ const RestrictionMapper = React.createClass({
 		var param = this.state.param;
 
 		var seqID = param['sequence_id'];
-
+		seqID = seqID.replace("%28", "(");
+		seqID = seqID.replace("%29", ")");
 		var sequence = "";
 		if (seqID) {
 		    sequence = window.localStorage.getItem(seqID);
@@ -225,7 +226,7 @@ const RestrictionMapper = React.createClass({
 
 	getSubmitNode: function() {
 
-		       return(<div>
+		return(<div>
                       <p><input type="submit" value="DISPLAY MAP" className="button secondary"></input><input type="reset" value="RESET FORM" className="button secondary"></input>
                       </p>
                 </div>);
