@@ -101,7 +101,9 @@ var SearchForm = React.createClass({
 
 		        var descText = "<p>Query performed by the Saccharomyces Genome Database; for full BLAST options and parameters, refer to the NCBI BLAST Documentation Links to GenBank, EMBL, PIR, SwissProt, and SGD are shown in bold type; links to locations within this document are in normal type. Your comments and suggestions are requested: <a href='/suggestion'>Send a Message to SGD</a></p><hr>"; 
 			if (this.state.filter) {
-			       descText = descText + '<p><b>***Please Note Sequence Filtering is ON.***</b>Sequence filtering will mask out regions with low compositional complexity or segments consisting of simple repetitive sequences from your query sequence. Filtering can eliminate statistically significant but biologically uninteresting reports from the BLAST output. A low complexity sequence found by a filter program is substituted using the letter "N" in nucleotide sequence (e.g., "NNNNN") and the letter "X" in protein sequences (e.g., "XXXXX"). Filtering is on by default, however it can be turned off by selecting "none" from the Filter options on the BLAST form.</p><p>For more details on filtering see the <a href="http://blast.ncbi.nlm.nih.gov/blast_help.shtml">BLAST Help at NCBI</a>.</p><hr>';
+			       descText = descText + '<p><b>***Please Note Sequence Filtering is ON.***</b> Sequence filtering will mask out regions of low compositional complexity from your query sequence. Filtering can eliminate statistically significant but biologically uninteresting reports from the BLAST output. Low complexity regions found by a filter program are substituted using the letter "N" in nucleotide sequence (e.g., "NNNNN") and the letter "X" in protein sequences (e.g., "XXXXX"). In the BLAST output, filtered regions are shown in the query sequence as lower-case letters. Filtering is on by default, however it can be turned off by selecting "Off" from the Filter options on the BLAST form.</p><p>For more details on filtering see the <a href="http://blast.ncbi.nlm.nih.gov/blast_help.shtml">\
+BLAST Help at NCBI</a>.</p><hr>';
+
 			}
 			
 			var graph = this._getGraphNode(this.state.resultData.hits);
