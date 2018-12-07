@@ -642,7 +642,6 @@ def index_disease_terms():
         for k in key_values:
             if k is not None:
                 keys.add(k.lower())
-
         obj = {
             "name": do.display_name,
             "category": "disease",
@@ -957,13 +956,14 @@ def index_part_1():
     index_strains()
     index_colleagues()
     index_chemicals()
-    index_disease_terms()
+
 
 def index_part_2():
     index_reserved_names()
     index_toolbar_links()
     index_observables()
     index_go_terms()
+    index_disease_terms()
     index_complex_names()
     index_references()
 
