@@ -10,16 +10,18 @@ import traceback
 
 from src.models import Apo, DBSession, Dnasequenceannotation, Go, Locusdbentity, Phenotype, Referencedbentity, Straindbentity
 
-HEADER_OBJ = { 'X-Forwarded-Proto': 'https' }
+HEADER_OBJ = {'X-Forwarded-Proto': 'https'}
 
 engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600, pool_size=2)
 DBSession.configure(bind=engine)
 
 if 'WORKER_LOG_FILE' in os.environ.keys():
     LOG_FILE = os.environ['WORKER_LOG_FILE']
-    logging.basicConfig(filename=LOG_FILE)
+    logging.basicConfig(
+        filename=LOG_FILE, format='%(asctime)s %(levelname)s %(message)s')
 logger = logging.getLogger(__name__)
 logger.setLevel(level=logging.INFO)
+
 
 # init spiders
 class BaseSpider(scrapy.Spider):
@@ -27,7 +29,7 @@ class BaseSpider(scrapy.Spider):
         'CONCURRENT_REQUESTS_PER_DOMAIN': 2,
         'CONCURRENT_REQUESTS': 16
     }
-    
+
     def get_entities(self):
         return []
 
@@ -37,7 +39,7 @@ class BaseSpider(scrapy.Spider):
             index = entities.index(entity)
             if (index % 100 == 0):
                 percent_done = str(float(index) / float(len(entities)) * 100)
-                self.log('CHECKIN STATS: ' + percent_done + '% of current index complete')
+                self.logger.info('CHECKIN STATS: ' + percent_done + '% of current index complete')
             urls = entity.get_all_cache_urls(True)
             for url in urls:
                 yield scrapy.Request(url=url, headers=HEADER_OBJ, method='PURGE', callback=self.parse)
@@ -47,12 +49,14 @@ class BaseSpider(scrapy.Spider):
         # # to debug latency
         # latency = response.request.meta['download_latency']
         if response.status != 200:
-            self.log('error on ' + response.url)
+            self.logger.error('error on ' + response.url)
+
 
 class GenesSpider(BaseSpider):
     name = 'genes'
+
     def get_entities(self):
-        self.log('getting genes')
+        self.logger.info('getting genes')
         attempts = 0
         while attempts < 3:
             try:
@@ -74,10 +78,12 @@ class GenesSpider(BaseSpider):
                 attempts += 1
         return all_genes
 
+
 class GoSpider(BaseSpider):
     name = 'go'
+
     def get_entities(self):
-        self.log('getting gos')
+        self.logger.info('getting gos')
         attempts = 0
         while attempts < 3:
             try:
@@ -89,10 +95,12 @@ class GoSpider(BaseSpider):
                 attempts += 1
         return gos
 
+
 class ObservableSpider(BaseSpider):
     name = 'observable'
+
     def get_entities(self):
-        self.log('getting observables')
+        self.logger.info('getting observables')
         attempts = 0
         while attempts < 3:
             try:
@@ -106,8 +114,9 @@ class ObservableSpider(BaseSpider):
 
 class PhenotypeSpider(BaseSpider):
     name = 'phenotype'
+
     def get_entities(self):
-        self.log('getting phenotypes')
+        self.logger.info('getting phenotypes')
         attempts = 0
         while attempts < 3:
             try:
@@ -121,6 +130,7 @@ class PhenotypeSpider(BaseSpider):
 
 configure_logging()
 runner = CrawlerRunner()
+
 
 @defer.inlineCallbacks
 def crawl():

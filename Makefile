@@ -79,3 +79,6 @@ upload-expression-details:
 
 load-triage:
 	source dev_variables.sh && python scripts/loading/load_reference_triage.py
+
+crawl-site:
+	source prod_variables.sh && python src/loading/scrapy/pages/spiders/pages_spider.py
