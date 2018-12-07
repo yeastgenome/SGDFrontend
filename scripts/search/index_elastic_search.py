@@ -642,7 +642,6 @@ def index_disease_terms():
         for k in key_values:
             if k is not None:
                 keys.add(k.lower())
-        print do.doid
         obj = {
             "name": do.display_name,
             "category": "disease",
