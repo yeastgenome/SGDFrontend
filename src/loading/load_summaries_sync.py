@@ -39,7 +39,7 @@ def validate_file_content_and_process(file_content, nex_session, username):
     Parameters
     ----------
     file_content: csv-reader object
-                  cvs-reader reads a tvs file and returns an object
+                  csv-reader reads a tvs file and returns an object
     nex_session: database_session object
     username: str
               authorized user to make CRUD operations
@@ -106,38 +106,7 @@ def validate_file_content_and_process(file_content, nex_session, username):
         raise ValueError(
             'The file is not a valid TSV with the correct number of columns. Check the file and try again.'
         )
-    '''
-    try:
-        for i, val in enumerate(file_content):
-            # match header
-            if i is 0:
-                is_header_match = header_literal == val
-                if not is_header_match:
-                    raise ValueError('File header does not match expected format. Please make your file match the template file linked below.') 
-            else:
-                gene_id = val[0]
-                file_gene_ids.append(gene_id.strip())
-                gene_id_with_summary = gene_id + val[1]
-                if gene_id_with_summary in already_used_genes:
-                    raise ValueError('The same gene summary cannot be updated twice in the same file: ' + str(gene_id))
-                already_used_genes.append(gene_id_with_summary)
-                # match summary types
-                if val[1] not in accepted_summary_types:
-                    raise ValueError('Unaccepted summary type. Must be one of ' + ', '.join(accepted_summary_types))
-                # collect PMIDs
-                if len(val) == 4:
-                    pmids = val[3].replace(' ', '')
-                    if len(pmids):
-                        pmids = re.split('\||,', pmids)
-                        for d in pmids:
-                            file_pmids.append(str(d))
-            # match length of each row
-            if (len(val) != len(header_literal) and len(val) != len(header_literal) - 1):
-                raise ValueError('Row has incorrect number of columns.')
-            copied.append(val)
-    except IndexError:
-        raise ValueError('The file is not a valid TSV with the correct number of columns. Check the file and try again.')
-    '''
+    
     nex_session.execute('SET LOCAL ROLE ' + username)
     
     # check that gene names are valid
@@ -161,10 +130,10 @@ def validate_file_content_and_process(file_content, nex_session, username):
     
     for item in copied:
         if item:
-            file_id = item.get('# Feature', '')   #val[0]
+            file_id = item.get('# Feature', '')
             file_summary_type = item.get(
-                    'Summary Type (phenotype, regulation)', '') #val[1]
-            file_summary_val = item.get('Summary', '') #val[2]
+                    'Summary Type (phenotype, regulation)', '')
+            file_summary_val = item.get('Summary', '')
             file_summary_html = link_gene_names(file_summary_val, locus_names_ids)
             gene = nex_session.query(Locusdbentity).filter_by(format_name=file_id).one_or_none()
             summaries = nex_session.query(Locussummary.summary_type, Locussummary.summary_id, Locussummary.html, Locussummary.date_created).filter_by(locus_id=gene.dbentity_id, summary_type=file_summary_type).all()
