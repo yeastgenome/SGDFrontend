@@ -85,7 +85,7 @@ module.exports = React.createClass({
 		var enzymes = Object.keys(data).sort();
 		for (var i = 0; i < enzymes.length; i++) {
 		       // h += 1.2*HEIGHT; 
-		       h += 1.195*HEIGHT;     
+		       h += 1.198*HEIGHT;     
 		       var bar = this._getBarNode(enzymes[i], data[enzymes[i]], seqLength, h);
 		       allBars.push(<svg style={{ width: "100%", left: props.left, height: HEIGHT, position: "relative"}}>{bar}</svg>);
 		}
