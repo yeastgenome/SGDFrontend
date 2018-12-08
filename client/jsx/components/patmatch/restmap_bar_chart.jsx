@@ -11,7 +11,8 @@ const BAR_COLOR = "#F5F5F5";
 const LEGEND_COLOR = "#F5FFFA";
 
 const OPACITY = 0.5;
-const BAR_START = 60;
+// const BAR_START = 60;
+const BAR_START = 75;
 
 const GREEN = "#008000";
 const MAGENTA =	"#FF00FF";
@@ -31,7 +32,7 @@ module.exports = React.createClass({
 	getDefaultProps() {	
 		return { data: null,
 		         seqLength: null,
-			 left: 30,
+			 left: 10,
 			 scaleType: "linear" };
 		      
 	},
@@ -82,8 +83,9 @@ module.exports = React.createClass({
 		
 		var h = 0;
 		var enzymes = Object.keys(data).sort();
-		for (var i = 1; i < enzymes.length; i++) { 
-		       h += 1.2*HEIGHT;     
+		for (var i = 0; i < enzymes.length; i++) {
+		       // h += 1.2*HEIGHT; 
+		       h += 1.18*HEIGHT;     
 		       var bar = this._getBarNode(enzymes[i], data[enzymes[i]], seqLength, h);
 		       allBars.push(<svg style={{ width: "100%", left: props.left, height: HEIGHT, position: "relative"}}>{bar}</svg>);
 		}
@@ -128,72 +130,42 @@ module.exports = React.createClass({
 
 	_getBarNode(enzyme, d, seqLen, h) {
 
-		var cut_sites  = d['cut_site'];
+		var cutPositionsW  = d['cut_site_on_watson_strand'].split(",");
+		var cutPositionsC = d['cut_site_on_crick_strand'].split(",");
 		var offset = parseInt(d['offset']);
 		var overhang = parseInt(d['overhang']);
 		var recognition_seq = d['recognition_seq'];
                 var enzyme_type = d['enzyme_type'];
-
-		var cutPositions = cut_sites.split(":");	
 		var cutTicks = [];
 		var cutSites = [];
 		var coordW1 = [];
 		var coordW2 = [];
 		var cutSiteW = [];
-		var cutSiteC = []
-		for (var i = 0; i < cutPositions.length; i++) {
-		    var coords = cutPositions[i].split(",");
-		    var beg = parseInt(coords[0]);
-		    var end = parseInt(coords[1]);
+		var cutSiteC = [];
+		for (var i = 0; i < cutPositionsW.length; i++) {
+		    if (cutPositionsW[i] == '') {
+                       continue;
+	            }  
+		    var cutSite = parseInt(cutPositionsW[i]);
 		    var	color =	"red";
-		    var x = BAR_START;
+		    var x = BAR_START + this._getScale(cutSite);
 		    var y = 5;
-		    if (beg < end) {
-		         coordW1.push(beg);
-                    	 coordW2.push(end);
-			 var cutSite = beg+offset;
-		         x = x + this._getScale(cutSite); 
-			 cutSites.push(cutSite);
-			 cutSiteW.push(cutSite);
-			 // var mouseOverId = enzyme + "_" + cutSite.toString();
-		         // var mouseOverText = "Cut on Watson strand (5'->3') at " + cutSite.toString();
-			 // var tooltipTop = h-32;
-                	 // var tooltipLeft = x+31;
-                	 // var _onMouseover = (e) => {
-                         //    this._onMouseOver(e, mouseOverId, tooltipTop, tooltipLeft, mouseOverText);
-			 // }
-                         // cutTicks.push(<circle cx={x+1} cy={y-2} r={3} stroke={color} stroke-width={1} fill={color} onMouseOver={_onMouseover} />);
-
-			 cutTicks.push(<circle cx={x+1} cy={y-2} r={3} stroke={color} stroke-width={1} fill={color} />);
-		    }		    
-		    else {
-		         color = "blue";
-			 var cutSite = end+offset+overhang;
-			 cutSiteC.push(cutSite);
-			 x = x + this._getScale(cutSite);
-		         y = y + 5;       
-			 var foundCoord = 0;
-			 for (var j = 0; j < coordW1.length; j++) {
-			     if (beg == coordW2[j] || end == coordW1[j]) {
-			     	 foundCoord = 1;
-				 break;
-			     }
-			 }
-			 if (foundCoord = 0) {
-			     var cutSite = end+offset+overhang;
-			     cutSites.push(cutSite);
-			 }
-		
-			 // var mouseOverId = enzyme + "_" + cutSite.toString();
-			 // var mouseOverText = "Cut on Crick strand (3'->5') at " + cutSite.toString();
-                         // var tooltipTop = h-18;
-                         // var tooltipLeft = x+1;
-                         // var _onMouseoverText = (e) => {
-                         //    this._onMouseOver(e, mouseOverId, tooltipTop, tooltipLeft, mouseOverText, false, false);
-                         // }
-		         // cutTicks.push(<circle cx={x+1} cy={y+9} r={3} stroke={color} stroke-width={1} fill={color} onMouseOver={_onMouseoverText} />);
-			 cutTicks.push(<circle cx={x+1} cy={y+9} r={3} stroke={color} stroke-width={1} fill={color} />);
+		    cutSites.push(cutSite);
+		    cutSiteW.push(cutSite);
+		    cutTicks.push(<circle cx={x+1} cy={y-2} r={3} stroke={color} stroke-width={1} fill={color} />);	         
+		    cutTicks.push(<rect x={x} y={y} width={2} height={7} fill={color} opacity={OPACITY} />);
+		}
+		for (var i = 0; i < cutPositionsC.length; i++) {		    
+		    if (cutPositionsC[i] == '') {
+		        continue;
 		    }
+		    var cutSite = parseInt(cutPositionsC[i]);
+		    var color = "blue";
+		    x = BAR_START + this._getScale(cutSite);
+                    y = 10;
+		    cutSiteC.push(cutSite);
+		    cutSites.push(cutSite);
+		    cutTicks.push(<circle cx={x+1} cy={y+9} r={3} stroke={color} stroke-width={1} fill={color} />);
 		    cutTicks.push(<rect x={x} y={y} width={2} height={7} fill={color} opacity={OPACITY} />); 
 		}
 		
