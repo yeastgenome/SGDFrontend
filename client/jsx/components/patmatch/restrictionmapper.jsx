@@ -219,7 +219,7 @@ const RestrictionMapper = React.createClass({
                 });
 
                 return(<div>
-                       <span style={ style.textFont }><strong>Step2: Choose Restriction Enzyme Set: </strong></span>
+                       <span style={ style.textFont }><strong>Step 2: Choose Restriction Enzyme Set: </strong></span>
                        <p><select ref='type' name='type' onChange={this.onChange}>{_elements}</select>
 		       <font color='red'>Note</font>: To find enzymes that do not cut, choose 'all' and see the resulting list at bottom.</p>
                 </div>);
