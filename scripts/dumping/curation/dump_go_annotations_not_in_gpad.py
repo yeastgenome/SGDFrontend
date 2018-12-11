@@ -45,8 +45,9 @@ TAG = 10
 TAXON = 11
 DATE = 12
 SOURCE = 13
-ANNOT_TYPE = 14 ## for yeastmine
-LAST_FIELD = 13
+CREATED_BY = 14
+ANNOT_TYPE = 15 ## for yeastmine
+LAST_FIELD = 14
 
 DATABASE = 'Saccharomyces Genome Database (SGD)'
 URL = 'http://www.yeastgenome.org/'
@@ -125,10 +126,10 @@ def dump_data():
     for x in nex_session.query(Goannotation).all():
 
         row = [None] * (LAST_FIELD+1)
-
+        
         source = id_to_source[x.source_id]
         row[SOURCE] = source
-
+        row[CREATED_BY] = x.created_by
         if source == 'GO_Central' or (source == 'SGD' and x.annotation_type == 'high-throughput'):
             
             (feature_name, gene_name, headline, qualifier) = id_to_gene[x.dbentity_id]
