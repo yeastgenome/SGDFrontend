@@ -110,7 +110,7 @@ def search(request):
         "biological_process": [("go_locus", "go_loci")],
         "cellular_component": [("go_locus", "go_loci")],
         "molecular_function": [("go_locus", "go_loci")],
-        "disease": [("do_locus", "do_loci")],
+        "disease": [("disease_locus", "disease_loci")],
         "reference": [("author", "author"), ("journal", "journal"),
                       ("year", "year"), ("reference_locus", "reference_loci")],
         "contig": [("strain", "strain")],

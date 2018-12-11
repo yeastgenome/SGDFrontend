@@ -354,7 +354,7 @@ mapping = {
                     "type": "string",
                     "analyzer": "symbols"
                 },
-                "do_loci": {
+                "disease_loci": {
                     "type": "string",
                     "fields": {
                         "raw": {
