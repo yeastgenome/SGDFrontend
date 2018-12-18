@@ -1171,7 +1171,8 @@ const GeneSequenceResources = React.createClass({
 		   if (param['rev2'] && param['rev2'] == 'on') {
                       paramData['rev'] = 1;
                    }
-		   this.sendRequest(paramData)
+		   this.sendRequest(paramData);
+		   window.localStorage.clear();
                    return
 		}
 
