@@ -6012,6 +6012,7 @@ class Geninteractionannotation(Base):
     biogrid_experimental_system = Column(String(100), nullable=False)
     annotation_type = Column(String(20), nullable=False)
     bait_hit = Column(String(10), nullable=False)
+    mutant_id = Column(ForeignKey(u'nex.apo.apo_id', ondelete=u'CASCADE'), nullable=False, index=True)
     description = Column(String(1000))
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
@@ -6022,6 +6023,7 @@ class Geninteractionannotation(Base):
     reference = relationship(u'Referencedbentity', foreign_keys=[reference_id])
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
+    mutant = relationship(u'Apo', primaryjoin='Geninteractionannotation.mutant_id == Apo.apo_id')
 
     def to_dict(self, reference=None):
         dbentity1 = self.dbentity1
