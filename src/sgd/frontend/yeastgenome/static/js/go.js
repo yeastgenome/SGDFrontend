@@ -65,7 +65,7 @@ function create_go_table(data) {
             computationalDatatable.push(go_data_to_table(data[i], i));
             computationalGenes[data[i]["locus"]["id"]] = true;
         }
-	}
+    }
     set_up_header('manual_go_table', manualDatatable.length, 'entry', 'entries', Object.keys(manualGenes).length, 'gene', 'genes');
     set_up_header('htp_go_table', htpDatatable.length, 'entry', 'entries', Object.keys(htpGenes).length, 'gene', 'genes');
     set_up_header('computational_go_table', computationalDatatable.length, 'entry', 'entries', Object.keys(computationalGenes).length, 'gene', 'genes');
@@ -76,20 +76,21 @@ function create_go_table(data) {
 	options["bDestroy"] = true;
 	// options["oLanguage"] = {"sEmptyTable": "No genes annotated directly to " + go_term['display_name']};
     options["aoColumns"] = [
-        {"bSearchable":false, "bVisible":false}, //evidence_id
-        {"bSearchable":false, "bVisible":false}, //analyze_id
-        null, //gene
-        {"bSearchable":false, "bVisible":false}, //gene systematic name
-        null, //gene ontology term
-        {"bSearchable":false, "bVisible":false}, //gene ontology term id
-        null, //qualifier
-        {"bSearchable":false, "bVisible":false}, //aspect
-        null, //evidence
-        {"bSearchable":false, "bVisible":false}, //method
-        null, //source
-        null, //assigned on
-        null, //annotation_extension
-        null // reference
+        {"bSearchable":false, "bVisible":false,"mDataProp":0}, //evidence_id
+        {"bSearchable":false, "bVisible":false,"mDataProp":1}, //analyze_id
+        {"mDataProp":2}, //gene
+        {"bSearchable":false, "bVisible":false,"mDataProp":3}, //gene systematic name
+        {"mDataProp":6}, //qualifier
+        {"mDataProp":4}, //gene ontology term
+        {"bSearchable":false, "bVisible":false,"mDataProp":5}, //gene ontology term id
+        {"bSearchable":false, "bVisible":false,"mDataProp":7}, //aspect
+        {"mDataProp":12}, //annotation_extension
+        {"mDataProp":8}, //evidence
+        {"bSearchable":false, "bVisible":false,"mDataProp":9}, //method
+        {"mDataProp":10}, //source
+        {"mDataProp":11}, //assigned on
+        {"mDataProp":13}, //reference
+        
     ];
     create_or_hide_table(manualDatatable, options, "manual_go_table", go_term["display_name"], go_term["link"], go_term["id"], "manually curated", data);
     create_or_hide_table(htpDatatable, options, "htp_go_table", go_term["display_name"], go_term["link"], go_term["id"], "high-throughput", data);
