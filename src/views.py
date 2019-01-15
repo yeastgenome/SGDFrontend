@@ -883,6 +883,15 @@ def locus_protein_experiment_details(request):
     else:
         return HTTPNotFound()
 
+@view_config(route_name='locus_protein_abundance_details', renderer='json', request_method='GET')
+def locus_protein_abundance_details(request):
+    id = extract_id_request(request, 'locus')
+    locus = get_locus_by_id(id)
+    if locus:
+        return locus.protein_abundance_details()
+    else:
+        return HTTPNotFound()
+
 @view_config(route_name='locus_protein_domain_details', renderer='json', request_method='GET')
 def locus_protein_domain_details(request):
     id = extract_id_request(request, 'locus')

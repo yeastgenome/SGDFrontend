@@ -85,6 +85,8 @@ def load_data():
         conc_value = None
         conc_unit = None
         fold_change = None
+        median = None
+        mad = None
         if len(pieces) >= 8:
             if pieces[7]:
                 chebi_id = chebiid_to_chebi_id.get(pieces[7])
@@ -111,11 +113,15 @@ def load_data():
                 conc_unit = pieces[12]
             if pieces[13]:
                 fold_change = float(pieces[13])
+            if pieces[14]:
+                median = int(pieces[14])
+            if pieces[15]:
+                mad = int(pieces[15])
 
         insert_proteinabundanceannotation(nex_session, fw, dbentity_id, source_id, taxonomy_id,
                                           reference_id, original_reference_id, eco_id, efo_id, 
-                                          chebi_id, go_id, data_value, fold_change,
-                                          time_value, time_unit, conc_value, conc_unit)
+                                          chebi_id, go_id, data_value, fold_change, time_value,
+                                          time_unit, conc_value, conc_unit, median, mad)
 
         i = i + 1
         if i > 500:
@@ -133,7 +139,7 @@ def load_data():
     log.info(str(datetime.now()) + "\n")
     
 
-def insert_proteinabundanceannotation(nex_session, fw, dbentity_id, source_id, taxonomy_id, reference_id, original_reference_id, eco_id, efo_id, chebi_id, go_id, data_value, fold_change, time_value, time_unit, conc_value, conc_unit):
+def insert_proteinabundanceannotation(nex_session, fw, dbentity_id, source_id, taxonomy_id, reference_id, original_reference_id, eco_id, efo_id, chebi_id, go_id, data_value, fold_change, time_value, time_unit, conc_value, conc_unit, median, mad):
 
     x = Proteinabundanceannotation(dbentity_id = dbentity_id,
                                    source_id = source_id,
@@ -151,6 +157,8 @@ def insert_proteinabundanceannotation(nex_session, fw, dbentity_id, source_id, t
                                    concentration_unit = conc_unit,
                                    time_value = time_value,
                                    time_unit = time_unit,
+                                   median_value = median,
+                                   median_abs_dev_value = mad,
                                    created_by = CREATED_BY)
 
     nex_session.add(x)

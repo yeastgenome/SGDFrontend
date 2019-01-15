@@ -2576,6 +2576,21 @@ class Locusdbentity(Dbentity):
 
         return [a.to_dict(locus=self, references=ids_to_references) for a in annotations]
 
+    def protein_abundance_details(self):
+        annotations = DBSession.query(Proteinabundanceannotation).filter_by(dbentity_id=self.dbentity_id).all()
+        new_reference_ids = [a.reference_id for a in annotations]
+        orig_reference_ids = [a.original_reference_id for a in annotations]
+        reference_ids = list(set(new_reference_ids + orig_reference_ids))
+        references = DBSession.query(Referencedbentity).filter(Referencedbentity.dbentity_id.in_(reference_ids)).all()
+
+        ids_to_references = {}
+        for r in references:
+            ids_to_references[r.dbentity_id] = r
+        
+        # return [a.to_dict(locus=self, references=ids_to_references) for a in annotations]
+        data = [a.to_dict(locus=self, references=ids_to_references) for a in annotations] 
+        return sorted(data, key=lambda d: d['order_by'])
+
     def ecnumber_details(self):
         aliases = DBSession.query(LocusAlias).filter(LocusAlias.locus_id == self.dbentity_id, LocusAlias.alias_type == "EC number").all()
 
@@ -2800,6 +2815,8 @@ class Locusdbentity(Dbentity):
         return obj
 
     def disease_to_dict(self):
+        #path_res = DBSession.query(FilePath, Path).filter(FilePath.file_id == self.dbentity_id).outerjoin(Path).all()
+        #do_annotations = DBSession.query(Diseaseannotation, Diseasesupportingevidence).filter(Diseaseannotation.dbentity_id == self.dbentity_id).outerjoin(Diseasesupportingevidence).all()
         do_annotations = DBSession.query(Diseaseannotation).filter_by(dbentity_id=self.dbentity_id).all()
 
         obj = []
@@ -3933,7 +3950,7 @@ class Locusdbentity(Dbentity):
         obj["pathways"] = [a.to_dict() for a in pathwayannotations]
 
         obj["complexes"] = self.complex_details()
-
+        
         # reserved name
         reservedname = DBSession.query(Reservedname).filter_by(locus_id=self.dbentity_id).one_or_none()
         if reservedname:
@@ -4075,7 +4092,9 @@ class Locusdbentity(Dbentity):
         obj = {
             "length": 0,
             "molecular_weight": None,
-            "pi": None
+            "pi": None, 
+            "median_value": None,
+            "median_abs_dev_value": None
         }
 
         protein = DBSession.query(Proteinsequenceannotation).filter_by(dbentity_id=self.dbentity_id, taxonomy_id=274901).one_or_none()
@@ -4086,7 +4105,15 @@ class Locusdbentity(Dbentity):
             else:
                 obj["length"] = len(protein.residues) - 1
 
+        abundance_data = DBSession.query(Proteinabundanceannotation).filter_by(dbentity_id=self.dbentity_id).all()
+        for row in abundance_data:
+            if row.median_value:
+                obj["median_value"] = int(row.median_value)
+                obj["median_abs_dev_value"] = int(row.median_abs_dev_value)
+                break
+
         return obj
+
 
     def phenotype_overview_to_dict(self):
         obj = {
@@ -8543,10 +8570,11 @@ class Proteinabundanceannotation(Base):
     concentration_unit = Column(String)
     time_value = Column(Integer)
     time_unit = Column(String)
+    median_value = Column(Integer)
+    median_abs_dev_value = Column(Integer)
     date_created = Column(DateTime, nullable=False, server_default=text("('now'::text)::timestamp without time zone"))
     created_by = Column(String(12), nullable=False)
     
-
     eco = relationship(u'Eco')
     efo = relationship(u'Efo')
     dbentity = relationship(u'Dbentity')
@@ -8556,6 +8584,72 @@ class Proteinabundanceannotation(Base):
     go = relationship(u'Go')
     source = relationship(u'Source')
     taxonomy = relationship(u'Taxonomy')
+
+    def to_dict(self, locus=None, references=None):
+
+        if references:
+            reference = references[self.reference_id]
+            original_reference = references[self.original_reference_id]
+        else:
+            reference = self.reference
+            original_reference = self.original_reference
+
+        if locus is None:
+            locus = self.dbentity
+        
+        process = ""
+        chemical_name = ""
+        p = '0'
+        c = '0'
+        if self.process_id:
+            process = self.go.display_name
+            p = '1'
+        if self.chemical_id:
+            chemical_name = self.chebi.display_name
+            c = '1'
+        order_by = original_reference.display_name + "_" + p + c + "_" + process + "_" + chemical_name 
+
+        strain = self.taxonomy.display_name.replace("Saccharomyces cerevisiae ", "").upper()
+        if strain == '':
+            strain = "Other";
+
+        return {
+
+            "id": self.annotation_id,
+            "order_by": order_by,
+            "reference": {
+                "display_name": reference.display_name,
+                "link": reference.obj_url
+            },
+            "original_reference": {
+                "display_name": original_reference.display_name,
+                "link": original_reference.obj_url
+            },
+            "locus": {
+                "id": self.dbentity_id,
+                "display_name": locus.display_name,
+                "format_name": locus.format_name,
+                "link": locus.obj_url
+            },
+            "media": {
+                "display_name": self.efo.display_name
+            },
+            "treatment": {
+                "chemical": chemical_name,
+                "process": process,
+                "time_value": self.time_value,
+                "time_unit": self.time_unit,
+                "conc_value": self.concentration_value,
+                "conc_unit": self.concentration_unit,
+            },
+            "data_value": self.data_value,
+            "data_unit": self.data_unit,
+            "fold_change": self.fold_change,
+            "visualization": {
+                "display_name": self.eco.display_name
+            },
+            "strain_background": strain
+        }
 
 
 class Complexdbentity(Dbentity):
