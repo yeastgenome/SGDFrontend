@@ -1,17 +1,17 @@
 import React from 'react';
 import d3 from 'd3';
 import _ from 'underscore';
+import $ from 'jquery';
 
 const CalcWidthOnResize = require("../mixins/calc_width_on_resize.jsx");
 const FlexibleTooltip = require("../widgets/flexible_tooltip.jsx");
 const StandaloneAxis = require("../blast/standalone_axis.jsx");
 
-const HEIGHT = 22;
+const HEIGHT = 30;
 const BAR_COLOR = "#F5F5F5";
 const LEGEND_COLOR = "#F5FFFA";
 
 const OPACITY = 0.5;
-// const BAR_START = 60;
 const BAR_START = 75;
 
 const GREEN = "#008000";
@@ -84,10 +84,10 @@ module.exports = React.createClass({
 		var h = 0;
 		var enzymes = Object.keys(data).sort();
 		for (var i = 0; i < enzymes.length; i++) {
-		       // h += 1.2*HEIGHT; 
-		       h += 1.198*HEIGHT;     
+		       h += HEIGHT;
 		       var bar = this._getBarNode(enzymes[i], data[enzymes[i]], seqLength, h);
-		       allBars.push(<svg style={{ width: "100%", left: props.left, height: HEIGHT, position: "relative"}}>{bar}</svg>);
+		       allBars.push(<svg style={{ display: "block", margin: "0", width: "100%", left: props.left, height: HEIGHT, position: "relative"}}>{bar}</svg>);
+		       
 		}
 
 		return (<div ref="wrapper" className="blast-bar-graph" onMouseLeave={this._onMouseLeave}>
@@ -149,7 +149,7 @@ module.exports = React.createClass({
 		    var cutSite = parseInt(cutPositionsW[i]);
 		    var	color =	"red";
 		    var x = BAR_START + this._getScale(cutSite);
-		    var y = 5;
+		    var y = 10;
 		    cutSiteW.push(cutSite);
 		    cutTicks.push(<circle cx={x+1} cy={y-2} r={3} stroke={color} stroke-width={1} fill={color} />);	         
 		    cutTicks.push(<rect x={x} y={y} width={2} height={7} fill={color} opacity={OPACITY} />);
@@ -161,7 +161,7 @@ module.exports = React.createClass({
 		    var cutSite = parseInt(cutPositionsC[i]);
 		    var color = "blue";
 		    x = BAR_START + this._getScale(cutSite);
-                    y = 10;
+                    y = 15;
 		    cutSiteC.push(cutSite);
 		    cutTicks.push(<circle cx={x+1} cy={y+9} r={3} stroke={color} stroke-width={1} fill={color} />);
 		    cutTicks.push(<rect x={x} y={y} width={2} height={7} fill={color} opacity={OPACITY} />); 
@@ -175,10 +175,6 @@ module.exports = React.createClass({
 				
                 var transform = this._getGroupTransform(startX, endX);
 			
-		// var fragments = cutFragments.join(", ");
-		// var cSiteW = cutSiteW.join(", ");
-		// var cSiteC = cutSiteC.join(", "); 
-
 		var fragments = "";
                 if (cutFragments.length > 10) {
                      cutFragments = cutFragments.slice(0,10);
@@ -236,7 +232,7 @@ module.exports = React.createClass({
 				 fill={BAR_COLOR} 
 				 opacity={OPACITY} />
 			   <rect x={BAR_START} 
-			   	 y={10} 
+			   	 y={15} 
 				 width={endX - startX} 
 				 height={2} 
 				 fill="black" 
@@ -249,7 +245,7 @@ module.exports = React.createClass({
                                  fill={BAR_COLOR}
                                  opacity={OPACITY} />
 			   <text x={2} 
-				 y={HEIGHT-5} 
+				 y={HEIGHT-8} 
 				 font-family="Times New Roman" 
 				 font-size="14" 
 				 fill={textColor}>{enzyme}</text>
