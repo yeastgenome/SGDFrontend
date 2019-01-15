@@ -16,7 +16,7 @@ def _run_restrictionmap(p):
 
     paramData = _construct_parameters(p)
 
-    url = rest_url + "cgi-bin/aws-restrictionmapper" 
+    url = rest_url + "cgi-bin/aws-restrictionmapper2" 
    
     req = Request(url=url, data=paramData)
     res = urlopen(req)
@@ -29,13 +29,17 @@ def _run_restrictionmap(p):
                  "seqName": dataSet[1],
                  "chrCoords": dataSet[2],
                  "seqLength": dataSet[3],
-                 "notCutEnzyme": json.loads(dataSet[4]) }
+                 "notCutEnzyme": json.loads(dataSet[4]),
+                 "downloadUrl": dataSet[5],
+                 "downloadUrl4notCutEnzyme": dataSet[6] }
     else:
         data = { "ERROR": json.loads(dataSet[0]),
                  "seqName": dataSet[1],
                  "chrCoords": dataSet[2],
                  "seqLength": dataSet[3],
-                 "notCutEnzyme": [] }
+                 "notCutEnzyme": [],
+                 "downloadUrl": '',
+                 "downloadUrl4notCutEnzyme": ''}
 
     return data
 

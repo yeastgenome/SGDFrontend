@@ -132,12 +132,12 @@ module.exports = React.createClass({
 
 		var cutPositionsW  = d['cut_site_on_watson_strand'].split(",");
 		var cutPositionsC = d['cut_site_on_crick_strand'].split(",");
+		var cutFragments = d['fragment_size'].split(",");
 		var offset = parseInt(d['offset']);
 		var overhang = parseInt(d['overhang']);
 		var recognition_seq = d['recognition_seq'];
                 var enzyme_type = d['enzyme_type'];
 		var cutTicks = [];
-		var cutSites = [];
 		var coordW1 = [];
 		var coordW2 = [];
 		var cutSiteW = [];
@@ -150,7 +150,6 @@ module.exports = React.createClass({
 		    var	color =	"red";
 		    var x = BAR_START + this._getScale(cutSite);
 		    var y = 5;
-		    cutSites.push(cutSite);
 		    cutSiteW.push(cutSite);
 		    cutTicks.push(<circle cx={x+1} cy={y-2} r={3} stroke={color} stroke-width={1} fill={color} />);	         
 		    cutTicks.push(<rect x={x} y={y} width={2} height={7} fill={color} opacity={OPACITY} />);
@@ -164,14 +163,10 @@ module.exports = React.createClass({
 		    x = BAR_START + this._getScale(cutSite);
                     y = 10;
 		    cutSiteC.push(cutSite);
-		    cutSites.push(cutSite);
 		    cutTicks.push(<circle cx={x+1} cy={y+9} r={3} stroke={color} stroke-width={1} fill={color} />);
 		    cutTicks.push(<rect x={x} y={y} width={2} height={7} fill={color} opacity={OPACITY} />); 
 		}
-		
-		cutSites.push(seqLen)
-		var cutFragments = this._getFragments(cutSites);
-		
+				
 		var startX = this._getScale(0);
                 var endX = this._getScale(seqLen);
 
@@ -179,10 +174,38 @@ module.exports = React.createClass({
                 var textColor = enzyme_type_to_color[enzyme_type];
 				
                 var transform = this._getGroupTransform(startX, endX);
-						
-		var fragments = cutFragments.sort(function(a, b){return b-a}).join(", ");
-		var cSiteW = cutSiteW.sort(function(a, b){return a-b}).join(", ");
-		var cSiteC = cutSiteC.sort(function(a, b){return a-b}).join(", "); 
+			
+		// var fragments = cutFragments.join(", ");
+		// var cSiteW = cutSiteW.join(", ");
+		// var cSiteC = cutSiteC.join(", "); 
+
+		var fragments = "";
+                if (cutFragments.length > 10) {
+                     cutFragments = cutFragments.slice(0,10);
+                     fragments = cutFragments.join(", ") + ", ...";
+                }
+                else {
+                     fragments = cutFragments.join(", ");
+                }
+
+		var cSiteW = "";
+                if (cutSiteW.length > 10) {
+                     cutSiteW = cutSiteW.slice(0, 10);
+                     cSiteW = cutSiteW.join(", ") + ", ...";
+                }
+                else {
+                     cSiteW = cutSiteW.join(", ")
+                }
+
+                var cSiteC = "";
+                if (cutSiteC.length > 10) {
+                     cutSiteC = cutSiteC.slice(0, 10);
+                     cSiteC = cutSiteC.join(", ") + ", ...";
+                }
+                else {
+                     cSiteC = cutSiteC.join(", ")
+                }
+
 		if (cSiteW == "") {
 		   cSiteW = "None";
 		}
@@ -339,22 +362,6 @@ module.exports = React.createClass({
 
 		return [modText, dateText]
 
-	},
-
-	_getFragments(cutSites) {
-		var cutSitesSorted = cutSites.sort(function(a, b){return a-b});
-                var preCutSite = 0;
-		var found = {};
-		var cutFragments = [];
-                for (var i = 0; i < cutSitesSorted.length; i++) {
-                    var cutSize = cutSitesSorted[i] - preCutSite;
-                    if (cutSize != 0 && found[cutSize] != 1) {
-                        cutFragments.push(cutSize);
-                        found[cutSize] = 1;
-                    }
-                    preCutSite = cutSitesSorted[i];
-                }
-		return cutFragments;
 	},
 
 	// returns the transform string used to position the g element for a locus
