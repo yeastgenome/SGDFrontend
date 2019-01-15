@@ -170,14 +170,19 @@ function protein_abundance_data_to_table(evidence) {
 	    if (evidence['treatment']['conc_unit']!= null) {
 		unit = evidence['treatment']['conc_unit'];
 	    }
-	    treatment = evidence['treatment']['conc_value'] + unit + " " + treatment;
+	    if (unit == '%') {
+	        treatment = evidence['treatment']['conc_value'] + unit + " " + treatment;
+	    }
+	    else {
+		treatment = evidence['treatment']['conc_value'] + " " + unit + " " + treatment;
+	    }
 	}
 	if (evidence['treatment']['time_value']!= null) {
 	    var unit = '';
             if (evidence['treatment']['time_unit']!= null) {
 		unit = evidence['treatment']['time_unit'];
 	    } 
-	    treatment_time = evidence['treatment']['time_value'] + unit;
+	    treatment_time = evidence['treatment']['time_value'] + " " + unit;
 	}
     }
    
