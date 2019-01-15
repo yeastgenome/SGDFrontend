@@ -137,6 +137,77 @@ function protein_experiment_data_to_table(evidence) {
     return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], experiment, evidence['data_value'] + ' ' + evidence['data_unit'], reference];
 }
 
+function protein_abundance_data_to_table(evidence) {
+
+    var bioent = create_link(evidence['locus']['display_name'], evidence['locus']['link'], false);
+
+    var reference = '';
+    if(evidence['reference'] != null) {
+        reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
+    }
+    
+    var original_reference = '';
+    if(evidence['original_reference'] != null) {
+        original_reference = create_link(evidence['original_reference']['display_name'], evidence['original_reference']['link']);
+    }
+
+    var media = '';
+    if (evidence['media'] != null) {
+	media = evidence['media']['display_name'];
+    }
+
+    var treatment = 'untreated';
+    var treatment_time = '';
+    if (evidence['treatment']['chemical'] != '') {
+	treatment = evidence['treatment']['chemical'];
+    }
+    else if (evidence['treatment']['process'] != '') {
+	treatment = evidence['treatment']['process'];
+    }
+    if (treatment != 'untreated') {
+	if (evidence['treatment']['conc_value'] != null) {
+	    var unit = '';
+	    if (evidence['treatment']['conc_unit']!= null) {
+		unit = evidence['treatment']['conc_unit'];
+	    }
+	    treatment = evidence['treatment']['conc_value'] + unit + " " + treatment;
+	}
+	if (evidence['treatment']['time_value']!= null) {
+	    var unit = '';
+            if (evidence['treatment']['time_unit']!= null) {
+		unit = evidence['treatment']['time_unit'];
+	    } 
+	    treatment_time = evidence['treatment']['time_value'] + unit;
+	}
+    }
+   
+    var fold_change = '';
+    if (evidence['fold_change'] != null) {
+	fold_change = evidence['fold_change'];
+    }
+    
+    var visualization = '';
+    if (evidence['visualization'] != null) {
+	visualization = evidence['visualization']['display_name'];
+    }  
+
+    var strain_background = '';
+    if (evidence['strain_background'] != null) {
+	strain_background = evidence['strain_background'];
+    }  
+
+    return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], 
+	    evidence['data_value'],
+	    media,
+	    treatment,
+	    treatment_time,
+	    fold_change,
+	    visualization,
+	    strain_background,
+	    original_reference,
+	    reference];
+
+}
 
 function complex_subunit_data_to_table(evidence) {
     var subunit = create_link(evidence['display_name'], evidence['link'], false);

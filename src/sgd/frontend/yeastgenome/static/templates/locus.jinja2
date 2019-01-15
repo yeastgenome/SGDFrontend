@@ -214,14 +214,21 @@
         <div class="">
             <div class="">
                  <dl class="key-value">
-                     <dt>Length (a.a.)</dt>
+                     <dt style="width:200px">Length (a.a.)</dt>
                      <dd>{{ locus.protein_overview.length }}</dd>
 
-                     <dt>Mol. Weight (Da)</dt>
+                     <dt style="width:200px">Mol. Weight (Da)</dt>
                      <dd>{{ locus.protein_overview.molecular_weight }}</dd>
 
-                     <dt>Isoelectric Point</dt>
+                     <dt style="width:200px">Isoelectric Point</dt>
                      <dd>{{ locus.protein_overview.pi }}</dd>
+
+		     <dt style="width:200px">Median (Molecules/Cell)</dt>
+		     {% if locus.protein_overview.median_abs_dev_value %}
+                     	  <dd>{{ locus.protein_overview.median_value }} +/- {{ locus.protein_overview.median_abs_dev_value }}</dd>
+	             {% else %}
+		     	  <dd>{{ locus.protein_overview.median_value }}</dd>
+	             {% endif %}
                  </dl>
             </div>
         </div>

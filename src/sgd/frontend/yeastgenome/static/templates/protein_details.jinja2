@@ -12,6 +12,7 @@
     var domain_network_filename = "{{ locus.display_name }}_domain_network";
     var properties_table_filename = "{{ locus.display_name }}_protein_properties";
     var protein_experiment_table_filename = "{{ locus.display_name }}_experimental_data";
+    var protein_abundance_table_filename = "{{ locus.display_name }}_abundance_data";
     var phosphorylation_table_filename = "{{ locus.display_name }}_phosphorylation";
 
 	var display_name = "{{ locus.display_name }}";
@@ -63,11 +64,25 @@
     <section id="experiment" data-magellan-destination="experiment">
         <h2>Experimental Data</h2>
         <hr />
+
+	<h3>Protein Half Life</h3>
+
         <div class="">
-            <!-- Includes domain_table into template -->
+            <!-- Includes experiment_table into template -->
             {% set table_id = "protein_experiment_table" %}
             {% include "protein_experiment_table.jinja2" %}
         </div>
+	
+	<p></p>	
+
+	<h3>Protein Abundance</h3>
+	
+	<div class="">
+            <!-- Includes abundance_table into template -->
+            {% set table_id = "protein_abundance_table" %}
+            {% include "protein_abundance_table.jinja2" %}
+        </div>
+
     </section>
 
 <!-- Domains
