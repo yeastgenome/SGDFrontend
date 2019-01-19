@@ -4109,7 +4109,8 @@ class Locusdbentity(Dbentity):
         for row in abundance_data:
             if row.median_value:
                 obj["median_value"] = int(row.median_value)
-                obj["median_abs_dev_value"] = int(row.median_abs_dev_value)
+                if row.median_abs_dev_value:
+                    obj["median_abs_dev_value"] = int(row.median_abs_dev_value)
                 break
 
         return obj
@@ -8609,9 +8610,22 @@ class Proteinabundanceannotation(Base):
             c = '1'
         order_by = original_reference.display_name + "_" + p + c + "_" + process + "_" + chemical_name 
 
-        strain = self.taxonomy.display_name.replace("Saccharomyces cerevisiae ", "").upper()
-        if strain == '':
-            strain = "Other";
+        # strain = self.taxonomy.display_name.replace("Saccharomyces cerevisiae ", "").upper()
+        # if strain == '':
+        #    strain = "Other";
+
+        strains = Straindbentity.get_strains_by_taxon_id(self.taxonomy_id)
+        
+        strain_name = None
+        strain_link = None
+        if len(strains) == 1:
+            strain_name = strains[0].display_name
+            strain_link = strains[0].obj_url
+        else:
+            for x in strains:
+                if x.display_name == 'Other':
+                    strain_name = x.display_name
+                    strain_link = x.obj_url
 
         return {
 
@@ -8648,7 +8662,10 @@ class Proteinabundanceannotation(Base):
             "visualization": {
                 "display_name": self.eco.display_name
             },
-            "strain_background": strain
+            "strain": {
+                "link": strain_link,
+                "display_name": strain_name
+            }
         }
 
 
