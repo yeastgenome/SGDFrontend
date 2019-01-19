@@ -16,6 +16,7 @@ function domain_data_to_table(evidence) {
     }
 
     return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], coord_range, domain, description, evidence['source']['display_name'], '' + evidence['domain']['count']]
+
 }
 
 function dataset_datat_to_table(dataset) {
@@ -197,8 +198,8 @@ function protein_abundance_data_to_table(evidence) {
     }  
 
     var strain_background = '';
-    if (evidence['strain_background'] != null) {
-	strain_background = evidence['strain_background'];
+    if (evidence['strain'] != null) {
+	strain_background = create_link(evidence['strain']['display_name'], evidence['strain']['link']);
     }  
 
     return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], 

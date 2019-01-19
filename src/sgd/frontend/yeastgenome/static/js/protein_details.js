@@ -868,6 +868,7 @@ function create_protein_abundance_table(data) {
 			  ];
   options["aaData"] = datatable;
   options["bPaginate"] = true;
+  options["iDisplayLength"] = 5;
   options["oLanguage"] = {
       sEmptyTable: "No protein abundance data for this protein."
   };

@@ -4,6 +4,7 @@ from src.sgd.frontend import config
 from urllib2 import Request, urlopen, URLError
 
 rest_url = "https://patmatch.yeastgenome.org/"
+validate_url = "https://www.yeastgenome.org/backend/locus/"
             
 def do_restmap(request):
 
@@ -57,7 +58,12 @@ def _construct_parameters(p):
     name = p.get('name')
     if name is None:
         name = ""
-        
+    else:
+        url = validate_url + name
+        res = _get_json_from_server(url)
+        if res != 404 and 'sgdid' in res:
+            name = res.get('sgdid')
+            
     paramData = urllib.urlencode({ 'seq': seq,
                                    'type': type,
                                    'name': name })
@@ -65,6 +71,14 @@ def _construct_parameters(p):
     return paramData
 
 
+def _get_json_from_server(url):
 
+    try:
+        req = Request(url)
+        res = urlopen(req)
+        data = json.loads(res.read())
+        return data
+    except HTTPError:
+        return 404
              
 
