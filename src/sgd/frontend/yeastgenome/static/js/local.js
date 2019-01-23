@@ -204,6 +204,13 @@ jQuery.fn.dataTableExt.oApi.fnSearchHighlighting = function(oSettings) {
         jQuery('td', nRow).each( function(i) {
             // Take into account that ColVis may be in use
             var j = oApi._fnVisibleToColumnIndex( oSettings,i);
+
+            // j is the corresponding column for the table, but underlying mData might be different.
+            // Update j to mData if not equal.
+            if(j !== oSettings.aoColumns[j]['mData']){
+                j = oSettings.aoColumns[j]['mData'];
+            }
+
             // Only try to highlight if the cell is not empty or null
             if (aData[j]) {         
                 // If there is a search string try to match
@@ -218,6 +225,7 @@ jQuery.fn.dataTableExt.oApi.fnSearchHighlighting = function(oSettings) {
                 }
             }
         });
+        console.log(nRow);
         return nRow;
     }, 'row-highlight');
     return this;

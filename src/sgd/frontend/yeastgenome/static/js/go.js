@@ -72,25 +72,25 @@ function create_go_table(data) {
 
 	var options = {};
 	options["bPaginate"] = true;
-	options["aaSorting"] = [[3, "asc"]];
+    options["aaSorting"] = [[3, "asc"]];
 	options["bDestroy"] = true;
 	// options["oLanguage"] = {"sEmptyTable": "No genes annotated directly to " + go_term['display_name']};
     options["aoColumns"] = [
-        {"bSearchable":false, "bVisible":false,"mDataProp":0}, //evidence_id
-        {"bSearchable":false, "bVisible":false,"mDataProp":1}, //analyze_id
-        {"mDataProp":2}, //gene
-        {"bSearchable":false, "bVisible":false,"mDataProp":3}, //gene systematic name
-        {"mDataProp":6}, //qualifier
-        {"mDataProp":4}, //gene ontology term
-        {"bSearchable":false, "bVisible":false,"mDataProp":5}, //gene ontology term id
-        {"bSearchable":false, "bVisible":false,"mDataProp":7}, //aspect
-        {"mDataProp":12}, //annotation_extension
-        {"mDataProp":8}, //evidence
-        {"bSearchable":false, "bVisible":false,"mDataProp":9}, //method
-        {"mDataProp":10}, //source
-        {"mDataProp":11}, //assigned on
-        {"mDataProp":13}, //reference
-        
+        //Use of mData
+        {"bSearchable":false, "bVisible":false,"aTargets":[0],"mData":0}, //evidence_id
+        {"bSearchable":false, "bVisible":false,"aTargets":[1],"mData":1}, //analyze_id
+        {"aTargets":[2],"mData":2}, //gene
+        {"bSearchable":false, "bVisible":false,"aTargets":[3],"mData":3}, //gene systematic name
+        {"aTargets":[4],"mData":6}, //gene ontology term  -----> qualifier
+        {"bSearchable":false, "bVisible":false,"aTargets":[5],"mData":5}, //gene ontology term id
+        {"aTargets":[6],"mData":4}, //qualifier   -----> gene ontology term
+        {"bSearchable":false, "bVisible":false,"aTargets":[7],"mData":7}, //aspect
+        {"aTargets":[8],"mData":12}, //evidence   -----> annotation_extension
+        {"aTargets":[9],"mData":8}, //method -----> evidence
+        {"bSearchable":false,"bVisible":false,"aTargets":[10],"mData":9}, //source -----> method
+        {"aTargets":[11],"mData":10}, //assigned on -----> source
+        {"aTargets":[12],"mData":11}, //annotation_extension -----> assigned on
+        {"aTargets":[13],"mData":13} // reference        
     ];
     create_or_hide_table(manualDatatable, options, "manual_go_table", go_term["display_name"], go_term["link"], go_term["id"], "manually curated", data);
     create_or_hide_table(htpDatatable, options, "htp_go_table", go_term["display_name"], go_term["link"], go_term["id"], "high-throughput", data);
