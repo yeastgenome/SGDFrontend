@@ -15,7 +15,7 @@ def do_restmap(request):
 
 def _run_restrictionmap(p):
 
-    paramData = _construct_parameters(p)
+    [display_name, paramData] = _construct_parameters(p)
 
     url = rest_url + "cgi-bin/aws-restrictionmapper2" 
    
@@ -27,7 +27,7 @@ def _run_restrictionmap(p):
  
     if dataSet[1]:
         data = { "data": json.loads(dataSet[0]),
-                 "seqName": dataSet[1],
+                 "seqName": display_name,
                  "chrCoords": dataSet[2],
                  "seqLength": dataSet[3],
                  "notCutEnzyme": json.loads(dataSet[4]),
@@ -35,7 +35,7 @@ def _run_restrictionmap(p):
                  "downloadUrl4notCutEnzyme": dataSet[6] }
     else:
         data = { "ERROR": json.loads(dataSet[0]),
-                 "seqName": dataSet[1],
+                 "seqName": display_name,
                  "chrCoords": dataSet[2],
                  "seqLength": dataSet[3],
                  "notCutEnzyme": [],
@@ -56,19 +56,25 @@ def _construct_parameters(p):
     if type is None:
         type = ""
     name = p.get('name')
+    sgdid = None
+    display_name = None
     if name is None:
         name = ""
     else:
         url = validate_url + name
         res = _get_json_from_server(url)
         if res != 404 and 'sgdid' in res:
-            name = res.get('sgdid')
+            sgdid = res.get('sgdid')
+            if res.get('display_name') and res.get('display_name') != res.get('format_name'):
+                display_name = res.get('display_name').'/'.res.get('format_name')
+            else:
+                display_name = res.get('format_name')
             
     paramData = urllib.urlencode({ 'seq': seq,
                                    'type': type,
-                                   'name': name })
+                                   'name': sgdid })
 
-    return paramData
+    return [display_name, paramData]
 
 
 def _get_json_from_server(url):
