@@ -66,7 +66,7 @@ def _construct_parameters(p):
         if res != 404 and 'sgdid' in res:
             sgdid = res.get('sgdid')
             if res.get('display_name') and res.get('display_name') != res.get('format_name'):
-                display_name = res.get('display_name').'/'.res.get('format_name')
+                display_name = res.get('display_name') + '/' + res.get('format_name')
             else:
                 display_name = res.get('format_name')
             
