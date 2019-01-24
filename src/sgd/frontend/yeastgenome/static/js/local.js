@@ -225,7 +225,6 @@ jQuery.fn.dataTableExt.oApi.fnSearchHighlighting = function(oSettings) {
                 }
             }
         });
-        console.log(nRow);
         return nRow;
     }, 'row-highlight');
     return this;
