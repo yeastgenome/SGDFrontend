@@ -70,6 +70,10 @@ const RestrictionMapper = React.createClass({
 	        if (this.state.isComplete) {
 
 			var data = this.state.resultData;
+			if (typeof(data['seqname']) == "undefined") {
+			   return <div><span style={ style.textFont }>Enter either a valid gene name or a DNA sequence.</span></div>
+			}			
+
 			var notCutEnzymeTable = "";
 			var downloadLink = "";
 			if (param['type'] == 'all') {
