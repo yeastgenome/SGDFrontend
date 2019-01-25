@@ -358,7 +358,7 @@ const RestrictionMapper = React.createClass({
 
 	getDesc(seqName, seqLength, chrCoords) {
 	
-		if (seqName == 'Unnamed') {
+		if (seqName == 'null' || seqName == "") {
 		     return "<center><h3>The unnamed sequence (sequence length: " + seqLength + ")</h3></center>";
 		}
 		else {

@@ -59,8 +59,8 @@ def _construct_parameters(p):
     if type is None:
         type = ""
     name = p.get('name')
-    sgdid = None
-    display_name = None
+    sgdid = ""
+    display_name = ""
     if name is not None:
         name = name.replace("SGD:", "")
         url = validate_url + name
@@ -76,7 +76,7 @@ def _construct_parameters(p):
                     display_name = res.get('display_name') + '/' + res.get('format_name')
                 else:
                     display_name = res.get('format_name')
-    if sgdid is not None:
+    if sgdid or seq:
         paramData = urllib.urlencode({ 'seq': seq,
                                        'type': type,
                                        'name': sgdid })
