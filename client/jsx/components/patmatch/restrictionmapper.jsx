@@ -70,24 +70,11 @@ const RestrictionMapper = React.createClass({
 	        if (this.state.isComplete) {
 
 			var data = this.state.resultData;
-			if (typeof(data['seqname']) == "undefined") {
-			   return <div><span style={ style.textFont }>Enter either a valid gene name or a DNA sequence.</span></div>
-			}			
-
-			var notCutEnzymeTable = "";
-			var downloadLink = "";
-			if (param['type'] == 'all') {
-			     notCutEnzymeTable = this.getNotCutEnzymeTable(data['notCutEnzyme']);
-			     downloadLink = this.getDownloadLinks(data['downloadUrl'], data['downloadUrl4notCutEnzyme'])
-			}
-			else {
-			     downloadLink = this.getDownloadLinks(data['downloadUrl'], '');
-			}
-
+	
 			var cuts = data['data'];
 			var seqLength = data['seqLength'];
 			
-			if (seqLength == 0) {
+			if (seqLength == 0 || typeof(seqLength) == "undefined") {
 			    var message = "";
 			    if (param['gene']) {
 			         message = "Please enter a single valid gene name.";
@@ -97,6 +84,16 @@ const RestrictionMapper = React.createClass({
 			    }
 			    return <div><span style={ style.textFont }>{ message }</span></div>
 			}
+
+			var notCutEnzymeTable = "";
+                        var downloadLink = "";
+                        if (param['type'] == 'all') {
+                             notCutEnzymeTable = this.getNotCutEnzymeTable(data['notCutEnzyme']);
+                             downloadLink = this.getDownloadLinks(data['downloadUrl'], data['downloadUrl4notCutEnzyme'])
+                        }
+                        else {
+                             downloadLink = this.getDownloadLinks(data['downloadUrl'], '');
+                        }
 
 			var desc = this.getDesc(data['seqName'], seqLength, data['chrCoords']);
 			 
