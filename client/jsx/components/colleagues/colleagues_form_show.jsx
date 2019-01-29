@@ -92,7 +92,17 @@ const ColleaguesFormShow = React.createClass({
       temp.push(<StringField isReadOnly={this.props.isReadOnly} displayName="Country" paramName="country" defaultValue={data.country} key="address3" />);
     }
     if (data.email) {
-      temp.push(<StringField isReadOnly={this.props.isReadOnly} displayName="Email" paramName="email" defaultValue={data.email} key="email" />);
+      if (data.display_email){
+        temp.push( < StringField isReadOnly = {
+            this.props.isReadOnly
+          }
+          displayName = "Email"
+          paramName = "email"
+          defaultValue = {
+            data.email
+          }
+          key = "email" / > );
+        }
     }
     if (data.phones) {
       temp.push(<StringField isReadOnly={this.props.isReadOnly} displayName="Phones" paramName="phones" defaultValue={data.phones} key="phones" />);
