@@ -91,6 +91,7 @@ def patmatch(request):
 def restrictionmapper(request):
     return render_to_response(TEMPLATE_ROOT + 'restrictionMapper.jinja2', {}, request=request)
 
+
 @view_config(route_name='seq_tools')
 def seq_tools(request):
     return render_to_response(TEMPLATE_ROOT + 'seqTools.jinja2', {}, request=request)
@@ -107,18 +108,22 @@ def goslimmapper(request):
 def strain_alignment(request):
     return render_to_response(TEMPLATE_ROOT + 'strainAlignment.jinja2', {}, request=request)
 
+
 @view_config(route_name='colleague_show')
 def colleague_show(request):
     return render_to_response(TEMPLATE_ROOT + 'misc.jinja2', {}, request=request)
+
 
 @view_config(route_name='downloads')
 def downloads_tree(request):
     return render_to_response(
         TEMPLATE_ROOT + 'downloads.jinja2', {}, request=request)
-
+'''
 @view_config(route_name='new_colleague')
 def new_colleague(request):
     return render_to_response(TEMPLATE_ROOT + 'new_colleague.jinja2', {}, request=request)
+'''
+
 
 @view_config(route_name='interaction_search')
 def interaction_search(request):
@@ -217,16 +222,15 @@ def variant_viewer(request):
 
 @view_config(route_name='new_gene_name_reservation')
 def new_gene_name_reservation(request):
-    ci_base = 'https://curate.yeastgenome.org'
-    # if config.backend_url != 'https://www.yeastgenome.org/webservice':
-    #     ci_base = 'https://curate.qa.yeastgenome.org'
+    ci_base = config.backend_url if config.environment == 'dev' else 'https://curate.yeastgenome.org'
+    
     return render_to_response(TEMPLATE_ROOT + 'iframe.jinja2', { 'ci_url': 'new_reservation', 'ci_base': ci_base }, request=request)
+
 
 @view_config(route_name='new_colleague')
 def new_colleague(request):
-    ci_base = 'https://curate.qa.yeastgenome.org'
-    # if config.backend_url != 'https://www.yeastgenome.org/webservice':
-    #     ci_base = 'https://curate.qa.yeastgenome.org'
+    ci_base = config.backend_url if config.environment == 'dev' else 'https://curate.yeastgenome.org'
+  
     return render_to_response(TEMPLATE_ROOT + 'iframe.jinja2', { 'ci_url': 'new_colleague', 'ci_base': ci_base }, request=request)
 
 @view_config(route_name='primer3')
