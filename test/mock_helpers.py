@@ -169,6 +169,9 @@ def locus_side_effect(*args, **kwargs):
     if len(args) == 1 and str(args[0]) == "<class 'src.models.Locusdbentity'>":
         locus = factory.LocusdbentityFactory()
         return MockQuery(locus)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Proteinabundanceannotation'>":
+        protein_abundance_annotation = factory.Proteinabundanceannotation()
+        return MockQuery(protein_abundance_annotation)
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Bindingmotifannotation'>":
         bind = factory.BindingmotifannotationFactory()
         return MockQuery(bind)

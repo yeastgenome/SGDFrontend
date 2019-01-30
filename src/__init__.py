@@ -85,6 +85,7 @@ def main(global_config, **settings):
     config.add_route('locus_posttranslational_details', '/locus/{id}/posttranslational_details', request_method='GET')
     config.add_route('locus_ecnumber_details', '/locus/{id}/ecnumber_details', request_method='GET')
     config.add_route('locus_protein_experiment_details', '/locus/{id}/protein_experiment_details', request_method='GET')
+    config.add_route('locus_protein_abundance_details', '/locus/{id}/protein_abundance_details', request_method='GET')
     config.add_route('locus_protein_domain_details', '/locus/{id}/protein_domain_details', request_method='GET')
     config.add_route('locus_protein_domain_graph', '/locus/{id}/protein_domain_graph', request_method='GET')
     config.add_route('locus_binding_site_details', '/locus/{id}/binding_site_details', request_method='GET')

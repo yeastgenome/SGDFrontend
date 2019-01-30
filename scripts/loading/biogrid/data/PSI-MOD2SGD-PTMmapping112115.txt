@@ -1,0 +1,34 @@
+BUD Interaction Modification values	SGD display_name	PSI-MOD Preferred Name	PSI-MOD Synonym	PSI-MOD ID	
+	2-amino-3-oxo-butanoic acid	2-amino-3-oxobutanoic acid		MOD:01345	
+Acetylation	acetylation	acetylated residue	Acetylation	MOD:00394	
+	butyrylation	butanoylated residue	butyrylation	MOD:01996	
+	carbamidomethylation	carbamoylated residue	Carbamylation	MOD:00398	
+Deacetylation	deacetylation	deacetylation residue		NTR:00003
+		deamidation				
+Demethylation	demethylation	demethylation residue	None	NTR:00004
+Deneddylation	deneddylation	None	None	NTR:00007
+Dephosphorylation	dephosphorylation	None	None	NTR:00001
+Desumoylation	desumoylation	None	None	NTR:00005
+Deubiquitination	deubiquitination	None	None	NTR:00002
+	dimethylation	dimethylated residue	di-Methylation	MOD:00429	
+	ethylation	ethylated residue	Ethylation	MOD:01339	
+	farnesylation	farnesylated residue	Farnesylation	MOD:00437	
+Glycosylation	glycosylation	glycosylated residue		MOD:00693	
+Methylation	methylation	methylated residue	Methylation	MOD:00427	
+	monomethylation	monomethylated residue	Methylation	MOD:00599	
+	monoubiquitination	ubiquitinylated lysine		MOD:01148	
+Nedd(Rub1)ylation	neddylation	neddylated lysine		MOD:01150	
+No Modification					
+	oxidation	methionine oxidation with neutral loss of 64 Da		MOD:00935	
+	palmitoylation	palmitoylated residue	Palmitoylation	MOD:00440	
+Phosphorylation	phosphorylation	phosphorylated residue	Phosphorylation	MOD:00696	
+	piperidination				
+Prenylation	prenylation	isoprenylated residue		MOD:00703	
+Proteolytic processing		proteolytic processing	None	NTR:00006
+Proteolytic Processing          proteolytic processing  None    NTR:00006
+	propionylation	propanoylated residue		MOD:01894	
+	succinylation	succinylated residue		MOD:01029	
+Sumoylation	sumoylation	sumoylated lysine		MOD:01149	
+	thiophosphorylation	thiophosphorylated residue	Thiophosphorylation	MOD:00583	
+	trimethylation	trimethylated residue	tri-Methylation	MOD:00430	
+Ubiquitination	ubiquitination	ubiquitinylated lysine		MOD:01148	

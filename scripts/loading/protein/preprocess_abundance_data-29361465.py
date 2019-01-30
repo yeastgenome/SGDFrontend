@@ -1,9 +1,11 @@
 metadatafileTreated = "data/Grid-with-metadata_final_treated.txt"
 metadatafileUntreated = "data/Grid-with-metadata_final_untreated.txt"
-datafileUntreated = "data/Table-S4-final-abundance-no-stress-29361465.txt"
-datafileTreated = "data/Table-S8-abundance-in-stress-29361465.txt"
-foldfile = "data/Table-S9-fold-change-abundance-in-stress-29361465.txt"
-
+# datafileUntreated = "data/Table-S4-final-abundance-no-stress-29361465.txt"
+# datafileTreated = "data/Table-S8-abundance-in-stress-29361465.txt"  
+# foldfile = "data/Table-S9-fold-change-abundance-in-stress-29361465.txt"
+datafileUntreated = "data/TableS4_wMAD1.txt"
+datafileTreated = "data/TableS8_abundance_in_stress_final_corrected_11.28.18.txt"
+foldfile = "data/TableS9_fold_change_abundance_in_stress_final_corrected_11.28.18.txt"
 
 def generate_data():
 
@@ -11,7 +13,7 @@ def generate_data():
     author2metadataTreated = get_treated_metadata()
     geneAuthor2fold = get_fold_change()
 
-    print "SYSTEMATIC_NMAE\tAUTHOR\tPMID\tMOLECULES_PER_CELL\tECO\tEFO\tSTRAIN\tCHEBI\tGOID\tTIME_VALUE\tTIME_UNIT\tCOND_VALUE\tCONT_UNIT\tCHANGE_FOLD"
+    print "SYSTEMATIC_NMAE\tAUTHOR\tPMID\tMOLECULES_PER_CELL\tECO\tEFO\tSTRAIN\tCHEBI\tGOID\tTIME_VALUE\tTIME_UNIT\tCOND_VALUE\tCONT_UNIT\tCHANGE_FOLD\tMEDIAN\tMAD"
 
     generate_data_for_untreated_expts(author2metadataUntreated)
     generate_data_for_treated_expts(author2metadataTreated, geneAuthor2fold)
@@ -24,12 +26,16 @@ def generate_data_for_untreated_expts(author2metadataUntreated):
     for line in f:
         pieces = line.strip().split("\t")
         if line.startswith('Systematic Name'):
-            header = pieces[6:]
+            header = pieces[7:]
             continue
-        if len(pieces) < 6:
+        if len(pieces) < 7:
             continue
         gene = pieces[0]
-        data = pieces[6:]
+        median = pieces[4]
+        mad = pieces[6]
+        if mad == "":
+            mad = None
+        data = pieces[7:]
         i = 0
         for author in header:
             if i >= len(data):
@@ -39,7 +45,7 @@ def generate_data_for_untreated_expts(author2metadataUntreated):
                 continue
             molecules = data[i]
             (pmid, eco, efo, strain) = author2metadataUntreated[author]
-            print gene + "\t" + author + "\t" + pmid + "\t" + molecules + "\t" + eco + "\t" + efo + "\t" + strain + "\t\t\t\t\t\t\t"
+            print gene + "\t" + author + "\t" + pmid + "\t" + molecules + "\t" + eco + "\t" + efo + "\t" + strain + "\tNone\tNone\tNone\tNone\tNone\tNone\tNone\t" + median + "\t" + str(mad)
             i = i + 1
 
     f.close()
@@ -106,7 +112,7 @@ def generate_data_for_treated_expts(author2metadataTreated, geneAuthor2fold):
                 conc_value = None
             if conc_unit == '':
                 conc_unit = None
-            print gene + "\t" + author + "\t" + pmid + "\t" + molecules + "\t" + eco + "\t" + efo + "\t" + strain + "\t" + str(chebi) + "\t" + str(goid) + "\t" + time_value + "\t" + time_unit + "\t" + str(conc_value) + "\t" + str(conc_unit) + "\t" + str(thisFold)
+            print gene + "\t" + author + "\t" + pmid + "\t" + molecules + "\t" + eco + "\t" + efo + "\t" + strain + "\t" + str(chebi) + "\t" + str(goid) + "\t" + time_value + "\t" + time_unit + "\t" + str(conc_value) + "\t" + str(conc_unit) + "\t" + str(thisFold) + "\tNone\tNone"
             i = i + 1
 
 def get_fold_change():
