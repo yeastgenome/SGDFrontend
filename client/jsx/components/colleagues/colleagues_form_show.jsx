@@ -312,6 +312,7 @@ const ColleaguesFormShow = React.createClass({
       let backendSegment = this.props.isCurator ? '' : '/backend';
       let url = `${backendSegment}${COLLEAGUE_GET_URL}/${this.props.colleagueDisplayName}`;
       apiRequest(url).then( json => {
+        console.log(json)
         this.setState({ data: json, isLoadPending: false });
       });
     }
