@@ -70,14 +70,11 @@ const RestrictionMapper = React.createClass({
 	        if (this.state.isComplete) {
 
 			var data = this.state.resultData;
-			var notCutEnzymeTable = "";
-			if (param['type'] == 'all') {
-			     notCutEnzymeTable = this.getNotCutEnzymeTable(data['notCutEnzyme']);
-			}
+	
 			var cuts = data['data'];
 			var seqLength = data['seqLength'];
 			
-			if (seqLength == 0) {
+			if (seqLength == 0 || typeof(seqLength) == "undefined") {
 			    var message = "";
 			    if (param['gene']) {
 			         message = "Please enter a single valid gene name.";
@@ -87,6 +84,16 @@ const RestrictionMapper = React.createClass({
 			    }
 			    return <div><span style={ style.textFont }>{ message }</span></div>
 			}
+
+			var notCutEnzymeTable = "";
+                        var downloadLink = "";
+                        if (param['type'] == 'all') {
+                             notCutEnzymeTable = this.getNotCutEnzymeTable(data['notCutEnzyme']);
+                             downloadLink = this.getDownloadLinks(data['downloadUrl'], data['downloadUrl4notCutEnzyme'])
+                        }
+                        else {
+                             downloadLink = this.getDownloadLinks(data['downloadUrl'], '');
+                        }
 
 			var desc = this.getDesc(data['seqName'], seqLength, data['chrCoords']);
 			 
@@ -100,12 +107,14 @@ const RestrictionMapper = React.createClass({
 			return (<div>
                                <div className="row">
 			       	    <p dangerouslySetInnerHTML={{ __html: desc }} />
+				    <p dangerouslySetInnerHTML={{ __html: downloadLink}} />
 				    <div>
 					<table style={graphStyle}>
 					       <tr><td>{graphNode}</td></tr>
 					</table>
 				    </div>
                                     <p>{ notCutEnzymeTable }</p>
+				    <p dangerouslySetInnerHTML={{ __html: downloadLink}} />
                                </div>
                         </div>);
 
@@ -221,7 +230,7 @@ const RestrictionMapper = React.createClass({
                 return(<div>
                        <span style={ style.textFont }><strong>Step 2: Choose Restriction Enzyme Set: </strong></span>
                        <p><select ref='type' name='type' onChange={this.onChange}>{_elements}</select>
-		       <font color='red'>Note</font>: To find enzymes that do not cut, choose 'all' and see the resulting list at bottom.</p>
+		       <font color='red'>Note</font>: To find enzymes that do not cut, choose 'all' and then choose the "Download 'Do Not Cut' Enzyme List" option and/or see the "do not cut" list at bottom of the Results page.</p>
                 </div>);
 
         },
@@ -265,7 +274,7 @@ const RestrictionMapper = React.createClass({
 		}
 	
 		var notCutTable = { headers: [headers],
-                                     rows:   tableRows };
+                                    rows:   tableRows };
 
 	        return(<div>
 		       <center>
@@ -275,7 +284,6 @@ const RestrictionMapper = React.createClass({
                 </div>);
 
 	},
-
 
         onChange(e) {
                 this.setState({ text: e.target.value});
@@ -294,7 +302,6 @@ const RestrictionMapper = React.createClass({
 
 	runRestTools(searchType, value) {
 
-		
 		var paramData = {};
 		var param = this.state.param;
 		paramData['type'] = param['type'];
@@ -339,9 +346,19 @@ const RestrictionMapper = React.createClass({
 
 	},
 
+	getDownloadLinks(url, url4notCutEnzyme) {
+
+	        var links =  "<a href='" + url + "' target='dl_win'>Download Restriction Site Results</a>"; 
+	        if (url4notCutEnzyme) {
+		      links = links + " | <a href='" + url4notCutEnzyme + "' target='dl_win'>Download 'Do Not Cut' Enzyme List</a>";  
+		}
+		return "<center><h3>" + links + "</h3></center>";
+
+	},
+
 	getDesc(seqName, seqLength, chrCoords) {
 	
-		if (seqName == 'Unnamed') {
+		if (seqName == 'null' || seqName == "") {
 		     return "<center><h3>The unnamed sequence (sequence length: " + seqLength + ")</h3></center>";
 		}
 		else {

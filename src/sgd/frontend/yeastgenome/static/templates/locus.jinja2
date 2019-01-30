@@ -204,24 +204,30 @@
             <a href="#" data-dropdown="protein_info"><i class="fa fa-info-circle"></i></a>
 
             <p id="protein_info" class="f-dropdown content medium" data-dropdown-content>
-                Basic information about the protein. Click "Protein Details" for further information about the protein
-                such as abundance data, domains, shared domains with other proteins, protein sequence retrieval for
-                various strains, sequence-based physico-chemical properties, protein modification sites, and
-                external identifiers for the protein.
+       	       Basic sequence-derived (length, molecular weight, isoelectric point) and experimentally-determined (median abundance, median absolute deviation) protein information. Click "Protein Details" for further information about the protein such as half-life, abundance, domains, domains shared with other proteins, protein sequence retrieval for various strains, physico-chemical properties, protein modification sites, and external identifiers for the protein.
             </p>
         </h2>
         <hr />
         <div class="">
             <div class="">
                  <dl class="key-value">
-                     <dt>Length (a.a.)</dt>
+                     <dt style="width:300px">Length (a.a.)</dt>
                      <dd>{{ locus.protein_overview.length }}</dd>
 
-                     <dt>Mol. Weight (Da)</dt>
+                     <dt style="width:300px">Mol. Weight (Da)</dt>
                      <dd>{{ locus.protein_overview.molecular_weight }}</dd>
 
-                     <dt>Isoelectric Point</dt>
+                     <dt style="width:300px">Isoelectric Point</dt>
                      <dd>{{ locus.protein_overview.pi }}</dd>
+
+		     {% if locus.protein_overview.median_value %}
+			  <dt style="width:300px">Median Abundance (molecules/cell)</dt>
+		     	  {% if locus.protein_overview.median_abs_dev_value %}
+                     	      <dd>{{ locus.protein_overview.median_value }} +/- {{ locus.protein_overview.median_abs_dev_value }}</dd>
+	             	  {% else %}
+		     	      <dd>{{ locus.protein_overview.median_value }}</dd>
+	             	  {% endif %}
+		     {% endif %}
                  </dl>
             </div>
         </div>
