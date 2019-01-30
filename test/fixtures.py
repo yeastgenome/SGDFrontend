@@ -9,7 +9,8 @@ from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRela
     Goslimannotation, Interactor, Goslim, Expressionannotation, Datasetsample, DatasetUrl, DatasetFile, ReferenceAlias, Dnasequenceannotation, Dnasubsequence,\
     So, ContigUrl, LocusAlias, LocusAliasReferences, LocusReferences, LocussummaryReference, LocusUrl, Posttranslationannotation,\
     Psimod, Proteinexptannotation, Proteindomainannotation, Proteindomain, ProteindomainUrl, Ec, EcAlias, EcUrl, LocusRelation, LocusRelationReference, \
-    Locusnote, LocusnoteReference, Pathwayannotation, Pathwaydbentity, PathwayUrl, Bindingmotifannotation, Disease, Diseaseannotation
+    Locusnote, LocusnoteReference, Pathwayannotation, Pathwaydbentity, PathwayUrl, Bindingmotifannotation, Disease, Diseaseannotation, \
+    Proteinabundanceannotation
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -1750,3 +1751,31 @@ class BindingmotifannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
     logo_url = "logo url"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
+
+class ProteinabundanceAnnotationFactory(factory.alchemy.SQLAlchemyModelFactory):
+
+    class Meta:
+        model = Proteinabundanceannotation
+        sqlalchemy_session = DBSession
+
+    annotation_id = 1
+    dbentity_id = 1
+    source_id = 1
+    taxonomy_id = 1
+    reference_id = 1
+    original_reference_id = 1
+    data_value = 1
+    data_unit = "data unit"
+    assay_id = 1
+    media_id = 1
+    fold_change = "fold change"
+    chemical_id = 1
+    concentration_value = "concentration value"
+    concentration_unit = "concentration unit"
+    time_value = "time value"
+    time_unit = "time unit"
+    process_id = 1
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+    median_value = "median value"
+    median_abs_dev_value = "median abs dev value"
