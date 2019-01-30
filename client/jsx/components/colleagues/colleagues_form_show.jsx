@@ -39,17 +39,24 @@ const ColleaguesFormShow = React.createClass({
   },
 
   render () {
-    if (this.state.isComplete) return this._renderCompleteNode();
-    let formLabel = this.props.isUpdate ? 'Update Colleague' : 'New Colleague';
-    let showLabel = this.state.isLoadPending ? '...' : `${this.state.data.first_name} ${this.state.data.last_name}`;
-    let label = this.props.isReadOnly ? showLabel : formLabel;
-    return (
-      <div>
-        <h1>{label}</h1>
-        {this._renderTriageNode()}
-        {this._renderForm()}
-      </div>
-    );
+    if(!_.isEmpty(this.state.data)){
+      if (this.state.isComplete) return this._renderCompleteNode();
+      let formLabel = this.props.isUpdate ? 'Update Colleague' : 'New Colleague';
+      let showLabel = this.state.isLoadPending ? '...' : `${this.state.data.first_name} ${this.state.data.last_name}`;
+      let label = this.props.isReadOnly ? showLabel : formLabel;
+      return (
+        <div>
+          <h1>{label}</h1>
+          {this._renderTriageNode()}
+          {this._renderForm()}
+        </div>
+      );
+
+    }
+    else{
+        return(<div><h1>Colleague not found</h1></div>)
+    }
+    
   },
 
   componentDidMount () {
@@ -309,6 +316,7 @@ const ColleaguesFormShow = React.createClass({
       let backendSegment = this.props.isCurator ? '' : '/backend';
       let url = `${backendSegment}${COLLEAGUE_GET_URL}/${this.props.colleagueDisplayName}`;
       apiRequest(url).then( json => {
+        console.log(json)
         this.setState({ data: json, isLoadPending: false });
       });
     }
