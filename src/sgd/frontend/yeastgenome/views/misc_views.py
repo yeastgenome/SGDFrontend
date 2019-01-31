@@ -232,7 +232,7 @@ def new_colleague(request):
     #TODO: run this line in dev to avoid updating curate.* box
     # https://curate.yeastgenome.org points to production
     # https://curate.qa.yeastgenome.org points to QA
-    #ci_base = config.backend_url if config.environment == 'dev' else 'https://curate.yeastgenome.org'
+    #ci_base = config.backend_url if config.environment == 'dev' else 'https://curate.qa.yeastgenome.org'
     ci_base = 'https://curate.qa.yeastgenome.org'
 
     return render_to_response(TEMPLATE_ROOT + 'iframe.jinja2', { 'ci_url': 'new_colleague', 'ci_base': ci_base }, request=request)
