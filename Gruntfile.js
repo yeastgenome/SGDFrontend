@@ -220,7 +220,7 @@ module.exports = function(grunt) {
     grunt.registerTask("dev", ["compileDev", "watch"]);
     
     grunt.registerTask("default", ["static", "concurrent:production","uglify"]);
-    grunt.registerTask("deployAssets", ["static", "concurrent:production", "uploadToS3"]);
+    grunt.registerTask("deployAssets", ["static", "concurrent:production","uglify", "uploadToS3"]);
     grunt.registerTask("deployAssetsTest", ["static", "concurrent:dev", "uploadToS3"]);
 
 };
