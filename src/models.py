@@ -6520,10 +6520,13 @@ class Goannotation(Base):
         if experiment_url == None and len(alias_url) > 1:
             experiment_url = alias_url[1].obj_url
 
+        date_created = self.date_created
+        if self.annotation_type == 'computational':
+            date_created = self.date_assigned
         go_obj = {
             "id": self.annotation_id,
             "annotation_type": self.annotation_type,
-            "date_created": self.date_created.strftime("%Y-%m-%d"),
+            "date_created": date_created.strftime("%Y-%m-%d"),
             "qualifier": self.go_qualifier.replace("_", " "),
             "locus": {
                 "display_name": self.dbentity.display_name,
