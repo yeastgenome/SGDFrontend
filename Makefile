@@ -25,13 +25,6 @@ run-prod:
 stop-prod:
 	-pserve sgdfrontend_production.ini --stop-daemon --pid-file=/var/run/pyramid/frontend.pid
 
-build-dev: dependencies grunt-dev
-	pip install -r requirements.txt
-	python setup.py develop
-
-grunt-dev:
-	grunt dev
-
 build: dependencies grunt
 	pip install -r requirements.txt
 	python setup.py develop
