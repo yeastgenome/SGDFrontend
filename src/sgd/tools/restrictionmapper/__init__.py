@@ -20,7 +20,7 @@ def _run_restrictionmap(p):
     if display_name is None:
         return { "ERROR": "not valid name" }
 
-    url = rest_url + "cgi-bin/aws-restrictionmapper2" 
+    url = rest_url + "cgi-bin/aws-restrictionmapper" 
 
     req = Request(url=url, data=paramData)
     res = urlopen(req)
