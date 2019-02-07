@@ -219,7 +219,7 @@ module.exports = function(grunt) {
     // compile dev, then watch and trigger live reload
     grunt.registerTask("dev", ["compileDev", "watch"]);
     
-    grunt.registerTask("default", ["static", "concurrent:production","uglify"]);
+    grunt.registerTask("default", ["static", "concurrent:production"]);
     grunt.registerTask("deployAssets", ["static", "concurrent:production","uglify", "uploadToS3"]);
     grunt.registerTask("deployAssetsTest", ["static", "concurrent:dev", "uploadToS3"]);
 
