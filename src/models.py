@@ -6657,9 +6657,14 @@ class Goextension(Base):
                     "role": self.ro.display_name
                 }
         else:
+
+            dbxref_id = source_id[1]
+            if dbxref_id in ['MGI', 'locus']:
+                dbxref_id = dbxref_id + ":" + source_id[2]
+                
             return {
                 "bioentity": {
-                    "display_name": source_id[1],
+                    "display_name": dbxref_id,
                     "link": self.obj_url
                 },
                 "role": self.ro.display_name
@@ -6790,9 +6795,14 @@ class Gosupportingevidence(Base):
                     "role": self.evidence_type.capitalize()
                 }
         else:
+
+            dbxref_id = source_id[1]
+            if dbxref_id in ['MGI', 'locus']:
+                dbxref_id = dbxref_id + ":" + source_id[2]
+
             return {
                 "bioentity": {
-                    "display_name": source_id[1],
+                    "display_name": dbxref_id,
                     "link": self.obj_url
                 },
                 "role": self.evidence_type.capitalize()
