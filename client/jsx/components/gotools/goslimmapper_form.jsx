@@ -281,9 +281,9 @@ const GoSlimMapper = React.createClass({
 		var genes = this.refs.genes.value.trim();
 		if (genes == '') {
 		     genes = this.state.uploadedGenes;
-		     this.setState({
-                            uploadedGenes: ''
-                     });
+		     // this.setState({
+                     //       uploadedGenes: ''
+                     // });
 		}
 		genes = this.processGeneList(genes);
                 if (genes == '') {
