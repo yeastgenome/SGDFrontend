@@ -25,6 +25,7 @@ def prep_views(chosen_frontend, config):
     config.add_route('restrictionmapper', '/restrictionMapper')
     config.add_route('seq_tools', '/seqTools')
     config.add_route('gotermfinder', '/goTermFinder')
+    config.add_route('goslimmapper', '/goSlimMapper')
     config.add_route('strain_alignment', '/strainAlignment')
     config.add_route('complex', '/complex/{identifier}')
     config.add_route('blog_post', '/blog/{slug}')
