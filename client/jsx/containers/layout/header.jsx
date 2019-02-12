@@ -79,7 +79,7 @@ const Header = React.createClass({
                 <li><a className="disabled-header-a" href="/blast-sgd">BLAST</a></li>
                 <li><a className="disabled-header-a" href="/blast-fungal">Fungal BLAST</a></li>
                 <li><a className="disabled-header-a" href="/goTermFinder">GO Term Finder</a></li>
-                <li><a className="disabled-header-a" href="/cgi-bin/GO/goSlimMapper.pl">GO Slim Mapper</a></li>
+                <li><a className="disabled-header-a" href="/goSlimMapper">GO Slim Mapper</a></li>
                 <li><a className="disabled-header-a" href="/nph-patmatch">Pattern Matching</a></li>
                 <li><a className="disabled-header-a" href="/primer3">Design Primers</a></li>
                 <li><a className="disabled-header-a" href="/restrictionMapper">Restriction Site Mapper</a></li>
@@ -126,7 +126,7 @@ const Header = React.createClass({
                   <a href="#">Gene Ontology</a>
                   <ul className="dropdown">
                     <li><a className="disabled-header-a" href="/goTermFinder">GO Term Finder</a></li>
-                    <li><a className="disabled-header-a" href="/cgi-bin/GO/goSlimMapper.pl">GO Slim Mapper</a></li>
+                    <li><a className="disabled-header-a" href="/goSlimMapper">GO Slim Mapper</a></li>
                     <li><a className="disabled-header-a" href="https://downloads.yeastgenome.org/curation/literature/go_slim_mapping.tab">GO Slim Mapping File</a></li>
                   </ul>
                 </li>

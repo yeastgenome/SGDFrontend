@@ -15,8 +15,7 @@ const SeqtoolsUrl = "/run_seqtools";
 
 const MAX_GENE_TO_SHOW = 4;
 const MAX_GENE = 50;
-const MAX_SEQ_LENGTH_FOR_TOOLS = 20000;
-
+const MAX_SEQ_LENGTH_FOR_TOOLS = 100000;
 
 const GeneSequenceResources = React.createClass({
 
@@ -49,13 +48,13 @@ const GeneSequenceResources = React.createClass({
 
 	componentDidMount() {
 		var param = this.state.param;
-	        if (param['submit']) {
+	        if (param['genes']) {
 	              this.runSeqTools('genes');
 	        }
-		else if (param['submit2']) {
+		else if (param['chr']) {
                       this.runSeqTools('chr');
                 }
-		else if (param['submit3']) {
+		else if (param['seq_id']) {
                       this.runSeqTools('seq');
                 }
 		else if (param['emboss']) {
@@ -906,8 +905,9 @@ const GeneSequenceResources = React.createClass({
         },
 
 	onSubmit3(e) {
-
+		     
                 var seq = this.refs.seq.value.trim();
+
 		seq = seq.replace(/[^A-Za-z]/g, "");	
                 if (seq == '') {
                    alert("Please enter a raw sequence.");
@@ -934,6 +934,11 @@ const GeneSequenceResources = React.createClass({
 		   }
 		   
 		}
+
+		var seq_id = this.refs.seq_id.value.trim();
+		if (seq) {
+                    window.localStorage.setItem(seq_id, seq);
+                 }
 
         },
 
@@ -1013,11 +1018,16 @@ const GeneSequenceResources = React.createClass({
 
 		var seqtypeNode = this.getSeqtypeNode();
 
+		var min = 1;
+		var max = 10000;
+		var localSeqID = min + (Math.random() * (max-min));
+
 		return(<div>
                        <h3>Type or Paste a: </h3>
 		       { seqtypeNode }
 		       <p>Sequence:
-                       <textarea ref='seq' name='seq' onChange={this.onChange} rows='3' cols='75'></textarea></p>
+                       <textarea ref='seq' onChange={this.onChange} rows='3' cols='75'></textarea></p>
+		       <input type='hidden' name='seq_id' ref='seq_id' value={localSeqID}></input>
                 </div>);    
 
 	},
@@ -1180,7 +1190,8 @@ const GeneSequenceResources = React.createClass({
 		}
 
 		if (searchType == 'seq') {
-		   var seq = param['seq'];
+		   var seqID = param['seq_id'];
+		   var seq = window.localStorage.getItem(seqID);
 		   seq = seq.replace(/%0D/g, '');
 		   seq = seq.replace(/%0A/g, '');
 		   seq = seq.toUpperCase().replace(/[^A-Z]/g, '');

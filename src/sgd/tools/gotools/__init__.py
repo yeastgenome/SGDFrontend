@@ -5,21 +5,69 @@ import os
 
 # http://0.0.0.0:6545/run_gotools?aspect=C&genes=COR5|CYT1|Q0105|QCR2|S000001929|S000002937|S000003809|YEL024W|YEL039C|YGR183C|YHR001W-A
 
-gotools_url = "http://gotermfinder.yeastgenome.org/cgi-bin/gotermfinder"
+gotermfinder_url = "http://gotermfinder.yeastgenome.org/cgi-bin/gotermfinder"
 
-# gotools_url = "http://gotermfinder.dev.yeastgenome.org/cgi-bin/gotermfinder" 
+goslimmapper_url = "http://gotermfinder.yeastgenome.org/cgi-bin/goslimmapper"
 
-# http://gotermfinder.dev.yeastgenome.org/cgi-bin/gotermfinder?aspect=F&genes=COR5|CYT1|Q0105|QCR2|S000001929|S000002937|S000003809|YEL024W|YEL039C|YGR183C|YHR001W-A
-
+# http://gotermfinder.yeastgenome.org/cgi-bin/gotermfinder?aspect=F&genes=COR5|CYT1|Q0105|QCR2|S000001929|S000002937|S000003809|YEL024W|YEL039C|YGR183C|YHR001W-A
 
 def do_gosearch(request):
 
     p = dict(request.params)
 
-    data = run_gotermfinder(p)
-   
+    data = {}
+    if p.get('mapper'):
+        data = run_goslimmapper(p)
+    else:
+        data = run_gotermfinder(p)
     return Response(body=json.dumps(data), content_type='application/json')
  
+def run_goslimmapper(p):
+
+    genes = p.get('genes', '')
+    if genes == '':
+        return { " ERROR": "NO GENE NAME PASSED IN" }
+    aspect = p.get('aspect', '')
+    if aspect == '':
+        return { " ERROR": "NO GO ASPECT PASSED IN" }
+    terms = p.get('terms', '')
+    if terms == '':
+        return { " ERROR": "NO SLIM TERMS PASSED IN" }
+    
+    import urllib
+
+    paramData = urllib.urlencode({ 'genes': genes,
+                                   'terms': terms,
+                                   'aspect': aspect });
+
+    res = _get_json_from_server(goslimmapper_url, paramData)
+
+    if res.get('output'):
+        return { "output": res['output'] }
+
+    htmlUrl = res['html']
+    rootUrl = res['rootUrl']
+
+    response = urlopen(htmlUrl)
+    html = response.read()
+    html = html.replace("<html><body>", "").replace("</body></html>", "")
+    html = html.replace("<br><b>", "").replace("</b><br><br><center>", "<center>")
+    html = html.replace("color=red", "color=maroon")
+    html = html.replace("<td colspan=5>", "<td colspan=5 bgcolor='#FFCC99'>")
+    html = html.replace("<font color=#FFFFFF>", "").replace("</font>", "")
+    html = html.replace("<th align=center", "<th bgcolor='#CCCCFF' align=center")
+    html = html.replace('<tr bgcolor="FFE4C4">', '')
+    # html = html.replace("http://amigo.geneontology.org/amigo/term/", "https://www.yeastgenome.org/go/")
+    html = html.replace("infowin", "_extwin")
+
+    return { "html": html,
+             "tab_page": res['tab'],
+             "term_page": res['terms'],
+             "table_page": res['html'],
+             "gene_input_page": res['gene_input'],
+             "slim_input_page": res['slim_input'] }
+
+
 def run_gotermfinder(p):
     
     genes = p.get('genes', '')
@@ -32,7 +80,7 @@ def run_gotermfinder(p):
     evidence = p.get('evidence', '')
         
     ## add code later to handle pvalue + exclude evidence list etc
-    # url = gotools_url + "?aspect=" + aspect + "&genes=" + genes 
+    # url = gotermfinder_url + "?aspect=" + aspect + "&genes=" + genes 
 
     import urllib
 
@@ -43,7 +91,7 @@ def run_gotermfinder(p):
                                    'FDR': FDR,
                                    'evidence': evidence });
     
-    res = _get_json_from_server(gotools_url, paramData)
+    res = _get_json_from_server(gotermfinder_url, paramData)
 
     if res.get('output'):
         return { "output": res['output'] }
@@ -59,7 +107,7 @@ def run_gotermfinder(p):
     imageHtml = "<b>Nodes" + imageHtml.split("</font><br><br><b>Nodes")[1]
     
     response = urlopen(htmlUrl)
-    html = response.read() 
+    html = response.read()
     html = html.replace("<html><body>", "").replace("</body></html>", "")
     html = html.replace("color=red", "color=maroon")
     html = html.replace('<a name="table" />', '')
