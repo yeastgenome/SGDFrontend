@@ -155,7 +155,7 @@ const RestrictionMapper = React.createClass({
 			<p></p>
 			<div className="row">
 			     <div className="large-12 columns">
-			     	  <form onSubmit={this.onSubmit} target="infowin">
+			     	  <form onSubmit={this.onSubmit} target="restmap_infowin">
 				        <DataTable data={searchSection} />
 			          </form>
 			     </div>

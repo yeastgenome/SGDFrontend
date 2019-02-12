@@ -525,7 +525,7 @@ BLAST Help at NCBI</a>.</p><hr>';
 
 		if (newDatabase) {
 		    database = newDatabase;
-		    window.localStorage.clear();
+		    // window.localStorage.clear();
 		    window.localStorage.setItem("seq", seq);
 		    window.localStorage.setItem("program", program);
 		    window.localStorage.setItem("database", database);
