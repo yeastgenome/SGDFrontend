@@ -336,7 +336,7 @@ def read_gpad_file(filename, nex_session, uniprot_to_date_assigned, uniprot_to_s
             continue
 
         field = line.strip().split('\t')
-        if field[9] != 'SGD' and not field[11].startswith('go_evidence=IEA'):
+        if field[9] != 'SGD' and field[9] != 'GO_Central' and not field[11].startswith('go_evidence=IEA'):
             continue
 
         ## get rid of duplicate lines...                                                                    
@@ -344,17 +344,8 @@ def read_gpad_file(filename, nex_session, uniprot_to_date_assigned, uniprot_to_s
             continue
         read_line[line] = 1
 
-        # if get_extension == 1 and field[10] == '':
-        #    continue
-        # if get_support == 1 and field[6] == '':
-        #    continue
-
         ## uniprot ID & SGDIDs                                                                              
         uniprotID = field[1]
-        # sgdid_list = uniprot_to_sgdid_list.get(uniprotID)
-        # if sgdid_list is None:
-        #    print "The UniProt ID = ", uniprotID, " is not mapped to any SGDID."
-        #    continue
 
         ## go_qualifier                                                                                     
         go_qualifier = field[2]
@@ -385,10 +376,12 @@ def read_gpad_file(filename, nex_session, uniprot_to_date_assigned, uniprot_to_s
         source = field[9]
 
         ## created_by                                                                                       
-        if source != 'SGD' and go_evidence == 'IEA':
+        if (source != 'SGD' and go_evidence == 'IEA') or source == 'GO_Central':
             created_by = computational_created_by
         else:
-            created_by = curator_id.get(annot_prop_dict.get('curator_name'))
+            curator_name = annot_prop_dict.get('curator_name')
+            curator_name = curator_name.replace(" [Expired account]", "") 
+            created_by = curator_id.get(curator_name)
 
         ## dbentity_id list
         dbentity_ids = []
@@ -435,14 +428,17 @@ def read_gpad_file(filename, nex_session, uniprot_to_date_assigned, uniprot_to_s
             continue
 
         # assigned_group = field[9]           
-        # eg, SGD for manual cuartion;
+        # eg, SGD for manual cuartion + HTP;
         # Interpro, UniPathway, UniProtKB, GOC, RefGenome for computational annotation
         # taxon_id = field[7]                  
         
         date_created = str(field[8][0:4]) + '-' + str(field[8][4:6]) + '-' + str(field[8][6:])
         if source == 'SGD':
             date_assigned = uniprot_to_date_assigned.get(uniprotID)
-            annotation_type = 'manually curated'
+            if go_evidence.startswith('H'):
+                annotation_type = 'high-throughput'
+            else:
+                annotation_type = 'manually curated'
         else:
             date_assigned = date_created
             annotation_type = 'computational'
@@ -544,11 +540,11 @@ def get_go_extension_link(dbxref_id):
         id = dbxref_id.replace('InterPro:', '')
         return "http://www.ebi.ac.uk/interpro/entry/" + id
     if dbxref_id.startswith('EC:'):
-        EC = dbxref_id.replace('EC:', ' ')
+        EC = dbxref_id.replace('EC:', '')
         return "http://enzyme.expasy.org/EC/" + EC
-    if dbxref_id.startswith('UniPathway:'):
-        id = dbxref_id.replace('UniPathway:', '')
-        return "http://www.grenoble.prabi.fr/obiwarehouse/unipathway/upa?upid=" + id
+    # if dbxref_id.startswith('UniPathway:'):
+    #    id = dbxref_id.replace('UniPathway:', '')
+    #    return "http://www.grenoble.prabi.fr/obiwarehouse/unipathway/upa?upid=" + id
     if dbxref_id.startswith('HAMAP:'):
         id = dbxref_id.replace('HAMAP:', '')
         return "http://hamap.expasy.org/unirule/" + id
@@ -559,14 +555,47 @@ def get_go_extension_link(dbxref_id):
         id = dbxref_id.replace('EMBL:', '')
         return "http://www.ebi.ac.uk/Tools/dbfetch/emblfetch?style=html&id=" + id
     if dbxref_id.startswith('MGI:'):
-        id = dbxref_id.replace('MGI:', '')
-        return "http://uswest.ensembl.org/Drosophila_melanogaster/Gene/Summary?g=" + id
+        id = dbxref_id.replace('MGI:MGI:', 'MGI:')
+        return "http://www.informatics.jax.org/marker/" + id
     if dbxref_id.startswith('PANTHER:'):
         id = dbxref_id.replace('PANTHER:', '')
         return "http://pantree.org/node/annotationNode.jsp?id=" + id
     if dbxref_id.startswith('araport11:'):
         id = dbxref_id.replace('araport11:', '')
         return "https://www.araport.org/search/thalemine/" + id
+    if dbxref_id.startswith('ComplexPortal:'):
+        id = dbxref_id.replace('ComplexPortal:', '')
+        return "https://www.ebi.ac.uk/complexportal/complex/" + id
+    if dbxref_id.startswith('TAIR:'):
+        id = dbxref_id.replace('TAIR:', '')
+        return "https://www.arabidopsis.org/servlets/TairObject?accession=" + id
+    if dbxref_id.startswith('PomBase:'):
+        id = dbxref_id.replace('PomBase:', '')
+        return "https://www.pombase.org/gene/" + id
+    if dbxref_id.startswith('RGD:'):
+        id = dbxref_id.replace('RGD:', '')
+        return "https://rgd.mcw.edu/rgdweb/report/gene/main.html?id=" + id
+    if dbxref_id.startswith('CGD:'):
+        id = dbxref_id.replace('CGD:', '')
+        return "http://www.candidagenome.org/cgi-bin/GO/goAnnotation.pl?dbid=" + id
+    if dbxref_id.startswith('dictyBase:'):
+        id = dbxref_id.replace('dictyBase:', '')
+        return "http://dictybase.org/gene/" + id
+    if dbxref_id.startswith('ZFIN:'):
+        id = dbxref_id.replace('ZFIN:', '')
+        return "https://zfin.org/" + id
+    if dbxref_id.startswith('FB:'):
+        id = dbxref_id.replace('FB:', '')
+        return "http://flybase.org/reports/" + id
+    if dbxref_id.startswith('WB:'):
+        id = dbxref_id.replace('WB:', '')
+        return "https://wormbase.org/species/c_elegans/gene/" + id
+    if dbxref_id.startswith('UniRule:'):
+        id = dbxref_id.replace('UniRule:', '')
+        return "https://www.uniprot.org/unirule/" + id
+    if dbxref_id.startswith('Rfam:'):
+        id = dbxref_id.replace('Rfam:', '')
+        return "http://rfam.xfam.org/family/" + id
     return "Unknown"
 
 def children_from_obo(filename, ancestor):

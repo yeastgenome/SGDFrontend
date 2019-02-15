@@ -72,8 +72,11 @@ go_ref_mapping = {
     'GO_REF:0000039' : 'S000148671',
     'GO_REF:0000040' : 'S000148672',
     'GO_REF:0000041' : 'S000150560',
+    'GO_REF:0000104' : 'S000181514',
     'GO_REF:0000107' : 'S000204514',
-    'GO_REF:0000108' : 'S000204515'
+    'GO_REF:0000108' : 'S000204515',
+    'GO_REF:0000111' : 'S000246004',
+    'GO_REF:0000115' : 'S000246005'
 }
 
 current_go_qualifier = ['NOT', 'colocalizes_with', 'contributes_to']

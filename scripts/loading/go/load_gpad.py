@@ -145,8 +145,13 @@ def load_new_data(data, source_to_id, annotation_type, key_to_annotation, annota
                        'supportevidence_deleted']:
         annotation_update_log[('manually curated', count_name)] = 0
         annotation_update_log[('computational', count_name)] = 0
-                        
+        annotation_update_log[('high-throughput', count_name)] = 0
+
     hasGoodAnnot = {}
+
+    allowed_types = [annotation_type]
+    if annotation_type == 'manually curated':
+        allowed_types.append('high-throughput')
 
     nex_session = get_session()
 
@@ -157,10 +162,10 @@ def load_new_data(data, source_to_id, annotation_type, key_to_annotation, annota
     annotation_id_to_extension = {}
     annotation_id_to_support = {}
     for x in data:
-        if x['annotation_type'] != annotation_type:
+        if x['annotation_type'] not in allowed_types:
             continue
         source_id = source_to_id.get(x['source'])
-        if x['source'] == 'EnsemblPlants':
+        if x['source'] == 'EnsemblPlants' or x['source'] == 'AgBase':
             continue
         if source_id is None:
             print "The source: ", x['source'], " is not in the SOURCE table."
@@ -329,7 +334,10 @@ def update_goextension(nex_session, annotation_id, goextension, annotation_id_to
             if ro_id is None:
                 print role, " is not in RO table."
                 continue
+            
             dbxref_id = pieces[1][:-1]
+            if dbxref_id.startswith('EcoGene:') or dbxref_id.startswith('UniPathway:'):
+                continue
             link = get_go_extension_link(dbxref_id)
             if link.startswith('Unknown'):
                 if dbxref_id.startswith('IntAct:'):
@@ -340,10 +348,12 @@ def update_goextension(nex_session, annotation_id, goextension, annotation_id_to
 
             key = (group_id, ro_id, dbxref_id)
             if key in key_to_extension:
-                
                 # print "GO extension ", key, " is in the database."
-
-                key_to_extension.pop(key)
+                x = key_to_extension.pop(key)
+                if x.obj_url != link:
+                    x.obj_url = link
+                    nex_session.add(x)
+                    nex_session.flush()
             else:
 
                 # print "NEW GO extension ", key
@@ -393,6 +403,8 @@ def update_gosupportevidence(nex_session, annotation_id, gosupport, annotation_i
             if dbxref_id in seen_this_id:
                 continue
             seen_this_id[dbxref_id] = 1
+            if dbxref_id.startswith('EcoGene:') or dbxref_id.startswith('UniPathway:'):
+                continue
             link = get_go_extension_link(dbxref_id)
             if link.startswith('Unknown'):
                 print "Unknown ID: ", dbxref_id
@@ -404,14 +416,14 @@ def update_gosupportevidence(nex_session, annotation_id, gosupport, annotation_i
             key = (group_id, evidence_type, dbxref_id)
     
             if key in key_to_support:
-                
                 # print "GO supporting evidence ", key, " is in the database"
-
-                key_to_support.pop(key)
+                x = key_to_support.pop(key)
+                if x.obj_url != link:
+                    x.obj_url = link
+                    nex_session.add(x)
+                    nex_session.flush()
             else:
-
                 # print "NEW GO supporting evidence ", key
-
                 thisSupport = Gosupportingevidence(annotation_id = annotation_id,
                                                    group_id = group_id,
                                                    dbxref_id = dbxref_id,
@@ -471,7 +483,7 @@ def all_go_annotations(nex_session, annotation_type):
         
     key_to_annotation = {}
     for x in nex_session.query(Goannotation).all():
-        if (x.source.display_name == 'SGD' and x.annotation_type == 'manually curated' and annotation_type == 'manually curated') or (annotation_type == 'computational' and x.annotation_type=='computational'):
+        if (x.source.display_name == 'SGD' and x.annotation_type in ['manually curated', 'high-throughput'] and annotation_type == 'manually curated') or (annotation_type == 'computational' and x.annotation_type=='computational'):
             key = (x.dbentity_id, x.go_id, x.eco_id, x.reference_id, x.annotation_type, x.source.display_name, x.go_qualifier, x.taxonomy_id)
             key_to_annotation[key] = x
 
@@ -491,7 +503,6 @@ def delete_obsolete_annotations(key_to_annotation, hasGoodAnnot, go_id_to_aspect
     try:
 
         ## add check to see if there are any valid htp annotations..                                         
-
         for x in nex_session.query(Goannotation).filter_by(source_id=src_id).filter_by(annotation_type='high-throughput').all():
             hasGoodAnnot[(x.dbentity_id, go_id_to_aspect[x.go_id])] = 1
 
@@ -504,9 +515,9 @@ def delete_obsolete_annotations(key_to_annotation, hasGoodAnnot, go_id_to_aspect
             if dbentity_id_with_new_pmid.get(x.dbentity_id) is not None:
                 continue
 
-            ## don't delete PAINT annotations (they are not in GPAD files yet)                              
-            if x.source_id == source_to_id['GO_Central']:
-                continue
+            ## ## don't delete PAINT annotations (they are not in GPAD files yet)                              
+            ## if x.source_id == source_to_id['GO_Central']:
+            ##    continue
 
             aspect = go_id_to_aspect[x.go_id]
             if x.eco_id == evidence_to_eco_id['ND'] and hasGoodAnnot.get((x.dbentity_id, aspect)) is None:
@@ -514,6 +525,7 @@ def delete_obsolete_annotations(key_to_annotation, hasGoodAnnot, go_id_to_aspect
                 continue
             elif dbentity_id_with_uniprot.get(x.dbentity_id):
                 ## don't want to delete the annotations that are not in GPAD file yet
+                ## do we still have any annotations that are not in GPAD? but just in case
                 delete_extensions_evidences(nex_session, x.annotation_id)
                 nex_session.delete(x)
                 nex_session.commit()
