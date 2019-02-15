@@ -113,17 +113,15 @@ def load_new_data(nex_session, data, source_to_id, goid_to_go, ro_id, roid_to_ro
                 nex_session.add(y)
                 nex_session.flush()
                 update_log['updated'] = update_log['updated'] + 1
-                fw.write("The is_obsolete for " + x['id'] + " has been updated from " + y.is_obsolete + " to " + 'False' + "\n")
+                fw.write("The is_obsolete for " + str(x['id']) + " has been updated from " + y.is_obsolete + " to " + 'False' + "\n")
             if x['term'] != y.display_name.strip():
-                ## update term
-                fw.write("The display_name for " + x['id'] + " has been updated from " + y.display_name + " to " + x['term'] + "\n")
+                fw.write("The display_name for " + str(x['id']) + " has been updated from " + y.display_name + " to " + x['term'] + "\n")
                 y.display_name = x['term']
-                # nex_session.add(y)
-                # nex_session.flush()
                 update_log['updated'] = update_log['updated'] + 1
-                # print "UPDATED: ", y.goid, ":"+y.display_name+ ":" + ":"+x['term']+":"
-            # else:
-            #    print "SAME: ", y.goid, y.display_name, x['definition'], x['aliases'], x['parents'], x['other_parents']
+            if x['definition'] != y.description:
+                fw.write("The description for " + str(x['id']) + " has been updated from " + str(y.description) + " to " + str(x['definition']) + "\n")
+                y.description = x['definition']
+                update_log['updated'] = update_log['updated'] + 1
             active_goid.append(x['id'])
         else:
             fw.write("NEW entry = " + x['id'] + " " + x['term'] + "\n")

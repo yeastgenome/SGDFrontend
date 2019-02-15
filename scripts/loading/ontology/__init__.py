@@ -22,7 +22,7 @@ def read_obo(filename):
                               'id': id,
                               'aliases': aliases,
                               'parents': parents,
-                              'definition': definition})
+                              'definition': definition });
             term = None
             id = None
             aliases = []
@@ -53,6 +53,7 @@ def read_obo(filename):
                 quotation_split = defline.split('" [')
                 definition = quotation_split[0][1:]
                 definition = definition.replace("\\", "")
+                definition = definition.replace("&apos;", "'").replace("&lt;", "<").replace("&gt;", ">").replace("&amp;", "&").replace("&quot;", "'")
             elif pieces[0] == 'is_a':
                 parent = pieces[1].split(' ! ')[0]
                 parents.append(parent)
@@ -247,6 +248,8 @@ def read_owl(filename, ontology, is_sgd_term=None):
             for term_stop_tag in term_stop_tags:
                 if term_stop_tag in line:
                     if is_obsolete_id == 0 and id is not None and term is not None:
+                        if definition is not None:
+                            definition = definition.replace("&apos;", "'").replace("&lt;", "<").replace("&gt;", ">").replace("&amp;", "&").replace("&quot;", "'")
                         data.append({ "term": term.replace("&apos;", "'").replace("&lt;", "<").replace("&gt;", ">"),
                                       "id": id,
                                       "namespace": namespace,
@@ -357,7 +360,7 @@ def read_owl(filename, ontology, is_sgd_term=None):
         # <oboInOwl:hasDefinition>The design of an experiment involving non-human animals.</oboInOwl:hasDefinition>               
         if '<obo:IAO_0000115' in line or '<oboInOwl:hasDefinition' in line:
             definition = line.split('>')[1].split('<')[0]
-
+            definition = definition.replace("&apos;", "'").replace("&lt;", "<").replace("&gt;", ">")
 
         # <owl:deprecated rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</owl:deprecated>                  
         # <owl:deprecated>true</owl:deprecated>
