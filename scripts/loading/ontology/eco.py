@@ -1,23 +1,27 @@
+import urllib
+import logging
+import os
 from datetime import datetime
 import sys
-reload(sys)  # Reload does the trick!
+reload(sys)  # Reload does the trick!      
 sys.setdefaultencoding('utf-8')
-sys.path.insert(0, '../../../src/')
-from models import Source, Eco, EcoUrl, EcoAlias, EcoRelation, Ro
-sys.path.insert(0, '../')
-from config import CREATED_BY
-from database_session import get_nex_session as get_session
-from ontology import read_owl  
+
+from src.models import Source, Eco, EcoUrl, EcoAlias, EcoRelation, Ro
+from scripts.loading.database_session import get_session
+from scripts.loading.ontology import read_owl
+
                  
 __author__ = 'sweng66'
 
 ## Created on May 2017
 ## This script is used to update ECO ontology in NEX2.
 
-ontology_file = 'data/eco.owl'
-log_file = 'logs/eco.log'
+ontology_file = 'scripts/loading/ontology/data/eco.owl'
+log_file = 'scripts/loading/ontology/logs/eco.log'
 ontology = 'ECO'
 src = 'ECO'
+
+CREATED_BY = os.environ['DEFAULT_USER']
 
 def load_ontology():
 
