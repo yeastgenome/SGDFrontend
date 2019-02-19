@@ -6514,7 +6514,7 @@ class Goannotation(Base):
 
         experiment_url = None
         for url in alias_url:
-            if url.display_name == "OntoBee":
+            if url.display_name not in ['BioPortal', 'OLS', 'Ontobee']:
                 experiment_url = url.obj_url
                 break
         if experiment_url == None and len(alias_url) > 1:
