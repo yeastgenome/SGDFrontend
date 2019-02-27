@@ -213,6 +213,23 @@ function create_go_table(data) {
 
         options["oLanguage"] = {"sEmptyTable": "No gene ontology data for " + reference['display_name']};
         options["aaData"] = datatable;
+        options["aoColumns"] = [
+            //Use of mData
+            {"bSearchable":false, "bVisible":false,"aTargets":[0],"mData":0}, //evidence_id
+            {"bSearchable":false, "bVisible":false,"aTargets":[1],"mData":1}, //analyze_id
+            {"aTargets":[2],"mData":2}, //gene
+            {"bSearchable":false, "bVisible":false,"aTargets":[3],"mData":3}, //gene systematic name
+            {"aTargets":[4],"mData":6}, //gene ontology term  -----> qualifier
+            {"bSearchable":false, "bVisible":false,"aTargets":[5],"mData":5}, //gene ontology term id
+            {"aTargets":[6],"mData":4}, //qualifier   -----> gene ontology term
+            {"bSearchable":false, "bVisible":false,"aTargets":[7],"mData":7}, //aspect
+            {"aTargets":[8],"mData":12}, //evidence   -----> annotation_extension
+            {"aTargets":[9],"mData":8}, //method -----> evidence
+            {"bSearchable":false,"bVisible":false,"aTargets":[10],"mData":9}, //source -----> method
+            {"aTargets":[11],"mData":10}, //assigned on -----> source
+            {"aTargets":[12],"mData":11}, //annotation_extension -----> assigned on
+            {"aTargets":[13],"mData":13} // reference        
+        ];
     }
 
     return create_table("go_table", options);

@@ -29,20 +29,21 @@ function create_go_table(data) {
 	options["bDestroy"] = true;
 	options["oLanguage"] = {"sEmptyTable": "No genes annotated directly to " + ontology['display_name']};
     options["aoColumns"] = [
-            {"bSearchable":false, "bVisible":false}, //evidence_id
-            {"bSearchable":false, "bVisible":false}, //analyze_id
-            null, //gene
-            {"bSearchable":false, "bVisible":false}, //gene systematic name
-            {"bSearchable":false, "bVisible":false}, //gene ontology term
-            {"bSearchable":false, "bVisible":false}, //gene ontology term id
-            null, //qualifier
-            {"bSearchable":false, "bVisible":false}, //aspect
-            {"bSearchable":false, "bVisible":false}, //method
-            null, //evidence
-            null, //source
-            null, //assigned on
-            null, //annotation_extension
-            null // reference
+			//Use of mData
+            {"bSearchable":false, "bVisible":false,"aTargets":[0],"mData":0}, //evidence_id
+            {"bSearchable":false, "bVisible":false,"aTargets":[1],"mData":1}, //analyze_id
+            {"aTargets":[2],"mData":2}, //gene
+            {"bSearchable":false, "bVisible":false,"aTargets":[3],"mData":3}, //gene systematic name
+            {"aTargets":[4],"mData":6}, //gene ontology term  -----> qualifier
+            {"bSearchable":false, "bVisible":false,"aTargets":[5],"mData":5}, //gene ontology term id
+            {"aTargets":[6],"mData":4, "bVisible":false}, //qualifier   -----> gene ontology term
+            {"bSearchable":false, "bVisible":false,"aTargets":[7],"mData":7}, //aspect
+            {"aTargets":[8],"mData":12}, //evidence   -----> annotation_extension
+            {"aTargets":[9],"mData":8}, //method -----> evidence
+            {"bSearchable":false,"bVisible":false,"aTargets":[10],"mData":9}, //source -----> method
+            {"aTargets":[11],"mData":10}, //assigned on -----> source
+            {"aTargets":[12],"mData":11}, //annotation_extension -----> assigned on
+            {"aTargets":[13],"mData":13} // reference  
             ];
     options["aaData"] = datatable;
 

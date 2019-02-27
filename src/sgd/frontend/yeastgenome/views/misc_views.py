@@ -99,6 +99,10 @@ def seq_tools(request):
 def gotermfinder(request):
     return render_to_response(TEMPLATE_ROOT + 'goTermFinder.jinja2', {}, request=request)
 
+@view_config(route_name='goslimmapper')
+def goslimmapper(request):
+    return render_to_response(TEMPLATE_ROOT + 'goSlimMapper.jinja2', {}, request=request)
+
 @view_config(route_name='strain_alignment')
 def strain_alignment(request):
     return render_to_response(TEMPLATE_ROOT + 'strainAlignment.jinja2', {}, request=request)
