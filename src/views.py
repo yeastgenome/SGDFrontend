@@ -1252,6 +1252,26 @@ def ecnumber_locus_details(request):
     else:
         return HTTPNotFound()
 
+@view_config(route_name='goslim', renderer='json', request_method='GET')
+def goslim(request):
+
+    slim_data = DBSession.query(Goslim).all()
+    data = {}
+    for x in slim_data:
+        slim_type = x.slim_name + ": " + x.go.go_namespace.split(' ')[1]
+        slim_terms = []
+        if slim_type in data:
+            slim_terms = data[slim_type]
+        slim_terms.append(x.go.display_name + " ; " + x.go.goid)
+        data[slim_type] = slim_terms
+
+    orderedData = []
+    for slim_type in sorted(data.iterkeys()):
+        orderedData.append({"slim_type": slim_type,
+                            "terms": sorted(data[slim_type])})
+
+    return orderedData
+
 @view_config(route_name='complex', renderer='json', request_method='GET')
 def complex(request):
     

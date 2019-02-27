@@ -6484,7 +6484,7 @@ class Goannotation(Base):
 
         experiment_url = None
         for url in alias_url:
-            if url.display_name == "OntoBee":
+            if url.display_name not in ['BioPortal', 'OLS', 'Ontobee']:
                 experiment_url = url.obj_url
                 break
         if experiment_url == None and len(alias_url) > 1:
@@ -6514,16 +6514,19 @@ class Goannotation(Base):
 
         experiment_url = None
         for url in alias_url:
-            if url.display_name == "OntoBee":
+            if url.display_name not in ['BioPortal', 'OLS', 'Ontobee']:
                 experiment_url = url.obj_url
                 break
         if experiment_url == None and len(alias_url) > 1:
             experiment_url = alias_url[1].obj_url
 
+        date_created = self.date_created
+        if self.annotation_type == 'computational':
+            date_created = self.date_assigned
         go_obj = {
             "id": self.annotation_id,
             "annotation_type": self.annotation_type,
-            "date_created": self.date_created.strftime("%Y-%m-%d"),
+            "date_created": date_created.strftime("%Y-%m-%d"),
             "qualifier": self.go_qualifier.replace("_", " "),
             "locus": {
                 "display_name": self.dbentity.display_name,
@@ -6654,9 +6657,14 @@ class Goextension(Base):
                     "role": self.ro.display_name
                 }
         else:
+
+            dbxref_id = source_id[1]
+            if dbxref_id in ['MGI', 'locus']:
+                dbxref_id = dbxref_id + ":" + source_id[2]
+                
             return {
                 "bioentity": {
-                    "display_name": source_id[1],
+                    "display_name": dbxref_id,
                     "link": self.obj_url
                 },
                 "role": self.ro.display_name
@@ -6787,9 +6795,14 @@ class Gosupportingevidence(Base):
                     "role": self.evidence_type.capitalize()
                 }
         else:
+
+            dbxref_id = source_id[1]
+            if dbxref_id in ['MGI', 'locus']:
+                dbxref_id = dbxref_id + ":" + source_id[2]
+
             return {
                 "bioentity": {
-                    "display_name": source_id[1],
+                    "display_name": dbxref_id,
                     "link": self.obj_url
                 },
                 "role": self.evidence_type.capitalize()
