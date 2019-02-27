@@ -1,23 +1,27 @@
+import urllib
+import logging
+import os
 from datetime import datetime
 import sys
-reload(sys)  # Reload does the trick!
+reload(sys)  # Reload does the trick!                                                             \
+
 sys.setdefaultencoding('utf-8')
-sys.path.insert(0, '../../../src/')
-from models import Source, Obi, ObiUrl, ObiRelation, Ro
-sys.path.insert(0, '../')
-from config import CREATED_BY
-from database_session import get_nex_session as get_session
-from ontology import read_owl  
+from src.models import Source, Obi, ObiUrl, ObiRelation, Ro
+# from src.helpers import upload_file
+from scripts.loading.database_session import get_session
+from scripts.loading.ontology import read_owl
                  
 __author__ = 'sweng66'
 
 ## Created on May 2017
 ## This script is used to update OBI ontology in NEX2.
 
-ontology_file = 'data/obi.owl'
-log_file = 'logs/obi.log'
+ontology_file = 'scripts/loading/ontology/data/obi.owl'
+log_file = 'scripts/loading/ontology/logs/obi.log'
 ontology = 'OBI'
 src = 'OBI Consortium'
+
+CREATED_BY = os.environ['DEFAULT_USER']
 
 def load_ontology():
 
