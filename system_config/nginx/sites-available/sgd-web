@@ -6,7 +6,7 @@ upstream backend {
 	server 127.0.0.1:6543;
 }
 
-log_format client_ip '$http_x_forwarded_for - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"';
+log_format client_ip '$http_x_forwarded_for - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" "request-time=$request_time" "upstream_response_time=$upstream_response_time" $pipe';
 
 server {
     listen 8080;
