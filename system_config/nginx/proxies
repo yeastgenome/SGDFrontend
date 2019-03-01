@@ -1,5 +1,5 @@
 location /1011-yeast-genomes {
-    return 302 $scheme://www.yeastgenome.org/search?q=PMID%3A29643504&category=download&status=Active;
+    return 301 $scheme://www.yeastgenome.org/search?q=PMID%3A29643504&category=download&status=Active;
 }
 
 location /cache/chromosomes.shtml {
@@ -69,7 +69,7 @@ location /cgi-bin/GO/goTermFinder.pl {
 }
 
 location /cgi-bin/locus.fpl {
-    rewrite ^ $scheme://$host/locus/${arg_dbid}? redirect;
+    rewrite ^ $scheme://$host/locus/${arg_dbid}? permanent;
 }
 
 location /cgi-bin/PATMATCH/getSequence {
