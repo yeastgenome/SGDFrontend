@@ -1333,4 +1333,8 @@ def healthcheck(request):
             DBSession.rollback()
             DBSession.remove()
             attempts += 1
+        except Exception as e:
+            traceback.print_exc()
+            log.error(e, exc_info=1)
+            attempts += 1
     return ldict
