@@ -1311,6 +1311,12 @@ def alignment(request):
     else:
         return {}
 
+@view_config(route_name='colleague_with_subscription', renderer='json', request_method='GET')
+# @authenticate
+def colleague_with_subscription(request):
+    colleagues = models_helper.get_all_colleague_with_subscription()
+    return {'colleagues':[colleague.to_simple_dict() for colleague in colleagues]}
+
 # check for basic rad54 response
 @view_config(route_name='healthcheck', renderer='json', request_method='GET')
 def healthcheck(request):
