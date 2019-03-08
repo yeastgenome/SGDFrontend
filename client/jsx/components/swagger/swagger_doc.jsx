@@ -2,7 +2,7 @@ import React from 'react';
 import Radium from 'radium';
 import { connect } from 'react-redux';
 import SwaggerUi, {presets} from 'swagger-ui';
-import 'swagger-ui/dist/swagger-ui.css';
+
 
 const SwaggerDoc = React.createClass({
     componentDidMount() {
