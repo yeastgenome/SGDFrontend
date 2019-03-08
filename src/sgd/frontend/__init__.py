@@ -35,6 +35,8 @@ def prep_views(chosen_frontend, config):
     config.add_route('blog_tag', '/blog/tag/{tag}')
     config.add_route('colleague_show', '/colleague/{identifier}')
     config.add_route('downloads', '/downloads')
+
+    config.add_route('api_portal', '/api')
     
     config.add_route('interaction_search', '/interaction-search')
     config.add_route('download_list', '/download-list')

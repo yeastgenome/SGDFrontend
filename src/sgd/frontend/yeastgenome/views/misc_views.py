@@ -111,6 +111,7 @@ def strain_alignment(request):
 
 @view_config(route_name='colleague_show')
 def colleague_show(request):
+    #import pdb ; pdb.set_trace()
     return render_to_response(TEMPLATE_ROOT + 'misc.jinja2', {}, request=request)
 
 
