@@ -51,7 +51,7 @@
     "redux-thunk": "^1.0.0",
     "sgd_visualization": "^1.0.12",
     "string": "^3.3.3",
-    "swagger-ui-dist": "^3.21.0",
+    "swagger-ui": "^3.20.9",
     "tcomb-form": "^0.8.0",
     "tcomb-json-schema": "^0.2.3",
     "underscore": "~1.6.0"
