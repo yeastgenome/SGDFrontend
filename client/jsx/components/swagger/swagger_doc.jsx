@@ -3,7 +3,6 @@ import Radium from 'radium';
 import { connect } from 'react-redux';
 import SwaggerUi, {presets} from 'swagger-ui';
 
-
 const SwaggerDoc = React.createClass({
     componentDidMount() {
         SwaggerUi({
