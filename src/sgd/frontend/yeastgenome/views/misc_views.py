@@ -108,6 +108,11 @@ def goslimmapper(request):
 def strain_alignment(request):
     return render_to_response(TEMPLATE_ROOT + 'strainAlignment.jinja2', {}, request=request)
 
+@view_config(route_name='api_portal')
+def api_portal(request):
+    return render_to_response(
+        TEMPLATE_ROOT + 'swagger.jinja2', {}, request=request)
+
 
 @view_config(route_name='colleague_show')
 def colleague_show(request):
