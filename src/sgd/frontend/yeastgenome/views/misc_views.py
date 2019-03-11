@@ -279,3 +279,9 @@ def get_redirect_url_from_results(results):
 def get_https_url(url, request):
     host = request.host_url.replace('http', 'https').replace(':8080', '')
     return host + url
+
+
+@view_config(route_name='api_doc')
+def api_doc(request):
+    
+    return render_to_response(TEMPLATE_ROOT + 'sgd_redoc.jinja2', {}, request=request)
