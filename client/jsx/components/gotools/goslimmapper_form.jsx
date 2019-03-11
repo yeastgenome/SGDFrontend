@@ -15,6 +15,14 @@ const style = {
 const GOtoolsUrl = "/run_gotools";
 const GOslimUrl = "/backend/goslim";
 
+const goSet = [ "Yeast GO-Slim: process",
+      	        "Yeast GO-Slim: function",
+	        "Yeast GO-Slim: component",
+	        "Generic GO-Slim: process",
+	        "Generic GO-Slim: function",
+	        "Generic GO-Slim: component",
+	        "Macromolecular complex terms: component" ];
+
 const GoSlimMapper = React.createClass({
 
 	getInitialState() {
@@ -126,7 +134,7 @@ const GoSlimMapper = React.createClass({
 			<div dangerouslySetInnerHTML={{ __html: descText}} />
 			<div className="row">
 			     <div className="large-12 columns">
-			     	  <form onSubmit={this.onSubmit} target="infowin">
+			     	  <form onSubmit={this.onSubmit} onReset={this.onReset} target="infowin">
 				        <DataTable data={_geneSection} />
 					<DataTable data={_goSection} />
 					{ submitReset }
@@ -148,10 +156,10 @@ const GoSlimMapper = React.createClass({
 	getGeneBox() {
 
 		return (<div style={{ textAlign: "top" }}>
-                        <h3>Enter Gene/ORF names</h3> (separated by a return or a space):
+                        <h3>Enter Gene/ORF names (separated by a return or a space):</h3>
                         <textarea ref='genes' id='genes' onChange={this._onChange} name='genes' rows='3' cols='200'></textarea>
                         Note: If you have a big gene list (>100), save it as a file and upload it below.
-                        <h3><strong style={{ color: 'red'}}>OR</strong>Upload a file of Gene/ORF names (.txt or .tab format):
+                        <h3><strong style={{ color: 'red'}}>OR</strong> Upload a file of Gene/ORF names (.txt or .tab format):
                         <input className="btn btn-default btn-file" type="file" name='uploadFile' onChange={this.handleFile} accept="image/*;capture=camera"/></h3>
 		</div>);
 
@@ -183,19 +191,25 @@ const GoSlimMapper = React.createClass({
 
 	getGoSetNode() {
           
-		var slimData = this.state.goslimData;
+		// var slimData = this.state.goslimData;
 
-		var defaultSlimType = "";      
-		var i = 0;
-                var _elements = _.map(slimData, g => {
-		     if (i == 0) {
-		         defaultSlimType =  g.slim_type;
-		     }
-		     i = i + 1;
-                     return <option value={g.slim_type}>{g.slim_type}</option>;
-                });
+		// var defaultSlimType = "";      
+		// var i = 0;
+                // var _elements = _.map(slimData, g => {
+		//     if (i == 0) {
+		//         defaultSlimType =  g.slim_type;
+		//     }
+		//     i = i + 1;
+                //     return <option value={g.slim_type}>{g.slim_type}</option>;
+                // });
 		
-		window.localStorage.setItem("slimType", defaultSlimType);
+		// window.localStorage.setItem("slimType", defaultSlimType);
+
+		var _elements = _.map(goSet, g => {
+		      return <option value={g}>{g}</option>;
+		});
+
+		window.localStorage.setItem("slimType", goSet[0]);
 
                 return(<div>
                        <h3>Choose a GO Set:</h3>
@@ -243,7 +257,7 @@ const GoSlimMapper = React.createClass({
 	        if (genes == '') {
                      return '';
                 }
-                genes = genes.replace(/[^A-Za-z:\-0-9]/g, ' ');
+                genes = genes.replace(/[^A-Za-z:\-0-9\(\)\,\_]/g, ' ');
                 var re = /\+/g;
                 genes = genes.replace(re, " ");
                 var re = / +/g;
@@ -278,6 +292,8 @@ const GoSlimMapper = React.createClass({
 
 	onSubmit(e) {
 
+		// window.localStorage.clear();
+
 		var genes = this.refs.genes.value.trim();
 		if (genes == '') {
 		     genes = this.state.uploadedGenes;
@@ -287,11 +303,13 @@ const GoSlimMapper = React.createClass({
 		}
 		genes = this.processGeneList(genes);
                 if (genes == '') {
-                     alert("Please enter two or more gene names.");
+                     alert("Please enter one or more gene names.");
                      e.preventDefault();
                      return 1;
                 }
 		
+		window.localStorage.setItem("genes", genes);
+
 		var slimType = this.state.slimType;
                 if (slimType == '') {
                       slimType = window.localStorage.getItem("slimType");
@@ -303,7 +321,9 @@ const GoSlimMapper = React.createClass({
 		else if (slimType && slimType.includes(": function")) {
 		     aspect = "F";
                 }
-		
+
+		window.localStorage.setItem("aspect", aspect);
+				
                 var terms = this.processTermList();
 
 		if (terms == '') {
@@ -312,11 +332,14 @@ const GoSlimMapper = React.createClass({
                      return 1;
                 }                
 	
-		window.localStorage.clear();
-                window.localStorage.setItem("genes", genes);
 		window.localStorage.setItem("terms", terms);
-		window.localStorage.setItem("aspect", aspect);
-                
+
+	},
+
+	onReset(e) {
+		
+		// window.localStorage.setItem("slimType", goSet[0]);
+		this.setState({ slimType: goSet[0] } );
 	},
 
         onChange(e) {
@@ -379,7 +402,7 @@ const GoSlimMapper = React.createClass({
 
 	topDescription() {
 		
-		return "<p><h3>The GO Slim Mapper maps annotations of a group of genes to more general terms and/or bins them into broad categories, ie. <a href='https://sites.google.com/view/yeastgenome-help/analyze-help/go-slim-mapper?authuser=0' target='help_win'>GO Slim</a> terms.<p></p> Three GO Slim sets are available at SGD:<p></p><ul><li>Macromolecular complex terms: protein complex terms from the Cellular Component ontology</li><li>Yeast GO-Slim: GO terms that represent the major Biological Processes, Molecular Functions, and Cellular Components in S. cerevisiae</li><li>Generic GO-Slim: broad, high level GO terms from the Biological Process and Cellular Component ontologies selected and maintained by the Gene Ontology Consortium (GOC)</li><ul></h3></p>";
+		return "<p><h3>The GO Slim Mapper maps annotations of a group of genes to more general terms and/or bins them into broad categories, i.e. <a href='https://sites.google.com/view/yeastgenome-help/analyze-help/go-slim-mapper?authuser=0' target='help_win'>GO Slim</a> terms.<p></p> Three GO Slim sets are available at SGD:<p></p><ul><li>Yeast GO-Slim: GO terms that represent the major Biological Processes, Molecular Functions, and Cellular Components in <i>S. cerevisiae</i></li><li>Generic GO-Slim: broad, high level GO terms from the Biological Process and Cellular Component ontologies selected and maintained by the Gene Ontology Consortium (GOC)</li><li>Macromolecular complex terms: protein complex terms from the Cellular Component ontology</li><ul></h3></p>";
 	
 	},
 
