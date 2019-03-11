@@ -37,6 +37,7 @@ def prep_views(chosen_frontend, config):
     config.add_route('downloads', '/downloads')
 
     config.add_route('api_portal', '/api')
+    config.add_route('api_doc', '/api/doc')
     
     config.add_route('interaction_search', '/interaction-search')
     config.add_route('download_list', '/download-list')
