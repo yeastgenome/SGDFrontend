@@ -1318,28 +1318,36 @@ def colleague_with_subscription(request):
     colleagues = models_helper.get_all_colleague_with_subscription()
     return {'colleagues':[colleague.to_simple_dict() for colleague in colleagues]}
 
-@view_config(route_name='get_newsletter_sourcecode',renderer='json',request_method='GET')
+@view_config(route_name='get_newsletter_sourcecode',renderer='json',request_method='POST')
 def get_newsletter_sourcecode(request):
     from urllib2 import urlopen
-    url = str(request.matchdict['url'])
-
-    url = "https://wiki.yeastgenome.org/index.php/SGD_Newsletter,_Fall_2018"
+    url = request.POST['url']
     response = urlopen(url)
     html = response.read()
     soup = BeautifulSoup(html, 'html.parser')
-    soup.append("<link rel='stylesheet' href='https://wiki.yeastgenome.org/load.php?debug=false&lang=en&modules=mediawiki.legacy.commonPrint%2Cshared%7Cmediawiki.sectionAnchor%7Cmediawiki.skinning.interface%7Cskins.vector.styles&only=styles&skin=vector'/>")
     body = soup.find(id='content')
+    body['style']='margin-left:0'
     
     for link in body.find_all(href=re.compile("^#")):
         link['href'] ='https://wiki.yeastgenome.org/index.php/SGD_Newsletter,_Fall_2018' + link['href']
-        # link.decompose()
     for link in body.find_all(href=re.compile("^/")):
         link['href']="https://wiki.yeastgenome.org" + link['href']
     for img in body.find_all(src=re.compile("^/")):
+        if(len(img['srcset']) > 0):
+            del img['srcset']
+            # img['srcset'] = ','.join(map(lambda x: 'https://wiki.yeastgenome.org'+ x,img['srcset'].split(',')))
         img['src']="https://wiki.yeastgenome.org" + img['src']
     
-    body.append("<link rel='stylesheet' href='https://wiki.yeastgenome.org/load.php?debug=false&amp;lang=en&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cmediawiki.sectionAnchor%7Cmediawiki.skinning.interface%7Cskins.vector.styles&amp;only=styles&amp;skin=vector'/>")
+    stylesheet = BeautifulSoup("<link rel='stylesheet' href='https://wiki.yeastgenome.org/load.php?debug=false&lang=en&modules=mediawiki.legacy.commonPrint%2Cshared%7Cmediawiki.sectionAnchor%7Cmediawiki.skinning.interface%7Cskins.vector.styles&only=styles&skin=vector'/>")
+    # body.append(stylesheet)
+    stylesheet.insert(1,body)
+    body = stylesheet
     return {"code":body.prettify()}
+
+@view_config(route_name='send_newsletter',renderer='json',request_method='POST')
+def send_newsletter(request):
+    print(request.POST['html'])
+    return {"success":"Email sent"}
 
 # check for basic rad54 response
 @view_config(route_name='healthcheck', renderer='json', request_method='GET')
