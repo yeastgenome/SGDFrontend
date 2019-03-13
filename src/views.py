@@ -1320,29 +1320,35 @@ def colleague_with_subscription(request):
 
 @view_config(route_name='get_newsletter_sourcecode',renderer='json',request_method='POST')
 def get_newsletter_sourcecode(request):
-    from urllib2 import urlopen
-    url = request.POST['url']
-    response = urlopen(url)
-    html = response.read()
-    soup = BeautifulSoup(html, 'html.parser')
-    body = soup.find(id='content')
-    body['style']='margin-left:0'
-    
-    for link in body.find_all(href=re.compile("^#")):
-        link['href'] ='https://wiki.yeastgenome.org/index.php/SGD_Newsletter,_Fall_2018' + link['href']
-    for link in body.find_all(href=re.compile("^/")):
-        link['href']="https://wiki.yeastgenome.org" + link['href']
-    for img in body.find_all(src=re.compile("^/")):
-        if(len(img['srcset']) > 0):
-            del img['srcset']
-            # img['srcset'] = ','.join(map(lambda x: 'https://wiki.yeastgenome.org'+ x,img['srcset'].split(',')))
-        img['src']="https://wiki.yeastgenome.org" + img['src']
-    
-    stylesheet = BeautifulSoup("<link rel='stylesheet' href='https://wiki.yeastgenome.org/load.php?debug=false&lang=en&modules=mediawiki.legacy.commonPrint%2Cshared%7Cmediawiki.sectionAnchor%7Cmediawiki.skinning.interface%7Cskins.vector.styles&only=styles&skin=vector'/>")
-    # body.append(stylesheet)
-    stylesheet.insert(1,body)
-    body = stylesheet
-    return {"code":body.prettify()}
+    try:
+        from urllib2 import urlopen
+        url = str(request.POST['url'])
+
+        if(url.startswith('https://wiki.yeastgenome.org')):
+            response = urlopen(url)
+            html = response.read()
+            soup = BeautifulSoup(html, 'html.parser')
+            body = soup.find(id='content')
+            body['style']='margin-left:0'
+            
+            for link in body.find_all(href=re.compile("^#")):
+                link['href'] ='https://wiki.yeastgenome.org/index.php/SGD_Newsletter,_Fall_2018' + link['href']
+            for link in body.find_all(href=re.compile("^/")):
+                link['href']="https://wiki.yeastgenome.org" + link['href']
+            for img in body.find_all(src=re.compile("^/")):
+                if(img.has_attr('srcset')):
+                    del img['srcset']
+                    # img['srcset'] = ','.join(map(lambda x: 'https://wiki.yeastgenome.org'+ x,img['srcset'].split(',')))
+                img['src']="https://wiki.yeastgenome.org" + img['src']
+            
+            # stylesheet = BeautifulSoup("<link rel='stylesheet' href='https://wiki.yeastgenome.org/load.php?debug=false&lang=en&modules=mediawiki.legacy.commonPrint%2Cshared%7Cmediawiki.sectionAnchor%7Cmediawiki.skinning.interface%7Cskins.vector.styles&only=styles&skin=vector'/>","lxml")
+            # body.insert(1,stylesheet.link)
+            return {"code":body.prettify()}
+        else:
+            return HTTPBadRequest(body=json.dumps({'error': "URL must be from wiki.yeastgenome.org"}))
+    except:
+        return HTTPBadRequest(body=json.dumps({'error': "Unexpected error"}))
+
 
 @view_config(route_name='send_newsletter',renderer='json',request_method='POST')
 def send_newsletter(request):
