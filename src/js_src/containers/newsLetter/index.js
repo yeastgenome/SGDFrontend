@@ -39,7 +39,7 @@ class NewsLetter extends Component {
   }
 
   submitForm() {
-    this.setState({ isPending: true,code:'' });
+    this.setState({ isPending: true, code: '' });
     fetchData(SOURCE_URL, {
       type: 'POST',
       data: { url: this.state.url }
@@ -87,11 +87,14 @@ class NewsLetter extends Component {
           <div className="row">
             <div className="columns large-12">
               <h1>NewsLetter</h1>
+              
+              
 
               <div className="row">
-                <label className="columns medium-12 large-1">URL</label>
-                <input type="url" className="columns medium-12 large-8" placeholder="Enter URL for newsletter" value={this.state.url} onChange={this.urlChange} />
-                <button type="button large-1 columns" onClick={this.submitForm} className="button">Get source code</button>
+                <label className="columns medium-12 large-9">URL 
+                <input type="url"  placeholder="Enter URL for newsletter" value={this.state.url} onChange={this.urlChange} />
+                <button type="button" onClick={this.submitForm} className="button">Get source code</button>
+                </label>
               </div>
 
               <div className="row">
@@ -138,7 +141,7 @@ class NewsLetter extends Component {
   }
 }
 
-function mapStateToProps(state){
+function mapStateToProps(state) {
   return state;
 }
 

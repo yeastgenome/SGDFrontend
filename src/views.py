@@ -19,7 +19,7 @@ import logging
 import json
 
 from .models import DBSession, ESearch, Colleague, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, Dataset, DatasetKeyword, Contig, Proteindomain, Ec, Dnasequenceannotation, Straindbentity, Disease, Complexdbentity, Filedbentity, Goslim, So, ApoRelation, GoRelation
-from .helpers import extract_id_request, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id, get_disease_by_id, primer3_parser
+from .helpers import extract_id_request, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id, get_disease_by_id, primer3_parser,send_email
 from .search_helpers import build_autocomplete_search_body_request, format_autocomplete_results, build_search_query, build_es_search_body_request, build_es_aggregation_body_request, format_search_results, format_aggregation_results, build_sequence_objects_search_query
 from .models_helpers import ModelsHelper
 from .models import SGD_SOURCE_ID, TAXON_ID
@@ -1341,8 +1341,8 @@ def get_newsletter_sourcecode(request):
                     # img['srcset'] = ','.join(map(lambda x: 'https://wiki.yeastgenome.org'+ x,img['srcset'].split(',')))
                 img['src']="https://wiki.yeastgenome.org" + img['src']
             
-            # stylesheet = BeautifulSoup("<link rel='stylesheet' href='https://wiki.yeastgenome.org/load.php?debug=false&lang=en&modules=mediawiki.legacy.commonPrint%2Cshared%7Cmediawiki.sectionAnchor%7Cmediawiki.skinning.interface%7Cskins.vector.styles&only=styles&skin=vector'/>","lxml")
-            # body.insert(1,stylesheet.link)
+            stylesheet = BeautifulSoup("<link rel='stylesheet' href='https://wiki.yeastgenome.org/load.php?debug=false&lang=en&modules=mediawiki.legacy.commonPrint%2Cshared%7Cmediawiki.sectionAnchor%7Cmediawiki.skinning.interface%7Cskins.vector.styles&only=styles&skin=vector'/>","lxml")
+            body.insert(1,stylesheet.link)
             return {"code":body.prettify()}
         else:
             return HTTPBadRequest(body=json.dumps({'error': "URL must be from wiki.yeastgenome.org"}))
@@ -1352,8 +1352,8 @@ def get_newsletter_sourcecode(request):
 
 @view_config(route_name='send_newsletter',renderer='json',request_method='POST')
 def send_newsletter(request):
-    print(request.POST['html'])
-    return {"success":"Email sent"}
+    html = request.POST['html']
+    return send_email(html)
 
 # check for basic rad54 response
 @view_config(route_name='healthcheck', renderer='json', request_method='GET')
