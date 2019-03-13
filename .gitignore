@@ -35,3 +35,4 @@ asset_version.json
 docs/
 production_asset_url.json
 *.env
+*pytest*
