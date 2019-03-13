@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import CurateLayout from '../curateHome/layout';
-
+import Loader from '../../components/loader';
 import fetchData from '../../lib/fetchData';
+import { setError } from '../../actions/metaActions';
+import { connect } from 'react-redux';
 // const DATA_URL = '/colleagues_subscriptions';
 const SOURCE_URL = '/get_newsletter_sourcecode';
 const SEND_EMAIL = '/send_newsletter';
@@ -9,8 +11,7 @@ const SEND_EMAIL = '/send_newsletter';
 const previewBox = {
   height: '630px',
   overflow: 'scroll',
-  border: '1px solid rgba(0, 0, 0, 0.2)',
-  // boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'
+  border: '1px solid rgba(0, 0, 0, 0.2)'
 };
 
 class NewsLetter extends Component {
@@ -18,7 +19,8 @@ class NewsLetter extends Component {
     super(props);
     this.state = {
       url: 'https://wiki.yeastgenome.org/index.php/SGD_Newsletter,_Fall_2018',
-      code: ''
+      code: '',
+      isPending: false
     };
 
     this.handleCodeChange = this.handleCodeChange.bind(this);
@@ -32,34 +34,27 @@ class NewsLetter extends Component {
     // });
   }
 
-  sendEmail(){
-    fetchData(SEND_EMAIL,{
-      type:'POST',
-      data:{html:this.state.code}
-    }).then((data)=> {
-      console.log(data);
-    }).catch((data)=> {
-      console.log(data);
-    });
-    
-  }
-  submitForm() {
-    fetchData(SOURCE_URL, {
-      type: 'POST',
-      data: { url: this.state.url }
-    }).then((data) => {
-      this.setState({ code: data.code });
-    }).catch((data) => {
-      console.error(data);
-    });
-  }
-
   urlChange(event) {
     this.setState({ url: event.target.value });
   }
 
-  handleCodeChange(event) {
-    this.setState({ code: event.target.value });
+  submitForm() {
+    this.setState({ isPending: true,code:'' });
+    fetchData(SOURCE_URL, {
+      type: 'POST',
+      data: { url: this.state.url }
+    }).then((data) => {
+      this.setState({ isPending: false });
+      this.setState({ code: data.code });
+    }).catch((data) => {
+      this.setState({ isPending: false });
+      this.props.dispatch(setError(data.error));
+    });
+  }
+
+  renderCode() {
+    if (this.state.isPending) return <Loader />;
+    return (<textarea rows="26" cols="10" onChange={this.handleCodeChange} value={this.state.code}></textarea>);
   }
 
   preview() {
@@ -69,13 +64,30 @@ class NewsLetter extends Component {
     );
   }
 
+  handleCodeChange(event) {
+    this.setState({ code: event.target.value });
+  }
+
+  sendEmail() {
+    fetchData(SEND_EMAIL, {
+      type: 'POST',
+      data: { html: this.state.code }
+    }).then((data) => {
+      console.log(data);
+    }).catch((data) => {
+      console.log(data);
+    });
+
+  }
+
   render() {
     return (
       <CurateLayout>
         {
-          <div>
-            <h1>NewsLetter</h1>
-            <form>
+          <div className="row">
+            <div className="columns large-12">
+              <h1>NewsLetter</h1>
+
               <div className="row">
                 <label className="columns medium-12 large-1">URL</label>
                 <input type="url" className="columns medium-12 large-8" placeholder="Enter URL for newsletter" value={this.state.url} onChange={this.urlChange} />
@@ -91,7 +103,7 @@ class NewsLetter extends Component {
                   </div>
                   <div className="row">
                     <div className="column medium-12 large-12">
-                      <textarea rows="26" cols="10" onChange={this.handleCodeChange} value={this.state.code}></textarea>
+                      {this.renderCode()}
                     </div>
                   </div>
                 </div>
@@ -113,17 +125,22 @@ class NewsLetter extends Component {
 
               <div className="row">
               </div>
-            
+
               <div className="row">
                 <div className="columns large-12">
                   <button type="button" onClick={this.sendEmail} className="button">Send Email</button>
                 </div>
               </div>
-            </form>
+            </div>
           </div>
         }
       </CurateLayout>);
   }
 }
 
-export default NewsLetter;
+function mapStateToProps(state){
+  return state;
+}
+
+// export default NewsLetter;
+export default connect(mapStateToProps)(NewsLetter);
