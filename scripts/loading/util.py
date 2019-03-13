@@ -808,7 +808,10 @@ def get_dbentity_by_name(dbentity_name, to_ignore, nex_session):
     from src.models import Locusdbentity
     if dbentity_name not in to_ignore:
         try:
-            int(dbentity_name)
+            if len(dbentity_name) > 0  and dbentity_name.endswith('P'):
+                int(dbentity_name[:-1])
+            else:
+                int(dbentity_name)
         except ValueError:
             dbentity_id = get_word_to_dbentity_id(dbentity_name, nex_session)
             return None if dbentity_id is None else nex_session.query(Locusdbentity).filter_by(dbentity_id=dbentity_id).first()
