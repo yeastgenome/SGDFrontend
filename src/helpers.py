@@ -480,31 +480,20 @@ def send_email(msg):
         from email.mime.text import MIMEText
         from email.mime.multipart import MIMEMultipart
 
-        sender_email = ""
-        receiver_email = ""
+        sender_email = "Sagar"
+        receiver_email = "sagarjha@stanford.edu"
         password = ''
-
         message = MIMEMultipart("alternative")        
-        message["Subject"] = "multipart test"
+        message["Subject"] = "SGD - Newsletter"
         message["From"] = sender_email
         message["To"] = receiver_email
-
-        ## Create the plain-text and HTML version of your message
-        ## Turn these into plain/html MIMEText objects
-        # part1 = MIMEText(text, "plain")
-
-        part2 = MIMEText(msg.encode('utf8'), "html")
-        
-        ## Add HTML/plain-text parts to MIMEMultipart message
-        ## The email client will try to render the last part first
-        # message.attach(part1)
-        message.attach(part2)
-
+        html_message = MIMEText(msg.encode('utf8'), "html")
+        message.attach(html_message)
         # Create secure connection with server and send email
-        context = ssl.create_default_context()
-        server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
-        server.set_debuglevel(1)
-        server.login(sender_email, password)
+        # context = ssl.create_default_context()
+        server = smtplib.SMTP_SSL("localhost", 25)
+        # server.set_debuglevel(1)
+        # server.login(sender_email, password)
         server.sendmail(sender_email, receiver_email, message.as_string())
         server.quit()
         
