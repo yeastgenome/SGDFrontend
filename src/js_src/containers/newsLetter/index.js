@@ -87,9 +87,6 @@ class NewsLetter extends Component {
           <div className="row">
             <div className="columns large-12">
               <h1>NewsLetter</h1>
-              
-              
-
               <div className="row">
                 <label className="columns medium-12 large-9">URL 
                 <input type="url"  placeholder="Enter URL for newsletter" value={this.state.url} onChange={this.urlChange} />
