@@ -493,7 +493,7 @@ def send_email(msg):
         message.attach(html_message)
         # Create secure connection with server and send email
         # context = ssl.create_default_context()
-        server = smtplib.SMTP_SSL("localhost", 25)
+        server = smtplib.SMTP("localhost", 25)
         # server.set_debuglevel(1)
         # server.login(sender_email, password)
         server.sendmail(sender_email, receiver_email, message.as_string())
