@@ -480,13 +480,15 @@ def send_email(msg):
         from email.mime.text import MIMEText
         from email.mime.multipart import MIMEMultipart
 
-        sender_email = "Sagar"
-        receiver_email = "sagarjha@stanford.edu"
-        password = ''
+        sender_email = "Sagar <test@testtest.edu>"
+        receiver_email = ["sagarjha@stanford.edu","edith.wong@stanford.edu"]
+
         message = MIMEMultipart("alternative")        
         message["Subject"] = "SGD - Newsletter"
         message["From"] = sender_email
-        message["To"] = receiver_email
+        # message["To"] = receiver_email
+        message.add_header('reply-to',"edith.wong@stanford.edu")
+        
         html_message = MIMEText(msg.encode('utf8'), "html")
         message.attach(html_message)
         # Create secure connection with server and send email
