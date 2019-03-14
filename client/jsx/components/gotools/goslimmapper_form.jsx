@@ -402,7 +402,7 @@ const GoSlimMapper = React.createClass({
 
 	topDescription() {
 		
-		return "<p><h3>The GO Slim Mapper maps annotations of a group of genes to more general terms and/or bins them into broad categories, i.e. <a href='https://sites.google.com/view/yeastgenome-help/analyze-help/go-slim-mapper?authuser=0' target='help_win'>GO Slim</a> terms.<p></p> Three GO Slim sets are available at SGD:<p></p><ul><li>Yeast GO-Slim: GO terms that represent the major Biological Processes, Molecular Functions, and Cellular Components in <i>S. cerevisiae</i></li><li>Generic GO-Slim: broad, high level GO terms from the Biological Process and Cellular Component ontologies selected and maintained by the Gene Ontology Consortium (GOC)</li><li>Macromolecular complex terms: protein complex terms from the Cellular Component ontology</li><ul></h3></p>";
+		return "<p><h3>The GO Slim Mapper maps annotations of a group of genes to more general terms and/or bins them into broad categories, i.e. <a href='https://sites.google.com/view/yeastgenome-help/analyze-help/go-slim-mapper?authuser=0' target='help_win'>GO Slim</a> terms.<p></p> Three GO Slim sets are available at SGD:<p></p><ul><li>Yeast GO-Slim: broad, high level GO terms from the Biological Process, Molecular Function and Cellular Component ontologies selected and maintained by the Saccharomyces Genome Database (SGD)</li><li>Generic GO-Slim: broad, high level GO terms from the Biological Process, Molecular Function and Cellular Component ontologies selected and maintained by the Gene Ontology Consortium (GOC)</li><li>Macromolecular complex terms: protein complex terms from the Cellular Component ontology</li><ul></h3></p>";
 	
 	},
 
