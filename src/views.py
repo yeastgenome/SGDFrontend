@@ -1348,7 +1348,7 @@ def get_newsletter_sourcecode(request):
                 catlinks.decompose()
             
             for link in body.find_all(href=re.compile("^#")):
-                link['href'] ='https://wiki.yeastgenome.org/index.php/SGD_Newsletter,_Fall_2018' + link['href']
+                link['href'] = url + link['href']
             for link in body.find_all(href=re.compile("^/")):
                 link['href']="https://wiki.yeastgenome.org" + link['href']
             for img in body.find_all(src=re.compile("^/")):
