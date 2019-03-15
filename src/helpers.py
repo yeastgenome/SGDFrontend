@@ -474,20 +474,17 @@ def tsv_file_to_dict(tsv_file):
         return list_dictionary
 
 
-def send_email(msg):
+def send_newsletter_email(subject,recipients,msg):
     try:
-        import smtplib, ssl
+        import smtplib
         from email.mime.text import MIMEText
         from email.mime.multipart import MIMEMultipart
         
         SENDER_EMAIL = "Mike Cherry <cherry@stanford.edu>" 
-        SUBJECT = "SGD - Newsletter"
         REPLY_TO = "edith.wong@stanford.edu" #<sgd-helpdesk@lists.stanford.edu>
 
-        receiver_email = ["sagarjha@stanford.edu"]
-
         message = MIMEMultipart("alternative")        
-        message["Subject"] = SUBJECT
+        message["Subject"] = subject
         message["From"] = SENDER_EMAIL
         message.add_header('reply-to',REPLY_TO)
 
@@ -495,7 +492,7 @@ def send_email(msg):
         message.attach(html_message)
         
         server = smtplib.SMTP("localhost", 25)
-        server.sendmail(SENDER_EMAIL, receiver_email, message.as_string())
+        server.sendmail(SENDER_EMAIL, recipients, message.as_string())
         server.quit()
         
         return {"success":"Email was successfully sent."}

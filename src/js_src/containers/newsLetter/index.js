@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import CurateLayout from '../curateHome/layout';
 import Loader from '../../components/loader';
 import fetchData from '../../lib/fetchData';
-import { setError,setMessage } from '../../actions/metaActions';
+import { setError, setMessage } from '../../actions/metaActions';
 import { connect } from 'react-redux';
 // const DATA_URL = '/colleagues_subscriptions';
 const SOURCE_URL = '/get_newsletter_sourcecode';
 const SEND_EMAIL = '/send_newsletter';
 
 const previewBox = {
-  height: '630px',
+  height: '641px',
   overflow: 'scroll',
   border: '1px solid rgba(0, 0, 0, 0.2)'
 };
@@ -20,6 +20,8 @@ class NewsLetter extends Component {
     this.state = {
       url: 'https://wiki.yeastgenome.org/index.php/SGD_Newsletter,_Fall_2018',
       code: '',
+      subject: '',
+      recipients: '',
       isPending: false
     };
 
@@ -27,6 +29,8 @@ class NewsLetter extends Component {
     this.submitForm = this.submitForm.bind(this);
     this.urlChange = this.urlChange.bind(this);
     this.sendEmail = this.sendEmail.bind(this);
+    this.subjectChange = this.subjectChange.bind(this);
+    this.recipientsChange = this.recipientsChange.bind(this);
   }
   componentDidMount() {
     // fetchData(SOURCE_URL).then(_source => {
@@ -42,7 +46,9 @@ class NewsLetter extends Component {
     this.setState({ isPending: true, code: '' });
     fetchData(SOURCE_URL, {
       type: 'POST',
-      data: { url: this.state.url }
+      data: {
+        url: this.state.url
+      }
     }).then((data) => {
       this.setState({ isPending: false });
       this.setState({ code: data.code });
@@ -68,10 +74,20 @@ class NewsLetter extends Component {
     this.setState({ code: event.target.value });
   }
 
+  subjectChange(event) {
+    this.setState({ subject: event.target.value });
+  }
+
+  recipientsChange(event) {
+    this.setState({ recipients: event.target.value });
+  }
+
   sendEmail() {
     fetchData(SEND_EMAIL, {
       type: 'POST',
-      data: { html: this.state.code }
+      data: {
+        html: this.state.code, subject: this.state.subject,recipients: this.state.recipients
+      }
     }).then((data) => {
       this.props.dispatch(setMessage(data.success));
     }).catch((data) => {
@@ -88,9 +104,9 @@ class NewsLetter extends Component {
             <div className="columns large-12">
               <h1>NewsLetter</h1>
               <div className="row">
-                <label className="columns medium-12 large-9">URL 
-                <input type="url"  placeholder="Enter URL for newsletter" value={this.state.url} onChange={this.urlChange} />
-                <button type="button" onClick={this.submitForm} className="button">Get source code</button>
+                <label className="columns medium-12 large-9">URL
+                <input type="url" placeholder="Enter URL for newsletter" value={this.state.url} onChange={this.urlChange} />
+                  <button type="button" onClick={this.submitForm} className="button">Get source code</button>
                 </label>
               </div>
 
@@ -124,6 +140,18 @@ class NewsLetter extends Component {
               </div>
 
               <div className="row">
+              </div>
+
+              <div className="row">
+                <label className="columns medium-12 large-9">Subject Line
+                <input type="url" placeholder="Enter newsletter subject line" value={this.state.subject} onChange={this.subjectChange} />
+                </label>
+              </div>
+
+              <div className="row">
+                <label className="columns medium-12 large-9">Recipients (This is just for testing, will not be available in production)
+                <input type="url" placeholder="Enter emails with ; seperated" value={this.state.recipients} onChange={this.recipientsChange} />
+                </label>
               </div>
 
               <div className="row">
