@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import CurateLayout from '../curateHome/layout';
 import Loader from '../../components/loader';
 import fetchData from '../../lib/fetchData';
-import { setError } from '../../actions/metaActions';
+import { setError,setMessage } from '../../actions/metaActions';
 import { connect } from 'react-redux';
 // const DATA_URL = '/colleagues_subscriptions';
 const SOURCE_URL = '/get_newsletter_sourcecode';
@@ -73,9 +73,9 @@ class NewsLetter extends Component {
       type: 'POST',
       data: { html: this.state.code }
     }).then((data) => {
-      console.log(data);
+      this.props.dispatch(setMessage(data.success));
     }).catch((data) => {
-      console.log(data);
+      this.props.dispatch(setError(data.error));
     });
 
   }

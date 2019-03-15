@@ -479,27 +479,26 @@ def send_email(msg):
         import smtplib, ssl
         from email.mime.text import MIMEText
         from email.mime.multipart import MIMEMultipart
+        
+        SENDER_EMAIL = "Mike Cherry <cherry@stanford.edu>" 
+        SUBJECT = "SGD - Newsletter"
+        REPLY_TO = "edith.wong@stanford.edu" #<sgd-helpdesk@lists.stanford.edu>
 
-        sender_email = "Sagar <test@testtest.edu>"
-        receiver_email = ["sagarjha@stanford.edu","edith.wong@stanford.edu"]
+        receiver_email = ["sagarjha@stanford.edu"]
 
         message = MIMEMultipart("alternative")        
-        message["Subject"] = "SGD - Newsletter"
-        message["From"] = sender_email
-        # message["To"] = receiver_email
-        message.add_header('reply-to',"edith.wong@stanford.edu")
-        
+        message["Subject"] = SUBJECT
+        message["From"] = SENDER_EMAIL
+        message.add_header('reply-to',REPLY_TO)
+
         html_message = MIMEText(msg.encode('utf8'), "html")
         message.attach(html_message)
-        # Create secure connection with server and send email
-        # context = ssl.create_default_context()
+        
         server = smtplib.SMTP("localhost", 25)
-        # server.set_debuglevel(1)
-        # server.login(sender_email, password)
         server.sendmail(sender_email, receiver_email, message.as_string())
         server.quit()
         
-        return {"success":"Email sent"}
+        return {"success":"Email was successfully sent."}
 
     except Exception as e:
-        return {"error":"Major error"}
+        return {"error":"Error occured while sending email."}
