@@ -55,8 +55,13 @@ def run_goslimmapper(p):
     html = html.replace("color=red", "color=maroon")
     html = html.replace("<td colspan=5>", "<td colspan=5 bgcolor='#FFCC99'>")
     html = html.replace("<font color=#FFFFFF>", "").replace("</font>", "")
-    html = html.replace("<th align=center", "<th bgcolor='#CCCCFF' align=center")
+    html = html.replace("<th align=center nowrap>", "<th bgcolor='#CCCCFF' align=center nowrap>")
+    html = html.replace("<th align=center>", "<th bgcolor='#CCCCFF' align=center nowrap>")
     html = html.replace('<tr bgcolor="FFE4C4">', '')
+    html = html.replace(' nowrap=""', '')
+    html = html.replace('( ', '(')
+    html = html.replace(' )', ')')
+    
     # html = html.replace("http://amigo.geneontology.org/amigo/term/", "https://www.yeastgenome.org/go/")
     html = html.replace("infowin", "_extwin")
 
