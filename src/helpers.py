@@ -495,7 +495,7 @@ def send_email(msg):
         message.attach(html_message)
         
         server = smtplib.SMTP("localhost", 25)
-        server.sendmail(sender_email, receiver_email, message.as_string())
+        server.sendmail(SENDER_EMAIL, receiver_email, message.as_string())
         server.quit()
         
         return {"success":"Email was successfully sent."}
