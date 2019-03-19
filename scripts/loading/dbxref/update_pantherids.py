@@ -13,8 +13,16 @@ log = logging.getLogger()
 log.setLevel(logging.INFO)
 log_file = "scripts/loading/dbxref/logs/update_pantherids.log"
 # log_file = "logs/update_pantherids.log"
-
 alias_type_src_list = [("PANTHER ID", "PANTHER")]
+
+ALIAS_TYPE = 'PANTHER ID'
+OBJ_URL = 'http://www.pantherdb.org/panther/family.do?clsAccession='
+DISPLAY_NAME = 'PANTHER'
+# CREATED_BY = os.environ['DEFAULT_USER']
+
+ADDED = 0
+DELETED = 0
+UPDATED = 0
 
 ##read the file
 def read_panther_gene_list_file(source_to_id):
@@ -117,7 +125,11 @@ def update_data():
             del key_to_ids_DB[key]
         else:
             #This is a new record which is not in db so insert
-            print("Insert   ",key)
+            #find the source_id and locus_id
+            (panther_id,alias_type,source_id) = key
+            locus_id = get_locus_id(panther_id,panther_id_to_sgdid,sgdid_to_locus_id)
+            insert_alias(nex_session,fw,locus_id,source_id,panther_id)
+            # print("Insert   ",key)
     
     for key in key_to_ids_DB:
         #records left in db whihc are not found in file.
@@ -128,6 +140,32 @@ def update_data():
     #Upload file to s3 
     #Log informations for completion
 
+def get_locus_id(panther_id,panther_id_to_sgdid,sgdid_to_locus_id):
+    sgdid = panther_id_to_sgdid.get(panther_id)
+
+    if sgdid is None:
+        return None
+    
+    locus_id = sgdid_to_locus_id.get(sgdid)
+    if locus_id is None:
+        log.info("The SGDID: " + sgdid + " is not in the database.")
+        return None
+
+    return locus_id
+
+def insert_alias(nex_session,fw,locus_id,source_id,panther_id):
+    
+    obj_url = OBJ_URL + panther_id
+    print(DISPLAY_NAME,obj_url,source_id,locus_id,"1",ALIAS_TYPE,"OTTO")
+    # x = LocusAlias(
+    #     display_name=DISPLAY_NAME,
+    #     obj_url=obj_url,
+    #     source_id=source_id,
+    #     locus_id=locus_id,
+    #     has_external_id_section="1",
+    #     alias_type=ALIAS_TYPE,
+    #     created_by = CREATED_BY
+    # )
 
 ##init
 if __name__ == '__main__':
