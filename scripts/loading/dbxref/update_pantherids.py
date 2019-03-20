@@ -3,23 +3,23 @@ import logging
 from datetime import datetime
 from scripts.loading.database_session import get_session
 from src.models import Dbentity, LocusAlias, Source, Filedbentity, Edam
-pantherGeneFile = 'scripts/loading/dbxref/data/pantherGeneList021119.txt'
+pantherGeneFile = 'scripts/loading/dbxref/data/pantherGeneList021120_full.txt'
 # pantherGeneFile = 'data/pantherGeneList021119.txt'
 
 
-__author__ = 'sagarjhas'
+__author__ = 'sagarjha'
 
 logging.basicConfig(format='%(message)s')
 log = logging.getLogger()
 log.setLevel(logging.INFO)
 log_file = "scripts/loading/dbxref/logs/update_pantherids.log"
 # log_file = "logs/update_pantherids.log"
-alias_type_src_list = [("PANTHER ID", "PANTHER")]
 
 ALIAS_TYPE = 'PANTHER ID'
+SRC = "PANTHER"
 OBJ_URL = 'http://www.pantherdb.org/panther/family.do?clsAccession='
-DISPLAY_NAME = 'PANTHER'
 CREATED_BY = os.environ['DEFAULT_USER']
+alias_type_src_list = [(ALIAS_TYPE, SRC)]
 
 ADDED = 0
 DELETED = 0
@@ -109,22 +109,22 @@ def read_panther_gene_list_file(source_to_id):
         for line in lines:
             words = line.split()
             
-            sgdid = words[1]
+            sgdid_list = words[1].split(",")
             pantherid = words[-1]
 
-            if(pantherid.startswith('(PTHR')):
-                
-                pantherid = pantherid[1:-1]
-                sgdid_to_panther_id[sgdid] = pantherid
-                panther_id_to_sgdid[pantherid]= sgdid
+            for sgdid in sgdid_list:
+                if(pantherid.startswith('(PTHR')):
+                    pantherid = pantherid[1:-1]
+                    sgdid_to_panther_id[sgdid] = pantherid
+                    panther_id_to_sgdid[pantherid]= sgdid
 
-                key = (pantherid,"PANTHER ID",source_to_id.get("PANTHER"))
-                pantherid_list = []
-                if key in key_to_ids:
-                    pantherid_list = key_to_ids[key]
-                if pantherid not in pantherid_list:
-                    pantherid_list.append(pantherid)
-                key_to_ids[key] = pantherid_list
+                    key = (pantherid,ALIAS_TYPE,source_to_id.get(SRC))
+                    pantherid_list = []
+                    if key in key_to_ids:
+                        pantherid_list = key_to_ids[key]
+                    if pantherid not in pantherid_list:
+                        pantherid_list.append(pantherid)
+                    key_to_ids[key] = pantherid_list
     
     return [sgdid_to_panther_id,panther_id_to_sgdid,key_to_ids]
 
