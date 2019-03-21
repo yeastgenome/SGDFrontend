@@ -62,7 +62,7 @@ sub vcl_recv {
     }
 
     # don't cache healthcheck
-    if (req.url ~ "healthcheck$") {
+    if (req.url ~ "^/locus/S000005085$") {
         return (pass);
     }
 }
