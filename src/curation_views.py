@@ -1030,7 +1030,7 @@ def send_newsletter(request):
         recipients = recipients.replace('\n','')
         recipients = recipients.split(";")
         
-        returnValue = send_newsletter_email(subject,'sagarjha@stanford.edu',html)
+        returnValue = send_newsletter_email(subject,recipients,html)
         return returnValue
     except:
         return HTTPBadRequest(body=json.dumps({'error': "Error occured during sending newsletter"}))
