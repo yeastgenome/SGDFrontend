@@ -4,7 +4,7 @@ import Loader from '../../components/loader';
 import fetchData from '../../lib/fetchData';
 import { setError, setMessage } from '../../actions/metaActions';
 import { connect } from 'react-redux';
-// const DATA_URL = '/colleagues_subscriptions';
+const RECIPIENT_URL = '/colleagues_subscriptions';
 const SOURCE_URL = '/get_newsletter_sourcecode';
 const SEND_EMAIL = '/send_newsletter';
 
@@ -28,11 +28,12 @@ class NewsLetter extends Component {
     this.handleCodeChange = this.handleCodeChange.bind(this);
     this.handleSubmitForm = this.handleSubmitForm.bind(this);
     this.handleUrlChange = this.handleUrlChange.bind(this);
-    this.handlerenderCode = this.handlerenderCode.bind(this);
+    this.handleRenderCode = this.handleRenderCode.bind(this);
 
     this.handleSendEmail = this.handleSendEmail.bind(this);
     this.handleSubjectChange = this.handleSubjectChange.bind(this);
     this.handleRecipientsChange = this.handleRecipientsChange.bind(this);
+    this.handleGettingRecipients = this.handleGettingRecipients.bind(this);
   }
   componentDidMount() {
     // fetchData(SOURCE_URL).then(_source => {
@@ -41,7 +42,7 @@ class NewsLetter extends Component {
   }
 
   handleUrlChange(event) {
-    this.setState({ url: event.target.value });
+    this.setState({ url: event.target.value, code:'' });
   }
 
   handleSubmitForm() {
@@ -60,7 +61,7 @@ class NewsLetter extends Component {
     });
   }
 
-  handlerenderCode() {
+  handleRenderCode() {
     if (this.state.isPending) return <Loader />;
     return (<textarea rows="26" cols="10" onChange={this.handleCodeChange} value={this.state.code}></textarea>);
   }
@@ -82,6 +83,16 @@ class NewsLetter extends Component {
 
   handleRecipientsChange(event) {
     this.setState({ recipients: event.target.value });
+  }
+
+  handleGettingRecipients(){
+    fetchData(RECIPIENT_URL, {
+      type: 'GET'
+    }).then((data) => {
+      this.setState({ recipients: data.colleagues });
+    }).catch((data) => {
+      this.props.dispatch(setError(data.error));
+    });
   }
 
   handleSendEmail() {
@@ -108,10 +119,17 @@ class NewsLetter extends Component {
                 <h1>NewsLetter</h1>
                 {/* URL */}
                 <div className="row">
-                  <label className="columns medium-12 large-9">URL
-                    <input type="url" placeholder="Enter URL for newsletter" value={this.state.url} onChange={this.handleUrlChange} />
-                    <button type="button" onClick={this.handleSubmitForm} className="button">Get source code</button>
-                  </label>
+                <div className="columns medium-12">
+                <label> URL </label>
+                </div>
+                </div>
+                <div className="row">
+                <div className="columns medium-8">
+                <input type="url" placeholder="Enter URL for newsletter" value={this.state.url} onChange={this.handleUrlChange} />
+                </div>
+                <div className="columns medium-4">
+                <button type="button" onClick={this.handleSubmitForm} className="button">Get source code</button>
+                </div>
                 </div>
                 {/* Source code */}
                 <div className="row">
@@ -123,7 +141,7 @@ class NewsLetter extends Component {
                     </div>
                     <div className="row">
                       <div className="column medium-12 large-12">
-                        {this.handlerenderCode()}
+                        {this.handleRenderCode()}
                       </div>
                     </div>
                   </div>
@@ -151,12 +169,30 @@ class NewsLetter extends Component {
                 <input type="url" placeholder="Enter newsletter subject line" value={this.state.subject} onChange={this.handleSubjectChange} />
                   </label>
                 </div>
+                
                 {/* Recipients */}
                 <div className="row">
-                  <label className="columns medium-12 large-9">Recipients (This is just for testing, will not be available in production)
-                <input type="url" placeholder="Enter emails with ; seperated" value={this.state.recipients} onChange={this.handleRecipientsChange} />
-                  </label>
+                <div className="large-8 columns"> 
+                <label>Recipients</label>
                 </div>
+                </div>
+
+                <div className="row">
+                  <div className="large-8 columns">  
+                    <textarea rows="3" cols="10" type="url" placeholder="Enter emails with ; seperated" value={this.state.recipients} onChange={this.handleRecipientsChange} />
+                    </div>
+                  
+                    <div className="large-4 columns">
+                      <button type="button" onClick={this.handleGettingRecipients}  className="button">Get all recipients</button>
+                    </div>
+                  
+                  {/* <label className="columns medium-12 large-9">Recipients
+                  <textarea rows="5" cols="10" type="url" placeholder="Enter emails with ; seperated" value={this.state.recipients} onChange={this.handleRecipientsChange} />
+                  </label> */}
+                </div>
+
+
+
                 {/* Send button */}
                 <div className="row">
                   <div className="columns large-12">
@@ -165,6 +201,7 @@ class NewsLetter extends Component {
                 </div>
               </div>
             </div>
+
           </form>
         }
       </CurateLayout>);
