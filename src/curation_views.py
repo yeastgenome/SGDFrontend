@@ -23,10 +23,12 @@ from .curation_helpers import ban_from_cache, process_pmid_list, get_curator_ses
 from .loading.promote_reference_triage import add_paper
 from .models import DBSession, Dbentity, Dbuser, CuratorActivity, Colleague, Colleaguetriage, LocusnoteReference, Referencedbentity, Reservedname, ReservednameTriage, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags, convert_space_separated_pmids_to_list
 from .tsv_parser import parse_tsv_annotations
+from .models_helpers import ModelsHelper
 
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.ERROR)
 log = logging.getLogger()
+models_helper = ModelsHelper()
 
 def authenticate(view_callable):
     def inner(context, request):
@@ -958,8 +960,12 @@ def get_username_from_db_uri():
 @view_config(route_name='colleague_with_subscription', renderer='json', request_method='GET')
 @authenticate
 def colleague_with_subscription(request):
-    colleagues = models_helper.get_all_colleague_with_subscription()
-    return {'colleagues':[colleague.to_simple_dict() for colleague in colleagues]}
+    try:
+        colleagues = models_helper.get_all_colleague_with_subscription()
+        emails_string = ";\n".join([colleague.email for colleague in colleagues])  #[colleague.email for colleague in colleagues]
+        return {'colleagues':emails_string}
+    except:
+        return {'error':"Error retrieving colleagues"}
 
 @view_config(route_name='get_newsletter_sourcecode',renderer='json',request_method='POST')
 @authenticate
@@ -1019,7 +1025,11 @@ def send_newsletter(request):
     try:    
         html = request.POST['html']
         subject = request.POST['subject']
-        recipients = request.POST['recipients'].split(';')
-        return send_newsletter_email(subject,recipients,html)
+        # recipients = request.POST['recipients'].split(';')
+        recipients = str(request.POST['recipients'])
+        recipients = recipients.replace('\n','')
+        recipients = recipients.split(";")
+        
+        # return send_newsletter_email(subject,recipients,html)
     except:
         return {"error":"Error occured during sending newsletter"}
