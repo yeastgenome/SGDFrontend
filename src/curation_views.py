@@ -965,7 +965,7 @@ def colleague_with_subscription(request):
         emails_string = ";\n".join([colleague.email for colleague in colleagues])  #[colleague.email for colleague in colleagues]
         return {'colleagues':emails_string}
     except:
-        return {'error':"Error retrieving colleagues"}
+        return HTTPBadRequest(body=json.dumps({'error': "Error retrieving colleagues"}))
 
 @view_config(route_name='get_newsletter_sourcecode',renderer='json',request_method='POST')
 @authenticate
@@ -1030,6 +1030,7 @@ def send_newsletter(request):
         recipients = recipients.replace('\n','')
         recipients = recipients.split(";")
         
-        # return send_newsletter_email(subject,recipients,html)
+        returnValue = send_newsletter_email(subject,'sagarjha@stanford.edu',html)
+        return returnValue
     except:
-        return {"error":"Error occured during sending newsletter"}
+        return HTTPBadRequest(body=json.dumps({'error': "Error occured during sending newsletter"}))
