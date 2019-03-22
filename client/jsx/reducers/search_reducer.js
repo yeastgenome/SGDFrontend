@@ -81,8 +81,8 @@ const searchResultsReducer = function (_state, action) {
       state.results = action.response.results.map( d => {
         d.categoryName = getCategoryDisplayName(d.category);
         // make list of loci from 3 possible types
-        if (d.go_loci) {
-          d.loci = d.go_loci;
+        if (d.gene_ontology_loci) {
+          d.loci = d.gene_ontology_loci;
         } else if (d.disease_loci) {
           d.loci = d.disease_loci;
         }else if (d.phenotype_loci) {
