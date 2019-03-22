@@ -20,15 +20,14 @@ export default function apiRequest(url, options) {
     try{
        if ([200, 400].indexOf(response.status) < 0) {
          throw new Error('There was an API error.  Please refresh and try again.  If you continue to see this message, please contact sgd-programmers@lists.stanford.edu.');
-       } else {
+       } 
+       else {
          return response.json();
        }
     }
     catch(e){
-      console.log(e)
-      return {};
+      console.log({'error': e});
     }
-   
   });
   return p;
 };
