@@ -95,17 +95,7 @@ const ColleaguesFormShow = React.createClass({
       temp.push(<StringField isReadOnly={this.props.isReadOnly} displayName="Country" paramName="country" defaultValue={data.country} key="address3" />);
     }
     if (data.email) {
-      if (data.display_email){
-        temp.push( < StringField isReadOnly = {
-            this.props.isReadOnly
-          }
-          displayName = "Email"
-          paramName = "email"
-          defaultValue = {
-            data.email
-          }
-          key = "email" / > );
-        }
+      temp.push(<StringField isReadOnly={this.props.isReadOnly} displayName="Email" paramName="email" defaultValue={data.email} key="email" />);
     }
     if (data.phones) {
       temp.push(<StringField isReadOnly={this.props.isReadOnly} displayName="Phones" paramName="phones" defaultValue={data.phones} key="phones" />);
@@ -312,7 +302,6 @@ const ColleaguesFormShow = React.createClass({
       let backendSegment = this.props.isCurator ? '' : '/backend';
       let url = `${backendSegment}${COLLEAGUE_GET_URL}/${this.props.colleagueDisplayName}`;
       apiRequest(url).then( json => {
-        console.log(json)
         this.setState({ data: json, isLoadPending: false });
       });
     }
