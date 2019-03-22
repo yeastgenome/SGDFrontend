@@ -26,11 +26,13 @@ class NewsLetter extends Component {
     };
 
     this.handleCodeChange = this.handleCodeChange.bind(this);
-    this.submitForm = this.submitForm.bind(this);
-    this.urlChange = this.urlChange.bind(this);
-    this.sendEmail = this.sendEmail.bind(this);
-    this.subjectChange = this.subjectChange.bind(this);
-    this.recipientsChange = this.recipientsChange.bind(this);
+    this.handleSubmitForm = this.handleSubmitForm.bind(this);
+    this.handleUrlChange = this.handleUrlChange.bind(this);
+    this.handlerenderCode = this.handlerenderCode.bind(this);
+
+    this.handleSendEmail = this.handleSendEmail.bind(this);
+    this.handleSubjectChange = this.handleSubjectChange.bind(this);
+    this.handleRecipientsChange = this.handleRecipientsChange.bind(this);
   }
   componentDidMount() {
     // fetchData(SOURCE_URL).then(_source => {
@@ -38,11 +40,11 @@ class NewsLetter extends Component {
     // });
   }
 
-  urlChange(event) {
+  handleUrlChange(event) {
     this.setState({ url: event.target.value });
   }
 
-  submitForm() {
+  handleSubmitForm() {
     this.setState({ isPending: true, code: '' });
     fetchData(SOURCE_URL, {
       type: 'POST',
@@ -58,7 +60,7 @@ class NewsLetter extends Component {
     });
   }
 
-  renderCode() {
+  handlerenderCode() {
     if (this.state.isPending) return <Loader />;
     return (<textarea rows="26" cols="10" onChange={this.handleCodeChange} value={this.state.code}></textarea>);
   }
@@ -74,19 +76,19 @@ class NewsLetter extends Component {
     this.setState({ code: event.target.value });
   }
 
-  subjectChange(event) {
+  handleSubjectChange(event) {
     this.setState({ subject: event.target.value });
   }
 
-  recipientsChange(event) {
+  handleRecipientsChange(event) {
     this.setState({ recipients: event.target.value });
   }
 
-  sendEmail() {
+  handleSendEmail() {
     fetchData(SEND_EMAIL, {
       type: 'POST',
       data: {
-        html: this.state.code, subject: this.state.subject,recipients: this.state.recipients
+        html: this.state.code, subject: this.state.subject, recipients: this.state.recipients
       }
     }).then((data) => {
       this.props.dispatch(setMessage(data.success));
@@ -100,67 +102,70 @@ class NewsLetter extends Component {
     return (
       <CurateLayout>
         {
-          <div className="row">
-            <div className="columns large-12">
-              <h1>NewsLetter</h1>
-              <div className="row">
-                <label className="columns medium-12 large-9">URL
-                <input type="url" placeholder="Enter URL for newsletter" value={this.state.url} onChange={this.urlChange} />
-                  <button type="button" onClick={this.submitForm} className="button">Get source code</button>
-                </label>
-              </div>
-
-              <div className="row">
-                <div className="column medium-6 large-6">
-                  <div className="row">
-                    <div className="column medium-12 large-12">
-                      <label>HTML Code</label>
+          <form>
+            <div className="row">
+              <div className="columns large-12">
+                <h1>NewsLetter</h1>
+                {/* URL */}
+                <div className="row">
+                  <label className="columns medium-12 large-9">URL
+                    <input type="url" placeholder="Enter URL for newsletter" value={this.state.url} onChange={this.handleUrlChange} />
+                    <button type="button" onClick={this.handleSubmitForm} className="button">Get source code</button>
+                  </label>
+                </div>
+                {/* Source code */}
+                <div className="row">
+                  <div className="column medium-6 large-6">
+                    <div className="row">
+                      <div className="column medium-12 large-12">
+                        <label>HTML Code</label>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="column medium-12 large-12">
+                        {this.handlerenderCode()}
+                      </div>
                     </div>
                   </div>
-                  <div className="row">
-                    <div className="column medium-12 large-12">
-                      {this.renderCode()}
+
+                  <div className="column medium-6 large-6">
+                    <div className="row">
+                      <div className="column medium-12 large-12">
+                        <label>Preview Area</label>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="column medium-12 large-11" style={previewBox}>
+                        {/* <textarea rows="5" cols="10" value={this.state.code}></textarea> */}
+                        {this.preview()}
+                      </div>
                     </div>
                   </div>
                 </div>
-
-                <div className="column medium-6 large-6">
-                  <div className="row">
-                    <div className="column medium-12 large-12">
-                      <label>Previw Area</label>
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="column medium-12 large-11" style={previewBox}>
-                      {/* <textarea rows="5" cols="10" value={this.state.code}></textarea> */}
-                      {this.preview()}
-                    </div>
-                  </div>
+                {/* HTML code and Preview */}
+                <div className="row">
                 </div>
-              </div>
-
-              <div className="row">
-              </div>
-
-              <div className="row">
-                <label className="columns medium-12 large-9">Subject Line
-                <input type="url" placeholder="Enter newsletter subject line" value={this.state.subject} onChange={this.subjectChange} />
-                </label>
-              </div>
-
-              <div className="row">
-                <label className="columns medium-12 large-9">Recipients (This is just for testing, will not be available in production)
-                <input type="url" placeholder="Enter emails with ; seperated" value={this.state.recipients} onChange={this.recipientsChange} />
-                </label>
-              </div>
-
-              <div className="row">
-                <div className="columns large-12">
-                  <button type="button" onClick={this.sendEmail} className="button">Send Email</button>
+                {/* Subject line */}
+                <div className="row">
+                  <label className="columns medium-12 large-9">Subject Line
+                <input type="url" placeholder="Enter newsletter subject line" value={this.state.subject} onChange={this.handleSubjectChange} />
+                  </label>
+                </div>
+                {/* Recipients */}
+                <div className="row">
+                  <label className="columns medium-12 large-9">Recipients (This is just for testing, will not be available in production)
+                <input type="url" placeholder="Enter emails with ; seperated" value={this.state.recipients} onChange={this.handleRecipientsChange} />
+                  </label>
+                </div>
+                {/* Send button */}
+                <div className="row">
+                  <div className="columns large-12">
+                    <button type="button" onClick={this.handleSendEmail} className="button">Send Email</button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </form>
         }
       </CurateLayout>);
   }
