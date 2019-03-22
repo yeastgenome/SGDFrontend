@@ -567,12 +567,12 @@ def index_go_terms():
             go_id=go.go_id).all()
 
         references = set([])
-        go_loci = set([])
+        gene_ontology_loci = set([])
         annotations = DBSession.query(Goannotation).filter_by(
             go_id=go.go_id).all()
         for annotation in annotations:
             if annotation.go_qualifier != "NOT":
-                go_loci.add(annotation.dbentity.display_name)
+                gene_ontology_loci.add(annotation.dbentity.display_name)
             references.add(annotation.reference.display_name)
 
         numerical_id = go.goid.split(":")[1]
@@ -592,7 +592,7 @@ def index_go_terms():
             "description": go.description,
             "synonyms": [s[0] for s in synonyms],
             "go_id": go.goid,
-            "go_loci": sorted(list(go_loci)),
+            "gene_ontology_loci": sorted(list(gene_ontology_loci)),
             "number_annotations": len(annotations),
             "references": list(references),
             "category": go.go_namespace.replace(" ", "_"),
@@ -976,8 +976,10 @@ if __name__ == "__main__":
     '''
     cleanup()
     setup()
-    t1 = Thread(target=index_part_1)
-    t2 = Thread(target=index_part_2)
-    t1.start()
-    t2.start()
+    index_go_terms()
+    index_disease_terms()
+    # t1 = Thread(target=index_part_1)
+    # t2 = Thread(target=index_part_2)
+    # t1.start()
+    # t2.start()
     

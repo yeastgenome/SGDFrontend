@@ -107,9 +107,9 @@ def search(request):
                       ("references", "references"), ("phenotype_locus",
                                                      "phenotype_loci"),
                       ("chemical", "chemical"), ("mutant_type", "mutant_type")],
-        "biological_process": [("go_locus", "go_loci")],
-        "cellular_component": [("go_locus", "go_loci")],
-        "molecular_function": [("go_locus", "go_loci")],
+        "biological_process": [("go_locus", "gene_ontology_loci")],
+        "cellular_component": [("go_locus", "gene_ontology_loci")],
+        "molecular_function": [("go_locus", "gene_ontology_loci")],
         "disease": [("disease_locus", "disease_loci")],
         "reference": [("author", "author"), ("journal", "journal"),
                       ("year", "year"), ("reference_locus", "reference_loci")],
@@ -150,7 +150,7 @@ def search(request):
         "mutant_type",
         "synonyms",
         "go_id",
-        "go_loci",
+        "gene_ontology_loci",
         "author",
         "journal",
         "reference_loci",
@@ -167,7 +167,7 @@ def search(request):
 
     json_response_fields = [
         'name', 'href', 'description', 'category', 'bioentity_id',
-        'phenotype_loci', 'go_loci', 'reference_loci', 'aliases', 'year',
+        'phenotype_loci', 'gene_ontology_loci', 'reference_loci', 'aliases', 'year',
         'keyword', 'format', 'status', 'file_size', 'readme_url', 'topic', 'data', 'is_quick_flag'
     ]
 
