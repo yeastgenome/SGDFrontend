@@ -161,7 +161,7 @@ module.exports = React.createClass({
 		    var cutSite = parseInt(cutPositionsC[i]);
 		    var color = "blue";
 		    x = BAR_START + this._getScale(cutSite);
-                    y = 15;
+        y = 15;
 		    cutSiteC.push(cutSite);
 		    cutTicks.push(<circle cx={x+1} cy={y+9} r={3} stroke={color} stroke-width={1} fill={color} />);
 		    cutTicks.push(<rect x={x} y={y} width={2} height={7} fill={color} opacity={OPACITY} />); 
