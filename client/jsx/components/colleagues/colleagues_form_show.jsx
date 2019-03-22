@@ -39,24 +39,20 @@ const ColleaguesFormShow = React.createClass({
   },
 
   render () {
-    if(!_.isEmpty(this.state.data)){
-      if (this.state.isComplete) return this._renderCompleteNode();
-      let formLabel = this.props.isUpdate ? 'Update Colleague' : 'New Colleague';
-      let showLabel = this.state.isLoadPending ? '...' : `${this.state.data.first_name} ${this.state.data.last_name}`;
-      let label = this.props.isReadOnly ? showLabel : formLabel;
-      return (
-        <div>
-          <h1>{label}</h1>
-          {this._renderTriageNode()}
-          {this._renderForm()}
-        </div>
-      );
-
+    if (this.state.isComplete) return this._renderCompleteNode();
+    let formLabel = this.props.isUpdate ? 'Update Colleague' : 'New Colleague';
+    let showLabel = 'Colleague data not found';
+    if (Object.keys(this.state.data).length > 0) {
+      showLabel = this.state.isLoadPending ? '...' : `${this.state.data.first_name} ${this.state.data.last_name}`;
     }
-    else{
-        return(<div><h1>Colleague not found</h1></div>)
-    }
-    
+    let label = this.props.isReadOnly ? showLabel : formLabel;
+    return (
+      <div>
+        <h1>{label}</h1>
+        {this._renderTriageNode()}
+        {this._renderForm()}
+      </div>
+    );
   },
 
   componentDidMount () {
@@ -99,17 +95,7 @@ const ColleaguesFormShow = React.createClass({
       temp.push(<StringField isReadOnly={this.props.isReadOnly} displayName="Country" paramName="country" defaultValue={data.country} key="address3" />);
     }
     if (data.email) {
-      if (data.display_email){
-        temp.push( < StringField isReadOnly = {
-            this.props.isReadOnly
-          }
-          displayName = "Email"
-          paramName = "email"
-          defaultValue = {
-            data.email
-          }
-          key = "email" / > );
-        }
+      temp.push(<StringField isReadOnly={this.props.isReadOnly} displayName="Email" paramName="email" defaultValue={data.email} key="email" />);
     }
     if (data.phones) {
       temp.push(<StringField isReadOnly={this.props.isReadOnly} displayName="Phones" paramName="phones" defaultValue={data.phones} key="phones" />);
@@ -316,7 +302,6 @@ const ColleaguesFormShow = React.createClass({
       let backendSegment = this.props.isCurator ? '' : '/backend';
       let url = `${backendSegment}${COLLEAGUE_GET_URL}/${this.props.colleagueDisplayName}`;
       apiRequest(url).then( json => {
-        console.log(json)
         this.setState({ data: json, isLoadPending: false });
       });
     }
