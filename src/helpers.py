@@ -481,7 +481,7 @@ def send_newsletter_email(subject,recipients,msg):
         from email.mime.multipart import MIMEMultipart
         
         SENDER_EMAIL = "Mike Cherry <cherry@stanford.edu>" 
-        REPLY_TO = "edith.wong@stanford.edu" #<sgd-helpdesk@lists.stanford.edu>
+        REPLY_TO = 'sagarjha@stanford.edu' #<sgd-helpdesk@lists.stanford.edu>
 
         message = MIMEMultipart("alternative")        
         message["Subject"] = subject
@@ -492,10 +492,27 @@ def send_newsletter_email(subject,recipients,msg):
         message.attach(html_message)
         
         server = smtplib.SMTP("localhost", 25)
-        server.sendmail(SENDER_EMAIL, recipients, message.as_string())
+        any_recipients_error = server.sendmail(SENDER_EMAIL, recipients, message.as_string())
         server.quit()
+
+        if(len(any_recipients_error) > 0):
+            error_message = ''
+            for key in any_recipients_error:
+                error_message = error_message + ' ' + key + ' ' + str(any_recipients_error[key]) + ' ;' + '\n'
+            
+            error_message = "Email sending unsuccessful for this recipients " + error_message
+            return {"error": error_message}
+                
         
         return {"success":"Email was successfully sent."}
 
+    except SMTPHeloError as e:
+        return {"error","The server didn't reply properly to the helo greeting. "}
+    except SMTPRecipientsRefused as e:
+        return {"error","The server rejected ALL recipients (no mail was sent)."}
+    except SMTPSenderRefused as e:
+        return {"error","The server didn't accept the sender's email"}
+    except SMTPDataError as e:
+        return {"error","The server replied with an unexpected"}
     except Exception as e:
         return {"error":"Error occured while sending email."}
