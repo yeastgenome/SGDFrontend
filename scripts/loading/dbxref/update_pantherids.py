@@ -4,8 +4,6 @@ from datetime import datetime
 from scripts.loading.database_session import get_session
 from src.models import Dbentity, LocusAlias, Source, Filedbentity, Edam
 pantherGeneFile = 'scripts/loading/dbxref/data/pantherGeneList021119.txt'
-# pantherGeneFile = 'data/pantherGeneList021119.txt'
-
 
 __author__ = 'sagarjha'
 
@@ -13,7 +11,6 @@ logging.basicConfig(format='%(message)s')
 log = logging.getLogger()
 log.setLevel(logging.INFO)
 log_file = "scripts/loading/dbxref/logs/update_pantherids.log"
-# log_file = "logs/update_pantherids.log"
 
 ALIAS_TYPE = 'PANTHER ID'
 SRC = "PANTHER"
@@ -49,9 +46,10 @@ def update_data():
     
     log.info("Reading data from panther gene list file...")
 
-    [sgdid_to_panther_id,panther_id_to_sgdid,key_to_ids] = read_panther_gene_list_file(source_to_id)
+    # [sgdid_to_panther_id,panther_id_to_sgdid,key_to_ids] = read_panther_gene_list_file(source_to_id)
+    [sgdid_to_panther_id,key_to_ids] = read_panther_gene_list_file(source_to_id)
 
-    all_aliases = nex_session.query(LocusAlias).all()
+    all_aliases = nex_session.query(LocusAlias).filter_by(alias_type = ALIAS_TYPE)
     
     nex_session.close()
     nex_session = get_session()
@@ -69,29 +67,34 @@ def update_data():
         panther_id = sgdid_to_panther_id.get(sgdid)
         if panther_id is None:
             continue
+        
+        # if x.alias_type == ALIAS_TYPE:
+        #     if x.display_name != panther_id:
+        #         #change in panther id for the sgdid
+        #         update_panther_id(nex_session,fw,x.locus_id,panther_id)
+        #     continue
+            
 
-        key = (panther_id,x.alias_type,x.source_id,sgdid)   
+        key = (sgdid,x.alias_type,x.source_id)   
         panther_id_list_DB = []
         if key in key_to_ids_DB:
             panther_id_list_DB = key_to_ids_DB[key]
         panther_id_list_DB.append(x.display_name)       
         key_to_ids_DB[key] = panther_id_list_DB
-        
     
     for key in key_to_ids:
         if key in key_to_ids_DB:
-            update_aliases(nex_session,fw,key,key_to_ids[key],key_to_ids_DB[key],
-                            panther_id_to_sgdid,sgdid_to_locus_id,id_to_source)
+            update_aliases(nex_session,fw,key,key_to_ids[key],key_to_ids_DB[key],sgdid_to_locus_id,id_to_source)
             del key_to_ids_DB[key]
         else: 
-            insert_aliases(nex_session,fw,key,key_to_ids[key],panther_id_to_sgdid,sgdid_to_locus_id)
+            insert_aliases(nex_session,fw,key,key_to_ids[key],sgdid_to_locus_id)
     
     for key in key_to_ids_DB:
-        delete_aliases(nex_session,fw,key,panther_id_to_sgdid,sgdid_to_locus_id)
+        delete_aliases(nex_session,fw,key,sgdid_to_locus_id)
     
-    nex_session.commit()
+    # nex_session.commit()
 
-    #Upload file to s3 ??
+    # ## Upload file to s3 ??
 
     log.info("Loading summary:")
     log.info("\tAdded: " + str(ADDED))
@@ -102,7 +105,7 @@ def update_data():
 
 def read_panther_gene_list_file(source_to_id):
     sgdid_to_panther_id = {}
-    panther_id_to_sgdid = {}
+    # panther_id_to_sgdid = {}
     key_to_ids = {}
     with open(pantherGeneFile,'r') as file:
         lines = file.readlines()
@@ -116,9 +119,8 @@ def read_panther_gene_list_file(source_to_id):
 
                 for sgdid in sgdid_list:
                     sgdid_to_panther_id[sgdid] = pantherid
-                    panther_id_to_sgdid[pantherid]= sgdid
-
-                    key = (pantherid,ALIAS_TYPE,source_to_id.get(SRC),sgdid)
+                    # panther_id_to_sgdid[pantherid]= sgdid
+                    key = (sgdid,ALIAS_TYPE,source_to_id.get(SRC))
                     pantherid_list = []
                     if key in key_to_ids:
                         pantherid_list = key_to_ids[key]
@@ -126,9 +128,9 @@ def read_panther_gene_list_file(source_to_id):
                         pantherid_list.append(pantherid)
                     key_to_ids[key] = pantherid_list
     
-    return [sgdid_to_panther_id,panther_id_to_sgdid,key_to_ids]
+    return [sgdid_to_panther_id,key_to_ids]
 
-def get_locus_id(panther_id,panther_id_to_sgdid,sgdid_to_locus_id,sgdid):
+def get_locus_id(sgdid,sgdid_to_locus_id):
     # sgdid = panther_id_to_sgdid.get(panther_id)
 
     if sgdid is None:
@@ -141,12 +143,13 @@ def get_locus_id(panther_id,panther_id_to_sgdid,sgdid_to_locus_id,sgdid):
 
     return locus_id
 
-def update_aliases(nex_session,fw,key,ids,ids_DB,panther_id_to_sgdid,sgdid_to_locus_id,id_to_source):
+def update_aliases(nex_session,fw,key,ids,ids_DB,sgdid_to_locus_id,id_to_source):
     if set(ids_DB) == set(ids):
         return
     
-    (panther_id,alias_type,source_id,sgdid) = key
-    locus_id = get_locus_id(panther_id,panther_id_to_sgdid,sgdid_to_locus_id,sgdid)
+    (sgdid,alias_type,source_id) = key
+    locus_id = get_locus_id(sgdid,sgdid_to_locus_id)
+    
     if locus_id is None:
         return
     
@@ -163,10 +166,22 @@ def update_aliases(nex_session,fw,key,ids,ids_DB,panther_id_to_sgdid,sgdid_to_lo
         global DELETED
         DELETED = DELETED + 1
 
-def insert_aliases(nex_session,fw,key,ids,panther_id_to_sgdid,sgdid_to_locus_id):
+# def update_panther_id(nex_session,fw,locus_id,panther_id):
+    
+#     obj_url = OBJ_URL + panther_id
+#     nex_session.query(LocusAlias).filter_by(locus_id=locus_id, alias_type=ALIAS_TYPE).update({"display_name":panther_id,"obj_url":obj_url})
+    
+#     fw.write("Update "+ALIAS_TYPE+" to "+panther_id+" for locus_id="+str(locus_id)+"\n")
+#     global UPDATED
+#     UPDATED = UPDATED + 1
 
-    (panther_id,alias_type,source_id,sgdid) = key
-    locus_id = get_locus_id(panther_id,panther_id_to_sgdid,sgdid_to_locus_id,sgdid)
+
+def insert_aliases(nex_session,fw,key,ids,sgdid_to_locus_id):
+
+    # (panther_id,alias_type,source_id,sgdid) = key
+    (sgdid,alias_type,source_id) = key
+    # locus_id = get_locus_id(panther_id,panther_id_to_sgdid,sgdid_to_locus_id,sgdid)
+    locus_id = get_locus_id(sgdid,sgdid_to_locus_id)
 
     if locus_id is None:
         return
@@ -192,10 +207,10 @@ def insert_alias(nex_session,fw,locus_id,source_id,panther_id):
 
     fw.write("Insert a new " + ALIAS_TYPE + ": " + panther_id + "\n")
 
-def delete_aliases(nex_session,fw,key,panther_id_to_sgdid,sgdid_to_locus_id):
-    (panther_id,alias_type,source_id,sgdid) = key
-
-    locus_id = get_locus_id(panther_id,panther_id_to_sgdid,sgdid_to_locus_id,sgdid)
+def delete_aliases(nex_session,fw,key,sgdid_to_locus_id):
+    
+    (sgdid,alias_type,source_id) = key
+    locus_id = get_locus_id(sgdid,sgdid_to_locus_id)
     if locus_id is None:
         return
 
@@ -211,4 +226,3 @@ def delete_alias(nex_session,fw,locus_id,panther_id):
 
 if __name__ == '__main__':
     update_data()
-
