@@ -1,8 +1,6 @@
 const DEFAULT_REQUEST_TIMEOUT = 5000;
 // options { method, data, crsfToken, timeout }
 export default function apiRequest(url, options) {
-  console.log(url);
-  console.log(options);
   options = options || {};
   let _method = options.method || 'GET';
   let timeout = options.timeout || DEFAULT_REQUEST_TIMEOUT;
@@ -21,14 +19,14 @@ export default function apiRequest(url, options) {
     // if not 200 or 400 throw unknown error
     try{
        if ([200, 400].indexOf(response.status) < 0) {
-
          throw new Error('There was an API error.  Please refresh and try again.  If you continue to see this message, please contact sgd-programmers@lists.stanford.edu.');
        } else {
          return response.json();
        }
     }
     catch(e){
-      console.log({'error': e})
+      console.log(e)
+      return {};
     }
    
   });
