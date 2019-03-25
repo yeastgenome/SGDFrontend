@@ -481,7 +481,7 @@ def send_newsletter_email(subject,recipients,msg):
         from email.mime.multipart import MIMEMultipart
         
         SENDER_EMAIL = "Mike Cherry <cherry@stanford.edu>" 
-        REPLY_TO = 'sagarjha@stanford.edu' #<sgd-helpdesk@lists.stanford.edu>
+        REPLY_TO = "sgd-helpdesk@lists.stanford.edu"
 
         message = MIMEMultipart("alternative")        
         message["Subject"] = subject
