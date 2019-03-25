@@ -23,7 +23,7 @@ class ModelsHelper(object):
         """
         Get all colleague data filter by is_contact
         """
-        colleague = DBSession.query(Colleague).filter(Colleague.is_contact == 'y',Colleague.email != None).all()
+        colleague = DBSession.query(Colleague).filter(Colleague.is_contact == 'y',Colleague.email != None).order_by(Colleague.email).all()
         return colleague
 
     def get_all_collegue_locus(self):
