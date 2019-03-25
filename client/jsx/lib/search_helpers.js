@@ -74,6 +74,6 @@ export function getFacetName (key) {
       return 'Associated Genes';
       break;
     default:
-      return key.replace('_', ' ');
+      return key.replace(/_/g, ' ');
   }
 };
