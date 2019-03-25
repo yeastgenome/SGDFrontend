@@ -2,7 +2,7 @@ import os
 import logging
 from datetime import datetime
 from scripts.loading.database_session import get_session
-from src.models import Dbentity, LocusAlias, Source, Filedbentity, Edam
+from src.models import Dbentity, LocusAlias, Source
 pantherGeneFile = 'scripts/loading/dbxref/data/pantherGeneList021119.txt'
 
 __author__ = 'sagarjha'
@@ -92,7 +92,7 @@ def update_data():
     for key in key_to_ids_DB:
         delete_aliases(nex_session,fw,key,sgdid_to_locus_id)
     
-    # nex_session.commit()
+    nex_session.commit()
 
     # ## Upload file to s3 ??
 
