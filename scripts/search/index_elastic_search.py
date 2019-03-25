@@ -567,12 +567,12 @@ def index_go_terms():
             go_id=go.go_id).all()
 
         references = set([])
-        go_loci = set([])
+        gene_ontology_loci = set([])
         annotations = DBSession.query(Goannotation).filter_by(
             go_id=go.go_id).all()
         for annotation in annotations:
             if annotation.go_qualifier != "NOT":
-                go_loci.add(annotation.dbentity.display_name)
+                gene_ontology_loci.add(annotation.dbentity.display_name)
             references.add(annotation.reference.display_name)
 
         numerical_id = go.goid.split(":")[1]
@@ -592,7 +592,7 @@ def index_go_terms():
             "description": go.description,
             "synonyms": [s[0] for s in synonyms],
             "go_id": go.goid,
-            "go_loci": sorted(list(go_loci)),
+            "gene_ontology_loci": sorted(list(gene_ontology_loci)),
             "number_annotations": len(annotations),
             "references": list(references),
             "category": go.go_namespace.replace(" ", "_"),
@@ -625,11 +625,11 @@ def index_disease_terms():
     for do in dos:
         synonyms = DBSession.query(DiseaseAlias.display_name).filter_by(disease_id=do.disease_id).all()
         references = set([])
-        do_loci = set([])
+        disease_loci = set([])
         annotations = DBSession.query(Diseaseannotation).filter_by(disease_id=do.disease_id).all()
         for annotation in annotations:
             if annotation.disease_qualifier != "NOT":
-                do_loci.add(annotation.dbentity.display_name)
+                disease_loci.add(annotation.dbentity.display_name)
             references.add(annotation.reference.display_name)
         if do.doid != 'derives_from':
             numerical_id = do.doid.split(":")[1]
@@ -649,7 +649,7 @@ def index_disease_terms():
             "description": do.description,
             "synonyms": [s[0] for s in synonyms],
             "doid": do.doid,
-            "do_loci": sorted(list(do_loci)),
+            "disease_loci": sorted(list(disease_loci)),
             "number_annotations": len(annotations),
             "references": list(references),
             "keys": list(keys)

@@ -336,7 +336,7 @@ mapping = {
                     "type": "string",
                     "analyzer": "symbols"
                 },
-                "go_loci": {
+                "gene_ontology_loci": {
                     "type": "string",
                     "fields": {
                         "raw": {
@@ -354,7 +354,7 @@ mapping = {
                     "type": "string",
                     "analyzer": "symbols"
                 },
-                "do_loci": {
+                "disease_loci": {
                     "type": "string",
                     "fields": {
                         "raw": {
