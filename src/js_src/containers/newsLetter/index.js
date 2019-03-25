@@ -243,7 +243,7 @@ class NewsLetter extends Component {
                   </div>
 
                   <div className="large-4 columns">
-                    <button type="button" onClick={this.handleGettingRecipients} className="button">Get all recipients</button>
+                    <button type="button" onClick={this.handleGettingRecipients} className="button">Get recipients from database</button>
                   </div>
 
                   {/* <label className="columns medium-12 large-9">Recipients
