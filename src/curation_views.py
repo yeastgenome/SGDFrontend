@@ -1004,13 +1004,8 @@ def get_newsletter_sourcecode(request):
             for img in body.find_all(src=re.compile("^/")):
                 if(img.has_attr('srcset')):
                     del img['srcset']
-                    # img['srcset'] = ','.join(map(lambda x: 'https://wiki.yeastgenome.org'+ x,img['srcset'].split(',')))
                 img['src']="https://wiki.yeastgenome.org" + img['src']
             
-            ##Insert wiki's style sheet
-            #stylesheet = BeautifulSoup("<link rel='stylesheet' href='https://wiki.yeastgenome.org/load.php?debug=false&lang=en&modules=mediawiki.legacy.commonPrint%2Cshared%7Cmediawiki.sectionAnchor%7Cmediawiki.skinning.interface%7Cskins.vector.styles&only=styles&skin=vector'/>","lxml")
-            #body.insert(1,stylesheet.link)
-
             unsubscribe = BeautifulSoup("<p>Note: If you no longer wish to receive this newsletter, please contact the SGD Help Desk at sgd-helpdesk@lists.stanford.edu .<p>").p
             body.append(unsubscribe)
             return {"code":body.prettify()}
