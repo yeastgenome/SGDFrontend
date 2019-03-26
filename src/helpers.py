@@ -12,6 +12,9 @@ from sqlalchemy.exc import IntegrityError, InternalError, StatementError
 import traceback
 import requests
 import csv
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 from .models import DBSession, Dbuser, Go, Referencedbentity, Keyword, Locusdbentity, FilePath, Edam, Filedbentity, FileKeyword, ReferenceFile, Disease
 
@@ -476,10 +479,6 @@ def tsv_file_to_dict(tsv_file):
 
 def send_newsletter_email(subject,recipients,msg):
     try:
-        import smtplib
-        from email.mime.text import MIMEText
-        from email.mime.multipart import MIMEMultipart
-        
         SENDER_EMAIL = "Mike Cherry <cherry@stanford.edu>" 
         REPLY_TO = "sgd-helpdesk@lists.stanford.edu"
 
