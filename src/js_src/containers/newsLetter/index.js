@@ -4,18 +4,13 @@ import Loader from '../../components/loader';
 import fetchData from '../../lib/fetchData';
 import { setError, setMessage } from '../../actions/metaActions';
 import { connect } from 'react-redux';
+import style from './style.css' ;
+
 const RECIPIENT_URL = '/colleagues_subscriptions';
 const SOURCE_URL = '/get_newsletter_sourcecode';
 const SEND_EMAIL = '/send_newsletter';
 const VISIBLE_ERROR = 'form-error is-visible';
 const INVISIBLE_ERROR = 'form-error';
-
-const previewBox = {
-  height: '641px',
-  overflow: 'scroll',
-  border: '1px solid rgba(0, 0, 0, 0.2)'
-};
-
 
 class NewsLetter extends Component {
   constructor(props) {
@@ -208,18 +203,13 @@ class NewsLetter extends Component {
                       </div>
                     </div>
                     <div className="row">
-                      <div className="column medium-12 large-11" style={previewBox}>
-                        {/* <textarea rows="5" cols="10" value={this.state.code}></textarea> */}
+                      <div className={`column medium-12 large-11 ${style.previewBox}`}>
                         {this.preview()}
                       </div>
                     </div>
                   </div>
                 </div>
-
-                {/* HTML code and Preview */}
-                <div className="row">
-                </div>
-
+                
                 {/* Subject line */}
                 <div className="row">
                   <label className="columns medium-12 large-9">Subject Line
@@ -246,9 +236,6 @@ class NewsLetter extends Component {
                     <button type="button" onClick={this.handleGettingRecipients} className="button">Get recipients from database</button>
                   </div>
 
-                  {/* <label className="columns medium-12 large-9">Recipients
-                  <textarea rows="5" cols="10" type="url" placeholder="Enter emails with ; seperated" value={this.state.recipients} onChange={this.handleRecipientsChange} />
-                  </label> */}
                 </div>
 
                 {/* Send button */}
