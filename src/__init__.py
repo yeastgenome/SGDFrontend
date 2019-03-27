@@ -128,6 +128,9 @@ def main(global_config, **settings):
     config.add_route('colleague_triage_update', '/colleagues/triage/{id}', request_method='PUT')
     config.add_route('colleague_triage_promote', '/colleagues/triage/{id}/promote', request_method='PUT')
     config.add_route('colleague_triage_delete', '/colleagues/triage/{id}', request_method='DELETE')
+    config.add_route('colleague_with_subscription', '/colleagues_subscriptions', request_method='GET')
+    config.add_route('get_newsletter_sourcecode', '/get_newsletter_sourcecode', request_method='POST')
+    config.add_route('send_newsletter', '/send_newsletter', request_method='POST')
 
     # config.add_route('colleague_triage_accept', '/colleagues/triage/{id}', request_method='POST')
     # config.add_route('colleague_triage_update', '/colleagues/triage/{id}', request_method='PUT')

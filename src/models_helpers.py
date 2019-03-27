@@ -19,6 +19,13 @@ class ModelsHelper(object):
         colleague = DBSession.query(Colleague).filte(Colleague.colleague_id == id).first()
         return colleague
 
+    def get_all_colleague_with_subscription(self):
+        """
+        Get all colleague data filter by is_contact
+        """
+        colleague = DBSession.query(Colleague).filter(Colleague.is_contact == 'y',Colleague.email != None).order_by(Colleague.email).all()
+        return colleague
+
     def get_all_collegue_locus(self):
         """
         Get all colleague_locus data

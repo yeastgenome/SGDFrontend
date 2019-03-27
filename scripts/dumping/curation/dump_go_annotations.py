@@ -2,6 +2,8 @@ from datetime import datetime
 import logging
 import os
 import sys
+reload(sys)  # Reload does the trick!
+sys.setdefaultencoding('UTF8')
 import boto
 from boto.s3.key import Key
 import transaction
