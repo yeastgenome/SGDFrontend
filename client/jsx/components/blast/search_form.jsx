@@ -137,7 +137,7 @@ BLAST Help at NCBI</a>.</p><hr>';
 
 		        return (<div>
 			       <div className="row">
-			       	    <p><b>Something wrong with your blast search</b></p>
+			       	    <p><b>Something went wrong with your BLAST search</b></p>
 			       </div>
 			</div>);
 			

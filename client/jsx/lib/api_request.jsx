@@ -1,6 +1,6 @@
 const DEFAULT_REQUEST_TIMEOUT = 5000;
 // options { method, data, crsfToken, timeout }
-export default function apiRequst(url, options) {
+export default function apiRequest(url, options) {
   options = options || {};
   let _method = options.method || 'GET';
   let timeout = options.timeout || DEFAULT_REQUEST_TIMEOUT;
