@@ -16,16 +16,19 @@ import traceback
 import transaction
 import json
 import re
+from bs4 import BeautifulSoup
 
-from .helpers import allowed_file, extract_id_request, secure_save_file, curator_or_none, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id
+from .helpers import allowed_file, extract_id_request, secure_save_file, curator_or_none, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id,send_newsletter_email
 from .curation_helpers import ban_from_cache, process_pmid_list, get_curator_session, get_pusher_client, validate_orcid
 from .loading.promote_reference_triage import add_paper
 from .models import DBSession, Dbentity, Dbuser, CuratorActivity, Colleague, Colleaguetriage, LocusnoteReference, Referencedbentity, Reservedname, ReservednameTriage, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags, convert_space_separated_pmids_to_list
 from .tsv_parser import parse_tsv_annotations
+from .models_helpers import ModelsHelper
 
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.ERROR)
 log = logging.getLogger()
+models_helper = ModelsHelper()
 
 def authenticate(view_callable):
     def inner(context, request):
@@ -951,3 +954,78 @@ def get_username_from_db_uri():
 #     transaction.commit() # this commit must be synchronous because the upload_to_s3 task expects the row in the DB
 #     log.info('File ' + request.POST.get('display_name') + ' was successfully uploaded.')
 #     return Response({'success': True})
+
+
+
+@view_config(route_name='colleague_with_subscription', renderer='json', request_method='GET')
+@authenticate
+def colleague_with_subscription(request):
+    try:
+        colleagues = models_helper.get_all_colleague_with_subscription()
+        emails_string = ";\n".join([colleague.email for colleague in colleagues])  #[colleague.email for colleague in colleagues]
+        return {'colleagues':emails_string}
+    except:
+        return HTTPBadRequest(body=json.dumps({'error': "Error retrieving colleagues"}))
+
+@view_config(route_name='get_newsletter_sourcecode',renderer='json',request_method='POST')
+@authenticate
+def get_newsletter_sourcecode(request):
+    try:
+        from urllib2 import urlopen
+        url = str(request.POST['url'])
+
+        if(url.startswith('https://wiki.yeastgenome.org')):
+            response = urlopen(url)
+            html = response.read()
+            soup = BeautifulSoup(html, 'html.parser')
+            body = soup.find(id='content')
+            body['style']='margin-left:0'
+
+            sitesub = body.find(id='siteSub')
+            if(sitesub):
+                sitesub.decompose()
+            
+            jumptonav = body.find(id='jump-to-nav')
+            if(jumptonav):
+                jumptonav.decompose()
+            
+            printfooter= body.find(class_="printfooter")
+            if(printfooter):
+                printfooter.decompose()
+
+            catlinks = body.find(id='catlinks')
+            if(catlinks):
+                catlinks.decompose()
+            
+            for link in body.find_all(href=re.compile("^#")):
+                link['href'] = url + link['href']
+            for link in body.find_all(href=re.compile("^/")):
+                link['href']="https://wiki.yeastgenome.org" + link['href']
+            for img in body.find_all(src=re.compile("^/")):
+                if(img.has_attr('srcset')):
+                    del img['srcset']
+                img['src']="https://wiki.yeastgenome.org" + img['src']
+            
+            unsubscribe = BeautifulSoup("<p>Note: If you no longer wish to receive this newsletter, please contact the SGD Help Desk at sgd-helpdesk@lists.stanford.edu .<p>").p
+            body.append(unsubscribe)
+            return {"code":body.prettify()}
+        else:
+            return HTTPBadRequest(body=json.dumps({'error': "URL must be from wiki.yeastgenome.org"}))
+    except:
+        return HTTPBadRequest(body=json.dumps({'error': "Unexpected error"}))
+
+@view_config(route_name='send_newsletter',renderer='json',request_method='POST')
+@authenticate
+def send_newsletter(request):
+    try:    
+        html = request.POST['html']
+        subject = request.POST['subject']
+        # recipients = request.POST['recipients'].split(';')
+        recipients = str(request.POST['recipients'])
+        recipients = recipients.replace('\n','')
+        recipients = recipients.split(";")
+        
+        returnValue = send_newsletter_email(subject,recipients,html)
+        return returnValue
+    except:
+        return HTTPBadRequest(body=json.dumps({'error': "Error occured during sending newsletter"}))
