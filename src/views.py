@@ -17,7 +17,7 @@ import datetime
 import logging
 import json
 
-from .models import DBSession, ESearch, Colleague, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, Dataset, DatasetKeyword, Contig, Proteindomain, Ec, Dnasequenceannotation, Straindbentity, Disease, Complexdbentity, Filedbentity, Goslim, So, ApoRelation, GoRelation, Psimod
+from .models import DBSession, ESearch, Colleague, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, LocusAlias, Dataset, DatasetKeyword, Contig, Proteindomain, Ec, Dnasequenceannotation, Straindbentity, Disease, Complexdbentity, Filedbentity, Goslim, So, ApoRelation, GoRelation, Psimod
 from .helpers import extract_id_request, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id, get_disease_by_id, primer3_parser
 from .search_helpers import build_autocomplete_search_body_request, format_autocomplete_results, build_search_query, build_es_search_body_request, build_es_aggregation_body_request, format_search_results, format_aggregation_results, build_sequence_objects_search_query
 from .models_helpers import ModelsHelper
@@ -1273,6 +1273,44 @@ def goslim(request):
                             "terms": sorted(data[slim_type])})
 
     return orderedData
+
+
+@view_config(route_name='ambiguous_names', renderer='json', request_method='GET')
+def ambiguous_names(request):
+
+    locus_data = DBSession.query(Locusdbentity).filter_by(has_summary='1').all()
+    mapping = {}
+    locus_id2systematic_name = {}
+    for x in locus_data:
+        mapping[x.systematic_name] = x
+        if x.gene_name:
+            mapping[x.gene_name] = x
+        locus_id2systematic_name[x.dbentity_id] = x.systematic_name
+
+    data = {}
+    alias_data = DBSession.query(LocusAlias).filter_by(alias_type='Uniform').all()
+    for y in alias_data:
+        display_name = y.display_name
+        if display_name not in mapping:
+            continue
+        if display_name not in data:
+            x = mapping[display_name]
+            data[display_name] = [{ "systematic_name": x.systematic_name,
+                                    "gene_name": x.gene_name,
+                                    "sgdid": x.sgdid,
+                                    "name_type": 'gene_name' }]
+        names = data[display_name]
+        systematic_name = locus_id2systematic_name[y.locus_id]
+        x = mapping[systematic_name]
+        names.append({ "systematic_name": systematic_name,
+                       "gene_name": x.gene_name,
+                       "sgdid": x.sgdid,
+                       "alias_name": display_name,
+                       "name_type": 'alias_name' })
+        data[display_name] = names
+
+    return data
+
 
 @view_config(route_name='complex', renderer='json', request_method='GET')
 def complex(request):
