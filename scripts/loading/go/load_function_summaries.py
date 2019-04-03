@@ -33,8 +33,9 @@ def load_summaries(summary_file):
         if len(pieces) < 8:
             print "BAD LINE:", line
             continue
-
-        curator = curator_id.get(pieces[1].strip())
+        
+        curatorName = pieces[1].strip().replace(" [Expired account]", "")
+        curator = curator_id.get(curatorName)
         if curator is None:
             print "The curator name:", pieces[1], " is not in the mapping file."
             continue
