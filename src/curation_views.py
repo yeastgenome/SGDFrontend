@@ -17,6 +17,7 @@ import transaction
 import json
 import re
 from bs4 import BeautifulSoup
+import pandas as pd
 
 from .helpers import allowed_file, extract_id_request, secure_save_file, curator_or_none, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id,send_newsletter_email
 from .curation_helpers import ban_from_cache, process_pmid_list, get_curator_session, get_pusher_client, validate_orcid
@@ -1029,3 +1030,19 @@ def send_newsletter(request):
         return returnValue
     except:
         return HTTPBadRequest(body=json.dumps({'error': "Error occured during sending newsletter"}))
+
+
+@view_config(route_name='ptm_file_insert', renderer='json', request_method='POST')
+@authenticate
+def ptm_file_insert(request):
+    try:
+        file = request.POST['file'].file
+        filename = request.POST['file'].filename
+        data = pd.read_excel(io=file, sheet_name="Sheet1")
+        for index, row in data.iterrows():
+            print (row.values)
+        
+        return {"data":filename}
+
+    except Exception as e:
+        return HTTPBadRequest(body=json.dumps({ 'error': "error" }), content_type='text/json')

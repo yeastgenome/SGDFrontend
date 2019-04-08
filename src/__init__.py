@@ -168,6 +168,8 @@ def main(global_config, **settings):
     config.add_route('reserved_name_delete', '/reservations/{id}', request_method='DELETE')
     config.add_route('reserved_name_promote', '/reservations/{id}/promote', request_method='PUT')
     config.add_route('new_gene_name_reservation', '/reserve', request_method='POST')
+
+    config.add_route('ptm_file_insert','/ptm_file',request_method='POST')
     config.add_route('healthcheck', '/healthcheck')
     config.scan()
     config.add_static_view(name='assets', path='./build')
