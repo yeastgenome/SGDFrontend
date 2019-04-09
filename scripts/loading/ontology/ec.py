@@ -1,32 +1,41 @@
+import urllib
+import logging
+import os
 from datetime import datetime
 import sys
 reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('utf-8')
-sys.path.insert(0, '../../../src/')
-from models import Source, Ec, EcUrl, EcAlia
-sys.path.insert(0, '../')
-from config import CREATED_BY
-from database_session import get_nex_session as get_session
-from ontology import read_data_file  
+from src.models import Source, Ec, EcUrl, EcAlias
+from scripts.loading.database_session import get_session
+from scripts.loading.ontology import read_data_file  
                  
 __author__ = 'sweng66'
 
 ## Created on May 2017
 ## This script is used to update EC ontology in NEX2.
 
-enzyme_file = 'data/enzyme.dat'
-log_file = 'logs/ec.log'
+log_file = 'scripts/loading/ontology/logs/ec.log'
 src = 'ExPASy'
+CREATED_BY = os.environ['DEFAULT_USER']
 
-def load_ontology():
+logging.basicConfig(format='%(message)s')
+log = logging.getLogger()
+log.setLevel(logging.INFO)
+
+log.info("EC Loading Report:\n")
+
+def load_ontology(enzyme_file):
 
     nex_session = get_session()
+
+    log.info(str(datetime.now()))
+    log.info("Getting data from database...")
 
     source_to_id = dict([(x.display_name, x.source_id) for x in nex_session.query(Source).all()])
     ecid_to_ec =  dict([(x.ecid, x) for x in nex_session.query(Ec).all()])
     
     ec_id_to_alias = {}
-    for x in nex_session.query(EcAlia).all():
+    for x in nex_session.query(EcAlias).all():
         aliases = []
         if x.ec_id in ec_id_to_alias:
             aliases = ec_id_to_alias[x.ec_id]
@@ -35,7 +44,9 @@ def load_ontology():
 
     ####################################
     fw = open(log_file, "w")
-    
+
+    log.info("Reading data from enzyme file...")
+
     data = read_data_file(enzyme_file)
 
     [update_log, to_delete_list] = load_new_data(nex_session, data, 
@@ -50,6 +61,8 @@ def load_ontology():
 
     fw.close()
 
+    log.info(str(datetime.now()))
+    log.info("Done!\n\n")
 
 def load_new_data(nex_session, data, source_to_id, ecid_to_ec, ec_id_to_alias, fw):
 
@@ -98,7 +111,7 @@ def load_new_data(nex_session, data, source_to_id, ecid_to_ec, ec_id_to_alias, f
             update_log['added'] = update_log['added'] + 1
             # print "NEW entry:", id
             ## add three URLs
-            insert_url(nex_session, source_to_id['src'], src, ec_id, 
+            insert_url(nex_session, source_to_id[src], src, ec_id, 
                        'http://enzyme.expasy.org/EC/'+x['id'],
                        fw)
             insert_url(nex_session, source_to_id['BRENDA'], 'BRENDA', ec_id,
@@ -151,7 +164,7 @@ def update_aliases(nex_session, ec_id, curr_aliases, new_aliases, source_id, eci
     for alias in curr_aliases:
         if alias not in new_aliases:
             ## remove the old one                                                             
-            to_delete = nex_session.query(EcAlia).filter_by(ec_id=ec_id, display_name=alias).first()
+            to_delete = nex_session.query(EcAlias).filter_by(ec_id=ec_id, display_name=alias).first()
             nex_session.delete(to_delete) 
             fw.write("The old alias = " + alias + " has been deleted for ec_id = " + str(ec_id) + "\n")
              
@@ -181,7 +194,7 @@ def insert_alias(nex_session, source_id, display_name, alias_type, ec_id, alias_
 
     alias_just_added[(ec_id, display_name)] = 1
 
-    x = EcAlia(display_name = display_name,
+    x = EcAlias(display_name = display_name,
                 alias_type = alias_type,
                 source_id = source_id,
                 ec_id = ec_id,
@@ -205,7 +218,11 @@ def write_summary_and_send_email(fw, update_log, to_delete_list):
 
 if __name__ == "__main__":
         
-    load_ontology()
+    url_path = "ftp://ftp.expasy.org/databases/enzyme/"
+    ec_file = "enzyme.dat"
+    urllib.urlretrieve(url_path + ec_file, ec_file)
+
+    load_ontology(ec_file)
 
 
     
