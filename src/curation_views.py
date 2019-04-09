@@ -22,7 +22,7 @@ import pandas as pd
 from .helpers import allowed_file, extract_id_request, secure_save_file, curator_or_none, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id,send_newsletter_email
 from .curation_helpers import ban_from_cache, process_pmid_list, get_curator_session, get_pusher_client, validate_orcid
 from .loading.promote_reference_triage import add_paper
-from .models import DBSession, Dbentity, Dbuser, CuratorActivity, Colleague, Colleaguetriage, LocusnoteReference, Referencedbentity, Reservedname, ReservednameTriage, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags, convert_space_separated_pmids_to_list, Psimod
+from .models import DBSession, Dbentity, Dbuser, CuratorActivity, Colleague, Colleaguetriage, LocusnoteReference, Referencedbentity, Reservedname, ReservednameTriage, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags, convert_space_separated_pmids_to_list, Psimod, Posttranslationannotation
 from .tsv_parser import parse_tsv_annotations
 from .models_helpers import ModelsHelper
 
@@ -1038,10 +1038,17 @@ def ptm_file_insert(request):
     try:
         file = request.POST['file'].file
         filename = request.POST['file'].filename
-        # data = pd.read_excel(io=file, sheet_name="Sheet1")
-
-
+        xl = pd.ExcelFile(file)
+        list_of_sheets = xl.sheet_names
         
+        ##Find sheet with data
+        # for sheet in list_of_sheets:
+        #     data = pd.read_excel(io=file, sheet_name=sheet)
+        #     if (not data.empty):
+                
+
+        SOURCE_ID = 834
+
         locus_sgd_id = {}
         reference_sgd_id = {}
         dbentity_in_db = DBSession.query(Dbentity).filter(or_(Dbentity.subclass == 'LOCUS',Dbentity.subclass =='REFERENCE')).all()
@@ -1068,10 +1075,23 @@ def ptm_file_insert(request):
             psimod_to_id[p.display_name] = p.psimod_id
         
         #modifier_id
+        posttranslationannotation_to_site= {}
+        posttranslationannotation_in_db = DBSession.query(Posttranslationannotation).all()
+        for p in posttranslationannotation_in_db:
+            key = (p.reference_id,psimod_id,taxonomy_id,dbentity_id)
+            value = (p.site_index,p.site_residue)
+            posttranslationannotation_in_db[key] = value
 
 
-        # for index, row in data.iterrows():
-        #     print (row.values)
+        data = pd.read_excel(io=file, sheet_name="Sheet1")
+        data['Reference'].unique()
+        ## for index, row in data.iterrows():
+        ##     print ('Strain',row['Strain'],'Taxonomy',row['Taxonomy'],'Reference',row['Reference'],'Site Index',row['Site Index'],'Site Residue',row['Site Residue'],'Psimod',row['Psimod'],'Modifier Id',row['Modifier Id'])
+
+        ##How to identify if it an update or insert
+        ##If reference_id,psimod_id,taxonomy_id,dbentity_id is same then it is an update
+        ##Else it is an insert
+        
         
         return {"data":filename}
 
