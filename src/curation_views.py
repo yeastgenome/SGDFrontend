@@ -1081,27 +1081,37 @@ def ptm_file_insert(request):
 
         #Read data from file
         list_of_posttranslationannotation = []
+        list_of_posttranslationannotation_errors = []
         data = pd.read_excel(io=file, sheet_name="Sheet1")
         for index, row in data.iterrows():
             posttranslationannotation={}
+            posttranslationannotation_error = {}
             if(pd.isnull(row['Strain']) or ((row['Strain'],'LOCUS') not in sgd_id_to_dbentity_id)):
+                posttranslationannotation_error[index] = 'Error in strain'
+                list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                 continue
             else:
                 posttranslationannotation['dbentity_id'] = sgd_id_to_dbentity_id[(row['Strain'], 'LOCUS')]
             
             taxonomy = row['Taxonomy'].upper()
             if(pd.isnull(row['Taxonomy']) or (taxonomy not in strain_to_taxonomy_id)):
+                posttranslationannotation_error[index] = 'Error in taxonomy'
+                list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                 continue
             else:
                 posttranslationannotation['taxonomy_id'] = strain_to_taxonomy_id[taxonomy]
 
             if(pd.isnull(row['Reference']) or ((row['Reference'], 'REFERENCE') not in sgd_id_to_dbentity_id)):
+                posttranslationannotation_error[index] = 'Error in reference'
+                list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                 continue
             else:
                 posttranslationannotation['reference_id'] = sgd_id_to_dbentity_id[(row['Reference'], 'REFERENCE')]
 
             psimod = row['Psimod'].upper()
             if(pd.isnull(row['Psimod']) or (psimod not in psimod_to_id)):
+                posttranslationannotation_error[index] = 'Error in psimod'
+                list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                 continue
             else:
                 posttranslationannotation['psimod_id'] =  psimod_to_id[psimod]
@@ -1110,7 +1120,7 @@ def ptm_file_insert(request):
                 posttranslationannotation['modifier_id'] = psimod_to_id[row['Modifier Id']]
 
             list_of_posttranslationannotation.append(posttranslationannotation)
-            print(posttranslationannotation)
+        print(list_of_posttranslationannotation_errors)
         
 
         ##How to identify if it an update or insert
