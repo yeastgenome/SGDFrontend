@@ -1058,11 +1058,12 @@ def ptm_file_insert(request):
         SOURCE_ID = 834
 
         # reading from database
-        sgd_id_to_dbentity_id = models_helper.get_dbentity_by_subclass(['LOCUS','REFERENCE'])
+        sgd_id_to_dbentity_id,sgd_id_to_systematic_name = models_helper.get_dbentity_by_subclass(['LOCUS','REFERENCE'])
         strain_to_taxonomy_id = models_helper.get_straindbentity_by_strain_type(['Reference','Alternative Reference'])
         psimod_to_id = models_helper.get_psimod_all()
         posttranslationannotation_to_site = models_helper.posttranslationannotation_with_key_index()
-        
+        pubmed_id_to_reference, reference_to_dbentity_id = models_helper.get_references_all()
+
         # reading from file
         list_of_posttranslationannotation = []
         list_of_posttranslationannotation_errors = []
@@ -1072,12 +1073,15 @@ def ptm_file_insert(request):
             posttranslationannotation_error = {}
 
             gene = row[COLUMNS['gene']]
-            if(pd.isnull(gene) or ((gene, 'LOCUS') not in sgd_id_to_dbentity_id)):
+            if(not pd.isnull(gene) and (gene, 'LOCUS') in sgd_id_to_dbentity_id):
+                posttranslationannotation['dbentity_id'] = sgd_id_to_dbentity_id[(gene, 'LOCUS')]
+            elif(not pd.isnull(gene) and (gene, 'LOCUS') in sgd_id_to_systematic_name):
+                posttranslationannotation['dbentity_id'] = sgd_id_to_systematic_name[(gene, 'LOCUS')]
+            else:
                 posttranslationannotation_error[index] = 'Error in gene ' + gene
                 list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                 continue
-            else:
-                posttranslationannotation['dbentity_id'] = sgd_id_to_dbentity_id[(gene, 'LOCUS')]
+                
             
             taxonomy = row[COLUMNS['taxonomy']].upper()
             if(pd.isnull(taxonomy) or (taxonomy not in strain_to_taxonomy_id)):
@@ -1089,12 +1093,17 @@ def ptm_file_insert(request):
 
             
             reference = row[COLUMNS['reference']]
-            if(pd.isnull(reference) or (reference, 'REFERENCE') not in sgd_id_to_dbentity_id):
+            if(not pd.isnull(reference) and (reference, 'REFERENCE') in sgd_id_to_dbentity_id):
+                posttranslationannotation['reference_id'] = sgd_id_to_dbentity_id[(reference, 'REFERENCE')]
+            elif(not pd.isnull(reference) and reference in pubmed_id_to_reference):
+                posttranslationannotation['reference_id'] = pubmed_id_to_reference[reference]
+            elif(not pd.isnull(reference) and reference in reference_to_dbentity_id):
+                posttranslationannotation['reference_id'] = reference_to_dbentity_id[reference]
+            else:
                 posttranslationannotation_error[index] = 'Error in reference ' + reference
                 list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                 continue
-            else:
-                posttranslationannotation['reference_id'] = sgd_id_to_dbentity_id[(reference, 'REFERENCE')]
+                
 
             psimod = row[COLUMNS['psimod']].upper()
             if(pd.isnull(psimod) or (psimod not in psimod_to_id)):
@@ -1105,8 +1114,11 @@ def ptm_file_insert(request):
                 posttranslationannotation['psimod_id'] =  psimod_to_id[psimod]
             
             modifier = row[COLUMNS['modifier']]
-            if(not(pd.isnull(modifier)) and ((modifier, 'LOCUS') in sgd_id_to_dbentity_id)):
+
+            if(not pd.isnull(modifier) and (modifier, 'LOCUS') in sgd_id_to_dbentity_id):
                 posttranslationannotation['modifier_id'] = sgd_id_to_dbentity_id[(modifier, 'LOCUS')]
+            elif(not pd.isnull(modifier) and (modifier, 'LOCUS') in sgd_id_to_systematic_name):
+                posttranslationannotation['modifier_id'] = sgd_id_to_systematic_name[(modifier, 'LOCUS')]
 
             list_of_posttranslationannotation.append(posttranslationannotation)
         

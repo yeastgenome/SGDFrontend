@@ -397,14 +397,14 @@ class ModelsHelper(object):
 
     def get_dbentity_by_subclass(self,subclasses):
         sgd_id_to_dbentity_id = {}
+        sgd_id_to_systematic_name = {}
         dbentity_all = DBSession.query(Dbentity).all()
         for d in dbentity_all:
             if d.subclass in subclasses:
-                key = (d.sgdid, d.subclass)
-                value = d.dbentity_id
-                sgd_id_to_dbentity_id[key] = value
+                sgd_id_to_dbentity_id[(d.sgdid, d.subclass)] = d.dbentity_id
+                sgd_id_to_systematic_name[(d.format_name, d.subclass)] = d.dbentity_id
         
-        return sgd_id_to_dbentity_id
+        return sgd_id_to_dbentity_id, sgd_id_to_systematic_name
 
     def get_straindbentity_by_strain_type(self,straintypes):
         strain_to_taxonomy_id = {}
@@ -433,3 +433,12 @@ class ModelsHelper(object):
             posttranslationannotation_to_site[key] = value
         
         return posttranslationannotation_to_site
+
+    def get_references_all(self):
+        pubmed_id_to_reference = {}
+        reference_to_dbentity_id = {}
+        references_in_db = DBSession.query(Referencedbentity).all()
+        for r in references_in_db:
+            pubmed_id_to_reference[p.pmid] = p.dbentity_id
+            reference_to_dbentity_id[p.dbentity_id] = p.dbentity_id
+
