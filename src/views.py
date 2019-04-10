@@ -1289,8 +1289,14 @@ def ambiguous_names(request):
 
     data = {}
     alias_data = DBSession.query(LocusAlias).filter_by(alias_type='Uniform').all()
+    display_name_to_locus_id = {}
     for y in alias_data:
         display_name = y.display_name
+        locus_id_list = []
+        if display_name in display_name_to_locus_id:
+            locus_id_list = display_name_to_locus_id[display_name]
+        locus_id_list.append(y.locus_id)
+        display_name_to_locus_id[display_name] = locus_id_list
         if display_name not in mapping:
             continue
         if display_name not in data:
@@ -1308,6 +1314,22 @@ def ambiguous_names(request):
                        "alias_name": display_name,
                        "name_type": 'alias_name' })
         data[display_name] = names
+
+    for display_name in display_name_to_locus_id:
+        if len(display_name_to_locus_id[display_name]) > 1:
+            locus_id_list = display_name_to_locus_id[display_name]
+            names = []
+            if display_name in data:
+                names = data[display_name]
+            for locus_id in locus_id_list:
+                systematic_name = locus_id2systematic_name[locus_id]
+                x = mapping[systematic_name]
+                names.append({ "systematic_name": systematic_name,
+                               "gene_name": x.gene_name,
+                               "sgdid": x.sgdid,
+                               "alias_name": display_name,
+                               "name_type": 'alias_name' })
+            data[display_name] = names
 
     return data
 
