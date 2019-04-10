@@ -6,7 +6,7 @@ from datetime import datetime
 import logging
 reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
-from src.models import Dbentity, LocusAlias, Source, Filedbentity, Edam
+from src.models import Dbentity, LocusAlias, LocusUrl, Source, Filedbentity, Edam
 from src.helpers import upload_file
 from scripts.loading.database_session import get_session
 
@@ -50,7 +50,7 @@ def update_data(infile):
         locus_id_to_ec_list_DB[x.locus_id] = ec_list
 
     log.info(str(datetime.now()))
-    log.info("Reading data from enzyme,dat file...")
+    log.info("Reading data from enzyme.dat file and updating database...")
 
     locus_id_to_ec_list = read_enzyme_file(uniprot_to_locus_id, infile)
 
@@ -80,6 +80,7 @@ def add_ec_list(nex_session, fw, locus_id, source_id, new_ec_list):
     
     for ec in new_ec_list:
         insert_locus_alias(nex_session, fw, locus_id, source_id, ec)
+        insert_locus_url(nex_session, fw, locus_id, source_id, ec)
 
 def insert_locus_alias(nex_session, fw, locus_id, source_id, ec):
 
@@ -99,6 +100,24 @@ def insert_locus_alias(nex_session, fw, locus_id, source_id, ec):
 
     fw.write("Insert a new " + ALIAS_TYPE + ": " + ec + " for locus_id=" + str(locus_id) + "\n")
 
+def insert_locus_url(nex_session, fw, locus_id, source_id, ec):
+
+    obj_url = ROOT_OBJ_URL + ec
+
+    # print locus_id, source_id, ec, obj_url, ALIAS_TYPE, CREATED_BY                                    
+
+    x = LocusUrl(display_name = "E.C." + ec,
+                 obj_url = obj_url,
+                 source_id = source_id,
+                 locus_id = locus_id,
+                 url_type = "External id",
+                 placement = "LOCUS_LSP_RESOURCES",
+                 created_by = CREATED_BY)
+
+    nex_session.add(x)
+
+    fw.write("Insert a new " + ALIAS_TYPE + " URL: " + ec + " for locus_id=" + str(locus_id) + "\n")
+
 def update_ec_list(nex_session, fw, locus_id, source_id, new_ec_list, old_ec_list):
 
     for ec in new_ec_list:
@@ -106,9 +125,11 @@ def update_ec_list(nex_session, fw, locus_id, source_id, new_ec_list, old_ec_lis
             old_ec_list.remove(ec)
         else:
             insert_locus_alias(nex_session, fw, locus_id, source_id, ec)
+            insert_locus_url(nex_session, fw, locus_id, source_id, ec)
 
     for ec in old_ec_list:
         delete_ec(nex_session, fw, locus_id, ec)
+        delete_ec_url(nex_session, fw, locus_id, ec)
 
 def delete_ec(nex_session, fw, locus_id, ec):
     
@@ -116,6 +137,11 @@ def delete_ec(nex_session, fw, locus_id, ec):
     
     fw.write("Delete " + ALIAS_TYPE + ": " + ec + " for locus_id=" + str(locus_id) + "\n")    
 
+def delete_ec_url(nex_session, fw, locus_id, ec):
+
+    nex_session.query(LocusUrl).filter_by(display_name="E.C."+ec, locus_id=locus_id).delete()
+
+    fw.write("Delete " + ALIAS_TYPE + " URL: " + ec + " for locus_id=" + str(locus_id) + "\n")
 
 def delete_old_ec_list(nex_session, fw, locus_id_to_ec_list_DB):
 
@@ -123,6 +149,7 @@ def delete_old_ec_list(nex_session, fw, locus_id_to_ec_list_DB):
         ec_list = locus_id_to_ec_list_DB[locus_id]
         for ec in ec_list:
             delete_ec(nex_session, fw, locus_id, ec)
+            delete_ec_url(nex_session, fw, locus_id, ec)
 
 def read_enzyme_file(uniprot_to_locus_id, infile):
 
