@@ -1,4 +1,4 @@
-from models import DBSession, Base, Colleague, ColleagueLocus, ColleagueRelation, FilePath, Filedbentity, FileKeyword, Path, ColleagueReference, ColleagueUrl, Colleaguetriage, Dbentity, Locusdbentity, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi
+from models import DBSession, Base, Colleague, ColleagueLocus, ColleagueRelation, FilePath, Filedbentity, FileKeyword, Path, ColleagueReference, ColleagueUrl, Colleaguetriage, Dbentity, Locusdbentity, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi, Psimod, Posttranslationannotation
 import os
 import requests
 
@@ -394,3 +394,42 @@ class ModelsHelper(object):
                 return files
 
         return None
+
+    def get_dbentity_by_subclass(self,subclasses):
+        sgd_id_to_dbentity_id = {}
+        dbentity_all = DBSession.query(Dbentity).all()
+        for d in dbentity_all:
+            if d.subclass in subclasses:
+                key = (d.sgdid, d.subclass)
+                value = d.dbentity_id
+                sgd_id_to_dbentity_id[key] = value
+        
+        return sgd_id_to_dbentity_id
+
+    def get_straindbentity_by_strain_type(self,straintypes):
+        strain_to_taxonomy_id = {}
+        strains_in_db = DBSession.query(Straindbentity).all()
+        for s in strains_in_db:
+            if(s.strain_type in straintypes):
+                strain_to_taxonomy_id[s.display_name] = s.taxonomy_id
+        
+        return strain_to_taxonomy_id
+
+    def get_psimod_all(self):
+        psimod_to_id = {}
+        psimod_in_db = DBSession.query(Psimod).all()
+        for p in psimod_in_db:
+            key = p.display_name.upper()
+            psimod_to_id[key] = p.psimod_id
+        
+        return psimod_to_id
+
+    def posttranslationannotation_with_key_index(self):
+        posttranslationannotation_to_site = {}
+        posttranslationannotation_in_db = DBSession.query(Posttranslationannotation).all()
+        for p in posttranslationannotation_in_db:
+            key = (p.reference_id, p.psimod_id, p.taxonomy_id, p.dbentity_id)
+            value = [p.site_index, p.site_residue]
+            posttranslationannotation_to_site[key] = value
+        
+        return posttranslationannotation_to_site

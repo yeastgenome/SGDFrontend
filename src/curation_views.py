@@ -1049,37 +1049,13 @@ def ptm_file_insert(request):
 
         SOURCE_ID = 834
 
-        sgd_id_to_dbentity_id = {}
-        dbentity_in_db = DBSession.query(Dbentity).filter(or_(Dbentity.subclass == 'LOCUS',Dbentity.subclass =='REFERENCE')).all()
+        # reading from database
+        sgd_id_to_dbentity_id = models_helper.get_dbentity_by_subclass(['LOCUS','REFERENCE'])
+        strain_to_taxonomy_id = models_helper.get_straindbentity_by_strain_type(['Reference','Alternative Reference'])
+        psimod_to_id = models_helper.get_psimod_all()
+        posttranslationannotation_to_site = models_helper.posttranslationannotation_with_key_index()
         
-        for d in dbentity_in_db:
-            key = (d.sgdid,d.subclass)
-            value = d.dbentity_id
-            sgd_id_to_dbentity_id[key] = value
-        
-        #taxonomy_id
-        strain_to_taxonomy_id={}
-        strains_in_db = DBSession.query(Straindbentity).filter(or_(Straindbentity.strain_type == 'Reference', Straindbentity.strain_type == 'Alternative Reference')).all()
-        for s in strains_in_db:
-            strain_to_taxonomy_id[s.display_name]= s.taxonomy_id
-
-        #psmoid
-        psimod_to_id = {}
-        psimod_in_db = DBSession.query(Psimod).all()
-        for p in psimod_in_db:
-            key = p.display_name.upper()
-            psimod_to_id[key] = p.psimod_id
-
-        #modifier_id
-        posttranslationannotation_to_site= {}
-        posttranslationannotation_in_db = DBSession.query(Posttranslationannotation).all()
-        for p in posttranslationannotation_in_db:
-            key = (p.reference_id,p.psimod_id,p.taxonomy_id,p.dbentity_id)
-            value = [p.site_index,p.site_residue]
-            posttranslationannotation_to_site[key] = value
-
-
-        #Read data from file
+        # reading from file
         list_of_posttranslationannotation = []
         list_of_posttranslationannotation_errors = []
         data = pd.read_excel(io=file, sheet_name="Sheet1")
