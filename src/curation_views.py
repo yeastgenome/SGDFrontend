@@ -1049,18 +1049,13 @@ def ptm_file_insert(request):
 
         SOURCE_ID = 834
 
-        locus_sgd_id = {}
-        reference_sgd_id = {}
+        sgd_id_to_dbentity_id = {}
         dbentity_in_db = DBSession.query(Dbentity).filter(or_(Dbentity.subclass == 'LOCUS',Dbentity.subclass =='REFERENCE')).all()
         
         for d in dbentity_in_db:
-            if d.subclass == 'LOCUS':
-                locus_sgd_id[d.sgdid] = d.dbentity_id
-                continue
-            
-            if d.subclass == 'REFERENCE':
-                reference_sgd_id[d.sgdid] = d.dbentity_id
-                continue
+            key = (d.sgdid,d.subclass)
+            value = d.dbentity_id
+            sgd_id_to_dbentity_id[key] = value
         
         #taxonomy_id
         strain_to_taxonomy_id={}
@@ -1070,23 +1065,53 @@ def ptm_file_insert(request):
 
         #psmoid
         psimod_to_id = {}
-        psimod_in_db = DBSession.query(Psimod).filter(Psimod.source_id == 834).all()
+        psimod_in_db = DBSession.query(Psimod).all()
         for p in psimod_in_db:
-            psimod_to_id[p.display_name] = p.psimod_id
-        
+            key = p.display_name.upper()
+            psimod_to_id[key] = p.psimod_id
+
         #modifier_id
         posttranslationannotation_to_site= {}
         posttranslationannotation_in_db = DBSession.query(Posttranslationannotation).all()
         for p in posttranslationannotation_in_db:
-            key = (p.reference_id,psimod_id,taxonomy_id,dbentity_id)
-            value = (p.site_index,p.site_residue)
-            posttranslationannotation_in_db[key] = value
+            key = (p.reference_id,p.psimod_id,p.taxonomy_id,p.dbentity_id)
+            value = [p.site_index,p.site_residue]
+            posttranslationannotation_to_site[key] = value
 
 
+        #Read data from file
+        list_of_posttranslationannotation = []
         data = pd.read_excel(io=file, sheet_name="Sheet1")
-        data['Reference'].unique()
-        ## for index, row in data.iterrows():
-        ##     print ('Strain',row['Strain'],'Taxonomy',row['Taxonomy'],'Reference',row['Reference'],'Site Index',row['Site Index'],'Site Residue',row['Site Residue'],'Psimod',row['Psimod'],'Modifier Id',row['Modifier Id'])
+        for index, row in data.iterrows():
+            posttranslationannotation={}
+            if(pd.isnull(row['Strain']) or ((row['Strain'],'LOCUS') not in sgd_id_to_dbentity_id)):
+                continue
+            else:
+                posttranslationannotation['dbentity_id'] = sgd_id_to_dbentity_id[(row['Strain'], 'LOCUS')]
+            
+            taxonomy = row['Taxonomy'].upper()
+            if(pd.isnull(row['Taxonomy']) or (taxonomy not in strain_to_taxonomy_id)):
+                continue
+            else:
+                posttranslationannotation['taxonomy_id'] = strain_to_taxonomy_id[taxonomy]
+
+            if(pd.isnull(row['Reference']) or ((row['Reference'], 'REFERENCE') not in sgd_id_to_dbentity_id)):
+                continue
+            else:
+                posttranslationannotation['reference_id'] = sgd_id_to_dbentity_id[(row['Reference'], 'REFERENCE')]
+
+            psimod = row['Psimod'].upper()
+            if(pd.isnull(row['Psimod']) or (psimod not in psimod_to_id)):
+                continue
+            else:
+                posttranslationannotation['psimod_id'] =  psimod_to_id[psimod]
+            
+            if(not(pd.isnull(row['Modifier Id'])) and ((row['Modifier Id'], 'LOCUS') in sgd_id_to_dbentity_id)):
+                posttranslationannotation['modifier_id'] = psimod_to_id[row['Modifier Id']]
+
+            list_of_posttranslationannotation.append(posttranslationannotation)
+            print(posttranslationannotation)
+        
 
         ##How to identify if it an update or insert
         ##If reference_id,psimod_id,taxonomy_id,dbentity_id is same then it is an update
