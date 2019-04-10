@@ -1045,7 +1045,15 @@ def ptm_file_insert(request):
         # for sheet in list_of_sheets:
         #     data = pd.read_excel(io=file, sheet_name=sheet)
         #     if (not data.empty):
-                
+        COLUMNS = {
+            'gene': 'Gene (sgdid,systematic name)',
+            'taxonomy': 'Taxonomy',
+            'reference': 'Reference (sgdid, pubmed id, reference no)',
+            'index': 'Site Index',
+            'residue': 'Site Residue',
+            'psimod': 'Psimod',
+            'modifier': 'Modifier Id(sgdid, systematic name)'
+        }
 
         SOURCE_ID = 834
 
@@ -1062,42 +1070,48 @@ def ptm_file_insert(request):
         for index, row in data.iterrows():
             posttranslationannotation={}
             posttranslationannotation_error = {}
-            if(pd.isnull(row['Strain']) or ((row['Strain'],'LOCUS') not in sgd_id_to_dbentity_id)):
-                posttranslationannotation_error[index] = 'Error in strain'
+
+            gene = row[COLUMNS['gene']]
+            if(pd.isnull(gene) or ((gene, 'LOCUS') not in sgd_id_to_dbentity_id)):
+                posttranslationannotation_error[index] = 'Error in gene ' + gene
                 list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                 continue
             else:
-                posttranslationannotation['dbentity_id'] = sgd_id_to_dbentity_id[(row['Strain'], 'LOCUS')]
+                posttranslationannotation['dbentity_id'] = sgd_id_to_dbentity_id[(gene, 'LOCUS')]
             
-            taxonomy = row['Taxonomy'].upper()
-            if(pd.isnull(row['Taxonomy']) or (taxonomy not in strain_to_taxonomy_id)):
-                posttranslationannotation_error[index] = 'Error in taxonomy'
+            taxonomy = row[COLUMNS['taxonomy']].upper()
+            if(pd.isnull(taxonomy) or (taxonomy not in strain_to_taxonomy_id)):
+                posttranslationannotation_error[index] = 'Error in taxonomy '+ taxonomy
                 list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                 continue
             else:
                 posttranslationannotation['taxonomy_id'] = strain_to_taxonomy_id[taxonomy]
 
-            if(pd.isnull(row['Reference']) or ((row['Reference'], 'REFERENCE') not in sgd_id_to_dbentity_id)):
-                posttranslationannotation_error[index] = 'Error in reference'
+            
+            reference = row[COLUMNS['reference']]
+            if(pd.isnull(reference) or (reference, 'REFERENCE') not in sgd_id_to_dbentity_id):
+                posttranslationannotation_error[index] = 'Error in reference ' + reference
                 list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                 continue
             else:
-                posttranslationannotation['reference_id'] = sgd_id_to_dbentity_id[(row['Reference'], 'REFERENCE')]
+                posttranslationannotation['reference_id'] = sgd_id_to_dbentity_id[(reference, 'REFERENCE')]
 
-            psimod = row['Psimod'].upper()
-            if(pd.isnull(row['Psimod']) or (psimod not in psimod_to_id)):
-                posttranslationannotation_error[index] = 'Error in psimod'
+            psimod = row[COLUMNS['psimod']].upper()
+            if(pd.isnull(psimod) or (psimod not in psimod_to_id)):
+                posttranslationannotation_error[index] = 'Error in psimod ' + psimod
                 list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                 continue
             else:
                 posttranslationannotation['psimod_id'] =  psimod_to_id[psimod]
             
-            if(not(pd.isnull(row['Modifier Id'])) and ((row['Modifier Id'], 'LOCUS') in sgd_id_to_dbentity_id)):
-                posttranslationannotation['modifier_id'] = psimod_to_id[row['Modifier Id']]
+            modifier = row[COLUMNS['modifier']]
+            if(not(pd.isnull(modifier)) and ((modifier, 'LOCUS') in sgd_id_to_dbentity_id)):
+                posttranslationannotation['modifier_id'] = sgd_id_to_dbentity_id[(modifier, 'LOCUS')]
 
             list_of_posttranslationannotation.append(posttranslationannotation)
-        print(list_of_posttranslationannotation_errors)
         
+        curator_session = get_curator_session(request.session['username'])
+        # curator_session
 
         ##How to identify if it an update or insert
         ##If reference_id,psimod_id,taxonomy_id,dbentity_id is same then it is an update
