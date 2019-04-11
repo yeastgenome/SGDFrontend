@@ -1288,7 +1288,8 @@ def ambiguous_names(request):
         locus_id2systematic_name[x.dbentity_id] = x.systematic_name
 
     data = {}
-    alias_data = DBSession.query(LocusAlias).filter_by(alias_type='Uniform').all()
+    # alias_data = DBSession.query(LocusAlias).filter_by(alias_type='Uniform').all()
+    alias_data = DBSession.query(LocusAlias).filter(LocusAlias.alias_type.in_(['Uniform', 'Non-uniform'])).all()   
     display_name_to_locus_id = {}
     for y in alias_data:
         display_name = y.display_name
