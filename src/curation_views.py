@@ -1072,18 +1072,68 @@ def ptm_file_insert(request):
 
         #TODO: Check for nan before split 
         for index, row in data.iterrows():
-            posttranslationannotation={}
+            posttranslationannotation_existing={
+                'dbentity_id':'',
+                'taxonomy_id':'',
+                'reference_id':'',
+                'psimod_id':'',
+                'modifier_id':''
+            }
+            posttranslationannotation_update = {
+                'dbentity_id': '',
+                'taxonomy_id': '',
+                'reference_id': '',
+                'psimod_id': '',
+                'modifier_id': ''
+            }
             posttranslationannotation_error = {}
 
-            gene = row[COLUMNS['gene']].split(SEPARATOR)[0]
-            if(not pd.isnull(gene) and (gene, 'LOCUS') in sgd_id_to_dbentity_id):
-                posttranslationannotation['dbentity_id'] = sgd_id_to_dbentity_id[(gene, 'LOCUS')]
-            elif(not pd.isnull(gene) and (gene, 'LOCUS') in sgd_id_to_systematic_name):
-                posttranslationannotation['dbentity_id'] = sgd_id_to_systematic_name[(gene, 'LOCUS')]
-            else:
+            gene = row[COLUMNS['gene']]
+            if(pd.isnull(gene)):
                 posttranslationannotation_error[index] = 'Error in gene ' + gene
                 list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                 continue
+            else:
+                if SEPARATOR in gene:
+                    gene = str(row[COLUMNS['gene']].split(SEPARATOR)[0]).strip()
+                    gene_new = str(row[COLUMNS['gene']].split(SEPARATOR)[1]).strip()
+
+                    key = (gene,'LOCUS')
+                    if(key in sgd_id_to_dbentity_id):
+                        posttranslationannotation_existing['dbentity_id'] = sgd_id_to_dbentity_id[key]
+                    elif(key in sgd_id_to_systematic_name):
+                        posttranslationannotation_existing['dbentity_id'] = sgd_id_to_systematic_name[key]
+                    else:
+                        posttranslationannotation_error[index] = 'Error in gene ' + gene
+                        list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
+                        continue
+
+                    key = (gene_new, 'LOCUS')
+                    if(key in sgd_id_to_dbentity_id):
+                        posttranslationannotation_update['dbentity_id'] = sgd_id_to_dbentity_id[key]
+                    elif(key in sgd_id_to_systematic_name):
+                        posttranslationannotation_update['dbentity_id'] = sgd_id_to_systematic_name[key]
+                    else:
+                        posttranslationannotation_error[index] = 'Error in updating gene ' + gene
+                        list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
+                        continue
+
+                else:
+                    gene = str(row[COLUMNS['gene']]).strip()
+                    gene_new = gene
+
+                    key = (gene, 'LOCUS')
+                    if(key in sgd_id_to_dbentity_id):
+                        posttranslationannotation_existing['dbentity_id'] = sgd_id_to_dbentity_id[key]
+                        posttranslationannotation_update['dbentity_id'] = sgd_id_to_dbentity_id[key]
+                    elif(key in sgd_id_to_systematic_name):
+                        posttranslationannotation_existing['dbentity_id'] = sgd_id_to_systematic_name[key]
+                        posttranslationannotation_update['dbentity_id'] = sgd_id_to_systematic_name[key]
+                    else:
+                        posttranslationannotation_error[index] = 'Error in gene ' + gene
+                        list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
+                        continue
+
                 
             taxonomy = row[COLUMNS['taxonomy']].upper().split(SEPARATOR)[0]
             if(pd.isnull(taxonomy) or (taxonomy not in strain_to_taxonomy_id)):
@@ -1091,19 +1141,25 @@ def ptm_file_insert(request):
                 list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                 continue
             else:
-                posttranslationannotation['taxonomy_id'] = strain_to_taxonomy_id[taxonomy]
+                posttranslationannotation_existing['taxonomy_id'] = strain_to_taxonomy_id[taxonomy]
 
-            reference = str(row[COLUMNS['reference']]).split(SEPARATOR)[0]
-            if(not pd.isnull(reference) and (reference, 'REFERENCE') in sgd_id_to_dbentity_id):
-                posttranslationannotation['reference_id'] = sgd_id_to_dbentity_id[(reference, 'REFERENCE')]
-            elif(not pd.isnull(reference) and reference in pubmed_id_to_reference):
-                posttranslationannotation['reference_id'] = pubmed_id_to_reference[reference]
-            elif(not pd.isnull(reference) and int(reference) in reference_to_dbentity_id):
-                posttranslationannotation['reference_id'] = reference_to_dbentity_id[int(reference)]
-            else:
+            reference = str(row[COLUMNS['reference']])
+            if(pd.isnull(reference)):
                 posttranslationannotation_error[index] = 'Error in reference ' + reference
                 list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                 continue
+            else:
+                reference = str(row[COLUMNS['reference']]).split(SEPARATOR)[0]
+                if((reference, 'REFERENCE') in sgd_id_to_dbentity_id):
+                    posttranslationannotation_existing['reference_id'] = sgd_id_to_dbentity_id[(reference, 'REFERENCE')]
+                elif(reference in pubmed_id_to_reference):
+                    posttranslationannotation_existing['reference_id'] = pubmed_id_to_reference[reference]
+                elif(int(reference) in reference_to_dbentity_id):
+                    posttranslationannotation_existing['reference_id'] = reference_to_dbentity_id[int(reference)]
+                else:
+                    posttranslationannotation_error[index] = 'Error in reference ' + reference
+                    list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
+                    continue
                 
             psimod = row[COLUMNS['psimod']].upper().split(SEPARATOR)[0]
             if(pd.isnull(psimod) or (psimod not in psimod_to_id)):
@@ -1111,15 +1167,19 @@ def ptm_file_insert(request):
                 list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                 continue
             else:
-                posttranslationannotation['psimod_id'] =  psimod_to_id[psimod]
+                psimod = row[COLUMNS['psimod']].upper().split(SEPARATOR)[0]
+                posttranslationannotation_existing['psimod_id'] =  psimod_to_id[psimod]
             
             modifier = row[COLUMNS['modifier']].split(SEPARATOR)[0]
-            if(not pd.isnull(modifier) and (modifier, 'LOCUS') in sgd_id_to_dbentity_id):
-                posttranslationannotation['modifier_id'] = sgd_id_to_dbentity_id[(modifier, 'LOCUS')]
-            elif(not pd.isnull(modifier) and (modifier, 'LOCUS') in sgd_id_to_systematic_name):
-                posttranslationannotation['modifier_id'] = sgd_id_to_systematic_name[(modifier, 'LOCUS')]
+            if(pd.isnull(modifier)):
+                pass
+            else:
+                if(not pd.isnull(modifier) and (modifier, 'LOCUS') in sgd_id_to_dbentity_id):
+                    posttranslationannotation_existing['modifier_id'] = sgd_id_to_dbentity_id[(modifier, 'LOCUS')]
+                elif(not pd.isnull(modifier) and (modifier, 'LOCUS') in sgd_id_to_systematic_name):
+                    posttranslationannotation_existing['modifier_id'] = sgd_id_to_systematic_name[(modifier, 'LOCUS')]
 
-            list_of_posttranslationannotation.append(posttranslationannotation)
+            list_of_posttranslationannotation.append(posttranslationannotation_existing)
         
         # curator_session = get_curator_session(request.session['username'])
         # curator_session
