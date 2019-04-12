@@ -436,11 +436,11 @@ class ModelsHelper(object):
 
     def get_references_all(self):
         pubmed_id_to_reference = {}
-        reference_to_dbentity_id = {}
+        reference_to_dbentity_id = []
         references_in_db = DBSession.query(Referencedbentity).all()
         for reference in references_in_db:
             pubmed_id_to_reference[str(reference.pmid)] = reference.dbentity_id
-            reference_to_dbentity_id[str(reference.dbentity_id)] = reference.dbentity_id
+            reference_to_dbentity_id.append(str(reference.dbentity_id))
 
         return pubmed_id_to_reference,reference_to_dbentity_id
 
