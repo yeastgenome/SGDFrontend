@@ -278,7 +278,7 @@ const GoTermFinder = React.createClass({
 		if (genes == '') {
 		     return '';
 		}	 	        
-                genes = genes.replace(/[^A-Za-z:\-0-9]/g, ' ');
+		genes = genes.replace(/[^A-Za-z:\-0-9\(\)\,\_]/g, ' ');
                 var re = /\+/g;
                 genes = genes.replace(re, " ");
                 var re = / +/g;
