@@ -144,7 +144,7 @@ const GoTermFinder = React.createClass({
 			<div dangerouslySetInnerHTML={{ __html: descText}} />
 			<div className="row">
 			     <div className="large-12 columns">
-			     	  <form onSubmit={this.onSubmit} target="infowin">
+			     	  <form onSubmit={this.onSubmit} onReset={this.onReset} target="infowin">
 				  	{ submitReset }
 				        <DataTable data={_defaultSection} />
 					<DataTable data={_backgroundSection} />
@@ -286,6 +286,11 @@ const GoTermFinder = React.createClass({
 
 		return genes;
 
+	},
+
+	onReset(e) {
+		   window.location.reload();
+                   return 1;
 	},
 
 	onSubmit(e) {
