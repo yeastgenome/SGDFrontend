@@ -1313,6 +1313,15 @@ def alignment(request):
     else:
         return {}
 
+
+@view_config(route_name='get_strains', renderer='json', request_method='GET')
+def get_strains(request):
+    strains = DBSession.query(Straindbentity).filter(or_(Straindbentity.strain_type == 'Alternative Reference', Straindbentity.strain_type == 'Reference', Straindbentity.taxonomy_id == 274803)).order_by(Straindbentity.display_name).all()
+    if strains:
+        return {'strains': [s.get_strains_with_taxonomy() for s in strains]}
+    return None
+
+
 # check for basic rad54 response
 @view_config(route_name='healthcheck', renderer='json', request_method='GET')
 def healthcheck(request):
