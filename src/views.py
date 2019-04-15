@@ -17,7 +17,7 @@ import datetime
 import logging
 import json
 
-from .models import DBSession, ESearch, Colleague, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, Dataset, DatasetKeyword, Contig, Proteindomain, Ec, Dnasequenceannotation, Straindbentity, Disease, Complexdbentity, Filedbentity, Goslim, So, ApoRelation, GoRelation
+from .models import DBSession, ESearch, Colleague, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, Dataset, DatasetKeyword, Contig, Proteindomain, Ec, Dnasequenceannotation, Straindbentity, Disease, Complexdbentity, Filedbentity, Goslim, So, ApoRelation, GoRelation, Psimod
 from .helpers import extract_id_request, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id, get_disease_by_id, primer3_parser
 from .search_helpers import build_autocomplete_search_body_request, format_autocomplete_results, build_search_query, build_es_search_body_request, build_es_aggregation_body_request, format_search_results, format_aggregation_results, build_sequence_objects_search_query
 from .models_helpers import ModelsHelper
@@ -1316,10 +1316,25 @@ def alignment(request):
 
 @view_config(route_name='get_strains', renderer='json', request_method='GET')
 def get_strains(request):
-    strains = DBSession.query(Straindbentity).filter(or_(Straindbentity.strain_type == 'Alternative Reference', Straindbentity.strain_type == 'Reference', Straindbentity.taxonomy_id == 274803)).order_by(Straindbentity.display_name).all()
-    if strains:
-        return {'strains': [s.get_strains_with_taxonomy() for s in strains]}
-    return None
+    try:    
+        strains = DBSession.query(Straindbentity).filter(or_(Straindbentity.strain_type == 'Alternative Reference', Straindbentity.strain_type == 'Reference', Straindbentity.taxonomy_id == 274803)).order_by(Straindbentity.display_name).all()
+        if strains:
+            return {'strains': [s.get_strains_with_taxonomy() for s in strains]}
+        
+        return None
+
+    except Exception as e:
+        return HTTPBadRequest(body=json.dumps({'error': str(e)}))
+
+@view_config(route_name='get_psimod', renderer ='json',request_method='GET')
+def get_psimod(request):
+    try:
+        psimods = DBSession.query(Psimod).order_by(Psimod.display_name).all()
+        if psimods:
+            return {'psimods':[{"psimod_id":p.psimod_id, "display_name":p.display_name} for p in psimods]}
+        return None
+    except Exception as e:
+        return HTTPBadRequest(body=json.dumps({'error':str(e)}))
 
 
 # check for basic rad54 response
