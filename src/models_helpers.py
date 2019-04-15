@@ -397,14 +397,14 @@ class ModelsHelper(object):
 
     def get_dbentity_by_subclass(self,subclasses):
         sgd_id_to_dbentity_id = {}
-        sgd_id_to_systematic_name = {}
+        systematic_name_to_dbentity_id = {}
         dbentity_all = DBSession.query(Dbentity).all()
         for d in dbentity_all:
             if d.subclass in subclasses:
                 sgd_id_to_dbentity_id[(d.sgdid, d.subclass)] = d.dbentity_id
-                sgd_id_to_systematic_name[(d.format_name, d.subclass)] = d.dbentity_id
+                systematic_name_to_dbentity_id[(d.format_name, d.subclass)] = d.dbentity_id
         
-        return sgd_id_to_dbentity_id, sgd_id_to_systematic_name
+        return sgd_id_to_dbentity_id, systematic_name_to_dbentity_id
 
     def get_straindbentity_by_strain_type(self,straintypes):
         strain_to_taxonomy_id = {}
