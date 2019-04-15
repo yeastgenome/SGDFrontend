@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-const GET_PTMs_URL = '/get_ptms/';
 import fetchData from '../../lib/fetchData';
+
+const GET_PTMs_URL = '/get_ptms/';
+const GET_STRAINS = '/get_strains';
 const TIMEOUT = 120000;
 
 class PtmForm extends Component {
@@ -26,7 +28,8 @@ class PtmForm extends Component {
     };
 
     this.state = {
-      list_of_ptms: [],
+      taxonomy_id_to_name:[],
+      list_of_ptms: [this.newPTM],
       dbentity_id: 'S000001855',
       taxonomy_id: '',
       reference_id: '',
@@ -34,8 +37,14 @@ class PtmForm extends Component {
       site_residue: '',
       psimod_id: '',
       modifier_id: '',
-      visible_ptm_index: -1
+      visible_ptm_index: 0
     };
+
+    this.getStrainsForTaxonomy();
+  }
+
+  componentDidMount(){
+    this.setPtm(0);
   }
 
   handleChange(event) {
@@ -44,6 +53,19 @@ class PtmForm extends Component {
     this.setState({
       [name]: value
     });
+  }
+
+  getStrainsForTaxonomy(){
+    fetchData(GET_STRAINS,{
+      type:'GET'
+    })
+    .then(data => {
+      var values = data['strains'].map((strain,index) => {
+        return <option value={strain.taxonomy_id} key={index}> {strain.display_name} </option> ;
+      });
+      this.setState({taxonomy_id_to_name: values});
+    })
+    .catch(err => console.log(err));
   }
 
   getPTMS() {
@@ -84,7 +106,7 @@ class PtmForm extends Component {
   }
 
   render() {
-    var currentIndex = this.state.visible_ptm_index;
+    var currentIndex = this.state.visible_ptm_index + 1;
     var count_of_ptms = this.state.list_of_ptms.length;
     return (
       <form>
@@ -124,7 +146,10 @@ class PtmForm extends Component {
 
             <div className='row'>
               <div className='columns medium-8'>
-                <input type='text' placeholder='Enter Taxonomy' name='taxonomy_id' value={this.state.taxonomy_id} onChange={this.handleChange} />
+                {/* <input type='text' placeholder='Enter Taxonomy' name='taxonomy_id' value={this.state.taxonomy_id} onChange={this.handleChange} /> */}
+                <select value={this.state.taxonomy_id} onChange={this.handleChange} name='taxonomy_id'>
+                  {this.state.taxonomy_id_to_name}
+                </select>
               </div>
             </div>
           </div>
@@ -223,10 +248,10 @@ class PtmForm extends Component {
 
         <div className='row'>
           <div className='columns small-3'>
-            <button type='button' className="button" onClick={this.handleDecrement} disabled={count_of_ptms == 0 || currentIndex == 0 ? true : false} >{`<--  ${currentIndex}`}</button>
+            <button type='button' className="button" onClick={this.handleDecrement} disabled={count_of_ptms == 0 || currentIndex == 1 ? true : false} >{`<--  ${currentIndex}`}</button>
           </div>
           <div className='columns small-3'>
-            <button type='button' className="button" onClick={this.handleIncrement} disabled={count_of_ptms == 0 || currentIndex == count_of_ptms - 1 ? true : false} >{` ${currentIndex + 1} -->`}</button>
+            <button type='button' className="button" onClick={this.handleIncrement} disabled={count_of_ptms == 0 || currentIndex == count_of_ptms ? true : false} >{` ${currentIndex + 1} -->`}</button>
           </div>
           <div className='columns small-6'>
             <button type='button' className="button" >{this.state.annotation_id == 0 ? 'Insert' : 'Update'}</button>
