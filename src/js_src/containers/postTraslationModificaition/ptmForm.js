@@ -11,6 +11,19 @@ class PtmForm extends Component {
     this.setPtm = this.setPtm.bind(this);
     this.handleIncrement = this.handleIncrement.bind(this);
     this.handleDecrement = this.handleDecrement.bind(this);
+    
+    this.newPTM = {
+      id: 0,
+      locus: {
+        display_name: ''
+      },
+      reference: {
+        pubmed_id: ''
+      },
+      site_index: '',
+      site_residue: '',
+      type: ''
+    };
 
     this.state = {
       list_of_ptms: [],
@@ -39,16 +52,16 @@ class PtmForm extends Component {
       type: 'GET',
       timeout: TIMEOUT
     }).then(data => {
-      this.setState({ list_of_ptms: data['ptms'], visible_ptm_index: 0 });
+      this.setState({ list_of_ptms: [this.newPTM, ...data['ptms']], visible_ptm_index: 0 });
       this.setPtm(0);
     })
       .catch(err => console.log(err));
   }
-  
-  handleIncrement(){
+
+  handleIncrement() {
     this.setPtm(1);
   }
-  handleDecrement(){
+  handleDecrement() {
     this.setPtm(-1);
   }
 
@@ -58,6 +71,7 @@ class PtmForm extends Component {
       var ptm = this.state.list_of_ptms[index];
       this.setState({ visible_ptm_index: index });
       this.setState({
+        annotation_id:ptm.id,
         dbentity_id: ptm.locus.display_name,
         taxonomy_id: '',
         reference_id: ptm.reference.pubmed_id,
@@ -74,6 +88,8 @@ class PtmForm extends Component {
     var count_of_ptms = this.state.list_of_ptms.length;
     return (
       <form>
+        <p>{this.state.annotation_id}</p>
+
         {/* Gene */}
         <div className='row'>
           <div className='columns large-12'>
@@ -206,9 +222,14 @@ class PtmForm extends Component {
         </div>
 
         <div className='row'>
-          <div className='columns'>
-            <input type='button' className="button" value='<--' onClick={this.handleDecrement} disabled={count_of_ptms == 0 || currentIndex == 0 ? true : false} />
-            <input type='button' className="button" value='-->' onClick={this.handleIncrement} disabled={count_of_ptms == 0 || currentIndex == count_of_ptms - 1 ? true : false} />
+          <div className='columns small-3'>
+            <button type='button' className="button" onClick={this.handleDecrement} disabled={count_of_ptms == 0 || currentIndex == 0 ? true : false} >{`<--  ${currentIndex}`}</button>
+          </div>
+          <div className='columns small-3'>
+            <button type='button' className="button" onClick={this.handleIncrement} disabled={count_of_ptms == 0 || currentIndex == count_of_ptms - 1 ? true : false} >{` ${currentIndex + 1} -->`}</button>
+          </div>
+          <div className='columns small-6'>
+            <button type='button' className="button" >{this.state.annotation_id == 0 ? 'Insert' : 'Update'}</button>
           </div>
         </div>
       </form>
