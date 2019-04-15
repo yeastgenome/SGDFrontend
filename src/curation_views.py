@@ -1059,7 +1059,7 @@ def ptm_file_insert(request):
         SEPARATOR = '|'
 
         # reading from database
-        sgd_id_to_dbentity_id,sgd_id_to_systematic_name = models_helper.get_dbentity_by_subclass(['LOCUS','REFERENCE'])
+        sgd_id_to_dbentity_id,systematic_name_to_dbentity_id = models_helper.get_dbentity_by_subclass(['LOCUS','REFERENCE'])
         strain_to_taxonomy_id = models_helper.get_straindbentity_by_strain_type(['Reference','Alternative Reference'])
         psimod_to_id = models_helper.get_psimod_all()
         posttranslationannotation_to_site = models_helper.posttranslationannotation_with_key_index()
@@ -1095,8 +1095,8 @@ def ptm_file_insert(request):
                     key = (gene,'LOCUS')
                     if(key in sgd_id_to_dbentity_id):
                         posttranslationannotation_existing['dbentity_id'] = sgd_id_to_dbentity_id[key]
-                    elif(key in sgd_id_to_systematic_name):
-                        posttranslationannotation_existing['dbentity_id'] = sgd_id_to_systematic_name[key]
+                    elif(key in systematic_name_to_dbentity_id):
+                        posttranslationannotation_existing['dbentity_id'] = systematic_name_to_dbentity_id[key]
                     else:
                         posttranslationannotation_error[index] = 'Error in gene ' + gene
                         list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
@@ -1105,8 +1105,8 @@ def ptm_file_insert(request):
                     key = (gene_new, 'LOCUS')
                     if(key in sgd_id_to_dbentity_id):
                         posttranslationannotation_update['dbentity_id'] = sgd_id_to_dbentity_id[key]
-                    elif(key in sgd_id_to_systematic_name):
-                        posttranslationannotation_update['dbentity_id'] = sgd_id_to_systematic_name[key]
+                    elif(key in systematic_name_to_dbentity_id):
+                        posttranslationannotation_update['dbentity_id'] = systematic_name_to_dbentity_id[key]
                     else:
                         posttranslationannotation_error[index] = 'Error in updating gene ' + gene
                         list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
@@ -1117,8 +1117,8 @@ def ptm_file_insert(request):
                     key = (gene, 'LOCUS')
                     if(key in sgd_id_to_dbentity_id):
                         posttranslationannotation_existing['dbentity_id'] = sgd_id_to_dbentity_id[key]
-                    elif(key in sgd_id_to_systematic_name):
-                        posttranslationannotation_existing['dbentity_id'] = sgd_id_to_systematic_name[key]
+                    elif(key in systematic_name_to_dbentity_id):
+                        posttranslationannotation_existing['dbentity_id'] = systematic_name_to_dbentity_id[key]
                     else:
                         posttranslationannotation_error[index] = 'Error in gene ' + gene
                         list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
@@ -1244,20 +1244,20 @@ def ptm_file_insert(request):
 
                     if((modifier, 'LOCUS') in sgd_id_to_dbentity_id):
                         posttranslationannotation_existing['modifier_id'] = sgd_id_to_dbentity_id[(modifier, 'LOCUS')]
-                    elif((modifier, 'LOCUS') in sgd_id_to_systematic_name):
-                        posttranslationannotation_existing['modifier_id'] = sgd_id_to_systematic_name[(modifier, 'LOCUS')]
+                    elif((modifier, 'LOCUS') in systematic_name_to_dbentity_id):
+                        posttranslationannotation_existing['modifier_id'] = systematic_name_to_dbentity_id[(modifier, 'LOCUS')]
 
                     if((modifier_new, 'LOCUS') in sgd_id_to_dbentity_id):
                         posttranslationannotation_update['modifier_id'] = sgd_id_to_dbentity_id[(modifier_new, 'LOCUS')]
-                    elif((modifier_new, 'LOCUS') in sgd_id_to_systematic_name):
-                        posttranslationannotation_update['modifier_id'] = sgd_id_to_systematic_name[(modifier_new, 'LOCUS')]
+                    elif((modifier_new, 'LOCUS') in systematic_name_to_dbentity_id):
+                        posttranslationannotation_update['modifier_id'] = systematic_name_to_dbentity_id[(modifier_new, 'LOCUS')]
 
                 else:
                     modifier = str(row[COLUMNS['modifier']])
                     if((modifier, 'LOCUS') in sgd_id_to_dbentity_id):
                         posttranslationannotation_existing['modifier_id'] = sgd_id_to_dbentity_id[(modifier, 'LOCUS')]
-                    elif((modifier, 'LOCUS') in sgd_id_to_systematic_name):
-                        posttranslationannotation_existing['modifier_id'] = sgd_id_to_systematic_name[(modifier, 'LOCUS')]
+                    elif((modifier, 'LOCUS') in systematic_name_to_dbentity_id):
+                        posttranslationannotation_existing['modifier_id'] = systematic_name_to_dbentity_id[(modifier, 'LOCUS')]
 
 
             list_of_posttranslationannotation.append(posttranslationannotation_existing)
@@ -1276,3 +1276,26 @@ def ptm_file_insert(request):
     except Exception as e:
         print(e)
         return HTTPBadRequest(body=json.dumps({ 'error': e.message }), content_type='text/json')
+
+
+@view_config(route_name='get_ptm_by_gene',renderer='json',request_method='GET')
+def get_ptm_by_gene(request):
+    gene = request.matchdict['id']
+
+    if(gene is None):
+        return HTTPBadRequest(body=json.dumps({'error': 'No gene provided'}), content_type='text/json')
+    
+    sgd_id_to_dbentity_id, systematic_name_to_dbentity_id = models_helper.get_dbentity_by_subclass(['LOCUS'])
+    dbentity_id = 0
+
+    if (gene,'LOCUS') in sgd_id_to_dbentity_id:
+        dbentity_id = sgd_id_to_dbentity_id[(gene,'LOCUS')]
+    
+    if (gene, 'LOCUS') in systematic_name_to_dbentity_id:
+        dbentity_id = systematic_name_to_dbentity_id[(gene, 'LOCUS')]
+
+    if dbentity_id == 0:
+        return HTTPBadRequest(body=json.dumps({'error': 'Gene not found in database'}), content_type='text/json')
+    
+    ptms = DBSession.query(Posttranslationannotation).filter(Posttranslationannotation.dbentity_id == dbentity_id).all()
+    return {'ptms' :[p.to_dict() for p in ptms]}
