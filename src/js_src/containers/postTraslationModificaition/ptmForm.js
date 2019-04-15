@@ -3,6 +3,7 @@ import fetchData from '../../lib/fetchData';
 
 const GET_PTMs_URL = '/get_ptms/';
 const GET_STRAINS = '/get_strains';
+const GET_PSIMODS = '/get_psimod';
 const TIMEOUT = 120000;
 
 class PtmForm extends Component {
@@ -29,6 +30,7 @@ class PtmForm extends Component {
 
     this.state = {
       taxonomy_id_to_name:[],
+      psimod_id_to_name:[],
       list_of_ptms: [this.newPTM],
       dbentity_id: 'S000001855',
       taxonomy_id: '',
@@ -41,6 +43,7 @@ class PtmForm extends Component {
     };
 
     this.getStrainsForTaxonomy();
+    this.getPsimods();
   }
 
   componentDidMount(){
@@ -64,6 +67,19 @@ class PtmForm extends Component {
         return <option value={strain.taxonomy_id} key={index}> {strain.display_name} </option> ;
       });
       this.setState({taxonomy_id_to_name: values});
+    })
+    .catch(err => console.log(err));
+  }
+
+  getPsimods(){
+    fetchData(GET_PSIMODS, {
+      type: 'GET'
+    })
+    .then(data => {
+      var values = data['psimods'].map((psimod,index) => {
+        return <option value={psimod.psimod_id} key={index}>{psimod.display_name}</option>;
+      });
+      this.setState({ psimod_id_to_name: values});
     })
     .catch(err => console.log(err));
   }
@@ -99,7 +115,7 @@ class PtmForm extends Component {
         reference_id: ptm.reference.pubmed_id,
         site_index: ptm.site_index,
         site_residue: ptm.site_residue,
-        psimod_id: ptm.type,
+        psimod_id: ptm.psimod_id,
         modifier_id: ''
       });
     }
@@ -222,7 +238,10 @@ class PtmForm extends Component {
 
             <div className='row'>
               <div className='columns medium-8'>
-                <input type='text' placeholder='Enter psimod' name='psimod_id' value={this.state.psimod_id} onChange={this.handleChange} />
+                {/* <input type='text' placeholder='Enter psimod' name='psimod_id' value={this.state.psimod_id} onChange={this.handleChange} /> */}
+                <select name='psimod_id' value={this.state.psimod_id} onChange={this.handleChange}>
+                  {this.state.psimod_id_to_name}
+                </select>
               </div>
             </div>
           </div>
