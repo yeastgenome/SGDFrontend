@@ -1280,7 +1280,7 @@ def ptm_file_insert(request):
 
 @view_config(route_name='get_ptm_by_gene',renderer='json',request_method='GET')
 def get_ptm_by_gene(request):
-    gene = request.matchdict['id']
+    gene = str(request.matchdict['id'])
 
     if(gene is None):
         return HTTPBadRequest(body=json.dumps({'error': 'No gene provided'}), content_type='text/json')
@@ -1291,8 +1291,8 @@ def get_ptm_by_gene(request):
     if (gene,'LOCUS') in sgd_id_to_dbentity_id:
         dbentity_id = sgd_id_to_dbentity_id[(gene,'LOCUS')]
     
-    if (gene, 'LOCUS') in systematic_name_to_dbentity_id:
-        dbentity_id = systematic_name_to_dbentity_id[(gene, 'LOCUS')]
+    if (gene.upper(), 'LOCUS') in systematic_name_to_dbentity_id:
+        dbentity_id = systematic_name_to_dbentity_id[(gene.upper(), 'LOCUS')]
 
     if dbentity_id == 0:
         return HTTPBadRequest(body=json.dumps({'error': 'Gene not found in database'}), content_type='text/json')
