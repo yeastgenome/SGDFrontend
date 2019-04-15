@@ -16,11 +16,12 @@ class PostTranslationModification extends Component {
             <h1>PTM file upload</h1>
             <FileUpload />
           </div>
+          
           <div className="columns large-6">
             <h1>Add single value</h1>
 
             <PtmForm />
-            
+
           </div>
         </div>
       </CurateLayout>
