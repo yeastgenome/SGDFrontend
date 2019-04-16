@@ -173,6 +173,7 @@ def main(global_config, **settings):
     config.add_route('get_ptm_by_gene','/get_ptms/{id}',request_method='GET')
     config.add_route('get_strains','/get_strains',request_method='GET')
     config.add_route('get_psimod', '/get_psimod', request_method='GET')
+    config.add_route('update_ptm','update_ptm',request_method='POST')
 
     config.add_route('healthcheck', '/healthcheck')
     config.scan()

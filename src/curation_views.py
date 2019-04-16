@@ -1279,6 +1279,7 @@ def ptm_file_insert(request):
 
 
 @view_config(route_name='get_ptm_by_gene',renderer='json',request_method='GET')
+@authenticate
 def get_ptm_by_gene(request):
     gene = str(request.matchdict['id'])
 
@@ -1299,3 +1300,26 @@ def get_ptm_by_gene(request):
     
     ptms = DBSession.query(Posttranslationannotation).filter(Posttranslationannotation.dbentity_id == dbentity_id).all()
     return {'ptms' :[p.to_dict() for p in ptms]}
+
+@view_config(route_name="update_ptm",renderer='json',request_method='POST')
+@authenticate
+def update_ptm(request):
+    id = str(request.params.get('id'))
+    dbentity_id = str(request.params.get('dbentity_id'))
+    taxonomy_id = str(request.params.get('taxonomy_id'))
+    reference_id = str(request.params.get('reference_id'))
+    site_index = str(request.params.get('site_index'))
+    site_residue = str(request.params.get('site_residue'))
+    psimod_id = str(request.params.get('psimod_id'))
+    modifier_id = str(request.params.get('modifier_id'))
+    
+    return {
+        "id":id,
+        "dbentity_id":dbentity_id,
+        "taxonomy_id":taxonomy_id,
+        "reference_id":reference_id,
+        "site_index":site_index,
+        "site_residue":site_residue,
+        "psimod_id":psimod_id,
+        "modifier_id": modifier_id
+        }
