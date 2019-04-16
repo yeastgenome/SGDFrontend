@@ -1305,7 +1305,7 @@ def get_ptm_by_gene(request):
 @authenticate
 def update_ptm(request):
     try:
-        id = str(request.params.get('id'))
+        id = int(request.params.get('id'))
 
         site_index = str(request.params.get('site_index'))
         if not site_index:
@@ -1329,33 +1329,106 @@ def update_ptm(request):
         psimod_id = str(request.params.get('psimod_id'))
         if not psimod_id:
             return HTTPBadRequest(body=json.dumps({'error': "psimod is blank"}), content_type='text/json')
-        
+        psimod_id = int(psimod_id)
+
         taxonomy_id = str(request.params.get('taxonomy_id'))
         if not taxonomy_id:
             return HTTPBadRequest(body=json.dumps({'error': "taxonomy is blank"}), content_type='text/json')
+        taxonomy_id = int(taxonomy_id)
+
+        sgd_id_to_dbentity_id,systematic_name_to_dbentity_id = models_helper.get_dbentity_by_subclass(['LOCUS','REFERENCE'])
+        pubmed_id_to_reference, reference_to_dbentity_id = models_helper.get_references_all()
+
+        #Gene
+        # key = (dbentity_id, 'LOCUS')
+        # if(key in sgd_id_to_dbentity_id):
+        #     dbentity_id = sgd_id_to_dbentity_id[key]
+        # elif(key in systematic_name_to_dbentity_id):
+        #     dbentity_id = systematic_name_to_dbentity_id[key]
+        # else:
+        #     return HTTPBadRequest(body=json.dumps({'error': "gene value not found in database"}), content_type='text/json')
+
+        dbentity_in_db = None
+        dbentity_in_db = DBSession.query(Dbentity).filter(or_(Dbentity.sgdid == dbentity_id,Dbentity.format_name == dbentity_id)).one_or_none()
+        if dbentity_in_db is not None:
+            dbentity_id = dbentity_in_db.dbentity_id
+        else:
+            return HTTPBadRequest(body=json.dumps({'error': "gene value not found in database"}), content_type='text/json')
+            
+
+        #reference
+        dbentity_in_db = None
+        pmid_in_db = None
+        dbentity_in_db = DBSession.query(Dbentity).filter(Dbentity.sgdid == reference_id).one_or_none()
+        if dbentity_in_db is None:
+            dbentity_in_db = DBSession.query(Dbentity).filter(Dbentity.dbentity_id == int(reference_id)).one_or_none()
+        if dbentity_in_db is None:
+            pmid_in_db = DBSession.query(Referencedbentity).filter(Referencedbentity.pmid == int(reference_id)).one_or_none()
+
+        if dbentity_in_db is not None:
+            reference_id = dbentity_in_db.dbentity_id
+        elif (pmid_in_db is not None):
+            reference_id = pmid_in_db.dbentity_id
+        else:
+            return HTTPBadRequest(body=json.dumps({'error': "reference value not found in database"}), content_type='text/json')
+
+
+        # if((reference_id, 'REFERENCE') in sgd_id_to_dbentity_id):
+        #     reference_id = sgd_id_to_dbentity_id[(reference_id, 'REFERENCE')]
+        # elif(reference_id in pubmed_id_to_reference):
+        #     reference_id = pubmed_id_to_reference[reference_id]
+        # elif(reference_id in reference_to_dbentity_id):
+        #     reference_id = int(reference_id)
+        # else:
+        #     return HTTPBadRequest(body=json.dumps({'error': "reference value not found in database"}), content_type='text/json')
         
+        #Modifier
+        # key = (modifier_id, 'LOCUS') if modifier_id else ''
+        # if(key in sgd_id_to_dbentity_id):
+        #     modifier_id = sgd_id_to_dbentity_id[key]
+        # elif(key in systematic_name_to_dbentity_id):
+        #     modifier_id = systematic_name_to_dbentity_id[key]
+        
+        if modifier_id: 
+            dbentity_in_db = None
+            dbentity_in_db = DBSession.query(Dbentity).filter(or_(Dbentity.sgdid == modifier_id, Dbentity.format_name == modifier_id)).one_or_none()
+            if dbentity_in_db is not None:
+                modifier_id = dbentity_in_db.dbentity_id
+            else:
+                return HTTPBadRequest(body=json.dumps({'error': "Modifier value not found in database"}), content_type='text/json')
+
+        obj = {
+            "id": id,
+            "dbentity_id": dbentity_id,
+            "taxonomy_id": taxonomy_id,
+            "reference_id": reference_id,
+            "site_index": site_index,
+            "site_residue": site_residue,
+            "psimod_id": psimod_id,
+            "modifier_id": modifier_id,
+            "updated":False
+        }
         
         if(int(id) > 0):
+            obj['updated'] = True
             try:
                 pass
             except:
                 pass
         
-        if(int(id) == 0):
-            try:
-                pass
-            except:
-                pass
+        # if(int(id) == 0):
+        #     y = Posttranslationannotation(taxonomy_id=taxonomy_id,
+        #                                   source_id=source_id,
+        #                                   dbentity_id=dbentity_id,
+        #                                   reference_id=reference_id,
+        #                                   site_index=site_index,
+        #                                   site_residue=site_residue,
+        #                                   psimod_id=psimod_id,
+        #                                   modifier_id=modifier_id,
+        #                                   created_by=CREATED_BY)
+        #     nex_session.add(y)
+        #     nex_session.commit()
 
-        return {
-            "id":id,
-            "dbentity_id":dbentity_id,
-            "taxonomy_id":taxonomy_id,
-            "reference_id":reference_id,
-            "site_index":site_index,
-            "site_residue":site_residue,
-            "psimod_id":psimod_id,
-            "modifier_id": modifier_id
-            }
+        return obj
     except Exception as e:
         return HTTPBadRequest(body=json.dumps({'error': str(e.message)}), content_type='text/json')
