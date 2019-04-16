@@ -5,6 +5,7 @@ import style from './style.css';
 
 import fetchData from '../../lib/fetchData';
 const FILE_INSERT = '/ptm_file';
+import { setError, setMessage } from '../../actions/metaActions';
 const TIMEOUT = 120000;
 
 class FileUpload extends Component{
@@ -37,11 +38,8 @@ class FileUpload extends Component{
       contentType: false,
       timeout:TIMEOUT
     })
-    .then((data) => {
-      console.log(data);
-    }).catch((err) => {
-      console.log(err);
-    });
+    .then((data) => this.props.dispatch(setMessage(data)))
+    .catch((err) => this.props.dispatch(setError(err.error)));
   }
 
   render(){
@@ -57,9 +55,9 @@ class FileUpload extends Component{
   }
 }
 
-
 FileUpload.propTypes = {
-  csrfToken: React.PropTypes.string
+  csrfToken: React.PropTypes.string,
+  dispatch: React.PropTypes.func
 };
 
 function mapStateToProps(state) {
@@ -69,5 +67,3 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps)(FileUpload);
-
-// export default FileUpload;
