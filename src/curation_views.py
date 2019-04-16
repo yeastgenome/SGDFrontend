@@ -1304,22 +1304,58 @@ def get_ptm_by_gene(request):
 @view_config(route_name="update_ptm",renderer='json',request_method='POST')
 @authenticate
 def update_ptm(request):
-    id = str(request.params.get('id'))
-    dbentity_id = str(request.params.get('dbentity_id'))
-    taxonomy_id = str(request.params.get('taxonomy_id'))
-    reference_id = str(request.params.get('reference_id'))
-    site_index = str(request.params.get('site_index'))
-    site_residue = str(request.params.get('site_residue'))
-    psimod_id = str(request.params.get('psimod_id'))
-    modifier_id = str(request.params.get('modifier_id'))
-    
-    return {
-        "id":id,
-        "dbentity_id":dbentity_id,
-        "taxonomy_id":taxonomy_id,
-        "reference_id":reference_id,
-        "site_index":site_index,
-        "site_residue":site_residue,
-        "psimod_id":psimod_id,
-        "modifier_id": modifier_id
-        }
+    try:
+        id = str(request.params.get('id'))
+
+        site_index = str(request.params.get('site_index'))
+        if not site_index:
+            return HTTPBadRequest(body=json.dumps({'error': "site index is blank"}), content_type='text/json')
+        site_index = int(site_index)
+        
+        site_residue = str(request.params.get('site_residue'))
+        if not site_residue:
+            return HTTPBadRequest(body=json.dumps({'error': "site residue is blank"}), content_type='text/json')
+
+        reference_id = str(request.params.get('reference_id'))
+        if not reference_id:
+            return HTTPBadRequest(body=json.dumps({'error': "reference is blank"}), content_type='text/json')
+
+        dbentity_id = str(request.params.get('dbentity_id'))
+        if not dbentity_id:
+            return HTTPBadRequest(body=json.dumps({'error': "gene is blank"}), content_type='text/json')
+
+        modifier_id = str(request.params.get('modifier_id'))
+
+        psimod_id = str(request.params.get('psimod_id'))
+        if not psimod_id:
+            return HTTPBadRequest(body=json.dumps({'error': "psimod is blank"}), content_type='text/json')
+        
+        taxonomy_id = str(request.params.get('taxonomy_id'))
+        if not taxonomy_id:
+            return HTTPBadRequest(body=json.dumps({'error': "taxonomy is blank"}), content_type='text/json')
+        
+        
+        if(int(id) > 0):
+            try:
+                pass
+            except:
+                pass
+        
+        if(int(id) == 0):
+            try:
+                pass
+            except:
+                pass
+
+        return {
+            "id":id,
+            "dbentity_id":dbentity_id,
+            "taxonomy_id":taxonomy_id,
+            "reference_id":reference_id,
+            "site_index":site_index,
+            "site_residue":site_residue,
+            "psimod_id":psimod_id,
+            "modifier_id": modifier_id
+            }
+    except Exception as e:
+        return HTTPBadRequest(body=json.dumps({'error': str(e.message)}), content_type='text/json')

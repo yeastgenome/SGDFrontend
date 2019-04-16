@@ -1,23 +1,28 @@
 import React, { Component } from 'react';
 import fetchData from '../../lib/fetchData';
+import { connect } from 'react-redux';
+// import Loader from '../../components/loader';
+import { setError, setMessage } from '../../actions/metaActions';
 
 const GET_PTMs_URL = '/get_ptms/';
 const GET_STRAINS = '/get_strains';
 const GET_PSIMODS = '/get_psimod';
-const TIMEOUT = 120000;
+const UPDATE_PTM = '/update_ptm';
 
 class PtmForm extends Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
-    this.getPTMS = this.getPTMS.bind(this);
+    this.handleGetPTMS = this.handleGetPTMS.bind(this);
     this.setPtm = this.setPtm.bind(this);
     this.handleIncrement = this.handleIncrement.bind(this);
     this.handleDecrement = this.handleDecrement.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
     
     this.newPTM = {
       id: 0,
       locus: {
+        id:'',
         display_name: ''
       },
       reference: {
@@ -25,13 +30,18 @@ class PtmForm extends Component {
       },
       site_index: '',
       site_residue: '',
-      type: ''
+      type: '',
+      taxonomy:{
+        taxonomy_id:''
+      }
     };
 
     this.state = {
       taxonomy_id_to_name:[],
       psimod_id_to_name:[],
       list_of_ptms: [this.newPTM],
+
+      id:0,
       dbentity_id: 'S000001855',
       taxonomy_id: '',
       reference_id: '',
@@ -58,49 +68,50 @@ class PtmForm extends Component {
     });
   }
 
-  getStrainsForTaxonomy(){
-    fetchData(GET_STRAINS,{
-      type:'GET'
-    })
-    .then(data => {
-      var values = data['strains'].map((strain,index) => {
-        return <option value={strain.taxonomy_id} key={index}> {strain.display_name} </option> ;
-      });
-      this.setState({taxonomy_id_to_name: values});
-    })
-    .catch(err => console.log(err));
-  }
-
-  getPsimods(){
-    fetchData(GET_PSIMODS, {
-      type: 'GET'
-    })
-    .then(data => {
-      var values = data['psimods'].map((psimod,index) => {
-        return <option value={psimod.psimod_id} key={index}>{psimod.display_name}</option>;
-      });
-      this.setState({ psimod_id_to_name: values});
-    })
-    .catch(err => console.log(err));
-  }
-
-  getPTMS() {
-    var url = `${GET_PTMs_URL}${this.state.dbentity_id}`;
-    fetchData(url, {
-      type: 'GET',
-      timeout: TIMEOUT
-    }).then(data => {
-      this.setState({ list_of_ptms: [this.newPTM, ...data['ptms']], visible_ptm_index: 0 });
-      this.setPtm(0);
-    })
-      .catch(err => console.log(err));
-  }
-
   handleIncrement() {
     this.setPtm(1);
   }
+
   handleDecrement() {
     this.setPtm(-1);
+  }
+
+  getStrainsForTaxonomy() {
+    fetchData(GET_STRAINS, {
+      type: 'GET'
+    })
+      .then(data => {
+        var values = data['strains'].map((strain, index) => {
+          return <option value={strain.taxonomy_id} key={index}> {strain.display_name} </option>;
+        });
+        this.setState({ taxonomy_id_to_name: values });
+      })
+      .catch(err => this.props.dispatch(setError(err)));
+  }
+
+  getPsimods() {
+    fetchData(GET_PSIMODS, {
+      type: 'GET'
+    })
+      .then(data => {
+        var values = data['psimods'].map((psimod, index) => {
+          return <option value={psimod.psimod_id} key={index}>{psimod.display_name}</option>;
+        });
+        this.setState({ psimod_id_to_name: values });
+      })
+      .catch(err => this.props.dispatch(setError(err.error)));
+  }
+
+  handleGetPTMS() {
+    var url = `${GET_PTMs_URL}${this.state.dbentity_id}`;
+    fetchData(url, {
+      type: 'GET'
+    }).then(data => {
+      this.newPTM.locus.display_name = data['ptms'][0].locus.display_name;
+      this.setState({ list_of_ptms: [this.newPTM, ...data['ptms']], visible_ptm_index: 0 });
+      this.setPtm(0);
+    })
+      .catch(err => this.props.dispatch(setError(err)));
   }
 
   setPtm(change) {
@@ -109,24 +120,39 @@ class PtmForm extends Component {
       var ptm = this.state.list_of_ptms[index];
       this.setState({ visible_ptm_index: index });
       this.setState({
-        annotation_id:ptm.id,
+        id:ptm.id,
         dbentity_id: ptm.locus.display_name,
-        taxonomy_id: '',
         reference_id: ptm.reference.pubmed_id,
         site_index: ptm.site_index,
         site_residue: ptm.site_residue,
         psimod_id: ptm.psimod_id,
+        taxonomy_id: ptm.taxonomy.taxonomy_id,
         modifier_id: ''
       });
     }
+  }
+
+  handleSubmit(e){
+    e.preventDefault();
+    var formData = new FormData(this.refs.form);
+    fetchData(UPDATE_PTM,{
+      type:'POST',
+      data:formData,
+      processData: false,
+      contentType: false
+    }).then((data) => this.props.dispatch(setMessage(data)))
+    .catch((err) => {
+      this.props.dispatch(setError(err.error));
+    });
   }
 
   render() {
     var currentIndex = this.state.visible_ptm_index + 1;
     var count_of_ptms = this.state.list_of_ptms.length;
     return (
-      <form>
-        <p>{this.state.annotation_id}</p>
+      <form onSubmit={this.handleSubmit} ref='form'>
+        
+        <input name='id' value={this.state.id} />
 
         {/* Gene */}
         <div className='row'>
@@ -144,7 +170,7 @@ class PtmForm extends Component {
               </div>
 
               <div className='columns medium-4'>
-                <input type="button" className="button" value="Get database value" onClick={this.getPTMS} />
+                <input type="button" className="button" value="Get database value" onClick={this.handleGetPTMS} />
               </div>
             </div>
           </div>
@@ -220,7 +246,7 @@ class PtmForm extends Component {
 
             <div className='row'>
               <div className='columns medium-8'>
-                <input type='text' placeholder='Enter site residue' name='site_redidue' value={this.state.site_residue} onChange={this.handleChange} />
+                <input type='text' placeholder='Enter site residue' name='site_residue' value={this.state.site_residue} onChange={this.handleChange} />
               </div>
             </div>
           </div>
@@ -267,13 +293,13 @@ class PtmForm extends Component {
 
         <div className='row'>
           <div className='columns small-3'>
-            <button type='button' className="button" onClick={this.handleDecrement} disabled={count_of_ptms == 0 || currentIndex == 1 ? true : false} >{`<--  ${currentIndex}`}</button>
+            <button type='button' className={`button ${count_of_ptms == 0 || currentIndex == 1 ? 'invisible' :''}`} onClick={this.handleDecrement}> Previous </button>
           </div>
           <div className='columns small-3'>
-            <button type='button' className="button" onClick={this.handleIncrement} disabled={count_of_ptms == 0 || currentIndex == count_of_ptms ? true : false} >{` ${currentIndex + 1} -->`}</button>
+            <button type='button' className={`button ${count_of_ptms == 0 || currentIndex == count_of_ptms ? 'invisible' : ''}`} onClick={this.handleIncrement}> Next </button>
           </div>
           <div className='columns small-6'>
-            <button type='button' className="button" >{this.state.annotation_id == 0 ? 'Insert' : 'Update'}</button>
+            <button type='submit' className="button" >{this.state.id == 0 ? 'Insert' : 'Update'}</button>
           </div>
         </div>
       </form>
@@ -281,5 +307,13 @@ class PtmForm extends Component {
   }
 }
 
+PtmForm.propTypes = {
+  dispatch: React.PropTypes.func
+};
 
-export default PtmForm;
+function mapStateToProps() {
+  return {
+  };
+}
+
+export default connect(mapStateToProps)(PtmForm);
