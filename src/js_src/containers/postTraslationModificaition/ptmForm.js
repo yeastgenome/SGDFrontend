@@ -141,7 +141,9 @@ class PtmForm extends Component {
       data:formData,
       processData: false,
       contentType: false
-    }).then((data) => this.props.dispatch(setMessage(data.success)))
+    }).then((data) => {
+      this.props.dispatch(setMessage(data.success));
+    })
     .catch((err) => {
       this.props.dispatch(setError(err.error));
     });
@@ -153,7 +155,7 @@ class PtmForm extends Component {
     return (
       <form onSubmit={this.handleSubmit} ref='form'>
         
-        <input name='id' value={this.state.id} className="hide"/>
+        <input name='id' value={this.state.id} className="hide" />
 
         {/* Gene */}
         <div className='row'>

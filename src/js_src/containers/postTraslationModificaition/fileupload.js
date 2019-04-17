@@ -38,7 +38,7 @@ class FileUpload extends Component{
       contentType: false,
       timeout:TIMEOUT
     })
-    .then((data) => this.props.dispatch(setMessage(data)))
+    .then((data) => this.props.dispatch(setMessage(data.success)))
     .catch((err) => this.props.dispatch(setError(err.error)));
   }
 
