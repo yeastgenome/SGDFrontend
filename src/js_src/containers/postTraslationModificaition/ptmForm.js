@@ -23,7 +23,7 @@ class PtmForm extends Component {
       id: 0,
       locus: {
         id:'',
-        display_name: ''
+        format_name: ''
       },
       reference: {
         pubmed_id: ''
@@ -103,11 +103,12 @@ class PtmForm extends Component {
   }
 
   handleGetPTMS() {
+    this.setState({list_of_ptms:[]});
     var url = `${GET_PTMs_URL}${this.state.dbentity_id}`;
     fetchData(url, {
       type: 'GET'
     }).then(data => {
-      this.newPTM.locus.display_name = data['ptms'][0].locus.display_name;
+      this.newPTM.locus.format_name = data['ptms'][0].locus.format_name;
       this.setState({ list_of_ptms: [this.newPTM, ...data['ptms']], visible_ptm_index: 0 });
       this.setPtm(0);
     })
@@ -121,7 +122,7 @@ class PtmForm extends Component {
       this.setState({ visible_ptm_index: index });
       this.setState({
         id:ptm.id,
-        dbentity_id: ptm.locus.display_name,
+        dbentity_id: ptm.locus.format_name,
         reference_id: ptm.reference.pubmed_id,
         site_index: ptm.site_index,
         site_residue: ptm.site_residue,
@@ -152,7 +153,7 @@ class PtmForm extends Component {
     return (
       <form onSubmit={this.handleSubmit} ref='form'>
         
-        <input name='id' value={this.state.id} />
+        <input name='id' value={this.state.id} className="hide"/>
 
         {/* Gene */}
         <div className='row'>
