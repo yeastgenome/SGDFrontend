@@ -86,7 +86,7 @@ class PtmForm extends Component {
         });
         this.setState({ taxonomy_id_to_name: values });
       })
-      .catch(err => this.props.dispatch(setError(err)));
+      .catch(err => this.props.dispatch(setError(err.error)));
   }
 
   getPsimods() {
@@ -141,7 +141,7 @@ class PtmForm extends Component {
       data:formData,
       processData: false,
       contentType: false
-    }).then((data) => this.props.dispatch(setMessage(data)))
+    }).then((data) => this.props.dispatch(setMessage(data.success)))
     .catch((err) => {
       this.props.dispatch(setError(err.error));
     });
