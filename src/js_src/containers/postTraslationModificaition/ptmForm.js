@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import fetchData from '../../lib/fetchData';
 import { connect } from 'react-redux';
-// import Loader from '../../components/loader';
+import Loader from '../../components/loader';
 import { setError, setMessage } from '../../actions/metaActions';
 
 const GET_PTMs_URL = '/get_ptms/';
@@ -18,11 +18,11 @@ class PtmForm extends Component {
     this.handleIncrement = this.handleIncrement.bind(this);
     this.handleDecrement = this.handleDecrement.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    
+
     this.newPTM = {
       id: 0,
       locus: {
-        id:'',
+        id: '',
         format_name: ''
       },
       reference: {
@@ -31,17 +31,17 @@ class PtmForm extends Component {
       site_index: '',
       site_residue: '',
       type: '',
-      taxonomy:{
-        taxonomy_id:''
+      taxonomy: {
+        taxonomy_id: ''
       }
     };
 
     this.state = {
-      taxonomy_id_to_name:[],
-      psimod_id_to_name:[],
+      taxonomy_id_to_name: [],
+      psimod_id_to_name: [],
       list_of_ptms: [this.newPTM],
-
-      id:0,
+      isPending: false,
+      id: 0,
       dbentity_id: 'S000001855',
       taxonomy_id: '',
       reference_id: '',
@@ -56,7 +56,7 @@ class PtmForm extends Component {
     this.getPsimods();
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.setPtm(0);
   }
 
@@ -103,16 +103,19 @@ class PtmForm extends Component {
   }
 
   handleGetPTMS() {
-    this.setState({list_of_ptms:[]});
+    this.setState({ list_of_ptms: [], isPending: true });
     var url = `${GET_PTMs_URL}${this.state.dbentity_id}`;
     fetchData(url, {
       type: 'GET'
     }).then(data => {
       this.newPTM.locus.format_name = data['ptms'][0].locus.format_name;
-      this.setState({ list_of_ptms: [this.newPTM, ...data['ptms']], visible_ptm_index: 0 });
+      this.setState({ list_of_ptms: [this.newPTM, ...data['ptms']], visible_ptm_index: 0, isPending: false });
       this.setPtm(0);
     })
-      .catch(err => this.props.dispatch(setError(err)));
+      .catch(err => {
+        this.setState({ isPending: false });
+        this.props.dispatch(setError(err.error));
+      });
   }
 
   setPtm(change) {
@@ -121,7 +124,7 @@ class PtmForm extends Component {
       var ptm = this.state.list_of_ptms[index];
       this.setState({ visible_ptm_index: index });
       this.setState({
-        id:ptm.id,
+        id: ptm.id,
         dbentity_id: ptm.locus.format_name,
         reference_id: ptm.reference.pubmed_id,
         site_index: ptm.site_index,
@@ -133,28 +136,57 @@ class PtmForm extends Component {
     }
   }
 
-  handleSubmit(e){
+  handleSubmit(e) {
     e.preventDefault();
+    this.setState({ isPending: true });
     var formData = new FormData(this.refs.form);
-    fetchData(UPDATE_PTM,{
-      type:'POST',
-      data:formData,
+    fetchData(UPDATE_PTM, {
+      type: 'POST',
+      data: formData,
       processData: false,
       contentType: false
     }).then((data) => {
+      this.setState({ isPending: false });
       this.props.dispatch(setMessage(data.success));
     })
-    .catch((err) => {
-      this.props.dispatch(setError(err.error));
-    });
+      .catch((err) => {
+        this.setState({ isPending: false });
+        this.props.dispatch(setError(err.error));
+      });
   }
 
-  render() {
+  renderActions() {
+    if (this.state.isPending) {
+      return (
+        <div className='row'>
+          <div className='columns small-3'>
+            <Loader />
+          </div>
+        </div>
+      );
+    }
+
     var currentIndex = this.state.visible_ptm_index + 1;
     var count_of_ptms = this.state.list_of_ptms.length;
     return (
+      <div className='row'>
+        <div className='columns small-3'>
+          <button type='button' className={`button ${count_of_ptms == 0 || currentIndex == 1 ? 'invisible' : ''}`} onClick={this.handleDecrement}> Previous </button>
+        </div>
+        <div className='columns small-3'>
+          <button type='button' className={`button ${count_of_ptms == 0 || currentIndex == count_of_ptms ? 'invisible' : ''}`} onClick={this.handleIncrement}> Next </button>
+        </div>
+        <div className='columns small-6'>
+          <button type='submit' className="button" >{this.state.id == 0 ? 'Insert' : 'Update'}</button>
+        </div>
+      </div>
+    );
+  }
+
+  render() {
+    return (
       <form onSubmit={this.handleSubmit} ref='form'>
-        
+
         <input name='id' value={this.state.id} className="hide" />
 
         {/* Gene */}
@@ -294,17 +326,8 @@ class PtmForm extends Component {
           </div>
         </div>
 
-        <div className='row'>
-          <div className='columns small-3'>
-            <button type='button' className={`button ${count_of_ptms == 0 || currentIndex == 1 ? 'invisible' :''}`} onClick={this.handleDecrement}> Previous </button>
-          </div>
-          <div className='columns small-3'>
-            <button type='button' className={`button ${count_of_ptms == 0 || currentIndex == count_of_ptms ? 'invisible' : ''}`} onClick={this.handleIncrement}> Next </button>
-          </div>
-          <div className='columns small-6'>
-            <button type='submit' className="button" >{this.state.id == 0 ? 'Insert' : 'Update'}</button>
-          </div>
-        </div>
+        {this.renderActions()}
+
       </form>
     );
   }
