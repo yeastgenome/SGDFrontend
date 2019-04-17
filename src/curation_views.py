@@ -1336,18 +1336,6 @@ def update_ptm(request):
             return HTTPBadRequest(body=json.dumps({'error': "taxonomy is blank"}), content_type='text/json')
         taxonomy_id = int(taxonomy_id)
 
-        sgd_id_to_dbentity_id,systematic_name_to_dbentity_id = models_helper.get_dbentity_by_subclass(['LOCUS','REFERENCE'])
-        pubmed_id_to_reference, reference_to_dbentity_id = models_helper.get_references_all()
-
-        #Gene
-        # key = (dbentity_id, 'LOCUS')
-        # if(key in sgd_id_to_dbentity_id):
-        #     dbentity_id = sgd_id_to_dbentity_id[key]
-        # elif(key in systematic_name_to_dbentity_id):
-        #     dbentity_id = systematic_name_to_dbentity_id[key]
-        # else:
-        #     return HTTPBadRequest(body=json.dumps({'error': "gene value not found in database"}), content_type='text/json')
-
         dbentity_in_db = None
         dbentity_in_db = DBSession.query(Dbentity).filter(or_(Dbentity.sgdid == dbentity_id,Dbentity.format_name == dbentity_id)).one_or_none()
         if dbentity_in_db is not None:
@@ -1355,7 +1343,6 @@ def update_ptm(request):
         else:
             return HTTPBadRequest(body=json.dumps({'error': "gene value not found in database"}), content_type='text/json')
             
-
         #reference
         dbentity_in_db = None
         pmid_in_db = None
@@ -1371,23 +1358,6 @@ def update_ptm(request):
             reference_id = pmid_in_db.dbentity_id
         else:
             return HTTPBadRequest(body=json.dumps({'error': "reference value not found in database"}), content_type='text/json')
-
-
-        # if((reference_id, 'REFERENCE') in sgd_id_to_dbentity_id):
-        #     reference_id = sgd_id_to_dbentity_id[(reference_id, 'REFERENCE')]
-        # elif(reference_id in pubmed_id_to_reference):
-        #     reference_id = pubmed_id_to_reference[reference_id]
-        # elif(reference_id in reference_to_dbentity_id):
-        #     reference_id = int(reference_id)
-        # else:
-        #     return HTTPBadRequest(body=json.dumps({'error': "reference value not found in database"}), content_type='text/json')
-        
-        #Modifier
-        # key = (modifier_id, 'LOCUS') if modifier_id else ''
-        # if(key in sgd_id_to_dbentity_id):
-        #     modifier_id = sgd_id_to_dbentity_id[key]
-        # elif(key in systematic_name_to_dbentity_id):
-        #     modifier_id = systematic_name_to_dbentity_id[key]
         
         if modifier_id: 
             dbentity_in_db = None
