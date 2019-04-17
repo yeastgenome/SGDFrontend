@@ -1367,38 +1367,67 @@ def update_ptm(request):
             else:
                 return HTTPBadRequest(body=json.dumps({'error': "Modifier value not found in database"}), content_type='text/json')
 
-        obj = {
-            "id": id,
-            "dbentity_id": dbentity_id,
-            "taxonomy_id": taxonomy_id,
-            "reference_id": reference_id,
-            "site_index": site_index,
-            "site_residue": site_residue,
-            "psimod_id": psimod_id,
-            "modifier_id": modifier_id,
-            "updated":False
-        }
+        # obj = {
+        #     "id": id,
+        #     "dbentity_id": dbentity_id,
+        #     "taxonomy_id": taxonomy_id,
+        #     "reference_id": reference_id,
+        #     "site_index": site_index,
+        #     "site_residue": site_residue,
+        #     "psimod_id": psimod_id,
+        #     "modifier_id": modifier_id,
+        #     "updated":False
+        # }
+        CREATED_BY = get_username_from_db_uri()
         
         if(int(id) > 0):
-            obj['updated'] = True
+            # obj['updated'] = True
             try:
-                pass
-            except:
-                pass
-        
-        # if(int(id) == 0):
-        #     y = Posttranslationannotation(taxonomy_id=taxonomy_id,
-        #                                   source_id=source_id,
-        #                                   dbentity_id=dbentity_id,
-        #                                   reference_id=reference_id,
-        #                                   site_index=site_index,
-        #                                   site_residue=site_residue,
-        #                                   psimod_id=psimod_id,
-        #                                   modifier_id=modifier_id,
-        #                                   created_by=CREATED_BY)
-        #     nex_session.add(y)
-        #     nex_session.commit()
+                DBSession.query(Posttranslationannotation).filter_by(Posttranslationannotation.annotation_id == id).update(
+                    {dbentity_id: dbentity_id,
+                     source_id: 834,
+                     taxonomy_id: taxonomy_id,
+                     reference_id: reference_id,
+                     site_index: site_index,
+                     site_residue: site_residue,
+                     psimod_id: psimod_id,
+                     modifier_id: modifier_id,
+                     created_by: CREATED_BY
+                     })
 
-        return obj
+                return {"success": "Record is updated"}
+            except Exception as e:
+                return HTTPBadRequest(body=json.dumps({'error': 'Updated failed'+ ' ' + str(e.message)}), content_type='text/json')
+        
+        if(int(id) == 0):
+            try: 
+                y = None
+                if not modifier_id:    
+                    y = Posttranslationannotation(taxonomy_id=taxonomy_id,
+                                                source_id=834,
+                                                dbentity_id=dbentity_id,
+                                                reference_id=reference_id,
+                                                site_index=site_index,
+                                                site_residue=site_residue,
+                                                psimod_id=psimod_id,
+                                                created_by=CREATED_BY)
+                else:
+                    y = Posttranslationannotation(taxonomy_id=taxonomy_id,
+                                                  source_id=834,
+                                                  dbentity_id=dbentity_id,
+                                                  reference_id=reference_id,
+                                                  site_index=site_index,
+                                                  site_residue=site_residue,
+                                                  psimod_id=psimod_id,
+                                                  modifier_id=modifier_id,
+                                                  created_by=CREATED_BY)
+                DBSession.add(y)
+                transaction.commit()
+            
+                return {"success":"New value is added"}
+            except Exception as e:
+                transaction.abort()
+                return HTTPBadRequest(body=json.dumps({'error': 'Insert failed'+ ' ' +str(e.message)}), content_type='text/json')
+
     except Exception as e:
         return HTTPBadRequest(body=json.dumps({'error': str(e.message)}), content_type='text/json')
