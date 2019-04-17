@@ -1038,6 +1038,7 @@ def ptm_file_insert(request):
     try:
         file = request.POST['file'].file
         filename = request.POST['file'].filename
+        CREATED_BY = get_username_from_db_uri()
         xl = pd.ExcelFile(file)
         list_of_sheets = xl.sheet_names
         
@@ -1058,33 +1059,33 @@ def ptm_file_insert(request):
         SOURCE_ID = 834
         SEPARATOR = '|'
 
-        # reading from database
         sgd_id_to_dbentity_id,systematic_name_to_dbentity_id = models_helper.get_dbentity_by_subclass(['LOCUS','REFERENCE'])
         strain_to_taxonomy_id = models_helper.get_straindbentity_by_strain_type(['Reference','Alternative Reference'])
         psimod_to_id = models_helper.get_psimod_all()
         posttranslationannotation_to_site = models_helper.posttranslationannotation_with_key_index()
         pubmed_id_to_reference, reference_to_dbentity_id = models_helper.get_references_all()
 
-        # reading from file
         list_of_posttranslationannotation = []
         list_of_posttranslationannotation_errors = []
         data = pd.read_excel(io=file, sheet_name="Sheet1")
-
-        #TODO: Check for nan before split 
+        
         for index, row in data.iterrows():
             posttranslationannotation_existing={
                 'dbentity_id':'',
+                'source_id': SOURCE_ID,
                 'taxonomy_id':'',
                 'reference_id':'',
                 'psimod_id':'',
-                'modifier_id':''
+                'modifier_id':'',
+                "site_index":'',
+                "site_residue":''
             }
             posttranslationannotation_update = {}
             posttranslationannotation_error = {}
 
             gene = row[COLUMNS['gene']]
             if(pd.isnull(gene)):
-                posttranslationannotation_error[index] = 'Error in gene ' + gene
+                posttranslationannotation_error[index] = 'Error in gene'
                 list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                 continue
             else:
@@ -1123,10 +1124,10 @@ def ptm_file_insert(request):
                         posttranslationannotation_error[index] = 'Error in gene ' + gene
                         list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                         continue
-
+            
             taxonomy = row[COLUMNS['taxonomy']]
             if(pd.isnull(taxonomy)):
-                posttranslationannotation_error[index] = 'Error in taxonomy '+ taxonomy
+                posttranslationannotation_error[index] = 'Error in taxonomy'
                 list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                 continue
             else:
@@ -1156,10 +1157,9 @@ def ptm_file_insert(request):
                         list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                         continue
                      
-
             reference = row[COLUMNS['reference']]
             if(pd.isnull(reference)):
-                posttranslationannotation_error[index] = 'Error in reference ' + reference
+                posttranslationannotation_error[index] = 'Error in reference'
                 list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                 continue
             else:
@@ -1204,7 +1204,7 @@ def ptm_file_insert(request):
 
             psimod = row[COLUMNS['psimod']]
             if(pd.isnull(psimod)):
-                posttranslationannotation_error[index] = 'Error in psimod ' + psimod
+                posttranslationannotation_error[index] = 'Error in psimod'
                 list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                 continue
             else:
@@ -1259,10 +1259,30 @@ def ptm_file_insert(request):
                     elif((modifier, 'LOCUS') in systematic_name_to_dbentity_id):
                         posttranslationannotation_existing['modifier_id'] = systematic_name_to_dbentity_id[(modifier, 'LOCUS')]
 
+            index = row[COLUMNS['index']]
+            if (pd.isnull(index)):
+                posttranslationannotation_error[index] = 'Error in index ' + index
+                list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
+                continue
+            else:
+                posttranslationannotation_existing['site_index'] = int(str(row[COLUMNS['index']]).split(SEPARATOR)[0])
+                if SEPARATOR in str(index):
+                    posttranslationannotation_update['site_index'] = int(
+                        str(row[COLUMNS['index']]).split(SEPARATOR)[1])
+
+            residue = row[COLUMNS['residue']]
+            if(pd.isnull(residue)):
+                posttranslationannotation_error[index] = 'Error in residue ' + residue
+                list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
+                continue
+            else:
+                posttranslationannotation_existing['site_residue'] = str(row[COLUMNS['residue']]).split(SEPARATOR)[0]
+                if SEPARATOR in residue:
+                    residue_new = str(row[COLUMNS['index']]).split(SEPARATOR)[1]
+                    posttranslationannotation_update['site_residue'] = residue_new
 
             list_of_posttranslationannotation.append(posttranslationannotation_existing)
         
-
         # curator_session = get_curator_session(request.session['username'])
         # curator_session
 
@@ -1274,7 +1294,6 @@ def ptm_file_insert(request):
         return {"data":filename}
 
     except Exception as e:
-        print(e)
         return HTTPBadRequest(body=json.dumps({ 'error': e.message }), content_type='text/json')
 
 
@@ -1300,6 +1319,8 @@ def get_ptm_by_gene(request):
 def update_ptm(request):
     try:
         id = int(request.params.get('id'))
+        CREATED_BY = get_username_from_db_uri()
+        source_id = 834
 
         site_index = str(request.params.get('site_index'))
         if not site_index:
@@ -1337,7 +1358,6 @@ def update_ptm(request):
         else:
             return HTTPBadRequest(body=json.dumps({'error': "gene value not found in database"}), content_type='text/json')
             
-        #reference
         dbentity_in_db = None
         pmid_in_db = None
         dbentity_in_db = DBSession.query(Dbentity).filter(Dbentity.sgdid == reference_id).one_or_none()
@@ -1360,23 +1380,8 @@ def update_ptm(request):
                 modifier_id = dbentity_in_db.dbentity_id
             else:
                 return HTTPBadRequest(body=json.dumps({'error': "Modifier value not found in database"}), content_type='text/json')
-
-        # obj = {
-        #     "id": id,
-        #     "dbentity_id": dbentity_id,
-        #     "taxonomy_id": taxonomy_id,
-        #     "reference_id": reference_id,
-        #     "site_index": site_index,
-        #     "site_residue": site_residue,
-        #     "psimod_id": psimod_id,
-        #     "modifier_id": modifier_id,
-        #     "updated":False
-        # }
-        CREATED_BY = get_username_from_db_uri()
-        source_id =  834
         
         if(int(id) > 0):
-            # obj['updated'] = True
             try:
                 update_ptm = {"dbentity_id": dbentity_id,
                               "source_id": source_id,
