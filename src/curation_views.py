@@ -1286,19 +1286,13 @@ def get_ptm_by_gene(request):
     if(gene is None):
         return HTTPBadRequest(body=json.dumps({'error': 'No gene provided'}), content_type='text/json')
     
-    sgd_id_to_dbentity_id, systematic_name_to_dbentity_id = models_helper.get_dbentity_by_subclass(['LOCUS'])
-    dbentity_id = 0
+    dbentity = None 
+    dbentity = DBSession.query(Dbentity).filter(or_(Dbentity.sgdid == gene,Dbentity.format_name == gene)).one_or_none()
 
-    if (gene,'LOCUS') in sgd_id_to_dbentity_id:
-        dbentity_id = sgd_id_to_dbentity_id[(gene,'LOCUS')]
-    
-    if (gene.upper(), 'LOCUS') in systematic_name_to_dbentity_id:
-        dbentity_id = systematic_name_to_dbentity_id[(gene.upper(), 'LOCUS')]
-
-    if dbentity_id == 0:
+    if dbentity is None:
         return HTTPBadRequest(body=json.dumps({'error': 'Gene not found in database'}), content_type='text/json')
     
-    ptms = DBSession.query(Posttranslationannotation).filter(Posttranslationannotation.dbentity_id == dbentity_id).all()
+    ptms = DBSession.query(Posttranslationannotation).filter(Posttranslationannotation.dbentity_id == dbentity.dbentity_id).all()
     return {'ptms' :[p.to_dict() for p in ptms]}
 
 @view_config(route_name="update_ptm",renderer='json',request_method='POST')
@@ -1379,24 +1373,29 @@ def update_ptm(request):
         #     "updated":False
         # }
         CREATED_BY = get_username_from_db_uri()
+        source_id =  834
         
         if(int(id) > 0):
             # obj['updated'] = True
             try:
-                DBSession.query(Posttranslationannotation).filter_by(Posttranslationannotation.annotation_id == id).update(
-                    {dbentity_id: dbentity_id,
-                     source_id: 834,
-                     taxonomy_id: taxonomy_id,
-                     reference_id: reference_id,
-                     site_index: site_index,
-                     site_residue: site_residue,
-                     psimod_id: psimod_id,
-                     modifier_id: modifier_id,
-                     created_by: CREATED_BY
-                     })
+                update_ptm = {"dbentity_id": dbentity_id,
+                              "source_id": source_id,
+                              "taxonomy_id": taxonomy_id,
+                              "reference_id": reference_id,
+                              "site_index": site_index,
+                              "site_residue": site_residue,
+                              "psimod_id": psimod_id,
+                              "created_by": CREATED_BY
+                              }
+                if modifier_id:
+                   update_ptm["modifier_id"] = modifier_id
+
+                DBSession.query(Posttranslationannotation).filter(Posttranslationannotation.annotation_id == id).update(update_ptm)
+                transaction.commit()
 
                 return {"success": "Record is updated"}
             except Exception as e:
+                transaction.abort()
                 return HTTPBadRequest(body=json.dumps({'error': 'Updated failed'+ ' ' + str(e.message)}), content_type='text/json')
         
         if(int(id) == 0):
@@ -1404,7 +1403,7 @@ def update_ptm(request):
                 y = None
                 if not modifier_id:    
                     y = Posttranslationannotation(taxonomy_id=taxonomy_id,
-                                                source_id=834,
+                                                source_id=source_id,
                                                 dbentity_id=dbentity_id,
                                                 reference_id=reference_id,
                                                 site_index=site_index,
@@ -1413,7 +1412,7 @@ def update_ptm(request):
                                                 created_by=CREATED_BY)
                 else:
                     y = Posttranslationannotation(taxonomy_id=taxonomy_id,
-                                                  source_id=834,
+                                                  source_id=source_id,
                                                   dbentity_id=dbentity_id,
                                                   reference_id=reference_id,
                                                   site_index=site_index,
