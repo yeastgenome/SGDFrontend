@@ -1281,17 +1281,58 @@ def ptm_file_insert(request):
                     residue_new = str(row[COLUMNS['index']]).split(SEPARATOR)[1]
                     posttranslationannotation_update['site_residue'] = residue_new
 
-            list_of_posttranslationannotation.append(posttranslationannotation_existing)
-        
-        # curator_session = get_curator_session(request.session['username'])
-        # curator_session
-
-        ##How to identify if it an update or insert
-        ##If reference_id,psimod_id,taxonomy_id,dbentity_id is same then it is an update
-        ##Else it is an insert
-        
-        
-        return {"data":filename}
+            list_of_posttranslationannotation.append((posttranslationannotation_existing,posttranslationannotation_update))
+            
+            INSERT = 0
+            UPDATE = 0
+            for item in list_of_posttranslationannotation:    
+                data,update_data = item 
+                if bool(update_data):
+                    ptm_in_db = DBSession.query(Posttranslationannotation).filter(and_(
+                        Posttranslationannotation.dbentity_id == data['dbentity_id'],
+                        Posttranslationannotation.psimod_id == data['psimod_id'],
+                        Posttranslationannotation.site_index == data['site_index'],
+                        Posttranslationannotation.site_residue == data['site_residue'],
+                        Posttranslationannotation.reference_id == data['reference_id'],
+                        )).one_or_none()
+                    if ptm_in_db is not None:
+                        DBSession.query(Posttranslationannotation).filter(and_(
+                            Posttranslationannotation.dbentity_id == data['dbentity_id'],
+                            Posttranslationannotation.psimod_id == data['psimod_id'],
+                            Posttranslationannotation.site_index == data['site_index'],
+                            Posttranslationannotation.site_residue == data['site_residue'],
+                            Posttranslationannotation.reference_id == data['reference_id'],
+                        )).update(update_data)
+                        UPDATE = UPDATE + 1
+                else:
+                    p = None
+                    if not data['modifier_id']:
+                        p = Posttranslationannotation(taxonomy_id=data['taxonomy_id'],
+                                                      source_id=SOURCE_ID,
+                                                      dbentity_id=data['dbentity_id'],
+                                                      reference_id=data['reference_id'],
+                                                      site_index=data['site_index'],
+                                                      site_residue=data['site_residue'],
+                                                      psimod_id=data['psimod_id'],
+                                                      created_by=CREATED_BY)
+                    else:
+                        p = Posttranslationannotation(taxonomy_id=data['taxonomy_id'],
+                                                      source_id=SOURCE_ID,
+                                                      dbentity_id=data['dbentity_id'],
+                                                      reference_id=data['reference_id'],
+                                                      site_index=data['site_index'],
+                                                      site_residue=data['site_residue'],
+                                                      psimod_id=data['psimod_id'],
+                                                      modifier_id = data['modifier_id'],
+                                                      created_by=CREATED_BY)
+                    DBSession.add(p)
+                    INSERT = INSERT + 1
+            try:
+                transaction.commit()
+                return {"success":"Inserted: " + str(INSERT) + " Updated: " + str(UPDATE)}
+            except Exception as e:
+                transaction.abort()
+                return HTTPBadRequest(body=json.dumps({'error': e.message}), content_type='text/json')
 
     except Exception as e:
         return HTTPBadRequest(body=json.dumps({ 'error': e.message }), content_type='text/json')
