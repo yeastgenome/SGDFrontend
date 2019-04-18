@@ -1070,7 +1070,8 @@ def ptm_file_insert(request):
         data = pd.read_excel(io=file, sheet_name="Sheet1")
         
         for index_row, row in data.iterrows():
-            index = index_row + 1
+            index = index_row + 2
+            column = ''
             try:
                 posttranslationannotation_existing={
                     'dbentity_id':'',
@@ -1085,9 +1086,10 @@ def ptm_file_insert(request):
                 posttranslationannotation_update = {}
                 posttranslationannotation_error = ' '
 
-                gene = row[COLUMNS['gene']]
+                column = COLUMNS['gene']
+                gene = row[column]
                 if(pd.isnull(gene)):
-                    posttranslationannotation_error = 'Error in gene on row '  + str(index) 
+                    posttranslationannotation_error = 'Error in gene on row '  + str(index) + '  in column ' + column 
                     list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                     continue
                 else:
@@ -1101,7 +1103,7 @@ def ptm_file_insert(request):
                         elif(key in systematic_name_to_dbentity_id):
                             posttranslationannotation_existing['dbentity_id'] = systematic_name_to_dbentity_id[key]
                         else:
-                            posttranslationannotation_error = 'Error in gene on row ' + str(index)
+                            posttranslationannotation_error = 'Error in gene on row ' + str(index) + '  in column ' + column
                             list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                             continue
 
@@ -1111,7 +1113,7 @@ def ptm_file_insert(request):
                         elif(key in systematic_name_to_dbentity_id):
                             posttranslationannotation_update['dbentity_id'] = systematic_name_to_dbentity_id[key]
                         else:
-                            posttranslationannotation_error = 'Error in gene on row ' + str(index)
+                            posttranslationannotation_error = 'Error in gene on row ' + str(index) + '  in column ' + column
                             list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                             continue
 
@@ -1123,13 +1125,14 @@ def ptm_file_insert(request):
                         elif(key in systematic_name_to_dbentity_id):
                             posttranslationannotation_existing['dbentity_id'] = systematic_name_to_dbentity_id[key]
                         else:
-                            posttranslationannotation_error = 'Error in gene on row ' + str(index)
+                            posttranslationannotation_error = 'Error in gene on row ' + str(index) + '  in column ' + column
                             list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                             continue
                 
-                taxonomy = row[COLUMNS['taxonomy']]
+                column = COLUMNS['taxonomy']
+                taxonomy = row[column]
                 if(pd.isnull(taxonomy)):
-                    posttranslationannotation_error = 'Error in taxonomy on row ' + str(index)
+                    posttranslationannotation_error = 'Error in taxonomy on row ' + str(index) + '  in column ' + column
                     list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                     continue
                 else:
@@ -1140,14 +1143,14 @@ def ptm_file_insert(request):
                         if taxonomy in strain_to_taxonomy_id:
                             posttranslationannotation_existing['taxonomy_id'] = strain_to_taxonomy_id[taxonomy]
                         else:
-                            posttranslationannotation_error = 'Error in taxonomy on row ' + str(index)
+                            posttranslationannotation_error = 'Error in taxonomy on row ' + str(index) + '  in column ' + column
                             list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                             continue
 
                         if taxonomy_new in strain_to_taxonomy_id:
                             posttranslationannotation_update['taxonomy_id'] = strain_to_taxonomy_id[taxonomy_new]
                         else:
-                            posttranslationannotation_error = 'Error in updating taxonomy on row ' + str(index)
+                            posttranslationannotation_error = 'Error in updating taxonomy on row ' + str(index) + '  in column ' + column
                             list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                             continue
                     else:
@@ -1155,13 +1158,14 @@ def ptm_file_insert(request):
                         if taxonomy in strain_to_taxonomy_id:
                             posttranslationannotation_existing['taxonomy_id'] = strain_to_taxonomy_id[taxonomy]
                         else:
-                            posttranslationannotation_error = 'Error in taxonomy on row ' + str(index)
+                            posttranslationannotation_error = 'Error in taxonomy on row ' + str(index) + '  in column ' + column
                             list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                             continue
-                        
-                reference = row[COLUMNS['reference']]
+
+                column = COLUMNS['reference']
+                reference = row[column]
                 if(pd.isnull(reference)):
-                    posttranslationannotation_error = 'Error in reference on row ' + str(index)
+                    posttranslationannotation_error = 'Error in reference on row ' + str(index) + '  in column ' + column
                     list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                     continue
                 else:
@@ -1176,7 +1180,7 @@ def ptm_file_insert(request):
                         elif(reference in reference_to_dbentity_id):
                             posttranslationannotation_existing['reference_id'] = int(reference)
                         else:
-                            posttranslationannotation_error = 'Error in reference on row ' + str(index)
+                            posttranslationannotation_error = 'Error in reference on row ' + str(index) + '  in column ' + column
                             list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                             continue
                         
@@ -1187,7 +1191,7 @@ def ptm_file_insert(request):
                         elif(reference_new in reference_to_dbentity_id):
                             posttranslationannotation_update['reference_id'] = int(reference_new)
                         else:
-                            posttranslationannotation_error = 'Error in reference on row ' + str(index)
+                            posttranslationannotation_error = 'Error in reference on row ' + str(index) + '  in column ' + column
                             list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                             continue
 
@@ -1200,13 +1204,14 @@ def ptm_file_insert(request):
                         elif(reference in reference_to_dbentity_id):
                             posttranslationannotation_existing['reference_id'] = int(reference)
                         else:
-                            posttranslationannotation_error = 'Error in reference on row ' + str(index)
+                            posttranslationannotation_error = 'Error in reference on row ' + str(index) + '  in column ' + column
                             list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                             continue
-
-                psimod = row[COLUMNS['psimod']]
+                
+                column = COLUMNS['psimod']
+                psimod = row[column]
                 if(pd.isnull(psimod)):
-                    posttranslationannotation_error = 'Error in psimod ' + str(index)
+                    posttranslationannotation_error = 'Error in psimod ' + str(index) + '  in column ' + column
                     list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                     continue
                 else:
@@ -1217,14 +1222,14 @@ def ptm_file_insert(request):
                         if (psimod in psimod_to_id):
                             posttranslationannotation_existing['psimod_id'] = psimod_to_id[psimod]
                         else:
-                            posttranslationannotation_error = 'Error in psimod ' + str(index)
+                            posttranslationannotation_error = 'Error in psimod ' + str(index) + '  in column ' + column
                             list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                             continue
 
                         if (psimod_new in psimod_to_id):
                             posttranslationannotation_update['psimod_id'] = psimod_to_id[psimod_new]
                         else:
-                            posttranslationannotation_error = 'Error in psimod ' + str(index)
+                            posttranslationannotation_error = 'Error in psimod ' + str(index) + '  in column ' + column
                             list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                             continue
                     else:
@@ -1232,11 +1237,12 @@ def ptm_file_insert(request):
                         if (psimod in psimod_to_id):
                             posttranslationannotation_existing['psimod_id'] = psimod_to_id[psimod]
                         else:
-                            posttranslationannotation_error = 'Error in psimod ' + str(index)
+                            posttranslationannotation_error = 'Error in psimod ' + str(index) + '  in column ' + column
                             list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                             continue
-
-                modifier = row[COLUMNS['modifier']]
+                
+                column = COLUMNS['modifier']
+                modifier = row[column]
                 if(pd.isnull(modifier)):
                     pass
                 else:
@@ -1260,10 +1266,11 @@ def ptm_file_insert(request):
                             posttranslationannotation_existing['modifier_id'] = sgd_id_to_dbentity_id[(modifier, 'LOCUS')]
                         elif((modifier, 'LOCUS') in systematic_name_to_dbentity_id):
                             posttranslationannotation_existing['modifier_id'] = systematic_name_to_dbentity_id[(modifier, 'LOCUS')]
-
-                site_index = row[COLUMNS['index']]
+                
+                column = COLUMNS['index']
+                site_index = row[column]
                 if (pd.isnull(index)):
-                    posttranslationannotation_error = 'Error in index on row ' + str(index)
+                    posttranslationannotation_error = 'Error in index on row ' + str(index) + '  in column ' + column
                     list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                     continue
                 else:
@@ -1271,9 +1278,10 @@ def ptm_file_insert(request):
                     if SEPARATOR in str(site_index):
                         posttranslationannotation_update['site_index'] = int(str(row[COLUMNS['index']]).split(SEPARATOR)[1])
 
-                residue = row[COLUMNS['residue']]
+                column = COLUMNS['residue']
+                residue = row[column]
                 if(pd.isnull(residue)):
-                    posttranslationannotation_error = 'Error in residue on row ' + str(index)
+                    posttranslationannotation_error = 'Error in residue on row ' + str(index) + '  in column ' + column
                     list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
                     continue
                 else:
@@ -1285,12 +1293,16 @@ def ptm_file_insert(request):
                 list_of_posttranslationannotation.append((posttranslationannotation_existing,posttranslationannotation_update))
             
             except ValueError as e:
-                posttranslationannotation_error = 'Error in on row ' + str(index) + ', It is not a valid number.'
+                posttranslationannotation_error = 'Error in on row ' + str(index) + '  in column ' + column + ', It is not a valid number.'
                 list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
             except Exception as e:
-                posttranslationannotation_error = 'Error in on row ' + str(index) + ' ' + e.message
+                posttranslationannotation_error = 'Error in on row ' + str(index) + '  in column ' + column + ' ' + e.message
                 list_of_posttranslationannotation_errors.append(posttranslationannotation_error)
-            
+
+        if list_of_posttranslationannotation_errors:
+            err = [ e + '\n'  for e in list_of_posttranslationannotation_errors]
+            return HTTPBadRequest(body=json.dumps({"error": err}), content_type='text/json')
+
         INSERT = 0
         UPDATE = 0
         if list_of_posttranslationannotation:
@@ -1344,10 +1356,6 @@ def ptm_file_insert(request):
                 transaction.abort()
                 return HTTPBadRequest(body=json.dumps({'error': e.message}), content_type='text/json')
         
-        if list_of_posttranslationannotation_errors:
-            err = [ e + '\n'  for e in list_of_posttranslationannotation_errors]
-            return HTTPBadRequest(body=json.dumps({"error": err}), content_type='text/json')
-
 
     except Exception as e:
         return HTTPBadRequest(body=json.dumps({ 'error': e.message }), content_type='text/json')
