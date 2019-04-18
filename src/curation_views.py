@@ -1352,7 +1352,8 @@ def get_ptm_by_gene(request):
     if dbentity is None:
         return HTTPBadRequest(body=json.dumps({'error': 'Gene not found in database'}), content_type='text/json')
     
-    ptms = DBSession.query(Posttranslationannotation).filter(Posttranslationannotation.dbentity_id == dbentity.dbentity_id).all()
+    ptms = DBSession.query(Posttranslationannotation).filter(
+        Posttranslationannotation.dbentity_id == dbentity.dbentity_id).order_by(Posttranslationannotation.site_index.asc()).all()
     return {'ptms' :[p.to_dict() for p in ptms]}
 
 @view_config(route_name="update_ptm",renderer='json',request_method='POST')
