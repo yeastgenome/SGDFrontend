@@ -1317,7 +1317,8 @@ def alignment(request):
 @view_config(route_name='get_strains', renderer='json', request_method='GET')
 def get_strains(request):
     try:    
-        strains = DBSession.query(Straindbentity).filter(or_(Straindbentity.strain_type == 'Alternative Reference', Straindbentity.strain_type == 'Reference', Straindbentity.taxonomy_id == 274803)).order_by(Straindbentity.display_name).all()
+        strains = DBSession.query(Straindbentity).filter(or_(Straindbentity.strain_type == 'Alternative Reference',
+                                                             Straindbentity.strain_type == 'Reference', Straindbentity.dbentity_id == 1364635)).order_by(Straindbentity.display_name).all()
         if strains:
             return {'strains': [s.get_strains_with_taxonomy() for s in strains]}
         
