@@ -256,7 +256,7 @@ def write_header(fw, datestamp):
     fw.write("!From: Saccharomyces Genome Database (SGD)\n")
     fw.write("!URL: https://www.yeastgenome.org/\n")
     fw.write("!Contact Email: sgd-helpdesk@lists.stanford.edu\n")
-    fw.write("!Funding: NHGRI at US NIH, grant number 5-P41-HG001315\n")
+    fw.write("!Funding: NHGRI at US NIH, grant number U41-HG001315\n")
     fw.write("!\n")
 
 def read_from_go_central(url, matchSubDir=None):
