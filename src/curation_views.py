@@ -1044,13 +1044,13 @@ def ptm_file_insert(request):
         list_of_sheets = xl.sheet_names
         
         COLUMNS = {
-            'gene': 'Gene (sgdid,systematic name)',
+            'gene': 'Gene(sgdid,systematic name)',
             'taxonomy': 'Taxonomy',
-            'reference': 'Reference (sgdid, pubmed id, reference no)',
-            'index': 'Site Index',
-            'residue': 'Site Residue',
+            'reference': 'Reference(sgdid,pubmed id,reference no)',
+            'index': 'Index',
+            'residue': 'Residue',
             'psimod': 'Psimod',
-            'modifier': 'Modifier Id(sgdid, systematic name)'
+            'modifier': 'Modifier(sgdid,systematic name)'
         }
 
         SOURCE_ID = 834
