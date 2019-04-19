@@ -33,6 +33,9 @@ class PtmForm extends Component {
       type: '',
       taxonomy: {
         taxonomy_id: ''
+      },
+      modifier:{
+        format_name:''
       }
     };
 
@@ -131,7 +134,7 @@ class PtmForm extends Component {
         site_residue: ptm.site_residue,
         psimod_id: ptm.psimod_id,
         taxonomy_id: ptm.taxonomy.taxonomy_id,
-        modifier_id: ''
+        modifier_id: ptm.modifier.format_name
       });
     }
   }

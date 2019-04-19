@@ -1377,7 +1377,20 @@ def get_ptm_by_gene(request):
     
     ptms = DBSession.query(Posttranslationannotation).filter(
         Posttranslationannotation.dbentity_id == dbentity.dbentity_id).order_by(Posttranslationannotation.site_index.asc()).all()
-    return {'ptms' :[p.to_dict() for p in ptms]}
+
+    list_of_ptms = []
+    for ptm in ptms:
+        new_ptm = ptm.to_dict()
+        new_ptm['modifier'] = ''
+        
+        if ptm.modifier:    
+            new_ptm['modifier']={
+                'format_name': ptm.modifier.format_name
+            }
+
+        list_of_ptms.append(new_ptm)
+
+    return {'ptms' :list_of_ptms}
 
 @view_config(route_name="update_ptm",renderer='json',request_method='POST')
 @authenticate
