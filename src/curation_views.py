@@ -1381,7 +1381,7 @@ def get_ptm_by_gene(request):
     list_of_ptms = []
     for ptm in ptms:
         new_ptm = ptm.to_dict()
-        new_ptm['modifier'] = ''
+        new_ptm['modifier'] = {'format_name': ' '}
         
         if ptm.modifier:    
             new_ptm['modifier']={
