@@ -1389,6 +1389,31 @@ def get_ptm_by_gene(request):
 
     return {'ptms' :list_of_ptms}
 
+
+@view_config(route_name='get_strains', renderer='json', request_method='GET')
+def get_strains(request):
+    try:
+        strains = DBSession.query(Straindbentity).filter(or_(Straindbentity.strain_type == 'Alternative Reference',
+                                                             Straindbentity.strain_type == 'Reference', Straindbentity.dbentity_id == 1364635)).order_by(Straindbentity.display_name).all()
+        if strains:
+            return {'strains': [s.get_strains_with_taxonomy() for s in strains]}
+
+        return None
+
+    except Exception as e:
+        return HTTPBadRequest(body=json.dumps({'error': str(e)}))
+
+
+@view_config(route_name='get_psimod', renderer='json', request_method='GET')
+def get_psimod(request):
+    try:
+        psimods = DBSession.query(Psimod).order_by(Psimod.display_name).all()
+        if psimods:
+            return {'psimods': [{"psimod_id": p.psimod_id, "display_name": p.display_name} for p in psimods]}
+        return None
+    except Exception as e:
+        return HTTPBadRequest(body=json.dumps({'error': str(e)}))
+
 @view_config(route_name="update_ptm",renderer='json',request_method='POST')
 @authenticate
 def update_ptm(request):
