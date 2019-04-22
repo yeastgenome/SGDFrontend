@@ -454,7 +454,8 @@ class ModelsHelper(object):
         Get all PTMS by dbentity id
         '''
         ptms_in_db = None
-        ptms_in_db = DBSession.query(Posttranslationannotation).filter(Posttranslationannotation.dbentity_id == dbentity_id).order_by(Posttranslationannotation.site_index.asc()).all()
+        ptms_in_db = DBSession.query(Posttranslationannotation).filter(Posttranslationannotation.dbentity_id == dbentity_id).order_by(
+            Posttranslationannotation.site_index.asc(), Posttranslationannotation.site_residue.asc()).all()
         return ptms_in_db
 
     def get_all_strains(self):

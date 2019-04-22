@@ -67,9 +67,6 @@ class PtmForm extends Component {
     this.getPsimods();
   }
 
-  componentDidMount() {
-  }
-
   handleChange(event) {
     var value = event.target.value;
     var name = event.target.name;
@@ -108,13 +105,13 @@ class PtmForm extends Component {
       .catch(err => this.props.dispatch(setError(err.error)));
   }
 
-  handleGetPTMS() {
-    this.setState({ list_of_ptms: [], isPending: true });
+  handleGetPTMS(value) {
+    this.setState({ list_of_ptms: [], isPending: true,visible_ptm_index:value });
     var url = `${GET_PTMs_URL}${this.state.dbentity_id}`;
     fetchData(url, {
       type: 'GET'
     }).then(data => {
-      this.setState({ list_of_ptms: [...data['ptms']], visible_ptm_index: 0, isPending: false });
+      this.setState({ list_of_ptms: [...data['ptms']], isPending: false });
     })
       .catch(err => {
         this.setState({ isPending: false });
@@ -148,6 +145,7 @@ class PtmForm extends Component {
     }).then((data) => {
       this.setState({ isPending: false });
       this.props.dispatch(setMessage(data.success));
+      this.handleGetPTMS(this.state.visible_ptm_index);
     })
       .catch((err) => {
         this.setState({ isPending: false });
@@ -204,7 +202,6 @@ class PtmForm extends Component {
     if(this.state.isUpdate){
       return(
         <div>
-          {/* <div className='columns small-1'></div> */}
           {count_of_ptms > 0 &&
             <div className='row'>
               <div className='columns small-8'>
@@ -217,8 +214,6 @@ class PtmForm extends Component {
               </div>
             </div>
           }
-          {/* <div className='columns small-1 end'></div> */}
-
 
           <div className='row'>
             <div className='columns small-8'>
@@ -289,7 +284,7 @@ class PtmForm extends Component {
               <div className='columns large-12'>
                 <div className='row'>
                   <div className='columns medium-4'>
-                    <input type="button" className="button" value="Get database value" onClick={this.handleGetPTMS} />
+                    <input type="button" className="button" value="Get database value" onClick={() => this.handleGetPTMS(0)} />
                   </div>
                 </div>
               </div>
