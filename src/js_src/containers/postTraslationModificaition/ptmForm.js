@@ -8,6 +8,7 @@ const GET_PTMs_URL = '/get_ptms/';
 const GET_STRAINS = '/get_strains';
 const GET_PSIMODS = '/get_psimod';
 const UPDATE_PTM = '/update_ptm';
+const SKIP = 5;
 
 class PtmForm extends Component {
   constructor(props) {
@@ -15,9 +16,13 @@ class PtmForm extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleGetPTMS = this.handleGetPTMS.bind(this);
     this.setPtm = this.setPtm.bind(this);
-    this.handleIncrement = this.handleIncrement.bind(this);
-    this.handleDecrement = this.handleDecrement.bind(this);
+
+    this.handle_next_previous = this.handle_next_previous.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+
+    this.handleNewForm = this.handleNewForm.bind(this);
+    this.handleEditForm = this.handleEditForm.bind(this);
+    this.handleResetForm = this.handleResetForm.bind(this);
 
     this.newPTM = {
       id: 0,
@@ -34,25 +39,28 @@ class PtmForm extends Component {
       taxonomy: {
         taxonomy_id: ''
       },
-      modifier:{
-        format_name:''
+      modifier: {
+        format_name: ''
       }
     };
 
     this.state = {
+      isUpdate : false,
       taxonomy_id_to_name: [],
       psimod_id_to_name: [],
-      list_of_ptms: [this.newPTM],
+      list_of_ptms: [],
+
       isPending: false,
       id: 0,
-      dbentity_id: 'S000001855',
+      dbentity_id: '',
       taxonomy_id: '',
       reference_id: '',
       site_index: '',
       site_residue: '',
       psimod_id: '',
       modifier_id: '',
-      visible_ptm_index: 0
+
+      visible_ptm_index: -1
     };
 
     this.getStrainsForTaxonomy();
@@ -60,7 +68,6 @@ class PtmForm extends Component {
   }
 
   componentDidMount() {
-    this.setPtm(0);
   }
 
   handleChange(event) {
@@ -71,12 +78,8 @@ class PtmForm extends Component {
     });
   }
 
-  handleIncrement() {
-    this.setPtm(1);
-  }
-
-  handleDecrement() {
-    this.setPtm(-1);
+  handle_next_previous(value) {
+    this.setState({ visible_ptm_index: this.state.visible_ptm_index + value });
   }
 
   getStrainsForTaxonomy() {
@@ -111,9 +114,7 @@ class PtmForm extends Component {
     fetchData(url, {
       type: 'GET'
     }).then(data => {
-      this.newPTM.locus.format_name = data['ptms'][0].locus.format_name;
-      this.setState({ list_of_ptms: [this.newPTM, ...data['ptms']], visible_ptm_index: 0, isPending: false });
-      this.setPtm(0);
+      this.setState({ list_of_ptms: [...data['ptms']], visible_ptm_index: 0, isPending: false });
     })
       .catch(err => {
         this.setState({ isPending: false });
@@ -121,22 +122,18 @@ class PtmForm extends Component {
       });
   }
 
-  setPtm(change) {
-    var index = this.state.visible_ptm_index + change;
-    if (index >= 0 && index <= this.state.list_of_ptms.length - 1) {
-      var ptm = this.state.list_of_ptms[index];
-      this.setState({ visible_ptm_index: index });
-      this.setState({
-        id: ptm.id,
-        dbentity_id: ptm.locus.format_name,
-        reference_id: ptm.reference.pubmed_id,
-        site_index: ptm.site_index,
-        site_residue: ptm.site_residue,
-        psimod_id: ptm.psimod_id,
-        taxonomy_id: ptm.taxonomy.taxonomy_id,
-        modifier_id: ptm.modifier.format_name
-      });
-    }
+  setPtm(index) {
+    var ptm = this.state.list_of_ptms[index];
+    this.setState({
+      id: ptm.id,
+      dbentity_id: ptm.locus.format_name,
+      reference_id: ptm.reference.pubmed_id,
+      site_index: ptm.site_index,
+      site_residue: ptm.site_residue,
+      psimod_id: ptm.psimod_id,
+      taxonomy_id: ptm.taxonomy.taxonomy_id,
+      modifier_id: ptm.modifier.format_name
+    });
   }
 
   handleSubmit(e) {
@@ -158,6 +155,30 @@ class PtmForm extends Component {
       });
   }
 
+  handleResetForm(){
+    var ptm = this.newPTM;
+    this.setState({
+      id: ptm.id,
+      dbentity_id: ptm.locus.format_name,
+      reference_id: ptm.reference.pubmed_id,
+      site_index: ptm.site_index,
+      site_residue: ptm.site_residue,
+      psimod_id: ptm.psimod_id,
+      taxonomy_id: ptm.taxonomy.taxonomy_id,
+      modifier_id: ptm.modifier.format_name
+    });
+  }
+
+  handleNewForm() {
+    this.setState({ isUpdate: false,list_of_ptms:[]});
+    this.handleResetForm();
+  }
+
+  handleEditForm() {
+    this.setState({isUpdate:true,list_of_ptms:[]});
+    this.handleResetForm();
+  }
+
   renderActions() {
     if (this.state.isPending) {
       return (
@@ -169,18 +190,52 @@ class PtmForm extends Component {
       );
     }
 
-    var currentIndex = this.state.visible_ptm_index + 1;
+    var currentIndex = this.state.visible_ptm_index;
     var count_of_ptms = this.state.list_of_ptms.length;
+    
+    var buttons = this.state.list_of_ptms.filter( (i,index) => {
+      return index >= currentIndex && index < currentIndex + SKIP  ;
+    })
+    .map((i,index) => {
+      var new_index = index + currentIndex;
+      return <li key={index} onClick={() => this.setPtm(new_index)} className='button'>{i.site_index + ' ' + i.site_residue}</li>;
+    });
+
+    if(this.state.isUpdate){
+      return(
+        <div>
+
+          <div className='row'>
+            <div className='columns small-1'>
+              <button type='button' className='button' disabled={count_of_ptms < 0 || currentIndex <= 0 ? true : false} onClick={() => this.handle_next_previous(-SKIP)}> Previous </button>
+            </div>
+            {count_of_ptms > 0 && 
+              <div className='columns small-6'>
+                <ul className='expanded button-group'>
+                  {buttons}
+                </ul>
+              </div>
+            }
+            <div className='columns small-1 end'>
+              <button type='button' className='button' disabled={count_of_ptms == 0 || currentIndex + SKIP >= count_of_ptms ? true : false} onClick={() => this.handle_next_previous(SKIP)}> Next </button>
+            </div>
+          </div>
+
+          <div className='row'>
+            <div className='columns small-8'>
+              <button type='submit' className="button expanded" >Update</button>
+            </div>
+          </div>
+          </div>
+      );
+    }
+
     return (
-      <div className='row'>
-        <div className='columns small-3'>
-          <button type='button' className={`button ${count_of_ptms == 0 || currentIndex == 1 ? 'invisible' : ''}`} onClick={this.handleDecrement}> Previous </button>
-        </div>
-        <div className='columns small-3'>
-          <button type='button' className={`button ${count_of_ptms == 0 || currentIndex == count_of_ptms ? 'invisible' : ''}`} onClick={this.handleIncrement}> Next </button>
-        </div>
-        <div className='columns small-6'>
-          <button type='submit' className="button" >{this.state.id == 0 ? 'Insert' : 'Update'}</button>
+      <div>
+        <div className='row'>
+          <div className='columns small-8'>
+            <button type='submit' className="button expanded" >Add</button>
+          </div>
         </div>
       </div>
     );
@@ -188,150 +243,172 @@ class PtmForm extends Component {
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit} ref='form'>
-
-        <input name='id' value={this.state.id} className="hide" />
-
-        {/* Gene */}
+      <div>
         <div className='row'>
-          <div className='columns large-12'>
-
-            <div className='row'>
-              <div className='columns medium-12'>
-                <label> Gene (sgdid, systematic name) </label>
-              </div>
-            </div>
-
-            <div className='row'>
-              <div className='columns medium-8'>
-                <input type='text' name='dbentity_id' placeholder='Enter Gene' value={this.state.dbentity_id} onChange={this.handleChange} />
-              </div>
-
-              <div className='columns medium-4'>
-                <input type="button" className="button" value="Get database value" onClick={this.handleGetPTMS} />
-              </div>
-            </div>
+          <div className='columns medium-3'>
+            <button type="button" className="button expanded" onClick={this.handleNewForm} disabled={!this.state.isUpdate}>Add new ptm</button>
+          </div>
+          <div className='columns medium-3 end'>
+            <button type="button" className="button expanded" onClick={this.handleEditForm} disabled={this.state.isUpdate}>Update existing ptm</button>
           </div>
         </div>
 
-        {/* Taxonomy */}
-        <div className='row'>
-          <div className='columns large-12'>
+        <form onSubmit={this.handleSubmit} ref='form'>
 
-            <div className='row'>
-              <div className='columns medium-12'>
-                <label> Taxonomy </label>
+          <input name='id' value={this.state.id} className="hide" />
+
+          {/* Gene */}
+          <div className='row'>
+            <div className='columns large-12'>
+
+              <div className='row'>
+                <div className='columns medium-12'>
+                  <label> Gene (sgdid, systematic name) </label>
+                </div>
               </div>
-            </div>
 
-            <div className='row'>
-              <div className='columns medium-8'>
-                {/* <input type='text' placeholder='Enter Taxonomy' name='taxonomy_id' value={this.state.taxonomy_id} onChange={this.handleChange} /> */}
-                <select value={this.state.taxonomy_id} onChange={this.handleChange} name='taxonomy_id'>
-                  {this.state.taxonomy_id_to_name}
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Reference */}
-        <div className='row'>
-          <div className='columns large-12'>
-
-            <div className='row'>
-              <div className='columns medium-12'>
-                <label> Reference (sgdid, pubmed id, reference no) </label>
-              </div>
-            </div>
-
-            <div className='row'>
-              <div className='columns medium-8'>
-                <input type='text' placeholder='Enter Reference' name='reference_id' value={this.state.reference_id} onChange={this.handleChange} />
-
+              <div className='row'>
+                <div className='columns medium-8'>
+                  <input type='text' name='dbentity_id' placeholder='Enter Gene' value={this.state.dbentity_id} onChange={this.handleChange} />
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Site Index */}
-        <div className='row'>
-          <div className='columns large-12'>
+          {this.state.isUpdate && 
 
             <div className='row'>
-              <div className='columns medium-12'>
-                <label> Site Index </label>
+              <div className='columns large-12'>
+                <div className='row'>
+                  <div className='columns medium-4'>
+                    <input type="button" className="button" value="Get database value" onClick={this.handleGetPTMS} />
+                  </div>
+                </div>
               </div>
             </div>
+          }
+          
 
-            <div className='row'>
-              <div className='columns medium-8'>
-                <input type='text' placeholder='Enter site index' name='site_index' value={this.state.site_index} onChange={this.handleChange} />
+          {/* Taxonomy */}
+          <div className='row'>
+            <div className='columns large-12'>
+
+              <div className='row'>
+                <div className='columns medium-12'>
+                  <label> Taxonomy </label>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
 
-        {/* Site Residue */}
-        <div className='row'>
-          <div className='columns large-12'>
-
-            <div className='row'>
-              <div className='columns medium-12'>
-                <label> Site Residue </label>
-              </div>
-            </div>
-
-            <div className='row'>
-              <div className='columns medium-8'>
-                <input type='text' placeholder='Enter site residue' name='site_residue' value={this.state.site_residue} onChange={this.handleChange} />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Psimod */}
-        <div className='row'>
-          <div className='columns large-12'>
-
-            <div className='row'>
-              <div className='columns medium-12'>
-                <label> Psimod </label>
-              </div>
-            </div>
-
-            <div className='row'>
-              <div className='columns medium-8'>
-                {/* <input type='text' placeholder='Enter psimod' name='psimod_id' value={this.state.psimod_id} onChange={this.handleChange} /> */}
-                <select name='psimod_id' value={this.state.psimod_id} onChange={this.handleChange}>
-                  {this.state.psimod_id_to_name}
-                </select>
+              <div className='row'>
+                <div className='columns medium-8'>
+                  {/* <input type='text' placeholder='Enter Taxonomy' name='taxonomy_id' value={this.state.taxonomy_id} onChange={this.handleChange} /> */}
+                  <select value={this.state.taxonomy_id} onChange={this.handleChange} name='taxonomy_id'>
+                    {this.state.taxonomy_id_to_name}
+                  </select>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Modifier */}
-        <div className='row'>
-          <div className='columns large-12'>
+          {/* Reference */}
+          <div className='row'>
+            <div className='columns large-12'>
 
-            <div className='row'>
-              <div className='columns medium-12'>
-                <label> Modifier(sgdid, systematic name) </label>
+              <div className='row'>
+                <div className='columns medium-12'>
+                  <label> Reference (sgdid, pubmed id, reference no) </label>
+                </div>
               </div>
-            </div>
 
-            <div className='row'>
-              <div className='columns medium-8'>
-                <input type='text' placeholder='Enter modifier' name='modifier_id' value={this.state.modifier_id} onChange={this.handleChange} />
+              <div className='row'>
+                <div className='columns medium-8'>
+                  <input type='text' placeholder='Enter Reference' name='reference_id' value={this.state.reference_id} onChange={this.handleChange} />
+
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {this.renderActions()}
+          {/* Site Index */}
+          <div className='row'>
+            <div className='columns large-12'>
 
-      </form>
+              <div className='row'>
+                <div className='columns medium-12'>
+                  <label> Site Index </label>
+                </div>
+              </div>
+
+              <div className='row'>
+                <div className='columns medium-8'>
+                  <input type='text' placeholder='Enter site index' name='site_index' value={this.state.site_index} onChange={this.handleChange} />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Site Residue */}
+          <div className='row'>
+            <div className='columns large-12'>
+
+              <div className='row'>
+                <div className='columns medium-12'>
+                  <label> Site Residue </label>
+                </div>
+              </div>
+
+              <div className='row'>
+                <div className='columns medium-8'>
+                  <input type='text' placeholder='Enter site residue' name='site_residue' value={this.state.site_residue} onChange={this.handleChange} />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Psimod */}
+          <div className='row'>
+            <div className='columns large-12'>
+
+              <div className='row'>
+                <div className='columns medium-12'>
+                  <label> Psimod </label>
+                </div>
+              </div>
+
+              <div className='row'>
+                <div className='columns medium-8'>
+                  {/* <input type='text' placeholder='Enter psimod' name='psimod_id' value={this.state.psimod_id} onChange={this.handleChange} /> */}
+                  <select name='psimod_id' value={this.state.psimod_id} onChange={this.handleChange}>
+                    {this.state.psimod_id_to_name}
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Modifier */}
+          <div className='row'>
+            <div className='columns large-12'>
+
+              <div className='row'>
+                <div className='columns medium-12'>
+                  <label> Modifier(sgdid, systematic name) </label>
+                </div>
+              </div>
+
+              <div className='row'>
+                <div className='columns medium-8'>
+                  <input type='text' placeholder='Enter modifier' name='modifier_id' value={this.state.modifier_id} onChange={this.handleChange} />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {this.renderActions()}
+
+        </form>
+
+      </div>
     );
   }
 }
