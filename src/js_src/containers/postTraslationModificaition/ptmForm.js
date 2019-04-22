@@ -198,35 +198,34 @@ class PtmForm extends Component {
     })
     .map((i,index) => {
       var new_index = index + currentIndex;
-      return <li key={index} onClick={() => this.setPtm(new_index)} className='button'>{i.site_index + ' ' + i.site_residue}</li>;
+      return <li key={new_index} onClick={() => this.setPtm(new_index)} className='button small large-only-expanded'>{i.site_index + ' ' + i.site_residue}</li>;
     });
 
     if(this.state.isUpdate){
       return(
         <div>
-
-          <div className='row'>
-            <div className='columns small-1'>
-              <button type='button' className='button' disabled={count_of_ptms < 0 || currentIndex <= 0 ? true : false} onClick={() => this.handle_next_previous(-SKIP)}> Previous </button>
-            </div>
-            {count_of_ptms > 0 && 
-              <div className='columns small-6'>
-                <ul className='expanded button-group'>
-                  {buttons}
-                </ul>
+          {/* <div className='columns small-1'></div> */}
+          {count_of_ptms > 0 &&
+            <div className='row'>
+              <div className='columns small-8'>
+              <div className='expanded button-group'>
+                <li type='button' className='button warning' disabled={count_of_ptms < 0 || currentIndex <= 0 ? true : false} onClick={() => this.handle_next_previous(-SKIP)}> <i className="fa fa-chevron-circle-left"></i> </li>
+                {buttons}
+                <li type='button' className='button warning' disabled={count_of_ptms == 0 || currentIndex + SKIP >= count_of_ptms ? true : false} onClick={() => this.handle_next_previous(SKIP)}> <i className="fa fa-chevron-circle-right"></i></li>
               </div>
-            }
-            <div className='columns small-1 end'>
-              <button type='button' className='button' disabled={count_of_ptms == 0 || currentIndex + SKIP >= count_of_ptms ? true : false} onClick={() => this.handle_next_previous(SKIP)}> Next </button>
+
+              </div>
             </div>
-          </div>
+          }
+          {/* <div className='columns small-1 end'></div> */}
+
 
           <div className='row'>
             <div className='columns small-8'>
               <button type='submit' className="button expanded" >Update</button>
             </div>
           </div>
-          </div>
+        </div>
       );
     }
 
@@ -252,6 +251,15 @@ class PtmForm extends Component {
             <button type="button" className="button expanded" onClick={this.handleEditForm} disabled={this.state.isUpdate}>Update existing ptm</button>
           </div>
         </div>
+
+        {this.state.isUpdate && 
+          <ul>
+            <li>Enter gene name</li>
+            <li>Click Get database value</li>
+            <li>Click on the value to edit</li>
+            <li>Edit the field and click update to save</li>
+          </ul>
+        }
 
         <form onSubmit={this.handleSubmit} ref='form'>
 
