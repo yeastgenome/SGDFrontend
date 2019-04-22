@@ -1372,17 +1372,28 @@ def get_ptm_by_gene(request):
     if dbentity is None:
         return HTTPBadRequest(body=json.dumps({'error': 'Gene not found in database'}), content_type='text/json')
     
-    ptms = DBSession.query(Posttranslationannotation).filter(
-        Posttranslationannotation.dbentity_id == dbentity.dbentity_id).order_by(Posttranslationannotation.site_index.asc()).all()
+    ptms = models_helper.get_all_ptms_by_dbentity(dbentity.dbentity_id)
 
     list_of_ptms = []
     for ptm in ptms:
         new_ptm = ptm.to_dict()
         new_ptm['modifier'] = {'format_name': ''}
+        new_ptm['psimod_id'] = ''
+        new_ptm['taxonomy'] = {
+            "taxonomy_id": '',
+            "format_name": '',
+            "display_name": ''
+            }
         
-        if ptm.modifier:    
-            new_ptm['modifier']={
-                'format_name': ptm.modifier.format_name
+        if ptm.modifier:
+            new_ptm['modifier'] = {'format_name': ptm.modifier.format_name}
+        if ptm.psimod:
+            new_ptm['psimod_id'] = ptm.psimod.psimod_id
+        if ptm.taxonomy:
+            new_ptm['taxonomy'] = {
+                "taxonomy_id": ptm.taxonomy.taxonomy_id,
+                "format_name": ptm.taxonomy.format_name,
+                "display_name": ptm.taxonomy.display_name
             }
 
         list_of_ptms.append(new_ptm)
@@ -1393,10 +1404,11 @@ def get_ptm_by_gene(request):
 @view_config(route_name='get_strains', renderer='json', request_method='GET')
 def get_strains(request):
     try:
-        strains = DBSession.query(Straindbentity).filter(or_(Straindbentity.strain_type == 'Alternative Reference',
-                                                             Straindbentity.strain_type == 'Reference', Straindbentity.dbentity_id == 1364635)).order_by(Straindbentity.display_name).all()
-        if strains:
-            return {'strains': [s.get_strains_with_taxonomy() for s in strains]}
+        strains = models_helper.get_all_strains()
+        filered_strains = list(filter(lambda strain: strain.strain_type =='Alternative Reference'  or strain.strain_type =='Reference' or strain.dbentity_id == 1364635,strains))
+
+        if filered_strains:
+            return {'strains': [s.get_strains_with_taxonomy() for s in filered_strains]}
 
         return None
 
@@ -1407,7 +1419,7 @@ def get_strains(request):
 @view_config(route_name='get_psimod', renderer='json', request_method='GET')
 def get_psimod(request):
     try:
-        psimods = DBSession.query(Psimod).order_by(Psimod.display_name).all()
+        psimods = models_helper.get_all_psimods()
         if psimods:
             return {'psimods': [{"psimod_id": p.psimod_id, "display_name": p.display_name} for p in psimods]}
         return None

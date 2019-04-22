@@ -395,6 +395,11 @@ class ModelsHelper(object):
 
         return None
 
+
+
+
+
+
     def get_dbentity_by_subclass(self,subclasses):
         sgd_id_to_dbentity_id = {}
         systematic_name_to_dbentity_id = {}
@@ -444,3 +449,26 @@ class ModelsHelper(object):
 
         return pubmed_id_to_reference,reference_to_dbentity_id
 
+    def get_all_ptms_by_dbentity(self,dbentity_id):
+        '''
+        Get all PTMS by dbentity id
+        '''
+        ptms_in_db = None
+        ptms_in_db = DBSession.query(Posttranslationannotation).filter(Posttranslationannotation.dbentity_id == dbentity_id).order_by(Posttranslationannotation.site_index.asc()).all()
+        return ptms_in_db
+
+    def get_all_strains(self):
+        '''
+        Get all the strains
+        '''
+        strains_in_db = None
+        strains_in_db = DBSession.query(Straindbentity).order_by(Straindbentity.display_name).all()
+        return strains_in_db
+
+    def get_all_psimods(self):
+        '''
+        Get all psimods
+        '''
+        psimods_in_db = None
+        psimods_in_db = DBSession.query(Psimod).order_by(Psimod.display_name).all()
+        return psimods_in_db
