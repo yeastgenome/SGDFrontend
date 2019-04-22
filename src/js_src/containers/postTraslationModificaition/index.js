@@ -18,10 +18,8 @@ class PostTranslationModification extends Component {
           </div>
           
           <div className="columns large-6">
-            <h1>Add single value</h1>
-
+            <h1>Add/Update PTM</h1>
             <PtmForm />
-
           </div>
         </div>
       </CurateLayout>
