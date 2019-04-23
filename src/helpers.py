@@ -515,3 +515,13 @@ def send_newsletter_email(subject,recipients,msg):
         return {"error","The server replied with an unexpected"}
     except Exception as e:
         return {"error":"Error occured while sending email."}
+
+
+def unicode_to_string(unicode_value):
+    try:
+        returnValue = unicode_value.encode('ascii','ignore')
+        return returnValue
+    except UnicodeEncodeError as err:
+        return None
+
+    
