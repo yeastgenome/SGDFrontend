@@ -1435,6 +1435,19 @@ def update_ptm(request):
         curator_session = get_curator_session(request.session['username'])
         source_id = 834
 
+        dbentity_id = str(request.params.get('dbentity_id'))
+        if not dbentity_id:
+            return HTTPBadRequest(body=json.dumps({'error': "gene is blank"}), content_type='text/json')
+
+        taxonomy_id = str(request.params.get('taxonomy_id'))
+        if not taxonomy_id:
+            return HTTPBadRequest(body=json.dumps({'error': "taxonomy is blank"}), content_type='text/json')
+        taxonomy_id = int(taxonomy_id)
+
+        reference_id = str(request.params.get('reference_id'))
+        if not reference_id:
+            return HTTPBadRequest(body=json.dumps({'error': "reference is blank"}), content_type='text/json')
+        
         site_index = str(request.params.get('site_index'))
         if not site_index:
             return HTTPBadRequest(body=json.dumps({'error': "site index is blank"}), content_type='text/json')
@@ -1444,25 +1457,12 @@ def update_ptm(request):
         if not site_residue:
             return HTTPBadRequest(body=json.dumps({'error': "site residue is blank"}), content_type='text/json')
 
-        reference_id = str(request.params.get('reference_id'))
-        if not reference_id:
-            return HTTPBadRequest(body=json.dumps({'error': "reference is blank"}), content_type='text/json')
-
-        dbentity_id = str(request.params.get('dbentity_id'))
-        if not dbentity_id:
-            return HTTPBadRequest(body=json.dumps({'error': "gene is blank"}), content_type='text/json')
-
-        modifier_id = str(request.params.get('modifier_id'))
-
         psimod_id = str(request.params.get('psimod_id'))
         if not psimod_id:
             return HTTPBadRequest(body=json.dumps({'error': "psimod is blank"}), content_type='text/json')
         psimod_id = int(psimod_id)
-
-        taxonomy_id = str(request.params.get('taxonomy_id'))
-        if not taxonomy_id:
-            return HTTPBadRequest(body=json.dumps({'error': "taxonomy is blank"}), content_type='text/json')
-        taxonomy_id = int(taxonomy_id)
+ 
+        modifier_id = str(request.params.get('modifier_id'))        
 
         dbentity_in_db = None
         dbentity_in_db = DBSession.query(Dbentity).filter(or_(Dbentity.sgdid == dbentity_id,Dbentity.format_name == dbentity_id)).one_or_none()
