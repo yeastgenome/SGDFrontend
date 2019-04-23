@@ -12,12 +12,12 @@ class PostTranslationModification extends Component {
     return (
       <CurateLayout>
         <div className="row">
-          <div className="columns large-6">
+          <div className="columns small-12 medium-12 large-5">
             <h1>Ptm File Upload</h1>
             <FileUpload />
           </div>
           
-          <div className="columns large-6">
+          <div className="columns small-12 medium-12 large-5 end">
             <h1>Add/Update PTM</h1>
             <PtmForm />
           </div>

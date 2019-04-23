@@ -45,7 +45,7 @@ class PtmForm extends Component {
     };
 
     this.state = {
-      isUpdate : false,
+      isUpdate: false,
       taxonomy_id_to_name: [],
       psimod_id_to_name: [],
       list_of_ptms: [],
@@ -106,7 +106,8 @@ class PtmForm extends Component {
   }
 
   handleGetPTMS(value) {
-    this.setState({ list_of_ptms: [], isPending: true,visible_ptm_index:value });
+    this.handleResetForm();
+    this.setState({ list_of_ptms: [], isPending: true, visible_ptm_index: value });
     var url = `${GET_PTMs_URL}${this.state.dbentity_id}`;
     fetchData(url, {
       type: 'GET'
@@ -153,7 +154,7 @@ class PtmForm extends Component {
       });
   }
 
-  handleResetForm(){
+  handleResetForm() {
     var ptm = this.newPTM;
     this.setState({
       id: ptm.id,
@@ -168,12 +169,12 @@ class PtmForm extends Component {
   }
 
   handleNewForm() {
-    this.setState({ isUpdate: false,list_of_ptms:[]});
+    this.setState({ isUpdate: false, list_of_ptms: [] });
     this.handleResetForm();
   }
 
   handleEditForm() {
-    this.setState({isUpdate:true,list_of_ptms:[]});
+    this.setState({ isUpdate: true, list_of_ptms: [] });
     this.handleResetForm();
   }
 
@@ -181,7 +182,7 @@ class PtmForm extends Component {
     if (this.state.isPending) {
       return (
         <div className='row'>
-          <div className='columns small-3'>
+          <div className='columns medium-12'>
             <Loader />
           </div>
         </div>
@@ -190,33 +191,33 @@ class PtmForm extends Component {
 
     var currentIndex = this.state.visible_ptm_index;
     var count_of_ptms = this.state.list_of_ptms.length;
-    
-    var buttons = this.state.list_of_ptms.filter( (i,index) => {
-      return index >= currentIndex && index < currentIndex + SKIP  ;
-    })
-    .map((i,index) => {
-      var new_index = index + currentIndex;
-      return <li key={new_index} onClick={() => this.setPtm(new_index)} className='button small large-only-expanded'>{i.site_index + ' ' + i.site_residue}</li>;
-    });
 
-    if(this.state.isUpdate){
-      return(
+    var buttons = this.state.list_of_ptms.filter((i, index) => {
+      return index >= currentIndex && index < currentIndex + SKIP;
+    })
+      .map((i, index) => {
+        var new_index = index + currentIndex;
+        return <li key={new_index} onClick={() => this.setPtm(new_index)} className='button medium-only-expanded'>{i.site_index + ' ' + i.site_residue}</li>;
+      });
+
+    if (this.state.isUpdate) {
+      return (
         <div>
           {count_of_ptms > 0 &&
             <div className='row'>
-              <div className='columns small-8'>
-              <div className='expanded button-group'>
-                <li type='button' className='button warning' disabled={count_of_ptms < 0 || currentIndex <= 0 ? true : false} onClick={() => this.handle_next_previous(-SKIP)}> <i className="fa fa-chevron-circle-left"></i> </li>
-                {buttons}
-                <li type='button' className='button warning' disabled={count_of_ptms == 0 || currentIndex + SKIP >= count_of_ptms ? true : false} onClick={() => this.handle_next_previous(SKIP)}> <i className="fa fa-chevron-circle-right"></i></li>
-              </div>
+              <div className='columns medium-12'>
+                <div className='expanded button-group'>
+                  <li type='button' className='button warning' disabled={count_of_ptms < 0 || currentIndex <= 0 ? true : false} onClick={() => this.handle_next_previous(-SKIP)}> <i className="fa fa-chevron-circle-left"></i> </li>
+                  {buttons}
+                  <li type='button' className='button warning' disabled={count_of_ptms == 0 || currentIndex + SKIP >= count_of_ptms ? true : false} onClick={() => this.handle_next_previous(SKIP)}> <i className="fa fa-chevron-circle-right"></i></li>
+                </div>
 
               </div>
             </div>
           }
 
           <div className='row'>
-            <div className='columns small-8'>
+            <div className='columns medium-6'>
               <button type='submit' className="button expanded" >Update</button>
             </div>
           </div>
@@ -227,7 +228,7 @@ class PtmForm extends Component {
     return (
       <div>
         <div className='row'>
-          <div className='columns small-8'>
+          <div className='columns medium-6'>
             <button type='submit' className="button expanded" >Add</button>
           </div>
         </div>
@@ -239,15 +240,15 @@ class PtmForm extends Component {
     return (
       <div>
         <div className='row'>
-          <div className='columns medium-3'>
+          <div className='columns medium-6 small-6'>
             <button type="button" className="button expanded" onClick={this.handleNewForm} disabled={!this.state.isUpdate}>Add new ptm</button>
           </div>
-          <div className='columns medium-3 end'>
+          <div className='columns medium-6 small-6 end'>
             <button type="button" className="button expanded" onClick={this.handleEditForm} disabled={this.state.isUpdate}>Update existing ptm</button>
           </div>
         </div>
 
-        {this.state.isUpdate && 
+        {this.state.isUpdate &&
           <ul>
             <li>Enter gene name</li>
             <li>Click Get database value</li>
@@ -262,7 +263,7 @@ class PtmForm extends Component {
 
           {/* Gene */}
           <div className='row'>
-            <div className='columns large-12'>
+            <div className='columns medium-12'>
 
               <div className='row'>
                 <div className='columns medium-12'>
@@ -271,30 +272,27 @@ class PtmForm extends Component {
               </div>
 
               <div className='row'>
-                <div className='columns medium-8'>
+                <div className='columns medium-12'>
                   <input type='text' name='dbentity_id' placeholder='Enter Gene' value={this.state.dbentity_id} onChange={this.handleChange} />
                 </div>
               </div>
             </div>
           </div>
 
-          {this.state.isUpdate && 
+          {this.state.isUpdate &&
+
 
             <div className='row'>
-              <div className='columns large-12'>
-                <div className='row'>
-                  <div className='columns medium-4'>
-                    <input type="button" className="button" value="Get database value" onClick={() => this.handleGetPTMS(0)} />
-                  </div>
-                </div>
+              <div className='columns medium-6'>
+                <input type="button" className="button" value="Get database value" onClick={() => this.handleGetPTMS(0)} />
               </div>
             </div>
           }
-          
+
 
           {/* Taxonomy */}
           <div className='row'>
-            <div className='columns large-12'>
+            <div className='columns medium-12'>
 
               <div className='row'>
                 <div className='columns medium-12'>
@@ -303,7 +301,7 @@ class PtmForm extends Component {
               </div>
 
               <div className='row'>
-                <div className='columns medium-8'>
+                <div className='columns medium-12'>
                   {/* <input type='text' placeholder='Enter Taxonomy' name='taxonomy_id' value={this.state.taxonomy_id} onChange={this.handleChange} /> */}
                   <select value={this.state.taxonomy_id} onChange={this.handleChange} name='taxonomy_id'>
                     {this.state.taxonomy_id_to_name}
@@ -315,7 +313,7 @@ class PtmForm extends Component {
 
           {/* Reference */}
           <div className='row'>
-            <div className='columns large-12'>
+            <div className='columns medium-12'>
 
               <div className='row'>
                 <div className='columns medium-12'>
@@ -324,7 +322,7 @@ class PtmForm extends Component {
               </div>
 
               <div className='row'>
-                <div className='columns medium-8'>
+                <div className='columns medium-12'>
                   <input type='text' placeholder='Enter Reference' name='reference_id' value={this.state.reference_id} onChange={this.handleChange} />
 
                 </div>
@@ -334,7 +332,7 @@ class PtmForm extends Component {
 
           {/* Site Index */}
           <div className='row'>
-            <div className='columns large-12'>
+            <div className='columns medium-12'>
 
               <div className='row'>
                 <div className='columns medium-12'>
@@ -343,7 +341,7 @@ class PtmForm extends Component {
               </div>
 
               <div className='row'>
-                <div className='columns medium-8'>
+                <div className='columns medium-12'>
                   <input type='text' placeholder='Enter site index' name='site_index' value={this.state.site_index} onChange={this.handleChange} />
                 </div>
               </div>
@@ -352,7 +350,7 @@ class PtmForm extends Component {
 
           {/* Site Residue */}
           <div className='row'>
-            <div className='columns large-12'>
+            <div className='columns medium-12'>
 
               <div className='row'>
                 <div className='columns medium-12'>
@@ -361,7 +359,7 @@ class PtmForm extends Component {
               </div>
 
               <div className='row'>
-                <div className='columns medium-8'>
+                <div className='columns medium-12'>
                   <input type='text' placeholder='Enter site residue' name='site_residue' value={this.state.site_residue} onChange={this.handleChange} />
                 </div>
               </div>
@@ -370,7 +368,7 @@ class PtmForm extends Component {
 
           {/* Psimod */}
           <div className='row'>
-            <div className='columns large-12'>
+            <div className='columns medium-12'>
 
               <div className='row'>
                 <div className='columns medium-12'>
@@ -379,7 +377,7 @@ class PtmForm extends Component {
               </div>
 
               <div className='row'>
-                <div className='columns medium-8'>
+                <div className='columns medium-12'>
                   {/* <input type='text' placeholder='Enter psimod' name='psimod_id' value={this.state.psimod_id} onChange={this.handleChange} /> */}
                   <select name='psimod_id' value={this.state.psimod_id} onChange={this.handleChange}>
                     {this.state.psimod_id_to_name}
@@ -391,7 +389,7 @@ class PtmForm extends Component {
 
           {/* Modifier */}
           <div className='row'>
-            <div className='columns large-12'>
+            <div className='columns medium-12'>
 
               <div className='row'>
                 <div className='columns medium-12'>
@@ -400,7 +398,7 @@ class PtmForm extends Component {
               </div>
 
               <div className='row'>
-                <div className='columns medium-8'>
+                <div className='columns medium-12'>
                   <input type='text' placeholder='Enter modifier' name='modifier_id' value={this.state.modifier_id} onChange={this.handleChange} />
                 </div>
               </div>
