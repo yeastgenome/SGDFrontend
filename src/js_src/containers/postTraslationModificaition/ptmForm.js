@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Loader from '../../components/loader';
 import { setError, setMessage } from '../../actions/metaActions';
 
-const GET_PTMs_URL = '/get_ptms/';
+const GET_PTMs_URL = '/ptm/';
 const GET_STRAINS = '/get_strains';
 const GET_PSIMODS = '/get_psimod';
 const UPDATE_PTM = '/update_ptm';

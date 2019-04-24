@@ -1301,9 +1301,9 @@ def ptm_file_insert(request):
         return HTTPBadRequest(body=json.dumps({ 'error': e.message }), content_type='text/json')
 
 
-@view_config(route_name='get_ptm_by_gene',renderer='json',request_method='GET')
+@view_config(route_name='ptm_by_gene',renderer='json',request_method='GET')
 @authenticate
-def get_ptm_by_gene(request):
+def ptm_by_gene(request):
     gene = str(request.matchdict['id'])
 
     if(gene is None):
