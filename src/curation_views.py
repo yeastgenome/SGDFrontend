@@ -1369,9 +1369,10 @@ def get_psimod(request):
     except Exception as e:
         return HTTPBadRequest(body=json.dumps({'error': str(e)}))
 
-@view_config(route_name="update_ptm",renderer='json',request_method='POST')
+
+@view_config(route_name="ptm_update", renderer='json', request_method='POST')
 @authenticate
-def update_ptm(request):
+def ptm_update(request):
     try:
         id = int(request.params.get('id'))
         CREATED_BY = request.session['username']

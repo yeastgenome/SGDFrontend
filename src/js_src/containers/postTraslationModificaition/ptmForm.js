@@ -7,7 +7,7 @@ import { setError, setMessage } from '../../actions/metaActions';
 const GET_PTMs_URL = '/ptm/';
 const GET_STRAINS = '/get_strains';
 const GET_PSIMODS = '/get_psimod';
-const UPDATE_PTM = '/update_ptm';
+const UPDATE_PTM = '/ptm';
 const SKIP = 5;
 
 class PtmForm extends Component {
