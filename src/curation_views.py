@@ -1469,7 +1469,7 @@ def update_ptm(request):
                 if curator_session:
                     curator_session.rollback()
                 isSuccess = False
-                returnValue = 'Insert failes, issue in data'
+                returnValue = 'Update failed, issue in data'
             except Exception as e:
                 transaction.abort()
                 if curator_session:
@@ -1507,7 +1507,7 @@ def update_ptm(request):
                 if curator_session:
                     curator_session.rollback()
                 isSuccess = False
-                returnValue = 'Insert failes, issue in data'
+                returnValue = 'Insert failed, issue in data'
             except Exception as e:
                 transaction.abort()
                 if curator_session:
