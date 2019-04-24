@@ -146,7 +146,6 @@ class PtmForm extends Component {
     }).then((data) => {
       this.setState({ isPending: false });
       this.props.dispatch(setMessage(data.success));
-      this.handleGetPTMS(this.state.visible_ptm_index);
     })
       .catch((err) => {
         this.setState({ isPending: false });
