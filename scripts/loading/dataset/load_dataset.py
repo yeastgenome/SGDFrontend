@@ -1,22 +1,20 @@
 import sys
+import os
+from datetime import datetime
 reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
-sys.path.insert(0, '../../../src/')
-from models import Dataset, Filedbentity, DatasetFile, Referencedbentity, DatasetReference, \
+from src.models import Dataset, Filedbentity, DatasetFile, Referencedbentity, DatasetReference, \
                    Obi, Keyword, DatasetKeyword, DatasetUrl, Datasetlab, Datasetsample, \
                    Datasettrack, Colleague, Source
-sys.path.insert(0, '../')
-from database_session import get_nex_session as get_session
-from config import CREATED_BY
+from scripts.loading.database_session import get_session
 
 __author__ = 'sweng66'
 
-log_file = "logs/load_dataset.log"
+CREATED_BY = os.environ['DEFAULT_USER']
 
-files_to_load = ["data/new-2017-07/datasets_inSPELL_2015.tsv",
-                 "data/new-2017-07/datasets_inSPELL_2016_cleaned.tsv",
-                 "data/new-2017-07/datasets_GEO_all_2015_cleanedup.tsv",
-                 "data/new-2017-07/datasets_GEO_all_2016_cleanedup.tsv"]
+log_file = "scripts/loading/dataset/logs/load_dataset.log"
+
+files_to_load = ["scripts/loading/dataset/data/dataset_metadata_20190419.tsv"]
 
 def load_data():
 
@@ -26,7 +24,7 @@ def load_data():
     format_name_to_id = dict([(x.format_name, x.dataset_id) for x in nex_session.query(Dataset).all()])
 
     file_to_id = dict([(x.display_name, x.dbentity_id) for x in nex_session.query(Filedbentity).all()])
-    obi_name_to_id = dict([(x.display_name, x.obi_id) for x in nex_session.query(Obi).all()]) 
+    obi_name_to_id = dict([(x.format_name, x.obi_id) for x in nex_session.query(Obi).all()]) 
     pmid_to_reference_id = dict([(x.pmid, x.dbentity_id) for x in nex_session.query(Referencedbentity).all()])
     keyword_to_id = dict([(x.display_name, x.keyword_id) for x in nex_session.query(Keyword).all()])
     source_to_id = dict([(x.display_name, x.source_id) for x in nex_session.query(Source).all()])
@@ -36,10 +34,9 @@ def load_data():
 
     fw = open(log_file, "w")
 
-    found = {}
-    other_data = []
-    child_data = []
     old_datasets = []
+    found = {}
+    data = []
     for file in files_to_load:
         f = open(file)
         i = 0
@@ -65,15 +62,7 @@ def load_data():
                 if format_name in format_name_to_id:
                     old_datasets.append(format_name)
                 
-                obj_url = pieces[20].strip()
-
-                if format_name not in obj_url and "GEO_all_2016" in file:
-                    obj_url = "ftp://ftp.ncbi.nlm.nih.gov/geo/series/" + format_name[0:-3] + "nnn/" + format_name + "/"
-                    print "FIX OBJ_URL:", format_name, pieces[3], obj_url, pieces[20]
-                    
-                if "|" in obj_url or "|" in pieces[21]:
-                    print "MULTIPLE-URL:", pieces[21], obj_url
-                
+                obj_url = pieces[18].strip()
                 display_name = pieces[1].strip()
                 source = pieces[2].strip()
                 if source == 'lab website':
@@ -85,13 +74,13 @@ def load_data():
                     print "The source: ", source, " is not in the database"
                     continue
 
-                if pieces[11] == '' or pieces[12] == '' or pieces[13] == '':
+                if pieces[9] == '' or pieces[10] == '' or pieces[11] == '':
                     print "\nMISSING sample_count or is_in_spell or is_in_browser data for the following line: \n", line, "\n"
                     continue
 
-                sample_count = int(pieces[11].strip())
-                is_in_spell = pieces[12].strip()
-                is_in_browser = pieces[13].strip()
+                sample_count = int(pieces[9].strip())
+                is_in_spell = pieces[10].strip()
+                is_in_browser = pieces[11].strip()
                 if sample_count is None:
                     print "The sample_count column is None:", line
                     continue
@@ -106,104 +95,56 @@ def load_data():
                 elif int(is_in_browser) > 1:
                     is_in_browser = '1'
 
-                date_public = ""
-                if pieces[5]:
-                    date_public = pieces[5].strip()
-                    if "/" in date_public:
-                        dates = date_public.split('/')
-                        month = dates[0]
-                        day = dates[1]
-                        year = dates[2]
-                        if len(month) == 1:
-                            month = "0" + month
-                        if len(day) == 1:
-                            day = "0" + day
-                        if len(year) == 2:
-                            year = "20" + year
-                        date_public = year + "-" + month + "-" + day
-                
-                channel_count = ""
-                if pieces[10]:
-                    channel_count = int(pieces[10].strip())
+                # no date provided
+                date_public = str(datetime.now()).split(" ")[0]
+                channel_count = None
+                if pieces[8]:
+                    channel_count = int(pieces[8].strip())
 
                 file_id = None
-                if pieces[19]:
-                    file_id = file_to_id.get(pieces[19].strip())
+                if pieces[17]:
+                    file_id = file_to_id.get(pieces[17].strip())
                     if file_id is None:
-                        print "The file display_name: ", pieces[19], " is not in the database"
+                        print "The file display_name: ", pieces[17], " is not in the database"
                         continue
 
-                description = ""
-                if pieces[14]:
-                    desc_item = pieces[14].strip().split(". ")
-                    description = desc_item[0]
-                    desc_item.pop(0)
-                    for desc in desc_item:
-                        if description.endswith('et al') or description.endswith(' S') or description == 'S':
-                            description = description + ". " + desc
+                description = pieces[12]
 
-                assay_names = pieces[7].strip().split('|')
-                i = 0
-                for assay_name in assay_names:
-                    if assay_name == 'OBI:0000626':
-                        assay_name = 'DNA sequencing'
-                    if assay_name == 'transcriptional profiling by array assay':
-                        assay_name = 'transcription profiling by array assay'
-                    if assay_name.startswith('NTR:'):
-                        assay_name = assay_name.replace('NTR:', '')
-                    assay_id = obi_name_to_id.get(assay_name)
-                    if assay_id is None:
-                        print "The assay name:", assay_name, " is not in OBI table."
-                        continue
-                    i = i + 1
-                    if len(assay_names) > 1:
-                        this_format_name = format_name + "-" + str(i)
-                        print "MULTIPLE-ASSAY:", format_name+"\t"+this_format_name+"\t"+assay_name
-                    else:
-                        this_format_name = format_name
-                    
-                    data = { "source_id": source_id,
-                             "format_name": this_format_name,
-                             "display_name": display_name,
-                             "obj_url": "/dataset/" + format_name,
-                             "sample_count": sample_count,
-                             "assay_id": assay_id,
-                             "is_in_spell": is_in_spell,
-                             "is_in_browser": is_in_browser,
-                             "dbxref_id": pieces[3],
-                             "dbxref_type": pieces[4],
-                             "date_public": date_public,
-                             "channel_count": channel_count,
-                             "description": description,
-                             "parent_dataset": pieces[6].strip(),
-                             "lab_name": pieces[15].strip(),
-                             "lab_location": pieces[16].strip(),
-                             "keywords": pieces[17].strip(),
-                             "pmids": pieces[18].strip(),
-                             "file_id": file_id,
-                             "obj_url": obj_url,
-                             "url_type": pieces[21].strip() }
+                assay_id = obi_name_to_id.get(pieces[6])
+                if assay_id is None:
+                    print "The OBI format_name: ", pieces[6], " is not in the database"
+                    continue
 
-                    if pieces[6]: 
-                        # print "CHILD: ", data
-                        child_data.append(data)
-                    else:
-                        # print "OTHER: ", data
-                        other_data.append(data)
+                row =  { "source_id": source_id,
+                         "format_name": format_name,
+                         "display_name": display_name,
+                         "obj_url": "/dataset/" + format_name,
+                         "sample_count": sample_count,
+                         "assay_id": assay_id,
+                         "is_in_spell": is_in_spell,
+                         "is_in_browser": is_in_browser,
+                         "dbxref_id": pieces[3],
+                         "dbxref_type": pieces[4],
+                         "date_public": date_public,
+                         "channel_count": channel_count,
+                         "description": description,
+                         "lab_name": pieces[13].strip(),
+                         "lab_location": pieces[14].strip(),
+                         "keywords": pieces[15].strip(),
+                         "pmids": pieces[16].strip(),
+                         "file_id": file_id,
+                         "obj_url": obj_url,
+                         "url_type": pieces[19].strip() }
+
+                data.append(row)
                 
         f.close()
 
     delete_old_datasets(nex_session, fw, old_datasets, format_name_to_id)
 
-    insert_datasets(nex_session, fw, other_data, pmid_to_reference_id, 
+    insert_datasets(nex_session, fw, data, pmid_to_reference_id, 
                     keyword_to_id, coll_name_institution_to_id, coll_name_to_id, 
                     None)
-
-    dataset_to_id = dict([(x.display_name, x.dataset_id) for x in nex_session.query(Dataset).all()])
-
-    insert_datasets(nex_session, fw, child_data, pmid_to_reference_id, 
-                    keyword_to_id, coll_name_institution_to_id, coll_name_to_id, 
-                    dataset_to_id)
 
     fw.close()
 
@@ -214,6 +155,8 @@ def load_data():
 def delete_old_datasets(nex_session, fw, old_datasets, format_name_to_id):
     
     for format_name in old_datasets:
+
+        print "Deleting old dataset..."
         
         dataset_id = format_name_to_id.get(format_name)
         if dataset_id is None:
@@ -237,8 +180,8 @@ def insert_datasets(nex_session, fw, data, pmid_to_reference_id, keyword_to_id, 
 
         ## load into dataset table
         parent_dataset_id = None
-        if x.get('parent_dataset'):
-            parent_dataset_id = dataset_to_id
+        # if x.get('parent_dataset'):
+        #    parent_dataset_id = dataset_to_id
         dataset_id = insert_dataset(nex_session, fw, x, parent_dataset_id)
 
         ## load into dataset_file if x['file_name'] is not None
