@@ -176,6 +176,8 @@ def main(global_config, **settings):
     config.add_route('get_strains','/get_strains',request_method='GET')
     config.add_route('get_psimod', '/get_psimod', request_method='GET')
 
+    config.add_route('ptm_delete','/ptm/{id}',request_method='DELETE')
+
     config.add_route('healthcheck', '/healthcheck')
     config.scan()
     config.add_static_view(name='assets', path='./build')

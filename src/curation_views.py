@@ -1525,3 +1525,12 @@ def update_ptm(request):
 
     except Exception as e:
         return HTTPBadRequest(body=json.dumps({'error': str(e.message)}), content_type='text/json')
+
+
+@view_config(route_name="ptm_delete", renderer='json', request_method='DELETE')
+@authenticate
+def ptm_delete(request):
+    try:
+        pass
+    except Exception as e:
+        pass
