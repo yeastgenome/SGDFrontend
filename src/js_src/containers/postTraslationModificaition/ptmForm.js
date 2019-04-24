@@ -23,6 +23,7 @@ class PtmForm extends Component {
     this.handleNewForm = this.handleNewForm.bind(this);
     this.handleEditForm = this.handleEditForm.bind(this);
     this.handleResetForm = this.handleResetForm.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
 
     this.newPTM = {
       id: 0,
@@ -177,6 +178,10 @@ class PtmForm extends Component {
     this.handleResetForm();
   }
 
+  handleDelete(e){
+    e.preventDefault();
+  }
+
   renderActions() {
     if (this.state.isPending) {
       return (
@@ -218,6 +223,9 @@ class PtmForm extends Component {
           <div className='row'>
             <div className='columns medium-6'>
               <button type='submit' className="button expanded" >Update</button>
+            </div>
+            <div className='columns medium-2'>
+              <button type='button' className="button alert expanded" onClick={(e) => {if(confirm('Are you sure, you want to delete selected PTM ?')) this.handleDelete(e) ;}}>Delete</button>
             </div>
           </div>
         </div>
