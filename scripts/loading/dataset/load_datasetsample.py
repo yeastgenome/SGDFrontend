@@ -1,23 +1,17 @@
+import os
 import sys
 reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
-sys.path.insert(0, '../../../src/')
-from models import Dataset, Datasetsample, Taxonomy, Source
-sys.path.insert(0, '../')
-from database_session import get_nex_session as get_session
-from config import CREATED_BY
+from src.models import Dataset, Datasetsample, Taxonomy, Source
+from scripts.loading.database_session import get_session
 
 __author__ = 'sweng66'
 
-log_file = "logs/load_datasetsample.log"
+CREATED_BY = os.environ['DEFAULT_USER']
 
-files_to_load = ["data/new-2017-07/dataset_samples_GEO_all_2015.tsv",
-                 "data/new-2017-07/dataset_samples_GEO_all_2016_cleanedup.tsv",
-                 "data/new-2017-07/dataset_samples_inSPELL_2015.tsv",
-                 "data/new-2017-07/dataset_samples_inSPELL_2016.tsv"]
+log_file = "scripts/loading/dataset/logs/load_datasetsample.log"
 
-ds_multiassays_to_sample_mapping_file = "data/new-2017-07/ds_multiassays-to-samples_mapping.tsv"
-ds_with_multiassays_file = "data/new-2017-07/dataset_with_multiple_assays.lst"
+files_to_load = ["scripts/loading/dataset/data/datasample_metadata_20190419.tsv"]
 
 def load_data():
 
@@ -28,27 +22,6 @@ def load_data():
     format_name_to_datasetsample_id = dict([(x.format_name, x.datasetsample_id) for x in nex_session.query(Datasetsample).all()])
 
     fw = open(log_file, "w")
-
-    GSE_GSM_to_assay = {}
-    f = open(ds_multiassays_to_sample_mapping_file)
-    for line in f:
-        pieces = line.strip().split("\t")
-        GSE = pieces[0].strip()
-        assay_name = pieces[1]
-        GSM_list = pieces[2].strip().split('|')
-        for GSM in GSM_list:
-            GSE_GSM_to_assay[(GSE, GSM)] = assay_name
-    f.close()
-
-    GSE_assay_to_dataset_format_name = {}
-    f = open(ds_with_multiassays_file)
-    for line in f:
-        pieces = line.strip().split("\t")
-        GSE = pieces[0].strip()
-        dataset_format_name = pieces[1].strip()
-        assay_name = pieces[2].strip()
-        GSE_assay_to_dataset_format_name[(GSE, assay_name)] = dataset_format_name
-    f.close()
         
     format_name2display_name = {}
     dataset2index = {}
@@ -61,18 +34,7 @@ def load_data():
             line = line.strip()
             if line:
                 pieces = line.replace('"', '').split("\t")
-                GSE = pieces[0].strip()
-                GSM = pieces[3].strip()
-                dataset_format_name = GSE
-                if (GSE, GSM) in GSE_GSM_to_assay:
-                    assay = GSE_GSM_to_assay[(GSE, GSM)]
-                    # print "FOUND assay:", (GSE, GSM), assay
-                    if (GSE, assay) in GSE_assay_to_dataset_format_name:
-                        dataset_format_name = GSE_assay_to_dataset_format_name[(GSE, assay)]
-                    #    print "FOUND dataset format_name:", (GSE, assay), dataset_format_name
-                    # else:
-                    #    print "NOT FOUND dataset format_name:", (GSE, assay)
-
+                dataset_format_name = pieces[0].strip()
                 if dataset_format_name not in format_name_to_dataset_id_src:
                     print "The dataset: ", dataset_format_name, " is not in DATASET table."
                     continue
@@ -107,6 +69,7 @@ def load_data():
                         print "The taxid = ", pieces[9], " for: ", dataset_format_name, GSM, " is not in TAXONOMY table."
                     else:
                         data['taxonomy_id'] = taxonomy_id
+                GSM = pieces[3]
                 if GSM == '':
                     index = dataset2index.get(dataset_format_name, 0) + 1
                     data['format_name'] = dataset_format_name + "_sample_" + str(index)
