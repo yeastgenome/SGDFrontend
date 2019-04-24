@@ -1227,62 +1227,69 @@ def ptm_file_insert(request):
 
         INSERT = 0
         UPDATE = 0
-        curator_session = get_curator_session(request.session['username'])          
+        curator_session = get_curator_session(request.session['username'])
+        isSuccess = False
+        returnValue = ''     
         
         if list_of_posttranslationannotation:
             for item in list_of_posttranslationannotation:    
-                data,update_data = item 
-                # TEST:
-                print(data)
-                print(update_data)
-                print('----------------------')
-            #     if bool(update_data):
-            #         ptm_in_db = curator_session.query(Posttranslationannotation).filter(and_(
-            #             Posttranslationannotation.dbentity_id == data['dbentity_id'],
-            #             Posttranslationannotation.psimod_id == data['psimod_id'],
-            #             Posttranslationannotation.site_index == data['site_index'],
-            #             Posttranslationannotation.site_residue == data['site_residue'],
-            #             Posttranslationannotation.reference_id == data['reference_id'],
-            #             )).one_or_none()
-            #         if ptm_in_db is not None:
-            #             curator_session.query(Posttranslationannotation).filter(and_(
-            #                 Posttranslationannotation.dbentity_id == data['dbentity_id'],
-            #                 Posttranslationannotation.psimod_id == data['psimod_id'],
-            #                 Posttranslationannotation.site_index == data['site_index'],
-            #                 Posttranslationannotation.site_residue == data['site_residue'],
-            #                 Posttranslationannotation.reference_id == data['reference_id'],
-            #             )).update(update_data)
-            #             UPDATE = UPDATE + 1
-            #     else:
-            #         p = Posttranslationannotation(taxonomy_id=data['taxonomy_id'],
-            #                                         source_id=SOURCE_ID,
-            #                                         dbentity_id=data['dbentity_id'],
-            #                                         reference_id=data['reference_id'],
-            #                                         site_index=data['site_index'],
-            #                                         site_residue=data['site_residue'],
-            #                                         psimod_id=data['psimod_id'],
-            #                                         modifier_id = data['modifier_id'],
-            #                                         created_by=CREATED_BY)
-            #         curator_session.add(p)
-            #         INSERT = INSERT + 1
-            # try:
-            #     transaction.commit()
-            #     err = '\n'.join(list_of_posttranslationannotation_errors)
-            #     return HTTPOk(body=json.dumps({"success": "Inserted: " + str(INSERT) + " Updated: " + str(UPDATE) + " Errors " + err}), content_type='text/json')
-            # except IntegrityError as e:
-            #     transaction.abort()
-            #     if curator_session:
-            #         curator_session.rollback()
-            #     err = "Record already exisits for site index = " + str(e.params['site_index']) + " site residue = " + e.params['site_residue'] + ' dbentity_id = ' + str(e.params['dbentity_id'])
-            #     return HTTPBadRequest(body=json.dumps({'error': err}), content_type='text/json')
-            # except Exception as e:
-            #     transaction.abort()
-            #     if curator_session:
-            #         curator_session.rollback()
-            #     return HTTPBadRequest(body=json.dumps({'error': e.message}), content_type='text/json')
-            # finally:
-            #     if curator_session:
-            #         curator_session.close()
+                data,update_data = item
+                if bool(update_data):
+                    ptm_in_db = curator_session.query(Posttranslationannotation).filter(and_(
+                        Posttranslationannotation.dbentity_id == data['dbentity_id'],
+                        Posttranslationannotation.psimod_id == data['psimod_id'],
+                        Posttranslationannotation.site_index == data['site_index'],
+                        Posttranslationannotation.site_residue == data['site_residue'],
+                        Posttranslationannotation.reference_id == data['reference_id'],
+                        )).one_or_none()
+                    if ptm_in_db is not None:
+                        curator_session.query(Posttranslationannotation).filter(and_(
+                            Posttranslationannotation.dbentity_id == data['dbentity_id'],
+                            Posttranslationannotation.psimod_id == data['psimod_id'],
+                            Posttranslationannotation.site_index == data['site_index'],
+                            Posttranslationannotation.site_residue == data['site_residue'],
+                            Posttranslationannotation.reference_id == data['reference_id'],
+                        )).update(update_data)
+                        UPDATE = UPDATE + 1
+                else:
+                    p = Posttranslationannotation(taxonomy_id=data['taxonomy_id'],
+                                                    source_id=SOURCE_ID,
+                                                    dbentity_id=data['dbentity_id'],
+                                                    reference_id=data['reference_id'],
+                                                    site_index=data['site_index'],
+                                                    site_residue=data['site_residue'],
+                                                    psimod_id=data['psimod_id'],
+                                                    modifier_id = data['modifier_id'],
+                                                    created_by=CREATED_BY)
+                    curator_session.add(p)
+                    INSERT = INSERT + 1
+            
+            try:
+                transaction.commit()
+                err = '\n'.join(list_of_posttranslationannotation_errors)
+                isSuccess = True
+                returnValue = "Inserted: " + str(INSERT) + " Updated: " + str(UPDATE) + " Errors " + err
+            except IntegrityError as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = "Record already exisits for site index = " + str(e.params['site_index']) + " site residue = " + e.params['site_residue'] + ' dbentity_id = ' + str(e.params['dbentity_id'])
+            except Exception as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = e.message
+            finally:
+                if curator_session:
+                    curator_session.close()
+        
+        if isSuccess:
+            return HTTPOk(body=json.dumps({"success": returnValue}), content_type='text/json')
+        
+        return HTTPBadRequest(body=json.dumps({'error': returnValue}), content_type='text/json')
+
 
     except Exception as e:
         return HTTPBadRequest(body=json.dumps({ 'error': e.message }), content_type='text/json')
@@ -1426,6 +1433,9 @@ def update_ptm(request):
         else:
             modifier_id = None
         
+        isSuccess = False
+        returnValue = ''
+
         if(int(id) > 0):
             try:
                 update_ptm = {"dbentity_id": dbentity_id,
@@ -1440,13 +1450,14 @@ def update_ptm(request):
                 
                 curator_session.query(Posttranslationannotation).filter(Posttranslationannotation.annotation_id == id).update(update_ptm)
                 transaction.commit()
-
-                return HTTPOk(body=json.dumps({"success": "Record updated successfully."}), content_type='text/json')
+                isSuccess = True
+                returnValue = "Record updated successfully."
             except Exception as e:
                 transaction.abort()
                 if curator_session:
                     curator_session.rollback()
-                return HTTPBadRequest(body=json.dumps({'error': 'Updated failed'+ ' ' + str(e.message)}), content_type='text/json')
+                isSuccess = False
+                returnValue = 'Updated failed' + ' ' + str(e.message)
             finally:
                 if curator_session:
                     curator_session.close()
@@ -1465,16 +1476,22 @@ def update_ptm(request):
                                               created_by=CREATED_BY)
                 curator_session.add(y)
                 transaction.commit()
-            
-                return HTTPOk(body=json.dumps({"success": "Record added successfully."}), content_type='text/json')
+                isSuccess = True
+                returnValue = "Record added successfully."
             except Exception as e:
                 transaction.abort()
                 if curator_session:
                     curator_session.rollback()
-                return HTTPBadRequest(body=json.dumps({'error': 'Insert failed'+ ' ' +str(e.message)}), content_type='text/json')
+                isSuccess = False
+                returnValue = 'Insert failed' + ' ' + str(e.message)
             finally:
                 if curator_session:
                     curator_session.close()
+
+        if isSuccess:
+            return HTTPOk(body=json.dumps({"success": returnValue}), content_type='text/json')
+
+        return HTTPBadRequest(body=json.dumps({'error': returnValue}), content_type='text/json')
 
     except Exception as e:
         return HTTPBadRequest(body=json.dumps({'error': str(e.message)}), content_type='text/json')
