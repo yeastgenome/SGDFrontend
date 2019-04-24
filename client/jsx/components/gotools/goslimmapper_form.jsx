@@ -14,6 +14,7 @@ const style = {
 
 const GOtoolsUrl = "/run_gotools";
 const GOslimUrl = "/backend/goslim";
+const GeneChkUrl = "/backend/ambiguous_names";
 
 const goSet = [ "Yeast GO-Slim: process",
       	        "Yeast GO-Slim: function",
@@ -30,6 +31,7 @@ const GoSlimMapper = React.createClass({
 		var param = Params.getParams();		
 		
 		this.getSlimData();
+		this.getAmbiguousNames();
 
 		return {
 			isComplete: false,
@@ -39,6 +41,7 @@ const GoSlimMapper = React.createClass({
 			uploadedGenes: '',
 			resultData: {},
 			goslimData: [],
+			ambiguousNames: {},
 			slimType: '',
 			notFound: null,
 			param: param
@@ -190,21 +193,7 @@ const GoSlimMapper = React.createClass({
         },
 
 	getGoSetNode() {
-          
-		// var slimData = this.state.goslimData;
-
-		// var defaultSlimType = "";      
-		// var i = 0;
-                // var _elements = _.map(slimData, g => {
-		//     if (i == 0) {
-		//         defaultSlimType =  g.slim_type;
-		//     }
-		//     i = i + 1;
-                //     return <option value={g.slim_type}>{g.slim_type}</option>;
-                // });
-		
-		// window.localStorage.setItem("slimType", defaultSlimType);
-
+        
 		var _elements = _.map(goSet, g => {
 		      return <option value={g}>{g}</option>;
 		});
@@ -295,11 +284,12 @@ const GoSlimMapper = React.createClass({
 		// window.localStorage.clear();
 
 		var genes = this.refs.genes.value.trim();
+		var genesInBox = 0;
 		if (genes == '') {
 		     genes = this.state.uploadedGenes;
-		     // this.setState({
-                     //       uploadedGenes: ''
-                     // });
+		}
+		else {
+		     genesInBox = 1;
 		}
 		genes = this.processGeneList(genes);
                 if (genes == '') {
@@ -308,7 +298,64 @@ const GoSlimMapper = React.createClass({
                      return 1;
                 }
 		
+		var all_genes = genes.split("|");
+				
+		if (genesInBox == 1 && all_genes.length > 100) {
+		     alert("You have entered more than 100 genes. Please save it as a file and upload it.");
+                     e.preventDefault();
+                     return 1;
+		}
+
+		// check for ambiguous genes
+		var ambiguousGeneDict = this.state.ambiguousNames;
+
+		for (var i = 0; i < all_genes.length; i++) {
+		     var gene = all_genes[i];
+		     if (gene in ambiguousGeneDict) {
+		     	   var ambiguousGeneObj = ambiguousGeneDict[gene];
+			   var warningMsg = "The name '" + gene + "' is associated with multiple genes. " + gene + " is ";
+			   for (var j = 0; j < ambiguousGeneObj.length; j++) {
+			         var geneObj = ambiguousGeneObj[j];
+				 var display_name = geneObj['systematic_name'] + " (SGDID: " + geneObj['sgdid'] + ")";
+				 if (geneObj['gene_name']) {
+				      display_name = geneObj['gene_name'] + "/" + display_name;
+				 }
+				 if (j > 0) {
+                                     warningMsg = warningMsg + " and ";
+                                 }
+				 if (geneObj['name_type'] == 'alias_name') {
+				     warningMsg = warningMsg + "an alias name for " + display_name;
+				 }
+				 else {
+				     warningMsg = warningMsg + "the standard gene name for " + display_name;
+				 }
+			   }
+			   alert(warningMsg + ". Please modify your input list by replacing the entry '" + gene + "' with either the systematic ORF name or SGDID for the intended gene.");
+			   e.preventDefault();
+                     	   return 1;
+		     }
+     
+		}				
+
 		window.localStorage.setItem("genes", genes);
+
+                // var terms = [];
+                // _.map(slimData, g => {
+                //    if (g.slim_type == slimType) {
+                //       terms = g.terms;
+                //    }
+                // });
+
+		var terms = this.processTermList();
+
+                if (terms == '') {
+                     alert("Please select one or more GO Slim terms.");
+                     e.preventDefault();
+                     return 1;
+                }
+
+		window.localStorage.setItem("terms", terms);
+
 
 		var slimType = this.state.slimType;
                 if (slimType == '') {
@@ -324,16 +371,6 @@ const GoSlimMapper = React.createClass({
 
 		window.localStorage.setItem("aspect", aspect);
 				
-                var terms = this.processTermList();
-
-		if (terms == '') {
-                     alert("Please select one or more GO Slim terms.");
-                     e.preventDefault();
-                     return 1;
-                }                
-	
-		window.localStorage.setItem("terms", terms);
-
 	},
 
 	onReset(e) {
@@ -396,6 +433,19 @@ const GoSlimMapper = React.createClass({
                       }.bind(this),
                       error: function(xhr, status, err) {
                             console.error(GOslimUrl, status, err.toString());
+                      }.bind(this)
+                });
+        },
+
+	getAmbiguousNames: function() {
+                $.ajax({
+                      url: GeneChkUrl,
+                      dataType: 'json',
+                      success: function(data) {
+                            this.setState({ambiguousNames: data});
+                      }.bind(this),
+                      error: function(xhr, status, err) {
+                            console.error(GeneChkUrl, status, err.toString());
                       }.bind(this)
                 });
         },
