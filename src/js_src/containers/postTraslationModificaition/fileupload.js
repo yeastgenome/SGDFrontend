@@ -75,7 +75,7 @@ class FileUpload extends Component{
             <ul>
               <li>Drop/Select an <span className="primary label">excel (.xlsx)</span> file as shown in the template.</li>
               <li>Ordering of columns is not required.</li>
-              <li>For updating an exisiting record, Separate old value & new value with pipe | </li>
+              <li>For updating an exisiting record, Separate old value & new value with pipe |   <span className="primary label">old|new</span> </li>
             </ul>
           </div>
         </div>
