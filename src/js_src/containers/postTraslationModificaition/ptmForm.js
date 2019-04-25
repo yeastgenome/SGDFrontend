@@ -4,10 +4,9 @@ import { connect } from 'react-redux';
 import Loader from '../../components/loader';
 import { setError, setMessage } from '../../actions/metaActions';
 
-const GET_PTMs_URL = '/ptm/';
+const PTMS = '/ptm';
 const GET_STRAINS = '/get_strains';
 const GET_PSIMODS = '/get_psimod';
-const UPDATE_PTM = '/ptm';
 const SKIP = 5;
 
 class PtmForm extends Component {
@@ -109,7 +108,7 @@ class PtmForm extends Component {
   handleGetPTMS(value) {
     this.handleResetForm();
     this.setState({ list_of_ptms: [], isPending: true, visible_ptm_index: value });
-    var url = `${GET_PTMs_URL}${this.state.dbentity_id}`;
+    var url = `${PTMS}/${this.state.dbentity_id}`;
     fetchData(url, {
       type: 'GET'
     }).then(data => {
@@ -139,7 +138,7 @@ class PtmForm extends Component {
     e.preventDefault();
     this.setState({ isPending: true });
     var formData = new FormData(this.refs.form);
-    fetchData(UPDATE_PTM, {
+    fetchData(PTMS, {
       type: 'POST',
       data: formData,
       processData: false,
@@ -180,6 +179,21 @@ class PtmForm extends Component {
 
   handleDelete(e){
     e.preventDefault();
+    if(this.state.id > 0){
+      fetchData(`${PTMS}/${this.state.id}`,{
+        type:'DELETE'
+      })
+      .then((data) => {
+        this.props.dispatch(setMessage(data.success));
+        this.handleResetForm();
+      })
+      .catch((err) => {
+        this.props.dispatch(setError(err.error));
+      });
+    }
+    else{
+      this.props.dispatch(setError('No ptm is selected to delete.'));
+    }
   }
 
   renderActions() {

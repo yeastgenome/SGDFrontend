@@ -1532,6 +1532,33 @@ def ptm_update(request):
 @authenticate
 def ptm_delete(request):
     try:
-        pass
+        id = request.matchdict['id']
+        curator_session = get_curator_session(request.session['username'])
+        isSuccess = False
+        returnValue = ''
+        ptm_in_db = curator_session.query(Posttranslationannotation).filter(Posttranslationannotation.annotation_id == id).one_or_none()
+        if(ptm_in_db):
+            try:
+                curator_session.delete(ptm_in_db)
+                transaction.commit()
+                isSuccess = True
+                returnValue = 'Ptm successfully deleted.'
+            except Exception as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = 'Error occurred deleting ptm: ' + str(e.message)
+            finally:
+                if curator_session:
+                    curator_session.close()
+
+            if isSuccess:
+                return HTTPOk(body=json.dumps({'success': returnValue}), content_type='text/json')
+            
+            return HTTPBadRequest(body=json.dumps({'error': returnValue}), content_type='text/json')
+        
+        return HTTPBadRequest(body=json.dumps({'error': 'ptm not found in database.'}), content_type='text/json')
+
     except Exception as e:
-        pass
+        return HTTPBadRequest(body=json.dumps({'error': str(e.message)}), content_type='text/json')
