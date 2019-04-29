@@ -3,6 +3,7 @@ import fetchData from '../../lib/fetchData';
 import { connect } from 'react-redux';
 import Loader from '../../components/loader';
 import { setError, setMessage } from '../../actions/metaActions';
+import { setPTM } from '../../actions/ptmActions';
 
 const PTMS = '/ptm';
 const GET_STRAINS = '/get_strains';
@@ -51,15 +52,6 @@ class PtmForm extends Component {
       list_of_ptms: [],
 
       isPending: false,
-      id: 0,
-      dbentity_id: '',
-      taxonomy_id: '',
-      reference_id: '',
-      site_index: '',
-      site_residue: '',
-      psimod_id: '',
-      modifier_id: '',
-
       visible_ptm_index: -1
     };
 
@@ -67,12 +59,13 @@ class PtmForm extends Component {
     this.getPsimods();
   }
 
-  handleChange(event) {
-    var value = event.target.value;
-    var name = event.target.name;
-    this.setState({
-      [name]: value
-    });
+  handleChange() {
+    var currentPtm = {};
+    var data = new FormData(this.refs.form);
+    for (var key of data.entries()){
+      currentPtm[key[0]] = key[1];
+    }
+    this.props.dispatch(setPTM(currentPtm));
   }
 
   handle_next_previous(value) {
@@ -108,7 +101,7 @@ class PtmForm extends Component {
   handleGetPTMS(value) {
     this.handleResetForm();
     this.setState({ list_of_ptms: [], isPending: true, visible_ptm_index: value });
-    var url = `${PTMS}/${this.state.dbentity_id}`;
+    var url = `${PTMS}/${this.props.ptm.dbentity_id}`;
     fetchData(url, {
       type: 'GET'
     }).then(data => {
@@ -122,7 +115,7 @@ class PtmForm extends Component {
 
   setPtm(index) {
     var ptm = this.state.list_of_ptms[index];
-    this.setState({
+    var currentPtm = {
       id: ptm.id,
       dbentity_id: ptm.locus.format_name,
       reference_id: ptm.reference.pubmed_id,
@@ -131,7 +124,8 @@ class PtmForm extends Component {
       psimod_id: ptm.psimod_id,
       taxonomy_id: ptm.taxonomy.taxonomy_id,
       modifier_id: ptm.modifier.format_name
-    });
+    };
+    this.props.dispatch(setPTM(currentPtm));
   }
 
   handleSubmit(e) {
@@ -277,11 +271,9 @@ class PtmForm extends Component {
             <li>Edit the field and click update to save</li>
           </ul>
         }
-
+        
         <form onSubmit={this.handleSubmit} ref='form'>
-
-          <input name='id' value={this.state.id} className="hide" />
-
+          <input name='id' value={this.props.ptm.id} className="hide" />
           {/* Gene */}
           <div className='row'>
             <div className='columns medium-12'>
@@ -294,22 +286,19 @@ class PtmForm extends Component {
 
               <div className='row'>
                 <div className='columns medium-12'>
-                  <input type='text' name='dbentity_id' placeholder='Enter Gene' value={this.state.dbentity_id} onChange={this.handleChange} />
+                  <input type='text' name='dbentity_id' placeholder='Enter Gene' value={this.props.ptm.dbentity_id} onChange={this.handleChange} />
                 </div>
               </div>
             </div>
           </div>
 
           {this.state.isUpdate &&
-
-
             <div className='row'>
               <div className='columns medium-6'>
                 <input type="button" className="button" value="Get database value" onClick={() => this.handleGetPTMS(0)} />
               </div>
             </div>
           }
-
 
           {/* Taxonomy */}
           <div className='row'>
@@ -324,7 +313,7 @@ class PtmForm extends Component {
               <div className='row'>
                 <div className='columns medium-12'>
                   {/* <input type='text' placeholder='Enter Taxonomy' name='taxonomy_id' value={this.state.taxonomy_id} onChange={this.handleChange} /> */}
-                  <select value={this.state.taxonomy_id} onChange={this.handleChange} name='taxonomy_id'>
+                  <select value={this.props.ptm.taxonomy_id} onChange={this.handleChange} name='taxonomy_id'>
                     {this.state.taxonomy_id_to_name}
                   </select>
                 </div>
@@ -344,7 +333,7 @@ class PtmForm extends Component {
 
               <div className='row'>
                 <div className='columns medium-12'>
-                  <input type='text' placeholder='Enter Reference' name='reference_id' value={this.state.reference_id} onChange={this.handleChange} />
+                  <input type='text' placeholder='Enter Reference' name='reference_id' value={this.props.ptm.reference_id} onChange={this.handleChange} />
 
                 </div>
               </div>
@@ -363,7 +352,7 @@ class PtmForm extends Component {
 
               <div className='row'>
                 <div className='columns medium-12'>
-                  <input type='text' placeholder='Enter site index' name='site_index' value={this.state.site_index} onChange={this.handleChange} />
+                  <input type='text' placeholder='Enter site index' name='site_index' value={this.props.ptm.site_index} onChange={this.handleChange} />
                 </div>
               </div>
             </div>
@@ -381,7 +370,7 @@ class PtmForm extends Component {
 
               <div className='row'>
                 <div className='columns medium-12'>
-                  <input type='text' placeholder='Enter site residue' name='site_residue' value={this.state.site_residue} onChange={this.handleChange} />
+                  <input type='text' placeholder='Enter site residue' name='site_residue' value={this.props.ptm.site_residue} onChange={this.handleChange} />
                 </div>
               </div>
             </div>
@@ -400,7 +389,7 @@ class PtmForm extends Component {
               <div className='row'>
                 <div className='columns medium-12'>
                   {/* <input type='text' placeholder='Enter psimod' name='psimod_id' value={this.state.psimod_id} onChange={this.handleChange} /> */}
-                  <select name='psimod_id' value={this.state.psimod_id} onChange={this.handleChange}>
+                  <select name='psimod_id' value={this.props.ptm.psimod_id} onChange={this.handleChange}>
                     {this.state.psimod_id_to_name}
                   </select>
                 </div>
@@ -420,7 +409,7 @@ class PtmForm extends Component {
 
               <div className='row'>
                 <div className='columns medium-12'>
-                  <input type='text' placeholder='Enter modifier' name='modifier_id' value={this.state.modifier_id} onChange={this.handleChange} />
+                  <input type='text' placeholder='Enter modifier' name='modifier_id' value={this.props.ptm.modifier_id} onChange={this.handleChange} />
                 </div>
               </div>
             </div>
@@ -436,11 +425,14 @@ class PtmForm extends Component {
 }
 
 PtmForm.propTypes = {
-  dispatch: React.PropTypes.func
+  dispatch: React.PropTypes.func,
+  ptm:React.PropTypes.object
 };
 
-function mapStateToProps() {
+
+function mapStateToProps(state) {
   return {
+    ptm: state.ptm['currentPtm']
   };
 }
 
