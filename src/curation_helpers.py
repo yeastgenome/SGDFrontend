@@ -124,6 +124,7 @@ def get_list_of_ptms(ptms):
             "format_name": '',
             "display_name": ''
         }
+        new_ptm['reference']['sgdid'] = ptm.reference.sgdid
 
         if ptm.modifier:
             new_ptm['modifier'] = {'format_name': ptm.modifier.format_name}

@@ -13,9 +13,10 @@ const SKIP = 5;
 class PtmForm extends Component {
   constructor(props) {
     super(props);
+
     this.handleChange = this.handleChange.bind(this);
     this.handleGetPTMS = this.handleGetPTMS.bind(this);
-    this.setPtm = this.setPtm.bind(this);
+    this.handleSelectPTM = this.handleSelectPTM.bind(this);
 
     this.handle_next_previous = this.handle_next_previous.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -33,7 +34,7 @@ class PtmForm extends Component {
       visible_ptm_index: -1
     };
 
-    this.getStrainsForTaxonomy();
+    this.getTaxonomy();
     this.getPsimods();
   }
 
@@ -68,7 +69,7 @@ class PtmForm extends Component {
     this.setState({ visible_ptm_index: this.state.visible_ptm_index + value });
   }
 
-  getStrainsForTaxonomy() {
+  getTaxonomy() {
     fetchData(GET_STRAINS, {
       type: 'GET'
     }).then(data => {
@@ -105,12 +106,12 @@ class PtmForm extends Component {
       });
   }
 
-  setPtm(index) {
+  handleSelectPTM(index) {
     var ptm = this.state.list_of_ptms[index];
     var currentPtm = {
       id: ptm.id,
       dbentity_id: ptm.locus.format_name,
-      reference_id: ptm.reference.pubmed_id,
+      reference_id: ptm.reference.sgdid,
       site_index: ptm.site_index,
       site_residue: ptm.site_residue,
       psimod_id: ptm.psimod_id,
@@ -178,7 +179,7 @@ class PtmForm extends Component {
     })
       .map((i, index) => {
         var new_index = index + currentIndex;
-        return <li key={new_index} onClick={() => this.setPtm(new_index)} className='button medium-only-expanded'>{i.site_index + ' ' + i.site_residue}</li>;
+        return <li key={new_index} onClick={() => this.handleSelectPTM(new_index)} className='button medium-only-expanded'>{i.site_index + ' ' + i.site_residue}</li>;
       });
 
     if (this.state.isUpdate) {
