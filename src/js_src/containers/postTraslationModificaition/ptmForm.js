@@ -75,7 +75,7 @@ class PtmForm extends Component {
       var values = data['strains'].map((strain, index) => {
         return <option value={strain.taxonomy_id} key={index}> {strain.display_name} </option>;
       });
-      this.setState({ taxonomy_id_to_name: [<option value='' key='0'> -----select taxonomy----- </option>,...values] });
+      this.setState({ taxonomy_id_to_name: [<option value='' key='-1'> -----select taxonomy----- </option>,...values] });
     }).catch(err => this.props.dispatch(setError(err.error)));
   }
 
@@ -86,7 +86,7 @@ class PtmForm extends Component {
       var values = data['psimods'].map((psimod, index) => {
         return <option value={psimod.psimod_id} key={index}>{psimod.display_name}</option>;
       });
-      this.setState({ psimod_id_to_name: [<option value='' key='0'> -----select psimod----- </option>, ...values] });
+      this.setState({ psimod_id_to_name: [<option value='' key='-1'> -----select psimod----- </option>, ...values] });
     }).catch(err => this.props.dispatch(setError(err.error)));
   }
 
@@ -184,6 +184,7 @@ class PtmForm extends Component {
       return (
         <div>
           {count_of_ptms > 0 &&
+          <div>
             <div className='row'>
               <div className='columns medium-12'>
                 <div className='expanded button-group'>
@@ -191,19 +192,22 @@ class PtmForm extends Component {
                   {buttons}
                   <li type='button' className='button warning' disabled={count_of_ptms == 0 || currentIndex + SKIP >= count_of_ptms ? true : false} onClick={() => this.handle_next_previous(SKIP)}> <i className="fa fa-chevron-circle-right"></i></li>
                 </div>
-
               </div>
             </div>
-          }
-
-          <div className='row'>
-            <div className='columns medium-6'>
-              <button type='submit' className="button expanded" >Update</button>
-            </div>
-            <div className='columns medium-2'>
-              <button type='button' className="button alert expanded" onClick={(e) => {if(confirm('Are you sure, you want to delete selected PTM ?')) this.handleDelete(e) ;}}>Delete</button>
+            <div className='row'>
+              <div className='columns medium-6'>
+                <button type='submit' className="button expanded" >Update</button>
+              </div>
+              <div className='columns medium-2'>
+                <button type='button' className="button alert expanded" onClick={(e) => { if (confirm('Are you sure, you want to delete selected PTM ?')) this.handleDelete(e); }}>Delete</button>
+              </div>
             </div>
           </div>
+          }
+          {
+            count_of_ptms <=0 &&
+            <p className='callout alert'>No PTM to select & update</p>
+          }
         </div>
       );
     }
