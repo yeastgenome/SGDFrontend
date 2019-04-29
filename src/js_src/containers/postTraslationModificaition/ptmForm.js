@@ -31,7 +31,8 @@ class PtmForm extends Component {
       psimod_id_to_name: [],
       list_of_ptms: [],
       isPending: false,
-      visible_ptm_index: -1
+      visible_ptm_index: -1,
+      referenceLabel:'SGDID'
     };
 
     this.getTaxonomy();
@@ -108,10 +109,21 @@ class PtmForm extends Component {
 
   handleSelectPTM(index) {
     var ptm = this.state.list_of_ptms[index];
+    var reference_id = '';
+
+    if (ptm.reference.pubmed_id){
+      this.setState({ referenceLabel:'Pubmed Id'});
+      reference_id = ptm.reference.pubmed_id;
+    }
+    else{
+      this.setState({ referenceLabel: 'SGDID' });
+      reference_id = ptm.reference.sgdid;
+    }
+
     var currentPtm = {
       id: ptm.id,
       dbentity_id: ptm.locus.format_name,
-      reference_id: ptm.reference.sgdid,
+      reference_id: reference_id,
       site_index: ptm.site_index,
       site_residue: ptm.site_residue,
       psimod_id: ptm.psimod_id,
@@ -299,8 +311,11 @@ class PtmForm extends Component {
                 </div>
               </div>
               <div className='row'>
-                <div className='columns medium-12'>
-                  <input type='text' placeholder='Enter Reference' name='reference_id' value={this.props.ptm.reference_id} onChange={this.handleChange} />
+                <div className="input-group columns medium-12">
+                {this.state.isUpdate && 
+                    <span className="input-group-label">{this.state.referenceLabel}</span>
+                }
+                  <input className='input-group-field' type='text' placeholder='Enter Reference' name='reference_id' value={this.props.ptm.reference_id} onChange={this.handleChange} />
                 </div>
               </div>
             </div>
