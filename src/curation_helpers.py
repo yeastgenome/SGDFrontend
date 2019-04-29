@@ -112,3 +112,31 @@ def clear_list_empty_values(lst):
         return data
     else:
         return lst
+
+def get_list_of_ptms(ptms):
+    list_of_ptms = []
+    for ptm in ptms:
+        new_ptm = ptm.to_dict()
+        new_ptm['modifier'] = {'format_name': ''}
+        new_ptm['psimod_id'] = ''
+        new_ptm['taxonomy'] = {
+            "taxonomy_id": '',
+            "format_name": '',
+            "display_name": ''
+        }
+
+        if ptm.modifier:
+            new_ptm['modifier'] = {'format_name': ptm.modifier.format_name}
+        if ptm.psimod:
+            new_ptm['psimod_id'] = ptm.psimod.psimod_id
+        if ptm.taxonomy:
+            new_ptm['taxonomy'] = {
+                "taxonomy_id": ptm.taxonomy.taxonomy_id,
+                "format_name": ptm.taxonomy.format_name,
+                "display_name": ptm.taxonomy.display_name
+            }
+
+        list_of_ptms.append(new_ptm)
+    
+    return list_of_ptms
+
