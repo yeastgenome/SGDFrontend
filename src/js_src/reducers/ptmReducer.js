@@ -2,7 +2,6 @@
 // import { fromJS } from 'immutable';
 
 const DEFAULT_STATE = {
-  isUpdate: false,
   currentPtm:{
     id: 0,
     dbentity_id: '',

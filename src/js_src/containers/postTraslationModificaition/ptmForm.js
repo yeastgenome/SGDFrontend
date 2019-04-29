@@ -20,37 +20,15 @@ class PtmForm extends Component {
     this.handle_next_previous = this.handle_next_previous.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
 
-    this.handleNewForm = this.handleNewForm.bind(this);
-    this.handleEditForm = this.handleEditForm.bind(this);
+    this.handleToggleInsertUpdate = this.handleToggleInsertUpdate.bind(this);
     this.handleResetForm = this.handleResetForm.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
-
-    this.newPTM = {
-      id: 0,
-      locus: {
-        id: '',
-        format_name: ''
-      },
-      reference: {
-        pubmed_id: ''
-      },
-      site_index: '',
-      site_residue: '',
-      type: '',
-      taxonomy: {
-        taxonomy_id: ''
-      },
-      modifier: {
-        format_name: ''
-      }
-    };
 
     this.state = {
       isUpdate: false,
       taxonomy_id_to_name: [],
       psimod_id_to_name: [],
       list_of_ptms: [],
-
       isPending: false,
       visible_ptm_index: -1
     };
@@ -68,6 +46,24 @@ class PtmForm extends Component {
     this.props.dispatch(setPTM(currentPtm));
   }
 
+  handleSubmit(e) {
+    e.preventDefault();
+    this.setState({ isPending: true });
+    var formData = new FormData(this.refs.form);
+    fetchData(PTMS, {
+      type: 'POST',
+      data: formData,
+      processData: false,
+      contentType: false
+    }).then((data) => {
+      this.setState({ isPending: false });
+      this.props.dispatch(setMessage(data.success));
+    }).catch((err) => {
+      this.setState({ isPending: false });
+      this.props.dispatch(setError(err.error));
+    });
+  }
+
   handle_next_previous(value) {
     this.setState({ visible_ptm_index: this.state.visible_ptm_index + value });
   }
@@ -75,27 +71,23 @@ class PtmForm extends Component {
   getStrainsForTaxonomy() {
     fetchData(GET_STRAINS, {
       type: 'GET'
-    })
-      .then(data => {
-        var values = data['strains'].map((strain, index) => {
-          return <option value={strain.taxonomy_id} key={index}> {strain.display_name} </option>;
-        });
-        this.setState({ taxonomy_id_to_name: values });
-      })
-      .catch(err => this.props.dispatch(setError(err.error)));
+    }).then(data => {
+      var values = data['strains'].map((strain, index) => {
+        return <option value={strain.taxonomy_id} key={index}> {strain.display_name} </option>;
+      });
+      this.setState({ taxonomy_id_to_name: [<option value='' key='0'> -----select taxonomy----- </option>,...values] });
+    }).catch(err => this.props.dispatch(setError(err.error)));
   }
 
   getPsimods() {
     fetchData(GET_PSIMODS, {
       type: 'GET'
-    })
-      .then(data => {
-        var values = data['psimods'].map((psimod, index) => {
-          return <option value={psimod.psimod_id} key={index}>{psimod.display_name}</option>;
-        });
-        this.setState({ psimod_id_to_name: values });
-      })
-      .catch(err => this.props.dispatch(setError(err.error)));
+    }).then(data => {
+      var values = data['psimods'].map((psimod, index) => {
+        return <option value={psimod.psimod_id} key={index}>{psimod.display_name}</option>;
+      });
+      this.setState({ psimod_id_to_name: [<option value='' key='0'> -----select psimod----- </option>, ...values] });
+    }).catch(err => this.props.dispatch(setError(err.error)));
   }
 
   handleGetPTMS(value) {
@@ -128,46 +120,22 @@ class PtmForm extends Component {
     this.props.dispatch(setPTM(currentPtm));
   }
 
-  handleSubmit(e) {
-    e.preventDefault();
-    this.setState({ isPending: true });
-    var formData = new FormData(this.refs.form);
-    fetchData(PTMS, {
-      type: 'POST',
-      data: formData,
-      processData: false,
-      contentType: false
-    }).then((data) => {
-      this.setState({ isPending: false });
-      this.props.dispatch(setMessage(data.success));
-    })
-      .catch((err) => {
-        this.setState({ isPending: false });
-        this.props.dispatch(setError(err.error));
-      });
-  }
-
   handleResetForm() {
-    var ptm = this.newPTM;
-    this.setState({
-      id: ptm.id,
-      dbentity_id: ptm.locus.format_name,
-      reference_id: ptm.reference.pubmed_id,
-      site_index: ptm.site_index,
-      site_residue: ptm.site_residue,
-      psimod_id: ptm.psimod_id,
-      taxonomy_id: ptm.taxonomy.taxonomy_id,
-      modifier_id: ptm.modifier.format_name
-    });
+    var currentPtm = {
+      id: '',
+      dbentity_id: '',
+      reference_id: '',
+      site_index: '',
+      site_residue: '',
+      psimod_id: '',
+      taxonomy_id: '',
+      modifier_id: '',
+    };
+    this.props.dispatch(setPTM(currentPtm));
   }
 
-  handleNewForm() {
-    this.setState({ isUpdate: false, list_of_ptms: [] });
-    this.handleResetForm();
-  }
-
-  handleEditForm() {
-    this.setState({ isUpdate: true, list_of_ptms: [] });
+  handleToggleInsertUpdate() {
+    this.setState({ isUpdate: !this.state.isUpdate, list_of_ptms: [] });
     this.handleResetForm();
   }
 
@@ -256,10 +224,10 @@ class PtmForm extends Component {
       <div>
         <div className='row'>
           <div className='columns medium-6 small-6'>
-            <button type="button" className="button expanded" onClick={this.handleNewForm} disabled={!this.state.isUpdate}>Add new ptm</button>
+            <button type="button" className="button expanded" onClick={this.handleToggleInsertUpdate} disabled={!this.state.isUpdate}>Add new ptm</button>
           </div>
           <div className='columns medium-6 small-6 end'>
-            <button type="button" className="button expanded" onClick={this.handleEditForm} disabled={this.state.isUpdate}>Update existing ptm</button>
+            <button type="button" className="button expanded" onClick={this.handleToggleInsertUpdate} disabled={this.state.isUpdate}>Update existing ptm</button>
           </div>
         </div>
 
