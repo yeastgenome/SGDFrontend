@@ -212,7 +212,7 @@ class PtmForm extends Component {
               <div className='columns medium-6'>
                 <button type='submit' className="button expanded" >Update</button>
               </div>
-              <div className='columns medium-2'>
+              <div className='columns medium-3'>
                 <button type='button' className="button alert expanded" onClick={(e) => { if (confirm('Are you sure, you want to delete selected PTM ?')) this.handleDelete(e); }}>Delete</button>
               </div>
             </div>
