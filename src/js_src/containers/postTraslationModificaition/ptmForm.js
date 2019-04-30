@@ -32,18 +32,25 @@ class PtmForm extends Component {
       list_of_ptms: [],
       isPending: false,
       visible_ptm_index: -1,
-      referenceLabel:'SGDID'
+      referenceLabel: 'SGDID',
+      psimod_text_value : ''
     };
 
     this.getTaxonomy();
     this.getPsimods();
   }
 
-  handleChange() {
+  handleChange(event) {
+    event.preventDefault();
     var currentPtm = {};
     var data = new FormData(this.refs.form);
-    for (var key of data.entries()){
+    for (var key of data.entries()) {
       currentPtm[key[0]] = key[1];
+      if (key[0] == 'psimod_id') {
+        var selected_psimod = this.state.psimod_id_to_name.filter((item) => item.display_name == key[1])[0];
+        currentPtm['psimod_id'] = selected_psimod != undefined ? selected_psimod['psimod_id'] : '';
+        this.setState({ psimod_text_value: key[1] });
+      }
     }
     this.props.dispatch(setPTM(currentPtm));
   }
@@ -51,14 +58,18 @@ class PtmForm extends Component {
   handleSubmit(e) {
     e.preventDefault();
     this.setState({ isPending: true });
-    var formData = new FormData(this.refs.form);
+    var formData = new FormData();
+    for(var key in this.props.ptm){
+      formData.append(key,this.props.ptm[key]);
+    }
+
     fetchData(PTMS, {
       type: 'POST',
       data: formData,
       processData: false,
       contentType: false
     }).then((data) => {
-      this.setState({ isPending: false,list_of_ptms:data.ptms });
+      this.setState({ isPending: false, list_of_ptms: data.ptms });
       this.props.dispatch(setMessage(data.success));
     }).catch((err) => {
       this.setState({ isPending: false });
@@ -77,7 +88,7 @@ class PtmForm extends Component {
       var values = data['strains'].map((strain, index) => {
         return <option value={strain.taxonomy_id} key={index}> {strain.display_name} </option>;
       });
-      this.setState({ taxonomy_id_to_name: [<option value='' key='-1'> -----select taxonomy----- </option>,...values] });
+      this.setState({ taxonomy_id_to_name: [<option value='' key='-1'> -----select taxonomy----- </option>, ...values] });
     }).catch(err => this.props.dispatch(setError(err.error)));
   }
 
@@ -85,10 +96,7 @@ class PtmForm extends Component {
     fetchData(GET_PSIMODS, {
       type: 'GET'
     }).then(data => {
-      var values = data['psimods'].map((psimod, index) => {
-        return <option value={psimod.psimod_id} key={index}>{psimod.display_name}</option>;
-      });
-      this.setState({ psimod_id_to_name: [<option value='' key='-1'> -----select psimod----- </option>, ...values] });
+      this.setState({ psimod_id_to_name: data['psimods'] });
     }).catch(err => this.props.dispatch(setError(err.error)));
   }
 
@@ -111,14 +119,16 @@ class PtmForm extends Component {
     var ptm = this.state.list_of_ptms[index];
     var reference_id = '';
 
-    if (ptm.reference.pubmed_id){
-      this.setState({ referenceLabel:'Pubmed Id'});
+    if (ptm.reference.pubmed_id) {
+      this.setState({ referenceLabel: 'Pubmed Id' });
       reference_id = ptm.reference.pubmed_id;
     }
-    else{
+    else {
       this.setState({ referenceLabel: 'SGDID' });
       reference_id = ptm.reference.sgdid;
     }
+
+    var psimod_text = this.state.psimod_id_to_name.filter((item) => item.psimod_id == ptm.psimod_id)[0].display_name;
 
     var currentPtm = {
       id: ptm.id,
@@ -131,6 +141,7 @@ class PtmForm extends Component {
       modifier_id: ptm.modifier.format_name
     };
     this.props.dispatch(setPTM(currentPtm));
+    this.setState({psimod_text_value:psimod_text});
   }
 
   handleResetForm() {
@@ -152,22 +163,22 @@ class PtmForm extends Component {
     this.handleResetForm();
   }
 
-  handleDelete(e){
+  handleDelete(e) {
     e.preventDefault();
-    if(this.props.ptm.id > 0){
-      fetchData(`${PTMS}/${this.props.ptm.id}`,{
-        type:'DELETE'
+    if (this.props.ptm.id > 0) {
+      fetchData(`${PTMS}/${this.props.ptm.id}`, {
+        type: 'DELETE'
       })
-      .then((data) => {
-        this.props.dispatch(setMessage(data.success));
-        this.setState({ list_of_ptms: data.ptms});
-        this.handleResetForm();
-      })
-      .catch((err) => {
-        this.props.dispatch(setError(err.error));
-      });
+        .then((data) => {
+          this.props.dispatch(setMessage(data.success));
+          this.setState({ list_of_ptms: data.ptms });
+          this.handleResetForm();
+        })
+        .catch((err) => {
+          this.props.dispatch(setError(err.error));
+        });
     }
-    else{
+    else {
       this.props.dispatch(setError('No ptm is selected to delete.'));
     }
   }
@@ -198,28 +209,28 @@ class PtmForm extends Component {
       return (
         <div>
           {count_of_ptms > 0 &&
-          <div>
-            <div className='row'>
-              <div className='columns medium-12'>
-                <div className='expanded button-group'>
-                  <li type='button' className='button warning' disabled={count_of_ptms < 0 || currentIndex <= 0 ? true : false} onClick={() => this.handle_next_previous(-SKIP)}> <i className="fa fa-chevron-circle-left"></i> </li>
-                  {buttons}
-                  <li type='button' className='button warning' disabled={count_of_ptms == 0 || currentIndex + SKIP >= count_of_ptms ? true : false} onClick={() => this.handle_next_previous(SKIP)}> <i className="fa fa-chevron-circle-right"></i></li>
+            <div>
+              <div className='row'>
+                <div className='columns medium-12'>
+                  <div className='expanded button-group'>
+                    <li type='button' className='button warning' disabled={count_of_ptms < 0 || currentIndex <= 0 ? true : false} onClick={() => this.handle_next_previous(-SKIP)}> <i className="fa fa-chevron-circle-left"></i> </li>
+                    {buttons}
+                    <li type='button' className='button warning' disabled={count_of_ptms == 0 || currentIndex + SKIP >= count_of_ptms ? true : false} onClick={() => this.handle_next_previous(SKIP)}> <i className="fa fa-chevron-circle-right"></i></li>
+                  </div>
+                </div>
+              </div>
+              <div className='row'>
+                <div className='columns medium-6'>
+                  <button type='submit' className="button expanded" >Update</button>
+                </div>
+                <div className='columns medium-3'>
+                  <button type='button' className="button alert expanded" onClick={(e) => { if (confirm('Are you sure, you want to delete selected PTM ?')) this.handleDelete(e); }}>Delete</button>
                 </div>
               </div>
             </div>
-            <div className='row'>
-              <div className='columns medium-6'>
-                <button type='submit' className="button expanded" >Update</button>
-              </div>
-              <div className='columns medium-3'>
-                <button type='button' className="button alert expanded" onClick={(e) => { if (confirm('Are you sure, you want to delete selected PTM ?')) this.handleDelete(e); }}>Delete</button>
-              </div>
-            </div>
-          </div>
           }
           {
-            count_of_ptms <=0 &&
+            count_of_ptms <= 0 &&
             <p className='callout alert'>No PTM to select & update</p>
           }
         </div>
@@ -257,7 +268,7 @@ class PtmForm extends Component {
             <li>Edit the field and click update to save</li>
           </ul>
         }
-        
+
         <form onSubmit={this.handleSubmit} ref='form'>
           <input name='id' value={this.props.ptm.id} className="hide" />
           {/* Gene */}
@@ -312,9 +323,9 @@ class PtmForm extends Component {
               </div>
               <div className='row'>
                 <div className="input-group columns medium-12">
-                {this.state.isUpdate && 
+                  {this.state.isUpdate &&
                     <span className="input-group-label">{this.state.referenceLabel}</span>
-                }
+                  }
                   <input className='input-group-field' type='text' placeholder='Enter Reference' name='reference_id' value={this.props.ptm.reference_id} onChange={this.handleChange} />
                 </div>
               </div>
@@ -363,9 +374,14 @@ class PtmForm extends Component {
               </div>
               <div className='row'>
                 <div className='columns medium-12'>
-                  <select name='psimod_id' value={this.props.ptm.psimod_id} onChange={this.handleChange}>
-                    {this.state.psimod_id_to_name}
-                  </select>
+                  <input type='text' list='psimod_id' name='psimod_id' onChange={this.handleChange} value={this.state.psimod_text_value}></input>
+                  <datalist id='psimod_id'>
+                    {
+                      this.state.psimod_id_to_name.map((psimod, index) => {
+                        return <option value={psimod.display_name} key={index}>{psimod.display_name}</option>;
+                      })
+                    }
+                  </datalist>
                 </div>
               </div>
             </div>
@@ -398,7 +414,7 @@ class PtmForm extends Component {
 
 PtmForm.propTypes = {
   dispatch: React.PropTypes.func,
-  ptm:React.PropTypes.object
+  ptm: React.PropTypes.object
 };
 
 
