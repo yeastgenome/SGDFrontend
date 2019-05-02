@@ -28,7 +28,7 @@ class PtmForm extends Component {
     this.state = {
       isUpdate: false,
       taxonomy_id_to_name: [],
-      psimod_id_to_name: [],
+      psimods: [],
       list_of_ptms: [],
       isPending: false,
       visible_ptm_index: -1,
@@ -47,7 +47,7 @@ class PtmForm extends Component {
     for (var key of data.entries()) {
       currentPtm[key[0]] = key[1];
       if (key[0] == 'psimod_id') {
-        var selected_psimod = this.state.psimod_id_to_name.filter((item) => item.display_name == key[1])[0];
+        var selected_psimod = this.state.psimods.filter((item) => item.display_name == key[1])[0];
         currentPtm['psimod_id'] = selected_psimod != undefined ? selected_psimod['psimod_id'] : '';
         this.setState({ psimod_text_value: key[1] });
       }
@@ -96,7 +96,7 @@ class PtmForm extends Component {
     fetchData(GET_PSIMODS, {
       type: 'GET'
     }).then(data => {
-      this.setState({ psimod_id_to_name: data['psimods'] });
+      this.setState({ psimods: data['psimods'] });
     }).catch(err => this.props.dispatch(setError(err.error)));
   }
 
@@ -128,7 +128,7 @@ class PtmForm extends Component {
       reference_id = ptm.reference.sgdid;
     }
 
-    var psimod_text = this.state.psimod_id_to_name.filter((item) => item.psimod_id == ptm.psimod_id)[0].display_name;
+    var psimod_text = this.state.psimods.filter((item) => item.psimod_id == ptm.psimod_id)[0].display_name;
 
     var currentPtm = {
       id: ptm.id,
@@ -156,6 +156,7 @@ class PtmForm extends Component {
       modifier_id: '',
     };
     this.props.dispatch(setPTM(currentPtm));
+    this.setState({psimod_text_value:''});
   }
 
   handleToggleInsertUpdate() {
@@ -377,8 +378,8 @@ class PtmForm extends Component {
                   <input type='text' list='psimod_id' name='psimod_id' onChange={this.handleChange} value={this.state.psimod_text_value}></input>
                   <datalist id='psimod_id'>
                     {
-                      this.state.psimod_id_to_name.map((psimod, index) => {
-                        return <option value={psimod.display_name} key={index}>{psimod.display_name}</option>;
+                      this.state.psimods.map((psimod, index) => {
+                        return <option value={psimod.display_name} key={index}>{psimod.psimod_id}</option>;
                       })
                     }
                   </datalist>
