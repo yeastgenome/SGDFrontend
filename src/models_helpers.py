@@ -1,4 +1,4 @@
-from models import DBSession, Base, Colleague, ColleagueLocus, ColleagueRelation, FilePath, Filedbentity, FileKeyword, Path, ColleagueReference, ColleagueUrl, Colleaguetriage, Dbentity, Locusdbentity, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi, Psimod, Posttranslationannotation
+from models import DBSession, Base, Colleague, ColleagueLocus, ColleagueRelation, FilePath, Filedbentity, FileKeyword, Path, ColleagueReference, ColleagueUrl, Colleaguetriage, Dbentity, Locusdbentity, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi, Psimod, Posttranslationannotation, Eco
 import os
 import requests
 
@@ -473,3 +473,17 @@ class ModelsHelper(object):
         psimods_in_db = None
         psimods_in_db = DBSession.query(Psimod).order_by(Psimod.display_name)
         return psimods_in_db
+    
+    def get_all_go(self):
+        '''
+        Get all GO data
+        '''
+        go_in_db = DBSession.query(Go).limit(10).all()
+        return go_in_db
+
+    def get_all_eco(self):
+        '''
+        Get all ECO data
+        '''
+        eco_in_db = DBSession.query(Eco).all()
+        return eco_in_db
