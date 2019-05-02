@@ -380,9 +380,9 @@ class PtmForm extends Component {
                     {
                       this.state.psimods.map((psimod, index) => {
                         if(psimod.inuse){
-                          return <option value={psimod.display_name} key={index}>{psimod.psimod_id}</option>;
+                          return <option value={psimod.display_name} key={index}>{psimod.format_name}</option>;
                         }
-                        return <option value={psimod.display_name} key={index}>{psimod.psimod_id}</option>;
+                        return <option value={psimod.display_name} key={index}>{psimod.format_name}</option>;
                       })
                     }
                   </datalist>
