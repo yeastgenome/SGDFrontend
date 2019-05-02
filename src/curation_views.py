@@ -1341,7 +1341,29 @@ def get_psimod(request):
     try:
         psimods = models_helper.get_all_psimods()
         if psimods:
-            return {'psimods': [{"psimod_id": p.psimod_id, "display_name": p.display_name} for p in psimods]}
+            distinct_psimod_ids = DBSession.query(Posttranslationannotation.psimod_id).distinct()
+            psimods_in_use = psimods.filter(Psimod.psimod_id.in_(distinct_psimod_ids)).order_by(Psimod.display_name).all()
+            psimods_not_in_use = psimods.filter(~Psimod.psimod_id.in_(distinct_psimod_ids)).order_by(Psimod.display_name).all()
+            # unique_list = list(set(psimods.all() + psimods_in_use))
+            
+            returnList = []
+            for p in psimods_in_use:
+                obj = {"psimod_id": p.psimod_id,
+                       "display_name": p.display_name,
+                       "inuse":True
+                      }
+                returnList.append(obj)
+            
+            for p in psimods_not_in_use:
+                obj = {"psimod_id": p.psimod_id,
+                       "display_name": p.display_name,
+                       "inuse": False
+                       }
+                returnList.append(obj)
+
+                
+            return HTTPOk(body=json.dumps({'psimods': returnList}),content_type='text/json') 
+            # return {'psimods': [{"psimod_id": p.psimod_id, "display_name": p.display_name} for p in unique_list]}
         return None
     except Exception as e:
         return HTTPBadRequest(body=json.dumps({'error': str(e)}))

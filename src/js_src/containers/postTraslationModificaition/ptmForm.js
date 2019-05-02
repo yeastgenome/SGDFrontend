@@ -379,6 +379,9 @@ class PtmForm extends Component {
                   <datalist id='psimod_id'>
                     {
                       this.state.psimods.map((psimod, index) => {
+                        if(psimod.inuse){
+                          return <option value={psimod.display_name} key={index}>{psimod.psimod_id}</option>;
+                        }
                         return <option value={psimod.display_name} key={index}>{psimod.psimod_id}</option>;
                       })
                     }

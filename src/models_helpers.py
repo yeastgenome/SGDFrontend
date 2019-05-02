@@ -471,5 +471,5 @@ class ModelsHelper(object):
         Get all psimods
         '''
         psimods_in_db = None
-        psimods_in_db = DBSession.query(Psimod).order_by(Psimod.display_name).all()
+        psimods_in_db = DBSession.query(Psimod).order_by(Psimod.display_name)
         return psimods_in_db
