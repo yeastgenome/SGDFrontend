@@ -22,6 +22,7 @@ class CurateLayout extends Component {
             <li><Link className={(location === '/settings') ? style.activeLink : null} to='/settings'><span><i className='fa fa-cog' /> Settings</span></Link></li>
             <li><Link className={(location === '/curate/reference/new') ? style.activeLink : null} to='/curate/reference/new'><span><i className='fa fa-plus' /> Add References</span></Link></li>
             <li><Link className={(location === '/newsletter') ? style.activeLink : null} to='/newsletter'><span><i className="fa fa-envelope" /> Newsletter</span></Link></li>
+            <li><Link className={(location === '/regulation') ? style.activeLink : null} to='/regulation'><span><i className="fa fa-upload" /> Regulation</span></Link></li>
           </ul>
         </div>
         <div className={LARGE_COL_CLASS}>
