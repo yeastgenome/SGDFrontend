@@ -37,7 +37,7 @@ import ColleaguesIndex from './containers/colleagues/index';
 import ColleaguesShow from './containers/colleagues/show';
 // import AuthorResponse from './containers/authorResponse/index';
 import NewColleague from './containers/colleagues/new';
-
+import Regulation from './containers/regulation/index';
 
 export default (
   <Route>
@@ -74,6 +74,7 @@ export default (
         <Route component={requireAuthentication(Blank)} path='regulation' />
         <Route component={requireAuthentication(Blank)} path='interaction' />
       </Route>
+      <Route component={requireAuthentication(Regulation)} path='regulation' />
     </Route>
     <Route component={PublicLayout}>
       {/*<Route component={AuthorResponse} path='author_response' />*/}
