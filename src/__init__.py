@@ -54,6 +54,7 @@ def main(global_config, **settings):
     config.add_route('observable_ontology_graph', '/observable/{id}/ontology_graph', request_method='GET')
     config.add_route('observable_locus_details_all', '/observable/{id}/locus_details_all', request_method='GET')
 
+    config.add_route('get_all_go_for_regulations','/go/regulations', request_method='GET')
     config.add_route('go', '/go/{format_name}', request_method='GET')
     config.add_route('go_ontology_graph', '/go/{id}/ontology_graph', request_method='GET')
     config.add_route('go_locus_details', '/go/{id}/locus_details', request_method='GET')
@@ -170,6 +171,8 @@ def main(global_config, **settings):
     config.add_route('reserved_name_delete', '/reservations/{id}', request_method='DELETE')
     config.add_route('reserved_name_promote', '/reservations/{id}/promote', request_method='PUT')
     config.add_route('new_gene_name_reservation', '/reserve', request_method='POST')
+
+    config.add_route('get_all_eco_for_regulations','/eco/regulations',request_method='GET')
     config.add_route('healthcheck', '/healthcheck')
     config.scan()
     config.add_static_view(name='assets', path='./build')
