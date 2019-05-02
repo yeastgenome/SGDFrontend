@@ -1693,6 +1693,7 @@ def ptm_delete(request):
 
     except Exception as e:
         return HTTPBadRequest(body=json.dumps({'error': str(e.message)}), content_type='text/json')
+
 @view_config(route_name='get_all_go_for_regulations',renderer='json',request_method='GET')
 def get_all_go_for_regulations(request):
     go_in_db = models_helper.get_all_go()
