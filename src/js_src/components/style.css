@@ -94,3 +94,31 @@
 .titleCatIcon {
   top: -0.10rem;
 }
+
+/*  */
+.autoSelect{
+  overflow: scroll;
+  max-height:250px;
+  border:1px solid #cacaca;
+}
+
+.noBottomMargin{
+   margin:0px!important;
+}
+
+.styleList{
+  list-style-type:none!important;
+  margin:0px 10px;
+}
+
+.styleList li {
+  margin:10px 0px;
+}
+
+.styleList li:hover {
+  background-color: #0581C2;
+}
+
+.styleList li a {
+  color:#000;
+}

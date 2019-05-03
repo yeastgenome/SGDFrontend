@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import Loader from '../../components/loader';
 import { setError, setMessage } from '../../actions/metaActions';
 import { setPTM } from '../../actions/ptmActions';
+import DataList from '../../components/dataList';
 
 const PTMS = '/ptm';
 const GET_STRAINS = '/get_strains';
@@ -387,6 +388,9 @@ class PtmForm extends Component {
                     }
                   </datalist>
                 </div>
+              </div>
+              <div className='row'>
+                <DataList  url={GET_PSIMODS} />
               </div>
             </div>
           </div>
