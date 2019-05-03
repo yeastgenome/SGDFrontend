@@ -326,6 +326,7 @@ const RestrictionMapper = React.createClass({
 		var paramData = {};
 		var param = this.state.param;
 		paramData['type'] = param['type'];
+		var seq_id = param['seq_id'];
 
 		if (searchType == 'gene') {
                    var gene = value;
@@ -333,7 +334,9 @@ const RestrictionMapper = React.createClass({
                    gene = gene.replace("SGD%3A", "");
                    paramData['name'] = gene;
                    this.sendRequest(paramData);
-		   window.localStorage.clear();
+		   if (!seq_id) {
+		      window.localStorage.clear();
+	           }
                    return
                 }
 
@@ -344,7 +347,9 @@ const RestrictionMapper = React.createClass({
 		   // seq = seq.toUpperCase().replace(/[^ATCG]/g, '');
 		   paramData['seq'] = value;
 		   this.sendRequest(paramData);
-		   window.localStorage.clear();
+		   if (!seq_id) {
+		      window.localStorage.clear();
+                   }
                    return
 		}		
  		
