@@ -347,9 +347,7 @@ const RestrictionMapper = React.createClass({
 		   // seq = seq.toUpperCase().replace(/[^ATCG]/g, '');
 		   paramData['seq'] = value;
 		   this.sendRequest(paramData);
-		   if (!seq_id) {
-		      window.localStorage.clear();
-                   }
+		   window.localStorage.clear();
                    return
 		}		
  		
