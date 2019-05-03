@@ -259,7 +259,7 @@ const RestrictionMapper = React.createClass({
 	getSubmitNode: function() {
 
 		return(<div>
-                      <p><input type="submit" value="DISPLAY MAP" className="button secondary"></input><input type="reset" value="RESET FORM" className="button secondary"></input>
+                      <p><input type="submit" value="Display Result" className="button secondary"></input><input type="reset" value="Reset Form" className="button secondary"></input>
                       </p>
                 </div>);
 
@@ -332,7 +332,8 @@ const RestrictionMapper = React.createClass({
                    gene = gene.replace("SGD:", "");
                    gene = gene.replace("SGD%3A", "");
                    paramData['name'] = gene;
-                   this.sendRequest(paramData)
+                   this.sendRequest(paramData);
+		   window.localStorage.clear();
                    return
                 }
 
@@ -342,7 +343,8 @@ const RestrictionMapper = React.createClass({
 		   // seq = seq.replace(/%0A/g, '');
 		   // seq = seq.toUpperCase().replace(/[^ATCG]/g, '');
 		   paramData['seq'] = value;
-		   this.sendRequest(paramData)
+		   this.sendRequest(paramData);
+		   window.localStorage.clear();
                    return
 		}		
  		
