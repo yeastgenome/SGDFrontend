@@ -41,17 +41,12 @@ class PtmForm extends Component {
     this.getPsimods();
   }
 
-  handleChange(event) {
-    event.preventDefault();
+  handleChange() {
+    // event.preventDefault();
     var currentPtm = {};
     var data = new FormData(this.refs.form);
     for (var key of data.entries()) {
       currentPtm[key[0]] = key[1];
-      if (key[0] == 'psimod_id') {
-        var selected_psimod = this.state.psimods.filter((item) => item.display_name == key[1])[0];
-        currentPtm['psimod_id'] = selected_psimod != undefined ? selected_psimod['psimod_id'] : '';
-        this.setState({ psimod_text_value: key[1] });
-      }
     }
     this.props.dispatch(setPTM(currentPtm));
   }
@@ -375,22 +370,7 @@ class PtmForm extends Component {
                 </div>
               </div>
               <div className='row'>
-                <div className='columns medium-12'>
-                  <input type='text' list='psimod_id' name='psimod_id' onChange={this.handleChange} value={this.state.psimod_text_value}></input>
-                  <datalist id='psimod_id'>
-                    {
-                      this.state.psimods.map((psimod, index) => {
-                        if(psimod.inuse){
-                          return <option value={psimod.display_name} key={index}>{psimod.format_name}</option>;
-                        }
-                        return <option value={psimod.display_name} key={index}>{psimod.format_name}</option>;
-                      })
-                    }
-                  </datalist>
-                </div>
-              </div>
-              <div className='row'>
-                <DataList  url={GET_PSIMODS} />
+                <DataList url={GET_PSIMODS} selectedIdName='psimod_id' onOptionChange={this.handleChange} />
               </div>
             </div>
           </div>
