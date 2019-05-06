@@ -20,6 +20,16 @@ class DataList extends Component {
     this.getData();  
   }
 
+  componentWillReceiveProps(nextProps){
+    if(nextProps.selectedObject.psimod_id){
+      var id = nextProps.selectedObject.psimod_id;
+      var selected_item = this.state.options.filter((value) => value.psimod_id == id)[0];
+      if (selected_item != undefined) {
+        this.setState({ selectedOptionId: selected_item.psimod_id, inputFieldText: selected_item.display_name });
+      }
+    }
+  }
+
   getData() {
     fetchData(this.props.url, {
       type: 'GET'
@@ -85,7 +95,8 @@ DataList.propTypes = {
   options: React.PropTypes.array,
   url:React.PropTypes.string,
   onOptionChange: React.PropTypes.func,
-  selectedIdName:React.PropTypes.string
+  selectedIdName:React.PropTypes.string,
+  selectedObject:React.PropTypes.object,
 };
 
 

@@ -370,7 +370,7 @@ class PtmForm extends Component {
                 </div>
               </div>
               <div className='row'>
-                <DataList url={GET_PSIMODS} selectedIdName='psimod_id' onOptionChange={this.handleChange} />
+                <DataList url={GET_PSIMODS} selectedIdName='psimod_id' onOptionChange={this.handleChange} selectedObject={this.props.ptm}/>
               </div>
             </div>
           </div>
