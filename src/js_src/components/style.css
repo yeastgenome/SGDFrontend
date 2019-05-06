@@ -102,6 +102,10 @@
   border:1px solid #cacaca;
 }
 
+.autoSelect::-webkit-scrollbar{
+  display: none;
+}
+
 .noBottomMargin{
    margin:0px!important;
 }
@@ -113,12 +117,18 @@
 
 .styleList li {
   margin:10px 0px;
+  padding: 0px 2px;
 }
 
-.styleList li:hover {
-  background-color: #0581C2;
+.styleList li:hover{
+  background-color: #0581C2!important;
+  border-radius: 7px!important;
 }
 
-.styleList li a {
+.styleList li:hover *{
+color:#FFF!important;
+}
+
+.styleList li a{
   color:#000;
 }
