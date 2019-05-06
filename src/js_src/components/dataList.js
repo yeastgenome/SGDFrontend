@@ -7,67 +7,73 @@ class DataList extends Component {
     super(props);
     this.hadleClick = this.handleClick.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
+
     this.state = {
       options:[],
-      filtered_options: [],
-      isSelected:false,
-      inputValue:'',
-      selectedValue:''
+      isInputSelected:false,
+      inputFieldText:'',
+      selectedOptionId:''
     };
   }
 
   componentDidMount(){
-    this.getData();
+    this.getData();  
   }
 
   getData() {
     fetchData(this.props.url, {
       type: 'GET'
     }).then(data => {
-      this.setState({ options: data['psimods'],filtered_options:data['psimods'] });
+      this.setState({ options: data['psimods']});
     }); 
   }
 
   handleClick(bool){
-    this.setState({isSelected:bool});
+    this.setState({isInputSelected:bool});
   }
 
   handleChange(e){
     var input_value = e.target.value;
-    var new_list = this.state.options.filter((value) => RegExp(input_value).test(value['format_name']));
-    var new_list1 = this.state.options.filter((value) => RegExp('^'+input_value + '*').test(value['display_name']));
-    this.setState({filtered_options:[...new_list,...new_list1],inputValue:input_value});
+    if(input_value != ''){
+      this.setState({inputFieldText: input_value });
+    }
+    else{
+      this.setState({ inputFieldText: input_value, selectedOptionId: '' }, () => this.props.onOptionChange());
+    }
   }
 
   handleSelect(index){
-    console.log(index);
     var selected_item = this.state.options.filter((value) => value.psimod_id == index)[0];
-    console.log(selected_item);
     if (selected_item != undefined){
-      this.setState({ selectedValue:selected_item.psimod_id,inputValue:selected_item.display_name});
-    }
-    
+      this.setState({ selectedOptionId: selected_item.psimod_id, inputFieldText: selected_item.display_name }, () => this.props.onOptionChange());
+    } 
   }
 
-  render() {
+  renderOptions(){
     return (
-      <div className='columns medium-12'>
-        <input type='text' className={style.noBottomMargin} onSelect={() => this.handleClick(true)} onChange={this.handleChange.bind(this)} onBlur={() => this.handleClick(false)} value={this.state.inputValue} />
-        <div className={this.state.isSelected ? '':'hide'}>
-          {/* className={(this.state.isSelected?'':'hide')}> */}
-          {/* className={(this.state.isSelected ? '' : 'hide')}> */}
-          {/* style.autoSelect */}
+      <div className={this.state.isInputSelected?'':'hide'}>
+        <div className={style.autoSelect}>
           <ul className={style.styleList}>
             {
-              this.state.filtered_options.map((psimod) => {
-                return <li value={psimod.display_name} key={psimod.psimod_id} className='clearfix' onClick={() => this.handleSelect(psimod.psimod_id)}>
+              this.state.options.filter((value) => RegExp('^' + this.state.inputFieldText + '.*').test(value['format_name']) || RegExp('^' + this.state.inputFieldText + '.*').test(value['display_name']))
+              .map((psimod) => {
+                return <li value={psimod.display_name} key={psimod.psimod_id} className='clearfix' onMouseDown={() => this.handleSelect(psimod.psimod_id)}>
                   <a> <span className='float-left'>{psimod.display_name} </span><span className='float-right'>{psimod.format_name}</span> </a>
                 </li>;
               })
             }
           </ul>
         </div>
-        <p>{this.state.selectedValue}</p>
+      </div>
+    );
+  }
+
+  render() {
+    return (
+      <div className='columns medium-12'>
+        <input type='text' className={style.noBottomMargin} onSelect={() => this.handleClick(true)} onChange={this.handleChange.bind(this)} onBlur={() => this.handleClick(false)} value={this.state.inputFieldText}/>
+          {this.renderOptions()}
+        <input type='hidden' name={this.props.selectedIdName} value={this.state.selectedOptionId}/>
       </div>
     );
   }
@@ -77,7 +83,9 @@ class DataList extends Component {
 
 DataList.propTypes = {
   options: React.PropTypes.array,
-  url:React.PropTypes.string
+  url:React.PropTypes.string,
+  onOptionChange: React.PropTypes.func,
+  selectedIdName:React.PropTypes.string
 };
 
 
