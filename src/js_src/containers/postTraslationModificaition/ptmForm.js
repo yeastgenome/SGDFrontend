@@ -132,7 +132,7 @@ class PtmForm extends Component {
       reference_id: reference_id,
       site_index: ptm.site_index,
       site_residue: ptm.site_residue,
-      psimod_id: ptm.psimod_id,
+      psimod_id: ptm.psimod_id.toString(),
       taxonomy_id: ptm.taxonomy.taxonomy_id,
       modifier_id: ptm.modifier.format_name
     };
@@ -370,7 +370,7 @@ class PtmForm extends Component {
                 </div>
               </div>
               <div className='row'>
-                <DataList url={GET_PSIMODS} selectedIdName='psimod_id' onOptionChange={this.handleChange} selectedObject={this.props.ptm}/>
+                <DataList options={this.state.psimods} id='psimod_id' value1='display_name' value2='psimod_id'  selectedIdName='psimod_id' onOptionChange={this.handleChange} selectedId={this.props.ptm.psimod_id} />
               </div>
             </div>
           </div>

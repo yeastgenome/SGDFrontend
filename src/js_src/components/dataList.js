@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import fetchData from '../lib/fetchData';
+// import fetchData from '../lib/fetchData';
 import style from './style.css';
 
 class DataList extends Component {
@@ -16,26 +16,16 @@ class DataList extends Component {
     };
   }
 
-  componentDidMount(){
-    this.getData();  
-  }
-
   componentWillReceiveProps(nextProps){
-    if(nextProps.selectedObject.psimod_id){
-      var id = nextProps.selectedObject.psimod_id;
-      var selected_item = this.state.options.filter((value) => value.psimod_id == id)[0];
+    if (nextProps.selectedId){
+      var selected_item = this.props.options.filter((value) => value[this.props.id] == nextProps.selectedId)[0];
       if (selected_item != undefined) {
-        this.setState({ selectedOptionId: selected_item.psimod_id, inputFieldText: selected_item.display_name });
+        this.setState({ selectedOptionId: selected_item[this.props.id], inputFieldText: selected_item.display_name });
       }
     }
-  }
-
-  getData() {
-    fetchData(this.props.url, {
-      type: 'GET'
-    }).then(data => {
-      this.setState({ options: data['psimods']});
-    }); 
+    else{
+      this.setState({ selectedOptionId: 0, inputFieldText: '' });
+    }
   }
 
   handleClick(bool){
@@ -48,14 +38,14 @@ class DataList extends Component {
       this.setState({inputFieldText: input_value });
     }
     else{
-      this.setState({ inputFieldText: input_value, selectedOptionId: '' }, () => this.props.onOptionChange());
+      this.setState({ inputFieldText: input_value, selectedOptionId:0}, () => this.props.onOptionChange());
     }
   }
 
   handleSelect(index){
-    var selected_item = this.state.options.filter((value) => value.psimod_id == index)[0];
+    var selected_item = this.props.options.filter((value) => value[this.props.id] == index)[0];
     if (selected_item != undefined){
-      this.setState({ selectedOptionId: selected_item.psimod_id, inputFieldText: selected_item.display_name }, () => this.props.onOptionChange());
+      this.setState({ selectedOptionId: selected_item[this.props.id], inputFieldText: selected_item.display_name }, () => this.props.onOptionChange());
     } 
   }
 
@@ -65,10 +55,10 @@ class DataList extends Component {
         <div className={style.autoSelect}>
           <ul className={style.styleList}>
             {
-              this.state.options.filter((value) => RegExp('^' + this.state.inputFieldText + '.*').test(value['format_name']) || RegExp('^' + this.state.inputFieldText + '.*').test(value['display_name']))
-              .map((psimod) => {
-                return <li value={psimod.display_name} key={psimod.psimod_id} className='clearfix' onMouseDown={() => this.handleSelect(psimod.psimod_id)}>
-                  <a> <span className='float-left'>{psimod.display_name} </span><span className='float-right'>{psimod.format_name}</span> </a>
+              this.props.options.filter((value) => RegExp('^' + this.state.inputFieldText + '.*', 'i').test(value[this.props.value2]) || RegExp('^' + this.state.inputFieldText + '.*', 'i').test(value[this.props.value1]))
+              .map((option) => {
+                return <li value={option[this.props.value1]} key={option[this.props.id]} className='clearfix' onMouseDown={() => this.handleSelect(option[this.props.id])}>
+                  <a> <span className='float-left'>{option[this.props.value1]} </span><span className='float-right'>{option[this.props.value2]}</span> </a>
                 </li>;
               })
             }
@@ -81,9 +71,9 @@ class DataList extends Component {
   render() {
     return (
       <div className='columns medium-12'>
-        <input type='text' className={style.noBottomMargin} onSelect={() => this.handleClick(true)} onChange={this.handleChange.bind(this)} onBlur={() => this.handleClick(false)} value={this.state.inputFieldText}/>
+        <input type='text' className={style.noBottomMargin} onSelect={() => this.handleClick(true)} onChange={this.handleChange.bind(this)} onBlur={() => this.handleClick(false)} value={this.state.inputFieldText} />
           {this.renderOptions()}
-        <input type='hidden' name={this.props.selectedIdName} value={this.state.selectedOptionId}/>
+        <input type='hidden' name={this.props.selectedIdName} value={this.state.selectedOptionId} />
       </div>
     );
   }
@@ -94,9 +84,12 @@ class DataList extends Component {
 DataList.propTypes = {
   options: React.PropTypes.array,
   url:React.PropTypes.string,
+  id:React.PropTypes.string,
+  value1:React.PropTypes.string,
+  value2:React.PropTypes.string,
   onOptionChange: React.PropTypes.func,
   selectedIdName:React.PropTypes.string,
-  selectedObject:React.PropTypes.object,
+  selectedId:React.PropTypes.string,
 };
 
 
