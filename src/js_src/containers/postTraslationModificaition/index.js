@@ -17,7 +17,7 @@ class PostTranslationModification extends Component {
             <FileUpload />
           </div>
           
-          <div className="columns small-12 medium-12 large-5 end">
+          <div className="columns small-12 medium-12 large-6 end">
             <h1>Add/Update PTM</h1>
             <PtmForm />
           </div>
