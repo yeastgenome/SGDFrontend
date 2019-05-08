@@ -25,7 +25,7 @@ class DataList extends Component {
       }
     }
     else {
-      this.setState({ selectedOptionId: 0, inputFieldText: '' });
+      this.setState({ selectedOptionId: '', inputFieldText: '' });
     }
   }
 
@@ -57,7 +57,7 @@ class DataList extends Component {
       this.setState({ inputFieldText: input_value});
     }
     else {
-      this.setState({ inputFieldText: input_value, selectedOptionId: 0 }, () => this.props.onOptionChange());
+      this.setState({ inputFieldText: input_value, selectedOptionId: '' }, () => this.props.onOptionChange());
     }
   }
 
