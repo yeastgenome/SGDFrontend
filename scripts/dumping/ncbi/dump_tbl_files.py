@@ -373,10 +373,10 @@ def add_RNA_genes(files, annotation_id, locus_id, sgdid, chrnum, systematic_name
 
     go_section = locus_id_to_go_section.get(locus_id, [])
     go_session = go_section.sort()
-    for go_line in go_section:
-        eco_list = go_to_eco_list[go_line]
+    for goline in go_section:
+        eco_list = go_to_eco_list[(locus_id, goline)]
         eco_list.sort()
-        files[chrnum].write(go_line + "|" + ",".join(eco_list) + "\n")
+        files[chrnum].write(goline + "|" + ",".join(eco_list) + "\n")
 
     files[chrnum].write(TABS + "db_xref\tSGD:" + sgdid + "\n")
 
@@ -443,10 +443,10 @@ def add_ORF_features(files, annotation_id, locus_id, sgdid, chrnum, systematic_n
 
     go_section = locus_id_to_go_section.get(locus_id, [])
     go_session = go_section.sort()
-    for go_line in go_section:
-        eco_list = go_to_eco_list[go_line]
+    for goline in go_section:
+        eco_list = go_to_eco_list[(locus_id, goline)]
         eco_list.sort()
-        files[chrnum].write(go_line + "|" + ",".join(eco_list) + "\n")
+        files[chrnum].write(goline + "|" + ",".join(eco_list) + "\n")
 
     files[chrnum].write(TABS + "db_xref\tSGD:" + sgdid + "\n")
 
@@ -617,12 +617,14 @@ def get_go_data(nex_session):
         #    continue
 
         goline = TABS + namespace_mapping[go.go_namespace] + "\t" + go.display_name + "|" + go.goid + "|" + str(pmid)
+
         eco_list = []
-        if goline in go_to_eco_list:
-            eco_list = go_to_eco_list[goline]
+        if (x.dbentity_id, goline) in go_to_eco_list:
+            eco_list = go_to_eco_list[(x.dbentity_id, goline)]
         if eco not in eco_list:
             eco_list.append(eco)
-        go_to_eco_list[goline] = eco_list
+
+        go_to_eco_list[(x.dbentity_id, goline)] = eco_list
         
         # print goline
 
@@ -631,6 +633,7 @@ def get_go_data(nex_session):
             go_section = locus_id_to_go_section[x.dbentity_id]
         if goline not in go_section:
             go_section.append(goline)
+
         locus_id_to_go_section[x.dbentity_id] = go_section
 
     return [locus_id_to_go_section, go_to_eco_list]
