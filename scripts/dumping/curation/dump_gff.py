@@ -25,7 +25,7 @@ S3_BUCKET = os.environ['S3_BUCKET']
 
 CREATED_BY = os.environ['DEFAULT_USER']
  
-gff_file = "scripts/dumping/curation/data/saccharomyces_cerevisiae.gff"
+gff_file_name = "scripts/dumping/curation/data/saccharomyces_cerevisiae.gff"
 landmark_file = "scripts/dumping/curation/data/landmark_gene.txt"
 
 chromosomes = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX',
@@ -35,9 +35,11 @@ def dump_data():
  
     nex_session = get_session()
 
-    fw = open(gff_file, "w")
-
     datestamp = str(datetime.now()).split(" ")[0].replace("-", "")
+
+    gff_file = gff_file_name.replace(".gff", "") + "." + datestamp + ".gff"
+
+    fw = open(gff_file, "w")
 
     write_header(fw, str(datetime.now()))
 
@@ -47,7 +49,7 @@ def dump_data():
     edam_to_id = dict([(x.format_name, x.edam_id) for x in nex_session.query(Edam).all()])
     source_to_id = dict([(x.display_name, x.source_id) for x in nex_session.query(Source).all()])
     so_id_to_display_name = dict([(x.so_id, x.display_name) for x in nex_session.query(So).all()])
-    locus_id_to_sgdid = dict([(x.dbentity_id, x.sgdid) for x in nex_session.query(Dbentity).filter_by(subclass='LOCUS').all()])
+    locus_id_to_sgdid = dict([(x.dbentity_id, x.sgdid) for x in nex_session.query(Dbentity).filter_by(subclass='LOCUS', dbentity_status='Active').all()])
     
     log.info(str(datetime.now()))
     log.info("Getting alias data from the database...")
@@ -103,6 +105,9 @@ def dump_data():
 
         (contig_id, accession_id, length) = chr_to_contig[chr]
 
+        if chr == 'Mito':
+            chr = 'mt'
+
         fw.write("chr" + chr + "\tSGD\tchromosome\t1\t" + str(length) + "\t.\t.\t.\tID=chr" + chr + ";dbxref=NCBI:" + accession_id + ";Name=chr" + chr + "\n")
 
         # get features for each contig_id
@@ -111,15 +116,23 @@ def dump_data():
         gene_data = nex_session.query(Dnasequenceannotation).filter_by(contig_id=contig_id, dna_type='GENOMIC').order_by(Dnasequenceannotation.start_index, Dnasequenceannotation.end_index).all()
         
         annotation_id_to_subfeatures = {}
-
+        UTRs = {}
         for x in subfeature_data:
             subfeatures = []
             if x.annotation_id in annotation_id_to_subfeatures:
                 subfeatures = annotation_id_to_subfeatures[x.annotation_id]
             subfeatures.append((x.display_name, x.contig_start_index, x.contig_end_index))
             annotation_id_to_subfeatures[x.annotation_id] = subfeatures
+            if x.display_name == 'five_prime_UTR_intron':
+                UTRs[x.annotation_id] = (x.contig_start_index, x.contig_end_index)
 
         for x in gene_data:
+            
+            if x.dbentity_id not in locus_id_to_sgdid:
+                # deleted or merged
+                continue
+
+            sgdid = "SGD:" + locus_id_to_sgdid[x.dbentity_id]
 
             type = so_id_to_display_name[x.so_id]
             if type == 'ORF':
@@ -142,7 +155,20 @@ def dump_data():
                     alias_list = gene_name + "," + alias_list
                 else:
                     alias_list = gene_name
-            fw.write("chr" + chr + "\tSGD\t" + type + "\t" + str(x.start_index) + "\t" + str(x.end_index) + "\t.\t" + x.strand + "\t.\tID=" + systematic_name + ";Name=" + systematic_name)
+            systematic_name = do_escape(systematic_name)
+            strand = x.strand
+            if strand == '0':
+                strand = '.'
+            start_index = x.start_index
+            end_index = x.end_index
+            if x.annotation_id in UTRs:
+                (utrStart, utrEnd) = UTRs[x.annotation_id]
+                if utrStart < start_index:
+                    start_index = utrStart
+                else:
+                    end_index = utrEnd
+                    
+            fw.write("chr" + chr + "\tSGD\t" + type + "\t" + str(start_index) + "\t" + str(end_index) + "\t.\t" + strand + "\t.\tID=" + systematic_name + ";Name=" + systematic_name)
 
             if gene_name:
                 fw.write(";gene=" + gene_name)
@@ -157,8 +183,6 @@ def dump_data():
             if headline:
                 fw.write(";display=" + do_escape(headline))
 
-            sgdid = "SGD:" + locus_id_to_sgdid[x.dbentity_id]
-
             fw.write(";dbxref=" + sgdid)
 
             if qualifier:
@@ -168,7 +192,7 @@ def dump_data():
 
             # if type in ['ARS', 'telomere', 'transposable_element_gene']:
             #    continue
-            if x.annotation_id not in annotation_id_to_subfeatures:
+            if x.annotation_id not in annotation_id_to_subfeatures or type in ['pseudogene']:
                 continue
 
             subfeatures = annotation_id_to_subfeatures.get(x.annotation_id)
@@ -176,6 +200,12 @@ def dump_data():
             start2phase = get_phase(subfeatures, x.strand)
 
             for (display_name, contig_start_index, contig_end_index) in subfeatures:
+
+                if type == 'gene' and display_name == 'telomeric_repeat':
+                    continue
+
+                if display_name in ['non_transcribed_region', 'uORF'] :
+                    continue
 
                 name = systematic_name + "_" + display_name
 
@@ -190,17 +220,20 @@ def dump_data():
                         fw.write(";orf_classification=" + qualifier)
                     fw.write("\n")
                 else:
-                    fw.write("chr" + chr + "\tSGD\t" + display_name + "\t" + str(contig_start_index) + "\t" + str(contig_end_index) + "\t.\t" + x.strand + "\t" + str(phase) + "\tID=" + name + ";Name=" + name + ";dbxref=" + sgdid + ";curie=" + sgdid + "\n");
+                    fw.write("chr" + chr + "\tSGD\t" + display_name + "\t" + str(contig_start_index) + "\t" + str(contig_end_index) + "\t.\t" + strand + "\t" + str(phase) + "\tID=" + name + ";Name=" + name + ";dbxref=" + sgdid + ";curie=" + sgdid + "\n");
     
             if type == 'gene':
-                fw.write("chr" + chr + "\tSGD\tmRNA\t" + str(x.start_index) + "\t" + str(x.end_index) + "\t.\t" + x.strand + "\t.\tID=" + systematic_name + "_mRNA;Name=" + systematic_name + "_mRNA;Parent=" + systematic_name + "\n")
+                fw.write("chr" + chr + "\tSGD\tmRNA\t" + str(start_index) + "\t" + str(end_index) + "\t.\t" + x.strand + "\t.\tID=" + systematic_name + "_mRNA;Name=" + systematic_name + "_mRNA;Parent=" + systematic_name + "\n")
 
     # output 17 chr sequences at the end 
     
     for chr in chromosomes:
         seq = chr_to_seq[chr]
+        if chr == 'Mito':
+            chr = 'mt'
         fw.write(">chr"+ chr + "\n")
-        fw.write(formated_seq(seq) + "\n")
+        formattedSeq = formated_seq(seq)
+        fw.write(formattedSeq + "\n")
 
     log.info("Uploading SGD_features file to S3...")
 
@@ -270,22 +303,11 @@ def upload_gff_to_s3(file, filename):
 
 def update_database_load_file_to_s3(nex_session, gff_file, source_to_id, edam_to_id, datestamp):
 
-    # gff_file  = saccharomyces_cerevisiae.gff
-    # gzip_file = saccharomyces_cerevisiae.20170114.gff.gz
-    
-    gzip_file = gff_file.replace(".gff", "") + "." + datestamp + ".gff.gz"
-    import gzip
-    import shutil
-    with open(gff_file, 'rb') as f_in, gzip.open(gzip_file, 'wb') as f_out:
-        shutil.copyfileobj(f_in, f_out)
-
-    local_file = open(gzip_file)
+    local_file = open(gff_file) 
 
     ### upload a current GFF file to S3 with a static URL for Go Community ###
-    upload_gff_to_s3(local_file, "latest/saccharomyces_cerevisiae.gff.gz")
+    upload_gff_to_s3(local_file, "latest/saccharomyces_cerevisiae.gff")
     ##########################################################################
-
-    local_file = open(gzip_file)
 
     import hashlib
     gff_md5sum = hashlib.md5(local_file.read()).hexdigest()
@@ -294,9 +316,11 @@ def update_database_load_file_to_s3(nex_session, gff_file, source_to_id, edam_to
     if row is not None:
         return
 
-    gzip_file = gzip_file.replace("scripts/dumping/curation/data/", "")
+    # gzip_file = gzip_file.replace("scripts/dumping/curation/data/", "")
+    gff_file = gff_file.replace("scripts/dumping/curation/data/", "")  
 
-    nex_session.query(Dbentity).filter(Dbentity.display_name.like('saccharomyces_cerevisiae.%.gff.gz')).filter(Dbentity.dbentity_status=='Active').update({"dbentity_status":'Archived'}, synchronize_session='fetch')
+    nex_session.query(Dbentity).filter(Dbentity.display_name.like('saccharomyces_cerevisiae.%.gff')).filter(Dbentity.dbentity_status=='Active').update({"dbentity_status":'Archived'}, synchronize_session='fetch') 
+
     nex_session.commit()
 
     data_id = edam_to_id.get('EDAM:3671')   ## data:3671    Text
@@ -317,10 +341,10 @@ def update_database_load_file_to_s3(nex_session, gff_file, source_to_id, edam_to
     # path.path = /reports/chromosomal-features
 
     upload_file(CREATED_BY, local_file,
-                filename=gzip_file,
-                file_extension='gz',
+                filename=gff_file,
+                file_extension='gff',
                 description='GFF file for yeast genes (protein and RNA)',
-                display_name=gzip_file,
+                display_name=gff_file,
                 data_id=data_id,
                 format_id=format_id,
                 topic_id=topic_id,
@@ -332,10 +356,10 @@ def update_database_load_file_to_s3(nex_session, gff_file, source_to_id, edam_to
                 file_date=datetime.now(),
                 source_id=source_to_id['SGD'])
 
-    gff = nex_session.query(Dbentity).filter_by(display_name=gzip_file, dbentity_status='Active').one_or_none()
+    gff = nex_session.query(Dbentity).filter_by(display_name=gff_file, dbentity_status='Active').one_or_none()
 
     if gff is None:
-        log.info("The " + gzip_file + " is not in the database.")
+        log.info("The " + gff_file + " is not in the database.")
         return
     file_id = gff.dbentity_id
 
