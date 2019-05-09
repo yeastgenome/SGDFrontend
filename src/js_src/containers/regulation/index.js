@@ -15,7 +15,7 @@ class Regulation extends Component {
         <div className='row'>
           <div className='columns small-12 medium-12 large-5'>
             <h1>Regulation file upload</h1>
-            <FileUpload/>
+            <FileUpload />
           </div>
           <div className='columns small-12 medium-12 large-5 end'>
             <h1>Add/Update regulation</h1>
