@@ -234,7 +234,8 @@ def add_LTR(files, sgdid, chrnum, start, stop, desc, type):
 
     files[chrnum].write(str(start)+"\t"+str(stop)+"\t" + type + "\n")
     files[chrnum].write(TABS + "note\t" + desc + "\n")
-    files[chrnum].write(TABS + "evidence\tnot_experimental\n")
+    # files[chrnum].write(TABS + "evidence\tnot_experimental\n")
+    files[chrnum].write(TABS + "no experiment\n") 
     files[chrnum].write(TABS + "db_xref\tSGD:" + sgdid + "\n")
 
 
@@ -242,7 +243,8 @@ def add_telomeres(files, sgdid, chrnum, systematic_name, start, stop, desc, type
     
     files[chrnum].write(str(start)+"\t"+str(stop)+"\t" + type + "\n")
     files[chrnum].write(TABS + "note\t" + systematic_name + "; " + desc + "\n")
-    files[chrnum].write(TABS + "evidence\tnot_experimental\n")
+    # files[chrnum].write(TABS + "evidence\tnot_experimental\n")
+    files[chrnum].write(TABS + "no experiment\n") 
     files[chrnum].write(TABS + "db_xref\tSGD:" + sgdid + "\n")
 
 
@@ -251,7 +253,8 @@ def add_retrotransposons(files, sgdid, chrnum, systematic_name, start, stop, des
     files[chrnum].write(str(start)+"\t"+str(stop)+"\t" + type + "\n")
     files[chrnum].write(TABS + "mobile_element_type\tretrotransposon:" + systematic_name + "\n")
     files[chrnum].write(TABS + "note\t" + systematic_name + "; " + desc + "\n")
-    files[chrnum].write(TABS + "evidence\tnot_experimental\n")
+    # files[chrnum].write(TABS + "evidence\tnot_experimental\n")
+    files[chrnum].write(TABS + "no experiment\n") 
     files[chrnum].write(TABS + "db_xref\tSGD:" + sgdid + "\n")
 
 
@@ -264,9 +267,11 @@ def add_ARS_etc(files, sgdid, chrnum, systematic_name, gene_name, start, stop, d
     files[chrnum].write(TABS + "note\t" + name + "\n")
     files[chrnum].write(TABS + "note\t" + desc + "\n")
     if gene_name and gene_name != systematic_name:
-        files[chrnum].write(TABS + "evidence\texperimental\n")
+        # files[chrnum].write(TABS + "evidence\texperimental\n")
+        files[chrnum].write(TABS + "experiment\tEXISTENCE:experiment\n")  
     else:
-        files[chrnum].write(TABS + "evidence\tnot_experimental\n")
+        # files[chrnum].write(TABS + "evidence\tnot_experimental\n")
+        files[chrnum].write(TABS + "no experiment\n")
     files[chrnum].write(TABS + "db_xref\tSGD:" + sgdid + "\n")
 
 
@@ -274,7 +279,8 @@ def add_centromeres(files, locus_id, sgdid, chrnum, systematic_name, gene_name, 
 
     files[chrnum].write(str(start)+"\t"+str(stop)+"\t" + type + "\n")
     files[chrnum].write(TABS + "note\t" + systematic_name + "; " + desc + "\n")
-    files[chrnum].write(TABS + "evidence\texperimental\n")
+    # files[chrnum].write(TABS + "evidence\texperimental\n")
+    files[chrnum].write(TABS + "experiment\tEXISTENCE:experiment\n")
     files[chrnum].write(TABS + "db_xref\tSGD:" + sgdid + "\n")
     
     if cde_data is None:
@@ -312,10 +318,11 @@ def add_pseudogenes(files, annotation_id, locus_id, sgdid, chrnum, systematic_na
             files[chrnum].write(cds + "\n")
 
     if gene_name:
-        files[chrnum].write(TABS + "evidence\texperimental\n")
+        # files[chrnum].write(TABS + "evidence\texperimental\n")
+        files[chrnum].write(TABS + "experiment\tEXISTENCE:experiment\n")
     else:
-        files[chrnum].write(TABS + "evidence\tnot_experimental\n")
-
+        # files[chrnum].write(TABS + "evidence\tnot_experimental\n")
+        files[chrnum].write(TABS + "no experiment\n")
     if desc:
         files[chrnum].write(TABS + "note\t" + desc + "\n")
 
@@ -331,7 +338,8 @@ def add_NTS_features(files, chrnum, systematic_name, sgdid, start, stop, desc):
     files[chrnum].write(TABS + "note\t" + systematic_name + "\n") 
     if desc:
         files[chrnum].write(TABS + "note\t"+ desc + "\n")
-    files[chrnum].write(TABS + "evidence\tnot_experimental\n")
+    # files[chrnum].write(TABS + "evidence\tnot_experimental\n")
+    files[chrnum].write(TABS + "no experiment\n")
     files[chrnum].write(TABS + "db_xref\tSGD:" + sgdid + "\n")
 
 def add_RNA_genes(files, annotation_id, locus_id, sgdid, chrnum, systematic_name, gene_name, start, stop, desc, annotation_id_to_cds_data, locus_id_to_go_section, go_to_eco_list, type, feature_type):
@@ -367,9 +375,11 @@ def add_RNA_genes(files, annotation_id, locus_id, sgdid, chrnum, systematic_name
         files[chrnum].write(TABS + "note\t" + desc + "\n")
 
     if gene_name and gene_name.upper() != systematic_name.upper():
-        files[chrnum].write(TABS + "evidence\texperimental\n")
+        # files[chrnum].write(TABS + "evidence\texperimental\n")
+        files[chrnum].write(TABS + "experiment\tEXISTENCE:experiment\n")
     else:
-        files[chrnum].write(TABS + "evidence\tnot_experimental\n")
+        # files[chrnum].write(TABS + "evidence\tnot_experimental\n")
+        files[chrnum].write(TABS + "no experiment\n")
 
     go_section = locus_id_to_go_section.get(locus_id, [])
     go_session = go_section.sort()
@@ -437,9 +447,11 @@ def add_ORF_features(files, annotation_id, locus_id, sgdid, chrnum, systematic_n
         files[chrnum].write(TABS + "note\t" + desc + "\n")
 
     if gene_name:
-        files[chrnum].write(TABS + "evidence\texperimental\n")
+        # files[chrnum].write(TABS + "evidence\texperimental\n")
+        files[chrnum].write(TABS + "experiment\tEXISTENCE:experiment\n")
     else:
-        files[chrnum].write(TABS + "evidence\tnot_experimental\n")
+        # files[chrnum].write(TABS + "evidence\tnot_experimental\n")
+        files[chrnum].write(TABS + "no experiment\n")
 
     go_section = locus_id_to_go_section.get(locus_id, [])
     go_session = go_section.sort()
@@ -553,7 +565,8 @@ def get_cds_data(nex_session, annotation_id_to_strand, type_mapping):
             cde_data.append(str(start)+"\t"+str(end)+"\tcentromere")
             display_name = "REPLACE_THIS_CDE" + x.display_name.replace("centromere_DNA_Element_", "") + " of REPLACE_THIS"
             cde_data.append(TABS + "note\t" + display_name)
-            cde_data.append(TABS + "evidence\tnot_experimental")
+            # cde_data.append(TABS + "evidence\tnot_experimental")
+            cde_data.append(TABS + "no experiment") 
             annotation_id_to_cde_data[x.annotation_id] = cde_data
 
         # if x.display_name not in ['CDS']:
