@@ -7,6 +7,8 @@ import {setRegulation} from '../../actions/regulationActions';
 
 const GET_ECO = '/eco/regulations';
 const GET_GO = '/go/regulations';
+const REGULATIONS = '/regulation';
+
 const REGULATION_TYPE =  ['transcription','protein activity','protein stability','RNA activity','RNA stability'];
 const DIRECTION = ['positive','negative'];
 const REGULATOR_TYPE =['chromatin modifier','transcription factor','protein modifier','RNA-binding protein','RNA modifier'];
@@ -56,6 +58,13 @@ class RegulationForm extends Component {
 
   handleSubmit(e){
     e.preventDefault();
+    fetchData(REGULATIONS,{
+      type:'POST',
+      data:this.props.regulation
+    })
+    .then(data => console.log(data))
+    .catch(err => console.log(err));
+    
     this.props.dispatch(setMessage(''));
   }
 
@@ -234,7 +243,7 @@ class RegulationForm extends Component {
         <div className='row'>
           <div className='columns medium-12'>
             <div className='row'>
-              <div className='columns medium-12'>
+              <div className='columns medium-6'>
                 <button type='submit' className='button expanded'>Add</button>
               </div>
             </div>
