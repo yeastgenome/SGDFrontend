@@ -7,6 +7,8 @@ sys.setdefaultencoding('UTF8')
 import boto
 from boto.s3.key import Key
 import transaction
+import gzip
+import shutil
 from src.models import Dbentity, Locusdbentity, LocusAlias, Dnasequenceannotation, \
                        Dnasubsequence, So, Contig, Go, Goannotation, Edam, Path, \
                        FilePath, Filedbentity, Source
@@ -25,7 +27,7 @@ S3_BUCKET = os.environ['S3_BUCKET']
 
 CREATED_BY = os.environ['DEFAULT_USER']
  
-gff_file_name = "scripts/dumping/curation/data/saccharomyces_cerevisiae.gff"
+gff_file = "scripts/dumping/curation/data/saccharomyces_cerevisiae.gff"
 landmark_file = "scripts/dumping/curation/data/landmark_gene.txt"
 
 chromosomes = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX',
@@ -35,11 +37,9 @@ def dump_data():
  
     nex_session = get_session()
 
-    datestamp = str(datetime.now()).split(" ")[0].replace("-", "")
-
-    gff_file = gff_file_name.replace(".gff", "") + "." + datestamp + ".gff"
-
     fw = open(gff_file, "w")
+
+    datestamp = str(datetime.now()).split(" ")[0].replace("-", "")
 
     write_header(fw, str(datetime.now()))
 
@@ -204,7 +204,7 @@ def dump_data():
                 if type == 'gene' and display_name == 'telomeric_repeat':
                     continue
 
-                if display_name in ['non_transcribed_region', 'uORF'] :
+                if display_name == 'non_transcribed_region':
                     continue
 
                 name = systematic_name + "_" + display_name
@@ -235,9 +235,13 @@ def dump_data():
         formattedSeq = formated_seq(seq)
         fw.write(formattedSeq + "\n")
 
-    log.info("Uploading SGD_features file to S3...")
+    fw.close()
 
-    update_database_load_file_to_s3(nex_session, gff_file, source_to_id, edam_to_id, datestamp)
+    gzip_file =gzip_gff_file(gff_file,datestamp)
+
+    log.info("Uploading gff3 file to S3...")
+
+    update_database_load_file_to_s3(nex_session, gzip_file, source_to_id, edam_to_id)
 
     nex_session.close()
 
@@ -300,13 +304,24 @@ def upload_gff_to_s3(file, filename):
     k.make_public()
     transaction.commit()
 
+def gzip_gff_file(gff_file, datestamp):
 
-def update_database_load_file_to_s3(nex_session, gff_file, source_to_id, edam_to_id, datestamp):
+    # gff_file  = saccharomyces_cerevisiae.gff
+    # gzip_file = saccharomyces_cerevisiae.20170114.gff.gz                                                                 
+    gzip_file = gff_file.replace(".gff", "") + "." + datestamp + ".gff.gz"
 
-    local_file = open(gff_file) 
+    with open(gff_file, 'rb') as f_in, gzip.open(gzip_file, 'wb') as f_out:
+         shutil.copyfileobj(f_in, f_out)
+
+    return gzip_file
+
+
+def update_database_load_file_to_s3(nex_session, gzip_file, source_to_id, edam_to_id):
+
+    local_file = open(gzip_file)
 
     ### upload a current GFF file to S3 with a static URL for Go Community ###
-    upload_gff_to_s3(local_file, "latest/saccharomyces_cerevisiae.gff")
+    upload_gff_to_s3(local_file, "latest/saccharomyces_cerevisiae.gff.gz")
     ##########################################################################
 
     import hashlib
@@ -316,11 +331,9 @@ def update_database_load_file_to_s3(nex_session, gff_file, source_to_id, edam_to
     if row is not None:
         return
 
-    # gzip_file = gzip_file.replace("scripts/dumping/curation/data/", "")
-    gff_file = gff_file.replace("scripts/dumping/curation/data/", "")  
+    gzip_file = gzip_file.replace("scripts/dumping/curation/data/", "")
 
-    nex_session.query(Dbentity).filter(Dbentity.display_name.like('saccharomyces_cerevisiae.%.gff')).filter(Dbentity.dbentity_status=='Active').update({"dbentity_status":'Archived'}, synchronize_session='fetch') 
-
+    nex_session.query(Dbentity).filter(Dbentity.display_name.like('saccharomyces_cerevisiae.%.gff.gz')).filter(Dbentity.dbentity_status=='Active').update({"dbentity_status":'Archived'}, synchronize_session='fetch')
     nex_session.commit()
 
     data_id = edam_to_id.get('EDAM:3671')   ## data:3671    Text
@@ -341,10 +354,10 @@ def update_database_load_file_to_s3(nex_session, gff_file, source_to_id, edam_to
     # path.path = /reports/chromosomal-features
 
     upload_file(CREATED_BY, local_file,
-                filename=gff_file,
-                file_extension='gff',
+                filename=gzip_file,
+                file_extension='gz',
                 description='GFF file for yeast genes (protein and RNA)',
-                display_name=gff_file,
+                display_name=gzip_file,
                 data_id=data_id,
                 format_id=format_id,
                 topic_id=topic_id,
@@ -356,10 +369,10 @@ def update_database_load_file_to_s3(nex_session, gff_file, source_to_id, edam_to
                 file_date=datetime.now(),
                 source_id=source_to_id['SGD'])
 
-    gff = nex_session.query(Dbentity).filter_by(display_name=gff_file, dbentity_status='Active').one_or_none()
+    gff = nex_session.query(Dbentity).filter_by(display_name=gzip_file, dbentity_status='Active').one_or_none()
 
     if gff is None:
-        log.info("The " + gff_file + " is not in the database.")
+        log.info("The " + gzip_file + " is not in the database.")
         return
     file_id = gff.dbentity_id
 
