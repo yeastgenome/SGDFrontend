@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import DataList from '../../components/dataList';
 import fetchData from '../../lib/fetchData';
+import { setError, setMessage } from '../../actions/metaActions';
+import {setRegulation} from '../../actions/regulationActions';
 
 const GET_ECO = '/eco/regulations';
 const GET_GO = '/go/regulations';
-const REGULAION_TYPE =  ['transcription','protein activity','protein stability','RNA activity','RNA stability'];
+const REGULATION_TYPE =  ['transcription','protein activity','protein stability','RNA activity','RNA stability'];
 const DIRECTION = ['positive','negative'];
 const REGULATOR_TYPE =['chromatin modifier','transcription factor','protein modifier','RNA-binding protein','RNA modifier'];
 const ANNOTATION_TYPE= ['manually curated','high-throughput'];
@@ -15,6 +17,9 @@ class RegulationForm extends Component {
   constructor(props) {
     super(props);
     
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+
     this.state = {
       list_of_eco:[],
       list_of_go: []
@@ -28,32 +33,43 @@ class RegulationForm extends Component {
     fetchData(GET_ECO,{type:'GET'})
     .then((data) => {
       this.setState({list_of_eco:data.success});
-      console.log(data.success);
     })
-    .catch((err) => console.log(err));
+    .catch((err) => this.props.dispatch(setError(err.message)));
   }
 
   getGo() {
     fetchData(GET_GO, { type: 'GET' })
       .then((data) => {
         this.setState({ list_of_go: data.success });
-        console.log(data.success);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => this.props.dispatch(setError(err.message)));
   }
 
   handleChange(){
-    console.log('value change');
+    var data = new FormData(this.refs.form);
+    var current_regulation = {};
+    for (var key of data.entries()) {
+      current_regulation[key[0]] = key[1];
+    }
+    this.props.dispatch(setRegulation(current_regulation));
+  }
+
+  handleSubmit(e){
+    e.preventDefault();
+    this.props.dispatch(setMessage(''));
   }
 
   render() {
-    var regulation_types = REGULAION_TYPE.map((item) => <option key={item}>{item}</option>);
-    var regualator_types = REGULATOR_TYPE.map((item) => <option key={item}>{item}</option>);
+    var regulation_types = REGULATION_TYPE.map((item) => <option key={item}>{item}</option>);
+    var regulator_types = REGULATOR_TYPE.map((item) => <option key={item}>{item}</option>);
     var annotation_types = ANNOTATION_TYPE.map((item) => <option key={item}>{item}</option>);
     var directions = DIRECTION.map((item) => <option key={item}>{item}</option>);
     
     return (
-      <form>
+      <form ref='form' onSubmit={this.handleSubmit}>
+
+        <input name='annotation_id' className="hide" value={this.props.regulation.annotation_id}/>
+
         <div className='row'>
           <div className='columns medium-12'>
             <div className='row'>
@@ -63,7 +79,7 @@ class RegulationForm extends Component {
             </div>
             <div className='row'>
               <div className='columns medium-12'>
-                <input type='text' name='' />
+                <input type='text' name='target_id' onChange={this.handleChange} value={this.props.regulation.target_id}/>
               </div>
             </div>
           </div>
@@ -78,7 +94,7 @@ class RegulationForm extends Component {
             </div>
             <div className='row'>
               <div className='columns medium-12'>
-                <input type='text' name='' />
+                <input type='text' name='regulator_id' onChange={this.handleChange} value={this.props.regulation.regulator_id} />
               </div>
             </div>
           </div>
@@ -93,7 +109,7 @@ class RegulationForm extends Component {
             </div>
             <div className='row'>
               <div className='columns medium-12'>
-                <input type='text' name='' />
+                <input type='text' name='taxonomy_id' onChange={this.handleChange} value={this.props.regulation.taxonomy_id} />
               </div>
             </div>
           </div>
@@ -108,7 +124,7 @@ class RegulationForm extends Component {
             </div>
             <div className='row'>
               <div className='columns medium-12'>
-                <input type='text' name='' />
+                <input type='text' name='reference_id' onChange={this.handleChange} value={this.props.regulation.reference_id} />
               </div>
             </div>
           </div>
@@ -122,7 +138,7 @@ class RegulationForm extends Component {
               </div>
             </div>
             <div className='row'>
-              <DataList options={this.state.list_of_eco} id='eco_id' value1='display_name' value2='format_name' selectedIdName='eco_id' onOptionChange={this.handleChange} selectedId='' />
+              <DataList options={this.state.list_of_eco} id='eco_id' value1='display_name' value2='format_name' selectedIdName='eco_id' onOptionChange={this.handleChange} selectedId={this.props.regulation.eco_id} />
             </div>
           </div>
         </div>
@@ -137,8 +153,8 @@ class RegulationForm extends Component {
             </div>
             <div className='row'>
               <div className='columns medium-12'>
-                <select>
-                  {regualator_types}
+                <select onChange={this.handleChange} name='regulator_type' value={this.props.regulation.regulator_type} >
+                  {regulator_types}
                 </select>
               </div>
             </div>
@@ -155,7 +171,7 @@ class RegulationForm extends Component {
             </div>
             <div className='row'>
               <div className='columns medium-12'>
-                <select>
+                <select onChange={this.handleChange} name='regulation_type' value={this.props.regulation.regulation_type} >
                   {regulation_types}
                 </select>
               </div>
@@ -173,7 +189,7 @@ class RegulationForm extends Component {
             </div>
             <div className='row'>
               <div className='columns medium-12'>
-                <select>
+                <select onChange={this.handleChange} name='direction' value={this.props.regulation.direction}>
                   {directions}
                 </select>
               </div>
@@ -191,7 +207,7 @@ class RegulationForm extends Component {
             </div>
             <div className='row'>
               {(this.state.list_of_go.length > 0 ) && 
-                <DataList options={this.state.list_of_go} id='go_id' value1='display_name' value2='format_name' selectedIdName='go_id' onOptionChange={this.handleChange} selectedId='' />
+                <DataList options={this.state.list_of_go} id='go_id' value1='display_name' value2='format_name' selectedIdName='happens_during' onOptionChange={this.handleChange} selectedId={this.props.regulation.happens_during} />
               }
             </div>
           </div>
@@ -207,9 +223,19 @@ class RegulationForm extends Component {
             </div>
             <div className='row'>
               <div className='columns medium-12'>
-                <select>
+                <select onChange={this.handleChange} name='annotation_type' value={this.props.regulation.annotation_type}>
                   {annotation_types}
                 </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div className='row'>
+          <div className='columns medium-12'>
+            <div className='row'>
+              <div className='columns medium-12'>
+                <button type='submit' className='button expanded'>Add</button>
               </div>
             </div>
           </div>
@@ -221,8 +247,15 @@ class RegulationForm extends Component {
 
 }
 
+RegulationForm.propTypes = {
+  dispatch: React.PropTypes.func,
+  regulation:React.PropTypes.object
+};
+
 function mapStateToProps(state) {
-  return state;
+  return {
+    regulation: state.regulation['currentRegulation']
+  };
 }
 
 export default connect(mapStateToProps)(RegulationForm);
