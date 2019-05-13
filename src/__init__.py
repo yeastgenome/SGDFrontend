@@ -186,7 +186,8 @@ def main(global_config, **settings):
     config.add_route('ptm_update', '/ptm', request_method='POST')
     config.add_route('ptm_delete','/ptm/{id}',request_method='DELETE')
 
-    config.add_route('get_all_eco_for_regulations','/eco/regulations',request_method='GET')
+    config.add_route('regulation_insert_update','/regulation', request_method='POST')
+    config.add_route('get_all_eco_for_regulations','/eco/regulations', request_method='GET')
     config.add_route('healthcheck', '/healthcheck')
 
     #swagger
