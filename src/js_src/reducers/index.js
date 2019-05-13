@@ -5,6 +5,7 @@ import locusReducer from './locusReducer';
 import searchReducer from './searchReducer';
 import newsLetterReducer from './newsLetterReducer';
 import ptmReducer from './ptmReducer';
+import regulationReducer from './regulationReducer';
 
 export default {
   auth: authReducer,
@@ -13,5 +14,6 @@ export default {
   locus: locusReducer,
   search: searchReducer,
   newsLetter:newsLetterReducer,
-  ptm:ptmReducer
+  ptm:ptmReducer,
+  regulation:regulationReducer
 };
