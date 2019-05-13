@@ -399,7 +399,7 @@ class ModelsHelper(object):
         '''
         Get all GO data
         '''
-        go_in_db = DBSession.query(Go).limit(10).all()
+        go_in_db = DBSession.query(Go).all()
         return go_in_db
 
     def get_all_eco(self):
