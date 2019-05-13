@@ -1,41 +1,56 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import DataList from '../../components/dataList';
+import fetchData from '../../lib/fetchData';
+
+const GET_ECO = '/eco/regulations';
+const GET_GO = '/go/regulations';
+const REGULAION_TYPE =  ['transcription','protein activity','protein stability','RNA activity','RNA stability'];
+const DIRECTION = ['positive','negative'];
+const REGULATOR_TYPE =['chromatin modifier','transcription factor','protein modifier','RNA-binding protein','RNA modifier'];
+const ANNOTATION_TYPE= ['manually curated','high-throughput'];
+
 
 class RegulationForm extends Component {
   constructor(props) {
     super(props);
     
     this.state = {
-      REGULAION_TYPE : [
-        'transcription',
-        'protein activity',
-        'protein stability',
-        'RNA activity',
-        'RNA stability'
-      ],
-      DIRECTION:[
-        'positive',
-        'negative'
-      ],
-      REGULATOR_TYPE:[
-        'chromatin modifier',
-        'transcription factor',
-        'protein modifier',
-        'RNA-binding protein',
-        'RNA modifier'
-      ],
-      ANNOTATION_TYPE:[
-        'manually curated', 
-        'high-throughput'
-      ]
+      list_of_eco:[],
+      list_of_go: []
     };
+
+    this.getEco();
+    this.getGo();
+  }
+
+  getEco(){
+    fetchData(GET_ECO,{type:'GET'})
+    .then((data) => {
+      this.setState({list_of_eco:data.success});
+      console.log(data.success);
+    })
+    .catch((err) => console.log(err));
+  }
+
+  getGo() {
+    fetchData(GET_GO, { type: 'GET' })
+      .then((data) => {
+        this.setState({ list_of_go: data.success });
+        console.log(data.success);
+      })
+      .catch((err) => console.log(err));
+  }
+
+  handleChange(){
+    console.log('value change');
   }
 
   render() {
-    var regulation_types = this.state.REGULAION_TYPE.map((item) => <option key={item}>{item}</option>);
-    var regualator_types = this.state.REGULATOR_TYPE.map((item) => <option key={item}>{item}</option>);
-    var annotation_types = this.state.ANNOTATION_TYPE.map((item) => <option key={item}>{item}</option>);
-    var directions = this.state.DIRECTION.map((item) => <option key={item}>{item}</option>);
+    var regulation_types = REGULAION_TYPE.map((item) => <option key={item}>{item}</option>);
+    var regualator_types = REGULATOR_TYPE.map((item) => <option key={item}>{item}</option>);
+    var annotation_types = ANNOTATION_TYPE.map((item) => <option key={item}>{item}</option>);
+    var directions = DIRECTION.map((item) => <option key={item}>{item}</option>);
     
     return (
       <form>
@@ -107,9 +122,7 @@ class RegulationForm extends Component {
               </div>
             </div>
             <div className='row'>
-              <div className='columns medium-12'>
-                <input type='text' name='' />
-              </div>
+              <DataList options={this.state.list_of_eco} id='eco_id' value1='display_name' value2='format_name' selectedIdName='eco_id' onOptionChange={this.handleChange} selectedId='' />
             </div>
           </div>
         </div>
@@ -177,9 +190,9 @@ class RegulationForm extends Component {
               </div>
             </div>
             <div className='row'>
-              <div className='columns medium-12'>
-                <input type='text' name='' />
-              </div>
+              {(this.state.list_of_go.length > 0 ) && 
+                <DataList options={this.state.list_of_go} id='go_id' value1='display_name' value2='format_name' selectedIdName='go_id' onOptionChange={this.handleChange} selectedId='' />
+              }
             </div>
           </div>
         </div>
