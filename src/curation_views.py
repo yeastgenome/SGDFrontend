@@ -1583,3 +1583,30 @@ def get_all_eco_for_regulations(request):
     eco_in_db = models_helper.get_all_eco()
     obj = [{'eco_id':e.eco_id, 'format_name': e.format_name,'display_name':e.display_name} for e in eco_in_db]
     return HTTPOk(body=json.dumps({'success':obj}),content_type='text/json')
+
+
+@view_config(route_name='regulation_insert_update', renderer='json', request_method='POST')
+def regulation_insert_update(request):
+    try:
+        annotation_id = request.params.get('annotation_id')
+        target_id = request.params.get('target_id')
+        regulator_id = request.params.get('regulator_id')
+        taxonomy_id = request.params.get('taxonomy_id')
+        reference_id = request.params.get('reference_id')
+        eco_id = request.params.get('eco_id')
+        regulator_type = request.params.get('regulator_type')
+        regulation_type = request.params.get('regulation_type')
+        direction = request.params.get('direction')
+        happens_during = request.params.get('happens_during')
+        annotation_type = request.params.get('annotation_type')
+        print({
+            annotation_id,
+            target_id,
+            regulator_id, taxonomy_id, reference_id, eco_id, regulator_type, regulation_type,
+            direction, happens_during, annotation_type
+        })
+
+        return HTTPOk(body=json.dumps({'success':'success'}),content_type='text/json')
+    except Exception as e:
+        return HTTPBadRequest(body=json.dumps({'error': e.message}), content_type='text/json')
+
