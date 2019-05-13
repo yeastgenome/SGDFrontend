@@ -1696,7 +1696,7 @@ def ptm_delete(request):
 @view_config(route_name='get_all_go_for_regulations',renderer='json',request_method='GET')
 def get_all_go_for_regulations(request):
     go_in_db = models_helper.get_all_go()
-    obj = [g.to_dict() for g in go_in_db]
+    obj = [{'go_id': g.go_id, 'format_name': g.format_name,'display_name': g.display_name} for g in go_in_db]
     return HTTPOk(body=json.dumps({'success': obj}), content_type='text/json')
 
 
