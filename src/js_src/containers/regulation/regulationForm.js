@@ -11,7 +11,7 @@ const REGULATIONS = '/regulation';
 const GET_STRAINS = '/get_strains';
 
 const REGULATION_TYPE =  ['transcription','protein activity','protein stability','RNA activity','RNA stability'];
-const DIRECTION = ['positive','negative'];
+const DIRECTION = ['','positive','negative'];
 const REGULATOR_TYPE =['chromatin modifier','transcription factor','protein modifier','RNA-binding protein','RNA modifier'];
 const ANNOTATION_TYPE= ['manually curated','high-throughput'];
 
@@ -87,7 +87,6 @@ class RegulationForm extends Component {
     var regulator_types = REGULATOR_TYPE.map((item) => <option key={item}>{item}</option>);
     var annotation_types = ANNOTATION_TYPE.map((item) => <option key={item}>{item}</option>);
     var directions = DIRECTION.map((item) => <option key={item}>{item}</option>);
-    
     return (
       <form ref='form' onSubmit={this.handleSubmit}>
 
