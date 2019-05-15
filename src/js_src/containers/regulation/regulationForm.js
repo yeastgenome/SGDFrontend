@@ -8,6 +8,7 @@ import {setRegulation} from '../../actions/regulationActions';
 const GET_ECO = '/eco/regulations';
 const GET_GO = '/go/regulations';
 const REGULATIONS = '/regulation';
+const GET_STRAINS = '/get_strains';
 
 const REGULATION_TYPE =  ['transcription','protein activity','protein stability','RNA activity','RNA stability'];
 const DIRECTION = ['positive','negative'];
@@ -24,11 +25,13 @@ class RegulationForm extends Component {
 
     this.state = {
       list_of_eco:[],
-      list_of_go: []
+      list_of_go: [],
+      list_of_taxonomy:[],
     };
 
     this.getEco();
     this.getGo();
+    this.getTaxonomy();
   }
 
   getEco(){
@@ -45,6 +48,17 @@ class RegulationForm extends Component {
         this.setState({ list_of_go: data.success });
       })
       .catch((err) => this.props.dispatch(setError(err.message)));
+  }
+
+  getTaxonomy() {
+    fetchData(GET_STRAINS, {
+      type: 'GET'
+    }).then(data => {
+      var values = data['strains'].map((strain, index) => {
+        return <option value={strain.taxonomy_id} key={index}> {strain.display_name} </option>;
+      });
+      this.setState({ list_of_taxonomy: [<option value='' key='-1'> -----select taxonomy----- </option>, ...values] });
+    }).catch(err => this.props.dispatch(setError(err.error)));
   }
 
   handleChange(){
@@ -118,7 +132,9 @@ class RegulationForm extends Component {
             </div>
             <div className='row'>
               <div className='columns medium-12'>
-                <input type='text' name='taxonomy_id' onChange={this.handleChange} value={this.props.regulation.taxonomy_id} />
+                <select value={this.props.regulation.taxonomy_id} onChange={this.handleChange} name='taxonomy_id'>
+                  {this.state.list_of_taxonomy}
+                </select>
               </div>
             </div>
           </div>
