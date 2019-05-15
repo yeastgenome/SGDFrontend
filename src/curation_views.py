@@ -22,7 +22,7 @@ import pandas as pd
 from .helpers import allowed_file, extract_id_request, secure_save_file, curator_or_none, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id, send_newsletter_email, unicode_to_string
 from .curation_helpers import ban_from_cache, process_pmid_list, get_curator_session, get_pusher_client, validate_orcid, get_list_of_ptms
 from .loading.promote_reference_triage import add_paper
-from .models import DBSession, Dbentity, Dbuser, CuratorActivity, Colleague, Colleaguetriage, LocusnoteReference, Referencedbentity, Reservedname, ReservednameTriage, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags, convert_space_separated_pmids_to_list, Psimod, Posttranslationannotation
+from .models import DBSession, Dbentity, Dbuser, CuratorActivity, Colleague, Colleaguetriage, LocusnoteReference, Referencedbentity, Reservedname, ReservednameTriage, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags, convert_space_separated_pmids_to_list, Psimod, Posttranslationannotation,Regulationannotation
 from .tsv_parser import parse_tsv_annotations
 from .models_helpers import ModelsHelper
 
@@ -1588,23 +1588,105 @@ def get_all_eco_for_regulations(request):
 @view_config(route_name='regulation_insert_update', renderer='json', request_method='POST')
 def regulation_insert_update(request):
     try:
+        CREATED_BY = request.session['username']
+        curator_session = get_curator_session(request.session['username'])
+        source_id = 834
+
         annotation_id = request.params.get('annotation_id')
+
         target_id = request.params.get('target_id')
+        if not target_id:
+            return HTTPBadRequest(body=json.dumps({'error': "target gene is blank"}), content_type='text/json')
+
         regulator_id = request.params.get('regulator_id')
+        if not regulator_id:
+            return HTTPBadRequest(body=json.dumps({'error': "regulator gene is blank"}), content_type='text/json')
+
         taxonomy_id = request.params.get('taxonomy_id')
+        if not taxonomy_id:
+            return HTTPBadRequest(body=json.dumps({'error': "taxonomy is blank"}), content_type='text/json')
+        
         reference_id = request.params.get('reference_id')
+        if not reference_id:
+            return HTTPBadRequest(body=json.dumps({'error': "reference is blank"}), content_type='text/json')
+
         eco_id = request.params.get('eco_id')
+        if not eco_id:
+            return HTTPBadRequest(body=json.dumps({'error': "eco is blank"}), content_type='text/json')
+        
         regulator_type = request.params.get('regulator_type')
+        if not regulator_type:
+            return HTTPBadRequest(body=json.dumps({'error': "regulator type is blank"}), content_type='text/json')
+
         regulation_type = request.params.get('regulation_type')
+        if not regulation_type:
+            return HTTPBadRequest(body=json.dumps({'error': "regulation type is blank"}), content_type='text/json')
+
         direction = request.params.get('direction')
+
         happens_during = request.params.get('happens_during')
+        if not happens_during:
+            return HTTPBadRequest(body=json.dumps({'error': "happens during is blank"}), content_type='text/json')
+
         annotation_type = request.params.get('annotation_type')
-        print({
-            annotation_id,
-            target_id,
-            regulator_id, taxonomy_id, reference_id, eco_id, regulator_type, regulation_type,
-            direction, happens_during, annotation_type
-        })
+        if not annotation_type:
+            return HTTPBadRequest(body=json.dumps({'error': "annotation type is blank"}), content_type='text/json')
+
+        dbentity_in_db = None
+        dbentity_in_db = DBSession.query(Dbentity).filter(or_(Dbentity.sgdid == target_id, Dbentity.format_name == target_id)).one_or_none()
+        if dbentity_in_db is not None:
+            target_id = dbentity_in_db.dbentity_id
+        else:
+            return HTTPBadRequest(body=json.dumps({'error': "target gene value not found in database"}), content_type='text/json')
+
+        dbentity_in_db = None
+        dbentity_in_db = DBSession.query(Dbentity).filter(or_(Dbentity.sgdid == regulator_id, Dbentity.format_name == regulator_id)).one_or_none()
+        if dbentity_in_db is not None:
+            regulator_id = dbentity_in_db.dbentity_id
+        else:
+            return HTTPBadRequest(body=json.dumps({'error': "regulator gene value not found in database"}), content_type='text/json')
+
+        dbentity_in_db = None
+        pmid_in_db = None
+        dbentity_in_db = DBSession.query(Dbentity).filter(Dbentity.sgdid == reference_id).one_or_none()
+        if dbentity_in_db is None:
+            dbentity_in_db = DBSession.query(Dbentity).filter(Dbentity.dbentity_id == int(reference_id)).one_or_none()
+        if dbentity_in_db is None:
+            pmid_in_db = DBSession.query(Referencedbentity).filter(Referencedbentity.pmid == int(reference_id)).one_or_none()
+
+        if dbentity_in_db is not None:
+            reference_id = dbentity_in_db.dbentity_id
+        elif (pmid_in_db is not None):
+            reference_id = pmid_in_db.dbentity_id
+        else:
+            return HTTPBadRequest(body=json.dumps({'error': "reference value not found in database"}), content_type='text/json')
+        
+        
+        y = None
+        y = Regulationannotation(target_id = target_id,
+                                regulator_id = regulator_id,
+                                source_id = source_id,
+                                taxonomy_id = taxonomy_id,
+                                reference_id = reference_id,
+                                eco_id = eco_id,
+                                regulator_type = regulator_type,
+                                regulation_type = regulation_type,
+                                direction = direction,
+                                happens_during = happens_during,
+                                created_by = CREATED_BY,
+                                annotation_type = annotation_type)
+        
+
+        try:
+            curator_session.add(y)
+            transaction.commit()
+        except Exception as e:
+            transaction.abort()
+            if curator_session:
+                curator_session.rollback()
+        finally:
+            if curator_session:
+                curator_session.close()
 
         return HTTPOk(body=json.dumps({'success':'success'}),content_type='text/json')
     except Exception as e:
