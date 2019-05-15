@@ -746,14 +746,23 @@ class Chebi(Base):
     source = relationship(u'Source')
 
     def to_dict(self):
+
         urls = DBSession.query(ChebiUrl).filter_by(chebi_id=self.chebi_id).all()
+        synonyms = DBSession.query(ChebiAlia).filter_by(chebi_id=self.chebi_id).all()
 
         obj = {
             "id": self.chebi_id,
             "display_name": self.display_name,
             "chebi_id": self.chebiid,
+            "definition": self.description,
+            "synonyms": [synonym.to_dict() for synonym in synonyms],
             "urls": [url.to_dict() for url in urls]
         }
+        
+        ## need to fix the following...
+        obj["complexes"] = self.complex_to_dict() 
+        obj["phenotype"] = self.phenotype_to_dict()
+        obj["go"] = self.go_to_dict()
 
         return obj
 
@@ -768,6 +777,43 @@ class Chebi(Base):
             obj += annotation.to_dict(chemical=self)
 
         return obj
+
+    def go_to_dict(self):
+
+        extensions = DBSession.query(Goextension.annotation_id).filter_by(dbxref_id=self.chebiid).all()
+
+        go_annotations = DBSession.query(Goannotation).filter(Goannotation.annotation_id.in_(extensions)).all()
+
+        obj = []
+
+        for annotation in go_annotations:
+            obj += annotation.to_dict()
+
+        return obj
+
+    def complex_to_dict(self):
+
+        interactors = DBSession.query(Interactor.interactor_id).filter_by(format_name=self.chebiid).all()
+
+        annotations = DBSession.query(Complexbindingannotation).filter(Complexbindingannotation.interactor_id.in_(interactors)).all()
+
+        annotations2 = DBSession.query(Complexbindingannotation).filter(Complexbindingannotation.binding_interactor_id.in_(interactors)).all()
+
+        complexes = []
+        found = {}
+        for annotation in annotations + annotations2:
+            complex = annotation.complex
+            if complex.format_name in found:
+                continue
+            found[complex.format_name] = 1
+            complexes.append({ "display_name": complex.display_name,
+                               "intact_id": complex.intact_id,
+                               "format_name": complex.format_name,
+                               "link_url": complex.obj_url,
+                               "description": complex.description })
+
+        return complexes
+
 
 class ChebiAlia(Base):
     __tablename__ = 'chebi_alias'
@@ -787,6 +833,11 @@ class ChebiAlia(Base):
     chebi = relationship(u'Chebi')
     source = relationship(u'Source')
 
+    def to_dict(self):
+        return {
+            "display_name": self.display_name,
+            "synonym_type": self.alias_type
+        }
 
 class ChebiUrl(Base):
     __tablename__ = 'chebi_url'
@@ -9115,6 +9166,7 @@ class Complexbindingannotation(Base):
     taxonomy = relationship(u'Taxonomy')
     complex = relationship(u'Complexdbentity')
     psimi = relationship(u'Psimi')
+    
 
 class Interactor(Base):
     __tablename__ = 'interactor'

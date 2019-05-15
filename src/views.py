@@ -496,6 +496,37 @@ def chemical_phenotype_details(request):
     else:
         return HTTPNotFound()
 
+@view_config(route_name='chemical_go_details', renderer='json', request_method='GET')
+def chemical_go_details(request):
+    id = extract_id_request(request, 'chebi')
+
+    chebi = DBSession.query(Chebi).filter_by(chebi_id=id).one_or_none()
+    if chebi:
+        return chebi.go_to_dict()
+    else:
+        return HTTPNotFound()
+
+@view_config(route_name='chemical_complex_details', renderer='json', request_method='GET')
+def chemical_complex_details(request):
+    id = extract_id_request(request, 'chebi')
+
+    chebi = DBSession.query(Chebi).filter_by(chebi_id=id).one_or_none()
+    if chebi:
+        return chebi.complex_to_dict()
+    else:
+        return HTTPNotFound()
+
+@view_config(route_name='chemical_network_graph', renderer='json', request_method='GET')
+def chemical_network_graph(request):
+
+    id = extract_id_request(request, 'chebi')
+
+    chebi = DBSession.query(Chebi).filter_by(chebi_id=id).one_or_none()
+    if chebi:
+        return chebi.chemical_network()
+    else:
+        return HTTPNotFound()
+
 @view_config(route_name='phenotype', renderer='json', request_method='GET')
 def phenotype(request):
     id = extract_id_request(request, 'phenotype', param_name="format_name")
