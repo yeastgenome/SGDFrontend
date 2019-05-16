@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import DataList from '../../components/dataList';
 import fetchData from '../../lib/fetchData';
 import { setError, setMessage } from '../../actions/metaActions';
 import {setRegulation} from '../../actions/regulationActions';
+import DataList from '../../components/dataList';
 
 const GET_ECO = '/eco/regulations';
 const GET_GO = '/go/regulations';
@@ -83,6 +83,7 @@ class RegulationForm extends Component {
   }
 
   render() {
+    
     var regulation_types = REGULATION_TYPE.map((item) => <option key={item}>{item}</option>);
     var regulator_types = REGULATOR_TYPE.map((item) => <option key={item}>{item}</option>);
     var annotation_types = ANNOTATION_TYPE.map((item) => <option key={item}>{item}</option>);
@@ -268,7 +269,6 @@ class RegulationForm extends Component {
       </form>
     );
   }
-
 }
 
 RegulationForm.propTypes = {
