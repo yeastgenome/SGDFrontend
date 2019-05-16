@@ -27,7 +27,7 @@
                 add_navbar_element('Phenotype Annotations', 'phenotype');
             {% endif %}
 	    {% if chemical.go|length > 0 %}
-	        add_navbar_element('Go Annotations', 'go');
+	        add_navbar_element('Gene Ontology Annotations', 'go');
 	    {% endif %}
 	    {% if chemical.complexes|length > 0 %}
 	        add_navbar_element('Complexes', 'complex');
@@ -104,7 +104,7 @@
 	{% if chemical.go|length > 0 %}
         <section id="go" data-magellan-destination="go">
             <div class="page-header">
-                <h2>Go Annotations
+                <h2>Gene Ontology Annotations
             	    <a href="#" data-dropdown="go_info"><i class="fa fa-info-circle"></i></a>
             	    <p id="go_info" class="f-dropdown content medium" data-dropdown-content>
                         GO Annotations consist of four mandatory components: a gene product, a term 
