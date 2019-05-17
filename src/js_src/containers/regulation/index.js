@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import CurateLayout from '../curateHome/layout';
 import FileUpload from './fileUpload';
 import RegulationForm from './regulationForm';
-import RegulationTable from './regulationTable';
 
 class Regulation extends Component {
   constructor(props) {
@@ -14,25 +13,13 @@ class Regulation extends Component {
     return (
       <CurateLayout>
         <div className='row'>
-          <div className='columns small-12 medium-12 large-12'>
-           
-            <div className='row'>
-              <div className='columns small-12 medium-12 large-12'>
-                <RegulationTable />
-              </div>
-            </div>
-          
-            <div className='row'>
-              <div className='columns small-12 medium-12 large-5'>
-                <h1>Regulation file upload</h1>
-                <FileUpload />
-              </div>
-              <div className='columns small-12 medium-12 large-5 end'>
-                <h1>Add/Update regulation</h1>
-                <RegulationForm />
-              </div>
-            </div>
-
+          <div className='columns small-12 medium-12 large-5'>
+            <h1>Regulation file upload</h1>
+            <FileUpload />
+          </div>
+          <div className='columns small-12 medium-12 large-5 end'>
+            <h1>Add/Update regulation</h1>
+            <RegulationForm />
           </div>
         </div>
       </CurateLayout>
