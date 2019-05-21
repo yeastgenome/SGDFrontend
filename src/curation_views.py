@@ -1572,6 +1572,7 @@ def ptm_delete(request):
         return HTTPBadRequest(body=json.dumps({'error': str(e.message)}), content_type='text/json')
 
 @view_config(route_name='get_all_go_for_regulations',renderer='json',request_method='GET')
+@authenticate
 def get_all_go_for_regulations(request):
     go_in_db = models_helper.get_all_go()
     obj = [{'go_id': g.go_id, 'format_name': g.format_name,'display_name': g.display_name} for g in go_in_db]
@@ -1579,6 +1580,7 @@ def get_all_go_for_regulations(request):
 
 
 @view_config(route_name='get_all_eco_for_regulations', renderer='json', request_method='GET')
+@authenticate
 def get_all_eco_for_regulations(request):
     eco_in_db = models_helper.get_all_eco()
     obj = [{'eco_id':e.eco_id, 'format_name': e.format_name,'display_name':e.display_name} for e in eco_in_db]
@@ -1586,6 +1588,7 @@ def get_all_eco_for_regulations(request):
 
 
 @view_config(route_name='regulation_insert_update', renderer='json', request_method='POST')
+@authenticate
 def regulation_insert_update(request):
     try:
         CREATED_BY = request.session['username']
@@ -1791,6 +1794,7 @@ def regulation_insert_update(request):
 
 
 @view_config(route_name='regulations_by_filters',renderer='json',request_method='POST')
+@authenticate
 def regulations_by_filters(request):
     try:
         target_id = request.params.get('target_id')
@@ -1877,6 +1881,7 @@ def regulations_by_filters(request):
 
 
 @view_config(route_name='regulation_delete',renderer='json',request_method='DELETE')
+@authenticate
 def regulation_delete(request):
     try:
         id = request.matchdict['id']
@@ -1909,3 +1914,41 @@ def regulation_delete(request):
 
     except Exception as e:
         return HTTPBadRequest(body=json.dumps({'error': str(e.message)}), content_type='text/json')
+
+@view_config(route_name='regulation_file',renderer='json',request_method='POST')
+@authenticate
+def regulation_file(request):
+    try:
+        file = request.POST['file'].file
+        filename = request.POST['file'].filename
+        CREATED_BY = request.session['username']
+        xl = pd.ExcelFile(file)
+        list_of_sheets = xl.sheet_names
+
+        COLUMNS = {
+            'target_gene': 'Target Gene',
+            'regulator_gene':'Regulator Gene',
+            'reference': 'Reference(sgdid,pubmed id,reference no)',
+            'taxonomy': 'Taxonomy',
+            'eco':'Eco',
+            'regulator_type': 'Regulator type',
+            'regulation_type':'Regulation type',
+            'direction':'Direction',
+            'happens_during':'Happens during',
+            'annotation_type':'Annotation type'
+        }
+
+        SOURCE_ID = 834
+        SEPARATOR = '|'
+
+        list_of_posttranslationannotation = []
+        list_of_posttranslationannotation_errors = []
+        df = pd.read_excel(io=file, sheet_name="Sheet1")
+
+        #TODO:
+        #Process data
+        #Insert and Update
+        #Return value
+
+    except Exception as e:
+        pass
