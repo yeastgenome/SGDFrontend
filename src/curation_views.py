@@ -1623,6 +1623,9 @@ def regulation_insert_update(request):
             return HTTPBadRequest(body=json.dumps({'error': "regulation type is blank"}), content_type='text/json')
 
         direction = request.params.get('direction')
+        if not direction:
+            direction = None
+        
 
         happens_during = request.params.get('happens_during')
         if not happens_during:
@@ -1661,34 +1664,219 @@ def regulation_insert_update(request):
         else:
             return HTTPBadRequest(body=json.dumps({'error': "reference value not found in database"}), content_type='text/json')
         
-        
-        y = None
-        y = Regulationannotation(target_id = target_id,
-                                regulator_id = regulator_id,
-                                source_id = source_id,
-                                taxonomy_id = taxonomy_id,
-                                reference_id = reference_id,
-                                eco_id = eco_id,
-                                regulator_type = regulator_type,
-                                regulation_type = regulation_type,
-                                direction = direction,
-                                happens_during = happens_during,
-                                created_by = CREATED_BY,
-                                annotation_type = annotation_type)
-        
 
-        try:
-            curator_session.add(y)
-            transaction.commit()
-        except Exception as e:
-            transaction.abort()
-            if curator_session:
-                curator_session.rollback()
-        finally:
-            if curator_session:
-                curator_session.close()
+        isSuccess = False
+        returnValue = ''
+        references_in_db = []
 
-        return HTTPOk(body=json.dumps({'success':'success'}),content_type='text/json')
+        if(int(annotation_id) > 0):
+            try:
+                update_regulation = {'target_id': target_id,
+                                    'regulator_id': regulator_id,
+                                    'taxonomy_id': taxonomy_id,
+                                    'reference_id': reference_id,
+                                    'eco_id': eco_id,
+                                    'regulator_type': regulator_type,
+                                    'regulation_type': regulation_type,
+                                    'direction': direction,
+                                    'happens_during': happens_during,
+                                    'annotation_type': annotation_type
+                                    }
+
+                curator_session.query(Regulationannotation).filter(Regulationannotation.annotation_id == annotation_id).update(update_regulation)
+                transaction.commit()
+                isSuccess = True
+                returnValue = 'Record updated successfully.'
+                
+            except IntegrityError as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = 'Updated failed, record already exists'
+            except DataError as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = 'Update failed, issue in data'
+            except Exception as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = 'Updated failed ' + str(e.message)
+            finally:
+                if curator_session:
+                    curator_session.close()
+
+        
+        if(int(annotation_id) == 0):
+            try:
+                y = None
+                y = Regulationannotation(target_id = target_id,
+                                    regulator_id = regulator_id,
+                                    source_id = source_id,
+                                    taxonomy_id = taxonomy_id,
+                                    reference_id = reference_id,
+                                    eco_id = eco_id,
+                                    regulator_type = regulator_type,
+                                    regulation_type = regulation_type,
+                                    direction = direction,
+                                    happens_during = happens_during,
+                                    created_by = CREATED_BY,
+                                    annotation_type = annotation_type)
+                curator_session.add(y)
+                transaction.commit()
+                isSuccess = True
+                returnValue = 'Record added successfully.'
+            except IntegrityError as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = 'Insert failed, record already exists'
+            except DataError as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = 'Insert failed, issue in data'
+            except Exception as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = 'Insert failed' + ' ' + str(e.message)
+            finally:
+                if curator_session:
+                    curator_session.close()
+
+        if isSuccess:
+            return HTTPOk(body=json.dumps({'success': returnValue}), content_type='text/json')
+
+        return HTTPBadRequest(body=json.dumps({'error': returnValue}), content_type='text/json')
+
     except Exception as e:
         return HTTPBadRequest(body=json.dumps({'error': e.message}), content_type='text/json')
 
+
+@view_config(route_name='regulations_by_filters',renderer='json',request_method='POST')
+def regulations_by_filters(request):
+    try:
+        target_id = request.params.get('target_id')
+        regulator_id = request.params.get('regulator_id')
+        reference_id = request.params.get('reference_id')
+
+        sgd_id_to_dbentity_id, systematic_name_to_dbentity_id = models_helper.get_dbentity_by_subclass(['LOCUS', 'REFERENCE'])
+        pubmed_id_to_reference, reference_to_dbentity_id = models_helper.get_references_all()
+        
+        key=(target_id,'LOCUS')
+        if(key in sgd_id_to_dbentity_id):
+            target_id = sgd_id_to_dbentity_id[key]
+        elif(key in systematic_name_to_dbentity_id):
+            target_id = systematic_name_to_dbentity_id[key]
+
+        key=(regulator_id,'LOCUS')
+        if(key in sgd_id_to_dbentity_id):
+            regulator_id = sgd_id_to_dbentity_id[key]
+        elif(key in systematic_name_to_dbentity_id):
+            regulator_id = systematic_name_to_dbentity_id[key]
+        
+        key = (reference_id, 'REFERENCE')
+        if(key in sgd_id_to_dbentity_id):
+            reference_id = sgd_id_to_dbentity_id[key]
+        elif(reference_id in pubmed_id_to_reference):
+            reference_id = pubmed_id_to_reference[reference_id]
+        elif(reference_id in reference_to_dbentity_id):
+            reference_id = int(reference_id)
+
+        if (not(target_id or regulator_id or reference_id)):
+            return HTTPBadRequest(body=json.dumps({'error':'Please provide Target gene or Regulator gene or reference.'}),content_type='text/json')
+
+
+        regulations_in_db = DBSession.query(Regulationannotation)
+
+        if target_id:
+            regulations_in_db = regulations_in_db.filter(Regulationannotation.target_id == target_id)
+        
+        if regulator_id:
+            regulations_in_db = regulations_in_db.filter(Regulationannotation.regulator_id == regulator_id)
+        
+        if reference_id:
+            regulations_in_db = regulations_in_db.filter(Regulationannotation.reference_id == reference_id)
+
+        regulations = regulations_in_db.order_by(Regulationannotation.annotation_id.asc()).all()
+        
+        list_of_regulations = []
+        for regulation in regulations:
+
+            currentRegulation = {
+                'id': regulation.annotation_id,
+                'target_id': {
+                    'id': regulation.target.format_name,
+                    'display_name': regulation.target.display_name
+                },
+                'regulator_id': {
+                    'id': regulation.regulator.format_name,
+                    'display_name': regulation.regulator.display_name
+                },
+                'taxonomy_id': '',
+                'reference_id': regulation.reference.pmid,
+                'eco_id': '',
+                'regulator_type': regulation.regulator_type,
+                'regulation_type': regulation.regulation_type,
+                'direction': regulation.direction,
+                'happens_during': '',
+                'annotation_type': regulation.annotation_type,
+            }
+
+            if regulation.eco:
+                currentRegulation['eco_id'] = str(regulation.eco.eco_id)
+
+            if regulation.go:
+                currentRegulation['happens_during'] = str(regulation.go.go_id)
+
+            if regulation.taxonomy:
+                currentRegulation['taxonomy_id'] = regulation.taxonomy.taxonomy_id
+
+            list_of_regulations.append(currentRegulation)
+
+        return HTTPOk(body=json.dumps({'success': list_of_regulations}), content_type='text/json')
+    except Exception as e:
+        return HTTPBadRequest(body=json.dumps({'error': e.message}), content_type='text/json')
+
+
+@view_config(route_name='regulation_delete',renderer='json',request_method='DELETE')
+def regulation_delete(request):
+    try:
+        id = request.matchdict['id']
+        curator_session = get_curator_session(request.session['username'])
+        isSuccess = False
+        returnValue = ''
+        regulation_in_db = curator_session.query(Regulationannotation).filter(Regulationannotation.annotation_id == id).one_or_none()
+        if(regulation_in_db):
+            try:
+                curator_session.delete(regulation_in_db)
+                transaction.commit()
+                isSuccess = True
+                returnValue = 'Regulation successfully deleted.'
+            except Exception as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = 'Error occurred deleting regulation: ' + str(e.message)
+            finally:
+                if curator_session:
+                    curator_session.close()
+
+            if isSuccess:
+                return HTTPOk(body=json.dumps({'success': returnValue}), content_type='text/json')
+
+            return HTTPBadRequest(body=json.dumps({'error': returnValue}), content_type='text/json')
+
+        return HTTPBadRequest(body=json.dumps({'error': 'regulation not found in database.'}), content_type='text/json')
+
+    except Exception as e:
+        return HTTPBadRequest(body=json.dumps({'error': str(e.message)}), content_type='text/json')
