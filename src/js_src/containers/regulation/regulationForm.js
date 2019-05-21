@@ -165,8 +165,6 @@ class RegulationForm extends Component {
     })
     .catch(err => this.props.dispatch(setError(err.error)))
     .finally(() => this.setState({ isLoading: false }));
-    
-    this.props.dispatch(setMessage(''));
   }
 
   handleDelete(e){
@@ -190,6 +188,7 @@ class RegulationForm extends Component {
         .finally(() => this.setState({isLoading:false}));
     }
     else {
+      this.setState({ isLoading: false });
       this.props.dispatch(setError('No regulation is selected to delete.'));
     }
   }
