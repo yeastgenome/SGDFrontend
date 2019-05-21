@@ -39,7 +39,7 @@ class RegulationForm extends Component {
       list_of_go: [],
       list_of_taxonomy:[],
       isUpdate:false,
-      pageIndex:-1,
+      pageIndex:0,
       currentIndex:-1,
       list_of_regulations:[],
       isLoading:false
@@ -97,8 +97,6 @@ class RegulationForm extends Component {
 
   handleSelectRegulation(index){
     var regulation = this.state.list_of_regulations[index];
-    console.log(index);
-    console.log(this.state.pageIndex);
     var currentRegulation = {
       annotation_id: regulation.id,
       target_id: regulation.target_id.id,
@@ -113,6 +111,7 @@ class RegulationForm extends Component {
       annotation_type: regulation.annotation_type,
     };
     this.props.dispatch(setRegulation(currentRegulation));
+    this.setState({currentIndex:index});
   }
 
   handleResetForm(){
@@ -130,11 +129,11 @@ class RegulationForm extends Component {
       annotation_type: '',
     };
     this.props.dispatch(setRegulation(currentRegulation));
-    this.setState({ list_of_regulations: [], currentIndex:-1});
+    // this.setState({ list_of_regulations: [], currentIndex:-1});
   }
 
   handleToggleInsertUpdate() {
-    this.setState({ isUpdate: !this.state.isUpdate});
+    this.setState({ isUpdate: !this.state.isUpdate, list_of_regulations: [], currentIndex: -1});
     this.handleResetForm();
   }
 
@@ -167,6 +166,7 @@ class RegulationForm extends Component {
 
   handleDelete(e){
     e.preventDefault();
+    this.setState({isLoading:true});
     if (this.props.regulation.annotation_id > 0) {
       
       fetchData(`${REGULATIONS}/${this.props.regulation.annotation_id}`, {
@@ -174,11 +174,15 @@ class RegulationForm extends Component {
       })
         .then((data) => {
           this.props.dispatch(setMessage(data.success));
+          var new_list_of_regulations = this.state.list_of_regulations;
+          new_list_of_regulations.splice(this.state.currentIndex, 1);
+          this.setState({ list_of_regulations: new_list_of_regulations,currentIndex:-1,pageIndex:0});
           this.handleResetForm();
         })
         .catch((err) => {
           this.props.dispatch(setError(err.error));
-        });
+        })
+        .finally(() => this.setState({isLoading:false}));
     }
     else {
       this.props.dispatch(setError('No regulation is selected to delete.'));
@@ -188,6 +192,7 @@ class RegulationForm extends Component {
   renderActions(){
     var pageIndex = this.state.pageIndex;
     var count_of_regulations = this.state.list_of_regulations.length;
+    var totalPages = count_of_regulations%SKIP;
 
     if (this.state.isLoading) {
       return (
@@ -197,19 +202,22 @@ class RegulationForm extends Component {
 
     if(this.state.isUpdate){
       var buttons = this.state.list_of_regulations.filter((i,index) => {
-        return index >= pageIndex && index < pageIndex + SKIP;
+        return index >= (pageIndex * SKIP) && index < (pageIndex * SKIP) + SKIP;
       })
-      .map((regulation, index) =>
-        <li key={index} onClick={() => this.handleSelectRegulation(index)} className='button medium-only-expanded'>{regulation.target_id.display_name + ' ' + regulation.regulator_id.display_name}</li>
-      );
+      .map((regulation, index) =>{
+        var new_index = index;
+        if (this.state.pageIndex > 0){new_index = index + SKIP;}
+        return <li key={new_index} onClick={() => this.handleSelectRegulation(new_index)} className='button medium-only-expanded'>{regulation.target_id.display_name + ' ' + regulation.regulator_id.display_name}</li>;
+      }
+        );
       return (
         <div>
           <div className='row'>
             <div className='columns medium-12'>
               <div className='expanded button-group'>
-                <li type='button' className='button warning' disabled={count_of_regulations < 0 || pageIndex <= 0 ? true : false} onClick={() => this.handleNextPrevious(-SKIP)}> <i className="fa fa-chevron-circle-left"></i> </li>
+                <li type='button' className='button warning' disabled={count_of_regulations < 0 || pageIndex <= 0 ? true : false} onClick={() => this.handleNextPrevious(-1)}> <i className="fa fa-chevron-circle-left"></i> </li>
                 {buttons}
-                <li type='button' className='button warning' disabled={count_of_regulations == 0 || pageIndex + SKIP >= count_of_regulations ? true : false} onClick={() => this.handleNextPrevious(SKIP)}> <i className="fa fa-chevron-circle-right"></i></li>
+                <li type='button' className='button warning' disabled={count_of_regulations == 0 || pageIndex >= totalPages ? true : false} onClick={() => this.handleNextPrevious(1)}> <i className="fa fa-chevron-circle-right"></i></li>
               </div>
             </div>
           </div>
@@ -304,18 +312,20 @@ class RegulationForm extends Component {
             </div>
           </div>
 
-          <div className='row'>
-            <div className='columns medium-12'>
-              <div className='row'>
-                <div className='columns medium-6'>
-                  <button type='button' className='button expanded' onClick={this.getRegulations}>Get data</button>
-                </div>
-                <div className='columns medium-6'>
-                  {this.state.list_of_regulations.length}
+          {this.state.isUpdate && 
+            <div className='row'>
+              <div className='columns medium-12'>
+                <div className='row'>
+                  <div className='columns medium-6'>
+                    <button type='button' className='button expanded' onClick={this.getRegulations}>Get data</button>
+                  </div>
+                  <div className='columns medium-6'>
+                    {this.state.list_of_regulations.length}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          }
           
 
           <div className='row'>
