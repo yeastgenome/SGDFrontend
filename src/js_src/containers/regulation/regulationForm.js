@@ -29,7 +29,7 @@ class RegulationForm extends Component {
     this.handleToggleInsertUpdate = this.handleToggleInsertUpdate.bind(this);
     this.handleResetForm = this.handleResetForm.bind(this);
     this.renderActions = this.renderActions.bind(this);
-    this.getRegulations = this.getRegulations.bind(this);
+    this.handleGetRegulations = this.handleGetRegulations.bind(this);
     this.handleSelectRegulation = this.handleSelectRegulation.bind(this);
     this.handleNextPrevious = this.handleNextPrevious.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
@@ -77,8 +77,8 @@ class RegulationForm extends Component {
     }).catch(err => this.props.dispatch(setError(err.error)));
   }
 
-  getRegulations(){
-    this.setState({ list_of_regulations: [],isLoading:true });
+  handleGetRegulations(){
+    this.setState({ list_of_regulations: [], isLoading: true, currentIndex: -1, pageIndex: 0});
     fetchData(GET_REGULATIONS,{
       type:'POST',
       data: {
@@ -90,6 +90,7 @@ class RegulationForm extends Component {
     })
     .then(data => {
       this.setState({list_of_regulations:data['success']});
+      this.handleResetForm();
     })
     .catch(err => this.props.dispatch(setError(err.error)))
     .finally(() => this.setState({ isLoading: false }));
@@ -129,11 +130,10 @@ class RegulationForm extends Component {
       annotation_type: '',
     };
     this.props.dispatch(setRegulation(currentRegulation));
-    // this.setState({ list_of_regulations: [], currentIndex:-1});
   }
 
   handleToggleInsertUpdate() {
-    this.setState({ isUpdate: !this.state.isUpdate, list_of_regulations: [], currentIndex: -1});
+    this.setState({ isUpdate: !this.state.isUpdate, list_of_regulations: [], currentIndex: -1, pageIndex:0});
     this.handleResetForm();
   }
 
@@ -157,7 +157,12 @@ class RegulationForm extends Component {
       type:'POST',
       data:this.props.regulation
     })
-    .then(data => this.props.dispatch(setMessage(data.success)))
+    .then(data => {
+      this.props.dispatch(setMessage(data.success));
+      var list_of_regulations = this.state.list_of_regulations;
+      list_of_regulations[this.state.currentIndex] = data.regulation;
+      this.setState({list_of_regulations:list_of_regulations});
+    })
     .catch(err => this.props.dispatch(setError(err.error)))
     .finally(() => this.setState({ isLoading: false }));
     
@@ -192,22 +197,22 @@ class RegulationForm extends Component {
   renderActions(){
     var pageIndex = this.state.pageIndex;
     var count_of_regulations = this.state.list_of_regulations.length;
-    var totalPages = count_of_regulations%SKIP;
+    var totalPages = Math.ceil(count_of_regulations/SKIP) - 1;
 
     if (this.state.isLoading) {
       return (
         <Loader />
       );
     }
-
+  
     if(this.state.isUpdate){
       var buttons = this.state.list_of_regulations.filter((i,index) => {
         return index >= (pageIndex * SKIP) && index < (pageIndex * SKIP) + SKIP;
       })
       .map((regulation, index) =>{
-        var new_index = index;
-        if (this.state.pageIndex > 0){new_index = index + SKIP;}
-        return <li key={new_index} onClick={() => this.handleSelectRegulation(new_index)} className='button medium-only-expanded'>{regulation.target_id.display_name + ' ' + regulation.regulator_id.display_name}</li>;
+        var new_index = index + pageIndex*SKIP;
+        if (this.state.pageIndex > 0) { new_index = index + SKIP; }
+        return <li key={new_index} onClick={() => this.handleSelectRegulation(new_index)} className={`button medium-only-expanded ${this.state.currentIndex == new_index ? 'success' : ''}`}>{regulation.target_id.display_name + ' ' + regulation.regulator_id.display_name}</li>;
       }
         );
       return (
@@ -317,10 +322,7 @@ class RegulationForm extends Component {
               <div className='columns medium-12'>
                 <div className='row'>
                   <div className='columns medium-6'>
-                    <button type='button' className='button expanded' onClick={this.getRegulations}>Get data</button>
-                  </div>
-                  <div className='columns medium-6'>
-                    {this.state.list_of_regulations.length}
+                    <button type='button' className='button expanded' onClick={this.handleGetRegulations}>Get data</button>
                   </div>
                 </div>
               </div>
