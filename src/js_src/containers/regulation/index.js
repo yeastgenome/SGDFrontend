@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import CurateLayout from '../curateHome/layout';
 import FileUpload from './fileUpload';
 import RegulationForm from './regulationForm';
@@ -28,8 +27,4 @@ class Regulation extends Component {
 
 }
 
-function mapStateToProps(state) {
-  return state;
-}
-
-export default connect(mapStateToProps)(Regulation);
+export default Regulation;

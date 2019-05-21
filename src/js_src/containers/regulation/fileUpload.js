@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 
 class FileUpload extends Component {
   constructor(props) {
@@ -16,8 +15,5 @@ class FileUpload extends Component {
 
 }
 
-function mapStateToProps(state) {
-  return state;
-}
 
-export default connect(mapStateToProps)(FileUpload);
+export default FileUpload;
