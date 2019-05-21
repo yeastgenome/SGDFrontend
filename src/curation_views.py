@@ -1941,9 +1941,20 @@ def regulation_file(request):
         SOURCE_ID = 834
         SEPARATOR = '|'
 
-        list_of_posttranslationannotation = []
-        list_of_posttranslationannotation_errors = []
+        list_of_regulations = []
+        list_of_regulations_errors = []
         df = pd.read_excel(io=file, sheet_name="Sheet1")
+
+        null_columns = df.columns[df.isnull().any()]
+        for col in null_columns:
+            if COLUMNS['direction'] != col:
+                rows = df[df[col].isnull()].index.tolist()
+                rows = ','.join([str(r+2) for r in rows])
+                list_of_regulations_errors.append('No values in column ' + col + ' rows ' + rows)
+        
+        if list_of_regulations_errors:
+            err = [e + '\n' for e in list_of_regulations_errors]
+            return HTTPBadRequest(body=json.dumps({"error": list_of_regulations_errors}), content_type='text/json')
 
         #TODO:
         #Process data
