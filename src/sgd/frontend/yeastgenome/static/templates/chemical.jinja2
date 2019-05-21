@@ -32,6 +32,9 @@
 	    {% if chemical.complexes|length > 0 %}
 	        add_navbar_element('Complexes', 'complex');
             {% endif %}
+	    {% if chemical.network_graph.edges|length > 0 %}
+	        add_navbar_element('Shared Annotations', 'network');
+            {% endif %}
 	    add_navbar_element('Resources', 'resources');
         </script>
 
@@ -85,9 +88,7 @@
 			a mutant type (e.g., null), strain background, and a reference. In addition, 
 			annotations are classified as classical genetics or high-throughput (e.g., 
 			large scale survey, systematic mutation set). Whenever possible, allele 
-			information and additional details are provided. Click "Phenotype Details" 
-			to view all phenotype annotations and evidence for this locus as well as 
-			phenotypes it shares with other genes.
+			information and additional details are provided. 
                     </p>
                     <span id="phenotype_table_header" class="round secondary label"></span>
                 </h2>
@@ -114,9 +115,7 @@
                 	<a href='/ontology/go/cellular_component'>Cellular Component</a>), a 
 			reference, and an evidence code. SGD has manually curated and high-throughput 
 			GO Annotations, both derived from the literature, as well as computational, 
-			or predicted, annotations. Click "Gene Ontology Details" to view all GO 
-			information and evidence for this locus as well as biological processes it 
-			shares with other genes.
+			or predicted, annotations. 
                     </p>
                     <span id="go_table_header" class="round secondary label"></span>
                 </h2>
@@ -150,7 +149,27 @@
         </section>
         {% endif %}
 
-	
+	<!-- Network diagram
+	================================================== -->
+	{% if chemical.network_graph.edges|length > 0 %}
+    	<section id="network" data-magellan-destination="network">
+        	 <div class="page-header">
+            	      <h2>Shared Annotations
+                      		 <a href="#" data-dropdown="network_help"><i class="fa fa-info-circle"></i></a>
+                 		 <p id="network_help" class="f-dropdown content medium" data-dropdown-content>
+                      		 This diagram displays Gene Ontology terms (green), phenotypes (blue), and 
+				 macromolecular complexes (yellow) that are shared between the given chemical (black)
+				 and other chemicals (purple). The shared GO terms, phenotypes or complexes can be 
+				 visualized separately using the radio button at the bottom of the graph. 
+                                 </p>
+
+                      </h2>
+            	      <hr />
+                      <div id="j-chemical-network"></div>
+                 </div>
+        </section>
+	{% endif %}
+
         <!-- Resources
         ================================================== -->
 	<section id="resources" data-magellan-destination="resources">

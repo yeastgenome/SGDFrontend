@@ -13,6 +13,39 @@ $(document).ready(function() {
 		create_download_button("go_table_download", go_table, chemical['display_name'] + "_go_annotations");
 	});
 
+	$.getJSON('/backend/chemical/' + chemical['id']  + '/network_graph', function(data) {
+
+		if (data != null && data["nodes"].length > 1) {
+		    var _categoryColors = {
+			'FOCUS': 'black',
+			'GO': '#2ca02c',
+			'PHENOTYPE': '#1f77b4',
+			'COMPLEX': '#E6AB03',
+			'CHEMICAL': '#7d0df3'
+		    };
+		    var filters = {
+			' All': function(d) { return true; },
+			' GO Terms': function(d) {
+			    var acceptedCats = ['FOCUS', 'GO', 'CHEMICAL'];
+			    return acceptedCats.includes(d.category);
+			},
+			' Phenotypes': function(d) {
+			    var acceptedCats = ['FOCUS', 'PHENOTYPE', 'CHEMICAL'];
+			    return acceptedCats.includes(d.category);
+			},
+			' Complexes': function(d) {
+                            var acceptedCats = ['FOCUS', 'COMPLEX', 'CHEMICAL'];
+                            return acceptedCats.includes(d.category);
+                        },
+		       
+		    }
+		    views.network.render(data, _categoryColors, "j-chemical-network", filters, true);
+		} else {
+		    hide_section("network");
+		}
+		
+	});
+
 });
 
 
