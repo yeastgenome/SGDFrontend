@@ -271,6 +271,15 @@ class RegulationForm extends Component {
 
           <input name='annotation_id' className="hide" value={this.props.regulation.annotation_id} />
 
+          {this.state.isUpdate &&
+            <ul>
+              <li>Filter regulations by target gene,regulator gene or reference</li>
+              <li>Click Get database value</li>
+              <li>Click on the value to edit</li>
+              <li>Edit the field and click update to save</li>
+            </ul>
+          }
+
           <div className='row'>
             <div className='columns medium-12'>
               <div className='row'>
@@ -321,7 +330,7 @@ class RegulationForm extends Component {
               <div className='columns medium-12'>
                 <div className='row'>
                   <div className='columns medium-6'>
-                    <button type='button' className='button expanded' onClick={this.handleGetRegulations}>Get data</button>
+                    <button type='button' className='button expanded' onClick={this.handleGetRegulations}>Get database value</button>
                   </div>
                 </div>
               </div>
