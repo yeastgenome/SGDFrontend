@@ -1790,7 +1790,7 @@ def regulation_insert_update(request):
 
         isSuccess = False
         returnValue = ''
-        references_in_db = []
+        reference_in_db = None
 
         if(int(annotation_id) > 0):
             try:
@@ -1810,7 +1810,36 @@ def regulation_insert_update(request):
                 transaction.commit()
                 isSuccess = True
                 returnValue = 'Record updated successfully.'
-                
+
+                regulation = curator_session.query(Regulationannotation).filter(Regulationannotation.annotation_id == annotation_id).one_or_none()
+                reference_in_db = {
+                    'id': regulation.annotation_id,
+                    'target_id': {
+                        'id': regulation.target.format_name,
+                        'display_name': regulation.target.display_name
+                    },
+                    'regulator_id': {
+                        'id': regulation.regulator.format_name,
+                        'display_name': regulation.regulator.display_name
+                    },
+                    'taxonomy_id': '',
+                    'reference_id': regulation.reference.pmid,
+                    'eco_id': '',
+                    'regulator_type': regulation.regulator_type,
+                    'regulation_type': regulation.regulation_type,
+                    'direction': regulation.direction,
+                    'happens_during': '',
+                    'annotation_type': regulation.annotation_type,
+                }
+                if regulation.eco:
+                    reference_in_db['eco_id'] = str(regulation.eco.eco_id)
+
+                if regulation.go:
+                    reference_in_db['happens_during'] = str(regulation.go.go_id)
+
+                if regulation.taxonomy:
+                    reference_in_db['taxonomy_id'] = regulation.taxonomy.taxonomy_id
+
             except IntegrityError as e:
                 transaction.abort()
                 if curator_session:
@@ -1876,7 +1905,7 @@ def regulation_insert_update(request):
                     curator_session.close()
 
         if isSuccess:
-            return HTTPOk(body=json.dumps({'success': returnValue}), content_type='text/json')
+            return HTTPOk(body=json.dumps({'success': returnValue,'regulation':reference_in_db}), content_type='text/json')
 
         return HTTPBadRequest(body=json.dumps({'error': returnValue}), content_type='text/json')
 
