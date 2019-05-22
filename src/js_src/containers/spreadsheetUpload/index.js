@@ -97,10 +97,17 @@ class SpreadsheetUpload extends Component {
     let activeTemplate = this.getActiveTemplate();
     return (
       <form ref='form' onSubmit={this.handleSubmit.bind(this)}>
-        <p>Directions: Select a template type (refer to examples), upload your file by dragging into box or clicking box, then click "submit."</p>
+        <h4><u>Directions</u></h4>
+        <ul>
+          <li>File header has to match any of the example template headers in the drop down menu below</li>
+          <li>The following file formats are acceptable: <span className="label">csv</span> <span className="label">txt</span> <span className="label">xlsx</span> <span className="label">xls</span> <span className="label">tsv</span>
+          </li>
+          <li>Select a template type (refer to examples), upload your file by dragging into box or clicking box, then click "submit."</li>
+          </ul>
+        <h4><u>File</u></h4>
         <div className='row'>
           <div className={`columns small-3 ${style.selectContainer}`}>
-            <label>Template</label>
+            <label>Template Examples</label>
             <Select
               onChange={this.handleSelectChange.bind(this)}
               options={TEMPLATE_OPTIONS}
@@ -166,9 +173,35 @@ export default connect(mapStateToProps)(SpreadsheetUpload);
 // TEMP
 const TEMPLATE_OPTIONS = [
   {
-    label: 'Summaries',
-    value: 'locus_summaries',
-    tempalateUrl: 'https://docs.google.com/spreadsheets/d/1GwirBge5wrKBv5mDOnHMOrf7nxLydBQOIojaf5wd3QE/edit#gid=0'
+    label: 'Phenotype',
+    value: 'phenotype',
+    tempalateUrl: 'https://docs.google.com/spreadsheets/d/1g_MfDnzQGvHaAXB-IUWa15tk-KUrS7l0rpG4eI9pgvw/edit?usp=sharing'
+  },
+  {
+    label: 'Protein',
+    value: 'protein_summaries',
+    tempalateUrl: 'https://docs.google.com/spreadsheets/d/1Q_bPcDplLIpl-_wUpdBiFayVDVtdBCPjj5_MoKckQcA/edit?usp=sharing'
+  },
+
+  {
+    label: 'Sequence',
+    value: 'sequence_summaries',
+    tempalateUrl: 'https://docs.google.com/spreadsheets/d/10ZgpWmMXaC2-M4IR111sBFANEjAVsl5r9lv8IY_3gow/edit?usp=sharing'
+  },
+  {
+    label: 'Interaction',
+    value: 'Interaction_summaries',
+    tempalateUrl: 'https://docs.google.com/spreadsheets/d/1v3auVd6IZzE14QHiC4v5SstbhuVZphYgo_2p72lRePM/edit?usp=sharing'
+  }, 
+  {
+    label: 'Regulation',
+    value: 'regulation_summaries',
+    tempalateUrl: 'https://docs.google.com/spreadsheets/d/173BbPl9Q05ZDIZB3unSGmDaJ-YK0v2UXXmUuats7QJw/edit?usp=sharing'
+  }, 
+  {
+    label: 'Disease',
+    value: 'disease_summaries',
+    tempalateUrl: 'https://docs.google.com/spreadsheets/d/1E4gj7P7SADnRc0GJOMMTCz4foTX46kcAnZmWkmKw4mE/edit?usp=sharing'
   }
 ];
 const DEFAULT_VALUE = TEMPLATE_OPTIONS[0].value;

@@ -15,8 +15,9 @@ import csv
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-
-from .models import DBSession, Dbuser, Go, Referencedbentity, Keyword, Locusdbentity, FilePath, Edam, Filedbentity, FileKeyword, ReferenceFile, Disease
+import re
+from .models import DBSession, Dbuser, Go, Referencedbentity, Keyword, Locusdbentity, FilePath, Edam, Filedbentity, FileKeyword, ReferenceFile, Disease, CuratorActivity
+from src.curation_helpers import ban_from_cache, get_curator_session
 
 import logging
 log = logging.getLogger(__name__)
@@ -348,7 +349,7 @@ def link_gene_names(raw, locus_names_ids):
     processed = raw
     words = raw.split(' ')
     for p_original_word in words:
-        original_word = p_original_word.translate(None, string.punctuation)
+        original_word = str(p_original_word).translate(None, string.punctuation)
         wupper = original_word.upper()
         if wupper in locus_names_object.keys() and len(wupper) > 3:
             sgdid = locus_names_object[wupper]
@@ -356,6 +357,7 @@ def link_gene_names(raw, locus_names_ids):
             new_str = '<a href="' + url + '">' + wupper + '</a>'
             processed = processed.replace(original_word, new_str)
     return processed
+
 
 def primer3_parser(primer3_results):
     ''' Parse Primer3 designPrimers output, and sort it into a hierachical
@@ -450,34 +452,35 @@ def primer3_parser(primer3_results):
     return list(map(primer_pairs.get, sorted(primer_pairs.keys()))), notes
 
 
-def tsv_file_to_dict(tsv_file):
-    # import pdb ; pdb.set_trace()
+def file_upload_to_dict(file_upload, delimiter="\t"):
     ''' parse file to list of dictionaries
 
     Paramaters
     ----------
-    file: tsv_file object
+    file: file_upload object
 
     Returns
     -------
     list
-        dictionary: each file row becomes a dictionary with column header
+        dictionary: each file row becomes a dictionary with column headers
                     as keys.
 
     '''
     list_dictionary = []
-    if(tsv_file):
-        csv_obj = csv.DictReader(tsv_file, dialect='excel-tab')
+    if(file_upload):
+        delimiter = delimiter
+        csv_obj = csv.DictReader(file_upload, delimiter=delimiter)
         for item in csv_obj:
             list_dictionary.append(
-                {k: v for k, v in item.items() if k is not None}
+                {k.decode('utf-8-sig'): v
+                 for k, v in item.items() if k not in (None, '')}
                 )
         return list_dictionary
     else:
         return list_dictionary
 
 
-def send_newsletter_email(subject,recipients,msg):
+def send_newsletter_email(subject, recipients, msg):
     try:
         SENDER_EMAIL = "Mike Cherry <cherry@stanford.edu>" 
         REPLY_TO = "sgd-helpdesk@lists.stanford.edu"
@@ -502,16 +505,170 @@ def send_newsletter_email(subject,recipients,msg):
             error_message = "Email sending unsuccessful for this recipients " + error_message
             return {"error": error_message}
                 
-        
-        return {"success":"Email was successfully sent."}
+        return {"success": "Email was successfully sent."}
 
     except SMTPHeloError as e:
-        return {"error","The server didn't reply properly to the helo greeting. "}
+        return {"error", "The server didn't reply properly to the helo greeting. "}
     except SMTPRecipientsRefused as e:
-        return {"error","The server rejected ALL recipients (no mail was sent)."}
+        return {"error", "The server rejected ALL recipients (no mail was sent)."}
     except SMTPSenderRefused as e:
-        return {"error","The server didn't accept the sender's email"}
+        return {"error", "The server didn't accept the sender's email"}
     except SMTPDataError as e:
-        return {"error","The server replied with an unexpected"}
+        return {"error", "The server replied with an unexpected"}
     except Exception as e:
         return {"error":"Error occured while sending email."}
+
+
+#TODO: abstract this function in second release
+def update_curate_activity(locus_summary_object):
+    ''' Add curator locus-summary event to curator activity table
+    
+    Paramaters
+    ----------
+    locus_summary_object: LocusSummary
+        locus-summary object
+    
+    Returns
+    -------
+    bool: The return value. True for success, False otherwise
+    '''
+    flag = False
+    try:
+        curator_session = get_curator_session(locus_summary_object['created_by'])
+        existing = curator_session.query(CuratorActivity).filter(CuratorActivity.dbentity_id == locus_summary_object['dbentity_id']).one_or_none()
+        message = 'added'
+        if existing:
+            #curator_session.delete(existing)
+            message = 'updated'
+        new_curate_activity = CuratorActivity(
+            display_name=locus_summary_object['display_name'],
+            obj_url=locus_summary_object['obj_url'],
+            activity_category=locus_summary_object['activity_category'],
+            dbentity_id=locus_summary_object['dbentity_id'],
+            message=message,
+            json=locus_summary_object['json'],
+            created_by=locus_summary_object['created_by']
+        )
+        curator_session.add(new_curate_activity)
+        transaction.commit()
+        flag = True
+    except Exception as e:
+        traceback.print_exc()
+        transaction.abort()
+        raise(e)
+        
+    return flag
+
+
+def set_string_format(str_param, char_format='_'):
+    ''' format given string to replace space with underscore character
+    Parameters
+    ----------
+    string: str_param
+    string: char_format
+            needs to be single character
+    Returns
+    -------
+    string
+        returns formated string or empty string if parameter str_param is not provided/empty or if char_format length is greater than 1
+    '''
+    if str_param and len(char_format) == 1:
+        str_arr = str_param.strip().split(' ')
+        temp_str = ''
+        for element in str_arr:
+            temp_str += element + char_format
+        if temp_str.endswith(char_format):
+            temp_str = temp_str[:-1]
+        return temp_str
+    else:
+        return None
+
+def get_file_delimiter(file_upload):
+    ''' Check file delimiters
+
+    Parameters
+    ----------
+    file_upload: file
+
+    Returns
+    -------
+    string
+        delimiter character
+
+    '''
+
+    if file_upload:
+        temp = file_upload.readline()
+        dialect = csv.Sniffer().sniff(
+            temp, [',', '|', '\t', ';'])
+        file_upload.seek(0)
+        return dialect.delimiter
+    else:
+        raise ValueError(
+            'file format error, acceptable formats are txt, tsv, xls')
+#TODO: develop this into an endpoint that will check the file before uploading in the next release
+def summary_file_is_valid(file_upload):
+    ''' Check if file is valid for upload
+
+    Parameters
+    ----------
+    file_upload: file
+
+    Returns
+    -------
+    dict
+
+    '''
+
+    obj = {'message': '', 'flag': True}
+    header_literal = [
+        '# Feature',
+        'Summary Type (phenotype, regulation, disease, interaction, sequence, protein )',
+        'Summary', 'PMIDs'
+    ]
+    key_feature = re.compile(r".*feature$", re.IGNORECASE)
+    file_gene_ids = []
+    for item in file_upload:
+        for k, v in item.iteritems():
+            if key_feature.match(k):
+                gene_id = item.get(k, None)
+                if gene_id:
+                    file_gene_ids.append(gene_id.strip())
+                
+    valid_genes = DBSession.query(Locusdbentity.format_name).filter(
+        Locusdbentity.format_name.in_(file_gene_ids)).all()
+    valid_genes = [str(d[0]) for d in valid_genes]
+    invalid_genes = [d for d in file_gene_ids if d not in valid_genes]
+    if (len(item) != len(header_literal)):
+        obj['message'] = 'Row or header has incorrect number of columns'
+        obj['flag'] = False
+    if len(invalid_genes) > 0:
+        obj['message'] = 'Invalid gene identifier: ' + \
+            ', '.join(invalid_genes)
+        obj['flag'] = False
+    return obj
+
+
+def set_string_format(str_param, char_format='_'):
+    ''' format given string to replace space with underscore character
+    Parameters
+    ----------
+    string: str_param
+    string: char_format
+            needs to be single character
+    Returns
+    -------
+    string
+        returns formated string or empty string if parameter str_param is not provided/empty or if char_format length is greater than 1
+    '''
+    
+    if str_param and len(char_format) == 1:
+        str_arr = str_param.strip().split(' ')
+        temp_str = ''
+        for element in str_arr:
+            temp_str += element + char_format
+        if temp_str.endswith(char_format):
+            temp_str = temp_str[:-1]
+        return temp_str
+    else:
+        return None

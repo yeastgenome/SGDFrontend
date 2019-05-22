@@ -20,7 +20,22 @@ epub_pdf_status = 'NAP'
 
 _all_genes = None
 
-def add_paper(pmid, created_by="OTTO"):
+
+def add_paper(pmid, created_by="OTTO", method_obtained="Curator triage"):
+    """ Adds paper to referencedbentity table
+
+    Parameters
+    ----------
+    pmid: int
+    created_by: str, optional
+    method_obtained: str, optional
+
+    Returns
+    -------
+    object
+        reference object
+    """
+
     record = Medline.read(Entrez.efetch(db="pubmed", id=str(pmid), rettype='medline'))
     rec_keys = record.keys()
     if 'PMID' not in rec_keys:
@@ -30,9 +45,9 @@ def add_paper(pmid, created_by="OTTO"):
 
     ncbi = DBSession.query(Source).filter_by(format_name='NCBI').one_or_none()
     source_id = ncbi.source_id
-
     ## insert into DBENTITY/REFERENCEDBENTITY/REFERENCEDOCUMENT
-    [reference_id, authors, doi_url, pmc_url, sgdid, reference] = insert_referencedbentity(pmid, source_id, record, created_by)
+    [reference_id, authors, doi_url, pmc_url, sgdid, reference] = insert_referencedbentity(
+        pmid, source_id, record, created_by, method_obtained)
     insert_authors(reference_id, authors, source_id, created_by)
     insert_pubtypes(pmid, reference_id, record.get('PT', []), source_id, created_by)
     insert_urls(pmid, reference_id, doi_url, pmc_url, source_id, created_by)
@@ -81,6 +96,28 @@ def insert_pubtypes(pmid, reference_id, pubtypes, source_id, created_by):
 
 
 def insert_abstract(pmid, reference_id, record, source_id, journal_abbrev, journal_title, issn_print, created_by):
+    """ Add abstract to Referencedocument table
+
+    This method does not return anything, just does the necessary CRUD operations
+    
+    Parameters
+    ----------
+    pmid: int
+    reference_id: int
+    source_id: int
+    journal_abbrev: str
+    journal_title: str
+    issn_print: str
+    created_by: str
+
+    Return
+    ------
+    empty
+        does not return anything
+
+
+    """
+
     text = record.get('AB', '')
 
     if text == '':
@@ -164,7 +201,23 @@ def insert_authors(reference_id, authors, source_id, created_by):
     DBSession.refresh(x)
     
 
-def insert_referencedbentity(pmid, source_id, record, created_by):
+def insert_referencedbentity(pmid, source_id, record, created_by, method_obtained="Curator triage"):
+    """ Inserts referencedbentity object into table referencedbentity
+    
+    Parameters
+    ----------
+    pmid: int
+    source_id: int
+    record: dict
+    created_oby: str
+    method_obtained: str, optional
+
+    Returns
+    --------
+    list
+
+    """
+
     pubstatus, date_revised = get_pubstatus_date_revised(record)
     journal_id, journal, journal_title, issn_print = get_journal_id(record, created_by)
     pubdate = record.get('DP', None)
@@ -189,7 +242,7 @@ def insert_referencedbentity(pmid, source_id, record, created_by):
                           source_id = source_id,
                           subclass = 'REFERENCE',
                           dbentity_status = 'Active',
-                          method_obtained = 'Curator triage',
+                          method_obtained=method_obtained,
                           publication_status = publication_status,
                           fulltext_status = fulltext_status,
                           citation = citation,

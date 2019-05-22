@@ -127,7 +127,7 @@ def main(global_config, **settings):
     config.add_route('db_sign_in', '/db_sign_in')
     config.add_route('sign_out', '/signout')
     config.add_route('colleague_update', '/colleagues/{id}', request_method='PUT')
-    config.add_route('new_colleague', '/colleagues', request_method='POST')
+    # config.add_route('new_colleague', '/colleagues', request_method='POST')
     config.add_route('colleague_triage_index', '/colleagues/triage', request_method='GET')
     config.add_route('colleague_triage_show', '/colleagues/triage/{id}', request_method='GET')
     config.add_route('colleague_triage_update', '/colleagues/triage/{id}', request_method='PUT')
@@ -145,6 +145,9 @@ def main(global_config, **settings):
     # config.add_route('colleague_update', '/colleagues/{format_name}', request_method='PUT')
     config.add_route('colleague_get', '/colleagues/{format_name}', request_method='GET')
     config.add_route('refresh_homepage_cache', '/refresh_homepage_cache', request_method='POST')
+
+    #add new colleague
+    config.add_route('add_new_colleague_triage', '/colleagues', request_method='POST')
 
     config.add_route('get_new_reference_info', '/reference/confirm', request_method='POST')
     config.add_route('new_reference', '/reference', request_method='POST')
@@ -174,6 +177,10 @@ def main(global_config, **settings):
     config.add_route('reserved_name_promote', '/reservations/{id}/promote', request_method='PUT')
     config.add_route('new_gene_name_reservation', '/reserve', request_method='POST')
     config.add_route('healthcheck', '/healthcheck')
+
+    #swagger
+    #config.add_static_view('static', 'static', cache_max_age=3600)
+    config.add_route('api_portal', '/api', request_method='GET')
     config.scan()
     config.add_static_view(name='assets', path='./build')
 
