@@ -793,7 +793,12 @@ class Chebi(Base):
         obj = []
 
         for annotation in go_annotations:
-            obj += annotation.to_dict()
+            ## obj += annotation.to_dict() 
+            for annot in annotation.to_dict():
+                properties = annot.get("properties")
+                if properties is not None and len(properties) == 1 and properties[0]["bioentity"]["display_name"] != self.display_name:
+                    continue
+                obj.append(annot)
 
         return obj
 
