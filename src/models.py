@@ -750,10 +750,15 @@ class Chebi(Base):
         urls = DBSession.query(ChebiUrl).filter_by(chebi_id=self.chebi_id).all()
         synonyms = DBSession.query(ChebiAlia).filter_by(chebi_id=self.chebi_id).all()
 
+        is_ntr = 0
+        if self.chebiid.startswith("NTR:"):
+            is_ntr = 1
+
         obj = {
             "id": self.chebi_id,
             "display_name": self.display_name,
             "chebi_id": self.chebiid,
+            "is_ntr": is_ntr,
             "definition": self.description,
             "synonyms": [synonym.to_dict() for synonym in synonyms],
             "urls": [url.to_dict() for url in urls]
