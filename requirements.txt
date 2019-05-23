@@ -76,6 +76,6 @@ multiprocess==0.70.5
 primer3-py==0.5.5
 coverage==4.0.3
 python-coveralls==2.9.1
-pandas==0.22.0
-xlrd==1.2.0
 webcolors==1.8.1
+pandas==0.24.2
+xlrd==1.2.0

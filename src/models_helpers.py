@@ -1,4 +1,4 @@
-from models import DBSession, Base, Colleague, ColleagueLocus, ColleagueRelation, FilePath, Filedbentity, FileKeyword, Path, ColleagueReference, ColleagueUrl, Colleaguetriage, Dbentity, Locusdbentity, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi
+from models import DBSession, Base, Colleague, ColleagueLocus, ColleagueRelation, FilePath, Filedbentity, FileKeyword, Path, ColleagueReference, ColleagueUrl, Colleaguetriage, Dbentity, Locusdbentity, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi, Psimod, Posttranslationannotation
 import os
 import requests
 
@@ -394,3 +394,83 @@ class ModelsHelper(object):
                 return files
 
         return None
+
+
+
+
+
+
+    def get_dbentity_by_subclass(self,subclasses):
+        sgd_id_to_dbentity_id = {}
+        systematic_name_to_dbentity_id = {}
+        dbentity_all = DBSession.query(Dbentity).all()
+        for d in dbentity_all:
+            if d.subclass in subclasses:
+                sgd_id_to_dbentity_id[(d.sgdid, d.subclass)] = d.dbentity_id
+                systematic_name_to_dbentity_id[(d.format_name, d.subclass)] = d.dbentity_id
+        
+        return sgd_id_to_dbentity_id, systematic_name_to_dbentity_id
+
+    def get_common_strains(self):
+        strain_to_taxonomy_id = {}
+        strains_in_db = self.get_all_strains()
+        filtered_strains = list(filter(lambda strain: strain.strain_type == 'Alternative Reference' or strain.strain_type =='Reference' or strain.dbentity_id == 1364635, strains_in_db))
+        
+        for  s in filtered_strains:
+            strain_to_taxonomy_id[s.display_name.upper()] = s.taxonomy_id
+        
+        return strain_to_taxonomy_id
+
+    def get_psimod_all(self):
+        psimod_to_id = {}
+        psimod_in_db = DBSession.query(Psimod).all()
+        for p in psimod_in_db:
+            key = p.display_name.upper()
+            psimod_to_id[key] = p.psimod_id
+        
+        return psimod_to_id
+
+    def posttranslationannotation_with_key_index(self):
+        posttranslationannotation_to_site = {}
+        posttranslationannotation_in_db = DBSession.query(Posttranslationannotation).all()
+        for p in posttranslationannotation_in_db:
+            key = (p.reference_id, p.psimod_id, p.taxonomy_id, p.dbentity_id)
+            value = [p.site_index, p.site_residue]
+            posttranslationannotation_to_site[key] = value
+        
+        return posttranslationannotation_to_site
+
+    def get_references_all(self):
+        pubmed_id_to_reference = {}
+        reference_to_dbentity_id = []
+        references_in_db = DBSession.query(Referencedbentity).all()
+        for reference in references_in_db:
+            pubmed_id_to_reference[str(reference.pmid)] = reference.dbentity_id
+            reference_to_dbentity_id.append(str(reference.dbentity_id))
+
+        return pubmed_id_to_reference,reference_to_dbentity_id
+
+    def get_all_ptms_by_dbentity(self,dbentity_id):
+        '''
+        Get all PTMS by dbentity id
+        '''
+        ptms_in_db = None
+        ptms_in_db = DBSession.query(Posttranslationannotation).filter(Posttranslationannotation.dbentity_id == dbentity_id).order_by(
+            Posttranslationannotation.site_index.asc(), Posttranslationannotation.site_residue.asc()).all()
+        return ptms_in_db
+
+    def get_all_strains(self):
+        '''
+        Get all the strains
+        '''
+        strains_in_db = None
+        strains_in_db = DBSession.query(Straindbentity).order_by(Straindbentity.display_name).all()
+        return strains_in_db
+
+    def get_all_psimods(self):
+        '''
+        Get all psimods
+        '''
+        psimods_in_db = None
+        psimods_in_db = DBSession.query(Psimod).order_by(Psimod.display_name)
+        return psimods_in_db

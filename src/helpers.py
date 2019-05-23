@@ -649,26 +649,11 @@ def summary_file_is_valid(file_upload):
     return obj
 
 
-def set_string_format(str_param, char_format='_'):
-    ''' format given string to replace space with underscore character
-    Parameters
-    ----------
-    string: str_param
-    string: char_format
-            needs to be single character
-    Returns
-    -------
-    string
-        returns formated string or empty string if parameter str_param is not provided/empty or if char_format length is greater than 1
-    '''
-    
-    if str_param and len(char_format) == 1:
-        str_arr = str_param.strip().split(' ')
-        temp_str = ''
-        for element in str_arr:
-            temp_str += element + char_format
-        if temp_str.endswith(char_format):
-            temp_str = temp_str[:-1]
-        return temp_str
-    else:
+def unicode_to_string(unicode_value):
+    try:
+        returnValue = unicode_value.encode('ascii','ignore')
+        return returnValue
+    except UnicodeEncodeError as err:
         return None
+
+    
