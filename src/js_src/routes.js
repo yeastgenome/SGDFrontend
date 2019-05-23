@@ -22,6 +22,7 @@ import SpreadsheetUpload from './containers/spreadsheetUpload/index';
 import Settings from './containers/settings/index';
 import NotFound from './containers/curateHome/notFound';
 import NewsLetter from './containers/newsLetter/index';
+import PostTranslationModification from './containers/postTraslationModificaition/index';
 // curate lit biz
 import Blank from './components/blank';
 import NewReference from './containers/newReference';
@@ -52,6 +53,7 @@ export default (
       <Route component={requireAuthentication(SpreadsheetUpload)} path='spreadsheet_upload' />
       <Route component={requireAuthentication(Settings)} path='settings' />
       <Route component={requireAuthentication(NewsLetter)} path='newsletter' />
+      <Route component={requireAuthentication(PostTranslationModification)} path='ptm' />
       <Route component={Help} path='help' />
       <Route component={requireAuthentication(Search)} path='search' />
       <Route component={PublicHome} path='login' />

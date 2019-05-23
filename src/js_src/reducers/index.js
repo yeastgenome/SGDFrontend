@@ -4,6 +4,7 @@ import litReducer from './litReducer';
 import locusReducer from './locusReducer';
 import searchReducer from './searchReducer';
 import newsLetterReducer from './newsLetterReducer';
+import ptmReducer from './ptmReducer';
 
 export default {
   auth: authReducer,
@@ -11,5 +12,6 @@ export default {
   lit: litReducer,
   locus: locusReducer,
   search: searchReducer,
-  newsLetter:newsLetterReducer
+  newsLetter:newsLetterReducer,
+  ptm:ptmReducer
 };
