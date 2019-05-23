@@ -670,6 +670,9 @@ def chemical_side_effect(*args, **kwargs):
     if len(args) == 1 and str(args[0]) == "<class 'src.models.Chebi'>":
         chem = factory.ChebiFactory()
         return MockQuery(chem)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.ChebiAlia'>":
+        chebi_alias = factory.ChebiAliaFactory()
+        return MockQuery(chebi_alias)
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.ChebiUrl'>":
         url = factory.ChebiUrlFactory()
         return MockQuery(url)
@@ -701,6 +704,51 @@ def chemical_side_effect(*args, **kwargs):
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Apo'>":
         apo = factory.ApoFactory()
         return MockQuery(apo)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Interactor'>":
+        interactor = factory.InteractorFactory()
+        return MockQuery(interactor)
+    elif len(args) == 1 and str(args[0]) == "Interactor.interactor_id":
+        interactor = factory.InteractorFactory()
+        return MockQuery(interactor)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Complexbindingannotation'>":
+        bind = factory.ComplexbindingannotationFactory()
+        return MockQuery(bind)
+    elif len(args) == 1 and str(args[0]) == "Goextension.annotation_id":
+        ro = factory.RoFactory()
+        goext = factory.GoextensionFactory()
+        goext.ro = ro
+        return MockQuery(goext)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Goannotation'>":
+        source = factory.SourceFactory()
+        journal = factory.JournalFactory()
+        book = factory.BookFactory()
+        refdbentity = factory.ReferencedbentityFactory()
+        refdbentity.journal = journal
+        dbent = factory.DbentityFactory()
+        go = factory.GoFactory()
+        goannot = factory.GoannotationFactory()
+        goannot.go = go
+        goannot.dbentity = dbent
+        goannot.reference = refdbentity
+        goannot.source = source
+        return MockQuery(goannot)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.EcoAlias'>":
+        ecoalias = factory.EcAliasFactory()
+        return MockQuery(ecoalias)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.EcoUrl'>":
+        ecourl = factory.EcoUrlFactory()
+        return MockQuery(ecourl)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Goextension'>":
+        ro = factory.RoFactory()
+        goext = factory.GoextensionFactory()
+        goext.ro = ro
+        return MockQuery(goext)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Dbentity'>":
+        db = factory.DbentityFactory()
+        return MockQuery(db)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Gosupportingevidence'>":
+        goev = factory.GosupportingevidenceFactory()
+        return MockQuery(goev)
 
 def author_side_effect(*args, **kwargs):
     if len(args) == 1 and str(args[0]) == "<class 'src.models.Referenceauthor'>":

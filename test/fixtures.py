@@ -10,7 +10,7 @@ from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRela
     So, ContigUrl, LocusAlias, LocusAliasReferences, LocusReferences, LocussummaryReference, LocusUrl, Posttranslationannotation,\
     Psimod, Proteinexptannotation, Proteindomainannotation, Proteindomain, ProteindomainUrl, Ec, EcAlias, EcUrl, LocusRelation, LocusRelationReference, \
     Locusnote, LocusnoteReference, Pathwayannotation, Pathwaydbentity, PathwayUrl, Bindingmotifannotation, Disease, Diseaseannotation, \
-    Proteinabundanceannotation
+    Proteinabundanceannotation, ChebiAlia
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -1779,3 +1779,17 @@ class ProteinabundanceAnnotationFactory(factory.alchemy.SQLAlchemyModelFactory):
     created_by = "TOTO"
     median_value = "median value"
     median_abs_dev_value = "median abs dev value"
+
+class ChebiAliaFactory(factory.alchemy.SQLAlchemyModelFactory):
+
+    class Meta:
+        model = ChebiAlia
+        sqlalchemy_session = DBSession
+
+    alias_id = 1
+    display_name = "display name"
+    source_id = 1
+    chebi_id = 1
+    alias_type = "alias type"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
