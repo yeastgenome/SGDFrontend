@@ -2049,9 +2049,9 @@ def regulation_file(request):
         list_of_sheets = xl.sheet_names
 
         COLUMNS = {
-            'target_gene': 'Target Gene',
+            'target': 'Target Gene',
             'regulator_gene':'Regulator Gene',
-            'reference': 'Reference(sgdid,pubmed id,reference no)',
+            'reference': 'Reference',
             'taxonomy': 'Taxonomy',
             'eco':'Eco',
             'regulator_type': 'Regulator type',
@@ -2079,10 +2079,178 @@ def regulation_file(request):
             err = [e + '\n' for e in list_of_regulations_errors]
             return HTTPBadRequest(body=json.dumps({"error": list_of_regulations_errors}), content_type='text/json')
 
+
+        sgd_id_to_dbentity_id, systematic_name_to_dbentity_id = models_helper.get_dbentity_by_subclass(['LOCUS', 'REFERENCE'])
+        strain_to_taxonomy_id = models_helper.get_common_strains()
+        eco_displayname_to_id = models_helper.get_all_eco_mapping()
+        happensduring_to_id = models_helper.get_all_go_mapping()
+        pubmed_id_to_reference, reference_to_dbentity_id = models_helper.get_references_all()
+        list_of_regulator_types = ['chromatin modifier','transcription factor','protein modifier','RNA-binding protein','RNA modifier']
+        list_of_regulation_types = ['transcription','protein activity','protein stability','RNA activity','RNA stability']
+        list_of_directions = ['positive','negative']
+        list_of_annotation_types = ['manually curated','high-throughput']
+
+        for index_row,row in df.iterrows():
+            index  = index_row + 2;
+            column = ''
+            try:
+                regulation_existing = {
+                    'target_id': '',
+                    'regulator_id': '',
+                    'source_id':SOURCE_ID,
+                    'taxonomy_id': '',
+                    'reference_id': '',
+                    'eco_id': '',
+                    'regulator_type': '',
+                    'regulation_type': '',
+                    'direction': None,
+                    'happens_during': '',
+                    'annotation_type': ''
+                }
+                regualation_update = {}
+
+                column = COLUMNS['target']
+                target = row[column]
+                target_current = str(row[COLUMNS['target']].split(SEPARATOR)[0]).strip()
+                key = (target_current,'LOCUS')
+                
+                if key in sgd_id_to_dbentity_id:
+                    regulation_existing['target_id'] = sgd_id_to_dbentity_id[key]
+                elif(key in systematic_name_to_dbentity_id):
+                    regulation_existing['target_id'] = systematic_name_to_dbentity_id[key]
+                else:
+                    list_of_regulations_errors.append('Error in target gene on row ' + str(index)+ ', column ' + column)
+                    continue
+                
+                #TODO: Check for the seperator if it an update
+
+
+                column = COLUMNS['regulator_gene']
+                reglator_gene = row[column]
+                regulator_gene_current = str(row[COLUMNS['regulator_gene']].split(SEPARATOR)[0]).strip()
+                key = (regulator_gene_current,'LOCUS')
+                if key in sgd_id_to_dbentity_id:
+                    regulation_existing['regulator_id'] = sgd_id_to_dbentity_id[key]
+                elif(key in systematic_name_to_dbentity_id):
+                    regulation_existing['regulator_id'] = systematic_name_to_dbentity_id[key]
+                else:
+                    list_of_regulations_errors.append('Error in regulator gene on row ' + str(index)+ ', column ' + column)
+                    continue
+                
+                #TODO: Check for the seperator if it an update
+
+                column = COLUMNS['reference']
+                reference = row[column]
+                reference_current = str(row[COLUMNS['reference']]).split(SEPARATOR)[0]
+                key = (reference_current,'REFERENCE')
+                if(key in sgd_id_to_dbentity_id):
+                    regulation_existing['reference_id'] = sgd_id_to_dbentity_id[key]
+                elif(reference_current in pubmed_id_to_reference):
+                    regulation_existing['reference_id'] = pubmed_id_to_reference[reference_current]
+                elif(reference_current in reference_to_dbentity_id):
+                    regulation_existing['reference_id'] = int(reference_current)
+                else:
+                    list_of_regulations_errors.append('Error in reference on row ' + str(index) + ', column ' + column)
+                    continue
+                
+                #TODO: Check for the seperator if it an update
+                    
+                column = COLUMNS['taxonomy']
+                taxonomy = row[column]
+                taxonomy_current = str(row[COLUMNS['taxonomy']]).upper().split(SEPARATOR)[0]
+                if taxonomy_current in strain_to_taxonomy_id:
+                    regulation_existing['taxonomy_id'] = strain_to_taxonomy_id[taxonomy_current]
+                else:
+                    list_of_regulations_errors.append('Error in taxonomy on row ' + str(index) + ', column ' + column)
+                    continue
+                
+                #TODO: Check for the seperator if it an update
+
+                column = COLUMNS['eco']
+                eco = row[column]
+                eco_current = str(row[column]).split(SEPARATOR)[0]
+                if eco_current in eco_displayname_to_id:
+                    regulation_existing['eco_id'] = eco_displayname_to_id[eco_current]
+                else:
+                    list_of_regulations_errors.append('Error in eco on row ' + str(index) + ', column ' + column)
+                    continue
+                
+                #TODO: Check for the seperator if it an update
+
+
+                column = COLUMNS['regulator_type']
+                regulator_type = row[column]
+                regulator_type_current = str(row[column]).split(SEPARATOR)[0]
+                if regulator_type_current in list_of_regulator_types:
+                    regulation_existing['regulator_type'] = regulator_type_current
+                else:
+                    list_of_regulations_errors.append('Error in regulator type on row ' + str(index) + ', column ' + column)
+                    continue
+                #TODO: Check for the seperator if it an update
+
+                column = COLUMNS['regulation_type']
+                regulation_type = row[column]
+                regulation_type_current = str(row[column]).split(SEPARATOR)[0]
+                if regulation_type_current in list_of_regulation_types:
+                    regulation_existing['regulation_type'] = regulation_type_current
+                else:
+                    list_of_regulations_errors.append('Error in regulation type on row ' + str(index) + ', column ' + column)
+                    continue
+                
+                #TODO: Check for the seperator if it an update
+
+                column = COLUMNS['direction']
+                direction = row[column]
+                direction_current = None if pd.isnull(direction) else str(row[column]).split(SEPARATOR)[0]
+                if direction_current and direction_current not in list_of_directions:
+                    list_of_regulations_errors.append('Error in direction on row ' + str(index) + ', column ' + column)
+                    continue
+                else:
+                    regulation_existing['direction'] = direction_current
+                    
+                #TODO: Check for the seperator if it an update
+
+                column = COLUMNS['happens_during']
+                happens_during = row[column]
+                happens_during_current = str(row[column]).split(SEPARATOR)[0]
+                if happens_during_current in happensduring_to_id:
+                    regulation_existing['happens_during'] = happensduring_to_id[happens_during_current]
+                else:
+                    list_of_regulations_errors.append('Error in happens during on row ' + str(index) + ', column ' + column)
+                    continue
+                
+                #TODO: Check for the seperator if it an update
+
+                column = COLUMNS['annotation_type']
+                annotation_type = row[column]
+                annotation_type_current = str(row[column]).split(SEPARATOR)[0]
+                if annotation_type_current in list_of_annotation_types:
+                    regulation_existing['annotation_type'] = annotation_type_current
+                else:
+                    list_of_regulations_errors.append('Error in annotation type on row ' + str(index) + ', column ' + column)
+                    continue
+                    
+                #TODO: Check for the seperator if it an update
+                list_of_regulations.append(regulation_existing)
+            except Exception as e:
+                list_of_regulations_errors.append('Error in on row ' + str(index) + ', column ' + column + ' ' + e.message)
+        
+        #DEBUG:
+        return list_of_regulations
+
+        if list_of_regulations_errors:
+            err = [e + '\n' for e in list_of_regulations_errors]
+            return HTTPBadRequest(body=json.dumps({"error":list_of_regulations_errors}),content_type='text/json')
+        
+        INSERT = 0
+        UPDATE = 0
+        curator_session = get_curator_session(request.session['username'])
+        isSuccess = False
+        returnValue = ''
+
         #TODO:
-        #Process data
-        #Insert and Update
-        #Return value
+        #LOOP THROUGHT LIST FOR ADD OR UPDATE
+
 
     except Exception as e:
-        pass
+        return HTTPBadRequest(body=json.dumps({"error":str(e.message)}),content_type='text/json')
