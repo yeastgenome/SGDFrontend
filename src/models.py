@@ -894,7 +894,8 @@ class Chebi(Base):
         conditions = DBSession.query(PhenotypeannotationCond.annotation_id).filter_by(condition_class = 'chemical', condition_name=self.display_name).all()
 
         phenotype_annotations = DBSession.query(Phenotypeannotation).filter(Phenotypeannotation.annotation_id.in_(conditions)).all()            
-        
+
+        phenotype_to_id = {}
         for p in phenotype_annotations:
             pheno_id = "phenotype_" + str(p.annotation_id)
             conditions = DBSession.query(PhenotypeannotationCond).filter_by(annotation_id = p.annotation_id, condition_class = 'chemical').all() 
@@ -915,6 +916,11 @@ class Chebi(Base):
                         })
                         network_nodes_ids[c.format_name] = True
                     
+                    if p.phenotype.display_name in phenotype_to_id:
+                        pheno_id = phenotype_to_id[p.phenotype.display_name]
+                    else:
+                        phenotype_to_id[p.phenotype.display_name] = pheno_id 
+
                     if pheno_id not in network_nodes_ids:
                         network_nodes.append({
                             "name": p.phenotype.display_name,
