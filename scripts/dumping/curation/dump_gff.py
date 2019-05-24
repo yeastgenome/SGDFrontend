@@ -190,8 +190,6 @@ def dump_data():
 
             fw.write(";curie=" + sgdid + "\n")
 
-            # if type in ['ARS', 'telomere', 'transposable_element_gene']:
-            #    continue
             if x.annotation_id not in annotation_id_to_subfeatures or type in ['pseudogene']:
                 continue
 
@@ -199,15 +197,21 @@ def dump_data():
 
             start2phase = get_phase(subfeatures, x.strand)
 
-            for (display_name, contig_start_index, contig_end_index) in subfeatures:
+            telomeric_repeat_index = {}
 
-                if type == 'gene' and display_name == 'telomeric_repeat':
-                    continue
+            for (display_name, contig_start_index, contig_end_index) in subfeatures:
 
                 if display_name == 'non_transcribed_region':
                     continue
 
                 name = systematic_name + "_" + display_name
+
+                if systematic_name.startswith("TEL") and display_name == 'telomeric_repeat':
+                    index = 1
+                    if name in telomeric_repeat_index:
+                        index = telomeric_repeat_index[name] + 1
+                    telomeric_repeat_index[name] = index
+                    name = name + "_" + str(index)
 
                 phase = "."
                 if display_name == 'CDS':
