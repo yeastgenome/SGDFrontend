@@ -1,27 +1,36 @@
+import urllib
+import logging
+import os
 from datetime import datetime
 import sys
 reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('utf-8')
-sys.path.insert(0, '../../../src/')
-from models import Source, Chebi, ChebiUrl, ChebiAlia
-sys.path.insert(0, '../')
-from config import CREATED_BY
-from database_session import get_nex_session as get_session
-from ontology import read_owl  
+from src.models import Source, Chebi, ChebiUrl, ChebiAlia
+from scripts.loading.database_session import get_session
+from scripts.loading.ontology import read_owl
                  
 __author__ = 'sweng66'
 
 ## Created on May 2017
 ## This script is used to update APO ontology in NEX2.
 
-ontology_file = 'data/chebi.owl'
-log_file = 'logs/chebi.log'
+log_file = 'scripts/loading/ontology/logs/chebi.log'
 ontology = 'CHEBI'
 src = 'ChEBI'
+CREATED_BY = os.environ['DEFAULT_USER']
 
-def load_ontology():
+logging.basicConfig(format='%(message)s')
+log = logging.getLogger()
+log.setLevel(logging.INFO)
+
+log.info("Chebi Ontology Loading Report:\n")
+
+def load_ontology(ontology_file):
 
     nex_session = get_session()
+
+    log.info(str(datetime.now()))
+    log.info("Getting data from database...")
 
     source_to_id = dict([(x.display_name, x.source_id) for x in nex_session.query(Source).all()])
     chebiid_to_chebi =  dict([(x.chebiid, x) for x in nex_session.query(Chebi).all()])
@@ -37,9 +46,13 @@ def load_ontology():
     ####################################
     fw = open(log_file, "w")
 
+    log.info("Reading data from ontology file...")
+
     is_3_star_term = {}
     data = read_owl(ontology_file, ontology, is_3_star_term)
     
+    log.info("Updating chebi ontology data in the database...")
+
     [update_log, to_delete_list, term_name_changed] = load_new_data(nex_session, data, 
                                                                     source_to_id, 
                                                                     chebiid_to_chebi, 
@@ -47,12 +60,16 @@ def load_ontology():
                                                                     is_3_star_term,
                                                                     fw)
     
+    log.info("Writing loading summary...")
+
     write_summary_and_send_email(fw, update_log, to_delete_list, term_name_changed)
     
     nex_session.close()
 
     fw.close()
 
+    log.info(str(datetime.now()))
+    log.info("Done!\n\n")
 
 def load_new_data(nex_session, data, source_to_id, chebiid_to_chebi, chebi_id_to_alias, is_3_star_term, fw):
 
@@ -79,6 +96,11 @@ def load_new_data(nex_session, data, source_to_id, chebiid_to_chebi, chebi_id_to
             ## in database
             y = chebiid_to_chebi[x['id']]
             chebi_id = y.chebi_id
+            
+
+            print x['id']
+
+
 
             if y.is_obsolete is True:
                 y.is_obsolete = '0'
@@ -94,12 +116,9 @@ def load_new_data(nex_session, data, source_to_id, chebiid_to_chebi, chebi_id_to
                 term_name_changed = term_name_changed + "The display_name for " + x['id'] + " has been updated from " + y.display_name + " to " + x['term'] + "\n"
 
                 y.display_name = x['term']
-                # nex_session.add(y)
-                # nex_session.flush()
-                # update_log['updated'] = update_log['updated'] + 1
-                # print "UPDATED: ", y.chebiid, y.display_name, x['term']
-            # else:
-            #    print "SAME: ", y.chebiid, y.display_name, x['definition'], x['aliases']
+            if x['definition'] != y.description:
+                fw.write("The description for " + str(x['id']) + " has been updated from " + str(y.description) + " to " + str(x['definition']) + "\n")
+                y.description = x['definition']
             active_chebiid.append(x['id'])
         else:
             fw.write("NEW entry = " + x['id'] + " " + x['term'] + "\n")
@@ -232,7 +251,14 @@ def write_summary_and_send_email(fw, update_log, to_delete_list, term_name_chang
 
 if __name__ == "__main__":
         
-    load_ontology()
+    url_path = 'ftp://ftp.ebi.ac.uk/pub/databases/chebi/ontology/'
+    # chebi_owl_file = 'chebi_lite.owl'
+    chebi_owl_file = 'chebi.owl' 
+    urllib.urlretrieve(url_path + chebi_owl_file, chebi_owl_file)
+
+    load_ontology(chebi_owl_file)
+
+
 
 
     

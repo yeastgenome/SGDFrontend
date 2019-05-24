@@ -7,6 +7,7 @@ import ptmReducer from './ptmReducer';
 import newsLetterReducer from './newsLetterReducer';
 import regulationReducer from './regulationReducer';
 
+
 export default {
   auth: authReducer,
   meta: metaReducer,

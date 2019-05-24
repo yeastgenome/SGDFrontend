@@ -411,12 +411,13 @@ class ModelsHelper(object):
         
         return sgd_id_to_dbentity_id, systematic_name_to_dbentity_id
 
-    def get_straindbentity_by_strain_type(self,straintypes):
+    def get_common_strains(self):
         strain_to_taxonomy_id = {}
-        strains_in_db = DBSession.query(Straindbentity).all()
-        for s in strains_in_db:
-            if(s.strain_type in straintypes):
-                strain_to_taxonomy_id[s.display_name] = s.taxonomy_id
+        strains_in_db = self.get_all_strains()
+        filtered_strains = list(filter(lambda strain: strain.strain_type == 'Alternative Reference' or strain.strain_type =='Reference' or strain.dbentity_id == 1364635, strains_in_db))
+        
+        for  s in filtered_strains:
+            strain_to_taxonomy_id[s.display_name.upper()] = s.taxonomy_id
         
         return strain_to_taxonomy_id
 

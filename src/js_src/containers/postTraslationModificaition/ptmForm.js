@@ -42,7 +42,6 @@ class PtmForm extends Component {
   }
 
   handleChange() {
-    // event.preventDefault();
     var currentPtm = {};
     var data = new FormData(this.refs.form);
     for (var key of data.entries()) {

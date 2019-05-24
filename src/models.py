@@ -746,14 +746,29 @@ class Chebi(Base):
     source = relationship(u'Source')
 
     def to_dict(self):
+
         urls = DBSession.query(ChebiUrl).filter_by(chebi_id=self.chebi_id).all()
+        synonyms = DBSession.query(ChebiAlia).filter_by(chebi_id=self.chebi_id).all()
+
+        is_ntr = 0
+        if self.chebiid.startswith("NTR:"):
+            is_ntr = 1
 
         obj = {
             "id": self.chebi_id,
             "display_name": self.display_name,
             "chebi_id": self.chebiid,
+            "is_ntr": is_ntr,
+            "definition": self.description,
+            "synonyms": [synonym.to_dict() for synonym in synonyms],
             "urls": [url.to_dict() for url in urls]
         }
+        
+        ## need to fix the following...
+        obj["complexes"] = self.complex_to_dict() 
+        obj["phenotype"] = self.phenotype_to_dict()
+        obj["go"] = self.go_to_dict()
+        obj["network_graph"] = self.chemical_network()
 
         return obj
 
@@ -768,6 +783,224 @@ class Chebi(Base):
             obj += annotation.to_dict(chemical=self)
 
         return obj
+
+    def go_to_dict(self):
+
+        extensions = DBSession.query(Goextension.annotation_id).filter_by(dbxref_id=self.chebiid).all()
+
+        go_annotations = DBSession.query(Goannotation).filter(Goannotation.annotation_id.in_(extensions)).all()
+
+        obj = []
+
+        for annotation in go_annotations:
+            ## obj += annotation.to_dict() 
+            for annot in annotation.to_dict():
+                properties = annot.get("properties")
+                if properties is not None and len(properties) == 1 and properties[0]["bioentity"]["display_name"] != self.display_name:
+                    continue
+                obj.append(annot)
+
+        return obj
+
+    def complex_to_dict(self):
+
+        interactors = DBSession.query(Interactor.interactor_id).filter_by(format_name=self.chebiid).all()
+
+        annotations = DBSession.query(Complexbindingannotation).filter(Complexbindingannotation.interactor_id.in_(interactors)).all()
+
+        annotations2 = DBSession.query(Complexbindingannotation).filter(Complexbindingannotation.binding_interactor_id.in_(interactors)).all()
+
+        complexes = []
+        found = {}
+        for annotation in annotations + annotations2:
+            complex = annotation.complex
+            if complex.format_name in found:
+                continue
+            found[complex.format_name] = 1
+            complexes.append({ "display_name": complex.display_name,
+                               "intact_id": complex.intact_id,
+                               "format_name": complex.format_name,
+                               "link_url": complex.obj_url,
+                               "description": complex.description })
+
+        return complexes
+
+    def chemical_network(self):
+        
+        network_nodes =[]
+        network_edges =[]
+
+        network_nodes_ids = {}
+        network_edges_added = {}
+
+        network_nodes.append({
+            "name": self.display_name,
+            "id": self.format_name,
+            "href": "/chemical/" + self.format_name,
+            "category": "FOCUS",
+        })
+        network_nodes_ids[self.format_name] = True
+
+        ## go 
+        extensions = DBSession.query(Goextension.annotation_id).filter_by(dbxref_id=self.chebiid).all()
+
+        go_annotations = DBSession.query(Goannotation).filter(Goannotation.annotation_id.in_(extensions)).all()
+        
+        for g in go_annotations:
+            extensions = DBSession.query(Goextension).filter_by(annotation_id=g.annotation_id).all()
+            for ext in extensions:
+
+                if ext.dbxref_id.startswith("CHEBI:") and ext.dbxref_id != self.format_name:
+
+                    if ext.dbxref_id not in network_nodes_ids:
+
+                        chebi = DBSession.query(Chebi).filter_by(format_name=ext.dbxref_id).one_or_none()
+                        if chebi is None:
+                            continue
+
+                        network_nodes.append({
+                            "name": chebi.display_name,
+                            "id": ext.dbxref_id,
+                            "href": "/chemical/" + ext.dbxref_id,
+                            "category": "CHEMICAL",
+                        })
+                        network_nodes_ids[ext.dbxref_id] = True
+                
+                    if g.go.goid not in network_nodes_ids:
+                        network_nodes.append({
+                            "name": g.go.display_name,
+                            "id": g.go.goid,
+                            "href": g.go.obj_url,
+                            "category": "GO",
+                        })
+                        network_nodes_ids[g.go.goid] = True
+
+                    if (self.format_name,  g.go.goid) not in network_edges_added:
+                        network_edges.append({
+                            "source": self.format_name,
+                            "target": g.go.goid
+                        })
+                        network_edges_added[(self.format_name,  g.go.goid)] = True
+
+                    if (ext.dbxref_id, g.go.goid) not in network_edges_added:
+                        network_edges.append({
+                            "source": ext.dbxref_id,
+                            "target": g.go.goid
+                        })
+                        network_edges_added[(ext.dbxref_id,  g.go.goid)] = True
+            
+        ## phenotype
+
+        conditions = DBSession.query(PhenotypeannotationCond.annotation_id).filter_by(condition_class = 'chemical', condition_name=self.display_name).all()
+
+        phenotype_annotations = DBSession.query(Phenotypeannotation).filter(Phenotypeannotation.annotation_id.in_(conditions)).all()            
+        
+        for p in phenotype_annotations:
+            pheno_id = "phenotype_" + str(p.annotation_id)
+            conditions = DBSession.query(PhenotypeannotationCond).filter_by(annotation_id = p.annotation_id, condition_class = 'chemical').all() 
+            for cond in conditions:
+                chebiObjs = DBSession.query(Chebi).filter_by(display_name=cond.condition_name).all()
+                for c in chebiObjs:
+                    if c.format_name == self.format_name:
+                        continue
+                    if c.format_name not in network_nodes_ids:
+                        chebi = DBSession.query(Chebi).filter_by(format_name=c.format_name).one_or_none()
+                        if chebi is None:
+                            continue
+                        network_nodes.append({
+                                "name": chebi.display_name,
+                                "id": c.format_name,
+                                "href": "/chemical/" + c.format_name,
+                                "category": "CHEMICAL",
+                        })
+                        network_nodes_ids[c.format_name] = True
+                    
+                    if pheno_id not in network_nodes_ids:
+                        network_nodes.append({
+                            "name": p.phenotype.display_name,
+                            "id": pheno_id,
+                            "href": p.phenotype.obj_url,
+                            "category": "PHENOTYPE",
+                        })
+                        network_nodes_ids[pheno_id] = True
+
+                    if (self.format_name, pheno_id) not in network_edges_added:
+                        network_edges.append({
+                                "source": self.format_name,
+                                "target": pheno_id
+                        })
+                        network_edges_added[(self.format_name, pheno_id)] = True
+
+                    if (c.format_name, pheno_id) not in network_edges_added:
+                        network_edges.append({
+                                "source": c.format_name,
+                                "target": pheno_id
+                        })
+                        network_edges_added[(c.format_name, pheno_id)] = True
+                        
+        ## complex
+
+        interactors = DBSession.query(Interactor.interactor_id).filter_by(format_name=self.chebiid).all()
+
+        annotations = DBSession.query(Complexbindingannotation).filter(Complexbindingannotation.interactor_id.in_(interactors)).all()
+
+        annotations2 = DBSession.query(Complexbindingannotation).filter(Complexbindingannotation.binding_interactor_id.in_(interactors)).all()
+        
+        found = {}
+        for annotation in annotations + annotations2:
+            complex_id = annotation.complex_id
+            if complex_id in found:
+                continue
+            found[complex_id] = 1
+            annots = DBSession.query(Complexbindingannotation).filter_by(complex_id=complex_id).all()
+            
+            for a in annots:
+                interactors = DBSession.query(Interactor).filter_by(interactor_id=a.interactor_id).all()
+                binding_interactors = DBSession.query(Interactor).filter_by(interactor_id=a.binding_interactor_id).all()
+                
+                complex = a.complex
+
+                for i in interactors + binding_interactors:
+                    if i.format_name.startswith("CHEBI:") and i.format_name != self.format_name:
+                        if i.format_name not in network_nodes_ids:
+                            chebi = DBSession.query(Chebi).filter_by(format_name=i.format_name).one_or_none()
+                            if chebi is None:
+                                continue
+                            network_nodes.append({
+                                "name": chebi.display_name,
+                                "id": i.format_name,
+                                "href": "/chemical/" + i.format_name,
+                                "category": "CHEMICAL",
+                            })
+                            network_nodes_ids[i.format_name] = True
+
+                        if complex.format_name not in network_nodes_ids:
+                            network_nodes.append({
+                                    "name": complex.display_name,
+                                    "id": complex.format_name,
+                                    "href": "/complex/" + complex.format_name,
+                                    "category": "COMPLEX",
+                            })
+                            network_nodes_ids[complex.format_name] = True
+
+                        if (self.format_name, complex.format_name) not in network_edges_added:
+                            network_edges.append({
+                                    "source": self.format_name,
+                                    "target": complex.format_name
+                            })
+                            network_edges_added[(self.format_name, complex.format_name)] = True
+
+                        if (i.format_name, complex.format_name) not in network_edges_added:
+                            network_edges.append({
+                                    "source": i.format_name,
+                                    "target": complex.format_name
+                            })
+                            network_edges_added[(i.format_name, complex.format_name)] = True
+
+        data = { "edges": network_edges, "nodes": network_nodes }
+
+        return data
+
 
 class ChebiAlia(Base):
     __tablename__ = 'chebi_alias'
@@ -787,6 +1020,11 @@ class ChebiAlia(Base):
     chebi = relationship(u'Chebi')
     source = relationship(u'Source')
 
+    def to_dict(self):
+        return {
+            "display_name": self.display_name,
+            "synonym_type": self.alias_type
+        }
 
 class ChebiUrl(Base):
     __tablename__ = 'chebi_url'
@@ -880,7 +1118,10 @@ class Colleague(Base):
             'email': self.email,
             'display_email': self.display_email,
             'receive_quarterly_newsletter': self.is_contact,
-            'willing_to_be_beta_tester': self.is_beta_tester
+            'willing_to_be_beta_tester': self.is_beta_tester,
+            'colleague_id': self.colleague_id,
+            'link': self.obj_url,
+            'is_pi': self.is_pi
         }
 
     def to_dict_basic_data(self):
@@ -7174,6 +7415,7 @@ class Locussummary(Base):
             'value': self.text
         }
 
+   
 class LocussummaryReference(Base):
     __tablename__ = 'locussummary_reference'
     __table_args__ = (
@@ -9121,6 +9363,7 @@ class Complexbindingannotation(Base):
     taxonomy = relationship(u'Taxonomy')
     complex = relationship(u'Complexdbentity')
     psimi = relationship(u'Psimi')
+    
 
 class Interactor(Base):
     __tablename__ = 'interactor'

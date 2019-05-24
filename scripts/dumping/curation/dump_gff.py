@@ -7,6 +7,8 @@ sys.setdefaultencoding('UTF8')
 import boto
 from boto.s3.key import Key
 import transaction
+import gzip
+import shutil
 from src.models import Dbentity, Locusdbentity, LocusAlias, Dnasequenceannotation, \
                        Dnasubsequence, So, Contig, Go, Goannotation, Edam, Path, \
                        FilePath, Filedbentity, Source
@@ -47,7 +49,7 @@ def dump_data():
     edam_to_id = dict([(x.format_name, x.edam_id) for x in nex_session.query(Edam).all()])
     source_to_id = dict([(x.display_name, x.source_id) for x in nex_session.query(Source).all()])
     so_id_to_display_name = dict([(x.so_id, x.display_name) for x in nex_session.query(So).all()])
-    locus_id_to_sgdid = dict([(x.dbentity_id, x.sgdid) for x in nex_session.query(Dbentity).filter_by(subclass='LOCUS').all()])
+    locus_id_to_sgdid = dict([(x.dbentity_id, x.sgdid) for x in nex_session.query(Dbentity).filter_by(subclass='LOCUS', dbentity_status='Active').all()])
     
     log.info(str(datetime.now()))
     log.info("Getting alias data from the database...")
@@ -103,6 +105,9 @@ def dump_data():
 
         (contig_id, accession_id, length) = chr_to_contig[chr]
 
+        if chr == 'Mito':
+            chr = 'mt'
+
         fw.write("chr" + chr + "\tSGD\tchromosome\t1\t" + str(length) + "\t.\t.\t.\tID=chr" + chr + ";dbxref=NCBI:" + accession_id + ";Name=chr" + chr + "\n")
 
         # get features for each contig_id
@@ -111,15 +116,23 @@ def dump_data():
         gene_data = nex_session.query(Dnasequenceannotation).filter_by(contig_id=contig_id, dna_type='GENOMIC').order_by(Dnasequenceannotation.start_index, Dnasequenceannotation.end_index).all()
         
         annotation_id_to_subfeatures = {}
-
+        UTRs = {}
         for x in subfeature_data:
             subfeatures = []
             if x.annotation_id in annotation_id_to_subfeatures:
                 subfeatures = annotation_id_to_subfeatures[x.annotation_id]
             subfeatures.append((x.display_name, x.contig_start_index, x.contig_end_index))
             annotation_id_to_subfeatures[x.annotation_id] = subfeatures
+            if x.display_name == 'five_prime_UTR_intron':
+                UTRs[x.annotation_id] = (x.contig_start_index, x.contig_end_index)
 
         for x in gene_data:
+            
+            if x.dbentity_id not in locus_id_to_sgdid:
+                # deleted or merged
+                continue
+
+            sgdid = "SGD:" + locus_id_to_sgdid[x.dbentity_id]
 
             type = so_id_to_display_name[x.so_id]
             if type == 'ORF':
@@ -142,7 +155,20 @@ def dump_data():
                     alias_list = gene_name + "," + alias_list
                 else:
                     alias_list = gene_name
-            fw.write("chr" + chr + "\tSGD\t" + type + "\t" + str(x.start_index) + "\t" + str(x.end_index) + "\t.\t" + x.strand + "\t.\tID=" + systematic_name + ";Name=" + systematic_name)
+            systematic_name = do_escape(systematic_name)
+            strand = x.strand
+            if strand == '0':
+                strand = '.'
+            start_index = x.start_index
+            end_index = x.end_index
+            if x.annotation_id in UTRs:
+                (utrStart, utrEnd) = UTRs[x.annotation_id]
+                if utrStart < start_index:
+                    start_index = utrStart
+                else:
+                    end_index = utrEnd
+                    
+            fw.write("chr" + chr + "\tSGD\t" + type + "\t" + str(start_index) + "\t" + str(end_index) + "\t.\t" + strand + "\t.\tID=" + systematic_name + ";Name=" + systematic_name)
 
             if gene_name:
                 fw.write(";gene=" + gene_name)
@@ -157,8 +183,6 @@ def dump_data():
             if headline:
                 fw.write(";display=" + do_escape(headline))
 
-            sgdid = "SGD:" + locus_id_to_sgdid[x.dbentity_id]
-
             fw.write(";dbxref=" + sgdid)
 
             if qualifier:
@@ -168,7 +192,7 @@ def dump_data():
 
             # if type in ['ARS', 'telomere', 'transposable_element_gene']:
             #    continue
-            if x.annotation_id not in annotation_id_to_subfeatures:
+            if x.annotation_id not in annotation_id_to_subfeatures or type in ['pseudogene']:
                 continue
 
             subfeatures = annotation_id_to_subfeatures.get(x.annotation_id)
@@ -176,6 +200,12 @@ def dump_data():
             start2phase = get_phase(subfeatures, x.strand)
 
             for (display_name, contig_start_index, contig_end_index) in subfeatures:
+
+                if type == 'gene' and display_name == 'telomeric_repeat':
+                    continue
+
+                if display_name == 'non_transcribed_region':
+                    continue
 
                 name = systematic_name + "_" + display_name
 
@@ -190,21 +220,28 @@ def dump_data():
                         fw.write(";orf_classification=" + qualifier)
                     fw.write("\n")
                 else:
-                    fw.write("chr" + chr + "\tSGD\t" + display_name + "\t" + str(contig_start_index) + "\t" + str(contig_end_index) + "\t.\t" + x.strand + "\t" + str(phase) + "\tID=" + name + ";Name=" + name + ";dbxref=" + sgdid + ";curie=" + sgdid + "\n");
+                    fw.write("chr" + chr + "\tSGD\t" + display_name + "\t" + str(contig_start_index) + "\t" + str(contig_end_index) + "\t.\t" + strand + "\t" + str(phase) + "\tID=" + name + ";Name=" + name + ";dbxref=" + sgdid + ";curie=" + sgdid + "\n");
     
             if type == 'gene':
-                fw.write("chr" + chr + "\tSGD\tmRNA\t" + str(x.start_index) + "\t" + str(x.end_index) + "\t.\t" + x.strand + "\t.\tID=" + systematic_name + "_mRNA;Name=" + systematic_name + "_mRNA;Parent=" + systematic_name + "\n")
+                fw.write("chr" + chr + "\tSGD\tmRNA\t" + str(start_index) + "\t" + str(end_index) + "\t.\t" + x.strand + "\t.\tID=" + systematic_name + "_mRNA;Name=" + systematic_name + "_mRNA;Parent=" + systematic_name + "\n")
 
     # output 17 chr sequences at the end 
     
     for chr in chromosomes:
         seq = chr_to_seq[chr]
+        if chr == 'Mito':
+            chr = 'mt'
         fw.write(">chr"+ chr + "\n")
-        fw.write(formated_seq(seq) + "\n")
+        formattedSeq = formated_seq(seq)
+        fw.write(formattedSeq + "\n")
 
-    log.info("Uploading SGD_features file to S3...")
+    fw.close()
 
-    update_database_load_file_to_s3(nex_session, gff_file, source_to_id, edam_to_id, datestamp)
+    gzip_file =gzip_gff_file(gff_file,datestamp)
+
+    log.info("Uploading gff3 file to S3...")
+
+    update_database_load_file_to_s3(nex_session, gzip_file, source_to_id, edam_to_id)
 
     nex_session.close()
 
@@ -267,25 +304,25 @@ def upload_gff_to_s3(file, filename):
     k.make_public()
     transaction.commit()
 
-
-def update_database_load_file_to_s3(nex_session, gff_file, source_to_id, edam_to_id, datestamp):
+def gzip_gff_file(gff_file, datestamp):
 
     # gff_file  = saccharomyces_cerevisiae.gff
-    # gzip_file = saccharomyces_cerevisiae.20170114.gff.gz
-    
+    # gzip_file = saccharomyces_cerevisiae.20170114.gff.gz                                                                 
     gzip_file = gff_file.replace(".gff", "") + "." + datestamp + ".gff.gz"
-    import gzip
-    import shutil
+
     with open(gff_file, 'rb') as f_in, gzip.open(gzip_file, 'wb') as f_out:
-        shutil.copyfileobj(f_in, f_out)
+         shutil.copyfileobj(f_in, f_out)
+
+    return gzip_file
+
+
+def update_database_load_file_to_s3(nex_session, gzip_file, source_to_id, edam_to_id):
 
     local_file = open(gzip_file)
 
     ### upload a current GFF file to S3 with a static URL for Go Community ###
     upload_gff_to_s3(local_file, "latest/saccharomyces_cerevisiae.gff.gz")
     ##########################################################################
-
-    local_file = open(gzip_file)
 
     import hashlib
     gff_md5sum = hashlib.md5(local_file.read()).hexdigest()
