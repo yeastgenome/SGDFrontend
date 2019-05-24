@@ -488,3 +488,25 @@ class ModelsHelper(object):
         '''
         eco_in_db = DBSession.query(Eco).all()
         return eco_in_db
+
+    def get_all_eco_mapping(self):
+        '''
+        Get all ECO data as dictionary with key as display_name
+        ''' 
+        eco_displayname_to_Id = {}
+        eco_in_db = self.get_all_eco()
+        for eco in eco_in_db:
+            eco_displayname_to_Id[eco.display_name] = eco.eco_id
+        
+        return eco_displayname_to_Id
+    
+    def get_all_go_mapping(self):
+        '''
+        Get all GO data as dictionary with key as display_name
+        '''
+        go_displayname_to_Id = {}
+        go_in_db = self.get_all_go()
+        for go in go_in_db:
+            go_displayname_to_Id[go.display_name] = go.go_id
+        
+        return go_displayname_to_Id
