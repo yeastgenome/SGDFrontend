@@ -2041,6 +2041,7 @@ def regulation_delete(request):
 @view_config(route_name='regulation_file',renderer='json',request_method='POST')
 @authenticate
 def regulation_file(request):
+
     try:
         file = request.POST['file'].file
         filename = request.POST['file'].filename
@@ -2236,7 +2237,8 @@ def regulation_file(request):
                 list_of_regulations_errors.append('Error in on row ' + str(index) + ', column ' + column + ' ' + e.message)
         
         #DEBUG:
-        return list_of_regulations
+        # print(list_of_regulations_errors)
+        # return list_of_regulations
 
         if list_of_regulations_errors:
             err = [e + '\n' for e in list_of_regulations_errors]
@@ -2248,9 +2250,57 @@ def regulation_file(request):
         isSuccess = False
         returnValue = ''
 
-        #TODO:
-        #LOOP THROUGHT LIST FOR ADD OR UPDATE
-
+        if list_of_regulations:
+            for regulation in list_of_regulations:
+                #ADD NEW REGULATION
+                r = Regulationannotation(
+                    target_id = regulation['target_id'],
+                    regulator_id = regulation['regulator_id'], 
+                    source_id = SOURCE_ID,
+                    taxonomy_id = regulation['taxonomy_id'],
+                    reference_id = regulation['reference_id'], 
+                    eco_id = regulation['eco_id'],
+                    regulator_type = regulation['regulator_type'],
+                    regulation_type= regulation['regulation_type'],
+                    direction = regulation['direction'],
+                    happens_during = regulation['happens_during'],
+                    created_by = CREATED_BY,
+                    annotation_type = regulation['annotation_type']
+                )
+                curator_session.add(r)
+                INSERT = INSERT + 1
+            
+            try:
+                transaction.commit()
+                err = '\n'.join(list_of_regulations_errors)
+                isSuccess = True    
+                returnValue = 'Inserted: ' + str(INSERT) + ' Updated: ' + str(UPDATE) + ' Errors: ' + err
+            except IntegrityError as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = e.message
+            except DataError as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = e.message
+            except Exception as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = e.message
+            finally:
+                if curator_session:
+                    curator_session.close()
+        
+        if isSuccess:
+            return HTTPOk(body=json.dumps({"success": returnValue}), content_type='text/json')
+        
+        return HTTPBadRequest(body=json.dumps({'error': returnValue}), content_type='text/json')    
 
     except Exception as e:
         return HTTPBadRequest(body=json.dumps({"error":str(e.message)}),content_type='text/json')
