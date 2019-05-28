@@ -2149,10 +2149,10 @@ def regulation_file(request):
                     key = (reference_new,'REFERENCE')
                     if(key in sgd_id_to_dbentity_id):
                         regulation_update['reference_id'] = sgd_id_to_dbentity_id[key]
-                    elif(reference_current in pubmed_id_to_reference):
-                        regulation_update['reference_id'] = pubmed_id_to_reference[reference_current]
-                    elif(reference_current in reference_to_dbentity_id):
-                        regulation_update['reference_id'] = int(reference_current)
+                    elif(reference_new in pubmed_id_to_reference):
+                        regulation_update['reference_id'] = pubmed_id_to_reference[reference_new]
+                    elif(reference_new in reference_to_dbentity_id):
+                        regulation_update['reference_id'] = int(reference_new)
                     else:
                         list_of_regulations_errors.append('Error in reference on row ' + str(index) + ', column ' + column)
                         continue
