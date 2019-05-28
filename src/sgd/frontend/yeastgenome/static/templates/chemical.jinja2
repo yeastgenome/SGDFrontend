@@ -32,9 +32,14 @@
 	    {% if chemical.complexes|length > 0 %}
 	        add_navbar_element('Complexes', 'complex');
             {% endif %}
+
+	    <!--
 	    {% if chemical.network_graph.edges|length > 0 %}
 	        add_navbar_element('Shared Annotations', 'network');
             {% endif %}
+	    -->
+
+
 	    add_navbar_element('Resources', 'resources');
         </script>
 
@@ -154,6 +159,9 @@
 
 	<!-- Network diagram
 	================================================== -->
+
+	<!--
+
 	{% if chemical.network_graph.edges|length > 0 %}
     	<section id="network" data-magellan-destination="network">
         	 <div class="page-header">
@@ -172,6 +180,9 @@
                  </div>
         </section>
 	{% endif %}
+
+	-->
+
 
         <!-- Resources
         ================================================== -->
