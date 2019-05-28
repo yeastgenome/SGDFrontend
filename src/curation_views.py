@@ -2123,7 +2123,6 @@ def regulation_file(request):
                 target = row[column]
                 target_current = str(target.split(SEPARATOR)[0]).strip()
                 key = (target_current,'LOCUS')
-                
                 if key in sgd_id_to_dbentity_id:
                     regulation_existing['target_id'] = sgd_id_to_dbentity_id[key]
                 elif(key in systematic_name_to_dbentity_id):
@@ -2167,8 +2166,6 @@ def regulation_file(request):
                         list_of_regulations_errors.append('Error in regulator gene on row ' + str(index)+ ', column ' + column)
                         continue
                 
-
-
                 column = COLUMNS['reference']
                 reference = row[column]
                 reference_current = str(reference).split(SEPARATOR)[0]
@@ -2267,16 +2264,15 @@ def regulation_file(request):
                 
                 column = COLUMNS['direction']
                 direction = row[column]
-                direction_current = None if pd.isnull(direction) else str(direction).split(SEPARATOR)[0]
+                direction_current = None if pd.isnull(direction) else None if not str(direction).split(SEPARATOR)[0] else str(direction).split(SEPARATOR)[0]
                 if direction_current and direction_current not in list_of_directions:
                     list_of_regulations_errors.append('Error in direction on row ' + str(index) + ', column ' + column)
                     continue
                 else:
                     regulation_existing['direction'] = direction_current
 
-                #DEBUG:Check if value is null for update parameter
-                if SEPARATOR in direction:
-                    direction_new = None if pd.isnull(direction) else str(direction).split(SEPARATOR)[1]
+                if not pd.isnull(direction) and SEPARATOR in direction:
+                    direction_new = None if pd.isnull(direction) else None if not str(direction).split(SEPARATOR)[1] else str(direction).split(SEPARATOR)[1]
                     if direction_new and direction_new not in list_of_directions:
                         list_of_regulations_errors.append('Error in direction on row ' + str(index) + ', column ' + column)
                         continue
@@ -2322,7 +2318,6 @@ def regulation_file(request):
             except Exception as e:
                 list_of_regulations_errors.append('Error in on row ' + str(index) + ', column ' + column + ' ' + e.message)
         
-        
         if list_of_regulations_errors:
             err = [e + '\n' for e in list_of_regulations_errors]
             return HTTPBadRequest(body=json.dumps({"error":list_of_regulations_errors}),content_type='text/json')
@@ -2332,7 +2327,7 @@ def regulation_file(request):
         curator_session = get_curator_session(request.session['username'])
         isSuccess = False
         returnValue = ''
-
+        
         if list_of_regulations:
             for item in list_of_regulations:
                 regulation,update_regulation = item
