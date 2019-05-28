@@ -26,7 +26,7 @@ from .helpers import allowed_file, extract_id_request, secure_save_file,\
     FILE_EXTENSIONS, get_locus_by_id, get_go_by_id, set_string_format,\
     send_newsletter_email, get_file_delimiter, unicode_to_string
 from .curation_helpers import ban_from_cache, process_pmid_list,\
-    get_curator_session, get_pusher_client, validate_orcid, get_list_of_ptms
+    get_curator_session, get_pusher_client, validate_orcid, get_list_of_ptms,get_filtered_regulations
 from .loading.promote_reference_triage import add_paper
 from .models import DBSession, Dbentity, Dbuser, CuratorActivity, Colleague, Colleaguetriage, LocusnoteReference, Referencedbentity, Reservedname, ReservednameTriage, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags, convert_space_separated_pmids_to_list, Psimod, Posttranslationannotation,Regulationannotation
 from .tsv_parser import parse_tsv_annotations
@@ -1924,45 +1924,9 @@ def regulations_by_filters(request):
         regulator_id = request.params.get('regulator_id')
         reference_id = request.params.get('reference_id')
 
-        sgd_id_to_dbentity_id, systematic_name_to_dbentity_id = models_helper.get_dbentity_by_subclass(['LOCUS', 'REFERENCE'])
-        pubmed_id_to_reference, reference_to_dbentity_id = models_helper.get_references_all()
-        
-        key=(target_id,'LOCUS')
-        if(key in sgd_id_to_dbentity_id):
-            target_id = sgd_id_to_dbentity_id[key]
-        elif(key in systematic_name_to_dbentity_id):
-            target_id = systematic_name_to_dbentity_id[key]
-
-        key=(regulator_id,'LOCUS')
-        if(key in sgd_id_to_dbentity_id):
-            regulator_id = sgd_id_to_dbentity_id[key]
-        elif(key in systematic_name_to_dbentity_id):
-            regulator_id = systematic_name_to_dbentity_id[key]
-        
-        key = (reference_id, 'REFERENCE')
-        if(key in sgd_id_to_dbentity_id):
-            reference_id = sgd_id_to_dbentity_id[key]
-        elif(reference_id in pubmed_id_to_reference):
-            reference_id = pubmed_id_to_reference[reference_id]
-        elif(reference_id in reference_to_dbentity_id):
-            reference_id = int(reference_id)
-
-        if (not(target_id or regulator_id or reference_id)):
-            return HTTPBadRequest(body=json.dumps({'error':'Please provide Target gene or Regulator gene or reference.'}),content_type='text/json')
-
-
         regulations_in_db = DBSession.query(Regulationannotation)
-
-        if target_id:
-            regulations_in_db = regulations_in_db.filter(Regulationannotation.target_id == target_id)
-        
-        if regulator_id:
-            regulations_in_db = regulations_in_db.filter(Regulationannotation.regulator_id == regulator_id)
-        
-        if reference_id:
-            regulations_in_db = regulations_in_db.filter(Regulationannotation.reference_id == reference_id)
-
-        regulations = regulations_in_db.order_by(Regulationannotation.annotation_id.asc()).all()
+        regulations = get_filtered_regulations(regulations_in_db,models_helper,target_id,regulator_id,reference_id)
+        regulations = regulations.order_by(Regulationannotation.annotation_id.asc()).all()
         
         list_of_regulations = []
         for regulation in regulations:

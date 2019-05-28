@@ -167,3 +167,43 @@ def get_list_of_ptms(ptms):
     
     return list_of_ptms
 
+
+def get_filtered_regulations(regulations_in_db,models_helper,target_id,regulator_id,reference_id):
+    sgd_id_to_dbentity_id, systematic_name_to_dbentity_id = models_helper.get_dbentity_by_subclass(['LOCUS', 'REFERENCE'])
+    pubmed_id_to_reference, reference_to_dbentity_id = models_helper.get_references_all()
+    
+    key=(target_id,'LOCUS')
+    if(key in sgd_id_to_dbentity_id):
+        target_id = sgd_id_to_dbentity_id[key]
+    elif(key in systematic_name_to_dbentity_id):
+        target_id = systematic_name_to_dbentity_id[key]
+
+    key=(regulator_id,'LOCUS')
+    if(key in sgd_id_to_dbentity_id):
+        regulator_id = sgd_id_to_dbentity_id[key]
+    elif(key in systematic_name_to_dbentity_id):
+        regulator_id = systematic_name_to_dbentity_id[key]
+    
+    key = (reference_id, 'REFERENCE')
+    if(key in sgd_id_to_dbentity_id):
+        reference_id = sgd_id_to_dbentity_id[key]
+    elif(reference_id in pubmed_id_to_reference):
+        reference_id = pubmed_id_to_reference[reference_id]
+    elif(reference_id in reference_to_dbentity_id):
+        reference_id = int(reference_id)
+
+    if (not(target_id or regulator_id or reference_id)):
+        return HTTPBadRequest(body=json.dumps({'error':'Please provide Target gene or Regulator gene or reference.'}),content_type='text/json')
+
+
+    if target_id:
+        regulations_in_db = regulations_in_db.filter_by(target_id = target_id)
+    
+    if regulator_id:
+        regulations_in_db = regulations_in_db.filter_by(regulator_id = regulator_id)
+    
+    if reference_id:
+        regulations_in_db = regulations_in_db.filter_by(reference_id = reference_id)
+
+    return regulations_in_db
+
