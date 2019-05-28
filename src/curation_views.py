@@ -2035,7 +2035,7 @@ def regulation_file(request):
 
         null_columns = df.columns[df.isnull().any()]
         for col in null_columns:
-            if COLUMNS['direction'] != col:
+            if COLUMNS['direction'] != col and COLUMNS['happens_during'] !=col:
                 rows = df[df[col].isnull()].index.tolist()
                 rows = ','.join([str(r+2) for r in rows])
                 list_of_regulations_errors.append('No values in column ' + col + ' rows ' + rows)
@@ -2236,20 +2236,19 @@ def regulation_file(request):
                         
                 column = COLUMNS['happens_during']
                 happens_during = row[column]
-                happens_during_current = str(happens_during).split(SEPARATOR)[0]
-                if happens_during_current in happensduring_to_id:
-                    regulation_existing['happens_during'] = happensduring_to_id[happens_during_current]
+                # import pdb;pdb.set_trace()
+                happens_during_current = None if pd.isnull(happens_during) else None if not str(happens_during).split(SEPARATOR)[0] else str(happens_during).split(SEPARATOR)[0]
+                if happens_during_current and happens_during_current not in happensduring_to_id:
+                    list_of_regulations_errors.append('Error in direction on row ' + str(index) + ', column ' + column)
                 else:
-                    list_of_regulations_errors.append('Error in happens during on row ' + str(index) + ', column ' + column)
-                    continue
+                    regulation_existing['happens_during'] = None if happens_during_current == None else happensduring_to_id[happens_during_current]
                 
-                if SEPARATOR in happens_during:
-                    happens_during_new = str(happens_during).split(SEPARATOR)[1]
-                    if happens_during_new in happensduring_to_id:
-                        regulation_update['happens_during'] = happensduring_to_id[happens_during_new]
-                    else:
+                if not pd.isnull(happens_during) and SEPARATOR in happens_during:
+                    happens_during_new = None if pd.isnull(happens_during) else None if not str(happens_during).split(SEPARATOR)[1] else str(happens_during).split(SEPARATOR)[1]
+                    if happens_during_new and happens_during_new not in happensduring_to_id:
                         list_of_regulations_errors.append('Error in happens during on row ' + str(index) + ', column ' + column)
-                        continue    
+                    else:
+                        regulation_update['happens_during'] = None if happens_during_new == None else  happensduring_to_id[happens_during_new]
 
                 column = COLUMNS['annotation_type']
                 annotation_type = row[column]
@@ -2273,6 +2272,7 @@ def regulation_file(request):
             except Exception as e:
                 list_of_regulations_errors.append('Error in on row ' + str(index) + ', column ' + column + ' ' + e.message)
         
+
         if list_of_regulations_errors:
             err = [e + '\n' for e in list_of_regulations_errors]
             return HTTPBadRequest(body=json.dumps({"error":list_of_regulations_errors}),content_type='text/json')
