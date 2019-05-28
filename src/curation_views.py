@@ -2273,7 +2273,8 @@ def regulation_file(request):
                     continue
                 else:
                     regulation_existing['direction'] = direction_current
-                    
+
+                #DEBUG:Check if value is null for update parameter
                 if SEPARATOR in direction:
                     direction_new = None if pd.isnull(direction) else str(direction).split(SEPARATOR)[1]
                     if direction_new and direction_new not in list_of_directions:
@@ -2321,9 +2322,7 @@ def regulation_file(request):
             except Exception as e:
                 list_of_regulations_errors.append('Error in on row ' + str(index) + ', column ' + column + ' ' + e.message)
         
-        #DEBUG:
-        return HTTPBadRequest(body=json.dumps({"success":list_of_regulations}),content_type='text/json')
-
+        
         if list_of_regulations_errors:
             err = [e + '\n' for e in list_of_regulations_errors]
             return HTTPBadRequest(body=json.dumps({"error":list_of_regulations_errors}),content_type='text/json')
@@ -2335,24 +2334,51 @@ def regulation_file(request):
         returnValue = ''
 
         if list_of_regulations:
-            for regulation in list_of_regulations:
-                #ADD NEW REGULATION
-                r = Regulationannotation(
-                    target_id = regulation['target_id'],
-                    regulator_id = regulation['regulator_id'], 
-                    source_id = SOURCE_ID,
-                    taxonomy_id = regulation['taxonomy_id'],
-                    reference_id = regulation['reference_id'], 
-                    eco_id = regulation['eco_id'],
-                    regulator_type = regulation['regulator_type'],
-                    regulation_type= regulation['regulation_type'],
-                    direction = regulation['direction'],
-                    happens_during = regulation['happens_during'],
-                    created_by = CREATED_BY,
-                    annotation_type = regulation['annotation_type']
-                )
-                curator_session.add(r)
-                INSERT = INSERT + 1
+            for item in list_of_regulations:
+                regulation,update_regulation = item
+                if bool(update_regulation):
+                    regulation_in_db = curator_session.query(Regulationannotation).filter(and_(
+                        Regulationannotation.target_id == regulation['target_id'],
+                        Regulationannotation.regulator_id == regulation['regulator_id'],
+                        Regulationannotation.taxonomy_id == regulation['taxonomy_id'],
+                        Regulationannotation.reference_id == regulation['reference_id'],
+                        Regulationannotation.eco_id == regulation['eco_id'],
+                        Regulationannotation.regulator_type == regulation['regulator_type'],
+                        Regulationannotation.regulation_type == regulation['regulation_type'],
+                        Regulationannotation.annotation_type == regulation['annotation_type'],
+                        Regulationannotation.happens_during == regulation['happens_during']
+                        )).one_or_none()
+                    if regulation_in_db is not None:
+                        curator_session.query(Regulationannotation).filter(and_(
+                        Regulationannotation.target_id == regulation['target_id'],
+                        Regulationannotation.regulator_id == regulation['regulator_id'],
+                        Regulationannotation.taxonomy_id == regulation['taxonomy_id'],
+                        Regulationannotation.reference_id == regulation['reference_id'],
+                        Regulationannotation.eco_id == regulation['eco_id'],
+                        Regulationannotation.regulator_type == regulation['regulator_type'],
+                        Regulationannotation.regulation_type == regulation['regulation_type'],
+                        Regulationannotation.annotation_type == regulation['annotation_type'],
+                        Regulationannotation.happens_during == regulation['happens_during']
+                        )).update(update_regulation)
+                        UPDATE  = UPDATE + 1
+
+                else:    
+                    r = Regulationannotation(
+                        target_id = regulation['target_id'],
+                        regulator_id = regulation['regulator_id'], 
+                        source_id = SOURCE_ID,
+                        taxonomy_id = regulation['taxonomy_id'],
+                        reference_id = regulation['reference_id'], 
+                        eco_id = regulation['eco_id'],
+                        regulator_type = regulation['regulator_type'],
+                        regulation_type= regulation['regulation_type'],
+                        direction = regulation['direction'],
+                        happens_during = regulation['happens_during'],
+                        created_by = CREATED_BY,
+                        annotation_type = regulation['annotation_type']
+                    )
+                    curator_session.add(r)
+                    INSERT = INSERT + 1
             
             try:
                 transaction.commit()
