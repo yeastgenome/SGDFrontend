@@ -1764,7 +1764,7 @@ def regulation_insert_update(request):
 
         happens_during = request.params.get('happens_during')
         if not happens_during:
-            return HTTPBadRequest(body=json.dumps({'error': "happens during is blank"}), content_type='text/json')
+            happens_during = None
 
         annotation_type = request.params.get('annotation_type')
         if not annotation_type:
