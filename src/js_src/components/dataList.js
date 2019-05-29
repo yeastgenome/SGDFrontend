@@ -105,7 +105,7 @@ class DataList extends Component {
 
   render() {
     return (
-      <div className='columns medium-12'>
+      <div className={`columns medium-12 ${style.margin_bottom_20}`}>
         <input ref={(input) => { this.nameInput = input; }} type='text' className={style.noBottomMargin} onSelect={() => this.handleShowOptions()} onBlur={() => this.handleOnBlur()} onChange={this.handleChange.bind(this)} value={this.state.inputFieldText} />
         {this.renderOptions()}
         <input type='hidden' name={this.props.selectedIdName} value={this.state.selectedOptionId} />
