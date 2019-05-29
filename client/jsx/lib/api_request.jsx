@@ -28,11 +28,6 @@ export default function apiRequest(url, options) {
     catch(e){
       console.log({'error': e});
     }
-    catch(e){
-      console.log(e)
-      return {};
-    }
-   
   });
   return p;
-};
+}
