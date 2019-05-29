@@ -3,7 +3,7 @@ from pyramid.response import Response
 from src.sgd.frontend import config
 from urllib2 import Request, urlopen, URLError, HTTPError
 
-rest_url = "https://patmatch.yeastgenome.org/"
+rest_url = "https://patmatch.yeastgenome.org/cgi-bin/aws-restrictionmapper2"
 validate_url = "https://www.yeastgenome.org/backend/locus/"
             
 def do_restmap(request):
@@ -20,9 +20,7 @@ def _run_restrictionmap(p):
     if display_name is None:
         return { "ERROR": "not valid name" }
 
-    url = rest_url + "cgi-bin/aws-restrictionmapper" 
-
-    req = Request(url=url, data=paramData)
+    req = Request(url=rest_url, data=paramData)
     res = urlopen(req)
     result = res.read();
 

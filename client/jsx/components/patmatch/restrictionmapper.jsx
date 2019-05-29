@@ -87,9 +87,15 @@ const RestrictionMapper = React.createClass({
 
 			var notCutEnzymeTable = "";
                         var downloadLink = "";
-                        if (param['type'] == 'all') {
+                        if (param['type'] == 'all' || param['type'] == 'enzymes that do not cut') {
                              notCutEnzymeTable = this.getNotCutEnzymeTable(data['notCutEnzyme']);
-                             downloadLink = this.getDownloadLinks(data['downloadUrl'], data['downloadUrl4notCutEnzyme'])
+			     if (param['type'] == 'all') {
+			     	  downloadLink = this.getDownloadLinks(data['downloadUrl'], data['downloadUrl4notCutEnzyme']);
+			     }
+			     else {
+			     	  downloadLink = this.getDownloadLinks('', data['downloadUrl4notCutEnzyme']);
+
+			     }
                         }
                         else {
                              downloadLink = this.getDownloadLinks(data['downloadUrl'], '');
@@ -97,6 +103,17 @@ const RestrictionMapper = React.createClass({
 
 			var desc = this.getDesc(data['seqName'], seqLength, data['chrCoords']);
 			 
+			if (param['type'] == 'enzymes that do not cut') {
+			     return (<div>
+                               	    <div className="row">
+                                    	 <p dangerouslySetInnerHTML={{ __html: desc }} />
+                                    	 <p dangerouslySetInnerHTML={{ __html: downloadLink}} />
+					 <p>{ notCutEnzymeTable }</p>
+                                    	 <p dangerouslySetInnerHTML={{ __html: downloadLink}} />
+                                    </div>
+                             </div>);
+			}
+
 			var graphNode = (<RestBarChart 
                                 data={cuts}
 				seqLength={seqLength}
@@ -166,13 +183,18 @@ const RestrictionMapper = React.createClass({
 
 	getGeneNode() {
 			  
-                return (<div style={{ textAlign: "top" }}>
-			<p>Enter a single standard gene name (or ORF or SGDID);<br></br>
-			   for non-gene features (such as RNAs, CENs or ARSs)<br></br>
-			   use the GSR tool as described above. Example: SIR2,<br></br>
-			   YHR023W, or SGD:S000000001.
-			<input type='text' name='gene' ref='gene' onChange={this._onChange}  size='50'></input>
-			</p>
+                // return (<div style={{ textAlign: "top" }}>
+		//	<p>Enter a single standard gene name (or ORF or SGDID);<br></br>
+		//	   for non-gene features (such as RNAs, CENs or ARSs)<br></br>
+		//	   use the GSR tool as described above. Example: SIR2,<br></br>
+		//	   YHR023W, or SGD:S000000001.
+		//	<input type='text' name='gene' ref='gene' onChange={this._onChange}  size='50'></input>
+		//	</p>
+                // </div>);
+
+		return (<div style={{ textAlign: "top" }}>
+                        <p>Enter a single standard gene name (or ORF or SGDID); for non-gene features (such as RNAs, CENs or ARSs) use the GSR tool as described above. <br></br>Example: SIR2, YHR023W, or SGD:S000000001.</p>
+                        <input type='text' name='gene' ref='gene' onChange={this._onChange}  size='50'></input>
                 </div>);
 
         },
@@ -198,7 +220,7 @@ const RestrictionMapper = React.createClass({
 
 		if (sequence) {
 		       return(<div>
-				<textarea ref='seq' value={sequence} onChange={this.onChange} rows='5' cols='75'></textarea>
+				<textarea ref='seq' value={sequence} onChange={this.onChange} rows='5' cols='200'></textarea>
 				<input type='hidden' name='seq_id' ref='seq_id' value={localSeqID}></input>
 		       		Only DNA sequences containing A, G, C, and T are allowed. Any other characters will be removed automatically before analysis. 
                        </div>);
@@ -207,7 +229,7 @@ const RestrictionMapper = React.createClass({
 		       return(<div>
                                 <textarea ref='seq' onChange={this.onChange} rows='5' cols='75'></textarea>
                                 <input type='hidden' name='seq_id' ref='seq_id' value={localSeqID}></input>
-                                Only DNA sequences containing A, G, C, and T are allowed. Any other characters will be removed automatically before analysis. 
+                                <p>Only DNA sequences containing A, G, C, and T are allowed. Any other characters will be removed automatically before analysis.</p>
                        </div>);
 
 		}    
@@ -216,7 +238,7 @@ const RestrictionMapper = React.createClass({
 
 	getEnzymeNode() {
 
-                var enzymes = ["all", "3'overhang", "5'overhang", "blunt end", "cut once", "cut twice", "Six-base cutters"];
+                var enzymes = ["all", "3'overhang", "5'overhang", "blunt end", "cut once", "cut twice", "Six-base cutters", "enzymes that do not cut"];
 
                 var _elements = _.map(enzymes, e => {
                        if (e == 'all') {
@@ -229,8 +251,7 @@ const RestrictionMapper = React.createClass({
 
                 return(<div>
                        <span style={ style.textFont }><strong>Step 2: Choose Restriction Enzyme Set: </strong></span>
-                       <p><select ref='type' name='type' onChange={this.onChange}>{_elements}</select>
-		       <font color='red'>Note</font>: To find enzymes that do not cut, choose 'all' and then choose the "Download 'Do Not Cut' Enzyme List" option and/or see the "do not cut" list at bottom of the Results page.</p>
+                       <p><select ref='type' name='type' onChange={this.onChange}>{_elements}</select></p>
                 </div>);
 
         },
@@ -238,7 +259,7 @@ const RestrictionMapper = React.createClass({
 	getSubmitNode: function() {
 
 		return(<div>
-                      <p><input type="submit" value="DISPLAY MAP" className="button secondary"></input><input type="reset" value="RESET FORM" className="button secondary"></input>
+                      <p><input type="submit" value="Display Result" className="button secondary"></input><input type="reset" value="Reset Form" className="button secondary"></input>
                       </p>
                 </div>);
 
@@ -305,13 +326,17 @@ const RestrictionMapper = React.createClass({
 		var paramData = {};
 		var param = this.state.param;
 		paramData['type'] = param['type'];
+		var seq_id = param['seq_id'];
 
 		if (searchType == 'gene') {
                    var gene = value;
                    gene = gene.replace("SGD:", "");
                    gene = gene.replace("SGD%3A", "");
                    paramData['name'] = gene;
-                   this.sendRequest(paramData)
+                   this.sendRequest(paramData);
+		   if (!seq_id) {
+		      window.localStorage.clear();
+	           }
                    return
                 }
 
@@ -321,7 +346,8 @@ const RestrictionMapper = React.createClass({
 		   // seq = seq.replace(/%0A/g, '');
 		   // seq = seq.toUpperCase().replace(/[^ATCG]/g, '');
 		   paramData['seq'] = value;
-		   this.sendRequest(paramData)
+		   this.sendRequest(paramData);
+		   window.localStorage.clear();
                    return
 		}		
  		
@@ -348,9 +374,15 @@ const RestrictionMapper = React.createClass({
 
 	getDownloadLinks(url, url4notCutEnzyme) {
 
-	        var links =  "<a href='" + url + "' target='dl_win'>Download Restriction Site Results</a>"; 
-	        if (url4notCutEnzyme) {
-		      links = links + " | <a href='" + url4notCutEnzyme + "' target='dl_win'>Download 'Do Not Cut' Enzyme List</a>";  
+	        var links =  "";
+		if (url && url4notCutEnzyme) {	   
+		     links = "<a href='" + url + "' target='dl_win'>Download Restriction Site Results</a> | <a href='" + url4notCutEnzyme + "' target='dl_win'>Download 'Do Not Cut' Enzyme List</a>";
+		} 
+	        else if (url4notCutEnzyme) {
+		     links = "<a href='" + url4notCutEnzyme + "' target='dl_win'>Download 'Do Not Cut' Enzyme List</a>";  
+		}
+		else {
+		     links = "<a href='" + url + "' target='dl_win'>Download Restriction Site Results</a>";
 		}
 		return "<center><h3>" + links + "</h3></center>";
 

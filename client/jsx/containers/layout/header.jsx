@@ -213,6 +213,7 @@ const Header = React.createClass({
                 <li><a className="disabled-header-a" href="http://wiki.yeastgenome.org/index.php/Main_Page">Wiki</a></li>
                 <li><a className="s-disabled" href="/cgi-bin/submitData.pl">Submit Data</a></li>
                 <li><a className="disabled-header-a" href="http://wiki.yeastgenome.org/index.php/External_Links">Resources</a></li>
+                <li><a className="disabled-header-a" href="#">API</a></li>
               </ul>
             </li>
             <li className="has-dropdown" id="info-menu"><a href="#">Info &amp; Downloads</a>
