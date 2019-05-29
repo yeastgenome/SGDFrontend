@@ -17,11 +17,22 @@ export default function apiRequest(url, options) {
     })
   ]).then( response => {
     // if not 200 or 400 throw unknown error
-    if ([200, 400].indexOf(response.status) < 0) {
-      throw new Error('There was an API error.  Please refresh and try again.  If you continue to see this message, please contact sgd-programmers@lists.stanford.edu.');
-    } else {
-      return response.json();
+    try{
+       if ([200, 400].indexOf(response.status) < 0) {
+         throw new Error('There was an API error.  Please refresh and try again.  If you continue to see this message, please contact sgd-programmers@lists.stanford.edu.');
+       } 
+       else {
+         return response.json();
+       }
     }
+    catch(e){
+      console.log({'error': e});
+    }
+    catch(e){
+      console.log(e)
+      return {};
+    }
+   
   });
   return p;
 };

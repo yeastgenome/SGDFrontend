@@ -34,6 +34,7 @@
     "clipboard": "^1.5.12",
     "clusterfck": "~0.6.0",
     "d3": "~3.5.6",
+    "grunt-contrib-uglify-es": "github:gruntjs/grunt-contrib-uglify#harmony",
     "history": "^1.17.0",
     "isomorphic-fetch": "^2.1.1",
     "pluralize": "^1.2.1",
@@ -50,6 +51,7 @@
     "redux-thunk": "^1.0.0",
     "sgd_visualization": "^1.0.12",
     "string": "^3.3.3",
+    "swagger-ui-dist": "^3.21.0",
     "tcomb-form": "^0.8.0",
     "tcomb-json-schema": "^0.2.3",
     "underscore": "~1.6.0"
