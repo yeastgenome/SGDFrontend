@@ -66,7 +66,7 @@ class FileUpload extends Component{
           <p>Template File: </p>
           </div>
           <div className='columns medium-6 end'>
-            <a href='https://docs.google.com/spreadsheets/d/1Hd3bvvlEEtx-ubgF42uGDA8F4_B5ryaOJivzqk059hA/edit?usp=sharing' target='_blank' >PTM template file </a>
+            <a href='https://docs.google.com/spreadsheets/d/1Hd3bvvlEEtx-ubgF42uGDA8F4_B5ryaOJivzqk059hA/edit?usp=sharing' rel="noopener noreferrer" target='_blank' >PTM template file </a>
           </div>
         </div>
 
