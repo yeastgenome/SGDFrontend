@@ -1,9 +1,10 @@
+import pandas as pd
 from oauth2client import client, crypt
 from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPOk, HTTPNotFound, HTTPFound
 from pyramid.view import view_config
 from pyramid.session import check_csrf_token
-from sqlalchemy import create_engine, and_
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy import create_engine, and_ , or_
+from sqlalchemy.exc import IntegrityError,DataError
 from sqlalchemy.orm import scoped_session, sessionmaker
 from validate_email import validate_email
 from random import randint
@@ -18,10 +19,16 @@ import json
 import re
 from bs4 import BeautifulSoup
 
-from .helpers import allowed_file, extract_id_request, secure_save_file, curator_or_none, extract_references, extract_keywords, get_or_create_filepath, extract_topic, extract_format, file_already_uploaded, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id,send_newsletter_email
-from .curation_helpers import ban_from_cache, process_pmid_list, get_curator_session, get_pusher_client, validate_orcid
+from .helpers import allowed_file, extract_id_request, secure_save_file,\
+    curator_or_none, extract_references, extract_keywords,\
+    get_or_create_filepath, extract_topic, extract_format,\
+    file_already_uploaded, link_references_to_file, link_keywords_to_file,\
+    FILE_EXTENSIONS, get_locus_by_id, get_go_by_id, set_string_format,\
+    send_newsletter_email, get_file_delimiter, unicode_to_string
+from .curation_helpers import ban_from_cache, process_pmid_list,\
+    get_curator_session, get_pusher_client, validate_orcid, get_list_of_ptms
 from .loading.promote_reference_triage import add_paper
-from .models import DBSession, Dbentity, Dbuser, CuratorActivity, Colleague, Colleaguetriage, LocusnoteReference, Referencedbentity, Reservedname, ReservednameTriage, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags, convert_space_separated_pmids_to_list
+from .models import DBSession, Dbentity, Dbuser, CuratorActivity, Colleague, Colleaguetriage, LocusnoteReference, Referencedbentity, Reservedname, ReservednameTriage, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags, convert_space_separated_pmids_to_list, Psimod, Posttranslationannotation
 from .tsv_parser import parse_tsv_annotations
 from .models_helpers import ModelsHelper
 
@@ -29,6 +36,10 @@ logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.ERROR)
 log = logging.getLogger()
 models_helper = ModelsHelper()
+
+
+
+
 
 def authenticate(view_callable):
     def inner(context, request):
@@ -38,10 +49,13 @@ def authenticate(view_callable):
             return view_callable(request)
     return inner
 
+
 @view_config(route_name='account', request_method='GET', renderer='json')
 @authenticate
 def account(request):
-    return { 'username': request.session['username'] }
+    return {'username': request.session['username']}
+
+
 
 @view_config(route_name='get_locus_curate', request_method='GET', renderer='json')
 @authenticate
@@ -49,6 +63,7 @@ def get_locus_curate(request):
     id = extract_id_request(request, 'locus', param_name="sgdid")
     locus = get_locus_by_id(id)
     return locus.to_curate_dict()
+
 
 @view_config(route_name='locus_curate_summaries', request_method='PUT', renderer='json')
 @authenticate
@@ -69,6 +84,7 @@ def locus_curate_summaries(request):
         return locus.get_summary_dict()
     except ValueError as e:
         return HTTPBadRequest(body=json.dumps({ 'error': str(e) }), content_type='text/json')
+
 
 @view_config(route_name='locus_curate_basic', request_method='PUT', renderer='json')
 @authenticate
@@ -144,7 +160,8 @@ def new_reference(request):
         for x in references:
             pmid = x['pmid']
             Referencedbentity.clear_from_triage_and_deleted(pmid, username)
-            new_ref = add_paper(pmid, username)
+            new_ref = add_paper(
+                pmid, username, method_obtained="Curator PubMed reference")
         transaction.commit()
         # sync to curator activity
         for x in references:
@@ -416,13 +433,15 @@ def get_recent_annotations(request):
 @authenticate
 def upload_spreadsheet(request):
     try:
-        tsv_file = request.POST['file'].file
+        file_upload = request.POST['file'].file
         filename = request.POST['file'].filename
         template_type = request.POST['template']
         username = request.session['username']
-        #annotations = parse_tsv_annotations(DBSession, tsv_file, filename, template_type, request.session['username'])
-        annotations = parse_tsv_annotations(DBSession, tsv_file, filename, template_type, username)
-
+        file_ext = os.path.splitext(filename)[1].replace('.','').strip()
+        delimiter = '\t'
+        if file_ext in ('csv', 'tsv', 'txt',):
+            delimiter = get_file_delimiter(file_upload)
+        annotations = parse_tsv_annotations(DBSession, file_upload, filename, template_type, username, delimiter)
         pusher = get_pusher_client()
         pusher.trigger('sgd', 'curateHomeUpdate', {})
         return {'annotations': annotations}
@@ -431,6 +450,12 @@ def upload_spreadsheet(request):
     except AttributeError:
         traceback.print_exc()
         return HTTPBadRequest(body=json.dumps({ 'error': 'Please attach a valid TSV file.' }), content_type='text/json')
+    except IntegrityError as IE:
+        traceback.print_exc()
+        if 'already exists' in IE.message:
+            return HTTPBadRequest(body=json.dumps({'error': 'Unable to process file upload. Record already exists.'}), content_type='text/json')
+        else:
+            return HTTPBadRequest(body=json.dumps({'error': 'Unable to process file upload. Database error occured while updating your entry.'}), content_type='text/json')
     except:
         traceback.print_exc()
         return HTTPBadRequest(body=json.dumps({ 'error': 'Unable to process file upload. Please try again.' }), content_type='text/json')
@@ -561,8 +586,9 @@ def colleague_update(request):
         is_changed = False
         old_dict = colleague.to_simple_dict()
         for x in old_dict.keys():
-            if old_dict[x] != data[x]:
-                is_changed = True
+            if data.get(x) is not None:
+                if old_dict[x] != data[x]:
+                    is_changed = True
         if is_changed:
             existing_triage = DBSession.query(Colleaguetriage).filter(Colleaguetriage.colleague_id == req_id).one_or_none()
             if existing_triage:
@@ -574,6 +600,7 @@ def colleague_update(request):
                     triage_type='Update',
                 )
                 DBSession.add(new_c_triage)
+                colleague.is_in_triage = True
             transaction.commit()
             return { 'colleague_id': req_id }
         else:
@@ -583,7 +610,7 @@ def colleague_update(request):
         transaction.abort()
         log.error(e)
         return HTTPBadRequest(body=json.dumps({ 'message': str(e) }), content_type='text/json')
-
+'''
 # not authenticated to allow the public submission
 @view_config(route_name='new_colleague', renderer='json', request_method='POST')
 def new_colleague(request):
@@ -643,6 +670,8 @@ def new_colleague(request):
         transaction.abort()
         log.error(e)
         return HTTPBadRequest(body=json.dumps({ 'message': str(e) }), content_type='text/json')
+'''
+
 
 @view_config(route_name='reserved_name_index', renderer='json')
 @authenticate
@@ -819,20 +848,69 @@ def colleague_triage_update(request):
         return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
     return True
 
+
 @view_config(route_name='colleague_triage_promote', renderer='json', request_method='PUT')
 @authenticate
 def colleague_triage_promote(request):
     if not check_csrf_token(request, raises=False):
-        return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
+        return HTTPBadRequest(body=json.dumps({'error': 'Bad CSRF Token'}))
     curator_session = None
     try:
         username = request.session['username']
         curator_session = get_curator_session(username)
         req_id = int(request.matchdict['id'])
         params = request.json_body
-        c_triage = curator_session.query(Colleaguetriage).filter(Colleaguetriage.curation_id == req_id).one_or_none()
+        full_name = params['first_name'] + ' ' + params['last_name']
+        format_name = set_string_format(full_name) + str(randint(1, 100))
+        c_triage = curator_session.query(Colleaguetriage).filter(
+            Colleaguetriage.curation_id == req_id).one_or_none()
         if not c_triage:
             return HTTPNotFound()
+        orcid = params.get('orcid')
+        first_name = params.get('first_name')
+        last_name = params.get('last_name')
+        email = params.get('email')
+        is_beta_tester = params.get('willing_to_be_beta_tester')
+        display_email = params.get('display_email')
+        is_contact = params.get('receive_quarterly_newsletter')
+
+        if c_triage.colleague_id:
+            colleague = DBSession.query(Colleague).filter(
+                Colleague.colleague_id == c_triage.colleague_id).one_or_none()
+            if (colleague.first_name != first_name or colleague.last_name != last_name):
+                colleague.first_name = first_name
+                colleague.last_name = last_name
+                colleague.format_name = format_name
+                colleague.display_name = full_name
+                colleague.obj_url = '/colleague/' + format_name
+            colleague.orcid = orcid
+            colleague.email = email
+            colleague.display_email = display_email
+            colleague.is_contact = is_contact
+            colleague.is_beta_tester = is_beta_tester
+            colleague.is_in_triage = False
+
+            # get_username_from_db_uri() if colleague.created_by == 'OTTO' else username
+        else:
+            new_colleague = Colleague(
+                format_name=format_name,
+                display_name=full_name,
+                obj_url='/colleague/' + format_name,
+                source_id=759,  # direct submission
+                orcid=orcid,
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                is_contact=is_contact,
+                is_beta_tester=is_beta_tester,
+                display_email=display_email,
+                is_in_triage=False,
+                is_pi=False,
+                created_by=username
+            )
+            DBSession.add(new_colleague)
+            DBSession.flush()
+        '''
         colleague = curator_session.query(Colleague).filter(Colleague.colleague_id == c_triage.colleague_id).one_or_none()
         colleague.first_name = params.get('first_name')
         colleague.last_name = params.get('last_name')
@@ -842,16 +920,24 @@ def colleague_triage_promote(request):
         colleague.is_contact = params.get('receive_quarterly_newsletter')
         colleague.is_beta_tester = params.get('willing_to_be_beta_tester')
         colleague.is_in_triage = False
+        colleague.created_by = username #get_username_from_db_uri() if colleague.created_by == 'OTTO' else username
+        '''
+
         curator_session.delete(c_triage)
         transaction.commit()
         return True
+    except IntegrityError as e:
+        transaction.abort()
+        log.error(e)
+        return HTTPBadRequest(body=json.dumps({'message': 'Error: Duplicate record detected, Please contact sgd-helpdesk@lists.stanford.edu if issue persists'}), content_type='text/json')
     except Exception as e:
         transaction.abort()
         log.error(e)
-        return HTTPBadRequest(body=json.dumps({ 'message': str(e) }), content_type='text/json')
+        return HTTPBadRequest(body=json.dumps({'message': str(e)}), content_type='text/json')
     finally:
         if curator_session:
             curator_session.remove()
+
 
 @view_config(route_name='colleague_triage_delete', renderer='json', request_method='DELETE')
 @authenticate
@@ -885,6 +971,55 @@ def get_username_from_db_uri():
     userp = s[s.find(start)+len(start):s.find(end)]
     created_by = userp.split(':')[0].upper()
     return created_by
+
+
+# add new colleague
+#     config.add_route('add_new_colleague_triage', '/colleagues', request_method='POST')
+
+@view_config(route_name='add_new_colleague_triage', renderer='json', request_method='POST')
+def add_new_colleague_triage(request):
+    if not check_csrf_token(request, raises=False):
+        return HTTPBadRequest(body=json.dumps({'error': 'Bad CSRF Token'}))
+    params = request.json_body
+    required_fields = ['first_name', 'last_name', 'email', 'orcid']
+    for x in required_fields:
+        if not params[x]:
+            msg = x + ' is a required field.'
+            return HTTPBadRequest(body=json.dumps({'message': msg}), content_type='text/json')
+    is_email_valid = validate_email(params['email'], verify=False)
+    if not is_email_valid:
+        msg = params['email'] + ' is not a valid email.'
+        return HTTPBadRequest(body=json.dumps({'message': msg}), content_type='text/json')
+    is_orcid_valid = validate_orcid(params['orcid'])
+    if not is_orcid_valid:
+        msg = params['orcid'] + ' is not a valid orcid.'
+        return HTTPBadRequest(body=json.dumps({'message': msg}), content_type='text/json')
+    colleague_orcid_email_exists = DBSession.query(Colleague).filter(or_(and_(Colleague.orcid == params.get('orcid'), Colleague.email == params.get(
+        'email')), or_(Colleague.orcid == params.get('orcid'), Colleague.email == params.get('email')))).one_or_none()
+    if colleague_orcid_email_exists:
+        msg = 'You entered an ORCID or Email which is already being used by an SGD colleague. Try to find your entry or contact sgd-helpdesk@lists.stanford.edu if you think this is a mistake.'
+        return HTTPBadRequest(body=json.dumps({'message': msg}), content_type='text/json')
+    try:
+        full_name = params['first_name'] + ' ' + params['last_name']
+        # add a random number to be sure it's unique
+        format_name = set_string_format(full_name) + str(randint(1, 100))
+        new_c_triage = Colleaguetriage(
+            json=json.dumps(params),
+            triage_type='New',
+        )
+        DBSession.add(new_c_triage)
+        transaction.commit()
+        return {'colleague_id': 0}
+    except IntegrityError as IE:
+        transaction.abort()
+        log.error(IE)
+        return HTTPBadRequest(body=json.dumps({'message': 'Orcid or Email already exists, if error persist Please contact sgd-helpdesk@lists.stanford.edu'}), content_type='text/json')
+    except Exception as e:
+        transaction.abort()
+        log.error(e)
+        return HTTPBadRequest(body=json.dumps({'message': str(e) + ' something bad happened'}), content_type='text/json')
+
+
 
 # @view_config(route_name='upload', request_method='POST', renderer='json')
 # @authenticate
@@ -1029,3 +1164,540 @@ def send_newsletter(request):
         return returnValue
     except:
         return HTTPBadRequest(body=json.dumps({'error': "Error occured during sending newsletter"}))
+
+
+@view_config(route_name='ptm_file_insert', renderer='json', request_method='POST')
+@authenticate
+def ptm_file_insert(request):
+    
+    try:
+        file = request.POST['file'].file
+        filename = request.POST['file'].filename
+        CREATED_BY = request.session['username']
+        xl = pd.ExcelFile(file)
+        list_of_sheets = xl.sheet_names
+        
+        COLUMNS = {
+            'gene': 'Gene(sgdid,systematic name)',
+            'taxonomy': 'Taxonomy',
+            'reference': 'Reference(sgdid,pubmed id,reference no)',
+            'index': 'Index',
+            'residue': 'Residue',
+            'psimod': 'Psimod',
+            'modifier': 'Modifier(sgdid,systematic name)'
+        }
+
+        SOURCE_ID = 834
+        SEPARATOR = '|'
+
+        list_of_posttranslationannotation = []
+        list_of_posttranslationannotation_errors = []
+        df = pd.read_excel(io=file, sheet_name="Sheet1")
+        
+        null_columns = df.columns[df.isnull().any()]
+        for col in null_columns:
+            if COLUMNS['modifier'] != col:    
+                rows = df[df[col].isnull()].index.tolist()
+                rows = ','.join([ str(r+2) for r in rows])
+                list_of_posttranslationannotation_errors.append('No values in column ' + col + ' rows '+ rows)
+
+        if list_of_posttranslationannotation_errors:
+            err = [e + '\n' for e in list_of_posttranslationannotation_errors]
+            return HTTPBadRequest(body=json.dumps({"error": list_of_posttranslationannotation_errors}), content_type='text/json')
+
+        sgd_id_to_dbentity_id, systematic_name_to_dbentity_id = models_helper.get_dbentity_by_subclass(['LOCUS', 'REFERENCE'])
+        strain_to_taxonomy_id = models_helper.get_common_strains()
+        psimod_to_id = models_helper.get_psimod_all()
+        posttranslationannotation_to_site = models_helper.posttranslationannotation_with_key_index()
+        pubmed_id_to_reference, reference_to_dbentity_id = models_helper.get_references_all()
+
+        for index_row, row in df.iterrows():
+            index = index_row + 2
+            column = ''
+            try:
+                posttranslationannotation_existing={
+                    'dbentity_id':'',
+                    'source_id': SOURCE_ID,
+                    'taxonomy_id':'',
+                    'reference_id':'',
+                    'psimod_id':'',
+                    'modifier_id':None,
+                    "site_index":'',
+                    "site_residue":''
+                }
+                posttranslationannotation_update = {}
+
+                column = COLUMNS['gene']
+                gene = unicode_to_string(row[column])
+
+                gene_current = str(row[COLUMNS['gene']].split(SEPARATOR)[0]).strip()
+                key = (gene_current, 'LOCUS')
+                if(key in sgd_id_to_dbentity_id):
+                    posttranslationannotation_existing['dbentity_id'] = sgd_id_to_dbentity_id[key]
+                elif(key in systematic_name_to_dbentity_id):
+                    posttranslationannotation_existing['dbentity_id'] = systematic_name_to_dbentity_id[key]
+                else:
+                    list_of_posttranslationannotation_errors.append('Error in gene on row ' + str(index) + ', column ' + column)
+                    continue
+
+                if SEPARATOR in gene:
+                    gene_new = str(row[COLUMNS['gene']].split(SEPARATOR)[1]).strip()
+                    key = (gene_new, 'LOCUS')
+                    if(key in sgd_id_to_dbentity_id):
+                        posttranslationannotation_update['dbentity_id'] = sgd_id_to_dbentity_id[key]
+                    elif(key in systematic_name_to_dbentity_id):
+                        posttranslationannotation_update['dbentity_id'] = systematic_name_to_dbentity_id[key]
+                    else:
+                        list_of_posttranslationannotation_errors.append('Error in gene on row ' + str(index) + ', column ' + column)
+                        continue
+
+
+                column = COLUMNS['taxonomy']
+                taxonomy = row[column]
+                taxonomy_current = str(row[COLUMNS['taxonomy']]).upper().split(SEPARATOR)[0]
+                if taxonomy_current in strain_to_taxonomy_id:
+                    posttranslationannotation_existing['taxonomy_id'] = strain_to_taxonomy_id[taxonomy_current]
+                else:
+                    list_of_posttranslationannotation_errors.append('Error in taxonomy on row ' + str(index) + ', column ' + column)
+                    continue
+
+                if SEPARATOR in taxonomy:
+                    taxonomy_new = str(row[COLUMNS['taxonomy']]).upper().split(SEPARATOR)[1]
+                    if taxonomy_new in strain_to_taxonomy_id:
+                        posttranslationannotation_update['taxonomy_id'] = strain_to_taxonomy_id[taxonomy_new]
+                    else:
+                        list_of_posttranslationannotation_errors.append('Error in updating taxonomy on row ' + str(index) + ', column ' + column)
+                        continue
+
+
+                column = COLUMNS['reference']
+                reference = row[column]
+
+                reference_current = str(row[COLUMNS['reference']]).split(SEPARATOR)[0]
+                if((reference_current, 'REFERENCE') in sgd_id_to_dbentity_id):
+                    posttranslationannotation_existing['reference_id'] = sgd_id_to_dbentity_id[(reference_current, 'REFERENCE')]
+                elif(reference_current in pubmed_id_to_reference):
+                    posttranslationannotation_existing['reference_id'] = pubmed_id_to_reference[reference_current]
+                elif(reference_current in reference_to_dbentity_id):
+                    posttranslationannotation_existing['reference_id'] = int(reference_current)
+                else:
+                    list_of_posttranslationannotation_errors.append('Error in reference on row ' + str(index) + ', column ' + column)
+                    continue
+
+
+                if SEPARATOR in str(reference):
+                    reference_new = str(row[COLUMNS['reference']]).split(SEPARATOR)[1]
+
+                    if((reference_new, 'REFERENCE') in sgd_id_to_dbentity_id):
+                        posttranslationannotation_update['reference_id'] = sgd_id_to_dbentity_id[(reference_new, 'REFERENCE')]
+                    elif(reference_new in pubmed_id_to_reference):
+                        posttranslationannotation_update['reference_id'] = pubmed_id_to_reference[reference_new]
+                    elif(reference_new in reference_to_dbentity_id):
+                        posttranslationannotation_update['reference_id'] = int(reference_new)
+                    else:
+                        list_of_posttranslationannotation_errors.append('Error in reference on row ' + str(index) + ', column ' + column)
+                        continue
+
+            
+                column = COLUMNS['psimod']
+                psimod = row[column]
+
+                psimod_current = str(row[COLUMNS['psimod']]).upper().split(SEPARATOR)[0]
+                if (psimod_current in psimod_to_id):
+                    posttranslationannotation_existing['psimod_id'] = psimod_to_id[psimod_current]
+                else:
+                    list_of_posttranslationannotation_errors.append('Error in psimod ' + str(index) + ', column ' + column)
+                    continue
+
+                if SEPARATOR in psimod:
+                    psimod_new = str(row[COLUMNS['psimod']]).upper().split(SEPARATOR)[1]
+                    if (psimod_new in psimod_to_id):
+                        posttranslationannotation_update['psimod_id'] = psimod_to_id[psimod_new]
+                    else:
+                        list_of_posttranslationannotation_errors.append('Error in psimod ' + str(index) + ', column ' + column)
+                        continue
+                
+                column = COLUMNS['index']
+                site_index = row[column]
+                posttranslationannotation_existing['site_index'] = int(str(row[COLUMNS['index']]).split(SEPARATOR)[0])
+                if SEPARATOR in str(site_index):
+                    posttranslationannotation_update['site_index'] = int(str(row[COLUMNS['index']]).split(SEPARATOR)[1])
+
+                column = COLUMNS['residue']
+                residue = row[column]
+                posttranslationannotation_existing['site_residue'] = str(row[COLUMNS['residue']]).split(SEPARATOR)[0]
+                if SEPARATOR in residue:
+                    posttranslationannotation_update['site_residue'] = str(row[COLUMNS['residue']]).split(SEPARATOR)[1]
+
+                column = COLUMNS['modifier']
+                modifier = row[column]
+                if(pd.isnull(modifier)):
+                    pass
+                else:
+                    modifier_current = str(row[COLUMNS['modifier']]).split(SEPARATOR)[0]
+
+                    if((modifier_current, 'LOCUS') in sgd_id_to_dbentity_id):
+                        posttranslationannotation_existing['modifier_id'] = sgd_id_to_dbentity_id[(modifier_current, 'LOCUS')]
+                    elif((modifier_current, 'LOCUS') in systematic_name_to_dbentity_id):
+                        posttranslationannotation_existing['modifier_id'] = systematic_name_to_dbentity_id[(modifier_current, 'LOCUS')]
+
+                    if SEPARATOR in modifier:
+                        modifier_new = str(row[COLUMNS['modifier']]).split(SEPARATOR)[1]
+                        if((modifier_new, 'LOCUS') in sgd_id_to_dbentity_id):
+                            posttranslationannotation_update['modifier_id'] = sgd_id_to_dbentity_id[(modifier_new, 'LOCUS')]
+                        elif((modifier_new, 'LOCUS') in systematic_name_to_dbentity_id):
+                            posttranslationannotation_update['modifier_id'] = systematic_name_to_dbentity_id[(modifier_new, 'LOCUS')]
+                    
+                list_of_posttranslationannotation.append((posttranslationannotation_existing,posttranslationannotation_update))
+            
+            except ValueError as e:
+                list_of_posttranslationannotation_errors.append('Error in on row ' + str(index) + ', column ' + column + ', It is not a valid number.')
+            except Exception as e:
+                list_of_posttranslationannotation_errors.append('Error in on row ' + str(index) + ', column ' + column + ' ' + e.message)
+
+        if list_of_posttranslationannotation_errors:
+            err = [ e + '\n'  for e in list_of_posttranslationannotation_errors]
+            return HTTPBadRequest(body=json.dumps({"error": list_of_posttranslationannotation_errors}), content_type='text/json')
+
+        INSERT = 0
+        UPDATE = 0
+        curator_session = get_curator_session(request.session['username'])
+        isSuccess = False
+        returnValue = ''     
+        
+        if list_of_posttranslationannotation:
+            for item in list_of_posttranslationannotation:    
+                data,update_data = item
+                if bool(update_data):
+                    ptm_in_db = curator_session.query(Posttranslationannotation).filter(and_(
+                        Posttranslationannotation.dbentity_id == data['dbentity_id'],
+                        Posttranslationannotation.psimod_id == data['psimod_id'],
+                        Posttranslationannotation.site_index == data['site_index'],
+                        Posttranslationannotation.site_residue == data['site_residue'],
+                        Posttranslationannotation.reference_id == data['reference_id'],
+                        )).one_or_none()
+                    if ptm_in_db is not None:
+                        curator_session.query(Posttranslationannotation).filter(and_(
+                            Posttranslationannotation.dbentity_id == data['dbentity_id'],
+                            Posttranslationannotation.psimod_id == data['psimod_id'],
+                            Posttranslationannotation.site_index == data['site_index'],
+                            Posttranslationannotation.site_residue == data['site_residue'],
+                            Posttranslationannotation.reference_id == data['reference_id'],
+                        )).update(update_data)
+                        UPDATE = UPDATE + 1
+                else:
+                    p = Posttranslationannotation(taxonomy_id=data['taxonomy_id'],
+                                                    source_id=SOURCE_ID,
+                                                    dbentity_id=data['dbentity_id'],
+                                                    reference_id=data['reference_id'],
+                                                    site_index=data['site_index'],
+                                                    site_residue=data['site_residue'],
+                                                    psimod_id=data['psimod_id'],
+                                                    modifier_id = data['modifier_id'],
+                                                    created_by=CREATED_BY)
+                    curator_session.add(p)
+                    INSERT = INSERT + 1
+            
+            try:
+                transaction.commit()
+                err = '\n'.join(list_of_posttranslationannotation_errors)
+                isSuccess = True
+                returnValue = 'Inserted: ' + str(INSERT) + ' Updated: ' + str(UPDATE) + ' Errors: ' + err
+            except IntegrityError as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = 'Record already exisits for site index: ' + str(e.params['site_index']) + ' site residue: ' + e.params['site_residue'] + ' dbentity_id: ' + str(e.params['dbentity_id'])
+            except DataError as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = 'Error, issue in data row with site index: ' + str(e.params['site_index']) + ' site residue: ' + e.params['site_residue'] + ' dbentity_id: ' + str(e.params['dbentity_id'])
+            except Exception as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = e.message
+            finally:
+                if curator_session:
+                    curator_session.close()
+        
+        if isSuccess:
+            return HTTPOk(body=json.dumps({"success": returnValue}), content_type='text/json')
+        
+        return HTTPBadRequest(body=json.dumps({'error': returnValue}), content_type='text/json')
+
+
+    except Exception as e:
+        return HTTPBadRequest(body=json.dumps({ 'error': e.message }), content_type='text/json')
+
+
+@view_config(route_name='ptm_by_gene',renderer='json',request_method='GET')
+@authenticate
+def ptm_by_gene(request):
+    gene = str(request.matchdict['id'])
+
+    if(gene is None):
+        return HTTPBadRequest(body=json.dumps({'error': 'No gene provided'}), content_type='text/json')
+    
+    dbentity = None 
+    dbentity = DBSession.query(Dbentity).filter(or_(Dbentity.sgdid == gene,Dbentity.format_name == gene)).one_or_none()
+
+    if dbentity is None:
+        return HTTPBadRequest(body=json.dumps({'error': 'Gene not found in database'}), content_type='text/json')
+    
+    ptms = models_helper.get_all_ptms_by_dbentity(dbentity.dbentity_id)
+    list_of_ptms = get_list_of_ptms(ptms)
+
+    return HTTPOk(body=json.dumps({'ptms' :list_of_ptms}),content_type='text/json')
+
+
+@view_config(route_name='get_strains', renderer='json', request_method='GET')
+def get_strains(request):
+    try:
+        strains = models_helper.get_common_strains()
+        
+        if strains:
+            return {'strains': [{'display_name':key,'taxonomy_id':value} for key,value in strains.iteritems()]}
+
+        return None
+
+    except Exception as e:
+        return HTTPBadRequest(body=json.dumps({'error': str(e)}))
+
+
+@view_config(route_name='get_psimod', renderer='json', request_method='GET')
+def get_psimod(request):
+    try:
+        psimods = models_helper.get_all_psimods()
+        if psimods:
+            distinct_psimod_ids = DBSession.query(Posttranslationannotation.psimod_id).distinct()
+            psimods_in_use = psimods.filter(Psimod.psimod_id.in_(distinct_psimod_ids)).order_by(Psimod.display_name).all()
+            psimods_not_in_use = psimods.filter(~Psimod.psimod_id.in_(distinct_psimod_ids)).order_by(Psimod.display_name).all()
+            
+            returnList = []
+            for p in psimods_in_use:
+                obj = {"psimod_id": p.psimod_id,
+                       "format_name":p.format_name,
+                       "display_name": p.display_name,
+                       "inuse":True
+                      }
+                returnList.append(obj)
+            
+            for p in psimods_not_in_use:
+                obj = {"psimod_id": p.psimod_id,
+                       "format_name": p.format_name,
+                       "display_name": p.display_name,
+                       "inuse": False
+                       }
+                returnList.append(obj)
+
+                
+            return HTTPOk(body=json.dumps({'psimods': returnList}),content_type='text/json') 
+        return None
+    except Exception as e:
+        return HTTPBadRequest(body=json.dumps({'error': str(e)}))
+
+
+@view_config(route_name="ptm_update", renderer='json', request_method='POST')
+@authenticate
+def ptm_update(request):
+    try:
+        id = int(request.params.get('id'))
+        CREATED_BY = request.session['username']
+        curator_session = get_curator_session(request.session['username'])
+        source_id = 834
+
+        dbentity_id = str(request.params.get('dbentity_id'))
+        if not dbentity_id:
+            return HTTPBadRequest(body=json.dumps({'error': "gene is blank"}), content_type='text/json')
+
+        taxonomy_id = str(request.params.get('taxonomy_id'))
+        if not taxonomy_id:
+            return HTTPBadRequest(body=json.dumps({'error': "taxonomy is blank"}), content_type='text/json')
+        taxonomy_id = int(taxonomy_id)
+
+        reference_id = str(request.params.get('reference_id'))
+        if not reference_id:
+            return HTTPBadRequest(body=json.dumps({'error': "reference is blank"}), content_type='text/json')
+        
+        site_index = str(request.params.get('site_index'))
+        if not site_index:
+            return HTTPBadRequest(body=json.dumps({'error': "site index is blank"}), content_type='text/json')
+        site_index = int(site_index)
+        
+        site_residue = str(request.params.get('site_residue'))
+        if not site_residue:
+            return HTTPBadRequest(body=json.dumps({'error': "site residue is blank"}), content_type='text/json')
+
+        psimod_id = str(request.params.get('psimod_id'))
+        if not psimod_id:
+            return HTTPBadRequest(body=json.dumps({'error': "psimod is blank"}), content_type='text/json')
+        psimod_id = int(psimod_id)
+ 
+        modifier_id = str(request.params.get('modifier_id'))        
+
+        dbentity_in_db = None
+        dbentity_in_db = DBSession.query(Dbentity).filter(or_(Dbentity.sgdid == dbentity_id,Dbentity.format_name == dbentity_id)).one_or_none()
+        if dbentity_in_db is not None:
+            dbentity_id = dbentity_in_db.dbentity_id
+        else:
+            return HTTPBadRequest(body=json.dumps({'error': "gene value not found in database"}), content_type='text/json')
+            
+        dbentity_in_db = None
+        pmid_in_db = None
+        dbentity_in_db = DBSession.query(Dbentity).filter(Dbentity.sgdid == reference_id).one_or_none()
+        if dbentity_in_db is None:
+            dbentity_in_db = DBSession.query(Dbentity).filter(Dbentity.dbentity_id == int(reference_id)).one_or_none()
+        if dbentity_in_db is None:
+            pmid_in_db = DBSession.query(Referencedbentity).filter(Referencedbentity.pmid == int(reference_id)).one_or_none()
+
+        if dbentity_in_db is not None:
+            reference_id = dbentity_in_db.dbentity_id
+        elif (pmid_in_db is not None):
+            reference_id = pmid_in_db.dbentity_id
+        else:
+            return HTTPBadRequest(body=json.dumps({'error': "reference value not found in database"}), content_type='text/json')
+        
+        if modifier_id: 
+            dbentity_in_db = None
+            dbentity_in_db = DBSession.query(Dbentity).filter(or_(Dbentity.sgdid == modifier_id, Dbentity.format_name == modifier_id)).one_or_none()
+            if dbentity_in_db is not None:
+                modifier_id = dbentity_in_db.dbentity_id
+            else:
+                return HTTPBadRequest(body=json.dumps({'error': "Modifier value not found in database"}), content_type='text/json')
+        else:
+            modifier_id = None
+        
+        isSuccess = False
+        returnValue = ''
+        ptms_in_db = []
+
+        if(int(id) > 0):
+            try:
+                update_ptm = {"dbentity_id": dbentity_id,
+                              "source_id": source_id,
+                              "taxonomy_id": taxonomy_id,
+                              "reference_id": reference_id,
+                              "site_index": site_index,
+                              "site_residue": site_residue,
+                              "psimod_id": psimod_id,
+                              "modifier_id": modifier_id
+                              }
+                
+                curator_session.query(Posttranslationannotation).filter(Posttranslationannotation.annotation_id == id).update(update_ptm)
+                transaction.commit()
+                isSuccess = True
+                returnValue = 'Record updated successfully.'
+                ptms = models_helper.get_all_ptms_by_dbentity(dbentity_id)
+                ptms_in_db = get_list_of_ptms(ptms)
+            except IntegrityError as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = 'Updated failed, record already exists' 
+            except DataError as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = 'Update failed, issue in data'
+            except Exception as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = 'Updated failed ' + str(e.message)
+            finally:
+                if curator_session:
+                    curator_session.close()
+        
+        if(int(id) == 0):
+            try: 
+                y = None
+                y = Posttranslationannotation(taxonomy_id=taxonomy_id,
+                                              source_id=source_id,
+                                              dbentity_id=dbentity_id,
+                                              reference_id=reference_id,
+                                              site_index=site_index,
+                                              site_residue=site_residue,
+                                              psimod_id=psimod_id,
+                                              modifier_id=modifier_id,
+                                              created_by=CREATED_BY)
+                curator_session.add(y)
+                transaction.commit()
+                isSuccess = True
+                returnValue = 'Record added successfully.'
+            except IntegrityError as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = 'Insert failed, record already exists'
+            except DataError as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = 'Insert failed, issue in data'
+            except Exception as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = 'Insert failed' + ' ' + str(e.message)
+            finally:
+                if curator_session:
+                    curator_session.close()
+
+        if isSuccess:
+            return HTTPOk(body=json.dumps({'success': returnValue, "ptms": ptms_in_db}), content_type='text/json')
+
+        return HTTPBadRequest(body=json.dumps({'error': returnValue}), content_type='text/json')
+
+    except Exception as e:
+        return HTTPBadRequest(body=json.dumps({'error': str(e.message)}), content_type='text/json')
+
+
+@view_config(route_name="ptm_delete", renderer='json', request_method='DELETE')
+@authenticate
+def ptm_delete(request):
+    try:
+        id = request.matchdict['id']
+        curator_session = get_curator_session(request.session['username'])
+        isSuccess = False
+        returnValue = ''
+        ptm_in_db = curator_session.query(Posttranslationannotation).filter(Posttranslationannotation.annotation_id == id).one_or_none()
+        dbentity_id = ptm_in_db.dbentity_id
+        ptms_in_db = []
+        if(ptm_in_db):
+            try:
+                curator_session.delete(ptm_in_db)
+                transaction.commit()
+                isSuccess = True
+                returnValue = 'Ptm successfully deleted.'
+                ptms = models_helper.get_all_ptms_by_dbentity(dbentity_id)
+                ptms_in_db = get_list_of_ptms(ptms)
+            except Exception as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = 'Error occurred deleting ptm: ' + str(e.message)
+            finally:
+                if curator_session:
+                    curator_session.close()
+
+            if isSuccess:
+                return HTTPOk(body=json.dumps({'success': returnValue, 'ptms': ptms_in_db}), content_type='text/json')
+            
+            return HTTPBadRequest(body=json.dumps({'error': returnValue}), content_type='text/json')
+        
+        return HTTPBadRequest(body=json.dumps({'error': 'ptm not found in database.'}), content_type='text/json')
+
+    except Exception as e:
+        return HTTPBadRequest(body=json.dumps({'error': str(e.message)}), content_type='text/json')

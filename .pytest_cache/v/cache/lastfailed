@@ -1,0 +1,18 @@
+{
+  "test/test_functional.py": true, 
+  "test/test_helpers.py": true, 
+  "test/test_views/test_author.py": true, 
+  "test/test_views/test_chemical.py": true, 
+  "test/test_views/test_contig.py": true, 
+  "test/test_views/test_dataset.py": true, 
+  "test/test_views/test_ec_number.py": true, 
+  "test/test_views/test_go.py": true, 
+  "test/test_views/test_locus.py": true, 
+  "test/test_views/test_observable.py": true, 
+  "test/test_views/test_phenotype.py": true, 
+  "test/test_views/test_protein_domain.py": true, 
+  "test/test_views/test_references.py": true, 
+  "test/test_views/test_regulation.py": true, 
+  "test/test_views/test_reserved_names.py": true, 
+  "test/test_views/test_strains.py": true
+}

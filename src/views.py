@@ -16,8 +16,9 @@ import traceback
 import datetime
 import logging
 import json
+from pathlib import Path
 
-from .models import DBSession, ESearch, Colleague, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, LocusAlias, Dataset, DatasetKeyword, Contig, Proteindomain, Ec, Dnasequenceannotation, Straindbentity, Disease, Complexdbentity, Filedbentity, Goslim, So, ApoRelation, GoRelation
+from .models import DBSession, ESearch, Colleague, Dbentity, Edam, Referencedbentity, ReferenceFile, Referenceauthor, FileKeyword, Keyword, Referencedocument, Chebi, ChebiUrl, PhenotypeannotationCond, Phenotypeannotation, Reservedname, Straindbentity, Literatureannotation, Phenotype, Apo, Go, Referencetriage, Referencedeleted, Locusdbentity, LocusAlias, Dataset, DatasetKeyword, Contig, Proteindomain, Ec, Dnasequenceannotation, Straindbentity, Disease, Complexdbentity, Filedbentity, Goslim, So, ApoRelation, GoRelation, Psimod
 from .helpers import extract_id_request, link_references_to_file, link_keywords_to_file, FILE_EXTENSIONS, get_locus_by_id, get_go_by_id, get_disease_by_id, primer3_parser
 from .search_helpers import build_autocomplete_search_body_request, format_autocomplete_results, build_search_query, build_es_search_body_request, build_es_aggregation_body_request, format_search_results, format_aggregation_results, build_sequence_objects_search_query
 from .models_helpers import ModelsHelper
@@ -496,6 +497,37 @@ def chemical_phenotype_details(request):
     else:
         return HTTPNotFound()
 
+@view_config(route_name='chemical_go_details', renderer='json', request_method='GET')
+def chemical_go_details(request):
+    id = extract_id_request(request, 'chebi')
+
+    chebi = DBSession.query(Chebi).filter_by(chebi_id=id).one_or_none()
+    if chebi:
+        return chebi.go_to_dict()
+    else:
+        return HTTPNotFound()
+
+@view_config(route_name='chemical_complex_details', renderer='json', request_method='GET')
+def chemical_complex_details(request):
+    id = extract_id_request(request, 'chebi')
+
+    chebi = DBSession.query(Chebi).filter_by(chebi_id=id).one_or_none()
+    if chebi:
+        return chebi.complex_to_dict()
+    else:
+        return HTTPNotFound()
+
+@view_config(route_name='chemical_network_graph', renderer='json', request_method='GET')
+def chemical_network_graph(request):
+
+    id = extract_id_request(request, 'chebi')
+
+    chebi = DBSession.query(Chebi).filter_by(chebi_id=id).one_or_none()
+    if chebi:
+        return chebi.chemical_network()
+    else:
+        return HTTPNotFound()
+
 @view_config(route_name='phenotype', renderer='json', request_method='GET')
 def phenotype(request):
     id = extract_id_request(request, 'phenotype', param_name="format_name")
@@ -635,13 +667,16 @@ def disease_locus_details_all(request):
 
 @view_config(route_name='locus', renderer='json', request_method='GET')
 def locus(request):
-
     id = extract_id_request(request, 'locus', param_name="sgdid")
-    locus = get_locus_by_id(id)
-    if locus:
-        return locus.to_dict()
-    else:
+    try:
+        locus = get_locus_by_id(id)
+        if locus:
+            return locus.to_dict()
+        else:
+            return HTTPNotFound()
+    except Exception as e:
         return HTTPNotFound()
+
 
 @view_config(route_name='locus_tabs', renderer='json', request_method='GET')
 def locus_tabs(request):
@@ -1401,3 +1436,19 @@ def healthcheck(request):
             log.error(e, exc_info=1)
             attempts += 1
     return ldict
+
+
+# api portal with swagger
+@view_config(route_name='api_portal', renderer='json')
+def api_portal(request):
+    request.response.headers.update({
+       'Access-Control-Allow-Origin': '*',
+       'Access-Control-Allow-Methods': 'POST,GET,DELETE,PUT,OPTIONS',
+       'Access-Control-Allow-Headers': 'Origin, Content-Type, Accept, Authorization'
+    })
+    json_file = os.path.join(str(Path(__file__).parent.parent), "api_docs/swagger.json")
+    with open(json_file) as f:
+        data = json.load(f)
+
+    return data
+

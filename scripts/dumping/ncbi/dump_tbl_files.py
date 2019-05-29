@@ -115,7 +115,7 @@ def dump_data():
     ## get all features with 'GENOMIC' sequence in S288C
     main_data = [] 
     annotation_id_to_strand = {}
-    for x in nex_session.query(Dnasequenceannotation).filter_by(taxonomy_id = taxonomy_id, dna_type='GENOMIC').all():
+    for x in nex_session.query(Dnasequenceannotation).filter_by(taxonomy_id = taxonomy_id, dna_type='GENOMIC').order_by(Dnasequenceannotation.start_index, Dnasequenceannotation.end_index).all():
         if x.contig_id not in contig_id_to_chrnum:
             continue
         locus = dbentity_id_to_locus[x.dbentity_id]
@@ -234,7 +234,8 @@ def add_LTR(files, sgdid, chrnum, start, stop, desc, type):
 
     files[chrnum].write(str(start)+"\t"+str(stop)+"\t" + type + "\n")
     files[chrnum].write(TABS + "note\t" + desc + "\n")
-    files[chrnum].write(TABS + "evidence\tnot_experimental\n")
+    # files[chrnum].write(TABS + "evidence\tnot_experimental\n")
+    files[chrnum].write(TABS + "no experiment\n") 
     files[chrnum].write(TABS + "db_xref\tSGD:" + sgdid + "\n")
 
 
@@ -242,7 +243,8 @@ def add_telomeres(files, sgdid, chrnum, systematic_name, start, stop, desc, type
     
     files[chrnum].write(str(start)+"\t"+str(stop)+"\t" + type + "\n")
     files[chrnum].write(TABS + "note\t" + systematic_name + "; " + desc + "\n")
-    files[chrnum].write(TABS + "evidence\tnot_experimental\n")
+    # files[chrnum].write(TABS + "evidence\tnot_experimental\n")
+    files[chrnum].write(TABS + "no experiment\n") 
     files[chrnum].write(TABS + "db_xref\tSGD:" + sgdid + "\n")
 
 
@@ -251,7 +253,8 @@ def add_retrotransposons(files, sgdid, chrnum, systematic_name, start, stop, des
     files[chrnum].write(str(start)+"\t"+str(stop)+"\t" + type + "\n")
     files[chrnum].write(TABS + "mobile_element_type\tretrotransposon:" + systematic_name + "\n")
     files[chrnum].write(TABS + "note\t" + systematic_name + "; " + desc + "\n")
-    files[chrnum].write(TABS + "evidence\tnot_experimental\n")
+    # files[chrnum].write(TABS + "evidence\tnot_experimental\n")
+    files[chrnum].write(TABS + "no experiment\n") 
     files[chrnum].write(TABS + "db_xref\tSGD:" + sgdid + "\n")
 
 
@@ -264,9 +267,11 @@ def add_ARS_etc(files, sgdid, chrnum, systematic_name, gene_name, start, stop, d
     files[chrnum].write(TABS + "note\t" + name + "\n")
     files[chrnum].write(TABS + "note\t" + desc + "\n")
     if gene_name and gene_name != systematic_name:
-        files[chrnum].write(TABS + "evidence\texperimental\n")
+        # files[chrnum].write(TABS + "evidence\texperimental\n")
+        files[chrnum].write(TABS + "experiment\tEXISTENCE:experiment\n")  
     else:
-        files[chrnum].write(TABS + "evidence\tnot_experimental\n")
+        # files[chrnum].write(TABS + "evidence\tnot_experimental\n")
+        files[chrnum].write(TABS + "no experiment\n")
     files[chrnum].write(TABS + "db_xref\tSGD:" + sgdid + "\n")
 
 
@@ -274,7 +279,8 @@ def add_centromeres(files, locus_id, sgdid, chrnum, systematic_name, gene_name, 
 
     files[chrnum].write(str(start)+"\t"+str(stop)+"\t" + type + "\n")
     files[chrnum].write(TABS + "note\t" + systematic_name + "; " + desc + "\n")
-    files[chrnum].write(TABS + "evidence\texperimental\n")
+    # files[chrnum].write(TABS + "evidence\texperimental\n")
+    files[chrnum].write(TABS + "experiment\tEXISTENCE:experiment\n")
     files[chrnum].write(TABS + "db_xref\tSGD:" + sgdid + "\n")
     
     if cde_data is None:
@@ -312,10 +318,11 @@ def add_pseudogenes(files, annotation_id, locus_id, sgdid, chrnum, systematic_na
             files[chrnum].write(cds + "\n")
 
     if gene_name:
-        files[chrnum].write(TABS + "evidence\texperimental\n")
+        # files[chrnum].write(TABS + "evidence\texperimental\n")
+        files[chrnum].write(TABS + "experiment\tEXISTENCE:experiment\n")
     else:
-        files[chrnum].write(TABS + "evidence\tnot_experimental\n")
-
+        # files[chrnum].write(TABS + "evidence\tnot_experimental\n")
+        files[chrnum].write(TABS + "no experiment\n")
     if desc:
         files[chrnum].write(TABS + "note\t" + desc + "\n")
 
@@ -331,7 +338,8 @@ def add_NTS_features(files, chrnum, systematic_name, sgdid, start, stop, desc):
     files[chrnum].write(TABS + "note\t" + systematic_name + "\n") 
     if desc:
         files[chrnum].write(TABS + "note\t"+ desc + "\n")
-    files[chrnum].write(TABS + "evidence\tnot_experimental\n")
+    # files[chrnum].write(TABS + "evidence\tnot_experimental\n")
+    files[chrnum].write(TABS + "no experiment\n")
     files[chrnum].write(TABS + "db_xref\tSGD:" + sgdid + "\n")
 
 def add_RNA_genes(files, annotation_id, locus_id, sgdid, chrnum, systematic_name, gene_name, start, stop, desc, annotation_id_to_cds_data, locus_id_to_go_section, go_to_eco_list, type, feature_type):
@@ -367,16 +375,18 @@ def add_RNA_genes(files, annotation_id, locus_id, sgdid, chrnum, systematic_name
         files[chrnum].write(TABS + "note\t" + desc + "\n")
 
     if gene_name and gene_name.upper() != systematic_name.upper():
-        files[chrnum].write(TABS + "evidence\texperimental\n")
+        # files[chrnum].write(TABS + "evidence\texperimental\n")
+        files[chrnum].write(TABS + "experiment\tEXISTENCE:experiment\n")
     else:
-        files[chrnum].write(TABS + "evidence\tnot_experimental\n")
+        # files[chrnum].write(TABS + "evidence\tnot_experimental\n")
+        files[chrnum].write(TABS + "no experiment\n")
 
     go_section = locus_id_to_go_section.get(locus_id, [])
     go_session = go_section.sort()
-    for go_line in go_section:
-        eco_list = go_to_eco_list[go_line]
+    for goline in go_section:
+        eco_list = go_to_eco_list[(locus_id, goline)]
         eco_list.sort()
-        files[chrnum].write(go_line + "|" + ",".join(eco_list) + "\n")
+        files[chrnum].write(goline + "|" + ",".join(eco_list) + "\n")
 
     files[chrnum].write(TABS + "db_xref\tSGD:" + sgdid + "\n")
 
@@ -437,16 +447,18 @@ def add_ORF_features(files, annotation_id, locus_id, sgdid, chrnum, systematic_n
         files[chrnum].write(TABS + "note\t" + desc + "\n")
 
     if gene_name:
-        files[chrnum].write(TABS + "evidence\texperimental\n")
+        # files[chrnum].write(TABS + "evidence\texperimental\n")
+        files[chrnum].write(TABS + "experiment\tEXISTENCE:experiment\n")
     else:
-        files[chrnum].write(TABS + "evidence\tnot_experimental\n")
+        # files[chrnum].write(TABS + "evidence\tnot_experimental\n")
+        files[chrnum].write(TABS + "no experiment\n")
 
     go_section = locus_id_to_go_section.get(locus_id, [])
     go_session = go_section.sort()
-    for go_line in go_section:
-        eco_list = go_to_eco_list[go_line]
+    for goline in go_section:
+        eco_list = go_to_eco_list[(locus_id, goline)]
         eco_list.sort()
-        files[chrnum].write(go_line + "|" + ",".join(eco_list) + "\n")
+        files[chrnum].write(goline + "|" + ",".join(eco_list) + "\n")
 
     files[chrnum].write(TABS + "db_xref\tSGD:" + sgdid + "\n")
 
@@ -553,7 +565,8 @@ def get_cds_data(nex_session, annotation_id_to_strand, type_mapping):
             cde_data.append(str(start)+"\t"+str(end)+"\tcentromere")
             display_name = "REPLACE_THIS_CDE" + x.display_name.replace("centromere_DNA_Element_", "") + " of REPLACE_THIS"
             cde_data.append(TABS + "note\t" + display_name)
-            cde_data.append(TABS + "evidence\tnot_experimental")
+            # cde_data.append(TABS + "evidence\tnot_experimental")
+            cde_data.append(TABS + "no experiment") 
             annotation_id_to_cde_data[x.annotation_id] = cde_data
 
         # if x.display_name not in ['CDS']:
@@ -617,12 +630,14 @@ def get_go_data(nex_session):
         #    continue
 
         goline = TABS + namespace_mapping[go.go_namespace] + "\t" + go.display_name + "|" + go.goid + "|" + str(pmid)
+
         eco_list = []
-        if goline in go_to_eco_list:
-            eco_list = go_to_eco_list[goline]
+        if (x.dbentity_id, goline) in go_to_eco_list:
+            eco_list = go_to_eco_list[(x.dbentity_id, goline)]
         if eco not in eco_list:
             eco_list.append(eco)
-        go_to_eco_list[goline] = eco_list
+
+        go_to_eco_list[(x.dbentity_id, goline)] = eco_list
         
         # print goline
 
@@ -631,6 +646,7 @@ def get_go_data(nex_session):
             go_section = locus_id_to_go_section[x.dbentity_id]
         if goline not in go_section:
             go_section.append(goline)
+
         locus_id_to_go_section[x.dbentity_id] = go_section
 
     return [locus_id_to_go_section, go_to_eco_list]
