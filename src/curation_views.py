@@ -1717,6 +1717,7 @@ def regulation_insert_update(request):
         CREATED_BY = request.session['username']
         curator_session = get_curator_session(request.session['username'])
         source_id = 834
+        MANUALLY_CURATED ='manually curated'
 
         annotation_id = request.params.get('annotation_id')
 
@@ -1757,9 +1758,7 @@ def regulation_insert_update(request):
         if not happens_during:
             happens_during = None
 
-        annotation_type = request.params.get('annotation_type')
-        if not annotation_type:
-            return HTTPBadRequest(body=json.dumps({'error': "annotation type is blank"}), content_type='text/json')
+        annotation_type = MANUALLY_CURATED
 
         dbentity_in_db = None
         dbentity_in_db = DBSession.query(Dbentity).filter(or_(Dbentity.sgdid == target_id, Dbentity.format_name == target_id)).one_or_none()

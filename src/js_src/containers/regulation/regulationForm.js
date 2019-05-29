@@ -15,7 +15,6 @@ const GET_REGULATIONS = 'get_regulations';
 const REGULATION_TYPE =  ['','transcription','protein activity','protein stability','RNA activity','RNA stability'];
 const DIRECTION = [null,'positive','negative'];
 const REGULATOR_TYPE =['','chromatin modifier','transcription factor','protein modifier','RNA-binding protein','RNA modifier'];
-const ANNOTATION_TYPE= ['','manually curated','high-throughput'];
 const SKIP = 5;
 const TIMEOUT = 120000;
 
@@ -252,7 +251,6 @@ class RegulationForm extends Component {
     
     var regulation_types = REGULATION_TYPE.map((item) => <option key={item}>{item}</option>);
     var regulator_types = REGULATOR_TYPE.map((item) => <option key={item}>{item}</option>);
-    var annotation_types = ANNOTATION_TYPE.map((item) => <option key={item}>{item}</option>);
     var directions = DIRECTION.map((item) => <option key={item}>{item}</option>);
 
     return (
@@ -434,24 +432,6 @@ class RegulationForm extends Component {
                 {(this.state.list_of_go.length > 0) &&
                   <DataList options={this.state.list_of_go} id='go_id' value1='display_name' value2='format_name' selectedIdName='happens_during' onOptionChange={this.handleChange} selectedId={this.props.regulation.happens_during} />
                 }
-              </div>
-            </div>
-          </div>
-
-          {/* Annotation type */}
-          <div className='row'>
-            <div className='columns medium-12'>
-              <div className='row'>
-                <div className='columns medium-12'>
-                  <label> Annotation type </label>
-                </div>
-              </div>
-              <div className='row'>
-                <div className='columns medium-12'>
-                  <select onChange={this.handleChange} name='annotation_type' value={this.props.regulation.annotation_type}>
-                    {annotation_types}
-                  </select>
-                </div>
               </div>
             </div>
           </div>
