@@ -64,7 +64,7 @@ class FileUpload extends Component {
       <form onSubmit={this.handleSubmit} ref='form'>
 
         <div className='row'>
-          <div className='columns medium-2'>
+          <div className='columns medium-3'>
             <p>Template File: </p>
           </div>
           <div className='columns medium-6 end'>
