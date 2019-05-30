@@ -2131,7 +2131,8 @@ class Referencedbentity(Dbentity):
             "id": self.dbentity_id,
 
             "related_references": [],
-            "expression_datasets": []
+            "expression_datasets": [],
+            "downloadable_files": []
         }
 
         if self.pmid != None:
@@ -2141,6 +2142,9 @@ class Referencedbentity(Dbentity):
 
         datasets = DBSession.query(DatasetReference).filter_by(reference_id=self.dbentity_id).all()
         obj["expression_datasets"] = [data.dataset.to_dict(self) for data in datasets]
+
+        files = DBSession.query(ReferenceFile).filter_by(reference_id=self.dbentity_id).all()
+        obj["downloadable_files"] = [data.file.to_dict() for data in files]
 
         abstract = DBSession.query(Referencedocument.html).filter_by(reference_id=self.dbentity_id, document_type="Abstract").one_or_none()
         if abstract:
