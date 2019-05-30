@@ -16,14 +16,14 @@ __author__ = 'sweng66'
 ## Created on May 2017
 ## This script is used to update ECO ontology in NEX2.
 
-ontology_file = 'scripts/loading/ontology/data/eco.owl'
+# ontology_file = 'scripts/loading/ontology/data/eco.owl'
 log_file = 'scripts/loading/ontology/logs/eco.log'
 ontology = 'ECO'
 src = 'ECO'
 
 CREATED_BY = os.environ['DEFAULT_USER']
 
-def load_ontology():
+def load_ontology(ontology_file):
 
     nex_session = get_session()
 
@@ -293,7 +293,11 @@ def write_summary_and_send_email(fw, update_log, to_delete_list):
 
 if __name__ == "__main__":
         
-    load_ontology()
+    url_path = 'https://github.com/evidenceontology/evidenceontology/blob/master/'
+    owl_file = 'eco.owl'
+    urllib.urlretrieve(url_path + owl_file, owl_file)
+
+    load_ontology(owl_file)
 
 
     

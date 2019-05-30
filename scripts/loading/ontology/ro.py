@@ -1,24 +1,25 @@
+import urllib
+import os
 from datetime import datetime
 import sys
 reload(sys)  # Reload does the trick!
-sys.path.insert(0, '../../../src/')
-from models import Source, Ro, RoUrl
-sys.path.insert(0, '../')
-from config import CREATED_BY
-from database_session import get_nex_session as get_session
-from ontology import read_owl  
+from src.models import Source, Ro, RoUrl
+from scripts.loading.database_session import get_session
+from scripts.loading.ontology import read_owl
                  
 __author__ = 'sweng66'
 
 ## Created on May 2017
 ## This script is used to update RO ontology in NEX2.
 
-ontology_file = 'data/ro.owl'
-log_file = 'logs/ro.log'
+# ontology_file = 'data/ro.owl'
+log_file = 'scripts/loading/ontology/logs/ro.log'
 ontology = 'RO'
 src = 'GOC'
 
-def load_ontology():
+CREATED_BY = os.environ['DEFAULT_USER']
+
+def load_ontology(ontology_file):
 
     nex_session = get_session()
 
@@ -132,8 +133,12 @@ def write_summary_and_send_email(fw, update_log, to_delete_list):
 
 
 if __name__ == "__main__":
-        
-    load_ontology()
+
+    url_path = 'https://raw.githubusercontent.com/oborel/obo-relations/master/'
+    owl_file = 'ro.owl'
+    urllib.urlretrieve(url_path + owl_file, owl_file)
+
+    load_ontology(owl_file)
 
 
     

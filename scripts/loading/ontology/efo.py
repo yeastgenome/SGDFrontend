@@ -129,9 +129,9 @@ def load_new_data(nex_session, data, source_to_id, efoid_to_efo, ro_id, roid_to_
                 nex_session.flush()
                 update_log['updated'] = update_log['updated'] + 1
                 print "UPDATED: ", y.efoid, ":"+y.display_name+ ":" + ":"+x['term']+":"
-            if x.get('definition') and x['definition'] != y.description.strip():
+            if x.get('definition') and x['definition'] != y.description:
                 ## update description
-                fw.write("The description for " + x['id'] + " has been updated from " + y.description + " to " + x['definition'] + "\n")
+                fw.write("The description for " + x['id'] + " has been updated from " + str(y.description) + " to " + x['definition'] + "\n")
                 y.description = x['definition']
                 nex_session.add(y)
                 nex_session.flush()

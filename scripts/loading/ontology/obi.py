@@ -4,10 +4,8 @@ import os
 from datetime import datetime
 import sys
 reload(sys)  # Reload does the trick!                                                             \
-
 sys.setdefaultencoding('utf-8')
 from src.models import Source, Obi, ObiUrl, ObiRelation, Ro
-# from src.helpers import upload_file
 from scripts.loading.database_session import get_session
 from scripts.loading.ontology import read_owl
                  
@@ -16,14 +14,13 @@ __author__ = 'sweng66'
 ## Created on May 2017
 ## This script is used to update OBI ontology in NEX2.
 
-ontology_file = 'scripts/loading/ontology/data/obi.owl'
 log_file = 'scripts/loading/ontology/logs/obi.log'
 ontology = 'OBI'
 src = 'OBI Consortium'
 
 CREATED_BY = os.environ['DEFAULT_USER']
 
-def load_ontology():
+def load_ontology(ontology_file):
 
     nex_session = get_session()
 
@@ -229,7 +226,11 @@ def write_summary_and_send_email(fw, update_log, to_delete_list):
 
 if __name__ == "__main__":
         
-    load_ontology()
+    url_path = 'http://purl.obolibrary.org/obo/'
+    owl_file = 'obi.owl'
+    urllib.urlretrieve(url_path + owl_file, owl_file)
+
+    load_ontology(owl_file)
 
 
     
