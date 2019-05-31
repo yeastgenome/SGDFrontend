@@ -1,13 +1,14 @@
 from datetime import datetime
 import logging
+import tarfile
 import os
 import sys
 reload(sys)  
 sys.setdefaultencoding('UTF8')
-from src.models import Taxonomy, Source, Contig, Edam, Path, FilePath, So, \
+from src.models import Taxonomy, Source, Contig, Edam, Path, Filedbentity, FilePath, So, \
                        Dnasequenceannotation, Dnasubsequence, Locusdbentity, \
-                       Dbentity, Go, EcoAlias, Goannotation, LocusAlias, \
-                       Referencedbentity, Ec
+                       Dbentity, Go, EcoAlias, Goannotation, Gosupportingevidence, \
+                       LocusAlias, Referencedbentity, Ec
 from scripts.loading.database_session import get_session
 from src.helpers import upload_file
 
@@ -83,7 +84,7 @@ def dump_data():
     log.info(str(datetime.now()))
     log.info("Getting GO data from the database...")
 
-    [locus_id_to_go_section, go_to_eco_list] = get_go_data(nex_session)
+    [locus_id_to_go_section, go_to_pmid_list] = get_go_data(nex_session)
 
     ## open file handles for each chromosome
     files = open_file_handles()
@@ -122,9 +123,7 @@ def dump_data():
         if dbentity_id_to_status[x.dbentity_id] != 'Active':
             continue
         if locus.qualifier == 'Dubious':
-            # or locus.headline.startswith('Deleted ')  or locus.headline.startswith('Merged '): 
             continue
-        # print contig_id_to_chrnum[x.contig_id], locus.systematic_name, locus.gene_name, so_id_to_display_name[x.so_id], x.start_index, x.end_index, x.strand, locus.description
         main_data.append((x.annotation_id, x.dbentity_id, contig_id_to_chrnum[x.contig_id], locus.systematic_name, locus.gene_name, so_id_to_display_name[x.so_id], x.start_index, x.end_index, x.strand, locus.description))
         annotation_id_to_strand[x.annotation_id] = x.strand    
     
@@ -140,13 +139,9 @@ def dump_data():
 
     for row in main_data:
 
-        # print row 
         (annotation_id, locus_id, chrnum, systematic_name, gene_name, feature_type, start, stop, strand, desc) = row
 
         desc = clean_up_desc(desc)
-
-        # unless gene_name is not None or "RNA" in feature_type or feature_type in ['LTR_retrotransposon', 'long_terminal_repeat']:
-        # gene_name = systematic_name
         
         if strand == '-':
             (start, stop) = (stop, start)
@@ -159,22 +154,25 @@ def dump_data():
         if "RDN37-" in systematic_name:
             type = "misc_RNA"
         
-        if feature_type in ['ORF', 'transposable_element_gene']:
+        go_section = locus_id_to_go_section.get(locus_id, [])
+        go_session = go_section.sort()
+
+        if feature_type in ['ORF', 'transposable element gene']:
 
             add_ORF_features(files, annotation_id, locus_id, sgdid, chrnum, systematic_name, 
                              gene_name, start, stop, desc, annotation_id_to_cds_data,
                              annotation_id_to_frameshift, locus_id_to_uniform_names, 
                              locus_id_to_ncbi_protein_name, duplicate_gene_to_protein_id, 
-                             locus_id_to_protein_id, locus_id_to_go_section, go_to_eco_list, 
+                             locus_id_to_protein_id, go_section, go_to_pmid_list, 
                              locus_id_to_ecnumbers, type)
             continue
 
-        if feature_type in ['pseudogene', 'blocked_reading_frame']:
+        if feature_type in ['pseudogene', 'blocked reading frame']:
 
             add_pseudogenes(files, annotation_id, locus_id, sgdid, chrnum, 
                             systematic_name, gene_name, start, stop, desc, 
                             annotation_id_to_cds_data, locus_id_to_uniform_names, 
-                            type, feature_type)
+                            type, feature_type, go_section, go_to_pmid_list)
             continue
 
         if systematic_name.startswith('NTS'):
@@ -183,11 +181,11 @@ def dump_data():
             add_NTS_features(files, chrnum, systematic_name, sgdid, start, stop, desc)
             continue
 
-        if feature_type.endswith('RNA_gene'):
+        if feature_type.endswith('RNA gene'):
             
             add_RNA_genes(files, annotation_id, locus_id, sgdid, chrnum, systematic_name, 
                           gene_name, start, stop, desc, annotation_id_to_cds_data, 
-                          locus_id_to_go_section, go_to_eco_list, type, feature_type)
+                          go_section, go_to_pmid_list, type, feature_type)
             continue
 
         if feature_type == 'centromere':
@@ -197,7 +195,7 @@ def dump_data():
                             annotation_id_to_cde_data.get(annotation_id))
             continue
 
-        if feature_type == 'LTR_retrotransposon':
+        if feature_type == 'LTR retrotransposon':
 
             add_retrotransposons(files, sgdid, chrnum, systematic_name, start, stop, desc, type)
             continue
@@ -207,12 +205,12 @@ def dump_data():
             add_telomeres(files, sgdid, chrnum, systematic_name, start, stop, desc, type)
             continue
 
-        if feature_type == 'long_terminal_repeat':
+        if feature_type == 'long terminal repeat':
 
             add_LTR(files, sgdid, chrnum, start, stop, desc, type)
             continue
 
-        if feature_type in ['ARS', 'origin_of_replication', 'silent_mating_type_cassette_array', 'mating_type_region', 'matrix_attachment_site']:
+        if feature_type in ['ARS', 'origin of replication', 'silent mating type cassette array', 'mating type region', 'matrix attachment site']:
             
             add_ARS_etc(files, sgdid, chrnum, systematic_name, gene_name, start, stop, desc, type)
         
@@ -220,22 +218,38 @@ def dump_data():
     for i in range(18):
         files[i].close()
 
-    # log.info("Uploading GAF file to S3...")
+    tbl_tar_file = tar_files(datestamp)
 
-    # update_database_load_file_to_s3(nex_session, gaf_file, '1', source_to_id, edam_to_id, datestamp)
+    log.info("Uploading ncbi tbl files to S3...")
+
+    update_database_load_file_to_s3(nex_session, tbl_tar_file, source_to_id, edam_to_id)
 
     nex_session.close()
 
     log.info(str(datetime.now()))
     log.info("Done!")
 
+def tar_files(datestamp):
+
+    tbl_tar_file = "ncbi_tbl_files." + datestamp + ".tar.gz"
+    tf = tarfile.open(data_dir + tbl_tar_file , "w:gz")
+    os.chdir(data_dir)
+    for i in range(18):
+        if i == 0:
+            continue
+        if i < 10:
+            tf.add("chr0" + str(i) + ".tbl")
+        else:
+            tf.add("chr" + str(i) + ".tbl")
+    tf.close()
+
+    return tbl_tar_file
+
 
 def add_LTR(files, sgdid, chrnum, start, stop, desc, type):
 
     files[chrnum].write(str(start)+"\t"+str(stop)+"\t" + type + "\n")
     files[chrnum].write(TABS + "note\t" + desc + "\n")
-    # files[chrnum].write(TABS + "evidence\tnot_experimental\n")
-    files[chrnum].write(TABS + "no experiment\n") 
     files[chrnum].write(TABS + "db_xref\tSGD:" + sgdid + "\n")
 
 
@@ -243,8 +257,6 @@ def add_telomeres(files, sgdid, chrnum, systematic_name, start, stop, desc, type
     
     files[chrnum].write(str(start)+"\t"+str(stop)+"\t" + type + "\n")
     files[chrnum].write(TABS + "note\t" + systematic_name + "; " + desc + "\n")
-    # files[chrnum].write(TABS + "evidence\tnot_experimental\n")
-    files[chrnum].write(TABS + "no experiment\n") 
     files[chrnum].write(TABS + "db_xref\tSGD:" + sgdid + "\n")
 
 
@@ -253,8 +265,6 @@ def add_retrotransposons(files, sgdid, chrnum, systematic_name, start, stop, des
     files[chrnum].write(str(start)+"\t"+str(stop)+"\t" + type + "\n")
     files[chrnum].write(TABS + "mobile_element_type\tretrotransposon:" + systematic_name + "\n")
     files[chrnum].write(TABS + "note\t" + systematic_name + "; " + desc + "\n")
-    # files[chrnum].write(TABS + "evidence\tnot_experimental\n")
-    files[chrnum].write(TABS + "no experiment\n") 
     files[chrnum].write(TABS + "db_xref\tSGD:" + sgdid + "\n")
 
 
@@ -266,12 +276,6 @@ def add_ARS_etc(files, sgdid, chrnum, systematic_name, gene_name, start, stop, d
         name = gene_name
     files[chrnum].write(TABS + "note\t" + name + "\n")
     files[chrnum].write(TABS + "note\t" + desc + "\n")
-    if gene_name and gene_name != systematic_name:
-        # files[chrnum].write(TABS + "evidence\texperimental\n")
-        files[chrnum].write(TABS + "experiment\tEXISTENCE:experiment\n")  
-    else:
-        # files[chrnum].write(TABS + "evidence\tnot_experimental\n")
-        files[chrnum].write(TABS + "no experiment\n")
     files[chrnum].write(TABS + "db_xref\tSGD:" + sgdid + "\n")
 
 
@@ -279,8 +283,6 @@ def add_centromeres(files, locus_id, sgdid, chrnum, systematic_name, gene_name, 
 
     files[chrnum].write(str(start)+"\t"+str(stop)+"\t" + type + "\n")
     files[chrnum].write(TABS + "note\t" + systematic_name + "; " + desc + "\n")
-    # files[chrnum].write(TABS + "evidence\texperimental\n")
-    files[chrnum].write(TABS + "experiment\tEXISTENCE:experiment\n")
     files[chrnum].write(TABS + "db_xref\tSGD:" + sgdid + "\n")
     
     if cde_data is None:
@@ -291,7 +293,7 @@ def add_centromeres(files, locus_id, sgdid, chrnum, systematic_name, gene_name, 
         files[chrnum].write(cde+"\n")
 
 
-def add_pseudogenes(files, annotation_id, locus_id, sgdid, chrnum, systematic_name, gene_name, start, stop, desc, annotation_id_to_cds_data, locus_id_to_uniform_names, type, feature_type):
+def add_pseudogenes(files, annotation_id, locus_id, sgdid, chrnum, systematic_name, gene_name, start, stop, desc, annotation_id_to_cds_data, locus_id_to_uniform_names, type, feature_type, go_section, go_to_pmid_list):
 
     files[chrnum].write(str(start)+"\t"+str(stop)+"\t" + type + "\n")
 
@@ -316,21 +318,17 @@ def add_pseudogenes(files, annotation_id, locus_id, sgdid, chrnum, systematic_na
     if feature_type != 'pseudogene':
         for cds in  annotation_id_to_cds_data[annotation_id]:
             files[chrnum].write(cds + "\n")
-
-    if gene_name:
-        # files[chrnum].write(TABS + "evidence\texperimental\n")
-        files[chrnum].write(TABS + "experiment\tEXISTENCE:experiment\n")
-    else:
-        # files[chrnum].write(TABS + "evidence\tnot_experimental\n")
-        files[chrnum].write(TABS + "no experiment\n")
     if desc:
         files[chrnum].write(TABS + "note\t" + desc + "\n")
+
+    for goline in go_section:
+        pmid_list = format_pmid_list(go_to_pmid_list.get((locus_id, goline)))
+        files[chrnum].write(goline + pmid_list + "\n")
 
     files[chrnum].write(TABS + "db_xref\tSGD:" + sgdid + "\n")
 
     if feature_type == 'pseudogene':
         files[chrnum].write(mRNA_lines)
-
 
 def add_NTS_features(files, chrnum, systematic_name, sgdid, start, stop, desc):
     
@@ -338,11 +336,9 @@ def add_NTS_features(files, chrnum, systematic_name, sgdid, start, stop, desc):
     files[chrnum].write(TABS + "note\t" + systematic_name + "\n") 
     if desc:
         files[chrnum].write(TABS + "note\t"+ desc + "\n")
-    # files[chrnum].write(TABS + "evidence\tnot_experimental\n")
-    files[chrnum].write(TABS + "no experiment\n")
     files[chrnum].write(TABS + "db_xref\tSGD:" + sgdid + "\n")
 
-def add_RNA_genes(files, annotation_id, locus_id, sgdid, chrnum, systematic_name, gene_name, start, stop, desc, annotation_id_to_cds_data, locus_id_to_go_section, go_to_eco_list, type, feature_type):
+def add_RNA_genes(files, annotation_id, locus_id, sgdid, chrnum, systematic_name, gene_name, start, stop, desc, annotation_id_to_cds_data, go_section, go_to_pmid_list, type, feature_type):
     
     files[chrnum].write(str(start)+"\t"+str(stop)+"\tgene\n")
 
@@ -374,24 +370,14 @@ def add_RNA_genes(files, annotation_id, locus_id, sgdid, chrnum, systematic_name
     if desc:
         files[chrnum].write(TABS + "note\t" + desc + "\n")
 
-    if gene_name and gene_name.upper() != systematic_name.upper():
-        # files[chrnum].write(TABS + "evidence\texperimental\n")
-        files[chrnum].write(TABS + "experiment\tEXISTENCE:experiment\n")
-    else:
-        # files[chrnum].write(TABS + "evidence\tnot_experimental\n")
-        files[chrnum].write(TABS + "no experiment\n")
-
-    go_section = locus_id_to_go_section.get(locus_id, [])
-    go_session = go_section.sort()
     for goline in go_section:
-        eco_list = go_to_eco_list[(locus_id, goline)]
-        eco_list.sort()
-        files[chrnum].write(goline + "|" + ",".join(eco_list) + "\n")
+        pmid_list = format_pmid_list(go_to_pmid_list.get((locus_id, goline)))
+        files[chrnum].write(goline + pmid_list + "\n")
 
     files[chrnum].write(TABS + "db_xref\tSGD:" + sgdid + "\n")
 
 
-def add_ORF_features(files, annotation_id, locus_id, sgdid, chrnum, systematic_name, gene_name, start, stop, desc, annotation_id_to_cds_data, annotation_id_to_frameshift, locus_id_to_uniform_names, locus_id_to_ncbi_protein_name, duplicate_gene_to_protein_id, locus_id_to_protein_id, locus_id_to_go_section, go_to_eco_list, locus_id_to_ecnumbers, type):
+def add_ORF_features(files, annotation_id, locus_id, sgdid, chrnum, systematic_name, gene_name, start, stop, desc, annotation_id_to_cds_data, annotation_id_to_frameshift, locus_id_to_uniform_names, locus_id_to_ncbi_protein_name, duplicate_gene_to_protein_id, locus_id_to_protein_id, go_section, go_to_pmid_list, locus_id_to_ecnumbers, type):
 
     files[chrnum].write(str(start)+"\t"+str(stop)+"\t" + type + "\n")
 
@@ -446,66 +432,62 @@ def add_ORF_features(files, annotation_id, locus_id, sgdid, chrnum, systematic_n
     if desc:
         files[chrnum].write(TABS + "note\t" + desc + "\n")
 
-    if gene_name:
-        # files[chrnum].write(TABS + "evidence\texperimental\n")
-        files[chrnum].write(TABS + "experiment\tEXISTENCE:experiment\n")
-    else:
-        # files[chrnum].write(TABS + "evidence\tnot_experimental\n")
-        files[chrnum].write(TABS + "no experiment\n")
-
-    go_section = locus_id_to_go_section.get(locus_id, [])
-    go_session = go_section.sort()
     for goline in go_section:
-        eco_list = go_to_eco_list[(locus_id, goline)]
-        eco_list.sort()
-        files[chrnum].write(goline + "|" + ",".join(eco_list) + "\n")
+        pmid_list = format_pmid_list(go_to_pmid_list.get((locus_id, goline)))
+        files[chrnum].write(goline + pmid_list + "\n")
 
     files[chrnum].write(TABS + "db_xref\tSGD:" + sgdid + "\n")
 
     files[chrnum].write(mRNA_lines)
 
 
+def format_pmid_list(pmids):
+    if pmids == "" or pmids is None:
+        return ""
+    return " [" + "|".join(pmids) + "]"
+
+
 def type_to_show():
 
     return { 'ORF'                               : 'gene',
              'ARS'                               : 'rep_origin',
-             'origin_of_replication'             : 'rep_origin',
-             'ARS_consensus_sequence'            : 'rep_origin',
+             'origin of replication'             : 'rep_origin',
+             'ARS consensus sequence'            : 'rep_origin',
              'CDS'                               : 'CDS',
-             'telomeric_repeat'                  : 'repeat_region',
-             'X_element_combinatorial_repeat'    : 'repeat_region',
-             'X_element'                         : 'repeat_region',
-             'Y_prime_element'                   : 'repeat_region',
+             'telomeric repeat'                  : 'repeat_region',
+             'X element combinatorial repeat'    : 'repeat_region',
+             'X element'                         : 'repeat_region',
+             'Y prime element'                   : 'repeat_region',
              'telomere'                          : 'telomere',
              'centromere'                        : 'centromere',
-             'centromere_DNA_Element_I'          : 'centromere',
-             'centromere_DNA_Element_II'         : 'centromere',
-             'centromere_DNA_Element_III'        : 'centromere',
-             'silent_mating_type_cassette_array' : 'misc_feature',
-             'mating_type_region'                : 'misc_feature',
-             'matrix_attachment_site'            : 'misc_feature',
-             'long_terminal_repeat'              : 'LTR',
-             'LTR_retrotransposon'               : 'mobile_element',
-             'snoRNA_gene'                       : 'ncRNA',
-             'snRNA_gene'                        : 'ncRNA',
-             'ncRNA_gene'                        : 'ncRNA',
-             'rRNA_gene'                         : 'rRNA',
-             'telomerase_RNA_gene'               : 'ncRNA',
-             'transposable_element_gene'         : 'gene',
+             'centromere DNA Element I'          : 'centromere',
+             'centromere DNA_Element II'         : 'centromere',
+             'centromere DNA_Element III'        : 'centromere',
+             'silent mating type cassette array' : 'misc_feature',
+             'mating type region'                : 'misc_feature',
+             'matrix attachment site'            : 'misc_feature',
+             'long terminal repeat'              : 'LTR',
+             'LTR retrotransposon'               : 'mobile_element',
+             'snoRNA gene'                       : 'ncRNA',
+             'snRNA gene'                        : 'ncRNA',
+             'ncRNA gene'                        : 'ncRNA',
+             'rRNA gene'                         : 'rRNA',
+             'telomerase RNA gene'               : 'ncRNA',
+             'transposable element gene'         : 'gene',
              'pseudogene'                        : 'gene',
-             'blocked_reading_frame'             : 'gene',
-             'tRNA_gene'                         : 'tRNA',
-             'noncoding_exon'                    : 'tRNA' }
+             'blocked reading frame'             : 'gene',
+             'tRNA gene'                         : 'tRNA',
+             'noncoding exon'                    : 'tRNA' }
 
 
 def rpt_to_show():
     
-    return { 'telomeric_repeat'                : 'Telomeric Repeat',
-             'X_element_combinatorial_repeat'  : 'X element Combinatorial Repeat',
-             'X_element'                       : 'X element',
-             'Y_prime_element'                 : "Y_prime_element",
+    return { 'telomeric repeat'                : 'Telomeric Repeat',
+             'X element combinatorial repeat'  : 'X element Combinatorial Repeat',
+             'X element'                       : 'X element',
+             'Y prime_element'                 : "Y_prime_element",
              'telomere'                        : 'Telomeric Region',
-             'LTR_retrotransposon'             : 'Transposon' }
+             'LTR retrotransposon'             : 'Transposon' }
 
 
 # def ncRNA_class():
@@ -525,8 +507,6 @@ def open_file_handles():
         else:
             chrom.append(str(i))
             
-    print chrom
-
     files = [open(data_dir + "chr" + chr + ".tbl", "w") for chr in chrom]
     
     return files
@@ -605,41 +585,70 @@ def get_cds_data(nex_session, annotation_id_to_strand, type_mapping):
 
 def get_go_data(nex_session):
 
+    code_mapping = get_col4_5_for_code()
+
     reference_id_to_pmid = dict([(x.dbentity_id, x.pmid) for x in nex_session.query(Referencedbentity).all()])
     go_id_to_go = dict([(x.go_id, x) for x in nex_session.query(Go).all()])
-
+    
     eco_id_to_eco = {}
     for x in nex_session.query(EcoAlias).all():
         if len(x.display_name) > 5:
             continue
         eco_id_to_eco[x.eco_id] = x.display_name
 
-    locus_id_to_go_section = {}
+    annotation_id_to_panther = {}
+    annotation_id_to_supportingevidence = {}
 
-    go_to_eco_list = {}
+    for x in nex_session.query(Gosupportingevidence).all():
+        if x.dbxref_id.startswith("PANTHER:"):
+            if x.annotation_id in annotation_id_to_panther:
+                annotation_id_to_panther[x.annotation_id] = annotation_id_to_panther[x.annotation_id] + "|" + x.dbxref_id
+            else:
+                annotation_id_to_panther[x.annotation_id] = x.dbxref_id
+        if x.annotation_id in annotation_id_to_supportingevidence:
+            annotation_id_to_supportingevidence[x.annotation_id] = annotation_id_to_supportingevidence[x.annotation_id] + "|" + x.dbxref_id
+        else:
+            annotation_id_to_supportingevidence[x.annotation_id] = x.dbxref_id
+        
+    locus_id_to_go_section = {}
+    go_to_pmid_list = {}
 
     for x in nex_session.query(Goannotation).all():
 
         pmid = reference_id_to_pmid.get(x.reference_id)
         if pmid is None:
             pmid = ''
+        else:
+            pmid = "PMID:" + str(pmid)
+
         eco = eco_id_to_eco[x.eco_id]
         go = go_id_to_go[x.go_id]
 
-        # if eco in ['ND', 'IEA'] or go.display_name == go.go_namespace:
-        #    continue
+        if eco == 'ND' or eco not in code_mapping:
+            continue
 
-        goline = TABS + namespace_mapping[go.go_namespace] + "\t" + go.display_name + "|" + go.goid + "|" + str(pmid)
+        (col4Text, col5Text) = code_mapping [eco]
 
-        eco_list = []
-        if (x.dbentity_id, goline) in go_to_eco_list:
-            eco_list = go_to_eco_list[(x.dbentity_id, goline)]
-        if eco not in eco_list:
-            eco_list.append(eco)
-
-        go_to_eco_list[(x.dbentity_id, goline)] = eco_list
-        
-        # print goline
+        goline = TABS + col4Text + "\t" + col5Text + ", "
+        if eco == "IBA": 
+            if x.annotation_id in annotation_id_to_panther:
+                goline = goline + annotation_id_to_panther[x.annotation_id]
+            else:
+                continue
+        elif eco in ['ISS', 'ISM', 'ISA', 'ISO']:
+            if x.annotation_id in annotation_id_to_supportingevidence:
+                goline = goline + annotation_id_to_supportingevidence[x.annotation_id]
+            else:
+                continue
+        else:
+            goline = goline + go.goid + " " + go.display_name
+            if eco != "IEA":
+                pmid_list = []
+                if (x.dbentity_id, goline) in go_to_pmid_list:
+                    pmid_list = go_to_pmid_list[(x.dbentity_id, goline)]
+                if pmid not in pmid_list:
+                    pmid_list.append(pmid)
+                go_to_pmid_list[(x.dbentity_id, goline)] = pmid_list
 
         go_section = []
         if x.dbentity_id in locus_id_to_go_section:
@@ -649,7 +658,7 @@ def get_go_data(nex_session):
 
         locus_id_to_go_section[x.dbentity_id] = go_section
 
-    return [locus_id_to_go_section, go_to_eco_list]
+    return [locus_id_to_go_section, go_to_pmid_list]
 
 
 def get_protein_id_for_duplicate_gene():
@@ -666,6 +675,27 @@ def get_protein_id_for_duplicate_gene():
              'S000005659' : 'DAA10907.1' }  # EFT1                   
 
     
+def get_col4_5_for_code():
+    
+    return { "IEA": ("inference",  "electronic annotation"),
+             "IDA": ("experiment", "EXISTENCE:direct assay"),
+             "IBA": ("inference",  "protein family"),
+             "IMP": ("experiment", "EXISTENCE:mutant phenotype"),
+             "HDA": ("experiment", "EXISTENCE:direct assay"),
+             "IGI": ("experiment", "EXISTENCE:genetic interaction"),
+             "IPI": ("experiment", "EXISTENCE:physical interaction"),
+             "IC":  ("experiment", "EXISTENCE:curator inference"),
+             "ISS": ("inference",  "similar to DNA sequence"),
+             "ISM": ("inference",  "similar to DNA sequence"),
+             "TAS": ("inference",  "EXISTENCE:author statement"),
+             "ISA": ("inference",  "similar to DNA sequence"),
+             "HMP": ("experiment", "EXISTENCE:mutant phenotype"),
+             "NAS": ("inference",  "EXISTENCE:author statement"),
+             "IEP": ("experiment", "EXISTENCE:expression pattern"),
+             "HGI": ("experiment", "EXISTENCE:genetic interaction"),
+             "ISO": ("inference",  "similar to DNA sequence") }    
+
+
 def get_chr_to_num_mapping():
 
     return { "I":     1,
@@ -692,14 +722,7 @@ def clean_up_desc(desc):
 
     return desc.replace("Putative protein of unknown function", "hypothetical protein").replace("Protein of unknown function", "hypothetical protein").replace("protein of unknown function", "hypothetical protein").replace("Hypothetical protein", "hypothetical protein")
           
-   
-def update_database_load_file_to_s3(nex_session, gaf_file, is_public, source_to_id, edam_to_id, datestamp):
-
-    gzip_file = gaf_file + "." + datestamp + ".gz"
-    import gzip
-    import shutil
-    with open(gaf_file, 'rb') as f_in, gzip.open(gzip_file, 'wb') as f_out:
-        shutil.copyfileobj(f_in, f_out)
+def update_database_load_file_to_s3(nex_session, gzip_file, source_to_id, edam_to_id):
 
     local_file = open(gzip_file)
 
@@ -710,50 +733,50 @@ def update_database_load_file_to_s3(nex_session, gaf_file, is_public, source_to_
     if row is not None:
         return
 
-    gzip_file = gzip_file.replace("scripts/dumping/curation/data/", "")
+    # gzip_file = gzip_file.replace("scripts/dumping/ncbi/data/", "")
 
     nex_session.query(Dbentity).filter_by(display_name=gzip_file, dbentity_status='Active').update({"dbentity_status": 'Archived'})
     nex_session.commit()
 
-    data_id = edam_to_id.get('EDAM:2048')   ## data:2048 Report
+    data_id = edam_to_id.get('EDAM:3671')   ## data:3671 Text 
     topic_id = edam_to_id.get('EDAM:0085')  ## topic:0085 Functional genomics
-    format_id = edam_to_id.get('EDAM:3475') ## format:3475 TSV
+    format_id = edam_to_id.get('EDAM:3507') ## format:3507 Document format 
 
-    if "yeastmine" not in gaf_file:
-        from sqlalchemy import create_engine
-        from src.models import DBSession
-        engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
-        DBSession.configure(bind=engine)
+    from sqlalchemy import create_engine
+    from src.models import DBSession
+    engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
+    DBSession.configure(bind=engine)
     
-    readme = nex_session.query(Dbentity).filter_by(display_name="gene_association.README", dbentity_status='Active').one_or_none()
-    if readme is None:
-        log.info("gene_association.README is not in the database.")
-        return
-    readme_file_id = readme.dbentity_id
- 
+    # readme = nex_session.query(Dbentity).filter_by(display_name="ncbi_tab_files.README", dbentity_status='Active').one_or_none()
+    # if readme is None:
+    #    log.info("ncbi_tbl_files.README is not in the database.")
+    #    return
+    # readme_file_id = readme.dbentity_id
+    readme_file_id = None
+
     # path.path = /reports/function
 
     upload_file(CREATED_BY, local_file,
                 filename=gzip_file,
                 file_extension='gz',
-                description='All GO annotations for yeast genes (protein and RNA) in GAF file format',
+                description='All yeast features in tbl file format',
                 display_name=gzip_file,
                 data_id=data_id,
                 format_id=format_id,
                 topic_id=topic_id,
                 status='Active',
                 readme_file_id=readme_file_id,
-                is_public=is_public,
+                is_public='1',
                 is_in_spell='0',
                 is_in_browser='0',
                 file_date=datetime.now(),
                 source_id=source_to_id['SGD'])
 
-    gaf = nex_session.query(Dbentity).filter_by(display_name=gzip_file, dbentity_status='Active').one_or_none()
-    if gaf is None:
+    file = nex_session.query(Dbentity).filter_by(display_name=gzip_file, dbentity_status='Active').one_or_none()
+    if file is None:
         log.info("The " + gzip_file + " is not in the database.")
         return
-    file_id = gaf.dbentity_id
+    file_id = file.dbentity_id
 
     path = nex_session.query(Path).filter_by(path="/reports/function").one_or_none()
     if path is None:
