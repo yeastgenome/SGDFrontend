@@ -5,9 +5,9 @@ import os
 
 # http://0.0.0.0:6545/run_gotools?aspect=C&genes=COR5|CYT1|Q0105|QCR2|S000001929|S000002937|S000003809|YEL024W|YEL039C|YGR183C|YHR001W-A
 
-gotermfinder_url = "http://gotermfinder.yeastgenome.org/cgi-bin/gotermfinder2"
+gotermfinder_url = "http://gotermfinder.yeastgenome.org/cgi-bin/gotermfinder"
 
-goslimmapper_url = "http://gotermfinder.yeastgenome.org/cgi-bin/goslimmapper2"
+goslimmapper_url = "http://gotermfinder.yeastgenome.org/cgi-bin/goslimmapper"
 
 # http://gotermfinder.yeastgenome.org/cgi-bin/gotermfinder?aspect=F&genes=COR5|CYT1|Q0105|QCR2|S000001929|S000002937|S000003809|YEL024W|YEL039C|YGR183C|YHR001W-A
 
