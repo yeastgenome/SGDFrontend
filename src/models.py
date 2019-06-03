@@ -16,6 +16,8 @@ from itertools import groupby
 import boto
 from boto.s3.key import Key
 import hashlib
+import urllib
+from urllib2 import Request, urlopen, URLError, HTTPError
 
 from src.curation_helpers import ban_from_cache, get_author_etc, link_gene_names, get_curator_session, clear_list_empty_values
 from scripts.loading.util import link_gene_complex_names
