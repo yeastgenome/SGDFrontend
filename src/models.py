@@ -8257,12 +8257,11 @@ class Proteindomain(Base):
             "genes": ",".join([f[0] for f in format_names]),
             "aspect": "P"
         }
-        headers = {'Content-type': 'application/json; charset=utf-8"', 'processData': False}
 
         try:
-            response = requests.post(os.environ['BATTER_URI'], data=json.dumps(data), headers=headers).text
-
-            response_json = json.loads(response.split('\n')[1])
+            req = Request(url=os.environ['BATTER_URI'], data=data)
+            res = urlopen(req)
+            response_json = json.loads(res.read())
         except:
             return []
 
