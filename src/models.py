@@ -2688,10 +2688,12 @@ class Locusdbentity(Dbentity):
         target_ids = DBSession.query(Regulationannotation.target_id).filter_by(regulator_id=self.dbentity_id).all()
         format_names = DBSession.query(Dbentity.format_name).filter(Dbentity.dbentity_id.in_(target_ids)).all()
 
-        data = {
-            "genes": ",".join([f[0] for f in format_names]),
+        genes = ",".join([f[0] for f in format_names])
+
+        data = urllib.urlencode({
+            "genes": genes,
             "aspect": "P"
-        }
+        })
 
         try:
             req = Request(url=os.environ['BATTER_URI'], data=data)
@@ -2712,6 +2714,7 @@ class Locusdbentity(Dbentity):
                 "pvalue": row["pvalue"]
             })
         return obj
+
 
     def regulation_details(self):
         annotations = DBSession.query(Regulationannotation).filter(or_(Regulationannotation.target_id==self.dbentity_id, Regulationannotation.regulator_id==self.dbentity_id)).all()
