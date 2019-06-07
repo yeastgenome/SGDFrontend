@@ -1,4 +1,4 @@
-from src.models import DBSession, Base, Colleague, ColleagueLocus, Dbentity, Locusnote, Filedbentity, FileKeyword, LocusnoteReference, Locusdbentity, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi
+from src.models import DBSession, Base, Colleague, ColleagueLocus, Dbentity, Locusnote, Filedbentity, FileKeyword, LocusnoteReference, Locusdbentity, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi , Goextension, Interactor
 from sqlalchemy import create_engine, and_
 from elasticsearch import Elasticsearch
 from mapping import mapping
@@ -521,6 +521,10 @@ class IndexESHelper:
         obj = {}
         _dict_chebi = {}
         chebi_names = list(set([x.display_name for x in chebi_data]))
+        chebi_format_names = list(set([x.format_name for x in chebi_data]))
+        chebi_format_to_display_names = {}
+        for chebi in chebi_data:
+            chebi_format_to_display_names[chebi.format_name] = chebi.display_name
 
         for chebi_item in chebi_data:
             if chebi_item.display_name not in _dict_chebi:
@@ -533,13 +537,31 @@ class IndexESHelper:
                     PhenotypeannotationCond, Phenotypeannotation.annotation_id
                     == PhenotypeannotationCond.annotation_id).filter(
                         PhenotypeannotationCond.condition_name.in_(
-                            chebi_names)).all()
+                            chebi_names)).all()            
             for item_cond in _conditions:
                 temp = _dict_chebi.get(item_cond[1].condition_name)
                 if temp is not None:
                     for item in temp:
                         if len(temp) > 0:
                             obj[item.chebi_id] = item
+
+            _conditions = DBSession.query(Goextension).filter(Goextension.dbxref_id.in_(chebi_format_names)).all()
+            duplicate = 0
+            for item_cond in _conditions:
+                temp = _dict_chebi.get(chebi_format_to_display_names[item_cond.dbxref_id])
+                if temp is not None and len(temp) > 0:
+                    for item in temp:
+                        obj[item.chebi_id] = item
+
+            _conditions = DBSession.query(Interactor).filter(Interactor.format_name.in_(chebi_format_names)).all()
+            duplicate = 0
+            for item_cond in _conditions:
+                temp = _dict_chebi.get(chebi_format_to_display_names[item_cond.format_name])
+                if temp is not None and len(temp) > 0:
+                    for item in temp:
+                        obj[item.chebi_id] = item
+
+
         return obj
 
     @classmethod
