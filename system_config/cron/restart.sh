@@ -1,5 +1,7 @@
 #! /bin/sh
 
+ulimit -S -n unlimited
+
 cd /data/www/SGDBackend-NEX2/current
 source /data/envs/sgd/bin/activate
 . prod_variables.sh
