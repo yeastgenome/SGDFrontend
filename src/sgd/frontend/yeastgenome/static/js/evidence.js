@@ -61,7 +61,8 @@ function dataset_datat_to_table(dataset) {
 
 function downloadable_file_to_table(data) {
 
-    var file_with_link = create_link(data['s3_url'].split("/").pop(), data['s3_url'].split("?versionId").shift());
+    var s3_url = data['s3_url'].split("?versionId").shift();
+    var file_with_link = create_link(s3_url.split("/").pop(), s3_url);
     
     return [data['id'], data['id'], file_with_link, data['description']]
 
