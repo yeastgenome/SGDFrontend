@@ -7,6 +7,7 @@ class DataList extends Component {
     this.handleOnBlur = this.handleOnBlur.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
     this.handleMoreOptions = this.handleMoreOptions.bind(this);
+    this.handleNewValue = this.handleNewValue.bind(this);
 
     this.state = {
       showOptions: false,
@@ -69,6 +70,10 @@ class DataList extends Component {
     }
   }
 
+  handleNewValue(){
+    this.setState({selectedOptionId: this.state.inputFieldText }, () => this.props.onOptionChange());
+  }
+
   renderOptions() {
     var options;
     if (this.state.showMoreOptions) {
@@ -83,13 +88,20 @@ class DataList extends Component {
     else{
       options = this.props.options
         .filter((value) => RegExp('^' + this.state.inputFieldText + '.*', 'i').test(value[this.props.value2]) || RegExp('^' + this.state.inputFieldText + '.*', 'i').test(value[this.props.value1]))
-        .slice(0, 10)
         .map((option) => {
           return <li value={option[this.props.value1]} key={option[this.props.id]} className='clearfix' onMouseDown={() => this.handleSelect(option[this.props.id])}>
             <a> <span className='float-left'>{option[this.props.value1]} </span><span className='float-right'>{option[this.props.value2]}</span> </a>
           </li>;
         });
-      options.push(<li key='11' onMouseDown={() => this.handleMoreOptions()}><a>more options</a></li>);
+
+      if(options.length > 10){
+        options = options.slice(0, 10);
+        options.push(<li key='11' onMouseDown={() => this.handleMoreOptions()}><a>more options</a></li>);
+      }
+    }
+
+    if(options.length == 0 && this.props.setNewValue){
+      options.push(<li key='0' onMouseDown={() => this.handleNewValue()}><a>{this.state.inputFieldText}</a></li>);
     }
     
     return (
@@ -124,6 +136,11 @@ DataList.propTypes = {
   onOptionChange: React.PropTypes.func,
   selectedIdName: React.PropTypes.string,
   selectedId: React.PropTypes.string,
+  setNewValue:React.PropTypes.bool
+};
+
+DataList.defaultProps = {
+  setNewValue:false
 };
 
 export default DataList;
