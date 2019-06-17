@@ -756,7 +756,8 @@ def index_chemicals():
                 "href": item_v.obj_url,
                 "description": item_v.description,
                 "category": "chemical",
-                "keys": []
+                "keys": [],
+                "chebiid": item_v.chebiid
             }
             bulk_data.append({
                 "index": {
@@ -976,8 +977,9 @@ if __name__ == "__main__":
     '''
     cleanup()
     setup()
-    t1 = Thread(target=index_part_1)
+    index_chemicals()
+    '''t1 = Thread(target=index_part_1)
     t2 = Thread(target=index_part_2)
     t1.start()
-    t2.start()
+    t2.start()'''
     
