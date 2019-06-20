@@ -21,6 +21,8 @@ log.setLevel(logging.INFO)
 CREATED_BY = os.environ['DEFAULT_USER']
 
 data_dir = "scripts/dumping/ncbi/data/"
+tbl2asn_script = "scripts/dumping/ncbi/tbl2asn"
+log_file = "scripts/dumping/ncbi/logs/dump_tbl_files.log"
 
 TAXON = "TAX:559292"
 
@@ -218,32 +220,68 @@ def dump_data():
     for i in range(18):
         files[i].close()
 
-    tbl_tar_file = tar_files(datestamp)
+    log.info(str(datetime.now()))
+    log.info("Creating asn1 & gbf files...")
+    
+    cmd = tbl2asn_script + " -V v -V b -j '[organism=Saccharomyces cerevisiae S288c][strain=S288c][db_xref=taxon:559292][lineage=Eukaryota; Fungi; Dikarya; Ascomycota; Saccharomycotina; Saccharomycetes; Saccharomycetales; Saccharomycetaceae; Saccharomyces][genus=Saccharomyces][species=cerevisiae]' -p " + data_dir + " > " + log_file +  " 2>& 1"
 
+    os.system(cmd)
+
+    os.chdir(data_dir)
+
+    log.info(str(datetime.now()))
+    log.info("making tar ball for tbl files...")
+
+    tbl_tar_file = tar_files(datestamp, "tbl")
+
+    log.info(str(datetime.now()))
+    log.info("making tar ball for sqn files...")
+
+    sqn_tar_file = tar_files(datestamp, "sqn")
+
+    log.info(str(datetime.now()))
+    log.info("making tar ball for gbf files...")
+
+    gbf_tar_file = tar_files(datestamp, "gbf")
+
+    log.info(str(datetime.now()))
     log.info("Uploading ncbi tbl files to S3...")
 
     update_database_load_file_to_s3(nex_session, tbl_tar_file, source_to_id, edam_to_id)
+    
+    log.info(str(datetime.now()))
+    log.info("Uploading ncbi asn1 files to S3...")
+
+    update_database_load_file_to_s3(nex_session, sqn_tar_file, source_to_id, edam_to_id)
+
+    log.info(str(datetime.now()))
+    log.info("Uploading ncbi gbf files to S3...")
+
+    update_database_load_file_to_s3(nex_session, gbf_tar_file, source_to_id, edam_to_id)
 
     nex_session.close()
 
     log.info(str(datetime.now()))
     log.info("Done!")
 
-def tar_files(datestamp):
+def tar_files(datestamp, format):
 
-    tbl_tar_file = "ncbi_tbl_files." + datestamp + ".tar.gz"
-    tf = tarfile.open(data_dir + tbl_tar_file , "w:gz")
-    os.chdir(data_dir)
+    this_tar_file = "ncbi_" + format + "_files." + datestamp + ".tar.gz"
+
+    tf = tarfile.open(this_tar_file, "w:gz")
+    
     for i in range(18):
         if i == 0:
             continue
+        if i == 17 and format in ['sqn', 'gbf']:
+            continue
         if i < 10:
-            tf.add("chr0" + str(i) + ".tbl")
+            tf.add("chr0" + str(i) + "." + format)
         else:
-            tf.add("chr" + str(i) + ".tbl")
+            tf.add("chr" + str(i) + "." + format)
     tf.close()
 
-    return tbl_tar_file
+    return this_tar_file
 
 
 def add_LTR(files, sgdid, chrnum, start, stop, desc, type):
@@ -727,31 +765,37 @@ def update_database_load_file_to_s3(nex_session, gzip_file, source_to_id, edam_t
     local_file = open(gzip_file)
 
     import hashlib
-    gaf_md5sum = hashlib.md5(local_file.read()).hexdigest()
-    row = nex_session.query(Filedbentity).filter_by(md5sum = gaf_md5sum).one_or_none()
+    file_md5sum = hashlib.md5(local_file.read()).hexdigest()
+    row = nex_session.query(Filedbentity).filter_by(md5sum = file_md5sum).one_or_none()
 
     if row is not None:
         return
 
-    # gzip_file = gzip_file.replace("scripts/dumping/ncbi/data/", "")
-
-    nex_session.query(Dbentity).filter_by(display_name=gzip_file, dbentity_status='Active').update({"dbentity_status": 'Archived'})
+    if "tbl" in gzip_file:
+        nex_session.query(Dbentity).filter(Dbentity.display_name.like('ncbi_tbl_files.%.tar.gz')).filter(Dbentity.dbentity_status=='Active').update({"dbentity_status":'Archived'}, synchronize_session='fetch')
+    elif "sqn" in gzip_file:
+        nex_session.query(Dbentity).filter(Dbentity.display_name.like('ncbi_sqn_files.%.tar.gz')).filter(Dbentity.dbentity_status=='Active').update({"dbentity_status":'Archived'}, synchronize_session='fetch')
+    else:
+        nex_session.query(Dbentity).filter(Dbentity.display_name.like('ncbi_gbf_files.%.tar.gz')).filter(Dbentity.dbentity_status=='Active').update({"dbentity_status":'Archived'}, synchronize_session='fetch')
+    
     nex_session.commit()
 
     data_id = edam_to_id.get('EDAM:3671')   ## data:3671 Text 
     topic_id = edam_to_id.get('EDAM:0085')  ## topic:0085 Functional genomics
     format_id = edam_to_id.get('EDAM:3507') ## format:3507 Document format 
 
-    from sqlalchemy import create_engine
-    from src.models import DBSession
-    engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
-    DBSession.configure(bind=engine)
+    if "tbl" in gzip_file:
+        from sqlalchemy import create_engine
+        from src.models import DBSession
+        engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600)
+        DBSession.configure(bind=engine)
     
     # readme = nex_session.query(Dbentity).filter_by(display_name="ncbi_tab_files.README", dbentity_status='Active').one_or_none()
     # if readme is None:
     #    log.info("ncbi_tbl_files.README is not in the database.")
     #    return
     # readme_file_id = readme.dbentity_id
+
     readme_file_id = None
 
     # path.path = /reports/function
@@ -791,7 +835,6 @@ def update_database_load_file_to_s3(nex_session, gzip_file, source_to_id, edam_t
 
     nex_session.add(x)
     nex_session.commit()
-
 
 if __name__ == '__main__':
     
