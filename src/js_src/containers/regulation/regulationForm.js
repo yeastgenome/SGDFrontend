@@ -209,7 +209,6 @@ class RegulationForm extends Component {
       })
       .map((regulation, index) =>{
         var new_index = index + pageIndex*SKIP;
-        if (this.state.pageIndex > 0) { new_index = index + SKIP; }
         return <li key={new_index} onClick={() => this.handleSelectRegulation(new_index)} className={`button medium-only-expanded ${this.state.currentIndex == new_index ? 'success' : ''}`}>{regulation.target_id.display_name + ' ' + regulation.regulator_id.display_name}</li>;
       }
         );
