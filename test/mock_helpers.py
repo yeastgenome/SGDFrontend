@@ -1151,7 +1151,11 @@ def reference_side_effect(*args, **kwargs):
             elif len(args) == 1 and str(args[0]) == "<class 'src.models.Straindbentity'>":
                 s_name = factory.StraindbentityFactory()
                 return MockQuery(s_name)
-
+            elif len(args) == 1 and str(args[0]) == "<class 'src.models.ReferenceFile'>":
+                file = factory.FiledbentityFactory()
+                referencefile = factory.ReferenceFileFactory()
+                referencefile.file = file
+                return MockQuery(referencefile)
 
 def reference_phenotype_side_effect(*args, **kwargs):
     

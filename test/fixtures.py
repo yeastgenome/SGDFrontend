@@ -10,7 +10,7 @@ from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRela
     So, ContigUrl, LocusAlias, LocusAliasReferences, LocusReferences, LocussummaryReference, LocusUrl, Posttranslationannotation,\
     Psimod, Proteinexptannotation, Proteindomainannotation, Proteindomain, ProteindomainUrl, Ec, EcAlias, EcUrl, LocusRelation, LocusRelationReference, \
     Locusnote, LocusnoteReference, Pathwayannotation, Pathwaydbentity, PathwayUrl, Bindingmotifannotation, Disease, Diseaseannotation, \
-    Proteinabundanceannotation, ChebiAlia
+    Proteinabundanceannotation, ChebiAlia, ReferenceFile
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -1791,5 +1791,18 @@ class ChebiAliaFactory(factory.alchemy.SQLAlchemyModelFactory):
     source_id = 1
     chebi_id = 1
     alias_type = "alias type"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+
+class ReferenceFileFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = ReferenceFile
+        sqlalchemy_session = DBSession
+
+    reference_file_id = 1
+    reference_id = 1
+    file_id = 1
+    source_id = 1
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
