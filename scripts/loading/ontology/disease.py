@@ -5,7 +5,7 @@ from datetime import datetime
 import sys
 reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('utf-8')
-from src.models import Source, Disease, DiseaseUrl, DiseaseAlia, DiseaseRelation, Ro, Edam, Dbentity, Filedbentity
+from src.models import Source, Disease, DiseaseUrl, DiseaseAlias, DiseaseRelation, Ro, Edam, Dbentity, Filedbentity
 from src.helpers import upload_file
 from scripts.loading.database_session import get_session
 from scripts.loading.ontology import read_owl
@@ -41,7 +41,7 @@ def load_ontology(ontology_file):
     edam_to_id = dict([(x.format_name, x.edam_id) for x in nex_session.query(Edam).all()])
 
     disease_id_to_alias = {}
-    for x in nex_session.query(DiseaseAlia).all():
+    for x in nex_session.query(DiseaseAlias).all():
         aliases = []
         if x.disease_id in disease_id_to_alias:
             aliases = disease_id_to_alias[x.disease_id]
@@ -118,21 +118,10 @@ def load_new_data(nex_session, data, source_to_id, doid_to_disease, ro_id, disea
                 update_log['updated'] = update_log['updated'] + 1
                 fw.write("The is_obsolete for " + x['id'] + " has been updated from " + y.is_obsolete + " to " + 'False' + "\n")
 
-
-
-
-
-
-
             ## only for this testing time
-            insert_url(nex_session, source_to_id['Alliance'], 'Alliance', 'Alliance of Genome Resources', disease_id,
-                       'https://www.alliancegenome.org/disease/' + x['id'],
-                       fw)
-
-
-
-
-
+            ## insert_url(nex_session, source_to_id['Alliance'], 'Alliance', 'Alliance of Genome Resources', disease_id,
+            ##            'https://www.alliancegenome.org/disease/' + x['id'],
+            ##           fw)
 
             if x['term'] != y.display_name:
                 ## update term
@@ -240,7 +229,7 @@ def update_aliases(nex_session, disease_id, curr_aliases, new_aliases, source_id
     for (alias, type) in curr_aliases:
         if(alias, type) not in new_aliases:
             ## remove the old one                                                             
-            to_delete = nex_session.query(DiseaseAlia).filter_by(disease_id=disease_id, display_name=alias, alias_type=type).first()
+            to_delete = nex_session.query(DiseaseAlias).filter_by(disease_id=disease_id, display_name=alias, alias_type=type).first()
             nex_session.delete(to_delete) 
             # fw.write("The old alias = " + str(alias) + " has been deleted for disease_id = " + str(disease_id) + "\n")
              
@@ -289,11 +278,11 @@ def insert_alias(nex_session, source_id, display_name, alias_type, disease_id, a
     
     alias_just_added[(disease_id, display_name, alias_type)] = 1
 
-    x = DiseaseAlia(display_name = display_name,
-                    alias_type = alias_type,
-                    source_id = source_id,
-                    disease_id = disease_id,
-                    created_by = CREATED_BY)
+    x = DiseaseAlias(display_name = display_name,
+                     alias_type = alias_type,
+                     source_id = source_id,
+                     disease_id = disease_id,
+                     created_by = CREATED_BY)
     nex_session.add(x)
     nex_session.flush()
     fw.write("Added new ALIAS: " + display_name + " for disease_id = " + str(disease_id) + "\n")

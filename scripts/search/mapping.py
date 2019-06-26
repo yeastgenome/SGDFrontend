@@ -238,6 +238,10 @@ mapping = {
                     "type": "string",
                     "analyzer": "symbols"
                 },
+                "chebiid": {
+                    "type": "string",
+                    "analyzer": "symbols"
+                },
                 "keys": {
                     "type": "string",
                     "analyzer": "symbols"

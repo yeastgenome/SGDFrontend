@@ -1,24 +1,26 @@
+import urllib
 from datetime import datetime
 import sys
 reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('utf-8')
-sys.path.insert(0, '../../../src/')
-from models import Source, Psimod, PsimodUrl, PsimodRelation, Ro
-sys.path.insert(0, '../')
-from config import CREATED_BY
-from database_session import get_nex_session as get_session
-from ontology import read_obo  
+import os
+
+from src.models import Source, Psimod, PsimodUrl, PsimodRelation, Ro
+from scripts.loading.database_session import get_session
+from scripts.loading.ontology import read_obo
                  
 __author__ = 'sweng66'
 
 ## Created on May 2017
 ## This script is used to update PSIMOD ontology in NEX2.
 
-ontology_file = 'data/PSI-MOD.obo'
-log_file = 'logs/psimod.log'
+# ontology_file = 'data/PSI-MOD.obo'
+log_file = 'scripts/loading/ontology/logs/psimod.log'
 src = 'PSI'
 
-def load_ontology():
+CREATED_BY = os.environ['DEFAULT_USER']
+
+def load_ontology(ontology_file):
 
     nex_session = get_session()
 
@@ -226,7 +228,11 @@ def write_summary_and_send_email(fw, update_log, to_delete_list):
 
 if __name__ == "__main__":
         
-    load_ontology()
+    url_path = 'http://psidev.cvs.sourceforge.net/viewvc/psidev/psi/mod/data/'
+    obo_file = 'PSI-MOD.obo'
+    urllib.urlretrieve(url_path + obo_file, obo_file)
+    
+    load_ontology(obo_file)
 
 
     

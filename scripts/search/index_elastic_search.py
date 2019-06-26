@@ -756,7 +756,8 @@ def index_chemicals():
                 "href": item_v.obj_url,
                 "description": item_v.description,
                 "category": "chemical",
-                "keys": []
+                "keys": [],
+                "chebiid": item_v.chebiid
             }
             bulk_data.append({
                 "index": {

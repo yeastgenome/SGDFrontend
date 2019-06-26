@@ -166,6 +166,7 @@ def search(request):
         "file_size",
         "year",
         "readme_url",
+        "chebiid",
     ]  # year not inserted, have to change to str in mapping
 
     json_response_fields = [
