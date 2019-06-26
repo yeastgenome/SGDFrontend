@@ -55,9 +55,17 @@ function dataset_datat_to_table(dataset) {
         }
     }
 
-
-
     return [dataset['id'], dataset['id'], hist_values.join(', '), dataset_with_link, dataset['short_description'], tags.join(', '), dataset['condition_count'].toString(), reference]
+
+}
+
+function downloadable_file_to_table(data) {
+
+    var s3_url = data['s3_url'].split("?versionId").shift();
+    var file_with_link = create_link(s3_url.split("/").pop(), s3_url);
+    
+    return [data['id'], data['id'], file_with_link, data['description']]
+
 }
 
 function phosphorylation_data_to_table(evidence) {

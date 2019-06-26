@@ -39,6 +39,9 @@
             add_navbar_element('Disease Annotations', 'disease');
             add_navbar_element('Regulation Annotations', 'regulation');
             add_navbar_element('Expression Datasets', 'expression');
+	    {% if reference.downloadable_files|length > 0 %}
+	        add_navbar_element('Downloadable Files', 'file');
+	    {% endif %}
         </script>
 
 <!-- Summary
@@ -210,8 +213,26 @@
                 </div>
             </div>
         </section>
+
+<!-- File
+================================================== -->
+        {% if reference.downloadable_files|length > 0 %}
+            <section id="file" data-magellan-destination="file">
+                <div class="page-header">
+                    <h2>Downloadable Files <span id="expression_table_header" class="round secondary label"></span></h2>
+                    <hr />
+                    <div>
+                        <!-- Includes downloadable_file_table into template -->
+                        {% set table_id = "downloadable_file_table" %}
+                        {% include "downloadable_file_table.jinja2" %}
+                    </div>
+                </div>
+            </section>
+        {% endif %}
+
     </div>
 </div>
+
 {% endblock body %}
 
 {% block scripts %}

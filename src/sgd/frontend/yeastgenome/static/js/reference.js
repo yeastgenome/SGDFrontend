@@ -10,6 +10,15 @@ $(document).ready(function() {
         hide_section('expression');
     }
 
+    if(reference['downloadable_files'].length > 0) {
+        $("#downloadable_file_table_analyze").hide();
+        var file_table = create_downloadable_file_table(reference['downloadable_files']);
+        create_download_button("downloadable_file_table_download", file_table, reference['display_name'] + '_files');
+    }
+    else {
+        hide_section('file');
+    }
+
     $.getJSON('/backend/reference/' + reference['sgdid'] + '/literature_details', function(data) {
         data.sort(function(a, b) {return a['locus']['display_name'] > b['locus']['display_name']});
 
@@ -364,4 +373,39 @@ function create_expression_table(data) {
     }
 
     return create_table("expression_table", options);
+}
+
+
+function create_downloadable_file_table(data) {
+    var options = {
+        'bPaginate': true,
+        'aaSorting': [[3, "asc"]],
+        'aoColumns': [
+             {"bSearchable":false, "bVisible":false}, //Evidence ID
+             {"bSearchable":false, "bVisible":false}, //Analyze ID,
+             null, //File
+             null //Description
+        ]
+    }
+    if("Error" in data) {
+        options["oLanguage"] = {"sEmptyTable": data["Error"]};
+        options["aaData"] = [];
+    }
+    else {
+        var datatable = [];
+        // var reference_ids = {};
+        for (var i=0; i < data.length; i++) {
+            datatable.push(downloadable_file_to_table(data[i], i));
+            // if(data[i]['reference'] != null) {
+            //    reference_ids[data[i]['reference']['id']] = true;
+            // }
+        }
+
+        set_up_header('downloadable_file_table', datatable.length, 'file', 'files');
+
+        options["oLanguage"] = {"sEmptyTable": "No downloadable file for " + reference['display_name']};
+        options["aaData"] = datatable;
+    }
+
+    return create_table("downloadable_file_table", options);
 }
