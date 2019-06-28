@@ -77,3 +77,12 @@ export function getFacetName (key) {
       return key.replace(/_/g, ' ');
   }
 };
+
+export function formatAuthorName (authorName) {
+  let names = authorName.split(" ");
+  names[0] = names[0][0].toUpperCase()+names[0].slice(1);
+  for(var i=1; i<names.length; i++){
+    names[i] = names[i].toUpperCase();
+  }
+  return names.join(" ");
+};

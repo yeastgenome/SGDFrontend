@@ -6,7 +6,7 @@ import Radium from 'radium';
 import _ from 'underscore';
 import pluralize from 'pluralize';
 import StatusBtns from '../components/status_buttons/status_btns.jsx';
-import { getHrefWithoutAgg, getCategoryDisplayName, getFacetName } from '../lib/search_helpers';
+import { getHrefWithoutAgg, getCategoryDisplayName, getFacetName, formatAuthorName } from '../lib/search_helpers';
 import ClassNames from 'classnames';
 import S from 'string';
 
@@ -359,6 +359,18 @@ function mapStateToProps(_state) {
     if (item.key == 'year'){
       item['values'].sortOnYear('key', true);
       return;
+    }
+    else if (item.key == 'author'){
+      let values = item['values'];
+      values.map(element => {
+        element['key'] = formatAuthorName(element['key']);
+      });
+    }
+    else if (item.key.includes('_loci')){
+      let values = item['values'];
+      values.map(element => {
+        element['key'] = element['key'].toUpperCase();
+      });
     }
   });
   return {
