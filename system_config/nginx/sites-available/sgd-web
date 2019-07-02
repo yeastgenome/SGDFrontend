@@ -16,7 +16,8 @@ server {
     server_name _;
 
     include /etc/nginx/conf.d/proxies;
-
+    include /etc/nginx/conf.d/redirects;
+    
     port_in_redirect off;
 
     location /healthcheck {
