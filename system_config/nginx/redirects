@@ -1,0 +1,103 @@
+location = /1011-yeast-genomes {
+    return 301 $scheme://www.yeastgenome.org/search?q=PMID%3A29643504&category=download&status=Active;
+}
+
+location = /cache/chromosomes.shtml {
+    return 301 https://wiki.yeastgenome.org/index.php/Systematic_Sequencing_Table;
+}
+
+location /cache/fungi/ {
+    return 410;
+}
+
+location = /cache/geneSummarytable.html {
+    return 301 https://wiki.yeastgenome.org/index.php/Table_of_Gene_Summary_Paragraphs;
+}
+
+location = /cache/yeastLabs.html {
+    return 410;
+}
+
+#location = /cgi-bin/chromosomeHistory.pl {
+#    proxy_pass http://heritage.yeastgenome.org/cgi-bin/chromosomeHistory.pl;
+#}
+
+location = /cgi-bin/colleague/colleagueInfoSearch {
+    return 301 /search?q=&category=colleague;
+}
+
+location = /cgi-bin/colleague/colleagueSearch {
+    return 301 /search?q=&category=colleague;
+}
+
+location = /cgi-bin/FUNGI/alignment.pl {
+    return 301 /strainAlignment;
+}
+
+location = /cgi-bin/FUNGI/FungiMap {
+    return 410;
+}
+
+location = /cgi-bin/FUNGI/getSeq.pl {
+    return 410;
+}
+
+location = /cgi-bin/FUNGI/showAlign {
+    return 410;
+}
+
+location = /cgi-bin/geneHunter {
+    return 410;
+}
+
+location = /cgi-bin/getSeq {
+    return 301 /seqTools;
+} 
+
+location = /cgi-bin/GO/goSlimMapper.pl {
+    return 301 /goSlimMapper;
+}
+
+location = /cgi-bin/GO/goTermFinder.pl {
+    return 301 /goTermFinder;
+}
+
+location = /cgi-bin/locus.fpl {
+    rewrite ^ $scheme://$host/locus/${arg_dbid}? permanent;
+}
+
+location = /cgi-bin/PATMATCH/getSequence {
+    return 301 /nph-patmatch;
+}
+
+location = /cgi-bin/PATMATCH/nph-patmatch {
+    return 301 /nph-patmatch;
+}
+
+location = /cgi-bin/PATMATCH/RestrictionMapper {
+    return 301 /restrictionMapper;
+}
+
+location = /cgi-bin/protein/get3d {
+    return 410;
+}
+
+location = /cgi-bin/registry/geneRegistry {
+    return 301 /reserved_name/new;
+}
+
+location = /cgi-bin/search/luceneQS.fpl {
+    return 301 /search;
+}
+
+location = /cgi-bin/seqTools {
+    return 301 /seqTools;
+}
+
+#location = /cgi-bin/submitData.pl {
+#    proxy_pass http://heritage.yeastgenome.org/cgi-bin/submitData.pl;
+#}
+
+location = /cgi-bin/web-primer {
+    return 301 /primer3;
+}
