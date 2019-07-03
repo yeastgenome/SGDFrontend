@@ -1,10 +1,10 @@
 from pyramid import testing
 import unittest
 import mock
-from src.curation_views import get_locus_curate
+from src.curation_views import get_locus_curate, reference_triage_id
 import test.fixtures as factory
 from test.mock_helpers import MockQuery
-from test.mock_helpers import locus_side_effect
+from test.mock_helpers import locus_side_effect, reference_side_effect
 
 class CurationViewsTest(unittest.TestCase):
   def setUp(self):
@@ -25,3 +25,14 @@ class CurationViewsTest(unittest.TestCase):
     response = get_locus_curate(request)
     self.assertEqual(response, locus_object.to_curate_dict())
     
+    
+  @mock.patch('src.models.DBSession.query')
+  def test_reference_triage_id_should_return_valid_reference_triage(self,mock_search):
+    mock_search.side_effect = reference_side_effect
+    reference_triage = factory.ReferencetriageFactory()
+    request = testing.DummyRequest()
+    request.context = testing.DummyResource()
+    request.matchdict['id'] = "184870"
+    response = reference_triage_id(request)
+    self.assertEqual(response,reference_triage.to_dict())
+  
