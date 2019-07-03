@@ -35,3 +35,5 @@ class ComplexTest(unittest.TestCase):
         request.matchdict['id'] = 'nonexistent_id'  
         response = complex(request)
         self.assertEqual(response.get('complex_name'), None)
+
+

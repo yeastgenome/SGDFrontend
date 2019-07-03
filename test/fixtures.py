@@ -38,9 +38,9 @@ class EcoFactory(factory.alchemy.SQLAlchemyModelFactory):
     source_id = 1
     ecoid = 1
     description = "description"
+    is_obsolete = '0'
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
-
 
 class EcoAliasFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
