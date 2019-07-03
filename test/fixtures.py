@@ -10,7 +10,7 @@ from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRela
     So, ContigUrl, LocusAlias, LocusAliasReferences, LocusReferences, LocussummaryReference, LocusUrl, Posttranslationannotation,\
     Psimod, Proteinexptannotation, Proteindomainannotation, Proteindomain, ProteindomainUrl, Ec, EcAlias, EcUrl, LocusRelation, LocusRelationReference, \
     Locusnote, LocusnoteReference, Pathwayannotation, Pathwaydbentity, PathwayUrl, Bindingmotifannotation, Disease, Diseaseannotation, \
-    Proteinabundanceannotation, ChebiAlia, ReferenceFile
+    Proteinabundanceannotation, ChebiAlia, ReferenceFile, ComplexAlias, ComplexGo, ComplexReference
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -26,6 +26,48 @@ class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
+class EcoFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Eco
+        sqlalchemy_session = DBSession
+
+    eco_id = 1
+    format_name = "format name"
+    display_name = "display name"
+    obj_url = "obj url"
+    source_id = 1
+    ecoid = 1
+    description = "description"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+
+class EcoAliasFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = EcoAlias
+        sqlalchemy_session = DBSession
+
+    alias_id = 1
+    display_name = "eco alias display name"
+    source_id = 1
+    eco_id = 1
+    alias_type = "eco alias type"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class EcoUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = EcoUrl
+        sqlalchemy_session = DBSession
+
+    url_id = 1
+    display_name = "eco url display name"
+    obj_url = "obj url"
+    source_id = 1
+    eco_id = 1
+    url_type = "url type"
+    date_created =  factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
     
 class ColleagueFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
@@ -65,7 +107,7 @@ class ColleagueFactory(factory.alchemy.SQLAlchemyModelFactory):
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
-class ComplexFactory(factory.alchemy.SQLAlchemyModelFactory):
+class ComplexdbentityFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = Complexdbentity
         sqlalchemy_session = DBSession
@@ -77,7 +119,17 @@ class ComplexFactory(factory.alchemy.SQLAlchemyModelFactory):
     description = "lorem"
     properties = "lorem"
     complex_accession = "lorem"
-
+    subclass = "COMPLEX"
+    display_name = "complex1"
+    format_name = "complex2"
+    obj_url = "http://example.org/entity"
+    source_id = 1
+    sgdid = "S0000099"
+    dbentity_status = "Active"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+    source = factory.SubFactory(SourceFactory)
+    eco = factory.SubFactory(EcoFactory)
 
 class ComplexbindingannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
@@ -97,7 +149,7 @@ class ComplexbindingannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
     stoichiometry = 1
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
-    complex = factory.SubFactory(ComplexFactory)
+    complex = factory.SubFactory(ComplexdbentityFactory)
 
 class KeywordFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
@@ -619,6 +671,43 @@ class ChebiUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
+class ComplexAliasFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = ComplexAlias
+        sqlalchemy_session = DBSession
+
+    alias_id = 1
+    display_name = "display name"
+    obj_url = "/obj_url"
+    source_id = 1
+    complex_id = 1
+    alias_type = "alias type"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class ComplexGoFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = ComplexGo
+        sqlalchemy_session = DBSession
+
+    complex_go_id = 1
+    complex_id = 1
+    source_id = 1
+    go_id = 1
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class ComplexReferenceFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = ComplexReference
+        sqlalchemy_session = DBSession
+
+    complex_reference_id = 1
+    complex_id = 1
+    reference_id = 1
+    source_id = 1
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
 
 class LocusdbentityFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
@@ -1141,50 +1230,6 @@ class EcUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
     ec_id = 1
     url_type = "url type"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
-    created_by = "TOTO"
-
-
-class EcoFactory(factory.alchemy.SQLAlchemyModelFactory):
-    class Meta:
-        model = Eco
-        sqlalchemy_session = DBSession
-
-    eco_id = 1
-    format_name = "format name"
-    display_name = "display name"
-    obj_url = "obj url"
-    source_id = 1
-    ecoid = 1
-    description = "description"
-    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
-    created_by = "TOTO"
-
-
-class EcoAliasFactory(factory.alchemy.SQLAlchemyModelFactory):
-    class Meta:
-        model = EcoAlias
-        sqlalchemy_session = DBSession
-
-    alias_id = 1
-    display_name = "eco alias display name"
-    source_id = 1
-    eco_id = 1
-    alias_type = "eco alias type"
-    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
-    created_by = "TOTO"
-
-class EcoUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
-    class Meta:
-        model = EcoUrl
-        sqlalchemy_session = DBSession
-
-    url_id = 1
-    display_name = "eco url display name"
-    obj_url = "obj url"
-    source_id = 1
-    eco_id = 1
-    url_type = "url type"
-    date_created =  factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
 class GoextensionFactory(factory.alchemy.SQLAlchemyModelFactory):

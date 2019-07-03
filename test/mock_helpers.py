@@ -165,6 +165,50 @@ def locus_expression_side_effect(*args, **kwargs):
         dsurl = factory.DatasetUrlFactory()
         return MockQuery(dsurl)
 
+def complex_side_effect(*args, **kwargs):
+    if len(args) == 1 and str(args[0]) == "<class 'src.models.Complexdbentity'>":
+        complex = factory.ComplexdbentityFactory()
+        return MockQuery(complex)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Complexbindingannotation'>":
+        bind = factory.ComplexbindingannotationFactory()
+        interactor = factory.InteractorFactory()
+        locus =factory.LocusdbentityFactory()
+        interactor.locus = locus
+        bind.interactor = interactor
+        bindingInteractor = factory.InteractorFactory()
+        locus2 =factory.LocusdbentityFactory()
+        bindingInteractor.locus = locus2
+        bind.binding_interactor = bindingInteractor
+        return MockQuery(bind)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.ComplexAlias'>":
+        alias = factory.ComplexAliasFactory()
+        return MockQuery(alias)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.ComplexGo'>":
+        complexGo = factory.ComplexGoFactory()
+        go = factory.GoFactory()
+        complexGo.go = go
+        return MockQuery(complexGo)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.ComplexReference'>":
+        complexRef = factory.ComplexReferenceFactory()
+        ref = factory.ReferencedbentityFactory()
+        complexRef.reference = ref
+        return MockQuery(complexRef)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.ReferenceUrl'>":
+        refUrl = factory.ReferenceUrlFactory()
+        return MockQuery(refUrl)
+    elif len(args) == 2 and str(args[0]) == 'Goannotation.dbentity_id' and str(args[1]) == 'count(nex.goannotation.dbentity_id)':
+        goAnnot = factory.GoannotationFactory()
+        return MockQuery(goAnnot)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.GoRelation'>":
+        goRel = factory.GoRelationFactory()
+        return MockQuery(goRel)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.GoUrl'>":
+        goUrl = factory.GoUrlFactory()
+        return MockQuery(goUrl)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.GoAlias'>":
+        goAlias = factory.GoAliasFactory()
+        return MockQuery(goAlias)
+
 def locus_side_effect(*args, **kwargs):
     if len(args) == 1 and str(args[0]) == "<class 'src.models.Locusdbentity'>":
         locus = factory.LocusdbentityFactory()
