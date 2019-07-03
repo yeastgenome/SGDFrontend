@@ -534,7 +534,6 @@ class ReferencetriageFactory(factory.alchemy.SQLAlchemyModelFactory):
     fulltext_url = "full text URL"
     abstract = "this is abstract"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
-    created_by = "TOTO"
     json = "{}"
     abstract_genes = "abstract genes"
 
