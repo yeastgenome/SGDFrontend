@@ -19,7 +19,6 @@ class ComplexTest(unittest.TestCase):
     @mock.patch('src.models.DBSession.query')
     def test_should_return_valid_complex(self, mock_search, mock_redis):
         mock_search.side_effect = complex_side_effect
-
         cx = factory.ComplexdbentityFactory()
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
@@ -31,11 +30,8 @@ class ComplexTest(unittest.TestCase):
     @mock.patch('src.models.DBSession.query')
     def test_should_return_non_existent_complex(self, mock_search, mock_redis):
         mock_search.return_value = MockQuery(None)
-
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
         request.matchdict['id'] = 'nonexistent_id'  
         response = complex(request)
         self.assertEqual(response.get('complex_name'), None)
-
-
