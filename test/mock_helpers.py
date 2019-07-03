@@ -1184,6 +1184,9 @@ def reference_side_effect(*args, **kwargs):
                 referencefile = factory.ReferenceFileFactory()
                 referencefile.file = file
                 return MockQuery(referencefile)
+            elif len(args) == 1 and str(args[0]) == "<class 'src.models.Referencetriage'>":
+                reference_triage = factory.ReferencetriageFactory()
+                return MockQuery(reference_triage)
 
 def reference_phenotype_side_effect(*args, **kwargs):
     
