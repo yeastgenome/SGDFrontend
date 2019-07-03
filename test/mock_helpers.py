@@ -36,7 +36,12 @@ class MockQueryFilter(object):
 
     def distinct(self, *args, **kwargs):
         return self
+
+    def outerjoin(self, *args, **kwargs):
+        return self
     
+    def scalar(self,*args,**kwargs):
+        return 7
 
 class MockQuery(object):
     def __init__(self, query_result):
@@ -58,6 +63,8 @@ class MockQuery(object):
     def distinct(self, query_params):
         return self
 
+    def outerjoin(self,query_params):
+        return self
 
 class MockFileStorage(object):
     pass
@@ -525,6 +532,27 @@ def locus_side_effect(*args, **kwargs):
     elif len(args) == 1 and str(args[0]) == 'Dbentity.format_name':
         db = factory.DbentityFactory()
         return MockQuery((db.format_name,))
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Locussummary'>":
+        locus_summary = factory.LocussummaryFactory()
+        return MockQuery(locus_summary)
+    elif len(args) == 1 and str(args[0]) == "LocussummaryReference.reference_id":
+        locus_summary_reference = factory.LocussummaryReferenceFactory()
+        return MockQuery(locus_summary_reference.reference_id)
+    elif len(args) == 1 and str(args[0]) == "Referencedbentity.pmid":
+        reference = factory.ReferencedbentityFactory()
+        reference.pmid = []
+        return MockQuery(reference.pmid)
+    elif len(args) == 2 and str(args[0]) == "<class 'src.models.LocusAliasReferences'>" and str(args[1]) == "Referencedbentity.pmid":
+        locus_alias_reference = factory.LocusAliasReferencesFactory()
+        reference = factory.ReferencedbentityFactory()
+        return MockQuery((locus_alias_reference,reference.pmid))
+    elif len(args) == 2 and str(args[0]) == "<class 'src.models.LocusReferences'>" and str(args[1]) == "Referencedbentity.pmid":
+        locus_reference = factory.LocusReferencesFactory()
+        reference = factory.ReferencedbentityFactory()
+        return MockQuery((locus_reference, reference.pmid))
+    elif len(args) == 1 and str(args[0]) == "LocusAlias.display_name":
+        locus_alias = factory.LocusAliasFactory()
+        return MockQuery(locus_alias)
     else:
         print "the problem is the condition!!!!"
         print args[0]
