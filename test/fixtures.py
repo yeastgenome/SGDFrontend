@@ -10,7 +10,7 @@ from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRela
     So, ContigUrl, LocusAlias, LocusAliasReferences, LocusReferences, LocussummaryReference, LocusUrl, Posttranslationannotation,\
     Psimod, Proteinexptannotation, Proteindomainannotation, Proteindomain, ProteindomainUrl, Ec, EcAlias, EcUrl, LocusRelation, LocusRelationReference, \
     Locusnote, LocusnoteReference, Pathwayannotation, Pathwaydbentity, PathwayUrl, Bindingmotifannotation, Disease, Diseaseannotation, \
-    Proteinabundanceannotation, ChebiAlia, ReferenceFile, ComplexAlias, ComplexGo, ComplexReference, Colleaguetriage, CurationReference, CuratorActivity, DiseaseRelation, DiseaseUrl, \
+    Proteinabundanceannotation, ChebiAlia, ReferenceFile, ComplexAlias, ComplexGo, ComplexReference, Colleaguetriage, CurationReference, CuratorActivity, DiseaseRelation, DiseaseRelation, DiseaseUrl, \
     DiseaseAlias, Diseasesupportingevidence
 
 
@@ -1359,7 +1359,7 @@ class DiseaseAliasFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session = DBSession
 
     alias_id = 1
-    display_name = "display_name"
+    display_name = "display name"
     source_id = 1
     disease_id = 1
     alias_type = "alias type"

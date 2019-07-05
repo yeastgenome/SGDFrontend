@@ -50,6 +50,9 @@ class MockQueryFilter(object):
     def join(self, *args, **kwargs):
         return self
     
+    def join(self, *args, **kwargs):
+        return self
+    
 
 class MockQuery(object):
     def __init__(self, query_result):
@@ -82,6 +85,8 @@ class MockQuery(object):
 
     def count(self):
         return 1
+    def join(self,  *args, **kwargs):
+        return self
 
     def order_by(self, query_params):
         return self
