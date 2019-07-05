@@ -9,8 +9,9 @@ from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRela
     Goslimannotation, Interactor, Goslim, Expressionannotation, Datasetsample, DatasetUrl, DatasetFile, ReferenceAlias, Dnasequenceannotation, Dnasubsequence,\
     So, ContigUrl, LocusAlias, LocusAliasReferences, LocusReferences, LocussummaryReference, LocusUrl, Posttranslationannotation,\
     Psimod, Proteinexptannotation, Proteindomainannotation, Proteindomain, ProteindomainUrl, Ec, EcAlias, EcUrl, LocusRelation, LocusRelationReference, \
-    Locusnote, LocusnoteReference, Pathwayannotation, Pathwaydbentity, PathwayUrl, Bindingmotifannotation, Disease, Diseaseannotation, \
-    Proteinabundanceannotation, ChebiAlia, ReferenceFile, ComplexAlias, ComplexGo, ComplexReference
+    Proteinabundanceannotation, ChebiAlia, ReferenceFile, ComplexAlias, ComplexGo, ComplexReference,
+    Locusnote, LocusnoteReference, Pathwayannotation, Pathwaydbentity, PathwayUrl, Bindingmotifannotation, Disease, Diseaseannotation, DiseaseRelation, DiseaseUrl, \
+    DiseaseAlias, Diseasesupportingevidence
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -1326,6 +1327,59 @@ class DiseaseannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
+class DiseaseRelationFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = DiseaseRelation
+        sqlalchemy_session = DBSession
+
+    relation_id = 1
+    source_id = 1
+    parent_id = 1
+    child_id = 1
+    ro_id = 1
+    date_created =  factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class DiseaseUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = DiseaseUrl
+        sqlalchemy_session = DBSession
+
+    url_id = 1
+    display_name = "go rel display name"
+    obj_url = 1
+    source_id = 1
+    disease_id = 1
+    url_type = "url type"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class DiseaseAliasFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = DiseaseAlias
+        sqlalchemy_session = DBSession
+
+    alias_id = 1
+    display_name = "display name"
+    source_id = 1
+    disease_id = 1
+    alias_type = "alias type"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class DiseasesupportingevidenceFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Diseasesupportingevidence
+        sqlalchemy_session = DBSession
+
+    diseasesupportingevidence_id = 1
+    annotation_id = 1
+    group_id = 1
+    dbxref_id = "SGD:100000"
+    obj_url = "obj url"
+    evidence_type = "evidence type"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
 
 class DatasetsampleFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
