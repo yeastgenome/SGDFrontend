@@ -145,13 +145,13 @@ def load_disease():
     diseases = DBSession.query(Disease).all()
 
     for disease in diseases:
+        if disease.doid == 'derives_from':
+                continue
         numerical_id = disease.doid.split(":")
-
         table_set(disease.format_name.upper(), disease.doid, "disease")
-        table_set(disease.doid, disease.do_id, "disease")
+        table_set(disease.doid, disease.doid, "disease")
         table_set(disease.display_name.replace(" ", "_").upper(), disease.doid, "disease")
-        table_set(str(int(numerical_id[3])), disease.doid, "disease")
-
+        table_set(str(int(numerical_id[1])), disease.doid, "disease")
 
 def load_protein_domain():
     print("Loading protein domains into Redis...")
@@ -210,17 +210,18 @@ def load_ec_numbers():
         table_set(ecnumber.ec_id, ecnumber.ec_id, "ec")
 
 if __name__ == "__main__":
-    load_references()
-    load_locus()
-    load_reserved_names()
-    load_author()
-    load_chemical()
-    load_phenotype()
-    load_observables()
-    load_go()
-    load_protein_domain()
-    load_contigs()
-    load_dataset()
-    load_keyword()
-    load_strains()
-    load_ec_numbers()
+#     load_references()
+#     load_locus()
+#     load_reserved_names()
+#     load_author()
+#     load_chemical()
+#     load_phenotype()
+#     load_observables()
+#     load_go()
+    load_disease()
+#     load_protein_domain()
+#     load_contigs()
+#     load_dataset()
+#     load_keyword()
+#     load_strains()
+#     load_ec_numbers()

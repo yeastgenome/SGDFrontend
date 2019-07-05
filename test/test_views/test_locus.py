@@ -6,10 +6,10 @@ import json
 import test.fixtures as factory
 from test.mock_helpers import MockQuery
 from test.mock_helpers import go_side_effect, phenotype_side_effect, locus_side_effect, reference_side_effect,\
-    locus_reference_side_effect, locus_expression_side_effect, sequence_side_effect, protein_side_effect
+    locus_reference_side_effect, locus_expression_side_effect, sequence_side_effect, protein_side_effect, disease_side_effect
 from src.views import locus, locus_go_details, locus_phenotype_details, locus_phenotype_graph, locus_literature_details, locus_interaction_details, \
     locus_sequence_details, locus_neighbor_sequence_details, locus_posttranslational_details, locus_ecnumber_details, \
-    locus_protein_experiment_details, locus_protein_domain_details, locus_protein_domain_graph
+    locus_protein_experiment_details, locus_protein_domain_details, locus_protein_domain_graph, locus_disease_details, locus_disease_graph
 
 
 class LocusTest(unittest.TestCase):
@@ -38,14 +38,35 @@ class LocusTest(unittest.TestCase):
     @mock.patch('src.models.DBSession.query')
     def test_should_return_valid_locus_go_details(self, mock_search, mock_redis):
         mock_search.side_effect = go_side_effect
-
         locus = factory.LocusdbentityFactory()
-
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
         id = mock_redis.extract_id_request(request, 'locus', param_name='id')
         response = locus_go_details(request)
         self.assertEqual(response, locus.go_to_dict())
+
+
+    @mock.patch('src.views.extract_id_request', return_value="S000114259")
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_valid_locus_disease_details(self, mock_search, mock_redis):
+        mock_search.side_effect = disease_side_effect
+        locus = factory.LocusdbentityFactory()
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+        id = mock_redis.extract_id_request(request, 'locus', param_name='id')
+        response = locus_disease_details(request)
+        self.assertEqual(response, locus.disease_to_dict())
+
+    @mock.patch('src.views.extract_id_request', return_value="S000114259")
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_valid_locus_disease_graph(self, mock_search, mock_redis):
+        mock_search.side_effect = disease_side_effect
+        locus = factory.LocusdbentityFactory()
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+        id = mock_redis.extract_id_request(request, 'locus', param_name='id')
+        response = locus_disease_graph(request)
+        self.assertEqual(response, locus.disease_graph())
 
     @mock.patch('src.views.extract_id_request', return_value="S000114259")
     @mock.patch('src.models.DBSession.query')
