@@ -3070,8 +3070,7 @@ class Locusdbentity(Dbentity):
         return obj
 
     def disease_to_dict(self):
-        #path_res = DBSession.query(FilePath, Path).filter(FilePath.file_id == self.dbentity_id).outerjoin(Path).all()
-        #do_annotations = DBSession.query(Diseaseannotation, Diseasesupportingevidence).filter(Diseaseannotation.dbentity_id == self.dbentity_id).outerjoin(Diseasesupportingevidence).all()
+        
         do_annotations = DBSession.query(Diseaseannotation).filter_by(dbentity_id=self.dbentity_id).all()
 
         obj = []
