@@ -130,6 +130,43 @@ class ReferencesTest(unittest.TestCase):
         self.assertEqual(response.status_code, 404)
 
 
+
+    @mock.patch('src.views.extract_id_request', return_value="S000114259")
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_valid_reference_disease_details(self, mock_search, mock_redis):
+        mock_search.side_effect = disease_side_effect
+        reference = factory.ReferencedbentityFactory()
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+        id = mock_redis.extract_id_request(request, 'reference', param_name='id')
+        response = reference_disease_details(request)
+        self.assertEqual(response, reference.disease_to_dict())
+
+    @mock.patch('src.views.extract_id_request', return_value="S000114259")
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_valid_reference_this_week(self, mock_search, mock_redis):
+        mock_search.side_effect = reference_side_effect
+        reference = factory.ReferencedbentityFactory()
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+        id = mock_redis.extract_id_request(request, 'reference', param_name='id')
+        response = reference_this_week(request)
+        self.assertEqual(response, reference.disease_to_dict())
+
+
+    @mock.patch('src.views.extract_id_request', return_value="nonexistent_id")
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_non_existent_reference(self, mock_search, mock_redis):
+        mock_search.return_value = MockQuery(None)
+
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+        #request.matchdict['id'] = 'nonexistent_id'
+        id = mock_redis.extract_id_request(request, 'reference', param_name='id')
+        response = reference(request)
+        self.assertEqual(response.status_code, 404)
+
+
     # @mock.patch('src.models.DBSession.query')
     # def test_should_return_valid_reference_literature_details(self, mock_search):
     #     mock_search.side_effect = reference_side_effect
