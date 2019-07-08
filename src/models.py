@@ -5382,6 +5382,8 @@ class Disease(Base):
                         if hgnc_id in human_gene_ids_to_symbols.keys():
                             entry['display_name'] = human_gene_ids_to_symbols[hgnc_id]
                         else:
+                            import pdb
+                            pdb.set_trace()
                             url = ALLIANCE_API_BASE_URL + hgnc_id
                             symbol = requests.request('GET', url).json()['symbol']
                             entry['display_name'] = symbol
