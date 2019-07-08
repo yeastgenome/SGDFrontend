@@ -6,7 +6,10 @@ class MockQueryFilter(object):
         self._params = query_params
 
     def one_or_none(self):
-        return self._return
+        if self._return.__class__ == list:
+            return self._return[0]
+        else:
+            return self._return
 
     def first(self):
         return self._return
@@ -60,8 +63,11 @@ class MockQuery(object):
     def all(self):
         return self._query_result
 
-    def distinct(self, query_params):
-        return self
+    def distinct(self, *query_params):
+        if self._query_result:
+            return self._query_result
+        else:
+            return self
 
     def outerjoin(self,query_params):
         return self
@@ -899,7 +905,10 @@ def side_effect(*args, **kwargs):
         return MockQuery(ecurl)
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Psimod'>":
         psimod = factory.PsimodFactory()
-        return MockQuery([psimod,psimod])
+        return MockQuery([psimod])
+    elif len(args) == 1 and str(args[0]) == "Posttranslationannotation.psimod_id":
+        ptm = factory.PsimodFactory()
+        return MockQuery([ptm])
 # def mock_extract_id_request(request, classname):
 #      return 'S000203483'
 
