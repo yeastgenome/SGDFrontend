@@ -66,6 +66,15 @@ class MockQuery(object):
     def outerjoin(self,query_params):
         return self
 
+    def count(self):
+        return 1
+
+    def order_by(self, query_params):
+        return self
+
+    def limit(self, query_params):
+        return self
+        
 class MockFileStorage(object):
     pass
 
@@ -888,7 +897,9 @@ def side_effect(*args, **kwargs):
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.EcUrl'>":
         ecurl = factory.EcUrlFactory()
         return MockQuery(ecurl)
-
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Psimod'>":
+        psimod = factory.PsimodFactory()
+        return MockQuery([psimod,psimod])
 # def mock_extract_id_request(request, classname):
 #      return 'S000203483'
 
@@ -1186,7 +1197,7 @@ def reference_side_effect(*args, **kwargs):
                 return MockQuery(referencefile)
             elif len(args) == 1 and str(args[0]) == "<class 'src.models.Referencetriage'>":
                 reference_triage = factory.ReferencetriageFactory()
-                return MockQuery(reference_triage)
+                return MockQuery([reference_triage])
 
 def reference_phenotype_side_effect(*args, **kwargs):
     
