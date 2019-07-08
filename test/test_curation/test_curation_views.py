@@ -56,11 +56,12 @@ class CurationViewsTest(unittest.TestCase):
   #get_strains
   
   ##get_psimod
-  # @mock.patch('src.models.DBSession.query')
-  # def test_get_psimods_should_return_valid_list(self, mock_search):
-  #   mock_search.side_effect = side_effect
+  @mock.patch('src.models.DBSession.query')
+  def test_get_psimod_should_return_valid_list(self, mock_search):
+    mock_search.side_effect = side_effect
 
-  #   request = testing.DummyRequest()
-  #   request.context = testing.DummyResource()
-  #   response = get_psimod(request)
-  #   print(response)
+    request = testing.DummyRequest()
+    request.context = testing.DummyResource()
+    response = get_psimod(request)
+    result = ['{"psimods": [{"display_name": "display_name", "psimod_id": 1, "format_name": "format_name", "inuse": true}, {"display_name": "display_name", "psimod_id": 1, "format_name": "format_name", "inuse": false}]}']
+    self.assertEqual(response._app_iter__get(), result)
