@@ -5367,9 +5367,10 @@ class Disease(Base):
 
     def annotations_to_dict(self):
         annotations = DBSession.query(Diseaseannotation).filter_by(disease_id=self.disease_id).all()
-
         annotations_dict = []
-        human_gene_ids_to_symbols = {}
+        #human_gene_ids_to_symbols = {}
+        human_gene_ids_to_symbols = {'display name' : 'TEST1'}
+
         for a in annotations:
             annotation = a.to_dict(disease=self)
             try:
@@ -5380,6 +5381,8 @@ class Disease(Base):
                         if hgnc_id in human_gene_ids_to_symbols.keys():
                             entry['display_name'] = human_gene_ids_to_symbols[hgnc_id]
                         else:
+                            import pdb
+                            pdb.set_trace()
                             url = ALLIANCE_API_BASE_URL + hgnc_id
                             symbol = requests.request('GET', url).json()['symbol']
                             entry['display_name'] = symbol
@@ -5394,7 +5397,8 @@ class Disease(Base):
         annotations = DBSession.query(Diseaseannotation).filter_by(disease_id=self.disease_id).all()
 
         annotations_dict = []
-        human_gene_ids_to_symbols = {}
+        #human_gene_ids_to_symbols = {}
+        human_gene_ids_to_symbols = {'display name' : 'TEST1'}
 
         for a in annotations:
             annotation = a.to_dict(disease=self)

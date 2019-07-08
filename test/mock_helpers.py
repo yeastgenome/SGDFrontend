@@ -12,7 +12,7 @@ class MockQueryFilter(object):
         else:
             return self._return
 
-    def first(self):
+    # def first(self):
         return self._return
 
     def order_by(self, *args, **kwargs):
@@ -77,8 +77,8 @@ class MockQuery(object):
     def outerjoin(self,query_params):
         return self
     
-    def join(self,  *args, **kwargs):
-        return self
+    # def join(self,  *args, **kwargs):
+    #     return self
 
     def count(self):
         return 1
@@ -811,7 +811,7 @@ def disease_side_effect(*args, **kwargs):
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Diseasesupportingevidence'>":
         disevd = factory.DiseasesupportingevidenceFactory()
         return MockQuery(disevd)
-    elif len(args) == 3 and str(args[0]) == 'Diseaseannotation' and str(args[1]) == 'Diseasesupportingevidence.dbxref_id' and str(args[2]) ==  'Diseasesupportingevidence.obj_url':
+    elif len(args) == 3 and str(args[0]) == "<class 'src.models.Diseaseannotation'>" and str(args[1]) == 'Diseasesupportingevidence.dbxref_id' and str(args[2]) ==  'Diseasesupportingevidence.obj_url':
         dis = factory.DiseaseFactory()
         disannot = factory.DiseaseannotationFactory()
         disannot.dis = dis
