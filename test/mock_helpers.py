@@ -727,14 +727,10 @@ def disease_side_effect(*args, **kwargs):
         disannot = factory.DiseaseannotationFactory()
         disannot.dis = dis
         return MockQuery(disannot)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Referencedbentity'>":
+        refdb = factory.ReferencedbentityFactory()
+        return MockQuery(refdb)
     
-
-
-
-
-
-
-
 
 
 
