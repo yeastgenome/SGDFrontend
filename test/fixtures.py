@@ -1298,8 +1298,8 @@ class DiseaseFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session = DBSession
 
     disease_id = 1
-    format_name = "format name"
-    display_name = "display name"
+    format_name = "format_name"
+    display_name = "display_name"
     obj_url = "obj url"
     source_id = 1
     doid = 1
@@ -1360,7 +1360,7 @@ class DiseaseAliasFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session = DBSession
 
     alias_id = 1
-    display_name = "display name"
+    display_name = "display_name"
     source_id = 1
     disease_id = 1
     alias_type = "alias type"
