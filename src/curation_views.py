@@ -5,7 +5,7 @@ from pyramid.view import view_config
 from pyramid.session import check_csrf_token
 from sqlalchemy import create_engine, and_ , or_
 from sqlalchemy.exc import IntegrityError,DataError
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.orm import scoped_session, sessionmaker, joinedload
 from validate_email import validate_email
 from random import randint
 from Bio import Entrez, Medline
@@ -27,7 +27,7 @@ from .helpers import allowed_file, extract_id_request, secure_save_file,\
     FILE_EXTENSIONS, get_locus_by_id, get_go_by_id, set_string_format,\
     send_newsletter_email, get_file_delimiter, unicode_to_string
 from .curation_helpers import ban_from_cache, process_pmid_list,\
-    get_curator_session, get_pusher_client, validate_orcid, get_list_of_ptms,get_filtered_regulations
+    get_curator_session, get_pusher_client, validate_orcid, get_list_of_ptms
 from .loading.promote_reference_triage import add_paper
 from .models import DBSession, Dbentity, Dbuser, CuratorActivity, Colleague, Colleaguetriage, LocusnoteReference, Referencedbentity, Reservedname, ReservednameTriage, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags, convert_space_separated_pmids_to_list, Psimod, Posttranslationannotation,Regulationannotation
 from .tsv_parser import parse_tsv_annotations
@@ -1928,17 +1928,52 @@ def regulation_insert_update(request):
 @authenticate
 def regulations_by_filters(request):
     try:
-        target_id = request.params.get('target_id')
-        regulator_id = request.params.get('regulator_id')
-        reference_id = request.params.get('reference_id')
+        target_id = str(request.params.get('target_id'))
+        regulator_id = str(request.params.get('regulator_id'))
+        reference_id = str(request.params.get('reference_id'))
+
+        if not(target_id or regulator_id or reference_id):
+            raise Exception("Please provide input for target gene, regulator gene, reference or combination to get the regulations.")
 
         regulations_in_db = DBSession.query(Regulationannotation)
-        regulations = get_filtered_regulations(regulations_in_db,models_helper,target_id,regulator_id,reference_id)
-        regulations = regulations.order_by(Regulationannotation.annotation_id.asc()).all()
+        
+        target_dbentity_id,regulator_dbentity_id,reference_dbentity_id = None,None,None
+
+        if target_id:
+            target_dbentity_id = DBSession.query(Dbentity).filter(or_(Dbentity.sgdid==target_id, Dbentity.format_name==target_id)).one_or_none()
+
+            if not target_dbentity_id:
+                raise Exception('Target gene not found, please provide sgdid or systematic name')
+            else:
+                target_dbentity_id = target_dbentity_id.dbentity_id
+                regulations_in_db = regulations_in_db.filter_by(target_id=target_dbentity_id)
+
+        if regulator_id:
+            regulator_dbentity_id = DBSession.query(Dbentity).filter(or_(Dbentity.sgdid == regulator_id,Dbentity.format_name== regulator_id)).one_or_none()
+
+            if not regulator_dbentity_id:
+                raise Exception('Regulator gene not found, please provide sgdid or systematic name')
+            else:
+                regulator_dbentity_id = regulator_dbentity_id.dbentity_id
+                regulations_in_db = regulations_in_db.filter_by(regulator_id=regulator_dbentity_id)
+        
+        if reference_id:
+            if reference_id.startswith('S00'):
+                reference_dbentity_id = DBSession.query(Dbentity).filter(Dbentity.sgdid == reference_id).one_or_none()
+            else:
+                reference_dbentity_id = DBSession.query(Referencedbentity).filter(or_(Referencedbentity.pmid == int(reference_id),Referencedbentity.dbentity_id == int(reference_id))).one_or_none()
+            
+            if not reference_dbentity_id:
+                raise Exception('Reference not found, please provide sgdid , pubmed id or reference number')
+            else:
+                reference_dbentity_id = reference_dbentity_id.dbentity_id
+                regulations_in_db = regulations_in_db.filter_by(reference_id=reference_dbentity_id)
+        
+        regulations = regulations_in_db.options(joinedload(Regulationannotation.eco), joinedload(Regulationannotation.go), joinedload(Regulationannotation.taxonomy)
+                                                , joinedload(Regulationannotation.reference), joinedload(Regulationannotation.regulator), joinedload(Regulationannotation.target)).order_by(Regulationannotation.annotation_id.asc()).all()
         
         list_of_regulations = []
         for regulation in regulations:
-
             currentRegulation = {
                 'id': regulation.annotation_id,
                 'target_id': {
@@ -1969,7 +2004,7 @@ def regulations_by_filters(request):
                 currentRegulation['taxonomy_id'] = regulation.taxonomy.taxonomy_id
 
             list_of_regulations.append(currentRegulation)
-
+        
         return HTTPOk(body=json.dumps({'success': list_of_regulations}), content_type='text/json')
     except Exception as e:
         return HTTPBadRequest(body=json.dumps({'error': e.message}), content_type='text/json')
