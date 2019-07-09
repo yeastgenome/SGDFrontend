@@ -6,8 +6,8 @@ import json
 import test.fixtures as factory
 from test.mock_helpers import MockQuery
 from test.mock_helpers import chemical_side_effect
-from src.views import chemical, chemical_phenotype_details
-
+from src.views import chemical, chemical_phenotype_details, chemical_go_details, \
+                      chemical_complex_details, chemical_network_graph
 
 class ChemicalTest(unittest.TestCase):
     def setUp(self):
@@ -44,6 +44,45 @@ class ChemicalTest(unittest.TestCase):
         response = chemical_phenotype_details(request)
         self.assertEqual(response, chem.phenotype_to_dict())
 
+    @mock.patch('src.views.extract_id_request', return_value="485823")
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_valid_chemical_go_details(self, mock_search, mock_redis):
+        mock_search.side_effect = chemical_side_effect
+
+        chem = factory.ChebiFactory()
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+        id = mock_redis.extract_id_request(request, 'chemical', param_name='id')
+
+        response = chemical_go_details(request)
+        self.assertEqual(response, chem.go_to_dict())
+        
+    @mock.patch('src.views.extract_id_request', return_value="171437")
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_valid_chemical_complex_details(self, mock_search, mock_redis):
+        mock_search.side_effect = chemical_side_effect
+
+        chem = factory.ChebiFactory()
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+        id = mock_redis.extract_id_request(request, 'chemical', param_name='id')
+
+        response = chemical_complex_details(request)
+        self.assertEqual(response, chem.complex_to_dict())
+
+    @mock.patch('src.views.extract_id_request', return_value="184870")
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_valid_chemical_network_graph(self, mock_search, mock_redis):
+        mock_search.side_effect = chemical_side_effect
+
+        chem = factory.ChebiFactory()
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+        id = mock_redis.extract_id_request(request, 'chemical', param_name='id')
+
+        response = chemical_network_graph(request)
+        self.assertEqual(response, chem.chemical_network())
+
     @mock.patch('src.views.extract_id_request', return_value="nonexistent_id")
     @mock.patch('src.models.DBSession.query')
     def test_should_return_non_existent_chemical(self, mock_search, mock_redis):
@@ -66,5 +105,38 @@ class ChemicalTest(unittest.TestCase):
         #request.matchdict['id'] = 'nonexistent_id'
         id = mock_redis.extract_id_request(request, 'chemical', param_name='id')
         response = chemical_phenotype_details(request)
+        self.assertEqual(response.status_code, 404)
+        
+    @mock.patch('src.views.extract_id_request', return_value="nonexistent_id")
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_non_existent_chemical_go_details(self, mock_search, mock_redis):
+        mock_search.return_value = MockQuery(None)
+
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+        id = mock_redis.extract_id_request(request, 'chemical', param_name='id')
+        response = chemical_go_details(request)
+        self.assertEqual(response.status_code, 404)
+
+    @mock.patch('src.views.extract_id_request', return_value="nonexistent_id")
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_non_existent_chemical_complex_details(self, mock_search, mock_redis):
+        mock_search.return_value = MockQuery(None)
+
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+        id = mock_redis.extract_id_request(request, 'chemical', param_name='id')
+        response = chemical_complex_details(request)
+        self.assertEqual(response.status_code, 404)
+
+    @mock.patch('src.views.extract_id_request', return_value="nonexistent_id")
+    @mock.patch('src.models.DBSession.query')
+    def test_should_return_non_existent_chemical_network_graph(self, mock_search, mock_redis):
+        mock_search.return_value = MockQuery(None)
+
+        request = testing.DummyRequest()
+        request.context = testing.DummyResource()
+        id = mock_redis.extract_id_request(request, 'chemical', param_name='id')
+        response = chemical_network_graph(request)
         self.assertEqual(response.status_code, 404)
 
