@@ -1253,7 +1253,7 @@ class DiseaseFactory(factory.alchemy.SQLAlchemyModelFactory):
 
     disease_id = 1
     format_name = "format_name"
-    display_name = "display_name"
+    display_name = "display name"
     obj_url = "obj url"
     source_id = 1
     doid = 1
