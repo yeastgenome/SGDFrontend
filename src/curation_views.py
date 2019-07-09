@@ -4,7 +4,7 @@ from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPOk, HTTPNo
 from pyramid.view import view_config
 from pyramid.session import check_csrf_token
 from sqlalchemy import create_engine, and_ , or_
-from sqlalchemy.exc import IntegrityError,DataError
+from sqlalchemy.exc import IntegrityError, DataError, InternalError
 from sqlalchemy.orm import scoped_session, sessionmaker, joinedload
 from validate_email import validate_email
 from random import randint
@@ -1854,12 +1854,21 @@ def regulation_insert_update(request):
                     curator_session.rollback()
                 isSuccess = False
                 returnValue = 'Update failed, issue in data'
-            except Exception as e:
+            except InternalError as e:
                 transaction.abort()
                 if curator_session:
                     curator_session.rollback()
                 isSuccess = False
-                returnValue = 'Updated failed ' + str(e.message)
+                error = str(e.orig).replace('_', ' ')
+                error = error[0:error.index('.')]
+                returnValue = 'Updated failed, ' + error
+            except Exception as e:
+                print(e)
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = 'Updated failed, ' + str(e.message)
             finally:
                 if curator_session:
                     curator_session.close()
