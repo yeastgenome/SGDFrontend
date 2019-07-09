@@ -3,12 +3,16 @@ from pyramid import testing
 import unittest
 import mock
 import json
+import datetime
+
 import test.fixtures as factory
+from datetime import timedelta
 from test.mock_helpers import MockQuery
 from test.mock_helpers import reference_side_effect, reference_phenotype_side_effect, disease_side_effect
 from src.views import reference_list, reference, reference_literature_details, \
     reference_interaction_details, reference_phenotype_details, reference_regulation_details, reference_go_details, reference_disease_details, reference_this_week
 from src.models import Referencedocument, Referencedbentity
+
 
 class ReferencesTest(unittest.TestCase):
     unittest.TestCase.maxDiff =  None
@@ -70,21 +74,16 @@ class ReferencesTest(unittest.TestCase):
     @mock.patch('src.views.extract_id_request', return_value="S000114259")
     @mock.patch('src.models.DBSession.query')
     def test_should_return_valid_reference(self, mock_search, mock_redis):
-
         mock_search.side_effect = reference_side_effect
-
         source = factory.SourceFactory()
         journal = factory.JournalFactory()
         book = factory.BookFactory()
         r_name = factory.ReferencedbentityFactory()
         r_name.journal = journal
-
         request = testing.DummyRequest()
         request.context = testing.DummyResource()
-        #request.matchdict['id'] = "S000114259"
         id = mock_redis.extract_id_request(request, 'reference', param_name='id')
         response = reference(request)
-
         self.assertEqual(response, r_name.to_dict())
 
 
@@ -108,7 +107,14 @@ class ReferencesTest(unittest.TestCase):
         request.context = testing.DummyResource()
         id = mock_redis.extract_id_request(request, 'reference', param_name='id')
         response = reference_this_week(request)
-        self.assertEqual(response, reference.disease_to_dict())
+        start_date = datetime.datetime.today() - datetime.timedelta(days=30)
+        end_date = datetime.datetime.today()
+        refs = {
+            'start': start_date.strftime("%Y-%m-%d"),
+            'end': end_date.strftime("%Y-%m-%d"),
+            'references' : [reference.to_dict_citation()]
+        }
+        self.assertEqual(response, refs)
 
 
     @mock.patch('src.views.extract_id_request', return_value="nonexistent_id")
