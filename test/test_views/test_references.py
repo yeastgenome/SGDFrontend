@@ -151,7 +151,14 @@ class ReferencesTest(unittest.TestCase):
         request.context = testing.DummyResource()
         id = mock_redis.extract_id_request(request, 'reference', param_name='id')
         response = reference_this_week(request)
-        self.assertEqual(response, reference.disease_to_dict())
+        start_date = datetime.datetime.today() - datetime.timedelta(days=30)
+        end_date = datetime.datetime.today()
+        refs = {
+            'start': start_date.strftime("%Y-%m-%d"),
+            'end': end_date.strftime("%Y-%m-%d"),
+            'references' : [reference.to_dict_citation()]
+        }
+        self.assertEqual(response, refs)
 
 
     @mock.patch('src.views.extract_id_request', return_value="nonexistent_id")
