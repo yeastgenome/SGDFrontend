@@ -307,7 +307,7 @@ def reference_this_week(request):
     end_date = datetime.datetime.today()
 
     recent_literature = DBSession.query(Referencedbentity).filter(Referencedbentity.date_created >= start_date).order_by(Referencedbentity.date_created.desc()).all()
-
+    
     refs = [x.to_dict_citation() for x in recent_literature]
     return {
         'start': start_date.strftime("%Y-%m-%d"),
