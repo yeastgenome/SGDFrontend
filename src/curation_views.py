@@ -58,7 +58,6 @@ def account(request):
 
 
 @view_config(route_name='get_locus_curate', request_method='GET', renderer='json')
-@authenticate
 def get_locus_curate(request):
     id = extract_id_request(request, 'locus', param_name="sgdid")
     locus = get_locus_by_id(id)
@@ -211,7 +210,6 @@ def reference_triage_id_delete(request):
         return HTTPNotFound()
 
 @view_config(route_name='reference_triage_id', renderer='json', request_method='GET')
-@authenticate
 def reference_triage_id(request):
     id = request.matchdict['id'].upper()
     triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
@@ -291,7 +289,6 @@ def reference_triage_promote(request):
         return HTTPNotFound()
 
 @view_config(route_name='reference_triage_index', renderer='json', request_method='GET')
-@authenticate
 def reference_triage_index(request):
     total = DBSession.query(Referencetriage).count()
     triages = DBSession.query(Referencetriage).order_by(Referencetriage.date_created.asc()).limit(150).all()
@@ -832,7 +829,6 @@ def colleague_triage_index(request):
     return [x.to_dict() for x in c_triages]
 
 @view_config(route_name='colleague_triage_show', renderer='json', request_method='GET')
-@authenticate
 def colleague_triage_show(request):
     req_id = request.matchdict['id'].upper()
     c_triage = DBSession.query(Colleaguetriage).filter(Colleaguetriage.curation_id == req_id).one_or_none()
@@ -1093,7 +1089,6 @@ def add_new_colleague_triage(request):
 
 
 @view_config(route_name='colleague_with_subscription', renderer='json', request_method='GET')
-@authenticate
 def colleague_with_subscription(request):
     try:
         colleagues = models_helper.get_all_colleague_with_subscription()
@@ -1436,7 +1431,6 @@ def ptm_file_insert(request):
 
 
 @view_config(route_name='ptm_by_gene',renderer='json',request_method='GET')
-@authenticate
 def ptm_by_gene(request):
     gene = str(request.matchdict['id'])
 
