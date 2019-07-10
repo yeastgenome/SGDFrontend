@@ -61,8 +61,8 @@ class MockQuery(object):
     def distinct(self, query_params):
         return self
     
-    # def join(self,  *args, **kwargs):
-    #     return self
+    def join(self,  *args, **kwargs):
+        return self
 
 
 class MockFileStorage(object):
