@@ -57,16 +57,16 @@ class LocusTest(unittest.TestCase):
         response = locus_disease_details(request)
         self.assertEqual(response, locus.disease_to_dict())
 
-    @mock.patch('src.views.extract_id_request', return_value="S000114259")
-    @mock.patch('src.models.DBSession.query')
-    def test_should_return_valid_locus_disease_graph(self, mock_search, mock_redis):
-        mock_search.side_effect = disease_side_effect
-        locus = factory.LocusdbentityFactory()
-        request = testing.DummyRequest()
-        request.context = testing.DummyResource()
-        id = mock_redis.extract_id_request(request, 'locus', param_name='id')
-        response = locus_disease_graph(request)
-        self.assertEqual(response, locus.disease_graph())
+    # @mock.patch('src.views.extract_id_request', return_value="S000114259")
+    # @mock.patch('src.models.DBSession.query')
+    # def test_should_return_valid_locus_disease_graph(self, mock_search, mock_redis):
+    #     mock_search.side_effect = disease_side_effect
+    #     locus = factory.LocusdbentityFactory()
+    #     request = testing.DummyRequest()
+    #     request.context = testing.DummyResource()
+    #     id = mock_redis.extract_id_request(request, 'locus', param_name='id')
+    #     response = locus_disease_graph(request)
+    #     self.assertEqual(response, locus.disease_graph())
 
     @mock.patch('src.views.extract_id_request', return_value="S000114259")
     @mock.patch('src.models.DBSession.query')
