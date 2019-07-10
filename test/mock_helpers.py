@@ -926,6 +926,9 @@ def side_effect(*args, **kwargs):
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Colleague'>":
         colleague = factory.ColleagueFactory()
         return MockQuery([colleague,colleague])
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Colleaguetriage'>":
+        colleague_triage = factory.ColleaguetriageFactory()
+        return MockQuery(colleague_triage)
 # def mock_extract_id_request(request, classname):
 #      return 'S000203483'
 

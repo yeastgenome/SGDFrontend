@@ -1,7 +1,7 @@
 from pyramid import testing
 import unittest
 import mock
-from src.curation_views import get_locus_curate, reference_triage_id, reference_triage_index, colleague_with_subscription, get_strains, ptm_by_gene, get_strains, get_psimod
+from src.curation_views import get_locus_curate, reference_triage_id, reference_triage_index, colleague_with_subscription, get_strains, ptm_by_gene, get_strains, get_psimod, colleague_triage_show
 import test.fixtures as factory
 from test.mock_helpers import MockQuery
 from test.mock_helpers import locus_side_effect, reference_side_effect, side_effect, strain_side_effect
@@ -49,11 +49,22 @@ class CurationViewsTest(unittest.TestCase):
   #reference_tags
   #get_recent_annotations
   #colleague_triage_index
-  #colleague_triage_show
   
+  ##colleague_triage_show
+  @mock.patch('src.models.DBSession.query')
+  def test_colleague_triage_show_should_return_valid_colleague_information(self, mock_search):
+    mock_search.side_effect = side_effect
+
+    request = testing.DummyRequest()
+    request.context = testing.DummyResource()
+    request.matchdict['id'] = "1"
+    response = colleague_triage_show(request)
+    colleage_triage = factory.ColleaguetriageFactory()
+    self.assertEqual(response, colleage_triage.to_dict())
+
   ##colleague_with_subscription
   @mock.patch('src.models.DBSession.query')
-  def test_colleague_with_subscription_should_return_emails(self, mock_search):
+  def test_colleague_with_subscription_should_return_valid_emails(self, mock_search):
     mock_search.side_effect = side_effect
 
     request = testing.DummyRequest()
