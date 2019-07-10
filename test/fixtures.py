@@ -13,7 +13,6 @@ from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRela
     Locusnote, LocusnoteReference, Pathwayannotation, Pathwaydbentity, PathwayUrl, Bindingmotifannotation, Disease, Diseaseannotation, DiseaseRelation, DiseaseUrl, \
     DiseaseAlias, Diseasesupportingevidence
 
-
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = Source
