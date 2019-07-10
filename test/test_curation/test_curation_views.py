@@ -1,7 +1,7 @@
 from pyramid import testing
 import unittest
 import mock
-from src.curation_views import get_locus_curate, reference_triage_id, reference_triage_index, get_strains,ptm_by_gene, get_strains, get_psimod
+from src.curation_views import get_locus_curate, reference_triage_id, reference_triage_index, colleague_with_subscription, get_strains, ptm_by_gene, get_strains, get_psimod
 import test.fixtures as factory
 from test.mock_helpers import MockQuery
 from test.mock_helpers import locus_side_effect, reference_side_effect, side_effect, strain_side_effect
@@ -50,7 +50,17 @@ class CurationViewsTest(unittest.TestCase):
   #get_recent_annotations
   #colleague_triage_index
   #colleague_triage_show
-  #colleague_with_subscription
+  
+  ##colleague_with_subscription
+  @mock.patch('src.models.DBSession.query')
+  def test_colleague_with_subscription_should_return_emails(self, mock_search):
+    mock_search.side_effect = side_effect
+
+    request = testing.DummyRequest()
+    request.context = testing.DummyResource()
+    response = colleague_with_subscription(request)
+    result = {'colleagues': 'jimmy.page@example.org;\njimmy.page@example.org'}
+    self.assertEqual(response,result)
   
   ##ptm_by_gene
   @mock.patch('src.models.DBSession.query')
