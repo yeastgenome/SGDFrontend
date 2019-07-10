@@ -1,7 +1,7 @@
 from pyramid import testing
 import unittest
 import mock
-from src.curation_views import get_locus_curate, reference_triage_id, reference_triage_index, get_strains, get_strains, get_psimod
+from src.curation_views import get_locus_curate, reference_triage_id, reference_triage_index, get_strains,ptm_by_gene, get_strains, get_psimod
 import test.fixtures as factory
 from test.mock_helpers import MockQuery
 from test.mock_helpers import locus_side_effect, reference_side_effect, side_effect, strain_side_effect
@@ -51,7 +51,18 @@ class CurationViewsTest(unittest.TestCase):
   #colleague_triage_index
   #colleague_triage_show
   #colleague_with_subscription
-  #ptm_by_gene
+  
+  ##ptm_by_gene
+  @mock.patch('src.models.DBSession.query')
+  def test_ptm_by_gene_should_return_valid_ptm(self, mock_search):
+    mock_search.side_effect = side_effect
+
+    request = testing.DummyRequest()
+    request.context = testing.DummyResource()
+    request.matchdict['id'] = "184870"
+    response = ptm_by_gene(request)
+    result = ['{"ptms": [{"site_index": 1, "reference": {"sgdid": "S000001", "link": "http://example.org/entity", "display_name": "My entity", "pubmed_id": 1}, "taxonomy": {"taxonomy_id": "", "display_name": "", "format_name": ""}, "locus": {"link": "/reference/S000185012", "display_name": "display name", "id": 1, "format_name": "format name"}, "site_residue": "residue", "id": 1, "aliases": [], "properties": [], "source": {"display_name": "Addgene"}, "psimod_id": 1, "modifier": {"format_name": ""}, "type": "display_name"}]}']
+    self.assertEqual(response._app_iter__get(),result)
   
   ##get_strains
   @mock.patch('src.models.DBSession.query')

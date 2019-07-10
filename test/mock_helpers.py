@@ -953,6 +953,20 @@ def side_effect(*args, **kwargs):
     elif len(args) == 1 and str(args[0]) == "Posttranslationannotation.psimod_id":
         ptm = factory.PsimodFactory()
         return MockQuery([ptm])
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Dbentity'>":
+        dbentity = factory.DbentityFactory()
+        return MockQuery(dbentity)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Posttranslationannotation'>":
+        ptm = factory.PosttranslationannotationFactory()
+        dbentity = factory.DbentityFactory()
+        reference = factory.ReferencedbentityFactory()
+        source = factory.SourceFactory()
+        psimod = factory.PsimodFactory()
+        ptm.dbentity = dbentity
+        ptm.reference = reference
+        ptm.source = source
+        ptm.psimod = psimod
+        return MockQuery(ptm)
 # def mock_extract_id_request(request, classname):
 #      return 'S000203483'
 
