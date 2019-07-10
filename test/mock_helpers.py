@@ -967,6 +967,9 @@ def side_effect(*args, **kwargs):
         ptm.source = source
         ptm.psimod = psimod
         return MockQuery(ptm)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Colleague'>":
+        colleague = factory.ColleagueFactory()
+        return MockQuery([colleague,colleague])
 # def mock_extract_id_request(request, classname):
 #      return 'S000203483'
 
