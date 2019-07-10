@@ -1,10 +1,10 @@
 from pyramid import testing
 import unittest
 import mock
-from src.curation_views import get_locus_curate, reference_triage_id, reference_triage_index, get_strains, get_psimod
+from src.curation_views import get_locus_curate, reference_triage_id, reference_triage_index, get_strains, get_strains, get_psimod
 import test.fixtures as factory
 from test.mock_helpers import MockQuery
-from test.mock_helpers import locus_side_effect, reference_side_effect, side_effect
+from test.mock_helpers import locus_side_effect, reference_side_effect, side_effect, strain_side_effect
 
 class CurationViewsTest(unittest.TestCase):
   
@@ -53,7 +53,16 @@ class CurationViewsTest(unittest.TestCase):
   #colleague_with_subscription
   #ptm_by_gene
   
-  #get_strains
+  ##get_strains
+  @mock.patch('src.models.DBSession.query')
+  def test_get_strains_should_return_valid_list(self, mock_search):
+    mock_search.side_effect = strain_side_effect
+
+    request = testing.DummyRequest()
+    request.context = testing.DummyResource()
+    response = get_strains(request)
+    result = {'strains': [{'taxonomy_id': 1, 'display_name': 'SOME NAME'}]}
+    self.assertEqual(response,result)
   
   ##get_psimod
   @mock.patch('src.models.DBSession.query')

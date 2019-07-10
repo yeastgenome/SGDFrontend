@@ -1242,3 +1242,8 @@ def reference_phenotype_side_effect(*args, **kwargs):
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Apo'>":
         apo = factory.ApoFactory()
         return MockQuery(apo)
+
+def strain_side_effect(*args, **kwargs):
+    if len(args) == 1 and str(args[0]) == "<class 'src.models.Straindbentity'>":
+        s_name = factory.StraindbentityFactory()
+        return MockQuery([s_name])
