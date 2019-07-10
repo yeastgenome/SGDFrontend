@@ -9,9 +9,8 @@ from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRela
     Goslimannotation, Interactor, Goslim, Expressionannotation, Datasetsample, DatasetUrl, DatasetFile, ReferenceAlias, Dnasequenceannotation, Dnasubsequence,\
     So, ContigUrl, LocusAlias, LocusAliasReferences, LocusReferences, LocussummaryReference, LocusUrl, Posttranslationannotation,\
     Psimod, Proteinexptannotation, Proteindomainannotation, Proteindomain, ProteindomainUrl, Ec, EcAlias, EcUrl, LocusRelation, LocusRelationReference, \
-    Locusnote, LocusnoteReference, Pathwayannotation, Pathwaydbentity, PathwayUrl, Bindingmotifannotation, Disease, Diseaseannotation, \
-    Proteinabundanceannotation, ChebiAlia, ReferenceFile, ComplexAlias, ComplexGo, ComplexReference, Colleaguetriage, CurationReference, CuratorActivity, DiseaseRelation, DiseaseRelation, DiseaseUrl, \
-    DiseaseAlias, Diseasesupportingevidence
+    Locusnote, LocusnoteReference, Pathwayannotation, Pathwaydbentity, PathwayUrl, Bindingmotifannotation, Disease, Diseaseannotation, Colleaguetriage, CurationReference, CuratorActivity, DiseaseRelation, DiseaseUrl, \
+    Proteinabundanceannotation, ChebiAlia, ReferenceFile, ComplexAlias, ComplexGo, ComplexReference, DiseaseAlias, Diseasesupportingevidence
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
