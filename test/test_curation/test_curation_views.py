@@ -1,7 +1,7 @@
 from pyramid import testing
 import unittest
 import mock
-from src.curation_views import get_locus_curate, reference_triage_id, reference_triage_index, colleague_with_subscription, get_strains, ptm_by_gene, get_strains, get_psimod, colleague_triage_show
+from src.curation_views import get_locus_curate, reference_triage_id, reference_triage_index, colleague_with_subscription, get_strains, ptm_by_gene, get_strains, get_psimod, colleague_triage_show, colleague_triage_index
 import test.fixtures as factory
 from test.mock_helpers import MockQuery
 from test.mock_helpers import locus_side_effect, reference_side_effect, side_effect, strain_side_effect
@@ -48,7 +48,17 @@ class CurationViewsTest(unittest.TestCase):
 
   #reference_tags
   #get_recent_annotations
-  #colleague_triage_index
+  
+  ##colleague_triage_index
+  @mock.patch('src.models.DBSession.query')
+  def test_colleague_triage_index_should_return_valid_list_of_colleague_information(self, mock_search):
+    mock_search.side_effect = side_effect
+
+    request = testing.DummyRequest()
+    request.context = testing.DummyResource()
+    response = colleague_triage_index(request)
+    colleage_triage = factory.ColleaguetriageFactory()
+    self.assertEqual(response, [colleage_triage.to_dict()])
   
   ##colleague_triage_show
   @mock.patch('src.models.DBSession.query')

@@ -823,7 +823,6 @@ def extend_reserved_name(request):
 
 
 @view_config(route_name='colleague_triage_index', renderer='json', request_method='GET')
-@authenticate
 def colleague_triage_index(request):
     c_triages = DBSession.query(Colleaguetriage).all()
     return [x.to_dict() for x in c_triages]
