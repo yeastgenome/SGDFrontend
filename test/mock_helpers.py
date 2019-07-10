@@ -80,8 +80,8 @@ class MockQuery(object):
     def outerjoin(self,query_params):
         return self
     
-    # def join(self,  *args, **kwargs):
-    #     return self
+    def join(self,  *args, **kwargs):
+        return self
 
     def count(self):
         return 1
