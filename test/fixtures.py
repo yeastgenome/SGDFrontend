@@ -10,7 +10,7 @@ from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRela
     So, ContigUrl, LocusAlias, LocusAliasReferences, LocusReferences, LocussummaryReference, LocusUrl, Posttranslationannotation,\
     Psimod, Proteinexptannotation, Proteindomainannotation, Proteindomain, ProteindomainUrl, Ec, EcAlias, EcUrl, LocusRelation, LocusRelationReference, \
     Locusnote, LocusnoteReference, Pathwayannotation, Pathwaydbentity, PathwayUrl, Bindingmotifannotation, Disease, Diseaseannotation, \
-    Proteinabundanceannotation, ChebiAlia, ReferenceFile, ComplexAlias, ComplexGo, ComplexReference
+    Proteinabundanceannotation, ChebiAlia, ReferenceFile, ComplexAlias, ComplexGo, ComplexReference, Colleaguetriage
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -1850,3 +1850,15 @@ class ReferenceFileFactory(factory.alchemy.SQLAlchemyModelFactory):
     source_id = 1
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
+
+class ColleaguetriageFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Colleaguetriage
+        sqlalchemy_session = DBSession
+
+    curation_id = 1
+    triage_type = "triage_type"
+    colleague_id = 1
+    json = '{"first_name":"SGD"}'
+    curator_comment = "curator_comment"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
