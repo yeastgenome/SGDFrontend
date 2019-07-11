@@ -8,7 +8,7 @@ class MockQueryFilter(object):
     def one_or_none(self):
         return self._return
 
-    # def first(self):
+    def first(self):
         return self._return
 
     def order_by(self, *args, **kwargs):
