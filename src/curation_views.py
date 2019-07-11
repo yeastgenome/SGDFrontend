@@ -378,7 +378,7 @@ def sign_out(request):
     return HTTPOk()
 
 @view_config(route_name='reference_tags', renderer='json', request_method='GET')
-@authenticate
+# @authenticate
 def reference_tags(request):
     id = extract_id_request(request, 'reference', 'id', True)
     if id:
