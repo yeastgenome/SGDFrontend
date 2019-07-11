@@ -1,7 +1,7 @@
 from pyramid import testing
 import unittest
 import mock
-from src.curation_views import get_locus_curate, reference_triage_id, reference_triage_index, colleague_with_subscription, get_strains, ptm_by_gene, get_strains, get_psimod, colleague_triage_show, colleague_triage_index
+from src.curation_views import get_locus_curate, reference_triage_id, reference_triage_index, colleague_with_subscription, get_strains, ptm_by_gene, get_strains, get_psimod, colleague_triage_show, colleague_triage_index, reference_tags
 import test.fixtures as factory
 from test.mock_helpers import MockQuery
 from test.mock_helpers import locus_side_effect, reference_side_effect, side_effect, strain_side_effect
@@ -46,7 +46,18 @@ class CurationViewsTest(unittest.TestCase):
     result = {'entries': [t.to_dict() for t in reference_triage], 'total': 1}
     self.assertEqual(response, result)
 
-  #reference_tags
+  ##reference_tags
+  @mock.patch('src.models.DBSession.query')
+  def test_reference_tags_should_return_valid_reference(self, mock_search):
+    mock_search.side_effect = reference_side_effect
+    request = testing.DummyRequest()
+    request.context = testing.DummyResource()
+    request.matchdict['id'] = "1"
+    response = reference_tags(request)
+    result = [{'comment': 'curators comments', 'genes': 'GENE1', 'name': None}]
+    self.assertEqual(response,result)
+
+
   #get_recent_annotations
   
   ##colleague_triage_index
