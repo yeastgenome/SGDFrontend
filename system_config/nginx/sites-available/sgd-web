@@ -20,6 +20,10 @@ server {
     
     port_in_redirect off;
 
+    location /favicon.ico {
+        alias /data/www/SGDFrontend/current/src/sgd/frontend/yeastgenome/img-domain/favicon.ico;
+    }
+
     location /healthcheck {
         proxy_redirect off;
         proxy_next_upstream error;
