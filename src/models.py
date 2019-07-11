@@ -3080,7 +3080,8 @@ class Locusdbentity(Dbentity):
                 if annotation not in obj:
                     obj.append(annotation)
         # get human gene symbols from Alliance API
-        human_gene_ids_to_symbols = {}
+        #human_gene_ids_to_symbols = {}
+        human_gene_ids_to_symbols = {'display name' : 'TEST1'}
         for x in obj:
             try:
                 for y in x['properties']:
