@@ -12,7 +12,7 @@ class MockQueryFilter(object):
         else:
             return self._return
 
-    # def first(self):
+    def first(self):
         return self._return
 
     def order_by(self, *args, **kwargs):
