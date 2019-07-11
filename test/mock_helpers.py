@@ -65,7 +65,7 @@ class MockQuery(object):
         return self._query_result
 
     def distinct(self, *query_params):
-        if self._query_result:
+        if len(query_params) == 0 and self._query_result:
             return self._query_result
         else:
             return self
