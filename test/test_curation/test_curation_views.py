@@ -1,7 +1,7 @@
 from pyramid import testing
 import unittest
 import mock
-from src.curation_views import get_locus_curate, reference_triage_id, reference_triage_index, colleague_with_subscription, get_strains, ptm_by_gene, get_strains, get_psimod, colleague_triage_show, colleague_triage_index, reference_tags
+from src.curation_views import get_locus_curate, reference_triage_id, reference_triage_index, colleague_with_subscription, get_strains, ptm_by_gene, get_strains, get_psimod, colleague_triage_show, colleague_triage_index, reference_tags, get_recent_annotations
 import test.fixtures as factory
 from test.mock_helpers import MockQuery
 from test.mock_helpers import locus_side_effect, reference_side_effect, side_effect, strain_side_effect
@@ -58,7 +58,23 @@ class CurationViewsTest(unittest.TestCase):
     self.assertEqual(response,result)
 
 
-  #get_recent_annotations
+  ##get_recent_annotations
+  @mock.patch('src.models.DBSession.query')
+  def test_get_recent_annotations_should_return_valid_list_of_valid_annotation(self, mock_search):
+    mock_search.side_effect = side_effect
+    
+    request = testing.DummyRequest()
+    request.context = testing.DummyResource()
+    request.params['everyone'] = True
+    request.session['username'] = "OTTO"
+    response = get_recent_annotations(request)
+    response[0]['time_created'] = response[0]['time_created'][0:-9]
+
+
+    curation_factory = factory.CuratorActivityFactory()
+    result = curation_factory.to_dict()
+    result['time_created'] = result['time_created'][0:-9]
+    self.assertEqual(response,[result])
   
   ##colleague_triage_index
   @mock.patch('src.models.DBSession.query')
