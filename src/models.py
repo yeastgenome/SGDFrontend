@@ -3091,9 +3091,10 @@ class Locusdbentity(Dbentity):
                             entry['display_name'] = human_gene_ids_to_symbols[hgnc_id]
                         else:
                             url = ALLIANCE_API_BASE_URL + hgnc_id
-                            symbol = requests.request('GET', url).json()['symbol']                            
-                            entry['display_name'] = symbol
-                            human_gene_ids_to_symbols[hgnc_id] = symbol
+                            if "symbol" in requests.request('GET', url).json():
+                                symbol = requests.request('GET', url).json()['symbol']                            
+                                entry['display_name'] = symbol
+                                human_gene_ids_to_symbols[hgnc_id] = symbol
             except Exception as e:
                 traceback.print_exc()
         return obj
