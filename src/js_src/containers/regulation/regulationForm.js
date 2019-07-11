@@ -225,10 +225,10 @@ class RegulationForm extends Component {
           </div>
           <div className='row'>
             <div className='columns medium-6'>
-              <button type='submit' className="button expanded" >Update</button>
+              <button type='submit' className="button expanded" disabled={this.state.currentIndex > -1 ? '' : 'disabled'}>Update</button>
             </div>
             <div className='columns medium-3'>
-              <button type='button' className="button alert expanded" onClick={(e) => { if (confirm('Are you sure, you want to delete selected PTM ?')) this.handleDelete(e); }}>Delete</button>
+              <button type='button' className="button alert expanded" disabled={this.state.currentIndex > -1 ? '':'disabled'} onClick={(e) => { if (confirm('Are you sure, you want to delete selected Regulation ?')) this.handleDelete(e); }}>Delete</button>
             </div>
           </div>
         </div >
