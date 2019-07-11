@@ -410,7 +410,6 @@ def update_reference_tags(request):
         return HTTPBadRequest(body=json.dumps({ 'error': str(e) }), content_type='text/json')
 
 @view_config(route_name='get_recent_annotations', request_method='GET', renderer='json')
-@authenticate
 def get_recent_annotations(request):
     annotations = []
     is_everyone = request.params.get('everyone', False)
@@ -420,7 +419,7 @@ def get_recent_annotations(request):
     if is_everyone:
         recent_activity = DBSession.query(CuratorActivity).filter(CuratorActivity.date_created >= start_date).order_by(CuratorActivity.date_created.desc()).all()
     else:
-        recent_activity = DBSession.query(CuratorActivity).filter(and_(CuratorActivity.date_created >= start_date, CuratorActivity.created_by == username)).order_by(CuratorActivity.date_created.desc()).all()
+        recent_activity = DBSession.query(CuratorActivity).filter(and_(CuratorActivity.date_created >= start_date, CuratorActivity.created_by == username)).order_by(CuratorActivity.date_created.desc()).all() 
     for d in recent_activity:
         annotations.append(d.to_dict())
     annotations = sorted(annotations, key=lambda r: r['time_created'], reverse=True)
