@@ -12,8 +12,9 @@ from src.views import locus, locus_go_details, locus_phenotype_details, locus_ph
     locus_protein_experiment_details, locus_protein_domain_details, locus_protein_domain_graph, locus_tabs, \
     locus_expression_graph, locus_go_graph, locus_literature_graph, locus_protein_abundance_details, locus_regulation_details, \
     locus_regulation_graph, locus_regulation_target_enrichment, locus_binding_site_details, locus_disease_details, \
-    locus_interaction_graph
+    locus_interaction_graph, locus_disease_graph
 
+### NEED TO ADD TEST FOR locus_disease_graph
 
 class LocusTest(unittest.TestCase):
 
@@ -179,7 +180,7 @@ class LocusTest(unittest.TestCase):
         response = locus_interaction_graph(request)
         self.assertEqual(response, locus.interaction_graph())
 
-    @mock.patch('src.views.extract_id_request', return_value="S000114259")
+    @mock.patch('src.views.extract_id_request', return_value="S000003878")
     @mock.patch('src.models.DBSession.query')
     def test_should_return_valid_locus_literature_graph(self, mock_search, mock_redis):
         mock_search.side_effect = locus_side_effect
