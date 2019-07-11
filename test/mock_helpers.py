@@ -1,4 +1,5 @@
 import fixtures as factory
+from mock import Mock
 
 class MockQueryFilter(object):
     def __init__(self, query_params, query_result):
@@ -1271,6 +1272,20 @@ def reference_side_effect(*args, **kwargs):
             elif len(args) == 1 and str(args[0]) == "<class 'src.models.Referencetriage'>":
                 reference_triage = factory.ReferencetriageFactory()
                 return MockQuery([reference_triage])
+            elif len(args) == 2 and str(args[0]) == "<class 'src.models.CurationReference'>" and str(args[1]) == "<class 'src.models.Locusdbentity'>":
+                curator_reference = factory.CurationReferenceFactory()
+                locus_dbentity = factory.LocusdbentityFactory()
+                mock = Mock()
+                mock.Locusdbentity = locus_dbentity
+                mock.CurationReference = curator_reference
+                return MockQuery([mock])
+            elif len(args) == 2 and str(args[0]) == "<class 'src.models.Literatureannotation'>" and str(args[1]) == "<class 'src.models.Locusdbentity'>":
+                literature_annotation = factory.LiteratureannotationFactory()
+                locus_dbentity = factory.LocusdbentityFactory()
+                mock = Mock()
+                mock.Locusdbentity = locus_dbentity
+                mock.Literatureannotation = literature_annotation
+                return MockQuery([mock])
 
 def reference_phenotype_side_effect(*args, **kwargs):
     
