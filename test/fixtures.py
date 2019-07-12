@@ -10,7 +10,7 @@ from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRela
     So, ContigUrl, LocusAlias, LocusAliasReferences, LocusReferences, LocussummaryReference, LocusUrl, Posttranslationannotation,\
     Psimod, Proteinexptannotation, Proteindomainannotation, Proteindomain, ProteindomainUrl, Ec, EcAlias, EcUrl, LocusRelation, LocusRelationReference, \
     Locusnote, LocusnoteReference, Pathwayannotation, Pathwaydbentity, PathwayUrl, Bindingmotifannotation, Disease, Diseaseannotation, \
-    Proteinabundanceannotation, ChebiAlia, ReferenceFile, ComplexAlias, ComplexGo, ComplexReference
+    Proteinabundanceannotation, ChebiAlia, ReferenceFile, ComplexAlias, ComplexGo, ComplexReference, Colleaguetriage, CurationReference, CuratorActivity
 
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
@@ -534,7 +534,6 @@ class ReferencetriageFactory(factory.alchemy.SQLAlchemyModelFactory):
     fulltext_url = "full text URL"
     abstract = "this is abstract"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
-    created_by = "TOTO"
     json = "{}"
     abstract_genes = "abstract genes"
 
@@ -1851,3 +1850,46 @@ class ReferenceFileFactory(factory.alchemy.SQLAlchemyModelFactory):
     source_id = 1
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
+
+class ColleaguetriageFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Colleaguetriage
+        sqlalchemy_session = DBSession
+
+    curation_id = 1
+    triage_type = "triage_type"
+    colleague_id = 1
+    json = '{"first_name":"SGD"}'
+    curator_comment = "curator_comment"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+
+class CurationReferenceFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = CurationReference
+        sqlalchemy_session = DBSession
+
+    curation_id = 1
+    reference_id = 1
+    source_id = 1
+    locus_id = 1
+    curation_tag = 'tags tags'
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = 'OTTO'
+    curator_comment = 'curators comments'
+    json = '{"key":"value"}'
+
+
+class CuratorActivityFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = CuratorActivity
+        sqlalchemy_session = DBSession
+
+    curation_id = 1
+    display_name = "display name"
+    obj_url = 'http://example.org/1'
+    activity_category = 'activity category'
+    dbentity_id = 1
+    message = 'message message'
+    json = '{"key":"value"}'
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = 'OTTO'
