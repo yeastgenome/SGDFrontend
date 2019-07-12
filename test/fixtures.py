@@ -12,7 +12,6 @@ from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRela
     Locusnote, LocusnoteReference, Pathwayannotation, Pathwaydbentity, PathwayUrl, Bindingmotifannotation, Disease, Diseaseannotation, Colleaguetriage, CurationReference, CuratorActivity, DiseaseRelation, DiseaseUrl, \
     Proteinabundanceannotation, ChebiAlia, ReferenceFile, ComplexAlias, ComplexGo, ComplexReference, DiseaseAlias, Diseasesupportingevidence
 
-
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = Source
