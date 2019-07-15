@@ -2258,7 +2258,8 @@ class Referencedbentity(Dbentity):
                 if annotation not in obj:
                     obj.append(annotation)
         # get human gene symbols from Alliance API
-        human_gene_ids_to_symbols = {}
+        #human_gene_ids_to_symbols = {}
+        human_gene_ids_to_symbols = {'display name' : 'TEST1'}
         for x in obj:
             try:
                 for y in x['properties']:
@@ -3070,8 +3071,7 @@ class Locusdbentity(Dbentity):
         return obj
 
     def disease_to_dict(self):
-        #path_res = DBSession.query(FilePath, Path).filter(FilePath.file_id == self.dbentity_id).outerjoin(Path).all()
-        #do_annotations = DBSession.query(Diseaseannotation, Diseasesupportingevidence).filter(Diseaseannotation.dbentity_id == self.dbentity_id).outerjoin(Diseasesupportingevidence).all()
+        
         do_annotations = DBSession.query(Diseaseannotation).filter_by(dbentity_id=self.dbentity_id).all()
 
         obj = []
@@ -3080,7 +3080,8 @@ class Locusdbentity(Dbentity):
                 if annotation not in obj:
                     obj.append(annotation)
         # get human gene symbols from Alliance API
-        human_gene_ids_to_symbols = {}
+        #human_gene_ids_to_symbols = {}
+        human_gene_ids_to_symbols = {'display name' : 'TEST1'}
         for x in obj:
             try:
                 for y in x['properties']:
@@ -3091,9 +3092,10 @@ class Locusdbentity(Dbentity):
                             entry['display_name'] = human_gene_ids_to_symbols[hgnc_id]
                         else:
                             url = ALLIANCE_API_BASE_URL + hgnc_id
-                            symbol = requests.request('GET', url).json()['symbol']                            
-                            entry['display_name'] = symbol
-                            human_gene_ids_to_symbols[hgnc_id] = symbol
+                            if "symbol" in requests.request('GET', url).json():
+                                symbol = requests.request('GET', url).json()['symbol']                            
+                                entry['display_name'] = symbol
+                                human_gene_ids_to_symbols[hgnc_id] = symbol
             except Exception as e:
                 traceback.print_exc()
         return obj
@@ -5367,9 +5369,10 @@ class Disease(Base):
 
     def annotations_to_dict(self):
         annotations = DBSession.query(Diseaseannotation).filter_by(disease_id=self.disease_id).all()
-
         annotations_dict = []
-        human_gene_ids_to_symbols = {}
+        #human_gene_ids_to_symbols = {}
+        human_gene_ids_to_symbols = {'display name' : 'TEST1'}
+
         for a in annotations:
             annotation = a.to_dict(disease=self)
             try:
@@ -5394,7 +5397,8 @@ class Disease(Base):
         annotations = DBSession.query(Diseaseannotation).filter_by(disease_id=self.disease_id).all()
 
         annotations_dict = []
-        human_gene_ids_to_symbols = {}
+        #human_gene_ids_to_symbols = {}
+        human_gene_ids_to_symbols = {'display name' : 'TEST1'}
 
         for a in annotations:
             annotation = a.to_dict(disease=self)
@@ -8959,8 +8963,10 @@ class Complexdbentity(Dbentity):
         data['intact_id'] = self.intact_id
         data['systematic_name'] = self.systematic_name
         data['source'] = self.source.display_name
-        data['description'] = link_gene_complex_names(self.description, {self.format_name: 1}, DBSession),
-        data['properties'] = link_gene_complex_names(self.properties, {self.format_name: 1}, DBSession),
+        # data['description'] = link_gene_complex_names(self.description, {self.format_name: 1}, DBSession),
+        # data['properties'] = link_gene_complex_names(self.properties, {self.format_name: 1}, DBSession),
+        data['description'] = self.description
+        data['properties'] = self.properties
         data['eco'] = self.eco.format_name
 
         nodes_ids = {}

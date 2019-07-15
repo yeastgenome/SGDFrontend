@@ -224,6 +224,11 @@ def load_new_data(data, source_to_id, annotation_type, key_to_annotation, annota
                 #####  date_assigned_in_db = str(getattr(thisAnnot, 'date_assigned'))
                 date_assigned_in_db = thisAnnot.date_assigned
                 date_assigned_db = str(date_assigned_in_db).split(" ")[0]
+
+                if x['date_assigned'] is None:
+                    fw.write("No date_assigned for key=" + str(key) + "\n")
+                    continue
+
                 if date_assigned_db != str(x['date_assigned']):
                     fw.write("UPDATE GOANNOTATION: key=" + str(key) + " OLD date_assigned=" + date_assigned_db + ", NEW date_assigned=" + str(x['date_assigned']) + "\n")
                     # nex_session.query(Goannotation).filter_by(id=thisAnnot.annotation_id).update({"date_assigned": x['date_assigned']})
@@ -233,7 +238,11 @@ def load_new_data(data, source_to_id, annotation_type, key_to_annotation, annota
                     count_key = (x['annotation_type'], 'annotation_updated')
                     annotation_update_log[count_key] = annotation_update_log[count_key] + 1
             else:
-                
+
+                if x['date_assigned'] is None:
+                    fw.write("No date_assigned for key=" + str(key) + "\n")
+                    continue
+
                 # print "KEY=", str(key), " is a NEW ENTRY"
 
                 fw.write("NEW GOANNOTATION: key=" + str(key) + "\n")
@@ -503,11 +512,11 @@ def delete_obsolete_annotations(key_to_annotation, hasGoodAnnot, go_id_to_aspect
     try:
 
         ## add check to see if there are any valid htp annotations..                                         
-        for x in nex_session.query(Goannotation).filter_by(source_id=src_id).filter_by(annotation_type='high-throughput').all():
-            hasGoodAnnot[(x.dbentity_id, go_id_to_aspect[x.go_id])] = 1
+        # for x in nex_session.query(Goannotation).filter_by(source_id=src_id).filter_by(annotation_type='high-throughput').all():
+        #    hasGoodAnnot[(x.dbentity_id, go_id_to_aspect[x.go_id])] = 1
 
         ## delete the old ones -                                                                            
-  
+
         for x in to_be_deleted:
 
             ## don't delete the annotations for the features with a pmid not in db yet 
@@ -519,11 +528,11 @@ def delete_obsolete_annotations(key_to_annotation, hasGoodAnnot, go_id_to_aspect
             ## if x.source_id == source_to_id['GO_Central']:
             ##    continue
 
-            aspect = go_id_to_aspect[x.go_id]
-            if x.eco_id == evidence_to_eco_id['ND'] and hasGoodAnnot.get((x.dbentity_id, aspect)) is None:
-                ## still keep the ND annotation if there is no good annotation available yet 
-                continue
-            elif dbentity_id_with_uniprot.get(x.dbentity_id):
+            # aspect = go_id_to_aspect[x.go_id]
+            # if x.eco_id == evidence_to_eco_id['ND'] and hasGoodAnnot.get((x.dbentity_id, aspect)) is None:
+            #    ## still keep the ND annotation if there is no good annotation available yet 
+            #    continue
+            if dbentity_id_with_uniprot.get(x.dbentity_id):
                 ## don't want to delete the annotations that are not in GPAD file yet
                 ## do we still have any annotations that are not in GPAD? but just in case
                 delete_extensions_evidences(nex_session, x.annotation_id)

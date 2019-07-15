@@ -10,8 +10,8 @@ from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRela
     So, ContigUrl, LocusAlias, LocusAliasReferences, LocusReferences, LocussummaryReference, LocusUrl, Posttranslationannotation,\
     Psimod, Proteinexptannotation, Proteindomainannotation, Proteindomain, ProteindomainUrl, Ec, EcAlias, EcUrl, LocusRelation, LocusRelationReference, \
     Locusnote, LocusnoteReference, Pathwayannotation, Pathwaydbentity, PathwayUrl, Bindingmotifannotation, Disease, Diseaseannotation, \
-    Proteinabundanceannotation, ChebiAlia, ReferenceFile
-
+    Proteinabundanceannotation, ChebiAlia, ReferenceFile, ComplexAlias, ComplexGo, ComplexReference, Colleaguetriage, CurationReference, \
+    CuratorActivity, Efo, DiseaseAlias, Diseasesupportingevidence, DiseaseRelation, DiseaseUrl
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
@@ -26,6 +26,48 @@ class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
+class EcoFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Eco
+        sqlalchemy_session = DBSession
+
+    eco_id = 1
+    format_name = "format name"
+    display_name = "display name"
+    obj_url = "obj url"
+    source_id = 1
+    ecoid = 1
+    description = "description"
+    is_obsolete = '0'
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class EcoAliasFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = EcoAlias
+        sqlalchemy_session = DBSession
+
+    alias_id = 1
+    display_name = "eco alias display name"
+    source_id = 1
+    eco_id = 1
+    alias_type = "eco alias type"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class EcoUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = EcoUrl
+        sqlalchemy_session = DBSession
+
+    url_id = 1
+    display_name = "eco url display name"
+    obj_url = "obj url"
+    source_id = 1
+    eco_id = 1
+    url_type = "url type"
+    date_created =  factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
     
 class ColleagueFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
@@ -65,7 +107,7 @@ class ColleagueFactory(factory.alchemy.SQLAlchemyModelFactory):
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
-class ComplexFactory(factory.alchemy.SQLAlchemyModelFactory):
+class ComplexdbentityFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = Complexdbentity
         sqlalchemy_session = DBSession
@@ -77,7 +119,17 @@ class ComplexFactory(factory.alchemy.SQLAlchemyModelFactory):
     description = "lorem"
     properties = "lorem"
     complex_accession = "lorem"
-
+    subclass = "COMPLEX"
+    display_name = "complex1"
+    format_name = "complex2"
+    obj_url = "http://example.org/entity"
+    source_id = 1
+    sgdid = "S0000099"
+    dbentity_status = "Active"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+    source = factory.SubFactory(SourceFactory)
+    eco = factory.SubFactory(EcoFactory)
 
 class ComplexbindingannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
@@ -97,7 +149,7 @@ class ComplexbindingannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
     stoichiometry = 1
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
-    complex = factory.SubFactory(ComplexFactory)
+    complex = factory.SubFactory(ComplexdbentityFactory)
 
 class KeywordFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
@@ -482,7 +534,6 @@ class ReferencetriageFactory(factory.alchemy.SQLAlchemyModelFactory):
     fulltext_url = "full text URL"
     abstract = "this is abstract"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
-    created_by = "TOTO"
     json = "{}"
     abstract_genes = "abstract genes"
 
@@ -619,6 +670,43 @@ class ChebiUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
+class ComplexAliasFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = ComplexAlias
+        sqlalchemy_session = DBSession
+
+    alias_id = 1
+    display_name = "display name"
+    obj_url = "/obj_url"
+    source_id = 1
+    complex_id = 1
+    alias_type = "alias type"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class ComplexGoFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = ComplexGo
+        sqlalchemy_session = DBSession
+
+    complex_go_id = 1
+    complex_id = 1
+    source_id = 1
+    go_id = 1
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class ComplexReferenceFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = ComplexReference
+        sqlalchemy_session = DBSession
+
+    complex_reference_id = 1
+    complex_id = 1
+    reference_id = 1
+    source_id = 1
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
 
 class LocusdbentityFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
@@ -1143,50 +1231,6 @@ class EcUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
-
-class EcoFactory(factory.alchemy.SQLAlchemyModelFactory):
-    class Meta:
-        model = Eco
-        sqlalchemy_session = DBSession
-
-    eco_id = 1
-    format_name = "format name"
-    display_name = "display name"
-    obj_url = "obj url"
-    source_id = 1
-    ecoid = 1
-    description = "description"
-    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
-    created_by = "TOTO"
-
-
-class EcoAliasFactory(factory.alchemy.SQLAlchemyModelFactory):
-    class Meta:
-        model = EcoAlias
-        sqlalchemy_session = DBSession
-
-    alias_id = 1
-    display_name = "eco alias display name"
-    source_id = 1
-    eco_id = 1
-    alias_type = "eco alias type"
-    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
-    created_by = "TOTO"
-
-class EcoUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
-    class Meta:
-        model = EcoUrl
-        sqlalchemy_session = DBSession
-
-    url_id = 1
-    display_name = "eco url display name"
-    obj_url = "obj url"
-    source_id = 1
-    eco_id = 1
-    url_type = "url type"
-    date_created =  factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
-    created_by = "TOTO"
-
 class GoextensionFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = Goextension
@@ -1252,7 +1296,7 @@ class DiseaseFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session = DBSession
 
     disease_id = 1
-    format_name = "format name"
+    format_name = "format_name"
     display_name = "display name"
     obj_url = "obj url"
     source_id = 1
@@ -1260,7 +1304,7 @@ class DiseaseFactory(factory.alchemy.SQLAlchemyModelFactory):
     description = "description"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
-    is_obsolete = "false"
+    is_obsolete = False
 
 class DiseaseannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
@@ -1281,6 +1325,59 @@ class DiseaseannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
+class DiseaseRelationFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = DiseaseRelation
+        sqlalchemy_session = DBSession
+
+    relation_id = 1
+    source_id = 1
+    parent_id = 1
+    child_id = 1
+    ro_id = 1
+    date_created =  factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class DiseaseUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = DiseaseUrl
+        sqlalchemy_session = DBSession
+
+    url_id = 1
+    display_name = "go rel display name"
+    obj_url = 1
+    source_id = 1
+    disease_id = 1
+    url_type = "url type"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class DiseaseAliasFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = DiseaseAlias
+        sqlalchemy_session = DBSession
+
+    alias_id = 1
+    display_name = "display_name"
+    source_id = 1
+    disease_id = 1
+    alias_type = "alias type"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class DiseasesupportingevidenceFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Diseasesupportingevidence
+        sqlalchemy_session = DBSession
+
+    diseasesupportingevidence_id = 1
+    annotation_id = 1
+    group_id = 1
+    dbxref_id = "SGD:100000"
+    obj_url = "obj url"
+    evidence_type = "evidence type"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
 
 class DatasetsampleFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
@@ -1295,7 +1392,7 @@ class DatasetsampleFactory(factory.alchemy.SQLAlchemyModelFactory):
     taxonomy_id = 1
     dataset_id = 1
     sample_order = 1
-    dbxref_id = 1
+    dbxref_id = "SGD:100000"
     dbxref_type = "type"
     biosample = "biosample"
     strain_name = "strain name"
@@ -1315,8 +1412,8 @@ class ExpressionannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
     taxonomy_id = 1
     reference_id = 1
     datasetsample_id = 1
-    expression_value = 0.1
-    datasetsample = factory.SubFactory(DatasetsampleFactory)
+    normalized_expression_value = 0.1
+    log_ratio_value = 0.1
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
@@ -1770,15 +1867,15 @@ class ProteinabundanceAnnotationFactory(factory.alchemy.SQLAlchemyModelFactory):
     media_id = 1
     fold_change = "fold change"
     chemical_id = 1
-    concentration_value = "concentration value"
+    concentration_value = 1.0
     concentration_unit = "concentration unit"
-    time_value = "time value"
+    time_value = 1
     time_unit = "time unit"
     process_id = 1
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
-    median_value = "median value"
-    median_abs_dev_value = "median abs dev value"
+    median_value = 1
+    median_abs_dev_value = 1
 
 class ChebiAliaFactory(factory.alchemy.SQLAlchemyModelFactory):
 
@@ -1804,5 +1901,78 @@ class ReferenceFileFactory(factory.alchemy.SQLAlchemyModelFactory):
     reference_id = 1
     file_id = 1
     source_id = 1
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+
+class ColleaguetriageFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Colleaguetriage
+        sqlalchemy_session = DBSession
+
+    curation_id = 1
+    triage_type = "triage_type"
+    colleague_id = 1
+    json = '{"first_name":"SGD"}'
+    curator_comment = "curator_comment"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+
+class CurationReferenceFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = CurationReference
+        sqlalchemy_session = DBSession
+
+    curation_id = 1
+    reference_id = 1
+    source_id = 1
+    locus_id = 1
+    curation_tag = 'tags tags'
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = 'OTTO'
+    curator_comment = 'curators comments'
+    json = '{"key":"value"}'
+
+
+class CuratorActivityFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = CuratorActivity
+        sqlalchemy_session = DBSession
+
+    curation_id = 1
+    display_name = "display name"
+    obj_url = 'http://example.org/1'
+    activity_category = 'activity category'
+    dbentity_id = 1
+    message = 'message message'
+    json = '{"key":"value"}'
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = 'OTTO'
+class EfoFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Efo
+        sqlalchemy_session = DBSession
+
+    efo_id = 1
+    format_name = "format name"
+    display_name = "display name"
+    obj_url = "obj url"
+    source_id = 1
+    efoid = 1
+    description = "description"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+    is_obsolete = False
+
+
+class DiseasesupportingevidenceFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Diseasesupportingevidence
+        sqlalchemy_session = DBSession
+
+    diseasesupportingevidence_id = 1
+    annotation_id = 1
+    group_id = 1
+    dbxref_id = "SGD:100000"
+    obj_url = "obj url"
+    evidence_type = "evidence type"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
