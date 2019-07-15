@@ -37,3 +37,4 @@ production_asset_url.json
 *.env
 *py_cache*
 .pytest*
+Notes.MD
