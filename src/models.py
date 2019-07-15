@@ -2258,7 +2258,8 @@ class Referencedbentity(Dbentity):
                 if annotation not in obj:
                     obj.append(annotation)
         # get human gene symbols from Alliance API
-        human_gene_ids_to_symbols = {}
+        #human_gene_ids_to_symbols = {}
+        human_gene_ids_to_symbols = {'display name' : 'TEST1'}
         for x in obj:
             try:
                 for y in x['properties']:
@@ -3070,8 +3071,7 @@ class Locusdbentity(Dbentity):
         return obj
 
     def disease_to_dict(self):
-        #path_res = DBSession.query(FilePath, Path).filter(FilePath.file_id == self.dbentity_id).outerjoin(Path).all()
-        #do_annotations = DBSession.query(Diseaseannotation, Diseasesupportingevidence).filter(Diseaseannotation.dbentity_id == self.dbentity_id).outerjoin(Diseasesupportingevidence).all()
+        
         do_annotations = DBSession.query(Diseaseannotation).filter_by(dbentity_id=self.dbentity_id).all()
 
         obj = []
@@ -3080,7 +3080,8 @@ class Locusdbentity(Dbentity):
                 if annotation not in obj:
                     obj.append(annotation)
         # get human gene symbols from Alliance API
-        human_gene_ids_to_symbols = {}
+        #human_gene_ids_to_symbols = {}
+        human_gene_ids_to_symbols = {'display name' : 'TEST1'}
         for x in obj:
             try:
                 for y in x['properties']:
@@ -5368,9 +5369,10 @@ class Disease(Base):
 
     def annotations_to_dict(self):
         annotations = DBSession.query(Diseaseannotation).filter_by(disease_id=self.disease_id).all()
-
         annotations_dict = []
-        human_gene_ids_to_symbols = {}
+        #human_gene_ids_to_symbols = {}
+        human_gene_ids_to_symbols = {'display name' : 'TEST1'}
+
         for a in annotations:
             annotation = a.to_dict(disease=self)
             try:
@@ -5395,7 +5397,8 @@ class Disease(Base):
         annotations = DBSession.query(Diseaseannotation).filter_by(disease_id=self.disease_id).all()
 
         annotations_dict = []
-        human_gene_ids_to_symbols = {}
+        #human_gene_ids_to_symbols = {}
+        human_gene_ids_to_symbols = {'display name' : 'TEST1'}
 
         for a in annotations:
             annotation = a.to_dict(disease=self)

@@ -46,6 +46,16 @@ class MockQueryFilter(object):
     
     def scalar(self,*args,**kwargs):
         return 7
+        
+    def join(self, *args, **kwargs):
+        return self
+    
+    def join(self, *args, **kwargs):
+        return self
+    
+    def join(self, *args, **kwargs):
+        return self
+    
 
 class MockQuery(object):
     def __init__(self, query_result):
@@ -72,9 +82,17 @@ class MockQuery(object):
 
     def outerjoin(self,query_params):
         return self
+    
+    def join(self,  *args, **kwargs):
+        return self
+    
+    def join(self,  *args, **kwargs):
+        return self
 
     def count(self):
         return 1
+    def join(self,  *args, **kwargs):
+        return self
 
     def order_by(self, query_params):
         return self
@@ -364,9 +382,6 @@ def locus_side_effect(*args, **kwargs):
     elif len(args) == 2 and str(args[0]) == 'PhenotypeannotationCond.annotation_id' and str(args[1]) == 'count(DISTINCT nex.phenotypeannotation_cond.group_id)':
         phenocond = factory.PhenotypeannotationCondFactory()
         return MockQuery((phenocond.annotation_id, 20))
-    elif len(args) == 2 and str(args[0]) == 'PhenotypeannotationCond.annotation_id' and str(args[1]) == ' func.count(distinct(PhenotypeannotationCond.group_id))':
-        phenocond = factory.PhenotypeannotationCondFactory()
-        return MockQuery((phenocond.annotation_id, 20))
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Straindbentity'>":
         s_name = factory.StraindbentityFactory()
         return MockQuery(s_name)
@@ -393,8 +408,7 @@ def locus_side_effect(*args, **kwargs):
     elif len(args) == 2 and str(args[0]) == 'Chebi.display_name' and str(args[1]) == 'Chebi.obj_url':
         chebi = factory.ChebiFactory()
         return MockQuery((chebi.display_name, chebi.obj_url))
-    elif len(args) == 2 and str(args[0]) == 'Goannotation.dbentity_id' and str(
-            args[1]) == 'count(nex.goannotation.dbentity_id)':
+    elif len(args) == 2 and str(args[0]) == 'Goannotation.dbentity_id' and str(args[1]) == 'count(nex.goannotation.dbentity_id)':
         goannot = factory.GoannotationFactory()
         return MockQuery(goannot)
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Apo'>":
@@ -818,6 +832,73 @@ def observable_side_effect(*args, **kwargs):
         print "the problem is the condition!!!!"
         print args[0]
         print args[1]
+
+
+def disease_side_effect(*args, **kwargs):
+    if len(args) == 1 and str(args[0]) == "<class 'src.models.Disease'>":
+        dis = factory.DiseaseFactory()
+        return MockQuery(dis)
+    if len(args) == 2 and str(args[0]) == 'Diseaseannotation.dbentity_id' and str(args[1]) == 'count(nex.diseaseannotation.dbentity_id)':
+        dis = factory.DiseaseFactory()
+        disannot = factory.DiseaseannotationFactory()
+        disannot.dis = dis
+        return MockQuery(disannot)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.DiseaseRelation'>":
+        dischild = factory.DiseaseFactory()
+        disparent = factory.DiseaseFactory()
+        disrel = factory.DiseaseRelationFactory()
+        ro = factory.RoFactory()
+        disrel.child = dischild
+        disrel.parent = disparent
+        disrel.ro = ro
+        return MockQuery(disrel)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.DiseaseUrl'>":
+        disurl = factory.DiseaseUrlFactory()
+        return MockQuery(disurl)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.DiseaseAlias'>":
+        disalias = factory.DiseaseAliasFactory()
+        return MockQuery(disalias)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Locusdbentity'>":
+        locus = factory.LocusdbentityFactory()
+        return MockQuery(locus)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Diseaseannotation'>":
+        source = factory.SourceFactory()
+        journal = factory.JournalFactory()
+        book = factory.BookFactory()
+        refdbentity = factory.ReferencedbentityFactory()
+        refdbentity.journal = journal
+        dbent = factory.DbentityFactory()
+        dis = factory.DiseaseFactory()
+        disannot = factory.DiseaseannotationFactory()
+        disannot.disease = dis
+        disannot.dbentity = dbent
+        disannot.reference = refdbentity
+        disannot.source = source
+        return MockQuery(disannot)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.EcoAlias'>":
+        ecoalias = factory.EcoAliasFactory()
+        return MockQuery(ecoalias)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.EcoUrl'>":
+        ecourl = factory.EcoUrlFactory()
+        return MockQuery(ecourl)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Dbentity'>":
+        dbent = factory.DbentityFactory()
+        return MockQuery(dbent)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Diseasesupportingevidence'>":
+        disevd = factory.DiseasesupportingevidenceFactory()
+        return MockQuery(disevd)
+    elif len(args) == 3 and str(args[0]) == "<class 'src.models.Diseaseannotation'>" and str(args[1]) == 'Diseasesupportingevidence.dbxref_id' and str(args[2]) ==  'Diseasesupportingevidence.obj_url':
+        dis = factory.DiseaseFactory()
+        disannot = factory.DiseaseannotationFactory()
+        disannot.dis = dis
+        return MockQuery(disannot)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Referencedbentity'>":
+        refdb = factory.ReferencedbentityFactory()
+        return MockQuery(refdb)
+    
+
+
+
 
 def chemical_side_effect(*args, **kwargs):
     if len(args) == 1 and str(args[0]) == "<class 'src.models.Chebi'>":
