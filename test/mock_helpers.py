@@ -255,7 +255,25 @@ def locus_side_effect(*args, **kwargs):
         locus = factory.LocusdbentityFactory()
         return MockQuery(locus)
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Proteinabundanceannotation'>":
-        protein_abundance_annotation = factory.Proteinabundanceannotation()
+        protein_abundance_annotation = factory.ProteinabundanceAnnotationFactory()
+        eco = factory.EcoFactory()
+        protein_abundance_annotation.eco = eco
+        efo = factory.EfoFactory()
+        protein_abundance_annotation.efo = efo
+        db_entity = factory.DbentityFactory()
+        protein_abundance_annotation.dbentity = db_entity
+        ref = factory.ReferencedbentityFactory()
+        protein_abundance_annotation.reference = ref
+        orig_ref = factory.ReferencedbentityFactory()
+        protein_abundance_annotation.original_reference = orig_ref
+        chebi = factory.ChebiFactory()
+        protein_abundance_annotation.chebi = chebi
+        go = factory.GoFactory()
+        protein_abundance_annotation.go = go
+        src = factory.SourceFactory()
+        protein_abundance_annotation.src = src
+        tax = factory.TaxonomyFactory()
+        protein_abundance_annotation.tax = tax
         return MockQuery(protein_abundance_annotation)
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Bindingmotifannotation'>":
         bind = factory.BindingmotifannotationFactory()
@@ -329,6 +347,16 @@ def locus_side_effect(*args, **kwargs):
         do = factory.DiseaseFactory()
         doannot = factory.DiseaseannotationFactory()
         doannot.do = do
+        dbentity = factory.DbentityFactory()
+        doannot.dbentity = dbentity
+        eco = factory.EcoFactory()
+        doannot.eco = eco
+        ref = factory.ReferencedbentityFactory()
+        doannot.reference = ref
+        src = factory.SourceFactory()
+        doannot.source = src
+        taxonomy = factory.TaxonomyFactory()
+        doannot.taxonomy = taxonomy
         return MockQuery(doannot)
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.EcoAlias'>":
         ecoalias = factory.EcoAliasFactory()
@@ -601,8 +629,7 @@ def locus_side_effect(*args, **kwargs):
         return MockQuery(pdurl)
     elif len(args) == 1 and str(args[0]) == 'Proteindomainannotation.dbentity_id':
         pda = factory.ProteindomainannotationFactory()
-        return MockQuery((pda.dbentity_id),)
-        return MockQuery(db.format_name)
+        return MockQuery((pda.dbentity_id))
     elif len(args) == 1 and str(args[0]) == 'Dbentity.format_name':
         db = factory.DbentityFactory()
         return MockQuery((db.format_name,))
@@ -627,8 +654,43 @@ def locus_side_effect(*args, **kwargs):
     elif len(args) == 1 and str(args[0]) == "LocusAlias.display_name":
         locus_alias = factory.LocusAliasFactory()
         return MockQuery(locus_alias)
+        return MockQuery((db.format_name))
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Expressionannotation'>":
+        exp = factory.ExpressionannotationFactory()
+        return MockQuery(exp)
+    elif len(args) == 3 and str(args[0]) == 'Expressionannotation.dbentity_id' and str(args[1]) == 'Expressionannotation.datasetsample_id' and str(args[2]) == 'Expressionannotation.normalized_expression_value':
+        exp = factory.ExpressionannotationFactory()
+        return MockQuery(exp)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Literatureannotation'>":
+        lit_annot = factory.LiteratureannotationFactory()
+        return MockQuery(lit_annot)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Diseasesupportingevidence'>":
+        dis_evidence = factory.DiseasesupportingevidenceFactory()
+        do_annot = factory.DiseaseannotationFactory()
+        dis_evidence.annotation = do_annot
+        return MockQuery(dis_evidence)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Dbentity'>":
+        dbentity = factory.DbentityFactory()
+        src = factory.SourceFactory()
+        dbentity.source = src
+        return MockQuery(dbentity)
+    elif len(args) == 1 and str(args[0]) == "<class 'src.models.Physinteractionannotation'>":
+        phys_annot = factory.PhysinteractionannotationFactory()
+        dbentity1 = factory.DbentityFactory()
+        phys_annot.dbentity1 = dbentity1
+        dbentity2 = factory.DbentityFactory()
+        phys_annot.dbentity2 = dbentity2
+        psimod = factory.PsimodFactory()
+        phys_annot.psimod = psimod
+        ref = factory.ReferencedbentityFactory()
+        phys_annot.reference = ref
+        src = factory.SourceFactory()
+        phys_annot.source = src
+        taxonomy = factory.TaxonomyFactory()
+        phys_annot.taxonomy = taxonomy
+        return MockQuery(phys_annot)
     else:
-        print "the problem is the condition!!!!"
+        print "Locus side effect condition not handled!!!!"
         print args[0]
 
 def phenotype_side_effect(*args, **kwargs):

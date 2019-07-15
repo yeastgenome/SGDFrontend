@@ -9,8 +9,9 @@ from src.models import DBSession, Source, Colleague, ColleagueUrl, ColleagueRela
     Goslimannotation, Interactor, Goslim, Expressionannotation, Datasetsample, DatasetUrl, DatasetFile, ReferenceAlias, Dnasequenceannotation, Dnasubsequence,\
     So, ContigUrl, LocusAlias, LocusAliasReferences, LocusReferences, LocussummaryReference, LocusUrl, Posttranslationannotation,\
     Psimod, Proteinexptannotation, Proteindomainannotation, Proteindomain, ProteindomainUrl, Ec, EcAlias, EcUrl, LocusRelation, LocusRelationReference, \
-    Locusnote, LocusnoteReference, Pathwayannotation, Pathwaydbentity, PathwayUrl, Bindingmotifannotation, Disease, Diseaseannotation, Colleaguetriage, CurationReference, CuratorActivity, DiseaseRelation, DiseaseUrl, \
-    Proteinabundanceannotation, ChebiAlia, ReferenceFile, ComplexAlias, ComplexGo, ComplexReference, DiseaseAlias, Diseasesupportingevidence
+    Locusnote, LocusnoteReference, Pathwayannotation, Pathwaydbentity, PathwayUrl, Bindingmotifannotation, Disease, Diseaseannotation, \
+    Proteinabundanceannotation, ChebiAlia, ReferenceFile, ComplexAlias, ComplexGo, ComplexReference, Colleaguetriage, CurationReference, \
+    CuratorActivity, Efo, DiseaseAlias, Diseasesupportingevidence, DiseaseRelation, DiseaseUrl
 
 class SourceFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
@@ -1303,7 +1304,7 @@ class DiseaseFactory(factory.alchemy.SQLAlchemyModelFactory):
     description = "description"
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
-    is_obsolete = "false"
+    is_obsolete = False
 
 class DiseaseannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
@@ -1391,7 +1392,7 @@ class DatasetsampleFactory(factory.alchemy.SQLAlchemyModelFactory):
     taxonomy_id = 1
     dataset_id = 1
     sample_order = 1
-    dbxref_id = 1
+    dbxref_id = "SGD:100000"
     dbxref_type = "type"
     biosample = "biosample"
     strain_name = "strain name"
@@ -1411,8 +1412,8 @@ class ExpressionannotationFactory(factory.alchemy.SQLAlchemyModelFactory):
     taxonomy_id = 1
     reference_id = 1
     datasetsample_id = 1
-    expression_value = 0.1
-    datasetsample = factory.SubFactory(DatasetsampleFactory)
+    normalized_expression_value = 0.1
+    log_ratio_value = 0.1
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
 
@@ -1866,15 +1867,15 @@ class ProteinabundanceAnnotationFactory(factory.alchemy.SQLAlchemyModelFactory):
     media_id = 1
     fold_change = "fold change"
     chemical_id = 1
-    concentration_value = "concentration value"
+    concentration_value = 1.0
     concentration_unit = "concentration unit"
-    time_value = "time value"
+    time_value = 1
     time_unit = "time unit"
     process_id = 1
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
-    median_value = "median value"
-    median_abs_dev_value = "median abs dev value"
+    median_value = 1
+    median_abs_dev_value = 1
 
 class ChebiAliaFactory(factory.alchemy.SQLAlchemyModelFactory):
 
@@ -1945,3 +1946,33 @@ class CuratorActivityFactory(factory.alchemy.SQLAlchemyModelFactory):
     json = '{"key":"value"}'
     date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = 'OTTO'
+class EfoFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Efo
+        sqlalchemy_session = DBSession
+
+    efo_id = 1
+    format_name = "format name"
+    display_name = "display name"
+    obj_url = "obj url"
+    source_id = 1
+    efoid = 1
+    description = "description"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
+    is_obsolete = False
+
+
+class DiseasesupportingevidenceFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Diseasesupportingevidence
+        sqlalchemy_session = DBSession
+
+    diseasesupportingevidence_id = 1
+    annotation_id = 1
+    group_id = 1
+    dbxref_id = "SGD:100000"
+    obj_url = "obj url"
+    evidence_type = "evidence type"
+    date_created = factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
+    created_by = "TOTO"
