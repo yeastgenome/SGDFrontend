@@ -65,31 +65,32 @@ function create_go_table(data) {
             computationalDatatable.push(go_data_to_table(data[i], i));
             computationalGenes[data[i]["locus"]["id"]] = true;
         }
-	}
+    }
     set_up_header('manual_go_table', manualDatatable.length, 'entry', 'entries', Object.keys(manualGenes).length, 'gene', 'genes');
     set_up_header('htp_go_table', htpDatatable.length, 'entry', 'entries', Object.keys(htpGenes).length, 'gene', 'genes');
     set_up_header('computational_go_table', computationalDatatable.length, 'entry', 'entries', Object.keys(computationalGenes).length, 'gene', 'genes');
 
 	var options = {};
 	options["bPaginate"] = true;
-	options["aaSorting"] = [[3, "asc"]];
+    options["aaSorting"] = [[3, "asc"]];
 	options["bDestroy"] = true;
 	// options["oLanguage"] = {"sEmptyTable": "No genes annotated directly to " + go_term['display_name']};
     options["aoColumns"] = [
-        {"bSearchable":false, "bVisible":false}, //evidence_id
-        {"bSearchable":false, "bVisible":false}, //analyze_id
-        null, //gene
-        {"bSearchable":false, "bVisible":false}, //gene systematic name
-        null, //gene ontology term
-        {"bSearchable":false, "bVisible":false}, //gene ontology term id
-        null, //qualifier
-        {"bSearchable":false, "bVisible":false}, //aspect
-        null, //evidence
-        {"bSearchable":false, "bVisible":false}, //method
-        null, //source
-        null, //assigned on
-        null, //annotation_extension
-        null // reference
+        //Use of mData
+        {"bSearchable":false, "bVisible":false,"aTargets":[0],"mData":0}, //evidence_id
+        {"bSearchable":false, "bVisible":false,"aTargets":[1],"mData":1}, //analyze_id
+        {"aTargets":[2],"mData":2}, //gene
+        {"bSearchable":false, "bVisible":false,"aTargets":[3],"mData":3}, //gene systematic name
+        {"aTargets":[4],"mData":6}, //gene ontology term  -----> qualifier
+        {"bSearchable":false, "bVisible":false,"aTargets":[5],"mData":5}, //gene ontology term id
+        {"aTargets":[6],"mData":4}, //qualifier   -----> gene ontology term
+        {"bSearchable":false, "bVisible":false,"aTargets":[7],"mData":7}, //aspect
+        {"aTargets":[8],"mData":12}, //evidence   -----> annotation_extension
+        {"aTargets":[9],"mData":8}, //method -----> evidence
+        {"bSearchable":false,"bVisible":false,"aTargets":[10],"mData":9}, //source -----> method
+        {"aTargets":[11],"mData":10}, //assigned on -----> source
+        {"aTargets":[12],"mData":11}, //annotation_extension -----> assigned on
+        {"aTargets":[13],"mData":13} // reference        
     ];
     create_or_hide_table(manualDatatable, options, "manual_go_table", go_term["display_name"], go_term["link"], go_term["id"], "manually curated", data);
     create_or_hide_table(htpDatatable, options, "htp_go_table", go_term["display_name"], go_term["link"], go_term["id"], "high-throughput", data);

@@ -41,7 +41,10 @@ const ColleaguesFormShow = React.createClass({
   render () {
     if (this.state.isComplete) return this._renderCompleteNode();
     let formLabel = this.props.isUpdate ? 'Update Colleague' : 'New Colleague';
-    let showLabel = this.state.isLoadPending ? '...' : `${this.state.data.first_name} ${this.state.data.last_name}`;
+    let showLabel = 'Colleague data not found';
+    if (Object.keys(this.state.data).length > 0) {
+      showLabel = this.state.isLoadPending ? '...' : `${this.state.data.first_name} ${this.state.data.last_name}`;
+    }
     let label = this.props.isReadOnly ? showLabel : formLabel;
     return (
       <div>

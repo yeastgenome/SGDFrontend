@@ -166,12 +166,19 @@ def _get_blast_options(p):
     if outFormat.startswith("ungapped"):
         options = options + " -ungapped"
 
+    # blastn: DUST and is on by default
+    # blastp: SEG and is off by default
+    # blastx: SEG and is on by default
+    # tblastx: SEG and is on by default
+    # tblastn: SEG and is on by default
     if filter == 'on':
-        if program != 'blastn':
+        if program == 'blastp':
             options = options + " -seg yes"
-        else:
-            options = options + " -dust '20 64 1'"
-    
+    else:
+        if program == 'blastn':
+            options = options + " -dust 'no'"
+        elif program != 'blastp':
+            options = options + " -seg 'no'"
+            
     return options;
-
-             
+    

@@ -10,6 +10,15 @@ $(document).ready(function() {
         hide_section('expression');
     }
 
+    if(reference['downloadable_files'].length > 0) {
+        $("#downloadable_file_table_analyze").hide();
+        var file_table = create_downloadable_file_table(reference['downloadable_files']);
+        create_download_button("downloadable_file_table_download", file_table, reference['display_name'] + '_files');
+    }
+    else {
+        hide_section('file');
+    }
+
     $.getJSON('/backend/reference/' + reference['sgdid'] + '/literature_details', function(data) {
         data.sort(function(a, b) {return a['locus']['display_name'] > b['locus']['display_name']});
 
@@ -213,6 +222,23 @@ function create_go_table(data) {
 
         options["oLanguage"] = {"sEmptyTable": "No gene ontology data for " + reference['display_name']};
         options["aaData"] = datatable;
+        options["aoColumns"] = [
+            //Use of mData
+            {"bSearchable":false, "bVisible":false,"aTargets":[0],"mData":0}, //evidence_id
+            {"bSearchable":false, "bVisible":false,"aTargets":[1],"mData":1}, //analyze_id
+            {"aTargets":[2],"mData":2}, //gene
+            {"bSearchable":false, "bVisible":false,"aTargets":[3],"mData":3}, //gene systematic name
+            {"aTargets":[4],"mData":6}, //gene ontology term  -----> qualifier
+            {"bSearchable":false, "bVisible":false,"aTargets":[5],"mData":5}, //gene ontology term id
+            {"aTargets":[6],"mData":4}, //qualifier   -----> gene ontology term
+            {"bSearchable":false, "bVisible":false,"aTargets":[7],"mData":7}, //aspect
+            {"aTargets":[8],"mData":12}, //evidence   -----> annotation_extension
+            {"aTargets":[9],"mData":8}, //method -----> evidence
+            {"bSearchable":false,"bVisible":false,"aTargets":[10],"mData":9}, //source -----> method
+            {"aTargets":[11],"mData":10}, //assigned on -----> source
+            {"aTargets":[12],"mData":11}, //annotation_extension -----> assigned on
+            {"aTargets":[13],"mData":13} // reference        
+        ];
     }
 
     return create_table("go_table", options);
@@ -347,4 +373,39 @@ function create_expression_table(data) {
     }
 
     return create_table("expression_table", options);
+}
+
+
+function create_downloadable_file_table(data) {
+    var options = {
+        'bPaginate': true,
+        'aaSorting': [[3, "asc"]],
+        'aoColumns': [
+             {"bSearchable":false, "bVisible":false}, //Evidence ID
+             {"bSearchable":false, "bVisible":false}, //Analyze ID,
+             null, //File
+             null //Description
+        ]
+    }
+    if("Error" in data) {
+        options["oLanguage"] = {"sEmptyTable": data["Error"]};
+        options["aaData"] = [];
+    }
+    else {
+        var datatable = [];
+        // var reference_ids = {};
+        for (var i=0; i < data.length; i++) {
+            datatable.push(downloadable_file_to_table(data[i], i));
+            // if(data[i]['reference'] != null) {
+            //    reference_ids[data[i]['reference']['id']] = true;
+            // }
+        }
+
+        set_up_header('downloadable_file_table', datatable.length, 'file', 'files');
+
+        options["oLanguage"] = {"sEmptyTable": "No downloadable file for " + reference['display_name']};
+        options["aaData"] = datatable;
+    }
+
+    return create_table("downloadable_file_table", options);
 }

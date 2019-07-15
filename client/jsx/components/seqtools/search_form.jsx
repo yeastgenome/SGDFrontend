@@ -15,8 +15,7 @@ const SeqtoolsUrl = "/run_seqtools";
 
 const MAX_GENE_TO_SHOW = 4;
 const MAX_GENE = 50;
-const MAX_SEQ_LENGTH_FOR_TOOLS = 20000;
-
+const MAX_SEQ_LENGTH_FOR_TOOLS = 10000000;
 
 const GeneSequenceResources = React.createClass({
 
@@ -49,13 +48,13 @@ const GeneSequenceResources = React.createClass({
 
 	componentDidMount() {
 		var param = this.state.param;
-	        if (param['submit']) {
+	        if (param['genes']) {
 	              this.runSeqTools('genes');
 	        }
-		else if (param['submit2']) {
+		else if (param['chr']) {
                       this.runSeqTools('chr');
                 }
-		else if (param['submit3']) {
+		else if (param['seq_id']) {
                       this.runSeqTools('seq');
                 }
 		else if (param['emboss']) {
@@ -339,6 +338,9 @@ const GeneSequenceResources = React.createClass({
 		_.map(genes, gene => {
 		    var chrCoords = chrCoords4gene[gene];
 		    var chr = chrCoords['chr'];
+		    if (chr == 'Mito') {
+		        chr = 'mt';
+		    } 
 		    var start = chrCoords['start'];
 		    var end = chrCoords['end'];
 		    var url = "https://browse.yeastgenome.org/?loc=chr" + chr + ":" + start + ".." + end + "&tracks=All%20Annotated%20Sequence%20Features%2CProtein-Coding-Genes%2CDNA&highlight="; 
@@ -462,7 +464,7 @@ const GeneSequenceResources = React.createClass({
                 var fungalBlastButton = this.getToolButtonChr('/blast-fungal', 'Fungal BLAST', seqID, '');
 
                 var primerButton = this.getToolButtonChr('/primer3', 'Design Primers', seqID, '');
-                var restrictionButton = this.getToolButtonChr4post('https://www.yeastgenome.org/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map', seq, seqID);
+                var restrictionButton = this.getToolButtonChr('/restrictionMapper', 'Restriction Site Mapper', seqID, '');
 		var translatedProteinButton = this.getToolButtonChr('/seqTools', 'Translated Protein Sequence', seqID, 'transeq');
                 var sixframeButton = this.getToolButtonChr('/seqTools', '6 Frame Translation', seqID, 'remap');
 
@@ -554,7 +556,7 @@ const GeneSequenceResources = React.createClass({
 		if (seq.length <= MAX_SEQ_LENGTH_FOR_TOOLS) {
 
 		     var primerButton = this.getToolButtonChr('/primer3', 'Design Primers', seqID, '');
-                     var restrictionButton = this.getToolButtonChr4post('https://www.yeastgenome.org/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map', seq);
+                     var restrictionButton = this.getToolButtonChr('/restrictionMapper', 'Restriction Site Mapper', seqID, '');
                      var restrictFragmentsButton = this.getToolButtonChr('/seqTools', 'Restriction Fragments', seqID, 'restrict');
                      var sixframeButton = this.getToolButtonChr('/seqTools', '6 Frame Translation', seqID, 'remap');
 
@@ -587,7 +589,7 @@ const GeneSequenceResources = React.createClass({
 		var blastButton = this.getToolButton(gene, '/blast-sgd',  'BLAST', ID, '');
 		var fungalBlastButton = this.getToolButton(gene, '/blast-fungal', 'Fungal BLAST', ID, '');	
 		var primerButton = this.getToolButton(gene, '/primer3', 'Design Primers', ID, '');
-		var restrictionButton = this.getToolButton4post(gene, 'https://www.yeastgenome.org/cgi-bin/PATMATCH/RestrictionMapper', 'Genome Restriction Map', ID);
+		var restrictionButton = this.getToolButton(gene, '/restrictionMapper', 'Restriction Site Mapper', ID, '');
 		var restrictFragmentsButton = this.getToolButton(gene, '/seqTools', 'Restriction Fragments', ID, 'restrict');
 		var sixframeButton = this.getToolButton(gene, '/seqTools', '6 Frame Translation', ID, 'remap');
 
@@ -634,24 +636,6 @@ const GeneSequenceResources = React.createClass({
 		}
 
         },
-
-	getToolButton4post(name, program, button, ID) {
-
-		var strain = this.state.strain;
-		if (strain == '') {
-		     strain = window.localStorage.getItem("strain");   
-		}
-		var seqID = name + "_" + strain + "_" + ID;
-		var seq = window.localStorage.getItem(seqID);
-
-		// <input type="submit" value={ button } className="button small secondary"></input>
-		
-		return (<form method="POST" action={ program } target="toolwin">
-		                <input type="hidden" name="seq" value={ seq }  />
-                                <input type="submit" value={ button } style={ style.button }></input>
-                        </form>);
-
-	},
 
 	getToolButtonRawSeq(program, button, seqID, seqtype) {
 
@@ -921,8 +905,9 @@ const GeneSequenceResources = React.createClass({
         },
 
 	onSubmit3(e) {
-
+		     
                 var seq = this.refs.seq.value.trim();
+
 		seq = seq.replace(/[^A-Za-z]/g, "");	
                 if (seq == '') {
                    alert("Please enter a raw sequence.");
@@ -950,6 +935,11 @@ const GeneSequenceResources = React.createClass({
 		   
 		}
 
+		var seq_id = this.refs.seq_id.value.trim();
+		if (seq) {
+                    window.localStorage.setItem(seq_id, seq);
+                 }
+
         },
 
 	getGeneNodeLeft() {
@@ -958,7 +948,7 @@ const GeneSequenceResources = React.createClass({
 			  
                 return (<div style={{ textAlign: "top" }}>
                         <h3>Enter a list of names:</h3>
-			<p>[space-separated standard gene names (and/or ORF and/or SGDID). <br></br>Example: SIR2 YHR023W SGD:S000000001. The maximum gene number for this search is { MAX_GENE }. It will take first { MAX_GENE } genes if more than { MAX_GENE } are provided.] 
+			<p>Use space-separated standard gene names (and/or ORF and/or SGDID). <br></br>Example: SIR2 YHR023W SGD:S000000001. The maximum gene number for this search is { MAX_GENE }. It will take first { MAX_GENE } genes if more than { MAX_GENE } are provided.  
 			<textarea ref='genes' name='genes' onChange={this.onChange} rows='2' cols='50'></textarea></p>
 			<h3><b>If available,</b> add flanking basepairs</h3>
 			<p>Upstream: <input type='text' ref='up' name='up' onChange={this.onChange} size='50'></input>
@@ -1028,11 +1018,16 @@ const GeneSequenceResources = React.createClass({
 
 		var seqtypeNode = this.getSeqtypeNode();
 
+		var min = 1;
+		var max = 10000;
+		var localSeqID = min + (Math.random() * (max-min));
+
 		return(<div>
                        <h3>Type or Paste a: </h3>
 		       { seqtypeNode }
 		       <p>Sequence:
-                       <textarea ref='seq' name='seq' onChange={this.onChange} rows='3' cols='75'></textarea></p>
+                       <textarea ref='seq' onChange={this.onChange} rows='3' cols='75'></textarea></p>
+		       <input type='hidden' name='seq_id' ref='seq_id' value={localSeqID}></input>
                 </div>);    
 
 	},
@@ -1189,12 +1184,14 @@ const GeneSequenceResources = React.createClass({
 		   if (param['rev2'] && param['rev2'] == 'on') {
                       paramData['rev'] = 1;
                    }
-		   this.sendRequest(paramData)
+		   this.sendRequest(paramData);
+		   window.localStorage.clear();
                    return
 		}
 
 		if (searchType == 'seq') {
-		   var seq = param['seq'];
+		   var seqID = param['seq_id'];
+		   var seq = window.localStorage.getItem(seqID);
 		   seq = seq.replace(/%0D/g, '');
 		   seq = seq.replace(/%0A/g, '');
 		   seq = seq.toUpperCase().replace(/[^A-Z]/g, '');

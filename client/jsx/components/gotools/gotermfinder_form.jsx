@@ -13,6 +13,7 @@ const style = {
 };
 
 const GOtoolsUrl = "/run_gotools";
+const GeneChkUrl = "/backend/ambiguous_names";
 
 const evidenceCode = [ 'HDA', 'HGI', 'HMP', 'IBA', 'IC',  'IEA', 'IDA', 'IEP', 'IGI', 
       		       'IKR', 'IMP', 'IMR', 'IPI', 'IRD', 'ISA', 'ISM', 'ISO', 'ISS', 
@@ -24,6 +25,8 @@ const GoTermFinder = React.createClass({
 	        
 		var param = Params.getParams();
 		
+		this.getAmbiguousNames();
+		
 		return {
 			isComplete: false,
 			isPending: false,
@@ -31,6 +34,7 @@ const GoTermFinder = React.createClass({
 			aspect: 'F',
 			uploadedGenes: '',
 			uploadedGenes4bg: '',
+			ambiguousNames: {},
 			resultData: {},
 			notFound: null,
 			param: param
@@ -140,7 +144,7 @@ const GoTermFinder = React.createClass({
 			<div dangerouslySetInnerHTML={{ __html: descText}} />
 			<div className="row">
 			     <div className="large-12 columns">
-			     	  <form onSubmit={this.onSubmit} target="infowin">
+			     	  <form onSubmit={this.onSubmit} onReset={this.onReset} target="infowin">
 				  	{ submitReset }
 				        <DataTable data={_defaultSection} />
 					<DataTable data={_backgroundSection} />
@@ -274,7 +278,7 @@ const GoTermFinder = React.createClass({
 		if (genes == '') {
 		     return '';
 		}	 	        
-                genes = genes.replace(/[^A-Za-z:\-0-9]/g, ' ');
+		genes = genes.replace(/[^A-Za-z:\-0-9\(\)\,\_]/g, ' ');
                 var re = /\+/g;
                 genes = genes.replace(re, " ");
                 var re = / +/g;
@@ -284,14 +288,23 @@ const GoTermFinder = React.createClass({
 
 	},
 
+	onReset(e) {
+		   window.location.reload();
+                   return 1;
+	},
+
 	onSubmit(e) {
 
 		var genes = this.refs.genes.value.trim();
+		var genesInBox = 0;
 		if (genes == '') {
 		     genes = this.state.uploadedGenes;
 		     this.setState({
                             uploadedGenes: ''
                      });
+		}
+		else {
+		     genesInBox = 1;
 		}
 		genes = this.processGeneList(genes);
                 if (genes == '') {
@@ -299,6 +312,48 @@ const GoTermFinder = React.createClass({
                      e.preventDefault();
                      return 1;
                 }
+
+		var all_genes = genes.split("|");
+
+		if (genesInBox == 1 && all_genes.length > 100) {
+		     alert("You have entered more than 100 genes. Please save it as a file and upload it.");
+                     e.preventDefault();
+                     return 1;
+                }
+
+		// check for ambiguous genes
+
+		var ambiguousGeneDict = this.state.ambiguousNames;
+
+                for (var i = 0; i < all_genes.length; i++) {
+                     var gene = all_genes[i];
+                     if (gene in ambiguousGeneDict) {
+                           var ambiguousGeneObj = ambiguousGeneDict[gene];
+                           var warningMsg = "The name '" + gene + "' is associated with multiple genes. " + gene + " is ";
+                           for (var j = 0; j < ambiguousGeneObj.length; j++) {
+                                 var geneObj = ambiguousGeneObj[j];
+                                 var display_name = geneObj['systematic_name'] + " (SGDID: " + geneObj['sgdid'] + ")";
+                                 if (geneObj['gene_name']) {
+                                      display_name = geneObj['gene_name'] + "/" + display_name;
+                                 }
+                                 if (j > 0) {
+                                     warningMsg = warningMsg + " and ";
+                                 }
+                                 if (geneObj['name_type'] == 'alias_name') {
+                                     warningMsg = warningMsg + "an alias name for " + display_name;
+                                 }
+                                 else {
+                                     warningMsg = warningMsg + "the standard gene name for " + display_name;
+                                 }
+                           }
+                           alert(warningMsg + ". Please modify your input list by replacing the entry '" + gene + "' with either the systematic ORF name or SGDID for the intended gene.");
+                           e.preventDefault();
+                           return 1;
+                     }
+
+                }
+
+		window.localStorage.setItem("genes", genes);
 
 		var genes4bg = this.refs.genes4bg.value.trim();
                 if (genes4bg == '') {
@@ -309,6 +364,8 @@ const GoTermFinder = React.createClass({
                 }
                 genes4bg = this.processGeneList(genes4bg);
                 	
+		window.localStorage.setItem("genes4bg", genes4bg);
+
 		var aspect = '';
 		if (document.getElementById('C').checked) {
 		   	aspect = 'C';		
@@ -320,9 +377,7 @@ const GoTermFinder = React.createClass({
 			aspect = 'F';
 		}
 
-		window.localStorage.clear();
-                window.localStorage.setItem("genes", genes);
-		window.localStorage.setItem("genes4bg", genes4bg);
+		// window.localStorage.clear();
                 window.localStorage.setItem("aspect", aspect);
 
 	},
@@ -375,6 +430,19 @@ const GoTermFinder = React.createClass({
 		return
 		 		
 	},
+
+	getAmbiguousNames: function() {
+                $.ajax({
+                      url: GeneChkUrl,
+                      dataType: 'json',
+                      success: function(data) {
+                            this.setState({ambiguousNames: data});
+                      }.bind(this),
+                      error: function(xhr, status, err) {
+                            console.error(GeneChkUrl, status, err.toString());
+                      }.bind(this)
+                });
+        },
 	
 	sendRequest(paramData) {
 
