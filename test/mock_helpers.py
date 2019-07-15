@@ -632,7 +632,6 @@ def locus_side_effect(*args, **kwargs):
         return MockQuery((pda.dbentity_id))
     elif len(args) == 1 and str(args[0]) == 'Dbentity.format_name':
         db = factory.DbentityFactory()
-<<<<<<< HEAD
         return MockQuery((db.format_name,))
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Locussummary'>":
         locus_summary = factory.LocussummaryFactory()
@@ -655,8 +654,6 @@ def locus_side_effect(*args, **kwargs):
     elif len(args) == 1 and str(args[0]) == "LocusAlias.display_name":
         locus_alias = factory.LocusAliasFactory()
         return MockQuery(locus_alias)
-=======
->>>>>>> Update unit tests for Locus page
         return MockQuery((db.format_name))
     elif len(args) == 1 and str(args[0]) == "<class 'src.models.Expressionannotation'>":
         exp = factory.ExpressionannotationFactory()
