@@ -360,13 +360,13 @@ function mapStateToProps(_state) {
       item['values'].sortOnYear('key', true);
       return;
     }
-    else if (item.key == 'author'){
+    else if (item.key == 'author') {
       let values = item['values'];
       values.map(element => {
         element['key'] = formatAuthorName(element['key']);
       });
     }
-    else if (item.key.includes('_loci')){
+    else if (item.key.includes('_loci')) {
       let values = item['values'];
       values.map(element => {
         element['key'] = element['key'].toUpperCase();

@@ -94,7 +94,17 @@ export function fetchSearchResults () {
       return dispatch(receiveSearchResponse(bootstrappedSearchResults));
     }
     const qp = (state.routing.location.query);
-    const searchPath = state.routing.location.search;
+    for (var key in qp) {
+      if(key.includes('_loci') || key === 'author') {
+        if(typeof qp[key] === 'string') {
+          qp[key] = qp[key].toLowerCase();
+        } else if(typeof qp[key] === 'object') {
+          for(var i=0; i < qp[key].length; i++) {
+            qp[key][i] = qp[key][i].toLowerCase();
+          }
+        }
+      }
+    }
     // from page and results per page, add limit and offset to API request
     const _offset = searchState.currentPage * searchState.resultsPerPage; 
     const _limit = searchState.resultsPerPage;
