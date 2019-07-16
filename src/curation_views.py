@@ -18,6 +18,7 @@ import transaction
 import json
 import re
 from bs4 import BeautifulSoup
+import pandas as pd
 
 from .helpers import allowed_file, extract_id_request, secure_save_file,\
     curator_or_none, extract_references, extract_keywords,\
@@ -1446,7 +1447,6 @@ def ptm_by_gene(request):
 
     return HTTPOk(body=json.dumps({'ptms' :list_of_ptms}),content_type='text/json')
 
-
 @view_config(route_name='get_strains', renderer='json', request_method='GET')
 def get_strains(request):
     try:
@@ -1488,7 +1488,8 @@ def get_psimod(request):
                 returnList.append(obj)
 
                 
-            return HTTPOk(body=json.dumps({'psimods': returnList}),content_type='text/json') 
+            return HTTPOk(body=json.dumps({'psimods': returnList}),content_type='text/json')
+
         return None
     except Exception as e:
         return HTTPBadRequest(body=json.dumps({'error': str(e)}))
