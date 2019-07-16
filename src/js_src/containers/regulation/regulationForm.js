@@ -88,8 +88,13 @@ class RegulationForm extends Component {
       timeout: TIMEOUT
     })
     .then(data => {
-      this.setState({list_of_regulations:data['success']});
-      this.handleResetForm();
+      if(data['success'].length == 0 ){
+        this.props.dispatch(setMessage('No regulations found for given input.'));
+      }
+      else{
+        this.setState({ list_of_regulations: data['success'] });
+        this.handleResetForm();
+      }
     })
     .catch(err => this.props.dispatch(setError(err.error)))
     .finally(() => this.setState({ isLoading: false }));
