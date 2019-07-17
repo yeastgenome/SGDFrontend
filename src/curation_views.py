@@ -1929,9 +1929,9 @@ def regulation_insert_update(request):
 @authenticate
 def regulations_by_filters(request):
     try:
-        target_id = str(request.params.get('target_id'))
-        regulator_id = str(request.params.get('regulator_id'))
-        reference_id = str(request.params.get('reference_id'))
+        target_id = str(request.params.get('target_id')).strip()
+        regulator_id = str(request.params.get('regulator_id')).strip()
+        reference_id = str(request.params.get('reference_id')).strip()
 
         if not(target_id or regulator_id or reference_id):
             raise Exception("Please provide input for target gene, regulator gene, reference or combination to get the regulations.")
