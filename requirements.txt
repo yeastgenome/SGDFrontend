@@ -1,5 +1,5 @@
 elasticsearch==1.4.0
-enum34==1.0.4
+enum34>=1.0.4
 Jinja2==2.8
 MarkupSafe==0.15
 parse==1.6.6

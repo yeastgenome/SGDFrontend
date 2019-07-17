@@ -1,8 +1,10 @@
 import os
 
 from setuptools import setup, find_packages
-from pip.download import PipSession
-from pip.req import parse_requirements
+# from pip.download import PipSession
+# from pip.req import parse_requirements
+from pip._internal.download import PipSession
+from pip._internal.req import parse_requirements
 
 install_reqs = parse_requirements("requirements.txt", session=PipSession())
 requires = [str(ir.req) for ir in install_reqs]
