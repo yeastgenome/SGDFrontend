@@ -125,7 +125,8 @@ def _get_json_from_server(url):
 
     req = Request(url)
     res = urlopen(req)
-    data = json.loads(res.read())
+    # data = json.loads(res.read())
+    data = res.read().json()
     return data
 
 def _get_blast_options(p):
