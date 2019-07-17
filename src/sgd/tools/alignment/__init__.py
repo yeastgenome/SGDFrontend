@@ -1,6 +1,7 @@
 import json
 from pyramid.response import Response
-from urllib2 import Request, urlopen, URLError, HTTPError
+from urllib.request import Request, urlopen
+from urllib.error import URLError, HTTPError
 from src.sgd.frontend.yeastgenome import clean_cell
 import os
 
@@ -170,7 +171,7 @@ def set_download_file(alignment, type):
                 id2seq[id] = seq
                 
     content = ">" + ref_id + "\n" + format_fasta(ref_seq.replace("-", "")) + "\n"
-    for id in sorted(id2seq. iterkeys()):
+    for id in sorted(id2seq. keys()):
         content = content + ">" + id + "\n" + format_fasta(id2seq[id].replace("-", "")) + "\n"
 
     filename = ref_id.split("_")[0] + "_" + type + ".fsa" 
@@ -179,7 +180,7 @@ def set_download_file(alignment, type):
     headers = response.headers
     if not response.charset:
         response.charset = 'utf8'
-    response.text = unicode(content)
+    response.text = str(content)
     headers['Content-Type'] = 'text/plain'
     headers['Content-Disposition'] = str('attachment; filename=' + '"' + filename + '"')
     headers['Content-Description'] = 'File Transfer'
@@ -224,7 +225,7 @@ def format_alignment(orfName, type, alignment):
     maxLen = len(ref_seq)
     strains = [ref_id]
     id2seqChar = {ref_id : list(id2seq[ref_id])}
-    for id in sorted(id2seq. iterkeys()):
+    for id in sorted(id2seq. keys()):
         if id.endswith('S288C'):
             continue
         seq = id2seq[id]

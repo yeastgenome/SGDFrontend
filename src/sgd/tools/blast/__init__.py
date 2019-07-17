@@ -1,7 +1,8 @@
 import json
 from pyramid.response import Response
 from src.sgd.frontend import config
-from urllib2 import Request, urlopen, URLError
+from urllib.request import Request, urlopen
+from urllib.error import URLError
 
 compute_url = "https://blast.yeastgenome.org/"
 
@@ -25,7 +26,8 @@ def do_blast(request):
 
 def _run_blast(p):
 
-    from urllib2 import Request, urlopen, URLError
+    from urllib.request import Request, urlopen
+    from urllib.error import URLError
 
     paramData = _construct_blast_parameters(p)
 
@@ -75,9 +77,9 @@ def _construct_blast_parameters(p):
 
     blastOptions = blastOptions.replace(' ', '+')
 
-    import urllib
+    import urllib.request, urllib.parse, urllib.error
     
-    paramData = urllib.urlencode({ 'program': program,
+    paramData = urllib.parse.urlencode({ 'program': program,
                                    'dataset': database,
                                    'sequence': seq,
                                    'seqname': seqname,

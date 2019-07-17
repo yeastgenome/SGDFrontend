@@ -1,7 +1,8 @@
 import json
 from pyramid.response import Response
 from src.sgd.frontend import config
-from urllib2 import Request, urlopen, URLError
+from urllib.request import Request, urlopen
+from urllib.error import URLError
 
 patmatch_url = "https://patmatch.yeastgenome.org/"
                 
@@ -22,9 +23,9 @@ def do_patmatch(request):
 
 def _get_seq(p):
 
-    import urllib
+    import urllib.request, urllib.parse, urllib.error
 
-    paramData = urllib.urlencode({ 'seqname': p.get('seqname'),
+    paramData = urllib.parse.urlencode({ 'seqname': p.get('seqname'),
                                    'dataset': p.get('dataset') });
 
     url = patmatch_url + "cgi-bin/aws-patmatch"
@@ -79,9 +80,9 @@ def _construct_patmatch_parameters(p):
     seqtype = p.get('seqtype') if p.get('seqtype') is not None else 'pep'
     dataset = p.get('dataset') if p.get('dataset') is not None else 'orf_pep'
     
-    import urllib
+    import urllib.request, urllib.parse, urllib.error
 
-    paramData = urllib.urlencode({ 'pattern': p.get('pattern'),
+    paramData = urllib.parse.urlencode({ 'pattern': p.get('pattern'),
                                    'strain': p.get('strain'),
                                    'seqtype': seqtype,
                                    'dataset': dataset,

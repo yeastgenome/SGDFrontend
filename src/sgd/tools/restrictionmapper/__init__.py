@@ -1,7 +1,8 @@
 import json
 from pyramid.response import Response
 from src.sgd.frontend import config
-from urllib2 import Request, urlopen, URLError, HTTPError
+from urllib.request import Request, urlopen
+from urllib.error import URLError, HTTPError
 
 rest_url = "https://patmatch.yeastgenome.org/cgi-bin/aws-restrictionmapper2"
 validate_url = "https://www.yeastgenome.org/backend/locus/"
@@ -48,7 +49,7 @@ def _run_restrictionmap(p):
 
 def _construct_parameters(p):
 
-    import urllib
+    import urllib.request, urllib.parse, urllib.error
     
     seq = p.get('seq')
     if seq is None:
@@ -75,7 +76,7 @@ def _construct_parameters(p):
                 else:
                     display_name = res.get('format_name')
     if sgdid or seq:
-        paramData = urllib.urlencode({ 'seq': seq,
+        paramData = urllib.parse.urlencode({ 'seq': seq,
                                        'type': type,
                                        'name': sgdid })
         return [display_name, paramData]

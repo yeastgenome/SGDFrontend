@@ -1,6 +1,7 @@
 import json
 from pyramid.response import Response
-from urllib2 import Request, urlopen, URLError, HTTPError
+from urllib.request import Request, urlopen
+from urllib.error import URLError, HTTPError
 import os
 
 # http://0.0.0.0:6545/run_gotools?aspect=C&genes=COR5|CYT1|Q0105|QCR2|S000001929|S000002937|S000003809|YEL024W|YEL039C|YGR183C|YHR001W-A
@@ -34,9 +35,9 @@ def run_goslimmapper(p):
     if terms == '':
         return { " ERROR": "NO SLIM TERMS PASSED IN" }
     
-    import urllib
+    import urllib.request, urllib.parse, urllib.error
 
-    paramData = urllib.urlencode({ 'genes': genes,
+    paramData = urllib.parse.urlencode({ 'genes': genes,
                                    'terms': terms,
                                    'aspect': aspect });
 
@@ -87,9 +88,9 @@ def run_gotermfinder(p):
     ## add code later to handle pvalue + exclude evidence list etc
     # url = gotermfinder_url + "?aspect=" + aspect + "&genes=" + genes 
 
-    import urllib
+    import urllib.request, urllib.parse, urllib.error
 
-    paramData = urllib.urlencode({ 'genes': genes,
+    paramData = urllib.parse.urlencode({ 'genes': genes,
                                    'genes4bg': genes4bg,
                                    'aspect': aspect,
                                    'pvalue': pvalue,

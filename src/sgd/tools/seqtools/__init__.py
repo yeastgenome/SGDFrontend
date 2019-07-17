@@ -1,6 +1,7 @@
 import json
 from pyramid.response import Response
-from urllib2 import Request, urlopen, URLError, HTTPError
+from urllib.request import Request, urlopen
+from urllib.error import URLError, HTTPError
 from src.sgd.frontend.yeastgenome import clean_cell
 import os
 
@@ -126,7 +127,7 @@ def display_sequence_for_chr(p, data):
     else:
         filename += ".fsa"
 
-    return set_download_file(filename, unicode(content))
+    return set_download_file(filename, str(content))
 
 def display_sequence_for_genes(p, data):
 
@@ -176,7 +177,7 @@ def display_sequence_for_genes(p, data):
     if content == "":
         content = "No sequence available." 
 
-    return set_download_file(filename, unicode(content))
+    return set_download_file(filename, str(content))
 
 
 def set_download_file(filename, content):
