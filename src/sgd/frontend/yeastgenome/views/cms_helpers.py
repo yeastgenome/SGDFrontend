@@ -88,7 +88,7 @@ def get_recent_blog_posts():
         blog_posts = json.loads(response.text)['posts']
         for post in blog_posts:
             post = add_simple_date_to_post(post)
-    except Exception, e:
+    except Exception as e:
         blog_posts = []
     return blog_posts
 
@@ -99,9 +99,9 @@ def get_meetings():
         response = requests.get(calendar_url, timeout=HOMEPAGE_REQUEST_TIMEOUT)
         meetings = json.loads(response.text)['items']
         # only get "all day" events
-        meetings = [d for d in meetings if 'date' in d['start'].keys()]
+        meetings = [d for d in meetings if 'date' in list(d['start'].keys())]
         for meeting in meetings:
-            if 'description' not in meeting.keys():
+            if 'description' not in list(meeting.keys()):
                 meeting['description'] = ''
             # get URL from description and remove URLs from description
             urls = re.findall(URL_REGEX, meeting['description'])
@@ -128,7 +128,7 @@ def get_meetings():
         meetings = [d for d in meetings if d['start_date'] > now]
         # sort by start date
         meetings = sorted(meetings, key=lambda d: d['start_date'])
-    except Exception, e:
+    except Exception as e:
         meetings = []
     return meetings
 

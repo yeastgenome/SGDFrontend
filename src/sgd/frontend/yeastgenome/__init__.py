@@ -3,7 +3,7 @@ import string
 import datetime
 import json
 import uuid
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import base64
 import requests
 import os.path
@@ -142,23 +142,23 @@ class YeastgenomeFrontend(FrontendInterface):
     def redirect(self, page, params):
         if page == 'interaction':
             if len(params) > 0:
-                return HTTPFound('/locus/' + params.values()[0] + '/interaction')
+                return HTTPFound('/locus/' + list(params.values())[0] + '/interaction')
             else:
-                page = urllib.urlopen(self.heritage_url + '/cgi-bin/interaction_search').read()
+                page = urllib.request.urlopen(self.heritage_url + '/cgi-bin/interaction_search').read()
                 return Response(page)
         elif page == 'literature':
             if len(params) > 0:
-                return HTTPFound('/locus/' + params.values()[0] + '/literature')
+                return HTTPFound('/locus/' + list(params.values())[0] + '/literature')
         elif page == 'protein':
             if len(params) > 0:
-                return HTTPFound('/locus/' + params.values()[0] + '/protein')
+                return HTTPFound('/locus/' + list(params.values())[0] + '/protein')
         elif page == 'expression':
             del params['type']
             if len(params) > 0:
-                return HTTPFound('/locus/' + params.values()[0] + '/expression')
+                return HTTPFound('/locus/' + list(params.values())[0] + '/expression')
         elif page == 'locus':
             if len(params) > 0:
-                return HTTPFound('/locus/' + params.values()[0])
+                return HTTPFound('/locus/' + list(params.values())[0])
         elif page == 'phenotype':
             if 'phenotype' in params:
                 old_phenotype = params['phenotype'].split(':')
@@ -180,36 +180,36 @@ class YeastgenomeFrontend(FrontendInterface):
                 return HTTPFound('/chemical/' + params['property_value'].replace(' ', '_'))
         elif page == 'go':
             if len(params) > 0:
-                return HTTPFound('/locus/' + params.values()[0] + '/go')
+                return HTTPFound('/locus/' + list(params.values())[0] + '/go')
         elif page == 'go_term':
             if len(params) > 0:
-                if params.values()[0].startswith('GO:'):
-                    return HTTPFound('/go/' + params.values()[0])
+                if list(params.values())[0].startswith('GO:'):
+                    return HTTPFound('/go/' + list(params.values())[0])
                 else:
-                    return HTTPFound('/go/GO:' + str(int(params.values()[0])).zfill(7))
+                    return HTTPFound('/go/GO:' + str(int(list(params.values())[0])).zfill(7))
         elif page == 'disease':
             if len(params) > 0:
-                return HTTPFound('/locus/' + params.values()[0] + '/disease')
+                return HTTPFound('/locus/' + list(params.values())[0] + '/disease')
         elif page == 'do_term':
             if len(params) > 0:
-                if params.values()[0].startswith('DO:'):
-                    return HTTPFound('/disease/' + params.values()[0])
+                if list(params.values())[0].startswith('DO:'):
+                    return HTTPFound('/disease/' + list(params.values())[0])
                 else:
-                    return HTTPFound('/disease/DO:' + str(int(params.values()[0])).zfill(7))
+                    return HTTPFound('/disease/DO:' + str(int(list(params.values())[0])).zfill(7))
         elif page == 'reference':
             if 'author' in params:
-                return HTTPFound('/author/' + params.values()[0].replace(' ', '_'))
+                return HTTPFound('/author/' + list(params.values())[0].replace(' ', '_'))
             elif 'topic' in params:
-                topic = params.values()[0]
-                page = urllib.urlopen(self.heritage_url + '/cgi-bin/reference/reference.pl?topic=' + topic + '&rm=multi_ref_result').read()
+                topic = list(params.values())[0]
+                page = urllib.request.urlopen(self.heritage_url + '/cgi-bin/reference/reference.pl?topic=' + topic + '&rm=multi_ref_result').read()
                 return Response(page)
             elif 'rm' in params and 'topic_group' in params and 'page' in params:
-                page = urllib.urlopen(self.heritage_url + '/cgi-bin/reference/reference.pl?rm=' + params['rm'] + '&topic_group=' + params['topic_group'] + '&page=' + params['page']).read()
+                page = urllib.request.urlopen(self.heritage_url + '/cgi-bin/reference/reference.pl?rm=' + params['rm'] + '&topic_group=' + params['topic_group'] + '&page=' + params['page']).read()
                 return Response(page)
             elif 'doi' in params:
-                return HTTPFound('/reference/doi:' + params.values()[0].replace(' ', '_').replace('/', '-').lower())
+                return HTTPFound('/reference/doi:' + list(params.values())[0].replace(' ', '_').replace('/', '-').lower())
             elif len(params) > 0:
-                return HTTPFound('/reference/' + params.values()[0].replace(' ', '_').replace('/', '-'))
+                return HTTPFound('/reference/' + list(params.values())[0].replace(' ', '_').replace('/', '-'))
         else:
             return Response(status_int=500, body='Invalid URL.')
     
@@ -240,7 +240,7 @@ class YeastgenomeFrontend(FrontendInterface):
             try:
                 [clean_cell(cell) for cell in row[cutoff:]]
             except:
-                print row
+                print(row)
 
         response.text = table_header + '\n' + '\n'.join(['\t'.join([clean_cell(cell) for cell in row[cutoff:]]) for row in data])
 
@@ -437,7 +437,8 @@ def clean_cell(cell):
 def send_message(request):
 
     import smtplib
-    from urllib2 import Request, urlopen, URLError
+    from urllib.request import Request, urlopen
+    from urllib.error import URLError
     
     from email.mime.text import MIMEText
 

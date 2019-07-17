@@ -5,10 +5,7 @@ Created on Oct 11, 2013
 '''
 from abc import abstractmethod, ABCMeta
 
-class FrontendInterface:
-    __metaclass__ = ABCMeta
-    
-    #Renderer
+class FrontendInterface(metaclass=ABCMeta):
     @abstractmethod
     def get_renderer(self, method_name):
         return None

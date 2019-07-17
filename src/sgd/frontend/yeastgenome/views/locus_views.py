@@ -25,7 +25,7 @@ def render_locus_page(request, template_name):
     if locus_obj == None:
         return not_found(request)
     # determine whether to show standard gene name
-    locus_obj['locus']['display_standard_name'] = ('gene_name' in locus_obj['locus'].keys() and locus_obj['locus']['gene_name'] != None)
+    locus_obj['locus']['display_standard_name'] = ('gene_name' in list(locus_obj['locus'].keys()) and locus_obj['locus']['gene_name'] != None)
     return render_to_response(TEMPLATE_ROOT + template_name + '.jinja2', locus_obj, request=request)
 
 @view_config(route_name='locus')

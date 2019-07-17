@@ -1,7 +1,7 @@
 __author__ = 'kpaskov'
 
 import re
-from urlparse import urlparse
+from urllib.parse import urlparse
 from behave import step
 from selenium.common.exceptions import NoSuchElementException
 

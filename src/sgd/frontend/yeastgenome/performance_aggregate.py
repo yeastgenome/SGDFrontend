@@ -9,7 +9,7 @@ file_to_times = {}
 root_file = '/Users/kpaskov/sgd-ng2_log/backend'
 file_names = [x for x in listdir(root_file) if not x.startswith('.')]
 for file_name in file_names:
-    print file_name
+    print(file_name)
     f = open(root_file + '/'+ file_name, 'r')
     file_to_times[file_name] = []
     key_to_pieces = {}
@@ -32,7 +32,7 @@ for file_name in file_names:
                 method_to_times[method] = [total_time]
             if method != 'home' and method != 'all_bibentries':
                 if method != key_to_pieces[key][4]:
-                    print method + '\t' + key_to_pieces[key]
+                    print(method + '\t' + key_to_pieces[key])
                 file_to_times[file_name].append(total_time)
                 if total_time > 1:
                     problem_lines.append(str(total_time) + '\t' + str(key_to_pieces[key]))
@@ -41,11 +41,11 @@ for file_name in file_names:
             argument = None if len(pieces) == 5 else pieces[5]
             key_to_pieces[key] = pieces
         else:
-            print pieces
+            print(pieces)
     f.close()
 
-print 'Overall Times\tMin\t1st Quartile\tMedian\t3rd Quartile\tMax\tVolume'
-for key, values in method_to_times.iteritems():
+print('Overall Times\tMin\t1st Quartile\tMedian\t3rd Quartile\tMax\tVolume')
+for key, values in method_to_times.items():
     values.sort()
     length = len(values)
     min_val = str(values[0])
@@ -53,9 +53,9 @@ for key, values in method_to_times.iteritems():
     quart1 = str(values[int(floor(0.25*length))])
     median = str(values[int(floor(0.5*length))])
     quart3 = str(values[int(floor(0.75*length))])
-    print '\t'.join([key, min_val, quart1, median, quart3, max_val, str(length), ])
+    print('\t'.join([key, min_val, quart1, median, quart3, max_val, str(length), ]))
 
-print 'By Day Times\tMin\t1st Quartile\tMedian\t3rd Quartile\tMax\tVolume'
+print('By Day Times\tMin\t1st Quartile\tMedian\t3rd Quartile\tMax\tVolume')
 for filename in file_names:
     values = file_to_times[filename]
     values.sort()
@@ -65,8 +65,8 @@ for filename in file_names:
     quart1 = str(values[int(floor(0.25*length))])
     median = str(values[int(floor(0.5*length))])
     quart3 = str(values[int(floor(0.75*length))])
-    print '\t'.join([filename, min_val, quart1, median, quart3, max_val, str(length)])
+    print('\t'.join([filename, min_val, quart1, median, quart3, max_val, str(length)]))
 
-print 'Problem Areas'
+print('Problem Areas')
 for problem_line in problem_lines:
-    print problem_line
+    print(problem_line)

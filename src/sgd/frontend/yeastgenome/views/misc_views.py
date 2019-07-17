@@ -5,7 +5,7 @@ from pyramid.renderers import render_to_response
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPInternalServerError, HTTPMovedPermanently
 from src.sgd.frontend import config
 from src.sgd.frontend.yeastgenome.views.cms_helpers import BLOG_BASE_URL, BLOG_PAGE_SIZE, add_simple_date_to_post, get_wp_categories, get_archive_years, get_meetings, get_recent_blog_posts, wp_categories
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import datetime
 import json
 import requests
@@ -53,11 +53,11 @@ def blog_list(request):
     next_url = request.path + '?page=' + str(page + 1)
     offset = str((page - 1) * BLOG_PAGE_SIZE)
     offset_expression = 'offset=' + offset + '&' + 'number=' + str(BLOG_PAGE_SIZE)
-    if url_params.has_key('category'):
+    if 'category' in url_params:
         url_suffix = '?category=' + url_params['category'] + '&' + offset_expression
-    elif url_params.has_key('tag'):
+    elif 'tag' in url_params:
         url_suffix = '?tag=' + url_params['tag'] + '&' + offset_expression
-    elif url_params.has_key('year'):
+    elif 'year' in url_params:
         year = url_params['year']
         start_date = year + '-01-01'
         end_date = year + '-12-31'
