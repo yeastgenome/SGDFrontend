@@ -1779,9 +1779,15 @@ def regulation_insert_update(request):
         pmid_in_db = None
         dbentity_in_db = DBSession.query(Dbentity).filter(and_(Dbentity.sgdid == reference_id,Dbentity.subclass == 'REFERENCE')).one_or_none()
         if dbentity_in_db is None:
-            dbentity_in_db = DBSession.query(Dbentity).filter(and_(Dbentity.dbentity_id == int(reference_id), Dbentity.subclass == 'REFERENCE')).one_or_none()
+            try:
+                dbentity_in_db = DBSession.query(Dbentity).filter(and_(Dbentity.dbentity_id == int(reference_id), Dbentity.subclass == 'REFERENCE')).one_or_none()
+            except ValueError as e:
+                pass
         if dbentity_in_db is None:
-            pmid_in_db = DBSession.query(Referencedbentity).filter(Referencedbentity.pmid == int(reference_id)).one_or_none()
+            try:
+                pmid_in_db = DBSession.query(Referencedbentity).filter(Referencedbentity.pmid == int(reference_id)).one_or_none()
+            except ValueError as e:
+                pass
 
         if dbentity_in_db is not None:
             reference_id = dbentity_in_db.dbentity_id
