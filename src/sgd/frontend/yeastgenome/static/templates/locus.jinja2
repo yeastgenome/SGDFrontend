@@ -477,7 +477,7 @@
                 <div class="panel">
                     <h3>Classical Genetics</h3>
                     <dl class="key-value">
-                        {% for mutant, phenotypes in locus.phenotype_overview.classical_phenotypes.iteritems() %}
+                        {% for mutant, phenotypes in locus.phenotype_overview.classical_phenotypes.items() %}
                             <dt>{{ mutant }}</dt>
                             <dd><ul style="list-style-type:disc">
                                 {% for phenotype in phenotypes|sort(attribute='display_name') %}
@@ -493,7 +493,7 @@
                 <div class="panel">
                     <dl class="key-value">
                         <h3>Large-scale Survey</h3>
-                        {% for mutant, phenotypes in locus.phenotype_overview.large_scale_phenotypes.iteritems() %}
+                        {% for mutant, phenotypes in locus.phenotype_overview.large_scale_phenotypes.items() %}
                             <dt>{{ mutant }}</dt>
                             <dd><ul style="list-style-type:disc">
                                 {% for phenotype in phenotypes|sort(attribute='display_name') %}

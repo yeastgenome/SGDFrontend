@@ -31,14 +31,14 @@
 		{{ post['content']|safe }}
 		<p>
 			Categories:
-			{% for key, value in post['categories'].iteritems() %}
+			{% for key, value in post['categories'].items() %}
 				<span><a href="/blog/category/{{ value['slug'] }}">{{ value['name'] }}</a></span>
 			{% endfor %}
 		</p>
 		{% if post['tags'] %}
 			<p>
 				Tags:
-				{% for key, value in post['tags'].iteritems() %}
+				{% for key, value in post['tags'].items() %}
 					<span><a href="/blog/tag/{{ value['slug'] }}">{{ value['name'] }}</a></span>
 					{% if not loop.last %}
 						<span>,</span>
