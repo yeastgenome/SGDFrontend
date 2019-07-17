@@ -1762,14 +1762,14 @@ def regulation_insert_update(request):
         annotation_type = MANUALLY_CURATED
 
         dbentity_in_db = None
-        dbentity_in_db = DBSession.query(Dbentity).filter(or_(Dbentity.sgdid == target_id, Dbentity.format_name == target_id)).one_or_none()
+        dbentity_in_db = DBSession.query(Dbentity).filter(or_(Dbentity.sgdid == target_id, Dbentity.format_name == target_id)).filter(Dbentity.subclass == 'LOCUS').one_or_none()
         if dbentity_in_db is not None:
             target_id = dbentity_in_db.dbentity_id
         else:
             return HTTPBadRequest(body=json.dumps({'error': "target gene value not found in database"}), content_type='text/json')
 
         dbentity_in_db = None
-        dbentity_in_db = DBSession.query(Dbentity).filter(or_(Dbentity.sgdid == regulator_id, Dbentity.format_name == regulator_id)).one_or_none()
+        dbentity_in_db = DBSession.query(Dbentity).filter(or_(Dbentity.sgdid == regulator_id, Dbentity.format_name == regulator_id)).filter(Dbentity.subclass == 'LOCUS').one_or_none()
         if dbentity_in_db is not None:
             regulator_id = dbentity_in_db.dbentity_id
         else:
@@ -1777,9 +1777,9 @@ def regulation_insert_update(request):
 
         dbentity_in_db = None
         pmid_in_db = None
-        dbentity_in_db = DBSession.query(Dbentity).filter(Dbentity.sgdid == reference_id).one_or_none()
+        dbentity_in_db = DBSession.query(Dbentity).filter(and_(Dbentity.sgdid == reference_id,Dbentity.subclass == 'REFERENCE')).one_or_none()
         if dbentity_in_db is None:
-            dbentity_in_db = DBSession.query(Dbentity).filter(Dbentity.dbentity_id == int(reference_id)).one_or_none()
+            dbentity_in_db = DBSession.query(Dbentity).filter(and_(Dbentity.dbentity_id == int(reference_id), Dbentity.subclass == 'REFERENCE')).one_or_none()
         if dbentity_in_db is None:
             pmid_in_db = DBSession.query(Referencedbentity).filter(Referencedbentity.pmid == int(reference_id)).one_or_none()
 
