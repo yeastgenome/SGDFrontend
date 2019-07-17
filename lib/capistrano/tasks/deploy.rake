@@ -9,7 +9,7 @@ namespace :deploy do
   desc 'Build AWS env application'
   task :build_aws do
     on roles(:app), in: :sequence do
-      execute "export WORKON_HOME=/data/envs/ && source virtualenvwrapper.sh && cd #{release_path} && workon sgdf && make build-deploy"
+      execute "export WORKON_HOME=/data/envs/ && source virtualenvwrapper.sh && cd #{release_path} && workon sgdf3 && make build-deploy"
     end
   end
   
@@ -23,7 +23,7 @@ namespace :deploy do
   desc 'Restart AWS'
   task :restart_aws do
     on roles(:app), in: :sequence do
-      execute "cd #{current_path} && export WORKON_HOME=/data/envs/ && source virtualenvwrapper.sh && workon sgdf && make stop-prod && make run-prod"
+      execute "cd #{current_path} && export WORKON_HOME=/data/envs/ && source virtualenvwrapper.sh && workon sgdf3 && make stop-prod && make run-prod"
     end
   end
 
