@@ -38,8 +38,8 @@ def run_goslimmapper(p):
     import urllib.request, urllib.parse, urllib.error
 
     paramData = urllib.parse.urlencode({ 'genes': genes,
-                                   'terms': terms,
-                                   'aspect': aspect });
+                                         'terms': terms,
+                                         'aspect': aspect });
 
     res = _get_json_from_server(goslimmapper_url, paramData)
 
@@ -50,7 +50,7 @@ def run_goslimmapper(p):
     rootUrl = res['rootUrl']
 
     response = urlopen(htmlUrl)
-    html = response.read()
+    html = response.read().decode('utf-8')
     html = html.replace("<html><body>", "").replace("</body></html>", "")
     html = html.replace("<br><b>", "").replace("</b><br><br><center>", "<center>")
     html = html.replace("color=red", "color=maroon")
@@ -91,11 +91,11 @@ def run_gotermfinder(p):
     import urllib.request, urllib.parse, urllib.error
 
     paramData = urllib.parse.urlencode({ 'genes': genes,
-                                   'genes4bg': genes4bg,
-                                   'aspect': aspect,
-                                   'pvalue': pvalue,
-                                   'FDR': FDR,
-                                   'evidence': evidence });
+                                         'genes4bg': genes4bg,
+                                         'aspect': aspect,
+                                         'pvalue': pvalue,
+                                         'FDR': FDR,
+                                         'evidence': evidence });
     
     res = _get_json_from_server(gotermfinder_url, paramData)
 
@@ -107,13 +107,13 @@ def run_gotermfinder(p):
     imageHtmlUrl = res['imageHtml']
 
     response = urlopen(imageHtmlUrl)
-    imageHtml = response.read()
+    imageHtml = response.read().decode('utf-8')
     imageHtml = imageHtml.replace("<html><body>", "").replace("</body></html>", "")
     imageHtml = imageHtml.replace("<img src='./", "<img src='" + rootUrl + "/")
     imageHtml = "<b>Nodes" + imageHtml.split("</font><br><br><b>Nodes")[1]
     
     response = urlopen(htmlUrl)
-    html = response.read()
+    html = response.read().decode('utf-8')
     html = html.replace("<html><body>", "").replace("</body></html>", "")
     html = html.replace("color=red", "color=maroon")
     html = html.replace('<a name="table" />', '')
@@ -134,9 +134,9 @@ def run_gotermfinder(p):
 def _get_json_from_server(url, paramData):
     
     try:
-        req = Request(url=url, data=paramData)
+        req = Request(url=url, data=paramData.encode('utf-8'))
         res = urlopen(req)
-        data = json.loads(res.read())
+        data = json.loads(res.read().decode('utf-8'))
         return data
     except HTTPError:
         return 404
