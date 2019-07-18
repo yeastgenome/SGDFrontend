@@ -26,14 +26,14 @@ def _get_seq(p):
     import urllib.request, urllib.parse, urllib.error
 
     paramData = urllib.parse.urlencode({ 'seqname': p.get('seqname'),
-                                   'dataset': p.get('dataset') });
+                                         'dataset': p.get('dataset') });
 
     url = patmatch_url + "cgi-bin/aws-patmatch"
-    req = Request(url=url, data=paramData)
+    req = Request(url=url, data=paramData.encode('utf-8'))
     res = urlopen(req)
     result = res.read();
 
-    return json.loads(result)
+    return json.loads(result.decode('utf-8'))
 
 
 def _run_patmatch(p):
@@ -42,9 +42,9 @@ def _run_patmatch(p):
 
     url = patmatch_url + "cgi-bin/aws-patmatch" 
    
-    req = Request(url=url, data=paramData)
+    req = Request(url=url, data=paramData.encode('utf-8'))
     res = urlopen(req)
-    result = res.read();
+    result = res.read().decode('utf-8');
 
     dataSet = result.split("\t")
 
@@ -100,7 +100,7 @@ def _get_config():
     url = patmatch_url + "patmatch/patmatch.json"
     req = Request(url)
     res = urlopen(req)
-    data = json.loads(res.read()) 
+    data = json.loads(res.read().decode('utf-8')) 
     return data
 
 
