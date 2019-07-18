@@ -3,6 +3,7 @@ from pyramid.response import Response
 from src.sgd.frontend import config
 from urllib.request import Request, urlopen
 from urllib.error import URLError
+from urllib.parse import urlencode
 
 compute_url = "https://blast.yeastgenome.org/"
 
@@ -26,18 +27,15 @@ def do_blast(request):
 
 def _run_blast(p):
 
-    from urllib.request import Request, urlopen
-    from urllib.error import URLError
-
     paramData = _construct_blast_parameters(p)
 
     url = compute_url + "cgi-bin/aws-blast"
 
-    req = Request(url=url, data=paramData)
+    req = Request(url=url, data=paramData.encode('utf-8'))
 
     res = urlopen(req)
 
-    result = res.read()
+    result = res.read().decode('utf-8')
 
     dataSet = result.split("\t")
     
@@ -76,17 +74,15 @@ def _construct_blast_parameters(p):
     database = database.replace(' ', '+')
 
     blastOptions = blastOptions.replace(' ', '+')
-
-    import urllib.request, urllib.parse, urllib.error
     
-    paramData = urllib.parse.urlencode({ 'program': program,
-                                   'dataset': database,
-                                   'sequence': seq,
-                                   'seqname': seqname,
-                                   'config': confFile,
-                                   'options': blastOptions,
-                                   'filtering': filtering,
-                                   'alignToShow': p['alignToShow'] })
+    paramData = urlencode({ 'program': program,
+                            'dataset': database,
+                            'sequence': seq,
+                            'seqname': seqname,
+                            'config': confFile,
+                            'options': blastOptions,
+                            'filtering': filtering,
+                            'alignToShow': p['alignToShow'] })
     return paramData
 
     
@@ -125,8 +121,7 @@ def _get_json_from_server(url):
 
     req = Request(url)
     res = urlopen(req)
-    # data = json.loads(res.read())
-    data = res.read().json()
+    data = json.loads(res.read().decode('utf-8'))
     return data
 
 def _get_blast_options(p):
