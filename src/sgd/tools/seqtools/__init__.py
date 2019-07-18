@@ -221,7 +221,7 @@ def format_gcg(sequence):
     ## adding newlines and index label
     index = 1
     sequence = newseq
-    j = BASES_PER_LINE + BASES_PER_LINE/BASES_PER_CHUNK
+    j = int(BASES_PER_LINE + BASES_PER_LINE/BASES_PER_CHUNK)
     newseq = " "*(maxIndexLen-1) + "1 " + sequence[0:j] + "\n"
     if seqlen <= BASES_PER_LINE:
         return newseq 
@@ -528,7 +528,7 @@ def _get_json_from_server(url):
     try:
         req = Request(url)
         res = urlopen(req)
-        data = json.loads(res.read())
+        data = json.loads(res.read().decode('utf-8'))
         return data
     except HTTPError:
         return 404
