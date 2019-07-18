@@ -21,9 +21,9 @@ def _run_restrictionmap(p):
     if display_name is None:
         return { "ERROR": "not valid name" }
 
-    req = Request(url=rest_url, data=paramData)
+    req = Request(url=rest_url, data=paramData.encode('utf-8'))
     res = urlopen(req)
-    result = res.read();
+    result = res.read().decode('utf-8');
 
     dataSet = result.split("\t")
  
@@ -89,7 +89,7 @@ def _get_json_from_server(url):
     try:
         req = Request(url)
         res = urlopen(req)
-        data = json.loads(res.read())
+        data = json.loads(res.read().decode('utf-8'))
         return data
     except HTTPError:
         return 404
