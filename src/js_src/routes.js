@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React  from 'react';
 import { IndexRoute, Route  } from 'react-router';
 
@@ -14,7 +15,7 @@ import { requireAuthentication } from './containers/authenticateComponent';
 import CurateHome from './containers/curateHome';
 import Search from './containers/search';
 import LocusLayout from './containers/locus/layout';
-// import LocusBasic from './containers/locus/basic';
+import LocusBasic from './containers/locus/basic';
 // import LocusName from './containers/locus/name';
 import LocusSummaries from './containers/locus/summaries';
 import TriageIndex from './containers/triage';
@@ -39,6 +40,7 @@ import ColleaguesShow from './containers/colleagues/show';
 import NewColleague from './containers/colleagues/new';
 import Regulation from './containers/regulation/index';
 
+
 export default (
   <Route>
     <Route component={Layout} path='/'>
@@ -59,10 +61,11 @@ export default (
       <Route component={PublicHome} path='login' />
       <Route component={GoogleLogin} path='google_login' />
       <Route component={requireAuthentication(LocusLayout)} path='curate/locus/:id'>
-        <IndexRoute component={requireAuthentication(LocusSummaries)} />
-        {/*<IndexRoute component={requireAuthentication(LocusBasic)} />*/}
-        {/*<Route component={requireAuthentication(LocusName)} path='gene_name' />*/}
-        {/*<Route component={requireAuthentication(LocusSummaries)} path='summaries' />*/}
+        {/* <IndexRoute component={requireAuthentication(LocusSummaries)} /> */}
+        <IndexRoute component={requireAuthentication(LocusBasic)} />
+        <Route component={requireAuthentication(LocusBasic)} path='basic' />
+        <Route component={requireAuthentication(LocusSummaries)} path='summaries' />
+        { /*<Route component={requireAuthentication(LocusName)} path='gene_name' /> */ }
       </Route>
       <Route component={requireAuthentication(NewReference)} path='curate/reference/new' />
       <Route component={requireAuthentication(CurateLit)} path='curate/reference/:id'>
