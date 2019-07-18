@@ -55,7 +55,7 @@ def retrieve_data(p):
         imagesUrl = data['dna_images_url']
         
     response = urlopen(alignUrl)
-    alignment = response.read() 
+    alignment = response.read().decode('utf-8') 
     
     if p.get('download'):
         return set_download_file(alignment, type)
@@ -115,7 +115,7 @@ def format_gcg(sequence):
     ## adding newlines and index label                                                                                                                                            
     index = 1
     sequence = newseq
-    j = BASES_PER_LINE + BASES_PER_LINE/BASES_PER_CHUNK
+    j = int(BASES_PER_LINE + BASES_PER_LINE/BASES_PER_CHUNK)
     newseq = " "*(maxIndexLen-1) + "1 " + sequence[0:j] + "\n"
     if seqlen <= BASES_PER_LINE:
         return newseq
@@ -336,7 +336,7 @@ def _get_json_from_server(url):
     try:
         req = Request(url=url)
         res = urlopen(req)
-        data = json.loads(res.read())
+        data = json.loads(res.read().decode('utf-8'))
         return data
     except HTTPError:
         return 404
