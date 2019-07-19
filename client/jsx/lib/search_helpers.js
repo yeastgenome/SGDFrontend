@@ -78,6 +78,7 @@ export function getFacetName (key) {
   }
 };
 
+// Capitalize first letter of last name of author and capitalize first names and other parts
 export function formatAuthorName (authorName) {
   let names = authorName.split(" ");
   names[0] = names[0][0].toUpperCase()+names[0].slice(1);
@@ -86,3 +87,21 @@ export function formatAuthorName (authorName) {
   }
   return names.join(" ");
 };
+
+// For References facet in Phenotypes category, format the author names
+export function formatReferences (reference) {
+  // references like "niu w, et al."
+  if (reference.includes(",")) {
+    let name = reference.split(",");
+    name[0] = formatAuthorName(name[0]);
+    return name.join(",")
+  // references like "elble r and tye bk"
+  } else if(reference.includes(" and ")) {
+    let authors = reference.split(" and ");
+    authors[0] = formatAuthorName(authors[0]);
+    authors[1] = formatAuthorName(authors[1]);
+    return authors.join(" and ");
+  }
+  // only one author name like "cross fr"
+  return formatAuthorName(reference);
+}

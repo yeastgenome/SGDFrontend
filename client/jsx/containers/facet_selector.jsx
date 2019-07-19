@@ -6,7 +6,7 @@ import Radium from 'radium';
 import _ from 'underscore';
 import pluralize from 'pluralize';
 import StatusBtns from '../components/status_buttons/status_btns.jsx';
-import { getHrefWithoutAgg, getCategoryDisplayName, getFacetName, formatAuthorName } from '../lib/search_helpers';
+import { getHrefWithoutAgg, getCategoryDisplayName, getFacetName, formatAuthorName, formatReferences } from '../lib/search_helpers';
 import ClassNames from 'classnames';
 import S from 'string';
 
@@ -370,6 +370,12 @@ function mapStateToProps(_state) {
       let values = item['values'];
       values.map(element => {
         element['key'] = element['key'].toUpperCase();
+      });
+    }
+    else if (item.key == 'references') {
+      let values = item['values'];
+      values.map(element => {
+        element['key'] = formatReferences(element['key']);
       });
     }
   });

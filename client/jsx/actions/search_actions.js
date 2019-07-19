@@ -95,7 +95,7 @@ export function fetchSearchResults () {
     }
     const qp = (state.routing.location.query);
     for (var key in qp) {
-      if(key.includes('_loci') || key === 'author') {
+      if(key.includes('_loci') || key === 'author' || key === 'references') {
         if(typeof qp[key] === 'string') {
           qp[key] = qp[key].toLowerCase();
         } else if(typeof qp[key] === 'object') {
