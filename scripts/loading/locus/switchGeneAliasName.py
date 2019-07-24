@@ -2,7 +2,8 @@ import logging
 import os
 from datetime import datetime
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 from src.models import Locusdbentity, Referencedbentity, Dbentity, LocusAlias, \
     LocusReferences, LocusAliasReferences, ArchLocuschange, Source, Locusnote, \
     LocusnoteReference
@@ -42,12 +43,12 @@ def change_name(infile, logfile):
 
         locus_id = name_to_locus_id.get(orf_name)       
         if locus_id is None:
-            print "The ORF name:", orf_name, " is not in the database."
+            print("The ORF name:", orf_name, " is not in the database.")
             continue
 
         old_alias_id = alias_name_to_id.get(old_alias_name)
         if old_alias_id is None:
-            print "The alias_name: ", old_alias_name, " is not in the database."
+            print("The alias_name: ", old_alias_name, " is not in the database.")
             continue
 
         reference_id_list_for_old_gene = []
@@ -264,8 +265,8 @@ if __name__ == '__main__':
     if len(sys.argv) >= 2:
          infile = sys.argv[1]
     else:
-        print "Usage:         python switchGeneAliasName.py datafile"
-        print "Usage example: python switchGeneAliasName.py scripts/loading/locus/data/change_std_name-02152018.txt"
+        print("Usage:         python switchGeneAliasName.py datafile")
+        print("Usage example: python switchGeneAliasName.py scripts/loading/locus/data/change_std_name-02152018.txt")
         exit()
     
     logfile = "scripts/loading/locus/logs/switchGeneAliasName.log"

@@ -38,8 +38,8 @@ def load_summaries(summary_file):
         dbentity_id = biocyc_id_to_dbentity_id.get(pathway_name)
 
         if dbentity_id is None:
-            print "TO CHECK: The biocyc_id:", pathway_name, " is not in the database."
-	    print line
+            print("TO CHECK: The biocyc_id:", pathway_name, " is not in the database.")
+	    print(line)
             continue
 
         # summary_id = insert_pathwaysummary(nex_session, fw, dbentity_id, summary_text, source_id)
@@ -55,10 +55,10 @@ def load_summaries(summary_file):
             if int(pmid) in pmid_to_reference_id:
                 reference_id_list.append(pmid_to_reference_id[int(pmid)])
             else:
-                print "TO CHECK: The pmid: ", pmid, " is not in the database."
+                print("TO CHECK: The pmid: ", pmid, " is not in the database.")
                 bad = 1
         if bad == 1:
-	    print line
+	    print(line)
             continue
 
         # insert_summary_references(nex_session, fw, reference_id_list, summary_id, source_id)
@@ -106,8 +106,8 @@ if __name__ == "__main__":
     if len(sys.argv) >= 2:
         summary_file = sys.argv[1]
     else:
-        print "Usage: load_pathway_summaries.py summary_file_name_with_path"
-        print "Example: load_pathwaysummaries.py data/biochempwy_to-load.tsv"
+        print("Usage: load_pathway_summaries.py summary_file_name_with_path")
+        print("Example: load_pathwaysummaries.py data/biochempwy_to-load.tsv")
         exit()
 
     load_summaries(summary_file)

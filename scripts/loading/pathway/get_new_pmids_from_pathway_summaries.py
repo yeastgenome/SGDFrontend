@@ -20,7 +20,7 @@ def get_new_pmids(summary_file):
         pieces = line.strip().split("\t")
 
         if len(pieces) < 3:
-            print line
+            print(line)
             continue
 
         pmids = pieces[2].strip().replace(" ", "").split("|")
@@ -35,7 +35,7 @@ def get_new_pmids(summary_file):
     f.close()
     
     for pmid in new_pmids:
-        print "NEW PMID: ", pmid
+        print("NEW PMID: ", pmid)
 
 if __name__ == "__main__":
         
@@ -47,8 +47,8 @@ if __name__ == "__main__":
     elif len(sys.argv) >= 2:
         summary_file = sys.argv[1]
     else:
-        print "Usage: get_new_pmids_from_pathway_summaries.py summary_file_name_with_path"
-        print "Example: get_new_pmids_from_pathway_summaries.py data/biochempwy_to-load.tsv"
+        print("Usage: get_new_pmids_from_pathway_summaries.py summary_file_name_with_path")
+        print("Example: get_new_pmids_from_pathway_summaries.py data/biochempwy_to-load.tsv")
         exit()
 
     get_new_pmids(summary_file)

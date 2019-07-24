@@ -42,9 +42,9 @@ def add_display_name():
     for x in all_pathways:
         if x.biocyc_id in biocyc_to_display_name:
             nex_session.query(Pathwaydbentity).filter_by(biocyc_id=x.biocyc_id).update({'display_name': biocyc_to_display_name[x.biocyc_id]})
-            print x.biocyc_id + "\t" + biocyc_to_display_name[x.biocyc_id]
+            print(x.biocyc_id + "\t" + biocyc_to_display_name[x.biocyc_id])
         else:
-            print "NOT FOUND:", x.biocyc_id
+            print("NOT FOUND:", x.biocyc_id)
     
     nex_session.rollback()
     # nex_session.commit()
