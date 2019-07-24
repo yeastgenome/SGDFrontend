@@ -1,6 +1,7 @@
 from datetime import datetime
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('utf-8')
 sys.path.insert(0, '../../../src/')
 from models import Source, Dbentity, Taxonomy, Proteindomain, Proteindomainannotation
@@ -52,12 +53,12 @@ def read_data_and_update_database(nex_session, fw):
         items = line.strip().split("\t")
         dbentity_id = sgdid_to_dbentity_id.get(items[0])
         if dbentity_id is None:
-            print "The SGDID: ", items[0], " is not in the DBENTITY table."
+            print("The SGDID: ", items[0], " is not in the DBENTITY table.")
             continue
         format_name = items[1].replace(' ', '_')
         proteindomain_id = format_name_to_id.get(format_name)
         if proteindomain_id is None:
-            print "The domain name:", format_name, " is not in the PROTEINDOMAIN table."
+            print("The domain name:", format_name, " is not in the PROTEINDOMAIN table.")
             continue
         start = int(items[3])
         end = int(items[4])

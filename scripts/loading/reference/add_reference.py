@@ -1,8 +1,9 @@
-from StringIO import StringIO
+from io import StringIO
 from Bio import Entrez, Medline
 import os
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
 from src.models import Dbentity, Referencedbentity, Referencedocument, Referenceauthor,\
     Referencetype, ReferenceUrl, ReferenceRelation, Source, Journal
@@ -21,7 +22,7 @@ epub_status = 'Epub ahead of print'
 pdf_status = 'N'
 epub_pdf_status = 'NAP'
 
-from pubmed import get_pubmed_record, set_cite
+from .pubmed import get_pubmed_record, set_cite
 
 def add_paper(pmid, nex_session=None):
      

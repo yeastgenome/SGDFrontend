@@ -1,6 +1,7 @@
 from datetime import datetime
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('utf-8')
 sys.path.insert(0, '../../../src/')
 from models import Source, Proteindomain, ProteindomainUrl
@@ -41,7 +42,7 @@ def read_data_and_update_database(nex_session, fw):
         items = line.strip().split("\t")
         source_id = source_to_id.get(items[2])
         if source_id is None:
-            print "SOURCE:", items[2], " is not in the database."
+            print("SOURCE:", items[2], " is not in the database.")
             continue
         display_name = items[1]
         format_name = items[1].replace(' ', '_')

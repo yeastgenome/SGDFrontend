@@ -1,7 +1,8 @@
-from StringIO import StringIO
+from io import StringIO
 from Bio import Entrez, Medline
 import sys
-reload(sys)
+import importlib
+importlib.reload(sys)
 sys.setdefaultencoding('UTF8')
 from src.models import Dbentity, Referencedbentity, Referencedocument, Referenceauthor,\
     Referencetype, ReferenceUrl, ReferenceRelation, Source, Journal, Locusdbentity
@@ -200,7 +201,7 @@ def insert_referencedbentity(pmid, source_id, record, created_by):
                           fulltext_status = fulltext_status,
                           citation = citation,
                           year = int(year),
-                          pmid = long(pmid),
+                          pmid = int(pmid),
                           pmcid = pmcid,
                           date_published = pubdate,
                           date_revised = date_revised,
@@ -209,7 +210,7 @@ def insert_referencedbentity(pmid, source_id, record, created_by):
                           volume = volume,
                           title = title,
                           doi = doi,
-                          journal_id = long(journal_id),
+                          journal_id = int(journal_id),
                           created_by = created_by)
 
     DBSession.add(x)

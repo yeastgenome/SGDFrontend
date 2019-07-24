@@ -1,12 +1,13 @@
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
 sys.path.insert(0, '../../../src/')
 from models import Referencedbentity, Locusdbentity, Referencedeleted, \
                    Literatureannotation, CurationReference, Source, Taxonomy 
 sys.path.insert(0, '../')
 from database_session import get_nex_session
-from promote_reference_triage_from_file import add_paper
+from .promote_reference_triage_from_file import add_paper
 
 __author__ = 'sweng66'
 
@@ -72,19 +73,19 @@ def load_references(infile, logfile):
 
         if pieces[2] == '1':
             # add to DB only - reference has been loaded so skip this one
-            print "Add to DB only: ", pieces[0]
+            print("Add to DB only: ", pieces[0])
             continue
         if pieces[3] == '1':
-            print "Discard this paper"
+            print("Discard this paper")
             if pmid in pmid_to_refdeleted_id:
-                print "The row for PMID: ", pmid, " is in the REFERENCEDELETED table."
+                print("The row for PMID: ", pmid, " is in the REFERENCEDELETED table.")
                 continue
             insert_referencedeleted(nex_session, fw, pmid, created_by, date_created)
             continue
     
         reference_id = pmid_to_reference_id.get(pmid)
         if reference_id is None:
-            print "The pmid: ", pmid, " is not in the database."
+            print("The pmid: ", pmid, " is not in the database.")
             continue
         
         # curation tags
@@ -96,7 +97,7 @@ def load_references(infile, logfile):
                 if pieces[i] == '1':
                     locus_id = None
                     if (reference_id, locus_id, curation_tag) in key_in_curation:
-                        print "The row for ", (reference_id, locus_id, curation_tag), " is already in the CURATION_REFERENCE table."
+                        print("The row for ", (reference_id, locus_id, curation_tag), " is already in the CURATION_REFERENCE table.")
                         continue
                     insert_curation_reference(nex_session, fw, reference_id, 
                                               locus_id, curation_tag, created_by, 
@@ -108,11 +109,11 @@ def load_references(infile, logfile):
                         name = name.strip()
                         locus_id = name_to_locus_id.get(name)
                         if locus_id is None:
-                            print "The gene name: ", name, " is not in the database."
+                            print("The gene name: ", name, " is not in the database.")
                             continue
 
                         if (reference_id, locus_id, curation_tag) in key_in_curation:
-                            print "The row for ", (reference_id, locus_id, curation_tag), " is already in the CURATION_REFERENCE table."
+                            print("The row for ", (reference_id, locus_id, curation_tag), " is already in the CURATION_REFERENCE table.")
                             continue
                         insert_curation_reference(nex_session, fw, reference_id, 
                                                   locus_id, curation_tag, 
@@ -129,7 +130,7 @@ def load_references(infile, logfile):
                 if pieces[i] == '1' or topic == 'Omics':
                     locus_id = None
                     if (reference_id, locus_id, topic) in key_in_annotation:
-                        print "The row for ", (reference_id, locus_id, topic), " is already in the LITERATUREANNOTATION table."
+                        print("The row for ", (reference_id, locus_id, topic), " is already in the LITERATUREANNOTATION table.")
                         continue
                     insert_literatureannotation(nex_session, fw, reference_id, 
                                                 taxonomy_id, locus_id, topic, 
@@ -142,10 +143,10 @@ def load_references(infile, logfile):
                         name = name.strip()
                         locus_id = name_to_locus_id.get(name)
                         if locus_id is None:
-                            print "The gene name: ", name, " is not in the database."
+                            print("The gene name: ", name, " is not in the database.")
                             continue
                         if (reference_id, locus_id, topic) in key_in_annotation:
-                            print "The row for ", (reference_id, locus_id, topic), " is already in the LITERATUREANNOTATION table."
+                            print("The row for ", (reference_id, locus_id, topic), " is already in the LITERATUREANNOTATION table.")
                             continue
                         insert_literatureannotation(nex_session, fw, reference_id,
                                                     taxonomy_id, locus_id, topic,
@@ -184,7 +185,7 @@ def load_papers(fw, infile, pmid_to_reference_id):
         if pmid in just_loaded:
             continue
          
-        print "Adding paper for pmid: ", pmid
+        print("Adding paper for pmid: ", pmid)
 
         add_paper(pmid, created_by, date_created)
 
@@ -196,7 +197,7 @@ def load_papers(fw, infile, pmid_to_reference_id):
 
 def insert_literatureannotation(nex_session, fw, reference_id, taxonomy_id, locus_id, topic, created_by, date_created,source_id):
 
-    print "NEW Literatureannotation:", reference_id, taxonomy_id, locus_id, topic, created_by, date_created, source_id
+    print("NEW Literatureannotation:", reference_id, taxonomy_id, locus_id, topic, created_by, date_created, source_id)
     
     x = None
     if locus_id is None:
@@ -220,7 +221,7 @@ def insert_literatureannotation(nex_session, fw, reference_id, taxonomy_id, locu
 
 def insert_curation_reference(nex_session, fw, reference_id, locus_id, curation_tag, created_by, date_created, source_id):
 
-    print "NEW curation_reference:", reference_id, locus_id, curation_tag, created_by, date_created, source_id
+    print("NEW curation_reference:", reference_id, locus_id, curation_tag, created_by, date_created, source_id)
 
     x = None
     if locus_id is None:
@@ -243,7 +244,7 @@ def insert_curation_reference(nex_session, fw, reference_id, locus_id, curation_
 
 def insert_referencedeleted(nex_session, fw, pmid, created_by, date_created):
 
-    print "NEW referencedeleted: ", pmid, created_by, date_created
+    print("NEW referencedeleted: ", pmid, created_by, date_created)
 
     x = Referencedeleted(pmid = pmid,
                          reason_deleted = reason_deleted,
@@ -260,8 +261,8 @@ if __name__ == '__main__':
     if len(sys.argv) >= 2:
          infile = sys.argv[1]
     else:
-        print "Usage:         python load_reference_triage_data.py triage_file"
-        print "Usage example: python load_reference_triage_data.py data/frozenTriage4Shuai011717.txt"
+        print("Usage:         python load_reference_triage_data.py triage_file")
+        print("Usage example: python load_reference_triage_data.py data/frozenTriage4Shuai011717.txt")
         exit()
     
     logfile = "logs/" + infile.split('/')[1].replace(".txt", ".log")

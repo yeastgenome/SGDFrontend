@@ -1,9 +1,10 @@
 from datetime import datetime
 import time
-from StringIO import StringIO
+from io import StringIO
 from Bio import Entrez, Medline
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
 sys.path.insert(0, '../../../src/')
 from models import Referencedbentity, Referencedocument, Source
@@ -11,7 +12,7 @@ sys.path.insert(0, '../')
 from config import CREATED_BY
 from util import link_gene_names
 from database_session import get_nex_session as get_session
-from pubmed import get_pubmed_record
+from .pubmed import get_pubmed_record
 
 __author__ = 'sweng66'
 
@@ -28,7 +29,7 @@ def update_all_abstracts(log_file):
 
     fw.write(str(datetime.now()) + "\n")
     
-    print datetime.now()
+    print(datetime.now())
 
     pmid_to_reference =  dict([(x.pmid, x) for x in nex_session.query(Referencedbentity).all()])
     source_to_id = dict([(x.display_name, x.source_id) for x in nex_session.query(Source).all()])
@@ -39,7 +40,7 @@ def update_all_abstracts(log_file):
 
     fw.write("Getting Pubmed records...\n")
 
-    print "Getting Pubmed records..."
+    print("Getting Pubmed records...")
 
     source_id = source_to_id[SRC]
 
@@ -73,7 +74,7 @@ def update_all_abstracts(log_file):
         update_database_batch(nex_session, fw, records, pmid_to_reference, 
                               reference_id_to_abstract, source_id)
 
-    print "Done"
+    print("Done")
 
     fw.close()
     nex_session.commit()
@@ -114,8 +115,8 @@ def update_abstract(nex_session, fw, pmid, reference_id, record, abstract_db, so
         nex_session.add(x)
         nex_session.commit()
         fw.write("PMID:" + str(pmid) + ": new abstract added.\nNew abstract: " + abstract + "\n")
-        print "PMID:", pmid, ": new abstract added."
-        print "New abstract:", abstract
+        print("PMID:", pmid, ": new abstract added.")
+        print("New abstract:", abstract)
  
     else:
         nex_session.query(Referencedocument).filter_by(reference_id=reference_id).update({'text': abstract,
@@ -123,9 +124,9 @@ def update_abstract(nex_session, fw, pmid, reference_id, record, abstract_db, so
         nex_session.commit()
         fw.write("PMID=" + str(pmid) + ": the abstract is updated.\nNew abstract: " + abstract + "\nOld abstract: " + abstract_db + "\n\n")
 
-        print "PMID=", pmid, ": the abstract is updated."
-        print "New abstract:", abstract
-        print "Old abstract:", abstract_db
+        print("PMID=", pmid, ": the abstract is updated.")
+        print("New abstract:", abstract)
+        print("Old abstract:", abstract_db)
 
 
 if __name__ == '__main__':

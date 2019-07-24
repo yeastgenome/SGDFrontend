@@ -1,5 +1,6 @@
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
 sys.path.insert(0, '../../../src/')
 from models import Posttranslationannotation, Locusdbentity, Referencedbentity, Psimod, Taxonomy, \
@@ -66,7 +67,7 @@ def load_data():
 
     for file_name in files_to_load:
 
-        print "LOADING DATA from: ", file_name
+        print("LOADING DATA from: ", file_name)
 
         f = open(file_name)
         
@@ -78,7 +79,7 @@ def load_data():
                 continue
             dbentity_id = name_to_dbentity_id.get(pieces[0])
             if dbentity_id is None:
-                print "The ", pieces[0], " is not in the DBENTITY table."
+                print("The ", pieces[0], " is not in the DBENTITY table.")
                 continue
             site = pieces[1].strip()
             site_residue = site[0]
@@ -106,11 +107,11 @@ def load_data():
                 psimod_term = modification_type
             psimod_id = term_to_psimod_id.get(psimod_term)
             if psimod_id is None:
-                print "The PSIMOD term ", psimod_term, " is not in PSIMOD table."
+                print("The PSIMOD term ", psimod_term, " is not in PSIMOD table.")
                 continue
             reference_id = pmid_to_reference_id.get(pmid)
             if reference_id is None:
-                print "The PMID=", pmid, " is not in REFERENCEDBENTITY table."
+                print("The PMID=", pmid, " is not in REFERENCEDBENTITY table.")
                 continue
 
             modifiers = modifiers.strip().replace(" | ", "|")
@@ -118,7 +119,7 @@ def load_data():
                 for modifier in modifiers.upper().split('|'):
                     modifier_id = name_to_dbentity_id.get(modifier)
                     if modifier_id is None:
-                        print "The modifier: ", modifier, " is not in LOCUSDBENTITY table."
+                        print("The modifier: ", modifier, " is not in LOCUSDBENTITY table.")
                         continue
                     key = (dbentity_id, reference_id, site_index, site_residue, psimod_id, modifier_id)
                     if key in key_to_id:
@@ -145,7 +146,7 @@ def load_data():
 
 def insert_into_database(nex_session, fw, taxonomy_id, source_id, dbentity_id, reference_id, site_index, site_residue, psimod_id, modifier_id, line):
 
-    print "NEW:", dbentity_id, reference_id, site_index, site_residue, psimod_id, modifier_id
+    print("NEW:", dbentity_id, reference_id, site_index, site_residue, psimod_id, modifier_id)
 
     y = None
     if modifier_id:

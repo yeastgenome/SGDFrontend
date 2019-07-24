@@ -1,7 +1,8 @@
-from StringIO import StringIO
+from io import StringIO
 from Bio import Entrez, Medline
 import sys
-reload(sys)
+import importlib
+importlib.reload(sys)
 sys.setdefaultencoding('UTF8')
 sys.path.insert(0, '../../../src/')
 # from ..models 
@@ -219,7 +220,7 @@ def insert_referencedbentity(pmid, source_id, record, created_by, date_created):
                           fulltext_status = fulltext_status,
                           citation = citation,
                           year = int(year),
-                          pmid = long(pmid),
+                          pmid = int(pmid),
                           pmcid = pmcid,
                           date_published = pubdate,
                           date_revised = date_revised,
@@ -228,7 +229,7 @@ def insert_referencedbentity(pmid, source_id, record, created_by, date_created):
                           volume = volume,
                           title = title,
                           doi = doi,
-                          journal_id = long(journal_id),
+                          journal_id = int(journal_id),
                           date_created = date_created,
                           created_by = created_by)
 
