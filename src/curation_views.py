@@ -4,8 +4,8 @@ from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPOk, HTTPNo
 from pyramid.view import view_config
 from pyramid.session import check_csrf_token
 from sqlalchemy import create_engine, and_ , or_
-from sqlalchemy.exc import IntegrityError,DataError
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.exc import IntegrityError, DataError, InternalError
+from sqlalchemy.orm import scoped_session, sessionmaker, joinedload
 from validate_email import validate_email
 from random import randint
 from Bio import Entrez, Medline
@@ -18,6 +18,7 @@ import transaction
 import json
 import re
 from bs4 import BeautifulSoup
+import pandas as pd
 
 from .helpers import allowed_file, extract_id_request, secure_save_file,\
     curator_or_none, extract_references, extract_keywords,\
@@ -28,7 +29,7 @@ from .helpers import allowed_file, extract_id_request, secure_save_file,\
 from .curation_helpers import ban_from_cache, process_pmid_list,\
     get_curator_session, get_pusher_client, validate_orcid, get_list_of_ptms
 from .loading.promote_reference_triage import add_paper
-from .models import DBSession, Dbentity, Dbuser, CuratorActivity, Colleague, Colleaguetriage, LocusnoteReference, Referencedbentity, Reservedname, ReservednameTriage, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags, convert_space_separated_pmids_to_list, Psimod, Posttranslationannotation
+from .models import DBSession, Dbentity, Dbuser, CuratorActivity, Colleague, Colleaguetriage, LocusnoteReference, Referencedbentity, Reservedname, ReservednameTriage, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags, convert_space_separated_pmids_to_list, Psimod, Posttranslationannotation,Regulationannotation
 from .tsv_parser import parse_tsv_annotations
 from .models_helpers import ModelsHelper
 
@@ -1446,7 +1447,6 @@ def ptm_by_gene(request):
 
     return HTTPOk(body=json.dumps({'ptms' :list_of_ptms}),content_type='text/json')
 
-
 @view_config(route_name='get_strains', renderer='json', request_method='GET')
 def get_strains(request):
     try:
@@ -1488,7 +1488,8 @@ def get_psimod(request):
                 returnList.append(obj)
 
                 
-            return HTTPOk(body=json.dumps({'psimods': returnList}),content_type='text/json') 
+            return HTTPOk(body=json.dumps({'psimods': returnList}),content_type='text/json')
+
         return None
     except Exception as e:
         return HTTPBadRequest(body=json.dumps({'error': str(e)}))
@@ -1693,3 +1694,723 @@ def ptm_delete(request):
 
     except Exception as e:
         return HTTPBadRequest(body=json.dumps({'error': str(e.message)}), content_type='text/json')
+
+@view_config(route_name='get_all_go_for_regulations',renderer='json',request_method='GET')
+@authenticate
+def get_all_go_for_regulations(request):
+    go_in_db = models_helper.get_all_go()
+    obj = [{'go_id': g.go_id, 'format_name': g.format_name,'display_name': g.display_name} for g in go_in_db]
+    return HTTPOk(body=json.dumps({'success': obj}), content_type='text/json')
+
+
+@view_config(route_name='get_all_eco_for_regulations', renderer='json', request_method='GET')
+@authenticate
+def get_all_eco_for_regulations(request):
+    eco_in_db = models_helper.get_all_eco()
+    obj = [{'eco_id':e.eco_id, 'format_name': e.format_name,'display_name':e.display_name} for e in eco_in_db]
+    return HTTPOk(body=json.dumps({'success':obj}),content_type='text/json')
+
+
+@view_config(route_name='regulation_insert_update', renderer='json', request_method='POST')
+@authenticate
+def regulation_insert_update(request):
+    try:
+        CREATED_BY = request.session['username']
+        curator_session = get_curator_session(request.session['username'])
+        source_id = 834
+        MANUALLY_CURATED ='manually curated'
+
+        annotation_id = request.params.get('annotation_id')
+
+        target_id = request.params.get('target_id')
+        if not target_id:
+            return HTTPBadRequest(body=json.dumps({'error': "target gene is blank"}), content_type='text/json')
+
+        regulator_id = request.params.get('regulator_id')
+        if not regulator_id:
+            return HTTPBadRequest(body=json.dumps({'error': "regulator gene is blank"}), content_type='text/json')
+
+        taxonomy_id = request.params.get('taxonomy_id')
+        if not taxonomy_id:
+            return HTTPBadRequest(body=json.dumps({'error': "taxonomy is blank"}), content_type='text/json')
+        
+        reference_id = request.params.get('reference_id')
+        if not reference_id:
+            return HTTPBadRequest(body=json.dumps({'error': "reference is blank"}), content_type='text/json')
+
+        eco_id = request.params.get('eco_id')
+        if not eco_id:
+            return HTTPBadRequest(body=json.dumps({'error': "eco is blank"}), content_type='text/json')
+        
+        regulator_type = request.params.get('regulator_type')
+        if not regulator_type:
+            return HTTPBadRequest(body=json.dumps({'error': "regulator type is blank"}), content_type='text/json')
+
+        regulation_type = request.params.get('regulation_type')
+        if not regulation_type:
+            return HTTPBadRequest(body=json.dumps({'error': "regulation type is blank"}), content_type='text/json')
+
+        direction = request.params.get('direction')
+        if not direction:
+            direction = None
+        
+
+        happens_during = request.params.get('happens_during')
+        if not happens_during:
+            happens_during = None
+
+        annotation_type = MANUALLY_CURATED
+
+        dbentity_in_db = None
+        dbentity_in_db = DBSession.query(Dbentity).filter(or_(Dbentity.sgdid == target_id, Dbentity.format_name == target_id)).filter(Dbentity.subclass == 'LOCUS').one_or_none()
+        if dbentity_in_db is not None:
+            target_id = dbentity_in_db.dbentity_id
+        else:
+            return HTTPBadRequest(body=json.dumps({'error': "target gene value not found in database"}), content_type='text/json')
+
+        dbentity_in_db = None
+        dbentity_in_db = DBSession.query(Dbentity).filter(or_(Dbentity.sgdid == regulator_id, Dbentity.format_name == regulator_id)).filter(Dbentity.subclass == 'LOCUS').one_or_none()
+        if dbentity_in_db is not None:
+            regulator_id = dbentity_in_db.dbentity_id
+        else:
+            return HTTPBadRequest(body=json.dumps({'error': "regulator gene value not found in database"}), content_type='text/json')
+
+        dbentity_in_db = None
+        pmid_in_db = None
+        dbentity_in_db = DBSession.query(Dbentity).filter(and_(Dbentity.sgdid == reference_id,Dbentity.subclass == 'REFERENCE')).one_or_none()
+        if dbentity_in_db is None:
+            try:
+                dbentity_in_db = DBSession.query(Dbentity).filter(and_(Dbentity.dbentity_id == int(reference_id), Dbentity.subclass == 'REFERENCE')).one_or_none()
+            except ValueError as e:
+                pass
+        if dbentity_in_db is None:
+            try:
+                pmid_in_db = DBSession.query(Referencedbentity).filter(Referencedbentity.pmid == int(reference_id)).one_or_none()
+            except ValueError as e:
+                pass
+
+        if dbentity_in_db is not None:
+            reference_id = dbentity_in_db.dbentity_id
+        elif (pmid_in_db is not None):
+            reference_id = pmid_in_db.dbentity_id
+        else:
+            return HTTPBadRequest(body=json.dumps({'error': "reference value not found in database"}), content_type='text/json')
+        
+
+        isSuccess = False
+        returnValue = ''
+        reference_in_db = None
+
+        if(int(annotation_id) > 0):
+            try:
+                update_regulation = {'target_id': target_id,
+                                    'regulator_id': regulator_id,
+                                    'taxonomy_id': taxonomy_id,
+                                    'reference_id': reference_id,
+                                    'eco_id': eco_id,
+                                    'regulator_type': regulator_type,
+                                    'regulation_type': regulation_type,
+                                    'direction': direction,
+                                    'happens_during': happens_during,
+                                    'annotation_type': annotation_type
+                                    }
+
+                curator_session.query(Regulationannotation).filter(Regulationannotation.annotation_id == annotation_id).update(update_regulation)
+                transaction.commit()
+                isSuccess = True
+                returnValue = 'Record updated successfully.'
+
+                regulation = curator_session.query(Regulationannotation).filter(Regulationannotation.annotation_id == annotation_id).one_or_none()
+                reference_in_db = {
+                    'id': regulation.annotation_id,
+                    'target_id': {
+                        'id': regulation.target.format_name,
+                        'display_name': regulation.target.display_name
+                    },
+                    'regulator_id': {
+                        'id': regulation.regulator.format_name,
+                        'display_name': regulation.regulator.display_name
+                    },
+                    'taxonomy_id': '',
+                    'reference_id': regulation.reference.pmid,
+                    'eco_id': '',
+                    'regulator_type': regulation.regulator_type,
+                    'regulation_type': regulation.regulation_type,
+                    'direction': regulation.direction,
+                    'happens_during': '',
+                    'annotation_type': regulation.annotation_type,
+                }
+                if regulation.eco:
+                    reference_in_db['eco_id'] = str(regulation.eco.eco_id)
+
+                if regulation.go:
+                    reference_in_db['happens_during'] = str(regulation.go.go_id)
+
+                if regulation.taxonomy:
+                    reference_in_db['taxonomy_id'] = regulation.taxonomy.taxonomy_id
+
+            except IntegrityError as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = 'Updated failed, record already exists'
+            except DataError as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = 'Update failed, issue in data'
+            except InternalError as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                error = str(e.orig).replace('_', ' ')
+                error = error[0:error.index('.')]
+                returnValue = 'Updated failed, ' + error
+            except Exception as e:
+                print(e)
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = 'Updated failed, ' + str(e.message)
+            finally:
+                if curator_session:
+                    curator_session.close()
+
+        
+        if(int(annotation_id) == 0):
+            try:
+                y = None
+                y = Regulationannotation(target_id = target_id,
+                                    regulator_id = regulator_id,
+                                    source_id = source_id,
+                                    taxonomy_id = taxonomy_id,
+                                    reference_id = reference_id,
+                                    eco_id = eco_id,
+                                    regulator_type = regulator_type,
+                                    regulation_type = regulation_type,
+                                    direction = direction,
+                                    happens_during = happens_during,
+                                    created_by = CREATED_BY,
+                                    annotation_type = annotation_type)
+                curator_session.add(y)
+                transaction.commit()
+                isSuccess = True
+                returnValue = 'Record added successfully.'
+            except IntegrityError as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = 'Insert failed, record already exists'
+            except DataError as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = 'Insert failed, issue in data'
+            except Exception as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = 'Insert failed' + ' ' + str(e.message)
+            finally:
+                if curator_session:
+                    curator_session.close()
+
+        if isSuccess:
+            return HTTPOk(body=json.dumps({'success': returnValue,'regulation':reference_in_db}), content_type='text/json')
+
+        return HTTPBadRequest(body=json.dumps({'error': returnValue}), content_type='text/json')
+
+    except Exception as e:
+        return HTTPBadRequest(body=json.dumps({'error': e.message}), content_type='text/json')
+
+
+@view_config(route_name='regulations_by_filters',renderer='json',request_method='POST')
+@authenticate
+def regulations_by_filters(request):
+    try:
+        target_id = str(request.params.get('target_id')).strip()
+        regulator_id = str(request.params.get('regulator_id')).strip()
+        reference_id = str(request.params.get('reference_id')).strip()
+
+        if not(target_id or regulator_id or reference_id):
+            raise Exception("Please provide input for target gene, regulator gene, reference or combination to get the regulations.")
+
+        regulations_in_db = DBSession.query(Regulationannotation)
+        
+        target_dbentity_id,regulator_dbentity_id,reference_dbentity_id = None,None,None
+
+        if target_id:
+            target_dbentity_id = DBSession.query(Dbentity).filter(or_(Dbentity.sgdid==target_id, Dbentity.format_name==target_id)).one_or_none()
+
+            if not target_dbentity_id:
+                raise Exception('Target gene not found, please provide sgdid or systematic name')
+            else:
+                target_dbentity_id = target_dbentity_id.dbentity_id
+                regulations_in_db = regulations_in_db.filter_by(target_id=target_dbentity_id)
+
+        if regulator_id:
+            regulator_dbentity_id = DBSession.query(Dbentity).filter(or_(Dbentity.sgdid == regulator_id,Dbentity.format_name== regulator_id)).one_or_none()
+
+            if not regulator_dbentity_id:
+                raise Exception('Regulator gene not found, please provide sgdid or systematic name')
+            else:
+                regulator_dbentity_id = regulator_dbentity_id.dbentity_id
+                regulations_in_db = regulations_in_db.filter_by(regulator_id=regulator_dbentity_id)
+        
+        if reference_id:
+            if reference_id.startswith('S00'):
+                reference_dbentity_id = DBSession.query(Dbentity).filter(Dbentity.sgdid == reference_id).one_or_none()
+            else:
+                reference_dbentity_id = DBSession.query(Referencedbentity).filter(or_(Referencedbentity.pmid == int(reference_id),Referencedbentity.dbentity_id == int(reference_id))).one_or_none()
+            
+            if not reference_dbentity_id:
+                raise Exception('Reference not found, please provide sgdid , pubmed id or reference number')
+            else:
+                reference_dbentity_id = reference_dbentity_id.dbentity_id
+                regulations_in_db = regulations_in_db.filter_by(reference_id=reference_dbentity_id)
+        
+        regulations = regulations_in_db.options(joinedload(Regulationannotation.eco), joinedload(Regulationannotation.go), joinedload(Regulationannotation.taxonomy)
+                                                , joinedload(Regulationannotation.reference), joinedload(Regulationannotation.regulator), joinedload(Regulationannotation.target)).order_by(Regulationannotation.annotation_id.asc()).all()
+        
+        list_of_regulations = []
+        for regulation in regulations:
+            currentRegulation = {
+                'id': regulation.annotation_id,
+                'target_id': {
+                    'id': regulation.target.format_name,
+                    'display_name': regulation.target.display_name
+                },
+                'regulator_id': {
+                    'id': regulation.regulator.format_name,
+                    'display_name': regulation.regulator.display_name
+                },
+                'taxonomy_id': '',
+                'reference_id': regulation.reference.pmid,
+                'eco_id': '',
+                'regulator_type': regulation.regulator_type,
+                'regulation_type': regulation.regulation_type,
+                'direction': regulation.direction,
+                'happens_during': '',
+                'annotation_type': regulation.annotation_type,
+            }
+
+            if regulation.eco:
+                currentRegulation['eco_id'] = str(regulation.eco.eco_id)
+
+            if regulation.go:
+                currentRegulation['happens_during'] = str(regulation.go.go_id)
+
+            if regulation.taxonomy:
+                currentRegulation['taxonomy_id'] = regulation.taxonomy.taxonomy_id
+
+            list_of_regulations.append(currentRegulation)
+        
+        return HTTPOk(body=json.dumps({'success': list_of_regulations}), content_type='text/json')
+    except Exception as e:
+        return HTTPBadRequest(body=json.dumps({'error': e.message}), content_type='text/json')
+
+
+@view_config(route_name='regulation_delete',renderer='json',request_method='DELETE')
+@authenticate
+def regulation_delete(request):
+    try:
+        id = request.matchdict['id']
+        curator_session = get_curator_session(request.session['username'])
+        isSuccess = False
+        returnValue = ''
+        regulation_in_db = curator_session.query(Regulationannotation).filter(Regulationannotation.annotation_id == id).one_or_none()
+        if(regulation_in_db):
+            try:
+                curator_session.delete(regulation_in_db)
+                transaction.commit()
+                isSuccess = True
+                returnValue = 'Regulation successfully deleted.'
+            except Exception as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = 'Error occurred deleting regulation: ' + str(e.message)
+            finally:
+                if curator_session:
+                    curator_session.close()
+
+            if isSuccess:
+                return HTTPOk(body=json.dumps({'success': returnValue}), content_type='text/json')
+
+            return HTTPBadRequest(body=json.dumps({'error': returnValue}), content_type='text/json')
+
+        return HTTPBadRequest(body=json.dumps({'error': 'regulation not found in database.'}), content_type='text/json')
+
+    except Exception as e:
+        return HTTPBadRequest(body=json.dumps({'error': str(e.message)}), content_type='text/json')
+
+@view_config(route_name='regulation_file',renderer='json',request_method='POST')
+@authenticate
+def regulation_file(request):
+
+    try:
+        file = request.POST['file'].file
+        filename = request.POST['file'].filename
+        CREATED_BY = request.session['username']
+        xl = pd.ExcelFile(file)
+        list_of_sheets = xl.sheet_names
+
+        COLUMNS = {
+            'target': 'Target Gene',
+            'regulator_gene':'Regulator Gene',
+            'reference': 'Reference',
+            'taxonomy': 'Taxonomy',
+            'eco':'Eco',
+            'regulator_type': 'Regulator type',
+            'regulation_type':'Regulation type',
+            'direction':'Direction',
+            'happens_during':'Happens during',
+            'annotation_type':'Annotation type'
+        }
+
+        SOURCE_ID = 834
+        SEPARATOR = '|'
+
+        list_of_regulations = []
+        list_of_regulations_errors = []
+        df = pd.read_excel(io=file, sheet_name="Sheet1")
+
+        null_columns = df.columns[df.isnull().any()]
+        for col in null_columns:
+            if COLUMNS['direction'] != col and COLUMNS['happens_during'] !=col:
+                rows = df[df[col].isnull()].index.tolist()
+                rows = ','.join([str(r+2) for r in rows])
+                list_of_regulations_errors.append('No values in column ' + col + ' rows ' + rows)
+        
+        if list_of_regulations_errors:
+            err = [e + '\n' for e in list_of_regulations_errors]
+            return HTTPBadRequest(body=json.dumps({"error": list_of_regulations_errors}), content_type='text/json')
+
+
+        sgd_id_to_dbentity_id, systematic_name_to_dbentity_id = models_helper.get_dbentity_by_subclass(['LOCUS', 'REFERENCE'])
+        strain_to_taxonomy_id = models_helper.get_common_strains()
+        eco_displayname_to_id = models_helper.get_all_eco_mapping()
+        happensduring_to_id = models_helper.get_all_go_mapping()
+        pubmed_id_to_reference, reference_to_dbentity_id = models_helper.get_references_all()
+        list_of_regulator_types = ['chromatin modifier','transcription factor','protein modifier','RNA-binding protein','RNA modifier']
+        list_of_regulation_types = ['transcription','protein activity','protein stability','RNA activity','RNA stability']
+        list_of_directions = ['positive','negative']
+        list_of_annotation_types = ['manually curated','high-throughput']
+
+        for index_row,row in df.iterrows():
+            index  = index_row + 2;
+            column = ''
+            try:
+                regulation_existing = {
+                    'target_id': '',
+                    'regulator_id': '',
+                    'source_id':SOURCE_ID,
+                    'taxonomy_id': '',
+                    'reference_id': '',
+                    'eco_id': '',
+                    'regulator_type': '',
+                    'regulation_type': '',
+                    'direction': None,
+                    'happens_during': '',
+                    'annotation_type': ''
+                }
+                regulation_update = {}
+
+                column = COLUMNS['target']
+                target = row[column]
+                target_current = str(target.split(SEPARATOR)[0]).strip()
+                key = (target_current,'LOCUS')
+                if key in sgd_id_to_dbentity_id:
+                    regulation_existing['target_id'] = sgd_id_to_dbentity_id[key]
+                elif(key in systematic_name_to_dbentity_id):
+                    regulation_existing['target_id'] = systematic_name_to_dbentity_id[key]
+                else:
+                    list_of_regulations_errors.append('Error in target gene on row ' + str(index)+ ', column ' + column)
+                    continue
+                                
+                if SEPARATOR in target:
+                    target_new = str(target.split(SEPARATOR)[1]).strip()
+                    key = (target_new,'LOCUS')
+                
+                    if key in sgd_id_to_dbentity_id:
+                        regulation_update['target_id'] = sgd_id_to_dbentity_id[key]
+                    elif(key in systematic_name_to_dbentity_id):
+                        regulation_update['target_id'] = systematic_name_to_dbentity_id[key]
+                    else:
+                        list_of_regulations_errors.append('Error in target gene on row ' + str(index)+ ', column ' + column)
+                        continue
+                
+                column = COLUMNS['regulator_gene']
+                regulator_gene = row[column]
+                regulator_gene_current = str(regulator_gene.split(SEPARATOR)[0]).strip()
+                key = (regulator_gene_current,'LOCUS')
+                if key in sgd_id_to_dbentity_id:
+                    regulation_existing['regulator_id'] = sgd_id_to_dbentity_id[key]
+                elif(key in systematic_name_to_dbentity_id):
+                    regulation_existing['regulator_id'] = systematic_name_to_dbentity_id[key]
+                else:
+                    list_of_regulations_errors.append('Error in regulator gene on row ' + str(index)+ ', column ' + column)
+                    continue
+                
+                if SEPARATOR in regulator_gene:
+                    regulator_gene_new = str(regulator_gene.split(SEPARATOR)[1]).strip()
+                    key = (regulator_gene_new,'LOCUS')
+                    if key in sgd_id_to_dbentity_id:
+                        regulation_update['regulator_id'] = sgd_id_to_dbentity_id[key]
+                    elif(key in systematic_name_to_dbentity_id):
+                        regulation_update['regulator_id'] = systematic_name_to_dbentity_id[key]
+                    else:
+                        list_of_regulations_errors.append('Error in regulator gene on row ' + str(index)+ ', column ' + column)
+                        continue
+                
+                column = COLUMNS['reference']
+                reference = row[column]
+                reference_current = str(reference).split(SEPARATOR)[0]
+                key = (reference_current,'REFERENCE')
+                if(key in sgd_id_to_dbentity_id):
+                    regulation_existing['reference_id'] = sgd_id_to_dbentity_id[key]
+                elif(reference_current in pubmed_id_to_reference):
+                    regulation_existing['reference_id'] = pubmed_id_to_reference[reference_current]
+                elif(reference_current in reference_to_dbentity_id):
+                    regulation_existing['reference_id'] = int(reference_current)
+                else:
+                    list_of_regulations_errors.append('Error in reference on row ' + str(index) + ', column ' + column)
+                    continue
+                
+                if SEPARATOR in str(reference):
+                    reference_new = str(reference).split(SEPARATOR)[1]
+                    key = (reference_new,'REFERENCE')
+                    if(key in sgd_id_to_dbentity_id):
+                        regulation_update['reference_id'] = sgd_id_to_dbentity_id[key]
+                    elif(reference_new in pubmed_id_to_reference):
+                        regulation_update['reference_id'] = pubmed_id_to_reference[reference_new]
+                    elif(reference_new in reference_to_dbentity_id):
+                        regulation_update['reference_id'] = int(reference_new)
+                    else:
+                        list_of_regulations_errors.append('Error in reference on row ' + str(index) + ', column ' + column)
+                        continue
+                 
+                column = COLUMNS['taxonomy']
+                taxonomy = row[column]
+                taxonomy_current = str(taxonomy).upper().split(SEPARATOR)[0]
+                if taxonomy_current in strain_to_taxonomy_id:
+                    regulation_existing['taxonomy_id'] = strain_to_taxonomy_id[taxonomy_current]
+                else:
+                    list_of_regulations_errors.append('Error in taxonomy on row ' + str(index) + ', column ' + column)
+                    continue
+                
+                if SEPARATOR in taxonomy:
+                    taxonomy_new = str(taxonomy).upper().split(SEPARATOR)[1]
+                    if taxonomy_new in strain_to_taxonomy_id:
+                        regulation_update['taxonomy_id'] = strain_to_taxonomy_id[taxonomy_new]
+                    else:
+                        list_of_regulations_errors.append('Error in taxonomy on row ' + str(index) + ', column ' + column)
+                        continue
+                    
+                column = COLUMNS['eco']
+                eco = row[column]
+                eco_current = str(eco).split(SEPARATOR)[0]
+                if eco_current in eco_displayname_to_id:
+                    regulation_existing['eco_id'] = eco_displayname_to_id[eco_current]
+                else:
+                    list_of_regulations_errors.append('Error in eco on row ' + str(index) + ', column ' + column)
+                    continue
+                
+                if SEPARATOR in eco:
+                    eco_new = str(eco).split(SEPARATOR)[1]
+                    if eco_new in eco_displayname_to_id:
+                        regulation_update['eco_id'] = eco_displayname_to_id[eco_new]
+                    else:
+                        list_of_regulations_errors.append('Error in eco on row ' + str(index) + ', column ' + column)
+                        continue
+                    
+
+                column = COLUMNS['regulator_type']
+                regulator_type = row[column]
+                regulator_type_current = str(regulator_type).split(SEPARATOR)[0]
+                if regulator_type_current in list_of_regulator_types:
+                    regulation_existing['regulator_type'] = regulator_type_current
+                else:
+                    list_of_regulations_errors.append('Error in regulator type on row ' + str(index) + ', column ' + column)
+                    continue
+                
+                if SEPARATOR in regulator_type:
+                    regulator_type_new = str(regulator_type).split(SEPARATOR)[1]
+                    if regulator_type_new in list_of_regulator_types:
+                        regulation_update['regulator_type'] = regulator_type_new
+                    else:
+                        list_of_regulations_errors.append('Error in regulator type on row ' + str(index) + ', column ' + column)
+                        continue
+                    
+                column = COLUMNS['regulation_type']
+                regulation_type = row[column]
+                regulation_type_current = str(regulation_type).split(SEPARATOR)[0]
+                if regulation_type_current in list_of_regulation_types:
+                    regulation_existing['regulation_type'] = regulation_type_current
+                else:
+                    list_of_regulations_errors.append('Error in regulation type on row ' + str(index) + ', column ' + column)
+                    continue
+                
+                if SEPARATOR in regulation_type:
+                    regulation_type_new = str(regulation_type).split(SEPARATOR)[1]
+                    if regulation_type_new in list_of_regulation_types:
+                        regulation_update['regulation_type'] = regulation_type_new
+                    else:
+                        list_of_regulations_errors.append('Error in regulation type on row ' + str(index) + ', column ' + column)
+                        continue
+                
+                column = COLUMNS['direction']
+                direction = row[column]
+                direction_current = None if pd.isnull(direction) else None if not str(direction).split(SEPARATOR)[0] else str(direction).split(SEPARATOR)[0]
+                if direction_current and direction_current not in list_of_directions:
+                    list_of_regulations_errors.append('Error in direction on row ' + str(index) + ', column ' + column)
+                    continue
+                else:
+                    regulation_existing['direction'] = direction_current
+
+                if not pd.isnull(direction) and SEPARATOR in direction:
+                    direction_new = None if pd.isnull(direction) else None if not str(direction).split(SEPARATOR)[1] else str(direction).split(SEPARATOR)[1]
+                    if direction_new and direction_new not in list_of_directions:
+                        list_of_regulations_errors.append('Error in direction on row ' + str(index) + ', column ' + column)
+                        continue
+                    else:
+                        regulation_update['direction'] = direction_new
+                        
+                column = COLUMNS['happens_during']
+                happens_during = row[column]
+                # import pdb;pdb.set_trace()
+                happens_during_current = None if pd.isnull(happens_during) else None if not str(happens_during).split(SEPARATOR)[0] else str(happens_during).split(SEPARATOR)[0]
+                if happens_during_current and happens_during_current not in happensduring_to_id:
+                    list_of_regulations_errors.append('Error in direction on row ' + str(index) + ', column ' + column)
+                else:
+                    regulation_existing['happens_during'] = None if happens_during_current == None else happensduring_to_id[happens_during_current]
+                
+                if not pd.isnull(happens_during) and SEPARATOR in happens_during:
+                    happens_during_new = None if pd.isnull(happens_during) else None if not str(happens_during).split(SEPARATOR)[1] else str(happens_during).split(SEPARATOR)[1]
+                    if happens_during_new and happens_during_new not in happensduring_to_id:
+                        list_of_regulations_errors.append('Error in happens during on row ' + str(index) + ', column ' + column)
+                    else:
+                        regulation_update['happens_during'] = None if happens_during_new == None else  happensduring_to_id[happens_during_new]
+
+                column = COLUMNS['annotation_type']
+                annotation_type = row[column]
+                annotation_type_current = str(annotation_type).split(SEPARATOR)[0]
+                if annotation_type_current in list_of_annotation_types:
+                    regulation_existing['annotation_type'] = annotation_type_current
+                else:
+                    list_of_regulations_errors.append('Error in annotation type on row ' + str(index) + ', column ' + column)
+                    continue
+
+                if SEPARATOR in annotation_type:
+                    annotation_type_new = str(annotation_type).split(SEPARATOR)[1]
+                    if annotation_type_new in list_of_annotation_types:
+                        regulation_update['annotation_type'] = annotation_type_new
+                    else:
+                        list_of_regulations_errors.append('Error in annotation type on row ' + str(index) + ', column ' + column)
+                        continue
+
+                list_of_regulations.append([regulation_existing,regulation_update])
+            
+            except Exception as e:
+                list_of_regulations_errors.append('Error in on row ' + str(index) + ', column ' + column + ' ' + e.message)
+        
+
+        if list_of_regulations_errors:
+            err = [e + '\n' for e in list_of_regulations_errors]
+            return HTTPBadRequest(body=json.dumps({"error":list_of_regulations_errors}),content_type='text/json')
+        
+        INSERT = 0
+        UPDATE = 0
+        curator_session = get_curator_session(request.session['username'])
+        isSuccess = False
+        returnValue = ''
+        
+        if list_of_regulations:
+            for item in list_of_regulations:
+                regulation,update_regulation = item
+                if bool(update_regulation):
+                    regulation_in_db = curator_session.query(Regulationannotation).filter(and_(
+                        Regulationannotation.target_id == regulation['target_id'],
+                        Regulationannotation.regulator_id == regulation['regulator_id'],
+                        Regulationannotation.taxonomy_id == regulation['taxonomy_id'],
+                        Regulationannotation.reference_id == regulation['reference_id'],
+                        Regulationannotation.eco_id == regulation['eco_id'],
+                        Regulationannotation.regulator_type == regulation['regulator_type'],
+                        Regulationannotation.regulation_type == regulation['regulation_type'],
+                        Regulationannotation.annotation_type == regulation['annotation_type'],
+                        Regulationannotation.happens_during == regulation['happens_during']
+                        )).one_or_none()
+                    if regulation_in_db is not None:
+                        curator_session.query(Regulationannotation).filter(and_(
+                        Regulationannotation.target_id == regulation['target_id'],
+                        Regulationannotation.regulator_id == regulation['regulator_id'],
+                        Regulationannotation.taxonomy_id == regulation['taxonomy_id'],
+                        Regulationannotation.reference_id == regulation['reference_id'],
+                        Regulationannotation.eco_id == regulation['eco_id'],
+                        Regulationannotation.regulator_type == regulation['regulator_type'],
+                        Regulationannotation.regulation_type == regulation['regulation_type'],
+                        Regulationannotation.annotation_type == regulation['annotation_type'],
+                        Regulationannotation.happens_during == regulation['happens_during']
+                        )).update(update_regulation)
+                        UPDATE  = UPDATE + 1
+
+                else:    
+                    r = Regulationannotation(
+                        target_id = regulation['target_id'],
+                        regulator_id = regulation['regulator_id'], 
+                        source_id = SOURCE_ID,
+                        taxonomy_id = regulation['taxonomy_id'],
+                        reference_id = regulation['reference_id'], 
+                        eco_id = regulation['eco_id'],
+                        regulator_type = regulation['regulator_type'],
+                        regulation_type= regulation['regulation_type'],
+                        direction = regulation['direction'],
+                        happens_during = regulation['happens_during'],
+                        created_by = CREATED_BY,
+                        annotation_type = regulation['annotation_type']
+                    )
+                    curator_session.add(r)
+                    INSERT = INSERT + 1
+            
+            try:
+                transaction.commit()
+                err = '\n'.join(list_of_regulations_errors)
+                isSuccess = True    
+                returnValue = 'Inserted:  ' + str(INSERT) + ' <br />Updated: ' + str(UPDATE) + '<br />Errors: ' + err
+            except IntegrityError as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = e.message
+            except DataError as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = e.message
+            except Exception as e:
+                transaction.abort()
+                if curator_session:
+                    curator_session.rollback()
+                isSuccess = False
+                returnValue = e.message
+            finally:
+                if curator_session:
+                    curator_session.close()
+        
+        if isSuccess:
+            return HTTPOk(body=json.dumps({"success": returnValue}), content_type='text/json')
+        
+        return HTTPBadRequest(body=json.dumps({'error': returnValue}), content_type='text/json')    
+
+    except Exception as e:
+        return HTTPBadRequest(body=json.dumps({"error":str(e.message)}),content_type='text/json')

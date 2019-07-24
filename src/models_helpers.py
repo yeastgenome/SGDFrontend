@@ -1,4 +1,4 @@
-from models import DBSession, Base, Colleague, ColleagueLocus, ColleagueRelation, FilePath, Filedbentity, FileKeyword, Path, ColleagueReference, ColleagueUrl, Colleaguetriage, Dbentity, Locusdbentity, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi, Psimod, Posttranslationannotation
+from models import DBSession, Base, Colleague, ColleagueLocus, ColleagueRelation, FilePath, Filedbentity, FileKeyword, Path, ColleagueReference, ColleagueUrl, Colleaguetriage, Dbentity, Locusdbentity, LocusAlias, Dnasequenceannotation, So, Locussummary, Phenotypeannotation, PhenotypeannotationCond, Phenotype, Goannotation, Go, Goslimannotation, Goslim, Apo, Straindbentity, Strainsummary, Reservedname, GoAlias, Goannotation, Referencedbentity, Referencedocument, Referenceauthor, ReferenceAlias, Chebi, Psimod, Posttranslationannotation, Eco
 import os
 import requests
 
@@ -474,3 +474,39 @@ class ModelsHelper(object):
         psimods_in_db = None
         psimods_in_db = DBSession.query(Psimod).order_by(Psimod.display_name)
         return psimods_in_db
+    
+    def get_all_go(self):
+        '''
+        Get all GO data
+        '''
+        go_in_db = DBSession.query(Go).all()
+        return go_in_db
+
+    def get_all_eco(self):
+        '''
+        Get all ECO data
+        '''
+        eco_in_db = DBSession.query(Eco).all()
+        return eco_in_db
+
+    def get_all_eco_mapping(self):
+        '''
+        Get all ECO data as dictionary with key as display_name
+        ''' 
+        eco_displayname_to_Id = {}
+        eco_in_db = self.get_all_eco()
+        for eco in eco_in_db:
+            eco_displayname_to_Id[eco.display_name] = eco.eco_id
+        
+        return eco_displayname_to_Id
+    
+    def get_all_go_mapping(self):
+        '''
+        Get all GO data as dictionary with key as display_name
+        '''
+        go_displayname_to_Id = {}
+        go_in_db = self.get_all_go()
+        for go in go_in_db:
+            go_displayname_to_Id[go.display_name] = go.go_id
+        
+        return go_displayname_to_Id

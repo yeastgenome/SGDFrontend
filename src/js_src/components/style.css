@@ -102,6 +102,10 @@
   border:1px solid #cacaca;
 }
 
+.margin_bottom_20{
+  margin-bottom: 20px;
+}
+
 .autoSelect::-webkit-scrollbar{
   display: none;
 }

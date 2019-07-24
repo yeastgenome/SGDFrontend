@@ -518,7 +518,6 @@ def send_newsletter_email(subject, recipients, msg):
     except Exception as e:
         return {"error":"Error occured while sending email."}
 
-
 #TODO: abstract this function in second release
 def update_curate_activity(locus_summary_object):
     ''' Add curator locus-summary event to curator activity table
@@ -647,7 +646,6 @@ def summary_file_is_valid(file_upload):
             ', '.join(invalid_genes)
         obj['flag'] = False
     return obj
-
 
 def unicode_to_string(unicode_value):
     try:
