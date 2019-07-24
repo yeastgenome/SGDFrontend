@@ -1,14 +1,15 @@
 from datetime import datetime
 import time
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
 sys.path.insert(0, '../../../src/')
 from models import Referencedbentity, Source, Journal
 sys.path.insert(0, '../')
 from config import CREATED_BY
 from database_session import get_nex_session as get_session
-from pubmed import get_pubmed_record_from_xml, set_cite
+from .pubmed import get_pubmed_record_from_xml, set_cite
 
 __author__ = 'sweng66'
 
@@ -50,8 +51,8 @@ def update_reference_table(log_file):
     fw.write(str(datetime.now()) + "\n")
     fw.write("Getting Pubmed records...\n")
 
-    print datetime.now()
-    print "Getting Pubmed records..."
+    print(datetime.now())
+    print("Getting Pubmed records...")
 
     pmids = []
     j = 0
@@ -82,7 +83,7 @@ def update_reference_table(log_file):
                               reference_id_to_authors, journal_id_to_abbrev, 
                               source_id)
 
-    print "Done"
+    print("Done")
 
     fw.close()
     nex_session.commit()
@@ -161,39 +162,39 @@ def update_reference(nex_session, fw, pmid, record, x, reference_id_to_authors, 
     has_update = 0
     if published_status:
         x.publication_status = published_status
-        print "UPDATE:", pmid, "publication_status=", published_status
+        print("UPDATE:", pmid, "publication_status=", published_status)
         has_update = 1
     if citation != x.citation:
         x.citation = citation
-        print "UPDATE:", pmid, "citation=", citation
+        print("UPDATE:", pmid, "citation=", citation)
         has_update = 1
     if title != x.title:
         x.title = title
-        print "UPDATE:", pmid, "title=", title
+        print("UPDATE:", pmid, "title=", title)
         has_update = 1
     if year != x.year:
         x.year = year
-        print "UPDATE:", pmid, "year=", year
+        print("UPDATE:", pmid, "year=", year)
         has_update = 1
     if volume != x.volume:
         x.volume = volume
-        print "UPDATE:", pmid, "volume=", volume
+        print("UPDATE:", pmid, "volume=", volume)
         has_update = 1
     if issue != x.issue:
         x.issue = issue
-        print "UPDATE:", pmid, "issue=", issue
+        print("UPDATE:", pmid, "issue=", issue)
         has_update = 1
     if page != x.page:
         x.page = page
-        print "UPDATE:", pmid, "page=", page
+        print("UPDATE:", pmid, "page=", page)
         has_update = 1
     if doi and doi != x.doi:
         x.doi = doi
-        print "UPDATE:", pmid, "doi=", doi
+        print("UPDATE:", pmid, "doi=", doi)
         has_update = 1
     if pmcid and pmcid != x.pmcid and pmcid != "PMC4502675":
         x.pmcid = pmcid
-        print "UPDATE:", pmid, "pmcid=", pmcid
+        print("UPDATE:", pmid, "pmcid=", pmcid)
         has_update = 1
     if date_revised:
         date_revised_db = None
@@ -201,14 +202,14 @@ def update_reference(nex_session, fw, pmid, record, x, reference_id_to_authors, 
             date_revised_db = str(x.date_revised).split(' ')[0]
         if date_revised_db is None or date_revised != date_revised_db:
             x.date_revised = date_revised
-            print "UPDATE:", pmid, "date_revised=", date_revised
+            print("UPDATE:", pmid, "date_revised=", date_revised)
             has_update = 1
 
     if has_update == 1:
         nex_session.add(x)
         nex_session.commit()
     else:
-        print pmid, "No change"
+        print(pmid, "No change")
 
 
 def update_authors(nex_session, fw, pmid, reference_id, authors, authors_in_db, source_id):
@@ -241,9 +242,9 @@ def update_authors(nex_session, fw, pmid, reference_id, authors, authors_in_db, 
 
     fw.write("PMID=" + str(pmid) + ": the author list is updated.\nNew authors: " + ", ".join(authors) + "\nOld authors: " + ", ".join(authors_in_db) + "\n\n")
 
-    print "PMID=", pmid, ": the author list is updated."
-    print "New authors:", ", ".join(authors)
-    print "Old authors:", ", ".join(authors_in_db)
+    print("PMID=", pmid, ": the author list is updated.")
+    print("New authors:", ", ".join(authors))
+    print("Old authors:", ", ".join(authors_in_db))
 
 
 if __name__ == '__main__':

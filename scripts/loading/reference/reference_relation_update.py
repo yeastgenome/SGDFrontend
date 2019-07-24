@@ -1,17 +1,18 @@
 from datetime import datetime
 import time
-from StringIO import StringIO
+from io import StringIO
 from Bio import Entrez, Medline
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
 sys.path.insert(0, '../../../src/')
 from models import Referencedbentity, ReferenceRelation, Source
 sys.path.insert(0, '../')
 from config import CREATED_BY
 from database_session import get_nex_session as get_session
-from pubmed import get_pubmed_record
-from add_reference import tag_to_type_mapping, relation_in_tag, relation_on_tag
+from .pubmed import get_pubmed_record
+from .add_reference import tag_to_type_mapping, relation_in_tag, relation_on_tag
 
 __author__ = 'sweng66'
 
@@ -28,8 +29,8 @@ def update_all_relations(log_file):
     fw.write(str(datetime.now()) + "\n")
     fw.write("Getting PMID list...\n")
 
-    print datetime.now()
-    print "Getting PMID list..."
+    print(datetime.now())
+    print("Getting PMID list...")
 
     pmid_to_reference =  dict([(x.pmid, x) for x in nex_session.query(Referencedbentity).all()])
     source_to_id = dict([(x.display_name, x.source_id) for x in nex_session.query(Source).all()])
@@ -38,8 +39,8 @@ def update_all_relations(log_file):
     fw.write(str(datetime.now()) + "\n")
     fw.write("Getting Pubmed records...\n")
 
-    print datetime.now()
-    print "Getting Pubmed records..."
+    print(datetime.now())
+    print("Getting Pubmed records...")
 
     pmids = []
     for pmid in pmid_to_reference:
@@ -59,7 +60,7 @@ def update_all_relations(log_file):
         records = get_pubmed_record(','.join(pmids))
         update_database_batch(nex_session, fw, records, pmid_to_reference, key_to_type, source_to_id)
 
-    print "Done"
+    print("Done")
     fw.close()
     nex_session.commit()
 
@@ -141,7 +142,7 @@ def update_relation(nex_session, fw, pmid, type, source_id, parent_reference_id,
             nex_session.query(ReferenceRelation).filter_by(parent_id=parent_reference_id, child_id=child_reference_id).update({'relation_type': type})
             nex_session.commit()
             fw.write("PMID=" + str(pmid) + ": relation_type is updated to " + type + "\n")
-            print "PMID=", pmid, ": relation_type is updated to ", type
+            print("PMID=", pmid, ": relation_type is updated to ", type)
             key_to_type[(parent_reference_id, child_reference_id)] = type
     else:
         r = ReferenceRelation(source_id = source_id,
@@ -152,7 +153,7 @@ def update_relation(nex_session, fw, pmid, type, source_id, parent_reference_id,
         nex_session.add(r)
         nex_session.commit()
         fw.write("PMID=" + str(pmid) + ": a new reference_relation is added.\n")
-        print "PMID=", pmid, ": a new reference_relation is added. type=", type
+        print("PMID=", pmid, ": a new reference_relation is added. type=", type)
         key_to_type[(parent_reference_id, child_reference_id)] = type
         
 

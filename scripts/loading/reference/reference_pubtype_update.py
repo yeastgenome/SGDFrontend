@@ -1,16 +1,17 @@
 from datetime import datetime
 import time
-from StringIO import StringIO
+from io import StringIO
 from Bio import Entrez, Medline
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
 sys.path.insert(0, '../../../src/')
 from models import Referencedbentity, Referencetype, Source
 sys.path.insert(0, '../')
 from config import CREATED_BY
 from database_session import get_nex_session as get_session
-from pubmed import get_pubmed_record
+from .pubmed import get_pubmed_record
 
 __author__ = 'sweng66'
 
@@ -28,8 +29,8 @@ def update_all_pubtypes(log_file):
     fw.write(str(datetime.now()) + "\n")
     fw.write("Getting PMID list...\n")
 
-    print datetime.now()
-    print "Getting PMID list..."
+    print(datetime.now())
+    print("Getting PMID list...")
 
     pmid_to_reference =  dict([(x.pmid, x) for x in nex_session.query(Referencedbentity).all()])
     source_to_id = dict([(x.display_name, x.source_id) for x in nex_session.query(Source).all()])
@@ -45,8 +46,8 @@ def update_all_pubtypes(log_file):
     fw.write(str(datetime.now()) + "\n")
     fw.write("Getting Pubmed records...\n")
 
-    print datetime.now()
-    print "Getting Pubmed records..."
+    print(datetime.now())
+    print("Getting Pubmed records...")
 
     source_id = source_to_id[SRC]
 
@@ -68,7 +69,7 @@ def update_all_pubtypes(log_file):
         records = get_pubmed_record(','.join(pmids))
         update_database_batch(nex_session, fw, records, pmid_to_reference, reference_id_to_pubtypes, source_id)
 
-    print "Done"
+    print("Done")
     fw.close()
     nex_session.commit()
 
@@ -123,9 +124,9 @@ def update_reftypes(nex_session, fw, pmid, reference_id, pubtypes, pubtypes_in_d
         nex_session.commit()
         fw.write("PMID=" + str(pmid) + ": the reference type list is updated.\nNew types: " + str(pubtypes) + "\nOld types: " + str(pubtypes_in_db) + "\n\n")
         
-        print "PMID=", pmid, ": the reference type list is updated."
-        print "New types:", pubtypes
-        print "Old types:", pubtypes_in_db
+        print("PMID=", pmid, ": the reference type list is updated.")
+        print("New types:", pubtypes)
+        print("Old types:", pubtypes_in_db)
 
 
 if __name__ == '__main__':
