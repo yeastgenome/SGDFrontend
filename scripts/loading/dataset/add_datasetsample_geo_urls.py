@@ -1,6 +1,7 @@
 from datetime import datetime
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.path.insert(0, '../../../src/')
 from models import Datasetsample
 sys.path.insert(0, '../')
@@ -27,7 +28,7 @@ def load_geo_urls():
     i = 0
     for x in all:
         if x.dbxref_id and x.dbxref_url is None:
-            print x.dbxref_id
+            print(x.dbxref_id)
             dbxref_url = geo_root_url + x.dbxref_id    
             nex_session.query(Datasetsample).filter_by(datasetsample_id=x.datasetsample_id).update({"dbxref_url": dbxref_url})
             i = i + 1

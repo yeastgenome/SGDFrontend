@@ -1,9 +1,10 @@
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import logging
 import os
 from datetime import datetime
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 from src.models import Locusdbentity, Referencedbentity, Source, Taxonomy, \
                        Psimod, Physinteractionannotation
 from scripts.loading.reference.promote_reference_triage import add_paper
@@ -132,7 +133,7 @@ def load_data(infile, logfile):
                     key = (dbentity1_id, dbentity2_id, bait_hit, biogrid_experimental_system, annotation_type, reference_id, psimod_id)
 
 
-                    print "KEY=", key
+                    print("KEY=", key)
 
 
                 
@@ -146,7 +147,7 @@ def load_data(infile, logfile):
                         #    nex_session.add(x)
                     else:
 
-                        print "NEW"
+                        print("NEW")
 
 
                         insert_interaction(nex_session, fw, source_id, taxonomy_id, reference_id, 
@@ -217,7 +218,7 @@ if __name__ == '__main__':
     url_path = 'https://www.thebiogrid.org/downloads/datasets/'
     infile = 'SGD.tab.txt'
 
-    urllib.urlretrieve(url_path + infile, infile)
+    urllib.request.urlretrieve(url_path + infile, infile)
             
     logfile = "scripts/loading/biogrid/logs/physinteractionannotation.log"
     

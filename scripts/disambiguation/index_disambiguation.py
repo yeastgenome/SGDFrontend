@@ -87,7 +87,7 @@ def load_author():
         except UnicodeEncodeError:
             ignoring.append(format_name)
 
-    print "Ignoring for special characters: " + ",".join(ignoring)
+    print("Ignoring for special characters: " + ",".join(ignoring))
 
 def load_chemical():
     print("Loading chemicals into Redis...")
@@ -104,7 +104,7 @@ def load_chemical():
         except UnicodeEncodeError:
             ignoring.append(chemical.display_name)
 
-    print "Ignoring for special characters: " + ",".join(ignoring)
+    print("Ignoring for special characters: " + ",".join(ignoring))
 
 def load_phenotype():
     print("Loading phenotypes into Redis...")

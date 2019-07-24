@@ -1,7 +1,8 @@
 from datetime import datetime
 import math
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.path.insert(0, '../../../src/')
 from models import Dataset, Datasetsample, Expressionannotation
 sys.path.insert(0, '../')
@@ -43,7 +44,7 @@ def update_database():
             ## round down to 2 decimal point
             new_value = float("%.2f" % new_value)  
        
-        print x.annotation_id, value, new_value
+        print(x.annotation_id, value, new_value)
 
     nex_session.close()
 

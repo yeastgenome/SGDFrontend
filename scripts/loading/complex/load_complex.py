@@ -1,10 +1,12 @@
 import json
-from urllib2 import Request, urlopen, URLError
+from urllib.request import Request, urlopen
+from urllib.error import URLError
 import logging
 import os
 from datetime import datetime
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF-8')
 from src.models import Source, Psimi, Dbentity, Go, Taxonomy, Eco, Referencedbentity, \
        Locusdbentity, Complexdbentity, ComplexAlias, ComplexGo, ComplexReference, \
@@ -47,8 +49,8 @@ def load_complex():
     nex_session = get_session()
 
 
-    print "Retriving core data from database..."
-    print datetime.now()
+    print("Retriving core data from database...")
+    print(datetime.now())
 
     source_to_id = dict([(x.display_name, x.source_id) for x in nex_session.query(Source).all()])
     format_name_to_psimi_id = dict([(x.format_name, x.psimi_id) for x in nex_session.query(Psimi).all()])
@@ -66,8 +68,8 @@ def load_complex():
     format_name_to_interactor = dict([(x.format_name, x) for x in nex_session.query(Interactor).all()])
 
     
-    print "Retriving Reference data from ComplexReference table..."
-    print datetime.now()
+    print("Retriving Reference data from ComplexReference table...")
+    print(datetime.now())
 
 
     complex_id_to_reference_id_list = {}
@@ -79,8 +81,8 @@ def load_complex():
         complex_id_to_reference_id_list[x.complex_id] = reference_id_list
 
 
-    print "Retriving Go data from ComplexGo table..."
-    print datetime.now()
+    print("Retriving Go data from ComplexGo table...")
+    print(datetime.now())
 
 
     complex_id_to_go_id_list = {}
@@ -92,8 +94,8 @@ def load_complex():
         complex_id_to_go_id_list[x.complex_id] = go_id_list
 
 
-    print "Retriving Alias data from ComplexAlias table..."
-    print datetime.now()
+    print("Retriving Alias data from ComplexAlias table...")
+    print(datetime.now())
 
     complex_id_to_alias_list = {}
     for x in nex_session.query(ComplexAlias).all():
@@ -104,8 +106,8 @@ def load_complex():
         complex_id_to_alias_list[x.complex_id] = alias_list
  
 
-    print "Getting all json data from complex portal..."
-    print datetime.now()
+    print("Getting all json data from complex portal...")
+    print(datetime.now())
 
 
     fw = open(log_file, "w")
@@ -114,8 +116,8 @@ def load_complex():
     elements = all_json['elements']
 
     
-    print "Getting data from complex portal for each complex..."
-    print datetime.now()
+    print("Getting data from complex portal for each complex...")
+    print(datetime.now())
 
 
     interactor_added = {}
@@ -127,15 +129,15 @@ def load_complex():
         complexName = x['complexName']
 
 
-        print "Getting data for", complexAC
-        print datetime.now()
+        print("Getting data for", complexAC)
+        print(datetime.now())
 
 
         detailUrl = detail_json_url_template.replace("REPLACE_ID_HERE", complexAC)
         
         y = get_json(detailUrl)
         if y == 404:
-            print "Can't access:", detailUrl
+            print("Can't access:", detailUrl)
             continue
 
         systematicName = y['systematicName']
@@ -173,7 +175,7 @@ def load_complex():
 
         eco_id = format_name_to_eco_id.get(ecoid)
         if eco_id is None:
-            print "The ecoid ", ecoid, " is not found in the database."
+            print("The ecoid ", ecoid, " is not found in the database.")
             continue
         source = y.get('institution')
         if source == "Saccharomyces Genome Database":
@@ -183,7 +185,7 @@ def load_complex():
         source_id = None
         source_id = source_to_id.get(source)
         if source_id is None:
-            print "The source ", y.get('institution'), " is not found in the database."
+            print("The source ", y.get('institution'), " is not found in the database.")
             continue
 
         dbentity_id = None
@@ -203,15 +205,15 @@ def load_complex():
         for pmid in pmid_list:
             reference_id = pmid_to_reference_id.get(int(pmid))
 
-            print "PMID:", pmid, "reference_id:", reference_id
+            print("PMID:", pmid, "reference_id:", reference_id)
 
             if reference_id is None:
                 reference_id = pmid_added.get(pmid)
                 if reference_id is None:
-                    print "Adding PMID:", pmid, " into the database."
+                    print("Adding PMID:", pmid, " into the database.")
                     (reference_id, sgdid) = add_paper(pmid, CREATED_BY)
                     if reference_id is None:
-                        print "The pmid ", pmid, " is not in the database."
+                        print("The pmid ", pmid, " is not in the database.")
                         continue
                     else:
                         pmid_added[pmid] = reference_id
@@ -227,7 +229,7 @@ def load_complex():
                 goid = goid_mapping[goid]
             go_id = goid_to_go_id.get(goid)
             if go_id is None:
-                print "The goid ", goid, " is not in the database."
+                print("The goid ", goid, " is not in the database.")
                 continue
             if go_id not in go_id_list:
                 go_id_list.append(go_id)
@@ -240,7 +242,7 @@ def load_complex():
         seqUrl = seq_json_url_template.replace("REPLACE_ID_HERE", intact_id)
         s = get_json(seqUrl)
         if s == 404:
-            print "Can't access:", seqUrl
+            print("Can't access:", seqUrl)
             continue
         
         seq4id = {}
@@ -276,10 +278,10 @@ def load_complex():
                 locusAlias = nex_session.query(LocusAlias).filter_by(display_name=format_name, alias_type='UniProtKB ID').one_or_none()
                 if locusAlias is not None:
                     display_name = locusAlias.locus.systematic_name
-                    print "GETTING DISPLAY_NAME from database for ", format_name, " display_name=", display_name
+                    print("GETTING DISPLAY_NAME from database for ", format_name, " display_name=", display_name)
                 else:
                     display_name = desc.split(' ')[-1]
-                    print "GETTING DISPLAY_NAME from DESCRIPTION for ", format_name, " and desc=", desc, " display_name=", display_name
+                    print("GETTING DISPLAY_NAME from DESCRIPTION for ", format_name, " and desc=", desc, " display_name=", display_name)
 
             if format_name in interactor_added:
                 interactor_to_id[format_name] = interactor_added[format_name]
@@ -301,7 +303,7 @@ def load_complex():
             
 def insert_interactor(nex_session, fw, format_name, display_name, obj_url, desc, source_id, locus_id, type_id, role_id, seq):
 
-    print "INSERT INTERACTOR:", format_name, display_name, obj_url, desc, source_id, locus_id, type_id, role_id, seq
+    print("INSERT INTERACTOR:", format_name, display_name, obj_url, desc, source_id, locus_id, type_id, role_id, seq)
     
     if seq is None:
         seq = ""
@@ -328,7 +330,7 @@ def insert_interactor(nex_session, fw, format_name, display_name, obj_url, desc,
 
 def update_interactor(nex_session, fw, format_name, display_name, obj_url, locus_id, desc, type_id, role_id, seq, x):
     
-    print "UPDATE INTERACTOR:", format_name, display_name, obj_url, locus_id, desc, type_id, role_id, seq
+    print("UPDATE INTERACTOR:", format_name, display_name, obj_url, locus_id, desc, type_id, role_id, seq)
 
     update_hash= {}
     if display_name and display_name != x.display_name:
@@ -358,7 +360,7 @@ def update_interactor(nex_session, fw, format_name, display_name, obj_url, locus
 
 def insert_complex_alias(nex_session, fw, complex_id, alias_type, display_name, source_id):
 
-    print "INSERT ALIAS:", complex_id, alias_type, display_name, source_id
+    print("INSERT ALIAS:", complex_id, alias_type, display_name, source_id)
     # return
 
     x = ComplexAlias(complex_id = complex_id,
@@ -374,7 +376,7 @@ def insert_complex_alias(nex_session, fw, complex_id, alias_type, display_name, 
 
 def update_complex_alias(nex_session, fw, complex_id, aliases, source_id, aliases_in_db):
 
-    print "UPDATE ALIAS:", complex_id, aliases, source_id
+    print("UPDATE ALIAS:", complex_id, aliases, source_id)
     # return
 
     if aliases_in_db is None:
@@ -398,7 +400,7 @@ def update_complex_alias(nex_session, fw, complex_id, aliases, source_id, aliase
 
 def insert_complex_go(nex_session, fw, complex_id, go_id, source_id):
 
-    print "INSERT GO:", complex_id, go_id, source_id
+    print("INSERT GO:", complex_id, go_id, source_id)
     # return
 
     x = ComplexGo(complex_id = complex_id,
@@ -413,7 +415,7 @@ def insert_complex_go(nex_session, fw, complex_id, go_id, source_id):
 
 def update_complex_go(nex_session, fw, complex_id, go_id_list, source_id, go_id_list_in_db):
 
-    print "UPDATE GO:", complex_id, go_id_list, source_id
+    print("UPDATE GO:", complex_id, go_id_list, source_id)
     # return
 
     if go_id_list_in_db is None:
@@ -435,7 +437,7 @@ def update_complex_go(nex_session, fw, complex_id, go_id_list, source_id, go_id_
 
 def insert_complex_reference(nex_session, fw, complex_id, reference_id, source_id):
 
-    print "INSERT REFERENCE:", complex_id, reference_id, source_id
+    print("INSERT REFERENCE:", complex_id, reference_id, source_id)
     # return
 
     x = ComplexReference(complex_id = complex_id,
@@ -450,7 +452,7 @@ def insert_complex_reference(nex_session, fw, complex_id, reference_id, source_i
 
 def update_complex_reference(nex_session, fw, complex_id, reference_id_list, source_id, reference_id_list_in_db):
 
-    print "UPDATE REFERENCE:", complex_id, reference_id_list, source_id
+    print("UPDATE REFERENCE:", complex_id, reference_id_list, source_id)
     # return
     
     if reference_id_list_in_db is None:
@@ -474,7 +476,7 @@ def update_complex_reference(nex_session, fw, complex_id, reference_id_list, sou
 
 def insert_complexdbentity(nex_session, fw, intact_id, complexAC, complexName, systematicName, eco_id, desc, properties, source_id):
 
-    print "NEW complexdbentity: ", intact_id, complexAC, complexName, systematicName, eco_id, desc, properties, source_id
+    print("NEW complexdbentity: ", intact_id, complexAC, complexName, systematicName, eco_id, desc, properties, source_id)
     # return
 
     x = Complexdbentity(format_name = complexAC,
@@ -501,7 +503,7 @@ def insert_complexdbentity(nex_session, fw, intact_id, complexAC, complexName, s
 
 def update_dbentity(nex_session, fw, complexAC, display_name, source_id, display_name_in_db):
         
-    print "UPDATE DBENTITY:", complexAC, display_name, source_id
+    print("UPDATE DBENTITY:", complexAC, display_name, source_id)
     # return
 
     if display_name_in_db == display_name:
@@ -514,7 +516,7 @@ def update_dbentity(nex_session, fw, complexAC, display_name, source_id, display
 
 def update_complexdbentity(nex_session, fw, intact_id, complexAC, systematicName, eco_id, desc, properties, complexAC_to_complexdbentity):
 
-    print "UPDATE COMPLEXDBENTITY:", intact_id, complexAC, systematicName, eco_id, desc, properties
+    print("UPDATE COMPLEXDBENTITY:", intact_id, complexAC, systematicName, eco_id, desc, properties)
     # return
 
     x = complexAC_to_complexdbentity.get(complexAC)
@@ -539,13 +541,13 @@ def update_complexdbentity(nex_session, fw, intact_id, complexAC, systematicName
 
 def get_json(url):
 
-    print "get json:", url
+    print("get json:", url)
 
     try:
         req = Request(url)
         res = urlopen(req)
         raw_data = res.read()
-        u_raw_data = unicode(raw_data, 'latin-1')
+        u_raw_data = str(raw_data, 'latin-1')
         data = json.loads(u_raw_data)
         return data
     except URLError:

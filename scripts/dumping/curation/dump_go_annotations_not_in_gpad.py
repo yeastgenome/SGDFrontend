@@ -185,9 +185,9 @@ def dump_data():
 
             found = {}
     
-            for evid_group_id in sorted(all_support_evidences.iterkeys()):
+            for evid_group_id in sorted(all_support_evidences.keys()):
                 support_evidences = ",".join(all_support_evidences[evid_group_id])
-                for ext_group_id in sorted(all_extensions.iterkeys()):
+                for ext_group_id in sorted(all_extensions.keys()):
                     extensions = ",".join(all_extensions[ext_group_id])
                     if (support_evidences, extensions) in found:
                         continue

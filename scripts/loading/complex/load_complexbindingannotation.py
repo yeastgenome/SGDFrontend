@@ -1,10 +1,12 @@
 import json
-from urllib2 import Request, urlopen, URLError
+from urllib.request import Request, urlopen
+from urllib.error import URLError
 import logging
 import os
 from datetime import datetime
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF-8')
 from src.models import Psimi, Taxonomy, Dbentity, Complexbindingannotation, Interactor
 from scripts.loading.database_session import get_session
@@ -53,7 +55,7 @@ def load_complexbindingannotation():
     for complexAC in complexAC_to_dbentity:
 
 
-        print "Getting info for ", complexAC
+        print("Getting info for ", complexAC)
 
 
         d =  complexAC_to_dbentity[complexAC]
@@ -64,7 +66,7 @@ def load_complexbindingannotation():
         
         y = get_json(detailUrl)
         if y == 404:
-            print "Can't access:", detailUrl
+            print("Can't access:", detailUrl)
             continue
 
         for p in y['participants']:
@@ -72,7 +74,7 @@ def load_complexbindingannotation():
             interactor = p['identifier']
             interactor_id = interactor_to_id.get(interactor)
             if interactor_id is None:
-                print "The interactor: ", interactor, " is not in the database."
+                print("The interactor: ", interactor, " is not in the database.")
                 continue
                 
             stoichiometry = p.get('stochiometry')
@@ -94,22 +96,22 @@ def load_complexbindingannotation():
                         continue
                     binding_interactor_id = interactor_to_id.get(binding_interactor)
                     if binding_interactor_id is None:
-                        print "The binding interactor: ", binding_interactor, " is not in the database."
+                        print("The binding interactor: ", binding_interactor, " is not in the database.")
                         continue
                     binding_type = lf.get('featureTypeMI')
                     if binding_type is None:
-                        print "No binding type for ", complexAC, interactor, binding_interactor
+                        print("No binding type for ", complexAC, interactor, binding_interactor)
                         continue
                     binding_type_id = format_name_to_psimi_id.get(binding_type)
                     if binding_type_id is None:
-                        print "The binding_type:", binding_type, " is not in the PSIMI table."
+                        print("The binding_type:", binding_type, " is not in the PSIMI table.")
                         continue
 
                     ranges = lf.get('ranges')
                 
                     (range_start, range_end) = cleanup_ranges(ranges)
 
-                    print "ranges:", ranges, range_start, range_end
+                    print("ranges:", ranges, range_start, range_end)
                     
                     bindingInteractors.append((binding_interactor_id, binding_type_id, range_start, range_end))
 
@@ -215,13 +217,13 @@ def cleanup_ranges(ranges):
 
 def get_json(url):
 
-    print "get json:", url
+    print("get json:", url)
 
     try:
         req = Request(url)
         res = urlopen(req)
         raw_data = res.read()
-        u_raw_data = unicode(raw_data, 'latin-1')
+        u_raw_data = str(raw_data, 'latin-1')
         data = json.loads(u_raw_data)
         return data
     except URLError:

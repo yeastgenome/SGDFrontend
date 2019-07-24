@@ -13,7 +13,7 @@ def dump_data(goid):
     goObj = nex_session.query(Go).filter_by(goid=goid).one_or_none()
 
     if goObj is None:
-        print "The goid:", goid, " is not in the database."
+        print("The goid:", goid, " is not in the database.")
         return
 
     go_id = goObj.go_id
@@ -36,7 +36,7 @@ def output_children(go_id, parent_to_children, go_id_to_go):
         return
     for this_go_id in parent_to_children[go_id]:
         (goid, term) = go_id_to_go[this_go_id]
-        print goid + "\t" + term
+        print(goid + "\t" + term)
         output_children(this_go_id, parent_to_children, go_id_to_go)
 
 if __name__ == '__main__':
@@ -45,8 +45,8 @@ if __name__ == '__main__':
         goid = sys.argv[1]
         dump_data(goid)
     else:
-        print "Usage:         python dump_children_for_go.py goid"
-        print "Usage example: python dump_children_for_go.py GO:0002057"
+        print("Usage:         python dump_children_for_go.py goid")
+        print("Usage example: python dump_children_for_go.py GO:0002057")
         exit()
 
     

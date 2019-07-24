@@ -1,5 +1,6 @@
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.path.insert(0, '../../../src/')
 from models import Dbentity, Referencedbentity, Locusdbentity, LocusReference, ColleagueLocus, \
                    Colleague, Reservedname, Source
@@ -41,27 +42,27 @@ def load_data():
             continue
         locus_id = name_to_locus_id.get(pieces[1].strip())
         if locus_id is None:
-            print "The ORF name: ", pieces[1], " is not in the database."
+            print("The ORF name: ", pieces[1], " is not in the database.")
             continue
         colleague_id = bud_id_to_colleague_id.get(int(pieces[3]))
         if colleague_id is None:
-            print "The colleague bud_id:", pieces[3], " is not in the database."
+            print("The colleague bud_id:", pieces[3], " is not in the database.")
             continue
         reference_id = None
         if pieces[4]:
             if int(pieces[4]) in bud_id_to_reference_id:
                 reference_id = bud_id_to_reference_id.get(int(pieces[4]))
             else:
-                print "The reference bud_id:", pieces[4], " is not in the database."
+                print("The reference bud_id:", pieces[4], " is not in the database.")
                 continue
         else:
-            print "NO reference_no provided."
-            print line
+            print("NO reference_no provided.")
+            print(line)
             continue
 
         [reserved_date, expired_date] = reformat_date(pieces[6])
 
-        print gene_name, locus_id, colleague_id, reference_id, reserved_date, expired_date, name_desc        
+        print(gene_name, locus_id, colleague_id, reference_id, reserved_date, expired_date, name_desc)        
         
         # update LOCUSDBENTITY
         nex_session.query(Locusdbentity).filter_by(dbentity_id=locus_id).update({"gene_name": gene_name, "name_description": name_desc})
@@ -90,7 +91,7 @@ def load_data():
 
 def add_reservedname(nex_session, fw, locus_id, gene_name, reference_id, colleague_id, reserved_date, expired_date, source_id):
 
-    print locus_id, gene_name, reference_id, colleague_id, reserved_date, expired_date, source_id
+    print(locus_id, gene_name, reference_id, colleague_id, reserved_date, expired_date, source_id)
 
     if reference_id is None:
         reference_id = ""
@@ -113,7 +114,7 @@ def add_reservedname(nex_session, fw, locus_id, gene_name, reference_id, colleag
     
 def add_colleague_locus(nex_session, fw, locus_id, colleague_id, source_id):
     
-    print locus_id, colleague_id, source_id
+    print(locus_id, colleague_id, source_id)
 
     x = ColleagueLocus(locus_id = locus_id,
                        colleague_id = colleague_id,
@@ -127,7 +128,7 @@ def add_colleague_locus(nex_session, fw, locus_id, colleague_id, source_id):
 
 def add_locus_reference(nex_session, fw, locus_id, reference_id, source_id):
     
-    print locus_id, reference_id, source_id
+    print(locus_id, reference_id, source_id)
 
     x = LocusReference(locus_id = locus_id,
                        reference_id = reference_id,
@@ -147,7 +148,7 @@ def reformat_date(this_date):
     dates = this_date.split(" ")[0].split("/")
     month = dates[0]
     if len(dates) <3:
-        print "BAD DATE:", this_date
+        print("BAD DATE:", this_date)
         return [None, None]
     day= dates[1]
     year = dates[2]
@@ -156,7 +157,7 @@ def reformat_date(this_date):
     elif len(year) == 2 and (year.startswith('0') or year.startswith('1')):
         year = '20' + year
     elif len(year) == 2:
-        print "WRONG YEAR"
+        print("WRONG YEAR")
         return [None, None]
     if len(month) == 1:
         month ="0" + month

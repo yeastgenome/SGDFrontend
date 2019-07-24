@@ -1,5 +1,6 @@
 import sys
-reload(sys)  
+import importlib
+importlib.reload(sys)  
 sys.setdefaultencoding('UTF8')
 sys.path.insert(0, '../../../src/')
 from models import Dataset, Datasetsample, Referencedbentity, DatasetReference
@@ -24,9 +25,9 @@ for dataset_id in sample_count:
     if dataset_id not in dataset_id_to_sample_count:
         continue
     if sample_count[dataset_id] != dataset_id_to_sample_count[dataset_id]:
-        print "MISMATCH: ", dataset_id, sample_count[dataset_id], dataset_id_to_sample_count[dataset_id]
+        print("MISMATCH: ", dataset_id, sample_count[dataset_id], dataset_id_to_sample_count[dataset_id])
     else:
-        print "MATCH:    ", dataset_id,sample_count[dataset_id], dataset_id_to_sample_count[dataset_id]
+        print("MATCH:    ", dataset_id,sample_count[dataset_id], dataset_id_to_sample_count[dataset_id])
 
 
 

@@ -1,6 +1,7 @@
 from datetime import datetime
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.path.insert(0, '../../../src/')
 from models import Source, Dataset, DatasetUrl
 sys.path.insert(0, '../')
@@ -26,7 +27,7 @@ def load_geo_urls():
     source_id = source_to_id[src]
     for x in nex_session.query(Dataset).all():
         if x.dbxref_id and x.dbxref_id.startswith('GSE') and x.dataset_id not in dataset_id_to_url:
-            print x.dbxref_id
+            print(x.dbxref_id)
 
             y = DatasetUrl(display_name = type,
                            dataset_id = x.dataset_id,

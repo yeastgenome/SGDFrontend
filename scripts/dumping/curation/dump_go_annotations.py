@@ -2,13 +2,14 @@ from datetime import datetime
 import logging
 import os
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
 import boto
 from boto.s3.key import Key
 import transaction
-from urllib2 import urlopen
-from urllib import urlretrieve
+from urllib.request import urlopen
+from urllib.request import urlretrieve
 
 from src.models import Dbentity, Locusdbentity, Referencedbentity, Taxonomy, \
                        Go, Ro, EcoAlias, Source, Goannotation, Goextension, \
@@ -202,9 +203,9 @@ def dump_data():
 
         found = {}
     
-        for evid_group_id in sorted(all_support_evidences.iterkeys()):
+        for evid_group_id in sorted(all_support_evidences.keys()):
             support_evidences = ",".join(all_support_evidences[evid_group_id])
-            for ext_group_id in sorted(all_extensions.iterkeys()):
+            for ext_group_id in sorted(all_extensions.keys()):
                 extensions = ",".join(all_extensions[ext_group_id])
                 if (support_evidences, extensions) in found:
                     continue

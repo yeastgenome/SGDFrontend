@@ -3,7 +3,8 @@ import logging
 import tarfile
 import os
 import sys
-reload(sys)  
+import importlib
+importlib.reload(sys)  
 sys.setdefaultencoding('UTF8')
 from src.models import Taxonomy, Source, Contig, Edam, Path, Filedbentity, FilePath, So, \
                        Dnasequenceannotation, Dnasubsequence, Locusdbentity, \
