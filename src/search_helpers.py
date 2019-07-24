@@ -67,7 +67,7 @@ def format_autocomplete_results(es_response, field='name'):
                 'href': hit['_source']['href'],
                 'category': hit['_source']['category']
             }
-            if 'institution' in hit['_source'].keys():
+            if 'institution' in list(hit['_source'].keys()):
                 obj['institution'] = hit['_source']['institution']
             if obj['category'] == 'colleague':
                 format_name = hit['_source']['href'].replace('/colleague/', '')
@@ -94,7 +94,7 @@ def build_es_aggregation_body_request(es_query, category, category_filters):
                 'terms': {'field': 'category', 'size': 50}
             }
         }
-    elif category in category_filters.keys():
+    elif category in list(category_filters.keys()):
         for subcategory in category_filters[category]:
             agg_query_body['aggs'][subcategory[1]] = {
                 'terms': {
@@ -122,7 +122,7 @@ def format_aggregation_results(aggregation_results, category, category_filters):
             })
 
         return [category_obj]
-    elif category in category_filters.keys():
+    elif category in list(category_filters.keys()):
         formatted_agg = []
 
         for subcategory in category_filters[category]:
@@ -196,7 +196,7 @@ def build_search_query(query, search_fields, category, category_filters, args):
         }
     }
 
-    if category in category_filters.keys():
+    if category in list(category_filters.keys()):
         for item in category_filters[category]:
             if args.get(item[1]):
                 for param in args.get(item[1]):
@@ -254,7 +254,7 @@ def filter_highlighting(highlight):
     if highlight is None:
         return None
 
-    for k in highlight.keys():
+    for k in list(highlight.keys()):
         if k.endswith(".symbol") and k.split(".")[0] in highlight:
             if highlight[k] == highlight[k.split(".")[0]]:
                 highlight.pop(k, None)

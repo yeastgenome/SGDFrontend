@@ -86,7 +86,7 @@ def validate_file_content_and_process(file_content, nex_session, username):
             #TODO: abstract the loop below in the next release
             gene_id = ''
             summary_type = ''
-            for k, v in item.iteritems():
+            for k, v in item.items():
                 if key_feature.match(k):
                     gene_id = item.get(k)
                 if key_summary_type.match(k):
@@ -135,7 +135,7 @@ def validate_file_content_and_process(file_content, nex_session, username):
     invalid_refs = [d for d in file_pmids if d not in temp_matching_refs]
     if len(invalid_refs):
         # raise ValueError('Invalid PMID: ' + ', '.join(invalid_refs) + '. Must be a pipe-separated list of PMIDs from SGD.')
-        print len(invalid_refs)
+        print(len(invalid_refs))
     # update
     receipt_entries = []
     locus_names_ids = nex_session.query(Locusdbentity.display_name, Locusdbentity.sgdid).all()
@@ -144,7 +144,7 @@ def validate_file_content_and_process(file_content, nex_session, username):
 
     for item in copied:
         if item:
-            for k, v in item.iteritems():
+            for k, v in item.items():
                 if key_feature.match(k):
                     file_id = item.get(k)
                 if key_summary_type.match(k):

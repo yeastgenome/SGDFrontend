@@ -177,7 +177,7 @@ def search(request):
 
     args = {}
 
-    for key in request.params.keys():
+    for key in list(request.params.keys()):
         args[key] = request.params.getall(key)
 
     es_query = build_search_query(query, search_fields, category,
@@ -1021,7 +1021,7 @@ def ecnumber(request):
 @view_config(route_name='primer3', renderer='json', request_method='POST')
 def primer3(request):
     params = request.json_body
-    p_keys = params.keys()
+    p_keys = list(params.keys())
 
     if 'gene_name' in p_keys:
         gene_name = params.get('gene_name')
@@ -1304,7 +1304,7 @@ def goslim(request):
         data[slim_type] = slim_terms
 
     orderedData = []
-    for slim_type in sorted(data.iterkeys()):
+    for slim_type in sorted(data.keys()):
         orderedData.append({"slim_type": slim_type,
                             "terms": sorted(data[slim_type])})
 

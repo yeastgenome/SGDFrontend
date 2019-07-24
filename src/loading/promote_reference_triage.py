@@ -1,8 +1,9 @@
-from StringIO import StringIO
+from io import StringIO
 from Bio import Entrez, Medline
 
 import sys
-reload(sys)
+import importlib
+importlib.reload(sys)
 sys.setdefaultencoding('UTF8')
 
 from ..models import DBSession, Dbentity, Referencedbentity, Referencedocument, Referenceauthor,\
@@ -37,7 +38,7 @@ def add_paper(pmid, created_by="OTTO", method_obtained="Curator triage"):
     """
 
     record = Medline.read(Entrez.efetch(db="pubmed", id=str(pmid), rettype='medline'))
-    rec_keys = record.keys()
+    rec_keys = list(record.keys())
     if 'PMID' not in rec_keys:
         raise ValueError('Unable to fetch record feom pubmed. Make sure it is a valid PMID.')
     
@@ -247,7 +248,7 @@ def insert_referencedbentity(pmid, source_id, record, created_by, method_obtaine
                           fulltext_status = fulltext_status,
                           citation = citation,
                           year = int(year),
-                          pmid = long(pmid),
+                          pmid = int(pmid),
                           pmcid = pmcid,
                           date_published = pubdate,
                           date_revised = date_revised,
@@ -256,7 +257,7 @@ def insert_referencedbentity(pmid, source_id, record, created_by, method_obtaine
                           volume = volume,
                           title = title,
                           doi = doi,
-                          journal_id = long(journal_id),
+                          journal_id = int(journal_id),
                           created_by = created_by)
 
     DBSession.add(x)
@@ -377,7 +378,7 @@ def insert_relations(pmid, reference_id, record, created_by):
         print(child_pmid)
         child_reference_id = get_reference_id(int(child_pmid))
         print('is there a child?')
-        print(child_pmid, child_reference_id )
+        print((child_pmid, child_reference_id ))
         if child_reference_id is not None:
             x = ReferenceRelation(parent_id = parent_reference_id,
                                   child_id = child_reference_id,
@@ -393,7 +394,7 @@ def insert_relations(pmid, reference_id, record, created_by):
         parent_pmid = onText.split("PMID: ")[1].strip()
         parent_reference_id = get_reference_id(int(parent_pmid))
         print('is there a parent?')
-        print(parent_pmid, parent_reference_id )
+        print((parent_pmid, parent_reference_id ))
         if parent_reference_id is not None:
             x = ReferenceRelation(parent_id = parent_reference_id,
                                   child_id = child_reference_id,

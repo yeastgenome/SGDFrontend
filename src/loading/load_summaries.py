@@ -179,7 +179,7 @@ def read_summary_file(nex_session, summary_type, summary_file_reader, all_Locusd
                 for pmid in pmids:
                     reference_id = pmid_to_reference_id.get(int(pmid))
                     if reference_id is None:
-                        print "PMID=", pmid, " is not in the database"
+                        print("PMID=", pmid, " is not in the database")
                         continue
                     order = order + 1
                     references.append({'reference_id': reference_id, 'reference_order': order})

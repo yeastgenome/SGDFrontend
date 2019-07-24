@@ -6,8 +6,8 @@ from sqlalchemy.exc import IntegrityError
 import traceback
 import pandas as pd
 
-from loading.load_summaries_sync import load_summaries, validate_file_content_and_process
-from helpers import upload_file, file_upload_to_dict
+from .loading.load_summaries_sync import load_summaries, validate_file_content_and_process
+from .helpers import upload_file, file_upload_to_dict
 
 
 # takes a TSV file and returns an array of annotations

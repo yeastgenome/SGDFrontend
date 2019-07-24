@@ -117,7 +117,7 @@ def get_new_reference_info(request):
         if len(int_pmids) > MAX_PUBS_ADDED:
             raise ValueError('Only ' + str(MAX_PUBS_ADDED) + ' may be added at once.')
         # avoid repeat PMIDs
-        repeat_pmids = [x for x, count in collections.Counter(int_pmids).items() if count > 1]
+        repeat_pmids = [x for x, count in list(collections.Counter(int_pmids).items()) if count > 1]
         if len(repeat_pmids):
             str_pmids = [str(x) for x in repeat_pmids]
             str_pmids = ', '.join(str_pmids)
@@ -251,7 +251,7 @@ def reference_triage_promote(request):
     # validate tags before doing anything else
     try:
         validate_tags(tags)
-    except Exception, e:
+    except Exception as e:
         return HTTPBadRequest(body=json.dumps({'error': str(e) }))
     id = request.matchdict['id'].upper()
     triage = DBSession.query(Referencetriage).filter_by(curation_id=id).one_or_none()
@@ -406,7 +406,7 @@ def update_reference_tags(request):
         processed_tags = reference.get_tags()
         curator_session.remove()
         return processed_tags
-    except Exception, e:
+    except Exception as e:
         log.error(e)
         return HTTPBadRequest(body=json.dumps({ 'error': str(e) }), content_type='text/json')
 
@@ -480,7 +480,7 @@ def new_gene_name_reservation(request):
                 msg = 'Please enter a valid year.'
                 return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
     # make sure author names have only letters
-    if 'authors' in data.keys():
+    if 'authors' in list(data.keys()):
         authors = data['authors']
         for a in authors:
             if a['first_name'] and a['last_name']:
@@ -582,7 +582,7 @@ def colleague_update(request):
     try:
         is_changed = False
         old_dict = colleague.to_simple_dict()
-        for x in old_dict.keys():
+        for x in list(old_dict.keys()):
             if data.get(x) is not None:
                 if old_dict[x] != data[x]:
                     is_changed = True
@@ -1100,7 +1100,7 @@ def colleague_with_subscription(request):
 @authenticate
 def get_newsletter_sourcecode(request):
     try:
-        from urllib2 import urlopen
+        from urllib.request import urlopen
         url = str(request.POST['url'])
 
         if(url.startswith('https://wiki.yeastgenome.org')):
@@ -1453,7 +1453,7 @@ def get_strains(request):
         strains = models_helper.get_common_strains()
         
         if strains:
-            return {'strains': [{'display_name':key,'taxonomy_id':value} for key,value in strains.iteritems()]}
+            return {'strains': [{'display_name':key,'taxonomy_id':value} for key,value in strains.items()]}
 
         return None
 

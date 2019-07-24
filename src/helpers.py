@@ -35,7 +35,7 @@ disambiguation_table = redis.Redis()
 
 # get list of URLs to visit from comma-separated ENV variable cache_urls 'url1, url2'
 cache_urls = None
-if 'CACHE_URLS' in os.environ.keys():
+if 'CACHE_URLS' in list(os.environ.keys()):
     cache_urls = os.environ['CACHE_URLS'].split(',')
 else:
     cache_urls = ['http://localhost:6545']
@@ -351,7 +351,7 @@ def link_gene_names(raw, locus_names_ids):
     for p_original_word in words:
         original_word = str(p_original_word).translate(None, string.punctuation)
         wupper = original_word.upper()
-        if wupper in locus_names_object.keys() and len(wupper) > 3:
+        if wupper in list(locus_names_object.keys()) and len(wupper) > 3:
             sgdid = locus_names_object[wupper]
             url = '/locus/' + sgdid
             new_str = '<a href="' + url + '">' + wupper + '</a>'
@@ -421,7 +421,7 @@ def primer3_parser(primer3_results):
                     key2 = tmp[1].lower()
                     primer_pairs[id][key][key2] = primer3_results[k]
                 else:
-                    print(k, primer3_results[k])
+                    print((k, primer3_results[k]))
             elif tmp[0] == 'EXPLAIN':
                 notes[key] = primer3_results[k]
             elif tmp == ['NUM','RETURNED']: pass
@@ -445,7 +445,7 @@ def primer3_parser(primer3_results):
                 notes['pair'] = primer3_results[k]
             elif tmp == ['NUM','RETURNED']: pass
             else:
-                print(k, tmp[0])
+                print((k, tmp[0]))
         else:
             print(k)
 
@@ -473,7 +473,7 @@ def file_upload_to_dict(file_upload, delimiter="\t"):
         for item in csv_obj:
             list_dictionary.append(
                 {k.decode('utf-8-sig'): v
-                 for k, v in item.items() if k not in (None, '')}
+                 for k, v in list(item.items()) if k not in (None, '')}
                 )
         return list_dictionary
     else:
@@ -628,7 +628,7 @@ def summary_file_is_valid(file_upload):
     key_feature = re.compile(r".*feature$", re.IGNORECASE)
     file_gene_ids = []
     for item in file_upload:
-        for k, v in item.iteritems():
+        for k, v in item.items():
             if key_feature.match(k):
                 gene_id = item.get(k, None)
                 if gene_id:

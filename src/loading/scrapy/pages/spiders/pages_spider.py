@@ -15,7 +15,7 @@ HEADER_OBJ = {'X-Forwarded-Proto': 'https'}
 engine = create_engine(os.environ['NEX2_URI'], pool_recycle=3600, pool_size=2)
 DBSession.configure(bind=engine)
 
-if 'WORKER_LOG_FILE' in os.environ.keys():
+if 'WORKER_LOG_FILE' in list(os.environ.keys()):
     LOG_FILE = os.environ['WORKER_LOG_FILE']
     logging.basicConfig(
         filename=LOG_FILE, format='%(asctime)s %(levelname)s %(message)s')
