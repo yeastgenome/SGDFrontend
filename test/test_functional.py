@@ -1,9 +1,9 @@
 import unittest
 from moto import mock_s3
-import StringIO
+import io
 import os
 import tempfile
-import fixtures as factory
+from . import fixtures as factory
 import json
 import mock
 from webtest import TestApp, TestRequest

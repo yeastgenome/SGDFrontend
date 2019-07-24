@@ -2,9 +2,9 @@ import os
 
 import unittest
 import mock
-from mock_helpers import MockQuery, MockQueryFilter
+from .mock_helpers import MockQuery, MockQueryFilter
 from pyramid import testing
-import fixtures as factory
+from . import fixtures as factory
 
 from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPOk
 

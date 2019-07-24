@@ -1,4 +1,4 @@
-import fixtures as factory
+from . import fixtures as factory
 from mock import Mock
 
 class MockQueryFilter(object):
@@ -690,8 +690,8 @@ def locus_side_effect(*args, **kwargs):
         phys_annot.taxonomy = taxonomy
         return MockQuery(phys_annot)
     else:
-        print "Locus side effect condition not handled!!!!"
-        print args[0]
+        print("Locus side effect condition not handled!!!!")
+        print(args[0])
 
 def phenotype_side_effect(*args, **kwargs):
     if len(args) == 1 and str(args[0]) == "<class 'src.models.Phenotype'>":
@@ -826,9 +826,9 @@ def observable_side_effect(*args, **kwargs):
         goannot = factory.GoannotationFactory()
         return MockQuery(goannot)
     else:
-        print "the problem is the condition!!!!"
-        print args[0]
-        print args[1]
+        print("the problem is the condition!!!!")
+        print(args[0])
+        print(args[1])
 
 
 def disease_side_effect(*args, **kwargs):
@@ -1179,9 +1179,9 @@ def locus_reference_side_effect(*args, **kwargs):
         lit = factory.LiteratureannotationFactory()
         return MockQuery((lit.reference_id, lit.topic))
     else:
-        print "the problem is the condition!!!!"
-        print args[0]
-        print args[1]
+        print("the problem is the condition!!!!")
+        print(args[0])
+        print(args[1])
 
 
 def protein_side_effect(*args, **kwargs):
