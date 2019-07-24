@@ -1,8 +1,9 @@
-import urllib
+import urllib.request, urllib.parse, urllib.error
 from datetime import datetime
 import sys
 import os
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('utf-8')
 from src.models import Source, Edam, EdamUrl, EdamAlia, EdamRelation, Ro
 from scripts.loading.database_session import get_session
@@ -94,7 +95,7 @@ def load_new_data(nex_session, data, source_to_id, edamid_to_edam, ro_id, edam_i
                 nex_session.add(y)
                 nex_session.flush()
                 update_log['updated'] = update_log['updated'] + 1
-                print "UPDATED: ", y.edamid, y.display_name, x['term']
+                print("UPDATED: ", y.edamid, y.display_name, x['term'])
             # else:
             #    print "SAME: ", y.edamid, y.display_name, x['definition'], x['aliases'], x['parents']
             active_edamid.append(x['id'])
@@ -284,7 +285,7 @@ def write_summary_and_send_email(fw, update_log, to_delete_list):
             summary = summary + "\t" + edamid + " " + term + "\n"
                                           
     fw.write(summary)
-    print summary
+    print(summary)
 
 
 if __name__ == "__main__":
@@ -292,7 +293,7 @@ if __name__ == "__main__":
     # http://edamontology.org/EDAM_1.20.owl
     url_path = "http://edamontology.org/"
     owl_file = "EDAM_1.20.owl"
-    urllib.urlretrieve(url_path + owl_file, owl_file)
+    urllib.request.urlretrieve(url_path + owl_file, owl_file)
     load_ontology(owl_file)
 
 

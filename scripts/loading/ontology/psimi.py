@@ -1,9 +1,10 @@
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import logging
 import os
 from datetime import datetime
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('utf-8')
 from src.helpers import upload_file
 from scripts.loading.database_session import get_session
@@ -393,6 +394,6 @@ if __name__ == "__main__":
         
     url_path = 'http://purl.obolibrary.org/obo/'
     mi_owl_file = 'mi.owl'
-    urllib.urlretrieve(url_path + mi_owl_file, mi_owl_file)
+    urllib.request.urlretrieve(url_path + mi_owl_file, mi_owl_file)
     
     load_ontology(mi_owl_file)

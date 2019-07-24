@@ -38,7 +38,7 @@ def load_data():
                 continue
             pieces = line.strip().split("\t")
             if len(pieces) < 9:
-                print "Unknown line: ", line
+                print("Unknown line: ", line)
                 continue
             date_added_to_database = reformat_date(pieces[5].strip())
             date_standardized = reformat_date(pieces[7].strip())
@@ -65,7 +65,7 @@ def insert_into_database(nex_session, fw, dbentity_id, source_id, bud_id, old_va
     
     x = None
     if old_value and date_name_standardized:
-        print "CASE1:", dbentity_id, source_id, bud_id, old_value, new_value, date_added_to_database, added_by, date_archived, date_name_standardized 
+        print("CASE1:", dbentity_id, source_id, bud_id, old_value, new_value, date_added_to_database, added_by, date_archived, date_name_standardized) 
         x = ArchLocuschange(dbentity_id = dbentity_id,
                             source_id = source_id,
                             bud_id = bud_id,
@@ -77,7 +77,7 @@ def insert_into_database(nex_session, fw, dbentity_id, source_id, bud_id, old_va
                             date_archived = date_archived,
                             date_name_standardized = date_name_standardized)
     elif old_value and date_name_standardized is None:
-        print "CASE2:", dbentity_id, source_id, bud_id, old_value, new_value, date_added_to_database, added_by, date_archived, date_name_standardized 
+        print("CASE2:", dbentity_id, source_id, bud_id, old_value, new_value, date_added_to_database, added_by, date_archived, date_name_standardized) 
         x = ArchLocuschange(dbentity_id = dbentity_id,
                             source_id = source_id,
                             bud_id = bud_id,
@@ -88,7 +88,7 @@ def insert_into_database(nex_session, fw, dbentity_id, source_id, bud_id, old_va
                             added_by = added_by,
                             date_archived = date_archived)
     elif old_value == "" and date_name_standardized:
-        print "CASE3:", dbentity_id, source_id, bud_id, old_value, new_value, date_added_to_database, added_by, date_archived, date_name_standardized
+        print("CASE3:", dbentity_id, source_id, bud_id, old_value, new_value, date_added_to_database, added_by, date_archived, date_name_standardized)
         x = ArchLocuschange(dbentity_id = dbentity_id,
                             source_id = source_id,
                             bud_id = bud_id,
@@ -99,7 +99,7 @@ def insert_into_database(nex_session, fw, dbentity_id, source_id, bud_id, old_va
                             date_archived = date_archived,
                             date_name_standardized = date_name_standardized)
     else:
-        print "CASE4:", dbentity_id, source_id, bud_id, old_value, new_value, date_added_to_database, added_by, date_archived, date_name_standardized
+        print("CASE4:", dbentity_id, source_id, bud_id, old_value, new_value, date_added_to_database, added_by, date_archived, date_name_standardized)
         x = ArchLocuschange(dbentity_id = dbentity_id,
                             source_id = source_id,
                             bud_id = bud_id,
@@ -122,7 +122,7 @@ def reformat_date(this_date):
     dates = this_date.split(" ")[0].split("/")
     month = dates[0]
     if len(dates) <3:
-        print "BAD DATE:", this_date
+        print("BAD DATE:", this_date)
     day= dates[1]
     year = dates[2]
     if len(year) == 2 and year.startswith('9'):
@@ -130,7 +130,7 @@ def reformat_date(this_date):
     elif len(year) == 2 and (year.startswith('0') or year.startswith('1')):
         year = '20' + year
     elif len(year) == 2:
-        print "WRONG YEAR"
+        print("WRONG YEAR")
         return 
     if len(month) == 1:
         month ="0" + month

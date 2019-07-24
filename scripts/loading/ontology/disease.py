@@ -1,9 +1,10 @@
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import logging
 import os
 from datetime import datetime
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('utf-8')
 from src.models import Source, Disease, DiseaseUrl, DiseaseAlias, DiseaseRelation, Ro, Edam, Dbentity, Filedbentity
 from src.helpers import upload_file
@@ -125,7 +126,7 @@ def load_new_data(nex_session, data, source_to_id, doid_to_disease, ro_id, disea
 
             if x['term'] != y.display_name:
                 ## update term
-                print "UPDATED: ", y.doid, y.display_name, x['term']
+                print("UPDATED: ", y.doid, y.display_name, x['term'])
                 fw.write("The display_name for " + x['id'] + " has been updated from " + y.display_name + " to " + x['term'] + "\n")
                 y.display_name = x['term']
                 nex_session.add(y)
@@ -148,7 +149,7 @@ def load_new_data(nex_session, data, source_to_id, doid_to_disease, ro_id, disea
             nex_session.flush()
             disease_id = this_x.disease_id
             update_log['added'] = update_log['added'] + 1
-            print "NEW: ", x['id'], x['term'], x['namespace'], x['definition']
+            print("NEW: ", x['id'], x['term'], x['namespace'], x['definition'])
 
             ## add three URLs
             link_id = x['id'].replace(':', '_')
@@ -295,7 +296,7 @@ def insert_relation(nex_session, source_id, parent_id, child_id, ro_id, relation
 
     relation_just_added[(parent_id, child_id)] = 1
 
-    print "Added new PARENT: parent_id = " + str(parent_id) + " for disease_id = " + str(child_id) + "\n"
+    print("Added new PARENT: parent_id = " + str(parent_id) + " for disease_id = " + str(child_id) + "\n")
     x = DiseaseRelation(parent_id = parent_id,
                         child_id = child_id,
                         source_id = source_id,
@@ -316,7 +317,7 @@ def write_summary_and_send_email(fw, update_log, to_delete_list):
     #        summary = summary + "\t" + doid + " " + term + "\n"
                                           
     fw.write(summary)
-    print summary
+    print(summary)
 
 
 def update_database_load_file_to_s3(nex_session, ontology_file, source_to_id, edam_to_id):
@@ -370,7 +371,7 @@ if __name__ == "__main__":
     url_path = 'https://raw.githubusercontent.com/DiseaseOntology/HumanDiseaseOntology/master/src/ontology/'
     do_owl_file = 'doid.owl'
 
-    urllib.urlretrieve(url_path + do_owl_file, do_owl_file)
+    urllib.request.urlretrieve(url_path + do_owl_file, do_owl_file)
 
     load_ontology(do_owl_file)
 

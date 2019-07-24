@@ -1,6 +1,7 @@
 from datetime import datetime
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.path.insert(0, '../../../src/')
 from models import Source, Apo, ApoUrl, ApoAlia, ApoRelation, Ro
 sys.path.insert(0, '../')
@@ -257,7 +258,7 @@ def write_summary_and_send_email(fw, update_log, to_delete_list):
     #        summary = summary + "\t" + apoid + " " + term + "\n"
                                           
     fw.write(summary)
-    print summary
+    print(summary)
 
 
 if __name__ == "__main__":

@@ -1,9 +1,10 @@
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import logging
 import os
 from datetime import datetime
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('utf-8')
 from src.helpers import upload_file
 from scripts.loading.database_session import get_session
@@ -128,7 +129,7 @@ def load_new_data(nex_session, data, source_to_id, efoid_to_efo, ro_id, roid_to_
                 nex_session.add(y)
                 nex_session.flush()
                 update_log['updated'] = update_log['updated'] + 1
-                print "UPDATED: ", y.efoid, ":"+y.display_name+ ":" + ":"+x['term']+":"
+                print("UPDATED: ", y.efoid, ":"+y.display_name+ ":" + ":"+x['term']+":")
             if x.get('definition') and x['definition'] != y.description:
                 ## update description
                 fw.write("The description for " + x['id'] + " has been updated from " + str(y.description) + " to " + x['definition'] + "\n")
@@ -136,7 +137,7 @@ def load_new_data(nex_session, data, source_to_id, efoid_to_efo, ro_id, roid_to_
                 nex_session.add(y)
                 nex_session.flush()
                 update_log['updated'] = update_log['updated'] + 1
-                print "UPDATED: ", y.efoid, ":"+y.description+ ":" + ":"+x['definition']+":"
+                print("UPDATED: ", y.efoid, ":"+y.description+ ":" + ":"+x['definition']+":")
             # else:
             #    print "SAME: ", y.efoid, y.display_name, x['definition'], x['aliases'], x['parents'], x['other_parents']
             active_efoid.append(x['id'])
@@ -404,6 +405,6 @@ if __name__ == "__main__":
         
     url_path = "http://www.ebi.ac.uk/efo/"
     efo_owl_file = "efo.owl"
-    urllib.urlretrieve(url_path + efo_owl_file, efo_owl_file)
+    urllib.request.urlretrieve(url_path + efo_owl_file, efo_owl_file)
     
     load_ontology(efo_owl_file)

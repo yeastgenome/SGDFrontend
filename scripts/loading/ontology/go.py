@@ -1,9 +1,10 @@
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import logging
 import os
 from datetime import datetime
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('utf-8')
 from src.models import Source, Go, GoUrl, GoAlias, GoRelation, Ro, Edam, Dbentity, Filedbentity
 from src.helpers import upload_file
@@ -395,7 +396,7 @@ if __name__ == "__main__":
         
     url_path = 'http://purl.obolibrary.org/obo/'
     go_owl_file = 'go.owl'
-    urllib.urlretrieve(url_path + go_owl_file, go_owl_file)
+    urllib.request.urlretrieve(url_path + go_owl_file, go_owl_file)
     
     load_ontology(go_owl_file)
 

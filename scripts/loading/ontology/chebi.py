@@ -1,9 +1,10 @@
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import logging
 import os
 from datetime import datetime
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('utf-8')
 from src.models import Source, Chebi, ChebiUrl, ChebiAlia
 from scripts.loading.database_session import get_session
@@ -98,7 +99,7 @@ def load_new_data(nex_session, data, source_to_id, chebiid_to_chebi, chebi_id_to
             chebi_id = y.chebi_id
             
 
-            print x['id']
+            print(x['id'])
 
 
 
@@ -246,7 +247,7 @@ def write_summary_and_send_email(fw, update_log, to_delete_list, term_name_chang
     summary = summary + term_name_changed
 
     fw.write(summary)
-    print summary
+    print(summary)
 
 
 if __name__ == "__main__":
@@ -254,7 +255,7 @@ if __name__ == "__main__":
     url_path = 'ftp://ftp.ebi.ac.uk/pub/databases/chebi/ontology/'
     # chebi_owl_file = 'chebi_lite.owl'
     chebi_owl_file = 'chebi.owl' 
-    urllib.urlretrieve(url_path + chebi_owl_file, chebi_owl_file)
+    urllib.request.urlretrieve(url_path + chebi_owl_file, chebi_owl_file)
 
     load_ontology(chebi_owl_file)
 

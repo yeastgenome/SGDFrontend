@@ -1,6 +1,7 @@
 from datetime import datetime
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('utf-8')
 from src.models import Source, So, SoUrl, SoAlia, SoRelation, Ro
 from scripts.loading.database_session import get_session
@@ -94,7 +95,7 @@ def load_new_data(nex_session, data, source_to_id, soid_to_so, ro_id, so_id_to_a
                 nex_session.add(y)
                 nex_session.flush()
                 update_log['updated'] = update_log['updated'] + 1
-                print "UPDATED: ", y.soid, y.display_name, x['term']
+                print("UPDATED: ", y.soid, y.display_name, x['term'])
             # else:
             #    print "SAME: ", y.soid, y.display_name, x['definition'], x['aliases'], x['parents']
             active_soid.append(x['id'])
@@ -286,14 +287,14 @@ def write_summary_and_send_email(fw, update_log, to_delete_list):
             summary = summary + "\t" + soid + " " + term + "\n"
                                           
     fw.write(summary)
-    print summary
+    print(summary)
 
 
 if __name__ == "__main__":
         
     url_path = 'https://raw.githubusercontent.com/The-Sequence-Ontology/SO-Ontologies/master/'
     owl_file = 'so.owl'
-    urllib.urlretrieve(url_path + owl_file, owl_file)
+    urllib.request.urlretrieve(url_path + owl_file, owl_file)
 
     load_ontology(owl_file)
 

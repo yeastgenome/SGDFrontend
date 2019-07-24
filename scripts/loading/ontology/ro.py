@@ -1,8 +1,9 @@
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import os
 from datetime import datetime
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 from src.models import Source, Ro, RoUrl
 from scripts.loading.database_session import get_session
 from scripts.loading.ontology import read_owl
@@ -129,14 +130,14 @@ def write_summary_and_send_email(fw, update_log, to_delete_list):
     #        summary = summary + "\t" + roid + " " + term + "\n"
                                           
     fw.write(summary)
-    print summary
+    print(summary)
 
 
 if __name__ == "__main__":
 
     url_path = 'https://raw.githubusercontent.com/oborel/obo-relations/master/'
     owl_file = 'ro.owl'
-    urllib.urlretrieve(url_path + owl_file, owl_file)
+    urllib.request.urlretrieve(url_path + owl_file, owl_file)
 
     load_ontology(owl_file)
 

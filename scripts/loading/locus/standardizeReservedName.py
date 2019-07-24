@@ -2,7 +2,8 @@ import logging
 import os
 from datetime import datetime
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 from src.models import Locusdbentity, Referencedbentity, Dbentity, Reservedname, \
     LocusReferences, ArchLocuschange, Source, Locusnote, LocusnoteReference
 from scripts.loading.database_session import get_session
@@ -48,7 +49,7 @@ def standardize_name(infile, logfile):
         created_by = gene_to_created_by.get(gene_name)
 
         if created_by is None:
-            print "The gene name: ", gene_name, " is not in Reservedname table."
+            print("The gene name: ", gene_name, " is not in Reservedname table.")
             continue
 
         pmid_4_gene_name = None
@@ -63,9 +64,9 @@ def standardize_name(infile, logfile):
 
         locus_id = name_to_locus_id[orf_name]       
         if pmid_4_gene_name and pmid_4_gene_name not in pmid_to_reference:
-            print "The pmid:", pmid_4_gene_name, " is not in the database."
+            print("The pmid:", pmid_4_gene_name, " is not in the database.")
         if pmid_4_name_desc and pmid_4_name_desc not in pmid_to_reference:
-            print "The pmid:", pmid_4_name_desc, " is not in the database."
+            print("The pmid:", pmid_4_name_desc, " is not in the database.")
             
         # 1. update dbentity.display_name = gene_name in the file
         update_dbentity(nex_session, fw, locus_id, gene_name)
@@ -99,7 +100,7 @@ def standardize_name(infile, logfile):
         # 7. update the papers in the locusnote to point to new papers in LOCUSNOTE_REFERENCE
         note_id = locus_id_gene_to_note_id.get((locus_id, gene_name))
         if note_id is None:
-            print "No note for gene_name: ", gene_name
+            print("No note for gene_name: ", gene_name)
             continue
 
         delete_old_locusnote_reference(nex_session, fw, note_id, gene_name)
@@ -149,7 +150,7 @@ def delete_old_locusnote_reference(nex_session, fw, note_id, gene_name):
     x = nex_session.query(LocusnoteReference).filter_by(note_id=note_id).one_or_none()
 
     if x is None:
-        print "No papers for note_id: ", note_id, " and gene: ", gene_name
+        print("No papers for note_id: ", note_id, " and gene: ", gene_name)
         return
 
     nex_session.delete(x)
@@ -223,7 +224,7 @@ def reformat_date(this_date):
 
     dates = this_date.split("/")
     if len(dates) <3:
-        print "BAD DATE:", this_date
+        print("BAD DATE:", this_date)
         return
     month = dates[0]
     day= dates[1]
@@ -233,7 +234,7 @@ def reformat_date(this_date):
     elif len(year) == 2 and (year.startswith('0') or year.startswith('1')):
         year = '20' + year
     elif len(year) == 2:
-        print "WRONG YEAR"
+        print("WRONG YEAR")
         return 
     if len(month) == 1:
         month ="0" + month
@@ -249,8 +250,8 @@ if __name__ == '__main__':
     if len(sys.argv) >= 2:
          infile = sys.argv[1]
     else:
-        print "Usage:         python standardizeReservedName.py datafile"
-        print "Usage example: python standardizeReservedName.py scripts/loading/locus/data/reservedNames2standardize110817.txt"
+        print("Usage:         python standardizeReservedName.py datafile")
+        print("Usage example: python standardizeReservedName.py scripts/loading/locus/data/reservedNames2standardize110817.txt")
         exit()
     
     logfile = "scripts/loading/locus/logs/standardizeReservedName.log"

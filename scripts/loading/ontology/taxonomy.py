@@ -1,8 +1,9 @@
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import os
 from datetime import datetime
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('utf-8')
 from src.models import Source, Taxonomy, TaxonomyUrl, TaxonomyAlia, TaxonomyRelation, Ro
 from scripts.loading.database_session import get_session
@@ -110,7 +111,7 @@ def load_new_data(nex_session, data, source_to_id, taxid_to_taxonomy, ro_id, tax
                 # nex_session.add(y)
                 # nex_session.flush()
                 update_log['updated'] = update_log['updated'] + 1
-                print "UPDATED: ", y.taxid, y.display_name, x['term']
+                print("UPDATED: ", y.taxid, y.display_name, x['term'])
             # else:
             #    print "SAME: ", taxid, y.display_name, x['aliases'], x['parents']
             active_taxid.append(taxid)
@@ -129,7 +130,7 @@ def load_new_data(nex_session, data, source_to_id, taxid_to_taxonomy, ro_id, tax
             nex_session.flush()
             taxonomy_id = this_x.taxonomy_id
             update_log['added'] = update_log['added'] + 1
-            print "NEW: ", taxid, x['term']
+            print("NEW: ", taxid, x['term'])
 
             ## add three URLs
             link_url =taxid.split(':')[1]
@@ -306,14 +307,14 @@ def write_summary_and_send_email(fw, update_log, to_delete_list):
             summary = summary + "\t" + taxid + " " + term + "\n"
                                           
     fw.write(summary)
-    print summary
+    print(summary)
 
 
 if __name__ == "__main__":
         
     url_path = 'http://ontologies.berkeleybop.org/'
     owl_file = 'goncbitaxon.owl'
-    urllib.urlretrieve(url_path + owl_file, owl_file)
+    urllib.request.urlretrieve(url_path + owl_file, owl_file)
 
     load_ontology(owl_file)
 

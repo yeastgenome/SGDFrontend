@@ -2,7 +2,8 @@ import logging
 import os
 from datetime import datetime
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 from src.models import Locusdbentity, Referencedbentity, Dbentity, Reservedname, LocusReferences, ArchLocuschange
 from scripts.loading.database_session import get_session
 
@@ -42,20 +43,20 @@ def standardize_name(infile, logfile):
         if pieces[0] == 'ORF':
             continue
         (locus_id, gene_name, name_desc) = name_to_locus[pieces[0]]       
-        print (locus_id, gene_name, name_desc)
+        print((locus_id, gene_name, name_desc))
 
         reference_list = locus_id_to_reference_list.get(locus_id)
-        print pieces[0], pieces[1], pieces[2], pieces[4], reference_list
+        print(pieces[0], pieces[1], pieces[2], pieces[4], reference_list)
  
         if reference_list is None:
-            print "NO REF for ", pieces[0], locus_id, gene_name
+            print("NO REF for ", pieces[0], locus_id, gene_name)
             continue
 
         for reference_row in reference_list:
             (reference_id, citation, pmid, reference_class) = reference_row 
             if (reference_id, citation) in unique_papers:
                 continue
-            print reference_id, citation
+            print(reference_id, citation)
             unique_papers.append((reference_id, citation))
 
     fw.close()
@@ -68,8 +69,8 @@ if __name__ == '__main__':
     if len(sys.argv) >= 2:
          infile = sys.argv[1]
     else:
-        print "Usage:         python standardizeReservedName.py datafile"
-        print "Usage example: python standardizeReservedName.py scripts/loading/locus/data/reservedNames2standardize110817.txt"
+        print("Usage:         python standardizeReservedName.py datafile")
+        print("Usage example: python standardizeReservedName.py scripts/loading/locus/data/reservedNames2standardize110817.txt")
         exit()
     
     logfile = "scripts/loading/locus/logs/standardizeReservedName.log"
