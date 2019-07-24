@@ -1,5 +1,6 @@
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
 sys.path.insert(0, '../../../src/')
 from models import PhenotypeannotationCond
@@ -41,7 +42,7 @@ def update_data():
                 # print "TO_FIX:", str(x.condition_id) + "\t" + str(x.annotation_id) + "\t" + x.condition_name + "\t" + x.condition_value + "\t" + str(x.condition_unit)
                 continue
             else:
-                print values[0], ":", values[1]
+                print(values[0], ":", values[1])
                 nex_session.query(PhenotypeannotationCond).filter_by(condition_id=x.condition_id).update({"condition_value": values[0], "condition_unit": values[1]})
                 i = i + 1
                 if i > 500:

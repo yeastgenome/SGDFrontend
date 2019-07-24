@@ -13,7 +13,7 @@ def generate_data():
     author2metadataTreated = get_treated_metadata()
     geneAuthor2fold = get_fold_change()
 
-    print "SYSTEMATIC_NMAE\tAUTHOR\tPMID\tMOLECULES_PER_CELL\tECO\tEFO\tSTRAIN\tCHEBI\tGOID\tTIME_VALUE\tTIME_UNIT\tCOND_VALUE\tCONT_UNIT\tCHANGE_FOLD\tMEDIAN\tMAD"
+    print("SYSTEMATIC_NMAE\tAUTHOR\tPMID\tMOLECULES_PER_CELL\tECO\tEFO\tSTRAIN\tCHEBI\tGOID\tTIME_VALUE\tTIME_UNIT\tCOND_VALUE\tCONT_UNIT\tCHANGE_FOLD\tMEDIAN\tMAD")
 
     generate_data_for_untreated_expts(author2metadataUntreated)
     generate_data_for_treated_expts(author2metadataTreated, geneAuthor2fold)
@@ -45,7 +45,7 @@ def generate_data_for_untreated_expts(author2metadataUntreated):
                 continue
             molecules = data[i]
             (pmid, eco, efo, strain) = author2metadataUntreated[author]
-            print gene + "\t" + author + "\t" + pmid + "\t" + molecules + "\t" + eco + "\t" + efo + "\t" + strain + "\tNone\tNone\tNone\tNone\tNone\tNone\tNone\t" + median + "\t" + str(mad)
+            print(gene + "\t" + author + "\t" + pmid + "\t" + molecules + "\t" + eco + "\t" + efo + "\t" + strain + "\tNone\tNone\tNone\tNone\tNone\tNone\tNone\t" + median + "\t" + str(mad))
             i = i + 1
 
     f.close()
@@ -90,7 +90,7 @@ def generate_data_for_treated_expts(author2metadataTreated, geneAuthor2fold):
         metadata = author2metadataTreated.get(author)
         fold = geneAuthor2fold.get((gene, author))
         if metadata is None:
-            print "BAD: no metadata for ", author
+            print("BAD: no metadata for ", author)
             continue
         i = 0
         
@@ -112,7 +112,7 @@ def generate_data_for_treated_expts(author2metadataTreated, geneAuthor2fold):
                 conc_value = None
             if conc_unit == '':
                 conc_unit = None
-            print gene + "\t" + author + "\t" + pmid + "\t" + molecules + "\t" + eco + "\t" + efo + "\t" + strain + "\t" + str(chebi) + "\t" + str(goid) + "\t" + time_value + "\t" + time_unit + "\t" + str(conc_value) + "\t" + str(conc_unit) + "\t" + str(thisFold) + "\tNone\tNone"
+            print(gene + "\t" + author + "\t" + pmid + "\t" + molecules + "\t" + eco + "\t" + efo + "\t" + strain + "\t" + str(chebi) + "\t" + str(goid) + "\t" + time_value + "\t" + time_unit + "\t" + str(conc_value) + "\t" + str(conc_unit) + "\t" + str(thisFold) + "\tNone\tNone")
             i = i + 1
 
 def get_fold_change():

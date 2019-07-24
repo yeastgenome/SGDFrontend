@@ -65,23 +65,23 @@ def extract_domains():
             if "</match>" in line:
                 dbname = match.get('dbname')
                 if dbname is None:
-                    print "No dbname for line:", line
+                    print("No dbname for line:", line)
                     match = {}
                     continue
                 source = dbname_to_source.get(dbname)
                 if source is None:
-                    print "Unknown source:", dbname
+                    print("Unknown source:", dbname)
                     match = {}
                     continue
                 id = match.get('id')
                 if id is None:
-                    print "No ID for line:", line
+                    print("No ID for line:", line)
                     match = {}
                     continue
                 start = match.get('start')
                 end = match.get('end')
                 if start is None or end is None:
-                    print "No start or end_index for line:", line
+                    print("No start or end_index for line:", line)
                     match = {}
                     continue
 

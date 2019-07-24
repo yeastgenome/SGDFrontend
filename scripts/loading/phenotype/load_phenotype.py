@@ -1,5 +1,6 @@
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
 from src.models import Apo, Locusdbentity, Referencedbentity, Phenotypeannotation, \
     Source, PhenotypeannotationCond, Taxonomy, Chebi, Phenotype, Allele, Reporter, Chebi
@@ -137,28 +138,28 @@ def load_phenotypes(infile, logfile):
             if field_name == 'feature_name':
                 dbentity_id = name_to_locus_id.get(x.strip())
                 if dbentity_id is None:
-                    print "The feature_name:", x, " is not in the database."
+                    print("The feature_name:", x, " is not in the database.")
                     bad_row = 1
                     break
 
             if field_name == 'PMID':
                 reference_id = pmid_to_reference_id.get(int(x.strip()))
                 if reference_id is None:
-                    print "The PMID: ", x, " is not in the database."
+                    print("The PMID: ", x, " is not in the database.")
                     bad_row = 1
                     break
 
             if field_name == "experiment_type":
                 experiment_id = experiment_to_id.get(x.strip().replace('"', ''))
                 if experiment_id is None:
-                    print "The experiment_type:", x, " is not in the APO table."
+                    print("The experiment_type:", x, " is not in the APO table.")
                     bad_row = 1
                     break
 
             if field_name == "mutant_type":
                 mutant_id = mutant_to_id.get(x.strip())
                 if mutant_id is None:
-                    print "The mutant_type:", x, " is not in the APO table."
+                    print("The mutant_type:", x, " is not in the APO table.")
                     bad_row = 1
                     continue
 
@@ -171,12 +172,12 @@ def load_phenotypes(infile, logfile):
             if field_name == "strain_background":
                 taxid = strain_taxid_mapping.get(x.strip())
                 if taxid is None:
-                    print "The strain_background:", x, " is not in the mapping."
+                    print("The strain_background:", x, " is not in the mapping.")
                     bad_row = 1
                     continue
                 taxonomy_id = taxid_to_taxonomy_id.get(taxid)
                 if taxonomy_id is None:
-                    print "The TAXON ID: ", taxid, " is not in the database."
+                    print("The TAXON ID: ", taxid, " is not in the database.")
                     bad_row = 1
                     continue
 
@@ -218,26 +219,26 @@ def load_phenotypes(infile, logfile):
                 phenotype = observable + ": " + qualifier
             phenotype_id = phenotype_to_id.get(phenotype)
             if phenotype_id is None:
-                print "The phenotype:", phenotype, " is not in the database."
+                print("The phenotype:", phenotype, " is not in the database.")
                 continue
         else:
-            print "No observable is provided for line:", line
+            print("No observable is provided for line:", line)
             continue
         
         if dbentity_id is None:
-            print "No feature_name is provided for line:", line
+            print("No feature_name is provided for line:", line)
             continue
 
         if taxonomy_id is None:
-            print "No strain_background is provided for line:", line
+            print("No strain_background is provided for line:", line)
             continue
 
         if reference_id is None:
-            print "No PMID is provided for line:",line
+            print("No PMID is provided for line:",line)
             continue
 
         if created_by is None:
-            print "No curator ID is provided for line:", line
+            print("No curator ID is provided for line:", line)
             continue
 
         # print "dbentity_id=", dbentity_id, ", source_id=", source_id, ", taxonomy_id=", taxonomy_id, ", reference_id=", reference_id, ", phenotype_id=", phenotype_id, ", allele_id=", allele_id, ", allele_comment=", allele_comment, ", reporter_id=", reporter_id
@@ -280,9 +281,9 @@ def load_phenotypes(infile, logfile):
                 chemical_values = cond_value.split(',')
                 chemical_units = cond_unit.split(',')
                 
-                print "chemical_names=", chemical_names
-                print "chemical_values=", chemical_values
-                print "chemical_units=", chemical_units
+                print("chemical_names=", chemical_names)
+                print("chemical_values=", chemical_values)
+                print("chemical_units=", chemical_units)
 
                 n = 0
                 for chemical_name in chemical_names:
@@ -291,13 +292,13 @@ def load_phenotypes(infile, logfile):
                     cond_value = chemical_values[n]
                     cond_unit = chemical_units[n]
 
-                    print "cond_name=", cond_name
-                    print "cond_value=", cond_value
-                    print "cond_unit=", cond_unit
+                    print("cond_name=", cond_name)
+                    print("cond_value=", cond_value)
+                    print("cond_unit=", cond_unit)
 
                     n = n + 1
                     if cond_name is None:
-                        print "The ChEBI ID", chebi, " is not in the database."
+                        print("The ChEBI ID", chebi, " is not in the database.")
                         continue
                     insert_phenotypeannotation_cond(nex_session, fw, created_by,
                                                     annotation_id, group_id,
@@ -326,7 +327,7 @@ def load_phenotypes(infile, logfile):
 
 def insert_phenotypeannotation_cond(nex_session, fw, created_by, annotation_id, group_id, cond_class, cond_name, cond_value, cond_unit):
 
-    print "New phenotypeannotation_cond:", created_by, annotation_id, group_id, cond_class, cond_name,cond_value, cond_unit
+    print("New phenotypeannotation_cond:", created_by, annotation_id, group_id, cond_class, cond_name,cond_value, cond_unit)
 
     x = PhenotypeannotationCond(annotation_id = annotation_id, 
                                 group_id = group_id,
@@ -344,7 +345,7 @@ def insert_reporter(nex_session, fw, source_id, created_by, reporter_name):
 
     reporter_name= reporter_name.replace('"', '')
 
-    print "NEW Reporter:", created_by, reporter_name
+    print("NEW Reporter:", created_by, reporter_name)
 
     format_name = reporter_name.replace(" ", "_").replace("/", "-")
     obj_url = "/reporter/" + format_name
@@ -368,7 +369,7 @@ def insert_allele(nex_session, fw, source_id, created_by, allele_name):
 
     allele_name = allele_name.replace('"', '')
 
-    print "NEW Allele:", created_by, allele_name
+    print("NEW Allele:", created_by, allele_name)
     
     format_name = allele_name.replace(" ", "_").replace("/", "-")
     obj_url = "/allele/" + format_name
@@ -390,7 +391,7 @@ def insert_allele(nex_session, fw, source_id, created_by, allele_name):
 
 def insert_phenotypeannotation(nex_session, fw, source_id, created_by, dbentity_id, taxonomy_id, reference_id, phenotype_id, experiment_id, mutant_id, allele_id, allele_comment, reporter_id, reporter_comment, strain_name, details):
 
-    print "NEW phenotypeannotation: ", created_by, dbentity_id, taxonomy_id, reference_id, phenotype_id, experiment_id, mutant_id, allele_id, allele_comment, reporter_id, reporter_comment, strain_name, details
+    print("NEW phenotypeannotation: ", created_by, dbentity_id, taxonomy_id, reference_id, phenotype_id, experiment_id, mutant_id, allele_id, allele_comment, reporter_id, reporter_comment, strain_name, details)
 
     allele_comment = allele_comment.replace('"', '')
     reporter_comment = reporter_comment.replace('"', '')
@@ -428,8 +429,8 @@ if __name__ == '__main__':
     if len(sys.argv) >= 2:
          infile = sys.argv[1]
     else:
-        print "Usage:         python load_phenotype.py datafile"
-        print "Usage example: python load_phenotype.py scripts/loading/phenotype/data/phenotype_dataCuration091717.tsv"
+        print("Usage:         python load_phenotype.py datafile")
+        print("Usage example: python load_phenotype.py scripts/loading/phenotype/data/phenotype_dataCuration091717.tsv")
         exit()
     
     logfile = "scripts/loading/phenotype/logs/" + infile.split('/')[4].replace(".txt", ".log")

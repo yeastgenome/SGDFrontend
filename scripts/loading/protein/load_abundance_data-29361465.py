@@ -1,11 +1,12 @@
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import gzip
 import shutil
 import logging
 import os
 from datetime import datetime
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 from src.models import Taxonomy, Source, Efo, Eco, Chebi, Go, Locusdbentity, Referencedbentity, \
                        Proteinabundanceannotation
 from scripts.loading.database_session import get_session
@@ -41,7 +42,7 @@ def load_data():
     strain_to_taxid_mapping = get_strain_taxid_mapping()
     reference_id = pmid_to_reference_id.get(PMID)
     if reference_id is None:
-        print "The PMID:", PMID, " is not in the database."
+        print("The PMID:", PMID, " is not in the database.")
         return
 
     log.info("Start loading:\n") 
@@ -58,25 +59,25 @@ def load_data():
         pieces = line.strip().replace("None", "").split("\t")
         dbentity_id = name_to_dbentity_id.get(pieces[0])
         if dbentity_id is None:
-            print "The ORF name is not in the Locusdbentity table:", pieces[0]
+            print("The ORF name is not in the Locusdbentity table:", pieces[0])
             continue
         original_reference_id = pmid_to_reference_id.get(int(pieces[2]))
         data_value = int(pieces[3])
         eco_id = ecoid_to_eco_id.get(pieces[4])
         if eco_id is None:
-            print "The ECOID:", pieces[4], " is not in the database."
+            print("The ECOID:", pieces[4], " is not in the database.")
             continue
         efo_id = efoid_to_efo_id.get(pieces[5])
         if efo_id is None:
-            print "The EFOID:", pieces[5], " is not in the database."
+            print("The EFOID:", pieces[5], " is not in the database.")
             continue
         taxid = strain_to_taxid_mapping.get(pieces[6])
         if taxid is None:
-            print "The strain:", pieces[6], " is not in the mapping list."
+            print("The strain:", pieces[6], " is not in the mapping list.")
             continue
         taxonomy_id = taxid_to_taxonomy_id.get(taxid)
         if taxonomy_id is None:
-            print "The TAXID:", taxid, " is not in the database."
+            print("The TAXID:", taxid, " is not in the database.")
             continue
         chebi_id = None
         go_id = None
@@ -91,12 +92,12 @@ def load_data():
             if pieces[7]:
                 chebi_id = chebiid_to_chebi_id.get(pieces[7])
                 if chebi_id is None:
-                    print "The chebiid:", pieces[7], " is not in the database."
+                    print("The chebiid:", pieces[7], " is not in the database.")
                     continue
             if pieces[8]:
                 go_id = goid_to_go_id.get(pieces[8])
                 if go_id is None:
-                    print "The goid:", pieces[8], " is not in the database."
+                    print("The goid:", pieces[8], " is not in the database.")
                     continue
             if pieces[9]:
                 time_value = int(pieces[9])
