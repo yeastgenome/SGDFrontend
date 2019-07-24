@@ -14,7 +14,7 @@ log = logging.getLogger()
 log.setLevel(logging.ERROR)
 
 cache_urls = None
-if 'CACHE_URLS' in os.environ.keys():
+if 'CACHE_URLS' in list(os.environ.keys()):
     cache_urls = os.environ['CACHE_URLS'].split(',')
 else:
     cache_urls = ['http://localhost:6545']
@@ -38,7 +38,7 @@ def link_gene_names(raw, locus_names_ids, ignore_str=''):
             wupper = wupper[:-1]
         if wupper == ignore_str.upper():
             continue
-        if wupper in locus_names_object.keys() and len(wupper) >= 2:
+        if wupper in list(locus_names_object.keys()) and len(wupper) >= 2:
             sgdid = locus_names_object[wupper]
             url = '/locus/'  + sgdid
             new_str = '<a href="' + url + '">' + original_word + '</a>'
@@ -55,7 +55,7 @@ def process_pmid_list(raw):
     p_list = raw.split()
     try:
         return [int(x) for x in p_list]
-    except ValueError, e:
+    except ValueError as e:
         raise ValueError('PMIDs must be a space-separated list of valid PMIDs.')
 
 def get_curator_session(username):

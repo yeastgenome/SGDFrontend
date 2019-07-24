@@ -292,7 +292,7 @@ class IndexESHelper:
         col_obj = {}
         bulk_data = []
         if locus_obj:
-            for item_key, item_value in colleague_obj.items():
+            for item_key, item_value in list(colleague_obj.items()):
                 if len(item_value) > 0:
                     for item in item_value:
                         temp = locus_obj.get(item.locus_id)
@@ -300,7 +300,7 @@ class IndexESHelper:
                             if item.colleague_id not in obj:
                                 obj[item.colleague_id] = []
                             obj[item.colleague_id].append(temp)
-            for k, v in obj.items():
+            for k, v in list(obj.items()):
                 temp = [item for sublist in v for item in sublist]
                 result[k] = temp
 
@@ -340,14 +340,10 @@ class IndexESHelper:
 
             loco = result.get(item.colleague_id)
             if loco is not None:
-                locus_1 = filter(
-                    lambda y: y is not None,
-                    p.map(lambda x: x.gene_name if x.gene_name else None, loco))
-                locus_2 = filter(
-                    lambda y: y is not None,
-                    p.map(
+                locus_1 = [y for y in p.map(lambda x: x.gene_name if x.gene_name else None, loco) if y is not None]
+                locus_2 = [y for y in p.map(
                         lambda x: x.systematic_name if x.systematic_name else None,
-                        loco))
+                        loco) if y is not None]
                 locus = set(locus_1 + locus_2)
             obj_temp["colleague_loci"] = sorted(
                 list(locus)) if len(locus) > 0 else []
@@ -433,7 +429,7 @@ class IndexESHelper:
         '''
         if phenos_annotation is not None:
 
-            for item_key, item_v in phenos_annotation.items():
+            for item_key, item_v in list(phenos_annotation.items()):
                 if phenos_annotation_cond is not None:
                     temp_cond = phenos_annotation_cond.get(item_key)
                     if temp_cond is not None:
@@ -452,10 +448,8 @@ class IndexESHelper:
             _annotations = phenos_annotation.get(item.phenotype_id)
 
             if _annotations is not None:
-                _annotations_mod = filter(
-                    lambda lst_item: type(lst_item) is not list, _annotations)
-                _annot_conds = filter(lambda lst_item: type(lst_item) is list,
-                                      _annotations)
+                _annotations_mod = [lst_item for lst_item in _annotations if type(lst_item) is not list]
+                _annot_conds = [lst_item for lst_item in _annotations if type(lst_item) is list]
 
                 for item_mod in _annotations_mod:
                     references.add(item_mod.reference.display_name)

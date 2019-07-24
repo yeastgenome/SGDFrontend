@@ -1,17 +1,18 @@
 from datetime import datetime
 import time
-from StringIO import StringIO
+from io import StringIO
 from Bio import Entrez, Medline
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
 sys.path.insert(0, '../../../src/')
 from models import Referencedbentity, Source, Journal
 sys.path.insert(0, '../')
 from config import CREATED_BY
 from database_session import get_nex_session as get_session
-from pubmed import get_pubmed_record, set_cite
-from add_reference import get_pubstatus_date_revised, get_doi
+from .pubmed import get_pubmed_record, set_cite
+from .add_reference import get_pubstatus_date_revised, get_doi
 
 __author__ = 'sweng66'
 
@@ -45,8 +46,8 @@ def update_reference_table(log_file):
     fw.write(str(datetime.now()) + "\n")
     fw.write("Getting Pubmed records...\n")
 
-    print datetime.now()
-    print "Getting Pubmed records..."
+    print(datetime.now())
+    print("Getting Pubmed records...")
 
     pmids = []
     j = 0
@@ -75,7 +76,7 @@ def update_reference_table(log_file):
         update_database_batch(nex_session, fw, records, pmid_to_reference, 
                               journal_id_to_abbrev, source_id)
 
-    print "Done"
+    print("Done")
 
     fw.close()
     nex_session.commit()
@@ -148,34 +149,34 @@ def update_reference(nex_session, fw, pmid, record, x, journal_id_to_abbrev, sou
     ### update reference table
     if published_status:
         x.publication_status = published_status
-        print "UPDATE:", pmid, "publication_status=", published_status
+        print("UPDATE:", pmid, "publication_status=", published_status)
     if citation != x.citation:
         x.citation = citation
-        print "UPDATE:", pmid, "citation=", citation
+        print("UPDATE:", pmid, "citation=", citation)
     if title != x.title:
         x.title = title
-        print "UPDATE:", pmid, "title=", title
+        print("UPDATE:", pmid, "title=", title)
     if year != x.year:
         x.year = year
-        print "UPDATE:", pmid, "year=", year
+        print("UPDATE:", pmid, "year=", year)
     if volume != x.volume:
         x.volume = volume
-        print "UPDATE:", pmid, "volume=", volume
+        print("UPDATE:", pmid, "volume=", volume)
     if issue != issue:
         x.issue = issue
-        print "UPDATE:", pmid, "issue=", issue
+        print("UPDATE:", pmid, "issue=", issue)
     if page != page:
         x.page = page
-        print "UPDATE:", pmid, "page=", page
+        print("UPDATE:", pmid, "page=", page)
     if doi and doi != x.doi:
         x.doi = doi
-        print "UPDATE:", pmid, "doi=", doi
+        print("UPDATE:", pmid, "doi=", doi)
     if pmcid and pmcid != x.pmcid and pmcid != "PMC4502675":
         x.pmcid = pmcid
-        print "UPDATE:", pmid, "pmcid=", pmcid
+        print("UPDATE:", pmid, "pmcid=", pmcid)
     if date_revised:
         x.date_revised = date_revised
-        print "UPDATE:", pmid, "date_revised=", date_revised
+        print("UPDATE:", pmid, "date_revised=", date_revised)
     nex_session.add(x)
     nex_session.commit()
 

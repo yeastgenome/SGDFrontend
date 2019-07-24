@@ -58,7 +58,7 @@ def get_sequence(parent_id, start, end, strand, sequence_library):
             residues = reverse_complement(residues)
         return residues
     else:
-        print 'Parent not found: ' + parent_id
+        print('Parent not found: ' + parent_id)
         
 def reverse_complement(residues):
     basecomplement = {'A': 'T', 'C': 'G', 'G': 'C', 'T': 'A', 't': 'a', 'a': 't', 'c': 'g', 'g': 'c', 'n': 'n', 'W': 'W', 'Y': 'R', 'R': 'Y', 'S': 'S', 'K':'M', 'M':'K', 'B':'V', 'D':'H', 'H':'D', 'V':'B', 'N':'N'}
@@ -360,7 +360,7 @@ def read_gpad_file(filename, nex_session, uniprot_to_date_assigned, uniprot_to_s
         goid = field[3]
         go_id = goid_to_go_id.get(goid)
         if go_id is None:
-            print "The GOID = ", goid, " is not in GO table."
+            print("The GOID = ", goid, " is not in GO table.")
             continue
 
         ## eco_id                                                                                           
@@ -369,7 +369,7 @@ def read_gpad_file(filename, nex_session, uniprot_to_date_assigned, uniprot_to_s
         go_evidence = annot_prop_dict.get('go_evidence')
         eco_id = evidence_to_eco_id.get(go_evidence)
         if eco_id is None:
-            print "The go_evidence = ", annotation.go_evidence, " is not in the ECO table."
+            print("The go_evidence = ", annotation.go_evidence, " is not in the ECO table.")
             continue
 
         ## source                                                                                           
@@ -417,9 +417,9 @@ def read_gpad_file(filename, nex_session, uniprot_to_date_assigned, uniprot_to_s
             reference_id = sgdid_to_reference_id.get(ref_sgdid)
         if reference_id is None:
             if pmid is None:
-                print "NO REFERENCE: line=", line
+                print("NO REFERENCE: line=", line)
                 continue
-            print "The PMID = " + str(pmid) + " is not in the REFERENCEDBENTITY table."
+            print("The PMID = " + str(pmid) + " is not in the REFERENCEDBENTITY table.")
             if new_pmids is not None:
                 if pmid not in new_pmids:
                     new_pmids.append(pmid)
@@ -710,7 +710,7 @@ def read_obo(ontology, filename, key_switch, parent_to_children, is_obsolete_id,
                     parent_child_pair[(parent, term['goid'])] = 1
                     ro_id = get_relation_to_ro_id(relation_type)
                     if ro_id is None:
-                        print relation_type, " is not in RO table"
+                        print(relation_type, " is not in RO table")
                         continue
                     if parent not in parent_to_children:
                         parent_to_children[parent] = []
@@ -980,7 +980,7 @@ def link_strain_names(text, to_ignore, nex_session):
     try:
         return ' '.join(new_chunks)
     except:
-        print text
+        print(text)
         return text
 
 
@@ -1002,5 +1002,5 @@ Subject: %s
         mailer = smtplib.SMTP(server)
         mailer.sendmail(sender, receiver, message)
     except (smtplib.SMTPConnectError):
-        print >> stderr, "Error sending email"
+        print("Error sending email", file=stderr)
         sys.exit(-1)

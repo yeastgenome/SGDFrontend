@@ -1,9 +1,10 @@
 from datetime import datetime
-from StringIO import StringIO
+from io import StringIO
 from Bio import Entrez, Medline 
-from urllib import urlopen
+from urllib.request import urlopen
 import sys
-reload(sys)  # Reload does the trick! 
+import importlib
+importlib.reload(sys)  # Reload does the trick! 
 sys.setdefaultencoding('UTF8')
 sys.path.insert(0, '../../../src/')
 from models import Referencedbentity, Referencetriage, Referencedeleted, \
@@ -11,7 +12,7 @@ from models import Referencedbentity, Referencetriage, Referencedeleted, \
 sys.path.insert(0, '../')
 from database_session import get_dev_session
 from config import CREATED_BY
-from pubmed import get_pmid_list, get_pubmed_record, set_cite
+from .pubmed import get_pmid_list, get_pubmed_record, set_cite
 from util import extract_gene_names
 
 __author__ = 'sweng66'
@@ -52,8 +53,8 @@ def load_references(log_file):
     fw.write(str(datetime.now()) + "\n")
     fw.write("Getting PMID list...\n")
     
-    print datetime.now()
-    print "Getting PMID list..."
+    print(datetime.now())
+    print("Getting PMID list...")
 
     pmid_list = get_pmid_list(TERMS, RETMAX, DAY)
 
@@ -69,14 +70,14 @@ def load_references(log_file):
 
     if len(pmids) == 0:
         fw.write("No new papers\n")
-        print "No new papers"
+        print("No new papers")
         return
 
     fw.write(str(datetime.now()) + "\n")
     fw.write("Getting Pubmed records...\n")
     
-    print datetime.now()
-    print "Getting Pubmed records and inserting references..."
+    print(datetime.now())
+    print("Getting Pubmed records and inserting references...")
 
     records = get_pubmed_record(','.join(pmids))
 
@@ -121,7 +122,7 @@ def load_references(log_file):
 
     fw.close()
 
-    print "Done!"
+    print("Done!")
 
 def insert_reference(nex_session, fw, pmid, citation, doi_url, abstract, gene_list):
 

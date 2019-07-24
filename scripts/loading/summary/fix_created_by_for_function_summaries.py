@@ -206,7 +206,7 @@ def read_summary_file(nex_session, fw, summary_type, summary_file, log_file):
             for pmid in pmids:
                 reference_id = pmid_to_reference_id.get(int(pmid))
                 if reference_id is None:
-                    print "PMID=", pmid, " is not in the database"
+                    print("PMID=", pmid, " is not in the database")
                     continue
                 order = order + 1
                 references.append({'reference_id': reference_id, 'reference_order': order})
@@ -253,7 +253,7 @@ def write_summary_and_send_email(load_summary_holder, fw, summary_type):
     ## send email here                                                                               
     # sendmail(email_subject, summary, EMAIL)
 
-    print summary
+    print(summary)
 
 
 if __name__ == "__main__":
@@ -269,10 +269,10 @@ if __name__ == "__main__":
         summary_file = sys.argv[1]
         summary_type = "Phenotype"
     else:
-        print "Usage: load_function_summaries.py summary_file_name_with_path summary_type[Phenotype|Regulation|Function]"
-        print "Example: load_function_summaries.py data/16-11phenoSummaries.txt Phenotype"
-        print "Example: load_function_summaries.py data/16-5regulationSummaries.txt Regulation"
-        print "Example: load_function_summaries.py data/gp_information.559292_sgd Function"
+        print("Usage: load_function_summaries.py summary_file_name_with_path summary_type[Phenotype|Regulation|Function]")
+        print("Example: load_function_summaries.py data/16-11phenoSummaries.txt Phenotype")
+        print("Example: load_function_summaries.py data/16-5regulationSummaries.txt Regulation")
+        print("Example: load_function_summaries.py data/gp_information.559292_sgd Function")
         exit()
 
     log_file = "logs/" + summary_type + "summary_loading.log"

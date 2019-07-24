@@ -1,5 +1,6 @@
 import sys
-reload(sys)  # Reload does the tricsys.setdefaultencoding('UTF8')
+import importlib
+importlib.reload(sys)  # Reload does the tricsys.setdefaultencoding('UTF8')
 sys.path.insert(0, '../../../src/')
 from models import Updatelog
 sys.path.insert(0, '../')
@@ -18,7 +19,7 @@ def load_data():
     bud_id_to_id = dict([(x.bud_id, x.updatelog_id) for x in nex_session.query(Updatelog).all()])
 
     for bud_id in bud_id_to_id:
-        print bud_id
+        print(bud_id)
     return
 
     i = 0    
@@ -46,7 +47,7 @@ def load_data():
 
 def insert_update_log(nex_session, x):
 
-    print "Load ", x[0], x[1], x[2], x[3], x[4], x[5], x[6], x[7]
+    print("Load ", x[0], x[1], x[2], x[3], x[4], x[5], x[6], x[7])
 
     y = Updatelog(bud_id = int(x[0]),
                   tab_name = x[1],

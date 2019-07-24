@@ -250,7 +250,7 @@ def read_summary_file(nex_session, fw, summary_type, summary_file_reader, log_fi
                 for pmid in pmids:
                     reference_id = pmid_to_reference_id.get(int(pmid))
                     if reference_id is None:
-                        print "PMID=", pmid, " is not in the database"
+                        print("PMID=", pmid, " is not in the database")
                         continue
                     order = order + 1
                     references.append({'reference_id': reference_id, 'reference_order': order})
@@ -299,7 +299,7 @@ def write_summary_and_send_email(load_summary_holder, fw, summary_type):
     # send email here                                                                               
     # sendmail(email_subject, summary, EMAIL)
 
-    print summary
+    print(summary)
 
 
 if __name__ == "__main__":
@@ -312,9 +312,9 @@ if __name__ == "__main__":
     elif len(sys.argv) >= 2:
         summary_file = sys.argv[1]
     else:
-        print "Usage: load_summaries.py summary_file_name_with_path summary_type[Phenotype_Regulation|Function]"
-        print "Example: load_summaries.py summary_test.txt Phenotype_Regulation"
-        print "Example: load_summaries.py gp_information.559292_sgd Function"
+        print("Usage: load_summaries.py summary_file_name_with_path summary_type[Phenotype_Regulation|Function]")
+        print("Example: load_summaries.py summary_test.txt Phenotype_Regulation")
+        print("Example: load_summaries.py gp_information.559292_sgd Function")
         exit()
 
     f = open(summary_file, 'r')
@@ -325,5 +325,5 @@ if __name__ == "__main__":
 
     data_to_return = load_summaries(nex_session, summary_file_reader, summary_type)
 
-    print json.dumps(data_to_return, sort_keys=True, indent=4)
+    print(json.dumps(data_to_return, sort_keys=True, indent=4))
     

@@ -175,4 +175,4 @@ def get_sequence(parent_id, start, end, strand, sequence_library):
             residues = reverse_complement(residues)
         return residues
     else:
-        print 'Parent not found: ' + parent_id
+        print('Parent not found: ' + parent_id)

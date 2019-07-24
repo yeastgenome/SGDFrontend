@@ -57,7 +57,7 @@ def index_locus(old_data):
 	# calc variant data
 	# get introns in { start, end } format
 	locus_id = old_data['sgdid']
-	print 'reindexing ' + locus_id
+	print('reindexing ' + locus_id)
 	old_data = es.get(index=SRC_INDEX, id=locus_id)['_source']
 	block_starts = old_data['block_starts']
 	block_sizes = old_data['block_sizes']
@@ -96,7 +96,7 @@ def index_loci():
 		try:
 			index_locus(data)
 		except:
-			print 'error redoing ' + data['sgdid']
+			print('error redoing ' + data['sgdid'])
 
 def translate(codon):
     if codon in codon_table:
@@ -197,7 +197,7 @@ def calculate_variant_data(type, aligned_sequences, introns):
                 variants[variant_key] += 1
 
     variant_data = []
-    for variant, score in variants.iteritems():
+    for variant, score in variants.items():
         obj_json = {
             'start': variant[0],
             'end': variant[1],

@@ -26,7 +26,7 @@ def delete_mapping():
     print("Deleting mapping...")
     response = requests.delete(ES_URI + INDEX_NAME + "/")
     if response.status_code != 200:
-        print("ERROR: " + str(response.json()))
+        print(("ERROR: " + str(response.json())))
     else:
         print("SUCCESS")
 
@@ -35,7 +35,7 @@ def put_mapping():
     print("Putting mapping... ")
     response = requests.put(ES_URI + INDEX_NAME + "/", json=mapping)
     if response.status_code != 200:
-        print("ERROR: " + str(response.json()))
+        print(("ERROR: " + str(response.json())))
     else:
         print("SUCCESS")
 
@@ -118,7 +118,7 @@ def index_toolbar_links():
                          [])
     ]
 
-    print("Indexing " + str(len(links)) + " toolbar links")
+    print(("Indexing " + str(len(links)) + " toolbar links"))
 
     for l in links:
         obj = {
@@ -137,9 +137,9 @@ def index_colleagues():
     _locus_names = IndexESHelper.get_colleague_locusdbentity()
     _combined_list = IndexESHelper.combine_locusdbentity_colleague(
         colleagues, _locus_names, _locus_ids)
-    print("Indexing " + str(len(colleagues)) + " colleagues")
+    print(("Indexing " + str(len(colleagues)) + " colleagues"))
     bulk_data = []
-    for item_k, item_v in _combined_list.items():
+    for item_k, item_v in list(_combined_list.items()):
         bulk_data.append({
             "index": {
                 "_index": INDEX_NAME,
@@ -222,7 +222,7 @@ def index_genes():
 
     bulk_data = []
 
-    print("Indexing " + str(len(all_genes)) + " genes")
+    print(("Indexing " + str(len(all_genes)) + " genes"))
     ##### test newer methods ##########
     _summary = IndexESHelper.get_locus_dbentity_summary()
     _protein = IndexESHelper.get_locus_dbentity_alias(["NCBI protein name"])
@@ -407,7 +407,7 @@ def index_phenotypes():
     bulk_data = []
     phenotypes = DBSession.query(Phenotype).all()
     _result = IndexESHelper.get_pheno_annotations(phenotypes)
-    print("Indexing " + str(len(_result)) + " phenotypes")
+    print(("Indexing " + str(len(_result)) + " phenotypes"))
     for phenotype_item in _result:
         bulk_data.append({
             "index": {
@@ -428,7 +428,7 @@ def index_observables():
     observables = DBSession.query(Apo).filter_by(
         apo_namespace="observable").all()
 
-    print("Indexing " + str(len(observables)) + " observables")
+    print(("Indexing " + str(len(observables)) + " observables"))
     bulk_data = []
 
     for observable in observables:
@@ -461,7 +461,7 @@ def index_observables():
 def index_strains():
     strains = DBSession.query(Straindbentity).all()
 
-    print("Indexing " + str(len(strains)) + " strains")
+    print(("Indexing " + str(len(strains)) + " strains"))
     for strain in strains:
         key_values = [
             strain.display_name, strain.format_name, strain.genbank_id
@@ -494,7 +494,7 @@ def index_reserved_names():
     # only index reservednames that do not have a locus associated with them
     reserved_names = DBSession.query(Reservedname).all()
 
-    print("Indexing " + str(len(reserved_names)) + " reserved names")
+    print(("Indexing " + str(len(reserved_names)) + " reserved names"))
     for reserved_name in reserved_names:
         name = reserved_name.display_name
         href = reserved_name.obj_url
@@ -522,7 +522,7 @@ def index_reserved_names():
     # only index reservednames that do not have a locus associated with them
     reserved_names = DBSession.query(Reservedname).all()
 
-    print("Indexing " + str(len(reserved_names)) + " reserved names")
+    print(("Indexing " + str(len(reserved_names)) + " reserved names"))
     for reserved_name in reserved_names:
         name = reserved_name.display_name
         href = reserved_name.obj_url
@@ -556,7 +556,7 @@ def index_go_terms():
 
     gos = DBSession.query(Go).all()
 
-    print("Indexing " + str(len(gos) - len(go_id_blacklist)) + " GO terms")
+    print(("Indexing " + str(len(gos) - len(go_id_blacklist)) + " GO terms"))
 
     bulk_data = []
     for go in gos:
@@ -619,7 +619,7 @@ def index_go_terms():
 def index_disease_terms():
     dos = DBSession.query(Disease).all()
 
-    print("Indexing " + str(len(dos)) + " DO terms")
+    print(("Indexing " + str(len(dos)) + " DO terms"))
 
     bulk_data = []
     for do in dos:
@@ -681,7 +681,7 @@ def index_references():
     _aliases = IndexESHelper.get_ref_aliases()
 
     bulk_data = []
-    print("Indexing " + str(len(_references)) + " references")
+    print(("Indexing " + str(len(_references)) + " references"))
 
     for reference in _references:
         reference_loci = []
@@ -748,8 +748,8 @@ def index_chemicals():
     all_chebi_data = DBSession.query(Chebi).all()
     _result = IndexESHelper.get_chebi_annotations(all_chebi_data)
     bulk_data = []
-    print("Indexing " + str(len(all_chebi_data)) + " chemicals")
-    for item_key, item_v in _result.items():
+    print(("Indexing " + str(len(all_chebi_data)) + " chemicals"))
+    for item_key, item_v in list(_result.items()):
         if item_v is not None:
             obj = {
                 "name": item_v.display_name,
@@ -782,7 +782,7 @@ def cleanup():
 
 def setup():
     # see if index exists, if not create it
-    indices = es.indices.get_aliases().keys()
+    indices = list(es.indices.get_aliases().keys())
     index_exists = INDEX_NAME in indices
     if not index_exists:
         put_mapping()
@@ -795,7 +795,7 @@ def index_not_mapped_genes():
     with open("./scripts/search/not_mapped.json",
               "r") as json_data:
         _data = json.load(json_data)
-        print("indexing " + str(len(_data)) + " not physically mapped genes")
+        print(("indexing " + str(len(_data)) + " not physically mapped genes"))
         for item in _data:
             temp_aliases = []
             if len(item["FEATURE_NAME"]) > 0:
@@ -830,7 +830,7 @@ def index_downloads():
     files = DBSession.query(Filedbentity).filter(Filedbentity.is_public == True,
                                                  Filedbentity.s3_url != None,
                                                  Filedbentity.readme_file_id != None).all()
-    print("indexing " + str(len(files)) + " download files")
+    print(("indexing " + str(len(files)) + " download files"))
     for x in files:
         keyword = []
         status = ""
@@ -889,7 +889,7 @@ def index_complex_names():
     
     complexes = DBSession.query(Complexdbentity).all()
     
-    print("Indexing " + str(len(complexes)) + " complex names")
+    print(("Indexing " + str(len(complexes)) + " complex names"))
     
     bulk_data = []
 

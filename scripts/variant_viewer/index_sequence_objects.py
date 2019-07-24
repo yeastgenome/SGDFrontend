@@ -113,7 +113,7 @@ def fetch_and_index_locus(locus, name):
     seq_details_url = LOCUS_BASE_URL + locus['sgdid'] + '/sequence_details'
     seq_details_response = requests.get(seq_details_url).json()
     
-    ref_obj = filter(lambda x: x['strain']['status'] == 'Reference', seq_details_response['genomic_dna'])[0]
+    ref_obj = [x for x in seq_details_response['genomic_dna'] if x['strain']['status'] == 'Reference'][0]
     chrom_start = ref_obj['start']
     chrom_end = ref_obj['end']
     contig_data = seq_details_response['genomic_dna'][0]['contig']
@@ -129,17 +129,17 @@ def fetch_and_index_locus(locus, name):
     locus['chrom_start'] = chrom_start
     _absolute_genetic_start = get_absolute_genetic_start(locus)
 
-    if 'protein_length' in alignment_response.keys():
+    if 'protein_length' in list(alignment_response.keys()):
         _protein_length = alignment_response['protein_length']
     else:
         _protein_length = 0
 
-    if 'variant_data_dna' in alignment_response.keys():
+    if 'variant_data_dna' in list(alignment_response.keys()):
         _variant_data_dna = alignment_response['variant_data_dna']
     else:
         _variant_data_dna = []
 
-    if 'variant_data_protein' in alignment_response.keys():
+    if 'variant_data_protein' in list(alignment_response.keys()):
         _variant_data_protein = alignment_response['variant_data_protein']
     else:
         _variant_data_protein = []
@@ -200,9 +200,9 @@ def get_absolute_genetic_start(locus):
         ('2-micron', 6318)
     ])
     contig_numeral = locus['contig_name'].split(' ')[1]
-    contig_index = CONTIG_LENGTHS.keys().index(contig_numeral)
+    contig_index = list(CONTIG_LENGTHS.keys()).index(contig_numeral)
     absolute_genetic_start = 0
-    for contig in CONTIG_LENGTHS.keys():
+    for contig in list(CONTIG_LENGTHS.keys()):
 
         if contig == contig_numeral:
             break
@@ -255,7 +255,7 @@ def index_loci():
     
     loci = raw_alignment_data['loci']
 
-    print "Indexing " + str(len(loci)) + " genes for variant viewer"
+    print("Indexing " + str(len(loci)) + " genes for variant viewer")
 
     for l in loci:
         fetch_and_index_locus(l, l['display_name'])

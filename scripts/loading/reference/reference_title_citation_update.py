@@ -3,7 +3,8 @@ import os
 from datetime import datetime
 import time
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
 from src.models import Dbentity, Referencedbentity, Journal, Referencedocument
 from scripts.loading.database_session import get_session
@@ -137,7 +138,7 @@ def update_database_batch(nex_session, fw, records, pmid_to_reference, abstracts
         if x is None:
             continue
 
-        print "Updating data for PMID: ", pmid
+        print("Updating data for PMID: ", pmid)
 
         dbentity_id = x['dbentity_id']
 
@@ -153,8 +154,8 @@ def update_database_batch(nex_session, fw, records, pmid_to_reference, abstracts
             wordsFromXML = abstract.split(" ")
             wordsFromTXT = abstractTXT.split(" ")
             if len(wordsFromTXT) > len(wordsFromXML)+2:
-                print "XML abstract: PMID:", pmid, abstract
-                print "TXT abstract: PMID:", pmid, abstractTXT
+                print("XML abstract: PMID:", pmid, abstract)
+                print("TXT abstract: PMID:", pmid, abstractTXT)
                 abstract = abstractTXT
         update_abstract(nex_session, fw, pmid, dbentity_id, abstract,
                         abstract_db)
@@ -191,13 +192,13 @@ def update_reference(nex_session, fw, record, pmid, x, journal_id_to_abbrev):
 
     has_update = 0
     if citation != x.citation:
-        print "PMID:", pmid, "update Citation - NEW:", citation
-        print "PMID:", pmid, "update Citation - OLD:", x.citation
+        print("PMID:", pmid, "update Citation - NEW:", citation)
+        print("PMID:", pmid, "update Citation - OLD:", x.citation)
         x.citation = citation
         has_update = 1
     if title != x.title:
-        print "PMID:", pmid, "update Title - NEW:", title
-        print "PMID:", pmid, "update Title - OLD:",x.title
+        print("PMID:", pmid, "update Title - NEW:", title)
+        print("PMID:", pmid, "update Title - OLD:",x.title)
         x.title = title
         has_update = 1
 

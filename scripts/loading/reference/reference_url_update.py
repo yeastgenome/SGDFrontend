@@ -1,17 +1,18 @@
 from datetime import datetime
 import time
-from StringIO import StringIO
+from io import StringIO
 from Bio import Entrez, Medline
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
 sys.path.insert(0, '../../../src/')
 from models import Referencedbentity, ReferenceUrl, Source
 sys.path.insert(0, '../')
 from config import CREATED_BY
 from database_session import get_nex_session as get_session
-from pubmed import get_pubmed_record
-from add_reference import get_doi
+from .pubmed import get_pubmed_record
+from .add_reference import get_doi
 
 __author__ = 'sweng66'
 
@@ -48,8 +49,8 @@ def update_all_urls(log_file):
     fw.write(str(datetime.now()) + "\n")
     fw.write("Getting Pubmed records...\n")
 
-    print datetime.now()
-    print "Getting Pubmed records..."
+    print(datetime.now())
+    print("Getting Pubmed records...")
   
     source_id = source_to_id[SRC]
 
@@ -73,7 +74,7 @@ def update_all_urls(log_file):
         update_database_batch(nex_session, fw, records, pmid_to_reference, 
                               reference_id_to_urls, source_id)
 
-    print "Done"
+    print("Done")
 
     fw.close()
     nex_session.commit()
@@ -162,16 +163,16 @@ def update_urls(nex_session, fw, pmid, reference_id, pmc_url, doi_url, urls_in_d
 
     if pmc_url_changed == 1:
         fw.write("PMID=" + str(pmid) + ": the PMC URL is updated.\nNew URL: " + str(pmc_url) + "\nOld URL: " + str(pmc_url_db) + "\n\n")
-        print "PMID=", pmid, ": the PMC URL is updated"
-        print "New URL:", pmc_url
-        print "Old URL:", pmc_url_db
+        print("PMID=", pmid, ": the PMC URL is updated")
+        print("New URL:", pmc_url)
+        print("Old URL:", pmc_url_db)
 
     if doi_url_changed == 1:
         fw.write("PMID=" + str(pmid) + ": the DOI URL is updated.\nNew URL: " + str(doi_url) + "\nOld URL: " + str(doi_url_db) + "\n\n")
 
-        print "PMID=", pmid, ": the DOI URL is updated"
-        print "New URL:", doi_url
-        print "Old URL:", doi_url_db 
+        print("PMID=", pmid, ": the DOI URL is updated")
+        print("New URL:", doi_url)
+        print("Old URL:", doi_url_db) 
 
 
 if __name__ == '__main__':

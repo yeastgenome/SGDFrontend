@@ -1,6 +1,7 @@
 from datetime import datetime
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.path.insert(0, '../../../src/')
 from models import Referencedbentity, Locusdbentity, Taxonomy, Eco, Go, Regulationannotation, Source
 sys.path.insert(0, '../')
@@ -48,12 +49,12 @@ def load_data(data_file, log_file):
 
         regulator_id = name_to_locus_id.get(pieces[0].strip())
         if regulator_id is None:
-            print "The regulator name: ", pieces[0], " is not in the database."
+            print("The regulator name: ", pieces[0], " is not in the database.")
             continue
 
         target_id = name_to_locus_id.get(pieces[3].strip())
         if target_id is None:
-            print "The target name: ", pieces[3], " is not in the database."
+            print("The target name: ", pieces[3], " is not in the database.")
             continue
 
         strain = pieces[5].strip()
@@ -61,23 +62,23 @@ def load_data(data_file, log_file):
             strain = 'CENPK'
         taxid = strain_to_taxid.get(strain)
         if taxid is None:
-            print "The strain name: ", pieces[5], " is not in the mapping module."
+            print("The strain name: ", pieces[5], " is not in the mapping module.")
             continue
         taxonomy_id = taxid_to_taxonomy_id.get(taxid)
         if taxonomy_id is None:
-            print "The taxid: ", taxid, " is not in the database."
+            print("The taxid: ", taxid, " is not in the database.")
             continue
 
         happens_during = ''
         if pieces[8]:
             happens_during = goid_to_id.get(pieces[8].strip().split(' ')[0])
             if happens_during is None:
-                print "Unknown GOID: ", pieces[8].strip().split(' ')[0]
+                print("Unknown GOID: ", pieces[8].strip().split(' ')[0])
                 continue
 
         reference_id = pmid_to_reference_id.get(int(pieces[10]))
         if reference_id is None:
-            print "The pmid: ", pieces[10], " is not in the database"
+            print("The pmid: ", pieces[10], " is not in the database")
             continue
 
         regulator_type = pieces[2].strip()
@@ -87,39 +88,39 @@ def load_data(data_file, log_file):
         created_by = pieces[12].strip()
 
         if regulator_type not in allowable_regulator_type:
-            print "Unknown regulator_type: ", regulator_type
+            print("Unknown regulator_type: ", regulator_type)
             continue
         if regulation_type not in allowable_regulation_type:
-            print "Unknown regulation_type: ", regulation_type
+            print("Unknown regulation_type: ", regulation_type)
             continue
         if direction and direction not in allowable_regulation_direction:
-            print "Unknown regulation_direction: ", direction
+            print("Unknown regulation_direction: ", direction)
             continue
         if annotation_type not in allowable_annotation_type:
-            print "Unknown annotation_type: ", annotation_type
+            print("Unknown annotation_type: ", annotation_type)
 
         if regulation_type == 'protein activity' and regulator_type in ['transcription factor', 'chromatin modifier']:
-            print "regulator_type in (transcription factor, chromatin modifier) cannot be used with regulation_type = 'protein activity'. See line below:"
-            print line
+            print("regulator_type in (transcription factor, chromatin modifier) cannot be used with regulation_type = 'protein activity'. See line below:")
+            print(line)
             continue
                 
         if regulator_type == 'protein modifier' and regulation_type == 'regulation of transcription':
-            print "regulator_type = 'protein modifier' cannot be used with regulation_type = 'regulation of transcription'. See line below:"
-            print line
+            print("regulator_type = 'protein modifier' cannot be used with regulation_type = 'regulation of transcription'. See line below:")
+            print(line)
             continue
 
         eco_items = pieces[9].strip().split(',')
         for eco_item in eco_items:
             eco_id = eco_to_id.get(eco_item.strip().split(' ')[0])
             if eco_id is None:
-                print "The ECO code: ", pieces[9], " is not in the database."
+                print("The ECO code: ", pieces[9], " is not in the database.")
                 continue
 
             key = (target_id, regulator_id, taxonomy_id, reference_id, eco_id, regulator_type, regulation_type, annotation_type, happens_during)
 
             if key in loaded:
-                print "Same row exists: ", loaded[key]
-                print "Same row exists: ", line
+                print("Same row exists: ", loaded[key])
+                print("Same row exists: ", line)
                 continue
             loaded[key] = line
 
@@ -210,8 +211,8 @@ if __name__ == '__main__':
     if len(sys.argv) >= 2:
         data_file = sys.argv[1]
     else:
-        print "Usage: load_regulation.py data_file"
-        print "Example: load_regulation.py data/regulationData062017.txt"
+        print("Usage: load_regulation.py data_file")
+        print("Example: load_regulation.py data/regulationData062017.txt")
         exit()
     
     load_data(data_file, log_file)
