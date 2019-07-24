@@ -1,10 +1,11 @@
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import sys
 import os
 import gzip
 from datetime import datetime
 import logging
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
 from src.models import Dbentity, LocusAlias, Source, Filedbentity, Edam
 from src.helpers import upload_file
@@ -262,7 +263,7 @@ def get_url(alias_type, ID, source):
     if source == "UniParc" and alias_type == "UniParc ID":
         return "http://www.uniprot.org/uniparc/"+ID
     
-    print "Unknown source & alias_type:", source, alias_type    
+    print("Unknown source & alias_type:", source, alias_type)    
     return ""
 
 
@@ -351,7 +352,7 @@ if __name__ == '__main__':
 
     url_path = 'ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/'
     uniprot_file = 'YEAST_559292_idmapping.dat.gz'
-    urllib.urlretrieve(url_path + uniprot_file, uniprot_file)
+    urllib.request.urlretrieve(url_path + uniprot_file, uniprot_file)
 
     update_data(uniprot_file)
 

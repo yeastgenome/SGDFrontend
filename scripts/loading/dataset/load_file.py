@@ -44,7 +44,7 @@ def load_data():
                 continue
             pieces = line.strip().split("\t")
             if len(pieces) < 20:
-                print "Unknown line: ", line
+                print("Unknown line: ", line)
                 continue
 
             ### load path
@@ -58,7 +58,7 @@ def load_data():
             if path is None:
                 path_id = insert_path(nex_session, fw, path, source_id)
                 if path_id is None:
-                    print "Can't insert path=", path, " into database."
+                    print("Can't insert path=", path, " into database.")
                     continue
                 path_loaded[path] = path_id 
             
@@ -84,18 +84,18 @@ def load_data():
             if format_id is None or pieces[10].startswith('NTR'):
                 format_id= display_name_to_id.get(pieces[9].strip())
             if topic_id is None:
-                print "No TOPIC edam id provided.", line
+                print("No TOPIC edam id provided.", line)
                 continue
             if data_id is None:
-                print "No DATA edam id provided.", line
+                print("No DATA edam id provided.", line)
                 continue
             if format_id is None:
-                print "No FORMAT edam id provided.", line
+                print("No FORMAT edam id provided.", line)
                 continue
             file_extension = pieces[11].strip()
             file_date = pieces[12].strip()
             if file_date == '':
-                print "No file_date provided:", line
+                print("No file_date provided:", line)
                 continue
             if "/" in file_date:
                 file_date = reformat_date(file_date)
@@ -109,7 +109,7 @@ def load_data():
             if pieces[16]:
                 readme_file = pieces[16].strip()
                 if pieces[11] != 'README' and pieces[11] != 'readme':
-                    print "OTHER-WITH README:", line
+                    print("OTHER-WITH README:", line)
 
             description = pieces[17].replace('"', '')
             if "|" in previous_file_name:
@@ -165,7 +165,7 @@ def insert_files(nex_session, fw, data, source_id, pmid_to_reference_id, keyword
             for pmid in pmids:
                 reference_id = pmid_to_reference_id.get(int(pmid))
                 if reference_id is None:
-                    print "The PMID: ", pmid, " is not in the database."
+                    print("The PMID: ", pmid, " is not in the database.")
                     continue
                 insert_file_reference(nex_session, fw, dbentity_id, reference_id, source_id)
 
@@ -176,7 +176,7 @@ def insert_files(nex_session, fw, data, source_id, pmid_to_reference_id, keyword
                 keyword = keyword.strip()
                 keyword_id = keyword_to_id.get(keyword)
                 if keyword_id is None:
-                    print "The keyword: '" + keyword + "' is not in the database."
+                    print("The keyword: '" + keyword + "' is not in the database.")
                     continue
                 insert_file_keyword(nex_session, fw, dbentity_id, keyword_id, source_id)
 

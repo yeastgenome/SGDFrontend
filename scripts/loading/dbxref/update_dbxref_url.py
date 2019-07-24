@@ -1,5 +1,6 @@
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
 sys.path.insert(0, '../../../src/')
 from models import LocusAlias, Source
@@ -32,7 +33,7 @@ def update_data():
         else:
             obj_url = get_url(x.alias_type, x.display_name, source_id_to_source[x.source_id])
             if obj_url != "":
-                print "OLD:", x.obj_url, "NEW:", obj_url 
+                print("OLD:", x.obj_url, "NEW:", obj_url) 
                 nex_session.query(LocusAlias).filter_by(locus_id=x.locus_id, alias_type=x.alias_type, display_name=x.display_name, source_id=x.source_id).update({"obj_url": obj_url})
                 i = i + 1
                 if i > 500:
@@ -82,7 +83,7 @@ def get_url(alias_type, ID, source):
         return "http://www.aspgd.org/cgi-bin/locus.pl?locus=" + ID
 
     if source != "SGD":
-        print "Unknown source & alias_type:", source, alias_type    
+        print("Unknown source & alias_type:", source, alias_type)    
     return ""
 
 

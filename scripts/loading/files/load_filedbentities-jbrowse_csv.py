@@ -73,7 +73,7 @@ def create_and_upload_file(obj, row_num, sftp_client):
                 logging.error('invalid EDAM id or source in row ' + str(row_num) + ' val in ' + obj['data_edam_id'] + ', ' + obj['format_edam_id'] + ', ' + obj['topic_edam_id'])
                 return
 
-            print "remote_file=", remote_file
+            print("remote_file=", remote_file)
 
             upload_file(CREATED_BY, remote_file,
                 filename=obj['display_name'],
@@ -188,7 +188,7 @@ def load_csv_filedbentities():
     # open ssh connection to download server
     client = paramiko.SSHClient()
     client.load_system_host_keys()
-    username = raw_input('Username for legacy download server: ')
+    username = input('Username for legacy download server: ')
     password =  getpass.getpass('Password for %s@%s: ' % (username, HOSTNAME))
     client.connect(HOSTNAME, 22, username, password, gss_auth=False, gss_kex=False)
     sftp_client = client.open_sftp()
@@ -208,7 +208,7 @@ def load_csv_filedbentities():
             
             ### added by Shuai
             if len(val) < 14:
-                print val
+                print(val)
                 return
             ### 
             raw_date = val[13]

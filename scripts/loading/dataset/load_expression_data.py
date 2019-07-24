@@ -1,5 +1,6 @@
 import sys
-reload(sys)  # Reload does the tricsys.setdefaultencoding('UTF8')
+import importlib
+importlib.reload(sys)  # Reload does the tricsys.setdefaultencoding('UTF8')
 sys.path.insert(0, '../../../src/')
 from models import Expressionannotation
 sys.path.insert(0, '../')
@@ -55,7 +56,7 @@ def load_data():
 
 def insert_expressionannotation(nex_session, fw, x):
 
-    print "Load ", x[0], x[3], x[4], x[5], x[6]
+    print("Load ", x[0], x[3], x[4], x[5], x[6])
 
     y = Expressionannotation(dbentity_id = int(x[0]),
                              source_id = int(x[1]),

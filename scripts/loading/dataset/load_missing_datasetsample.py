@@ -1,5 +1,6 @@
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
 sys.path.insert(0, '../../../src/')
 from models import Dataset, Datasetsample, Taxonomy, Source
@@ -27,7 +28,7 @@ def load_data():
     # format_name2display_name = {}
     # dataset2index = {}
     for file in files_to_load:
-        print "Loading data from ", file
+        print("Loading data from ", file)
         f = open(file)
         for line in f:
             if line.startswith('dataset'):
@@ -40,11 +41,11 @@ def load_data():
 
                 dataset_format_name = GSE
                 if dataset_format_name not in format_name_to_dataset_id_src:
-                    print "The dataset: ", dataset_format_name, " is not in DATASET table."
+                    print("The dataset: ", dataset_format_name, " is not in DATASET table.")
                     continue
                 (dataset_id, source_id) = format_name_to_dataset_id_src[dataset_format_name]
                 if len(pieces) < 9 or pieces[8] == '':
-                    print "SHORT LINE:", len(pieces), line
+                    print("SHORT LINE:", len(pieces), line)
                     continue
                 display_name = pieces[1]
         
@@ -70,7 +71,7 @@ def load_data():
                 if len(pieces) > 9 and pieces[9]:
                     taxonomy_id = taxid_to_taxonomy_id.get("TAX:"+pieces[9])
                     if taxonomy_id is None:
-                        print "The taxid = ", pieces[9], " for: ", dataset_format_name, GSM, " is not in TAXONOMY table."
+                        print("The taxid = ", pieces[9], " for: ", dataset_format_name, GSM, " is not in TAXONOMY table.")
                     else:
                         data['taxonomy_id'] = taxonomy_id
       
@@ -95,7 +96,7 @@ def load_data():
 
 def insert_datasetsample(nex_session, fw, x):
 
-    print "Load ", x['format_name']
+    print("Load ", x['format_name'])
 
     y = Datasetsample(format_name = x['format_name'],
                       display_name = x['display_name'],

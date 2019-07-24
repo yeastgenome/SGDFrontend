@@ -1,10 +1,11 @@
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import sys
 import os
 import gzip
 from datetime import datetime
 import logging
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
 from src.models import Dbentity, LocusAlias, LocusUrl, Source, Filedbentity, Edam
 from src.helpers import upload_file
@@ -183,7 +184,7 @@ if __name__ == '__main__':
 
     url_path = "ftp://ftp.expasy.org/databases/enzyme/"
     ec_file = "enzyme.dat"
-    urllib.urlretrieve(url_path + ec_file, ec_file)
+    urllib.request.urlretrieve(url_path + ec_file, ec_file)
 
     update_data(ec_file)
 

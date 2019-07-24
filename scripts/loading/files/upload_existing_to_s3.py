@@ -11,7 +11,7 @@ def upload_all_filedbentities():
     DBSession.configure(bind=engine)
     files = DBSession.query(Filedbentity).all()
     for x in files:
-        print(x.get_path(), x.topic.display_name)
+        print((x.get_path(), x.topic.display_name))
 
 if __name__ == '__main__':
     upload_all_filedbentities()

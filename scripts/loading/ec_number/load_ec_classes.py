@@ -1,6 +1,7 @@
 from datetime import datetime
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.path.insert(0, '../../../src/')
 from models import Ec, EcUrl, Source
 sys.path.insert(0, '../')
@@ -46,7 +47,7 @@ def load_data():
 
 def load_ec_url(nex_session, fw, ec_id, ec, e_source_id, b_source_id):
     
-    print ec_id, ec, e_source_id, b_source_id
+    print(ec_id, ec, e_source_id, b_source_id)
     
     ## load BRENDA URL:
     
@@ -76,7 +77,7 @@ def load_ec_url(nex_session, fw, ec_id, ec, e_source_id, b_source_id):
 
 def load_ec(nex_session, fw, ec, desc, source_id):
 
-    print ec, desc, source_id
+    print(ec, desc, source_id)
 
     ec = "EC:" + ec
     

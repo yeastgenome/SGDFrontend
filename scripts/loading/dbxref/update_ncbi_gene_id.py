@@ -1,10 +1,11 @@
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import sys
 import os
 import gzip
 from datetime import datetime
 import logging
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
 from src.models import Dbentity, Locusdbentity, LocusAlias, Source, Filedbentity, Edam
 from src.helpers import upload_file
@@ -120,7 +121,7 @@ def update_gene_ids(nex_session, fw, locus_id, gene_id_list, new_gene_id_list, s
     for gene_id in new_gene_id_list:
         if gene_id_list and gene_id in gene_id_list:
             continue
-        print "New Gene ID: ", gene_id, " for locus_id=", locus_id, name
+        print("New Gene ID: ", gene_id, " for locus_id=", locus_id, name)
         insert_alias(nex_session, fw, locus_id, source_id, gene_id)
 
     if gene_id_list is None:
@@ -129,7 +130,7 @@ def update_gene_ids(nex_session, fw, locus_id, gene_id_list, new_gene_id_list, s
     for gene_id in gene_id_list:
         if gene_id in new_gene_id_list:
             continue
-        print "Remove OLD Gene ID: ", gene_id, " for locus_id=", locus_id, name
+        print("Remove OLD Gene ID: ", gene_id, " for locus_id=", locus_id, name)
         delete_alias(nex_session, fw, locus_id, gene_id, source_id)
 
 

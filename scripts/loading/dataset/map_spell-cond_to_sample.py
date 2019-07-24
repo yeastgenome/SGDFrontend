@@ -1,5 +1,6 @@
 import sys
-reload(sys)  
+import importlib
+importlib.reload(sys)  
 sys.setdefaultencoding('UTF8')
 sys.path.insert(0, '../../../src/')
 from models import Dataset, Datasetsample, Referencedbentity, DatasetReference
@@ -109,15 +110,15 @@ for line in f:
     if (pmid, condition_name) in pmid_display_name_to_sample_format_name:
         sample_format_name = pmid_display_name_to_sample_format_name[(pmid, condition_name)]
         dataset_id = sample_format_name_to_dataset_id[sample_format_name]
-        print pieces[0]+"\t"+pieces[1]+"\t"+sample_format_name+"\t"+str(dataset_id_to_channel_count[dataset_id])
+        print(pieces[0]+"\t"+pieces[1]+"\t"+sample_format_name+"\t"+str(dataset_id_to_channel_count[dataset_id]))
     elif cond in spell_cond_to_sample_format_name:
         # print condition_name, spell_cond_to_sample_format_name[cond]
         sample_format_name = spell_cond_to_sample_format_name[cond]
         if sample_format_name in sample_format_name_to_dataset_id:
             dataset_id = sample_format_name_to_dataset_id[sample_format_name]
-            print pieces[0]+"\t"+pieces[1]+"\t"+sample_format_name+"\t"+str(dataset_id_to_channel_count[dataset_id])
+            print(pieces[0]+"\t"+pieces[1]+"\t"+sample_format_name+"\t"+str(dataset_id_to_channel_count[dataset_id]))
     else:
-        print "NOT: "+pieces[0]+"\t"+pieces[1]
+        print("NOT: "+pieces[0]+"\t"+pieces[1])
 
 f.close()
 exit()

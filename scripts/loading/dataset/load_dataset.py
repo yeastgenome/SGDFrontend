@@ -1,7 +1,8 @@
 import sys
 import os
 from datetime import datetime
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
 from src.models import Dataset, Filedbentity, DatasetFile, Referencedbentity, DatasetReference, \
                    Obi, Keyword, DatasetKeyword, DatasetUrl, Datasetlab, Datasetsample, \
@@ -48,7 +49,7 @@ def load_data():
             if line:
                 pieces = line.split("\t")
                 if len(pieces) < 14:
-                    print "MISSING INFO: ", line
+                    print("MISSING INFO: ", line)
                     continue
                            
                 format_name = pieces[0].strip()
@@ -71,26 +72,26 @@ def load_data():
                     source = 'Publication'
                 source_id = source_to_id.get(source)
                 if source_id is None:
-                    print "The source: ", source, " is not in the database"
+                    print("The source: ", source, " is not in the database")
                     continue
 
                 if pieces[9] == '' or pieces[10] == '' or pieces[11] == '':
-                    print "\nMISSING sample_count or is_in_spell or is_in_browser data for the following line: \n", line, "\n"
+                    print("\nMISSING sample_count or is_in_spell or is_in_browser data for the following line: \n", line, "\n")
                     continue
 
                 sample_count = int(pieces[9].strip())
                 is_in_spell = pieces[10].strip()
                 is_in_browser = pieces[11].strip()
                 if sample_count is None:
-                    print "The sample_count column is None:", line
+                    print("The sample_count column is None:", line)
                     continue
                 if is_in_spell is None:
-                    print "The is_in_spell column is None:", line
+                    print("The is_in_spell column is None:", line)
                     continue
                 elif int(is_in_spell) > 1:
                     is_in_spell = '1'
                 if is_in_browser is None:
-                    print "The is_in_browser column is None:", line
+                    print("The is_in_browser column is None:", line)
                     continue
                 elif int(is_in_browser) > 1:
                     is_in_browser = '1'
@@ -105,14 +106,14 @@ def load_data():
                 if pieces[17]:
                     file_id = file_to_id.get(pieces[17].strip())
                     if file_id is None:
-                        print "The file display_name: ", pieces[17], " is not in the database"
+                        print("The file display_name: ", pieces[17], " is not in the database")
                         continue
 
                 description = pieces[12]
 
                 assay_id = obi_name_to_id.get(pieces[6])
                 if assay_id is None:
-                    print "The OBI format_name: ", pieces[6], " is not in the database"
+                    print("The OBI format_name: ", pieces[6], " is not in the database")
                     continue
 
                 row =  { "source_id": source_id,
@@ -156,7 +157,7 @@ def delete_old_datasets(nex_session, fw, old_datasets, format_name_to_id):
     
     for format_name in old_datasets:
 
-        print "Deleting old dataset..."
+        print("Deleting old dataset...")
         
         dataset_id = format_name_to_id.get(format_name)
         if dataset_id is None:
@@ -195,7 +196,7 @@ def insert_datasets(nex_session, fw, data, pmid_to_reference_id, keyword_to_id, 
                 keyword = keyword.strip()
                 keyword_id = keyword_to_id.get(keyword)
                 if keyword_id is None:
-                    print "The keyword: '" + keyword + "' is not in the database."
+                    print("The keyword: '" + keyword + "' is not in the database.")
                     continue
                 insert_dataset_keyword(nex_session, fw, dataset_id, 
                                        keyword_id, x['source_id'])
@@ -206,7 +207,7 @@ def insert_datasets(nex_session, fw, data, pmid_to_reference_id, keyword_to_id, 
             for pmid in pmids:
                 reference_id = pmid_to_reference_id.get(int(pmid))
                 if reference_id is None:
-                    print "The PMID: ", pmid, " is not in the database."
+                    print("The PMID: ", pmid, " is not in the database.")
                     continue
                 insert_dataset_reference(nex_session, fw, dataset_id, 
                                          reference_id, x['source_id'])
@@ -229,7 +230,7 @@ def insert_datasets(nex_session, fw, data, pmid_to_reference_id, keyword_to_id, 
 
 def insert_datasetlab(nex_session, fw, dataset_id, lab_name, lab_location, coll_name_institution_to_id, coll_name_to_id, source_id):
 
-    print "LAB: ", dataset_id, lab_name, lab_location
+    print("LAB: ", dataset_id, lab_name, lab_location)
 
     coll_display_name = lab_name
     coll_institution = lab_location.replace('"', '')
@@ -267,7 +268,7 @@ def insert_datasetlab(nex_session, fw, dataset_id, lab_name, lab_location, coll_
 
 def insert_dataset_url(nex_session, fw, dataset_id, obj_url, url_type, source_id):
 
-    print "URL:",  dataset_id, obj_url, url_type
+    print("URL:",  dataset_id, obj_url, url_type)
 
     x = DatasetUrl(dataset_id = dataset_id,
                    source_id = source_id,
@@ -280,7 +281,7 @@ def insert_dataset_url(nex_session, fw, dataset_id, obj_url, url_type, source_id
 
 def insert_dataset_reference(nex_session, fw, dataset_id, reference_id, source_id):
 
-    print "REF:", dataset_id, reference_id, source_id
+    print("REF:", dataset_id, reference_id, source_id)
     
     x = DatasetReference(reference_id = reference_id,
                          dataset_id = dataset_id,
@@ -291,7 +292,7 @@ def insert_dataset_reference(nex_session, fw, dataset_id, reference_id, source_i
 
 def insert_dataset_keyword(nex_session, fw, dataset_id, keyword_id, source_id):
 
-    print "KW:", dataset_id, keyword_id, source_id
+    print("KW:", dataset_id, keyword_id, source_id)
     
     x = DatasetKeyword(keyword_id = keyword_id,
                        dataset_id = dataset_id,
@@ -302,7 +303,7 @@ def insert_dataset_keyword(nex_session, fw, dataset_id, keyword_id, source_id):
 
 def insert_dataset_file(nex_session, fw, dataset_id, file_id, source_id):
 
-    print "FILE:", dataset_id, file_id, source_id
+    print("FILE:", dataset_id, file_id, source_id)
     
     x = DatasetFile(file_id = file_id,
                     dataset_id = dataset_id,
@@ -312,7 +313,7 @@ def insert_dataset_file(nex_session, fw, dataset_id, file_id, source_id):
 
 def insert_dataset(nex_session, fw, x, parent_dataset_id):
 
-    print "DATASET:", x
+    print("DATASET:", x)
     
     y = Dataset(format_name = x['format_name'],
                 display_name = x['display_name'],
