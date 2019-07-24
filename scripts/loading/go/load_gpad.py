@@ -1,11 +1,12 @@
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import gzip
 import shutil
 import logging
 import os
 from datetime import datetime
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 from src.models import Go, Taxonomy, Source, Goannotation, Gosupportingevidence, \
                        Goextension, EcoAlias, Edam, Dbentity, Filedbentity
 from scripts.loading.database_session import get_session
@@ -168,7 +169,7 @@ def load_new_data(data, source_to_id, annotation_type, key_to_annotation, annota
         if x['source'] == 'EnsemblPlants' or x['source'] == 'AgBase':
             continue
         if source_id is None:
-            print "The source: ", x['source'], " is not in the SOURCE table."
+            print("The source: ", x['source'], " is not in the SOURCE table.")
             continue
 
         i = i + 1
@@ -341,7 +342,7 @@ def update_goextension(nex_session, annotation_id, goextension, annotation_id_to
             role = pieces[0].replace('_', ' ')
             ro_id = get_relation_to_ro_id(role)
             if ro_id is None:
-                print role, " is not in RO table."
+                print(role, " is not in RO table.")
                 continue
             
             dbxref_id = pieces[1][:-1]
@@ -352,7 +353,7 @@ def update_goextension(nex_session, annotation_id, goextension, annotation_id_to
                 if dbxref_id.startswith('IntAct:'):
                     continue
                 else:
-                    print "Unknown ID: ", dbxref_id
+                    print("Unknown ID: ", dbxref_id)
                     continue
 
             key = (group_id, ro_id, dbxref_id)
@@ -378,7 +379,7 @@ def update_goextension(nex_session, annotation_id, goextension, annotation_id_to
                 nex_session.add(thisExtension)
                 key= (annotation_type, 'extension_added')
                 annotation_update_log[key] = annotation_update_log[key] + 1
-    to_be_deleted = key_to_extension.values()
+    to_be_deleted = list(key_to_extension.values())
     
     for row in to_be_deleted:
 
@@ -416,7 +417,7 @@ def update_gosupportevidence(nex_session, annotation_id, gosupport, annotation_i
                 continue
             link = get_go_extension_link(dbxref_id)
             if link.startswith('Unknown'):
-                print "Unknown ID: ", dbxref_id
+                print("Unknown ID: ", dbxref_id)
                 continue
             evidence_type = 'with'
             if dbxref_id.startswith('GO:'):
@@ -446,7 +447,7 @@ def update_gosupportevidence(nex_session, annotation_id, gosupport, annotation_i
                 key= (annotation_type, 'supportevidence_added')
                 annotation_update_log[key] = annotation_update_log[key] + 1
 
-    to_be_deleted = key_to_support.values()
+    to_be_deleted = list(key_to_support.values())
 
     for row in to_be_deleted:
 
@@ -507,7 +508,7 @@ def delete_obsolete_annotations(key_to_annotation, hasGoodAnnot, go_id_to_aspect
 
     src_id = source_to_id['SGD']
 
-    to_be_deleted = key_to_annotation.values()
+    to_be_deleted = list(key_to_annotation.values())
 
     try:
 
@@ -658,28 +659,28 @@ if __name__ == "__main__":
     url_path = 'ftp://ftp.ebi.ac.uk/pub/contrib/goa/'
     gpad_file = 'gp_association.559292_sgd.gz'
     gpi_file = 'gp_information.559292_sgd.gz'
-    urllib.urlretrieve(url_path + gpad_file, gpad_file)
-    urllib.urlcleanup()
-    urllib.urlretrieve(url_path + gpi_file, gpi_file)
+    urllib.request.urlretrieve(url_path + gpad_file, gpad_file)
+    urllib.request.urlcleanup()
+    urllib.request.urlretrieve(url_path + gpi_file, gpi_file)
 
     gpadFileInfo = os.stat(gpad_file)
     gpiFileInfo = os.stat(gpi_file)
     
     if gpadFileInfo.st_size < 1700000:
-        print "This week's GPAD file size is too small, please check: ftp://ftp.ebi.ac.uk/pub/contrib/goa/gp_association.559292_sgd.gz"  
+        print("This week's GPAD file size is too small, please check: ftp://ftp.ebi.ac.uk/pub/contrib/goa/gp_association.559292_sgd.gz")  
         exit()
 
     if gpiFileInfo.st_size < 370000:
-        print "This week's GPI file size is too small, please check: ftp://ftp.ebi.ac.uk/pub/contrib/goa/gp_information.559292_sgd.gz"
+        print("This week's GPI file size is too small, please check: ftp://ftp.ebi.ac.uk/pub/contrib/goa/gp_information.559292_sgd.gz")
         exit()
 
     if len(sys.argv) >= 2:
         annotation_type = sys.argv[1]
     else:
         # annotation_type = "manually curated"
-        print "Usage:         python load_gpad.py annotation_type[manually curated|computational]"
-        print "Usage example: python load_gpad.py 'manually curated'"
-        print "Usage example: python load_gpad.py computational"
+        print("Usage:         python load_gpad.py annotation_type[manually curated|computational]")
+        print("Usage example: python load_gpad.py 'manually curated'")
+        print("Usage example: python load_gpad.py computational")
         exit()
     
     log_file = "scripts/loading/go/logs/GPAD_loading_" + annotation_type.replace(" ", "-") + ".log"

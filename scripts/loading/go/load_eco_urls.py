@@ -1,6 +1,7 @@
 from datetime import datetime
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.path.insert(0, '../../../src/')
 from models import EcoUrl
 sys.path.insert(0, '../')
@@ -38,7 +39,7 @@ def load_eco_urls():
         nex_session.add(x)
         nex_session.commit()
 
-        print eco_id, display_name, obj_url, url_type, source_id
+        print(eco_id, display_name, obj_url, url_type, source_id)
 
     nex_session.commit()
     nex_session.close()

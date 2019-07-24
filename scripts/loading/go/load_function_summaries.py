@@ -1,4 +1,4 @@
-from gpad_config import curator_id
+from .gpad_config import curator_id
 import sys
 from src.models import Dbentity, Locussummary,  Source, Updatelog
 from scripts.loading.database_session import get_session
@@ -31,13 +31,13 @@ def load_summaries(summary_file):
             continue
         
         if len(pieces) < 8:
-            print "BAD LINE:", line
+            print("BAD LINE:", line)
             continue
         
         curatorName = pieces[1].strip().replace(" [Expired account]", "")
         curator = curator_id.get(curatorName)
         if curator is None:
-            print "The curator name:", pieces[1], " is not in the mapping file."
+            print("The curator name:", pieces[1], " is not in the mapping file.")
             continue
 
         date_created = pieces[6].strip()
@@ -45,14 +45,14 @@ def load_summaries(summary_file):
 
         sgdid_list = uniprot_to_sgdid_list.get(pieces[3].strip())
         if sgdid_list is None:
-            print "The uniprot ID:", pieces[3], " is not found in the GPI file."
+            print("The uniprot ID:", pieces[3], " is not found in the GPI file.")
             continue
 
     
         for sgdid in sgdid_list:
             locus_id = sgdid_to_locus_id.get(sgdid)
             if locus_id is None:
-                print "The sgdid:", sgdid, " is not in the database."
+                print("The sgdid:", sgdid, " is not in the database.")
                 continue
 
             x = locus_id_to_summary.get(locus_id)
@@ -68,7 +68,7 @@ def load_summaries(summary_file):
     
 def update_summary(nex_session, fw, locus_id, summary, source_id, created_by, date_created, x):
 
-    print "UPDATE SUMMARY: ", locus_id, summary, source_id, created_by, date_created
+    print("UPDATE SUMMARY: ", locus_id, summary, source_id, created_by, date_created)
 
     date_created_db = str(x.date_created).split(' ')[0]
 
@@ -98,7 +98,7 @@ def update_summary(nex_session, fw, locus_id, summary, source_id, created_by, da
 
 def update_log(nex_session, fw, primary_key, tab_name, col_name, old_value, new_value, created_by):
 
-    print "UPDATE UPDATELOG:", primary_key, tab_name, col_name, old_value, new_value, created_by
+    print("UPDATE UPDATELOG:", primary_key, tab_name, col_name, old_value, new_value, created_by)
 
     nex_session.query(Updatelog).filter_by(tab_name=tab_name, primary_key=primary_key, col_name=col_name, old_value=old_value, new_value=new_value).update({"created_by": created_by})
 
@@ -148,8 +148,8 @@ if __name__ == "__main__":
     if len(sys.argv) >= 2:
         summary_file = sys.argv[1]
     else:
-        print "Usage: load_function_summaries.py summary_file_name_with_path"
-        print "Example: scripts/loading/go/load_function_summaries.py scripts/loading/go/data/protein2go_report031518.tsv"
+        print("Usage: load_function_summaries.py summary_file_name_with_path")
+        print("Example: scripts/loading/go/load_function_summaries.py scripts/loading/go/data/protein2go_report031518.tsv")
         exit()
 
     load_summaries(summary_file)

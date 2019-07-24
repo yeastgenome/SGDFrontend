@@ -1,5 +1,5 @@
 from datetime import datetime
-from StringIO import StringIO
+from io import StringIO
 import logging
 import os
 from Bio import Entrez, Medline 
@@ -8,7 +8,8 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 from zope.sqlalchemy import ZopeTransactionExtension
 import transaction
 import sys
-reload(sys)  # reload to set encoding
+import importlib
+importlib.reload(sys)  # reload to set encoding
 sys.setdefaultencoding('UTF8')
 from src.models import Referencedbentity, Referencetriage, Referencedeleted, Locusdbentity, LocusAlias
 from scripts.loading.reference.pubmed import get_pmid_list, get_pubmed_record, set_cite, get_abstract

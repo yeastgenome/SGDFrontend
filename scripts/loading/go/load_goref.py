@@ -1,6 +1,7 @@
 from datetime import datetime
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 sys.path.insert(0, '../../../src/')
 from models import Source, Dbentity, ReferenceAlias
 sys.path.insert(0, '../')
@@ -29,8 +30,8 @@ def load_go_refs(mapping_file):
     for line in f:
         pieces = line.strip().split("\t")
 
-        print pieces[0]
-        print pieces[1]
+        print(pieces[0])
+        print(pieces[1])
 
         x = ReferenceAlias(display_name = pieces[0],
                            source_id = source_id,
@@ -49,7 +50,7 @@ if __name__ == "__main__":
     if len(sys.argv) >= 2:
         mapping_file = sys.argv[1]
     else:
-        print "Usage: python update_goref.py GO_REF_to_SGDID.mapping"
+        print("Usage: python update_goref.py GO_REF_to_SGDID.mapping")
         exit()
 
     load_go_refs(mapping_file)

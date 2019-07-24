@@ -2,7 +2,8 @@ import logging
 import os
 from datetime import datetime
 import sys
-reload(sys)  # Reload does the trick!
+import importlib
+importlib.reload(sys)  # Reload does the trick!
 from src.models import Locusdbentity, Referencedbentity, Reservedname, Source, Locusnote, \
                        LocusReferences, LocusnoteReference
 from scripts.loading.database_session import get_session
@@ -41,7 +42,7 @@ def load_data(infile, logfile):
         if pieces[3]:
             reference_id = citation_to_reference_id.get(pieces[3].replace('"', ''))
         if reference_id is None:
-            print "No citation provided or the citation is not in the database:", pieces[3]
+            print("No citation provided or the citation is not in the database:", pieces[3])
             continue
         reservation_date = reformat_date(pieces[4])
         expiration_date = reformat_date(pieces[5])
@@ -141,7 +142,7 @@ def reformat_date(this_date):
 
     dates = this_date.split("/")
     if len(dates) <3:
-        print "BAD DATE:", this_date
+        print("BAD DATE:", this_date)
         return
     month = dates[0]
     day= dates[1]
@@ -151,7 +152,7 @@ def reformat_date(this_date):
     elif len(year) == 2 and (year.startswith('0') or year.startswith('1')):
         year = '20' + year
     elif len(year) == 2:
-        print "WRONG YEAR"
+        print("WRONG YEAR")
         return 
     if len(month) == 1:
         month ="0" + month
@@ -167,8 +168,8 @@ if __name__ == '__main__':
     if len(sys.argv) >= 2:
          infile = sys.argv[1]
     else:
-        print "Usage:         python loadGeneRegistries.py datafile"
-        print "Usage example: python loadGeneRegistries.py scripts/loading/locus/data/geneRegistries-2018-01-10.txt"
+        print("Usage:         python loadGeneRegistries.py datafile")
+        print("Usage example: python loadGeneRegistries.py scripts/loading/locus/data/geneRegistries-2018-01-10.txt")
         exit()
     
     logfile = "scripts/loading/locus/logs/loadGeneRegistries.log"
