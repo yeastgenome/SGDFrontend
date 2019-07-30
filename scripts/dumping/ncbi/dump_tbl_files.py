@@ -5,7 +5,6 @@ import os
 import sys
 import importlib
 importlib.reload(sys)  
-sys.setdefaultencoding('UTF8')
 from src.models import Taxonomy, Source, Contig, Edam, Path, Filedbentity, FilePath, So, \
                        Dnasequenceannotation, Dnasubsequence, Locusdbentity, \
                        Dbentity, Go, EcoAlias, Goannotation, Gosupportingevidence, \
@@ -763,7 +762,7 @@ def clean_up_desc(desc):
           
 def update_database_load_file_to_s3(nex_session, gzip_file, source_to_id, edam_to_id):
 
-    local_file = open(gzip_file)
+    local_file = open(gzip_file, mode='rb')
 
     import hashlib
     file_md5sum = hashlib.md5(local_file.read()).hexdigest()

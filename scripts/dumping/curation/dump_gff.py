@@ -4,7 +4,7 @@ import os
 import sys
 import importlib
 importlib.reload(sys)  # Reload does the trick!
-sys.setdefaultencoding('UTF8')
+# sys.setdefaultencoding('UTF8') # only for python2
 import boto
 from boto.s3.key import Key
 import transaction
@@ -246,7 +246,7 @@ def dump_data():
 
     log.info("Uploading gff3 file to S3...")
 
-    update_database_load_file_to_s3(nex_session, gzip_file, source_to_id, edam_to_id)
+    update_database_load_file_to_s3(nex_session, gff_file, gzip_file, source_to_id, edam_to_id)
 
     nex_session.close()
 
@@ -309,6 +309,7 @@ def upload_gff_to_s3(file, filename):
     k.make_public()
     transaction.commit()
 
+
 def gzip_gff_file(gff_file, datestamp):
 
     # gff_file  = saccharomyces_cerevisiae.gff
@@ -321,16 +322,16 @@ def gzip_gff_file(gff_file, datestamp):
     return gzip_file
 
 
-def update_database_load_file_to_s3(nex_session, gzip_file, source_to_id, edam_to_id):
+def update_database_load_file_to_s3(nex_session, gff_file, gzip_file, source_to_id, edam_to_id):
 
-    local_file = open(gzip_file)
-
+    local_file = open(gzip_file, mode='rb')
+    
     ### upload a current GFF file to S3 with a static URL for Go Community ###
     upload_gff_to_s3(local_file, "latest/saccharomyces_cerevisiae.gff.gz")
     ##########################################################################
 
     import hashlib
-    gff_md5sum = hashlib.md5(local_file.read()).hexdigest()
+    gff_md5sum = hashlib.md5(gff_file.encode()).hexdigest()
     row = nex_session.query(Filedbentity).filter_by(md5sum = gff_md5sum).one_or_none()
 
     if row is not None:
@@ -372,7 +373,8 @@ def update_database_load_file_to_s3(nex_session, gzip_file, source_to_id, edam_t
                 is_in_spell='0',
                 is_in_browser='0',
                 file_date=datetime.now(),
-                source_id=source_to_id['SGD'])
+                source_id=source_to_id['SGD'],
+                md5sum=gff_md5sum)
 
     gff = nex_session.query(Dbentity).filter_by(display_name=gzip_file, dbentity_status='Active').one_or_none()
 

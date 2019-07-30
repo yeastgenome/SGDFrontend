@@ -281,13 +281,15 @@ def upload_file(username, file, **kwargs):
     status = kwargs.get('status', 'Active')
     description = kwargs.get('description', None)
     readme_file_id = kwargs.get('readme_file_id', None)
+    md5sum = kwargs.get('md5sum', None)
     # get file size
     file.seek(0, os.SEEK_END)
     file_size = file.tell()
     file.seek(0)
 
     try:
-        md5sum = hashlib.md5(file.read()).hexdigest()
+        if md5sum is None:
+            md5sum = hashlib.md5(file.read()).hexdigest()
         fdb = Filedbentity(
             md5sum=md5sum,
             previous_file_name=filename,

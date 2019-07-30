@@ -4,7 +4,6 @@ import os
 import sys
 import importlib
 importlib.reload(sys)  # Reload does the trick!
-sys.setdefaultencoding('UTF8')
 import boto
 from boto.s3.key import Key
 import transaction
@@ -243,7 +242,7 @@ def dump_data():
 
     ## download sgd gaf from go central and upload it to S3
     download_sgd_gaf_from_go_central()
-    local_file = open(gaf_from_go)
+    local_file = open(gaf_from_go, mode='rb')
     upload_gaf_to_s3(local_file, "latest/" + gaf_from_go)
     ## done
 
@@ -263,7 +262,7 @@ def write_header(fw, datestamp):
 def read_from_go_central(url, matchSubDir=None):
     
     response = urlopen(url)
-    html = response.read()
+    html = response.read().decode('utf-8')
     lines = html.split("\n");
     current_sub = ""
     current_url = ""
@@ -310,17 +309,16 @@ def update_database_load_file_to_s3(nex_session, gaf_file, is_public, source_to_
     with open(gaf_file, 'rb') as f_in, gzip.open(gzip_file, 'wb') as f_out:
         shutil.copyfileobj(f_in, f_out)
 
-    local_file = open(gzip_file)
+    local_file = open(gzip_file, mode='rb')
 
     ### upload a current GAF file to S3 with a static URL for Go Community ###
     if is_public == '1':
         upload_gaf_to_s3(local_file, "latest/gene_association.sgd.gaf.gz")
     ##########################################################################
 
-    local_file = open(gzip_file)
-
     import hashlib
-    gaf_md5sum = hashlib.md5(local_file.read()).hexdigest()
+    gaf_md5sum = hashlib.md5(gaf_file.encode()).hexdigest()
+
     row = nex_session.query(Filedbentity).filter_by(md5sum = gaf_md5sum).one_or_none()
 
     if row is not None:
@@ -366,7 +364,8 @@ def update_database_load_file_to_s3(nex_session, gaf_file, is_public, source_to_
                 is_in_spell='0',
                 is_in_browser='0',
                 file_date=datetime.now(),
-                source_id=source_to_id['SGD'])
+                source_id=source_to_id['SGD'],
+                md5sum=gaf_md5sum)
 
     gaf = nex_session.query(Dbentity).filter_by(display_name=gzip_file, dbentity_status='Active').one_or_none()
     if gaf is None:
