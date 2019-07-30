@@ -4,7 +4,7 @@ from Bio import Entrez, Medline
 import sys
 import importlib
 importlib.reload(sys)
-sys.setdefaultencoding('UTF8')
+#sys.setdefaultencoding('UTF8')
 
 from ..models import DBSession, Dbentity, Referencedbentity, Referencedocument, Referenceauthor,\
                    Referencetype, ReferenceUrl, ReferenceRelation, Source, \
