@@ -6,7 +6,6 @@ from datetime import datetime
 import logging
 import importlib
 importlib.reload(sys)  # Reload does the trick!
-sys.setdefaultencoding('UTF8')
 from src.models import Dbentity, LocusAlias, LocusUrl, Source, Filedbentity, Edam
 from src.helpers import upload_file
 from scripts.loading.database_session import get_session

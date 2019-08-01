@@ -323,7 +323,7 @@ def read_gpad_file(filename, nex_session, uniprot_to_date_assigned, uniprot_to_s
 
     f = None
     if filename.endswith('.gz'):
-        f = gzip.open(filename)
+        f = gzip.open(filename, 'rt')
     else:
         f = open(filename)
     
@@ -476,13 +476,14 @@ def read_gpi_file(filename):
 
     f = None
     if filename.endswith('.gz'):
-        f = gzip.open(filename)
+        f = gzip.open(filename, 'rt')
     else:
         f = open(filename)
 
     uniprot_to_date_assigned = {}
     uniprot_to_sgdid_list = {}
-    for line  in f:
+
+    for line in f:
 
         if line.startswith('!'):
             continue

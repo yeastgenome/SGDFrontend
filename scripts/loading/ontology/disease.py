@@ -5,7 +5,6 @@ from datetime import datetime
 import sys
 import importlib
 importlib.reload(sys)  # Reload does the trick!
-sys.setdefaultencoding('utf-8')
 from src.models import Source, Disease, DiseaseUrl, DiseaseAlias, DiseaseRelation, Ro, Edam, Dbentity, Filedbentity
 from src.helpers import upload_file
 from scripts.loading.database_session import get_session
@@ -328,7 +327,7 @@ def update_database_load_file_to_s3(nex_session, ontology_file, source_to_id, ed
     with open(ontology_file, 'rb') as f_in, gzip.open(gzip_file, 'wb') as f_out:
         shutil.copyfileobj(f_in, f_out)
 
-    local_file = open(gzip_file)
+    local_file = open(gzip_file, mode='rb')
 
     import hashlib
     go_md5sum = hashlib.md5(local_file.read()).hexdigest()

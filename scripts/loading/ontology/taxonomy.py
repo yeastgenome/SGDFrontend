@@ -4,11 +4,10 @@ from datetime import datetime
 import sys
 import importlib
 importlib.reload(sys)  # Reload does the trick!
-sys.setdefaultencoding('utf-8')
 from src.models import Source, Taxonomy, TaxonomyUrl, TaxonomyAlia, TaxonomyRelation, Ro
 from scripts.loading.database_session import get_session
 from scripts.loading.ontology import children_for_taxonomy_ancestor, read_owl
-from database_session import get_nex_session as get_session
+from scripts.loading.database_session import get_session
                  
 __author__ = 'sweng66'
 

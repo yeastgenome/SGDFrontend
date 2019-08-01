@@ -3,7 +3,6 @@ from datetime import datetime
 import sys
 import importlib
 importlib.reload(sys)  # Reload does the trick!
-sys.setdefaultencoding('utf-8')
 import os
 
 from src.models import Source, Psimod, PsimodUrl, PsimodRelation, Ro

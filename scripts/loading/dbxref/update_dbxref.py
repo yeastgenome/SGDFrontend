@@ -6,7 +6,6 @@ from datetime import datetime
 import logging
 import importlib
 importlib.reload(sys)  # Reload does the trick!
-sys.setdefaultencoding('UTF8')
 from src.models import Dbentity, LocusAlias, Source, Filedbentity, Edam
 from src.helpers import upload_file
 from scripts.loading.database_session import get_session
@@ -269,7 +268,7 @@ def get_url(alias_type, ID, source):
 
 def update_database_load_file_to_s3(nex_session, data_file, source_to_id, edam_to_id):
 
-    local_file = open(data_file)
+    local_file = open(data_file, mode='rb')
 
     import hashlib
     dx_md5sum = hashlib.md5(local_file.read()).hexdigest()
@@ -310,7 +309,7 @@ def update_database_load_file_to_s3(nex_session, data_file, source_to_id, edam_t
     
 def read_uniprot_file(infile, source_to_id):
 
-    f = gzip.open(infile)    
+    f = gzip.open(infile, mode='rt')    
     sgdid_to_uniprot_id = {}
     uniprot_id_to_sgdid = {}
     key_to_ids = {}

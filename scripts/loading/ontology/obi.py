@@ -4,8 +4,7 @@ import os
 from datetime import datetime
 import sys
 import importlib
-importlib.reload(sys)  # Reload does the trick!                                                             \
-sys.setdefaultencoding('utf-8')
+importlib.reload(sys)  # Reload does the trick!                   
 from src.models import Source, Obi, ObiUrl, ObiRelation, Ro
 from scripts.loading.database_session import get_session
 from scripts.loading.ontology import read_owl

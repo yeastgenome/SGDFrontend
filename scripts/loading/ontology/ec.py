@@ -5,7 +5,6 @@ from datetime import datetime
 import sys
 import importlib
 importlib.reload(sys)  # Reload does the trick!
-sys.setdefaultencoding('utf-8')
 from src.models import Source, Ec, EcUrl, EcAlias
 from scripts.loading.database_session import get_session
 from scripts.loading.ontology import read_data_file  

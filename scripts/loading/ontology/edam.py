@@ -4,7 +4,6 @@ import sys
 import os
 import importlib
 importlib.reload(sys)  # Reload does the trick!
-sys.setdefaultencoding('utf-8')
 from src.models import Source, Edam, EdamUrl, EdamAlia, EdamRelation, Ro
 from scripts.loading.database_session import get_session
 from scripts.loading.ontology import read_owl  

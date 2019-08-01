@@ -560,8 +560,8 @@ def update_database_load_file_to_s3(nex_session, gpad_file, gpi_file, source_to_
 
     import hashlib
     
-    gpad_local_file = open(gpad_file)
-    gpi_local_file = open(gpi_file)
+    gpad_local_file = open(gpad_file, mode='rb')
+    gpi_local_file = open(gpi_file, mode='rb')
     gpad_md5sum = hashlib.md5(gpad_local_file.read()).hexdigest()
     gpi_md5sum = hashlib.md5(gpi_local_file.read()).hexdigest()
 
