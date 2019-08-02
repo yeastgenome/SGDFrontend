@@ -1,10 +1,5 @@
 from Bio import Entrez
 from urllib.request import urlopen
-import sys
-import os
-import importlib
-importlib.reload(sys)  # Reload does the trick!
-sys.setdefaultencoding('UTF8')
 
 Entrez.email = "yeastgenome@gmail.com"
 

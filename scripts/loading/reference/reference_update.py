@@ -2,10 +2,7 @@ import logging
 import os
 from datetime import datetime
 import time
-import sys
-import importlib
-importlib.reload(sys)  # Reload does the trick!
-sys.setdefaultencoding('UTF8')
+
 from src.models import Dbentity, Referencedbentity, Source, Journal, \
                        Referenceauthor, ReferenceUrl, Referencetype, \
                        ReferenceRelation, Referencedocument
