@@ -3,8 +3,6 @@ import os
 from datetime import datetime
 import time
 import sys
-import importlib
-importlib.reload(sys)  # Reload does the trick!
 from src.models import Dbentity, Referencedbentity
 from scripts.loading.database_session import get_session
 
