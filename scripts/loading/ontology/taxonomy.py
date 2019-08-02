@@ -132,7 +132,7 @@ def load_new_data(nex_session, data, source_to_id, taxid_to_taxonomy, ro_id, tax
             print("NEW: ", taxid, x['term'])
 
             ## add three URLs
-            link_url =taxid.split(':')[1]
+            link_id =taxid.split(':')[1]
             insert_url(nex_session, source_to_id[src], 'NCBI Taxonomy', taxonomy_id, 
                        'https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=' + link_id, 
                        fw)
