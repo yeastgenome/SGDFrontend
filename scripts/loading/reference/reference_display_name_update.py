@@ -5,7 +5,6 @@ import time
 import sys
 import importlib
 importlib.reload(sys)  # Reload does the trick!
-sys.setdefaultencoding('UTF8')
 from src.models import Dbentity, Referencedbentity
 from scripts.loading.database_session import get_session
 
@@ -27,7 +26,10 @@ def update_reference_data():
     all_refs = nex_session.query(Dbentity).filter_by(subclass='REFERENCE').all()
 
     for x in all_refs:
-        (citation, pmid) = dbentity_id_to_citation[x.dbentity_id]
+        if x.dbentity_id not in dbentity_id_to_citation:
+            log.info("The dbentity_id=" + str(x.dbentity_id) + " is not in the referencedbentity table.\n")
+            continue
+        (citation, pmid) = dbentity_id_to_citation.get(x.dbentity_id)
         display_name = citation.split(')')[0] + ')'
         if display_name == x.display_name:
             continue
