@@ -4,9 +4,8 @@ from Bio import Entrez, Medline
 import sys
 import importlib
 importlib.reload(sys)
-#sys.setdefaultencoding('UTF8')
 
-from ..models import DBSession, Dbentity, Referencedbentity, Referencedocument, Referenceauthor,\
+from src.models import DBSession, Dbentity, Referencedbentity, Referencedocument, Referenceauthor,\
                    Referencetype, ReferenceUrl, ReferenceRelation, Source, \
                    Journal, Locusdbentity
 from src.helpers import link_gene_names

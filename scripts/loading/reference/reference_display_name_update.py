@@ -24,6 +24,9 @@ def update_reference_data():
     all_refs = nex_session.query(Dbentity).filter_by(subclass='REFERENCE').all()
 
     for x in all_refs:
+        if x.dbentity_id not in dbentity_id_to_citation:
+            log.info("The dbentity_id=" + str(x.dbentity_id) + " is not in the referencedbentity table.\n")
+            continue
         (citation, pmid) = dbentity_id_to_citation[x.dbentity_id]
         display_name = citation.split(')')[0] + ')'
         if display_name == x.display_name:
