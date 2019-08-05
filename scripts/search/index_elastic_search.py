@@ -26,7 +26,7 @@ def delete_mapping():
     print("Deleting mapping...")
     response = requests.delete(ES_URI + INDEX_NAME + "/")
     if response.status_code != 200:
-        print(("ERROR: " + str(response)))
+        print(("ERROR: " + str(response.json())))
     else:
         print("SUCCESS")
 
@@ -35,7 +35,7 @@ def put_mapping():
     print("Putting mapping... ")
     response = requests.put(ES_URI + INDEX_NAME + "/", json=mapping)
     if response.status_code != 200:
-        print(("ERROR: " + str(response)))
+        print(("ERROR: " + str(response.json())))
     else:
         print("SUCCESS")
 
