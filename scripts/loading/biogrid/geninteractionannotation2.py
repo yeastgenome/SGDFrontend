@@ -3,8 +3,6 @@ import logging
 import os
 from datetime import datetime
 import sys
-import importlib
-importlib.reload(sys)  # Reload does the trick!
 from src.models import Locusdbentity, Referencedbentity, Source, Taxonomy, \
                        Phenotype, Geninteractionannotation, Apo
 from scripts.loading.reference.promote_reference_triage import add_paper
@@ -135,11 +133,14 @@ def load_data(infile, logfile):
 
                     key = (dbentity1_id, dbentity2_id, bait_hit, biogrid_experimental_system, annotation_type, reference_id)
 
-                    if i <= 573000:
-                        key_existed[key] = 1
-                        continue  
-                    else:
-                        print(key)
+                    # if i <= 573000:
+                    #    key_existed[key] = 1
+                    #    continue  
+                    # else:
+                    #    print(key)
+
+
+                    print (i, key) 
 
 
 
