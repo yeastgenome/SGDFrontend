@@ -2,7 +2,7 @@ import logging
 import os
 from datetime import datetime
 import time
-
+import sys
 from src.models import Dbentity, Referencedbentity
 from scripts.loading.database_session import get_session
 
@@ -27,7 +27,7 @@ def update_reference_data():
         if x.dbentity_id not in dbentity_id_to_citation:
             log.info("The dbentity_id=" + str(x.dbentity_id) + " is not in the referencedbentity table.\n")
             continue
-        (citation, pmid) = dbentity_id_to_citation[x.dbentity_id]
+        (citation, pmid) = dbentity_id_to_citation.get(x.dbentity_id)
         display_name = citation.split(')')[0] + ')'
         if display_name == x.display_name:
             continue
