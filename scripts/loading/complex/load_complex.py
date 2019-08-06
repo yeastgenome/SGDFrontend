@@ -7,7 +7,6 @@ from datetime import datetime
 import sys
 import importlib
 importlib.reload(sys)  # Reload does the trick!
-sys.setdefaultencoding('UTF-8')
 from src.models import Source, Psimi, Dbentity, Go, Taxonomy, Eco, Referencedbentity, \
        Locusdbentity, Complexdbentity, ComplexAlias, ComplexGo, ComplexReference, \
        Interactor, LocusAlias
@@ -546,9 +545,10 @@ def get_json(url):
     try:
         req = Request(url)
         res = urlopen(req)
-        raw_data = res.read()
-        u_raw_data = str(raw_data, 'latin-1')
-        data = json.loads(u_raw_data)
+        raw_data = res.read().decode('utf-8', "ignore")
+        # u_raw_data = str(raw_data, 'latin-1')
+        # data = json.loads(u_raw_data)
+        data = json.loads(raw_data) 
         return data
     except URLError:
         return 404

@@ -3,8 +3,6 @@ import logging
 import os
 from datetime import datetime
 import sys
-import importlib
-importlib.reload(sys)  # Reload does the trick!
 from src.models import Locusdbentity, Referencedbentity, Source, Taxonomy, \
                        Phenotype, Geninteractionannotation, Apo
 from scripts.loading.reference.promote_reference_triage import add_paper

@@ -7,7 +7,6 @@ from datetime import datetime
 import sys
 import importlib
 importlib.reload(sys)  # Reload does the trick!
-sys.setdefaultencoding('UTF-8')
 from src.models import Psimi, Taxonomy, Dbentity, Complexbindingannotation, Interactor
 from scripts.loading.database_session import get_session
 from scripts.loading.reference.promote_reference_triage import add_paper
@@ -222,9 +221,8 @@ def get_json(url):
     try:
         req = Request(url)
         res = urlopen(req)
-        raw_data = res.read()
-        u_raw_data = str(raw_data, 'latin-1')
-        data = json.loads(u_raw_data)
+        raw_data = res.read().decode('utf-8', "ignore")
+        data = json.loads(raw_data)
         return data
     except URLError:
         return 404
