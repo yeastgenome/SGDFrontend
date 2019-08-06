@@ -1,10 +1,7 @@
 from io import StringIO
 from Bio import Entrez, Medline
 import os
-import sys
-import importlib
-importlib.reload(sys)  # Reload does the trick!
-sys.setdefaultencoding('UTF8')
+
 from src.models import Dbentity, Referencedbentity, Referencedocument, Referenceauthor,\
     Referencetype, ReferenceUrl, ReferenceRelation, Source, Journal
 from scripts.loading.database_session import get_session
@@ -358,7 +355,7 @@ def insert_relations(nex_session, pmid, reference_id, record):
             
     for tag in relation_on_tag():
         if record.get(tag):
-	    type = tag_to_type[tag]
+            type = tag_to_type[tag]
             for onText in record[tag]:
                 if "PMID: " not in onText:
                     continue

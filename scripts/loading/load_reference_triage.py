@@ -7,10 +7,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 from zope.sqlalchemy import ZopeTransactionExtension
 import transaction
-import sys
-import importlib
-importlib.reload(sys)  # reload to set encoding
-sys.setdefaultencoding('UTF8')
+
 from src.models import Referencedbentity, Referencetriage, Referencedeleted, Locusdbentity, LocusAlias
 from scripts.loading.reference.pubmed import get_pmid_list, get_pubmed_record, set_cite, get_abstract
 from scripts.loading.util import extract_gene_names
