@@ -1,9 +1,6 @@
 from io import StringIO
 from Bio import Entrez, Medline
 import sys
-import importlib
-importlib.reload(sys)
-sys.setdefaultencoding('UTF8')
 from src.models import Dbentity, Referencedbentity, Referencedocument, Referenceauthor,\
     Referencetype, ReferenceUrl, ReferenceRelation, Source, Journal, Locusdbentity
 from scripts.loading.database_session import get_session
