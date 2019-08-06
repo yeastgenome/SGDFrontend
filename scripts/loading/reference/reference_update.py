@@ -128,7 +128,11 @@ def update_reference_data(log_file):
         # print "PMID: ", pmid
             
         if len(pmids) >= MAX:
-            records = get_pubmed_record_from_xml(','.join(pmids))
+            try:
+                records = get_pubmed_record_from_xml(','.join(pmids))
+            except:
+                print ("Error retrieving the pubmed records for ", ','.join(pmids))
+                continue
             abstracts = get_abstracts(','.join(pmids))
             update_database_batch(nex_session, fw, records, 
                                   pmid_to_reference, 
