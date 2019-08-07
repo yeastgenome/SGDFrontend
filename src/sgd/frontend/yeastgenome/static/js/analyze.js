@@ -78,15 +78,21 @@ function set_up_tools(table, go_term_finder_id, go_slim_mapper_id, spell_id, yea
 		location.assign(url);
 	};
 	document.getElementById(go_slim_mapper_id).onclick = function f() {
-		var bioent_format_names = "";
-		var data = table._("tr", {"filter": "applied"});
-		for (var i=0,len=data.length; i<len; i++) { 
-			var sys_name = data[i][2];
-			bioent_format_names = bioent_format_names + sys_name + " ";
-		}
-		post_to_url("http://yeastgenome.org/cgi-bin/GO/goSlimMapper.pl", {
-			"loci" : bioent_format_names
-		});
+	        var bioent_format_names = '';
+
+	        var data = table._("tr", {"filter": "applied"});
+	        for (var i=0,len=data.length; i<len; i++) {
+		    var sys_name = data[i][2];
+		    bioent_format_names = bioent_format_names + sys_name + " ";
+	        }
+	        var localStorageGeneList = data.reduce(function(acc, d) {
+		    var sysName = d[2];
+		    return acc + sysName + " ";
+                }, "");
+	        window.localStorage.setItem("geneList4slim", localStorageGeneList);
+	        var url = '/goSlimMapper';
+	        location.assign(url);
+
 	};
 	document.getElementById(spell_id).onclick = function f() {
 		var bioent_format_names = [];

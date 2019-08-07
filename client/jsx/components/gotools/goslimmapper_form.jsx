@@ -158,7 +158,7 @@ const GoSlimMapper = React.createClass({
 
 	getGeneBox() {
 
-	        var genes = window.localStorage.getItem("geneList");
+	        var genes = window.localStorage.getItem("geneList4slim");
                 if (genes) {
 		     return (<div style={{ textAlign: "top" }}>
                             <h3>Enter Gene/ORF names (separated by a return or a space):</h3>
