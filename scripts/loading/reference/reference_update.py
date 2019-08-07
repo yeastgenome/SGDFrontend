@@ -132,6 +132,7 @@ def update_reference_data(log_file):
                 records = get_pubmed_record_from_xml(','.join(pmids))
             except:
                 print ("Error retrieving the pubmed records for ", ','.join(pmids))
+                pmids = []
                 continue
             abstracts = get_abstracts(','.join(pmids))
             update_database_batch(nex_session, fw, records, 
