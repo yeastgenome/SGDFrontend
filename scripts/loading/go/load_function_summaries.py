@@ -1,4 +1,4 @@
-from .gpad_config import curator_id
+from scripts.loading.go.gpad_config import curator_id
 import sys
 from src.models import Dbentity, Locussummary,  Source, Updatelog
 from scripts.loading.database_session import get_session
