@@ -114,12 +114,12 @@ class CurationViewsTest(unittest.TestCase):
   @mock.patch('src.models.DBSession.query')
   def test_ptm_by_gene_should_return_valid_ptm(self, mock_search):
     mock_search.side_effect = side_effect
-
+    
     request = testing.DummyRequest()
     request.context = testing.DummyResource()
     request.matchdict['id'] = "184870"
     response = ptm_by_gene(request)
-    result = ['{"ptms": [{"site_index": 1, "reference": {"sgdid": "S000001", "link": "http://example.org/entity", "display_name": "My entity", "pubmed_id": 1}, "taxonomy": {"taxonomy_id": "", "display_name": "", "format_name": ""}, "locus": {"link": "/reference/S000185012", "display_name": "display name", "id": 1, "format_name": "format name"}, "site_residue": "residue", "id": 1, "aliases": [], "properties": [], "source": {"display_name": "Addgene"}, "psimod_id": 1, "modifier": {"format_name": ""}, "type": "display_name"}]}']
+    result = [b'{"ptms": [{"site_index": 1, "site_residue": "residue", "locus": {"id": 1, "display_name": "display name", "format_name": "format name", "link": "/reference/S000185012"}, "reference": {"display_name": "My entity", "link": "http://example.org/entity", "pubmed_id": 1, "sgdid": "S000001"}, "properties": [], "source": {"display_name": "Addgene"}, "aliases": [], "type": "display_name", "id": 1, "modifier": {"format_name": ""}, "psimod_id": 1, "taxonomy": {"taxonomy_id": "", "format_name": "", "display_name": ""}}]}']
     self.assertEqual(response._app_iter__get(),result)
   
   ##get_strains
@@ -141,5 +141,5 @@ class CurationViewsTest(unittest.TestCase):
     request = testing.DummyRequest()
     request.context = testing.DummyResource()
     response = get_psimod(request)
-    result = ['{"psimods": [{"display_name": "display_name", "psimod_id": 1, "format_name": "format_name", "inuse": true}, {"display_name": "display_name", "psimod_id": 1, "format_name": "format_name", "inuse": false}]}']
+    result = [b'{"psimods": [{"psimod_id": 1, "format_name": "format_name", "display_name": "display_name", "inuse": true}, {"psimod_id": 1, "format_name": "format_name", "display_name": "display_name", "inuse": false}]}']
     self.assertEqual(response._app_iter__get(), result)
