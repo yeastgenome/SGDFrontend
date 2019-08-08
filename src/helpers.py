@@ -104,9 +104,9 @@ def dbentity_safe_query(id, entity_class):
 
 def md5(fname):
     hash = hashlib.md5()
-    with open(fname, "rb") as f:
+    with open(fname, "r") as f:
         for chunk in iter(lambda: f.read(4096), ""):
-            hash.update(chunk)
+            hash.update(chunk.encode("utf-8"))
     return hash.hexdigest()
 
 
@@ -119,7 +119,7 @@ def secure_save_file(file, filename):
     temp_file_path = os.path.join(tempfile.gettempdir(), filename)
 
     file.seek(0)
-    with open(temp_file_path, 'wb') as output_file:
+    with open(temp_file_path, 'w') as output_file:
         shutil.copyfileobj(file, output_file)
 
     return temp_file_path

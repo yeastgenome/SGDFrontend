@@ -18,7 +18,7 @@ class SGDFunctionalTests(unittest.TestCase):
     def setUp(self):
         self.tmpfilename = "tmpfile.txt"
         self.tmpfilepath = os.path.join(tempfile.gettempdir(), self.tmpfilename)
-        with open(self.tmpfilepath, "wb") as f:
+        with open(self.tmpfilepath, "w") as f:
             f.write("Upload me and delete me!")
         
         from src import main

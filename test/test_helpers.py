@@ -52,7 +52,7 @@ class HelpersTest(unittest.TestCase):
         temp_file_path = secure_save_file(f, filename)
         f.close()
 
-        with open(os.path.join('/tmp', filename), 'rb') as f:
+        with open(os.path.join('/tmp', filename), 'r') as f:
             self.assertEqual(f.read(), self.msg)
         
         mock_secure_filename.assert_called_with(filename)
