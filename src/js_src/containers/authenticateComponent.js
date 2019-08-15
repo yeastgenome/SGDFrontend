@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
+import PropTypes from 'prop-types';
 
 import fetchData from '../lib/fetchData';
 import { authenticateUser } from '../actions/authActions';
@@ -40,9 +41,9 @@ export function requireAuthentication(Component) {
   }
 
   AuthenticatedComponent.propTypes = {
-    dispatch: React.PropTypes.func,
-    isAuthenticated: React.PropTypes.bool,
-    location: React.PropTypes.object
+    dispatch: PropTypes.func,
+    isAuthenticated: PropTypes.bool,
+    location: PropTypes.object
   };
 
   const mapStateToProps = state => ({

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
+import PropTypes from 'prop-types';
 import TagList from '../../components/tagList';
 import Loader from '../../components/loader';
 import fetchData from '../../lib/fetchData';
@@ -59,10 +59,10 @@ class Tags extends Component {
 }
 
 Tags.propTypes = {
-  activeTags: React.PropTypes.array,
-  dispatch: React.PropTypes.func,
-  id: React.PropTypes.string,
-  isPending: React.PropTypes.bool
+  activeTags: PropTypes.array,
+  dispatch: PropTypes.func,
+  id: PropTypes.string,
+  isPending: PropTypes.bool
 };
 
 function mapStateToProps(state) {

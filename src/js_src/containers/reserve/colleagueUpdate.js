@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 // import { push } from 'react-router-redux';
 import { Async } from 'react-select';
-
+import PropTypes from 'prop-types';
 import ColleagueForm from '../../components/colleagueForm';
 import fetchData from '../../lib/fetchData';
 import Loader from '../../components/loader';
@@ -108,9 +108,9 @@ class ColleagueUpdate extends Component {
 }
 
 ColleagueUpdate.propTypes = {
-  dispatch: React.PropTypes.func,
-  onComplete: React.PropTypes.func,
-  submitText: React.PropTypes.string
+  dispatch: PropTypes.func,
+  onComplete: PropTypes.func,
+  submitText: PropTypes.string
 };
 
 function mapStateToProps() {

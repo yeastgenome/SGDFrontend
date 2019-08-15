@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
-
+import PropTypes from 'prop-types';
 class ActionList extends Component {
   render() {
     if (this.props.category === 'locus' || this.props.category === 'reference' || this.props.category === 'reserved_name') {
@@ -12,8 +12,8 @@ class ActionList extends Component {
 }
 
 ActionList.propTypes = {
-  category: React.PropTypes.string,
-  href: React.PropTypes.string,
+  category: PropTypes.string,
+  href: PropTypes.string,
 };
 
 export default ActionList;

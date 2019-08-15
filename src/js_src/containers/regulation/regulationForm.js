@@ -5,7 +5,7 @@ import { setError, setMessage } from '../../actions/metaActions';
 import {setRegulation} from '../../actions/regulationActions';
 import DataList from '../../components/dataList';
 import Loader from '../../components/loader';
-
+import PropTypes from 'prop-types';
 const GET_ECO = '/eco/regulations';
 const GET_GO = '/go/regulations';
 const REGULATIONS = '/regulation';
@@ -451,8 +451,8 @@ class RegulationForm extends Component {
 }
 
 RegulationForm.propTypes = {
-  dispatch: React.PropTypes.func,
-  regulation:React.PropTypes.object
+  dispatch: PropTypes.func,
+  regulation:PropTypes.object
 };
 
 function mapStateToProps(state) {

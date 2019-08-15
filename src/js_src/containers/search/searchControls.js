@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
-
+import PropTypes from 'prop-types';
 import style from './style.css';
 import { getQueryParamWithValueChanged } from '../../lib/searchHelpers';
 
@@ -67,10 +67,10 @@ class SearchControlsComponent extends Component {
 }
 
 SearchControlsComponent.propTypes = {
-  currentPage: React.PropTypes.number,
-  isList: React.PropTypes.bool,
-  queryParams: React.PropTypes.object,
-  totalPages: React.PropTypes.number
+  currentPage: PropTypes.number,
+  isList: PropTypes.bool,
+  queryParams: PropTypes.object,
+  totalPages: PropTypes.number
 };
 
 function mapStateToProps(state) {

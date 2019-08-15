@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
+import PropTypes from 'prop-types';
 import { setError } from '../actions/metaActions';
 import fetchData from '../lib/fetchData';
 
@@ -48,10 +48,10 @@ class DeleteButton extends Component {
 }
 
 DeleteButton.propTypes = {
-  dispatch: React.PropTypes.func,
-  url: React.PropTypes.string,
-  label: React.PropTypes.string,
-  onSuccess: React.PropTypes.func
+  dispatch: PropTypes.func,
+  url: PropTypes.string,
+  label: PropTypes.string,
+  onSuccess: PropTypes.func
 };
 
 function mapStateToProps() {

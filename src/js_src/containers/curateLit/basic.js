@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
+import PropTypes from 'prop-types';
 import Tags from './tags';
 import { selectActiveLitEntry, selectHasData } from '../../selectors/litSelectors';
 
@@ -23,9 +23,9 @@ class CurateLitBasic extends Component {
 }
 
 CurateLitBasic.propTypes = {
-  data: React.PropTypes.object,
-  hasData: React.PropTypes.bool,
-  params: React.PropTypes.object
+  data: PropTypes.object,
+  hasData: PropTypes.bool,
+  params: PropTypes.object
 };
 
 function mapStateToProps(state) {

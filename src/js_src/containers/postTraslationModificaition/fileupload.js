@@ -2,7 +2,7 @@ import React,{Component} from 'react';
 import { connect } from 'react-redux';
 import Dropzone from 'react-dropzone';
 import style from './style.css';
-
+import PropTypes from 'prop-types';
 import fetchData from '../../lib/fetchData';
 import { setError, setMessage } from '../../actions/metaActions';
 import Loader from '../../components/loader';
@@ -103,8 +103,8 @@ class FileUpload extends Component{
 }
 
 FileUpload.propTypes = {
-  csrfToken: React.PropTypes.string,
-  dispatch: React.PropTypes.func
+  csrfToken: PropTypes.string,
+  dispatch: PropTypes.func
 };
 
 function mapStateToProps(state) {

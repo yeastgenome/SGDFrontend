@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import t from 'tcomb-form';
-
+import PropTypes from 'prop-types';
 import style from './style.css';
 import FlexiForm from '../../components/forms/flexiForm';
 import { authenticateUser } from '../../actions/authActions';
@@ -62,8 +62,8 @@ class Login extends Component {
 }
 
 Login.propTypes = {
-  dispatch: React.PropTypes.func,
-  queryParams: React.PropTypes.object
+  dispatch: PropTypes.func,
+  queryParams: PropTypes.object
 };
 
 function mapStateToProps(_state) {

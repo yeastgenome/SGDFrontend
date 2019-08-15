@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { Link } from 'react-router';
-
+import PropTypes from 'prop-types';
 import CategoryLabel from '../../components/categoryLabel';
 import CurateLayout from '../curateHome/layout';
 import DeleteButton from '../../components/deleteButton';
@@ -140,8 +140,8 @@ class GeneNameReservation extends Component {
 }
 
 GeneNameReservation.propTypes = {
-  params: React.PropTypes.object,
-  dispatch: React.PropTypes.func
+  params: PropTypes.object,
+  dispatch: PropTypes.func
 };
 
 function mapStateToProps() {

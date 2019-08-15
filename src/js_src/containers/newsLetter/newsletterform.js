@@ -5,7 +5,7 @@ import { setError, setMessage } from '../../actions/metaActions';
 import { connect } from 'react-redux';
 import style from './style.css';
 import { setURL, setCode, setSubject, setRecipients } from '../../actions/newsLetterActions';
-
+import PropTypes from 'prop-types';
 const RECIPIENT_URL = '/colleagues_subscriptions';
 const SOURCE_URL = '/get_newsletter_sourcecode';
 const SEND_EMAIL = '/send_newsletter';
@@ -249,15 +249,15 @@ class NewsLetterForm extends Component {
 }
 
 NewsLetterForm.propTypes = {
-  url: React.PropTypes.string,
-  code: React.PropTypes.string,
-  subject: React.PropTypes.string,
-  recipients: React.PropTypes.string,
-  dispatch: React.PropTypes.func,
-  updateURL: React.PropTypes.func,
-  updateCode: React.PropTypes.func,
-  updateRecipients: React.PropTypes.func,
-  updateSubject: React.PropTypes.func
+  url: PropTypes.string,
+  code: PropTypes.string,
+  subject: PropTypes.string,
+  recipients: PropTypes.string,
+  dispatch: PropTypes.func,
+  updateURL: PropTypes.func,
+  updateCode: PropTypes.func,
+  updateRecipients: PropTypes.func,
+  updateSubject: PropTypes.func
 };
 
 function mapStateToProps(state) {

@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Autosuggest from 'react-autosuggest';
 import { push } from 'react-router-redux';
+import PropTypes from 'prop-types';
 
 import style from './style.css';
 import CategoryLabel from '../../../components/categoryLabel';
@@ -105,9 +106,9 @@ class SearchBarComponent extends Component {
 }
 
 SearchBarComponent.propTypes = {
-  dispatch: React.PropTypes.func,
-  queryParams: React.PropTypes.object,
-  searchUrl: React.PropTypes.string
+  dispatch: PropTypes.func,
+  queryParams: PropTypes.object,
+  searchUrl: PropTypes.string
 };
 
 function mapStateToProps(state) {

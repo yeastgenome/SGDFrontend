@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import PropTypes from 'prop-types';
 class TextField extends Component {
   _renderReadOnly () {
     return (
@@ -31,12 +31,12 @@ class TextField extends Component {
 }
 
 TextField.propTypes = {
-  displayName: React.PropTypes.string,
-  paramName: React.PropTypes.string,
-  defaultValue: React.PropTypes.string,
-  iconClass: React.PropTypes.string,
-  placeholder: React.PropTypes.string,
-  isReadOnly: React.PropTypes.bool
+  displayName: PropTypes.string,
+  paramName: PropTypes.string,
+  defaultValue: PropTypes.string,
+  iconClass: PropTypes.string,
+  placeholder: PropTypes.string,
+  isReadOnly: PropTypes.bool
 };
 
 export default TextField;

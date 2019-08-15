@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 // import { push } from 'react-router-redux';
 // import { Link } from 'react-router';
 import t from 'tcomb-form';
-
+import PropTypes from 'prop-types';
 import CategoryLabel from '../../components/categoryLabel';
 import CurateLayout from '../curateHome/layout';
 import FlexiForm from '../../components/forms/flexiForm';
@@ -91,8 +91,8 @@ class GeneNameReservationEdit extends Component {
 }
 
 GeneNameReservationEdit.propTypes = {
-  params: React.PropTypes.object,
-  dispatch: React.PropTypes.func
+  params: PropTypes.object,
+  dispatch: PropTypes.func
 };
 
 function mapStateToProps() {

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
-
+import PropTypes from 'prop-types';
 import style from './style.css';
 import AnnotationSummary from '../../components/annotationSummary';
 import fetchData from '../../lib/fetchData';
@@ -119,12 +119,12 @@ class LitTriageIndex extends Component {
 }
 
 LitTriageIndex.propTypes = {
-  dispatch: React.PropTypes.func,
-  triageEntries: React.PropTypes.array,
-  triageTotal: React.PropTypes.number,
-  username: React.PropTypes.string,
-  isTagVisible: React.PropTypes.bool,
-  lastPromoted: React.PropTypes.object
+  dispatch: PropTypes.func,
+  triageEntries: PropTypes.array,
+  triageTotal: PropTypes.number,
+  username: PropTypes.string,
+  isTagVisible: PropTypes.bool,
+  lastPromoted: PropTypes.object
 };
 
 function mapStateToProps(state) {

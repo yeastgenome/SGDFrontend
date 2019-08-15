@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import style from './style.css';
-
+import PropTypes from 'prop-types';
 class DataList extends Component {
   constructor(props) {
     super(props);
@@ -128,15 +128,15 @@ class DataList extends Component {
 }
 
 DataList.propTypes = {
-  options: React.PropTypes.array,
-  url: React.PropTypes.string,
-  id: React.PropTypes.string,
-  value1: React.PropTypes.string,
-  value2: React.PropTypes.string,
-  onOptionChange: React.PropTypes.func,
-  selectedIdName: React.PropTypes.string,
-  selectedId: React.PropTypes.string,
-  setNewValue:React.PropTypes.bool
+  options: PropTypes.array,
+  url: PropTypes.string,
+  id: PropTypes.string,
+  value1: PropTypes.string,
+  value2: PropTypes.string,
+  onOptionChange: PropTypes.func,
+  selectedIdName: PropTypes.string,
+  selectedId: PropTypes.string,
+  setNewValue:PropTypes.bool
 };
 
 DataList.defaultProps = {

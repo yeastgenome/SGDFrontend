@@ -6,7 +6,7 @@ import DetailList from '../../components/detailList';
 import { makeFieldDisplayName } from '../../lib/searchHelpers';
 import { NON_HIGHLIGHTED_FIELDS } from '../../constants';
 import ActionList from './actionList';
-
+import PropTypes from 'prop-types';
 const MATCH_LABEL = 'match_by';
 const MAX_CHAR = 100;
 const SGD_LINK_URL = 'https://www.yeastgenome.org';
@@ -112,7 +112,7 @@ class ResultsTable extends Component {
 }
 
 ResultsTable.propTypes = {
-  entries: React.PropTypes.array
+  entries: PropTypes.array
 };
 
 export default ResultsTable;

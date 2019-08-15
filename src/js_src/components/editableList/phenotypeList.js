@@ -1,7 +1,7 @@
 /*eslint-disable react/no-set-state */
 import React, { Component } from 'react';
 import MultiSelectField from '../forms/multiSelectField';
-
+import PropTypes from 'prop-types';
 const LOCUS_URL = '/autocomplete_results?category=locus&q=';
 const PHENO_URL = '/autocomplete_results?category=phenotype&q=';
 
@@ -79,9 +79,9 @@ class PhenotypeList extends Component {
 }
 
 PhenotypeList.propTypes = {
-  defaultValues: React.PropTypes.array,
-  onUpdate: React.PropTypes.func, // onUpdate(values)
-  placeholder: React.PropTypes.string
+  defaultValues: PropTypes.array,
+  onUpdate: PropTypes.func, // onUpdate(values)
+  placeholder: PropTypes.string
 };
 
 export default PhenotypeList;

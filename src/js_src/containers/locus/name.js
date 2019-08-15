@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import t from 'tcomb-form';
-
+import PropTypes from 'prop-types';
 import FlexiForm from '../../components/forms/flexiForm';
 import Loader from '../../components/loader';
 import { setMessage } from '../../actions/metaActions';
@@ -39,10 +39,10 @@ class LocusGeneName extends Component {
 }
 
 LocusGeneName.propTypes = {
-  data: React.PropTypes.object,
-  dispatch: React.PropTypes.func,
-  isPending: React.PropTypes.bool,
-  params: React.PropTypes.object
+  data: PropTypes.object,
+  dispatch: PropTypes.func,
+  isPending: PropTypes.bool,
+  params: PropTypes.object
 };
 
 function mapStateToProps(state) {

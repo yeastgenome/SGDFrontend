@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
-
+import PropTypes from 'prop-types';
 import style from './style.css';
 import { SMALL_COL_CLASS, LARGE_COL_CLASS } from '../../constants';
 import fetchData from '../../lib/fetchData';
@@ -107,12 +107,12 @@ class CurateLitLayout extends Component {
 }
 
 CurateLitLayout.propTypes = {
-  activeEntry: React.PropTypes.object,
-  children: React.PropTypes.node,
-  dispatch: React.PropTypes.func,
-  params: React.PropTypes.object,
-  pathname: React.PropTypes.string,
-  isReady: React.PropTypes.bool
+  activeEntry: PropTypes.object,
+  children: PropTypes.node,
+  dispatch: PropTypes.func,
+  params: PropTypes.object,
+  pathname: PropTypes.string,
+  isReady: PropTypes.bool
 };
 
 function mapStateToProps(state) {

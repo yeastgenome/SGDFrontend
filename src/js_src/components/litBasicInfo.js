@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import PropTypes from 'prop-types';
 import Abstract from './abstract';
 
 class LitBasicInfo extends Component {
@@ -19,13 +19,13 @@ class LitBasicInfo extends Component {
 }
 
 LitBasicInfo.propTypes = {
-  abstract: React.PropTypes.string,
-  citation: React.PropTypes.string,
-  hideCitation: React.PropTypes.bool,
-  hideGeneList: React.PropTypes.bool,
-  fulltextUrl: React.PropTypes.string,
-  geneList: React.PropTypes.string,
-  pmid: React.PropTypes.string,
+  abstract: PropTypes.string,
+  citation: PropTypes.string,
+  hideCitation: PropTypes.bool,
+  hideGeneList: PropTypes.bool,
+  fulltextUrl: PropTypes.string,
+  geneList: PropTypes.string,
+  pmid: PropTypes.string,
 };
 
 export default LitBasicInfo;

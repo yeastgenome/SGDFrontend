@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
-
+import PropTypes from 'prop-types';
 import style from './style.css';
 import SingleFilterSelector from './singleFilterSelector';
 import { getQueryParamWithValueChanged } from '../../../lib/searchHelpers';
@@ -56,10 +56,10 @@ class FilterSelectorComponent extends Component {
 }
 
 FilterSelectorComponent.propTypes = {
-  activeCategory: React.PropTypes.string,
-  aggregations: React.PropTypes.array,
-  isPending: React.PropTypes.bool,
-  queryParams: React.PropTypes.object
+  activeCategory: PropTypes.string,
+  aggregations: PropTypes.array,
+  isPending: PropTypes.bool,
+  queryParams: PropTypes.object
 };
 
 function mapStateToProps(state) {

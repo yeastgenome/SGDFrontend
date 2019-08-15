@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
+import PropTypes from 'prop-types';
 import style from './style.css';
 import fetchData from '../../lib/fetchData';
 import { updateTriageEntry, updateLastPromoted, removeEntry } from './triageActions';
@@ -156,9 +156,9 @@ class TriageControls extends Component {
 }
 
 TriageControls.propTypes = {
-  entry: React.PropTypes.object,
-  dispatch: React.PropTypes.func,
-  username: React.PropTypes.string
+  entry: PropTypes.object,
+  dispatch: PropTypes.func,
+  username: PropTypes.string
 };
 
 function mapStateToProps(state) {

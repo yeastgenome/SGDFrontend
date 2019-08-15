@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
-
+import PropTypes from 'prop-types';
 import style from './style.css';
 import CategoryLabel from '../../components/categoryLabel';
 import DetailList from '../../components/detailList';
@@ -82,11 +82,11 @@ class LocusLayout extends Component {
 }
 
 LocusLayout.propTypes = {
-  children: React.PropTypes.node,
-  data: React.PropTypes.object,
-  dispatch: React.PropTypes.func,
-  pathname: React.PropTypes.string,
-  params: React.PropTypes.object
+  children: PropTypes.node,
+  data: PropTypes.object,
+  dispatch: PropTypes.func,
+  pathname: PropTypes.string,
+  params: PropTypes.object
 };
 
 function mapStateToProps(state) {

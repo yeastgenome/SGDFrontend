@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import Select from 'react-select';
 import { push } from 'react-router-redux';
-
+import PropTypes from 'prop-types';
 import style from './style.css';
 import { getQueryParamWithValueChanged } from '../../../lib/searchHelpers';
 import CategoryLabel from '../../../components/categoryLabel';
@@ -136,11 +136,11 @@ class SingleFilterSelector extends Component {
 }
 
 SingleFilterSelector.propTypes = {
-  dispatch: React.PropTypes.func,
-  displayName: React.PropTypes.string,
-  name: React.PropTypes.string,
-  queryParams: React.PropTypes.object,
-  values: React.PropTypes.array
+  dispatch: PropTypes.func,
+  displayName: PropTypes.string,
+  name: PropTypes.string,
+  queryParams: PropTypes.object,
+  values: PropTypes.array
 };
 
 export default connect()(SingleFilterSelector);
