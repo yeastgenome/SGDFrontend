@@ -111,7 +111,7 @@ def update_reference_data(log_file):
     dbentity_ids_with_author_changed = []
     for pmid in pmids_all:
         
-        if pmid is None or pmid in [26842620, 27823544, 11483584]:
+        if pmid is None or pmid in [26842620, 27823544, 11483584, 30930955]:
             continue
 
         i = i + 1
