@@ -22,7 +22,7 @@
     "react-router-redux": "^4.0.6",
     "react-select": "^1.0.0-rc.2",
     "react-simple-dropdown": "^1.1.5",
-    "redux": "^3.6.0",
+    "redux": "^4.0.4",
     "reselect": "^2.5.4",
     "tcomb-form": "^0.9.17",
     "tcomb-form-templates-semantic": "^0.2.0",
