@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { createMemoryHistory } from 'react-router';
+import { createMemoryHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import _ from 'underscore';
 import PropTypes from 'prop-types';

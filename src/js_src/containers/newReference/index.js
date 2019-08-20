@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import t from 'tcomb-form';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';

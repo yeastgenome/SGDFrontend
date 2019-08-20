@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-// import { Link } from 'react-router';
+// import { Link } from 'react-router-dom';
 import t from 'tcomb-form';
 import PropTypes from 'prop-types';
 import CategoryLabel from '../../components/categoryLabel';

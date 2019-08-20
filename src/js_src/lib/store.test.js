@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { createMemoryHistory } from 'react-router';
+import { createMemoryHistory } from 'react-router-dom';
 
 import configureStore from './configureStore';
 

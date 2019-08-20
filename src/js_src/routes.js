@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React  from 'react';
-import { IndexRoute, Route  } from 'react-router';
+import { IndexRoute, Route  } from 'react-router-dom';
 
 // unauthenticated routes and layout
 import Layout from './containers/layout';
