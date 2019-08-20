@@ -1,16 +1,47 @@
+// import { compose, createStore, applyMiddleware, combineReducers } from 'redux';
+// import { routerMiddleware, routerReducer } from 'connected-react-router';
+// import _ from 'underscore';
+
+// // custom reducers
+// import reducers from '../reducers';
+
+// const configureStore = (history) => {
+//   let combinedReducers = combineReducers(_.extend(reducers, { routing: routerReducer }));
+//   let store = createStore(
+//     combinedReducers,
+//     compose(applyMiddleware(routerMiddleware(history)))
+//   );
+//   if (module.hot) {
+//     // Enable Webpack hot module replacement for reducers
+//     module.hot.accept('../reducers', () => {
+//       const nextRootReducer = require('../reducers/index');
+//       store.replaceReducer(nextRootReducer);
+//     });
+//   }
+
+//   return store;
+// };
+
+// export default configureStore;
+
+
+
 import { compose, createStore, applyMiddleware, combineReducers } from 'redux';
-import { routerMiddleware, routerReducer } from 'connected-react-router';
-import _ from 'underscore';
+import { routerMiddleware, connectRouter } from 'connected-react-router';
+// import _ from 'underscore';
 
 // custom reducers
 import reducers from '../reducers';
 
 const configureStore = (history) => {
-  let combinedReducers = combineReducers(_.extend(reducers, { routing: routerReducer }));
-  let store = createStore(
-    combinedReducers,
-    compose(applyMiddleware(routerMiddleware(history)))
-  );
+
+  //Get a combinedReducer to create store
+  reducers['routing'] = connectRouter(history);
+  let combinedReducers = combineReducers(reducers);
+
+  //Lets create a store
+  let store = createStore(combinedReducers,compose(applyMiddleware(routerMiddleware(history))));
+
   if (module.hot) {
     // Enable Webpack hot module replacement for reducers
     module.hot.accept('../reducers', () => {
@@ -23,3 +54,4 @@ const configureStore = (history) => {
 };
 
 export default configureStore;
+
