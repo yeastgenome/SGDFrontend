@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import style from './style.css';
 import FlexiForm from '../../components/forms/flexiForm';
 import { authenticateUser } from '../../actions/authActions';
+import { parse } from 'query-string';
 
 const DEFAULT_AUTH_LANDING = '/';
 
@@ -24,7 +25,8 @@ class Login extends Component {
       }
     };
     let _onSuccess = (data) => {
-      let nextUrl = this.props.queryParams.next || DEFAULT_AUTH_LANDING;
+      var next = parse(this.props.location.search);
+      let nextUrl = next || DEFAULT_AUTH_LANDING;
       this.props.dispatch(authenticateUser(data.username));
       this.props.dispatch(push(nextUrl));
     };
@@ -68,7 +70,7 @@ Login.propTypes = {
 
 function mapStateToProps(_state) {
   return {
-    queryParams: _state.routing.locationBeforeTransitions.query
+    queryParams: _state.routing.location.query
   };
 }
 
