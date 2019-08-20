@@ -9,6 +9,7 @@
   "dependencies": {
     "connected-react-router": "^6.5.2",
     "extract-text-webpack-plugin": "^1.0.1",
+    "history": "^4.9.0",
     "immutable": "^3.8.1",
     "manifest-revision-webpack-plugin": "^0.3.0",
     "prop-types": "^15.7.2",
