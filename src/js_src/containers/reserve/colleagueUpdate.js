@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-// import { push } from 'react-router-redux';
+// import { push } from 'connected-react-router';
 import { Async } from 'react-select';
 import PropTypes from 'prop-types';
 import ColleagueForm from '../../components/colleagueForm';

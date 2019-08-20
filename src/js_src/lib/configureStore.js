@@ -1,5 +1,5 @@
 import { compose, createStore, applyMiddleware, combineReducers } from 'redux';
-import { routerMiddleware, routerReducer } from 'react-router-redux';
+import { routerMiddleware, routerReducer } from 'connected-react-router';
 import _ from 'underscore';
 
 // custom reducers

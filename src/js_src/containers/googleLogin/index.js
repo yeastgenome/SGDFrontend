@@ -1,7 +1,7 @@
 /* eslint-disable react/no-set-state */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
+import { push } from 'connected-react-router';
 import PropTypes from 'prop-types';
 import style from '../publicHome/style.css';
 import fetchData from '../../lib/fetchData';

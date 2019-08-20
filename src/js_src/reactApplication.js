@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Router, hashHistory, createMemoryHistory } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { syncHistoryWithStore } from 'react-router-redux';
+import { syncHistoryWithStore } from 'connected-react-router';
 import configureStore from './lib/configureStore';
 
 import routes from './routes';

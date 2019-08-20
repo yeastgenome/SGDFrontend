@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Select from 'react-select';
-import { push } from 'react-router-redux';
+import { push } from 'connected-react-router';
 import PropTypes from 'prop-types';
 import style from './style.css';
 import { getQueryParamWithValueChanged } from '../../../lib/searchHelpers';

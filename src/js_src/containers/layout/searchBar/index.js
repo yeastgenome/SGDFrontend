@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Autosuggest from 'react-autosuggest';
-import { push } from 'react-router-redux';
+import { push } from 'connected-react-router';
 import PropTypes from 'prop-types';
 
 import style from './style.css';
