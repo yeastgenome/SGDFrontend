@@ -26,7 +26,7 @@
 
 
 import React, { Component } from 'react';
-import { BrowserRouter as Router, createMemoryHistory,Route } from 'react-router-dom';
+import { HashRouter as Router, createMemoryHistory,Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 // import { syncHistoryWithStore } from 'connected-react-router';
 import configureStore from './lib/configureStore';
@@ -42,8 +42,16 @@ class ReactApp extends Component {
     // let history = syncHistoryWithStore(historyObj, store);
     return (
       <Provider store={store}>
-        <Router history={history}>
-          <Route render={() => (<div>Sagar</div>)}/>
+        <Router>
+          {/* <nav>
+            <Link to="/">Home</Link>
+            <br />
+            <Link to="/r">Route</Link>
+          </nav> */}
+
+            <Route render={() => (<div>Sagar</div>)} path='/' exact/>
+            <Route render={() => (<div>Route r</div>)} path='/r' />
+          
         </Router>
       </Provider>
     );
