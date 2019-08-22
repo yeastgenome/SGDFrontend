@@ -35,7 +35,8 @@
         <!-- custom app js bundled -->
         
         {% webpack 'main' %}
-            <script type="text/javascript" src="{{ ASSET.url }}"></script>
+            {# <script type="text/javascript" src="{{ ASSET.url }}"></script> #}
+            <script type="text/javascript" src="/assets/main.js"></script>
         {% endwebpack %}
     </body>
 </html>

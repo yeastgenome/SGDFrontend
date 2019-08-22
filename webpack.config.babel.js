@@ -19,8 +19,8 @@ let config = {
   output: {
     path: buildOutputPath,
     publicPath: publicHost + 'assets/',
-    filename: '[name].[hash].js',
-    chunkFilename: '[id].[hash].js'
+    filename: '[name].js',
+    chunkFilename: '[id].js'
   },
   devtool: 'eval-source-map',
   devServer: {
