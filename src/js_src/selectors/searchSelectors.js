@@ -37,8 +37,8 @@ export const selectIsPending = createSelector(
 export const selectQueryParams = createSelector(
   [selectRoutingDomain],
   (routing) => {
-    let location = routing.locationBeforeTransitions;
-    let queryParams = location ? routing.locationBeforeTransitions.query : {};
+    let location = router.location;
+    let queryParams = location ? router.location.query : {};
     return queryParams;
   }
 );

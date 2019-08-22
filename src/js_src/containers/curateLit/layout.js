@@ -118,7 +118,7 @@ CurateLitLayout.propTypes = {
 function mapStateToProps(state) {
   return {
     activeEntry: selectActiveLitEntry(state),
-    pathname: state.routing.locationBeforeTransitions.pathname,
+    pathname: state.router.location.pathname,
     isReady: state.meta.get('isReady')
   };
 }

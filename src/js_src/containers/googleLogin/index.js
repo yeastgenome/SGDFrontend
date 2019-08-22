@@ -88,7 +88,7 @@ GoogleLogin.propTypes = {
 
 function mapStateToProps(_state) {
   return {
-    queryParams: _state.routing.locationBeforeTransitions.query
+    queryParams: _state.router.location.query
   };
 }
 

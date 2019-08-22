@@ -93,7 +93,7 @@ function mapStateToProps(state) {
   let _data = state.locus.get('data') ? state.locus.get('data').toJS() : null;
   return {
     data: _data,
-    pathname: state.routing.locationBeforeTransitions.pathname
+    pathname: state.router.location.pathname
   };
 }
 

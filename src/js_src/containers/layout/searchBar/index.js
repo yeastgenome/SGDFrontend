@@ -112,7 +112,7 @@ SearchBarComponent.propTypes = {
 };
 
 function mapStateToProps(state) {
-  let location = state.routing.locationBeforeTransitions;
+  let location = state.router.location;
   let _queryParams = location ? location.query : {};
   return {
     queryParams: _queryParams
