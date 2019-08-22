@@ -37,7 +37,10 @@ const searchReducer = function (state = DEFAULT_STATE, action) {
     return state.set('isPending', action.payload);
   case '@@router/LOCATION_CHANGE':
     // update active cat
-    let newActiveCat = action.payload.query.category || 'none';
+    let newActiveCat = 'none';
+    if('query' in action.payload){
+      newActiveCat = action.payload.query.category;
+    }
     // parse aggs to update active state during route change
     return state.set('aggregations', fromJS(parseAggs(state.get('aggregations').toJS(), action.payload.query)))
                 .set('activeCategory', newActiveCat);
