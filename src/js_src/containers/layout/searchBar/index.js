@@ -14,7 +14,8 @@ import CategoryLabel from '../../../components/categoryLabel';
 class SearchBarComponent extends Component {
   constructor(props) {
     super(props);
-    let initValue = this.props.queryParams.q || '';
+    //TODO: Work on this.props.queryParms
+    let initValue = '' ;//this.props.queryParams.q || '';
     this.state = {
       autoOptions: [],
       value: initValue
