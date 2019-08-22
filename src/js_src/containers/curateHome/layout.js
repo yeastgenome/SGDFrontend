@@ -43,7 +43,7 @@ CurateLayout.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    location: state.routing.locationBeforeTransitions
+    location: state.router.location
   };
 }
 
