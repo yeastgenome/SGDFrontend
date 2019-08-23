@@ -22,7 +22,7 @@ class GeneNameReservationEdit extends Component {
   }
 
   componentDidMount() {
-    let url = `${DATA_BASE_URL}/${this.props.params.id}`;
+    let url = `${DATA_BASE_URL}/${this.props.match.params.id}`;
     fetchData(url).then( _data => {
       this.setState({ data: _data });
     });
@@ -62,7 +62,7 @@ class GeneNameReservationEdit extends Component {
       }
     };
     
-    let reserveUpdateUrl = `${DATA_BASE_URL}/${this.props.params.id}`;
+    let reserveUpdateUrl = `${DATA_BASE_URL}/${this.props.match.params.id}`;
     
     if (data) {
       return (

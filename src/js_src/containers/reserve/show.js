@@ -23,7 +23,7 @@ class GeneNameReservation extends Component {
   }
 
   componentDidMount() {
-    let url = `${DATA_BASE_URL}/${this.props.params.id}`;
+    let url = `${DATA_BASE_URL}/${this.props.match.params.id}`;
     fetchData(url).then( _data => {
       this.setState({ data: _data });
     });
@@ -85,7 +85,7 @@ class GeneNameReservation extends Component {
 
   renderRes() {
     let data = this.state.data;
-    let editUrl = `${DATA_BASE_URL}/${this.props.params.id}/edit`;
+    let editUrl = `${DATA_BASE_URL}/${this.props.match.params.id}/edit`;
     if (data) {
       return (
         <div>
@@ -109,13 +109,13 @@ class GeneNameReservation extends Component {
 
   renderActions() {
     let data = this.state.data;
-    let deleteUrl = `${DATA_BASE_URL}/${this.props.params.id}`;
+    let deleteUrl = `${DATA_BASE_URL}/${this.props.match.params.id}`;
     let reservation_status = data ? data.reservation_status : false;
     let promoteNode;
     if (reservation_status === 'Unprocessed') {
       promoteNode = <a className='button primary' onClick={this.handlePromote.bind(this)}><i className='fa fa-check' /> Add Gene Name Reservation</a>;
     } else {
-      let stLink = `${DATA_BASE_URL}/${this.props.params.id}/standardize`;
+      let stLink = `${DATA_BASE_URL}/${this.props.match.params.id}/standardize`;
       promoteNode = <Link className='button primary' to={stLink}><i className='fa fa-check' /> Standardize Gene Name</Link>;
     }
     return (
