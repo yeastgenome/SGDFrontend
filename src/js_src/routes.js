@@ -46,11 +46,14 @@ export default (
     <Layout />
     {/* <Route component={Layout} path='/'> */}
     <Switch>
+      <Route component={requireAuthentication(GeneNameReservationIndex)} path='/reservations' exact/>
+      <Route component={requireAuthentication(GeneNameReservation)} path='/reservations/:id' exact/>
+      <Route component={requireAuthentication(GeneNameReservationEdit)} path='/reservations/:id/edit' exact/>
+      <Route component={requireAuthentication(GeneNameReservationStandardize)} path='/reservations/:id/standardize' exact/>
+    </Switch>
+    <Switch>
+      <Route component={requireAuthentication(CurateHome)} path='/' exact />
       <Route component={requireAuthentication(TriageIndex)} path='/triage' />
-      <Route component={requireAuthentication(GeneNameReservationIndex)} path='/reservations' />
-      <Route component={requireAuthentication(GeneNameReservation)} path='/reservations/:id' />
-      <Route component={requireAuthentication(GeneNameReservationEdit)} path='/reservations/:id/edit' />
-      <Route component={requireAuthentication(GeneNameReservationStandardize)} path='/reservations/:id/standardize' />
       <Route component={requireAuthentication(ColleaguesIndex)} path='/colleagues/triage' />
       <Route component={requireAuthentication(ColleaguesShow)} path='/colleagues/triage/:id' />
       <Route component={requireAuthentication(SpreadsheetUpload)} path='/spreadsheet_upload' />
@@ -61,12 +64,13 @@ export default (
       <Route component={requireAuthentication(Search)} path='/search' />
       <Route component={PublicHome} path='/login' />
       <Route component={GoogleLogin} path='/google_login' />
+      <Route component={requireAuthentication(NewReference)} path='/curate/reference/new' />
       {/* <Route component={requireAuthentication(LocusLayout)} path='curate/locus/:id'>
         <IndexRoute component={requireAuthentication(LocusBasic)} />
         <Route component={requireAuthentication(LocusBasic)} path='basic' />
         <Route component={requireAuthentication(LocusSummaries)} path='summaries' />
       </Route>
-      <Route component={requireAuthentication(NewReference)} path='curate/reference/new' />
+      
       <Route component={requireAuthentication(CurateLit)} path='curate/reference/:id'>
         <IndexRoute component={requireAuthentication(CurateLitBasic)} />
         <Route component={requireAuthentication(Blank)} path='protein' />
@@ -76,8 +80,8 @@ export default (
         <Route component={requireAuthentication(Blank)} path='regulation' />
         <Route component={requireAuthentication(Blank)} path='interaction' />
       </Route> */}
-      <Route component={requireAuthentication(Regulation)} path='regulation' />
-    <Route component={requireAuthentication(CurateHome)} path='/' exact/>
+      <Route component={requireAuthentication(Regulation)} path='/regulation' />
+      
     {/* </Route> */}
     </Switch>
    
