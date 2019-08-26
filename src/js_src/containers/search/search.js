@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { createMemoryHistory } from 'react-router-dom';
+import { createMemoryHistory } from 'history';
 import { connect } from 'react-redux';
 import _ from 'underscore';
 import PropTypes from 'prop-types';
@@ -60,7 +60,7 @@ class SearchComponent extends Component {
     qp.limit = _limit;
     qp.offset = _offset;
     let tempHistory = createMemoryHistory('/');
-    let searchUrl = tempHistory.createPath({ pathname: BASE_SEARCH_URL, query: qp });
+    let searchUrl = tempHistory.createHref({ pathname: BASE_SEARCH_URL, search: '?'+Object.keys(qp).map(key => key + '=' + qp[key]).join('&') });
     this.props.dispatch(setPending(true));
     fetchData(searchUrl)
       .then( (data) => {
