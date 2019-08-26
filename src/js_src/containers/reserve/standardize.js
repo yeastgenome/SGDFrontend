@@ -81,7 +81,7 @@ class GeneNameReservationStandardize extends Component {
 }
 
 GeneNameReservationStandardize.propTypes = {
-  params: PropTypes.object,
+  match: PropTypes.object,
   dispatch: PropTypes.func
 };
 

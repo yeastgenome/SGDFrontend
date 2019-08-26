@@ -91,7 +91,7 @@ class GeneNameReservationEdit extends Component {
 }
 
 GeneNameReservationEdit.propTypes = {
-  params: PropTypes.object,
+  match: PropTypes.object,
   dispatch: PropTypes.func
 };
 

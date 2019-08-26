@@ -65,7 +65,8 @@ class Login extends Component {
 
 Login.propTypes = {
   dispatch: PropTypes.func,
-  queryParams: PropTypes.string
+  queryParams: PropTypes.string,
+  location:PropTypes.object
 };
 
 function mapStateToProps(_state) {
