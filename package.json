@@ -13,7 +13,7 @@
     "immutable": "^3.8.1",
     "manifest-revision-webpack-plugin": "^0.3.0",
     "prop-types": "^15.7.2",
-    "query-string": "^6.8.2",
+    "query-string": "^5.1.1",
     "react": "^16.9.0",
     "react-autosuggest": "^9.4.3",
     "react-bootstrap": "^0.30.5",
