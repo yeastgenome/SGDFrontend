@@ -43,11 +43,12 @@ class SingleFilterSelector extends Component {
         nameNode = <CategoryLabel category={d.name} />;
       } else {
         nameNode = <span>{d.displayName}</span>;
-      }
+      }      
       let newQueryObj = getQueryParamWithValueChanged(this.props.name, d.key, this.props.queryParams);
+      var search = '?' + Object.keys(newQueryObj).map(key => key+'='+newQueryObj[key]).join('&');
       return (
         <div className={`${style.filter} ${classSuffix}`} key={_key}>
-          <Link to={{ pathname: SEARCH_PATH, query: newQueryObj }}>
+          <Link to={{ pathname: SEARCH_PATH, search:  search}}>
             <span className={style.aggLink}>
               <span className={style.aggLinkLabel}>{nameNode}</span><span>{d.total.toLocaleString()}</span>
             </span>
