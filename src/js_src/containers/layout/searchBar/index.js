@@ -40,7 +40,7 @@ class SearchBarComponent extends Component {
     let query = this.state.value;
     let newQp = '?q='+query;
     if (query === '') newQp = '';
-    this.props.dispatch(push({ pathname: 'search', search: newQp }));
+    this.props.dispatch(push({ pathname: '/search', search: newQp }));
   }
 
   handleTyping(e, { newValue }) {
