@@ -68,7 +68,7 @@ class TagList extends Component {
       return (
         <div>
           <label>Genes (space-separated)</label>
-          <textArea className='sgd-geneList' data-type={name} onChange={_handleChange} style={{ minHeight: '1rem' }} type='text' defaultValue={value} />
+          <textarea className='sgd-geneList' data-type={name} onChange={_handleChange} style={{ minHeight: '1rem' }} type='text' defaultValue={value} />
         </div>
       );
     }
@@ -83,7 +83,7 @@ class TagList extends Component {
       return (
         <div>
           <label>Comment</label>
-          <textArea className='sgd-comment' data-type={name} onChange={_handleChange} style={{ minHeight: '1rem' }} type='text' defaultValue={value} />
+          <textarea className='sgd-comment' data-type={name} onChange={_handleChange} style={{ minHeight: '1rem' }} type='text' defaultValue={value} />
         </div>
       );
     }
