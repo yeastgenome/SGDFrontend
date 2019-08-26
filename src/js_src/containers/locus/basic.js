@@ -122,7 +122,7 @@ class LocusBasic extends Component {
         }
       }
     };
-    let url = `/locus/${this.props.params.id}/basic`;
+    let url = `/locus/${this.props.match.params.id}/basic`;
     return (
       <div className='row'>
         <div className='columns small-12 medium-6'>

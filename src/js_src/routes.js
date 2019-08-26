@@ -65,16 +65,9 @@ export default (
       <Route component={PublicHome} path='/login' />
       <Route component={GoogleLogin} path='/google_login' />
       <Route component={requireAuthentication(NewReference)} path='/curate/reference/new' />
-      {/* <Route component={requireAuthentication(LocusLayout)} path='curate/locus/:id'>
-        <IndexRoute component={requireAuthentication(LocusBasic)} />
-        <Route component={requireAuthentication(LocusBasic)} path='basic' />
-        <Route component={requireAuthentication(LocusSummaries)} path='summaries' />
-      </Route>
-      
-       */}
       <Route component={requireAuthentication(CurateLit)} path='/curate/reference/:id' />
       <Route component={requireAuthentication(Regulation)} path='/regulation' />
-      
+      <Route component={requireAuthentication(LocusLayout)} path='/curate/locus/:id' />
     {/* </Route> */}
     </Switch>
 

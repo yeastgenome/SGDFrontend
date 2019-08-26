@@ -11,7 +11,9 @@ import fetchData from '../../lib/fetchData';
 import updateTitle from '../../lib/updateTitle';
 import { updateData, clearPending} from './locusActions';
 import { PREVIEW_URL } from '../../constants.js';
-
+import {Switch,Route} from 'react-router-dom';
+import LocusBasic from '../locus/basic';
+import LocusSummaries from '../locus/summaries';
 const BASE_CURATE_URL = '/curate/locus';
 const SECTIONS = [
   'basic',
@@ -25,7 +27,7 @@ class LocusLayout extends Component {
   }
 
   fetchData() {
-    let id = this.props.params.id;
+    let id = this.props.match.params.id;
     let url = `/locus/${id}/curate`;
     this.props.dispatch(updateData(null));
     fetchData(url).then( (data) => {
@@ -36,7 +38,7 @@ class LocusLayout extends Component {
   }
 
   renderNav() {
-    let baseUrl = `${BASE_CURATE_URL}/${this.props.params.id}`;
+    let baseUrl = `${BASE_CURATE_URL}/${this.props.match.params.id}`;
     let current = this.props.pathname.replace(baseUrl, '');
     let nodes = SECTIONS.map( (d) => {
       let relative = d ? `/${d}` : '';
@@ -44,6 +46,7 @@ class LocusLayout extends Component {
       let isActive = (current === relative);
       let url = `${baseUrl}${relative}`;
       let _className = isActive ? style.activeNavLink : style.navLink;
+      console.log(url);
       return <li key={`lit${d}`}><Link className={_className} to={url}>{d.replace('_', ' ')}</Link></li>;
     });
     return <ul className={`vertical menu ${style.menu}`}>{nodes}</ul>;
@@ -51,7 +54,7 @@ class LocusLayout extends Component {
 
   renderHeader() {
     let data = this.props.data;
-    let previewUrl = `${PREVIEW_URL}/locus/${this.props.params.id}`;
+    let previewUrl = `${PREVIEW_URL}/locus/${this.props.match.params.id}`;
     if (!data) return null;
     return (
       <div>
@@ -72,7 +75,11 @@ class LocusLayout extends Component {
             {this.renderNav()}
           </div>
           <div className='columns small-10'>
-            {this.props.children}
+            <Switch>
+              <Route component={LocusBasic} path='/curate/locus/:id/basic'/>
+              <Route component={LocusSummaries} path='/curate/locus/:id/summaries'/>
+              <Route component={LocusBasic} path='/'/>
+            </Switch>
           </div>  
         </div>
         
