@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import style from './style.css';
 import FlexiForm from '../../components/forms/flexiForm';
 import { authenticateUser } from '../../actions/authActions';
-// import { parse } from 'query-string';
+import { parse } from 'query-string';
 
 const DEFAULT_AUTH_LANDING = '/';
 
@@ -25,9 +25,8 @@ class Login extends Component {
       }
     };
     let _onSuccess = (data) => {
-      // var next = parse(this.props.location.search).next;
-      //TODO: set it to use / as default, parse is not working
-      let nextUrl = '/' || DEFAULT_AUTH_LANDING;
+      var next = parse(this.props.location.search).next;
+      let nextUrl = next || DEFAULT_AUTH_LANDING;
       this.props.dispatch(authenticateUser(data.username));
       this.props.dispatch(push(nextUrl));
     };
