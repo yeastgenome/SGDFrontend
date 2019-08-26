@@ -13,8 +13,8 @@ class SearchControlsComponent extends Component {
   renderViewAs() {
     let listQp = getQueryParamWithValueChanged('mode', 'list', this.props.queryParams);
     let tableQp = getQueryParamWithValueChanged('mode', 'table', this.props.queryParams);
-    let listHref = { pathname: SEARCH_PATH, query: listQp };
-    let tableHref = { pathname: SEARCH_PATH, query: tableQp };
+    let listHref = { pathname: SEARCH_PATH, search: '?' + Object.keys(listQp).map(key => key + '=' + listQp[key]).join('&') };
+    let tableHref = { pathname: SEARCH_PATH, search: '?' + Object.keys(tableQp).map(key => key + '=' + tableQp[key]).join('&')};
     return (
       <div className={style.control}>
         <label className={style.searchLabel}>View As</label>
@@ -33,8 +33,9 @@ class SearchControlsComponent extends Component {
     let prevPage = Math.max(1, curPage - 1);
     let prevQp = getQueryParamWithValueChanged('page', prevPage, this.props.queryParams);
     let nextQp = getQueryParamWithValueChanged('page', nextPage, this.props.queryParams);
-    let prevHef = { pathname: SEARCH_PATH, query: prevQp };
-    let nextHef = { pathname: SEARCH_PATH, query: nextQp };
+
+    let prevHef = { pathname: SEARCH_PATH, search: '?' + Object.keys(prevQp).map(key => key + '=' + prevQp[key]).join('&') };
+    let nextHef = { pathname: SEARCH_PATH, search: '?' + Object.keys(nextQp).map(key => key + '=' + nextQp[key]).join('&') };
     let isPrevDisabled = curPage <= 1;
     let isNextDisabled = curPage >= totPage;
     return (
