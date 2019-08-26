@@ -71,20 +71,14 @@ export default (
         <Route component={requireAuthentication(LocusSummaries)} path='summaries' />
       </Route>
       
-      <Route component={requireAuthentication(CurateLit)} path='curate/reference/:id'>
-        <IndexRoute component={requireAuthentication(CurateLitBasic)} />
-        <Route component={requireAuthentication(Blank)} path='protein' />
-        <Route component={requireAuthentication(CurateLitPhenotype)} path='phenotypes' />
-        <Route component={requireAuthentication(Blank)} path='go' />
-        <Route component={requireAuthentication(Blank)} path='datasets' />
-        <Route component={requireAuthentication(Blank)} path='regulation' />
-        <Route component={requireAuthentication(Blank)} path='interaction' />
-      </Route> */}
+       */}
+      <Route component={requireAuthentication(CurateLit)} path='/curate/reference/:id' />
       <Route component={requireAuthentication(Regulation)} path='/regulation' />
       
     {/* </Route> */}
     </Switch>
-   
+
+      
     {/* <Route component={PublicLayout}>
       <Route component={NewColleague} path='new_colleague' />
       <Route component={NewGeneNameReservation} path='new_reservation' />

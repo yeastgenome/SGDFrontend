@@ -14,6 +14,10 @@ import { selectActiveLitEntry } from '../../selectors/litSelectors';
 import { updateActiveEntry } from './litActions';
 import { setNotReady, finishPending } from '../../actions/metaActions';
 import { PREVIEW_URL } from '../../constants.js';
+import {Switch,Route} from 'react-router-dom';
+import CurateLitBasic from '../curateLit/basic';
+import CurateLitPhenotype from '../curateLit/phenotype';
+import {requireAuthentication} from '../authenticateComponent';
 
 const BASE_CURATE_URL = '/curate/reference';
 const SECTIONS = [
@@ -33,7 +37,7 @@ class CurateLitLayout extends Component {
   }
 
   fetchData() {
-    let id = this.props.params.id;
+    let id = this.props.match.params.id;
     let url = `/reference/${id}`;
     fetchData(url).then( (data) => {
       if (this._isMounted) {
@@ -46,7 +50,7 @@ class CurateLitLayout extends Component {
 
   renderHeader() {
     let d = this.props.activeEntry;
-    let previewUrl = `${PREVIEW_URL}/reference/${this.props.params.id}`;
+    let previewUrl = `${PREVIEW_URL}/reference/${this.props.match.params.id}`;
     let urls = d.urls || [];
     let linkNodes = urls.map( (d, i) => {
       return <span key={`refL${i}`} style={{ marginRight: '1rem' }}><a href={d.link} target='_new'>{d.display_name}</a> </span>;
@@ -67,7 +71,7 @@ class CurateLitLayout extends Component {
   }
 
   renderSectionsNav() {
-    let baseUrl = `${BASE_CURATE_URL}/${this.props.params.id}`;
+    let baseUrl = `${BASE_CURATE_URL}/${this.props.match.params.id}`;
     let current = this.props.pathname.replace(baseUrl, '');
   
     return SECTIONS.map( (d) => {
@@ -97,7 +101,11 @@ class CurateLitLayout extends Component {
           </div>
           <div className={LARGE_COL_CLASS}>
             <div>
-              {this.props.children}
+              <Switch>
+                <Route component={CurateLitBasic} exact/>
+                {/* TODO: Navigate to phenotypes */} 
+                {/* <Route component={CurateLitPhenotype} path='/curate/reference/:id/phenotypes' exact/> */}
+              </Switch>
             </div>
           </div>
         </div>
