@@ -6,6 +6,7 @@ import style from './style.css';
 import SingleFilterSelector from './singleFilterSelector';
 import { getQueryParamWithValueChanged } from '../../../lib/searchHelpers';
 import CategoryLabel from '../../../components/categoryLabel';
+import {parse} from 'query-string';
 
 import {
   selectActiveCategory,
@@ -64,7 +65,7 @@ FilterSelectorComponent.propTypes = {
 
 function mapStateToProps(state) {
   let location = state.router.location;
-  let _queryParams = location ? location.query : {};
+  let _queryParams = location ? parse(location.search) : {};
   return {
     activeCategory:  selectActiveCategory(state),
     aggregations: selectAggregations(state),
