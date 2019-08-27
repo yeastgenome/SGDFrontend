@@ -54,7 +54,7 @@ export default (
     <Switch>
       <Route component={requireAuthentication(CurateHome)} path='/' exact />
       <Route component={requireAuthentication(TriageIndex)} path='/triage' />
-      <Route component={requireAuthentication(ColleaguesIndex)} path='/colleagues/triage' />
+      <Route component={requireAuthentication(ColleaguesIndex)} path='/colleagues/triage' exact/>
       <Route component={requireAuthentication(ColleaguesShow)} path='/colleagues/triage/:id' />
       <Route component={requireAuthentication(SpreadsheetUpload)} path='/spreadsheet_upload' />
       <Route component={requireAuthentication(Settings)} path='/settings' />

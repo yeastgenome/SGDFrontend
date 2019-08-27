@@ -22,7 +22,7 @@ class ColleagueTriageShow extends Component {
   }
 
   componentDidMount() {
-    let url = `${DATA_BASE_URL}/${this.props.params.id}`;
+    let url = `${DATA_BASE_URL}/${this.props.match.params.id}`;
     fetchData(url).then( _data => {
       this.setState({ data: _data });
     });
@@ -40,7 +40,7 @@ class ColleagueTriageShow extends Component {
 
   renderForm() {
     let data = this.state.data;
-    let url = `${DATA_BASE_URL}/${this.props.params.id}/promote`;
+    let url = `${DATA_BASE_URL}/${this.props.match.params.id}/promote`;
     if (data) {
       return (
         <div>
@@ -53,7 +53,7 @@ class ColleagueTriageShow extends Component {
   }
 
   renderActions() {
-    let deleteUrl = `${DATA_BASE_URL}/${this.props.params.id}`;
+    let deleteUrl = `${DATA_BASE_URL}/${this.props.match.params.id}`;
     return (
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '3rem' }}>
         <DeleteButton label='Discard colleague update' url={deleteUrl} onSuccess={this.handleDelete.bind(this)} />
@@ -74,7 +74,7 @@ class ColleagueTriageShow extends Component {
 }
 
 ColleagueTriageShow.propTypes = {
-  params: PropTypes.object,
+  match: PropTypes.object,
   dispatch: PropTypes.func
 };
 
