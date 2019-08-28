@@ -465,8 +465,8 @@ def reference_regulation_details(request):
 def author(request):
     format_name = extract_id_request(request, 'author', param_name="format_name")
 
-    key = "/author/" + format_name
-
+    key = "/author/" + format_name.decode("utf-8")
+    
     authors_ref = DBSession.query(Referenceauthor).filter_by(obj_url=key).all()
 
     references_dict = sorted([author_ref.reference.to_dict_reference_related() for author_ref in authors_ref], key=lambda r: r["display_name"])
