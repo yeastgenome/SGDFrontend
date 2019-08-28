@@ -6,7 +6,7 @@ import Select from 'react-select';
 import { push } from 'connected-react-router';
 import PropTypes from 'prop-types';
 import style from './style.css';
-import { getQueryParamWithValueChanged } from '../../../lib/searchHelpers';
+import { getQueryParamWithValueChanged,convertSearchObjectToString } from '../../../lib/searchHelpers';
 import CategoryLabel from '../../../components/categoryLabel';
 
 const DELIMITER = '@@';
@@ -45,7 +45,7 @@ class SingleFilterSelector extends Component {
         nameNode = <span>{d.displayName}</span>;
       }      
       let newQueryObj = getQueryParamWithValueChanged(this.props.name, d.key, this.props.queryParams);
-      var search = '?' + Object.keys(newQueryObj).map(key => key+'='+newQueryObj[key]).join('&');
+      var search = convertSearchObjectToString(newQueryObj);
       return (
         <div className={`${style.filter} ${classSuffix}`} key={_key}>
           <Link to={{ pathname: SEARCH_PATH, search:  search}}>

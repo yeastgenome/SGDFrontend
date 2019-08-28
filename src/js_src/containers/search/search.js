@@ -14,6 +14,7 @@ import { SMALL_COL_CLASS, LARGE_COL_CLASS, SEARCH_API_ERROR_MESSAGE } from '../.
 import { receiveResponse, setError, setPending } from './searchActions';
 import Loader from '../../components/loader';
 import LoadingPage from '../../components/loadingPage';
+import { convertSearchObjectToString} from '../../lib/searchHelpers';
 
 // used to test rendering fixture response
 import fixtureResponse from './tests/fixtureResponse';
@@ -60,7 +61,8 @@ class SearchComponent extends Component {
     qp.limit = _limit;
     qp.offset = _offset;
     let tempHistory = createMemoryHistory('/');
-    let searchUrl = tempHistory.createHref({ pathname: BASE_SEARCH_URL, search: '?'+Object.keys(qp).map(key => key + '=' + qp[key]).join('&') });
+    var search = convertSearchObjectToString(qp);
+    let searchUrl = tempHistory.createHref({ pathname: BASE_SEARCH_URL, search: search }); 
     this.props.dispatch(setPending(true));
     fetchData(searchUrl)
       .then( (data) => {

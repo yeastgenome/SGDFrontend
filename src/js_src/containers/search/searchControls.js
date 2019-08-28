@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import style from './style.css';
-import { getQueryParamWithValueChanged } from '../../lib/searchHelpers';
+import { getQueryParamWithValueChanged,convertSearchObjectToString } from '../../lib/searchHelpers';
 
 import { selectTotalPages, selectQueryParams } from '../../selectors/searchSelectors';
 
@@ -12,9 +12,11 @@ const SEARCH_PATH = '/search';
 class SearchControlsComponent extends Component {
   renderViewAs() {
     let listQp = getQueryParamWithValueChanged('mode', 'list', this.props.queryParams);
+    listQp = convertSearchObjectToString(listQp);
     let tableQp = getQueryParamWithValueChanged('mode', 'table', this.props.queryParams);
-    let listHref = { pathname: SEARCH_PATH, search: '?' + Object.keys(listQp).map(key => key + '=' + listQp[key]).join('&') };
-    let tableHref = { pathname: SEARCH_PATH, search: '?' + Object.keys(tableQp).map(key => key + '=' + tableQp[key]).join('&')};
+    tableQp = convertSearchObjectToString(tableQp);
+    let listHref = { pathname: SEARCH_PATH, search: listQp};
+    let tableHref = { pathname: SEARCH_PATH, search: tableQp};
     return (
       <div className={style.control}>
         <label className={style.searchLabel}>View As</label>
@@ -32,10 +34,11 @@ class SearchControlsComponent extends Component {
     let nextPage = Math.min(this.props.totalPages, curPage + 1);
     let prevPage = Math.max(1, curPage - 1);
     let prevQp = getQueryParamWithValueChanged('page', prevPage, this.props.queryParams);
+    prevQp = convertSearchObjectToString(prevQp);
     let nextQp = getQueryParamWithValueChanged('page', nextPage, this.props.queryParams);
-
-    let prevHef = { pathname: SEARCH_PATH, search: '?' + Object.keys(prevQp).map(key => key + '=' + prevQp[key]).join('&') };
-    let nextHef = { pathname: SEARCH_PATH, search: '?' + Object.keys(nextQp).map(key => key + '=' + nextQp[key]).join('&') };
+    nextQp = convertSearchObjectToString(nextQp);
+    let prevHef = { pathname: SEARCH_PATH, search: prevQp};
+    let nextHef = { pathname: SEARCH_PATH, search: nextQp};
     let isPrevDisabled = curPage <= 1;
     let isNextDisabled = curPage >= totPage;
     return (
