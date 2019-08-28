@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { createMemoryHistory } from 'react-router';
+import { createMemoryHistory } from 'history';
 import { connect } from 'react-redux';
 import _ from 'underscore';
-
+import PropTypes from 'prop-types';
 import style from './style.css';
 import fetchData from '../../lib/fetchData';
 import FilterSelector from './filterSelector/filterSelector';
@@ -14,6 +14,7 @@ import { SMALL_COL_CLASS, LARGE_COL_CLASS, SEARCH_API_ERROR_MESSAGE } from '../.
 import { receiveResponse, setError, setPending } from './searchActions';
 import Loader from '../../components/loader';
 import LoadingPage from '../../components/loadingPage';
+import { convertSearchObjectToString} from '../../lib/searchHelpers';
 
 // used to test rendering fixture response
 import fixtureResponse from './tests/fixtureResponse';
@@ -60,7 +61,8 @@ class SearchComponent extends Component {
     qp.limit = _limit;
     qp.offset = _offset;
     let tempHistory = createMemoryHistory('/');
-    let searchUrl = tempHistory.createPath({ pathname: BASE_SEARCH_URL, query: qp });
+    var search = convertSearchObjectToString(qp);
+    let searchUrl = tempHistory.createHref({ pathname: BASE_SEARCH_URL, search: search }); 
     this.props.dispatch(setPending(true));
     fetchData(searchUrl)
       .then( (data) => {
@@ -123,18 +125,18 @@ class SearchComponent extends Component {
 }
 
 SearchComponent.propTypes = {
-  activeCategory: React.PropTypes.string,
-  currentPage: React.PropTypes.number,
-  dispatch: React.PropTypes.func,
-  errorMessage: React.PropTypes.string,
-  history: React.PropTypes.object,
-  isError: React.PropTypes.bool,
-  isPending: React.PropTypes.bool,
-  isReady: React.PropTypes.bool,
-  isList: React.PropTypes.bool,
-  pageSize: React.PropTypes.number,
-  queryParams: React.PropTypes.object,
-  results: React.PropTypes.array
+  activeCategory: PropTypes.string,
+  currentPage: PropTypes.number,
+  dispatch: PropTypes.func,
+  errorMessage: PropTypes.string,
+  history: PropTypes.object,
+  isError: PropTypes.bool,
+  isPending: PropTypes.bool,
+  isReady: PropTypes.bool,
+  isList: PropTypes.bool,
+  pageSize: PropTypes.number,
+  queryParams: PropTypes.object,
+  results: PropTypes.array
 };
 
 function mapStateToProps(state) {

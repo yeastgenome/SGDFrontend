@@ -58,3 +58,29 @@ export function getQueryParamWithValueChanged(key, val, queryParams, isClear=fal
   }
   return qp;
 }
+
+export function convertSearchObjectToString(searchObject){
+  var searchString = Object.keys(searchObject)
+    .filter(key => {
+      if (typeof (searchObject[key]) == 'object') {
+        if (searchObject[key].length > 0){
+          return true; 
+        }
+        return false;
+      }
+      else{
+        return searchObject[key] == undefined ? false:true;
+      }
+    })
+    .map((key) => {
+      if (typeof(searchObject[key]) == 'object') {
+        return searchObject[key].map(item => key + '=' + item).join('&');
+      }
+      else {
+        //String
+        return key + '=' + searchObject[key];
+      }
+    })
+    .join('&');
+  return '?' + searchString;
+}

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import t from 'tcomb-form';
 import semantic from 'tcomb-form-templates-semantic';
-
+import PropTypes from 'prop-types';
 import Loader from '../loader';
 import { setError, clearError } from '../../actions/metaActions';
 import fetchData from '../../lib/fetchData';
@@ -62,18 +62,18 @@ class FlexiForm extends Component {
 }
 
 FlexiForm.propTypes = {
-  defaultData: React.PropTypes.object,
-  dispatch: React.PropTypes.func,
-  getUrl: React.PropTypes.string,
-  onError: React.PropTypes.func,
-  onSuccess: React.PropTypes.func,// (data) =>
-  onChange: React.PropTypes.func,
-  submitText: React.PropTypes.string,
-  requestMethod: React.PropTypes.string,
-  tFormSchema: React.PropTypes.func.isRequired,
-  tFormOptions: React.PropTypes.object,
-  timeout: React.PropTypes.number,
-  updateUrl: React.PropTypes.string.isRequired,
+  defaultData: PropTypes.object,
+  dispatch: PropTypes.func,
+  getUrl: PropTypes.string,
+  onError: PropTypes.func,
+  onSuccess: PropTypes.func,// (data) =>
+  onChange: PropTypes.func,
+  submitText: PropTypes.string,
+  requestMethod: PropTypes.string,
+  tFormSchema: PropTypes.func.isRequired,
+  tFormOptions: PropTypes.object,
+  timeout: PropTypes.number,
+  updateUrl: PropTypes.string.isRequired,
 };
 
 function mapStateToProps() {

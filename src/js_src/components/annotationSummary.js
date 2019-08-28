@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import CategoryLabel from './categoryLabel';
-import { Link } from 'react-router';
-
+import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import { PREVIEW_URL } from '../constants';
 import DetaiLList from './detailList';
 
@@ -91,9 +91,9 @@ class AnnotationSummary extends Component {
 }
 
 AnnotationSummary.propTypes = {
-  annotations: React.PropTypes.array,
-  message: React.PropTypes.string,
-  hideMessage: React.PropTypes.bool
+  annotations: PropTypes.array,
+  message: PropTypes.string,
+  hideMessage: PropTypes.bool
 };
 
 export default AnnotationSummary;

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-
+import PropTypes from 'prop-types';
 import style from './style.css';
-import { getQueryParamWithValueChanged } from '../../lib/searchHelpers';
+import { getQueryParamWithValueChanged,convertSearchObjectToString } from '../../lib/searchHelpers';
 
 import { selectTotalPages, selectQueryParams } from '../../selectors/searchSelectors';
 
@@ -12,9 +12,11 @@ const SEARCH_PATH = '/search';
 class SearchControlsComponent extends Component {
   renderViewAs() {
     let listQp = getQueryParamWithValueChanged('mode', 'list', this.props.queryParams);
+    listQp = convertSearchObjectToString(listQp);
     let tableQp = getQueryParamWithValueChanged('mode', 'table', this.props.queryParams);
-    let listHref = { pathname: SEARCH_PATH, query: listQp };
-    let tableHref = { pathname: SEARCH_PATH, query: tableQp };
+    tableQp = convertSearchObjectToString(tableQp);
+    let listHref = { pathname: SEARCH_PATH, search: listQp};
+    let tableHref = { pathname: SEARCH_PATH, search: tableQp};
     return (
       <div className={style.control}>
         <label className={style.searchLabel}>View As</label>
@@ -32,9 +34,11 @@ class SearchControlsComponent extends Component {
     let nextPage = Math.min(this.props.totalPages, curPage + 1);
     let prevPage = Math.max(1, curPage - 1);
     let prevQp = getQueryParamWithValueChanged('page', prevPage, this.props.queryParams);
+    prevQp = convertSearchObjectToString(prevQp);
     let nextQp = getQueryParamWithValueChanged('page', nextPage, this.props.queryParams);
-    let prevHef = { pathname: SEARCH_PATH, query: prevQp };
-    let nextHef = { pathname: SEARCH_PATH, query: nextQp };
+    nextQp = convertSearchObjectToString(nextQp);
+    let prevHef = { pathname: SEARCH_PATH, search: prevQp};
+    let nextHef = { pathname: SEARCH_PATH, search: nextQp};
     let isPrevDisabled = curPage <= 1;
     let isNextDisabled = curPage >= totPage;
     return (
@@ -67,10 +71,10 @@ class SearchControlsComponent extends Component {
 }
 
 SearchControlsComponent.propTypes = {
-  currentPage: React.PropTypes.number,
-  isList: React.PropTypes.bool,
-  queryParams: React.PropTypes.object,
-  totalPages: React.PropTypes.number
+  currentPage: PropTypes.number,
+  isList: PropTypes.bool,
+  queryParams: PropTypes.object,
+  totalPages: PropTypes.number
 };
 
 function mapStateToProps(state) {

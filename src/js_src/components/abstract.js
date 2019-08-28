@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import PropTypes from 'prop-types';
 import style from './style.css';
 
 const GENE_COLOR = '#1f77b4';
@@ -101,11 +101,11 @@ class Abstract extends Component {
 }
 
 Abstract.propTypes = {
-  abstract: React.PropTypes.string,
-  fulltextUrl: React.PropTypes.string,
-  geneList: React.PropTypes.string,
-  hideGeneList: React.PropTypes.bool,
-  pmid: React.PropTypes.string
+  abstract: PropTypes.string,
+  fulltextUrl: PropTypes.string,
+  geneList: PropTypes.string,
+  hideGeneList: PropTypes.bool,
+  pmid: PropTypes.string
 };
 
 export default Abstract;

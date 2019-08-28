@@ -1,7 +1,7 @@
 /*eslint-disable react/no-set-state */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
+import PropTypes from 'prop-types';
 import style from './style.css';
 
 const FINISH_INTERVAL = 250;
@@ -47,7 +47,7 @@ class Loader extends Component {
 }
 
 Loader.propTypes = {
-  isPending: React.PropTypes.bool
+  isPending: PropTypes.bool
 };
 
 function mapStateToProps(state) {

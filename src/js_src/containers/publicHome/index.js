@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
+import { push } from 'connected-react-router';
 import t from 'tcomb-form';
-
+import PropTypes from 'prop-types';
 import style from './style.css';
 import FlexiForm from '../../components/forms/flexiForm';
 import { authenticateUser } from '../../actions/authActions';
+import { parse } from 'query-string';
 
 const DEFAULT_AUTH_LANDING = '/';
 
@@ -24,7 +25,7 @@ class Login extends Component {
       }
     };
     let _onSuccess = (data) => {
-      let nextUrl = this.props.queryParams.next || DEFAULT_AUTH_LANDING;
+      let nextUrl = parse(this.props.queryParams).next || DEFAULT_AUTH_LANDING;
       this.props.dispatch(authenticateUser(data.username));
       this.props.dispatch(push(nextUrl));
     };
@@ -62,13 +63,13 @@ class Login extends Component {
 }
 
 Login.propTypes = {
-  dispatch: React.PropTypes.func,
-  queryParams: React.PropTypes.object
+  dispatch: PropTypes.func,
+  queryParams: PropTypes.string
 };
 
 function mapStateToProps(_state) {
   return {
-    queryParams: _state.routing.locationBeforeTransitions.query
+    queryParams: _state.router.location.search
   };
 }
 

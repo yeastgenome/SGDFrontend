@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
-// import { Link } from 'react-router';
-
+import { push } from 'connected-react-router';
+// import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import CategoryLabel from '../../components/categoryLabel';
 import CurateLayout from '../curateHome/layout';
 import ColleagueForm from '../../components/colleagueForm';
@@ -22,7 +22,7 @@ class ColleagueTriageShow extends Component {
   }
 
   componentDidMount() {
-    let url = `${DATA_BASE_URL}/${this.props.params.id}`;
+    let url = `${DATA_BASE_URL}/${this.props.match.params.id}`;
     fetchData(url).then( _data => {
       this.setState({ data: _data });
     });
@@ -40,7 +40,7 @@ class ColleagueTriageShow extends Component {
 
   renderForm() {
     let data = this.state.data;
-    let url = `${DATA_BASE_URL}/${this.props.params.id}/promote`;
+    let url = `${DATA_BASE_URL}/${this.props.match.params.id}/promote`;
     if (data) {
       return (
         <div>
@@ -53,7 +53,7 @@ class ColleagueTriageShow extends Component {
   }
 
   renderActions() {
-    let deleteUrl = `${DATA_BASE_URL}/${this.props.params.id}`;
+    let deleteUrl = `${DATA_BASE_URL}/${this.props.match.params.id}`;
     return (
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '3rem' }}>
         <DeleteButton label='Discard colleague update' url={deleteUrl} onSuccess={this.handleDelete.bind(this)} />
@@ -74,8 +74,8 @@ class ColleagueTriageShow extends Component {
 }
 
 ColleagueTriageShow.propTypes = {
-  params: React.PropTypes.object,
-  dispatch: React.PropTypes.func
+  match: PropTypes.object,
+  dispatch: PropTypes.func
 };
 
 function mapStateToProps() {

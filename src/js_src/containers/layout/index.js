@@ -1,7 +1,7 @@
-import React, { Component, PropTypes } from 'react';
-import { Link } from 'react-router';
+import React, { Component} from 'react';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-
+import PropTypes from 'prop-types';
 // import * as AuthActions from '../actions/auth_actions';
 import style from './style.css';
 import SearchBar from './searchBar';
@@ -130,10 +130,10 @@ class LayoutComponent extends Component {
 
 LayoutComponent.propTypes = {
   children: PropTypes.node,
-  error: React.PropTypes.string,
-  message: React.PropTypes.string,
-  dispatch: React.PropTypes.func,
-  isAuthenticated: React.PropTypes.bool,
+  error: PropTypes.string,
+  message: PropTypes.string,
+  dispatch: PropTypes.func,
+  isAuthenticated: PropTypes.bool,
 };
 
 function mapStateToProps(state) {

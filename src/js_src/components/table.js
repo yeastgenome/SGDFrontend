@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import PropTypes from 'prop-types';
 class Table extends Component {
   formatHeader(d) {
     return d;
@@ -50,8 +50,8 @@ class Table extends Component {
 }
 
 Table.propTypes = {
-  entries: React.PropTypes.array,
-  fields: React.PropTypes.array
+  entries: PropTypes.array,
+  fields: PropTypes.array
 };
 
 export default Table;

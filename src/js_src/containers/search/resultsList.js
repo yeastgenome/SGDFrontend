@@ -5,7 +5,7 @@ import CategoryLabel from '../../components/categoryLabel';
 import DetailList from '../../components/detailList';
 import { NON_HIGHLIGHTED_FIELDS } from '../../constants';
 import ActionList from './actionList';
-
+import PropTypes from 'prop-types';
 const DEFAULT_FIELDS = ['symbol', 'gene_symbol', 'name', 'gene_synonyms', 'synonyms', 'sourceHref', 'id', 'species', 'type'];
 const SGD_LINK_URL = 'https://www.yeastgenome.org';
 
@@ -63,7 +63,7 @@ class ResultsList extends Component {
 }
 
 ResultsList.propTypes = {
-  entries: React.PropTypes.array
+  entries: PropTypes.array
 };
 
 export default ResultsList;

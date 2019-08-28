@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import _ from 'underscore';
-
+import PropTypes from 'prop-types';
 import style from './style.css';
 import { allTags } from '../../containers/curateLit/litConstants';
 
@@ -68,7 +68,7 @@ class TagList extends Component {
       return (
         <div>
           <label>Genes (space-separated)</label>
-          <textArea className='sgd-geneList' data-type={name} onChange={_handleChange} style={{ minHeight: '1rem' }} type='text' defaultValue={value} />
+          <textarea className='sgd-geneList' data-type={name} onChange={_handleChange} style={{ minHeight: '1rem' }} type='text' defaultValue={value} />
         </div>
       );
     }
@@ -83,7 +83,7 @@ class TagList extends Component {
       return (
         <div>
           <label>Comment</label>
-          <textArea className='sgd-comment' data-type={name} onChange={_handleChange} style={{ minHeight: '1rem' }} type='text' defaultValue={value} />
+          <textarea className='sgd-comment' data-type={name} onChange={_handleChange} style={{ minHeight: '1rem' }} type='text' defaultValue={value} />
         </div>
       );
     }
@@ -151,10 +151,10 @@ class TagList extends Component {
 }
 
 TagList.propTypes = {
-  tags: React.PropTypes.array,
-  onUpdate: React.PropTypes.func,
-  isReadOnly: React.PropTypes.bool,
-  isTriage: React.PropTypes.bool
+  tags: PropTypes.array,
+  onUpdate: PropTypes.func,
+  isReadOnly: PropTypes.bool,
+  isTriage: PropTypes.bool
 };
 
 export default TagList;

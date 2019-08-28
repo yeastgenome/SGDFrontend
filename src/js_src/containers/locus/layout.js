@@ -1,8 +1,8 @@
 /*eslint-disable */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router';
-
+import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import style from './style.css';
 import CategoryLabel from '../../components/categoryLabel';
 import DetailList from '../../components/detailList';
@@ -11,7 +11,9 @@ import fetchData from '../../lib/fetchData';
 import updateTitle from '../../lib/updateTitle';
 import { updateData, clearPending} from './locusActions';
 import { PREVIEW_URL } from '../../constants.js';
-
+import {Switch,Route} from 'react-router-dom';
+import LocusBasic from '../locus/basic';
+import LocusSummaries from '../locus/summaries';
 const BASE_CURATE_URL = '/curate/locus';
 const SECTIONS = [
   'basic',
@@ -25,7 +27,7 @@ class LocusLayout extends Component {
   }
 
   fetchData() {
-    let id = this.props.params.id;
+    let id = this.props.match.params.id;
     let url = `/locus/${id}/curate`;
     this.props.dispatch(updateData(null));
     fetchData(url).then( (data) => {
@@ -36,7 +38,7 @@ class LocusLayout extends Component {
   }
 
   renderNav() {
-    let baseUrl = `${BASE_CURATE_URL}/${this.props.params.id}`;
+    let baseUrl = `${BASE_CURATE_URL}/${this.props.match.params.id}`;
     let current = this.props.pathname.replace(baseUrl, '');
     let nodes = SECTIONS.map( (d) => {
       let relative = d ? `/${d}` : '';
@@ -51,7 +53,7 @@ class LocusLayout extends Component {
 
   renderHeader() {
     let data = this.props.data;
-    let previewUrl = `${PREVIEW_URL}/locus/${this.props.params.id}`;
+    let previewUrl = `${PREVIEW_URL}/locus/${this.props.match.params.id}`;
     if (!data) return null;
     return (
       <div>
@@ -72,7 +74,11 @@ class LocusLayout extends Component {
             {this.renderNav()}
           </div>
           <div className='columns small-10'>
-            {this.props.children}
+            <Switch>
+              <Route component={LocusBasic} path='/curate/locus/:id/basic'/>
+              <Route component={LocusSummaries} path='/curate/locus/:id/summaries'/>
+              <Route component={LocusBasic} path='/'/>
+            </Switch>
           </div>  
         </div>
         
@@ -82,18 +88,18 @@ class LocusLayout extends Component {
 }
 
 LocusLayout.propTypes = {
-  children: React.PropTypes.node,
-  data: React.PropTypes.object,
-  dispatch: React.PropTypes.func,
-  pathname: React.PropTypes.string,
-  params: React.PropTypes.object
+  children: PropTypes.node,
+  data: PropTypes.object,
+  dispatch: PropTypes.func,
+  pathname: PropTypes.string,
+  params: PropTypes.object
 };
 
 function mapStateToProps(state) {
   let _data = state.locus.get('data') ? state.locus.get('data').toJS() : null;
   return {
     data: _data,
-    pathname: state.routing.locationBeforeTransitions.pathname
+    pathname: state.router.location.pathname
   };
 }
 

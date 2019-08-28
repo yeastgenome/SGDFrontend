@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import t from 'tcomb-form';
-
+import PropTypes from 'prop-types';
 import fetchData from '../../lib/fetchData';
 import Loader from '../../components/loader';
 import { updateData, setPending, clearPending} from './locusActions';
@@ -69,10 +69,10 @@ class LocusSummaries extends Component {
 }
 
 LocusSummaries.propTypes = {
-  data: React.PropTypes.object,
-  dispatch: React.PropTypes.func,
-  isPending: React.PropTypes.bool,
-  params: React.PropTypes.object
+  data: PropTypes.object,
+  dispatch: PropTypes.func,
+  isPending: PropTypes.bool,
+  params: PropTypes.object
 };
 
 function mapStateToProps(state) {

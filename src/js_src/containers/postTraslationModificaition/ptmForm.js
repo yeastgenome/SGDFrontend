@@ -5,7 +5,7 @@ import Loader from '../../components/loader';
 import { setError, setMessage } from '../../actions/metaActions';
 import { setPTM } from '../../actions/ptmActions';
 import DataList from '../../components/dataList';
-
+import PropTypes from 'prop-types';
 const PTMS = '/ptm';
 const GET_STRAINS = '/get_strains';
 const GET_PSIMODS = '/get_psimod';
@@ -400,8 +400,8 @@ class PtmForm extends Component {
 }
 
 PtmForm.propTypes = {
-  dispatch: React.PropTypes.func,
-  ptm: React.PropTypes.object
+  dispatch: PropTypes.func,
+  ptm: PropTypes.object
 };
 
 

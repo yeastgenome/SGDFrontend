@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-
+import PropTypes from 'prop-types';
 import style from './style.css';
 import { SMALL_COL_CLASS, LARGE_COL_CLASS } from '../../constants';
 
@@ -37,13 +37,13 @@ class CurateLayout extends Component {
 }
 
 CurateLayout.propTypes = {
-  children: React.PropTypes.object,
-  location: React.PropTypes.object,
+  children: PropTypes.object,
+  location: PropTypes.object,
 };
 
 function mapStateToProps(state) {
   return {
-    location: state.routing.locationBeforeTransitions
+    location: state.router.location
   };
 }
 

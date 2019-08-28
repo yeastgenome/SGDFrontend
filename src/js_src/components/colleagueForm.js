@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import t from 'tcomb-form';
-
+import PropTypes from 'prop-types';
 import FlexiForm from './forms/flexiForm';
 
 class ColleagueForm extends Component {
@@ -65,11 +65,11 @@ class ColleagueForm extends Component {
 }
 
 ColleagueForm.propTypes = {
-  defaultData: React.PropTypes.object,
-  onComplete: React.PropTypes.func,
-  requestMethod: React.PropTypes.string,
-  submitText: React.PropTypes.string,
-  submitUrl: React.PropTypes.string
+  defaultData: PropTypes.object,
+  onComplete: PropTypes.func,
+  requestMethod: PropTypes.string,
+  submitText: PropTypes.string,
+  submitUrl: PropTypes.string
 };
 
 export default ColleagueForm;

@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React  from 'react';
-import { IndexRoute, Route  } from 'react-router';
+import { IndexRoute, Route,Switch  } from 'react-router-dom';
 
 // unauthenticated routes and layout
 import Layout from './containers/layout';
@@ -40,50 +40,92 @@ import ColleaguesShow from './containers/colleagues/show';
 import NewColleague from './containers/colleagues/new';
 import Regulation from './containers/regulation/index';
 
-
+//TODO: Fix the Routes.
 export default (
-  <Route>
-    <Route component={Layout} path='/'>
-      <IndexRoute component={requireAuthentication(CurateHome)} />
-      <Route component={requireAuthentication(TriageIndex)} path='triage' />
-      <Route component={requireAuthentication(GeneNameReservationIndex)} path='reservations' />
-      <Route component={requireAuthentication(GeneNameReservation)} path='reservations/:id' />
-      <Route component={requireAuthentication(GeneNameReservationEdit)} path='reservations/:id/edit' />
-      <Route component={requireAuthentication(GeneNameReservationStandardize)} path='reservations/:id/standardize' />
-      <Route component={requireAuthentication(ColleaguesIndex)} path='colleagues/triage' />
-      <Route component={requireAuthentication(ColleaguesShow)} path='colleagues/triage/:id' />
-      <Route component={requireAuthentication(SpreadsheetUpload)} path='spreadsheet_upload' />
-      <Route component={requireAuthentication(Settings)} path='settings' />
-      <Route component={requireAuthentication(NewsLetter)} path='newsletter' />
-      <Route component={requireAuthentication(PostTranslationModification)} path='ptm' />
-      <Route component={Help} path='help' />
-      <Route component={requireAuthentication(Search)} path='search' />
-      <Route component={PublicHome} path='login' />
-      <Route component={GoogleLogin} path='google_login' />
-      <Route component={requireAuthentication(LocusLayout)} path='curate/locus/:id'>
-        {/* <IndexRoute component={requireAuthentication(LocusSummaries)} /> */}
-        <IndexRoute component={requireAuthentication(LocusBasic)} />
-        <Route component={requireAuthentication(LocusBasic)} path='basic' />
-        <Route component={requireAuthentication(LocusSummaries)} path='summaries' />
-        { /*<Route component={requireAuthentication(LocusName)} path='gene_name' /> */ }
-      </Route>
-      <Route component={requireAuthentication(NewReference)} path='curate/reference/new' />
-      <Route component={requireAuthentication(CurateLit)} path='curate/reference/:id'>
-        <IndexRoute component={requireAuthentication(CurateLitBasic)} />
-        <Route component={requireAuthentication(Blank)} path='protein' />
-        <Route component={requireAuthentication(CurateLitPhenotype)} path='phenotypes' />
-        <Route component={requireAuthentication(Blank)} path='go' />
-        <Route component={requireAuthentication(Blank)} path='datasets' />
-        <Route component={requireAuthentication(Blank)} path='regulation' />
-        <Route component={requireAuthentication(Blank)} path='interaction' />
-      </Route>
-      <Route component={requireAuthentication(Regulation)} path='regulation' />
-    </Route>
-    <Route component={PublicLayout}>
-      {/*<Route component={AuthorResponse} path='author_response' />*/}
+  <div>
+    <Layout />
+    {/* <Route component={Layout} path='/'> */}
+    <Switch>
+      <Route component={requireAuthentication(GeneNameReservationIndex)} path='/reservations' exact/>
+      <Route component={requireAuthentication(GeneNameReservation)} path='/reservations/:id' exact/>
+      <Route component={requireAuthentication(GeneNameReservationEdit)} path='/reservations/:id/edit' exact/>
+      <Route component={requireAuthentication(GeneNameReservationStandardize)} path='/reservations/:id/standardize' exact/>
+    </Switch>
+    <Switch>
+      <Route component={requireAuthentication(CurateHome)} path='/' exact />
+      <Route component={requireAuthentication(TriageIndex)} path='/triage' />
+      <Route component={requireAuthentication(ColleaguesIndex)} path='/colleagues/triage' exact/>
+      <Route component={requireAuthentication(ColleaguesShow)} path='/colleagues/triage/:id' />
+      <Route component={requireAuthentication(SpreadsheetUpload)} path='/spreadsheet_upload' />
+      <Route component={requireAuthentication(Settings)} path='/settings' />
+      <Route component={requireAuthentication(NewsLetter)} path='/newsletter' />
+      <Route component={requireAuthentication(PostTranslationModification)} path='/ptm' />
+      <Route component={Help} path='/help' />
+      <Route component={requireAuthentication(Search)} path='/search' />
+      <Route component={PublicHome} path='/login' />
+      <Route component={GoogleLogin} path='/google_login' />
+      <Route component={requireAuthentication(NewReference)} path='/curate/reference/new' />
+      <Route component={requireAuthentication(CurateLit)} path='/curate/reference/:id' />
+      <Route component={requireAuthentication(Regulation)} path='/regulation' />
+      <Route component={requireAuthentication(LocusLayout)} path='/curate/locus/:id' />
+    {/* </Route> */}
+    </Switch>
+
+      
+    {/* <Route component={PublicLayout}>
       <Route component={NewColleague} path='new_colleague' />
       <Route component={NewGeneNameReservation} path='new_reservation' />
     </Route>
+   
     <Route component={NotFound} path='*' />
-  </Route>
+   */}
+  </div>
 );
+
+
+// export default (
+//   <Route>
+//     <Route component={Layout} path='/'>
+//       <IndexRoute component={requireAuthentication(CurateHome)} />
+//       <Route component={requireAuthentication(TriageIndex)} path='triage' />
+//       <Route component={requireAuthentication(GeneNameReservationIndex)} path='reservations' />
+//       <Route component={requireAuthentication(GeneNameReservation)} path='reservations/:id' />
+//       <Route component={requireAuthentication(GeneNameReservationEdit)} path='reservations/:id/edit' />
+//       <Route component={requireAuthentication(GeneNameReservationStandardize)} path='reservations/:id/standardize' />
+//       <Route component={requireAuthentication(ColleaguesIndex)} path='colleagues/triage' />
+//       <Route component={requireAuthentication(ColleaguesShow)} path='colleagues/triage/:id' />
+//       <Route component={requireAuthentication(SpreadsheetUpload)} path='spreadsheet_upload' />
+//       <Route component={requireAuthentication(Settings)} path='settings' />
+//       <Route component={requireAuthentication(NewsLetter)} path='newsletter' />
+//       <Route component={requireAuthentication(PostTranslationModification)} path='ptm' />
+//       <Route component={Help} path='help' />
+//       <Route component={requireAuthentication(Search)} path='search' />
+//       <Route component={PublicHome} path='login' />
+//       <Route component={GoogleLogin} path='google_login' />
+//       <Route component={requireAuthentication(LocusLayout)} path='curate/locus/:id'>
+//         {/* <IndexRoute component={requireAuthentication(LocusSummaries)} /> */}
+//         <IndexRoute component={requireAuthentication(LocusBasic)} />
+//         <Route component={requireAuthentication(LocusBasic)} path='basic' />
+//         <Route component={requireAuthentication(LocusSummaries)} path='summaries' />
+//         { /*<Route component={requireAuthentication(LocusName)} path='gene_name' /> */ }
+//       </Route>
+//       <Route component={requireAuthentication(NewReference)} path='curate/reference/new' />
+//       <Route component={requireAuthentication(CurateLit)} path='curate/reference/:id'>
+//         <IndexRoute component={requireAuthentication(CurateLitBasic)} />
+//         <Route component={requireAuthentication(Blank)} path='protein' />
+//         <Route component={requireAuthentication(CurateLitPhenotype)} path='phenotypes' />
+//         <Route component={requireAuthentication(Blank)} path='go' />
+//         <Route component={requireAuthentication(Blank)} path='datasets' />
+//         <Route component={requireAuthentication(Blank)} path='regulation' />
+//         <Route component={requireAuthentication(Blank)} path='interaction' />
+//       </Route>
+//       <Route component={requireAuthentication(Regulation)} path='regulation' />
+//     </Route>
+//     <Route component={PublicLayout}>
+//       {/*<Route component={AuthorResponse} path='author_response' />*/}
+//       <Route component={NewColleague} path='new_colleague' />
+//       <Route component={NewGeneNameReservation} path='new_reservation' />
+//     </Route>
+//     <Route component={NotFound} path='*' />
+//   </Route>
+// );

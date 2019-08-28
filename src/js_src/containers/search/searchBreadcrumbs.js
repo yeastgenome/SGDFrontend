@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-
+import PropTypes from 'prop-types';
 import style from './style.css';
-import { getQueryParamWithValueChanged, makeFieldDisplayName } from '../../lib/searchHelpers';
+import { getQueryParamWithValueChanged, makeFieldDisplayName,convertSearchObjectToString } from '../../lib/searchHelpers';
 
 import { selectQueryParams, selectTotal } from '../../selectors/searchSelectors.js';
 
@@ -14,7 +14,8 @@ class SearchBreadcrumbsComponent extends Component {
   renderCrumbValues(key, values) {
     return values.map( (d, i) => {
       let newQp = getQueryParamWithValueChanged(key, d, this.props.queryParams);
-      let newPath = { pathname: '/search', query: newQp };
+      newQp = convertSearchObjectToString(newQp);
+      let newPath = { pathname: '/search', search: newQp };
       let label = makeFieldDisplayName(d);
       let labelNode = (key === 'q') ? `"${label}"` : label;
       if (key === 'species') {
@@ -53,9 +54,9 @@ class SearchBreadcrumbsComponent extends Component {
 }
 
 SearchBreadcrumbsComponent.propTypes = {
-  isPending: React.PropTypes.bool,
-  queryParams: React.PropTypes.object,
-  total: React.PropTypes.number
+  isPending: PropTypes.bool,
+  queryParams: PropTypes.object,
+  total: PropTypes.number
 };
 
 function mapStateToProps(state) {

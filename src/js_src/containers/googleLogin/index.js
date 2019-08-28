@@ -1,8 +1,8 @@
 /* eslint-disable react/no-set-state */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
-
+import { push } from 'connected-react-router';
+import PropTypes from 'prop-types';
 import style from '../publicHome/style.css';
 import fetchData from '../../lib/fetchData';
 import Loader from '../../components/loader';
@@ -82,13 +82,13 @@ class GoogleLogin extends Component {
 }
 
 GoogleLogin.propTypes = {
-  dispatch: React.PropTypes.func,
-  queryParams: React.PropTypes.object
+  dispatch: PropTypes.func,
+  queryParams: PropTypes.object
 };
 
 function mapStateToProps(_state) {
   return {
-    queryParams: _state.routing.locationBeforeTransitions.query
+    queryParams: _state.router.location.query
   };
 }
 

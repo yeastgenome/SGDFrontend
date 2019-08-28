@@ -1,12 +1,12 @@
 /*eslint-disable react/no-set-state */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import Select from 'react-select';
-import { push } from 'react-router-redux';
-
+import { push } from 'connected-react-router';
+import PropTypes from 'prop-types';
 import style from './style.css';
-import { getQueryParamWithValueChanged } from '../../../lib/searchHelpers';
+import { getQueryParamWithValueChanged,convertSearchObjectToString } from '../../../lib/searchHelpers';
 import CategoryLabel from '../../../components/categoryLabel';
 
 const DELIMITER = '@@';
@@ -43,11 +43,12 @@ class SingleFilterSelector extends Component {
         nameNode = <CategoryLabel category={d.name} />;
       } else {
         nameNode = <span>{d.displayName}</span>;
-      }
+      }      
       let newQueryObj = getQueryParamWithValueChanged(this.props.name, d.key, this.props.queryParams);
+      var search = convertSearchObjectToString(newQueryObj);
       return (
         <div className={`${style.filter} ${classSuffix}`} key={_key}>
-          <Link to={{ pathname: SEARCH_PATH, query: newQueryObj }}>
+          <Link to={{ pathname: SEARCH_PATH, search:  search}}>
             <span className={style.aggLink}>
               <span className={style.aggLinkLabel}>{nameNode}</span><span>{d.total.toLocaleString()}</span>
             </span>
@@ -136,11 +137,11 @@ class SingleFilterSelector extends Component {
 }
 
 SingleFilterSelector.propTypes = {
-  dispatch: React.PropTypes.func,
-  displayName: React.PropTypes.string,
-  name: React.PropTypes.string,
-  queryParams: React.PropTypes.object,
-  values: React.PropTypes.array
+  dispatch: PropTypes.func,
+  displayName: PropTypes.string,
+  name: PropTypes.string,
+  queryParams: PropTypes.object,
+  values: PropTypes.array
 };
 
 export default connect()(SingleFilterSelector);

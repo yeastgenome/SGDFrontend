@@ -1,6 +1,6 @@
 /*eslint-disable react/no-set-state */
 import React, { Component } from 'react';
-
+import PropTypes from 'prop-types';
 class EditableList extends Component {
   constructor(props) {
     super(props);
@@ -50,9 +50,9 @@ class EditableList extends Component {
 }
 
 EditableList.propTypes = {
-  defaultValues: React.PropTypes.array,
-  onUpdate: React.PropTypes.func, // onUpdate(values)
-  placeholder: React.PropTypes.string
+  defaultValues: PropTypes.array,
+  onUpdate: PropTypes.func, // onUpdate(values)
+  placeholder: PropTypes.string
 };
 
 export default EditableList;

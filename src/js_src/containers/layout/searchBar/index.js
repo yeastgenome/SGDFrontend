@@ -2,7 +2,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Autosuggest from 'react-autosuggest';
-import { push } from 'react-router-redux';
+import { push } from 'connected-react-router';
+import PropTypes from 'prop-types';
+import {parse} from 'query-string';
 
 import style from './style.css';
 import CategoryLabel from '../../../components/categoryLabel';
@@ -36,9 +38,9 @@ class SearchBarComponent extends Component {
   handleSubmit(e) {
     if (e) e.preventDefault();
     let query = this.state.value;
-    let newQp = { q: query };
-    if (query === '') newQp = {};
-    this.props.dispatch(push({ pathname: 'search', query: newQp }));
+    let newQp = '?q='+query;
+    if (query === '') newQp = '';
+    this.props.dispatch(push({ pathname: '/search', search: newQp }));
   }
 
   handleTyping(e, { newValue }) {
@@ -105,14 +107,13 @@ class SearchBarComponent extends Component {
 }
 
 SearchBarComponent.propTypes = {
-  dispatch: React.PropTypes.func,
-  queryParams: React.PropTypes.object,
-  searchUrl: React.PropTypes.string
+  dispatch: PropTypes.func,
+  queryParams: PropTypes.object
 };
 
 function mapStateToProps(state) {
-  let location = state.routing.locationBeforeTransitions;
-  let _queryParams = location ? location.query : {};
+  let location = state.router.location;
+  let _queryParams = location ? parse(location.search) : {};
   return {
     queryParams: _queryParams
   };

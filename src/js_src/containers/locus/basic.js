@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import t from 'tcomb-form';
-
+import PropTypes from 'prop-types';
 import FlexiForm from '../../components/forms/flexiForm';
 import Loader from '../../components/loader';
 import { setMessage, setError } from '../../actions/metaActions';
@@ -122,7 +122,7 @@ class LocusBasic extends Component {
         }
       }
     };
-    let url = `/locus/${this.props.params.id}/basic`;
+    let url = `/locus/${this.props.match.params.id}/basic`;
     return (
       <div className='row'>
         <div className='columns small-12 medium-6'>
@@ -134,10 +134,10 @@ class LocusBasic extends Component {
 }
 
 LocusBasic.propTypes = {
-  data: React.PropTypes.object,
-  dispatch: React.PropTypes.func,
-  isPending: React.PropTypes.bool,
-  params: React.PropTypes.object
+  data: PropTypes.object,
+  dispatch: PropTypes.func,
+  isPending: PropTypes.bool,
+  params: PropTypes.object
 };
 
 function mapStateToProps(state) {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
+import PropTypes from 'prop-types';
 import style from './style.css';
 import { clearError, clearMessage } from '../../actions/metaActions';
 
@@ -48,10 +48,10 @@ class PublicLayout extends Component {
 }
 
 PublicLayout.propTypes = {
-  children: React.PropTypes.node,
-  error: React.PropTypes.string,
-  message: React.PropTypes.string,
-  dispatch: React.PropTypes.func
+  children: PropTypes.node,
+  error: PropTypes.string,
+  message: PropTypes.string,
+  dispatch: PropTypes.func
 };
 
 function mapStateToProps(state) {

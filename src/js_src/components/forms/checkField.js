@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import _ from 'underscore';
-
+import PropTypes from 'prop-types';
 import StringField from './stringField';
 
 class CheckField extends Component {
@@ -25,11 +25,11 @@ class CheckField extends Component {
 }
 
 CheckField.propTypes = {
-  defaultChecked: React.PropTypes.bool,
-  displayName: React.PropTypes.string,
-  paramName: React.PropTypes.string,
-  iconClass: React.PropTypes.string,
-  isReadOnly: React.PropTypes.bool
+  defaultChecked: PropTypes.bool,
+  displayName: PropTypes.string,
+  paramName: PropTypes.string,
+  iconClass: PropTypes.string,
+  isReadOnly: PropTypes.bool
 };
 
 export default CheckField;

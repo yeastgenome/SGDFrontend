@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Async } from 'react-select';
-
+import PropTypes from 'prop-types';
 import fetchData from '../../lib/fetchData';
 
 
@@ -48,13 +48,13 @@ class MultiSelectField extends Component {
 }
 
 MultiSelectField.propTypes = {
-  displayName: React.PropTypes.string,
-  optionsUrl: React.PropTypes.string,
-  paramName: React.PropTypes.string,
-  defaultValues: React.PropTypes.array,
-  iconClass: React.PropTypes.string,
-  defaultOptions: React.PropTypes.array,
-  allowCreate: React.PropTypes.bool
+  displayName: PropTypes.string,
+  optionsUrl: PropTypes.string,
+  paramName: PropTypes.string,
+  defaultValues: PropTypes.array,
+  iconClass: PropTypes.string,
+  defaultOptions: PropTypes.array,
+  allowCreate: PropTypes.bool
 };
 
 export default MultiSelectField;

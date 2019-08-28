@@ -7,7 +7,7 @@ import { setError, setMessage } from '../../actions/metaActions';
 const TIMEOUT = 120000;
 const FILE_INSERT = '/regulation_file';
 import fetchData from '../../lib/fetchData';
-
+import PropTypes from 'prop-types';
 class FileUpload extends Component {
   constructor(props) {
     super(props);
@@ -100,8 +100,8 @@ class FileUpload extends Component {
 }
 
 FileUpload.propTypes = {
-  csrfToken: React.PropTypes.string,
-  dispatch: React.PropTypes.func
+  csrfToken: PropTypes.string,
+  dispatch: PropTypes.func
 };
 
 function mapStateToProps(state) {

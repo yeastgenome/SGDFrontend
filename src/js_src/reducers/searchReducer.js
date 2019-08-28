@@ -1,6 +1,6 @@
 /*eslint-disable no-case-declarations */
 import { fromJS } from 'immutable';
-
+import {parse} from 'query-string';
 import { parseAggs, parseResults } from './searchParsers';
 
 const DEFAULT_PAGE_SIZE = 50;
@@ -37,9 +37,14 @@ const searchReducer = function (state = DEFAULT_STATE, action) {
     return state.set('isPending', action.payload);
   case '@@router/LOCATION_CHANGE':
     // update active cat
-    let newActiveCat = action.payload.query.category || 'none';
+    let newActiveCat = 'none';
+    var params = parse(action.payload.location.search);
+    if('category' in params){
+      newActiveCat = params.category;
+      // newActiveCat = action.payload.query.category;
+    }
     // parse aggs to update active state during route change
-    return state.set('aggregations', fromJS(parseAggs(state.get('aggregations').toJS(), action.payload.query)))
+    return state.set('aggregations', fromJS(parseAggs(state.get('aggregations').toJS(), params)))
                 .set('activeCategory', newActiveCat);
   case 'SEARCH_RESPONSE':
     let actionCat = action.category || 'none';

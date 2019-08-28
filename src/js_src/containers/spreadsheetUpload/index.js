@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import Dropzone from 'react-dropzone';
 import Select from 'react-select';
 import _ from 'underscore';
-
+import PropTypes from 'prop-types';
 import style from './style.css';
 import fetchData from '../../lib/fetchData';
 import AnnotationSummary from '../../components/annotationSummary';
@@ -157,8 +157,8 @@ class SpreadsheetUpload extends Component {
 }
 
 SpreadsheetUpload.propTypes = {
-  csrfToken: React.PropTypes.string,
-  dispatch: React.PropTypes.func
+  csrfToken: PropTypes.string,
+  dispatch: PropTypes.func
 };
 
 function mapStateToProps(state) {

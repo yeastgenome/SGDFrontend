@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
-// import { Link } from 'react-router';
+import { push } from 'connected-react-router';
+// import { Link } from 'react-router-dom';
 import t from 'tcomb-form';
-
+import PropTypes from 'prop-types';
 import CategoryLabel from '../../components/categoryLabel';
 import CurateLayout from '../curateHome/layout';
 import DetailList from '../../components/detailList';
@@ -23,7 +23,7 @@ class GeneNameReservationStandardize extends Component {
   }
 
   componentDidMount() {
-    let url = `${DATA_BASE_URL}/${this.props.params.id}`;
+    let url = `${DATA_BASE_URL}/${this.props.match.params.id}`;
     fetchData(url).then( _data => {
       this.setState({ data: _data });
     });
@@ -51,7 +51,7 @@ class GeneNameReservationStandardize extends Component {
         }
       }
     };
-    let standardizeUrl = `${DATA_BASE_URL}/${this.props.params.id}/standardize`;
+    let standardizeUrl = `${DATA_BASE_URL}/${this.props.match.params.id}/standardize`;
     let _defaultData = null;
     return (
       <div>
@@ -81,8 +81,8 @@ class GeneNameReservationStandardize extends Component {
 }
 
 GeneNameReservationStandardize.propTypes = {
-  params: React.PropTypes.object,
-  dispatch: React.PropTypes.func
+  match: PropTypes.object,
+  dispatch: PropTypes.func
 };
 
 function mapStateToProps() {

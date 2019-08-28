@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
+import PropTypes from 'prop-types';
 import fetchData from '../../lib/fetchData';
 import Loader from '../../components/loader';
 import { clearError, setError } from '../../actions/metaActions';
@@ -76,8 +76,8 @@ class Settings extends Component {
 }
 
 Settings.propTypes = {
-  csrfToken: React.PropTypes.string,
-  dispatch: React.PropTypes.func
+  csrfToken: PropTypes.string,
+  dispatch: PropTypes.func
 };
 
 function mapStateToProps(state) {
