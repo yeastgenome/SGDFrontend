@@ -69,7 +69,7 @@ export function convertSearchObjectToString(searchObject){
         return false;
       }
       else{
-        return true;
+        return searchObject[key] == undefined ? false:true;
       }
     })
     .map((key) => {
