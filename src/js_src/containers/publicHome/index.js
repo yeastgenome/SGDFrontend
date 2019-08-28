@@ -25,8 +25,7 @@ class Login extends Component {
       }
     };
     let _onSuccess = (data) => {
-      var next = parse(this.props.location.search).next;
-      let nextUrl = next || DEFAULT_AUTH_LANDING;
+      let nextUrl = parse(this.props.queryParams).next || DEFAULT_AUTH_LANDING;
       this.props.dispatch(authenticateUser(data.username));
       this.props.dispatch(push(nextUrl));
     };
@@ -65,8 +64,7 @@ class Login extends Component {
 
 Login.propTypes = {
   dispatch: PropTypes.func,
-  queryParams: PropTypes.string,
-  location:PropTypes.object
+  queryParams: PropTypes.string
 };
 
 function mapStateToProps(_state) {
