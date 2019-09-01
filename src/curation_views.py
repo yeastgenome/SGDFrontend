@@ -3,7 +3,7 @@ from oauth2client import client, crypt
 from pyramid.httpexceptions import HTTPBadRequest, HTTPForbidden, HTTPOk, HTTPNotFound, HTTPFound
 from pyramid.view import view_config
 from pyramid.session import check_csrf_token
-from sqlalchemy import create_engine, and_ , or_
+from sqlalchemy import create_engine, and_, or_
 from sqlalchemy.exc import IntegrityError, DataError, InternalError
 from sqlalchemy.orm import scoped_session, sessionmaker, joinedload
 from validate_email import validate_email
@@ -19,17 +19,26 @@ import json
 import re
 from bs4 import BeautifulSoup
 import pandas as pd
+import cgi
 
 from .helpers import allowed_file, extract_id_request, secure_save_file,\
     curator_or_none, extract_references, extract_keywords,\
     get_or_create_filepath, extract_topic, extract_format,\
     file_already_uploaded, link_references_to_file, link_keywords_to_file,\
     FILE_EXTENSIONS, get_locus_by_id, get_go_by_id, set_string_format,\
-    send_newsletter_email, get_file_delimiter, unicode_to_string
+    send_newsletter_email, get_file_delimiter, unicode_to_string,\
+    file_curate_update_readme, upload_new_file, get_file_curate_dropdown_data,\
+    get_file_details
 from .curation_helpers import ban_from_cache, process_pmid_list,\
     get_curator_session, get_pusher_client, validate_orcid, get_list_of_ptms
 from .loading.promote_reference_triage import add_paper
-from .models import DBSession, Dbentity, Dbuser, CuratorActivity, Colleague, Colleaguetriage, LocusnoteReference, Referencedbentity, Reservedname, ReservednameTriage, Straindbentity, Literatureannotation, Referencetriage, Referencedeleted, Locusdbentity, CurationReference, Locussummary, validate_tags, convert_space_separated_pmids_to_list, Psimod, Posttranslationannotation,Regulationannotation
+from .models import DBSession, Dbentity, Dbuser, CuratorActivity, Colleague,\
+     Colleaguetriage, LocusnoteReference, Referencedbentity, Reservedname,\
+     ReservednameTriage, Straindbentity, Literatureannotation,\
+     Referencetriage, Referencedeleted, Locusdbentity,\
+     CurationReference, Locussummary, validate_tags,\
+     convert_space_separated_pmids_to_list, Psimod,\
+     Posttranslationannotation, Regulationannotation
 from .tsv_parser import parse_tsv_annotations
 from .models_helpers import ModelsHelper
 
@@ -38,8 +47,7 @@ logging.getLogger('sqlalchemy.engine').setLevel(logging.ERROR)
 log = logging.getLogger()
 models_helper = ModelsHelper()
 
-
-
+SGD_SOURCE_ID = 834
 
 
 def authenticate(view_callable):
@@ -54,7 +62,7 @@ def authenticate(view_callable):
 @view_config(route_name='account', request_method='GET', renderer='json')
 @authenticate
 def account(request):
-    return {'username': request.session['username']}
+    return {'username': request.session['username'], 'csrfToken': request.session.get_csrf_token()}
 
 
 
@@ -327,7 +335,10 @@ def db_sign_in(request):
         session['email'] = curator.email
         session['username'] = curator.username
         log.info('User ' + curator.email + ' was successfuly authenticated.')
-        return { 'username': session['username'] }
+        return {
+            'username': session['username'],
+            'csrfToken': request.session.get_csrf_token()
+        }
     except:
         traceback.print_exc()
         return HTTPForbidden(body=json.dumps({'error': 'Incorrect login details.'}))
@@ -556,6 +567,12 @@ def new_gene_name_reservation(request):
 # not authenticated to allow the public submission
 @view_config(route_name='colleague_update', renderer='json', request_method='PUT')
 def colleague_update(request):
+    curator_session = None
+    if 'username' in request.session:
+        curator_session = get_curator_session(request.session['username'])
+    else:
+        curator_session = DBSession
+
     if not check_csrf_token(request, raises=False):
         return HTTPBadRequest(body=json.dumps({'error':'Bad CSRF Token'}))
     req_id = request.matchdict['id'].upper()
@@ -575,7 +592,8 @@ def colleague_update(request):
     if not is_orcid_valid:
         msg = data['orcid'] + ' is not a valid orcid.'
         return HTTPBadRequest(body=json.dumps({ 'message': msg }), content_type='text/json')
-    colleague = DBSession.query(Colleague).filter(Colleague.colleague_id == req_id).one_or_none()
+    colleague = curator_session.query(Colleague).filter(
+        Colleague.colleague_id == req_id).one_or_none()
     if not colleague:
         return HTTPNotFound()
     # add colleague triage entry
@@ -587,7 +605,8 @@ def colleague_update(request):
                 if old_dict[x] != data[x]:
                     is_changed = True
         if is_changed:
-            existing_triage = DBSession.query(Colleaguetriage).filter(Colleaguetriage.colleague_id == req_id).one_or_none()
+            existing_triage = curator_session.query(Colleaguetriage).filter(
+                Colleaguetriage.colleague_id == req_id).one_or_none()
             if existing_triage:
                 existing_triage.json = json.dumps(data)
             else:
@@ -596,7 +615,7 @@ def colleague_update(request):
                     json=json.dumps(data),
                     triage_type='Update',
                 )
-                DBSession.add(new_c_triage)
+                curator_session.add(new_c_triage)
                 colleague.is_in_triage = True
             transaction.commit()
             return { 'colleague_id': req_id }
@@ -870,7 +889,7 @@ def colleague_triage_promote(request):
         is_contact = params.get('receive_quarterly_newsletter')
 
         if c_triage.colleague_id:
-            colleague = DBSession.query(Colleague).filter(
+            colleague = curator_session.query(Colleague).filter(
                 Colleague.colleague_id == c_triage.colleague_id).one_or_none()
             if (colleague.first_name != first_name or colleague.last_name != last_name):
                 colleague.first_name = first_name
@@ -903,20 +922,8 @@ def colleague_triage_promote(request):
                 is_pi=False,
                 created_by=username
             )
-            DBSession.add(new_colleague)
-            DBSession.flush()
-        '''
-        colleague = curator_session.query(Colleague).filter(Colleague.colleague_id == c_triage.colleague_id).one_or_none()
-        colleague.first_name = params.get('first_name')
-        colleague.last_name = params.get('last_name')
-        colleague.orcid = params.get('orcid')
-        colleague.email = params.get('email')
-        colleague.display_email = params.get('display_email')
-        colleague.is_contact = params.get('receive_quarterly_newsletter')
-        colleague.is_beta_tester = params.get('willing_to_be_beta_tester')
-        colleague.is_in_triage = False
-        colleague.created_by = username #get_username_from_db_uri() if colleague.created_by == 'OTTO' else username
-        '''
+            curator_session.add(new_colleague)
+            curator_session.flush()
 
         curator_session.delete(c_triage)
         transaction.commit()
@@ -973,6 +980,12 @@ def get_username_from_db_uri():
 
 @view_config(route_name='add_new_colleague_triage', renderer='json', request_method='POST')
 def add_new_colleague_triage(request):
+    curator_session = None
+    if 'username' in request.session:
+        curator_session = get_curator_session(request.session['username'])
+    else:
+        curator_session = DBSession
+
     if not check_csrf_token(request, raises=False):
         return HTTPBadRequest(body=json.dumps({'error': 'Bad CSRF Token'}))
     params = request.json_body
@@ -989,7 +1002,7 @@ def add_new_colleague_triage(request):
     if not is_orcid_valid:
         msg = params['orcid'] + ' is not a valid orcid.'
         return HTTPBadRequest(body=json.dumps({'message': msg}), content_type='text/json')
-    colleague_orcid_email_exists = DBSession.query(Colleague).filter(or_(and_(Colleague.orcid == params.get('orcid'), Colleague.email == params.get(
+    colleague_orcid_email_exists = curator_session.query(Colleague).filter(or_(and_(Colleague.orcid == params.get('orcid'), Colleague.email == params.get(
         'email')), or_(Colleague.orcid == params.get('orcid'), Colleague.email == params.get('email')))).one_or_none()
     if colleague_orcid_email_exists:
         msg = 'You entered an ORCID or Email which is already being used by an SGD colleague. Try to find your entry or contact sgd-helpdesk@lists.stanford.edu if you think this is a mistake.'
@@ -1002,7 +1015,7 @@ def add_new_colleague_triage(request):
             json=json.dumps(params),
             triage_type='New',
         )
-        DBSession.add(new_c_triage)
+        curator_session.add(new_c_triage)
         transaction.commit()
         return {'colleague_id': 0}
     except IntegrityError as IE:
@@ -2414,3 +2427,63 @@ def regulation_file(request):
 
     except Exception as e:
         return HTTPBadRequest(body=json.dumps({"error":str(e.message)}),content_type='text/json')
+
+
+@view_config(route_name='upload_file_curate', renderer='json', request_method='POST')
+def upload_file_curate(request):
+    try:
+        if not check_csrf_token(request, raises=False):
+            return HTTPBadRequest(body=json.dumps({'error': 'Bad CSRF Token'}))
+        obj = {
+            'file': request.POST['file'].file,
+            'file_name': request.POST['file'].filename,
+            'status': request.POST['status'],
+            'display_name': request.POST['displayName'],
+            'keywords': request.POST['genomeVariation'],
+            'previous_filename': request.POST['previousFileName'],
+            'description': request.POST['description']
+        }
+        file_curate_update_readme(obj)
+
+    except Exception as e:
+        pass
+
+    return {}
+
+
+@view_config(route_name="get_file", renderer='json', request_method='GET')
+@authenticate
+def get_file(request):
+    ''' Get file data '''
+    try:
+        dname = request.matchdict['name']
+        if dname:
+            return get_file_details(dname)
+        return None
+    except Exception as e:
+         return HTTPBadRequest(body=json.dumps({'error': str(e.message)}), content_type='text/json')
+
+
+@view_config(route_name="upload_tar_file", renderer='json', request_method='POST')
+@authenticate
+def upload_tar_file(request):
+    ''' Upload tar files containing zip/sra file with README file '''
+    try:
+        obj = {}
+        for key, val in request.POST.items():
+            if type(cgi.FieldStorage()) is type(val):
+                obj[val.name] = val.file
+            else:
+                obj[key] = val
+
+        obj['uname'] = request.session['username']
+        obj['source_id'] = SGD_SOURCE_ID
+        return upload_new_file(obj)
+    except Exception as e:
+         return HTTPBadRequest(body=json.dumps({'error': str(e)}), content_type='text/json')
+
+
+@view_config(route_name="file_curate_menus", renderer='json', request_method='GET')
+def file_curate_menus(request):
+
+    return get_file_curate_dropdown_data()

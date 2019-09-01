@@ -4,6 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from zope.sqlalchemy import ZopeTransactionExtension
 from elasticsearch import Elasticsearch
 import os
+import io
 from math import floor, log
 import json
 import copy
@@ -11,6 +12,8 @@ import requests
 import re
 import traceback
 import transaction
+import logging
+
 from datetime import datetime, timedelta
 from itertools import groupby
 import boto
@@ -23,6 +26,9 @@ from urllib.error import URLError, HTTPError
 from src.curation_helpers import ban_from_cache, get_author_etc, link_gene_names, get_curator_session, clear_list_empty_values
 from scripts.loading.util import link_gene_complex_names
 
+from src.aws_helpers import simple_s3_upload, get_checksum, calculate_checksum_s3_file
+
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 ESearch = Elasticsearch(os.environ['ES_URI'], retry_on_timeout=True)
 
@@ -2556,11 +2562,12 @@ class Filedbentity(Dbentity):
     readme_file = relationship(
         'Filedbentity',
         foreign_keys=[dbentity_id],
-        primaryjoin='Filedbentity.dbentity_id == Filedbentity.readme_file_id')
+        primaryjoin='Filedbentity.dbentity_id == Filedbentity.readme_file_id', uselist=False)
     topic = relationship(
         'Edam', primaryjoin='Filedbentity.topic_id == Edam.edam_id')
 
     def to_dict(self):
+
         obj = {
             "id":
                 self.dbentity_id,
@@ -2586,46 +2593,113 @@ class Filedbentity(Dbentity):
                 self.s3_url if self.s3_url else '',
             "description":
                 self.description if self.description else '',
-            "year":
-                self.year
+            "year": self.year,
+            "display_name": self.display_name,
+            "status": self.dbentity_status,
+            "readme_file_url": self.readme_file.s3_url if self.readme_file else None
         }
         return obj
 
 
-    def upload_file_to_s3(self, file, filename):
-        # get s3_url and upload
-        s3_path = self.sgdid + '/' + filename
-        conn = boto.connect_s3(S3_ACCESS_KEY, S3_SECRET_KEY)
-        bucket = conn.get_bucket(S3_BUCKET)
-        k = Key(bucket)
-        k.key = s3_path
-        # make content-type 'text/plain' if it's a README
-        if self.readme_file_id is None:
-            k.content_type = 'text/plain'
-        k.set_contents_from_file(file, rewind=True)
-        k.make_public()
-        file_s3 = bucket.get_key(k.key)
-        # s3 md5sum
-        etag_md5_s3 = file_s3.etag.strip('"').strip("'")
-        # get local md5sum https://stackoverflow.com/questions/3431825/generating-an-md5-checksum-of-a-file
-        hash_md5 = hashlib.md5()
-        file.seek(0)
-        for chunk in iter(lambda: file.read(4096), b""):
-            hash_md5.update(chunk)
-        local_md5sum = hash_md5.hexdigest()
-        file.seek(0)
-        # compare m5sum, save if match
-        if local_md5sum != etag_md5_s3:
-            transaction.abort()
-            raise Exception('MD5sum check failed.')
-        self.md5sum = etag_md5_s3
-        # get file size
-        file.seek(0, os.SEEK_END)
-        file_size = file.tell()
-        file.seek(0)
-        self.file_size = file_size
-        self.s3_url = file_s3.generate_url(expires_in=0, query_auth=False)
-        transaction.commit()
+    def to_simple_dict(self):
+        readme_file_url = ''
+        if self.readme_file_id:
+            readme_file_url = self.readme_file.s3_url
+        obj = {
+            "id":
+                self.dbentity_id,
+            "data_id":
+                self.data_id if self.format_id else 0,
+            "format_id":
+                self.format_id if self.format_id else 0,
+            "readme_file_id":
+                self.readme_file_id if self.readme_file_id else '',
+            "file_size":
+                self.file_size if self.file_size else 0,
+            "is_public":
+                str(self.is_public),
+            "file_extension":
+                self.file_extension if self.file_extension else '',
+            "s3_url":
+                self.s3_url if self.s3_url else '',
+            "description":
+                self.description if self.description else '',
+            "year": self.year,
+            "display_name": self.display_name,
+            "status": self.dbentity_status,
+            "readme_file_url": self.readme_file.s3_url if self.readme_file else None
+        }
+        return obj
+
+    def upload_file_to_s3(self, file, filename, file_path=None):
+        """ uploads files to s3 
+        
+        Notes
+        ------
+        S3 only supports 5Gb files for uploading directly
+
+        To upload bigger files, use multi-part upload
+        """
+        try:
+            # get s3_url and upload
+            s3_path = self.sgdid + '/' + filename
+            conn = boto.connect_s3(S3_ACCESS_KEY, S3_SECRET_KEY)
+            bucket = conn.get_bucket(S3_BUCKET)
+            k = Key(bucket)
+            k.key = s3_path
+            if file_path:
+                new_s3_file = simple_s3_upload(file_path, s3_path, True)
+                file_s3 = bucket.get_key(k.key)
+                etag_md5_s3 = file_s3.etag.strip('"').strip("'")
+                file.seek(0)
+                self.md5sum = etag_md5_s3
+                # get file size
+                file.seek(0, os.SEEK_END)
+                file_size = file.tell()
+                file.seek(0)
+                self.file_size = file_size
+                self.s3_url = file_s3.generate_url(
+                    expires_in=0, query_auth=False)
+                transaction.commit()
+
+            else:
+                conn = boto.connect_s3(S3_ACCESS_KEY, S3_SECRET_KEY)
+                bucket = conn.get_bucket(S3_BUCKET)
+                k = Key(bucket)
+                k.key = s3_path
+                # make content-type 'text/plain' if it's a README
+                if self.readme_file_id is None:
+                    k.content_type = 'text/plain'
+                file_bytes = io.BytesIO(file.read1())
+                k.set_contents_from_file(file_bytes, rewind=True)
+                k.make_public()
+                file_s3 = bucket.get_key(k.key)
+        
+                # get local md5sum https://stackoverflow.com/questions/3431825/generating-an-md5-checksum-of-a-file
+                hash_md5 = hashlib.md5()
+                local_md5 = get_checksum(file)
+                file.seek(0)
+                for chunk in iter(lambda: file.read(4096), b""):
+                    hash_md5.update(chunk)
+
+                local_md5sum = hash_md5.hexdigest()
+                file.seek(0)
+                
+                if self.md5sum != local_md5sum:
+                    self.md5sum = local_md5sum
+                    # get file size
+                    file.seek(0, os.SEEK_END)
+                    file_size = file.tell()
+                    file.seek(0)
+                    self.file_size = file_size
+                    mod_s3_url = file_s3.generate_url(
+                        expires_in=0, query_auth=False)
+                    self.s3_url = re.sub(r'\?.+', '', mod_s3_url).strip()
+                    return True
+                return False
+        except Exception as e:
+            logging.debug(e)
+            
 
     def get_path(self):
         path_res = DBSession.query(FilePath, Path).filter(

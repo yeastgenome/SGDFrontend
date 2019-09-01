@@ -11,13 +11,20 @@ from pyramid.httpexceptions import HTTPForbidden, HTTPBadRequest, HTTPNotFound
 from sqlalchemy.exc import IntegrityError, InternalError, StatementError
 import traceback
 import requests
+import json
 import csv
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import re
-from .models import DBSession, Dbuser, Go, Referencedbentity, Keyword, Locusdbentity, FilePath, Edam, Filedbentity, FileKeyword, ReferenceFile, Disease, CuratorActivity
+from sqlalchemy import and_, inspect
+
+from .models import DBSession, Dbentity, Dbuser, Go, Referencedbentity,\
+    Keyword, Locusdbentity, FilePath, Edam, Filedbentity, FileKeyword,\
+    ReferenceFile, Disease, CuratorActivity, Source
 from src.curation_helpers import ban_from_cache, get_curator_session
+from src.aws_helpers import update_s3_readmefile, get_s3_url
+
 
 import logging
 log = logging.getLogger(__name__)
@@ -29,6 +36,7 @@ FILE_EXTENSIONS = [
     'wrl', 'xls', 'xlsx', 'xml', 'sql', 'txt', 'html', 'gz', 'tsv'
 ]
 MAX_QUERY_ATTEMPTS = 3
+S3_BUCKET = os.environ['S3_BUCKET']
 
 import redis
 disambiguation_table = redis.Redis()
@@ -281,6 +289,7 @@ def upload_file(username, file, **kwargs):
     status = kwargs.get('status', 'Active')
     description = kwargs.get('description', None)
     readme_file_id = kwargs.get('readme_file_id', None)
+    full_file_path = kwargs.get('full_file_path', None)
     md5sum = kwargs.get('md5sum', None)
     # get file size
     file.seek(0, os.SEEK_END)
@@ -311,7 +320,7 @@ def upload_file(username, file, **kwargs):
             description=description,
             readme_file_id=readme_file_id,
             subclass='FILE',
-            created_by=username,
+            created_by=username.upper(),
             file_size=file_size)
         DBSession.add(fdb)
         DBSession.flush()
@@ -320,7 +329,7 @@ def upload_file(username, file, **kwargs):
         DBSession.flush()
         fdb = DBSession.query(Filedbentity).filter(
             Filedbentity.dbentity_id == did).one_or_none()
-        fdb.upload_file_to_s3(file, filename)
+        fdb.upload_file_to_s3(file, filename, full_file_path)
     except Exception as e:
         DBSession.rollback()
         DBSession.remove()
@@ -649,11 +658,347 @@ def summary_file_is_valid(file_upload):
         obj['flag'] = False
     return obj
 
+
 def unicode_to_string(unicode_value):
     try:
-        returnValue = unicode_value.encode('ascii','ignore')
+        returnValue = unicode_value.encode('ascii', 'ignore')
         return returnValue
     except UnicodeEncodeError as err:
         return None
 
+
+def update_curator_feed(update_obj, msg=None, curator_session=None):
+    if curator_session is None:
+        curator_session = DBSession
+    flag = False
+    if msg is None:
+        msg = 'added'
+    msg = 'added'
+    try:
+        exists = curator_session.query(CuratorActivity).filter(
+            CuratorActivity.dbentity_id == update_obj['dbentity_id']).one_or_none()
+        if exists:
+            exists.display_name = update_obj['display_name']
+            exists.obj_url = update_obj['s3_url']
+            exists.activity_category = update_obj['activity_category']
+            exists.dbentity_id = update_obj['dbentity_id']
+            exists.message = 'updated'
+            exists.json = update_obj['json']
+            exists.created_by = update_obj['created_by']
+
+        else:
+            new_curator_activity = CuratorActivity(
+                display_name=update_obj['display_name'],
+                obj_url=update_obj['s3_url'],
+                activity_category=update_obj['activity_category'],
+                dbentity_id=update_obj['dbentity_id'],
+                message='Added',
+                json=update_obj['json'],
+                created_by=update_obj['created_by']
+            )
+            curator_session.add(new_curator_activity)
+
+        flag = True
+
+    except Exception as e:
+        raise(e)
+
+    return flag
+
+
+def update_readme_files_with_urls(readme_name, update_all=False):
+    """ Update parent readme files with list of s3 urls
+    Notes:
+        The parent readme file should contain all the s3 urls of files
+        under the parent folder
+        create a dictionary with parent_readme name as key and value as list of files
+    """
+    try:
+        if not update_all:
+            temp = []
+
+            if readme_name:
+                readme_file = DBSession.query(Dbentity).filter(
+                    Dbentity.display_name == readme_name).one_or_none()
+
+                if readme_file:
+                    update_urls_helper(readme_file)
+                    #transaction.commit()
+        else:
+            all_files = DBSession.query(Dbentity).all()
+
+            for _file in all_files:
+                if _file.display_name.endswith('.README'):
+                    update_urls_helper(_file)
+
+    except Exception as e:
+        logging.error(e)
+        transaction.abort()
+
+
+def update_urls_helper(readme_file):
+    """ Update files with s3_urls helper"""
+
+    temp = []
+    file_list = DBSession.query(Filedbentity).filter(
+        Filedbentity.readme_file_id == readme_file.dbentity_id).all()
+    if file_list:
+        for item in file_list:
+            s3_url = item.s3_url
+            if s3_url:
+                temp.append(s3_url)
+            else:
+                s3_url = get_s3_url(item.display_name, item.sgdid)
+                temp.append(s3_url)
+    if temp:
+        updated_readme = update_s3_readmefile(
+            temp, readme_file.dbentity_id, readme_file.sgdid, readme_file.display_name, S3_BUCKET)
+        if updated_readme:
+            readme_dbentity_file = DBSession.query(
+                Filedbentity).filter(Filedbentity.dbentity_id == readme_file.dbentity_id).one_or_none()
+            readme_dbentity_file.md5sum = updated_readme['md5sum']
+            readme_dbentity_file.file_size = updated_readme['file_size']
+            readme_dbentity_file.s3_url = updated_readme['s3_url']
+
+
+def get_sources(session=None):
+    ''' Get sources from dbentity model '''
+
+    data = DBSession.query(Dbentity).all()
+    temp = set()
+    for item in data:
+        temp.add(item.source.display_name)
+
+    return list(temp)
+
+
+def get_file_keywords(session=None):
+
+    data = DBSession.query(FileKeyword).all()
+    temp = set()
+
+    for item in data:
+
+        temp.add(item.keyword.display_name)
+
+    return list(temp)
+
+
+def get_edam_data(session=None):
+    """ Get topic ided based on edam relation
+    Returns
+    -------
+    dict:
+        file_id(key): edam.display_name 
     
+    Notes:
+        From filedbentity topic_id, mapp to Edam table and get the Edam.display_name
+        query and filter where edam_namespace is 'topic'
+    """
+
+    data = DBSession.query(Filedbentity).all()
+    n_spaces = ['topic', 'data', 'format']
+    temp = []
+    data_obj = {}
+    for item in data:
+        name = item.topic.display_name
+        name_space = item.topic.edam_namespace
+
+        if name_space in data_obj:
+            if name not in data_obj[name_space] and name_space in n_spaces:
+                data_obj[name_space].append(name)
+        else:
+            if name_space in n_spaces:
+                data_obj[name_space] = []
+
+    return data_obj
+
+
+def get_file_curate_dropdown_data(session=None):
+    ''' Get dropdown menus for new file curate form '''
+
+    data = get_edam_data()
+    if data:
+        data['keywords'] = get_file_keywords()
+        data['sources'] = get_sources()
+        data['status'] = ['Active', 'Archived']
+    return data
+
+
+def file_curate_update_readme(obj, session=None):
+    readme_file = DBSession.query(
+        Filedbentity).filter(Filedbentity.display_name == obj['display_name']).one_or_none()
+    if readme_file:
+        readme_file.upload_file_to_s3(obj['file'], obj['file_name'])
+
+
+def upload_new_file(req_obj, session=None):
+    try:
+        if req_obj:
+            other_extensions = ('zip', '.gz', '.sra')
+            readme_file = {}
+            other_files = []
+            readme_file_id = None
+            username = req_obj['uname']
+            curator_session = get_curator_session(username)
+
+            for key, val in req_obj.items():
+                if key.endswith('.README'):
+                    existing_readme_meta = get_existing_meta_data(
+                        req_obj['displayName'], curator_session)
+                    keywords = re.split(',|\|', req_obj['keywords'])
+                    if existing_readme_meta:
+                        existing_readme_meta.display_name = req_obj['displayName']
+                        existing_readme_meta.description = req_obj['description']
+                        existing_readme_meta.status = req_obj['status']
+                        existing_readme_meta.is_public = True
+                        existing_readme_meta.is_in_spell = False
+                        existing_readme_meta.is_in_browser = False
+                        readme_file_id = existing_readme_meta.dbentity_id
+                        existing_readme_meta.upload_file_to_s3(
+                            val, req_obj['displayName'])
+                        add_keywords(req_obj['displayName'],
+                                     keywords, req_obj['source_id'], username, curator_session)
+                        update_obj = {
+                            'display_name': req_obj['displayName'],
+                            'created_by': username,
+                            's3_url': existing_readme_meta.s3_url,
+                            'activity_category': 'download',
+                            'dbentity_id': existing_readme_meta.dbentity_id,
+                            'json': json.dumps({"file curation data": existing_readme_meta.to_simple_dict()}),
+                        }
+                        msg = 'Add readme file for file curation'
+                        update_curator_feed(update_obj, msg)
+                    '''else:
+                        #TODO: finish this method after getting metadata from Mike
+                        new_obj = {
+                            'display_name': req_obj['displayName'],
+                            'description': req_obj['description'],
+                            'status': req_obj['status'],
+                            'is_public': True,
+                            'is_in_spell': False,
+                            'is_in_browser': False
+                        }
+                    '''
+                if key.endswith(other_extensions):
+                    other_files.append(
+                        {
+                            'display_name': req_obj['displayName'],
+                            'file': val,
+                            'file_name': key,
+                            'description': req_obj['description'],
+                            'status': req_obj['status']
+                        })
+
+            if len(other_files) > 0:
+                update_from_s3 = None
+                for item in other_files:
+                    db_file = get_existing_meta_data(
+                        item['display_name'], curator_session)
+                    if db_file:
+                        update_from_s3 = add_file_meta_db(
+                            db_file, item, db_file.readme_file_id, curator_session)
+                        # update activities
+                        update_obj = {
+                            'display_name': item['display_name'],
+                            'created_by': username,
+                            's3_url': db_file.s3_url,
+                            'activity_category': 'download',
+                            'dbentity_id': db_file.dbentity_id,
+                            'json': json.dumps({'file curation data': db_file.to_simple_dict()}),
+                        }
+                        msg = 'Add file for file curation'
+                        update_curator_feed(update_obj, msg, curator_session)
+            transaction.commit()
+            DBSession.flush()
+            return True
+    except Exception as e:
+        transaction.abort()
+        raise(e)
+
+
+def add_file_meta_db(db_file, obj, readme_id=None, curator_session=None):
+    try:
+        if curator_session is None:
+            curator_session = DBSession
+        if db_file and obj:
+            db_file.display_name = obj['display_name']
+            db_file.description = obj['description']
+            db_file.status = obj['status']
+            db_file.is_public = True
+            db_file.is_in_spell = False
+            db_file.is_in_browser = False
+            flag = db_file.upload_file_to_s3(
+                obj['file'], obj['display_name'])
+            if readme_id:
+                db_file.readme_file_id = readme_id
+                readme_file = curator_session.query(Filedbentity).filter(
+                    Filedbentity.dbentity_id == readme_id).one_or_none()
+                if readme_file:
+                    if flag:
+                        update_readme_files_with_urls(readme_file.display_name)
+
+    except Exception as e:
+        raise(e)
+
+
+def get_existing_meta_data(display_name=None, curator_session=None):
+
+    result = None
+    if curator_session is None:
+        curator_session = DBSession
+    if display_name:
+        result = curator_session.query(Filedbentity).filter(
+            Filedbentity.display_name == display_name).one_or_none()
+
+    return result
+
+
+def get_source_id(source=None):
+    result = None
+    if source:
+        result = DBSession.query(Source.source_id).filter(
+            Source.display_name == source).one_or_none()[0]
+
+
+def get_file_details(display_name):
+    if display_name:
+        file_data = DBSession.query(Filedbentity).filter(
+            Filedbentity.display_name == display_name).one_or_none()
+        if file_data:
+            readme = file_data.readme_file
+            if readme:
+                return readme.to_dict()
+            else:
+                return file_data.to_dict()
+        else:
+            return None
+    else:
+        return None
+
+
+def add_keywords(name, keywords, src_id, uname, curator_session=None):
+    """ add keywords """
+
+    try:
+        if curator_or_none is None:
+            curator_session = DBSession
+        if len(keywords) > 0:
+            existing = curator_session.query(Filedbentity).filter(
+                Filedbentity.display_name == name).one_or_none()
+
+            for word in keywords:
+                word = word.strip()
+                keyword = curator_session.query(Keyword).filter(
+                    Keyword.display_name == word).one_or_none()
+                existing_file_keyword = curator_session.query(FileKeyword).filter(and_(
+                    FileKeyword.file_id == existing.dbentity_id, FileKeyword.keyword_id == keyword.keyword_id)).one_or_none()
+                if not existing_file_keyword:
+                    new_file_keyword = FileKeyword(
+                        created_by=uname, file_id=existing.dbentity_id, keyword_id=keyword.keyword_id, source_id=src_id)
+                    curator_session.add(new_file_keyword)
+
+    except Exception as e:
+        logging.error(e)
+
+

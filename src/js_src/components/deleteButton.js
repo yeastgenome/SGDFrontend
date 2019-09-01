@@ -16,7 +16,7 @@ class DeleteButton extends Component {
     this._isMounted = true;
   }
 
-  componentWillUmmount() {
+  componentWillUnmount() {
     this.isMounted = false;
   }
 

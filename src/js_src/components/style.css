@@ -1,30 +1,31 @@
 .loadingText {
-	width: 100%;
-	height: 1rem;
-	background: #e2e2e2;
-	margin-bottom: 1rem;
-	border-radius: 0.25rem;
+  width: 100%;
+  height: 1rem;
+  background: #e2e2e2;
+  margin-bottom: 1rem;
+  border-radius: 0.25rem;
 }
 
 .loadingHeader {
-	height: 2rem;
+  height: 2rem;
 }
 
-.detailList mark, em {
-	background: yellow;
+.detailList mark,
+em {
+  background: yellow;
 }
 
 .detailLabel {
-	text-transform: capitalize;
+  text-transform: capitalize;
 }
 
 .catIcon {
-	width: 1rem;
-	height: 1rem;
-	position: relative;
-	top: 0.15rem;
-	border-radius: 0.5rem;
-	display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  position: relative;
+  top: 0.15rem;
+  border-radius: 0.5rem;
+  display: inline-block;
 }
 
 .linkContainer {
@@ -32,34 +33,42 @@
 }
 
 .sgdLoaderContainer {
-	display: flex;
-	min-height: 250px;
-	justify-content: center;
-	display: -webkit-flex; /* Safari */
-    -webkit-justify-content: space-around; /* Safari 6.1+ */
-	align-items: center;
-	-webkit-align-items: center; /* Safari 7.0+ */
+  display: flex;
+  min-height: 250px;
+  justify-content: center;
+  display: -webkit-flex;
+  /* Safari */
+  -webkit-justify-content: space-around;
+  /* Safari 6.1+ */
+  align-items: center;
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
 }
+
 @-moz-keyframes three-quarters-loader {
   0% {
     -moz-transform: rotate(0deg);
     transform: rotate(0deg);
   }
+
   100% {
     -moz-transform: rotate(360deg);
     transform: rotate(360deg);
   }
 }
+
 @-webkit-keyframes three-quarters-loader {
   0% {
     -webkit-transform: rotate(0deg);
     transform: rotate(0deg);
   }
+
   100% {
     -webkit-transform: rotate(360deg);
     transform: rotate(360deg);
   }
 }
+
 @keyframes three-quarters-loader {
   0% {
     -moz-transform: rotate(0deg);
@@ -67,6 +76,7 @@
     -webkit-transform: rotate(0deg);
     transform: rotate(0deg);
   }
+
   100% {
     -moz-transform: rotate(360deg);
     -ms-transform: rotate(360deg);
@@ -74,6 +84,7 @@
     transform: rotate(360deg);
   }
 }
+
 /* :not(:required) hides this rule from IE9 and below */
 .sgdLoader:not(:required) {
   -moz-animation: three-quarters-loader 1250ms infinite linear;
@@ -96,43 +107,89 @@
 }
 
 /*  */
-.autoSelect{
+.autoSelect {
   overflow: scroll;
-  max-height:250px;
-  border:1px solid #cacaca;
+  max-height: 250px;
+  border: 1px solid #cacaca;
 }
 
-.margin_bottom_20{
-  margin-bottom: 20px;
-}
-
-.autoSelect::-webkit-scrollbar{
+.autoSelect::-webkit-scrollbar {
   display: none;
 }
 
-.noBottomMargin{
-   margin:0px!important;
+.noBottomMargin {
+  margin: 0px !important;
 }
 
-.styleList{
-  list-style-type:none!important;
-  margin:0px 10px;
+.styleList {
+  list-style-type: none !important;
+  margin: 0px 10px;
 }
 
 .styleList li {
-  margin:10px 0px;
+  margin: 10px 0px;
   padding: 0px 2px;
 }
 
-.styleList li:hover{
-  background-color: #0581C2!important;
-  border-radius: 7px!important;
+.styleList li:hover {
+  background-color: #0581C2 !important;
+  border-radius: 7px !important;
 }
 
-.styleList li:hover *{
-color:#FFF!important;
+.styleList li:hover * {
+  color: #FFF !important;
 }
 
-.styleList li a{
-  color:#000;
+.styleList li a {
+  color: #000;
+}
+
+.fileContainer {
+  width: 100%;
+  min-height: 200px;
+}
+
+.uploadMsg {
+  width: 7rem;
+  text-align: center;
+  margin: 0 auto;
+  margin-top: 2rem;
+}
+
+.uploadIcon {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.submitButton {
+  margin-top: 1rem;
+}
+
+.fileContainer {
+  width: 100%;
+  min-height: 200px;
+}
+
+.uploadMsg {
+  width: 7rem;
+  text-align: center;
+  margin: 0 auto;
+  margin-top: 2rem;
+}
+
+.uploadIcon {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.submitButton {
+  margin-top: 1rem;
+}
+
+.dateComponent {
+  margin-bottom: 1rem;
+}
+
+.txtBox {
+  min-height: 100px !important;
 }

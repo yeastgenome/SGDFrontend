@@ -163,7 +163,7 @@ SpreadsheetUpload.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    csrfToken: state.auth.csrfToken
+    csrfToken: state.auth.get('csrfToken')
   };
 }
 
@@ -192,12 +192,12 @@ const TEMPLATE_OPTIONS = [
     label: 'Interaction',
     value: 'Interaction_summaries',
     tempalateUrl: 'https://docs.google.com/spreadsheets/d/1v3auVd6IZzE14QHiC4v5SstbhuVZphYgo_2p72lRePM/edit?usp=sharing'
-  }, 
+  },
   {
     label: 'Regulation',
     value: 'regulation_summaries',
     tempalateUrl: 'https://docs.google.com/spreadsheets/d/173BbPl9Q05ZDIZB3unSGmDaJ-YK0v2UXXmUuats7QJw/edit?usp=sharing'
-  }, 
+  },
   {
     label: 'Disease',
     value: 'disease_summaries',

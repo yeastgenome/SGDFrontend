@@ -2,15 +2,17 @@ import React, { Component } from 'react';
 import CategoryLabel from './categoryLabel';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+
 import { PREVIEW_URL } from '../constants';
 import DetaiLList from './detailList';
 
 import TagList from './tagList';
-
+import moment from 'moment';
+import 'moment-timezone';
 class AnnotationSummary extends Component {
   renderUpdatedBy(d) {
     if (d.date_created && d.created_by) {
-      return <span>on {d.date_created} by {d.created_by}</span>;
+      return <span>on <b>{moment(d.time_created).tz('America/Los_Angeles').format('MM-DD-YYYY h:mm:ss A z')}</b> by {d.created_by}</span>;
     }
     return null;
   }
@@ -22,11 +24,11 @@ class AnnotationSummary extends Component {
           <div style={{ marginLeft: '1rem', marginBottom: '1rem' }}>
             <DetaiLList data={d.data.keys} />
           </div>
-        );  
+        );
       } else if (d.data.tags) {
         return this.renderTags(d.data);
       }
-      
+
     }
     return null;
   }
@@ -50,7 +52,7 @@ class AnnotationSummary extends Component {
 
   renderAnnotations() {
     let nodes = this.props.annotations.map( (d, i) => {
-      let previewUrl = `${PREVIEW_URL}${d.href}`;
+      let previewUrl = d.category =='download' ? d.href : `${PREVIEW_URL}${d.href}`;
       let curateNode = null;
       if (d.category === 'reference' || d.category === 'locus') {
         let curateUrl = `/curate${d.href}`.replace(/regulation|phenotype/, '');
@@ -59,6 +61,11 @@ class AnnotationSummary extends Component {
       let linkNode = <a href={previewUrl} target='_new'>{d.name}</a>;
       if (d.category === 'reserved_name') {
         linkNode = <span>{d.name}</span>;
+      }
+      if (d.category =='download'){
+        /*eslint-disable no-debugger */
+
+        curateNode = <Link to={{pathname:'file_curate_update', search:`?name=${d.name.replace(/<[^>]*>?/gm, '')}`}}><i className='fa fa-edit' /> Curate</Link>;
       }
       return (
         <div key={'note' + i}>
@@ -80,7 +87,7 @@ class AnnotationSummary extends Component {
   }
 
   render() {
-    
+
     return (
       <div>
         {this.renderMessage()}

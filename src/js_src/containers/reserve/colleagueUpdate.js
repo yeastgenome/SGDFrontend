@@ -10,7 +10,7 @@ import Loader from '../../components/loader';
 const AUTOCOMPLETE_BASE = '/autocomplete_results?category=colleague&q=';
 const COLLEAGUE_BASE = '/colleagues';
 
-class ColleagueUpdate extends Component {
+export class ColleagueUpdate extends Component {
   constructor(props) {
     super(props);
     this.state = {

@@ -48,7 +48,8 @@ class ResultsTable extends Component {
   }
 
   renderActions(d) {
-    return <ActionList category={d.category} href={d.href} id={d.id} />;
+    let dname = d.display_name ? d.display_name : undefined;
+    return <ActionList category={d.category} href={d.href} id={d.id} displayName={dname} />;
   }
 
   renderRows() {

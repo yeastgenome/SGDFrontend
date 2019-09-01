@@ -35,12 +35,13 @@ class ResultsList extends Component {
   }
 
   renderEntry(d, i, fields) {
+    let dname = d.displayName ? d.display_name : undefined;
     return (
       <div className={style.resultContainer} key={`sr${i}`}>
         {this.renderHeader(d)}
         {this.renderDetailFromFields(d, fields)}
         {this.renderHighlightedValues(d.highlight)}
-        <ActionList category={d.category} href={d.href} />
+        <ActionList category={d.category} href={d.href} displayName={dname} />
         <hr />
       </div>
     );

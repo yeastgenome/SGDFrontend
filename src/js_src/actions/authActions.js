@@ -1,5 +1,8 @@
-export function authenticateUser (username) {
-  return { type: 'AUTHENTICATE_USER', payload: username };
+export function authenticateUser(data) {
+  return {
+    type: 'AUTHENTICATE_USER',
+    payload: data
+  };
 }
 
 export function logout () {

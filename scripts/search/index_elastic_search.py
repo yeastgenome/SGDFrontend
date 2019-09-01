@@ -10,6 +10,7 @@ import collections
 from index_es_helpers import IndexESHelper
 import concurrent.futures
 import uuid
+import logging
 
 
 engine = create_engine(os.environ["NEX2_URI"], pool_recycle=3600)
@@ -832,63 +833,67 @@ def index_downloads():
                                                  Filedbentity.readme_file_id != None).all()
     print(("indexing " + str(len(files)) + " download files"))
     for x in files:
-        keyword = []
-        status = ""
-        temp = dbentity_file_obj.get(x.dbentity_id)
-        if temp:
-            keyword = temp
-        if (x.dbentity_status == "Active" or x.dbentity_status == "Archived"):
-            if x.dbentity_status == "Active":
-                status = "Active"
-            else:
-                status = "Archived"
-        obj = {
-            "name":
-                x.display_name,
-            "href":
-                x.s3_url,
-            "category":
-                "download",
-            "description":
-                x.description,
-            "keyword":
-                keyword,
-            "format":
-                str(x.format.display_name),
-            "status":
-                str(status),
-            "file_size":
-                str(IndexESHelper.convertBytes(x.file_size))
-                if x.file_size is not None else x.file_size,
-            "year":
-                str(x.year),
-            "readme_url":
-                x.readme_file[0].s3_url,
-            "topic": x.topic.display_name,
-            "data": x.data.display_name,
-            "path_id": x.get_path_id()
-        }
-        bulk_data.append({
-            "index": {
-                "_index": INDEX_NAME,
-                "_type": DOC_TYPE,
-                "_id": str(uuid.uuid4())
+        try:
+            keyword = []
+            status = ""
+            temp = dbentity_file_obj.get(x.dbentity_id)
+            if temp:
+                keyword = temp
+            if (x.dbentity_status == "Active" or x.dbentity_status == "Archived"):
+                if x.dbentity_status == "Active":
+                    status = "Active"
+                else:
+                    status = "Archived"
+            obj = {
+                ""
+                "name":
+                    x.display_name,
+                "href":
+                    x.s3_url,
+                "category":
+                    "download",
+                "description":
+                    x.description,
+                "keyword":
+                    keyword,
+                "format":
+                    str(x.format.display_name),
+                "status":
+                    str(status),
+                "file_size":
+                    str(IndexESHelper.convertBytes(x.file_size))
+                    if x.file_size is not None else x.file_size,
+                "year":
+                    str(x.year),
+                "readme_url":
+                    x.readme_file.s3_url,
+                "topic": x.topic.display_name,
+                "data": x.data.display_name,
+                "path_id": x.get_path_id()
             }
-        })
 
-        bulk_data.append(obj)
-        if len(bulk_data) == 50:
-            es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
-            bulk_data = []
+            bulk_data.append({
+                "index": {
+                    "_index": INDEX_NAME,
+                    "_type": DOC_TYPE,
+                    "_id": str(uuid.uuid4())
+                }
+            })
+
+            bulk_data.append(obj)
+            if len(bulk_data) == 50:
+                es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
+                bulk_data = []
+
+        except Exception as e:
+            logging.error(e.message)
 
     if len(bulk_data) > 0:
         es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
-        
+       
 
 def index_complex_names():
-    
     complexes = DBSession.query(Complexdbentity).all()
-    
     print(("Indexing " + str(len(complexes)) + " complex names"))
     
     bulk_data = []

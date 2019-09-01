@@ -73,8 +73,8 @@ class CurateLitLayout extends Component {
   renderSectionsNav() {
     let baseUrl = `${BASE_CURATE_URL}/${this.props.match.params.id}`;
     let current = this.props.pathname.replace(baseUrl, '');
-  
-    return SECTIONS.map( (d) => {
+
+    let temp = SECTIONS.map( (d) => {
       let relative;
       if (d === 'tags') {
         relative = '';
@@ -86,6 +86,7 @@ class CurateLitLayout extends Component {
       let _className = isActive ? style.activeNavLink : style.navLink;
       return <li key={`lit${d}`}><Link className={_className} to={url}>{d}</Link></li>;
     });
+    return temp;
   }
 
   render() {
@@ -103,7 +104,7 @@ class CurateLitLayout extends Component {
             <div>
               <Switch>
                 <Route component={CurateLitBasic} exact/>
-                {/* TODO: Navigate to phenotypes */} 
+                {/* TODO: Navigate to phenotypes */}
                 {/* <Route component={CurateLitPhenotype} path='/curate/reference/:id/phenotypes' exact/> */}
               </Switch>
             </div>

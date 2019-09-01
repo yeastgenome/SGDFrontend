@@ -1,10 +1,13 @@
 {
+  "test/test_curation/test_curation_views.py": true, 
   "test/test_functional.py": true, 
   "test/test_helpers.py": true, 
   "test/test_views/test_author.py": true, 
   "test/test_views/test_chemical.py": true, 
+  "test/test_views/test_complex.py": true, 
   "test/test_views/test_contig.py": true, 
   "test/test_views/test_dataset.py": true, 
+  "test/test_views/test_disease.py": true, 
   "test/test_views/test_ec_number.py": true, 
   "test/test_views/test_go.py": true, 
   "test/test_views/test_locus.py": true, 

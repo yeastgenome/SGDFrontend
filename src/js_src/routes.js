@@ -39,6 +39,8 @@ import ColleaguesShow from './containers/colleagues/show';
 // import AuthorResponse from './containers/authorResponse/index';
 import NewColleague from './containers/colleagues/new';
 import Regulation from './containers/regulation/index';
+import FileCurate from './containers/fileCurate';
+import FileCurateUpdate from './containers/fileCurate/updateFile.js';
 
 //TODO: Fix the Routes.
 export default (
@@ -68,17 +70,18 @@ export default (
       <Route component={requireAuthentication(CurateLit)} path='/curate/reference/:id' />
       <Route component={requireAuthentication(Regulation)} path='/regulation' />
       <Route component={requireAuthentication(LocusLayout)} path='/curate/locus/:id' />
+      <Route component={requireAuthentication(FileCurate)} path='/file_curate' />
+      <Route component={requireAuthentication(FileCurateUpdate)} path='/file_curate_update' />
     {/* </Route> */}
     </Switch>
 
-      
+
     {/* <Route component={PublicLayout}>
       <Route component={NewColleague} path='new_colleague' />
       <Route component={NewGeneNameReservation} path='new_reservation' />
-    </Route>
-   
-    <Route component={NotFound} path='*' />
-   */}
+      </Route>
+     <Route component={NotFound} path='*' />
+    */}
   </div>
 );
 

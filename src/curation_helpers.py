@@ -47,6 +47,7 @@ def link_gene_names(raw, locus_names_ids, ignore_str=''):
             processed = re.sub(target_regex, new_str, processed)
     return processed
 
+
 # take pipe separated list and return list of integers
 def process_pmid_list(raw):
     raw = raw.strip()
@@ -58,12 +59,18 @@ def process_pmid_list(raw):
     except ValueError as e:
         raise ValueError('PMIDs must be a space-separated list of valid PMIDs.')
 
+
 def get_curator_session(username):
-    curator_engine = create_engine(os.environ['NEX2_URI'])
-    session_factory = sessionmaker(bind=curator_engine, extension=ZopeTransactionExtension(), expire_on_commit=False)
-    curator_session = scoped_session(session_factory)
-    curator_session.execute('SET LOCAL ROLE ' + username)
-    return curator_session
+    if username:
+        curator_engine = create_engine(os.environ['NEX2_URI'])
+        session_factory = sessionmaker(
+            bind=curator_engine, extension=ZopeTransactionExtension(), expire_on_commit=False)
+        curator_session = scoped_session(session_factory)
+        curator_session.execute('SET LOCAL ROLE ' + username)
+        return curator_session
+    else:
+        return None
+
 
 def get_pusher_client():
     pusher_client = pusher.Pusher(
@@ -73,6 +80,7 @@ def get_pusher_client():
         ssl=True
     )
     return pusher_client
+
 
 def ban_from_cache(targets, is_exact=False):
     '''

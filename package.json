@@ -3,8 +3,8 @@
   "version": "17.10.0",
   "license": "MIT",
   "author": {
-    "name": "Travis Sheppard",
-    "email": "tshepp@stanford.edu"
+    "name": "SGD",
+    "email": "yeastgenome@gmail.com"
   },
   "dependencies": {
     "connected-react-router": "^6.5.2",
@@ -29,7 +29,11 @@
     "tcomb-form": "^0.9.17",
     "tcomb-form-templates-semantic": "^0.2.0",
     "underscore": "^1.8.3",
-    "webpack-bundle-tracker": "0.0.93"
+    "webpack-bundle-tracker": "0.0.93",
+    "date-fns": "^1.30.1",
+    "moment": "^2.22.2",
+    "moment-timezone": "^0.5.26",
+    "react-day-picker": "^7.3.0"
   },
   "devDependencies": {
     "babel-core": "^6.14.0",
@@ -52,7 +56,20 @@
     "url-loader": "^0.5.7",
     "webpack": "^1.13.2",
     "webpack-dev-server": "^1.16.1",
-    "webpack-node-externals": "^1.4.3"
+    "webpack-node-externals": "^1.4.3",
+    "ajv": "^6.6.1",
+    "babel-jest": "^23.6.0",
+    "babel-polyfill": "^6.26.0",
+    "config.json": "0.0.4",
+    "identity-obj-proxy": "^3.0.0",
+    "intl": "^1.2.5",
+    "jest": "^24.5.0",
+    "jsdoc-react-proptypes": "^1.0.3",
+    "json-loader": "^0.5.7",
+    "react-addons-test-utils": "^15.4.0",
+    "react-doc": "^1.2.6",
+    "react-test-renderer": "^16.6.3",
+    "redux-mock-store": "^1.5.3"
   },
   "scripts": {
     "start": "webpack-dev-server --history-api-fallback --port 2992 --hot --inline",
@@ -62,6 +79,12 @@
     "clean": "rimraf src/build && mkdir src/build",
     "copy": "cp -r src/public/. src/build",
     "test": "NODE_ENV=test mocha-webpack --webpack-config webpack.config-test.js \"src/js_src/**/*test.js\"",
-    "test:watch": "NODE_ENV=test mocha-webpack --webpack-config webpack.config-test.js --watch \"src/js_src/**/*test.js\""
+    "test:watch": "NODE_ENV=test mocha-webpack --webpack-config webpack.config-test.js --watch \"src/js_src/**/*test.js\"",
+    "test-with-jest": "jest",
+    "test-wtih-jest:watch": "jest --watch",
+    "jest-coverage": "jest --coverage --colors",
+    "clean-node": "rm -rf node_modules",
+    "reinstall": "npm run clean-node && npm install",
+    "rebuild": "npm run clean-node && npm install && npm run build"
   }
 }

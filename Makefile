@@ -83,3 +83,10 @@ load-triage:
 crawl-site:
 	source prod_variables.sh && python src/loading/scrapy/pages/spiders/pages_spider.py
 
+load-files:
+	source dev_variables.sh && CREATED_BY=fgondwe python scripts/loading/files/upload_files_fdb.py
+
+tests-dev:
+	source dev_variables.sh && python test/test_dev.py
+
+
