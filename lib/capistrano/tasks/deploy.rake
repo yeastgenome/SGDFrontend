@@ -2,7 +2,7 @@ namespace :deploy do
   desc 'Build application'
   task :build do
     on roles(:app), in: :sequence do
-      execute "export WORKON_HOME=/data/envs/ && source virtualenvwrapper.sh && cd #{current_path} && mkvirtualenv sgd3 -p python3 && workon sgd3 && make prod-build"
+      execute "export WORKON_HOME=/data/envs/ && source virtualenvwrapper.sh && cd #{current_path} && workon sgd3 && make prod-build"
     end
   end
 
