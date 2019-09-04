@@ -6,8 +6,6 @@ import fetchData from '../../lib/fetchData';
 import { clearError, setError } from '../../actions/metaActions';
 import PropTypes from 'prop-types';
 
-
-/*eslint-disable no-debugger */
 //const UPLOAD_URL = '/upload_file_curate';
 const UPLOAD_TAR_URL = '/upload_tar_file';
 const GET_FILE_URL = '/get_file';
@@ -111,8 +109,6 @@ FileCurateUpdate.propTypes = {
   dispatch: PropTypes.func,
   location: PropTypes.object
 };
-
-/*eslint-disable no-debugger */
 
 function mapStateToProps(state) {
   return {

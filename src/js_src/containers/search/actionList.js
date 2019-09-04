@@ -6,7 +6,6 @@ class ActionList extends Component {
     let action_categories = ['locus', 'reference', 'reserved_name', 'download'];
     if(action_categories.includes(this.props.category)){
       if(this.props.category == 'download'){
-        /*eslint-disable no-debugger */
         return(
         <Link
           style={{ display: 'inline-block', minWidth: '6rem' }}

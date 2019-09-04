@@ -7,7 +7,6 @@ import dateFnsParse from 'date-fns/parse';
 
 const DEFAULT_FORMAT = 'M/D/YYYY';
 
-/* eslint-disable no-debugger */
 class FormDatePicker extends Component{
   constructor(props){
     super(props);

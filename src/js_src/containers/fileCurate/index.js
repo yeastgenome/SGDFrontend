@@ -1,4 +1,3 @@
-/* eslint-disable no-debugger */
 /* eslint-disable no-unused-vars */
 /**
  * @summary File Curation container component
