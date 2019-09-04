@@ -2299,7 +2299,6 @@ def regulation_file(request):
                         
                 column = COLUMNS['happens_during']
                 happens_during = row[column]
-                # import pdb;pdb.set_trace()
                 happens_during_current = None if pd.isnull(happens_during) else None if not str(happens_during).split(SEPARATOR)[0] else str(happens_during).split(SEPARATOR)[0]
                 if happens_during_current and happens_during_current not in happensduring_to_id:
                     list_of_regulations_errors.append('Error in direction on row ' + str(index) + ', column ' + column)

@@ -829,8 +829,7 @@ def index_downloads():
     bulk_data = []
     dbentity_file_obj = IndexESHelper.get_file_dbentity_keyword()
     files = DBSession.query(Filedbentity).filter(Filedbentity.is_public == True,
-                                                 Filedbentity.s3_url != None,
-                                                 Filedbentity.readme_file_id != None).all()
+                                                 Filedbentity.s3_url != None).all()
     print(("indexing " + str(len(files)) + " download files"))
     for x in files:
         try:
@@ -844,12 +843,12 @@ def index_downloads():
                     status = "Active"
                 else:
                     status = "Archived"
+
             obj = {
                 ""
                 "name":
                     x.display_name,
-                "href":
-                    x.s3_url,
+                "href": x.s3_url if x else None,
                 "category":
                     "download",
                 "description":
@@ -865,8 +864,7 @@ def index_downloads():
                     if x.file_size is not None else x.file_size,
                 "year":
                     str(x.year),
-                "readme_url":
-                    x.readme_file.s3_url,
+                "readme_url": x.readme_file.s3_url if x.readme_file else None,
                 "topic": x.topic.display_name,
                 "data": x.data.display_name,
                 "path_id": x.get_path_id()
@@ -884,7 +882,7 @@ def index_downloads():
             if len(bulk_data) == 50:
                 es.bulk(index=INDEX_NAME, body=bulk_data, refresh=True)
                 bulk_data = []
-
+        
         except Exception as e:
             logging.error(e.message)
 
@@ -980,10 +978,10 @@ if __name__ == "__main__":
         with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
             index_references()
     '''
+
     cleanup()
     setup()
     t1 = Thread(target=index_part_1)
     t2 = Thread(target=index_part_2)
     t1.start()
     t2.start()
-    

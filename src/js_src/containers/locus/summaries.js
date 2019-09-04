@@ -77,9 +77,8 @@ LocusSummaries.propTypes = {
 
 function mapStateToProps(state) {
   let _data = state.locus.get('data') ? state.locus.get('data').toJS() : null;
-  debugger;
   return {
-    
+
     data: _data,
     isPending: state.locus.get('isPending')
   };

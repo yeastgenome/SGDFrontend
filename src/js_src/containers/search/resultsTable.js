@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 const MATCH_LABEL = 'match_by';
 const MAX_CHAR = 100;
 const SGD_LINK_URL = 'https://www.yeastgenome.org';
-
+/* eslint-disable */
 class ResultsTable extends Component {
   getFields() {
     let fields = ['display_name', MATCH_LABEL, 'actions'];
@@ -49,14 +49,22 @@ class ResultsTable extends Component {
 
   renderActions(d) {
     let dname = d.display_name ? d.display_name : undefined;
+
     return <ActionList category={d.category} href={d.href} id={d.id} displayName={dname} />;
   }
 
   renderRows() {
     let entries = this.props.entries;
     let fields = this.getFields();
+    let href = '';
     let rowNodes = entries.map( (d, i) => {
-      let href = `${SGD_LINK_URL}${d.href}`;
+      if(d.category == 'download'){
+        href = d.href;
+      }
+      else{
+        href = `${SGD_LINK_URL}${d.href}`;
+      }
+
       let nodes = fields.map( (field) => {
         let _key = `srtc.${i}.${field}`;
         switch(field) {

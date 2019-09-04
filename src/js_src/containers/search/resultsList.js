@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+/* eslint-disable */
 import style from './style.css';
 import CategoryLabel from '../../components/categoryLabel';
 import DetailList from '../../components/detailList';

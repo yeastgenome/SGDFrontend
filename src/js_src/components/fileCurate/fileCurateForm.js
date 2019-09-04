@@ -11,8 +11,6 @@ import PropTypes from 'prop-types';
 //import Select from 'react-select';
 //const DROP_DOWN_URL = '/file_curate_menus';
 
-/* eslint-disable no-debugger */
-
 class FileCurateForm extends Component{
   constructor(props){
     super(props);
