@@ -16,7 +16,7 @@ import LocusBasic from '../locus/basic';
 import LocusSummaries from '../locus/summaries';
 const BASE_CURATE_URL = '/curate/locus';
 const SECTIONS = [
-  'basic',
+  // 'basic',
   // 'gene_name',
   'summaries'
 ];
@@ -77,7 +77,7 @@ class LocusLayout extends Component {
             <Switch>
               <Route component={LocusBasic} path='/curate/locus/:id/basic'/>
               <Route component={LocusSummaries} path='/curate/locus/:id/summaries'/>
-              <Route component={LocusBasic} path='/'/>
+              <Route component={LocusSummaries} path='/'/>
             </Switch>
           </div>  
         </div>
