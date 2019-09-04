@@ -13,7 +13,7 @@ import os
 
 SEARCH_URL = config.backend_url + '/get_search_results'
 TEMPLATE_ROOT = 'src:sgd/frontend/yeastgenome/static/templates/'
-ENV = os.getenv('ENV')
+ENV = os.getenv('ENV') if os.getenv('ENV') else config.env
 
 @view_config(route_name='healthcheck')
 def healthcheck(request):
