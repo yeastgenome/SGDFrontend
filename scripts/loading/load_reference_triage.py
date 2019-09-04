@@ -19,6 +19,7 @@ TERMS = ['yeast', 'cerevisiae']
 URL = 'http://www.ncbi.nlm.nih.gov/pubmed/'
 DAY = 21
 RETMAX = 10000
+MAX = 500
 
 logging.basicConfig()
 log = logging.getLogger()
@@ -57,7 +58,7 @@ def load_references():
     log.info(str(datetime.now()))
     log.info("Getting PMID list...")
     pmid_list = get_pmid_list(TERMS, RETMAX, DAY)
-    pmids = []
+    pmids_all = []
     for pmid in pmid_list:
         if int(pmid) in pmid_to_reference_id:
             continue
@@ -65,15 +66,35 @@ def load_references():
             continue
         if int(pmid) in pmid_to_refdeleted_id:
             continue
-        pmids.append(pmid)
+        pmids_all.append(pmid)
 
-    if len(pmids) == 0:
+    if len(pmids_all) == 0:
         log.info("No new papers")
         return
     # get data for each PMID entry
     log.info(str(datetime.now()))
     log.info("Getting Pubmed records...")
-    records = get_pubmed_record(','.join(pmids))
+
+    pmids = []
+    i = 0
+    for pmid in pmids_all:
+        pmids.append(pmid)
+        i = i + 1
+        if i > MAX:
+            records = get_pubmed_record(','.join(pmids))
+            handle_one_record(db_session, records, gene_list, alias_to_name)
+            i = 0
+
+    log.info("Done!")
+
+    if i > 0:
+        records = get_pubmed_record(','.join(pmids))
+        handle_one_record(db_session, records, gene_list, alias_to_name)
+
+    log.info("Done!")
+
+def handle_one_record(db_session, records, gene_list, alias_to_name):
+
     i = 1
     for rec in records:
         rec_file = StringIO(rec)
@@ -102,27 +123,8 @@ def load_references():
         abstract = record.get('AB', '')
         gene_names = extract_gene_names(abstract, gene_list, alias_to_name)
 
-        # pmid = int(record.get('Id'))
-        # pubmed_url = 'https://www.ncbi.nlm.nih.gov/pubmed/' + str(pmid)
-        # doi_url = ""
-        # if record.get('DOI'):
-        #     doi = record.get('DOI')
-        #     doi_url = "/".join(['http://dx.doi.org', doi])
-        # title = record.get('Title', '')
-        # authors = record.get('AuthorList', [])
-        # pubdate = record.get('PubDate', '')  # 'PubDate': '2012 Mar 20'  
-        # year = pubdate.split(' ')[0]
-        # journal = record.get('FullJournalName', '')
-        # volume = record.get('Volume', '')
-        # issue = record.get('Issue', '')
-        # pages = record.get('Pages', '')
-        # citation = set_cite(title, authors, year, journal, volume, issue, pages)  
-        # abstract = get_abstract(pmid)
-        # gene_names = extract_gene_names(abstract, gene_list, alias_to_name)
-
         # insert formatted data to DB
         insert_reference(db_session, pmid, citation, doi_url, abstract, " ".join(gene_names))
-    log.info("Done!")
 
 def insert_reference(db_session, pmid, citation, doi_url, abstract, gene_list):
     x = None
