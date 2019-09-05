@@ -1,6 +1,6 @@
 language: python
 python:
-  - "2.7"
+  - "3.5"
 install:
   - pip install -r requirements.txt
   - cp src/sgd/frontend/default_config.py src/sgd/frontend/config.py
