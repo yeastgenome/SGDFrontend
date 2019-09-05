@@ -230,12 +230,13 @@ def variant_viewer(request):
 
 @view_config(route_name='new_gene_name_reservation')
 def new_gene_name_reservation(request):
-    if ENV == 'dev':
-        ci_base = config.backend_url
-    elif ENV == 'prod':
-        ci_base = 'https://curate.yeastgenome.org'
-    else:
-        ci_base = 'https://curate.qa.yeastgenome.org'
+    ci_base = config.curate_server
+    # if ENV == 'dev':
+    #     ci_base = config.backend_url
+    # elif ENV == 'prod':
+    #     ci_base = 'https://curate.yeastgenome.org'
+    # else:
+    #     ci_base = 'https://curate.qa.yeastgenome.org'
 
     return render_to_response(
         TEMPLATE_ROOT + 'iframe.jinja2', {
@@ -248,12 +249,13 @@ def new_gene_name_reservation(request):
 
 @view_config(route_name='new_colleague')
 def new_colleague(request):
-    if ENV == 'dev':
-        ci_base = config.backend_url
-    elif ENV == 'prod':
-        ci_base = 'https://curate.yeastgenome.org'
-    else:
-        ci_base = 'https://curate.qa.yeastgenome.org'
+    ci_base = config.curate_server
+    # if ENV == 'dev':
+    #     ci_base = config.backend_url
+    # elif ENV == 'prod':
+    #     ci_base = 'https://curate.yeastgenome.org'
+    # else:
+    #     ci_base = 'https://curate.qa.yeastgenome.org'
 
     return render_to_response(
         TEMPLATE_ROOT + 'iframe.jinja2', {
