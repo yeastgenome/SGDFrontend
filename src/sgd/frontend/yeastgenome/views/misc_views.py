@@ -230,7 +230,8 @@ def variant_viewer(request):
 
 @view_config(route_name='new_gene_name_reservation')
 def new_gene_name_reservation(request):
-    ci_base = config.curate_server
+    # ci_base = config.curate_server
+    ci_base = 'https://curate1-web.dev.yeastgenome.org'
     # if ENV == 'dev':
     #     ci_base = config.backend_url
     # elif ENV == 'prod':
@@ -249,7 +250,8 @@ def new_gene_name_reservation(request):
 
 @view_config(route_name='new_colleague')
 def new_colleague(request):
-    ci_base = config.curate_server
+    # ci_base = config.curate_server
+    ci_base = 'https://curate1-web.dev.yeastgenome.org'
     # if ENV == 'dev':
     #     ci_base = config.backend_url
     # elif ENV == 'prod':
