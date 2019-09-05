@@ -9,6 +9,6 @@ class SGDViewTests(unittest.TestCase):
         testing.tearDown()
 
     def test_app(self):
-		from src.sgd.frontend import prepare_frontend
-		config = prepare_frontend('yeastgenome')
-		config.make_wsgi_app()
+        from src.sgd.frontend import prepare_frontend
+        config = prepare_frontend('yeastgenome')
+        config.make_wsgi_app()
