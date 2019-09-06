@@ -1173,7 +1173,7 @@ def send_newsletter(request):
             return HTTPOk(body=json.dumps(returnValue), content_type='text/json')
         else:
             return HTTPBadRequest(body=json.dumps(returnValue), content_type='text/json')
-    except:
+    except Exception as e:
         return HTTPBadRequest(body=json.dumps({'error': "Error occured during sending newsletter"}), content_type='text/json')
 
 
