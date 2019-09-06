@@ -359,8 +359,10 @@ def link_gene_names(raw, locus_names_ids):
         locus_names_object[display_name] = sgdid
     processed = raw
     words = raw.split(' ')
+    delete_dict = {sp_character: '' for sp_character in string.punctuation}
+    table = str.maketrans(delete_dict)
     for p_original_word in words:
-        original_word = str(p_original_word).translate(None, string.punctuation)
+        original_word = str(p_original_word).translate(table)
         wupper = original_word.upper()
         if wupper in list(locus_names_object.keys()) and len(wupper) > 3:
             sgdid = locus_names_object[wupper]
