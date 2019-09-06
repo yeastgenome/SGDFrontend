@@ -20,6 +20,7 @@ import re
 from bs4 import BeautifulSoup
 import pandas as pd
 import cgi
+import string
 
 from .helpers import allowed_file, extract_id_request, secure_save_file,\
     curator_or_none, extract_references, extract_keywords,\
@@ -1533,11 +1534,16 @@ def ptm_update(request):
         site_index = str(request.params.get('site_index'))
         if not site_index:
             return HTTPBadRequest(body=json.dumps({'error': "site index is blank"}), content_type='text/json')
-        site_index = int(site_index)
+        try:
+            site_index = int(site_index)
+        except:
+            return HTTPBadRequest(body=json.dumps({'error': "site index should be number."}), content_type='text/json')
         
         site_residue = str(request.params.get('site_residue'))
-        if not site_residue:
-            return HTTPBadRequest(body=json.dumps({'error': "site residue is blank"}), content_type='text/json')
+        if len(site_residue) == 1 and site_residue in string.ascii_letters:
+            site_residue = site_residue.upper()
+        else:
+            return HTTPBadRequest(body=json.dumps({'error': "site residue should be single letter."}), content_type='text/json')
 
         psimod_id = str(request.params.get('psimod_id'))
         if not psimod_id:
