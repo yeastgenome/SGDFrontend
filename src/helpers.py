@@ -502,8 +502,7 @@ def send_newsletter_email(subject, recipients, msg):
         message["Subject"] = subject
         message["From"] = SENDER_EMAIL
         message.add_header('reply-to',REPLY_TO)
-
-        html_message = MIMEText(msg.encode('utf8'), "html")
+        html_message = MIMEText(msg, "html")
         message.attach(html_message)
         
         server = smtplib.SMTP("localhost", 25)
@@ -520,13 +519,13 @@ def send_newsletter_email(subject, recipients, msg):
                 
         return {"success": "Email was successfully sent."}
 
-    except SMTPHeloError as e:
+    except smtplib.SMTPHeloError as e:
         return {"error", "The server didn't reply properly to the helo greeting. "}
-    except SMTPRecipientsRefused as e:
+    except smtplib.SMTPRecipientsRefused as e:
         return {"error", "The server rejected ALL recipients (no mail was sent)."}
-    except SMTPSenderRefused as e:
+    except smtplib.SMTPSenderRefused as e:
         return {"error", "The server didn't accept the sender's email"}
-    except SMTPDataError as e:
+    except smtplib.SMTPDataError as e:
         return {"error", "The server replied with an unexpected"}
     except Exception as e:
         return {"error":"Error occured while sending email."}
