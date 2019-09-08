@@ -86,5 +86,9 @@
     "clean-node": "rm -rf node_modules",
     "reinstall": "npm run clean-node && npm install",
     "rebuild": "npm run clean-node && npm install && npm run build"
+  },
+  "engines": {
+    "node": "10.16.0",
+    "npm": "6.9.0"
   }
 }
