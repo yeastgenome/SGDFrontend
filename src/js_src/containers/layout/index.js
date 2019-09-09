@@ -152,12 +152,6 @@ class LayoutComponent extends Component {
           </div>
         </div>
         <Switch>
-          <Route component={requireAuthentication(GeneNameReservationIndex)} path='/reservations' exact />
-          <Route component={requireAuthentication(GeneNameReservation)} path='/reservations/:id' exact />
-          <Route component={requireAuthentication(GeneNameReservationEdit)} path='/reservations/:id/edit' exact />
-          <Route component={requireAuthentication(GeneNameReservationStandardize)} path='/reservations/:id/standardize' exact />
-        </Switch>
-        <Switch>
           <Route component={requireAuthentication(CurateHome)} path='/' exact />
           <Route component={requireAuthentication(TriageIndex)} path='/triage' />
           <Route component={requireAuthentication(ColleaguesIndex)} path='/colleagues/triage' exact />
@@ -176,6 +170,10 @@ class LayoutComponent extends Component {
           <Route component={requireAuthentication(LocusLayout)} path='/curate/locus/:id' />
           <Route component={requireAuthentication(FileCurate)} path='/file_curate' />
           <Route component={requireAuthentication(FileCurateUpdate)} path='/file_curate_update' />
+          <Route component={requireAuthentication(GeneNameReservationIndex)} path='/reservations' exact />
+          <Route component={requireAuthentication(GeneNameReservation)} path='/reservations/:id' exact />
+          <Route component={requireAuthentication(GeneNameReservationEdit)} path='/reservations/:id/edit' exact />
+          <Route component={requireAuthentication(GeneNameReservationStandardize)} path='/reservations/:id/standardize' exact />
           <Route component={NotFound} path='*' />
         </Switch>
       </div>
