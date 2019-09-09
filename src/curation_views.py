@@ -1169,9 +1169,12 @@ def send_newsletter(request):
         recipients = recipients.split(";")
         
         returnValue = send_newsletter_email(subject,recipients,html)
-        return returnValue
-    except:
-        return HTTPBadRequest(body=json.dumps({'error': "Error occured during sending newsletter"}))
+        if "success" in returnValue:
+            return HTTPOk(body=json.dumps(returnValue), content_type='text/json')
+        else:
+            return HTTPBadRequest(body=json.dumps(returnValue), content_type='text/json')
+    except Exception as e:
+        return HTTPBadRequest(body=json.dumps({'error': "Error occured during sending newsletter"}), content_type='text/json')
 
 
 @view_config(route_name='ptm_file_insert', renderer='json', request_method='POST')

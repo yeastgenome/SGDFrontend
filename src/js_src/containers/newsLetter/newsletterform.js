@@ -94,7 +94,7 @@ class NewsLetterForm extends Component {
       this.props.updateCode(data.code);
     }).catch((data) => {
       this.setState({ isPending: false,isErrorCode : true });
-      this.props.dispatch(setError(data.error));
+      this.props.errorMessage(data.error);
     });
 
   }
@@ -120,7 +120,7 @@ class NewsLetterForm extends Component {
       this.props.updateRecipients(data.colleagues);
       this.setState({ isErrorRecipients:false });
     }).catch((data) => {
-      this.props.dispatch(setError(data.error));
+      this.props.errorMessage(data.error);
     });
   }
 
@@ -133,9 +133,9 @@ class NewsLetterForm extends Component {
           html: this.props.code, subject: this.props.subject, recipients: this.props.recipients
         }
       }).then((data) => {
-        this.props.dispatch(setMessage(data.success));
+        this.props.successMessage(data.success);
       }).catch((data) => {
-        this.props.dispatch(setError(data.error));
+        this.props.errorMessage(data.error);
       });
     }
   }
@@ -253,7 +253,6 @@ NewsLetterForm.propTypes = {
   code: PropTypes.string,
   subject: PropTypes.string,
   recipients: PropTypes.string,
-  dispatch: PropTypes.func,
   updateURL: PropTypes.func,
   updateCode: PropTypes.func,
   updateRecipients: PropTypes.func,
@@ -271,6 +270,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    successMessage:(message) => {dispatch(setMessage(message))},
+    errorMessage: (message) => { dispatch(setError(message))},
     updateURL: (url) => { dispatch(setURL(url)); },
     updateCode: (code) => { dispatch(setCode(code)); },
     updateSubject: (subject) => { dispatch(setSubject(subject));},
