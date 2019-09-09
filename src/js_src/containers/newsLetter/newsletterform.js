@@ -256,7 +256,9 @@ NewsLetterForm.propTypes = {
   updateURL: PropTypes.func,
   updateCode: PropTypes.func,
   updateRecipients: PropTypes.func,
-  updateSubject: PropTypes.func
+  updateSubject: PropTypes.func,
+  successMessage: PropTypes.func,
+  errorMessage: PropTypes.func,
 };
 
 function mapStateToProps(state) {
@@ -270,8 +272,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    successMessage:(message) => {dispatch(setMessage(message))},
-    errorMessage: (message) => { dispatch(setError(message))},
+    successMessage:(message) => {dispatch(setMessage(message));},
+    errorMessage: (message) => { dispatch(setError(message));},
     updateURL: (url) => { dispatch(setURL(url)); },
     updateCode: (code) => { dispatch(setCode(code)); },
     updateSubject: (subject) => { dispatch(setSubject(subject));},
