@@ -32,6 +32,8 @@ namespace_mapping = { 'biological process' : 'go_process',
                       'cellular component' : 'go_component',
                       'molecular function' : 'go_function' }
 
+MITO_ID = "KP263414"
+
 def dump_data():
  
     nex_session = get_session()
@@ -105,7 +107,7 @@ def dump_data():
             chrnum = chr2num[chr]
             contig_id_to_chrnum[x.contig_id] = chrnum
             if chrnum == 17:
-                files[chrnum].write(">Feature ref|NC_001224|\n")
+                files[chrnum].write(">Feature ref|" + MITO_ID + "|\n")
             else:
                 files[chrnum].write(">Feature tpg|" + x.genbank_accession + "|\n")
 
@@ -715,8 +717,8 @@ def get_protein_id_for_duplicate_gene():
     
 def get_col4_5_for_code():
     
-    return { "IEA": ("inference",  "electronic annotation"),
-             "IDA": ("experiment", "EXISTENCE:direct assay"),
+    # return { "IEA": ("inference",  "electronic annotation"),
+    return { "IDA": ("experiment", "EXISTENCE:direct assay"),
              "IBA": ("inference",  "protein family"),
              "IMP": ("experiment", "EXISTENCE:mutant phenotype"),
              "HDA": ("experiment", "EXISTENCE:direct assay"),
