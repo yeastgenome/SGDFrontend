@@ -79,16 +79,34 @@ export const allTags = [
     label: 'Regulation information',
     hasGenes: true,
     inTriage: true
-  }
+  },
+  {
+    name: 'pathways',
+    label: 'Pathways',
+    hasGenes: true,
+    inTriage: true
+  },
+  {
+    name: 'gene_model',
+    label: 'Gene model',
+    hasGenes: true,
+    inTriage: true
+  },
+  {
+    name: 'engineering',
+    label: 'Engineering',
+    hasGenes: true,
+    inTriage: true
+  },
+  {
+    name: 'alleles',
+    label: 'Alleles',
+    hasGenes: true,
+    inTriage: true
+  },
   // {
   //   name: 'go_needs_review',
   //   label: 'GO needs review',
-  //   hasGenes: false,
-  //   inTriage: false
-  // },
-  // {
-  //   name: 'gene_model',
-  //   label: 'Gene model',
   //   hasGenes: false,
   //   inTriage: false
   // },
@@ -119,12 +137,6 @@ export const allTags = [
   // {
   //   name: 'paragraph_not_needed',
   //   label: 'Paragraph not needed',
-  //   hasGenes: false,
-  //   inTriage: false
-  // },
-  // {
-  //   name: 'pathways',
-  //   label: 'Pathways',
   //   hasGenes: false,
   //   inTriage: false
   // },

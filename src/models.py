@@ -1652,7 +1652,9 @@ class CurationReference(Base):
         'phenotype_needs_review': 'Phenotype needs review',
         'ptm': 'Post-translational modifications',
         'regulation_information': 'Regulation information',
-        'fast_track': 'Fast Track'
+        'fast_track': 'Fast Track',
+        'engineering': 'Engineering',
+        'alleles': 'Alleles'
     }
 
     @staticmethod
