@@ -758,7 +758,8 @@ def get_chr_to_num_mapping():
 
 def clean_up_desc(desc):
 
-    desc = desc.replace("<i>", "").replace("</i>", "")
+    desc = desc.replace('“', "'").replace('"', "'").replace("’", "'")
+    desc = desc.replace('”', "'").replace("<i>", "").replace("</i>", "")
 
     return desc.replace("Putative protein of unknown function", "hypothetical protein").replace("Protein of unknown function", "hypothetical protein").replace("protein of unknown function", "hypothetical protein").replace("Hypothetical protein", "hypothetical protein")
           
