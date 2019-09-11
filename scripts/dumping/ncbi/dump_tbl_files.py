@@ -272,15 +272,15 @@ def tar_files(datestamp, format):
 
     tf = tarfile.open(this_tar_file, "w:gz")
     
-    for i in range(18):
+    for i in range(17):
         if i == 0:
-            continue
-        if i == 17 and format in ['sqn', 'gbf']:
             continue
         if i < 10:
             tf.add("chr0" + str(i) + "." + format)
         else:
             tf.add("chr" + str(i) + "." + format)
+    tf.add("chrmt." + format)
+
     tf.close()
 
     return this_tar_file
@@ -544,6 +544,8 @@ def open_file_handles():
     for i in range (18):
         if i < 10:
             chrom.append("0" + str(i))
+        elif i == 17:
+            chrom.append("mt")
         else:
             chrom.append(str(i))
             
@@ -667,9 +669,9 @@ def get_go_data(nex_session):
         if eco == 'ND' or eco not in code_mapping:
             continue
 
-        (col4Text, col5Text) = code_mapping [eco]
-
-        goline = TABS + col4Text + "\t" + col5Text + ", "
+        (col4Text, col5Text) = code_mapping[eco]
+        # goline = TABS + col4Text + "\t" + col5Text + ", "
+        goline = TABS + col4Text + "\t" + col5Text + ":"
         if eco == "IBA": 
             if x.annotation_id in annotation_id_to_panther:
                 goline = goline + annotation_id_to_panther[x.annotation_id]
@@ -718,22 +720,22 @@ def get_protein_id_for_duplicate_gene():
 def get_col4_5_for_code():
     
     # return { "IEA": ("inference",  "electronic annotation"),
-    return { "IDA": ("experiment", "EXISTENCE:direct assay"),
-             "IBA": ("inference",  "protein family"),
+    #          "IBA": ("inference",  "protein family"),
+    #          "TAS": ("inference",  "EXISTENCE:author statement"),
+    #          "NAS": ("inference",  "EXISTENCE:author statement"),
+    return { "ISS": ("inference",  "similar to DNA sequence"),
+             "ISM": ("inference",  "similar to DNA sequence"),
+             "ISA": ("inference",  "similar to DNA sequence"),
+             "ISO": ("inference",  "similar to DNA sequence"),
+             "IDA": ("experiment", "EXISTENCE:direct assay"),
              "IMP": ("experiment", "EXISTENCE:mutant phenotype"),
              "HDA": ("experiment", "EXISTENCE:direct assay"),
              "IGI": ("experiment", "EXISTENCE:genetic interaction"),
              "IPI": ("experiment", "EXISTENCE:physical interaction"),
              "IC":  ("experiment", "EXISTENCE:curator inference"),
-             "ISS": ("inference",  "similar to DNA sequence"),
-             "ISM": ("inference",  "similar to DNA sequence"),
-             "TAS": ("inference",  "EXISTENCE:author statement"),
-             "ISA": ("inference",  "similar to DNA sequence"),
              "HMP": ("experiment", "EXISTENCE:mutant phenotype"),
-             "NAS": ("inference",  "EXISTENCE:author statement"),
              "IEP": ("experiment", "EXISTENCE:expression pattern"),
-             "HGI": ("experiment", "EXISTENCE:genetic interaction"),
-             "ISO": ("inference",  "similar to DNA sequence") }    
+             "HGI": ("experiment", "EXISTENCE:genetic interaction") }
 
 
 def get_chr_to_num_mapping():
