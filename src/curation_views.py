@@ -273,7 +273,9 @@ def reference_triage_promote(request):
         try:
             new_reference = add_paper(triage.pmid, request.json['data']['assignee'])
             new_reference_id = new_reference.dbentity_id
-            DBSession.delete(triage)
+            curator_session = get_curator_session(request.session['username'])
+            triage = curator_session.query(Referencetriage).filter_by(curation_id=id).one_or_none()
+            curator_session.delete(triage)
             transaction.commit()
         except Exception as e:
             traceback.print_exc()
