@@ -10611,7 +10611,7 @@ class Updatelog(Base):
 
 # should be valid genes (by standard name or systematic name) and should not be primary, additional, or review for same gene
 def validate_tags(tags):
-    extra_tag_list = ['regulation_information', 'ptm', 'homology_disease']
+    extra_tag_list = ['regulation_information', 'ptm', 'homology_disease', 'gene_model', 'pathways', 'engineering', 'alleles']
     primary_obj = {}
     additional_obj = {}
     review_obj = {}
