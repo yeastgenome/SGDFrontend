@@ -1878,13 +1878,13 @@ def regulation_insert_update(request):
                 if curator_session:
                     curator_session.rollback()
                 isSuccess = False
-                returnValue = 'Updated failed, record already exists'
+                returnValue = 'Integrity Error: ' + str(e.orig.pgerror)
             except DataError as e:
                 transaction.abort()
                 if curator_session:
                     curator_session.rollback()
                 isSuccess = False
-                returnValue = 'Update failed, issue in data'
+                returnValue = 'Data Error: ' + str(e.orig.pgerror)
             except InternalError as e:
                 transaction.abort()
                 if curator_session:
@@ -1894,12 +1894,11 @@ def regulation_insert_update(request):
                 error = error[0:error.index('.')]
                 returnValue = 'Updated failed, ' + error
             except Exception as e:
-                print(e)
                 transaction.abort()
                 if curator_session:
                     curator_session.rollback()
                 isSuccess = False
-                returnValue = 'Updated failed, ' + str(e.message)
+                returnValue = 'Updated failed, ' + str(e)
             finally:
                 if curator_session:
                     curator_session.close()
@@ -1929,19 +1928,19 @@ def regulation_insert_update(request):
                 if curator_session:
                     curator_session.rollback()
                 isSuccess = False
-                returnValue = 'Insert failed, record already exists'
+                returnValue = 'Integrity Error: ' + str(e.orig.pgerror)
             except DataError as e:
                 transaction.abort()
                 if curator_session:
                     curator_session.rollback()
                 isSuccess = False
-                returnValue = 'Insert failed, issue in data'
+                returnValue = 'Data Error: ' + str(e.orig.pgerror)
             except Exception as e:
                 transaction.abort()
                 if curator_session:
                     curator_session.rollback()
                 isSuccess = False
-                returnValue = 'Insert failed' + ' ' + str(e.message)
+                returnValue = 'Insert failed ' +str(e)
             finally:
                 if curator_session:
                     curator_session.close()
@@ -1952,7 +1951,7 @@ def regulation_insert_update(request):
         return HTTPBadRequest(body=json.dumps({'error': returnValue}), content_type='text/json')
 
     except Exception as e:
-        return HTTPBadRequest(body=json.dumps({'error': e.message}), content_type='text/json')
+        return HTTPBadRequest(body=json.dumps({'error': str(e)}), content_type='text/json')
 
 
 @view_config(route_name='regulations_by_filters',renderer='json',request_method='POST')
@@ -2413,19 +2412,19 @@ def regulation_file(request):
                 if curator_session:
                     curator_session.rollback()
                 isSuccess = False
-                returnValue = e.message
+                returnValue = 'Integrity Error: '+str(e.orig.pgerror)
             except DataError as e:
                 transaction.abort()
                 if curator_session:
                     curator_session.rollback()
                 isSuccess = False
-                returnValue = e.message
+                returnValue = 'Data Error: '+str(e.orig.pgerror)
             except Exception as e:
                 transaction.abort()
                 if curator_session:
                     curator_session.rollback()
                 isSuccess = False
-                returnValue = e.message
+                returnValue = str(e)
             finally:
                 if curator_session:
                     curator_session.close()
@@ -2436,7 +2435,7 @@ def regulation_file(request):
         return HTTPBadRequest(body=json.dumps({'error': returnValue}), content_type='text/json')    
 
     except Exception as e:
-        return HTTPBadRequest(body=json.dumps({"error":str(e.message)}),content_type='text/json')
+        return HTTPBadRequest(body=json.dumps({"error":str(e)}),content_type='text/json')
 
 
 @view_config(route_name='upload_file_curate', renderer='json', request_method='POST')
