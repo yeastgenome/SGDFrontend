@@ -71,7 +71,7 @@ export default (
           <Route component={requireAuthentication(GeneNameReservation)} path='/reservations/:id' exact />
           <Route component={requireAuthentication(GeneNameReservationEdit)} path='/reservations/:id/edit' exact />
           <Route component={requireAuthentication(GeneNameReservationStandardize)} path='/reservations/:id/standardize' exact />
-          <Route component={requireAuthentication(CurateHome)} path='/'/>
+          <Route component={requireAuthentication(CurateHome)} path='/' exact/>
           <Route component={NotFound} path='*' />
         </Switch>
 
