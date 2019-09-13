@@ -29,12 +29,12 @@ class ColleagueTriageShow extends Component {
   }
 
   handleDelete() {
-    this.props.dispatch(push({ pathname: 'colleagues/triage' }));
+    this.props.dispatch(push({ pathname: '/colleagues/triage' }));
     this.props.dispatch(setMessage('Colleague triage entry was deleted.'));
   }
 
   handleComplete() {
-    this.props.dispatch(push({ pathname: 'colleagues/triage' }));
+    this.props.dispatch(push({ pathname: '/colleagues/triage' }));
     this.props.dispatch(setMessage('Colleague entry was successfully updated.'));
   }
 

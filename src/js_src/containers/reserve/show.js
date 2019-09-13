@@ -30,7 +30,7 @@ class GeneNameReservation extends Component {
   }
 
   handleDelete() {
-    this.props.dispatch(push({ pathname: 'reservations' }));
+    this.props.dispatch(push({ pathname: '/reservations' }));
     this.props.dispatch(setMessage('Gene name reservation was deleted.'));
   }
 
@@ -62,7 +62,7 @@ class GeneNameReservation extends Component {
     if (window.confirm('Are you sure you want to promote the gene name reservation?')) {
       let oldData = this.state.data;
       this.setState({ data: null });
-      let url = `${DATA_BASE_URL}/${this.props.params.id}/promote`;
+      let url = `${DATA_BASE_URL}/${this.props.match.params.id}/promote`;
       let successMessage = 'The new gene name reservation was added. It may take a day to show up in the search.';
       let reqOptions = {
         type: 'PUT',
@@ -73,7 +73,7 @@ class GeneNameReservation extends Component {
       this.setState({ isPending: true });
       fetchData(url, reqOptions).then( _data => {
         this.setState({ data: _data });
-        this.props.dispatch(push({ pathname: 'reservations' }));
+        this.props.dispatch(push({ pathname: '/reservations' }));
         this.props.dispatch(setMessage(successMessage));
       }).catch( (data) => {
         let errorMessage = data ? data.message : 'Unable to promote gene name.';

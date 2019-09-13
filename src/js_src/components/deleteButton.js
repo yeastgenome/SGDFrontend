@@ -12,11 +12,11 @@ class DeleteButton extends Component {
     };
   }
 
-  componentDidMount() {
+  UNSAFE_componentDidMount() {
     this._isMounted = true;
   }
 
-  componentWillUnmount() {
+  UNSAFE_componentWillUnmount() {
     this.isMounted = false;
   }
 

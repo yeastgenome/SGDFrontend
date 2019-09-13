@@ -48,7 +48,34 @@ export default (
     <Switch>
       <Route render={(props) => <PublicLayout {...props}><NewColleague/></PublicLayout>} path='/new_colleague' />
       <Route render={(props) => <PublicLayout {...props}><NewGeneNameReservation /></PublicLayout>} path='/new_reservation' />
-      <Route component={Layout} path='/' />
+      <Route render={() => <Layout>
+        <Switch>
+          <Route component={requireAuthentication(TriageIndex)} path='/triage' />
+          <Route component={requireAuthentication(ColleaguesIndex)} path='/colleagues/triage' exact />
+          <Route component={requireAuthentication(ColleaguesShow)} path='/colleagues/triage/:id' />
+          <Route component={requireAuthentication(SpreadsheetUpload)} path='/spreadsheet_upload' />
+          <Route component={requireAuthentication(Settings)} path='/settings' />
+          <Route component={requireAuthentication(NewsLetter)} path='/newsletter' />
+          <Route component={requireAuthentication(PostTranslationModification)} path='/ptm' />
+          <Route component={Help} path='/help' />
+          <Route component={requireAuthentication(Search)} path='/search' />
+          <Route component={PublicHome} path='/login' />
+          <Route component={GoogleLogin} path='/google_login' />
+          <Route component={requireAuthentication(NewReference)} path='/curate/reference/new' />
+          <Route component={requireAuthentication(CurateLit)} path='/curate/reference/:id' />
+          <Route component={requireAuthentication(Regulation)} path='/regulation' />
+          <Route component={requireAuthentication(LocusLayout)} path='/curate/locus/:id' />
+          <Route component={requireAuthentication(FileCurate)} path='/file_curate' />
+          <Route component={requireAuthentication(FileCurateUpdate)} path='/file_curate_update' />
+          <Route component={requireAuthentication(GeneNameReservationIndex)} path='/reservations' exact />
+          <Route component={requireAuthentication(GeneNameReservation)} path='/reservations/:id' exact />
+          <Route component={requireAuthentication(GeneNameReservationEdit)} path='/reservations/:id/edit' exact />
+          <Route component={requireAuthentication(GeneNameReservationStandardize)} path='/reservations/:id/standardize' exact />
+          <Route component={requireAuthentication(CurateHome)} path='/' exact/>
+          <Route component={NotFound} path='*' />
+        </Switch>
+
+      </Layout>} path='/'/>
     </Switch>
   </div>
 );
