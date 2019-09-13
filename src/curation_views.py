@@ -1878,13 +1878,13 @@ def regulation_insert_update(request):
                 if curator_session:
                     curator_session.rollback()
                 isSuccess = False
-                returnValue = 'Updated failed, record already exists'
+                returnValue = 'Integrity Error: ' + str(e.orig.pgerror)
             except DataError as e:
                 transaction.abort()
                 if curator_session:
                     curator_session.rollback()
                 isSuccess = False
-                returnValue = 'Update failed, issue in data'
+                returnValue = 'Data Error: ' + str(e.orig.pgerror)
             except InternalError as e:
                 transaction.abort()
                 if curator_session:
@@ -1894,12 +1894,11 @@ def regulation_insert_update(request):
                 error = error[0:error.index('.')]
                 returnValue = 'Updated failed, ' + error
             except Exception as e:
-                print(e)
                 transaction.abort()
                 if curator_session:
                     curator_session.rollback()
                 isSuccess = False
-                returnValue = 'Updated failed, ' + str(e.message)
+                returnValue = 'Updated failed, ' + str(e)
             finally:
                 if curator_session:
                     curator_session.close()
@@ -1929,19 +1928,19 @@ def regulation_insert_update(request):
                 if curator_session:
                     curator_session.rollback()
                 isSuccess = False
-                returnValue = 'Insert failed, record already exists'
+                returnValue = 'Integrity Error: ' + str(e.orig.pgerror)
             except DataError as e:
                 transaction.abort()
                 if curator_session:
                     curator_session.rollback()
                 isSuccess = False
-                returnValue = 'Insert failed, issue in data'
+                returnValue = 'Data Error: ' + str(e.orig.pgerror)
             except Exception as e:
                 transaction.abort()
                 if curator_session:
                     curator_session.rollback()
                 isSuccess = False
-                returnValue = 'Insert failed' + ' ' + str(e.message)
+                returnValue = 'Insert failed ' +str(e)
             finally:
                 if curator_session:
                     curator_session.close()
@@ -1952,7 +1951,7 @@ def regulation_insert_update(request):
         return HTTPBadRequest(body=json.dumps({'error': returnValue}), content_type='text/json')
 
     except Exception as e:
-        return HTTPBadRequest(body=json.dumps({'error': e.message}), content_type='text/json')
+        return HTTPBadRequest(body=json.dumps({'error': str(e)}), content_type='text/json')
 
 
 @view_config(route_name='regulations_by_filters',renderer='json',request_method='POST')
@@ -2102,6 +2101,7 @@ def regulation_file(request):
 
         SOURCE_ID = 834
         SEPARATOR = '|'
+        HIGH_THROUGHPUT = 'high-throughput'
 
         list_of_regulations = []
         list_of_regulations_errors = []
@@ -2127,7 +2127,6 @@ def regulation_file(request):
         list_of_regulator_types = ['chromatin modifier','transcription factor','protein modifier','RNA-binding protein','RNA modifier']
         list_of_regulation_types = ['transcription','protein activity','protein stability','RNA activity','RNA stability']
         list_of_directions = ['positive','negative']
-        list_of_annotation_types = ['manually curated','high-throughput']
 
         for index_row,row in df.iterrows():
             index  = index_row + 2;
@@ -2144,9 +2143,11 @@ def regulation_file(request):
                     'regulation_type': '',
                     'direction': None,
                     'happens_during': '',
-                    'annotation_type': ''
+                    'annotation_type': HIGH_THROUGHPUT
                 }
-                regulation_update = {}
+                regulation_update = {
+                    'annotation_type': HIGH_THROUGHPUT
+                }
 
                 column = COLUMNS['target']
                 target = row[column]
@@ -2323,22 +2324,6 @@ def regulation_file(request):
                     else:
                         regulation_update['happens_during'] = None if happens_during_new == None else  happensduring_to_id[happens_during_new]
 
-                column = COLUMNS['annotation_type']
-                annotation_type = row[column]
-                annotation_type_current = str(annotation_type).split(SEPARATOR)[0]
-                if annotation_type_current in list_of_annotation_types:
-                    regulation_existing['annotation_type'] = annotation_type_current
-                else:
-                    list_of_regulations_errors.append('Error in annotation type on row ' + str(index) + ', column ' + column)
-                    continue
-
-                if SEPARATOR in annotation_type:
-                    annotation_type_new = str(annotation_type).split(SEPARATOR)[1]
-                    if annotation_type_new in list_of_annotation_types:
-                        regulation_update['annotation_type'] = annotation_type_new
-                    else:
-                        list_of_regulations_errors.append('Error in annotation type on row ' + str(index) + ', column ' + column)
-                        continue
 
                 list_of_regulations.append([regulation_existing,regulation_update])
             
@@ -2359,7 +2344,7 @@ def regulation_file(request):
         if list_of_regulations:
             for item in list_of_regulations:
                 regulation,update_regulation = item
-                if bool(update_regulation):
+                if (len(update_regulation)>1):
                     regulation_in_db = curator_session.query(Regulationannotation).filter(and_(
                         Regulationannotation.target_id == regulation['target_id'],
                         Regulationannotation.regulator_id == regulation['regulator_id'],
@@ -2368,7 +2353,6 @@ def regulation_file(request):
                         Regulationannotation.eco_id == regulation['eco_id'],
                         Regulationannotation.regulator_type == regulation['regulator_type'],
                         Regulationannotation.regulation_type == regulation['regulation_type'],
-                        Regulationannotation.annotation_type == regulation['annotation_type'],
                         Regulationannotation.happens_during == regulation['happens_during']
                         )).one_or_none()
                     if regulation_in_db is not None:
@@ -2380,7 +2364,6 @@ def regulation_file(request):
                         Regulationannotation.eco_id == regulation['eco_id'],
                         Regulationannotation.regulator_type == regulation['regulator_type'],
                         Regulationannotation.regulation_type == regulation['regulation_type'],
-                        Regulationannotation.annotation_type == regulation['annotation_type'],
                         Regulationannotation.happens_during == regulation['happens_during']
                         )).update(update_regulation)
                         UPDATE  = UPDATE + 1
@@ -2413,19 +2396,19 @@ def regulation_file(request):
                 if curator_session:
                     curator_session.rollback()
                 isSuccess = False
-                returnValue = e.message
+                returnValue = 'Integrity Error: '+str(e.orig.pgerror)
             except DataError as e:
                 transaction.abort()
                 if curator_session:
                     curator_session.rollback()
                 isSuccess = False
-                returnValue = e.message
+                returnValue = 'Data Error: '+str(e.orig.pgerror)
             except Exception as e:
                 transaction.abort()
                 if curator_session:
                     curator_session.rollback()
                 isSuccess = False
-                returnValue = e.message
+                returnValue = str(e)
             finally:
                 if curator_session:
                     curator_session.close()
@@ -2436,7 +2419,7 @@ def regulation_file(request):
         return HTTPBadRequest(body=json.dumps({'error': returnValue}), content_type='text/json')    
 
     except Exception as e:
-        return HTTPBadRequest(body=json.dumps({"error":str(e.message)}),content_type='text/json')
+        return HTTPBadRequest(body=json.dumps({"error":str(e)}),content_type='text/json')
 
 
 @view_config(route_name='upload_file_curate', renderer='json', request_method='POST')
