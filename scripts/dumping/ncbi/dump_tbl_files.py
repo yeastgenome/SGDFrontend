@@ -189,7 +189,8 @@ def dump_data():
             
             add_RNA_genes(files, annotation_id, locus_id, sgdid, chrnum, systematic_name, 
                           gene_name, start, stop, desc, annotation_id_to_cds_data, 
-                          go_section, go_to_pmid_list, type, feature_type)
+                          go_section, go_to_pmid_list, type, feature_type, 
+                          locus_id_to_ncbi_protein_name)
             continue
 
         if feature_type == 'centromere':
@@ -378,7 +379,7 @@ def add_NTS_features(files, chrnum, systematic_name, sgdid, start, stop, desc):
         files[chrnum].write(TABS + "note\t"+ desc + "\n")
     files[chrnum].write(TABS + "db_xref\tSGD:" + sgdid + "\n")
 
-def add_RNA_genes(files, annotation_id, locus_id, sgdid, chrnum, systematic_name, gene_name, start, stop, desc, annotation_id_to_cds_data, go_section, go_to_pmid_list, type, feature_type):
+def add_RNA_genes(files, annotation_id, locus_id, sgdid, chrnum, systematic_name, gene_name, start, stop, desc, annotation_id_to_cds_data, go_section, go_to_pmid_list, type, feature_type, locus_id_to_ncbi_protein_name):
     
     files[chrnum].write(str(start)+"\t"+str(stop)+"\tgene\n")
 
@@ -405,7 +406,10 @@ def add_RNA_genes(files, annotation_id, locus_id, sgdid, chrnum, systematic_name
         files[chrnum].write(TABS + "ncRNA_class\t" + type + "\n")
         product = gene_name if gene_name else systematic_name
 
-    files[chrnum].write(TABS + "product\t" + product + "\n")
+    if locus_id in locus_id_to_ncbi_protein_name:
+        files[chrnum].write(locus_id_to_ncbi_protein_name[locus_id]+"\n")
+    else:
+        files[chrnum].write(TABS + "product\t" + product + "\n")
 
     if desc:
         files[chrnum].write(TABS + "note\t" + desc + "\n")
