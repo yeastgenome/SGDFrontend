@@ -32,6 +32,8 @@ namespace_mapping = { 'biological process' : 'go_process',
                       'cellular component' : 'go_component',
                       'molecular function' : 'go_function' }
 
+MITO_ID = "KP263414"
+
 def dump_data():
  
     nex_session = get_session()
@@ -105,7 +107,7 @@ def dump_data():
             chrnum = chr2num[chr]
             contig_id_to_chrnum[x.contig_id] = chrnum
             if chrnum == 17:
-                files[chrnum].write(">Feature ref|NC_001224|\n")
+                files[chrnum].write(">Feature ref|" + MITO_ID + "|\n")
             else:
                 files[chrnum].write(">Feature tpg|" + x.genbank_accession + "|\n")
 
@@ -187,7 +189,8 @@ def dump_data():
             
             add_RNA_genes(files, annotation_id, locus_id, sgdid, chrnum, systematic_name, 
                           gene_name, start, stop, desc, annotation_id_to_cds_data, 
-                          go_section, go_to_pmid_list, type, feature_type)
+                          go_section, go_to_pmid_list, type, feature_type, 
+                          locus_id_to_ncbi_protein_name)
             continue
 
         if feature_type == 'centromere':
@@ -270,15 +273,15 @@ def tar_files(datestamp, format):
 
     tf = tarfile.open(this_tar_file, "w:gz")
     
-    for i in range(18):
+    for i in range(17):
         if i == 0:
-            continue
-        if i == 17 and format in ['sqn', 'gbf']:
             continue
         if i < 10:
             tf.add("chr0" + str(i) + "." + format)
         else:
             tf.add("chr" + str(i) + "." + format)
+    tf.add("chrmt." + format)
+
     tf.close()
 
     return this_tar_file
@@ -376,7 +379,7 @@ def add_NTS_features(files, chrnum, systematic_name, sgdid, start, stop, desc):
         files[chrnum].write(TABS + "note\t"+ desc + "\n")
     files[chrnum].write(TABS + "db_xref\tSGD:" + sgdid + "\n")
 
-def add_RNA_genes(files, annotation_id, locus_id, sgdid, chrnum, systematic_name, gene_name, start, stop, desc, annotation_id_to_cds_data, go_section, go_to_pmid_list, type, feature_type):
+def add_RNA_genes(files, annotation_id, locus_id, sgdid, chrnum, systematic_name, gene_name, start, stop, desc, annotation_id_to_cds_data, go_section, go_to_pmid_list, type, feature_type, locus_id_to_ncbi_protein_name):
     
     files[chrnum].write(str(start)+"\t"+str(stop)+"\tgene\n")
 
@@ -403,7 +406,10 @@ def add_RNA_genes(files, annotation_id, locus_id, sgdid, chrnum, systematic_name
         files[chrnum].write(TABS + "ncRNA_class\t" + type + "\n")
         product = gene_name if gene_name else systematic_name
 
-    files[chrnum].write(TABS + "product\t" + product + "\n")
+    if locus_id in locus_id_to_ncbi_protein_name:
+        files[chrnum].write(locus_id_to_ncbi_protein_name[locus_id]+"\n")
+    else:
+        files[chrnum].write(TABS + "product\t" + product + "\n")
 
     if desc:
         files[chrnum].write(TABS + "note\t" + desc + "\n")
@@ -542,6 +548,8 @@ def open_file_handles():
     for i in range (18):
         if i < 10:
             chrom.append("0" + str(i))
+        elif i == 17:
+            chrom.append("mt")
         else:
             chrom.append(str(i))
             
@@ -665,9 +673,9 @@ def get_go_data(nex_session):
         if eco == 'ND' or eco not in code_mapping:
             continue
 
-        (col4Text, col5Text) = code_mapping [eco]
-
-        goline = TABS + col4Text + "\t" + col5Text + ", "
+        (col4Text, col5Text) = code_mapping[eco]
+        # goline = TABS + col4Text + "\t" + col5Text + ", "
+        goline = TABS + col4Text + "\t" + col5Text + ":"
         if eco == "IBA": 
             if x.annotation_id in annotation_id_to_panther:
                 goline = goline + annotation_id_to_panther[x.annotation_id]
@@ -715,23 +723,23 @@ def get_protein_id_for_duplicate_gene():
     
 def get_col4_5_for_code():
     
-    return { "IEA": ("inference",  "electronic annotation"),
+    # return { "IEA": ("inference",  "electronic annotation"),
+    #          "IBA": ("inference",  "protein family"),
+    #          "TAS": ("inference",  "EXISTENCE:author statement"),
+    #          "NAS": ("inference",  "EXISTENCE:author statement"),
+    return { "ISS": ("inference",  "similar to DNA sequence"),
+             "ISM": ("inference",  "similar to DNA sequence"),
+             "ISA": ("inference",  "similar to DNA sequence"),
+             "ISO": ("inference",  "similar to DNA sequence"),
              "IDA": ("experiment", "EXISTENCE:direct assay"),
-             "IBA": ("inference",  "protein family"),
              "IMP": ("experiment", "EXISTENCE:mutant phenotype"),
              "HDA": ("experiment", "EXISTENCE:direct assay"),
              "IGI": ("experiment", "EXISTENCE:genetic interaction"),
              "IPI": ("experiment", "EXISTENCE:physical interaction"),
              "IC":  ("experiment", "EXISTENCE:curator inference"),
-             "ISS": ("inference",  "similar to DNA sequence"),
-             "ISM": ("inference",  "similar to DNA sequence"),
-             "TAS": ("inference",  "EXISTENCE:author statement"),
-             "ISA": ("inference",  "similar to DNA sequence"),
              "HMP": ("experiment", "EXISTENCE:mutant phenotype"),
-             "NAS": ("inference",  "EXISTENCE:author statement"),
              "IEP": ("experiment", "EXISTENCE:expression pattern"),
-             "HGI": ("experiment", "EXISTENCE:genetic interaction"),
-             "ISO": ("inference",  "similar to DNA sequence") }    
+             "HGI": ("experiment", "EXISTENCE:genetic interaction") }
 
 
 def get_chr_to_num_mapping():
@@ -756,7 +764,8 @@ def get_chr_to_num_mapping():
 
 def clean_up_desc(desc):
 
-    desc = desc.replace("<i>", "").replace("</i>", "")
+    desc = desc.replace('“', "'").replace('"', "'").replace("’", "'")
+    desc = desc.replace('”', "'").replace("<i>", "").replace("</i>", "")
 
     return desc.replace("Putative protein of unknown function", "hypothetical protein").replace("Protein of unknown function", "hypothetical protein").replace("protein of unknown function", "hypothetical protein").replace("Hypothetical protein", "hypothetical protein")
           
