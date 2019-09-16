@@ -906,6 +906,7 @@ def colleague_triage_promote(request):
             colleague.is_contact = is_contact
             colleague.is_beta_tester = is_beta_tester
             colleague.is_in_triage = False
+            colleague.date_last_modified = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
             # get_username_from_db_uri() if colleague.created_by == 'OTTO' else username
         else:
