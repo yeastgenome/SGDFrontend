@@ -8,7 +8,6 @@ import { SMALL_COL_CLASS, LARGE_COL_CLASS } from '../../constants';
 class CurateLayout extends Component {
   render() {
     let location = this.props.location ? this.props.location.pathname : '';
-    // console.log(this.props.location);
     return (
       <div className='row'>
         <div className={SMALL_COL_CLASS}>

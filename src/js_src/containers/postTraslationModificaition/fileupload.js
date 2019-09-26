@@ -39,7 +39,10 @@ class FileUpload extends Component{
         type: 'POST',
         credentials: 'same-origin',
         headers: {
-          'X-CSRF-Token': this.props.csrfToken
+          'X-CSRF-Token': this.props.csrfToken,
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
         },
         data: formData,
         processData: false,

@@ -298,7 +298,9 @@ def upload_file(username, file, **kwargs):
 
     try:
         if md5sum is None:
-            md5sum = hashlib.md5(file.read()).hexdigest()
+            with open(full_file_path, 'rb') as f:
+                print("file path: " + full_file_path)
+                md5sum = hashlib.md5(f.read()).hexdigest()
         fdb = Filedbentity(
             md5sum=md5sum,
             previous_file_name=filename,
@@ -733,7 +735,7 @@ def update_readme_files_with_urls(readme_name, update_all=False):
                     update_urls_helper(_file)
 
     except Exception as e:
-        logging.error(e)
+        logging.error("Exception occurred", exc_info=True)
         transaction.abort()
 
 
@@ -759,7 +761,8 @@ def update_urls_helper(readme_file):
                 Filedbentity).filter(Filedbentity.dbentity_id == readme_file.dbentity_id).one_or_none()
             readme_dbentity_file.md5sum = updated_readme['md5sum']
             readme_dbentity_file.file_size = updated_readme['file_size']
-            readme_dbentity_file.s3_url = updated_readme['s3_url']
+            readme_dbentity_file.s3_url = re.sub(
+                r'\?.+', '', updated_readme['s3_url']).strip()
 
 
 def get_sources(session=None):
@@ -855,6 +858,8 @@ def upload_new_file(req_obj, session=None):
                         existing_readme_meta.is_public = True
                         existing_readme_meta.is_in_spell = False
                         existing_readme_meta.is_in_browser = False
+                        existing_readme_meta.file_date = datetime.datetime.strptime(
+                            req_obj['file_date'], '%Y-%m-%d')
                         readme_file_id = existing_readme_meta.dbentity_id
                         existing_readme_meta.upload_file_to_s3(
                             val, req_obj['displayName'])
@@ -866,7 +871,7 @@ def upload_new_file(req_obj, session=None):
                             's3_url': existing_readme_meta.s3_url,
                             'activity_category': 'download',
                             'dbentity_id': existing_readme_meta.dbentity_id,
-                            'json': json.dumps({"file curation data": existing_readme_meta.to_simple_dict()}),
+                            'json': json.dumps({"file curation data": existing_readme_meta.to_simple_dict(), "modified_date": str(datetime.datetime.now())}),
                         }
                         msg = 'Add readme file for file curation'
                         update_curator_feed(update_obj, msg)
@@ -888,7 +893,8 @@ def upload_new_file(req_obj, session=None):
                             'file': val,
                             'file_name': key,
                             'description': req_obj['description'],
-                            'status': req_obj['status']
+                            'status': req_obj['status'],
+                            'file_date': req_obj['file_date']
                         })
 
             if len(other_files) > 0:
@@ -906,7 +912,7 @@ def upload_new_file(req_obj, session=None):
                             's3_url': db_file.s3_url,
                             'activity_category': 'download',
                             'dbentity_id': db_file.dbentity_id,
-                            'json': json.dumps({'file curation data': db_file.to_simple_dict()}),
+                            'json': json.dumps({'file curation data': db_file.to_simple_dict(), "modified_date": str(datetime.datetime.now())}),
                         }
                         msg = 'Add file for file curation'
                         update_curator_feed(update_obj, msg, curator_session)
@@ -926,11 +932,13 @@ def add_file_meta_db(db_file, obj, readme_id=None, curator_session=None):
             db_file.display_name = obj['display_name']
             db_file.description = obj['description']
             db_file.status = obj['status']
+            db_file.file_date = obj['file_date']
             db_file.is_public = True
             db_file.is_in_spell = False
             db_file.is_in_browser = False
             flag = db_file.upload_file_to_s3(
                 obj['file'], obj['display_name'])
+
             if readme_id:
                 db_file.readme_file_id = readme_id
                 readme_file = curator_session.query(Filedbentity).filter(
@@ -982,24 +990,24 @@ def add_keywords(name, keywords, src_id, uname, curator_session=None):
     """ add keywords """
 
     try:
-        if curator_or_none is None:
+        if curator_session is None:
             curator_session = DBSession
         if len(keywords) > 0:
             existing = curator_session.query(Filedbentity).filter(
                 Filedbentity.display_name == name).one_or_none()
-
-            for word in keywords:
-                word = word.strip()
-                keyword = curator_session.query(Keyword).filter(
-                    Keyword.display_name == word).one_or_none()
-                existing_file_keyword = curator_session.query(FileKeyword).filter(and_(
-                    FileKeyword.file_id == existing.dbentity_id, FileKeyword.keyword_id == keyword.keyword_id)).one_or_none()
-                if not existing_file_keyword:
-                    new_file_keyword = FileKeyword(
-                        created_by=uname, file_id=existing.dbentity_id, keyword_id=keyword.keyword_id, source_id=src_id)
-                    curator_session.add(new_file_keyword)
+            if existing:
+                for word in keywords:
+                    word = word.strip()
+                    keyword = curator_session.query(Keyword).filter(
+                        Keyword.display_name == word).one_or_none()
+                    existing_file_keyword = curator_session.query(FileKeyword).filter(and_(
+                        FileKeyword.file_id == existing.dbentity_id, FileKeyword.keyword_id == keyword.keyword_id)).one_or_none()
+                    if not existing_file_keyword:
+                        new_file_keyword = FileKeyword(
+                            created_by=uname, file_id=existing.dbentity_id, keyword_id=keyword.keyword_id, source_id=src_id)
+                        curator_session.add(new_file_keyword)
 
     except Exception as e:
-        logging.error(e)
+        logging.error("Exception occurred", exc_info=True)
 
 

@@ -50,7 +50,7 @@ class ResultsTable extends Component {
   renderActions(d) {
     let dname = d.display_name ? d.display_name : undefined;
 
-    return <ActionList category={d.category} href={d.href} id={d.id} displayName={dname} />;
+    return <ActionList category={d.category} href={d.href} id={d.id} display_name={dname} />;
   }
 
   renderRows() {
@@ -59,7 +59,8 @@ class ResultsTable extends Component {
     let href = '';
     let rowNodes = entries.map( (d, i) => {
       if(d.category == 'download'){
-        href = d.href;
+        let regex = /\?.+/gi;
+        href = d.href.replace(regex, '');
       }
       else{
         href = `${SGD_LINK_URL}${d.href}`;

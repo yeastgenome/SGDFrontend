@@ -2449,13 +2449,19 @@ def upload_file_curate(request):
 @authenticate
 def get_file(request):
     ''' Get file data '''
+  
     try:
         dname = request.matchdict['name']
         if dname:
             return get_file_details(dname)
         return None
     except Exception as e:
-         return HTTPBadRequest(body=json.dumps({'error': str(e.message)}), content_type='text/json')
+        msg = ''
+        if e.message:
+            msg = e.message
+        else:
+            msg = 'Readme file missing or metadata not found, please contact us if issue persists'
+        return HTTPBadRequest(body=json.dumps({'error': str(msg)}), content_type='text/json')
 
 
 @view_config(route_name="upload_tar_file", renderer='json', request_method='POST')

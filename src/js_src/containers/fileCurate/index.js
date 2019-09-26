@@ -24,7 +24,6 @@ const UPLOAD_TAR_URL = '/upload_tar_file';
 const UPLOAD_TIMEOUT = 120000;
 const DROP_DOWN_URL = '/file_curate_menus';
 
-
 class FileCurate extends Component {
   constructor(props){
     super(props);

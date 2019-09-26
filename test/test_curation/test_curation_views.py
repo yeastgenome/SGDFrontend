@@ -6,8 +6,9 @@ import test.fixtures as factory
 from test.mock_helpers import MockQuery
 from test.mock_helpers import locus_side_effect, reference_side_effect, side_effect, strain_side_effect
 
+
 class CurationViewsTest(unittest.TestCase):
-  
+
   def setUp(self):
         self.config = testing.setUp()
 
@@ -35,7 +36,7 @@ class CurationViewsTest(unittest.TestCase):
     request.matchdict['id'] = "184870"
     response = reference_triage_id(request)
     self.assertEqual(response,reference_triage.to_dict())
-  
+
   @mock.patch('src.models.DBSession.query')
   def test_reference_triage_index_should_return_valid_reference_triages(self, mock_search):
     mock_search.side_effect = reference_side_effect
@@ -70,17 +71,18 @@ class CurationViewsTest(unittest.TestCase):
     response = get_recent_annotations(request)
     response[0]['time_created'] = response[0]['time_created'][0:-9]
 
-
     curation_factory = factory.CuratorActivityFactory()
     result = curation_factory.to_dict()
     result['time_created'] = result['time_created'][0:-9]
+
     self.assertEqual(response,[result])
-  
+
+
   ##colleague_triage_index
   @mock.patch('src.models.DBSession.query')
   def test_colleague_triage_index_should_return_valid_list_of_colleague_information(self, mock_search):
     mock_search.side_effect = side_effect
-
+    
     request = testing.DummyRequest()
     request.context = testing.DummyResource()
     response = colleague_triage_index(request)
@@ -132,7 +134,7 @@ class CurationViewsTest(unittest.TestCase):
     response = get_strains(request)
     result = {'strains': [{'taxonomy_id': 1, 'display_name': 'SOME NAME'}]}
     self.assertEqual(response,result)
-  
+
   ##get_psimod
   @mock.patch('src.models.DBSession.query')
   def test_get_psimod_should_return_valid_list(self, mock_search):

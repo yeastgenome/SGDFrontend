@@ -73,7 +73,6 @@ dev_aws_variables*
 #temp files
 # logs
 backup
-data
 *.log-*
 zz_*
 tmo_*
@@ -108,6 +107,6 @@ index_*.png
 *.env
 src/Untitled*
 dev_variables*
-scripts/loading/data/*
 .pytest_cache/*
 test/default_T_dev.py
+users.txt

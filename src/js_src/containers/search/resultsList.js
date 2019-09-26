@@ -19,7 +19,7 @@ class ResultsList extends Component {
   }
 
   renderHeader(d) {
-    let href = `${SGD_LINK_URL}${d.href}`;
+    let href = d.category == 'download' ? d.href : `${SGD_LINK_URL}${d.href}`;
     return (
       <div>
         <span className={style.resultCatLabel}><CategoryLabel category={d.category} /></span>
@@ -35,13 +35,19 @@ class ResultsList extends Component {
   }
 
   renderEntry(d, i, fields) {
-    let dname = d.displayName ? d.display_name : undefined;
+    let dname = '';
+    if(d.display_name){
+      dname = d.display_name;
+    }
+    else{
+      dname = d.displayName ? d.displayName : undefined;
+    }
     return (
       <div className={style.resultContainer} key={`sr${i}`}>
         {this.renderHeader(d)}
         {this.renderDetailFromFields(d, fields)}
         {this.renderHighlightedValues(d.highlight)}
-        <ActionList category={d.category} href={d.href} displayName={dname} />
+        <ActionList category={d.category} href={d.href} display_name={dname} />
         <hr />
       </div>
     );

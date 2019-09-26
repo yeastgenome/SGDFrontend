@@ -8,6 +8,7 @@ export default function fetchData(_url, options={}) {
   let _contentType = (typeof options.contentType === 'undefined') ? 'application/x-www-form-urlencoded; charset=UTF-8' : options.contentType;
   let _processData = (typeof options.processData === 'undefined') ? true : options.processData;
   let _timeout = options.timeout || DEFAULT_TIMEOUT;
+
   return new Promise(function (resolve, reject) {
     // *** DEPENDS ON GLOBAL $ because $ can abort ***
     $.ajax({
@@ -19,6 +20,7 @@ export default function fetchData(_url, options={}) {
       type : _type,
       dataType: 'json',
       timeout: _timeout,
+      cache: false,
       success: data => {
         resolve(data);
       },

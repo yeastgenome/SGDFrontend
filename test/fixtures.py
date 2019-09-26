@@ -68,7 +68,8 @@ class EcoUrlFactory(factory.alchemy.SQLAlchemyModelFactory):
     url_type = "url type"
     date_created =  factory.LazyAttribute(lambda o: datetime.datetime.utcnow())
     created_by = "TOTO"
-    
+
+
 class ColleagueFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = Colleague

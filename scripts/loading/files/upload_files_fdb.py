@@ -1,6 +1,7 @@
 import csv
 import os
 import logging
+import logging.handlers
 import re
 from datetime import datetime
 import getpass
@@ -31,6 +32,15 @@ LOCAL_FILE_DIRECTORY = os.environ.get('LOCAL_FILE_DIRECTORY')
 S3_BUCKET = os.environ['S3_BUCKET']
 S3_ACCESS_KEY = os.environ['S3_ACCESS_KEY']
 S3_SECRET_KEY = os.environ['S3_SECRET_KEY']
+
+log_filename = os.environ.get("SCRIPT_LOG_FILE")
+os.makedirs(os.path.dirname(log_filename), exist_ok=True)
+handler = logging.handlers.WatchedFileHandler(os.environ.get(log_filename, "../../../logs/sgd_backend_script.log"), mode="w")
+formatter = logging.Formatter(logging.BASIC_FORMAT)
+handler.setFormatter(formatter)
+root = logging.getLogger()
+root.setLevel(os.environ.get("LOG_LEVEL", "ERROR"))
+root.addHandler(handler)
 
 
 def file_upload_to_obj():
@@ -114,12 +124,11 @@ def upload_file_helper(CREATED_BY, remote_file, obj, full_file_path):
                     full_file_path=full_file_path
                     )
     except Exception as e:
-        logging.error(e)
+        logging.error("Exception occurred", exc_info=True)
 
 
 def upload_file_obj_db_s3():
     """ Upload file metadata to database and s3 """
-
     readme_file_id = None
     file_content_list = file_upload_to_obj()
 
@@ -148,7 +157,6 @@ def upload_file_obj_db_s3():
                 d_name = item['display_name']
                 f_ext = item['file_extension']
                 temp_file_path = get_file_from_path_collection(f_ext, d_name)
-
                 if not existing_file_meta_data:
                     try:
                         data_id = DBSession.query(Edam.edam_id).filter(
@@ -172,7 +180,7 @@ def upload_file_obj_db_s3():
                             ', ' + item['topic_edam_id'])
 
                     if temp_file_path:
-                        with open(temp_file_path, 'r') as remote_file:
+                        with open(temp_file_path, 'rb') as remote_file:
                             upload_file_helper(
                                 CREATED_BY, remote_file, item, temp_file_path)
 
@@ -188,7 +196,7 @@ def upload_file_obj_db_s3():
                     existing_file_meta_data.source_id = source_id
 
                     if temp_file_path:
-                        with open(temp_file_path, 'r') as remote_file:
+                        with open(temp_file_path, 'rb') as remote_file:
                             #update file size
                             if not existing_file_meta_data.file_size and existing_file_meta_data.s3_url:
                                 remote_file.seek(0, os.SEEK_END)
@@ -224,8 +232,7 @@ def upload_file_obj_db_s3():
                              item['display_name'])
 
     except Exception as e:
-        logging.error(e)
-        print(e)
+        logging.error("Exception occurred", exc_info=True)
 
 
 def add_path_entries(file_name, file_path, src_id, uname):
@@ -236,22 +243,22 @@ def add_path_entries(file_name, file_path, src_id, uname):
             Filedbentity.display_name == file_name).one_or_none()
         if not existing:
             logging.error('error with ' + file_name)
-            logging.debug('error with ' + file_name)
         path = DBSession.query(Path).filter_by(path=file_path).one_or_none()
 
         if path is None:
             logging.warning('Could not find path ')
         else:
-            existing_filepath = DBSession.query(FilePath).filter(and_(
-                FilePath.file_id == existing.dbentity_id, FilePath.path_id == path.path_id)).one_or_none()
+            if existing:
+                existing_filepath = DBSession.query(FilePath).filter(and_(
+                    FilePath.file_id == existing.dbentity_id, FilePath.path_id == path.path_id)).one_or_none()
 
-            if not existing_filepath:
-                new_filepath = FilePath(file_id=existing.dbentity_id, path_id=path.path_id,
-                                        source_id=src_id, created_by=uname)
-                DBSession.add(new_filepath)
+                if not existing_filepath:
+                    new_filepath = FilePath(file_id=existing.dbentity_id, path_id=path.path_id,
+                                            source_id=src_id, created_by=uname)
+                    DBSession.add(new_filepath)
 
     except Exception as e:
-        logging.error(e)
+        logging.error("Exception occurred", exc_info=True)
 
 
 def add_pmids(file_name, file_pmids, src_id, uname):
@@ -262,19 +269,20 @@ def add_pmids(file_name, file_pmids, src_id, uname):
             existing = DBSession.query(Filedbentity).filter(
                 Filedbentity.display_name == file_name).one_or_none()
             pmid_list = file_pmids
-            for pmid in pmid_list:
-                pmid = int(pmid.strip())
-                existing_ref_file = DBSession.query(ReferenceFile).filter(
-                    ReferenceFile.file_id == existing.dbentity_id).one_or_none()
-                ref = DBSession.query(Referencedbentity).filter(
-                    Referencedbentity.pmid == pmid).one_or_none()
-                if ref and not existing_ref_file:
-                    new_ref_file = ReferenceFile(
-                        created_by=uname, file_id=existing.dbentity_id, reference_id=ref.dbentity_id, source_id=src_id)
-                    DBSession.add(new_ref_file)
+            if existing:
+                for pmid in pmid_list:
+                    pmid = int(pmid.strip())
+                    existing_ref_file = DBSession.query(ReferenceFile).filter(
+                        ReferenceFile.file_id == existing.dbentity_id).one_or_none()
+                    ref = DBSession.query(Referencedbentity).filter(
+                        Referencedbentity.pmid == pmid).one_or_none()
+                    if ref and not existing_ref_file:
+                        new_ref_file = ReferenceFile(
+                            created_by=uname, file_id=existing.dbentity_id, reference_id=ref.dbentity_id, source_id=src_id)
+                        DBSession.add(new_ref_file)
 
     except Exception as e:
-        logging.error(e)
+        logging.error("Exception occurred", exc_info=True)
 
 
 '''
@@ -298,7 +306,7 @@ def add_keywords(name, keywords, src_id, uname):
                     DBSession.add(new_file_keyword)
 
     except Exception as e:
-        logging.error(e) '''
+        logging.error("Exception occurred", exc_info=True) '''
 
 '''
 def check_uploaded_files():
@@ -317,7 +325,7 @@ def check_uploaded_files():
 
 
 if __name__ == '__main__':
-    print "--------------start uploading data files --------------"
+    print("--------------start uploading data files --------------")
     pathStr = "./scripts/loading/data/log_time_upload.txt"
     start_time = time.time()
     upload_file_obj_db_s3()
@@ -328,4 +336,4 @@ if __name__ == '__main__':
         now = datetime.now().strftime("%m/%d/%Y %H:%M:%S")
         res_file.write(time_taken + "timestamp: " + now + "\r\n")
         logging.info(time_taken)
-        print "<---> script-run time taken: " + time_taken
+        print("<---> script-run time taken: " + time_taken)

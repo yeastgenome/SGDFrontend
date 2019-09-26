@@ -1,7 +1,5 @@
 import sys
 import importlib
-importlib.reload(sys)  # Reload does the trick!
-sys.setdefaultencoding('UTF8')
 from src.models import Apo, Locusdbentity, Referencedbentity, Phenotypeannotation, \
     Source, PhenotypeannotationCond, Taxonomy, Chebi, Phenotype, Allele, Reporter, Chebi
 from scripts.loading.database_session import get_session
@@ -16,7 +14,7 @@ column_size = 36
 cond_class = ['treatment', 'media', 'phase', 'temperature', 
               'chemical', 'assay', 'radiation']
 
-degree_file = "scripts/loading/phenotype/data/sample_line_with_degree.txt"
+# degree_file = "scripts/loading/phenotype/data/sample_line_with_degree.txt"
 
 def load_phenotypes(infile, logfile):
  
@@ -62,12 +60,12 @@ def load_phenotypes(infile, logfile):
         
     strain_taxid_mapping = get_strain_taxid_mapping()
 
-    f0 = open(degree_file)
-    degree = None
-    for line in f0:
-        field = line.split("\t")
-        degree = field[26]
-    f0.close()
+    # f0 = open(degree_file)
+    # degree = None
+    # for line in f0:
+    #    field = line.split("\t")
+    #    degree = field[26]
+    # f0.close()
 
     f = open(infile)
     
@@ -94,9 +92,14 @@ def load_phenotypes(infile, logfile):
                     x = "chemical_name"
                 header.append(x)
                 j = j + 1
+            header.append("details")
             cond_header = header[cond_start_index:cond_stop_index]
             continue
-
+        
+        # if len(header) < column_size:
+        #    for r in range(len(header), column_size-1):
+        #        header.append("")
+        
         if len(pieces) < column_size:
             for r in range(len(pieces), column_size-1):
                 pieces.append("")
@@ -120,9 +123,26 @@ def load_phenotypes(infile, logfile):
         bad_row = 0
         conds = pieces[cond_start_index:cond_stop_index]
 
+
+
+
+        ### testing
+        # print ("length of header=", len(header))
+        # print ("pieces33: ", header[33], pieces[33])
+        # print ("pieces34: ", header[34], pieces[34])
+        # print ("pieces35: ", header[35], pieces[35])
+        # continue
+        ### end of testing
+
+
+
+
         k = 0
         for x in pieces:
-            field_name = header[k].strip()
+            if k < len(header):
+                field_name = header[k].strip()
+            else:
+                continue
             if k < cond_stop_index and k >= cond_start_index:
                 k = k + 1
                 continue
@@ -268,7 +288,8 @@ def load_phenotypes(infile, logfile):
         ## insert conditions here
 
         m = 0
-        for r in range(0, len(cond_header)/3):
+        
+        for r in range(0, int(len(cond_header)/3)):
             cond_name  = conds[m]
             cond_value = conds[m+1]
             cond_unit  = conds[m+2]
@@ -287,7 +308,12 @@ def load_phenotypes(infile, logfile):
 
                 n = 0
                 for chemical_name in chemical_names:
-                    chebiid = "CHEBI:" + chemical_name
+                    chebiid = None
+                    if chemical_name.startswith("CHEBI:"):
+                        chebiid = chemical_name
+                    else:
+                        chebiid = "CHEBI:" + chemical_name
+                    chebiid = chebiid.replace(" ", "")
                     cond_name = chebiid_to_name.get(chebiid)
                     cond_value = chemical_values[n]
                     cond_unit = chemical_units[n]
@@ -298,7 +324,7 @@ def load_phenotypes(infile, logfile):
 
                     n = n + 1
                     if cond_name is None:
-                        print("The ChEBI ID", chebi, " is not in the database.")
+                        print("The ChEBI ID", chebiid, " is not in the database.")
                         continue
                     insert_phenotypeannotation_cond(nex_session, fw, created_by,
                                                     annotation_id, group_id,
@@ -306,10 +332,9 @@ def load_phenotypes(infile, logfile):
                                                     cond_value, cond_unit)
             else:
                 
-                if cond_class in ['temperature', 'treatment'] and cond_unit.endswith('C'):
-                    cond_unit = degree
-                    # cond_unit = cond_unit.encode('utf8')
-
+                # if cond_class in ['temperature', 'treatment'] and cond_unit.endswith('C'):
+                #    cond_unit = degree
+                
                 insert_phenotypeannotation_cond(nex_session, fw, created_by, 
                                                 annotation_id, group_id,
                                                 cond_class, cond_name, 

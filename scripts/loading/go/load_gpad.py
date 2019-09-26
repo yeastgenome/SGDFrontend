@@ -493,7 +493,7 @@ def all_go_annotations(nex_session, annotation_type):
         
     key_to_annotation = {}
     for x in nex_session.query(Goannotation).all():
-        if (x.source.display_name == 'SGD' and x.annotation_type in ['manually curated', 'high-throughput'] and annotation_type == 'manually curated') or (annotation_type == 'computational' and x.annotation_type=='computational'):
+        if (x.source.display_name in ['SGD', 'GO_Central'] and x.annotation_type in ['manually curated', 'high-throughput'] and annotation_type == 'manually curated') or (annotation_type == 'computational' and x.annotation_type=='computational'):
             key = (x.dbentity_id, x.go_id, x.eco_id, x.reference_id, x.annotation_type, x.source.display_name, x.go_qualifier, x.taxonomy_id)
             key_to_annotation[key] = x
 

@@ -6,13 +6,9 @@ import fetchData from '../../lib/fetchData';
 import { clearError, setError } from '../../actions/metaActions';
 import PropTypes from 'prop-types';
 
-//const UPLOAD_URL = '/upload_file_curate';
 const UPLOAD_TAR_URL = '/upload_tar_file';
 const GET_FILE_URL = '/get_file';
-
 const UPLOAD_TIMEOUT = 120000;
-//const DROP_DOWN_URL = '/file_curate_menus';
-
 
 class FileCurateUpdate extends Component {
   constructor(props){
@@ -67,7 +63,10 @@ class FileCurateUpdate extends Component {
       type: 'POST',
       credentials: 'same-origin',
       headers: {
-        'X-CSRF-Token': this.props.csrfToken
+        'X-CSRF-Token': this.props.csrfToken,
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
       },
       data: formData,
       processData: false,

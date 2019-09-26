@@ -441,8 +441,13 @@ def read_gpad_file(filename, nex_session, uniprot_to_date_assigned, uniprot_to_s
                 annotation_type = 'manually curated'
         else:
             date_assigned = date_created
-            annotation_type = 'computational'
-            
+            if go_evidence.startswith('H'):
+                annotation_type = 'high-throughput'
+            elif go_evidence in ['IEA', 'IBA'] :
+                annotation_type = 'computational'
+            else:
+                annotation_type = 'manually curated'
+
         for locus_id in dbentity_ids: 
             entry = { 'source': source,
                       'dbentity_id': locus_id,

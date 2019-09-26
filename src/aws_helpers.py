@@ -48,7 +48,7 @@ def get_all_file_paths_by_extension(extension, path_str=VOLUME_PATH):
 
         return result
     except Exception as e:
-        logging.error(e)
+        logging.error("Exception occurred", exc_info=True)
         return None
 
 
@@ -145,7 +145,7 @@ def update_s3_readmefile(s3_urls, dbentity_id, sgdid, readme_name, s3_bucket):
 
         return obj
     except Exception as e:
-        logging.error(e)
+        logging.error("Exception occurred", exc_info=True)
         return None
 
 
@@ -332,13 +332,14 @@ def simple_s3_upload(file_path, file_key_name, make_public=True, aws_s3_key=None
 
 
 def get_s3_url(name, sgdid):
-    """ Get s3 url using reame file display_name """
+    """ Get s3 url using readme file display_name """
 
     conn = boto.connect_s3(S3_ACCESS_KEY, S3_SECRET_KEY)
     bucket = conn.get_bucket(S3_BUCKET)
     file_key = sgdid + "/" + name
     file_s3 = bucket.get_key(file_key)
     url = file_s3.generate_url(expires_in=0, query_auth=False)
+    url = re.sub(r'\?.+', '', url).strip()
     return url
 
 
@@ -364,7 +365,7 @@ def get_checksum(file_obj, is_file=False):
             checksum = hashlib.md5(open(file_obj).read()).hexdigest()
             return checksum
         else:
-            checksum = hashlib.md5(file_obj.read1()).hexdigest()
+            checksum = hashlib.md5(file_obj.read()).hexdigest()
             return checksum
 
     except Exception as e:
@@ -400,6 +401,6 @@ def calculate_checksum_s3_file(s3_path, file_name, s3_bucket):
             logging.error('file not found: ' + local_s3_file_path)
         return local_file_md5sum
     except Exception as e:
-        logging.error(e)
+        logging.error("Exception occurred", exc_info=True)
         return None
 

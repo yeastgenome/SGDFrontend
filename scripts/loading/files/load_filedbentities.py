@@ -231,7 +231,7 @@ def load_csv_filedbentities():
 
             ### added by Shuai
             if len(val) < 14:
-                print val
+                print (val)
                 return
             ###
             raw_date = val[13]
@@ -421,9 +421,7 @@ def upload_file_obj_db_s3():
                             db_session.flush()
 
     except Exception as e:
-
-        logging.error(e)
-        print(e)
+        logging.error("Exception occurred", exc_info=True)
 
 
 def upload_file_helper(CREATED_BY, remote_file, obj):
@@ -447,7 +445,7 @@ def upload_file_helper(CREATED_BY, remote_file, obj):
                     source_id=obj['source_id']
                     )
     except Exception as e:
-        logging.error(e)
+        logging.error("Exception occurred", exc_info=True)
 
 
 if __name__ == '__main__':
@@ -471,7 +469,7 @@ def upload_readmes_first(file_upload={}):
 
         return True
     except Exception as e:
-        logging.error(e)
+        logging.error("Exception occurred", exc_info=True)
         return False
     
 
