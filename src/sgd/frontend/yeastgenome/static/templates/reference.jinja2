@@ -38,7 +38,7 @@
             add_navbar_element('Phenotype Annotations', 'phenotype');
             add_navbar_element('Disease Annotations', 'disease');
             add_navbar_element('Regulation Annotations', 'regulation');
-            add_navbar_element('Expression Datasets', 'expression');
+            add_navbar_element('Published Datasets', 'expression');
 	    {% if reference.downloadable_files|length > 0 %}
 	        add_navbar_element('Downloadable Files', 'file');
 	    {% endif %}
@@ -204,7 +204,7 @@
 ================================================== -->
         <section id="expression" data-magellan-destination="expression">
             <div class="page-header">
-                <h2>Expression Datasets <span id="expression_table_header" class="round secondary label"></span></h2>
+                <h2>Published Datasets <span id="expression_table_header" class="round secondary label"></span></h2>
                 <hr />
                 <div>
                     <!-- Includes regulation_table into template -->
