@@ -19,7 +19,8 @@ networkView.render = function renderNetworkView (graphData, categoryColors, targ
     	'TARGET': '#9F75B8',
     	'FOCUS': '#1f77b4'
     };
-    ReactDOM.render(<Graph categoryColors={categoryColors} data={graphData} filters={filters} headerText={_HeaderText} ignoreFloaters={ignoreFloaters} />, document.getElementById(targetId));
+    ReactDOM.render(<Graph categoryColors={categoryColors} data={graphData} filters={filters} headerText={_HeaderText} ignoreFloaters={ignoreFloaters} edgeColor='#696969' highlightedEdgeColor = '#5e7cff' 
+    nodeSize={10} edgeSize={2} labelSize={17} showLegend={true} title={_HeaderText}/>, document.getElementById(targetId));
 };
 
 module.exports = networkView;
