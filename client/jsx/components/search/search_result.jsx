@@ -98,9 +98,10 @@ const SearchResult = React.createClass({
         temp.push(readMeButtonNode);
       }
       if (this.props.readme_url) {
+        let mod_url = this.props.readme_url.replace(":443", "");
         fileSizeNode = <div className="columns medium-4 " key="abv3" style={{ marginTop: "1.0rem"}}>
-              <a target="_blank" href={this.props.readme_url} style={{ marginTop: "0.6rem", color: "#2993FC" }}>
-                <i className="fa fa-file-text-o" /> README
+              <a target="_blank" rel="noopener noreferrer" href={mod_url} style={{ marginTop: "0.6rem", color: "#2993FC" }}>
+                <i className="fa fa-file-text-o" /> README <i className="fa fa-external-link"></i>
               </a>
           </div>;
         temp.push(fileSizeNode);
