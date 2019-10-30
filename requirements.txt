@@ -10,7 +10,7 @@ pyramid==1.5
 pyramid-jinja2==2.1
 pytest==2.9.2
 repoze.lru==0.6
-requests==2.3.0
+requests==2.20.0
 sauceclient==0.2.1
 selenium==2.47.1
 simplejson==3.5.2
