@@ -239,9 +239,6 @@ module.exports = class SequenceDetailsModel extends BaseModel {
             return [d.format_name, _relativeCoord, _coordNode, d.coord_version, d.seq_version];
         });
 
-	
-	console.log("_rows="+_rows[0]);
-
         var tableData = {
             headers: [_headers],
             rows: _rows
