@@ -34,10 +34,14 @@ sequenceView.render = function () {
   // once data is fetched, update the navbar
   var _showVariants = bootstrappedData.featureType === 'ORF';
   var locusData = bootstrappedData.locusData;
+  
+
+  console.log("main_strain="+locusData.main_strain);
+
+
   ReactDOM.render(
     <AsyncSequenceView
       locusId={bootstrappedData.locusId} locusDisplayName={bootstrappedData.displayName}
-      mainStrain={locusData.main_strain}
       locusFormatName={bootstrappedData.formatName} locusHistoryData={bootstrappedData.locusHistory}
       detailsCallback={_detailsCallback} locusSGDID={bootstrappedData.sgdid} showVariants={_showVariants}
     />,
