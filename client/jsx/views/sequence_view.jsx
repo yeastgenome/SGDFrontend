@@ -33,10 +33,11 @@ sequenceView.render = function () {
   // async sequence view, fetches data, renders main strain, alt strains, and other strains (if present)
   // once data is fetched, update the navbar
   var _showVariants = bootstrappedData.featureType === 'ORF';
+  var locusData = bootstrappedData.locusData;
   ReactDOM.render(
     <AsyncSequenceView
       locusId={bootstrappedData.locusId} locusDisplayName={bootstrappedData.displayName}
-      mainStrain={bootstrappedData.locusData.main_strain}
+      mainStrain={locusData.main_strain}
       locusFormatName={bootstrappedData.formatName} locusHistoryData={bootstrappedData.locusHistory}
       detailsCallback={_detailsCallback} locusSGDID={bootstrappedData.sgdid} showVariants={_showVariants}
     />,
