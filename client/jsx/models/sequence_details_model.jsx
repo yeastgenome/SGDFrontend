@@ -224,13 +224,18 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 	var contigName = contigString;
 	if (MAIN_STRAIN_NAME != 'S288C') {
 	    contigName = contigData.name;
+	    _headers = [
+            	"Feature",
+            	"Relative Coordinates",
+            	"Coordinates"];
 	}
 
         var _rows = _.map(subFeatures, d => {
             var _relativeCoord = `${d.relative_start}..${d.relative_end}`;
-            // var _coordNode = { html: `<span><a href=${contigData.href}>${contigString}</a>:${d.chromosomal_start}..${d.chromosomal_end}</span>` };
-	    // var _coordNode = { html: `<span><a href=${contigData.href}>${contigData.name}</a>:${d.chromosomal_start}..${d.chromosomal_end}</span>` };
 	    var _coordNode = { html: `<span><a href=${contigData.href}>${contigName}</a>:${d.chromosomal_start}..${d.chromosomal_end}</span>` };
+	    if (MAIN_STRAIN_NAME != 'S288C') {
+	       return [d.format_name, _relativeCoord, _coordNode];
+	    }
             return [d.format_name, _relativeCoord, _coordNode, d.coord_version, d.seq_version];
         });
 
