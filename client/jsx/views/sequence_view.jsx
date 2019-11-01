@@ -7,7 +7,6 @@ const TabsModel = require("../models/tabs_model.jsx");
 
 var sequenceView = {};
 sequenceView.render = function () {
-  var locusData = bootstrappedData.locusData;
 
   // set current tab
   document.getElementById("sequence_tab").className += " active";
@@ -37,7 +36,7 @@ sequenceView.render = function () {
   ReactDOM.render(
     <AsyncSequenceView
       locusId={bootstrappedData.locusId} locusDisplayName={bootstrappedData.displayName}
-      mainStrain={locusData.main_strain}
+      mainStrain={bootstrappedData.main_strain}
       locusFormatName={bootstrappedData.formatName} locusHistoryData={bootstrappedData.locusHistory}
       detailsCallback={_detailsCallback} locusSGDID={bootstrappedData.sgdid} showVariants={_showVariants}
     />,
