@@ -235,7 +235,7 @@ module.exports = class SequenceDetailsModel extends BaseModel {
 	       coord_version = '-';
 	       seq_version = '-';
 	    }
-            return [d.format_name, _relativeCoord, _coordNode, d.coord_version, d.seq_version];
+            return [d.format_name, _relativeCoord, _coordNode, coord_version, seq_version];
         });
 
         var tableData = {
