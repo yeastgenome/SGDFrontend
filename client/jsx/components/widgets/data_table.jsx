@@ -67,8 +67,6 @@ const DataTable = React.createClass({
 
 		};
 		
-		$.fn.dataTableExt.errMode = 'none';
-
 		$.fn.dataTableExt.oSort['range-asc'] = function(x,y) {
 
 			x = x.split("..");
