@@ -54,6 +54,11 @@ summaryView.render = function () {
 
   // async sequence (if needed)
   if (bootstrappedData.tabs && bootstrappedData.tabs.sequence_section) {
+
+    
+    console.log("main_strain="+locusData.main_strain);
+
+
     var _geneticPosition = locusData.genetic_position ? (locusData.genetic_position + " cM") : null;
     ReactDOM.render(
       <AsyncSequenceView
