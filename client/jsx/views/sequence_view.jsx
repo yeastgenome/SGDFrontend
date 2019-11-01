@@ -35,10 +35,14 @@ sequenceView.render = function () {
   var _showVariants = bootstrappedData.featureType === 'ORF';
   ReactDOM.render(
     <AsyncSequenceView
-      locusId={bootstrappedData.locusId} locusDisplayName={bootstrappedData.displayName}
-      mainStrain={bootstrappedData.main_strain}
-      locusFormatName={bootstrappedData.formatName} locusHistoryData={bootstrappedData.locusHistory}
-      detailsCallback={_detailsCallback} locusSGDID={bootstrappedData.sgdid} showVariants={_showVariants}
+      locusId={bootstrappedData.locusId} 
+      mainStrain='CENPK'
+      locusDisplayName={bootstrappedData.displayName}
+      locusFormatName={bootstrappedData.formatName} 
+      locusHistoryData={bootstrappedData.locusHistory}
+      detailsCallback={_detailsCallback} 
+      locusSGDID={bootstrappedData.sgdid} 
+      showVariants={_showVariants}
     />,
     document.getElementById("sequence-viz")
   );
