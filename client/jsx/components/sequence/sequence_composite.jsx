@@ -31,6 +31,7 @@ const SequenceComposite = React.createClass({
       showSequence: true,
       showSubFeatures: true,
       showSubFeaturesTable: true,
+      mainStrain: null
     };
   },
 
@@ -123,6 +124,7 @@ const SequenceComposite = React.createClass({
         </h3>
         <LocusDiagram
           contigData={attr.contigData}
+	  mainStrain={this.props.mainStrain}
           data={attr.data}
           domainBounds={attr.domainBounds}
           focusLocusDisplayName={this.props.focusLocusDisplayName}
@@ -146,6 +148,7 @@ const SequenceComposite = React.createClass({
       var attr = this._getActiveStrainDetailsData();
       innerNode = (<LocusDiagram
         contigData={attr.contigData}
+	mainStrain={this.props.mainStrain}
         data={attr.data}
         domainBounds={attr.domainBounds}
         focusLocusDisplayName={this.props.focusLocusDisplayName}
