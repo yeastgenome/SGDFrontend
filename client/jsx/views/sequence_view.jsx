@@ -36,7 +36,7 @@ sequenceView.render = function () {
   ReactDOM.render(
     <AsyncSequenceView
       locusId={bootstrappedData.locusId} 
-      mainStrain='CENPK'
+      mainStrain={bootstrappedData.mainStrain}
       locusDisplayName={bootstrappedData.displayName}
       locusFormatName={bootstrappedData.formatName} 
       locusHistoryData={bootstrappedData.locusHistory}
