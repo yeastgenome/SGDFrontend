@@ -46,14 +46,23 @@ var AsyncSequenceView = React.createClass({
     var otherStrainsNode = this._getOtherStrainsNode();
     var historyNode = this._getHistoryNode();
     
-    return (<div>
-      {mainStrainNode}
-      {altStrainsNode}
-      {variantNode}
-      {otherStrainsNode}
-      {historyNode}
-    </div>);
- 
+    if (this.props.mainStrain == 'S288C') {
+      return (<div>
+        {mainStrainNode}
+        {altStrainsNode}
+        {variantNode}
+        {otherStrainsNode}
+        {historyNode}
+      </div>);
+    }
+    else {
+      return (<div>
+        {mainStrainNode}
+        {altStrainsNode}
+        {otherStrainsNode}
+        {historyNode}
+      </div>);
+    }
   },
 
   componentDidMount: function () {
