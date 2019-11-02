@@ -63,10 +63,6 @@ var AsyncSequenceView = React.createClass({
   _fetchData: function () {
     var _neighborsModel = new SequenceNeighborsModel({ id: this.props.locusId, mainStrain: this.props.mainStrain});
     
-
-    console.log("mainStrain="+this.props.mainStrain);
-
-
     _neighborsModel.fetch( (err, response) => {
       if (this.isMounted()) {
         this.setState({ neighborsModel: _neighborsModel });
