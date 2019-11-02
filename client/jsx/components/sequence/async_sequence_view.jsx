@@ -42,27 +42,18 @@ var AsyncSequenceView = React.createClass({
   render: function () {
     var mainStrainNode = this._getMainStrainNode();
     var altStrainsNode = this._getAltStrainsNode();
+    var variantNode = this._getVariantsNode();
     var otherStrainsNode = this._getOtherStrainsNode();
     var historyNode = this._getHistoryNode();
     
-    if (this.props.mainStrain == 'S288C') {
-      var variantNode = this._getVariantsNode();
-      return (<div>
-        {mainStrainNode}
-        {altStrainsNode}
-        {variantNode}
-        {otherStrainsNode}
-        {historyNode}
-      </div>);
-    }
-    else {
-      return (<div>
-        {mainStrainNode}
-        {altStrainsNode}
-        {otherStrainsNode}
-        {historyNode}
-      </div>);
-    }
+    return (<div>
+      {mainStrainNode}
+      {altStrainsNode}
+      {variantNode}
+      {otherStrainsNode}
+      {historyNode}
+    </div>);
+ 
   },
 
   componentDidMount: function () {
@@ -136,6 +127,7 @@ var AsyncSequenceView = React.createClass({
 
   _getVariantsNode: function () {
     if (!this.props.showVariants) return null;
+    if (!this.props.mainStrain != 'S288C') return null;
     var variantViewerStore = new VariantViewerStore();
     return (
       <section id='variants'>
