@@ -187,7 +187,7 @@ const SequenceComposite = React.createClass({
     var innerNode = <Loader />;
     if (this._canRenderDetails()) {
       var _buttonId = this.props.showAltStrains ? "alternative_download" : "reference_download";
-      var _text = this.props.showAltStrains ? "Sequence" : "Sequence - S288C";
+      var _text = this.props.showAltStrains ? "Sequence" : "Sequence - " + this.props.mainStrain;
       var _detailsData = this._getActiveStrainDetailsData()
       var _sequences = _detailsData.sequences;
       var _contigName = _detailsData.contigData.formatName;
