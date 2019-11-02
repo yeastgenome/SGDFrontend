@@ -323,6 +323,7 @@
 
 <!-- Resources
 ================================================== -->
+     {% if locus.main_strain == 'S288C' %}     
         <section id="resources" data-magellan-destination="resources">
         <h2>Resources</h2>
         <hr />
@@ -353,7 +354,9 @@
                     {% endfor %}
                 </p>
         </div>
-    </section>
+        </section>
+
+     {% endif %}
 
     </div>
 </div>
