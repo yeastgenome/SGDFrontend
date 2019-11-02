@@ -334,25 +334,24 @@
                  <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
 		 {% if loop.last %}</p>{% endif %}
               {% endfor %}
-             
-            <h3>Protein Databases</h3>
-                <p id='protein_databases_resources_list'>
-                    {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_PROTEIN_DATABASES'%}
-                        <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                    {% endfor %}
-                </p>
-            <h3>Localization</h3>
-                <p id="localization_resources_list">
-                    {% for url in locus.urls if url.category == 'LOCUS_PROEIN_LOCALIZATION'%}
-                        <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                    {% endfor %}
-                </p>
-            <h3>Post-translational Modifications</h3>
-                <p id="modifications_resources_list">
-                    {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_MODIFICATIONS'%}
-                        <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                    {% endfor %}
-                </p>
+
+              {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_PROTEIN_DATABASES'%}
+		 {% if loop.first %} <h3>Protein Databases</h3><p id='protein_databases_resources_list'> {% endif %}
+                 <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+		 {% if loop.last %}</p>{% endif %}	
+              {% endfor %}
+               
+              {% for url in locus.urls if url.category == 'LOCUS_PROEIN_LOCALIZATION'%}
+		 {% if loop.first %} <h3>Localization</h3> <p id="localization_resources_list"> {% endif %}
+                 <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+		 {% if loop.last %}</p>{% endif %}
+              {% endfor %}
+                
+              {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_MODIFICATIONS'%}
+	         {% if loop.first %} <h3>Post-translational Modifications</h3> <p id="modifications_resources_list"> {% endif %}
+                 <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+		 {% if loop.last %}</p>{% endif %}
+              {% endfor %}
           {% endif %}
         </div>
         </section>
