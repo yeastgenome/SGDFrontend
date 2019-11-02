@@ -123,6 +123,10 @@ function set_up_sequence(chart_id, data) {
     for (var i=0; i < data.length; i++) {
         var start = data[i]['start'];
         var end = data[i]['end'];
+
+	start = start + 1000;
+	end = end + 1000;
+
         var direction = strand_to_direction(data[i]['strand']);
         display_name_to_format_name[data[i]['locus']['display_name']] = data[i]['locus']['format_name'];
         if(direction == "5'") {
