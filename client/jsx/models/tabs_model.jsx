@@ -41,6 +41,9 @@ module.exports = class TabsModel {
 		var altElement = this.attributes.hasAltStrains ? { name: "Alternative Reference Strains", target: "alternative" } : null;
 		var otherElement = this.attributes.hasOtherStrains ? { name: "Other Strains", target: "other" } : null;
 		var vvElement = this.attributes.hasAltStrains ? { name: "Variants", target: "variants" } : null;
+		if (this.attributes.main_strain != 'S288C') {
+		  vvElement = null;
+		} 
 
 		return [
 			{ name: "Sequence Overview", target: "overview" },
