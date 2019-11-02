@@ -19,8 +19,10 @@ module.exports = class SequenceNeighborsModel extends BaseModel {
 	}
 
 	parse (response) {
-	      		 
-		MAIN_STRAIN_NAME = this.mainStrain; 
+
+	        if (this.mainStrain) {	      		 
+		   MAIN_STRAIN_NAME = this.mainStrain; 
+		}
 
 		var _altNames = _.filter(_.keys(response), n => { return n !== MAIN_STRAIN_NAME; });
 		var _altStrains = _.map(_altNames, n => {
