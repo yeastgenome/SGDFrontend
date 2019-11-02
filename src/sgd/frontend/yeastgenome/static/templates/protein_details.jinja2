@@ -322,19 +322,19 @@
     </section>
 
 <!-- Resources
-================================================== -->
-     {% if locus.main_strain == 'S288C' %}     
+================================================== -->  
         <section id="resources" data-magellan-destination="resources">
         <h2>Resources</h2>
         <hr />
-        
+
         <div class="panel">
-            <h3>Homologs</h3>
-                <p id='homolog_resources_list'>
-                    {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_HOMOLOGS'%}
-                        <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-                    {% endfor %}
-                </p>
+	  {% if locus.urls|length > 0 %}
+              {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_HOMOLOGS'%}
+		 {% if loop.first %} <h3>Homologs</h3><p id='homolog_resources_list'> {% endif %}
+                 <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+		 {% if loop.last %}</p>{% endif %}
+              {% endfor %}
+             
             <h3>Protein Databases</h3>
                 <p id='protein_databases_resources_list'>
                     {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_PROTEIN_DATABASES'%}
@@ -353,10 +353,9 @@
                         <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                     {% endfor %}
                 </p>
+          {% endif %}
         </div>
         </section>
-
-     {% endif %}
 
     </div>
 </div>
