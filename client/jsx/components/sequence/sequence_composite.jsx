@@ -95,17 +95,29 @@ const SequenceComposite = React.createClass({
     } else {
       var helpNode = <HelpIcon text={"<span>The <i>S. cerevisiae</i> reference genome sequence is derived from laboratory strain S288C.</span>"} isInfo={true} />;
       var _jbHref = "https://browse.yeastgenome.org/?loc=" + this.props.focusLocusFormatName;
-      node = (<div>
-        <div className="row title-right-text">
-          <div className="columns small-6">
-            {this.props.isSimplified ? this._getSimplifiedSequenceNode() : <h2>Reference Strain: S288C {helpNode}</h2>}
+      if (this.props.mainStrain != 'S288C') {
+      	node = (<div>
+          <div className="row title-right-text">
+            <div className="columns small-6">
+              {this.props.isSimplified ? this._getSimplifiedSequenceNode() : <h2>Focus Strain: {this.props.mainStrain}</h2>}
+            </div>
           </div>
-          <div className="columns small-6">
-            <p className="text-right locus-external-links">View in: <a href={_jbHref}>JBrowse</a></p>
+          {this.props.isSimplified ? null : <hr />}
+        </div>);
+      }
+      else {
+        node = (<div>
+          <div className="row title-right-text">
+            <div className="columns small-6">
+              {this.props.isSimplified ? this._getSimplifiedSequenceNode() : <h2>Reference Strain: S288C {helpNode}</h2>}
+            </div>
+            <div className="columns small-6">
+              <p className="text-right locus-external-links">View in: <a href={_jbHref}>JBrowse</a></p>
+            </div>
           </div>
-        </div>
-        {this.props.isSimplified ? null : <hr />}
-      </div>);
+          {this.props.isSimplified ? null : <hr />}
+        </div>);
+      }
       
     }
 
