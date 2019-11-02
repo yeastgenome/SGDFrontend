@@ -7,7 +7,7 @@ const TabsModel = require("../models/tabs_model.jsx");
 
 var sequenceView = {};
 sequenceView.render = function () {
-  var locusData = bootstrappedData.locusData;
+  // var locusData = bootstrappedData.locusData;
 
   // set current tab
   document.getElementById("sequence_tab").className += " active";
