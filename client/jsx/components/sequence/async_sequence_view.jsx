@@ -136,7 +136,6 @@ var AsyncSequenceView = React.createClass({
 
   _getVariantsNode: function () {
     if (!this.props.showVariants) return null;
-    if (!this.props.mainStrain != 'S288C') return null;
     var variantViewerStore = new VariantViewerStore();
     return (
       <section id='variants'>
