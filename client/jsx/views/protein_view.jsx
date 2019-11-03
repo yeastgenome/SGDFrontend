@@ -12,6 +12,9 @@ proteinView.render = function(rawDomainData, locusLength, colorScale) {
   
   var _tabModel = new TabsModel();
 
+  console.log("locusLength="+locusLength);
+
+
   let _elements = [
     { name: "Protein Overview", target: "overview" },
     { name: "Experimental Data", target: "experiment" },
