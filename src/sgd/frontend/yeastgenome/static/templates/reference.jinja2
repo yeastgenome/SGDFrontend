@@ -30,6 +30,7 @@
         <script>
             add_navbar_title('Reference: <span class="gene_name">{{ reference.display_name }}</span>');
             add_navbar_element('Abstract', 'overview');
+            add_navbar_element('Post-translational Modifications', 'posttranslationannotation');
             {% if reference.related_references|length > 0 %}
                 add_navbar_element('Related References', 'related');
             {% endif %}
@@ -143,7 +144,15 @@
                 </div>
             </section>
         {% endif %}
-
+<!-- Post-translational Modifications
+================================================== -->
+       <section id="posttranslationannotation" data-magellan-destination="posttranslationannotation">
+                <h2>Post-translational Modifications<span id="phosphorylation_table_header" class="round secondary label"></span></h2>
+                <hr />
+                <!-- Includes phosphorylation_table into template -->
+                {% set table_id = 'phosphorylation_table' %}
+                {% include "phosphorylation_table.jinja2" %}
+        </section>
 <!-- Interaction
 ================================================== -->
         <section id="interaction" data-magellan-destination="interaction">
