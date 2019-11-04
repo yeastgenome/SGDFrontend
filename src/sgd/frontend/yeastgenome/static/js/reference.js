@@ -1,6 +1,5 @@
 
 $(document).ready(function() {
-
     if(reference['expression_datasets'].length > 0) {
         $("#expression_table_analyze").hide();
         var expression_table = create_expression_table(reference['expression_datasets']);
@@ -84,6 +83,13 @@ $(document).ready(function() {
     else {
         hide_section("regulation");
     }
+
+    if(reference['counts']['ptms'] > 0){
+        $.getJSON('/backend/reference/' + reference['sgdid'] + '/posttranslational_details', function(data) {
+            console.log(data);
+        });
+    }
+
 });
 
 function create_literature_list(list_id, data, topic) {
