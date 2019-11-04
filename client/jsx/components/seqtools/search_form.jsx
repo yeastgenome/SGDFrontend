@@ -946,7 +946,7 @@ const GeneSequenceResources = React.createClass({
 
 		var reverseCompNode = this.getReverseCompNode('rev1');
 		
-		var = param = this.state.param;
+		var param = this.state.param;
        		var seqname = param['seqname'];
 			  
                 return (<div style={{ textAlign: "top" }}>
