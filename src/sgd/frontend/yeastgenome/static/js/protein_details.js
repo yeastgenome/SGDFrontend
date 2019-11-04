@@ -46,7 +46,7 @@ $(document).ready(function() {
           option.innerHTML = protein_data[i]["strain"]["display_name"];
           strain_selection.append(option);
           // if (protein_data[i]["strain"]["format_name"] == "S288C") {
-	  if (length == 0)
+	  if (length == 0) {
 	      length = protein_data[i]["residues"].length - 1;
 	  }
         }
