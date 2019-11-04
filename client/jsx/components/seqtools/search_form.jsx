@@ -945,11 +945,14 @@ const GeneSequenceResources = React.createClass({
 	getGeneNodeLeft() {
 
 		var reverseCompNode = this.getReverseCompNode('rev1');
+		
+		var = param = this.state.param;
+       		var seqname = param['seqname'];
 			  
                 return (<div style={{ textAlign: "top" }}>
                         <h3>Enter a list of names:</h3>
 			<p>Use space-separated standard gene names (and/or ORF and/or SGDID). <br></br>Example: SIR2 YHR023W SGD:S000000001. The maximum gene number for this search is { MAX_GENE }. It will take first { MAX_GENE } genes if more than { MAX_GENE } are provided.  
-			<textarea ref='genes' name='genes' onChange={this.onChange} rows='2' cols='50'></textarea></p>
+			<textarea ref='genes' name='genes' value={seqname} onChange={this.onChange} rows='2' cols='50'></textarea></p>
 			<h3><b>If available,</b> add flanking basepairs</h3>
 			<p>Upstream: <input type='text' ref='up' name='up' onChange={this.onChange} size='50'></input>
 			Downstream: <input type='text' ref='down' name='down' onChange={this.onChange} size='50'></input></p>
