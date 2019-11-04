@@ -86,8 +86,12 @@ $(document).ready(function() {
 
     if(reference['counts']['ptms'] > 0){
         $.getJSON('/backend/reference/' + reference['sgdid'] + '/posttranslational_details', function(data) {
-            console.log(data);
+            var phosphorylation_table = create_phosphorylation_table(data);
+            create_download_button("phosphorylation_table_download",phosphorylation_table,reference['display_name'] + "_posttranslationannotations");
         });
+    }
+    else{
+        hide_section("posttranslationannotation");
     }
 
 });
@@ -415,3 +419,43 @@ function create_downloadable_file_table(data) {
 
     return create_table("downloadable_file_table", options);
 }
+
+
+
+function create_phosphorylation_table(data) {
+    var datatable = [];
+    
+    var sites = {};
+    for (var i = 0; i < data.length; i++) {
+        datatable.push(['','','','',data[i]['protein'],'',data[i]["site_residue"] + data[i]["site_index"],data[i]['modification'],'',data[i]['modifier']])
+        sites[data[i]["site_residue"] + data[i]["site_index"]] = true;
+    }
+    set_up_header("phosphorylation_table", datatable.length, "entry", "entries", Object.keys(sites).length, "site", "sites");
+    
+    set_up_phospho_sort();
+    
+    var options = {};
+    options["bPaginate"] = true;
+    options["aaSorting"] = [[4, "asc"]];
+    options["bDestroy"] = true;
+    options["aoColumns"] = [
+        { bSearchable: false, bVisible: false },
+        { bSearchable: false, bVisible: false },
+        { bSearchable: false, bVisible: false },
+        { bSearchable: false, bVisible: false },
+        { sTitle:'Protein', bSearchable: true, bVisible: true },
+        { bSearchable: false, bVisible: false },
+        { sTitle:'Site',sType: "phospho" ,bSearchable: true},
+        {sTitle:'Modification',},
+        { bSearchable: false, bVisible: false },
+        {sTitle:'Modifier',bSearchable: true},
+    ];
+    options["aaData"] = datatable;
+    
+    options["oLanguage"] = {
+        sEmptyTable: "No post-translational data for this reference."
+    };
+    
+    return create_table("phosphorylation_table", options);
+    }
+
