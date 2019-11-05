@@ -30,15 +30,15 @@
         <script>
             add_navbar_title('Reference: <span class="gene_name">{{ reference.display_name }}</span>');
             add_navbar_element('Abstract', 'overview');
-            add_navbar_element('Post-translational Modifications', 'posttranslationannotation');
             {% if reference.related_references|length > 0 %}
                 add_navbar_element('Related References', 'related');
             {% endif %}
-            add_navbar_element('Interaction Annotations', 'interaction');
             add_navbar_element('Gene Ontology Annotations', 'go');
             add_navbar_element('Phenotype Annotations', 'phenotype');
             add_navbar_element('Disease Annotations', 'disease');
             add_navbar_element('Regulation Annotations', 'regulation');
+            add_navbar_element('Post-translational Modifications', 'posttranslationannotation');
+            add_navbar_element('Interaction Annotations', 'interaction');
             add_navbar_element('Published Datasets', 'expression');
 	    {% if reference.downloadable_files|length > 0 %}
 	        add_navbar_element('Downloadable Files', 'file');
@@ -144,27 +144,6 @@
                 </div>
             </section>
         {% endif %}
-<!-- Post-translational Modifications
-================================================== -->
-       <section id="posttranslationannotation" data-magellan-destination="posttranslationannotation">
-                <h2>Post-translational Modifications<span id="phosphorylation_table_header" class="round secondary label"></span></h2>
-                <hr />
-                <!-- Includes phosphorylation_table into template -->
-                {% set table_id = 'phosphorylation_table' %}
-                {% include "phosphorylation_table.jinja2" %}
-        </section>
-<!-- Interaction
-================================================== -->
-        <section id="interaction" data-magellan-destination="interaction">
-            <h2>Interaction Annotations <span id="interaction_table_header" class="round secondary label"></span></h2>
-            <hr />
-            <div>
-                <!-- Includes interaction_table into template -->
-                {% set table_id = "interaction_table" %}
-                {% include "interaction_table.jinja2" %}
-            </div>
-        </section>
-
 <!-- GO
 ================================================== -->
         <section id="go" data-magellan-destination="go">
@@ -208,7 +187,26 @@
                 {% include "regulation_combined_table.jinja2" %}
             </div>
         </section>
-
+<!-- Post-translational Modifications
+================================================== -->
+       <section id="posttranslationannotation" data-magellan-destination="posttranslationannotation">
+                <h2>Post-translational Modifications<span id="phosphorylation_table_header" class="round secondary label"></span></h2>
+                <hr />
+                <!-- Includes phosphorylation_table into template -->
+                {% set table_id = 'phosphorylation_table' %}
+                {% include "phosphorylation_table.jinja2" %}
+        </section>
+<!-- Interaction
+================================================== -->
+        <section id="interaction" data-magellan-destination="interaction">
+            <h2>Interaction Annotations <span id="interaction_table_header" class="round secondary label"></span></h2>
+            <hr />
+            <div>
+                <!-- Includes interaction_table into template -->
+                {% set table_id = "interaction_table" %}
+                {% include "interaction_table.jinja2" %}
+            </div>
+        </section>
 <!-- Expression
 ================================================== -->
         <section id="expression" data-magellan-destination="expression">
