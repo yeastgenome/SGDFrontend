@@ -67,4 +67,4 @@ var HelpIcon = React.createClass({
 	}
 });
 
-module.exports = HelpIcon;
+export default HelpIcon;
