@@ -49,4 +49,4 @@ const DropdownSelector = React.createClass({
   }
 });
 
-module.exports = DropdownSelector;
+export default DropdownSelector;

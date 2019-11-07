@@ -47,4 +47,4 @@ const TForm = React.createClass({
   }
 });
 
-module.exports = TForm;
+export default TForm;

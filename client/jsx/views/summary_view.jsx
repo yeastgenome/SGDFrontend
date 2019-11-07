@@ -90,4 +90,4 @@ summaryView.render = function () {
     }
 };
 
-module.exports = summaryView;
+export default summaryView;
