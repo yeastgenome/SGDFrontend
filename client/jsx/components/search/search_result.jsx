@@ -227,4 +227,4 @@ const style = {
   }
 };
 
-module.exports = Radium(SearchResult);
+export default Radium(SearchResult);
