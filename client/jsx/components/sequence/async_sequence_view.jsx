@@ -166,4 +166,4 @@ var AsyncSequenceView = React.createClass({
 
 });
 
-module.exports = AsyncSequenceView;
+export default AsyncSequenceView;

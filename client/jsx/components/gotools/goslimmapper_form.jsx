@@ -483,5 +483,5 @@ e-help/analyze-help/go-slim-mapper?authuser=0' target='help_win'>GO Slim</a> ter
 
 });
 
-module.exports = GoSlimMapper;
+export default GoSlimMapper;
 

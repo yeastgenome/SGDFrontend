@@ -23,4 +23,4 @@ networkView.render = function renderNetworkView (graphData, categoryColors, targ
     nodeSize={10} edgeSize={2} labelSize={17} showLegend={true} title={_HeaderText}/>, document.getElementById(targetId));
 };
 
-module.exports = networkView;
+export default networkView;
