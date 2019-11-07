@@ -2,10 +2,10 @@ import d3 from 'd3';
 import React from 'react';
 import _ from 'underscore';
 
-const DownloadButton = require('../widgets/download_button.jsx');
-const DropdownSelector = require('../widgets/dropdown_selector.jsx');
-const Legend = require('../viz/legend.jsx');
-const subFeatureColorScale = require('../../lib/locus_format_helper.jsx').subFeatureColorScale();
+import DownloadButton from '../widgets/download_button.jsx';
+import DropdownSelector from '../widgets/dropdown_selector.jsx';
+import Legend from '../viz/legend.jsx';
+import {subFeatureColorScale} from '../../lib/locus_format_helper.jsx';
 const LETTERS_PER_CHUNK = 10;
 const LETTERS_PER_LINE = 60;
 
