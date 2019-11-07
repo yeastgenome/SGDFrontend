@@ -2,15 +2,16 @@ import React from 'react';
 import d3 from 'd3';
 import _ from 'underscore';
 
-const CalcWidthOnResize = require('../mixins/calc_width_on_resize.jsx');
-const ChromosomeThumb = require('./chromosome_thumb.jsx');
-const FlexibleTooltip = require('../widgets/flexible_tooltip.jsx');
-const HelpIcon = require('../widgets/help_icon.jsx');
-const SequenceDetailsModel = require('../../models/sequence_details_model.jsx');
-const SequenceNeighborsModel = require('../../models/sequence_neighbors_model.jsx');
-const StandaloneAxis = require('./standalone_axis.jsx');
-const subFeatureColorScale = require('../../lib/locus_format_helper.jsx').subFeatureColorScale();
-const VariantPop = require('./variant_pop.jsx');
+import CalcWidthOnResize from '../mixins/calc_width_on_resize.jsx';
+import ChromosomeThumb from './chromosome_thumb.jsx';
+import FlexibleTooltip from '../widgets/flexible_tooltip.jsx';
+import HelpIcon from '../widgets/help_icon.jsx';
+import SequenceDetailsModel from '../../models/sequence_details_model.jsx';
+import SequenceNeighborsModel from '../../models/sequence_neighbors_model.jsx';
+import StandaloneAxis from './standalone_axis.jsx';
+import {subFeatureColorScale} from '../../lib/locus_format_helper.jsx';
+import VariantPop from './variant_pop.jsx';
+
 
 const AXIS_LABELING_HEIGHT = 24;
 const HEIGHT = 17;

@@ -46,11 +46,11 @@ var AsyncSequenceView = React.createClass({
     var historyNode = this._getHistoryNode();
 
     return (<div>
-      {/* {mainStrainNode}
+      {mainStrainNode}
       {altStrainsNode}
       {variantNode}
       {otherStrainsNode}
-      {historyNode} */}
+      {historyNode}
     </div>);
   },
 

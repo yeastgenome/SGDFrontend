@@ -5,13 +5,14 @@
 import React from 'react';
 import _ from 'underscore';
 
-const DataTable = require("../widgets/data_table.jsx");
-const DownloadButton = require("../widgets/download_button.jsx");
-const DropdownSelector = require("../widgets/dropdown_selector.jsx");
-const HelpIcon = require("../widgets/help_icon.jsx");
-const LocusDiagram = require("../viz/locus_diagram.jsx");
-const MultiSequenceDownload = require("./multi_sequence_download.jsx");
-const SequenceToggler = require("./sequence_toggler.jsx");
+import DataTable from "../widgets/data_table.jsx";
+import DownloadButton from "../widgets/download_button.jsx";
+import DropdownSelector  from "../widgets/dropdown_selector.jsx";
+import HelpIcon  from "../widgets/help_icon.jsx";
+import LocusDiagram from "../viz/locus_diagram.jsx";
+import MultiSequenceDownload from "./multi_sequence_download.jsx";
+import SequenceToggler from "./sequence_toggler.jsx";
+
 
 const Loader = React.createClass({
   render () {
