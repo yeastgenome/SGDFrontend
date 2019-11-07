@@ -9,7 +9,7 @@ import StyleGuide from './components/style_guide/style_guide.jsx';
 import Primer3 from './components/primer3/primer3.jsx';
 import ExampleContainer from './containers/example_container.jsx';
 
-module.exports = (
+export default (
   <Route path="/" component={Layout}>
     <Route path="colleague/:formatName" component={ColleaguesShow} />
     <Route path="search" component={Search} />
