@@ -15,4 +15,4 @@ reactRouterRender.render = function () {
   ReactDOM.render(<ReduxApplication history={_history} store={_store} />, document.getElementById('j-application-target'));
 }
 
-module.exports = reactRouterRender;
+export default reactRouterRender;

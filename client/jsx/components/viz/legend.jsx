@@ -33,4 +33,4 @@ const Legend = React.createClass({
 
 });
 
-module.exports = Legend;
+export default Legend;

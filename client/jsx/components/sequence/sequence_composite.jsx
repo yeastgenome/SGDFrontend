@@ -239,4 +239,4 @@ const SequenceComposite = React.createClass({
   }
 });
 
-module.exports = SequenceComposite;
+export default SequenceComposite;

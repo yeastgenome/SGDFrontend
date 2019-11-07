@@ -622,4 +622,4 @@ const LocusDiagram = React.createClass({
   }
 });
 
-module.exports = LocusDiagram;
+export default LocusDiagram;

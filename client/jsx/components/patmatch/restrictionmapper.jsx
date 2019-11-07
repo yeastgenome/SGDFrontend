@@ -400,5 +400,5 @@ const RestrictionMapper = React.createClass({
 	
 });
 
-module.exports = RestrictionMapper;
+export default  RestrictionMapper;
 
