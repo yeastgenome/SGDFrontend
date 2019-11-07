@@ -3,12 +3,12 @@ import _ from "underscore";
 import React from "react";
 import ReactDOM from "react-dom";
 
-const AsyncSequenceView = require("../components/sequence/async_sequence_view.jsx");
-const ExpressionChart = require("../components/viz/expression_chart.jsx");
-const HistoryTable = require("../components/sequence/history_table.jsx");
-const NavBar = require("../components/widgets/navbar.jsx");
-const ReferenceList = require("../components/literature/reference_list.jsx");
-const TabsModel = require("../models/tabs_model.jsx");
+import AsyncSequenceView from "../components/sequence/async_sequence_view.jsx";
+import ExpressionChart from "../components/viz/expression_chart.jsx";
+import HistoryTable from "../components/sequence/history_table.jsx";
+import NavBar from "../components/widgets/navbar.jsx";
+import ReferenceList from "../components/literature/reference_list.jsx";
+import TabsModel from "../models/tabs_model.jsx";
 
 var summaryView = {};
 summaryView.render = function () {
