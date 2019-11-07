@@ -493,5 +493,5 @@ const GoTermFinder = React.createClass({
 
 });
 
-module.exports = GoTermFinder;
+export default GoTermFinder;
 

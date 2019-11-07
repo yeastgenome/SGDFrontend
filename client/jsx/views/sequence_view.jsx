@@ -43,4 +43,4 @@ sequenceView.render = function () {
   );
 };
 
-module.exports = sequenceView;
+export default sequenceView;

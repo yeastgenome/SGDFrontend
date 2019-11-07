@@ -222,5 +222,5 @@ const StrainAlignment = React.createClass({
 
 });
 
-module.exports = StrainAlignment;
+export default StrainAlignment;
 

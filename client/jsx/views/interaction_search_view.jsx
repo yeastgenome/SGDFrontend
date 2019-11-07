@@ -48,4 +48,4 @@ interactionSearchView.render = function () {
   ReactDOM.render(<InteractionSearch />, document.getElementById('j-main'));
 };
 
-module.exports = interactionSearchView;
+export default interactionSearchView;
