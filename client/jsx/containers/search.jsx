@@ -369,4 +369,4 @@ function mapStateToProps(_state) {
   };
 };
 
-module.exports = connect(mapStateToProps)(Radium(Search));
+export default connect(mapStateToProps)(Radium(Search));
