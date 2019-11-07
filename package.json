@@ -49,7 +49,7 @@
     "redux": "^3.5.2",
     "redux-promise": "^0.5.3",
     "redux-thunk": "^1.0.0",
-    "sgd_visualization": "^1.0.12",
+    "sgd_visualization": "^2.0.0-beta.0",
     "string": "^3.3.3",
     "swagger-ui-dist": "^3.21.0",
     "tcomb-form": "^0.8.0",
