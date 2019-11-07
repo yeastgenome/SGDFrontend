@@ -22,4 +22,4 @@ const ReduxApplication = React.createClass({
 	}
 });
 
-module.exports = ReduxApplication;
+export default ReduxApplication;
