@@ -25,7 +25,7 @@ const enzyme_type_to_color = { "3' overhang": GREEN,
     			       "5' overhang": MAGENTA,
 			       "blunt end": ORANGE };
  
-module.exports = React.createClass({
+export default  React.createClass({
 
 	mixins: [CalcWidthOnResize],
 
