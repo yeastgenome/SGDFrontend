@@ -1,14 +1,14 @@
 import React from 'react';
 import _ from 'underscore';
 
-const HelpIcon = require('../widgets/help_icon.jsx');
-const HistoryTable = require('./history_table.jsx');
-const SequenceDetailsModel = require('../../models/sequence_details_model.jsx');
-const SequenceNeighborsModel = require('../../models/sequence_neighbors_model.jsx');
-const SequenceComposite = require('./sequence_composite.jsx');
-const SequenceToggler = require('./sequence_toggler.jsx');
-const AsyncVariantViewer = require("../variant_viewer/async_variant_viewer.jsx");
-const VariantViewerStore = require("../../stores/variant_viewer_store.jsx");
+import HelpIcon from '../widgets/help_icon.jsx';
+import HistoryTable from './history_table.jsx';
+import SequenceDetailsModel from '../../models/sequence_details_model.jsx';
+import SequenceNeighborsModel from '../../models/sequence_neighbors_model.jsx';
+import SequenceComposite from './sequence_composite.jsx';
+import SequenceToggler from './sequence_toggler.jsx';
+import AsyncVariantViewer from "../variant_viewer/async_variant_viewer.jsx";
+import VariantViewerStore from "../../stores/variant_viewer_store.jsx";
 
 /*
   Fetches data from model and renders locus diagram (or loader while fetching).
@@ -46,11 +46,11 @@ var AsyncSequenceView = React.createClass({
     var historyNode = this._getHistoryNode();
 
     return (<div>
-      {mainStrainNode}
+      {/* {mainStrainNode}
       {altStrainsNode}
       {variantNode}
       {otherStrainsNode}
-      {historyNode}
+      {historyNode} */}
     </div>);
   },
 
