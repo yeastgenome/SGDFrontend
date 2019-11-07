@@ -750,4 +750,4 @@ var SearchForm = React.createClass({
 
 });
 
-module.exports = SearchForm;
+export default SearchForm;

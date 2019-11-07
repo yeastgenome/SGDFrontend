@@ -1543,5 +1543,5 @@ const GeneSequenceResources = React.createClass({
 
 });
 
-module.exports = GeneSequenceResources;
+export default GeneSequenceResources;
 

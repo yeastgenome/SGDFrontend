@@ -175,4 +175,4 @@ const SequenceToggler = React.createClass({
 
 });
 
-module.exports = SequenceToggler;
+export default SequenceToggler;
