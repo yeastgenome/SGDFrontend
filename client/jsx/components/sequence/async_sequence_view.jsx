@@ -30,11 +30,11 @@ class AsyncSequenceView extends React.Component{
     var historyNode = this._getHistoryNode();
 
     return (<div>
-      {mainStrainNode}
+      {/* {mainStrainNode}
       {altStrainsNode}
       {variantNode}
       {otherStrainsNode}
-      {historyNode}
+      {historyNode} */}
     </div>);
   }
 
