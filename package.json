@@ -83,6 +83,7 @@
     "grunt-parallel": "^0.4.1",
     "grunt-text-replace": "~0.3.11",
     "htmltidy": "0.0.6",
+    "jquery": "^1.11.1",
     "mocha": "^2.3.4",
     "uglify-js": "^3.0.15",
     "uglifyify": "^3.0.4",
@@ -90,7 +91,10 @@
     "webpack-cli": "^3.3.10",
     "webworkify": "^1.0.2"
   },
-  "babel":{
-    "presets": ["@babel/preset-env","@babel/preset-react"]
-  }  
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react"
+    ]
+  }
 }
