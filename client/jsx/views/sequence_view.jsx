@@ -1,9 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-const NavBar = require("../components/widgets/navbar.jsx");
-const AsyncSequenceView = require("../components/sequence/async_sequence_view.jsx");
-const TabsModel = require("../models/tabs_model.jsx");
+import NavBar from "../components/widgets/navbar.jsx";
+import AsyncSequenceView from "../components/sequence/async_sequence_view.jsx";
+import TabsModel from "../models/tabs_model.jsx";
 
 var sequenceView = {};
 sequenceView.render = function () {
