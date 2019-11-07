@@ -3,7 +3,7 @@
 
 var React = require("react");
 var _ = require("underscore");
-var HelpIcon = require("../widgets/help_icon.jsx");
+import HelpIcon from '../widgets/help_icon.jsx';
 
 var ReferenceList = React.createClass({
 
@@ -46,4 +46,4 @@ var ReferenceList = React.createClass({
 	}
 });
 
-module.exports = ReferenceList;
+export default ReferenceList;
