@@ -394,4 +394,4 @@ Array.prototype.sortOnYear = function(key, order) {
   });
 };
 
-module.exports = connect(mapStateToProps)(Radium(FacetSelector));
+export default connect(mapStateToProps)(Radium(FacetSelector));

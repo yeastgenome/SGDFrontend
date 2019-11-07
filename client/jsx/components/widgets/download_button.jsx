@@ -30,4 +30,4 @@ const DownloadButton = React.createClass({
   }
 });
 
-module.exports = DownloadButton;
+export default DownloadButton;

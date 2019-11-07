@@ -173,4 +173,4 @@ function mapStateToProps(_state) {
   };
 }
 
-module.exports = connect(mapStateToProps)(AppSearchBar);
+export default connect(mapStateToProps)(AppSearchBar);

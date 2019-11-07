@@ -17,4 +17,4 @@ const ErrorMessage = React.createClass({
   }
 });
 
-module.exports = ErrorMessage;
+export default ErrorMessage;
