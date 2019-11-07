@@ -89,5 +89,8 @@
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
     "webworkify": "^1.0.2"
-  }
+  },
+  "babel":{
+    "presets": ["@babel/preset-env","@babel/preset-react"]
+  }  
 }
