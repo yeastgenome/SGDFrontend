@@ -66,6 +66,9 @@ const GeneSequenceResources = React.createClass({
 		
 		var param = this.state.param;
 
+		alert("seqname="+param['seqname']);
+		alert("emboss="+param['emboss']);
+
 	        if (this.state.isComplete) {
 
 			var data = this.state.resultData;
