@@ -1221,7 +1221,6 @@ const GeneSequenceResources = React.createClass({
                       if (param['strain']) {
                          paramData['strain'] = param['strain'];
                       }
-		      alert("HELLO WORLD");
 		      this.sendRequest(paramData)
 		      return
                    }
@@ -1258,8 +1257,8 @@ const GeneSequenceResources = React.createClass({
 	sendRequest(paramData) {
 
 
-                // alert("seqname="+paramData['seqname']);
-	        // alert("emboss="+paramData['emboss']);			               
+                alert("seqname="+paramData['seqname']);
+	        alert("emboss="+paramData['emboss']);			               
 
 		$.ajax({
 			url: SeqtoolsUrl,
