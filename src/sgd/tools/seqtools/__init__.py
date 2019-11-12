@@ -45,7 +45,19 @@ def run_emboss(p):
 
     emboss = p['emboss']
     seq = p.get('seq')
-    
+    seqname = p.get('seqname')
+
+    ## get seq for seqname
+    if seq is None and seqname is not None:
+        url = seq_url.replace("_REPLACE_NAME_HERE_", seqname)
+        res = _get_json_from_server(url)
+        if res == 404:
+            continue
+        if len(res.get('genomic_dna')) == 0:
+            continue
+        if res.get('genomic_dna') is not None:
+            [format_name, seq] = _extract_seq(strains, res['genomic_dna'], 1)
+
     inSeqFile = "/tmp/seq." + str(os.getpid()) + ".in"
     fw = open(inSeqFile, "w")
     fw.write(seq + "\n")
