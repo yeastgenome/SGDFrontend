@@ -58,7 +58,6 @@ const GeneSequenceResources = React.createClass({
                       this.runSeqTools('seq');
                 }
 		else if (param['emboss']) {
-		      alert("seqname="+param['seqname']);
 		      this.runSeqTools('emboss');
 		}      
 	},
