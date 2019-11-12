@@ -48,7 +48,10 @@ const GeneSequenceResources = React.createClass({
 
 	componentDidMount() {
 		var param = this.state.param;
-	        if (param['genes']) {
+		if (param['emboss']) {
+                      this.runSeqTools('emboss');
+		}
+	        else if (param['genes']) {
 	              this.runSeqTools('genes');
 	        }
 		else if (param['chr']) {
@@ -57,9 +60,6 @@ const GeneSequenceResources = React.createClass({
 		else if (param['seq_id']) {
                       this.runSeqTools('seq');
                 }
-		else if (param['emboss']) {
-		      this.runSeqTools('emboss');
-		}      
 	},
 
 	getPage() {
@@ -67,9 +67,9 @@ const GeneSequenceResources = React.createClass({
 		var param = this.state.param;
 		
 		// pretty weird.. we have to call it again here
-		if (param['emboss']) {
-		   this.runSeqTools('emboss');
-		}
+		// if (param['emboss']) {
+		//   this.runSeqTools('emboss');
+		// }
 		
 	        if (this.state.isComplete) {
 
@@ -1252,9 +1252,8 @@ const GeneSequenceResources = React.createClass({
 	sendRequest(paramData) {
 
 
-                alert("seqname="+paramData['seqname']);
-
-	        alert("emboss="+paramData['emboss']);			               
+                // alert("seqname="+paramData['seqname']);
+	        // alert("emboss="+paramData['emboss']);			               
 
 		$.ajax({
 			url: SeqtoolsUrl,
