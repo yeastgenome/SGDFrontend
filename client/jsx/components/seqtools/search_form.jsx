@@ -1146,10 +1146,6 @@ const GeneSequenceResources = React.createClass({
 		
 		var param = this.state.param;
 
-
-		alert("seqname=HELLO: "+ param['seqname']);
-		alert("emboss=HELLO: "+ param['emboss']);
-
 		if (searchType == 'genes') {
 
 		   var more = param['more'];
@@ -1220,15 +1216,15 @@ const GeneSequenceResources = React.createClass({
 
 		if (searchType == 'emboss') {
 		   paramData['emboss'] = param['emboss'];
-		   if (param['sequence_id']) {
+		   if (param['seqname']) {
+                      paramData['seqname'] = param['seqname'];
+                      if (param['strain']) {
+                         paramData['strain'] = param['strain'];
+                      }
+                   }
+		   else if (param['sequence_id']) {
 		      var seqID = param['sequence_id'];
 		      paramData['seq'] = window.localStorage.getItem(seqID);
-		   }
-		   else if (param['seqname']) {
-		      paramData['seqname'] = param['seqname'];
-		      if (param['strain']) { 
-		      	 paramData['strain'] = param['strain'];
-		      }
 		   }
 		   this.sendRequest(paramData)
                    return		   
