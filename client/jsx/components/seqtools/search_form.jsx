@@ -1218,6 +1218,11 @@ const GeneSequenceResources = React.createClass({
 		      if (param['strain']) { 
 		      	 paramData['strain'] = param['strain'];
 		      }
+
+
+		      alert('seqname='+param['seqname'])
+
+
 		   }
 		   this.sendRequest(paramData)
                    return		   
