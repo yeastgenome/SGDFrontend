@@ -22,6 +22,12 @@ const GeneSequenceResources = React.createClass({
 	getInitialState() {
 	        
 		var param = Params.getParams();
+		
+		var run_emboss = 0;
+                if (param['emboss'] && param['seqname']) {
+                     run_emboss = 1;
+                }
+
 		return {
 			isComplete: false,
 			isPending: false,
@@ -29,7 +35,8 @@ const GeneSequenceResources = React.createClass({
 			strain: '',
 			resultData: {},
 			notFound: null,
-			param: param
+			param: param,
+			run_emboss: run_emboss
 		};
 	},
 
@@ -48,7 +55,7 @@ const GeneSequenceResources = React.createClass({
 
 	componentDidMount() {
 		var param = this.state.param;
-		if (param['emboss']) {
+		if (this.state.run_emboss || param['emboss']) {
                       this.runSeqTools('emboss');
 		}
 	        else if (param['genes']) {
