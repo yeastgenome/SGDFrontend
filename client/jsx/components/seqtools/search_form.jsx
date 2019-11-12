@@ -1245,7 +1245,12 @@ const GeneSequenceResources = React.createClass({
         },
 
 	sendRequest(paramData) {
-        
+
+
+                alert("seqname="+parmaData['seqname']);
+
+	        alert("emboss="+paramData['emboss']);			               
+
 		$.ajax({
 			url: SeqtoolsUrl,
 			data_type: 'json',
