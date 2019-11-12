@@ -65,10 +65,12 @@ const GeneSequenceResources = React.createClass({
 	getPage() {
 		
 		var param = this.state.param;
-
-		alert("seqname="+param['seqname']);
-		alert("emboss="+param['emboss']);
-
+		
+		// pretty weird.. we have to call it again here
+		if (param['emboss']) {
+		   this.runSeqTools('emboss');
+		}
+		
 	        if (this.state.isComplete) {
 
 			var data = this.state.resultData;
