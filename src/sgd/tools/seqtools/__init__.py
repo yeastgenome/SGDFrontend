@@ -43,11 +43,18 @@ def do_seq_analysis(request):
 
 def run_emboss(p):
 
+    return { "content": "HELLO WORLD!" }
+
+
     emboss = p['emboss']
     seq = p.get('seq')
     seqname = p.get('seqname')
 
+
+
     return { "content": emboss + ":" + str(seqname) }
+
+
 
     ## get seq for seqname
     # if seq is None and seqname is not None:
