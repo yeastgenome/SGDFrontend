@@ -67,10 +67,10 @@ const GeneSequenceResources = React.createClass({
 		var param = this.state.param;
 		
 		// pretty weird.. we have to call it again here
-		if (param['emboss']) {
-		   this.runSeqTools('emboss');
-		   this.setState({ isComplete: true });
-		}
+		// if (param['emboss']) {
+		//   this.runSeqTools('emboss');
+		//   this.setState({ isComplete: true });
+		// }
 		
 	        if (this.state.isComplete) {
 
