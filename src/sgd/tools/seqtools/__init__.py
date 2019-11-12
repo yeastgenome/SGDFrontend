@@ -49,19 +49,18 @@ def run_emboss(p):
 
     ## get seq for seqname
     if seq is None and seqname is not None:
+        seq = ""
         strain = p.get('strain')
         if strain is None:
             strain = 'S288C'
         url = seq_url.replace("_REPLACE_NAME_HERE_", seqname)
         res = _get_json_from_server(url)
-        if res == 404:
-            seq = ""
-        elif len(res.get('genomic_dna')) == 0:
-            seq = ""
-        elif res.get('genomic_dna') is not None:
-            [format_name, seq] = _extract_seq([strain], res['genomic_dna'], 1)
-        else:
-            seq = ""
+        if res != 404 and len(res.get('genomic_dna')) != 0 and res.get('genomic_dna') is not None:
+            for row in res['genomic_dna']:
+                if strain == row['strain']:
+                    seq = row['residues']
+                    break      
+
     inSeqFile = "/tmp/seq." + str(os.getpid()) + ".in"
     fw = open(inSeqFile, "w")
     fw.write(seq + "\n")
