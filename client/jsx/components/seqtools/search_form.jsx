@@ -1209,12 +1209,15 @@ const GeneSequenceResources = React.createClass({
 
 		if (searchType == 'emboss') {
 		   paramData['emboss'] = param['emboss'];
-		   var seqID = param['sequence_id'];
-		   if (seqID != '') {
+		   if (param['sequence_id']) {
+		      var seqID = param['sequence_id'];
 		      paramData['seq'] = window.localStorage.getItem(seqID);
 		   }
-		   else {
-		      paramData['seqname'] = param['seqname']; 
+		   elif (param['seqname']) {
+		      paramData['seqname'] = param['seqname'];
+		      if (param['strain']) { 
+		      	 paramData['strain'] = param['strain'];
+		      }
 		   }
 		   this.sendRequest(paramData)
                    return		   
