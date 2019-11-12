@@ -1221,13 +1221,17 @@ const GeneSequenceResources = React.createClass({
                       if (param['strain']) {
                          paramData['strain'] = param['strain'];
                       }
+		      alert("HELLO WORLD");
+		      this.sendRequest(paramData)
+		      return
                    }
-		   else if (param['sequence_id']) {
+		   
+		   if (param['sequence_id']) {
 		      var seqID = param['sequence_id'];
 		      paramData['seq'] = window.localStorage.getItem(seqID);
-		   }
-		   this.sendRequest(paramData)
-                   return		   
+		      this.sendRequest(paramData)
+                      return
+		   }		   
 		}		
  		
 	},
