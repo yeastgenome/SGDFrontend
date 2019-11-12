@@ -276,7 +276,7 @@ class YeastgenomeFrontend(FrontendInterface):
         response.text = '\n' + '\n\n'.join([ref['text'] for ref in references])
         
         headers['Content-Type'] = 'text/plain'
-        headers['Content-Disposition'] = str('attachment; filename=' + display_name.encode('utf-8') + '.nbib')
+        headers['Content-Disposition'] = str('attachment; filename=' + display_name + '.nbib')
         headers['Content-Description'] = 'File Transfer'
         return response
 
