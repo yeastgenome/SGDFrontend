@@ -1213,7 +1213,7 @@ const GeneSequenceResources = React.createClass({
 		      var seqID = param['sequence_id'];
 		      paramData['seq'] = window.localStorage.getItem(seqID);
 		   }
-		   elif (param['seqname']) {
+		   else if (param['seqname']) {
 		      paramData['seqname'] = param['seqname'];
 		      if (param['strain']) { 
 		      	 paramData['strain'] = param['strain'];
