@@ -1210,7 +1210,10 @@ const GeneSequenceResources = React.createClass({
 		if (searchType == 'emboss') {
 		   paramData['emboss'] = param['emboss'];
 		   var seqID = param['sequence_id'];
-		   paramData['seq'] = window.localStorage.getItem(seqID);
+		   if seqID != '':
+		      paramData['seq'] = window.localStorage.getItem(seqID);
+		   else:
+		      paramData['seqname'] = param['seqname']; 
 		   this.sendRequest(paramData)
                    return		   
 		}		
