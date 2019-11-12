@@ -1252,7 +1252,7 @@ const GeneSequenceResources = React.createClass({
 	sendRequest(paramData) {
 
 
-                alert("seqname="+parmaData['seqname']);
+                alert("seqname="+paramData['seqname']);
 
 	        alert("emboss="+paramData['emboss']);			               
 
