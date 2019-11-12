@@ -47,7 +47,7 @@ def run_emboss(p):
     seq = p.get('seq')
     seqname = p.get('seqname')
 
-    return { "content": emboss + ":" + seqname }
+    return { "content": emboss + ":" + str(seqname) }
 
     ## get seq for seqname
     # if seq is None and seqname is not None:
