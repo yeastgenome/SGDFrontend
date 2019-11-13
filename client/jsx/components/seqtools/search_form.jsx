@@ -1281,10 +1281,11 @@ const GeneSequenceResources = React.createClass({
                               this.setState({seqData: data});
                         }.bind(this),
                         error: function(xhr, status, err) {
-			      // console.error(jsonUrl, status, err.toString());
-			      alert("ERROR="+err.toString());
+			      console.error(jsonUrl, status, err.toString());
                         }.bind(this)
                 });
+
+		alert('seq='+this.state.seqData.seq);
 
         },
 
