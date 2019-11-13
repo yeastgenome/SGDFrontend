@@ -26,6 +26,7 @@ const GeneSequenceResources = React.createClass({
 			isComplete: false,
 			isPending: false,
 			userError: null,
+			seq: '',
 			strain: '',
 			resultData: {},
 			notFound: null,
@@ -1207,17 +1208,18 @@ const GeneSequenceResources = React.createClass({
                    return
 		}		
 
+		if (param['seqname']) {
+		    this.setSeq(param['seqname'], param['strain']) 		
+		}
+
 		if (searchType == 'emboss') {
 		   paramData['emboss'] = param['emboss'];
 		   if (param['sequence_id']) {
 		      var seqID = param['sequence_id'];
 		      paramData['seq'] = window.localStorage.getItem(seqID);
 		   }
-		   else if (param['seqname']) {
-		      paramData['seqname'] = param['seqname'];
-		      if (param['strain']) { 
-		      	 paramData['strain'] = param['strain'];
-		      }
+		   else if (this.state.seq) {
+		      paramData['seq'] = this.state.seq;
 		   }
 		   this.sendRequest(paramData)
                    return		   
@@ -1263,6 +1265,26 @@ const GeneSequenceResources = React.createClass({
 
 	},
 	
+	setSeq(seqname, strain) {
+
+	        var seqUrl = SeqtoolsUrl + '?seqname=' + seqname;
+		if (strain) {
+		    seqUrl = seqUrl + '&strain=' + strain;
+                }
+                $.ajax({
+                        url: seqUrl,
+                        data_type: 'json',
+                        success: function(data) {
+                              this.setState({seq: data['seq']});
+                        }.bind(this),
+                        error: function(xhr, status, err) {
+			      console.error(jsonUrl, status, err.toString());
+                        }.bind(this)
+
+                });
+
+        },
+
 	getExtraParams(param) {
 
 	        var extraParams = "";
