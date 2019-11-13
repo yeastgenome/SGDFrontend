@@ -51,7 +51,7 @@ def run_emboss(p):
     else:
         seq = p.get('seq')
         
-    return { "content": seq }
+    return { "content": emboss + ": " + str(p.get('seqname')) + seq }
 
 
 
