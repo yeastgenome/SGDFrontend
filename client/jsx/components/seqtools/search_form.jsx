@@ -12,6 +12,7 @@ const style = {
 };
 
 const SeqtoolsUrl = "/run_seqtools";
+const BlastUrl = "/run_blast";
 
 const MAX_GENE_TO_SHOW = 4;
 const MAX_GENE = 50;
@@ -31,7 +32,7 @@ const GeneSequenceResources = React.createClass({
 			isComplete: false,
 			isPending: false,
 			userError: null,
-			seq: '',
+			seqData: {},
 			strain: '',
 			resultData: {},
 			notFound: null,
@@ -1220,7 +1221,8 @@ const GeneSequenceResources = React.createClass({
 		      paramData['seq'] = window.localStorage.getItem(seqID);
 		   }
 		   else if (this.state.seq) {
-		      paramData['seq'] = this.state.seq;
+		      var seqData = this.state.seqData;
+		      paramData['seq'] = seqData.seq;
 		   }
 		   this.sendRequest(paramData)
                    return		   
@@ -1267,7 +1269,7 @@ const GeneSequenceResources = React.createClass({
 	
 	getSeq(seqname, strain) {
 
-	        var seqUrl = SeqtoolsUrl + '?seqname=' + seqname;
+	        var seqUrl = SeqtoolsUrl + '?name=' + seqname;
 		if (strain) {
 		    seqUrl = seqUrl + '&strain=' + strain;
                 }
@@ -1276,7 +1278,7 @@ const GeneSequenceResources = React.createClass({
                         url: seqUrl,
                         data_type: 'json',
                         success: function(data) {
-                              this.setState({seq: data['seq']});
+                              this.setState({seqData: data});
                         }.bind(this),
                         error: function(xhr, status, err) {
 			      console.error(seqUrl, status, err.toString());
