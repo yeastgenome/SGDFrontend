@@ -51,7 +51,7 @@ def run_emboss(p):
     seq = ""
     if p.get('seq') is not None:
         seq = p.get('seq')
-    elif p.get('seqname') is not None:
+    else:
         data = get_genomic_dna_for_gene(p)
         seq = data['seq']
     
@@ -361,10 +361,8 @@ def get_genomic_dna_for_gene(p):
     data['seq'] = ''
     if res == 404:
         return data
-
     if len(res.get('genomic_dna')) == 0:
         return data
-    
     if res.get('genomic_dna') is not None:
         rows = res.get('genomic_dna')
         for row in rows:
