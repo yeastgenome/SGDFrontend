@@ -349,25 +349,26 @@ def get_genomic_dna_for_gene(p):
     if strain is None or strain == '':
         strain = 'S288C'
 
-    name = name.upper()
-    name = name.replace("SGD:", "")
+    name = name.upper().replace("SGD:", "")
     url = seq_url.replace("_REPLACE_NAME_HERE_", name)
     res = _get_json_from_server(url)
 
+    data = {}
+    data['seq'] = ''
     if res == 404:
-        return { 'seq': "" }
+        return data
 
     if len(res.get('genomic_dna')) == 0:
-        return { 'seq' : "" }
-
+        return data
+    
     if res.get('genomic_dna') is not None:
         rows = res.get('genomic_dna')
         for row in rows:
             s = row['strain']
             strain_name = s['display_name']
             if strain == strain_name:
-                return { 'seq': row['residues'] }
-    return { 'seq' : "" }
+                data['seq'] = row['residues']
+    return data
 
 
 def get_sequence_for_genes(p):
