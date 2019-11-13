@@ -1480,7 +1480,7 @@ const GeneSequenceResources = React.createClass({
 		 }
 		 
 	     	 return (<div>
-                           <span style={ style.textFont }><strong>{ title }</strong> for gene/sequence in strain <p style={{ fontSize: 18, color: 'red' }}> {strain}: { seqname }</p></span>
+                           <span style={ style.textFont }><strong>{ title }</strong> for gene/sequence in strain <div style={{ fontSize: 18, color: 'red' }}> {strain}: { seqname }</div></span>
                          </div>);
 
 	     }
