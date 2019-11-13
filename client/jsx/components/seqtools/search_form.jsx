@@ -22,6 +22,11 @@ const GeneSequenceResources = React.createClass({
 	getInitialState() {
 	        
 		var param = Params.getParams();
+		
+		if (param['seqname']) {
+		    this.getSeq(param['seqname'], param['strain']);		
+		}
+
 		return {
 			isComplete: false,
 			isPending: false,
@@ -1208,11 +1213,6 @@ const GeneSequenceResources = React.createClass({
                    return
 		}		
 
-		if (param['seqname']) {
-		    this.setSeq(param['seqname'], param['strain'])
-		    alert("seq="+this.state.seq); 		
-		}
-
 		if (searchType == 'emboss') {
 		   paramData['emboss'] = param['emboss'];
 		   if (param['sequence_id']) {
@@ -1261,12 +1261,11 @@ const GeneSequenceResources = React.createClass({
 			error: function(xhr, status, err) {
 			      this.setState({isPending: true});
 			}.bind(this) 
-
 		});
 
 	},
 	
-	setSeq(seqname, strain) {
+	getSeq(seqname, strain) {
 
 	        var seqUrl = SeqtoolsUrl + '?seqname=' + seqname;
 		if (strain) {
@@ -1282,7 +1281,6 @@ const GeneSequenceResources = React.createClass({
                         error: function(xhr, status, err) {
 			      console.error(seqUrl, status, err.toString());
                         }.bind(this)
-
                 });
 
         },
