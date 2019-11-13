@@ -1269,10 +1269,10 @@ const GeneSequenceResources = React.createClass({
 	
 	getSeq(seqname, strain) {
 
-	        var seqUrl = SeqtoolsUrl + '?name=' + seqname;
-		if (strain) {
-		    seqUrl = seqUrl + '&strain=' + strain;
-                }
+	        var seqUrl = BlastUrl + '?name=' + seqname;
+		// if (strain) {
+		//    seqUrl = seqUrl + '&strain=' + strain;
+                // }
 
                 $.ajax({
                         url: seqUrl,
