@@ -1272,6 +1272,9 @@ const GeneSequenceResources = React.createClass({
 		if (strain) {
 		    seqUrl = seqUrl + '&strain=' + strain;
                 }
+
+		alert("seqUrl="+seqUrl);
+
                 $.ajax({
                         url: seqUrl,
                         data_type: 'json',
