@@ -1471,6 +1471,13 @@ const GeneSequenceResources = React.createClass({
 	     else {
 	     	 title = "Protein Translation";
              }  	 
+
+	     if (param['seqname']) {
+	     	 return (<div>
+                           <span style={ style.textFont }><strong>{ title }</strong> for <p style={{ fontSize: 18, color: 'red' }}>{ param['seq'] }</p></span>
+                         </div>);
+
+	     }
 	     
 	     var pieces = param['sequence_id'].split('_');
 
