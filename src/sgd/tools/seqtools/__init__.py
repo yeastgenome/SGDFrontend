@@ -49,12 +49,6 @@ def run_emboss(p):
 
     emboss = p['emboss']
 
-    ## get seq for seqname
-    # if p.get('seqname') is not None:
-    #    seq = get_genomic_dna_for_gene(p)
-    # else:
-    #    seq = p.get('seq')
-
     seq = p.get('seq')
    
     inSeqFile = "/tmp/seq." + str(os.getpid()) + ".in"

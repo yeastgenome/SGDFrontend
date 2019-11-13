@@ -1209,7 +1209,8 @@ const GeneSequenceResources = React.createClass({
 		}		
 
 		if (param['seqname']) {
-		    this.setSeq(param['seqname'], param['strain']) 		
+		    this.setSeq(param['seqname'], param['strain'])
+		    alert("seq="+this.state.seq); 		
 		}
 
 		if (searchType == 'emboss') {
