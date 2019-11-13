@@ -16,13 +16,13 @@ def do_seq_analysis(request):
     if p.get('check'):
         data = validate_names(p)
         return Response(body=json.dumps(data), content_type='application/json')
-    
-    if p.get('seqname'):
-        data = get_genomic_dna_for_gene(p)
-        return Response(body=json.dumps(data), content_type='application/json')
 
     if p.get('emboss'):
         data = run_emboss(p)
+        return Response(body=json.dumps(data), content_type='application/json')
+    
+    if p.get('seqname'):
+        data = get_genomic_dna_for_gene(p)
         return Response(body=json.dumps(data), content_type='application/json')
 
     if p.get('chr'):
