@@ -46,12 +46,12 @@ const RestrictionMapper = React.createClass({
 
 	componentDidMount() {
 		var param = this.state.param;
+		if (param['seqname']) {
+		    param['gene'] = param['seqname'];
+		}
 	        if (param['gene']) {
 	              this.runRestTools('gene', param['gene']);
 	        }
-		else if (param['seqname']) {
-		      this.runRestTools('gene', param['seqname']);
-		}
 		else if (param['seq_id'] && window.localStorage.getItem(param['seq_id'])) {
                       this.runRestTools('seq', window.localStorage.getItem(param['seq_id']));
                 }
