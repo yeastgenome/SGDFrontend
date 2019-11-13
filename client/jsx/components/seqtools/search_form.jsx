@@ -1473,8 +1473,14 @@ const GeneSequenceResources = React.createClass({
              }  	 
 
 	     if (param['seqname']) {
+	         var seqname = param['seqname'];
+		 var strain = 'S288C';
+		 if (param['strain']) {
+		     strain = param['strain'];
+		 }
+		 
 	     	 return (<div>
-                           <span style={ style.textFont }><strong>{ title }</strong> for <p style={{ fontSize: 18, color: 'red' }}>{ param['seq'] }</p></span>
+                           <span style={ style.textFont }><strong>{ title }</strong> for gene/sequence in strain <p style={{ fontSize: 18, color: 'red' }}> {strain}: { seqname }</p></span>
                          </div>);
 
 	     }
