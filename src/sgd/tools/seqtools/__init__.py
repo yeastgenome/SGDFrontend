@@ -43,9 +43,6 @@ def do_seq_analysis(request):
 
 def run_emboss(p):
 
-    return { "content": "HELLO" }
-
-
     emboss = p['emboss']
 
     ## get seq for seqname
