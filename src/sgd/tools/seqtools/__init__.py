@@ -18,7 +18,7 @@ def do_seq_analysis(request):
         return Response(body=json.dumps(data), content_type='application/json')
     
     if p.get('seqname'):
-        data = get_genomic_dna_for_gene(p['seqname'])
+        data = get_genomic_dna_for_gene(p)
         return Response(body=json.dumps(data), content_type='application/json')
 
     if p.get('emboss'):
@@ -350,7 +350,7 @@ def _get_sequence_from_contig(contig, start, end, strand):
 
 def get_genomic_dna_for_gene(p):
 
-    name = p.get('seqname')
+    seqname = p.get('seqname')
     strain = p.get('strain')
     if strain is None or strain == '':
         strain = 'S288C'
