@@ -1269,7 +1269,7 @@ const GeneSequenceResources = React.createClass({
 	
 	getSeq(seqname, strain) {
 
-	        var seqUrl = BlastUrl + '?name=' + seqname;
+	        var seqUrl = SeqtoolsUrl + '?seqname=' + seqname;
 		// if (strain) {
 		//    seqUrl = seqUrl + '&strain=' + strain;
                 // }
