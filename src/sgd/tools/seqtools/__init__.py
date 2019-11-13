@@ -350,7 +350,7 @@ def _get_sequence_from_contig(contig, start, end, strand):
 
 def get_genomic_dna_for_gene(p):
 
-    seqname = p.get('seqname')
+    name = p.get('seqname')
     strain = p.get('strain')
     if strain is None or strain == '':
         strain = 'S288C'
