@@ -22,7 +22,6 @@ const GeneSequenceResources = React.createClass({
 	getInitialState() {
 	        
 		var param = Params.getParams();
-		
 		return {
 			isComplete: false,
 			isPending: false,
@@ -49,10 +48,7 @@ const GeneSequenceResources = React.createClass({
 
 	componentDidMount() {
 		var param = this.state.param;
-		if (param['emboss']) {
-                      this.runSeqTools('emboss');
-		}
-	        else if (param['genes']) {
+	        if (param['genes']) {
 	              this.runSeqTools('genes');
 	        }
 		else if (param['chr']) {
@@ -61,18 +57,15 @@ const GeneSequenceResources = React.createClass({
 		else if (param['seq_id']) {
                       this.runSeqTools('seq');
                 }
+		else if (param['emboss']) {
+		      this.runSeqTools('emboss');
+		}      
 	},
 
 	getPage() {
 		
 		var param = this.state.param;
-		
-		// pretty weird.. we have to call it again here
-		// if (param['emboss']) {
-		//   this.runSeqTools('emboss');
-		//   this.setState({ isComplete: true });
-		// }
-		
+
 	        if (this.state.isComplete) {
 
 			var data = this.state.resultData;
@@ -129,7 +122,7 @@ const GeneSequenceResources = React.createClass({
 			    
 			}
 			else if (param['emboss']) {
-
+			 
 			     var _text = this.getDesc4emboss(); 
 		 	     
 			     return(<div>
@@ -1216,22 +1209,18 @@ const GeneSequenceResources = React.createClass({
 
 		if (searchType == 'emboss') {
 		   paramData['emboss'] = param['emboss'];
-		   
-		   if (param['seqname']) {
-                      paramData['seqname'] = param['seqname'];
-                      if (param['strain']) {
-                         paramData['strain'] = param['strain'];
-                      }
-		      this.sendRequest(paramData)
-		      return
-                   }
-		   
 		   if (param['sequence_id']) {
 		      var seqID = param['sequence_id'];
 		      paramData['seq'] = window.localStorage.getItem(seqID);
-		      this.sendRequest(paramData)
-                      return
-		   }		   
+		   }
+		   else if (param['seqname']) {
+		      paramData['seqname'] = param['seqname'];
+		      if (param['strain']) { 
+		      	 paramData['strain'] = param['strain'];
+		      }
+		   }
+		   this.sendRequest(paramData)
+                   return		   
 		}		
  		
 	},
@@ -1256,7 +1245,7 @@ const GeneSequenceResources = React.createClass({
         },
 
 	sendRequest(paramData) {
-
+        
 		$.ajax({
 			url: SeqtoolsUrl,
 			data_type: 'json',
