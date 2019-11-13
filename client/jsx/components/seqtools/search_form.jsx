@@ -1222,6 +1222,11 @@ const GeneSequenceResources = React.createClass({
 		   }
 		   else if (this.state.seq) {
 		      var seqData = this.state.seqData;
+
+
+		      alert("seqData="+seqData);
+
+
 		      paramData['seq'] = seqData.seq;
 		   }
 		   this.sendRequest(paramData)
