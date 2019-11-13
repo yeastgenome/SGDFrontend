@@ -30,7 +30,8 @@ const GeneSequenceResources = React.createClass({
 			strain: '',
 			resultData: {},
 			notFound: null,
-			param: param
+			param: param,
+			run_emboss: 0
 		};
 	},
 
@@ -128,8 +129,9 @@ const GeneSequenceResources = React.createClass({
                                      </div>); 
 			    
 			}
-			else if (param['emboss']) {
-			 
+			// else if (param['emboss']) {
+			else if (this.state.run_emboss) {
+ 
 			     var _text = this.getDesc4emboss(); 
 		 	     
 			     return(<div>
@@ -1216,6 +1218,7 @@ const GeneSequenceResources = React.createClass({
 
 		if (searchType == 'emboss') {
 		   paramData['emboss'] = param['emboss'];
+		   this.setState({ run_emboss: 1 });
 		   if (param['seqname']) {
                       paramData['seqname'] = param['seqname'];
                       if (param['strain']) {
@@ -1255,10 +1258,6 @@ const GeneSequenceResources = React.createClass({
         },
 
 	sendRequest(paramData) {
-
-
-                alert("seqname="+paramData['seqname']);
-	        alert("emboss="+paramData['emboss']);			               
 
 		$.ajax({
 			url: SeqtoolsUrl,
