@@ -363,7 +363,8 @@ def get_genomic_dna_for_gene(p):
     if len(res.get('genomic_dna')) == 0:
         return ""
 
-    if res.get('genomic_dna') is not None: 
+    if res.get('genomic_dna') is not None:
+        rows = res.get('genomic_dna')
         for row in rows:
             s = row['strain']
             strain_name = s['display_name']
