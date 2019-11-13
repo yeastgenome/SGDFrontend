@@ -50,6 +50,10 @@ def run_emboss(p):
         seq = get_genomic_dna_for_gene(p)
     else:
         seq = p.get('seq')
+        
+    return { "content": seq }
+
+
 
     inSeqFile = "/tmp/seq." + str(os.getpid()) + ".in"
     fw = open(inSeqFile, "w")
