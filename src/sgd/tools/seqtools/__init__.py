@@ -16,6 +16,10 @@ def do_seq_analysis(request):
     if p.get('check'):
         data = validate_names(p)
         return Response(body=json.dumps(data), content_type='application/json')
+    
+    if p.get('seqname'):
+        data = get_genomic_dna_for_gene(p['seqname'])
+        return Response(body=json.dumps(data), content_type='application/json')
 
     if p.get('emboss'):
         data = run_emboss(p)
@@ -46,11 +50,13 @@ def run_emboss(p):
     emboss = p['emboss']
 
     ## get seq for seqname
-    if p.get('seqname') is not None:
-        seq = get_genomic_dna_for_gene(p)
-    else:
-        seq = p.get('seq')
-        
+    # if p.get('seqname') is not None:
+    #    seq = get_genomic_dna_for_gene(p)
+    # else:
+    #    seq = p.get('seq')
+
+    seq = p.get('seq')
+   
     inSeqFile = "/tmp/seq." + str(os.getpid()) + ".in"
     fw = open(inSeqFile, "w")
     fw.write(seq + "\n")
@@ -355,10 +361,10 @@ def get_genomic_dna_for_gene(p):
     res = _get_json_from_server(url)
 
     if res == 404:
-        return ""
+        return { 'seq': "" }
 
     if len(res.get('genomic_dna')) == 0:
-        return ""
+        return { 'seq' : "" }
 
     if res.get('genomic_dna') is not None:
         rows = res.get('genomic_dna')
@@ -366,8 +372,8 @@ def get_genomic_dna_for_gene(p):
             s = row['strain']
             strain_name = s['display_name']
             if strain == strain_name:
-                return row['residues']
-    return ""
+                return { 'seq': row['residues'] }
+    return { 'seq' : "" }
 
 
 def get_sequence_for_genes(p):
