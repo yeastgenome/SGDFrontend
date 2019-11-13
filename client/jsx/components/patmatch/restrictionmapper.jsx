@@ -20,6 +20,9 @@ const RestrictionMapper = React.createClass({
 	getInitialState() {
 	        
 		var param = Params.getParams();
+		if (param['seqname']) {
+                    param['gene'] = param['seqname'];
+                }
 		return {
 			isComplete: false,
 			isPending: false,
@@ -46,9 +49,6 @@ const RestrictionMapper = React.createClass({
 
 	componentDidMount() {
 		var param = this.state.param;
-		if (param['seqname']) {
-		    param['gene'] = param['seqname'];
-		}
 	        if (param['gene']) {
 	              this.runRestTools('gene', param['gene']);
 	        }
