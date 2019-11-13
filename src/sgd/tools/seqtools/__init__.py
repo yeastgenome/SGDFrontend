@@ -43,7 +43,7 @@ def do_seq_analysis(request):
 
 def run_emboss(p):
 
-    return { "content": "HELLO"}
+    return { "content": "HELLO" }
 
 
     emboss = p['emboss']
