@@ -44,16 +44,13 @@ def do_seq_analysis(request):
 def run_emboss(p):
 
     emboss = p['emboss']
-    seq = p.get('seq')
-    seqname = p.get('seqname')
 
     ## get seq for seqname
-    if seqname is not None:
-        strain = p.get('strain')
-        if strain is None:
-            strain = 'S288C'
+    if p.get('seqname') is not None:
         seq = get_genomic_dna_for_gene(p)
-    
+    else:
+        seq = p.get('seq')
+
     inSeqFile = "/tmp/seq." + str(os.getpid()) + ".in"
     fw = open(inSeqFile, "w")
     fw.write(seq + "\n")
