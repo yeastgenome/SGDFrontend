@@ -43,18 +43,11 @@ def do_seq_analysis(request):
 
 def run_emboss(p):
 
-    return { "content": "HELLO WORLD!" }
-
-
     emboss = p['emboss']
     seq = p.get('seq')
     seqname = p.get('seqname')
 
-
-
-    return { "content": emboss + ":" + str(seqname) }
-
-
+    # return { "content": emboss + ":" + str(seqname) }
 
     ## get seq for seqname
     # if seq is None and seqname is not None:
@@ -69,6 +62,7 @@ def run_emboss(p):
     #            if strain == row['strain']:
     #                seq = row['residues']
     #                break      
+
 
     inSeqFile = "/tmp/seq." + str(os.getpid()) + ".in"
     fw = open(inSeqFile, "w")

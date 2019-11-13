@@ -151,7 +151,7 @@ const GeneSequenceResources = React.createClass({
 		}
 		else {
 
-		        if (param['submit'] || param['submit2'] || param['submit3'] || param['emboss']) {
+		        if (param['submit'] || param['submit2'] || param['submit3']) {
 			     return <p>Please wait while we retrieve the requested information.</p>; 
 
 			}
