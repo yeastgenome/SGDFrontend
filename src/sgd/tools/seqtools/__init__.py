@@ -52,14 +52,8 @@ def run_emboss(p):
         strain = p.get('strain')
         if strain is None:
             strain = 'S288C'
-        url = seq_url.replace("_REPLACE_NAME_HERE_", seqname)
-        res = _get_json_from_server(url)
-        if res != 404 and len(res.get('genomic_dna')) != 0 and res.get('genomic_dna') is not None:
-            for row in res['genomic_dna']:
-                if strain == row['strain']:
-                    seq = row['residues']
-                    break      
-
+        seq = get_genomic_dna_for_gene(p)
+    
     inSeqFile = "/tmp/seq." + str(os.getpid()) + ".in"
     fw = open(inSeqFile, "w")
     fw.write(seq + "\n")
@@ -349,6 +343,33 @@ def _get_sequence_from_contig(contig, start, end, strand):
     if strand == '-':
         seq = _reverse_complement(seq)
     return seq
+
+
+def get_genomic_dna_for_gene(p):
+
+    name = p.get('seqname')
+    strain = p.get('strain')
+    if strain is None or strain == '':
+        strain = 'S288C'
+
+    name = name.upper()
+    name = name.replace("SGD:", "")
+    url = seq_url.replace("_REPLACE_NAME_HERE_", name)
+    res = _get_json_from_server(url)
+
+    if res == 404:
+        return ""
+
+    if len(res.get('genomic_dna')) == 0:
+        return ""
+
+    if res.get('genomic_dna') is not None: 
+        for row in rows:
+            s = row['strain']
+            strain_name = s['display_name']
+            if strain == strain_name:
+                return row['residues']
+    return ""
 
 
 def get_sequence_for_genes(p):
