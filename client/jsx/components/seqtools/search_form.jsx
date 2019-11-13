@@ -30,8 +30,7 @@ const GeneSequenceResources = React.createClass({
 			strain: '',
 			resultData: {},
 			notFound: null,
-			param: param,
-			run_emboss: 0
+			param: param
 		};
 	},
 
@@ -129,9 +128,8 @@ const GeneSequenceResources = React.createClass({
                                      </div>); 
 			    
 			}
-			// else if (param['emboss']) {
-			else if (this.state.run_emboss) {
- 
+			else if (param['emboss']) {
+
 			     var _text = this.getDesc4emboss(); 
 		 	     
 			     return(<div>
@@ -153,7 +151,7 @@ const GeneSequenceResources = React.createClass({
 		}
 		else {
 
-		        if (param['submit'] || param['submit2'] || param['submit3']) {
+		        if (param['submit'] || param['submit2'] || param['submit3'] || param['emboss']) {
 			     return <p>Please wait while we retrieve the requested information.</p>; 
 
 			}
@@ -1218,7 +1216,7 @@ const GeneSequenceResources = React.createClass({
 
 		if (searchType == 'emboss') {
 		   paramData['emboss'] = param['emboss'];
-		   this.setState({ run_emboss: 1 });
+		   
 		   if (param['seqname']) {
                       paramData['seqname'] = param['seqname'];
                       if (param['strain']) {
