@@ -48,9 +48,13 @@ def do_seq_analysis(request):
 def run_emboss(p):
 
     emboss = p['emboss']
-
-    seq = p.get('seq')
-   
+    seq = ""
+    if p.get('seq') is not None:
+        seq = p.get('seq')
+    elif p.get('seqname') is not None:
+        data = get_genomic_dna_for_gene(p)
+        seq = data['seq']
+    
     inSeqFile = "/tmp/seq." + str(os.getpid()) + ".in"
     fw = open(inSeqFile, "w")
     fw.write(seq + "\n")

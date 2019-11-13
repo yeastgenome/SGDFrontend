@@ -12,7 +12,6 @@ const style = {
 };
 
 const SeqtoolsUrl = "/run_seqtools";
-const BlastUrl = "/run_blast";
 
 const MAX_GENE_TO_SHOW = 4;
 const MAX_GENE = 50;
@@ -23,16 +22,10 @@ const GeneSequenceResources = React.createClass({
 	getInitialState() {
 	        
 		var param = Params.getParams();
-		
-		if (param['seqname']) {
-		    this.getSeq(param['seqname'], param['strain']);		
-		}
-
 		return {
 			isComplete: false,
 			isPending: false,
 			userError: null,
-			seqData: {},
 			strain: '',
 			resultData: {},
 			notFound: null,
@@ -1220,14 +1213,11 @@ const GeneSequenceResources = React.createClass({
 		      var seqID = param['sequence_id'];
 		      paramData['seq'] = window.localStorage.getItem(seqID);
 		   }
-		   else if (this.state.seq) {
-		      var seqData = this.state.seqData;
-
-
-		      console.log("seqData="+seqData);
-
-
-		      paramData['seq'] = seqData.seq;
+		   else if (param['seqname']) {
+		      paramData['seqname'] = param['seqname'];
+		      if (param['strain']) { 
+		      	 paramData['strain'] = param['strain'];
+		      }
 		   }
 		   this.sendRequest(paramData)
                    return		   
@@ -1268,30 +1258,11 @@ const GeneSequenceResources = React.createClass({
 			error: function(xhr, status, err) {
 			      this.setState({isPending: true});
 			}.bind(this) 
+
 		});
 
 	},
 	
-	getSeq(seqname, strain) {
-
-	        var jsonUrl = SeqtoolsUrl + '?seqname=' + seqname;
-		if (strain) {
-		   jsonUrl = seqUrl + '&strain=' + strain;
-                }
-
-                $.ajax({
-                        url: jsonUrl,
-                        data_type: 'json',
-                        success: function(data) {
-                              this.setState({seqData: data});
-                        }.bind(this),
-                        error: function(xhr, status, err) {
-			      console.error(jsonUrl, status, err.toString());
-                        }.bind(this)
-                });
-
-        },
-
 	getExtraParams(param) {
 
 	        var extraParams = "";
