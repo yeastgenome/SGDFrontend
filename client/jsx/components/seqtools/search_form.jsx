@@ -1209,8 +1209,16 @@ const GeneSequenceResources = React.createClass({
 
 		if (searchType == 'emboss') {
 		   paramData['emboss'] = param['emboss'];
-		   var seqID = param['sequence_id'];
-		   paramData['seq'] = window.localStorage.getItem(seqID);
+		   if (param['sequence_id']) {
+		      var seqID = param['sequence_id'];
+		      paramData['seq'] = window.localStorage.getItem(seqID);
+		   }
+		   else if (param['seqname']) {
+		      paramData['seqname'] = param['seqname'];
+		      if (param['strain']) { 
+		      	 paramData['strain'] = param['strain'];
+		      }
+		   }
 		   this.sendRequest(paramData)
                    return		   
 		}		
@@ -1463,6 +1471,19 @@ const GeneSequenceResources = React.createClass({
 	     else {
 	     	 title = "Protein Translation";
              }  	 
+
+	     if (param['seqname']) {
+	         var seqname = param['seqname'];
+		 var strain = 'S288C';
+		 if (param['strain']) {
+		     strain = param['strain'];
+		 }
+		 
+	     	 return (<div>
+		           <span style={ style.textFont }><strong>{ title }</strong> for gene/sequence in strain <strong style={{ color: 'red' }}>{ strain }: { seqname }</strong><p></p></span>
+		         </div>);
+
+	     }
 	     
 	     var pieces = param['sequence_id'].split('_');
 
