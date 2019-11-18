@@ -20,6 +20,9 @@ const RestrictionMapper = React.createClass({
 	getInitialState() {
 	        
 		var param = Params.getParams();
+		if (param['seqname']) {
+                    param['gene'] = param['seqname'];
+                }
 		return {
 			isComplete: false,
 			isPending: false,
