@@ -1192,6 +1192,7 @@ const GeneSequenceResources = React.createClass({
                    return
 		}
 
+
 		if (searchType == 'seq') {
 		   var seqID = param['seq_id'];
 		   var seq = window.localStorage.getItem(seqID);
@@ -1210,8 +1211,7 @@ const GeneSequenceResources = React.createClass({
 		if (searchType == 'emboss') {
 		   paramData['emboss'] = param['emboss'];
 		   if (param['sequence_id']) {
-		      var seqID = param['sequence_id'];
-		      paramData['seq'] = window.localStorage.getItem(seqID);
+		      paramData['seq'] = window.localStorage.getItem(param['sequence_id']);
 		   }
 		   else if (param['seqname']) {
 		      paramData['seqname'] = param['seqname'];
@@ -1489,7 +1489,7 @@ const GeneSequenceResources = React.createClass({
 
 	     if (pieces.length == 5) {
 	     	 var gene = pieces[0];
-	     	 var strain = pieces[1];
+	     	 var strainName = pieces[1];
 	     	 var up = pieces[2];
 	     	 var down = pieces[3]
 	     	 var rev = pieces[4]; 
@@ -1513,7 +1513,7 @@ const GeneSequenceResources = React.createClass({
                  }
 
 	     	 return (<div>
-	     	          <span style={ style.textFont }><strong>{ title }</strong> { text } <strong style={{ color: 'red' }}>{ strain }: { gene }</strong><strong>{ updownText }</strong></span>
+	     	          <span style={ style.textFont }><strong>{ title }</strong> { text } <strong style={{ color: 'red' }}>{ strainName }: { gene }</strong><strong>{ updownText }</strong></span>
 		          <p></p>
 		          <p style={{ fontSize: 18, color: 'red' }}>{ revText }</p>
 		        </div>);
