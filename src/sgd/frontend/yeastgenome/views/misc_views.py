@@ -257,13 +257,19 @@ def new_colleague(request):
 def author_response(request):
     ci_base = config.curate_server
 
+    # return render_to_response(
+    #    TEMPLATE_ROOT + 'author_response.jinja2', {
+    #        'ci_url': 'author_response',
+    #        'ci_base': ci_base,
+    #        't': 'AuthorResponse'
+    #        }, request=request)
+
     return render_to_response(
         TEMPLATE_ROOT + 'author_response.jinja2', {
-            'ci_url': 'author_response',
+            'ci_url': 'new_colleague',
             'ci_base': ci_base,
-            't': 'AuthorResponse'
+            't': 'Colleague'
             }, request=request)
-
 
 @view_config(route_name='primer3')
 def primer3(request):
