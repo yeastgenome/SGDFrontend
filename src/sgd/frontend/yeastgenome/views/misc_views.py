@@ -254,12 +254,12 @@ def new_colleague(request):
 
 
 @view_config(route_name='author_response')
-def author_response(request):
+def submit_data(request):
     ci_base = config.curate_server
 
     return render_to_response(
         TEMPLATE_ROOT + 'iframe.jinja2', {
-            'ci_url': 'new_colleague',
+            'ci_url': 'submit_data',
             'ci_base': ci_base,
             'title': 'Submit Data to SGD'
             }, request=request)
