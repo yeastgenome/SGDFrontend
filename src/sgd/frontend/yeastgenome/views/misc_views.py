@@ -259,9 +259,9 @@ def author_response(request):
 
     return render_to_response(
         TEMPLATE_ROOT + 'iframe.jinja2', {
-            'ci_url': 'author_response',
+            'ci_url': 'new_colleague',
             'ci_base': ci_base,
-            't': 'Submit Data to SGD'
+            'title': 'Submit Data to SGD'
             }, request=request)
 
 @view_config(route_name='primer3')
