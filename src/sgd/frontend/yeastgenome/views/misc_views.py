@@ -253,7 +253,7 @@ def new_colleague(request):
             }, request=request)
 
 
-@view_config(route_name='author_response')
+@view_config(route_name='submit_data')
 def submit_data(request):
     ci_base = config.curate_server
 
