@@ -259,7 +259,7 @@ def submit_data(request):
 
     return render_to_response(
         TEMPLATE_ROOT + 'iframe.jinja2', {
-            'ci_url': 'new_colleague',
+            'ci_url': 'submit_data',
             'ci_base': ci_base,
             'title': 'Submit Data to SGD'
             }, request=request)
