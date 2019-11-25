@@ -945,11 +945,14 @@ const GeneSequenceResources = React.createClass({
 	getGeneNodeLeft() {
 
 		var reverseCompNode = this.getReverseCompNode('rev1');
+		
+		var param = this.state.param;
+       		var seqname = param['seqname'];
 			  
                 return (<div style={{ textAlign: "top" }}>
                         <h3>Enter a list of names:</h3>
 			<p>Use space-separated standard gene names (and/or ORF and/or SGDID). <br></br>Example: SIR2 YHR023W SGD:S000000001. The maximum gene number for this search is { MAX_GENE }. It will take first { MAX_GENE } genes if more than { MAX_GENE } are provided.  
-			<textarea ref='genes' name='genes' onChange={this.onChange} rows='2' cols='50'></textarea></p>
+			<textarea ref='genes' name='genes' value={seqname} onChange={this.onChange} rows='2' cols='50'></textarea></p>
 			<h3><b>If available,</b> add flanking basepairs</h3>
 			<p>Upstream: <input type='text' ref='up' name='up' onChange={this.onChange} size='50'></input>
 			Downstream: <input type='text' ref='down' name='down' onChange={this.onChange} size='50'></input></p>
@@ -1206,8 +1209,15 @@ const GeneSequenceResources = React.createClass({
 
 		if (searchType == 'emboss') {
 		   paramData['emboss'] = param['emboss'];
-		   var seqID = param['sequence_id'];
-		   paramData['seq'] = window.localStorage.getItem(seqID);
+		   if (param['sequence_id']) {
+		      paramData['seq'] = window.localStorage.getItem(param['sequence_id']);
+		   }
+		   else if (param['seqname']) {
+		      paramData['seqname'] = param['seqname'];
+		      if (param['strain']) { 
+		      	 paramData['strain'] = param['strain'];
+		      }
+		   }
 		   this.sendRequest(paramData)
                    return		   
 		}		
@@ -1460,12 +1470,25 @@ const GeneSequenceResources = React.createClass({
 	     else {
 	     	 title = "Protein Translation";
              }  	 
+
+	     if (param['seqname']) {
+	         var seqname = param['seqname'];
+		 var strain = 'S288C';
+		 if (param['strain']) {
+		     strain = param['strain'];
+		 }
+		 
+	     	 return (<div>
+		           <span style={ style.textFont }><strong>{ title }</strong> for gene/sequence in strain <strong style={{ color: 'red' }}>{ strain }: { seqname }</strong><p></p></span>
+		         </div>);
+
+	     }
 	     
 	     var pieces = param['sequence_id'].split('_');
 
 	     if (pieces.length == 5) {
 	     	 var gene = pieces[0];
-	     	 var strain = pieces[1];
+	     	 var strainName = pieces[1];
 	     	 var up = pieces[2];
 	     	 var down = pieces[3]
 	     	 var rev = pieces[4]; 
@@ -1489,7 +1512,7 @@ const GeneSequenceResources = React.createClass({
                  }
 
 	     	 return (<div>
-	     	          <span style={ style.textFont }><strong>{ title }</strong> { text } <strong style={{ color: 'red' }}>{ strain }: { gene }</strong><strong>{ updownText }</strong></span>
+	     	          <span style={ style.textFont }><strong>{ title }</strong> { text } <strong style={{ color: 'red' }}>{ strainName }: { gene }</strong><strong>{ updownText }</strong></span>
 		          <p></p>
 		          <p style={{ fontSize: 18, color: 'red' }}>{ revText }</p>
 		        </div>);

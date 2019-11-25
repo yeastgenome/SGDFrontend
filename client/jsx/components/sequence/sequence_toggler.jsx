@@ -49,7 +49,7 @@ const SequenceToggler = React.createClass({
     var customRetrievalNode = null;
     if (this.props.showCustomRetrieval) {
       customRetrievalNode = (<ul className="button-group radius">
-        <a className="button small secondary" href={"http://yeastgenome.org/cgi-bin/seqTools?back=1&seqname=" + this.props.locusFormatName}>Custom Sequence Retrieval</a>
+        <a className="button small secondary" href={"/seqTools?seqname=" + this.props.locusFormatName}>Custom Sequence Retrieval</a>
       </ul>);
     }
 

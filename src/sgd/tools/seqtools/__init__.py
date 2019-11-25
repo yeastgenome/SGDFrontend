@@ -20,6 +20,10 @@ def do_seq_analysis(request):
     if p.get('emboss'):
         data = run_emboss(p)
         return Response(body=json.dumps(data), content_type='application/json')
+    
+    if p.get('seqname'):
+        data = get_genomic_dna_for_gene(p)
+        return Response(body=json.dumps(data), content_type='application/json')
 
     if p.get('chr'):
         data = get_sequence_for_chr(p)
@@ -44,7 +48,12 @@ def do_seq_analysis(request):
 def run_emboss(p):
 
     emboss = p['emboss']
-    seq = p.get('seq')
+    seq = ""
+    if p.get('seq') is not None:
+        seq = p.get('seq')
+    else:
+        data = get_genomic_dna_for_gene(p)
+        seq = data['seq']
     
     inSeqFile = "/tmp/seq." + str(os.getpid()) + ".in"
     fw = open(inSeqFile, "w")
@@ -335,6 +344,33 @@ def _get_sequence_from_contig(contig, start, end, strand):
     if strand == '-':
         seq = _reverse_complement(seq)
     return seq
+
+
+def get_genomic_dna_for_gene(p):
+
+    name = p.get('seqname')
+    strain = p.get('strain')
+    if strain is None or strain == '':
+        strain = 'S288C'
+
+    name = name.upper().replace("SGD:", "")
+    url = seq_url.replace("_REPLACE_NAME_HERE_", name)
+    res = _get_json_from_server(url)
+
+    data = {}
+    data['seq'] = ''
+    if res == 404:
+        return data
+    if len(res.get('genomic_dna')) == 0:
+        return data
+    if res.get('genomic_dna') is not None:
+        rows = res.get('genomic_dna')
+        for row in rows:
+            s = row['strain']
+            strain_name = s['display_name']
+            if strain == strain_name:
+                data['seq'] = row['residues']
+    return data
 
 
 def get_sequence_for_genes(p):
