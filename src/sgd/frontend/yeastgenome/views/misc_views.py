@@ -258,7 +258,7 @@ def submit_data(request):
     ci_base = config.curate_server
 
     return render_to_response(
-        TEMPLATE_ROOT + 'iframe.jinja2', {
+        TEMPLATE_ROOT + 'iframe_small.jinja2', {
             'ci_url': 'submit_data',
             'ci_base': ci_base,
             'title': 'Submit Data to SGD'
