@@ -41,7 +41,7 @@ var MultiSequenceDownload = React.createClass({
 			};
 			return <li key={"seqButton" + i}><a onClick={_onClick}>{s.name}</a></li>;
 		});
-		buttonNodes.push(<li key="topSeqButton"><a href={"/cgi-bin/seqTools?back=1&seqname=" + this.props.locusFormatName}>Custom Retrieval</a></li>);
+		buttonNodes.push(<li key="topSeqButton"><a href={"/seqTools?seqname=" + this.props.locusFormatName}>Custom Retrieval</a></li>);
 
 		var hiddenFormContainerNode = (<div style={{ display: "none" }}>
 			{_hiddenFormNodes}
