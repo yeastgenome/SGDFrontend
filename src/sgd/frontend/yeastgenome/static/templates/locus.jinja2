@@ -281,7 +281,7 @@
                             {% for entry in locus.go_overview.manual_molecular_function_terms %}
                                 <li>
                                     {% if 'qualifiers' in entry %}
-                                        {% for qualifier in entry.qualifiers if qualifier in ['NOT', 'colocalizes with', 'contributes to'] %}
+                                        {% for qualifier in entry.qualifiers %}
                                             {{ qualifier }}{% if not loop.last %}, {% endif %}
                                         {% endfor %}
                                     {% endif %}
@@ -300,7 +300,7 @@
                             {% for entry in locus.go_overview.htp_molecular_function_terms %}
                                 <li>
                                     {% if 'qualifiers' in entry %}
-                                        {% for qualifier in entry.qualifiers if qualifier in ['NOT', 'colocalizes with', 'contributes to'] %}
+                                        {% for qualifier in entry.qualifiers %}
                                             {{ qualifier }}{% if not loop.last %}, {% endif %}
                                         {% endfor %}
                                     {% endif %}
@@ -326,7 +326,7 @@
                             {% for entry in locus.go_overview.manual_biological_process_terms %}
                                 <li>
                                     {% if 'qualifiers' in entry %}
-                                        {% for qualifier in entry.qualifiers if qualifier in ['NOT', 'colocalizes with', 'contributes to'] %}
+                                        {% for qualifier in entry.qualifiers %}
                                             {{ qualifier }}{% if not loop.last %}, {% endif %}
                                         {% endfor %}
                                     {% endif %}
@@ -366,7 +366,7 @@
                             {% for entry in locus.go_overview.manual_cellular_component_terms %}
                                 <li>
                                     {% if 'qualifiers' in entry %}
-                                        {% for qualifier in entry.qualifiers if qualifier in ['NOT', 'colocalizes with', 'contributes to'] %}
+                                        {% for qualifier in entry.qualifiers %}
                                             {{ qualifier }}{% if not loop.last %}, {% endif %}
                                         {% endfor %}
                                     {% endif %}
@@ -385,7 +385,7 @@
                             {% for entry in locus.go_overview.htp_cellular_component_terms %}
                                 <li>
                                     {% if 'qualifiers' in entry %}
-                                        {% for qualifier in entry.qualifiers if qualifier in ['NOT', 'colocalizes with', 'contributes to'] %}
+                                        {% for qualifier in entry.qualifiers %}
                                             {{ qualifier }}{% if not loop.last %}, {% endif %}
                                         {% endfor %}
                                     {% endif %}
@@ -549,7 +549,7 @@
                             {% for entry in locus.disease_overview.manual_disease_terms %}
                                 <li>
                                 {% if 'qualifiers' in entry %}
-                                        {% for qualifier in entry.qualifiers if qualifier in ['NOT', 'colocalizes with', 'contributes to'] %}
+                                        {% for qualifier in entry.qualifiers %}
                                             {{ qualifier }}{% if not loop.last %}, {% endif %}
                                         {% endfor %}
                                     {% endif %}
@@ -571,7 +571,7 @@
                             {% for entry in locus.disease_overview.htp_disease_terms %}
                                 <li>
                                     {% if 'qualifiers' in entry %}
-                                        {% for qualifier in entry.qualifiers if qualifier in ['NOT', 'colocalizes with', 'contributes to'] %}
+                                        {% for qualifier in entry.qualifiers %}
                                             {{ qualifier }}{% if not loop.last %}, {% endif %}
                                         {% endfor %}
                                     {% endif %}
