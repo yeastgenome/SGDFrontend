@@ -525,9 +525,6 @@ function go_data_to_table(evidence, index) {
   	}
 
     var qualifier = evidence['qualifier'];
-    if(qualifier == 'involved in' || qualifier == 'enables' || qualifier == 'part of') {
-        qualifier = '';
-    }
     relationship_entry = relationship_entry || ''; // prevent null value so that GO table can sort
   	return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], biocon, evidence['go']['go_id'], qualifier, evidence['go']['go_aspect'], evidence_code, evidence['annotation_type'], evidence['source']['display_name'], evidence['date_created'], relationship_entry, reference];
 }
@@ -604,9 +601,6 @@ function disease_data_to_table(evidence, index) {
   	}
 
     var qualifier = evidence['qualifier'];
-    if(qualifier == 'involved in' || qualifier == 'enables' || qualifier == 'part of') {
-        qualifier = '';
-    }
     relationship_entry = relationship_entry || ''; // prevent null value so that GO table can sort
   	return [evidence['id'], evidence['locus']['id'], bioent, evidence['locus']['format_name'], biocon, evidence['disease']['disease_id'], qualifier, evidence_code, evidence['annotation_type'], evidence['source']['display_name'], evidence['date_created'], relationship_entry, reference];
 }
