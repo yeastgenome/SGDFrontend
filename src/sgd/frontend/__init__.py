@@ -68,7 +68,8 @@ def prep_views(chosen_frontend, config):
     # public CI
     config.add_route('new_gene_name_reservation', 'reserved_name/new')
     config.add_route('new_colleague', 'colleague_update')
-        
+    config.add_route('submit_data', '/submitData')
+
     config.add_route('author', '/author/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('author', request)(getattr(chosen_frontend, 'author')(request.matchdict['identifier'])),
                     renderer=chosen_frontend.get_renderer('author'),
