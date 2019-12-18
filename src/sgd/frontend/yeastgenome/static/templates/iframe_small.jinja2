@@ -1,0 +1,10 @@
+{% extends "lite_layout.jinja2" %}
+
+{% block title %}{{title}}{% endblock %}
+
+{% block body %}
+
+<iframe class="sgd-ci-iframe_small" src={{ ci_base + "/#/" + ci_url }} scrolling="no">
+</iframe>
+
+{% endblock body %}

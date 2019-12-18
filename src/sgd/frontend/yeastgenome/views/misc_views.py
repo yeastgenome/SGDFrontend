@@ -252,6 +252,18 @@ def new_colleague(request):
             't': 'Colleague'
             }, request=request)
 
+
+@view_config(route_name='submit_data')
+def submit_data(request):
+    ci_base = config.curate_server
+
+    return render_to_response(
+        TEMPLATE_ROOT + 'iframe_small.jinja2', {
+            'ci_url': 'submit_data',
+            'ci_base': ci_base,
+            'title': 'Submit Data to SGD'
+            }, request=request)
+
 @view_config(route_name='primer3')
 def primer3(request):
     return render_to_response(TEMPLATE_ROOT + 'primer3.jinja2', {}, request=request)
