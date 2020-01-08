@@ -100,5 +100,9 @@
       "@babel/preset-env",
       "@babel/preset-react"
     ]
+  },
+  "scripts": {
+    "build":"webpack --config webpack.config.prod.js",
+    "dev": "webpack --config webpack.config.dev.js"
   }
 }
