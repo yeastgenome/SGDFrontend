@@ -1,7 +1,6 @@
 const path = require("path");
 
 module.exports = {
-  mode:'development',
   entry: "./client/jsx/application.jsx",
   output: {
     filename: "./application.js",
