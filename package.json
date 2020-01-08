@@ -103,6 +103,6 @@
   },
   "scripts": {
     "build":"webpack --config webpack.config.prod.js",
-    "dev": "webpack --config webpack.config.dev.js"
+    "dev": "webpack --watch --config webpack.config.dev.js"
   }
 }
