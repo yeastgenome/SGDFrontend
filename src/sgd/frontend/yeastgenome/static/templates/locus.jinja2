@@ -550,7 +550,7 @@
                                 <li>
                                 {% if 'qualifiers' in entry %}
                                         {% for qualifier in entry.qualifiers %}
-					    {% if qualifier != 'None' %}
+					    {% if qualifier != None %}
                                                 {{ qualifier }}{% if not loop.last %}, {% endif %}
                                             {% endif %}
                                         {% endfor %}
