@@ -171,7 +171,7 @@ module.exports = React.createClass({
                         WebkitTextFillColor: 'silver',
                         position: 'absolute'
                     }}
-                    value={state.isHintVisible ? props.handleHint(inputValue, props.options) : null}
+                    value={state.isHintVisible ? props.handleHint(inputValue, props.options) : ''}
                 />
                 <Input
                     ref='input'
