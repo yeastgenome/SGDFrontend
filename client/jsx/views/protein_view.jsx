@@ -1,11 +1,11 @@
 "use strict";
 
-const React = require("react");
-const ReactDOM = require("react-dom");
-const ProteinViewer = require("sgd_visualization").ProteinViewerComponent;
-const _ = require("underscore");
-const NavBar = require("../components/widgets/navbar.jsx");
-const TabsModel = require("../models/tabs_model.jsx");
+import React from "react";
+import ReactDOM from "react-dom";
+import {ProteinViewerComponent as ProteinViewer} from 'sgd_visualization';
+import _ from "underscore";
+import NavBar from "../components/widgets/navbar.jsx";
+import TabsModel from "../models/tabs_model.jsx";
 
 var proteinView = {};
 proteinView.render = function(rawDomainData, locusLength, colorScale) {
@@ -56,4 +56,4 @@ proteinView.render = function(rawDomainData, locusLength, colorScale) {
   );
 };
 
-module.exports = proteinView;
+export default proteinView;
