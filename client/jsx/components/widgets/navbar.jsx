@@ -56,7 +56,7 @@ const Navbar = React.createClass({
   // Back to top button.
   componentDidMount: function () {
     // bootstrap scrollspy
-    $('body').scrollspy({ target: '.sgd-navbar' })
+    // $('body').scrollspy({ target: '.sgd-navbar' }) //TODO: (webpack_migration) Disable scrollspy
 
     // fix navbar if scrolling down below 245 px
     var _throttled = _.throttle(this._checkScroll, 100);
