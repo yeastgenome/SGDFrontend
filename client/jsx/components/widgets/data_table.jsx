@@ -47,7 +47,7 @@ const DataTable = React.createClass({
 			this._setupTableHighlight();
 			this._setupPlugins();
 			var $table = $(this.refs.table).dataTable(options);
-			$(document).foundation();
+			// $(document).foundation(); //TODO: (webpack-migration) disable foundation on dataTables.
 			$(this.refs.wrapper).find("input").attr("placeholder", "Filter table");
 			$table.fnSearchHighlighting();
 		}
