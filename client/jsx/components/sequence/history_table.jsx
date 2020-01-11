@@ -26,7 +26,7 @@ export default React.createClass({
 			var refsNode = _.map(e.references, (r, i) => {
 				var pubmedNode = r.pubmed_id ? <small> PMID:{r.pubmed_id}</small> : null;
 				var sepNode = (i > 0 && i !== e.references.length - 1) ? ", " : null;
-				return <span><a href={r.link}>{r.display_name}</a>{pubmedNode}{sepNode}</span>;
+				return <span key={i}><a href={r.link}>{r.display_name}</a>{pubmedNode}{sepNode}</span>;
 			});
 			return [e.date_created, noteNode, refsNode];
 		});
