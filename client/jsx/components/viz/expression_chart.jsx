@@ -6,8 +6,8 @@ var React = require("react");
 var _ = require("underscore");
 
 var CalcWidthOnResize = require("../mixins/calc_width_on_resize.jsx");
-var HelpIcon = require("../widgets/help_icon.jsx");
-var RadioSelector = require("../widgets/radio_selector.jsx");
+import HelpIcon from '../widgets/help_icon.jsx';
+import RadioSelector from '../widgets/radio_selector.jsx';
 
 var HEIGHT = 300;
 var SIDE_PADDING = 100;
@@ -210,4 +210,5 @@ var ExpressionChart = React.createClass({
 	}
 });
 
-module.exports = ExpressionChart;
+// module.exports = ExpressionChart;
+export default ExpressionChart;
