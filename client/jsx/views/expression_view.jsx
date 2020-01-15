@@ -3,7 +3,7 @@ var React = require("react");
 var ReactDOM = require("react-dom");
 var $ = require("jquery");
 
-var ExpressionChart = require("../components/viz/expression_chart.jsx");
+import ExpressionChart from '../components/viz/expression_chart.jsx';
 
 var expressionView = {};
 expressionView.render = function (data) {
@@ -25,4 +25,4 @@ expressionView.render = function (data) {
   }
 };
 
-module.exports = expressionView;
+export default expressionView;
