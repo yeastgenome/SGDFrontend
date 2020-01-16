@@ -1,37 +1,31 @@
 "use strict";
 
-var React = require("react");
-var _ = require("underscore");
+import React from 'react';
+import _ from 'underscore';
+import PropTypes from 'prop-types';
 
-var RadioSelector = React.createClass({
+class RadioSelector extends React.Component{
 	// elements, i.e.[ { name: "Doggy Woggy", key: "dog" }, ...]
 	// onSelect(activeElementKey)
-	propTypes: {
-		elements: React.PropTypes.array.isRequired,
-		initialActiveElementKey: React.PropTypes.string,
-		onSelect: React.PropTypes.func,
-		orientation: React.PropTypes.string // "horizontal" or "vertical"
-	},
-
-	getDefaultProps: function () { return { orientation: "horizontal" }; },
-
-	getInitialState: function () {
-		return {
+	constructor(props){
+		super(props);
+		this.state = {
 			activeElementKey: this.props.initialActiveElementKey
 		};
-	},
+	}
 
-	componentDidUpdate: function () {
+
+	componentDidUpdate() {
 		if (this.props.onSelect) {
 			this.props.onSelect(this.state.activeElementKey)
 		}
-	},
+	}
 
-	shouldComponentUpdate: function(nextProps, nextState) {
+	shouldComponentUpdate(nextProps, nextState) {
 		return !(this.state.activeElementKey === nextState.activeElementKey);
-	},
+	}
 
-	render: function () {
+	render() {
 		var inputs = _.map(this.props.elements, (d, i) => {
 			var _onClick = (e) => {
 				this.setState({
@@ -58,6 +52,17 @@ var RadioSelector = React.createClass({
 		);
 	}
 
-});
+}
 
-module.exports = RadioSelector;
+RadioSelector.propTypes = {
+	elements: PropTypes.array.isRequired,
+	initialActiveElementKey: PropTypes.string,
+	onSelect: PropTypes.func,
+	orientation: PropTypes.string // "horizontal" or "vertical"
+}
+
+RadioSelector.defaultProps = {
+	orientation: "horizontal"
+}
+
+export default RadioSelector;
