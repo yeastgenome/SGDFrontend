@@ -13,32 +13,16 @@ import VariantViewerStore from "../../stores/variant_viewer_store.jsx";
 /*
   Fetches data from model and renders locus diagram (or loader while fetching).
 */
-var AsyncSequenceView = React.createClass({
-
-  getDefaultProps: function () {
-    return {
-      detailsCallback: null, // (err, detailsModel)
-      geneticPosition: null,
-      isSimplified: false, // simplified is for LSP
-      locusDisplayName: null,
-      locusHistoryData: null,
-      locusFormatName: null,
-      showAltStrains: true,
-      showVariants: false,
-      showOtherStrains: true,
-      showHistory: true,
-      locusId: null,
-    };
-  },
-
-  getInitialState: function () {
-    return {
+class AsyncSequenceView extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {
       neighborsModel: null,
       detailsModel: null
-    };
-  },
+    }
+  }
 
-  render: function () {
+  render() {
     var mainStrainNode = this._getMainStrainNode();
     var altStrainsNode = this._getAltStrainsNode();
     var variantNode = this._getVariantsNode();
@@ -52,17 +36,17 @@ var AsyncSequenceView = React.createClass({
       {otherStrainsNode}
       {historyNode}
     </div>);
-  },
+  }
 
-  componentDidMount: function () {
+  componentDidMount() {
     this._fetchData();
-  },
+  }
 
   // from locusId, get data and update
-  _fetchData: function () {
+  _fetchData() {
     var _neighborsModel = new SequenceNeighborsModel({ id: this.props.locusId });
     _neighborsModel.fetch( (err, response) => {
-      if (this.isMounted()) {
+      // if (this.isMounted()) { //TODO: (webpack_migration) Disable isMounted
         this.setState({ neighborsModel: _neighborsModel });
         var _detailsModel = new SequenceDetailsModel({
           id: this.props.locusId,
@@ -71,18 +55,19 @@ var AsyncSequenceView = React.createClass({
           locusSGDID: this.props.locusSGDID
         });
         _detailsModel.fetch( (err, response) => {
-          if (this.isMounted()) this.setState({ detailsModel: _detailsModel });
+          // if (this.isMounted()) //TODO: (webpack_migration) Disable isMounted
+          this.setState({ detailsModel: _detailsModel });
 
           // call details callback (if defined)
           if (this.props.detailsCallback) {
             this.props.detailsCallback(err, _detailsModel);
           }
         });
-      }
+      // }
     });
-  },
+  }
 
-  _getMainStrainNode: function () {
+  _getMainStrainNode() {
     var innerNode = (<SequenceComposite
       isSimplified={this.props.isSimplified}
       focusLocusDisplayName={this.props.locusDisplayName}
@@ -100,9 +85,9 @@ var AsyncSequenceView = React.createClass({
         {innerNode}
       </section>);
     }
-  },
+  }
 
-  _getAltStrainsNode: function () {
+  _getAltStrainsNode() {
     var node = null;
     if (!this.props.showAltStrains) return node;
     if (this.state.detailsModel ? this.state.detailsModel.attributes.altStrainMetaData.length : false) {
@@ -118,9 +103,9 @@ var AsyncSequenceView = React.createClass({
     }
 
     return node;
-  },
+  }
 
-  _getVariantsNode: function () {
+  _getVariantsNode() {
     if (!this.props.showVariants) return null;
     var variantViewerStore = new VariantViewerStore();
     return (
@@ -130,9 +115,9 @@ var AsyncSequenceView = React.createClass({
         <AsyncVariantViewer hideTitle sgdid={this.props.locusSGDID} store={variantViewerStore} />
       </section>
     );
-  },  
+  }  
 
-  _getOtherStrainsNode: function () {
+  _getOtherStrainsNode() {
     var node = null
     if (!this.props.showOtherStrains) return node;
     if (this.state.detailsModel ? this.state.detailsModel.attributes.otherStrains.length : false) {
@@ -153,17 +138,33 @@ var AsyncSequenceView = React.createClass({
     }
 
     return node;
-  },
+  }
 
-  _getHistoryNode: function () {
+  _getHistoryNode() {
     var node = null;
     if (this.props.showHistory && this.props.locusHistoryData) {
       node = <HistoryTable data={this.props.locusHistoryData} dataType='SEQUENCE' />;
     }
 
     return node;
-  },
+  }
 
-});
+}
+
+// AsyncSequenceView.propTypes = { }
+
+AsyncSequenceView.defaultProps = {
+  detailsCallback: null, // (err, detailsModel)
+  geneticPosition: null,
+  isSimplified: false, // simplified is for LSP
+  locusDisplayName: null,
+  locusHistoryData: null,
+  locusFormatName: null,
+  showAltStrains: true,
+  showVariants: false,
+  showOtherStrains: true,
+  showHistory: true,
+  locusId: null,
+}
 
 export default AsyncSequenceView;
