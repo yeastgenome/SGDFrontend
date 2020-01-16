@@ -1,51 +1,38 @@
 
 "use strict";
-var Radium = require("radium");
-var React = require("react");
-var _ = require("underscore");
+import Radium from 'radium';
+import React from 'react';
+import PropTypes from 'prop-types';
+import _ from 'underscore';
 
-var VariantViewerComponent = require("sgd_visualization").VariantViewerComponent;
-var RadioSelector = require("../widgets/radio_selector.jsx");
+import {VariantViewerComponent} from 'sgd_visualization';
+import RadioSelector from "../widgets/radio_selector.jsx";
 
-var AsyncVariantViewer = React.createClass({
-	propTypes: {
-		hideTitle: React.PropTypes.bool,
-		sgdid: React.PropTypes.string.isRequired,
-		store: React.PropTypes.object.isRequired,
-		parentIsProtein: React.PropTypes.bool
-	},
-
-	getDefaultProps: function () {
-		return {
-			hideTitle: false,
-			parentIsProtein: false
-		};
-	},
-
-	getInitialState: function () {
-		return {
-			data: null,
+class AsyncVariantViewer extends React.Component{
+	constructor(props){
+		super(props);
+		this.state = {
+			data:null,
 			childIsProtein: this.props.parentIsProtein
-		};
-	},
+		}
+	}
 
-	render: function () {
+	render() {
 		return (
 			<div>
 				{this._renderContentNode()}
 			</div>
 		);
-	},
+	}
 
-	componentDidMount: function () {
+	componentDidMount() {
 		this.props.store.fetchLocusData(this.props.sgdid, (err, _data) => {
-			if (this.isMounted()) {
-				this.setState({ data: _data });
-			}
+			//if(this.isMounted()) //TODO: (webpack_migration) Disable isMounted
+			this.setState({ data: _data });
 		});
-	},
+	}
 
-	_renderContentNode: function () {
+	_renderContentNode() {
 		var data = this.state.data;
 		if (!data) return <div className="sgd-loader-container"><div className="sgd-loader" /></div>;
 		
@@ -56,9 +43,9 @@ var AsyncVariantViewer = React.createClass({
 				{vizNode}
 			</div>
 		);
-	},
+	}
 
-	_renderHeader: function () {
+	_renderHeader() {
 		var data = this.state.data;
 		if (!data) return null;
 		var name = (data.name === data.format_name) ? data.name : `${data.name} / ${data.format_name}`;
@@ -93,9 +80,9 @@ var AsyncVariantViewer = React.createClass({
 				</div>
 			</div>
 		);
-	},
+	}
 
-	_renderDnaViz: function () {
+	_renderDnaViz() {
 		var data = this.state.data;
 		var dnaSeqs = data.aligned_dna_sequences.map( d => {
 			return {
@@ -124,9 +111,9 @@ var AsyncVariantViewer = React.createClass({
 			downloadCaption={caption}
 			isRelative={true}
 		/>);
-	},
+	}
 
-	_renderProteinViz: function () {
+	_renderProteinViz() {
 		var data = this.state.data;
 		var proteinSeqs = data.aligned_protein_sequences.map( d => {
 			return {
@@ -160,9 +147,9 @@ var AsyncVariantViewer = React.createClass({
 			downloadCaption={caption}
 			isRelative={true}
 		/>);
-	},
+	}
 
-	_renderEmptyNode: function () {
+	_renderEmptyNode() {
 		var isProtein = this.state.childIsProtein;
 		var data = this.state.data;
 		var variantLength = isProtein ? data.variant_data_protein.length : data.variant_data_dna.length;
@@ -174,9 +161,9 @@ var AsyncVariantViewer = React.createClass({
 			text = "These sequences are identical."
 		}
 		return <p style={[style.emptyNode]}>{text}</p>;
-	},
+	}
 
-	_getDateStr: function () {
+	_getDateStr() {
 		var now = new Date();
 		var month = (now.getMonth() + 1).toString();
 		var date = now.getDate().toString();
@@ -185,7 +172,19 @@ var AsyncVariantViewer = React.createClass({
 		var txt = "SGD " + now.getFullYear() + "-" + month + "-" + date;
 		return txt;
 	}
-});
+}
+
+AsyncVariantViewer.propTypes = {
+	hideTitle: PropTypes.bool,
+	sgdid: PropTypes.string.isRequired,
+	store: PropTypes.object.isRequired,
+	parentIsProtein: PropTypes.bool
+}
+
+AsyncVariantViewer.defaultProps = {
+	hideTitle: false,
+	parentIsProtein: false
+}
 
 var style = {
 	headerWrapper: {
@@ -216,4 +215,4 @@ var style = {
 	}
 };
 
-module.exports = Radium(AsyncVariantViewer);
+export default Radium(AsyncVariantViewer);
