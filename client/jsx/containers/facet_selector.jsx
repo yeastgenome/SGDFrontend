@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { routeActions, push } from 'react-router-redux';
 import Radium from 'radium';
 import _ from 'underscore';
