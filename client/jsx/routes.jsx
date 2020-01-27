@@ -10,6 +10,16 @@ import Primer3 from './components/primer3/primer3.jsx';
 import ExampleContainer from './containers/example_container.jsx';
 
 export default (
+  //TODO: New way to write routes from version 5.0
+  // <Route render={() => <Layout>
+  //   <Switch>
+  //     <Route path="/colleague/:formatName" component={ColleaguesShow} />
+  //     <Route path="/search" component={Search} />
+  //     <Route path="/style-guide" component={StyleGuide} />
+  //     <Route path="/primer3" component={Primer3} />
+  //   </Switch>
+  // </Layout>} path='/'></Route>
+  
   <Route path="/" component={Layout}>
     <Route path="colleague/:formatName" component={ColleaguesShow} />
     <Route path="search" component={Search} />
