@@ -550,7 +550,9 @@
                                 <li>
                                 {% if 'qualifiers' in entry %}
                                         {% for qualifier in entry.qualifiers %}
-                                            {{ qualifier }}{% if not loop.last %}, {% endif %}
+					    {% if qualifier != None %}
+                                                {{ qualifier }}{% if not loop.last %}, {% endif %}
+                                            {% endif %}
                                         {% endfor %}
                                     {% endif %}
                                     <a href="{{ entry.term.link }}">{{ entry.term.display_name }}</a>
