@@ -38,7 +38,7 @@ if(locus['regulation_overview']['target_count'] + locus['regulation_overview']['
         google.visualization.events.addListener(chart, 'select', barSelectHandler);
 
         chart.draw(data_table, {
-            'title': 'Transcriptional Targets and Regulators for ' + locus['display_name'] + ' (includes high-throughput predictions)',
+            'title': 'Targets and Regulators for ' + locus['display_name'] + ' (includes high-throughput predictions)',
             'legend': {'position': 'none'},
             'hAxis': {title: 'Genes', minValue:0, maxValue:5, gridlines:{count:6}},
             'dataOpacity':1,

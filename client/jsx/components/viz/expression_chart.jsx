@@ -27,11 +27,11 @@ var ExpressionChart = React.createClass({
 
 	getDefaultProps: function () {
 		return {
-			data: null,
+			data: {},
 			hasHelpIcon: false,
 			hasScaleToggler: false,
-			minValue: null,
-			maxValue: null,
+			minValue: 0,
+			maxValue: 0,
 			onClick: null // (min, max) =>
 		};
 	},
