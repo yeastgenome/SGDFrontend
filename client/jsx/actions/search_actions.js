@@ -93,8 +93,8 @@ export function fetchSearchResults () {
       dispatch(hydrateSearch());
       return dispatch(receiveSearchResponse(bootstrappedSearchResults));
     }
-    const qp = (state.routing.location.query);
-    const searchPath = state.routing.location.search;
+    const qp = (state.routing.locationBeforeTransitions.query);
+    const searchPath = state.routing.locationBeforeTransitions.search;
     // from page and results per page, add limit and offset to API request
     const _offset = searchState.currentPage * searchState.resultsPerPage; 
     const _limit = searchState.resultsPerPage;

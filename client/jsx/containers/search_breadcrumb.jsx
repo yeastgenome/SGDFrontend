@@ -107,7 +107,7 @@ function mapStateToProps(_state) {
   return {
     total: state.total,
     query: state.query,
-    queryParams: _state.routing.location.query,
+    queryParams: _state.routing.locationBeforeTransitions.query,
     isPending: state.isPending,
     isPaginatePending: state.isPaginatePending,
   };

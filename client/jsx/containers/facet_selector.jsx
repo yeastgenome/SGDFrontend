@@ -364,7 +364,7 @@ function mapStateToProps(_state) {
   return {
     aggregations: state.aggregations,
     query: state.query,
-    queryParams: _state.routing.location.query,
+    queryParams: _state.routing.locationBeforeTransitions.query,
     activeCategory: state.activeCategory,
     isAggPending: state.isAggPending,
   };

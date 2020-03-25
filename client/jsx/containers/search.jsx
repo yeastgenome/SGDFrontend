@@ -1,4 +1,5 @@
-import React from 'react';
+import React,{Component} from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import Radium from 'radium';
 import { connect } from 'react-redux';
@@ -21,8 +22,14 @@ import { createPath } from '../lib/search_helpers';
 const SEARCH_URL = '/search';
 const CATS_SORTED_BY_ANNOTATION = ['phenotype', 'biological_process','cellular_component', 'molecular_function'];
 
-const Search = React.createClass({
-  displayName: 'Search',
+class Search extends Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      display:'Search'
+    }
+  }
+
   render() {
     if (this.props.apiError) {
       return <ErrorMessage />;
@@ -44,19 +51,21 @@ const Search = React.createClass({
           </div>
         </div>
       </div>;
-  },
+  }
 
   // listen for history changes and fetch results when they change, also update google analytics
   componentWillMount() {
-    this._unlisten = this.props.history.listen(() => {
+    this._unlisten = this.props.router.listen(() => {
       this._updateGoogleAnalytics();
       this._fetchSearchResults();
     });
-  },
+    this._updateGoogleAnalytics();
+    this._fetchSearchResults();
+  }
 
   componentWillUnmount() {
     this._unlisten();
-  },
+  }
 
   _renderViewAs() {
     if (this.props.activeCategory !== 'locus') return null;
@@ -88,7 +97,7 @@ const Search = React.createClass({
         </Link>
       </ul>
     );
-  },
+  }
 
   _renderSearchContent() {
     if (this.props.isPending) return <Loader />;
@@ -103,7 +112,7 @@ const Search = React.createClass({
         {secondPaginateNode}
       </div>
     );
-  },
+  }
 
   _renderControls() {
     if (this._isWrappedResults()) return this._renderWrappedControls();
@@ -134,7 +143,7 @@ const Search = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
   _renderWrappedControls() {
     // show progress bar if still downloading results, otherise download / analyze buttons
@@ -156,7 +165,7 @@ const Search = React.createClass({
         <p>Genetic loci that are not mapped to the genome sequence will be excluded from the analysis list.</p>
       </div>
     );
-  },
+  }
 
   _renderProgressNode() {
     let strWidth = `${Math.round(this.props.asyncProgress * 100)}%`;
@@ -168,7 +177,7 @@ const Search = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
   _renderPageSizeSelector() {
     const options = [10, 25, 50, 100];
@@ -198,7 +207,7 @@ const Search = React.createClass({
         </select>
       </div>
     );
-  },
+  }
 
   _renderSortBySelector() {
     let options = [
@@ -234,7 +243,7 @@ const Search = React.createClass({
         </select>
       </div>
     );
-  },
+  }
 
   _renderResults() {
     // empty message
@@ -264,7 +273,7 @@ const Search = React.createClass({
         return <SearchResult key={'searchResults' + id} {...d} />;
       });
     }
-  },
+  }
 
   _renderWrappedResults() {
     const nodes = this.props.asyncResults.map((d, i) => {
@@ -277,13 +286,13 @@ const Search = React.createClass({
       );
     });
     return <div>{nodes}</div>;
-  },
+  }
 
   // dispatches redux update and maybe fetches new data
   _fetchSearchResults() {
     // dispatch actions
     this.props.dispatch(startSearchFetchMaybeAsycFetch());
-  },
+  }
 
   _getdownloadStatus(str) {
     this.setState({selectedRadioBtn: str});
@@ -292,13 +301,13 @@ const Search = React.createClass({
       tempQParams["status"] = S(str).capitalize().s;
     }
     this.props.history.pushState(null, SEARCH_URL, tempQParams);
-  },
+  }
 
   _isWrappedResults() {
     return (
       this.props.activeCategory === 'locus' && this.props.geneMode !== 'list'
     );
-  },
+  }
 
   // updates google analytics, depends on global 'ga' object. Does nothing if not present
   _updateGoogleAnalytics() {
@@ -308,21 +317,22 @@ const Search = React.createClass({
     }`;
     ga('set', 'page', fullUrl);
     ga('send', 'pageview');
-  },
-  propTypes: {
-    activeCategory: React.PropTypes.string,
-    categoryAggs: React.PropTypes.array,
-    secondaryAggs: React.PropTypes.array,
-    wrapGeneResults: React.PropTypes.bool,
-    currentPage: React.PropTypes.number,
-    isPending: React.PropTypes.bool,
-    query: React.PropTypes.string,
-    results: React.PropTypes.array, // [{ name, url, category, description }]
-    total: React.PropTypes.number,
-    totalPages: React.PropTypes.number,
-    apiError: React.PropTypes.bool
   }
-});
+}
+
+Search.propTypes = {
+  activeCategory: PropTypes.string,
+  categoryAggs: PropTypes.array,
+  secondaryAggs: PropTypes.array,
+  wrapGeneResults: PropTypes.bool,
+  currentPage: PropTypes.number,
+  isPending: PropTypes.bool,
+  query: PropTypes.string,
+  results: PropTypes.array, // [{ name, url, category, description }]
+  total: PropTypes.number,
+  totalPages: PropTypes.number,
+  apiError: PropTypes.bool
+}
 
 const style = {
   labelText: {
@@ -361,8 +371,8 @@ function mapStateToProps(_state) {
     asyncProgress: state.asyncProgress, currentPage: state.currentPage, 
     totalPages: state.totalPages, resultsPerPage: state.resultsPerPage, 
     sortBy: state.sortBy, apiError: state.apiError, query: state.query, 
-    url: `${_state.routing.location.pathname}${_state.routing.location.search}`, 
-    queryParams: _state.routing.location.query, 
+    url: `${_state.routing.locationBeforeTransitions.pathname}${_state.routing.locationBeforeTransitions.search}`, 
+    queryParams: _state.routing.locationBeforeTransitions.query, 
     geneMode: state.geneMode,
     downloadStatusStr: state.downloadStatusStr,
     downloadStatus: state.downloadStatus
