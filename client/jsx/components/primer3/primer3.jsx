@@ -73,7 +73,7 @@ const Primer3 = React.createClass({
   },
 
   handleSubmit(e) {
-    this.props.history.pushState(null, '/primer3', { 'results': 1 });
+    this.props.router.push({pathname: '/primer3', search: '?results=1' });
     e.preventDefault();
     const value = this.refs.primerForm.getValue();
     let strValue = JSON.stringify(value);
@@ -384,7 +384,7 @@ function getCounter(c){
 
 function mapStateToProps(_state) {
   return {
-    queryParams: _state.routing.location.query
+    queryParams: _state.routing.locationBeforeTransitions.query
   };
 }
 
