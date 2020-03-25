@@ -1,7 +1,5 @@
-// set NODE_ENV again to avoid redux warning in production code
-if (process.env.NODE_ENV === 'production') {
-	process.env.NODE_ENV = 'production';
-}
+import react from 'react';
+console.log(react.version);
 import setup from './lib/setup.jsx';
 
 /*
