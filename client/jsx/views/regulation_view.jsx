@@ -3,7 +3,7 @@
 const React = require("react");
 const ReactDOM = require("react-dom");
 const _ = require("underscore");
-const NavBar = require("../components/widgets/navbar.jsx");
+import NavBar from '../components/widgets/navbar';
 const TabsModel = require("../models/tabs_model.jsx");
 
 var regulationView = {};
@@ -28,4 +28,4 @@ regulationView.render = function(){
 
 };
 
-module.exports = regulationView;
+export default regulationView;
