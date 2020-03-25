@@ -1,7 +1,7 @@
 const React = require("react");
 const ReactDOM = require("react-dom");
 const _ = require("underscore");
-const NavBar = require("../components/widgets/navbar.jsx");
+import NavBar from '../components/widgets/navbar';
 const TabsModel = require("../models/tabs_model.jsx");
 
 var litView = {};
@@ -27,4 +27,4 @@ litView.render = function(hasNetwork){
   ReactDOM.render(<NavBar title={_navTitleText} elements={_elements} />, document.getElementById("navbar-container"));
 };
 
-module.exports = litView;
+export default litView;
