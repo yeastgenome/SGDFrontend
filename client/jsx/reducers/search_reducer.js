@@ -34,7 +34,7 @@ const searchResultsReducer = function (_state, action) {
     return DEFAULT_STATE;
   }
   // let the URL change the query and other params
-  if (action.type === '@@router/UPDATE_LOCATION' && action.payload.pathname === '/search') {
+  if (action.type === '@@router/LOCATION_CHANGE' && action.payload.pathname === '/search') {
      let params = action.payload.query;
     if(action.payload.query.category){
       if (action.payload.query.category === 'download' && action.payload.query.status === undefined && state.downloadsFlag) {
