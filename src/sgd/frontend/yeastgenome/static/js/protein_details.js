@@ -12,11 +12,11 @@ var source_to_color = {
   PIRSF: "#0099c6",
   SMART: "#dd4477",
   PRINTS: "#66aa00",
-  JASPAR: "#b82e2e",
-  Phobius: "#316395",
+  ProDom: "#b82e2e",
+  PROSITE: "#316395",
   "-": "#994499",
   SignalP: "#4c33cc",
-  TMHMM: "#33cc99"
+  HAMAP: "#33cc99"  
 };
 
 $(document).ready(function() {
@@ -1034,13 +1034,13 @@ function prep_style() {
     .css({
       "background-color": source_to_color["PRINTS"]
     })
-    .selector("node[type='DOMAIN'][source='JASPAR']")
+    .selector("node[type='DOMAIN'][source='ProDom']")
     .css({
-      "background-color": source_to_color["JASPAR"]
+      "background-color": source_to_color["ProDom"]
     })
-    .selector("node[type='DOMAIN'][source='Phobius']")
+    .selector("node[type='DOMAIN'][source='PROSITE']")
     .css({
-      "background-color": source_to_color["Phobius"]
+      "background-color": source_to_color["PROSITE"]
     })
     .selector("node[type='DOMAIN'][source='-']")
     .css({
@@ -1050,9 +1050,9 @@ function prep_style() {
     .css({
       "background-color": source_to_color["SignalP"]
     })
-    .selector("node[type='DOMAIN'][source='TMHMM']")
+    .selector("node[type='DOMAIN'][source='HAMAP']")
     .css({
-      "background-color": source_to_color["TMHMM"]
+      "background-color": source_to_color["HAMAP"]
     });
 }
 
