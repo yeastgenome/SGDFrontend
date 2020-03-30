@@ -3,7 +3,7 @@ const path = require("path");
 module.exports = {
   entry: "./client/jsx/application.jsx",
   output: {
-    filename: "./application.js",
+    filename: "application.js",
     path:path.join(__dirname, "src/sgd/frontend/yeastgenome/static/js")
   },
   module: {

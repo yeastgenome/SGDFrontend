@@ -38,3 +38,4 @@ production_asset_url.json
 *py_cache*
 .pytest*
 Notes.MD
+application.js.map
