@@ -160,9 +160,10 @@ const GoSlimMapper = React.createClass({
 
 	        var genes = window.localStorage.getItem("geneList4slim");
                 if (genes) {
-		     return (<div style={{ textAlign: "top" }}>
+		    return (<div style={{ textAlign: "top" }}>
+			    <h3><strong style={{ color: 'red'}}>Your gene list has been saved in the memory. Please pick a GO Slim Set, refine the Slim Terms, and Submit the form.</strong></h3>
                             <h3>Enter Gene/ORF names (separated by a return or a space):</h3>
-                            <textarea ref='genes' id='genes' onChange={this._onChange} name='genes' rows='3' cols='200' value={ genes }></textarea>
+                            <textarea ref='genes' id='genes' onChange={this._onChange} name='genes' rows='3' cols='200'></textarea>
                             Note: If you have a big gene list (>100), save it as a file and upload it below.
                             <h3><strong style={{ color: 'red'}}>OR</strong> Upload a file of Gene/ORF names (.txt or .tab format):
                             <input className="btn btn-default btn-file" type="file" name='uploadFile' onChange={this.handleFile} accept="image/*;capture=camera"/></h3>
@@ -304,6 +305,12 @@ const GoSlimMapper = React.createClass({
 		else {
 		     genesInBox = 1;
 		}
+                var fromTools = 0;
+                if (genes == '') {
+                    genes = window.localStorage.getItem("geneList4slim");
+                    window.localStorage.setItem("geneList4slim", '');
+                    fromTools = 1;
+                }	    
 		genes = this.processGeneList(genes);
                 if (genes == '') {
                      alert("Please enter one or more gene names.");
@@ -321,8 +328,8 @@ const GoSlimMapper = React.createClass({
 
 		// check for ambiguous genes
 		var ambiguousGeneDict = this.state.ambiguousNames;
-
-		for (var i = 0; i < all_genes.length; i++) {
+	        if (fromTools == 0) {
+		   for (var i = 0; i < all_genes.length; i++) {
 		     var gene = all_genes[i];
 		     if (gene in ambiguousGeneDict) {
 		     	   var ambiguousGeneObj = ambiguousGeneDict[gene];
@@ -347,7 +354,7 @@ const GoSlimMapper = React.createClass({
 			   e.preventDefault();
                      	   return 1;
 		     }
-     
+                   }
 		}				
 
 		window.localStorage.setItem("genes", genes);
@@ -387,8 +394,7 @@ const GoSlimMapper = React.createClass({
 	},
 
 	onReset(e) {
-		
-		// window.localStorage.setItem("slimType", goSet[0]);
+		window.localStorage.clear();
 		this.setState({ slimType: goSet[0] } );
 	},
 
