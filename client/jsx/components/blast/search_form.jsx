@@ -292,11 +292,8 @@ BLAST Help at NCBI</a>.</p><hr>';
   _getCommentBoxNode: function() {
     return (
       <div>
-        <p>
-          <h3>
-            Query Comment (optional, will be added to output for your use):
-          </h3>
-        </p>
+        <h3>Query Comment (optional, will be added to output for your use):</h3>
+
         <input
           type="text"
           ref="queryComment"
@@ -333,12 +330,9 @@ BLAST Help at NCBI</a>.</p><hr>';
     return (
       <div>
         {this._submitNode}
-        <p>
-          <h3>
-            Upload Local TEXT File: FASTA, GCG, and RAW sequence formats are
-            okay
-          </h3>
-        </p>
+        <h3>
+          Upload Local TEXT File: FASTA, GCG, and RAW sequence formats are okay
+        </h3>
         WORD Documents do not work unless saved as TEXT.
         <input
           className="btn btn-default btn-file"
@@ -347,12 +341,10 @@ BLAST Help at NCBI</a>.</p><hr>';
           onChange={this._handleFile}
           accept="image/*;capture=camera"
         />
-        <p>
-          <h3>
-            Type or Paste a Query Sequence : (FASTA or RAW format, or No
-            Comments, Numbers are okay)
-          </h3>
-        </p>
+        <h3>
+          Type or Paste a Query Sequence : (FASTA or RAW format, or No Comments,
+          Numbers are okay)
+        </h3>
         <textarea
           ref="sequence"
           onChange={this._onChange}
@@ -370,24 +362,28 @@ BLAST Help at NCBI</a>.</p><hr>';
     if (this.state.seqType == 'protein') {
       _programDef = 'blastp';
     }
-    var _elements = _.map(data.program, p => {
+    let selected = '';
+    var _elements = _.map(data.program, (p, index) => {
       if (p.script == _programDef) {
-        return (
-          <option value={p.script} selected="selected">
-            {p.label}
-          </option>
-        );
-      } else {
-        return <option value={p.script}>{p.label}</option>;
+        selected = index;
       }
+      return (
+        <option value={p.script} key={index}>
+          {p.label}
+        </option>
+      );
     });
     return (
       <div>
+        <h3>Choose the Appropriate BLAST Program:</h3>
+
         <p>
-          <h3>Choose the Appropriate BLAST Program:</h3>
-        </p>
-        <p>
-          <select ref="program" name="program" onChange={this._onChange}>
+          <select
+            ref="program"
+            name="program"
+            onChange={this._onChange}
+            value={selected}
+          >
             {_elements}
           </select>
         </p>
@@ -405,7 +401,8 @@ BLAST Help at NCBI</a>.</p><hr>';
       _databaseDef = ['YeastORF.fsa'];
     }
     var i = 0;
-    var _elements = _.map(database, d => {
+    let selected = [];
+    var _elements = _.map(database, (d, index) => {
       i += 1;
       var dataset = d.dataset;
       if (dataset.match(/^label/)) {
@@ -413,21 +410,18 @@ BLAST Help at NCBI</a>.</p><hr>';
       }
 
       if ($.inArray(dataset, _databaseDef) > -1) {
-        return (
-          <option value={dataset} selected="selected">
-            {d.label}
-          </option>
-        );
-      } else {
-        return <option value={dataset}>{d.label}</option>;
+        selected.push(index);
       }
+      return (
+        <option value={dataset} key={index}>
+          {d.label}
+        </option>
+      );
     });
 
     return (
       <div>
-        <p>
-          <h3>Choose one or more Sequence Datasets:</h3>
-        </p>
+        <h3>Choose one or more Sequence Datasets:</h3>
         Select or unselect multiple datasets by pressing the Control (PC) or
         Command (Mac) key while clicking. Selecting a category label selects all
         datasets in that category.
@@ -437,6 +431,7 @@ BLAST Help at NCBI</a>.</p><hr>';
             id="database"
             onChange={this._onChange}
             size={i}
+            value={selected}
             multiple
           >
             {_elements}
@@ -459,7 +454,7 @@ BLAST Help at NCBI</a>.</p><hr>';
       <div>
         <b>Options:</b> For descriptions of BLAST options and parameters, refer
         to the BLAST documentation at NCBI.<br></br>
-        <div class="col-lg-4 col-lg-offset-4">
+        <div className="col-lg-4 col-lg-offset-4">
           <table width="100%">
             <tbody>
               <tr>
@@ -518,21 +513,21 @@ BLAST Help at NCBI</a>.</p><hr>';
     var format = ['gapped alignments', 'ungapped alignments'];
 
     var _elements = [];
-    format.forEach(function(f) {
+    let selected = '';
+    format.forEach(function(f, index) {
+      _elements.push(
+        <option value={f} key={index}>
+          {f}
+        </option>
+      );
       if (f == 'gapped alignments') {
-        _elements.push(
-          <option value={f} selected="selected">
-            {f}
-          </option>
-        );
-      } else {
-        _elements.push(<option value={f}>{f}</option>);
+        selected = index;
       }
     });
 
     return (
       <p>
-        <select ref="outFormat" onChange={this._onChange}>
+        <select ref="outFormat" onChange={this._onChange} value={selected}>
           {_elements}
         </select>
       </p>
@@ -545,8 +540,8 @@ BLAST Help at NCBI</a>.</p><hr>';
     var _elements = this._getDropdownList(matrix, 'BLOSUM62');
     return (
       <p>
-        <select ref="matrix" onChange={this._onChange}>
-          {_elements}
+        <select ref="matrix" onChange={this._onChange} value={_elements[1]}>
+          {_elements[0]}
         </select>
       </p>
     );
@@ -557,8 +552,12 @@ BLAST Help at NCBI</a>.</p><hr>';
     var _elements = this._getDropdownList(cutoffScore, '0.01');
     return (
       <p>
-        <select ref="cutoffScore" onChange={this._onChange}>
-          {_elements}
+        <select
+          ref="cutoffScore"
+          onChange={this._onChange}
+          value={_elements[1]}
+        >
+          {_elements[0]}
         </select>
       </p>
     );
@@ -585,8 +584,8 @@ BLAST Help at NCBI</a>.</p><hr>';
     var _elements = this._getDropdownList(wordLength, 'default');
     return (
       <p>
-        <select ref="wordLength" onChange={this._onChange}>
-          {_elements}
+        <select ref="wordLength" onChange={this._onChange} value={_elements[1]}>
+          {_elements[0]}
         </select>
       </p>
     );
@@ -597,8 +596,8 @@ BLAST Help at NCBI</a>.</p><hr>';
     var _elements = this._getDropdownList(threshold, 'default');
     return (
       <p>
-        <select ref="threshold" onChange={this._onChange}>
-          {_elements}
+        <select ref="threshold" onChange={this._onChange} value={_elements[1]}>
+          {_elements[0]}
         </select>
       </p>
     );
@@ -625,8 +624,12 @@ BLAST Help at NCBI</a>.</p><hr>';
     var _elements = this._getDropdownList(alignToShow, defaultVal);
     return (
       <p>
-        <select ref="alignToShow" onChange={this._onChange}>
-          {_elements}
+        <select
+          ref="alignToShow"
+          onChange={this._onChange}
+          value={_elements[1]}
+        >
+          {_elements[0]}
         </select>
       </p>
     );
@@ -648,18 +651,18 @@ BLAST Help at NCBI</a>.</p><hr>';
 
   _getDropdownList: function(elementList, activeVal) {
     var _elements = [];
-    elementList.forEach(function(m) {
+    let selected = '';
+    elementList.forEach(function(m, index) {
+      _elements.push(
+        <option value={m} key={index}>
+          {m}
+        </option>
+      );
       if (m == activeVal) {
-        _elements.push(
-          <option value={m} selected="selected">
-            {m}
-          </option>
-        );
-      } else {
-        _elements.push(<option value={m}>{m}</option>);
+        selected = index;
       }
     });
-    return _elements;
+    return [_elements, selected];
   },
 
   _onChange: function(e) {
