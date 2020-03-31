@@ -39,3 +39,4 @@ production_asset_url.json
 .pytest*
 Notes.MD
 application.js.map
+.prettierrc
