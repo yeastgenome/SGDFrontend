@@ -54,7 +54,8 @@
     "swagger-ui-dist": "^3.21.0",
     "tcomb-form": "^0.9.21",
     "tcomb-json-schema": "^0.2.3",
-    "underscore": "~1.6.0"
+    "underscore": "~1.6.0",
+    "webpack-bundle-analyzer": "^3.6.1"
   },
   "devDependencies": {
     "@babel/core": "^7.7.2",
