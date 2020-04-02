@@ -410,7 +410,8 @@ BLAST Help at NCBI</a>.</p><hr>';
       }
 
       if ($.inArray(dataset, _databaseDef) > -1) {
-        selected.push(index);
+        // selected.push(index); //TODO: Fix with ?name='YFL039C'
+        selected.push(dataset);
       }
       return (
         <option value={dataset} key={index}>
