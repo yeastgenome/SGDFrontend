@@ -39,3 +39,5 @@ production_asset_url.json
 .pytest*
 Notes.MD
 prod_deploy_variables_old.sh
+application.js.map
+.prettierrc
