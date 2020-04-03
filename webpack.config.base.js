@@ -4,7 +4,7 @@ module.exports = {
   entry: "./client/jsx/application.jsx",
   output: {
     filename: "application.js",
-    path:path.join(__dirname, "src/sgd/frontend/yeastgenome/static/js")
+    path: path.join(__dirname, "src/sgd/frontend/yeastgenome/static/js")
   },
   module: {
     rules: [
@@ -15,14 +15,14 @@ module.exports = {
           loader: "babel-loader",
           options: {
             cacheDirectory: true,
-            presets: ["@babel/preset-env","@babel/preset-react"]
+            presets: ["@babel/preset-env", "@babel/preset-react"]
           }
         }
       }
     ]
   },
-  resolve:{
-    extensions: ['*','.jsx','.js','.json']
+  resolve: {
+    extensions: ['*', '.jsx', '.js', '.json']
   },
   stats: {
     colors: true,
