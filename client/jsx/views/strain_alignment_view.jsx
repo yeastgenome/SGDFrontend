@@ -1,13 +1,13 @@
+'use strict';
 
-"use strict";
-
-const React = require("react");
-const SearchForm = require("../components/alignment/strain_alignment.jsx");
+import React from 'react';
+import ReactDOM from 'react-dom';
+const SearchForm = require('../components/alignment/strain_alignment.jsx');
 
 var strainAlignmentView = {};
 
 strainAlignmentView.render = function () {
-	React.render(<SearchForm />,  document.getElementById("j-main"));
+  ReactDOM.render(<SearchForm />, document.getElementById('j-main'));
 };
 
 module.exports = strainAlignmentView;
