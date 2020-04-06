@@ -87,7 +87,7 @@ module.exports = React.createClass({
                   placeholder="Your name"
                   ref="name"
                   size="50"
-                  required="true"
+                  required={true}
                 ></input>
                 <p></p>
                 <label>
@@ -99,7 +99,7 @@ module.exports = React.createClass({
                   placeholder="Your email address"
                   ref="internet"
                   size="50"
-                  required="true"
+                  required={true}
                 ></input>
                 <p></p>
                 <label>Subject:</label>
