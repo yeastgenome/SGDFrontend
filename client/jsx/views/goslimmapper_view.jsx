@@ -1,12 +1,13 @@
-"use strict";
+'use strict';
 
-const React = require("react");
-const SearchForm = require("../components/gotools/goslimmapper_form.jsx");
+import React from 'react';
+import ReactDOM from 'react-dom';
+const SearchForm = require('../components/gotools/goslimmapper_form.jsx');
 
 var goSlimMapperView = {};
 
 goSlimMapperView.render = function () {
-	React.render(<SearchForm />,  document.getElementById("j-main"));
+  ReactDOM.render(<SearchForm />, document.getElementById('j-main'));
 };
 
 module.exports = goSlimMapperView;
