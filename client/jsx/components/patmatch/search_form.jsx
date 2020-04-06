@@ -555,7 +555,7 @@ var SearchForm = React.createClass({
           Substitutions) can only be used in combination with exact patterns
           that do not contain ambiguous peptide or nucleotide characters (e.g. X
           for any amino acid or R for any purine) or regular expressions (e.g. L
-          {(3, 5)}X{5}DGO). In addition, the mismatch=3 option can only be used
+          {'3, 5'}X{5}DGO). In addition, the mismatch=3 option can only be used
           for query strings of at least 7 in length.
         </p>
       </div>

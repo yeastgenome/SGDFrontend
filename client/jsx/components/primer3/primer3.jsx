@@ -1,26 +1,10 @@
 import React from 'react';
 import Radium from 'radium';
-import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
 import _ from 'underscore';
-
 import t from 'tcomb-form';
-const Form = t.form.Form;
-
-var v = require('tcomb-validation');
-var validate = v.validate;
 
 const DataTable = require('../widgets/data_table.jsx');
-import apiRequest from '../../lib/api_request.jsx';
-import {
-  StringField,
-  CheckField,
-  TextField,
-  SelectField,
-  MultiSelectField,
-  RadioSelector,
-} from '../../components/widgets/form_helpers.jsx';
 
 const PRIMER3URL = '/backend/primer3';
 

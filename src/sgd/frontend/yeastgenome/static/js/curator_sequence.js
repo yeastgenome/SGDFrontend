@@ -10,10 +10,10 @@ var residues2 = null;
 var can_color1 = false;
 var can_color2 = false;
 
-$(document).ready(function() {
+$(document).ready(function () {
 
     $("#subfeature_table_analyze").hide();
-  	$.getJSON('/backend/locus/' + locus['id'] + '/sequence_details', function(data) {
+    $.getJSON('/backend/locus/' + locus['id'] + '/sequence_details', function (data) {
         var dna_data = data['genomic_dna'];
         var strain_selection1 = $("#strain_selection1");
         var strain_selection2 = $("#strain_selection2");
@@ -21,13 +21,13 @@ $(document).ready(function() {
         var strain_to_protein_data = {};
         var strain_to_coding_data = {};
 
-        for (var i=0; i < dna_data.length; i++) {
+        for (var i = 0; i < dna_data.length; i++) {
             var strain_format_name = dna_data[i]['strain']['format_name'];
             var strain_display_name = dna_data[i]['strain']['display_name'];
 
-            if(strain_format_name in strain_to_genomic_data) {
+            if (strain_format_name in strain_to_genomic_data) {
                 var count = 1;
-                while(strain_format_name in strain_to_genomic_data) {
+                while (strain_format_name in strain_to_genomic_data) {
                     strain_format_name = dna_data[i]['strain']['format_name'] + '_' + count;
                     strain_display_name = dna_data[i]['strain']['display_name'] + '_' + count;
                     count = count + 1;
@@ -48,12 +48,12 @@ $(document).ready(function() {
         }
 
         var protein_data = data['protein'];
-        for (i=0; i < protein_data.length; i++) {
+        for (i = 0; i < protein_data.length; i++) {
             strain_to_protein_data[protein_data[i]['strain']['format_name']] = protein_data[i];
         }
 
         var coding_data = data['coding_dna'];
-        for (i=0; i < coding_data.length; i++) {
+        for (i = 0; i < coding_data.length; i++) {
             strain_to_coding_data[coding_data[i]['strain']['format_name']] = coding_data[i];
         }
 
@@ -85,19 +85,19 @@ $(document).ready(function() {
             var mode = $("#sequence_type_chooser");
             residues1 = '';
             residues2 = '';
-            if(mode.val() == 'genomic_dna') {
+            if (mode.val() == 'genomic_dna') {
                 residues1 = strain1_data['residues'];
                 residues2 = strain2_data['residues'];
                 chromosome1 = strain1_data['contig']['format_name'];
                 chromosome2 = strain2_data['contig']['format_name'];
             }
-            else if(mode.val() == 'coding_dna') {
+            else if (mode.val() == 'coding_dna') {
                 residues1 = strain_to_coding_data[strain_selection1.val()]['residues'];
                 residues2 = strain_to_coding_data[strain_selection2.val()]['residues'];
                 chromosome1 = strain_selection1.val() + ' coding_dna';
                 chromosome2 = strain_selection2.val() + ' coding_dna';
             }
-            else if(mode.val() == 'protein') {
+            else if (mode.val() == 'protein') {
                 residues1 = strain_to_protein_data[strain_selection1.val()]['residues'];
                 residues2 = strain_to_protein_data[strain_selection2.val()]['residues'];
                 chromosome1 = strain_selection1.val() + ' protein';
@@ -108,11 +108,11 @@ $(document).ready(function() {
             $("#sequence2").html(prep_sequence(residues2));
 
             mode.children('option[value=genomic_dna]')
-                    .attr('disabled', !(strain_selection1.val() in strain_to_genomic_data && strain_selection2.val() in strain_to_genomic_data));
+                .attr('disabled', !(strain_selection1.val() in strain_to_genomic_data && strain_selection2.val() in strain_to_genomic_data));
             mode.children('option[value=coding_dna]')
-                    .attr('disabled', !(strain_selection1.val() in strain_to_coding_data && strain_selection2.val() in strain_to_coding_data));
+                .attr('disabled', !(strain_selection1.val() in strain_to_coding_data && strain_selection2.val() in strain_to_coding_data));
             mode.children('option[value=protein]')
-                    .attr('disabled', !(strain_selection1.val() in strain_to_protein_data && strain_selection2.val() in strain_to_protein_data));
+                .attr('disabled', !(strain_selection1.val() in strain_to_protein_data && strain_selection2.val() in strain_to_protein_data));
 
         }
         strain_selection1.change(on_strain_change);
@@ -128,7 +128,7 @@ $(document).ready(function() {
         });
     });
 
-    $.getJSON('/backend/locus/' + locus['id'] + '/neighbor_sequence_details', function(data) {
+    $.getJSON('/backend/locus/' + locus['id'] + '/neighbor_sequence_details', function (data) {
         strain_to_neighbors = data;
 
         draw_label_chart('label_chart1', $("#strain_selection1").val());
@@ -138,7 +138,7 @@ $(document).ready(function() {
 
 function pad_number(number, num_digits) {
     number = '' + number;
-    while(number.length < num_digits) {
+    while (number.length < num_digits) {
         number = ' ' + number;
     }
     return number;
@@ -149,19 +149,14 @@ function prep_sequence(residues) {
     var num_digits = ('' + residues.length).length;
 
     var new_sequence = pad_number(1, num_digits) + ' ' + chunks[0];
-    for(var i=1; i < chunks.length; i++) {
-        if(i == chunks.length-1) {
-            new_sequence = new_sequence + '<br>' + pad_number(i*60+1, num_digits) + ' ' + chunks[i];
-        }
-        else {
-            new_sequence = new_sequence + '<br>' + pad_number(i*60+1, num_digits) + ' ' + chunks[i];
-        }
+    for (var i = 1; i < chunks.length; i++) {
+        new_sequence = new_sequence + '<br>' + pad_number(i * 60 + 1, num_digits) + ' ' + chunks[i];
     }
     return new_sequence;
 }
 
 function strand_to_direction(strand) {
-    if(strand == '+') {
+    if (strand == '+') {
         return "5'";
     }
     else {
@@ -179,20 +174,20 @@ function make_label_ready_handler(chart_id, chart, data, display_name_to_format_
             var title_spans = $(".google-visualization-tooltip-item > span");
             var display_name = $(title_spans[0]).html();
             var spans = $(".google-visualization-tooltip-action > span");
-            if(display_name in display_name_to_format_name) {
+            if (display_name in display_name_to_format_name) {
                 var format_name = display_name_to_format_name[display_name]['locus']['format_name'];
-                if(format_name != display_name) {
+                if (format_name != display_name) {
                     $(title_spans[0]).html(display_name + ' (' + format_name + ')');
                 }
 
-                if(spans.length > 3) {
+                if (spans.length > 3) {
                     var start = display_name_to_format_name[display_name]['start'];
                     var end = display_name_to_format_name[display_name]['end'];
                     var chromosome = '';
-                    if(chart_id.indexOf('1', chart_id.length - 1) !== -1) {
+                    if (chart_id.indexOf('1', chart_id.length - 1) !== -1) {
                         chromosome = chromosome1;
                     }
-                    else if(chart_id.indexOf('2', chart_id.length - 1) !== -1) {
+                    else if (chart_id.indexOf('2', chart_id.length - 1) !== -1) {
                         chromosome = chromosome2;
                     }
                     $(spans[0]).html(chromosome + ':');
@@ -214,7 +209,7 @@ function make_label_ready_handler(chart_id, chart, data, display_name_to_format_
         var svg_gs = $("#" + chart_id + " > div > div > svg > g");
 
         var y_one = data['start'];
-        if(y_one == 1) {
+        if (y_one == 1) {
             y_one = 0;
         }
         var y_two = data['end'];
@@ -222,11 +217,11 @@ function make_label_ready_handler(chart_id, chart, data, display_name_to_format_
         var tickmark_holder = svg_gs[1];
         var tickmarks = tickmark_holder.childNodes;
 
-        var m = Math.round((y_two - y_one)/tickmarks.length/1000)*1000;
+        var m = Math.round((y_two - y_one) / tickmarks.length / 1000) * 1000;
 
-        for (var i=0; i < tickmarks.length; i++) {
-            var tick = y_one + i*m;
-            if(tick == 0) {
+        for (var i = 0; i < tickmarks.length; i++) {
+            var tick = y_one + i * m;
+            if (tick == 0) {
                 tick = 1;
             }
             $(tickmarks[i]).html(tick);
@@ -236,9 +231,9 @@ function make_label_ready_handler(chart_id, chart, data, display_name_to_format_
 }
 
 function draw_label_chart(chart_id, strain_name) {
-    if(strain_name in strain_to_neighbors) {
+    if (strain_name in strain_to_neighbors) {
         var neighbor_data = strain_to_neighbors[strain_name];
-        var data = neighbor_data['neighbors'].sort(function(a, b){return a['start']-b['start']});
+        var data = neighbor_data['neighbors'].sort(function (a, b) { return a['start'] - b['start'] });
 
         var container = document.getElementById(chart_id);
 
@@ -268,20 +263,20 @@ function draw_label_chart(chart_id, strain_name) {
         data_array.push(["3'", '', min_tick, min_tick]);
         var previous_end_5 = 0;
         var previous_end_3 = 0;
-        for (var i=0; i < data.length; i++) {
+        for (var i = 0; i < data.length; i++) {
             var start = Math.max(data[i]['start'], min_tick);
             var end = Math.min(data[i]['end'], max_tick);
             var direction = strand_to_direction(data[i]['strand']);
             display_name_to_format_name[data[i]['locus']['display_name']] = data[i];
             var color;
-            if(data[i]['locus']['display_name'] == locus['display_name']) {
+            if (data[i]['locus']['display_name'] == locus['display_name']) {
                 color = "#3366cc";
             }
             else {
                 color = "#A4A4A4";
             }
-            if(direction == "5'") {
-                if(previous_end_5 <= start) {
+            if (direction == "5'") {
+                if (previous_end_5 <= start) {
                     colors5.push(color);
                 }
                 else {
@@ -290,7 +285,7 @@ function draw_label_chart(chart_id, strain_name) {
                 previous_end_5 = Math.max(previous_end_5, end);
             }
             else {
-                if(previous_end_3 <= start) {
+                if (previous_end_3 <= start) {
                     colors3.push(color);
                 }
                 else {
@@ -313,8 +308,8 @@ function draw_label_chart(chart_id, strain_name) {
 
         var options = {
             'height': 1,
-            'timeline': {'hAxis': {'position': 'none'}},
-            'tooltip': {'isHTML': true},
+            'timeline': { 'hAxis': { 'position': 'none' } },
+            'tooltip': { 'isHTML': true },
             'colors': colors
         };
 
@@ -334,14 +329,14 @@ function make_sublabel_ready_handler(chart_id, chart, seq_start, seq_end, data, 
         function tooltipHandler(e) {
             var datarow = data_array[e.row];
             var spans = $(".google-visualization-tooltip-action > span");
-            if(spans.length > 2) {
-                var start = datarow[2]/100;
-                if(start == 0) {
+            if (spans.length > 2) {
+                var start = datarow[2] / 100;
+                if (start == 0) {
                     start = 1;
                 }
-                spans[1].innerHTML = ' ' + start + '-' + datarow[3]/100;
+                spans[1].innerHTML = ' ' + start + '-' + datarow[3] / 100;
                 spans[2].innerHTML = 'Length: ';
-                spans[3].innerHTML = ' ' + datarow[3]/100 - start + 1;
+                spans[3].innerHTML = ' ' + datarow[3] / 100 - start + 1;
             }
         }
         google.visualization.events.addListener(chart, 'onmouseover', tooltipHandler);
@@ -355,15 +350,15 @@ function make_sublabel_ready_handler(chart_id, chart, seq_start, seq_end, data, 
         var tickmark_holder = svg_gs[1];
         var tickmarks = tickmark_holder.childNodes;
 
-        var m = Math.round((y_two - y_one)/tickmarks.length/100)*100;
+        var m = Math.round((y_two - y_one) / tickmarks.length / 100) * 100;
         if (m == 0) {
-            m = Math.round((y_two - y_one)/tickmarks.length/10)*10;
+            m = Math.round((y_two - y_one) / tickmarks.length / 10) * 10;
         }
 
 
-        for (var i=0; i < tickmarks.length; i++) {
-            var tick = y_one + i*m;
-            if(tick == 0) {
+        for (var i = 0; i < tickmarks.length; i++) {
+            var tick = y_one + i * m;
+            if (tick == 0) {
                 tick = 1;
             }
             $(tickmarks[i]).html(tick);
@@ -373,26 +368,26 @@ function make_sublabel_ready_handler(chart_id, chart, seq_start, seq_end, data, 
         var rectangle_holder = svg_gs[3];
         var rectangles = rectangle_holder.childNodes;
         var ordered_colors = [];
-        for (var i=0; i < rectangles.length; i++) {
-            if(rectangles[i].nodeName == 'rect') {
+        for (var i = 0; i < rectangles.length; i++) {
+            if (rectangles[i].nodeName == 'rect') {
                 var color = rectangles[i].getAttribute('fill');
-                if(ordered_colors[ordered_colors.length - 1] != color) {
+                if (ordered_colors[ordered_colors.length - 1] != color) {
                     ordered_colors.push(color);
                 }
             }
         }
 
         var label_to_color;
-        if(chart_id.indexOf('1', chart_id.length - 1) !== -1) {
+        if (chart_id.indexOf('1', chart_id.length - 1) !== -1) {
             label_to_color = label_to_color1;
         }
-        else if(chart_id.indexOf('2', chart_id.length - 1) !== -1) {
+        else if (chart_id.indexOf('2', chart_id.length - 1) !== -1) {
             label_to_color = label_to_color2;
         }
 
         var color_index = 0;
-        for (var i=0; i < data.length; i++) {
-            if(!(data[i]['display_name'] in label_to_color)) {
+        for (var i = 0; i < data.length; i++) {
+            if (!(data[i]['display_name'] in label_to_color)) {
                 label_to_color[data[i]['display_name']] = ordered_colors[color_index];
                 color_index = color_index + 1;
             }
@@ -404,7 +399,7 @@ function make_sublabel_ready_handler(chart_id, chart, seq_start, seq_end, data, 
 function draw_sublabel_chart(chart_id, data) {
     var seq_start = data['start'];
     var seq_end = data['end'];
-    var data = data['tags'].sort(function(a, b){return a['relative_start']-b['relative_start']});
+    var data = data['tags'].sort(function (a, b) { return a['relative_start'] - b['relative_start'] });
 
     var container = document.getElementById(chart_id);
 
@@ -422,28 +417,28 @@ function draw_sublabel_chart(chart_id, data) {
 
     var min_start = null;
     var max_end = null;
-    for (var i=0; i < data.length; i++) {
-        var start = data[i]['relative_start']*100;
-        if(start == 100) {
+    for (var i = 0; i < data.length; i++) {
+        var start = data[i]['relative_start'] * 100;
+        if (start == 100) {
             start = 0;
         }
-        var end = data[i]['relative_end']*100;
+        var end = data[i]['relative_end'] * 100;
         var name = data[i]['display_name'];
         data_array.push(['Subfeatures', name, start, end]);
         labels[name] = true;
 
-        if(min_start == null || start < min_start) {
+        if (min_start == null || start < min_start) {
             min_start = start;
         }
-        if(max_end == null || end > max_end) {
+        if (max_end == null || end > max_end) {
             max_end = end;
         }
     }
     var start = 0;
-    var end = seq_end*100 - seq_start*100 + 100;
+    var end = seq_end * 100 - seq_start * 100 + 100;
     var show_row_lables = false;
-    if(min_start == null || max_end == null || min_start > 0 || max_end < end) {
-        if(start == 100) {
+    if (min_start == null || max_end == null || min_start > 0 || max_end < end) {
+        if (start == 100) {
             start = 0;
         }
         data_array.unshift(['Locus', locus['display_name'], start, end]);
@@ -454,20 +449,22 @@ function draw_sublabel_chart(chart_id, data) {
 
     var options = {
         'height': 1,
-        'timeline': {'hAxis': {'position': 'none'},
-                    'showRowLabels': show_row_lables},
-        'tooltip': {'isHTML': true}
+        'timeline': {
+            'hAxis': { 'position': 'none' },
+            'showRowLabels': show_row_lables
+        },
+        'tooltip': { 'isHTML': true }
     }
 
     chart.draw(dataTable, options);
     google.visualization.events.addListener(chart, 'ready', make_sublabel_ready_handler(chart_id, chart, seq_start, seq_end, data, data_array));
 
     options['height'] = $("#" + chart_id + " > div > div > div > svg").height() + 60;
-    if(options['height'] <= 105) {
-        if(chart_id.indexOf('1', chart_id.length - 1) !== -1) {
+    if (options['height'] <= 105) {
+        if (chart_id.indexOf('1', chart_id.length - 1) !== -1) {
             can_color1 = true;
         }
-        else if(chart_id.indexOf('2', chart_id.length - 1) !== -1) {
+        else if (chart_id.indexOf('2', chart_id.length - 1) !== -1) {
             can_color2 = true;
         }
     }
@@ -477,18 +474,18 @@ function draw_sublabel_chart(chart_id, data) {
 
 function color_sequence(seq_id, data) {
     var label_to_color;
-    if(chart_id.indexOf('1', chart_id.length - 1) !== -1) {
+    if (chart_id.indexOf('1', chart_id.length - 1) !== -1) {
         label_to_color = label_to_color1;
     }
-    else if(chart_id.indexOf('2', chart_id.length - 1) !== -1) {
+    else if (chart_id.indexOf('2', chart_id.length - 1) !== -1) {
         label_to_color = label_to_color2;
     }
 
-    if(data['tags'].length > 1) {
+    if (data['tags'].length > 1) {
 
         var reference_legend = $("#reference_legend");
         reference_legend.html('');
-        for(var key in label_to_color) {
+        for (var key in label_to_color) {
             var new_entry = document.createElement('li');
             new_entry.innerHTML = '<span style="color:' + label_to_color[key] + '">&#9608;</span> ' + key;
             reference_legend.append(new_entry);
@@ -499,9 +496,9 @@ function color_sequence(seq_id, data) {
         var seq = $("#" + seq_id).html();
         var new_seq = '';
         var start = 0;
-        for (var i=0; i < data['tags'].length; i++) {
+        for (var i = 0; i < data['tags'].length; i++) {
             var color;
-            if(data['tags'][i]['display_name'] in label_to_color) {
+            if (data['tags'][i]['display_name'] in label_to_color) {
                 color = label_to_color[data['tags'][i]['display_name']];
             }
             else {
@@ -509,16 +506,16 @@ function color_sequence(seq_id, data) {
                 label_to_color[data['tags'][i]['display_name']] = color;
                 color_index = color_index + 1;
             }
-            var start_index = data['tags'][i]['relative_start']-1;
+            var start_index = data['tags'][i]['relative_start'] - 1;
             var end_index = data['tags'][i]['relative_end'];
 
             var html_start_index = relative_to_html(start_index, num_digits);
             var html_end_index = relative_to_html(end_index, num_digits);
 
-            var start_index_row = Math.floor(1.0*start_index/60);
-            var end_index_row = Math.floor(1.0*end_index/60);
+            var start_index_row = Math.floor(1.0 * start_index / 60);
+            var end_index_row = Math.floor(1.0 * end_index / 60);
 
-            if(start_index_row == end_index_row) {
+            if (start_index_row == end_index_row) {
                 new_seq = new_seq +
                     seq.substring(start, html_start_index) +
                     "<span style='color:" + color + "'>" +
@@ -526,8 +523,8 @@ function color_sequence(seq_id, data) {
                     "</span>";
             }
             else {
-                var start_index_row_end = (start_index_row+1)*(71+num_digits);
-                var end_index_row_start = end_index_row*(71+num_digits) + 1 + num_digits;
+                var start_index_row_end = (start_index_row + 1) * (71 + num_digits);
+                var end_index_row_start = end_index_row * (71 + num_digits) + 1 + num_digits;
                 new_seq = new_seq +
                     seq.substring(start, html_start_index) +
                     "<span style='color:" + color + "'>" +
@@ -535,9 +532,9 @@ function color_sequence(seq_id, data) {
                     "</span>";
                 start = start_index_row_end;
 
-                for(var j=start_index_row+1; j < end_index_row; j++) {
-                    var row_start = j*(71+num_digits) + 1 + num_digits;
-                    var row_end = (j+1)*(71+num_digits);
+                for (var j = start_index_row + 1; j < end_index_row; j++) {
+                    var row_start = j * (71 + num_digits) + 1 + num_digits;
+                    var row_end = (j + 1) * (71 + num_digits);
                     new_seq = new_seq +
                         seq.substring(start, row_start) +
                         "<span style='color:" + color + "'>" +
@@ -559,7 +556,7 @@ function color_sequence(seq_id, data) {
 }
 
 function relative_to_html(index, num_digits) {
-    var row = Math.floor(1.0*index/60);
-    var column = index - row*60;
-    return row*(71+num_digits) + 1 + num_digits + column + Math.floor(1.0*column/10);
+    var row = Math.floor(1.0 * index / 60);
+    var column = index - row * 60;
+    return row * (71 + num_digits) + 1 + num_digits + column + Math.floor(1.0 * column / 10);
 }

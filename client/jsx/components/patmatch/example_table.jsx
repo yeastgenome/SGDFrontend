@@ -168,7 +168,7 @@ module.exports = {
           href="/nph-patmatch?seqtype=nuc&pattern=CGV...WH.{3,5}HW...CCG"
           target="infowin"
         >
-          CGV...WH.{(3, 5)}HW...CCG
+          CGV...WH.{'3, 5'}HW...CCG
         </a>
       </span>,
     ]);
@@ -181,7 +181,7 @@ module.exports = {
           href="/nph-patmatch?seqtype=nuc&pattern=CGH...WH.{3,5}HW...CCG"
           target="infowin"
         >
-          CGH...WH.{(3, 5)}HW...CCG
+          CGH...WH.{'3, 5'}HW...CCG
         </a>
       </span>,
     ]);
@@ -194,7 +194,7 @@ module.exports = {
           href="/nph-patmatch?seqtype=nuc&pattern=CGD...WH.{3,5}HW...CCG"
           target="infowin"
         >
-          CGD...WH.{(3, 5)}HW...CCG
+          CGD...WH.{'3, 5'}HW...CCG
         </a>
       </span>,
     ]);
@@ -207,7 +207,7 @@ module.exports = {
           href="/nph-patmatch?seqtype=nuc&pattern=CGB...WH.{3,5}HW...CCG"
           target="infowin"
         >
-          CGB...WH.{(3, 5)}HW...CCG
+          CGB...WH.{'3, 5'}HW...CCG
         </a>
       </span>,
     ]);
