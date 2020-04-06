@@ -242,9 +242,9 @@ const RestrictionMapper = React.createClass({
 
   getGeneNode() {
     // return (<div style={{ textAlign: "top" }}>
-    //	<p>Enter a single standard gene name (or ORF or SGDID);<br></br>
-    //	   for non-gene features (such as RNAs, CENs or ARSs)<br></br>
-    //	   use the GSR tool as described above. Example: SIR2,<br></br>
+    //	<p>Enter a single standard gene name (or ORF or SGDID);<br/>
+    //	   for non-gene features (such as RNAs, CENs or ARSs)<br/>
+    //	   use the GSR tool as described above. Example: SIR2,<br/>
     //	   YHR023W, or SGD:S000000001.
     //	<input type='text' name='gene' ref='gene' onChange={this._onChange}  size='50'></input>
     //	</p>
@@ -255,7 +255,8 @@ const RestrictionMapper = React.createClass({
         <p>
           Enter a single standard gene name (or ORF or SGDID); for non-gene
           features (such as RNAs, CENs or ARSs) use the GSR tool as described
-          above. <br></br>Example: SIR2, YHR023W, or SGD:S000000001.
+          above. <br />
+          Example: SIR2, YHR023W, or SGD:S000000001.
         </p>
         <input
           type="text"

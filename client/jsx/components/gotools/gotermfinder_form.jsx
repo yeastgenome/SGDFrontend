@@ -138,10 +138,10 @@ const GoTermFinder = React.createClass({
       );
 
       tableSaveOptions =
-        "<br><h2 id='table'><center>Search Results in HTML Table Format</center></h2><br>" +
+        "<br/><h2 id='table'><center>Search Results in HTML Table Format</center></h2><br/>" +
         tableSaveOptions;
       graphSaveOptions =
-        "<h2 id='graph'><center>Search Results in GO View Tree Image Format</center></h2><br>" +
+        "<h2 id='graph'><center>Search Results in GO View Tree Image Format</center></h2><br/>" +
         graphSaveOptions;
 
       return (

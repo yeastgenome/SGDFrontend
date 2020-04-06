@@ -457,7 +457,8 @@ BLAST Help at NCBI</a>.</p><hr>';
     return (
       <div>
         <b>Options:</b> For descriptions of BLAST options and parameters, refer
-        to the BLAST documentation at NCBI.<br></br>
+        to the BLAST documentation at NCBI.
+        <br />
         <div className="col-lg-4 col-lg-offset-4">
           <table width="100%">
             <tbody>
@@ -465,21 +466,21 @@ BLAST Help at NCBI</a>.</p><hr>';
                 <th>Output format:</th>
                 <td>{outFormatMenu}</td>
                 <td>
-                  <br></br>
+                  <br />
                 </td>
               </tr>
               <tr>
                 <th>Comparison Matrix:</th>
                 <td>{matrixMenu}</td>
                 <td>
-                  <br></br>
+                  <br />
                 </td>
               </tr>
               <tr>
                 <th>Cutoff Score (E value):</th>
                 <td>{cutoffMenu}</td>
                 <td>
-                  <br></br>
+                  <br />
                 </td>
               </tr>
               <tr>
@@ -491,14 +492,14 @@ BLAST Help at NCBI</a>.</p><hr>';
                 <th>Expect threshold (E threshold):</th>
                 <td>{thresholdMenu}</td>
                 <td>
-                  <br></br>
+                  <br />
                 </td>
               </tr>
               <tr>
                 <th>Number of best alignments to show:</th>
                 <td>{alignToShowMenu}</td>
                 <td>
-                  <br></br>
+                  <br />
                 </td>
               </tr>
               <tr>
