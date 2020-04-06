@@ -574,7 +574,6 @@ const GeneSequenceResources = React.createClass({
         SeqtoolsUrl + '?format=gcg&type=protein' + queryStr + extraParams;
       var thisHasCoding = hasCoding4gene[gene];
       var thisHasProtein = hasProtein4gene[gene];
-      var thisHasGenomic = hasGenomic4gene[gene];
       if (thisHasProtein > 0) {
         seqDLRow.push(
           <span style={style.textFont}>
@@ -1591,7 +1590,6 @@ const GeneSequenceResources = React.createClass({
   },
 
   getStrainPulldown(strains) {
-    var strainMapping = GSR.StrainMapping();
     var defaultStrain = '';
 
     var _elements = _.map(strains, (s) => {
@@ -1851,13 +1849,7 @@ const GeneSequenceResources = React.createClass({
     }
 
     var param = this.state.param;
-    var rev = param['rev1'];
-    var up = param['up'];
-    var down = param['down'];
     var more = param['more'];
-
-    var displaySetGenes = window.localStorage.getItem('displaySet');
-
     var extraParams = this.getExtraParams(param);
 
     var moreLinkQueryStr = 'genes=' + allGenes;
@@ -1932,7 +1924,6 @@ const GeneSequenceResources = React.createClass({
     var rev = param['rev1'];
     var up = param['up'];
     var down = param['down'];
-    var more = param['more'];
 
     var displaySetGenes = window.localStorage.getItem('displaySet');
 
