@@ -3,7 +3,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 
-import { getHrefWithoutAgg, getCategoryDisplayName } from '../lib/search_helpers';
+import {
+  getHrefWithoutAgg,
+  getCategoryDisplayName,
+} from '../lib/search_helpers';
 
 const SEARCH_URL = '/search';
 const SKIPPED_PARAMS = ['page', 'geneMode', 'is_quick', 'page_size', 'sort_by'];
@@ -32,7 +35,7 @@ const SearchBreadcrumb = React.createClass({
       return 0;
     });
     // make sure query is first
-    queryArray.forEach(key => {
+    queryArray.forEach((key) => {
       // don't render for some values or if q is blank
       if (SKIPPED_PARAMS.indexOf(key) >= 0 || qp[key] === '') return;
       // if category, give a really simple URL that returns to the initial results page (no filters)
@@ -47,13 +50,9 @@ const SearchBreadcrumb = React.createClass({
         if (key == 'status') {
           if (thisValue.toLowerCase() == 'active') {
             thisValue = 'Archived';
-          }
-          else if (thisValue.toLowerCase() == 'archived') {
-                 thisValue = 'Active';
-               }
-          else{
+          } else {
             thisValue = 'Active';
-         }
+          }
         }
         let currentValues = [thisValue];
         let newHref = getHrefWithoutAgg(qp, key, thisValue, currentValues);
@@ -61,7 +60,7 @@ const SearchBreadcrumb = React.createClass({
         // if multiple, map them
       } else {
         let currentValues = qp[key];
-        currentValues.forEach(thisValue => {
+        currentValues.forEach((thisValue) => {
           let newHref = getHrefWithoutAgg(qp, key, thisValue, currentValues);
           nodes.push(this._renderCrumb(thisValue, newHref));
         });
@@ -74,8 +73,8 @@ const SearchBreadcrumb = React.createClass({
     let quoteChar = hasQuotes ? '"' : '';
     return (
       <span key={`bcBtn${label}`}>
-        <Link to={href} className='button small' style={style.bcButton}>
-          <i className='fa fa-times' />
+        <Link to={href} className="button small" style={style.bcButton}>
+          <i className="fa fa-times" />
           <span style={style.bcLabel}>
             {quoteChar}
             {label}
@@ -99,7 +98,7 @@ const SearchBreadcrumb = React.createClass({
     } else {
       return `${totalString} results for `;
     }
-  }
+  },
 });
 
 function mapStateToProps(_state) {
@@ -111,15 +110,15 @@ function mapStateToProps(_state) {
     isPending: state.isPending,
     isPaginatePending: state.isPaginatePending,
   };
-};
+}
 
 const style = {
   bcButton: {
-    padding: '0.5rem 0.75rem'
+    padding: '0.5rem 0.75rem',
   },
   bcLabel: {
-    marginLeft: '0.5rem'
-  }
+    marginLeft: '0.5rem',
+  },
 };
 
 export default connect(mapStateToProps)(Radium(SearchBreadcrumb));
