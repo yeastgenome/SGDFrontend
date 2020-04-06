@@ -175,26 +175,26 @@ const StrainAlignment = React.createClass({
 
   getSeqTypeBox() {
     var _elements = [];
-    var selected = [];
     if (this.state.type == 'dna') {
-      _elements.push(<option value="protein">Protein</option>);
-      selected.push('protein');
+      _elements.push(
+        <option value="protein" selected="selected">
+          Protein
+        </option>
+      );
       _elements.push(<option value="dna">DNA</option>);
     } else {
       _elements.push(<option value="protein">Protein</option>);
-      _elements.push(<option value="dna">DNA</option>);
-      selected.push('dna');
+      _elements.push(
+        <option value="dna" selected="selected">
+          DNA
+        </option>
+      );
     }
 
     return (
       <div>
         <h3>Pick sequence type:</h3>
-        <select
-          name="type"
-          ref="type"
-          value={selected}
-          onChange={this.onChange2}
-        >
+        <select name="type" ref="type" onChange={this.onChange2}>
           {_elements}
         </select>
       </div>
