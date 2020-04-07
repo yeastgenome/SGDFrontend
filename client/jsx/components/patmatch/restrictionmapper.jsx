@@ -29,7 +29,6 @@ const RestrictionMapper = React.createClass({
       seq: '',
       resultData: {},
       notFound: null,
-      text: 'all',
       param: param,
     };
   },
@@ -354,7 +353,7 @@ const RestrictionMapper = React.createClass({
           <strong>Step 2: Choose Restriction Enzyme Set: </strong>
         </span>
         <p>
-          <select ref="type" name="type" value={this.state.text} onChange={this.onChange}>
+          <select ref="type" name="type" value='all' onChange={this.onChange}>
             {_elements}
           </select>
         </p>
