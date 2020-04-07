@@ -151,7 +151,7 @@ const GoSlimMapper = React.createClass({
 	submitReset() {
 
 		return (<div>
-		       <p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary" /> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"> /></p>
+		       <p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"/> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"/></p>
 		       </div>);
 
 	},
