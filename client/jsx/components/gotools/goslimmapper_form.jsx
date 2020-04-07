@@ -151,7 +151,7 @@ const GoSlimMapper = React.createClass({
 	submitReset() {
 
 		return (<div>
-		       <p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary"></input> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"></input></p>
+		       <p><input type="submit" ref='submit' name='submit' value="Submit Form" className="button secondary" /> <input type="reset" ref='reset' name='reset' value="Reset Form" className="button secondary"> /></p>
 		       </div>);
 
 	},
@@ -166,7 +166,7 @@ const GoSlimMapper = React.createClass({
                             <textarea ref='genes' id='genes' onChange={this._onChange} name='genes' rows='3' cols='200'></textarea>
                             Note: If you have a big gene list (>100), save it as a file and upload it below.
                             <h3><strong style={{ color: 'red'}}>OR</strong> Upload a file of Gene/ORF names (.txt or .tab format):
-                            <input className="btn btn-default btn-file" type="file" name='uploadFile' onChange={this.handleFile} accept="image/*;capture=camera"/></h3>
+                            <input className="btn btn-default btn-file" type="file" name='uploadFile' onChange={this.handleFile} accept="image/*;capture=camera" /></h3>
                     </div>);
 
 		}
