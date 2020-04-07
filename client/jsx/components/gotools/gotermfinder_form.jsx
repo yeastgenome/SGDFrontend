@@ -60,6 +60,7 @@ const GoTermFinder = React.createClass({
       ambiguousNames: {},
       resultData: {},
       notFound: null,
+      pvalue: '0.01',
       param: param,
     };
   },
@@ -403,7 +404,7 @@ const GoTermFinder = React.createClass({
     }
 
     var _pvalueElements = [
-      <option value="0.01" selected="selected">
+      <option value="0.01">
         0.01
       </option>,
     ];
@@ -437,7 +438,7 @@ const GoTermFinder = React.createClass({
           <strong>Pick a p-value below</strong> (default is 0.01):
         </h3>
         <p>
-          <select ref="pvalue" name="pvalue" onChange={this.onChange}>
+          <select ref="pvalue" name="pvalue" value={this.state.pvalue} onChange={this.onPvalueChange}>
             {_pvalueElements}
           </select>
         </p>
@@ -597,6 +598,10 @@ const GoTermFinder = React.createClass({
 
     // window.localStorage.clear();
     window.localStorage.setItem('aspect', aspect);
+  },
+
+  onPvalueChange(e) {
+    this.setState({ pvalue: e.target.value });
   },
 
   onChange(e) {
