@@ -344,15 +344,7 @@ const RestrictionMapper = React.createClass({
     ];
 
     var _elements = _.map(enzymes, (e) => {
-      if (e == 'all') {
-        return (
-          <option value={e} selected="selected">
-            {e}
-          </option>
-        );
-      } else {
-        return <option value={e}>{e}</option>;
-      }
+      return <option value={e}>{e}</option>;
     });
 
     return (
@@ -361,7 +353,7 @@ const RestrictionMapper = React.createClass({
           <strong>Step 2: Choose Restriction Enzyme Set: </strong>
         </span>
         <p>
-          <select ref="type" name="type" onChange={this.onChange}>
+          <select ref="type" name="type" value='all' onChange={this.onChange}>
             {_elements}
           </select>
         </p>
