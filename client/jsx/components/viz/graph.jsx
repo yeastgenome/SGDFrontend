@@ -20,7 +20,7 @@ class Graph extends Component {
     this.lastNodes = [];
     this.canClick = true;
     this.state = {
-      currentMaxValue: DEFAULT_MAX_VALUE
+      currentMaxValue: DEFAULT_MAX_VALUE,
     };
   }
 
@@ -28,10 +28,12 @@ class Graph extends Component {
     this.drawGraph();
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     // see if stage changed
     let hasStage = typeof this.props.stage !== 'undefined';
-    let shouldUpdate = hasStage ? (prevProps.stage !== this.props.stage) : this.didDataChange(prevProps.data, this.props.data);
+    let shouldUpdate = hasStage
+      ? prevProps.stage !== this.props.stage
+      : this.didDataChange(prevProps.data, this.props.data);
     if (shouldUpdate) {
       this.drawGraph();
     }
@@ -59,9 +61,9 @@ class Graph extends Component {
   }
 
   didDataChange(prevData, newData) {
-    let areNodesEqual = (prevData.nodes.length !== newData.nodes.length);
-    let areEdgesEqual = (prevData.edges.length !== newData.edges.length);
-    return (areNodesEqual && areEdgesEqual);
+    let areNodesEqual = prevData.nodes.length !== newData.nodes.length;
+    let areEdgesEqual = prevData.edges.length !== newData.edges.length;
+    return areNodesEqual && areEdgesEqual;
   }
 
   getHeight() {
@@ -73,10 +75,10 @@ class Graph extends Component {
     let nodes = this.props.data.nodes;
     let edges = this.getEdges();
     function findIndexOfNodeById(id) {
-      let thisNode = nodes.filter( d => d.id === id )[0];
+      let thisNode = nodes.filter((d) => d.id === id)[0];
       return nodes.indexOf(thisNode);
     }
-    return edges.map( d => {
+    return edges.map((d) => {
       let sourceIndex = findIndexOfNodeById(d.source);
       let targetIndex = findIndexOfNodeById(d.target);
       return { source: sourceIndex, target: targetIndex };
@@ -87,16 +89,16 @@ class Graph extends Component {
     let data = this.props.data;
     let rawEdges = data.edges;
     let nodes = this.getNodes();
-    let filteredEdges = rawEdges.filter( (d) => {
-      let hasSource = nodes.filter( (_d) => {
-        return (_d.id === d.source);
+    let filteredEdges = rawEdges.filter((d) => {
+      let hasSource = nodes.filter((_d) => {
+        return _d.id === d.source;
       }).length;
-      let hasTarget = nodes.filter( (_d) => {
-        return (_d.id === d.target);
+      let hasTarget = nodes.filter((_d) => {
+        return _d.id === d.target;
       }).length;
-      return (hasSource && hasTarget);
+      return hasSource && hasTarget;
     });
-    return filteredEdges.map( (d, i) => {
+    return filteredEdges.map((d, i) => {
       d.id = `e${i}`;
       d.color = EDGE_COLOR;
       d.size = 2;
@@ -109,7 +111,7 @@ class Graph extends Component {
     let colorScale = this.props.colorScale || defaultColorScale;
     // only get state.currentMaxNodes
     var maxNodes = this.state.currentMaxNodes || DEFAULT_MAX_VALUE;
-    return this.props.data.nodes.slice(0, maxNodes).map( (d) => {
+    return this.props.data.nodes.slice(0, maxNodes).map((d) => {
       d.color = colorScale(d.category);
       d.label = d.name;
       d.size = d.direct ? 1 : 0.5;
@@ -121,7 +123,8 @@ class Graph extends Component {
   getFormattedNodes() {
     let nodes = this.getNodes();
     let links = this.getFormattedLinks();
-    let force = d3.layout.force()
+    let force = d3.layout
+      .force()
       .size([1, 1])
       .nodes(nodes)
       .links(links)
@@ -132,12 +135,12 @@ class Graph extends Component {
     }
     force.stop();
     // give start and end as x1, x2, y1, y2 for transition
-    nodes = nodes.map( (d) => {
+    nodes = nodes.map((d) => {
       // assign 'correct' to x2 y2
       let correctX = d.x;
       let correctY = d.y;
       // try to get old and assign to default x and y
-      let oldNodes = this.lastNodes.filter( _d => d.id === _d.id );
+      let oldNodes = this.lastNodes.filter((_d) => d.id === _d.id);
       if (oldNodes.length) {
         let o = oldNodes[0];
         d.x = o.x2;
@@ -159,29 +162,28 @@ class Graph extends Component {
       this.s.graph.clear();
       this.s.refresh();
     } else {
-      sigma.classes.graph.addMethod('neighbors', function(nodeId) {
-      var k,
+      sigma.classes.graph.addMethod('neighbors', function (nodeId) {
+        var k,
           neighbors = {},
           index = this.allNeighborsIndex[nodeId] || {};
-      for (k in index)
-        neighbors[k] = this.nodesIndex[k];
-      return neighbors;
-    });
+        for (k in index) neighbors[k] = this.nodesIndex[k];
+        return neighbors;
+      });
     }
     let _nodes = this.getFormattedNodes();
     let _edges = this.getEdges();
     if (!_nodes.length) return;
     let _graph = {
       nodes: _nodes,
-      edges: _edges
+      edges: _edges,
     };
     this.s = new sigma({
       graph: _graph,
       renderers: [
         {
           container: TARGET_ID,
-          type: 'canvas'
-        }
+          type: 'canvas',
+        },
       ],
       settings: {
         animationsTime: TRANSITION_DURATION,
@@ -190,27 +192,25 @@ class Graph extends Component {
         maxNodeSize: 7,
         minEdgeSize: 2,
         maxEdgeSize: 2,
-        labelThreshold: 0,
         sideMargin: 4,
-        zoomingRatio: 1
-      }
+        zoomingRatio: 1,
+      },
     });
     sigma.plugins.animate(
       this.s,
       { x: 'x2', y: 'y2', size: 'size' },
       {
-        duration: TRANSITION_DURATION
+        duration: TRANSITION_DURATION,
       }
     );
     this.s.bind('overNode', (e) => {
       var nodeId = e.data.node.id;
       var toKeep = this.s.graph.neighbors(nodeId);
       toKeep[nodeId] = e.data.node;
-      this.s.graph.edges().forEach(function(e) {
+      this.s.graph.edges().forEach(function (e) {
         if (toKeep[e.source] && toKeep[e.target])
           e.color = HIGHLIGHTED_EDGE_COLOR;
-        else
-          e.color = EDGE_COLOR;;
+        else e.color = EDGE_COLOR;
       });
       this.s.refresh();
     });
@@ -221,7 +221,7 @@ class Graph extends Component {
     dragListener.bind('dragend', (e) => {
       setTimeout(() => {
         this.canClick = true;
-      }, 50)
+      }, 50);
     });
     this.s.bind('clickNode', (e) => {
       this.handleNodeClick(e);
@@ -231,39 +231,72 @@ class Graph extends Component {
   renderHeader() {
     const NODE_SIZE = '0.8rem';
     let cScale = this.props.colorScale;
-    let nodes = cScale.domain().map( (d, i) => {
+    let nodes = cScale.domain().map((d, i) => {
       let thisBg = cScale(d);
       return (
-        <span key={`hl${i}`} style={{ fontSize: '0.9rem', marginRight: '1rem' }}><span style={{ background: thisBg, borderRadius: '0.5rem', display: 'inline-block', height: NODE_SIZE, position: 'relative', top: '0.1rem', width: NODE_SIZE }}></span> {d}</span>
+        <span
+          key={`hl${i}`}
+          style={{ fontSize: '0.9rem', marginRight: '1rem' }}
+        >
+          <span
+            style={{
+              background: thisBg,
+              borderRadius: '0.5rem',
+              display: 'inline-block',
+              height: NODE_SIZE,
+              position: 'relative',
+              top: '0.1rem',
+              width: NODE_SIZE,
+            }}
+          ></span>{' '}
+          {d}
+        </span>
       );
     });
     let headerText = this.props.headerText;
     return (
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <div>
-          {nodes}
-        </div>
-        <div>
-          {headerText}
-        </div>
+        <div>{nodes}</div>
+        <div>{headerText}</div>
       </div>
     );
   }
 
   renderFooter() {
-    let _onChange = debounce(this.handleMaxSizeChange, SIZE_DEBOUNCE).bind(this);
+    let _onChange = debounce(this.handleMaxSizeChange, SIZE_DEBOUNCE).bind(
+      this
+    );
     return (
       <div>
-        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'flex-end',
+            justifyContent: 'space-between',
+          }}
+        >
           <div>
             <label>Maximum Number of Nodes</label>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span>{DEFAULT_MAX_VALUE.toString()}</span>
               <span>{MAX_MAX_VALUE.toString()}</span>
             </div>
-            <input type='range' style={{ minWidth: '15rem' }} min={DEFAULT_MAX_VALUE.toString()} max={MAX_MAX_VALUE.toString()} defaultValue={DEFAULT_MAX_VALUE.toString()} onChange={_onChange} ref='slider' />
+            <input
+              type="range"
+              style={{ minWidth: '15rem' }}
+              min={DEFAULT_MAX_VALUE.toString()}
+              max={MAX_MAX_VALUE.toString()}
+              defaultValue={DEFAULT_MAX_VALUE.toString()}
+              onChange={_onChange}
+              ref="slider"
+            />
           </div>
-          <a className='button small secondary' onClick={this.handleDownload.bind(this)}><i className='fa fa-download' /> Download (.png)</a>
+          <a
+            className="button small secondary"
+            onClick={this.handleDownload.bind(this)}
+          >
+            <i className="fa fa-download" /> Download (.png)
+          </a>
         </div>
       </div>
     );
@@ -271,7 +304,7 @@ class Graph extends Component {
 
   render() {
     return (
-      <div ref='container'>
+      <div ref="container">
         {this.renderHeader()}
         <div id={TARGET_ID} style={{ height: this.getHeight() }} />
         {this.renderFooter()}
@@ -284,7 +317,7 @@ Graph.propTypes = {
   data: React.PropTypes.object, // { nodes: [], edges: [] }
   headerText: React.PropTypes.string, // optional
   colorScale: React.PropTypes.func, // optional, default to d3.scale.category10(d.category)
-  stage: React.PropTypes.number // optional to force animation 
+  stage: React.PropTypes.number, // optional to force animation
 };
 module.exports = Graph;
 
@@ -295,9 +328,10 @@ module.exports = Graph;
 // https://davidwalsh.name/javascript-debounce-function
 function debounce(func, wait, immediate) {
   var timeout;
-  return function() {
-    var context = this, args = arguments;
-    var later = function() {
+  return function () {
+    var context = this,
+      args = arguments;
+    var later = function () {
       timeout = null;
       if (!immediate) func.apply(context, args);
     };
@@ -306,4 +340,4 @@ function debounce(func, wait, immediate) {
     timeout = setTimeout(later, wait);
     if (callNow) func.apply(context, args);
   };
-};
+}

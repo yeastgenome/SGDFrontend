@@ -25,7 +25,7 @@ module.exports = React.createClass({
   },
 
   shouldComponentUpdate: function (nextProps, nextState) {
-    return !(this.state.activeElementKey === nextState.activeElementKey);
+    return this.state.activeElementKey !== nextState.activeElementKey;
   },
 
   render: function () {
