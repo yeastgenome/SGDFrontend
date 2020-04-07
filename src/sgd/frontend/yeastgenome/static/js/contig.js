@@ -114,9 +114,6 @@ function set_up_sequence(chart_id, data) {
 
     var data_array = [];
 
-    var start = new Date()
-    var end = new Date()
-
     var display_name_to_format_name = {};
 
     data_array.push(["5'", '', 1, 1]);
