@@ -371,12 +371,15 @@ BLAST Help at NCBI</a>.</p><hr>';
         </option>
       );
     });
+
+    this.setState({ program: _programDef});
+      
     return (
       <div>
         <h3>Choose the Appropriate BLAST Program:</h3>
 
         <p>
-          <select ref="program" name="program" value={_programDef} onChange={this._onChange}>
+          <select ref="program" name="program" value={this.state.program} onChange={this._onProgramChange}>
             {_elements}
           </select>
         </p>
@@ -509,6 +512,8 @@ BLAST Help at NCBI</a>.</p><hr>';
   _getOutFormatMenu: function () {
     var format = ['gapped alignments', 'ungapped alignments'];
 
+    this.setState({ outFormat: 'gapped alignments'});
+      
     var _elements = [];
     format.forEach(function (f, index) {
       _elements.push(
@@ -517,10 +522,10 @@ BLAST Help at NCBI</a>.</p><hr>';
         </option>
       );
     });
-
+     
     return (
       <p>
-        <select ref="outFormat" value='gapped alignments' onChange={this._onChange}>
+        <select ref="outFormat" value={this.state.outFormat} onChange={this._onOutFormatChange}>
           {_elements}
         </select>
       </p>
@@ -531,21 +536,23 @@ BLAST Help at NCBI</a>.</p><hr>';
     if (!data.matrix) return null;
     var matrix = data.matrix;
     var _elements = this._getDropdownList(matrix);
+    this.setState({matrix: 'BLOSUM62'});  
     return (
       <p>
-        <select ref="matrix" value='BLOSUM62' onChange={this._onChange}>
+        <select ref="matrix" value={this.state.matrix} onChange={this._onMatrixChange}>
           {_elements}
         </select>
       </p>
     );
   },
 
+  this.setState({cutoffScore: '0.01'});
   _getCutoffScoreMenu: function () {
     var cutoffScore = ['10', '1', '0.1', '0.01', '0.001', '0.0001', '0.00001'];
     var _elements = this._getDropdownList(cutoffScore);
     return (
       <p>
-        <select ref="cutoffScore" value='0.01' onChange={this._onChange}>
+        <select ref="cutoffScore" value={this.state.cutoffScore} onChange={this._onCutoffScoreChange}>
           {_elements}
         </select>
       </p>
@@ -571,9 +578,10 @@ BLAST Help at NCBI</a>.</p><hr>';
       '2',
     ];
     var _elements = this._getDropdownList(wordLength);
+    this.setState({wordLength: 'default'});  
     return (
       <p>
-        <select ref="wordLength" value='default' onChange={this._onChange}>
+        <select ref="wordLength" value={this.state.wordLength} onChange={this._onWordLengthChange}>
           {_elements}
         </select>
       </p>
@@ -583,9 +591,10 @@ BLAST Help at NCBI</a>.</p><hr>';
   _getThresholdMenu: function () {
     var threshold = ['default', '0.0001', '0.01', '1', '10', '100', '1000'];
     var _elements = this._getDropdownList(threshold);
+    this.setState({threshold: 'default'});  
     return (
       <p>
-        <select ref="threshold" value='default' onChange={this._onChange}>
+        <select ref="threshold" value={this.state.threshold} onChange={this._onThresholdChange}>
           {_elements}
         </select>
       </p>
@@ -611,9 +620,10 @@ BLAST Help at NCBI</a>.</p><hr>';
     }
     alignToShow.unshift(defaultVal);
     var _elements = this._getDropdownList(alignToShow);
+    this.setState({alignToShow: defaultVal}); 
     return (
       <p>
-        <select ref="alignToShow" value={defaultVal} onChange={this._onChange}>
+        <select ref="alignToShow" value={this.state.alignToShow} onChange={this._onAlignToShowChange}>
           {_elements}
         </select>
       </p>
@@ -646,6 +656,34 @@ BLAST Help at NCBI</a>.</p><hr>';
     return _elements;
   },
 
+  _onProgramChange: function (e) {
+    this.setState({ program: e.target.value });
+  },
+
+  _onOutFormatChange: function (e) {
+    this.setState({ outFormat: e.target.value });
+  },
+
+  _onMatrixChange: function (e) {
+    this.setState({ matrix: e.target.value });
+  },
+
+  _onCutoffScoreChange: function (e) {
+    this.setState({ cutoffScore: e.target.value });
+  },
+
+  _onWordLengthChange: function (e) {
+    this.setState({ wordLength: e.target.value });
+  },
+
+  _onThresholdChange: function (e) {
+    this.setState({ threshold: e.target.value });
+  },
+
+  _onAlignToShowChange: function (e) {
+    this.setState({ alignToShow: e.target.value });
+  },
+    
   _onChange: function (e) {
     this.setState({ text: e.target.value });
   },
