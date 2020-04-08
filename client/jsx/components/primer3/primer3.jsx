@@ -1,7 +1,6 @@
 import React from 'react';
 import Radium from 'radium';
 import { connect } from 'react-redux';
-import _ from 'underscore';
 import t from 'tcomb-form';
 
 const DataTable = require('../widgets/data_table.jsx');
@@ -105,62 +104,70 @@ const Primer3 = React.createClass({
     let right_count, left_count;
     right_count = left_count = 0;
     const DISPLAY_KEYS = Object.keys(data);
-    let nodes = DISPLAY_KEYS.map((d, i) => {
-      let val = data[d];
-      if (val != null) {
-        const DISPLAY_KEYS_1 = Object.keys(val);
-        let nodes_1 = DISPLAY_KEYS_1.map((d1, i1) => {
-          //for each element in map {another map --> pair,right,left}
-          let val1 = val[d1];
-          const DISPLAY_KEYS_2 = Object.keys(val1);
-          let nodes_2 = DISPLAY_KEYS_2.map((d2, i2) => {
-            if (d1 != 'internal' || d1 != '__proto__') {
-              let val2 = val1[d2];
-              if (d1 == 'pair') {
-                if (d2 == 'product_size') size = val2;
-              } else if (d1 == 'right' || d1 == 'left') {
-                if (d2 == 'position') {
-                  if (input == 'name') {
-                    pos = val2 - 1000;
-                  } else if (input == 'seq') {
-                    pos = val2;
-                  }
+    let filter_value = DISPLAY_KEYS.filter((d, i) => {
+      return data[d] != null;
+    });
+
+    ///
+    filter_value.forEach((val) => {
+      const DISPLAY_KEYS_1 = Object.keys(val);
+
+      DISPLAY_KEYS_1.forEach((d1, i1) => {
+        //for each element in map {another map --> pair,right,left}
+        let val1 = val[d1];
+
+        const DISPLAY_KEYS_2 = Object.keys(val1);
+
+        DISPLAY_KEYS_2.forEach((d2, i2) => {
+          if (d1 != 'internal') {
+            let val2 = val1[d2];
+            if (d1 == 'pair') {
+              if (d2 == 'product_size') size = val2;
+            } else if (d1 == 'right' || d1 == 'left') {
+              if (d2 == 'position') {
+                if (input == 'name') {
+                  pos = val2 - 1000;
+                } else if (input == 'seq') {
+                  pos = val2;
                 }
-                if (d2 == 'length') len = val2;
-                if (d2 == 'tm') tm = val2.toFixed(2);
-                if (d2 == 'gc_percent') gc = val2.toFixed(2);
-                if (d2 == 'self_end_th') end_th = val2.toFixed(2);
-                if (d2 == 'self_any_th') any_th = val2.toFixed(2);
-                if (d2 == 'hairpin_th') hairpin = val2.toFixed(2);
-                if (d2 == 'sequence') seq = val2;
               }
+              if (d2 == 'length') len = val2;
+              if (d2 == 'tm') tm = val2.toFixed(2);
+              if (d2 == 'gc_percent') gc = val2.toFixed(2);
+              if (d2 == 'self_end_th') end_th = val2.toFixed(2);
+              if (d2 == 'self_any_th') any_th = val2.toFixed(2);
+              if (d2 == 'hairpin_th') hairpin = val2.toFixed(2);
+              if (d2 == 'sequence') seq = val2;
             }
-          });
-          if (d1 == 'right' || d1 == 'left') {
-            if (d1 == 'right') {
-              name = 'primer-right-' + right_count;
-              right_count = getCounter(right_count);
-            } else if (d1 == 'left') {
-              name = 'primer-left-' + left_count;
-              left_count = getCounter(left_count);
-            }
-            //console.log(name, pos, len, size, tm, gc, any_th, end_th, hairpin, seq)
-            rowData.push([
-              name,
-              pos,
-              len,
-              size,
-              tm,
-              gc,
-              any_th,
-              end_th,
-              hairpin,
-              seq,
-            ]);
           }
         });
-      }
+
+        if (d1 == 'right' || d1 == 'left') {
+          if (d1 == 'right') {
+            name = 'primer-right-' + right_count;
+            right_count = getCounter(right_count);
+          } else if (d1 == 'left') {
+            name = 'primer-left-' + left_count;
+            left_count = getCounter(left_count);
+          }
+          //console.log(name, pos, len, size, tm, gc, any_th, end_th, hairpin, seq)
+          rowData.push([
+            name,
+            pos,
+            len,
+            size,
+            tm,
+            gc,
+            any_th,
+            end_th,
+            hairpin,
+            seq,
+          ]);
+        }
+      });
     });
+    ///
+
     // sort to be in pairs
     rowData = rowData.sort(function (a, b) {
       try {
@@ -621,15 +628,6 @@ const style = {
     marginRight: '0.5rem',
   },
 };
-
-function addNewlines(seq) {
-  var result = '';
-  while ($.trim(seq).length > 0) {
-    result += seq.substring(0, 80) + '\n';
-    seq = seq.substring(80);
-  }
-  return result;
-}
 
 function getCounter(c) {
   var cc = c + 1;
