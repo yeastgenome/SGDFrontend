@@ -365,26 +365,18 @@ BLAST Help at NCBI</a>.</p><hr>';
       _programDef = 'blastp';
     }
     var _elements = _.map(data.program, (p, index) => {
-      if (p.script == _programDef) {
-        return (
-          <option value={p.script} selected="selected" key={index}>
-            {p.label}
-          </option>
-        );
-      } else {
-        return (
-          <option value={p.script} key={index}>
-            {p.label}
-          </option>
-        );
-      }
+      return (
+        <option value={p.script} key={index}>
+          {p.label}
+        </option>
+      );
     });
     return (
       <div>
         <h3>Choose the Appropriate BLAST Program:</h3>
 
         <p>
-          <select ref="program" name="program" onChange={this._onChange}>
+          <select ref="program" name="program" value={_programDef} onChange={this._onChange}>
             {_elements}
           </select>
         </p>
@@ -519,24 +511,16 @@ BLAST Help at NCBI</a>.</p><hr>';
 
     var _elements = [];
     format.forEach(function (f, index) {
-      if (f == 'gapped alignments') {
-        _elements.push(
-          <option value={f} selected="selected" key={index}>
-            {f}
-          </option>
-        );
-      } else {
-        _elements.push(
-          <option value={f} key={index}>
-            {f}
-          </option>
-        );
-      }
+      _elements.push(
+        <option value={f} key={index}>
+          {f}
+        </option>
+      );
     });
 
     return (
       <p>
-        <select ref="outFormat" onChange={this._onChange}>
+        <select ref="outFormat" value='gapped alignments' onChange={this._onChange}>
           {_elements}
         </select>
       </p>
@@ -546,10 +530,10 @@ BLAST Help at NCBI</a>.</p><hr>';
   _getMatrixMenu: function (data) {
     if (!data.matrix) return null;
     var matrix = data.matrix;
-    var _elements = this._getDropdownList(matrix, 'BLOSUM62');
+    var _elements = this._getDropdownList(matrix);
     return (
       <p>
-        <select ref="matrix" onChange={this._onChange}>
+        <select ref="matrix" value='BLOSUM62' onChange={this._onChange}>
           {_elements}
         </select>
       </p>
@@ -558,10 +542,10 @@ BLAST Help at NCBI</a>.</p><hr>';
 
   _getCutoffScoreMenu: function () {
     var cutoffScore = ['10', '1', '0.1', '0.01', '0.001', '0.0001', '0.00001'];
-    var _elements = this._getDropdownList(cutoffScore, '0.01');
+    var _elements = this._getDropdownList(cutoffScore);
     return (
       <p>
-        <select ref="cutoffScore" onChange={this._onChange}>
+        <select ref="cutoffScore" value='0.01' onChange={this._onChange}>
           {_elements}
         </select>
       </p>
@@ -586,10 +570,10 @@ BLAST Help at NCBI</a>.</p><hr>';
       '3',
       '2',
     ];
-    var _elements = this._getDropdownList(wordLength, 'default');
+    var _elements = this._getDropdownList(wordLength);
     return (
       <p>
-        <select ref="wordLength" onChange={this._onChange}>
+        <select ref="wordLength" value='default' onChange={this._onChange}>
           {_elements}
         </select>
       </p>
@@ -598,10 +582,10 @@ BLAST Help at NCBI</a>.</p><hr>';
 
   _getThresholdMenu: function () {
     var threshold = ['default', '0.0001', '0.01', '1', '10', '100', '1000'];
-    var _elements = this._getDropdownList(threshold, 'default');
+    var _elements = this._getDropdownList(threshold);
     return (
       <p>
-        <select ref="threshold" onChange={this._onChange}>
+        <select ref="threshold" value='default' onChange={this._onChange}>
           {_elements}
         </select>
       </p>
@@ -626,10 +610,10 @@ BLAST Help at NCBI</a>.</p><hr>';
       defaultVal = '500';
     }
     alignToShow.unshift(defaultVal);
-    var _elements = this._getDropdownList(alignToShow, defaultVal);
+    var _elements = this._getDropdownList(alignToShow);
     return (
       <p>
-        <select ref="alignToShow" onChange={this._onChange}>
+        <select ref="alignToShow" value={defaultVal} onChange={this._onChange}>
           {_elements}
         </select>
       </p>
@@ -650,22 +634,14 @@ BLAST Help at NCBI</a>.</p><hr>';
     );
   },
 
-  _getDropdownList: function (elementList, activeVal) {
+  _getDropdownList: function (elementList) {
     var _elements = [];
     elementList.forEach(function (m, index) {
-      if (m == activeVal) {
-        _elements.push(
-          <option value={m} selected="selected" key={index}>
-            {m}
-          </option>
-        );
-      } else {
-        _elements.push(
-          <option value={m} key={index}>
-            {m}
-          </option>
-        );
-      }
+      _elements.push(
+        <option value={m} key={index}>
+          {m}
+        </option>
+      );
     });
     return _elements;
   },
