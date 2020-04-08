@@ -546,10 +546,10 @@ BLAST Help at NCBI</a>.</p><hr>';
     );
   },
 
-  this.setState({cutoffScore: '0.01'});
   _getCutoffScoreMenu: function () {
     var cutoffScore = ['10', '1', '0.1', '0.01', '0.001', '0.0001', '0.00001'];
     var _elements = this._getDropdownList(cutoffScore);
+    this.setState({cutoffScore: '0.01'});
     return (
       <p>
         <select ref="cutoffScore" value={this.state.cutoffScore} onChange={this._onCutoffScoreChange}>
