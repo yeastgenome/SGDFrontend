@@ -404,7 +404,7 @@ BLAST Help at NCBI</a>.</p><hr>';
     }
       
     var defaultDatabase = [];
-    _.map(database, (d, index) => {
+    _.map(database, (d) => {
       var dataset = d.dataset;
       if (dataset.match(/^label/)) {
         dataset = datagroup[dataset];
