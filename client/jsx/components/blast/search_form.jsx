@@ -26,7 +26,6 @@ var SearchForm = React.createClass({
       if (param['name']) {
         this._getSeq(param['name'], param['type']);
       }
-      this._setDefaultDatabase();
     }
     
     var defaultProgram = 'blastn';
@@ -200,6 +199,8 @@ BLAST Help at NCBI</a>.</p><hr>';
       var seqData = this.state.seqData;
       var configData = this.state.configData;
 
+      this._setDefaultDatabase(configData);
+	
       var seq = '';
 
       var param = this.state.param;
@@ -393,8 +394,7 @@ BLAST Help at NCBI</a>.</p><hr>';
     );
   },
 
-  _setDefaultDatabase: function() {
-    var data = this.state.configData;
+  _setDefaultDatabase: function(data) {
     var database = data.database;
     var datagroup = data.datagroup;
     var _databaseDef = data.databasedef;
