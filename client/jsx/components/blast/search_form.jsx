@@ -966,7 +966,6 @@ BLAST Help at NCBI</a>.</p><hr>';
   _handleFile: function (e) {
     var reader = new FileReader();
     var fileHandle = e.target.files[0];
-    var fileName = e.target.files[0].name;
     reader.onload = function (upload) {
       this.setState({
         uploadedSeq: upload.target.result,
