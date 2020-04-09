@@ -26,8 +26,9 @@ var SearchForm = React.createClass({
       if (param['name']) {
         this._getSeq(param['name'], param['type']);
       }
+      this._setDefaultDatabase();
     }
-
+    
     var defaultProgram = 'blastn';
     if (param['type'] == 'protein') {
 	defaultProgram = 'blastp';
@@ -53,7 +54,7 @@ var SearchForm = React.createClass({
       uploadedSeq: null,
       uploadFile: null,
       program: defaultProgram,
-      database: null,
+      database: [],
       outFormat: 'gapped alignments',
       matrix: 'BLOSUM62',
       cutoffScore: '0.01',
@@ -392,15 +393,33 @@ BLAST Help at NCBI</a>.</p><hr>';
     );
   },
 
-  _getDatabaseNode: function (data) {
+  _setDefaultDatabase: function() {
+    var data = this.state.configData;
     var database = data.database;
     var datagroup = data.datagroup;
     var _databaseDef = data.databasedef;
-
     var param = this.state.param;
     if (param['type'] == 'protein') {
       _databaseDef = ['YeastORF.fsa'];
     }
+      
+    var defaultDatabase = [];
+    _.map(database, (d, index) => {
+      var dataset = d.dataset;
+      if (dataset.match(/^label/)) {
+        dataset = datagroup[dataset];
+      }
+      if ($.inArray(dataset, _databaseDef) > -1) {
+	defaultDatabase.push(dataset);
+      }
+    });
+    this.setState({database: defaultDatabase});
+  },
+    
+  _getDatabaseNode: function (data) {
+    var database = data.database;
+    var datagroup = data.datagroup;
+      
     var i = 0;
     var _elements = _.map(database, (d, index) => {
       i += 1;
@@ -408,20 +427,11 @@ BLAST Help at NCBI</a>.</p><hr>';
       if (dataset.match(/^label/)) {
         dataset = datagroup[dataset];
       }
-
-      if ($.inArray(dataset, _databaseDef) > -1) {
-        return (
-          <option value={dataset} selected="selected" key={index}>
-            {d.label}
-          </option>
-        );
-      } else {
-        return (
-          <option value={dataset} key={index}>
-            {d.label}
-          </option>
-        );
-      }
+      return (
+        <option value={dataset} key={index}>
+          {d.label}
+        </option>
+      );
     });
 
     return (
