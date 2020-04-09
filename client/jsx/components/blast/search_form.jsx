@@ -433,7 +433,7 @@ BLAST Help at NCBI</a>.</p><hr>';
         </option>
       );
     });
-
+    // value={this.state.database}
     return (
       <div>
         <h3>Choose one or more Sequence Datasets:</h3>
@@ -445,7 +445,6 @@ BLAST Help at NCBI</a>.</p><hr>';
             ref="database"
             id="database"
             onChange={this._onDatabaseChange}
-	    value={this.state.database}
             size={i}
             multiple
           >
@@ -464,7 +463,7 @@ BLAST Help at NCBI</a>.</p><hr>';
     var thresholdMenu = this._getThresholdMenu();
     var alignToShowMenu = this._getAlignToShowMenu();
     var filterMenu = this._getFilterMenu();
-
+      
     return (
       <div>
         <b>Options:</b> For descriptions of BLAST options and parameters, refer
