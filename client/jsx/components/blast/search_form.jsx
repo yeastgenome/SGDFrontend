@@ -26,7 +26,7 @@ var SearchForm = React.createClass({
       if (param['name']) {
         this._getSeq(param['name'], param['type']);
       }
-      this._setDefaultDatabase();
+      // this._setDefaultDatabase();
     }
     
     var defaultProgram = 'blastn';
