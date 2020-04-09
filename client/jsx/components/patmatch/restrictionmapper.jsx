@@ -29,6 +29,7 @@ const RestrictionMapper = React.createClass({
       seq: '',
       resultData: {},
       notFound: null,
+      type: 'all',
       param: param,
     };
   },
@@ -344,15 +345,7 @@ const RestrictionMapper = React.createClass({
     ];
 
     var _elements = _.map(enzymes, (e) => {
-      if (e == 'all') {
-        return (
-          <option value={e} selected="selected">
-            {e}
-          </option>
-        );
-      } else {
-        return <option value={e}>{e}</option>;
-      }
+      return <option value={e}>{e}</option>;
     });
 
     return (
@@ -361,7 +354,7 @@ const RestrictionMapper = React.createClass({
           <strong>Step 2: Choose Restriction Enzyme Set: </strong>
         </span>
         <p>
-          <select ref="type" name="type" onChange={this.onChange}>
+          <select ref="type" name="type" value={this.state.type} onChange={this.onTypeChange}>
             {_elements}
           </select>
         </p>
@@ -433,6 +426,10 @@ const RestrictionMapper = React.createClass({
     this.setState({ text: e.target.value });
   },
 
+  onTypeChange(e) {
+    this.setState({ type: e.target.value });
+  },
+  
   onSubmit(e) {
     var seq_id = this.refs.seq_id.value.trim();
     var seq = this.refs.seq.value.trim();

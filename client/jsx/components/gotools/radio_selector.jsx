@@ -25,7 +25,7 @@ module.exports = React.createClass({
   },
 
   shouldComponentUpdate: function (nextProps, nextState) {
-    return !(this.state.activeElementKey === nextState.activeElementKey);
+    return this.state.activeElementKey !== nextState.activeElementKey;
   },
 
   render: function () {
@@ -52,7 +52,7 @@ module.exports = React.createClass({
             id={d.key}
             value={d.key}
             checked={_checked}
-          ></input>
+          />
           <label onClick={_onClick}>
             <span style={{ fontSize: 18 }}>{d.name}</span>
           </label>

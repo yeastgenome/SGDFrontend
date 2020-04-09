@@ -27,6 +27,16 @@ var SearchForm = React.createClass({
         this._getSeq(param['name'], param['type']);
       }
     }
+    
+    var defaultProgram = 'blastn';
+    if (param['type'] == 'protein') {
+	defaultProgram = 'blastp';
+    }
+      
+    var defaultAlignToShow = '50';
+    if (this.props.blastType == 'fungal') {
+      defaultAlignToShow = '500';
+    }
 
     // need to put the date in a config file..
     var lastUpdate = 'January 13, 2015';
@@ -42,14 +52,14 @@ var SearchForm = React.createClass({
       sequence: null,
       uploadedSeq: null,
       uploadFile: null,
-      program: null,
-      database: null,
-      outFormat: null,
-      matrix: null,
-      cutoffScore: null,
-      wordLength: null,
-      threshold: null,
-      alignToShow: null,
+      program: defaultProgram,
+      database: [],
+      outFormat: 'gapped alignments',
+      matrix: 'BLOSUM62',
+      cutoffScore: '0.01',
+      wordLength: 'default',
+      threshold: 'default',
+      alignToShow: defaultAlignToShow,
       filtering: null,
       filter: null,
       resultData: {},
@@ -104,6 +114,8 @@ var SearchForm = React.createClass({
   componentDidMount: function () {
     if (this.state.submitted) {
       this._doBlast();
+    } else {
+      this._setDefaultDatabase(this.state.configData);  
     }
   },
 
@@ -188,7 +200,7 @@ BLAST Help at NCBI</a>.</p><hr>';
 
       var seqData = this.state.seqData;
       var configData = this.state.configData;
-
+	
       var seq = '';
 
       var param = this.state.param;
@@ -360,31 +372,21 @@ BLAST Help at NCBI</a>.</p><hr>';
   },
 
   _getBlastProgramNode: function (data) {
-    var _programDef = 'blastn';
-    if (this.state.seqType == 'protein') {
-      _programDef = 'blastp';
-    }
+
     var _elements = _.map(data.program, (p, index) => {
-      if (p.script == _programDef) {
-        return (
-          <option value={p.script} selected="selected" key={index}>
-            {p.label}
-          </option>
-        );
-      } else {
-        return (
-          <option value={p.script} key={index}>
-            {p.label}
-          </option>
-        );
-      }
+      return (
+        <option value={p.script} key={index}>
+          {p.label}
+        </option>
+      );
     });
+      
     return (
       <div>
         <h3>Choose the Appropriate BLAST Program:</h3>
 
         <p>
-          <select ref="program" name="program" onChange={this._onChange}>
+          <select ref="program" name="program" value={this.state.program} onChange={this._onProgramChange}>
             {_elements}
           </select>
         </p>
@@ -392,15 +394,32 @@ BLAST Help at NCBI</a>.</p><hr>';
     );
   },
 
-  _getDatabaseNode: function (data) {
+  _setDefaultDatabase: function(data) {
     var database = data.database;
     var datagroup = data.datagroup;
     var _databaseDef = data.databasedef;
-
     var param = this.state.param;
     if (param['type'] == 'protein') {
       _databaseDef = ['YeastORF.fsa'];
     }
+      
+    var defaultDatabase = [];
+    _.map(database, (d) => {
+      var dataset = d.dataset;
+      if (dataset.match(/^label/)) {
+        dataset = datagroup[dataset];
+      }
+      if ($.inArray(dataset, _databaseDef) > -1) {
+	defaultDatabase.push(dataset);
+      }
+    });
+    this.setState({database: defaultDatabase});
+  },
+    
+  _getDatabaseNode: function (data) {
+    var database = data.database;
+    var datagroup = data.datagroup;
+      
     var i = 0;
     var _elements = _.map(database, (d, index) => {
       i += 1;
@@ -408,22 +427,13 @@ BLAST Help at NCBI</a>.</p><hr>';
       if (dataset.match(/^label/)) {
         dataset = datagroup[dataset];
       }
-
-      if ($.inArray(dataset, _databaseDef) > -1) {
-        return (
-          <option value={dataset} selected="selected" key={index}>
-            {d.label}
-          </option>
-        );
-      } else {
-        return (
-          <option value={dataset} key={index}>
-            {d.label}
-          </option>
-        );
-      }
+      return (
+        <option value={dataset} key={index}>
+          {d.label}
+        </option>
+      );
     });
-
+    // value={this.state.database}
     return (
       <div>
         <h3>Choose one or more Sequence Datasets:</h3>
@@ -434,7 +444,7 @@ BLAST Help at NCBI</a>.</p><hr>';
           <select
             ref="database"
             id="database"
-            onChange={this._onChange}
+            onChange={this._onDatabaseChange}
             size={i}
             multiple
           >
@@ -453,7 +463,7 @@ BLAST Help at NCBI</a>.</p><hr>';
     var thresholdMenu = this._getThresholdMenu();
     var alignToShowMenu = this._getAlignToShowMenu();
     var filterMenu = this._getFilterMenu();
-
+      
     return (
       <div>
         <b>Options:</b> For descriptions of BLAST options and parameters, refer
@@ -515,28 +525,19 @@ BLAST Help at NCBI</a>.</p><hr>';
   },
 
   _getOutFormatMenu: function () {
-    var format = ['gapped alignments', 'ungapped alignments'];
-
+    var format = ['gapped alignments', 'ungapped alignments'];      
     var _elements = [];
     format.forEach(function (f, index) {
-      if (f == 'gapped alignments') {
-        _elements.push(
-          <option value={f} selected="selected" key={index}>
-            {f}
-          </option>
-        );
-      } else {
-        _elements.push(
-          <option value={f} key={index}>
-            {f}
-          </option>
-        );
-      }
+      _elements.push(
+        <option value={f} key={index}>
+          {f}
+        </option>
+      );
     });
-
+     
     return (
       <p>
-        <select ref="outFormat" onChange={this._onChange}>
+        <select ref="outFormat" value={this.state.outFormat} onChange={this._onOutFormatChange}>
           {_elements}
         </select>
       </p>
@@ -546,10 +547,10 @@ BLAST Help at NCBI</a>.</p><hr>';
   _getMatrixMenu: function (data) {
     if (!data.matrix) return null;
     var matrix = data.matrix;
-    var _elements = this._getDropdownList(matrix, 'BLOSUM62');
+    var _elements = this._getDropdownList(matrix);
     return (
       <p>
-        <select ref="matrix" onChange={this._onChange}>
+        <select ref="matrix" value={this.state.matrix} onChange={this._onMatrixChange}>
           {_elements}
         </select>
       </p>
@@ -558,10 +559,10 @@ BLAST Help at NCBI</a>.</p><hr>';
 
   _getCutoffScoreMenu: function () {
     var cutoffScore = ['10', '1', '0.1', '0.01', '0.001', '0.0001', '0.00001'];
-    var _elements = this._getDropdownList(cutoffScore, '0.01');
+    var _elements = this._getDropdownList(cutoffScore);
     return (
       <p>
-        <select ref="cutoffScore" onChange={this._onChange}>
+        <select ref="cutoffScore" value={this.state.cutoffScore} onChange={this._onCutoffScoreChange}>
           {_elements}
         </select>
       </p>
@@ -586,10 +587,10 @@ BLAST Help at NCBI</a>.</p><hr>';
       '3',
       '2',
     ];
-    var _elements = this._getDropdownList(wordLength, 'default');
+    var _elements = this._getDropdownList(wordLength);
     return (
       <p>
-        <select ref="wordLength" onChange={this._onChange}>
+        <select ref="wordLength" value={this.state.wordLength} onChange={this._onWordLengthChange}>
           {_elements}
         </select>
       </p>
@@ -598,10 +599,10 @@ BLAST Help at NCBI</a>.</p><hr>';
 
   _getThresholdMenu: function () {
     var threshold = ['default', '0.0001', '0.01', '1', '10', '100', '1000'];
-    var _elements = this._getDropdownList(threshold, 'default');
+    var _elements = this._getDropdownList(threshold);
     return (
       <p>
-        <select ref="threshold" onChange={this._onChange}>
+        <select ref="threshold" value={this.state.threshold} onChange={this._onThresholdChange}>
           {_elements}
         </select>
       </p>
@@ -620,16 +621,11 @@ BLAST Help at NCBI</a>.</p><hr>';
       '800',
       '1000',
     ];
-
-    var defaultVal = '50';
-    if (this.props.blastType == 'fungal') {
-      defaultVal = '500';
-    }
-    alignToShow.unshift(defaultVal);
-    var _elements = this._getDropdownList(alignToShow, defaultVal);
+    alignToShow.unshift(this.state.alignToShow);
+    var _elements = this._getDropdownList(alignToShow);
     return (
       <p>
-        <select ref="alignToShow" onChange={this._onChange}>
+        <select ref="alignToShow" value={this.state.alignToShow} onChange={this._onAlignToShowChange}>
           {_elements}
         </select>
       </p>
@@ -650,26 +646,50 @@ BLAST Help at NCBI</a>.</p><hr>';
     );
   },
 
-  _getDropdownList: function (elementList, activeVal) {
+  _getDropdownList: function (elementList) {
     var _elements = [];
     elementList.forEach(function (m, index) {
-      if (m == activeVal) {
-        _elements.push(
-          <option value={m} selected="selected" key={index}>
-            {m}
-          </option>
-        );
-      } else {
-        _elements.push(
-          <option value={m} key={index}>
-            {m}
-          </option>
-        );
-      }
+      _elements.push(
+        <option value={m} key={index}>
+          {m}
+        </option>
+      );
     });
     return _elements;
   },
 
+  _onProgramChange: function (e) {
+    this.setState({ program: e.target.value });
+  },
+
+  _onOutFormatChange: function (e) {
+    this.setState({ outFormat: e.target.value });
+  },
+
+  _onMatrixChange: function (e) {
+    this.setState({ matrix: e.target.value });
+  },
+
+  _onCutoffScoreChange: function (e) {
+    this.setState({ cutoffScore: e.target.value });
+  },
+
+  _onWordLengthChange: function (e) {
+    this.setState({ wordLength: e.target.value });
+  },
+
+  _onThresholdChange: function (e) {
+    this.setState({ threshold: e.target.value });
+  },
+
+  _onAlignToShowChange: function (e) {
+    this.setState({ alignToShow: e.target.value });
+  },
+
+  _onDatabaseChange: function (e) {
+    this.setState({ database: e.target.value });
+  },
+    
   _onChange: function (e) {
     this.setState({ text: e.target.value });
   },
@@ -949,7 +969,6 @@ BLAST Help at NCBI</a>.</p><hr>';
   _handleFile: function (e) {
     var reader = new FileReader();
     var fileHandle = e.target.files[0];
-    var fileName = e.target.files[0].name;
     reader.onload = function (upload) {
       this.setState({
         uploadedSeq: upload.target.result,
