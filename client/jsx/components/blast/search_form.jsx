@@ -28,6 +28,16 @@ var SearchForm = React.createClass({
       }
     }
 
+    var defaultProgram = 'blastn';
+    if (param['type'] == 'protein') {
+	defaultProgram = 'blastp';
+    }
+      
+    var defaultAlignToShow = '50';
+    if (this.props.blastType == 'fungal') {
+      defaultAlignToShow = '500';
+    }
+
     // need to put the date in a config file..
     var lastUpdate = 'January 13, 2015';
     return {
@@ -42,14 +52,14 @@ var SearchForm = React.createClass({
       sequence: null,
       uploadedSeq: null,
       uploadFile: null,
-      program: null,
+      program: defaultProgram,
       database: null,
-      outFormat: null,
-      matrix: null,
-      cutoffScore: null,
-      wordLength: null,
-      threshold: null,
-      alignToShow: null,
+      outFormat: 'gapped alignments',
+      matrix: 'BLOSUM62',
+      cutoffScore: '0.01',
+      wordLength: 'default',
+      threshold: 'default',
+      alignToShow: defaultAlignToShow,
       filtering: null,
       filter: null,
       resultData: {},
@@ -360,10 +370,7 @@ BLAST Help at NCBI</a>.</p><hr>';
   },
 
   _getBlastProgramNode: function (data) {
-    var _programDef = 'blastn';
-    if (this.state.seqType == 'protein') {
-      _programDef = 'blastp';
-    }
+
     var _elements = _.map(data.program, (p, index) => {
       return (
         <option value={p.script} key={index}>
@@ -371,8 +378,6 @@ BLAST Help at NCBI</a>.</p><hr>';
         </option>
       );
     });
-
-    this.setState({ program: _programDef});
       
     return (
       <div>
@@ -430,6 +435,7 @@ BLAST Help at NCBI</a>.</p><hr>';
             ref="database"
             id="database"
             onChange={this._onChange}
+	    value={this.state.database}
             size={i}
             multiple
           >
@@ -510,10 +516,7 @@ BLAST Help at NCBI</a>.</p><hr>';
   },
 
   _getOutFormatMenu: function () {
-    var format = ['gapped alignments', 'ungapped alignments'];
-
-    this.setState({ outFormat: 'gapped alignments'});
-      
+    var format = ['gapped alignments', 'ungapped alignments'];      
     var _elements = [];
     format.forEach(function (f, index) {
       _elements.push(
@@ -536,7 +539,6 @@ BLAST Help at NCBI</a>.</p><hr>';
     if (!data.matrix) return null;
     var matrix = data.matrix;
     var _elements = this._getDropdownList(matrix);
-    this.setState({matrix: 'BLOSUM62'});  
     return (
       <p>
         <select ref="matrix" value={this.state.matrix} onChange={this._onMatrixChange}>
@@ -549,7 +551,6 @@ BLAST Help at NCBI</a>.</p><hr>';
   _getCutoffScoreMenu: function () {
     var cutoffScore = ['10', '1', '0.1', '0.01', '0.001', '0.0001', '0.00001'];
     var _elements = this._getDropdownList(cutoffScore);
-    this.setState({cutoffScore: '0.01'});
     return (
       <p>
         <select ref="cutoffScore" value={this.state.cutoffScore} onChange={this._onCutoffScoreChange}>
@@ -578,7 +579,6 @@ BLAST Help at NCBI</a>.</p><hr>';
       '2',
     ];
     var _elements = this._getDropdownList(wordLength);
-    this.setState({wordLength: 'default'});  
     return (
       <p>
         <select ref="wordLength" value={this.state.wordLength} onChange={this._onWordLengthChange}>
@@ -591,7 +591,6 @@ BLAST Help at NCBI</a>.</p><hr>';
   _getThresholdMenu: function () {
     var threshold = ['default', '0.0001', '0.01', '1', '10', '100', '1000'];
     var _elements = this._getDropdownList(threshold);
-    this.setState({threshold: 'default'});  
     return (
       <p>
         <select ref="threshold" value={this.state.threshold} onChange={this._onThresholdChange}>
@@ -613,14 +612,8 @@ BLAST Help at NCBI</a>.</p><hr>';
       '800',
       '1000',
     ];
-
-    var defaultVal = '50';
-    if (this.props.blastType == 'fungal') {
-      defaultVal = '500';
-    }
-    alignToShow.unshift(defaultVal);
+    alignToShow.unshift(this.state.alignToShow);
     var _elements = this._getDropdownList(alignToShow);
-    this.setState({alignToShow: defaultVal}); 
     return (
       <p>
         <select ref="alignToShow" value={this.state.alignToShow} onChange={this._onAlignToShowChange}>
