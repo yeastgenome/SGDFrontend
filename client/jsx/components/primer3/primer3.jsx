@@ -1,7 +1,6 @@
 import React from 'react';
 import Radium from 'radium';
 import { connect } from 'react-redux';
-import _ from 'underscore';
 import t from 'tcomb-form';
 
 const DataTable = require('../widgets/data_table.jsx');
@@ -105,16 +104,19 @@ const Primer3 = React.createClass({
     let right_count, left_count;
     right_count = left_count = 0;
     const DISPLAY_KEYS = Object.keys(data);
-    let nodes = DISPLAY_KEYS.map((d, i) => {
-      let val = data[d];
-      if (val != null) {
+    DISPLAY_KEYS.forEach((d, i) => {
+      if (data[d] != null) {
+        let val = data[d];
         const DISPLAY_KEYS_1 = Object.keys(val);
-        let nodes_1 = DISPLAY_KEYS_1.map((d1, i1) => {
+
+        DISPLAY_KEYS_1.forEach((d1, i1) => {
           //for each element in map {another map --> pair,right,left}
           let val1 = val[d1];
+
           const DISPLAY_KEYS_2 = Object.keys(val1);
-          let nodes_2 = DISPLAY_KEYS_2.map((d2, i2) => {
-            if (d1 != 'internal' || d1 != '__proto__') {
+
+          DISPLAY_KEYS_2.forEach((d2, i2) => {
+            if (d1 != 'internal') {
               let val2 = val1[d2];
               if (d1 == 'pair') {
                 if (d2 == 'product_size') size = val2;
@@ -136,6 +138,7 @@ const Primer3 = React.createClass({
               }
             }
           });
+
           if (d1 == 'right' || d1 == 'left') {
             if (d1 == 'right') {
               name = 'primer-right-' + right_count;
@@ -161,6 +164,7 @@ const Primer3 = React.createClass({
         });
       }
     });
+
     // sort to be in pairs
     rowData = rowData.sort(function (a, b) {
       try {
@@ -621,15 +625,6 @@ const style = {
     marginRight: '0.5rem',
   },
 };
-
-function addNewlines(seq) {
-  var result = '';
-  while ($.trim(seq).length > 0) {
-    result += seq.substring(0, 80) + '\n';
-    seq = seq.substring(80);
-  }
-  return result;
-}
 
 function getCounter(c) {
   var cc = c + 1;

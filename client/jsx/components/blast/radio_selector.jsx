@@ -52,7 +52,7 @@ module.exports = React.createClass({
                         id={d.key}
                         value={d.key}
                         checked={_checked}
-                    ></input>
+                    />
                     <label onClick={_onClick}>{d.name}</label>
                 </div>
             )

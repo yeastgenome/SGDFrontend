@@ -54,7 +54,7 @@ var Checklist = React.createClass({
             value={d.key}
             checked={_isActive}
             style={{ margin: 0 }}
-          ></input>
+          />
           <label onClick={_onClick}>{d.name}</label>
         </div>
       );
