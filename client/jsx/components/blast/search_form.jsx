@@ -444,7 +444,7 @@ BLAST Help at NCBI</a>.</p><hr>';
           <select
             ref="database"
             id="database"
-            onChange={this._onChange}
+            onChange={this._onDatabaseChange}
 	    value={this.state.database}
             size={i}
             multiple
@@ -685,6 +685,10 @@ BLAST Help at NCBI</a>.</p><hr>';
 
   _onAlignToShowChange: function (e) {
     this.setState({ alignToShow: e.target.value });
+  },
+
+  _onDatabaseChange: function (e) {
+    this.setState({ database: e.target.value });
   },
     
   _onChange: function (e) {
