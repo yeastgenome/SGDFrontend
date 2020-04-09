@@ -434,7 +434,6 @@ BLAST Help at NCBI</a>.</p><hr>';
       );
     });
 
-    // value={this.state.database}
     return (
       <div>
         <h3>Choose one or more Sequence Datasets:</h3>
@@ -446,6 +445,7 @@ BLAST Help at NCBI</a>.</p><hr>';
             ref="database"
             id="database"
             onChange={this._onDatabaseChange}
+	    value={this.state.database}
             size={i}
             multiple
           >
