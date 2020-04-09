@@ -199,7 +199,7 @@ BLAST Help at NCBI</a>.</p><hr>';
       var seqData = this.state.seqData;
       var configData = this.state.configData;
 
-      this._setDefaultDatabase(configData);
+      // this._setDefaultDatabase(configData);
 	
       var seq = '';
 
