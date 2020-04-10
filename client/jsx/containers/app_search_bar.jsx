@@ -1,7 +1,5 @@
 import 'isomorphic-fetch';
 import React from 'react';
-import ReactDOM from 'react-dom';
-import Radium from 'radium';
 import { connect } from 'react-redux';
 import { routeActions } from 'react-router-redux';
 import _ from 'underscore';
@@ -15,12 +13,17 @@ const AUTOCOMPLETE_URL = '/backend/autocomplete_results';
 const AUTOCOMPLETE_FETCH_DEBOUNCE_WAIT = 200;
 
 const SearchOption = React.createClass({
-  render () {
+  render() {
     let extraClass = this.props.isSelected ? ' active' : '';
     let _className = `react-typeahead-option${extraClass}`;
     let catNode = null;
     if (this.props.data.href) {
-      catNode = <span style={{ float: 'right' }}><span className={`search-cat ${this.props.data.category}`}/> <a href={this.props.data.href}>{this.props.data.categoryName}</a></span>;
+      catNode = (
+        <span style={{ float: 'right' }}>
+          <span className={`search-cat ${this.props.data.category}`} />{' '}
+          <a href={this.props.data.href}>{this.props.data.categoryName}</a>
+        </span>
+      );
     }
     if (this.props.data.isShowAll) {
       return (
@@ -31,22 +34,25 @@ const SearchOption = React.createClass({
     }
     return (
       <div className={_className}>
-        <p>{catNode}<a>{this.props.data.name}</a></p>
+        <p>
+          {catNode}
+          <a>{this.props.data.name}</a>
+        </p>
       </div>
     );
-  }
+  },
 });
 
 const AppSearchBar = React.createClass({
   propTypes: {
     resultsUrl: React.PropTypes.string.isRequired,
     userInput: React.PropTypes.string,
-    redirectOnSearch: React.PropTypes.bool// if true, hard HTTP redirect to /search?q=${query}, if false, uses REDUX
+    redirectOnSearch: React.PropTypes.bool, // if true, hard HTTP redirect to /search?q=${query}, if false, uses REDUX
   },
 
   getDefaultProps() {
     return {
-      redirectOnSearch: true
+      redirectOnSearch: true,
     };
   },
 
@@ -54,21 +60,21 @@ const AppSearchBar = React.createClass({
     return {
       redirectHref: null,
       isShowAll: false,
-      autocompleteResults: []
+      autocompleteResults: [],
     };
   },
 
   render() {
     let debouncedOnChange = null;
-    const _onSubmit = e => {
+    const _onSubmit = (e) => {
       e.preventDefault();
     };
     return (
-      <div className='sgd-search-container'>
-        <form action='/search' onSubmit={_onSubmit} autoComplete='off'>
+      <div className="sgd-search-container">
+        <form action="/search" onSubmit={_onSubmit} autoComplete="off">
           <Typeahead
             inputValue={this.props.userInput}
-            placeholder='search: actin, kinase, glucose'
+            placeholder="search: actin, kinase, glucose"
             optionTemplate={SearchOption}
             options={this.state.autocompleteResults}
             onChange={this._onChange}
@@ -76,11 +82,13 @@ const AppSearchBar = React.createClass({
             onOptionClick={this._onOptionClick}
             onKeyDown={this._onKeyDown}
             autoFocus={true}
-            inputName='q'
+            inputName="q"
           />
-        <input type='submit' style={{ display: 'none' }} />
+          <input type="submit" style={{ display: 'none' }} />
         </form>
-        <span className='search-icon'><i className='fa fa-search'/></span>
+        <span className="search-icon">
+          <i className="fa fa-search" />
+        </span>
       </div>
     );
   },
@@ -98,32 +106,37 @@ const AppSearchBar = React.createClass({
     this._setUserInput(newValue);
     // debounce autocomplete fetching for fast typers, save to instance variable
     if (!this._debouncedFetch) {
-      this._debouncedFetch =  _.debounce(this._fetchAutocompleteResults, AUTOCOMPLETE_FETCH_DEBOUNCE_WAIT);
+      this._debouncedFetch = _.debounce(
+        this._fetchAutocompleteResults,
+        AUTOCOMPLETE_FETCH_DEBOUNCE_WAIT
+      );
     }
     this._debouncedFetch(newValue);
   },
 
-  _fetchAutocompleteResults (query) {
+  _fetchAutocompleteResults(query) {
     let url = `${this.props.resultsUrl}?q=${encodeURIComponent(query)}`;
     this.f = fetch(url)
-      .then( function (response) {
-          if (response.status >= 400) {
-            throw new Error('API error.');
-          }
-          return response.json();
-        }).then( jsonResponse => {
-          // change result labels
-          let results = jsonResponse.results.map( d => {
-            d.categoryName = getCategoryDisplayName(d.category);
-            return d;
-          });
-          // add 'show all'
-          results.unshift({ isShowAll: true, name: this.props.userInput });
-          // save results to state
-          if (this.isMounted()) this.setState({ autocompleteResults: results });
-        }).catch(function(err) {
-          console.warn('Unable to fetch autocomplete results.');
+      .then(function (response) {
+        if (response.status >= 400) {
+          throw new Error('API error.');
+        }
+        return response.json();
+      })
+      .then((jsonResponse) => {
+        // change result labels
+        let results = jsonResponse.results.map((d) => {
+          d.categoryName = getCategoryDisplayName(d.category);
+          return d;
         });
+        // add 'show all'
+        results.unshift({ isShowAll: true, name: this.props.userInput });
+        // save results to state
+        if (this.isMounted()) this.setState({ autocompleteResults: results });
+      })
+      .catch(function (err) {
+        console.warn('Unable to fetch autocomplete results.');
+      });
   },
 
   _setUserInput(newValue, href, _isShowAll, cb) {
@@ -143,12 +156,14 @@ const AppSearchBar = React.createClass({
 
   _submit() {
     if (typeof this.state.redirectHref === 'string') {
-      return this._hardRedirect(this.state.redirectHref)
+      return this._hardRedirect(this.state.redirectHref);
     }
     let newQuery = encodeURIComponent(this.props.userInput);
     if (this.props.redirectOnSearch) {
       // format query param, use isShowAll is to append
-      let newUrl = `/search?q=${newQuery}&is_quick=${this.state.isShowAll ? 'false' : 'true'}`;
+      let newUrl = `/search?q=${newQuery}&is_quick=${
+        this.state.isShowAll ? 'false' : 'true'
+      }`;
       return this._hardRedirect(newUrl);
     }
     this._updateUrl(newQuery);
@@ -156,10 +171,12 @@ const AppSearchBar = React.createClass({
 
   // update URL and HTML5 history with query param
   _updateUrl(query) {
-    this.props.dispatch(routeActions.push({ pathname: '/search', query: { q: query }}));
+    this.props.dispatch(
+      routeActions.push({ pathname: '/search', query: { q: query } })
+    );
   },
 
-  _hardRedirect (newUrl) {
+  _hardRedirect(newUrl) {
     if (window) window.location.href = newUrl;
   },
 });
@@ -169,7 +186,7 @@ function mapStateToProps(_state) {
   return {
     userInput: state.userInput,
     redirectOnSearch: true,
-    resultsUrl: AUTOCOMPLETE_URL
+    resultsUrl: AUTOCOMPLETE_URL,
   };
 }
 

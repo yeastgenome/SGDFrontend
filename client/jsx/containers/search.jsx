@@ -13,13 +13,16 @@ import Collapser from '../components/widgets/collapser.jsx';
 import ErrorMessage from '../components/widgets/error_message.jsx';
 import Loader from '../components/widgets/loader.jsx';
 import Paginator from '../components/widgets/paginator.jsx';
-import {
-  startSearchFetchMaybeAsycFetch
-} from '../actions/search_actions';
+import { startSearchFetchMaybeAsycFetch } from '../actions/search_actions';
 import { createPath } from '../lib/search_helpers';
 
 const SEARCH_URL = '/search';
-const CATS_SORTED_BY_ANNOTATION = ['phenotype', 'biological_process','cellular_component', 'molecular_function'];
+const CATS_SORTED_BY_ANNOTATION = [
+  'phenotype',
+  'biological_process',
+  'cellular_component',
+  'molecular_function',
+];
 
 const Search = React.createClass({
   displayName: 'Search',
@@ -27,14 +30,23 @@ const Search = React.createClass({
     if (this.props.apiError) {
       return <ErrorMessage />;
     }
-    return <div className='row'>
-        <div className='column medium-4 hide-for-small'>
-          <FacetSelector isMobile={false} downloadStatus={this._getdownloadStatus} downloadStatusStr={this.props.downloadStatusStr} />
+    return (
+      <div className="row">
+        <div className="column medium-4 hide-for-small">
+          <FacetSelector
+            isMobile={false}
+            downloadStatus={this._getdownloadStatus}
+            downloadStatusStr={this.props.downloadStatusStr}
+          />
         </div>
-        <div className='column small-12 medium-8'>
-          <div className='show-for-small-only'>
-            <Collapser label='Categories'>
-              <FacetSelector isMobile={true} downloadStatus={this._getdownloadStatus} downloadStatusStr={this.props.downloadStatusStr} />
+        <div className="column small-12 medium-8">
+          <div className="show-for-small-only">
+            <Collapser label="Categories">
+              <FacetSelector
+                isMobile={true}
+                downloadStatus={this._getdownloadStatus}
+                downloadStatusStr={this.props.downloadStatusStr}
+              />
             </Collapser>
           </div>
           <div style={[style.resultsWraper]}>
@@ -43,7 +55,8 @@ const Search = React.createClass({
             {this._renderSearchContent()}
           </div>
         </div>
-      </div>;
+      </div>
+    );
   },
 
   // listen for history changes and fetch results when they change, also update google analytics
@@ -65,26 +78,26 @@ const Search = React.createClass({
     const isWrap = this.props.geneMode === 'wrap';
     const listPath = createPath({
       pathname: SEARCH_URL,
-      query: _.extend(qp, { page: 0, geneMode: 'list' })
+      query: _.extend(qp, { page: 0, geneMode: 'list' }),
     });
     const wrapPath = createPath({
       pathname: SEARCH_URL,
-      query: _.extend(qp, { page: 0, geneMode: 'wrap' })
+      query: _.extend(qp, { page: 0, geneMode: 'wrap' }),
     });
 
     return (
-      <ul className='button-group' style={[style.viewAs]}>
+      <ul className="button-group" style={[style.viewAs]}>
         <Link
           to={listPath}
           className={`button tiny${!isList ? ' secondary' : ''}`}
         >
-          <i className='fa fa-reorder' /> <span>List</span>
+          <i className="fa fa-reorder" /> <span>List</span>
         </Link>
         <Link
           to={wrapPath}
           className={`button tiny${!isWrap ? ' secondary' : ''}`}
         >
-          <i className='fa fa-th' /> <span>Wrapped</span>
+          <i className="fa fa-th" /> <span>Wrapped</span>
         </Link>
       </ul>
     );
@@ -108,28 +121,28 @@ const Search = React.createClass({
   _renderControls() {
     if (this._isWrappedResults()) return this._renderWrappedControls();
     if (this.props.total === 0) return null;
-    const _onPaginate = newPage => {
+    const _onPaginate = (newPage) => {
       let urlParams = this.props.location.query;
       urlParams.page = newPage;
       this.props.history.pushState(null, SEARCH_URL, urlParams);
       if (window) window.scrollTo(0, 0); // go to top
     };
     return (
-      <div className='row'>
-        <div className='columns large-3 medium-4 small-6'>
+      <div className="row">
+        <div className="columns large-3 medium-4 small-6">
           <Paginator
             currentPage={this.props.currentPage}
             totalPages={this.props.totalPages}
             onPaginate={_onPaginate}
           />
         </div>
-        <div className='columns large-2 medium-4 hide-for-small'>
+        <div className="columns large-2 medium-4 hide-for-small">
           {this._renderPageSizeSelector()}
         </div>
-        <div className='columns large-2 medium-4 small-6'>
+        <div className="columns large-2 medium-4 small-6">
           {this._renderSortBySelector()}
         </div>
-        <div className='columns large-5 small-12 text-right'>
+        <div className="columns large-5 small-12 text-right">
           {this._renderViewAs()}
         </div>
       </div>
@@ -149,11 +162,16 @@ const Search = React.createClass({
     );
     return (
       <div>
-        <div className='row'>
-          <div className='columns small-6'>{actionProgressNode}</div>
-          <div className='columns small-6 text-right'>{this._renderViewAs()}</div>
+        <div className="row">
+          <div className="columns small-6">{actionProgressNode}</div>
+          <div className="columns small-6 text-right">
+            {this._renderViewAs()}
+          </div>
         </div>
-        <p>Genetic loci that are not mapped to the genome sequence will be excluded from the analysis list.</p>
+        <p>
+          Genetic loci that are not mapped to the genome sequence will be
+          excluded from the analysis list.
+        </p>
       </div>
     );
   },
@@ -163,8 +181,8 @@ const Search = React.createClass({
     return (
       <div style={[style.progressBar]}>
         <label>Downloading ...</label>
-        <div className='progress'>
-          <span className='meter' style={{ width: strWidth }} />
+        <div className="progress">
+          <span className="meter" style={{ width: strWidth }} />
         </div>
       </div>
     );
@@ -172,14 +190,14 @@ const Search = React.createClass({
 
   _renderPageSizeSelector() {
     const options = [10, 25, 50, 100];
-    let optionsNodes = options.map(d => {
+    let optionsNodes = options.map((d) => {
       return (
         <option key={`psOp${d}`} value={d}>
           {d}
         </option>
       );
     });
-    const _onChange = e => {
+    const _onChange = (e) => {
       let newValue = e.currentTarget.value;
       let urlParams = this.props.location.query;
       urlParams.page_size = newValue;
@@ -203,19 +221,19 @@ const Search = React.createClass({
   _renderSortBySelector() {
     let options = [
       { value: 'relevance', name: 'Relevance' },
-      { value: 'alphabetical', name: 'Alphabetical' }
+      { value: 'alphabetical', name: 'Alphabetical' },
     ];
     // only allow some categories to search by annotation
     if (this.props.canSortByAnnotation)
       options.push({ value: 'annotation', name: 'Annotation Count' });
-    let optionsNodes = options.map(d => {
+    let optionsNodes = options.map((d) => {
       return (
         <option key={`psOp${d.value}`} value={d.value}>
           {d.name}
         </option>
       );
     });
-    const _onChange = e => {
+    const _onChange = (e) => {
       let newValue = e.currentTarget.value;
       let urlParams = this.props.location.query;
       urlParams.sort_by = newValue;
@@ -286,10 +304,10 @@ const Search = React.createClass({
   },
 
   _getdownloadStatus(str) {
-    this.setState({selectedRadioBtn: str});
+    this.setState({ selectedRadioBtn: str });
     let tempQParams = this.props.queryParams;
-    if(tempQParams.hasOwnProperty('status')){
-      tempQParams["status"] = S(str).capitalize().s;
+    if (tempQParams.hasOwnProperty('status')) {
+      tempQParams['status'] = S(str).capitalize().s;
     }
     this.props.history.pushState(null, SEARCH_URL, tempQParams);
   },
@@ -303,70 +321,71 @@ const Search = React.createClass({
   // updates google analytics, depends on global 'ga' object. Does nothing if not present
   _updateGoogleAnalytics() {
     if (!ga) return;
-    let fullUrl = `${this.props.location.pathname}${
-      this.props.location.search
-    }`;
+    let fullUrl = `${this.props.location.pathname}${this.props.location.search}`;
     ga('set', 'page', fullUrl);
     ga('send', 'pageview');
   },
   propTypes: {
     activeCategory: React.PropTypes.string,
-    categoryAggs: React.PropTypes.array,
-    secondaryAggs: React.PropTypes.array,
-    wrapGeneResults: React.PropTypes.bool,
     currentPage: React.PropTypes.number,
     isPending: React.PropTypes.bool,
     query: React.PropTypes.string,
     results: React.PropTypes.array, // [{ name, url, category, description }]
     total: React.PropTypes.number,
     totalPages: React.PropTypes.number,
-    apiError: React.PropTypes.bool
-  }
+    apiError: React.PropTypes.bool,
+  },
 });
 
 const style = {
   labelText: {
-    marginBottom: '0.5rem'
+    marginBottom: '0.5rem',
   },
   selector: {
     height: 'auto',
-    padding: '0.5rem'
+    padding: '0.5rem',
   },
   viewAs: {
     display: 'inline-block',
     marginTop: '2rem',
-    marginBottom: '1rem'
+    marginBottom: '1rem',
   },
   resultsWraper: {
     minHeight: 1000,
   },
   progressBar: {
-    marginTop: '1.25rem'
+    marginTop: '1.25rem',
   },
   wrappedResult: {
     display: 'inline-block',
     padding: '0.25rem',
-    width: '7rem'
-  }
+    width: '7rem',
+  },
 };
 
 function mapStateToProps(_state) {
   let state = _state.searchResults;
-  return { 
-    results: state.results, 
-    asyncResults: state.asyncResults, 
-    activeCategory: state.activeCategory, 
-    canSortByAnnotation: CATS_SORTED_BY_ANNOTATION.indexOf(state.activeCategory) > -1, 
-    isPending: state.isPending, isAsyncPending: state.isAsyncPending, 
-    asyncProgress: state.asyncProgress, currentPage: state.currentPage, 
-    totalPages: state.totalPages, resultsPerPage: state.resultsPerPage, 
-    sortBy: state.sortBy, apiError: state.apiError, query: state.query, 
-    url: `${_state.routing.location.pathname}${_state.routing.location.search}`, 
-    queryParams: _state.routing.location.query, 
+  return {
+    results: state.results,
+    asyncResults: state.asyncResults,
+    activeCategory: state.activeCategory,
+    canSortByAnnotation:
+      CATS_SORTED_BY_ANNOTATION.indexOf(state.activeCategory) > -1,
+    isPending: state.isPending,
+    isAsyncPending: state.isAsyncPending,
+    asyncProgress: state.asyncProgress,
+    currentPage: state.currentPage,
+    totalPages: state.totalPages,
+    resultsPerPage: state.resultsPerPage,
+    sortBy: state.sortBy,
+    apiError: state.apiError,
+    query: state.query,
+    url: `${_state.routing.location.pathname}${_state.routing.location.search}`,
+    queryParams: _state.routing.location.query,
     geneMode: state.geneMode,
     downloadStatusStr: state.downloadStatusStr,
-    downloadStatus: state.downloadStatus
+    downloadStatus: state.downloadStatus,
   };
-};
+}
 
 module.exports = connect(mapStateToProps)(Radium(Search));

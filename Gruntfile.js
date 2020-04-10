@@ -1,17 +1,16 @@
 var crypto = require("crypto");
 var fs = require("fs");
-var path = require("path");
 
 // cache assets on browser for 1 month
 var CACHE_TTL = 2629740;
 var CLOUDFRONT_ROOT = "https://d1x6jdqbvd5dr.cloudfront.net/";
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
     var BUILD_PATH = "src/sgd/frontend/yeastgenome/static/";
-    
+
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
-        
+
         s3: {
             options: {
                 accessKeyId: "<%= awsKey %>",
@@ -42,30 +41,30 @@ module.exports = function(grunt) {
 
         concat: {
             options: {
-              separator: ''
+                separator: ''
             },
             dist: {
-              src: [
-                'bower_components/foundation/js/foundation/foundation.js', 
-                'bower_components/foundation/js/foundation/foundation.abide.js',
-                'bower_components/foundation/js/foundation/foundation.accordion.js',
-                'bower_components/foundation/js/foundation/foundation.alert.js',
-                'bower_components/foundation/js/foundation/foundation.clearing.js',
-                'bower_components/foundation/js/foundation/foundation.dropdown.js',
-                'bower_components/foundation/js/foundation/foundation.equalizer.js',
-                'bower_components/foundation/js/foundation/foundation.interchange.js',
-                'bower_components/foundation/js/foundation/foundation.joyride.js',
-                'src/sgd/frontend/yeastgenome/static/js/vendor/foundation/foundation.magellan.js',
-                'bower_components/foundation/js/foundation/foundation.offcanvas.js',
-                'bower_components/foundation/js/foundation/foundation.orbit.js',
-                'bower_components/foundation/js/foundation/foundation.reveal.js',
-                'bower_components/foundation/js/foundation/foundation.slider.js',
-                'bower_components/foundation/js/foundation/foundation.tab.js',
-                'bower_components/foundation/js/foundation/foundation.tooltip.js',
-                'bower_components/foundation/js/foundation/foundation.topbar.js'
-              ],
-              dest: 'bower_components/foundation/js/foundation.js'
-          },
+                src: [
+                    'bower_components/foundation/js/foundation/foundation.js',
+                    'bower_components/foundation/js/foundation/foundation.abide.js',
+                    'bower_components/foundation/js/foundation/foundation.accordion.js',
+                    'bower_components/foundation/js/foundation/foundation.alert.js',
+                    'bower_components/foundation/js/foundation/foundation.clearing.js',
+                    'bower_components/foundation/js/foundation/foundation.dropdown.js',
+                    'bower_components/foundation/js/foundation/foundation.equalizer.js',
+                    'bower_components/foundation/js/foundation/foundation.interchange.js',
+                    'bower_components/foundation/js/foundation/foundation.joyride.js',
+                    'src/sgd/frontend/yeastgenome/static/js/vendor/foundation/foundation.magellan.js',
+                    'bower_components/foundation/js/foundation/foundation.offcanvas.js',
+                    'bower_components/foundation/js/foundation/foundation.orbit.js',
+                    'bower_components/foundation/js/foundation/foundation.reveal.js',
+                    'bower_components/foundation/js/foundation/foundation.slider.js',
+                    'bower_components/foundation/js/foundation/foundation.tab.js',
+                    'bower_components/foundation/js/foundation/foundation.tooltip.js',
+                    'bower_components/foundation/js/foundation/foundation.topbar.js'
+                ],
+                dest: 'bower_components/foundation/js/foundation.js'
+            },
         },
 
         uglify: {
@@ -134,7 +133,7 @@ module.exports = function(grunt) {
                     },
                     transform: [
                         "babelify",
-                        ["envify",{global:true,NODE_ENV:"development"}]
+                        ["envify", { global: true, NODE_ENV: "development" }]
                     ]
                 }
             },
@@ -147,8 +146,8 @@ module.exports = function(grunt) {
                     },
                     transform: [
                         "babelify",
-                        ["uglifyify",{global:true}],
-                        ["envify",{global:true,NODE_ENV:"production"}]
+                        ["uglifyify", { global: true }],
+                        ["envify", { global: true, NODE_ENV: "production" }]
                     ]
                 }
             }
@@ -189,7 +188,7 @@ module.exports = function(grunt) {
         var _random = crypto.randomBytes(10).toString("hex");
         var _url = CLOUDFRONT_ROOT + _random;
         var obj = { url: _url };
-        fs.writeFile("production_asset_url.json", JSON.stringify(obj), function(err) {
+        fs.writeFile("production_asset_url.json", JSON.stringify(obj), function (err) {
             grunt.config("awsKey", process.env.AWS_ACCESS_KEY_ID)
             grunt.config("awsSecret", process.env.AWS_SECRET_ACCESS_KEY)
             grunt.config("awsDestDir", _random);
@@ -197,7 +196,7 @@ module.exports = function(grunt) {
             return done(err);
         });
     });
-    
+
     grunt.loadNpmTasks("grunt-aws");
     grunt.loadNpmTasks("grunt-text-replace");
     grunt.loadNpmTasks("grunt-contrib-concat");
@@ -218,9 +217,9 @@ module.exports = function(grunt) {
 
     // compile dev, then watch and trigger live reload
     grunt.registerTask("dev", ["compileDev", "watch"]);
-    
+
     grunt.registerTask("default", ["static", "concurrent:production"]);
-    grunt.registerTask("deployAssets", ["static", "concurrent:production","uglify", "uploadToS3"]);
+    grunt.registerTask("deployAssets", ["static", "concurrent:production", "uglify", "uploadToS3"]);
     grunt.registerTask("deployAssetsTest", ["static", "concurrent:dev", "uploadToS3"]);
 
 };

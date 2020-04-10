@@ -35,26 +35,26 @@ const searchResultsReducer = function (_state, action) {
   }
   // let the URL change the query and other params
   if (action.type === '@@router/UPDATE_LOCATION' && action.payload.pathname === '/search') {
-     let params = action.payload.query;
-    if(action.payload.query.category){
+    let params = action.payload.query;
+    if (action.payload.query.category) {
       if (action.payload.query.category === 'download' && action.payload.query.status === undefined && state.downloadsFlag) {
         state.downloadsFlag = false;
-      } 
-      else if(params.category === 'download' && params.hasOwnProperty('status')) {
-          state.downloadsFlag = true;
-          state.downloadStatusStr = params['status'];
-        }
-      else{
+      }
+      else if (params.category === 'download' && params.hasOwnProperty('status')) {
+        state.downloadsFlag = true;
+        state.downloadStatusStr = params['status'];
+      }
+      else {
         state.downloadsFlag = false;
         state.downloadStatusStr = '';
-        params = action.payload.query;
-       }
+        // params = action.payload.query;
       }
+    }
     // set userInput and query from q
     let newQuery = (typeof params.q === 'string') ? params.q : '';
     state.query = newQuery;
     state.userInput = newQuery;
-    
+
     // set currentPage from page
     let newPage = (typeof params.page === 'string' || typeof params.page === 'number') ? parseInt(params.page) : 0;
     // set paginate pending if page is changing
@@ -78,14 +78,14 @@ const searchResultsReducer = function (_state, action) {
       break;
     case 'SEARCH_RESPONSE':
       state.total = action.response.total;
-      state.results = action.response.results.map( d => {
+      state.results = action.response.results.map(d => {
         d.categoryName = getCategoryDisplayName(d.category);
         // make list of loci from 3 possible types
         if (d.gene_ontology_loci) {
           d.loci = d.gene_ontology_loci;
         } else if (d.disease_loci) {
           d.loci = d.disease_loci;
-        }else if (d.phenotype_loci) {
+        } else if (d.phenotype_loci) {
           d.loci = d.phenotype_loci;
         } else if (d.reference_loci) {
           d.loci = d.reference_loci;
@@ -94,10 +94,10 @@ const searchResultsReducer = function (_state, action) {
         }
         return d;
       });
-      state.aggregations = action.response.aggregations.map( d => {
+      state.aggregations = action.response.aggregations.map(d => {
         // correct the go and phenotype locus categoriesto prepend 'go_' or 'phenotype_' to 'locus'
         if (d.key === 'locus') {
-          switch(state.activeCategory) {
+          switch (state.activeCategory) {
             case 'phenotype':
               d.key = 'phenotype_locus';
               break
@@ -119,14 +119,14 @@ const searchResultsReducer = function (_state, action) {
         }
         d.name = d.key;
         // filter out root terms from values
-        d.values = d.values.filter( d => {
+        d.values = d.values.filter(d => {
           return (FILTERED_FACET_VALUES.indexOf(d.key) < 0);
         });
         // sort to try to put relevant (mathces query) facet value on top
         if (state.query !== '') {
           // escape regex special characters http://stackoverflow.com/questions/3115150/how-to-escape-regular-expression-special-characters-using-javascript
           let regexQuery = state.query.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
-          d.values = d.values.sort( (a, b) => {
+          d.values = d.values.sort((a, b) => {
             let aMatch = a.key.toLowerCase().match(regexQuery);
             let bMatch = b.key.toLowerCase().match(regexQuery);
             let totalIndex = (a.total > b.total) ? -1 : 1;
@@ -157,7 +157,7 @@ const searchResultsReducer = function (_state, action) {
       return state;
       break;
     case 'ASYNC_SEARCH_RESPONSE':
-      state.asyncResults = action.results.map( d => {
+      state.asyncResults = action.results.map(d => {
         d.categoryName = getCategoryDisplayName(d.category);
         return d;
       });
@@ -179,7 +179,7 @@ const searchResultsReducer = function (_state, action) {
     case 'HYDRATE_SEARCH':
       state.isHydrated = true;
       return state;
-      break; 
+      break;
     default:
       return state;
   }
