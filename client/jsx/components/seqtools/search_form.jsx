@@ -29,7 +29,9 @@ const GeneSequenceResources = React.createClass({
       isComplete: false,
       isPending: false,
       userError: null,
-      strain: '',
+      chr: 0,
+      strains: ['S288C'],	
+      strain: 'S288C',	
       resultData: {},
       notFound: null,
       param: param,
@@ -799,7 +801,7 @@ const GeneSequenceResources = React.createClass({
                 type="submit"
                 value="Genome Pattern Matching"
                 style={style.button}
-              ></input>
+              />
             </form>
             {restrictionButton}
           </div>
@@ -845,7 +847,7 @@ const GeneSequenceResources = React.createClass({
                 type="submit"
                 value="Genome Pattern Matching"
                 style={style.button}
-              ></input>
+              />
             </form>
           </div>
         </div>
@@ -974,13 +976,11 @@ const GeneSequenceResources = React.createClass({
     var seqID = name + '_' + strain + '_' + ID;
     var seq = window.localStorage.getItem(seqID);
 
-    // <input type="submit" value={ button } className="button small secondary"></input>
-
     if (emboss == '') {
       return (
         <form method="GET" action={program} target="toolwin">
           <input type="hidden" name="sequence_id" value={seqID} />
-          <input type="submit" value={button} style={style.button}></input>
+          <input type="submit" value={button} style={style.button} />
         </form>
       );
     } else {
@@ -988,7 +988,7 @@ const GeneSequenceResources = React.createClass({
         <form method="GET" action={program} target="toolwin">
           <input type="hidden" name="sequence_id" value={seqID} />
           <input type="hidden" name="emboss" value={emboss} />
-          <input type="submit" value={button} style={style.button}></input>
+          <input type="submit" value={button} style={style.button} />
         </form>
       );
     }
@@ -1000,14 +1000,14 @@ const GeneSequenceResources = React.createClass({
         <form method="GET" action={program} target="toolwin">
           <input type="hidden" name="sequence_id" value={seqID} />
           <input type="hidden" name="type" value={seqtype} />
-          <input type="submit" value={button} style={style.button}></input>
+          <input type="submit" value={button} style={style.button} />
         </form>
       );
     } else {
       return (
         <form method="GET" action={program} target="toolwin">
           <input type="hidden" name="sequence_id" value={seqID} />
-          <input type="submit" value={button} style={style.button}></input>
+          <input type="submit" value={button} style={style.button} />
         </form>
       );
     }
@@ -1019,14 +1019,14 @@ const GeneSequenceResources = React.createClass({
         <form method="GET" action={program} target="toolwin">
           <input type="hidden" name="sequence_id" value={seqID} />
           <input type="hidden" name="emboss" value={emboss} />
-          <input type="submit" value={button} style={style.button}></input>
+          <input type="submit" value={button} style={style.button} />
         </form>
       );
     } else {
       return (
         <form method="GET" action={program} target="toolwin">
           <input type="hidden" name="sequence_id" value={seqID} />
-          <input type="submit" value={button} style={style.button}></input>
+          <input type="submit" value={button} style={style.button} />
         </form>
       );
     }
@@ -1036,23 +1036,10 @@ const GeneSequenceResources = React.createClass({
     return (
       <form method="POST" action={program} target="toolwin">
         <input type="hidden" name="seq" value={seq} />
-        <input type="submit" value={button} style={style.button}></input>
+        <input type="submit" value={button} style={style.button} />
       </form>
     );
   },
-
-  // getDownloadSeqButton(genes, strains, type) {
-  //
-  //        // return (<form ref={ genes } method="POST" action="/run_seqtools" key={"hiddenNode_" + genes}>
-  //	return (<form method="POST" action="/run_seqtools">
-  //                       <input type="hidden" name="format" value='fasta' />
-  //                        <input type="hidden" name="type" value={ type } />
-  //                        <input type="hidden" name="genes" value={ genes } />
-  //			<input type="hidden" name="strains" value={ strains } />
-  //			<input type="submit" value="FASTA" className="button secondary"></input>
-  //               </form>);
-  //
-  // },
 
   display_result_table(headerRow, rows) {
     var _tableData = {
@@ -1333,7 +1320,7 @@ const GeneSequenceResources = React.createClass({
             name="up"
             onChange={this.onChange}
             size="50"
-          ></input>
+          />
           Downstream:{' '}
           <input
             type="text"
@@ -1341,7 +1328,7 @@ const GeneSequenceResources = React.createClass({
             name="down"
             onChange={this.onChange}
             size="50"
-          ></input>
+          />
         </p>
         {reverseCompNode}
       </div>
@@ -1357,21 +1344,21 @@ const GeneSequenceResources = React.createClass({
         <h3>Pick one or more strains:</h3>
         {strainNode}
         <p>
-          <input type="hidden" name="more" value="1"></input>
+          <input type="hidden" name="more" value="1" />
           <input
             type="submit"
             ref="submit"
             name="submit"
             value="Submit Form"
             className="button secondary"
-          ></input>{' '}
+          />{' '}
           <input
             type="reset"
             ref="reset"
             name="reset"
             value="Reset Form"
             className="button secondary"
-          ></input>
+          />
         </p>
       </div>
     );
@@ -1401,23 +1388,15 @@ const GeneSequenceResources = React.createClass({
 
     var chromosomes = Object.keys(chr2num);
 
-    var _elements = _.map(chromosomes, (c) => {
-      if (chr2num[c] == 0) {
-        return (
-          <option value={chr2num[c]} selected="selected">
-            {c}
-          </option>
-        );
-      } else {
-        return <option value={chr2num[c]}>{c}</option>;
-      }
+    var _elements = _.map(chromosomes, (c) => { 
+      return <option value={chr2num[c]}>{c}</option>;
     });
 
     return (
       <div>
         <h3>Pick a chromosome: </h3>
         <p>
-          <select ref="chr" name="chr" onChange={this.onChangeGenome}>
+          <select ref="chr" name="chr" value={this.state.chr} onChange={this.onChrChange}>
             {_elements}
           </select>
         </p>
@@ -1429,7 +1408,7 @@ const GeneSequenceResources = React.createClass({
             name="start"
             onChange={this.onChange}
             size="105"
-          ></input>
+          />
           to
           <input
             type="text"
@@ -1437,7 +1416,7 @@ const GeneSequenceResources = React.createClass({
             name="end"
             onChange={this.onChange}
             size="105"
-          ></input>
+          />
           The entire chromosome sequence will be displayed if no coordinates are
           entered.{' '}
         </p>
@@ -1462,14 +1441,14 @@ const GeneSequenceResources = React.createClass({
             name="submit2"
             value="Submit Form"
             className="button secondary"
-          ></input>{' '}
+          />{' '}
           <input
             type="reset"
             ref="reset2"
             name="reset2"
             value="Reset Form"
             className="button secondary"
-          ></input>
+          />
         </p>
       </div>
     );
@@ -1500,7 +1479,7 @@ const GeneSequenceResources = React.createClass({
           name="seq_id"
           ref="seq_id"
           value={localSeqID}
-        ></input>
+        />
       </div>
     );
   },
@@ -1522,14 +1501,14 @@ const GeneSequenceResources = React.createClass({
             name="submit3"
             value="Submit Form"
             className="button secondary"
-          ></input>{' '}
+          />{' '}
           <input
             type="reset"
             ref="reset3"
             name="reset3"
             value="Reset Form"
             className="button secondary"
-          ></input>
+          />
         </p>
       </div>
     );
@@ -1537,13 +1516,9 @@ const GeneSequenceResources = React.createClass({
 
   getSeqtypeNode() {
     var _elements = [];
-    _elements.push(
-      <option value="DNA" selected="selected">
-        DNA
-      </option>
-    );
+    _elements.push(<option value="DNA">DNA</option>);
     _elements.push(<option value="Protein">Protein</option>);
-
+      
     return (
       <div>
         <p>
@@ -1593,20 +1568,7 @@ const GeneSequenceResources = React.createClass({
     var defaultStrain = '';
 
     var _elements = _.map(strains, (s) => {
-      var label = s;
-      if (s == 'S288C') {
-        defaultStrain = 'S288C';
-        return (
-          <option value={s} selected="selected">
-            {label}
-          </option>
-        );
-      } else {
-        if (defaultStrain == '') {
-          defaultStrain = s;
-        }
-        return <option value={s}>{label}</option>;
-      }
+      return <option value={s}>{s}</option>;
     });
 
     window.localStorage.setItem('strain', defaultStrain);
@@ -1618,6 +1580,7 @@ const GeneSequenceResources = React.createClass({
             ref="strain"
             name="strain"
             id="strain"
+	    value={this.state.strain}
             onChange={this.onChange4strain}
           >
             {_elements}
@@ -1634,15 +1597,7 @@ const GeneSequenceResources = React.createClass({
 
     var _elements = _.map(strains, (s) => {
       var label = strain2label[s];
-      if (s == 'S288C') {
-        return (
-          <option value={s} selected="selected">
-            {label}
-          </option>
-        );
-      } else {
-        return <option value={s}>{label}</option>;
-      }
+      return <option value={s}>{label}</option>;
     });
 
     return (
@@ -1654,7 +1609,7 @@ const GeneSequenceResources = React.createClass({
             ref="strains"
             name="strains"
             id="strains"
-            onChange={this.onChange}
+            onChange={this.onStrainChange}
             size="11"
             multiple
           >
@@ -1665,12 +1620,20 @@ const GeneSequenceResources = React.createClass({
     );
   },
 
+  onStrainChange(e) {
+    this.setState({ strains: e.target.value });
+  },
+    
+  onChrChange(e) {
+    this.setState({ chr: e.target.value });
+  },
+    
   onChange(e) {
     this.setState({ text: e.target.value });
   },
 
   onChange4strain(e) {
-    this.setState({ text: e.target.value, strain: e.target.value });
+    this.setState({ strain: e.target.value });
   },
 
   runSeqTools(searchType) {
