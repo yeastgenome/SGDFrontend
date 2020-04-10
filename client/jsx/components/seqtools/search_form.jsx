@@ -30,8 +30,8 @@ const GeneSequenceResources = React.createClass({
       isPending: false,
       userError: null,
       chr: 0,
-      strains: ['S288C'],	
-      strain: 'S288C',	
+      strains: ['S288C'],
+      strain: 'S288C',
       resultData: {},
       notFound: null,
       param: param,
@@ -115,8 +115,8 @@ const GeneSequenceResources = React.createClass({
           </div>
         );
       } else if (param['submit2']) {
-        var _resultTable = this.getResultTable4chr(data);
-        var _desc = this.getDesc4chr(data);
+        let _resultTable = this.getResultTable4chr(data);
+        let _desc = this.getDesc4chr(data);
 
         return (
           <div>
@@ -125,8 +125,8 @@ const GeneSequenceResources = React.createClass({
           </div>
         );
       } else if (param['submit3']) {
-        var _resultTable = this.getResultTable4seq(data['residue']);
-        var _desc = this.getDesc4seq();
+        let _resultTable = this.getResultTable4seq(data['residue']);
+        let _desc = this.getDesc4seq();
         var _complementBox = this.getComplementBox(data['residue']);
 
         return (
@@ -974,7 +974,6 @@ const GeneSequenceResources = React.createClass({
       strain = window.localStorage.getItem('strain');
     }
     var seqID = name + '_' + strain + '_' + ID;
-    var seq = window.localStorage.getItem(seqID);
 
     if (emboss == '') {
       return (
@@ -1145,7 +1144,6 @@ const GeneSequenceResources = React.createClass({
     genes = genes.replace(/[^A-Za-z:\-0-9\(\)]/g, ' ');
     var re = /\+/g;
     genes = genes.replace(re, ' ');
-    var re = / +/g;
 
     var geneList = genes.split(' ');
 
@@ -1337,7 +1335,6 @@ const GeneSequenceResources = React.createClass({
 
   getGeneNodeRight() {
     var strainNode = this.getStrainNode();
-    var reverseCompNode = this.getReverseCompNode('rev1');
 
     return (
       <div>
@@ -1388,7 +1385,7 @@ const GeneSequenceResources = React.createClass({
 
     var chromosomes = Object.keys(chr2num);
 
-    var _elements = _.map(chromosomes, (c) => { 
+    var _elements = _.map(chromosomes, (c) => {
       return <option value={chr2num[c]}>{c}</option>;
     });
 
@@ -1396,7 +1393,12 @@ const GeneSequenceResources = React.createClass({
       <div>
         <h3>Pick a chromosome: </h3>
         <p>
-          <select ref="chr" name="chr" value={this.state.chr} onChange={this.onChrChange}>
+          <select
+            ref="chr"
+            name="chr"
+            value={this.state.chr}
+            onChange={this.onChrChange}
+          >
             {_elements}
           </select>
         </p>
@@ -1474,12 +1476,7 @@ const GeneSequenceResources = React.createClass({
             cols="75"
           ></textarea>
         </p>
-        <input
-          type="hidden"
-          name="seq_id"
-          ref="seq_id"
-          value={localSeqID}
-        />
+        <input type="hidden" name="seq_id" ref="seq_id" value={localSeqID} />
       </div>
     );
   },
@@ -1518,7 +1515,7 @@ const GeneSequenceResources = React.createClass({
     var _elements = [];
     _elements.push(<option value="DNA">DNA</option>);
     _elements.push(<option value="Protein">Protein</option>);
-      
+
     return (
       <div>
         <p>
@@ -1580,7 +1577,7 @@ const GeneSequenceResources = React.createClass({
             ref="strain"
             name="strain"
             id="strain"
-	    value={this.state.strain}
+            value={this.state.strain}
             onChange={this.onChange4strain}
           >
             {_elements}
@@ -1623,11 +1620,11 @@ const GeneSequenceResources = React.createClass({
   onStrainChange(e) {
     this.setState({ strains: e.target.value });
   },
-    
+
   onChrChange(e) {
     this.setState({ chr: e.target.value });
   },
-    
+
   onChange(e) {
     this.setState({ text: e.target.value });
   },
@@ -2067,9 +2064,9 @@ const GeneSequenceResources = React.createClass({
       var chr = pieces[0];
       var start = pieces[1];
       var end = pieces[2];
-      var rev = pieces[3];
+      let rev = pieces[3];
 
-      var revText = '';
+      let revText = '';
       if (rev == 1) {
         revText =
           'You have selected the reverse complement of this sequence region.';
