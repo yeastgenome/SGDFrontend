@@ -114,9 +114,10 @@ module.exports = React.createClass({
           </svg>
         );
         preBars = [bar];
-      } else {
-        preBars.push(bar);
       }
+      // else {
+      //   preBars.push(bar);
+      // }
     });
 
     allBars.push(
