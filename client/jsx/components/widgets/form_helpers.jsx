@@ -10,27 +10,39 @@ export const CheckField = React.createClass({
     paramName: React.PropTypes.string,
     defaultChecked: React.PropTypes.bool,
     iconClass: React.PropTypes.string,
-    isReadOnly: React.PropTypes.bool
+    isReadOnly: React.PropTypes.bool,
   },
 
-  render () {
+  render() {
     if (this.props.isReadOnly) return this._renderReadOnly();
     let _id = `sgd-c-check-${this.props.paramName}`;
-    let iconNode = this.props.iconClass ? <span><i className={`fa fa-${this.props.iconClass}`} /> </span> : null;
+    let iconNode = this.props.iconClass ? (
+      <span>
+        <i className={`fa fa-${this.props.iconClass}`} />{' '}
+      </span>
+    ) : null;
     return (
       <div>
-        <input id={_id} type='checkbox' name={this.props.paramName} defaultChecked={this.props.defaultChecked} />
-        <label htmlFor={_id}>{iconNode}{this.props.displayName}</label>
+        <input
+          id={_id}
+          type="checkbox"
+          name={this.props.paramName}
+          defaultChecked={this.props.defaultChecked}
+        />
+        <label htmlFor={_id}>
+          {iconNode}
+          {this.props.displayName}
+        </label>
       </div>
     );
   },
 
-  _renderReadOnly () {
+  _renderReadOnly() {
     let stringVal = this.props.defaultChecked ? 'true' : 'false';
     let extendedProps = _.clone(this.props);
     extendedProps.defaultValue = stringVal;
     return <StringField {...extendedProps} />;
-  }
+  },
 });
 
 export const StringField = React.createClass({
@@ -40,55 +52,71 @@ export const StringField = React.createClass({
     // defaultValue: string or nodes
     iconClass: React.PropTypes.string,
     placeholder: React.PropTypes.string,
-    isReadOnly: React.PropTypes.bool
+    isReadOnly: React.PropTypes.bool,
   },
 
-  render () {
+  render() {
     return this.props.isReadOnly ? this._renderReadOnly() : this._renderEdit();
   },
 
-  _renderReadOnly () {
-    if (this.props.paramName == "colleague_note") {
+  _renderReadOnly() {
+    if (this.props.paramName == 'colleague_note') {
       let tempStr = this.props.defaultValue.match(/\<a.*\>/);
       let tempArr = this.props.defaultValue.split(/\<a.*\>/);
-      let itm = tempStr[0];
 
-      return <div className="form-read-field">
+      return (
+        <div className="form-read-field">
           <dl className="key-value">
             <dt>
               {this._renderIcon()}
               {this.props.displayName}
             </dt>
             <dd>
-              {tempArr[0]} <span dangerouslySetInnerHTML={{ __html: tempStr[0] }} />
+              {tempArr[0]}{' '}
+              <span dangerouslySetInnerHTML={{ __html: tempStr[0] }} />
               {tempArr[1]}
             </dd>
           </dl>
-        </div>;
+        </div>
+      );
     }
-    return <div className="form-read-field">
-          <dl className="key-value">
-            <dt>
-              {this._renderIcon()}
-              {this.props.displayName}
-            </dt>
-            <dd>{this.props.defaultValue}</dd>
-          </dl>
-        </div>;
-  },
-
-  _renderEdit () {
     return (
-      <div>
-        <label>{this._renderIcon()}{this.props.displayName}</label>
-        <input type='text' name={this.props.paramName} placeholder={this.props.placeholder} defaultValue={this.props.defaultValue} />
+      <div className="form-read-field">
+        <dl className="key-value">
+          <dt>
+            {this._renderIcon()}
+            {this.props.displayName}
+          </dt>
+          <dd>{this.props.defaultValue}</dd>
+        </dl>
       </div>
     );
   },
 
-  _renderIcon () {
-    return this.props.iconClass ? <span><i className={`fa fa-${this.props.iconClass}`} /> </span> : null;
-  }
+  _renderEdit() {
+    return (
+      <div>
+        <label>
+          {this._renderIcon()}
+          {this.props.displayName}
+        </label>
+        <input
+          type="text"
+          name={this.props.paramName}
+          placeholder={this.props.placeholder}
+          defaultValue={this.props.defaultValue}
+        />
+      </div>
+    );
+  },
+
+  _renderIcon() {
+    return this.props.iconClass ? (
+      <span>
+        <i className={`fa fa-${this.props.iconClass}`} />{' '}
+      </span>
+    ) : null;
+  },
 });
 
 export const TextField = React.createClass({
@@ -98,36 +126,51 @@ export const TextField = React.createClass({
     defaultValue: React.PropTypes.string,
     iconClass: React.PropTypes.string,
     placeholder: React.PropTypes.string,
-    isReadOnly: React.PropTypes.bool
+    isReadOnly: React.PropTypes.bool,
   },
 
-  render () {
+  render() {
     return this.props.isReadOnly ? this._renderReadOnly() : this._renderEdit();
   },
 
-  _renderReadOnly () {
+  _renderReadOnly() {
     return (
-      <div className='form-read-field'>
-        <dl className='key-value'>
-          <dt>{this._renderIcon()}{this.props.displayName}</dt>
+      <div className="form-read-field">
+        <dl className="key-value">
+          <dt>
+            {this._renderIcon()}
+            {this.props.displayName}
+          </dt>
           <dd>{this.props.defaultValue}</dd>
         </dl>
       </div>
     );
   },
 
-  _renderEdit () {
+  _renderEdit() {
     return (
       <div>
-        <label>{this._renderIcon()}{this.props.displayName}</label>
-        <textarea type='text' name={this.props.paramName} placeholder={this.props.placeholder}>{this.props.defaultValue}</textarea>
+        <label>
+          {this._renderIcon()}
+          {this.props.displayName}
+        </label>
+        <textarea
+          type="text"
+          name={this.props.paramName}
+          placeholder={this.props.placeholder}
+          value={this.props.defaultValue}
+        />
       </div>
     );
   },
 
-  _renderIcon () {
-    return this.props.iconClass ? <span><i className={`fa fa-${this.props.iconClass}`} /> </span> : null;
-  }
+  _renderIcon() {
+    return this.props.iconClass ? (
+      <span>
+        <i className={`fa fa-${this.props.iconClass}`} />{' '}
+      </span>
+    ) : null;
+  },
 });
 
 export const MultiSelectField = React.createClass({
@@ -142,55 +185,73 @@ export const MultiSelectField = React.createClass({
     allowCreate: React.PropTypes.bool,
     isMulti: React.PropTypes.bool,
     isLinks: React.PropTypes.bool,
-    formatLink: React.PropTypes.func
+    formatLink: React.PropTypes.func,
   },
 
-  getDefaultProps () {
+  getDefaultProps() {
     return {
-      isMulti: true
+      isMulti: true,
     };
   },
 
-  getInitialState () {
-    let defaultValues = this.props.defaultValues || [];
+  getInitialState() {
+    let defaultValues = this.props.defaultValues || '';
     // if string is supplied, convert to array
     if (typeof defaultValues === 'string') {
       defaultValues = defaultValues.split(DELIMITER);
     }
     return {
-      values: defaultValues || []
+      values: defaultValues,
     };
   },
 
-  render () {
+  render() {
     if (this.props.isReadOnly) return this._renderReadOnly();
-    let iconNode = this.props.iconClass ? <span><i className={`fa fa-${this.props.iconClass}`} /> </span> : null;
+    let iconNode = this.props.iconClass ? (
+      <span>
+        <i className={`fa fa-${this.props.iconClass}`} />{' '}
+      </span>
+    ) : null;
     return (
       <div>
-        <label>{iconNode}{this.props.displayName}</label>
-        <Select multi={this.props.isMulti} joinValues
-          name={this.props.paramName} value={this.state.values}
+        <label>
+          {iconNode}
+          {this.props.displayName}
+        </label>
+        <Select
+          multi={this.props.isMulti}
+          joinValues
+          name={this.props.paramName}
+          value={this.state.values}
           asyncOptions={this._getAsyncOptions()}
-          labelKey='name' valueKey='name'
-          onChange={this._onChange} delimiter={DELIMITER}
+          labelKey="name"
+          valueKey="name"
+          onChange={this._onChange}
+          delimiter={DELIMITER}
           allowCreate={this.props.allowCreate}
         />
       </div>
     );
   },
 
-  _renderReadOnly () {
+  _renderReadOnly() {
     let values;
     if (this.props.isLinks) {
-      values = this.state.values.map( (d, i) => {
+      values = this.state.values.map((d, i) => {
         let url = this.props.formatLink(d);
-        let maybeComma = (i === this.state.values.length - 1) ? null : <span>, </span>;
-        return <span key={`collA${d.format_name}`}><a href={url}>{d.name}</a>{maybeComma}</span>;
+        let maybeComma =
+          i === this.state.values.length - 1 ? null : <span>, </span>;
+        return (
+          <span key={`collA${d.format_name}`}>
+            <a href={url}>{d.name}</a>
+            {maybeComma}
+          </span>
+        );
       });
     } else {
-      values = this.state.values.reduce( (prev, d, i) => {
-        let maybeComma = (i === this.state.values.length - 1) ? '' : ', ';
-        let name = (typeof d === 'string') ? d : d.name;
+      values = this.state.values.reduce((prev, d, i) => {
+        let maybeComma = i === this.state.values.length - 1 ? '' : ', ';
+        let name = typeof d === 'string' ? d : d.name;
         prev += `${name}${maybeComma}`;
         return prev;
       }, '');
@@ -199,27 +260,30 @@ export const MultiSelectField = React.createClass({
     return <StringField {...extendedProps} />;
   },
 
-  _onChange (newValues) {
+  _onChange(newValues) {
     newValues = newValues ? newValues.split(DELIMITER) : [];
     this.setState({ values: newValues });
   },
 
   // from a URL, returns the fetch function needed to get the options
-  _getAsyncOptions () {
+  _getAsyncOptions() {
     return (input, cb) => {
       let url = `${this.props.optionsUrl}${input}`;
       fetch(url)
-        .then( response => {
+        .then((response) => {
           return response.json();
-        }).then( optionsObj => {
+        })
+        .then((optionsObj) => {
           // add defaultOptions to results and remove duplicated
           let defaultOptions = this.props.defaultOptions || [];
-          optionsObj.options = _.uniq(optionsObj.results.concat(defaultOptions));
+          optionsObj.options = _.uniq(
+            optionsObj.results.concat(defaultOptions)
+          );
           if (!this.isMounted()) return;
           return cb(null, optionsObj);
         });
     };
-  }
+  },
 });
 
 export const SelectField = React.createClass({
@@ -230,36 +294,47 @@ export const SelectField = React.createClass({
     iconClass: React.PropTypes.string,
     options: React.PropTypes.array,
     isReadOnly: React.PropTypes.bool,
-    allowCreate: React.PropTypes.bool
+    allowCreate: React.PropTypes.bool,
   },
 
-  getInitialState () {
+  getInitialState() {
     return {
-      value: this.props.defaultValue || ''
+      value: this.props.defaultValue || '',
     };
   },
 
-  render () {
+  render() {
     if (this.props.isReadOnly) return this._renderReadOnly();
-    let iconNode = this.props.iconClass ? <span><i className={`fa fa-${this.props.iconClass}`} /> </span> : null;
+    let iconNode = this.props.iconClass ? (
+      <span>
+        <i className={`fa fa-${this.props.iconClass}`} />{' '}
+      </span>
+    ) : null;
     return (
       <div>
-        <label>{iconNode}{this.props.displayName}</label>
+        <label>
+          {iconNode}
+          {this.props.displayName}
+        </label>
         <Select
-          name={this.props.paramName} value={this.state.value}
-          options={this.props.options} clearable={false}
-          labelKey='name' valueKey='id'
-          onChange={this._onChange} allowCreate={this.props.allowCreate} 
+          name={this.props.paramName}
+          value={this.state.value}
+          options={this.props.options}
+          clearable={false}
+          labelKey="name"
+          valueKey="id"
+          onChange={this._onChange}
+          allowCreate={this.props.allowCreate}
         />
       </div>
     );
   },
 
-  _renderReadOnly () {
+  _renderReadOnly() {
     return <StringField {...this.props} />;
   },
 
-  _onChange (newValue) {
+  _onChange(newValue) {
     this.setState({ value: newValue });
-  }
+  },
 });

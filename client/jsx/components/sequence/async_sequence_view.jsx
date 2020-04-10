@@ -1,5 +1,4 @@
 import React from 'react';
-import _ from 'underscore';
 
 const HelpIcon = require('../widgets/help_icon.jsx');
 const HistoryTable = require('./history_table.jsx');
@@ -7,14 +6,13 @@ const SequenceDetailsModel = require('../../models/sequence_details_model.jsx');
 const SequenceNeighborsModel = require('../../models/sequence_neighbors_model.jsx');
 const SequenceComposite = require('./sequence_composite.jsx');
 const SequenceToggler = require('./sequence_toggler.jsx');
-const AsyncVariantViewer = require("../variant_viewer/async_variant_viewer.jsx");
-const VariantViewerStore = require("../../stores/variant_viewer_store.jsx");
+const AsyncVariantViewer = require('../variant_viewer/async_variant_viewer.jsx');
+const VariantViewerStore = require('../../stores/variant_viewer_store.jsx');
 
 /*
   Fetches data from model and renders locus diagram (or loader while fetching).
 */
 var AsyncSequenceView = React.createClass({
-
   getDefaultProps: function () {
     return {
       detailsCallback: null, // (err, detailsModel)
@@ -28,14 +26,14 @@ var AsyncSequenceView = React.createClass({
       showOtherStrains: true,
       showHistory: true,
       locusId: null,
-      mainStrain: null
+      mainStrain: null,
     };
   },
 
   getInitialState: function () {
     return {
       neighborsModel: null,
-      detailsModel: null
+      detailsModel: null,
     };
   },
 
@@ -45,23 +43,26 @@ var AsyncSequenceView = React.createClass({
     var variantNode = this._getVariantsNode();
     var otherStrainsNode = this._getOtherStrainsNode();
     var historyNode = this._getHistoryNode();
-    
+
     if (this.props.mainStrain == 'S288C') {
-      return (<div>
-        {mainStrainNode}
-        {altStrainsNode}
-        {variantNode}
-        {otherStrainsNode}
-        {historyNode}
-      </div>);
-    }
-    else {
-      return (<div>
-        {mainStrainNode}
-        {altStrainsNode}
-        {otherStrainsNode}
-        {historyNode}
-      </div>);
+      return (
+        <div>
+          {mainStrainNode}
+          {altStrainsNode}
+          {variantNode}
+          {otherStrainsNode}
+          {historyNode}
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          {mainStrainNode}
+          {altStrainsNode}
+          {otherStrainsNode}
+          {historyNode}
+        </div>
+      );
     }
   },
 
@@ -71,19 +72,22 @@ var AsyncSequenceView = React.createClass({
 
   // from locusId, get data and update
   _fetchData: function () {
-    var _neighborsModel = new SequenceNeighborsModel({ id: this.props.locusId, mainStrain: this.props.mainStrain});
-    
-    _neighborsModel.fetch( (err, response) => {
+    var _neighborsModel = new SequenceNeighborsModel({
+      id: this.props.locusId,
+      mainStrain: this.props.mainStrain,
+    });
+
+    _neighborsModel.fetch((err, response) => {
       if (this.isMounted()) {
         this.setState({ neighborsModel: _neighborsModel });
         var _detailsModel = new SequenceDetailsModel({
           id: this.props.locusId,
-	  mainStrain: this.props.mainStrain,
+          mainStrain: this.props.mainStrain,
           locusDiplayName: this.props.locusDisplayName,
           locusFormatName: this.props.locusFormatName,
-          locusSGDID: this.props.locusSGDID
+          locusSGDID: this.props.locusSGDID,
         });
-        _detailsModel.fetch( (err, response) => {
+        _detailsModel.fetch((err, response) => {
           if (this.isMounted()) this.setState({ detailsModel: _detailsModel });
 
           // call details callback (if defined)
@@ -96,39 +100,48 @@ var AsyncSequenceView = React.createClass({
   },
 
   _getMainStrainNode: function () {
-    var innerNode = (<SequenceComposite
-      isSimplified={this.props.isSimplified}
-      mainStrain={this.props.mainStrain}
-      focusLocusDisplayName={this.props.locusDisplayName}
-      focusLocusFormatName={this.props.locusFormatName}
-      geneticPosition={this.props.geneticPosition}
-      neighborsModel={this.state.neighborsModel}
-      detailsModel={this.state.detailsModel}
-      showAltStrains={false}
-    />);
+    var innerNode = (
+      <SequenceComposite
+        isSimplified={this.props.isSimplified}
+        mainStrain={this.props.mainStrain}
+        focusLocusDisplayName={this.props.locusDisplayName}
+        focusLocusFormatName={this.props.locusFormatName}
+        geneticPosition={this.props.geneticPosition}
+        neighborsModel={this.state.neighborsModel}
+        detailsModel={this.state.detailsModel}
+        showAltStrains={false}
+      />
+    );
 
     if (this.props.isSimplified) {
       return <div>{innerNode}</div>;
     } else {
-      return (<section id='reference'>
-        {innerNode}
-      </section>);
+      return <section id="reference">{innerNode}</section>;
     }
   },
 
   _getAltStrainsNode: function () {
     var node = null;
     if (!this.props.showAltStrains) return node;
-    if (this.state.detailsModel ? this.state.detailsModel.attributes.altStrainMetaData.length : false) {
-      var _defaultAltStrainKey = this.state.detailsModel.attributes.altStrainMetaData[0].key;
-      node = (<section id='alternative'><SequenceComposite
-        focusLocusDisplayName={this.props.locusDisplayName}
-        neighborsModel={this.state.neighborsModel}
-        detailsModel={this.state.detailsModel}
-        defaultAltStrainKey={_defaultAltStrainKey}
-        showAltStrains={true}
-        showSubFeatures={false}
-      /></section>);
+    if (
+      this.state.detailsModel
+        ? this.state.detailsModel.attributes.altStrainMetaData.length
+        : false
+    ) {
+      var _defaultAltStrainKey = this.state.detailsModel.attributes
+        .altStrainMetaData[0].key;
+      node = (
+        <section id="alternative">
+          <SequenceComposite
+            focusLocusDisplayName={this.props.locusDisplayName}
+            neighborsModel={this.state.neighborsModel}
+            detailsModel={this.state.detailsModel}
+            defaultAltStrainKey={_defaultAltStrainKey}
+            showAltStrains={true}
+            showSubFeatures={false}
+          />
+        </section>
+      );
     }
 
     return node;
@@ -138,32 +151,50 @@ var AsyncSequenceView = React.createClass({
     if (!this.props.showVariants) return null;
     var variantViewerStore = new VariantViewerStore();
     return (
-      <section id='variants'>
+      <section id="variants">
         <h2>Variants</h2>
         <hr />
-        <AsyncVariantViewer hideTitle sgdid={this.props.locusSGDID} store={variantViewerStore} />
+        <AsyncVariantViewer
+          hideTitle
+          sgdid={this.props.locusSGDID}
+          store={variantViewerStore}
+        />
       </section>
     );
-  },  
+  },
 
   _getOtherStrainsNode: function () {
-    var node = null
+    var node = null;
     if (!this.props.showOtherStrains) return node;
-    if (this.state.detailsModel ? this.state.detailsModel.attributes.otherStrains.length : false) {
-      var outerHelpNode = <HelpIcon text='Other laboratory, industrial, and environmental isolates; sequences available via the Download button.' isInfo={true} />;
-      var innerHelpNode = <HelpIcon text='Select a strain using the pull-down in order to download its sequence as an .fsa file using the Download button located directly below.' />;
-      node = (<section id='other'>
-        <h2>Other Strains {outerHelpNode}</h2>
-        <hr />
-        <div className='panel sgd-viz'>
-          <h3>Strains Available for Download {innerHelpNode}</h3>
-          <SequenceToggler
-            sequences={this.state.detailsModel.attributes.otherStrains}
-            locusDisplayName={this.props.locusDisplayName} showSequence={false}
-            buttonId='other_download'
-          />
-        </div>
-      </section>);
+    if (
+      this.state.detailsModel
+        ? this.state.detailsModel.attributes.otherStrains.length
+        : false
+    ) {
+      var outerHelpNode = (
+        <HelpIcon
+          text="Other laboratory, industrial, and environmental isolates; sequences available via the Download button."
+          isInfo={true}
+        />
+      );
+      var innerHelpNode = (
+        <HelpIcon text="Select a strain using the pull-down in order to download its sequence as an .fsa file using the Download button located directly below." />
+      );
+      node = (
+        <section id="other">
+          <h2>Other Strains {outerHelpNode}</h2>
+          <hr />
+          <div className="panel sgd-viz">
+            <h3>Strains Available for Download {innerHelpNode}</h3>
+            <SequenceToggler
+              sequences={this.state.detailsModel.attributes.otherStrains}
+              locusDisplayName={this.props.locusDisplayName}
+              showSequence={false}
+              buttonId="other_download"
+            />
+          </div>
+        </section>
+      );
     }
 
     return node;
@@ -172,12 +203,13 @@ var AsyncSequenceView = React.createClass({
   _getHistoryNode: function () {
     var node = null;
     if (this.props.showHistory && this.props.locusHistoryData) {
-      node = <HistoryTable data={this.props.locusHistoryData} dataType='SEQUENCE' />;
+      node = (
+        <HistoryTable data={this.props.locusHistoryData} dataType="SEQUENCE" />
+      );
     }
 
     return node;
   },
-
 });
 
 module.exports = AsyncSequenceView;

@@ -1,8 +1,6 @@
 'use strict';
 
 var React = require('react');
-var $ = require('jquery');
-var _ = require('underscore');
 
 var DataTable = require('../widgets/data_table.jsx');
 

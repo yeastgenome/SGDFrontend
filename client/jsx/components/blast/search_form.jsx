@@ -27,12 +27,12 @@ var SearchForm = React.createClass({
         this._getSeq(param['name'], param['type']);
       }
     }
-    
+
     var defaultProgram = 'blastn';
     if (param['type'] == 'protein') {
-	defaultProgram = 'blastp';
+      defaultProgram = 'blastp';
     }
-      
+
     var defaultAlignToShow = '50';
     if (this.props.blastType == 'fungal') {
       defaultAlignToShow = '500';
@@ -115,7 +115,7 @@ var SearchForm = React.createClass({
     if (this.state.submitted) {
       this._doBlast();
     } else {
-      this._setDefaultDatabase(this.state.configData);  
+      this._setDefaultDatabase(this.state.configData);
     }
   },
 
@@ -128,7 +128,7 @@ var SearchForm = React.createClass({
         return <div dangerouslySetInnerHTML={{ __html: errorReport }} />;
       }
 
-      var descText =
+      let descText =
         "<p>Query performed by the Saccharomyces Genome Database; for full BLAST options and parameters, refer to the NCBI BLAST Documentation Links to GenBank, EMBL, PIR, SwissProt, and SGD are shown in bold type; links to locations within this document are in normal type. Your comments and suggestions are requested: <a href='/suggestion'>Send a Message to SGD</a></p><hr>";
       if (this.state.filter) {
         descText =
@@ -200,7 +200,7 @@ BLAST Help at NCBI</a>.</p><hr>';
 
       var seqData = this.state.seqData;
       var configData = this.state.configData;
-	
+
       var seq = '';
 
       var param = this.state.param;
@@ -218,7 +218,7 @@ BLAST Help at NCBI</a>.</p><hr>';
       var databaseNode = this._getDatabaseNode(configData);
       var optionNode = this._getOptionsNode(configData);
       // need to put the date in a config file
-      var descText =
+      descText =
         "<p>Datasets updated: January 31, 2018</p><p>This form allows BLAST searches of S. cerevisiae sequence datasets. To search multiple fungal sequences, go to the <a href='/blast-fungal'>Fungal BLAST search form</a>.</p>";
 
       if (this.props.blastType == 'fungal') {
@@ -372,7 +372,6 @@ BLAST Help at NCBI</a>.</p><hr>';
   },
 
   _getBlastProgramNode: function (data) {
-
     var _elements = _.map(data.program, (p, index) => {
       return (
         <option value={p.script} key={index}>
@@ -380,13 +379,18 @@ BLAST Help at NCBI</a>.</p><hr>';
         </option>
       );
     });
-      
+
     return (
       <div>
         <h3>Choose the Appropriate BLAST Program:</h3>
 
         <p>
-          <select ref="program" name="program" value={this.state.program} onChange={this._onProgramChange}>
+          <select
+            ref="program"
+            name="program"
+            value={this.state.program}
+            onChange={this._onProgramChange}
+          >
             {_elements}
           </select>
         </p>
@@ -394,7 +398,7 @@ BLAST Help at NCBI</a>.</p><hr>';
     );
   },
 
-  _setDefaultDatabase: function(data) {
+  _setDefaultDatabase: function (data) {
     var database = data.database;
     var datagroup = data.datagroup;
     var _databaseDef = data.databasedef;
@@ -402,7 +406,7 @@ BLAST Help at NCBI</a>.</p><hr>';
     if (param['type'] == 'protein') {
       _databaseDef = ['YeastORF.fsa'];
     }
-      
+
     var defaultDatabase = [];
     _.map(database, (d) => {
       var dataset = d.dataset;
@@ -410,16 +414,16 @@ BLAST Help at NCBI</a>.</p><hr>';
         dataset = datagroup[dataset];
       }
       if ($.inArray(dataset, _databaseDef) > -1) {
-	defaultDatabase.push(dataset);
+        defaultDatabase.push(dataset);
       }
     });
-    this.setState({database: defaultDatabase});
+    this.setState({ database: defaultDatabase });
   },
-    
+
   _getDatabaseNode: function (data) {
     var database = data.database;
     var datagroup = data.datagroup;
-      
+
     var i = 0;
     var _elements = _.map(database, (d, index) => {
       i += 1;
@@ -463,7 +467,7 @@ BLAST Help at NCBI</a>.</p><hr>';
     var thresholdMenu = this._getThresholdMenu();
     var alignToShowMenu = this._getAlignToShowMenu();
     var filterMenu = this._getFilterMenu();
-      
+
     return (
       <div>
         <b>Options:</b> For descriptions of BLAST options and parameters, refer
@@ -525,7 +529,7 @@ BLAST Help at NCBI</a>.</p><hr>';
   },
 
   _getOutFormatMenu: function () {
-    var format = ['gapped alignments', 'ungapped alignments'];      
+    var format = ['gapped alignments', 'ungapped alignments'];
     var _elements = [];
     format.forEach(function (f, index) {
       _elements.push(
@@ -534,10 +538,14 @@ BLAST Help at NCBI</a>.</p><hr>';
         </option>
       );
     });
-     
+
     return (
       <p>
-        <select ref="outFormat" value={this.state.outFormat} onChange={this._onOutFormatChange}>
+        <select
+          ref="outFormat"
+          value={this.state.outFormat}
+          onChange={this._onOutFormatChange}
+        >
           {_elements}
         </select>
       </p>
@@ -550,7 +558,11 @@ BLAST Help at NCBI</a>.</p><hr>';
     var _elements = this._getDropdownList(matrix);
     return (
       <p>
-        <select ref="matrix" value={this.state.matrix} onChange={this._onMatrixChange}>
+        <select
+          ref="matrix"
+          value={this.state.matrix}
+          onChange={this._onMatrixChange}
+        >
           {_elements}
         </select>
       </p>
@@ -562,7 +574,11 @@ BLAST Help at NCBI</a>.</p><hr>';
     var _elements = this._getDropdownList(cutoffScore);
     return (
       <p>
-        <select ref="cutoffScore" value={this.state.cutoffScore} onChange={this._onCutoffScoreChange}>
+        <select
+          ref="cutoffScore"
+          value={this.state.cutoffScore}
+          onChange={this._onCutoffScoreChange}
+        >
           {_elements}
         </select>
       </p>
@@ -590,7 +606,11 @@ BLAST Help at NCBI</a>.</p><hr>';
     var _elements = this._getDropdownList(wordLength);
     return (
       <p>
-        <select ref="wordLength" value={this.state.wordLength} onChange={this._onWordLengthChange}>
+        <select
+          ref="wordLength"
+          value={this.state.wordLength}
+          onChange={this._onWordLengthChange}
+        >
           {_elements}
         </select>
       </p>
@@ -602,7 +622,11 @@ BLAST Help at NCBI</a>.</p><hr>';
     var _elements = this._getDropdownList(threshold);
     return (
       <p>
-        <select ref="threshold" value={this.state.threshold} onChange={this._onThresholdChange}>
+        <select
+          ref="threshold"
+          value={this.state.threshold}
+          onChange={this._onThresholdChange}
+        >
           {_elements}
         </select>
       </p>
@@ -625,7 +649,11 @@ BLAST Help at NCBI</a>.</p><hr>';
     var _elements = this._getDropdownList(alignToShow);
     return (
       <p>
-        <select ref="alignToShow" value={this.state.alignToShow} onChange={this._onAlignToShowChange}>
+        <select
+          ref="alignToShow"
+          value={this.state.alignToShow}
+          onChange={this._onAlignToShowChange}
+        >
           {_elements}
         </select>
       </p>
@@ -689,7 +717,7 @@ BLAST Help at NCBI</a>.</p><hr>';
   _onDatabaseChange: function (e) {
     this.setState({ database: e.target.value });
   },
-    
+
   _onChange: function (e) {
     this.setState({ text: e.target.value });
   },

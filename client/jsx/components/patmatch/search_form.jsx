@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import _ from 'underscore';
 import $ from 'jquery';
 
@@ -6,14 +6,12 @@ const Checklist = require('../widgets/checklist.jsx');
 const Params = require('../mixins/parse_url_params.jsx');
 const ExampleTable = require('./example_table.jsx');
 const DataTable = require('../widgets/data_table.jsx');
-
 const PatmatchUrl = '/run_patmatch';
-
-const LETTERS_PER_CHUNK = 10;
 const LETTERS_PER_LINE = 60;
 
-var SearchForm = React.createClass({
-  getInitialState: function () {
+class SearchForm extends Component {
+  constructor(props) {
+    super(props);
     var param = Params.getParams();
 
     var submitted = null;
@@ -28,7 +26,7 @@ var SearchForm = React.createClass({
 
     this._getConfigData();
 
-    return {
+    this.state = {
       isComplete: false,
       isPending: false,
       userError: null,
@@ -52,10 +50,14 @@ var SearchForm = React.createClass({
       submitted: submitted,
       seqFetched: false,
       getSeq: get_seq,
+      hitsNode: '500',
     };
-  },
 
-  render: function () {
+    this._onChange = this._onChange.bind(this);
+    this._doPatmatch = this._doPatmatch.bind(this);
+  }
+
+  render() {
     var formNode = this._getFormNode();
 
     if (this.state.getSeq) {
@@ -79,18 +81,18 @@ var SearchForm = React.createClass({
         </div>
       );
     }
-  },
+  }
 
-  componentDidMount: function () {
+  componentDidMount() {
     if (this.state.submitted) {
       this._doPatmatch();
     }
     // if (this.state.getSeq) {
     //      this._getSeq();
     // }
-  },
+  }
 
-  _getFormNode: function () {
+  _getFormNode() {
     if (this.state.getSeq && !this.state.seqFetched) {
       this._getSeq();
       return;
@@ -173,7 +175,7 @@ var SearchForm = React.createClass({
       return (
         <div>
           <div dangerouslySetInnerHTML={{ __html: descText }} />
-          <form onSubmit={this._onSubmit} target="infowin">
+          <form onSubmit={this._onSubmit.bind(this)} target="infowin">
             <div className="row">
               <div className="large-12 columns">
                 {genomeBoxNode}
@@ -189,19 +191,15 @@ var SearchForm = React.createClass({
         </div>
       );
     }
-  },
+  }
 
-  _getSeqNode: function () {
+  _getSeqNode() {
     var param = this.state.param;
     var beg = param['beg'];
     var end = param['end'];
     var dataset = param['dataset'];
     var seqname = param['seqname'];
-
     var seq = this.state.resultData.seq;
-    var text = this.state.resultData.defline;
-
-    var seq_orig = seq;
 
     var seqlen = seq.length;
     var seqStart = 0;
@@ -300,70 +298,63 @@ var SearchForm = React.createClass({
       '</center>';
 
     return seqNode;
-  },
+  }
 
-  _getGenomeBoxNode: function (data) {
-    var _genomeDef = 'S288C';
-    var _elements = _.map(data.genome, (g) => {
-      if (g.strain == _genomeDef) {
-        return (
-          <option value={g.strain} selected="selected">
-            {g.label}
-          </option>
-        );
-      } else {
-        return <option value={g.strain}>{g.label}</option>;
-      }
+  _getGenomeBoxNode(data) {
+    var _elements = _.map(data.genome, (g, index) => {
+      return (
+        <option value={g.strain} key={index}>
+          {g.label}
+        </option>
+      );
     });
     return (
       <div>
         <h3>Choose a genome to search: </h3>
         <p>
-          <select ref="genome" name="genome" onChange={this._onChangeGenome}>
+          <select
+            ref="genome"
+            name="genome"
+            onChange={this._onChangeGenome.bind(this)}
+          >
             {_elements}
           </select>
         </p>
       </div>
     );
-  },
+  }
 
-  _getSeqtypeNode: function () {
-    var param = this.state.param;
-
+  _getSeqtypeNode() {
+    // var param = this.state.param;
     var pattern_type = { peptide: 'protein', nucleotide: 'dna' };
     var _elements = [];
+    let index = 0;
     for (var key in pattern_type) {
-      if (param['seqtype'] && param['seqtype'] == 'dna') {
-        _elements.push(
-          <option value="dna" selected="selected">
-            {key}
-          </option>
-        );
-      }
-      if (key == 'peptide') {
-        _elements.push(
-          <option value={pattern_type[key]} selected="selected">
-            {key}
-          </option>
-        );
-      } else {
-        _elements.push(<option value={pattern_type[key]}>{key}</option>);
-      }
+      _elements.push(
+        <option value={pattern_type[key]} key={index}>
+          {key}
+        </option>
+      );
+      index = index + 1;
     }
 
     return (
       <div>
         <h3>Enter a</h3>
         <p>
-          <select name="seqtype" ref="seqtype" onChange={this._onChangeSeqtype}>
+          <select
+            name="seqtype"
+            ref="seqtype"
+            onChange={this._onChangeSeqtype.bind(this)}
+          >
             {_elements}
           </select>
         </p>
       </div>
     );
-  },
+  }
 
-  _getPatternBoxNode: function () {
+  _getPatternBoxNode() {
     var param = this.state.param;
     var pattern = param['seq'];
 
@@ -376,17 +367,18 @@ var SearchForm = React.createClass({
           ref="pattern"
           value={pattern}
           name="pattern"
-          onChange={this._onChange}
+          onChange={(e) => this._onChange(e)}
           rows="1"
           cols="50"
         ></textarea>
       </div>
     );
-  },
+  }
 
-  _getDatasetNode: function (data) {
+  _getDatasetNode(data) {
     // if( dataset.indexOf('orf_') >= 0 ){
     var _elements = [];
+    // let selected = [];
     for (var key in data.dataset) {
       if (key == this.state.genome) {
         var datasets = data.dataset[key];
@@ -395,17 +387,14 @@ var SearchForm = React.createClass({
           if (d.seqtype != this.state.seqtype) {
             continue;
           }
-          if (d.label.indexOf('Coding') >= 0 || d.label.indexOf('Trans') >= 0) {
-            _elements.push(
-              <option value={d.dataset_file_name} selected="selected">
-                {d.label}
-              </option>
-            );
-          } else {
-            _elements.push(
-              <option value={d.dataset_file_name}>{d.label}</option>
-            );
-          }
+          // if (d.label.indexOf('Coding') >= 0 || d.label.indexOf('Trans') >= 0) {
+          //   selected.push(d.dataset_file_name);
+          // }
+          _elements.push(
+            <option value={d.dataset_file_name} key={i}>
+              {d.label}
+            </option>
+          );
         }
       }
     }
@@ -420,9 +409,9 @@ var SearchForm = React.createClass({
         </p>
       </div>
     );
-  },
+  }
 
-  _getSubmitNode: function () {
+  _getSubmitNode() {
     return (
       <div>
         <p>
@@ -440,9 +429,9 @@ var SearchForm = React.createClass({
         </p>
       </div>
     );
-  },
+  }
 
-  _getOptionsNode: function () {
+  _getOptionsNode() {
     var maximumHitsNode = this._getMaximumHitsNode();
     var strandNode = this._getStrandNote();
     var mismatchNode = this._getMismatchNode();
@@ -466,9 +455,9 @@ var SearchForm = React.createClass({
         {mismatchTypeNode}
       </div>
     );
-  },
+  }
 
-  _getMaximumHitsNode: function () {
+  _getMaximumHitsNode() {
     var hits = [
       '25',
       '50',
@@ -480,39 +469,44 @@ var SearchForm = React.createClass({
       '5000',
       'no limit',
     ];
-    var _elements = this._getDropdownList(hits, '500');
+    let _elements = this._getDropdownList(hits);
     return (
-      <select name="max_hits" ref="max_hits" onChange={this._onChange}>
+      <select
+        name="max_hits"
+        ref="max_hits"
+        onChange={(e) => this._onChange(e, 'hitsNode')}
+        value={this.state.hitsNode}
+      >
         {_elements}
       </select>
     );
-  },
+  }
 
-  _getStrandNote: function () {
+  _getStrandNote() {
     var strands = [
       'Both strands',
       'Strand in dataset',
       'Reverse complement of strand in dataset',
     ];
-    var _elements = this._getDropdownList(strands, 'Both strands');
+    let _elements = this._getDropdownList(strands);
     return (
-      <select name="strand" ref="strand" onChange={this._onChange}>
+      <select name="strand" ref="strand">
         {_elements}
       </select>
     );
-  },
+  }
 
-  _getMismatchNode: function () {
+  _getMismatchNode() {
     var mismatch = ['0', '1', '2', '3'];
-    var _elements = this._getDropdownList(mismatch, '0');
+    let _elements = this._getDropdownList(mismatch);
     return (
-      <select name="mismatch" ref="mismatch" onChange={this._onChange}>
+      <select name="mismatch" ref="mismatch">
         {_elements}
       </select>
     );
-  },
+  }
 
-  _getMismatchTypeNode: function () {
+  _getMismatchTypeNode() {
     var _elements = [
       { key: 'insertion', name: 'Insertions' },
       { key: 'deletion', name: 'Deletions' },
@@ -532,24 +526,20 @@ var SearchForm = React.createClass({
         />
       </div>
     );
-  },
+  }
 
-  _getPatternExampleNote: function () {
+  _getPatternExampleNote() {
     var examples = ExampleTable.examples();
 
     return (
       <div>
-        <p>
-          <a name="examples">
-            <h3>Supported Pattern Syntax and Examples:</h3>
-          </a>
-        </p>
+        <a name="examples">
+          <h3>Supported Pattern Syntax and Examples:</h3>
+        </a>
         {examples}
-        <p>
-          <h3>
-            <a name="mismatch_note">Limits on the use of the Mismatch option</a>
-          </h3>
-        </p>
+        <h3>
+          <a name="mismatch_note">Limits on the use of the Mismatch option</a>
+        </h3>
         <p>
           At this time, the mismatch option (Insertions, Deletions, or
           Substitutions) can only be used in combination with exact patterns
@@ -560,57 +550,56 @@ var SearchForm = React.createClass({
         </p>
       </div>
     );
-  },
+  }
 
-  _getDropdownList: function (elementList, activeVal) {
+  _getDropdownList(elementList) {
     var _elements = [];
-    elementList.forEach(function (m) {
-      if (m == activeVal) {
-        _elements.push(
-          <option value={m} selected="selected">
-            {m}
-          </option>
-        );
-      } else {
-        _elements.push(<option value={m}>{m}</option>);
-      }
+    // let selected = '';
+    elementList.forEach(function (m, index) {
+      // if (m == activeVal) {
+      //   selected = m;
+      // }
+      _elements.push(
+        <option value={m} key={index}>
+          {m}
+        </option>
+      );
     });
     return _elements;
-  },
+  }
 
   // need to combine these three
-  _onChange: function (e) {
-    this.setState({ text: e.target.value });
-  },
+  _onChange(e, selectedValue) {
+    this.setState({ [selectedValue]: e.target.value });
+  }
 
-  _onChangeGenome: function (e) {
+  _onChangeGenome(e) {
     this.setState({ genome: e.target.value });
-  },
+  }
 
-  _onChangeSeqtype: function (e) {
+  _onChangeSeqtype(e) {
     this.setState({ seqtype: e.target.value });
-  },
+  }
 
-  _getConfigData: function () {
+  _getConfigData() {
     var jsonUrl = PatmatchUrl + '?conf=patmatch.json';
     $.ajax({
       url: jsonUrl,
       dataType: 'json',
-      success: function (data) {
+      success: (data) => {
         this.setState({ configData: data });
-      }.bind(this),
-      error: function (xhr, status, err) {
+      },
+      error: (xhr, status, err) => {
         console.error(jsonUrl, status, err.toString());
-      }.bind(this),
+      },
     });
-  },
+  }
 
-  _onSubmit: function (e) {
-    var genome = this.state.genome.value.trim();
-    var seqtype = this.state.seqtype.value.trim();
+  _onSubmit(e) {
+    var genome = this.state.genome.trim();
+    var seqtype = this.state.seqtype.trim();
     var pattern = this.refs.pattern.value.trim();
     var dataset = this.refs.dataset.value.trim();
-
     if (pattern) {
       window.localStorage.clear();
       window.localStorage.setItem('genome', genome);
@@ -621,9 +610,9 @@ var SearchForm = React.createClass({
       e.preventDefault();
       return 1;
     }
-  },
+  }
 
-  _doPatmatch: function () {
+  _doPatmatch() {
     var param = this.state.param;
 
     var genome = param['genome'];
@@ -655,8 +644,8 @@ var SearchForm = React.createClass({
       window.localStorage.setItem('strand', strand);
     }
 
-    var pattern = pattern.replace('%3C', '<');
-    var pattern = pattern.replace('%3E', '>');
+    pattern = pattern.replace('%3C', '<');
+    pattern = pattern.replace('%3E', '>');
 
     $.ajax({
       url: PatmatchUrl,
@@ -673,16 +662,16 @@ var SearchForm = React.createClass({
         deletion: param['deletion'],
         substitution: param['substitution'],
       },
-      success: function (data) {
+      success: (data) => {
         this.setState({ isComplete: true, resultData: data });
-      }.bind(this),
-      error: function (xhr, status, err) {
+      },
+      error: (xhr, status, err) => {
         this.setState({ isPending: true });
-      }.bind(this),
+      },
     });
-  },
+  }
 
-  _getSeq: function () {
+  _getSeq() {
     var param = this.state.param;
 
     $.ajax({
@@ -690,16 +679,16 @@ var SearchForm = React.createClass({
       data_type: 'json',
       type: 'POST',
       data: { seqname: param['seqname'], dataset: param['dataset'] },
-      success: function (data) {
+      success(data) {
         this.setState({ seqFetched: true, resultData: data });
-      }.bind(this),
-      error: function (xhr, status, err) {
+      },
+      error(xhr, status, err) {
         this.setState({ isPending: true });
-      }.bind(this),
+      },
     });
-  },
+  }
 
-  _getSummaryTable: function (totalHits, uniqueHits) {
+  _getSummaryTable(totalHits, uniqueHits) {
     var dataset = window.localStorage.getItem('dataset');
     var pattern = window.localStorage.getItem('pattern');
     var seqtype = window.localStorage.getItem('seqtype');
@@ -728,8 +717,8 @@ var SearchForm = React.createClass({
     _summaryRows.push(['Number of Unique Sequence Entries Hit', uniqueHits]);
     _summaryRows.push(['Sequences Searched', seqSearched]);
 
-    var pattern = pattern.replace('%3C', '<');
-    var pattern = pattern.replace('%3E', '>');
+    pattern = pattern.replace('%3C', '<');
+    pattern = pattern.replace('%3E', '>');
 
     if (seqtype == 'dna' || seqtype.indexOf('nuc') >= 0) {
       _summaryRows.push(['Entered nucleotide pattern', pattern]);
@@ -745,9 +734,9 @@ var SearchForm = React.createClass({
     var _summaryData = { headers: [['', '']], rows: _summaryRows };
 
     return <DataTable data={_summaryData} />;
-  },
+  }
 
-  _getResultTable: function (data, totalHits) {
+  _getResultTable(data, totalHits) {
     var dataset = window.localStorage.getItem('dataset');
 
     var withDesc = 0;
@@ -887,9 +876,9 @@ var SearchForm = React.createClass({
         pluginOptions={_dataTableOptions}
       />
     );
-  },
+  }
 
-  _getDatasetLabel: function (dataset) {
+  _getDatasetLabel(dataset) {
     var configData = this.state.configData;
     var datasetDisplayName = '';
     var seqtype = '';
@@ -912,7 +901,7 @@ var SearchForm = React.createClass({
     }
 
     return datasetDisplayName + ' ' + seqtype + ' Sequence';
-  },
-});
+  }
+}
 
 module.exports = SearchForm;

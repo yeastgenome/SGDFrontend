@@ -1,7 +1,5 @@
 import React from 'react';
 import d3 from 'd3';
-import _ from 'underscore';
-import $ from 'jquery';
 
 const CalcWidthOnResize = require('../mixins/calc_width_on_resize.jsx');
 const FlexibleTooltip = require('../widgets/flexible_tooltip.jsx');
@@ -207,8 +205,8 @@ module.exports = React.createClass({
       if (cutPositionsC[i] == '') {
         continue;
       }
-      var cutSite = parseInt(cutPositionsC[i]);
-      var color = 'blue';
+      let cutSite = parseInt(cutPositionsC[i]);
+      let color = 'blue';
       x = BAR_START + this._getScale(cutSite);
       y = 15;
       cutSiteC.push(cutSite);
@@ -230,7 +228,6 @@ module.exports = React.createClass({
     var startX = this._getScale(0);
     var endX = this._getScale(seqLen);
 
-    var textX = endX - 100;
     var textColor = enzyme_type_to_color[enzyme_type];
 
     var transform = this._getGroupTransform(startX, endX);
