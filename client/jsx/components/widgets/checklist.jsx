@@ -58,9 +58,9 @@ var Checklist = React.createClass({
 
     return (
       <div>
-        <form className="checklist" action="">
+        <div className="checklist" action="">
           {inputs}
-        </form>
+        </div>
         {this._getAllToggleNode()}
       </div>
     );
