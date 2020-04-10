@@ -1,5 +1,4 @@
 import React from 'react';
-import _ from 'underscore';
 import $ from 'jquery';
 
 const DataTable = require('../widgets/data_table.jsx');
@@ -397,19 +396,27 @@ const GoTermFinder = React.createClass({
     // used for both manual and computational: IKR, IMR
 
     // var _init_active_keys = evidenceCode;/
-    var _init_active_keys = [];
+
     var _elements = [];
     for (var i = 0; i < evidenceCode.length; i++) {
       _elements.push({ key: evidenceCode[i], name: evidenceCode[i] });
     }
 
     var _pvalueElements = [
-      <option value="0.01">
+      <option value="0.01" key="0">
         0.01
       </option>,
     ];
-    _pvalueElements.push(<option value="0.05">0.05</option>);
-    _pvalueElements.push(<option value="0.1">0.1</option>);
+    _pvalueElements.push(
+      <option value="0.05" key="1">
+        0.05
+      </option>
+    );
+    _pvalueElements.push(
+      <option value="0.1" key="2">
+        0.1
+      </option>
+    );
 
     var _init_active_keys = ['FDR'];
     var _FDRelements = [{ key: 'FDR', name: 'FDR' }];
@@ -438,7 +445,12 @@ const GoTermFinder = React.createClass({
           <strong>Pick a p-value below</strong> (default is 0.01):
         </h3>
         <p>
-          <select ref="pvalue" name="pvalue" value={this.state.pvalue} onChange={this.onPvalueChange}>
+          <select
+            ref="pvalue"
+            name="pvalue"
+            value={this.state.pvalue}
+            onChange={this.onPvalueChange}
+          >
             {_pvalueElements}
           </select>
         </p>
@@ -456,7 +468,6 @@ const GoTermFinder = React.createClass({
   handleFile(e) {
     var reader = new FileReader();
     var fileHandle = e.target.files[0];
-    var fileName = e.target.files[0].name;
     reader.onload = function (upload) {
       this.setState({
         uploadedGenes: upload.target.result,
@@ -468,7 +479,6 @@ const GoTermFinder = React.createClass({
   handleFile4bg(e) {
     var reader = new FileReader();
     var fileHandle = e.target.files[0];
-    var fileName = e.target.files[0].name;
     reader.onload = function (upload) {
       this.setState({
         uploadedGenes4bg: upload.target.result,

@@ -1,25 +1,25 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
-import { routeActions, push } from 'react-router-redux';
 import Radium from 'radium';
 import _ from 'underscore';
 import pluralize from 'pluralize';
 import StatusBtns from '../components/status_buttons/status_btns.jsx';
-import { getHrefWithoutAgg, getCategoryDisplayName, getFacetName } from '../lib/search_helpers';
+import {
+  getHrefWithoutAgg,
+  getCategoryDisplayName,
+  getFacetName,
+} from '../lib/search_helpers';
 import ClassNames from 'classnames';
-import S from 'string';
 
 const DEFAULT_FACET_LENGTH = 5;
 const MEDIUM_FACET_LENGTH = 20;
 const SEARCH_URL = '/search';
-const SELECT_MAX_CHAR_WIDTH = 8;
-const SELECT_OPTION_DELEMITER = '@@';
 
 const FacetSelector = React.createClass({
   propTypes: {
     downloadStatus: React.PropTypes.func,
-    downloadStatusStr: React.PropTypes.string
+    downloadStatusStr: React.PropTypes.string,
   },
   render() {
     if (this.props.isAggPending) return null;
@@ -33,7 +33,6 @@ const FacetSelector = React.createClass({
   },
 
   _renderCatSelector() {
-    let keySuffix = this.props.isMobile ? 'm' : '';
     let aggs =
       this.props.aggregations.length === 0
         ? []
@@ -42,13 +41,11 @@ const FacetSelector = React.createClass({
       let name = pluralize(getCategoryDisplayName(d.key));
       let href = '';
       if (d.key === 'download') {
-        if(!location.search.toLocaleLowerCase().includes('status=active')){
+        if (!location.search.toLocaleLowerCase().includes('status=active')) {
           href = `${this._getRawUrl()}&category=${d.key}&status=Active`;
-        }
-        else{
+        } else {
           href = `${this._getRawUrl()}&category=${d.key}`;
         }
-        
       } else {
         href = `${this._getRawUrl()}&category=${d.key}`;
       }
@@ -71,10 +68,10 @@ const FacetSelector = React.createClass({
       <div>
         <p>
           <Link to={this._getRawUrl()}>
-            <i className='fa fa-chevron-left' /> Show all categories
+            <i className="fa fa-chevron-left" /> Show all categories
           </Link>
         </p>
-        <h2 className='search-cat-title'>
+        <h2 className="search-cat-title">
           <span className={`search-cat ${this.props.activeCategory}`} />
           {catName}
         </h2>
@@ -92,7 +89,7 @@ const FacetSelector = React.createClass({
       return emptyMsgNode;
       // if there are filters, but no values, show same message
     } else if (
-      _.max(this.props.aggregations, d => {
+      _.max(this.props.aggregations, (d) => {
         return d.values.length;
       }).values.length === 0
     ) {
@@ -114,9 +111,35 @@ const FacetSelector = React.createClass({
           break;
       }
       if (d.key === 'status' && qp.category === 'download') {
-        return <FacetList customFacetRadioBtnFlag={true} customFacetFlag={true} aggKey={d.key} values={[{}]} currentValues={currentAgg.values} queryParams={this.props.queryParams} key={d.key} name={getFacetName(d.key)} downloadStatus={this.props.downloadStatus} downloadStatusStr={this.props.downloadStatusStr} />;
+        return (
+          <FacetList
+            customFacetRadioBtnFlag={true}
+            customFacetFlag={true}
+            aggKey={d.key}
+            values={[{}]}
+            currentValues={currentAgg.values}
+            queryParams={this.props.queryParams}
+            key={d.key}
+            name={getFacetName(d.key)}
+            downloadStatus={this.props.downloadStatus}
+            downloadStatusStr={this.props.downloadStatusStr}
+          />
+        );
       } else {
-        return <FacetList customFacetRadioBtnFlag={true} customFacetFlag={false} aggKey={d.key} values={d.values} currentValues={currentAgg.values} queryParams={this.props.queryParams} key={d.key} name={getFacetName(d.key)} downloadStatus={this.props.downloadStatus} downloadStatusStr={this.props.downloadStatusStr} />;
+        return (
+          <FacetList
+            customFacetRadioBtnFlag={true}
+            customFacetFlag={false}
+            aggKey={d.key}
+            values={d.values}
+            currentValues={currentAgg.values}
+            queryParams={this.props.queryParams}
+            key={d.key}
+            name={getFacetName(d.key)}
+            downloadStatus={this.props.downloadStatus}
+            downloadStatusStr={this.props.downloadStatusStr}
+          />
+        );
       }
     });
 
@@ -157,7 +180,7 @@ const FacetSelector = React.createClass({
       currentValues,
       isReset
     );
-  }
+  },
 });
 
 const FacetList = Radium(
@@ -169,25 +192,30 @@ const FacetList = Radium(
       queryParams: React.PropTypes.object.isRequired,
       name: React.PropTypes.string,
       customFacetFlag: React.PropTypes.bool,
-      customFacetRadioBtnFlag: React.PropTypes.bool,
       downloadStatus: React.PropTypes.func,
-      downloadStatusStr: React.PropTypes.string
+      downloadStatusStr: React.PropTypes.string,
     },
 
     getInitialState() {
       // null means don't slice, show all
-      let tempStr = 'active'
-        if (location.search
-            .toLocaleLowerCase()
-            .indexOf('active') > -1) {
-              tempStr='active';
-        } else if (location.search
-            .toLocaleLowerCase()
-            .indexOf('archived') > -1) {
-              tempStr = 'archived';
-        }
+      let tempStr = 'active';
+      if (location.search.toLocaleLowerCase().indexOf('active') > -1) {
+        tempStr = 'active';
+      } else if (location.search.toLocaleLowerCase().indexOf('archived') > -1) {
+        tempStr = 'archived';
+      }
 
-      return { isCollapsed: false, visibleLength: DEFAULT_FACET_LENGTH, selectedStatus: tempStr, statusObj: { active: { href: '/search?category=download&page=0&q=&status=Active' }, archived: { href: '/search?category=download&page=0&q=&status=Archived' } } };
+      return {
+        isCollapsed: false,
+        visibleLength: DEFAULT_FACET_LENGTH,
+        selectedStatus: tempStr,
+        statusObj: {
+          active: { href: '/search?category=download&page=0&q=&status=Active' },
+          archived: {
+            href: '/search?category=download&page=0&q=&status=Archived',
+          },
+        },
+      };
     },
 
     render() {
@@ -207,15 +235,32 @@ const FacetList = Radium(
         if (this.props.customFacetFlag) {
           let temp = [];
           for (let itm in this.state.statusObj) {
-            let modNewRef = this._getToggledHref('status', itm, this.props.currentValues);
-            if(this.props.downloadStatusStr){
-              temp.push(this._renderStatusButtons(itm, `2agg${itm}`, modNewRef, isActive, this.props.downloadStatusStr));
+            let modNewRef = this._getToggledHref(
+              'status',
+              itm,
+              this.props.currentValues
+            );
+            if (this.props.downloadStatusStr) {
+              temp.push(
+                this._renderStatusButtons(
+                  itm,
+                  `2agg${itm}`,
+                  modNewRef,
+                  isActive,
+                  this.props.downloadStatusStr
+                )
+              );
+            } else {
+              temp.push(
+                this._renderStatusButtons(
+                  itm,
+                  `2agg${itm}`,
+                  modNewRef,
+                  isActive,
+                  ''
+                )
+              );
             }
-            else{
-              temp.push(this._renderStatusButtons(itm, `2agg${itm}`, modNewRef, isActive, ''));
-
-            }
-            
           }
           return temp;
         }
@@ -245,21 +290,42 @@ const FacetList = Radium(
       );
     },
     _onStatusBtnChange(event) {
-      
       this.setState({
-        selectedStatus: event.currentTarget.value.toLowerCase()
+        selectedStatus: event.currentTarget.value.toLowerCase(),
       });
       this.props.downloadStatus(event.currentTarget.value.toLowerCase());
     },
 
     _renderStatusButtons(name, _key, href, isActive, dStr) {
-      if(dStr){
-        return <StatusBtns name={name} btnKey={_key} key={_key} href={href} isActive={isActive} btnClick={this._onStatusBtnChange} flag={dStr.toLowerCase() === name.toLowerCase()} actionFunc={this.props.actionTrigger} sString={this.props.sStatus} />;
+      if (dStr) {
+        return (
+          <StatusBtns
+            name={name}
+            btnKey={_key}
+            keyValue={_key}
+            href={href}
+            isActive={isActive}
+            btnClick={this._onStatusBtnChange}
+            flag={dStr.toLowerCase() === name.toLowerCase()}
+            actionFunc={this.props.actionTrigger}
+            sString={this.props.sStatus}
+          />
+        );
+      } else {
+        return (
+          <StatusBtns
+            name={name}
+            btnKey={_key}
+            keyValue={_key}
+            href={href}
+            isActive={isActive}
+            btnClick={this._onStatusBtnChange}
+            flag={this.state.selectedStatus === name.toLowerCase()}
+            actionFunc={this.props.actionTrigger}
+            sString={this.props.sStatus}
+          />
+        );
       }
-      else{
-        return <StatusBtns name={name} btnKey={_key} key={_key} href={href} isActive={isActive} btnClick={this._onStatusBtnChange} flag={this.state.selectedStatus === name.toLowerCase()} actionFunc={this.props.actionTrigger} sString={this.props.sStatus} />;
-      }
-      
     },
 
     _renderShowMoreMaybe() {
@@ -274,48 +340,43 @@ const FacetList = Radium(
       let text, _onClick;
       // currently showing all, allow collapse
       if (visibleLength === null) {
-        _onClick = e => {
+        _onClick = (e) => {
           e.preventDefault();
           this.setState({ visibleLength: DEFAULT_FACET_LENGTH });
         };
         text = `Show ${DEFAULT_FACET_LENGTH}`;
         // only showing 5, show more
       } else if (visibleLength === DEFAULT_FACET_LENGTH) {
-        _onClick = e => {
+        _onClick = (e) => {
           e.preventDefault();
           this.setState({ visibleLength: MEDIUM_FACET_LENGTH });
         };
         text = 'Show more';
         // medium length, show all
-      }
-      else if (valLength < DEFAULT_FACET_LENGTH) {
-        _onClick = e => {
+      } else if (valLength < DEFAULT_FACET_LENGTH) {
+        _onClick = (e) => {
           e.preventDefault();
           this.setState({
-            visibleLength: valLength
+            visibleLength: valLength,
           });
-        }
-      }
-    
-      else if (valLength === MEDIUM_FACET_LENGTH) {
-        _onClick = e => {
+        };
+      } else if (valLength === MEDIUM_FACET_LENGTH) {
+        _onClick = (e) => {
           e.preventDefault();
           this.setState({
-            visibleLength: DEFAULT_FACET_LENGTH
+            visibleLength: DEFAULT_FACET_LENGTH,
           });
         };
         text = `Show ${DEFAULT_FACET_LENGTH}`;
-
-      }
-       else {
-        _onClick = e => {
+      } else {
+        _onClick = (e) => {
           e.preventDefault();
           this.setState({ visibleLength: null });
         };
         text = 'Show all';
       }
       return (
-        <p className='text-right'>
+        <p className="text-right">
           <a onClick={_onClick}>{text}</a>
         </p>
       );
@@ -348,15 +409,15 @@ const FacetList = Radium(
     },
 
     _toggleIsCollapsed() {
-      this.setState({ isCollapsed: !this.state.isCollapsed });
-    }
+      this.setState((prevState) => ({ isCollapsed: !prevState.isCollapsed }));
+    },
   })
 );
 
 function mapStateToProps(_state) {
   let state = _state.searchResults;
-  state.aggregations.map( item => {
-    if (item.key == 'year'){
+  state.aggregations.map((item) => {
+    if (item.key == 'year') {
       item['values'].sortOnYear('key', true);
       return;
     }
@@ -368,9 +429,9 @@ function mapStateToProps(_state) {
     activeCategory: state.activeCategory,
     isAggPending: state.isAggPending,
   };
-};
+}
 
-Array.prototype.sortOnYear = function(key, order) {
+Array.prototype.sortOnYear = function (key, order) {
   this.sort((a, b) => {
     if (order) {
       if (a[key] > b[key]) {
@@ -380,8 +441,7 @@ Array.prototype.sortOnYear = function(key, order) {
       } else {
         return 0;
       }
-    }
-    else{
+    } else {
       if (a[key] < b[key]) {
         return -1;
       } else if (a[key] > b[key]) {
@@ -390,7 +450,6 @@ Array.prototype.sortOnYear = function(key, order) {
         return 0;
       }
     }
-    
   });
 };
 

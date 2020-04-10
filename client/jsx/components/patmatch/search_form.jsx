@@ -199,11 +199,7 @@ class SearchForm extends Component {
     var end = param['end'];
     var dataset = param['dataset'];
     var seqname = param['seqname'];
-
     var seq = this.state.resultData.seq;
-    var text = this.state.resultData.defline;
-
-    var seq_orig = seq;
 
     var seqlen = seq.length;
     var seqStart = 0;
@@ -305,12 +301,7 @@ class SearchForm extends Component {
   }
 
   _getGenomeBoxNode(data) {
-    var _genomeDef = 'S288C';
-    let selected = [];
     var _elements = _.map(data.genome, (g, index) => {
-      if (g.strain == _genomeDef) {
-        selected.push(g.strain);
-      }
       return (
         <option value={g.strain} key={index}>
           {g.label}
@@ -334,7 +325,7 @@ class SearchForm extends Component {
   }
 
   _getSeqtypeNode() {
-    var param = this.state.param;
+    // var param = this.state.param;
     var pattern_type = { peptide: 'protein', nucleotide: 'dna' };
     var _elements = [];
     let index = 0;
@@ -653,8 +644,8 @@ class SearchForm extends Component {
       window.localStorage.setItem('strand', strand);
     }
 
-    var pattern = pattern.replace('%3C', '<');
-    var pattern = pattern.replace('%3E', '>');
+    pattern = pattern.replace('%3C', '<');
+    pattern = pattern.replace('%3E', '>');
 
     $.ajax({
       url: PatmatchUrl,
@@ -726,8 +717,8 @@ class SearchForm extends Component {
     _summaryRows.push(['Number of Unique Sequence Entries Hit', uniqueHits]);
     _summaryRows.push(['Sequences Searched', seqSearched]);
 
-    var pattern = pattern.replace('%3C', '<');
-    var pattern = pattern.replace('%3E', '>');
+    pattern = pattern.replace('%3C', '<');
+    pattern = pattern.replace('%3E', '>');
 
     if (seqtype == 'dna' || seqtype.indexOf('nuc') >= 0) {
       _summaryRows.push(['Entered nucleotide pattern', pattern]);

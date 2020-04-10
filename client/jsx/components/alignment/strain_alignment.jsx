@@ -1,5 +1,4 @@
 import React from 'react';
-import _ from 'underscore';
 import $ from 'jquery';
 
 const DataTable = require('../widgets/data_table.jsx');
@@ -15,11 +14,10 @@ const StrainAlignment = React.createClass({
       isComplete: false,
       isPending: false,
       userError: null,
-      type: 'protein',
       resultData: {},
       notFound: null,
       locus: param['locus'],
-      type: param['type'],
+      type: param['type'] || 'protein',
       param: param,
     };
   },
@@ -177,12 +175,12 @@ const StrainAlignment = React.createClass({
     var _elements = [];
     _elements.push(<option value="protein">Protein</option>);
     _elements.push(<option value="dna">DNA</option>);
-          
+
     var type = 'dna';
     if (this.state.type == 'dna') {
       type = 'protein';
     }
-      
+
     return (
       <div>
         <h3>Pick sequence type:</h3>
