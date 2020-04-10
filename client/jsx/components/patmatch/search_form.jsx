@@ -378,7 +378,7 @@ class SearchForm extends Component {
   _getDatasetNode(data) {
     // if( dataset.indexOf('orf_') >= 0 ){
     var _elements = [];
-    let selected = [];
+    // let selected = [];
     for (var key in data.dataset) {
       if (key == this.state.genome) {
         var datasets = data.dataset[key];
@@ -387,9 +387,9 @@ class SearchForm extends Component {
           if (d.seqtype != this.state.seqtype) {
             continue;
           }
-          if (d.label.indexOf('Coding') >= 0 || d.label.indexOf('Trans') >= 0) {
-            selected.push(d.dataset_file_name);
-          }
+          // if (d.label.indexOf('Coding') >= 0 || d.label.indexOf('Trans') >= 0) {
+          //   selected.push(d.dataset_file_name);
+          // }
           _elements.push(
             <option value={d.dataset_file_name} key={i}>
               {d.label}

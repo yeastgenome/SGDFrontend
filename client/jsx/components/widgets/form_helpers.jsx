@@ -63,7 +63,6 @@ export const StringField = React.createClass({
     if (this.props.paramName == 'colleague_note') {
       let tempStr = this.props.defaultValue.match(/\<a.*\>/);
       let tempArr = this.props.defaultValue.split(/\<a.*\>/);
-      let itm = tempStr[0];
 
       return (
         <div className="form-read-field">
@@ -196,13 +195,13 @@ export const MultiSelectField = React.createClass({
   },
 
   getInitialState() {
-    let defaultValues = this.props.defaultValues || [];
+    let defaultValues = this.props.defaultValues || '';
     // if string is supplied, convert to array
     if (typeof defaultValues === 'string') {
       defaultValues = defaultValues.split(DELIMITER);
     }
     return {
-      values: defaultValues || [],
+      values: defaultValues,
     };
   },
 
