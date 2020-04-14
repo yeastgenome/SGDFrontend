@@ -30,11 +30,11 @@ const GeneSequenceResources = React.createClass({
       isPending: false,
       userError: null,
       chr: 0,
-      strains: ['S288C'],
       strain: 'S288C',
       resultData: {},
       notFound: null,
       param: param,
+      selectedStrains: [],
     };
   },
 
@@ -1592,11 +1592,21 @@ const GeneSequenceResources = React.createClass({
 
     var strains = Object.keys(strain2label);
 
-    var _elements = _.map(strains, (s) => {
+    var _elements = _.map(strains, (s, index) => {
       var label = strain2label[s];
-      return <option value={s}>{label}</option>;
+      return (
+        <option value={s} onClick={this.onStrainChange} key={index}>
+          {label}
+        </option>
+      );
     });
 
+    let selectedValue = [];
+    if (this.state.selectedStrains.length == 0) {
+      selectedValue = ['S288C'];
+    } else {
+      selectedValue = [...this.state.selectedStrains];
+    }
     return (
       <div>
         <p>
@@ -1606,9 +1616,9 @@ const GeneSequenceResources = React.createClass({
             ref="strains"
             name="strains"
             id="strains"
-            onChange={this.onStrainChange}
             size="11"
-            multiple
+            multiple={true}
+            value={selectedValue}
           >
             {_elements}
           </select>
@@ -1618,7 +1628,13 @@ const GeneSequenceResources = React.createClass({
   },
 
   onStrainChange(e) {
-    this.setState({ strains: e.target.value });
+    let currentValues = [...this.state.selectedStrains];
+    if (currentValues.includes(e.target.value)) {
+      currentValues.splice(currentValues.indexOf(e.target.value), 1);
+    } else {
+      currentValues.push(e.target.value);
+    }
+    this.setState({ selectedStrains: currentValues });
   },
 
   onChrChange(e) {
