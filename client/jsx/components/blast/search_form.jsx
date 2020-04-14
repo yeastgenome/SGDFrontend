@@ -66,6 +66,7 @@ var SearchForm = React.createClass({
       submitted: submitted,
       param: param,
       didBlast: 0,
+      selectedDatabase: [],
     };
   },
 
@@ -128,7 +129,7 @@ var SearchForm = React.createClass({
         return <div dangerouslySetInnerHTML={{ __html: errorReport }} />;
       }
 
-      let descText =
+      var descText =
         "<p>Query performed by the Saccharomyces Genome Database; for full BLAST options and parameters, refer to the NCBI BLAST Documentation Links to GenBank, EMBL, PIR, SwissProt, and SGD are shown in bold type; links to locations within this document are in normal type. Your comments and suggestions are requested: <a href='/suggestion'>Send a Message to SGD</a></p><hr>";
       if (this.state.filter) {
         descText =
@@ -423,16 +424,27 @@ BLAST Help at NCBI</a>.</p><hr>';
   _getDatabaseNode: function (data) {
     var database = data.database;
     var datagroup = data.datagroup;
+    var _databaseDef = data.databasedef;
 
     var i = 0;
+    const selectedValue = [];
     var _elements = _.map(database, (d, index) => {
       i += 1;
       var dataset = d.dataset;
       if (dataset.match(/^label/)) {
         dataset = datagroup[dataset];
       }
+
+      if (this.state.selectedDatabase.length == 0) {
+        if ($.inArray(dataset, _databaseDef) > -1) {
+          selectedValue.push(dataset);
+        }
+      } else {
+        selectedValue.push(...this.state.selectedDatabase);
+      }
+
       return (
-        <option value={dataset} key={index}>
+        <option value={dataset} key={index} onClick={this.handleDatabaseSelect}>
           {d.label}
         </option>
       );
@@ -450,13 +462,28 @@ BLAST Help at NCBI</a>.</p><hr>';
             id="database"
             onChange={this._onDatabaseChange}
             size={i}
-            multiple
+            value={selectedValue}
+            multiple={true}
           >
             {_elements}
           </select>
         </p>
       </div>
     );
+  },
+
+  handleDatabaseSelect(e) {
+    let newValue = e.target.value.split(',');
+    let allSelectedValues = [...this.state.selectedDatabase, ...newValue];
+    let filteredArray = [];
+    allSelectedValues.forEach((value) => {
+      if (filteredArray.includes(value)) {
+        filteredArray.splice(filteredArray.indexOf(value), 1);
+      } else {
+        filteredArray.push(value);
+      }
+    });
+    this.setState({ selectedDatabase: filteredArray });
   },
 
   _getOptionsNode: function (data) {
