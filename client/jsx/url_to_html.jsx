@@ -37,14 +37,17 @@ const elToHtml = function (el) {
 
 // takes relative url, call cb with html response
 // cb(err, html, statusCode)
-module.exports = function urlToHtml (relativeUrl, cb) {
+module.exports = function urlToHtml(relativeUrl, cb) {
   cb = _.once(cb);
   // create store for server, no router reducer
   let _history = useQueries(createMemoryHistory)();
   let _store = ConfigureStore(undefined, _history);
   // dispatch route events
   _store.dispatch(routeActions.push(relativeUrl));
-  let appElement = React.createElement(ReduxApplication, { history: _history, store: _store });
+  let appElement = React.createElement(ReduxApplication, {
+    history: _history,
+    store: _store,
+  });
   let htmlStr = elToHtml(appElement);
   return cb(null, htmlStr, 200);
 };

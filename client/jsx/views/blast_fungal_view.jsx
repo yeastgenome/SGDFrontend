@@ -1,16 +1,16 @@
-'use strict'
+'use strict';
 
-import React from 'react'
-import ReactDOM from 'react-dom'
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-var SearchForm = require('../components/blast/search_form.jsx')
+var SearchForm = require('../components/blast/search_form.jsx');
 
-var blastFungalView = {}
+var blastFungalView = {};
 blastFungalView.render = function () {
-    ReactDOM.render(
-        <SearchForm blastType="fungal" />,
-        document.getElementById('j-main')
-    )
-}
+  ReactDOM.render(
+    <SearchForm blastType="fungal" />,
+    document.getElementById('j-main')
+  );
+};
 
-module.exports = blastFungalView
+module.exports = blastFungalView;

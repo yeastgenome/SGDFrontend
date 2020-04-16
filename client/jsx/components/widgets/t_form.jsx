@@ -13,7 +13,7 @@ const TForm = React.createClass({
 
   getDefaultProps() {
     return {
-      submitText: 'Submit'
+      submitText: 'Submit',
     };
   },
   /*
@@ -35,16 +35,18 @@ const TForm = React.createClass({
     return (
       <div>
         <Form ref="form" type={tcombSchema} />
-         <a className="button small secondary" onClick={this._onSubmit}>{this.props.submitText}</a>
+        <a className="button small secondary" onClick={this._onSubmit}>
+          {this.props.submitText}
+        </a>
       </div>
     );
   },
 
-  _onSubmit (e) {
+  _onSubmit(e) {
     e.preventDefault();
     let value = this.refs.form.getValue();
     if (typeof this.props.onSubmit === 'function') this.props.onSubmit(value);
-  }
+  },
 });
 
 module.exports = TForm;

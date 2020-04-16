@@ -354,7 +354,12 @@ const RestrictionMapper = React.createClass({
           <strong>Step 2: Choose Restriction Enzyme Set: </strong>
         </span>
         <p>
-          <select ref="type" name="type" value={this.state.type} onChange={this.onTypeChange}>
+          <select
+            ref="type"
+            name="type"
+            value={this.state.type}
+            onChange={this.onTypeChange}
+          >
             {_elements}
           </select>
         </p>
@@ -429,7 +434,7 @@ const RestrictionMapper = React.createClass({
   onTypeChange(e) {
     this.setState({ type: e.target.value });
   },
-  
+
   onSubmit(e) {
     var seq_id = this.refs.seq_id.value.trim();
     var seq = this.refs.seq.value.trim();

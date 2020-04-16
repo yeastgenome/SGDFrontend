@@ -40,6 +40,8 @@ dependencies:
 	npm install
 	npm install -g grunt-cli
 	bundle install
+	npm run format
+	npm run lint
 
 run:
 	. dev_deploy_variables.sh && pserve sgdfrontend_development.ini --reload

@@ -10,7 +10,10 @@ const SetupSearch = function () {
   // configure store, with history in redux state
   let history = useQueries(createHistory)();
   let store = ConfigureStore(undefined, history);
-  ReactDOM.render(<AppSearchBar store={store} />, document.getElementById(SEARCH_EL_ID));
+  ReactDOM.render(
+    <AppSearchBar store={store} />,
+    document.getElementById(SEARCH_EL_ID)
+  );
 };
 
 module.exports = SetupSearch;

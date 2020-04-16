@@ -1,56 +1,56 @@
-"use strict";
-var $ = require("jquery");
+'use strict';
+var $ = require('jquery');
 
-var AUTOCOMPLETE_URL = "/backend/autocomplete_results"
+var AUTOCOMPLETE_URL = '/backend/autocomplete_results';
 
-var autocompleteQuery = "";
-var query = "";
+var autocompleteQuery = '';
+var query = '';
 var onSetQuery = () => {};
-var selectedCategories = []
+var selectedCategories = [];
 var onSetCategories = () => {};
 
 module.exports = class SearchStore {
-  constructor (options) {
+  constructor(options) {
     options = options || {};
     if (options.query) query = options.query;
-    if (typeof options.onSetQuery === "function") onSetQuery = options.onSetQuery;
+    if (typeof options.onSetQuery === 'function')
+      onSetQuery = options.onSetQuery;
   }
 
-  setOnSetQuery (_onSetQuery) {
+  setOnSetQuery(_onSetQuery) {
     onSetQuery = _onSetQuery;
   }
 
-  setQuery (_query) {
+  setQuery(_query) {
     query = _query;
-    if (typeof onSetQuery === "function") {
+    if (typeof onSetQuery === 'function') {
       onSetQuery(query);
     }
   }
 
-  setOnSetCategories (_onSetCategories) {
+  setOnSetCategories(_onSetCategories) {
     onSetCategories = _onSetCategories;
   }
 
-  setSelectedCategories (_selectedCategories) {
+  setSelectedCategories(_selectedCategories) {
     selectedCategories = _selectedCategories;
-    if (typeof onSetCategories === "function") {
+    if (typeof onSetCategories === 'function') {
       onSetCategories(selectedCategories);
     }
   }
 
-  setAutocompleteQuery (_autoQuery) {
+  setAutocompleteQuery(_autoQuery) {
     autocompleteQuery = _autoQuery;
   }
 
-  getQuery () {
+  getQuery() {
     return query;
   }
 
-
   // callback(err, results)
-  fetchAutocompleteResults (callback) {
-    var url = `${AUTOCOMPLETE_URL}?term=${autocompleteQuery}`
-    $.getJSON(url, data => {
+  fetchAutocompleteResults(callback) {
+    var url = `${AUTOCOMPLETE_URL}?term=${autocompleteQuery}`;
+    $.getJSON(url, (data) => {
       return callback(null, data.results);
     });
   }

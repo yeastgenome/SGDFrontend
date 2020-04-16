@@ -9,25 +9,33 @@ const DownloadButton = React.createClass({
       url: null, // *
       extension: '.txt',
       params: {},
-      text: 'Download'
+      text: 'Download',
     };
   },
 
   render: function () {
     var _paramKeys = _.keys(this.props.params);
     var inputNodes = _.map(_paramKeys, (k, i) => {
-      return <input type='hidden' name={k} value={this.props.params[k]} key={'downloadKey' + i}/>;
+      return (
+        <input
+          type="hidden"
+          name={k}
+          value={this.props.params[k]}
+          key={'downloadKey' + i}
+        />
+      );
     });
 
     return (
-      <form method='POST' action={this.props.url}>
+      <form method="POST" action={this.props.url}>
         {inputNodes}
-        <button id={this.props.buttonId} className='button small secondary'>
-          <i className='fa fa-download' /> {this.props.text} ({this.props.extension})
+        <button id={this.props.buttonId} className="button small secondary">
+          <i className="fa fa-download" /> {this.props.text} (
+          {this.props.extension})
         </button>
       </form>
     );
-  }
+  },
 });
 
 module.exports = DownloadButton;
