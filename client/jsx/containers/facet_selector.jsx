@@ -11,15 +11,22 @@ import {
   getFacetName,
 } from '../lib/search_helpers';
 import ClassNames from 'classnames';
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 const DEFAULT_FACET_LENGTH = 5;
 const MEDIUM_FACET_LENGTH = 20;
 const SEARCH_URL = '/search';
 
-const FacetSelector = React.createClass({
+const FacetSelector = createReactClass({
   propTypes: {
-    downloadStatus: React.PropTypes.func,
-    downloadStatusStr: React.PropTypes.string,
+    downloadStatus: PropTypes.func,
+    downloadStatusStr: PropTypes.string,
+    isAggPending: PropTypes.any,
+    activeCategory: PropTypes.any,
+    aggregations: PropTypes.any,
+    queryParams: PropTypes.any,
+    query: PropTypes.any,
   },
   render() {
     if (this.props.isAggPending) return null;
@@ -184,16 +191,20 @@ const FacetSelector = React.createClass({
 });
 
 const FacetList = Radium(
-  React.createClass({
+  createReactClass({
+    displayName: 'FacetList',
+
     propTypes: {
-      aggKey: React.PropTypes.string.isRequired,
-      values: React.PropTypes.array.isRequired,
-      currentValues: React.PropTypes.array.isRequired,
-      queryParams: React.PropTypes.object.isRequired,
-      name: React.PropTypes.string,
-      customFacetFlag: React.PropTypes.bool,
-      downloadStatus: React.PropTypes.func,
-      downloadStatusStr: React.PropTypes.string,
+      aggKey: PropTypes.string.isRequired,
+      values: PropTypes.array.isRequired,
+      currentValues: PropTypes.array.isRequired,
+      queryParams: PropTypes.object.isRequired,
+      name: PropTypes.string,
+      customFacetFlag: PropTypes.bool,
+      downloadStatus: PropTypes.func,
+      downloadStatusStr: PropTypes.string,
+      actionTrigger: PropTypes.any,
+      sStatus: PropTypes.any,
     },
 
     getInitialState() {

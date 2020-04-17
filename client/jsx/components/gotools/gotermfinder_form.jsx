@@ -5,6 +5,7 @@ const DataTable = require('../widgets/data_table.jsx');
 const Params = require('../mixins/parse_url_params.jsx');
 const RadioSelector = require('./radio_selector.jsx');
 const Checklist = require('./checklist.jsx');
+import createReactClass from 'create-react-class';
 
 const style = {
   button: {
@@ -43,7 +44,7 @@ const evidenceCode = [
   'TAS',
 ];
 
-const GoTermFinder = React.createClass({
+const GoTermFinder = createReactClass({
   getInitialState() {
     var param = Params.getParams();
 
@@ -74,6 +75,7 @@ const GoTermFinder = React.createClass({
             Gene Ontology Term Finder{' '}
             <a
               target="_blank"
+              rel="noopener noreferrer"
               href="https://sites.google.com/view/yeastgenome-help/analyze-help/go-term-finder?authuser=0"
             >
               <img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img>
@@ -184,10 +186,10 @@ const GoTermFinder = React.createClass({
     var _defaultSection = {
       headers: [
         [
-          <span style={style.textFont}>
+          <span style={style.textFont} key={0}>
             <a name="step1">Step 1. Query Set (Your Input)</a>
           </span>,
-          <span style={style.textFont}>
+          <span style={style.textFont} key={1}>
             <a name="step2">Step 2. Choose Ontology</a>
           </span>,
         ],
@@ -198,12 +200,12 @@ const GoTermFinder = React.createClass({
     var _backgroundSection = {
       headers: [
         [
-          <span style={style.textFont}>
+          <span style={style.textFont} key={2}>
             <a name="step3">
               Step 3. (Optional) Specify your background set of genes
             </a>
           </span>,
-          <span style={style.textFont}>
+          <span style={style.textFont} key={3}>
             <a name="step4">Step 4. Optional Input</a>
           </span>,
         ],
@@ -238,14 +240,14 @@ const GoTermFinder = React.createClass({
         <p>
           <input
             type="submit"
-            ref="submit"
+            ref={(submit) => (this.submit = submit)}
             name="submit"
             value="Submit Form"
             className="button secondary"
           ></input>{' '}
           <input
             type="reset"
-            ref="reset"
+            ref={(reset) => (this.reset = reset)}
             name="reset"
             value="Reset Form"
             className="button secondary"
@@ -301,14 +303,14 @@ const GoTermFinder = React.createClass({
             space):
           </h3>
           <textarea
-            ref="genes"
+            ref={(genes) => (this.genes = genes)}
             onChange={this._onChange}
             name="genes"
             rows="2"
             cols="90"
           ></textarea>
-          Note: If you have a big gene list (>100), save it as a file and upload
-          it below.
+          Note: If you have a big gene list (`{'>'}`100), save it as a file and
+          upload it below.
           <h3>
             <strong style={{ color: 'red' }}>OR</strong>{' '}
             <strong>Upload a file of Gene/ORF names</strong> (.txt or .tab
@@ -331,14 +333,14 @@ const GoTermFinder = React.createClass({
             space):
           </h3>
           <textarea
-            ref="genes"
+            ref={(genes) => (this.genes = genes)}
             onChange={this._onChange}
             name="genes"
             rows="2"
             cols="90"
           ></textarea>
-          Note: If you have a big gene list (>100), save it as a file and upload
-          it below.
+          Note: If you have a big gene list (`{'>'}`100), save it as a file and
+          upload it below.
           <h3>
             <strong style={{ color: 'red' }}>OR</strong>{' '}
             <strong>Upload a file of Gene/ORF names</strong> (.txt or .tab
@@ -367,14 +369,14 @@ const GoTermFinder = React.createClass({
           space):
         </h3>
         <textarea
-          ref="genes4bg"
+          ref={(genes4bg) => (this.genes4bg = genes4bg)}
           onChange={this._onChange}
           name="genes4bg"
           rows="4"
           cols="163"
         ></textarea>
-        Note: If you have a big background list (>100), save it as a file and
-        upload it below.
+        Note: If you have a big background list (`{'>'}`100), save it as a file
+        and upload it below.
         <h3>
           <strong style={{ color: 'red' }}>OR</strong>{' '}
           <strong>Upload a file of Gene/ORF names</strong> (.txt or .tab
@@ -446,7 +448,7 @@ const GoTermFinder = React.createClass({
         </h3>
         <p>
           <select
-            ref="pvalue"
+            ref={(pvalue) => (this.pvalue = pvalue)}
             name="pvalue"
             value={this.state.pvalue}
             onChange={this.onPvalueChange}
@@ -507,7 +509,7 @@ const GoTermFinder = React.createClass({
   },
 
   onSubmit(e) {
-    var genes = this.refs.genes.value.trim();
+    var genes = this.genes.value.trim();
     var genesInBox = 0;
     if (genes == '') {
       genes = this.state.uploadedGenes;
@@ -586,7 +588,7 @@ const GoTermFinder = React.createClass({
 
     window.localStorage.setItem('genes', genes);
 
-    var genes4bg = this.refs.genes4bg.value.trim();
+    var genes4bg = this.genes4bg.value.trim();
     if (genes4bg == '') {
       genes4bg = this.state.uploadedGenes4bg;
       this.setState({

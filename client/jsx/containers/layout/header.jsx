@@ -9,7 +9,10 @@ class Header extends Component {
 
   render() {
     return (
-      <header id="layout-page-header" ref="wrapper">
+      <header
+        id="layout-page-header"
+        ref={(wrapper) => (this.wrapper = wrapper)}
+      >
         {/* top black section */}
         <div className="hide-for-small">
           <div className="top-header">
@@ -20,6 +23,7 @@ class Header extends Component {
             <div className="site-links">
               <a
                 target="_blank"
+                rel="noopener noreferrer"
                 href="https://sites.google.com/view/yeastgenome-help/about"
                 className="hide-external-link-icon"
               >
@@ -33,6 +37,7 @@ class Header extends Component {
               <a
                 className="hide-external-link-icon"
                 target="_blank"
+                rel="noopener noreferrer"
                 href="https://sites.google.com/view/yeastgenome-help/"
               >
                 Help
@@ -51,6 +56,7 @@ class Header extends Component {
                 <a
                   href="http://twitter.com/#!/yeastgenome"
                   target="_blank"
+                  rel="noopener noreferrer"
                   id="twitter"
                   className="webicon twitter small"
                 >
@@ -59,6 +65,7 @@ class Header extends Component {
                 <a
                   href="https://www.facebook.com/yeastgenome"
                   target="_blank"
+                  rel="noopener noreferrer"
                   className="webicon facebook small"
                   id="facebook"
                 >
@@ -67,6 +74,7 @@ class Header extends Component {
                 <a
                   href="https://www.linkedin.com/company/saccharomyces-genome-database"
                   target="_blank"
+                  rel="noopener noreferrer"
                   className="webicon linkedin small"
                   id="linkedin"
                 >
@@ -75,6 +83,7 @@ class Header extends Component {
                 <a
                   href="https://www.youtube.com/SaccharomycesGenomeDatabase"
                   target="_blank"
+                  rel="noopener noreferrer"
                   id="youtube"
                   className="webicon youtube small"
                 >
@@ -542,6 +551,7 @@ class Header extends Component {
                       <a
                         className="disabled-header-a"
                         target="_blank"
+                        rel="noopener noreferrer"
                         href="https://sites.google.com/view/yeastgenome-help/community-help/gene-registry"
                       >
                         Gene Registry
@@ -551,6 +561,7 @@ class Header extends Component {
                       <a
                         className="disabled-header-a"
                         target="_blank"
+                        rel="noopener noreferrer"
                         href="https://sites.google.com/view/yeastgenome-help/community-help/nomenclature-conventions"
                       >
                         Nomenclature Conventions

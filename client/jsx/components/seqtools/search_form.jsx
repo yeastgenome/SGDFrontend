@@ -1,6 +1,7 @@
 import React from 'react';
 import _ from 'underscore';
 import $ from 'jquery';
+import createReactClass from 'create-react-class';
 
 const DataTable = require('../widgets/data_table.jsx');
 const Params = require('../mixins/parse_url_params.jsx');
@@ -22,7 +23,7 @@ const MAX_GENE_TO_SHOW = 4;
 const MAX_GENE = 50;
 const MAX_SEQ_LENGTH_FOR_TOOLS = 10000000;
 
-const GeneSequenceResources = React.createClass({
+const GeneSequenceResources = createReactClass({
   getInitialState() {
     var param = Params.getParams();
     return {
@@ -48,6 +49,7 @@ const GeneSequenceResources = React.createClass({
             Gene/Sequence Resources{' '}
             <a
               target="_blank"
+              rel="noopener noreferrer"
               href="https://sites.google.com/view/yeastgenome-help/sequence-help/genesequence-resources"
             >
               <img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img>

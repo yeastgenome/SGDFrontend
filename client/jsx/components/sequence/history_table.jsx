@@ -2,11 +2,19 @@
 
 var React = require('react');
 var _ = require('underscore');
-
+import createReactClass from 'create-react-class';
 var DataTable = require('../widgets/data_table.jsx');
 var HelpIcon = require('../widgets/help_icon.jsx');
+import PropTypes from 'prop-types';
 
-module.exports = React.createClass({
+module.exports = createReactClass({
+  displayName: 'HistoryTable',
+
+  propTypes: {
+    data: PropTypes.array,
+    dataType: PropTypes.string,
+  },
+
   getDefaultProps: function () {
     return {
       data: [], // * []

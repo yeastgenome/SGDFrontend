@@ -2,13 +2,17 @@ import React from 'react';
 import ToSchema from 'tcomb-json-schema';
 const t = require('tcomb-form');
 const Form = t.form.Form;
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 // create form from JSON validation format
-const TForm = React.createClass({
+const TForm = createReactClass({
+  displayName: 'TForm',
+
   propTypes: {
-    onSubmit: React.PropTypes.func, // (value) => form value object
-    submitText: React.PropTypes.string,
-    validationObject: React.PropTypes.object.isRequired,
+    onSubmit: PropTypes.func, // (value) => form value object
+    submitText: PropTypes.string,
+    validationObject: PropTypes.object.isRequired,
   },
 
   getDefaultProps() {
@@ -34,7 +38,7 @@ const TForm = React.createClass({
     let tcombSchema = ToSchema(this.props.validationObject);
     return (
       <div>
-        <Form ref="form" type={tcombSchema} />
+        <Form ref={(form) => (this.form = form)} type={tcombSchema} />
         <a className="button small secondary" onClick={this._onSubmit}>
           {this.props.submitText}
         </a>
@@ -44,7 +48,7 @@ const TForm = React.createClass({
 
   _onSubmit(e) {
     e.preventDefault();
-    let value = this.refs.form.getValue();
+    let value = this.form.getValue();
     if (typeof this.props.onSubmit === 'function') this.props.onSubmit(value);
   },
 });

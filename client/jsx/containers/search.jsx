@@ -15,6 +15,8 @@ import Loader from '../components/widgets/loader.jsx';
 import Paginator from '../components/widgets/paginator.jsx';
 import { startSearchFetchMaybeAsycFetch } from '../actions/search_actions';
 import { createPath } from '../lib/search_helpers';
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 const SEARCH_URL = '/search';
 const CATS_SORTED_BY_ANNOTATION = [
@@ -24,8 +26,9 @@ const CATS_SORTED_BY_ANNOTATION = [
   'molecular_function',
 ];
 
-const Search = React.createClass({
+const Search = createReactClass({
   displayName: 'Search',
+
   render() {
     if (this.props.apiError) {
       return <ErrorMessage />;
@@ -326,14 +329,27 @@ const Search = React.createClass({
     ga('send', 'pageview');
   },
   propTypes: {
-    activeCategory: React.PropTypes.string,
-    currentPage: React.PropTypes.number,
-    isPending: React.PropTypes.bool,
-    query: React.PropTypes.string,
-    results: React.PropTypes.array, // [{ name, url, category, description }]
-    total: React.PropTypes.number,
-    totalPages: React.PropTypes.number,
-    apiError: React.PropTypes.bool,
+    activeCategory: PropTypes.string,
+    currentPage: PropTypes.number,
+    isPending: PropTypes.bool,
+    query: PropTypes.string,
+    results: PropTypes.array, // [{ name, url, category, description }]
+    total: PropTypes.number,
+    totalPages: PropTypes.number,
+    apiError: PropTypes.bool,
+    downloadStatusStr: PropTypes.any,
+    history: PropTypes.any,
+    queryParams: PropTypes.any,
+    geneMode: PropTypes.any,
+    resultsPerPage: PropTypes.any,
+    location: PropTypes.any,
+    isAsyncPending: PropTypes.any,
+    asyncResults: PropTypes.any,
+    url: PropTypes.any,
+    asyncProgress: PropTypes.any,
+    sortBy: PropTypes.any,
+    dispatch: PropTypes.any,
+    canSortByAnnotation: PropTypes.any,
   },
 });
 

@@ -2,11 +2,17 @@
 
 var React = require('react');
 var _ = require('underscore');
-
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 var DidClickOutside = require('../mixins/did_click_outside.jsx');
 
-var MultiSequenceDownload = React.createClass({
+var MultiSequenceDownload = createReactClass({
+  displayName: 'MultiSequenceDownload',
   mixins: [DidClickOutside],
+  propTypes: {
+    sequences: PropTypes.any,
+    locusFormatName: PropTypes.any, // *
+  },
 
   getDefaultProps: function () {
     return {

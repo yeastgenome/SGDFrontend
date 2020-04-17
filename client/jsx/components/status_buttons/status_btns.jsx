@@ -6,6 +6,7 @@
 import React, { Component } from 'react';
 import S from 'string';
 import ClassNames from 'classnames';
+import PropTypes from 'prop-types';
 
 class StatusBtns extends Component {
   constructor(props) {
@@ -40,5 +41,12 @@ class StatusBtns extends Component {
     );
   }
 }
+
+StatusBtns.propTypes = {
+  keyValue: PropTypes.any,
+  name: PropTypes.any,
+  btnClick: PropTypes.any,
+  flag: PropTypes.any,
+};
 
 export default StatusBtns;

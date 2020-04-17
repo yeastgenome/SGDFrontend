@@ -3,12 +3,23 @@ var React = require('react');
 var BarChart = require('../viz/bar_chart.jsx');
 var DataTable = require('../widgets/data_table.jsx');
 var GenomeSnapshot = require('./genome_snapshot.jsx');
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 /*
 	A react component to render a table, as well as an alternetive
 	way to render the same data.
 */
-module.exports = React.createClass({
+module.exports = createReactClass({
+  displayName: 'TableAlternative',
+
+  propTypes: {
+    isInitiallyTable: PropTypes.any,
+    tableData: PropTypes.any,
+    graphData: PropTypes.any,
+    vizType: PropTypes.any,
+  },
+
   getDefaultProps: function () {
     return {
       isInitiallyTable: true,

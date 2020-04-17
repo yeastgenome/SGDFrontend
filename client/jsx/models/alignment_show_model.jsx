@@ -12,7 +12,7 @@ module.exports = class AlignmentShowModel extends BaseModel {
     if (options.strainIds) {
       strainIdUrlSegment = _.reduce(
         options.strainIds,
-        (memo, d, i) => {
+        (memo, d) => {
           return memo + 'strain_id=' + d.toString() + '&';
         },
         ''

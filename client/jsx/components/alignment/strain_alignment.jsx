@@ -1,12 +1,13 @@
 import React from 'react';
 import $ from 'jquery';
-
 const DataTable = require('../widgets/data_table.jsx');
 const Params = require('../mixins/parse_url_params.jsx');
-
 const alignUrl = '/get_alignment';
+import createReactClass from 'create-react-class';
 
-const StrainAlignment = React.createClass({
+const StrainAlignment = createReactClass({
+  displayName: 'StrainAlignment',
+
   getInitialState() {
     var param = Params.getParams();
 
@@ -37,6 +38,7 @@ const StrainAlignment = React.createClass({
               {displayName} <i>S. cerevisiae</i> Strain Sequence Alignment
               <a
                 target="_blank"
+                rel="noopener noreferrer"
                 href="https://sites.google.com/view/yeastgenome-help/sequence-help/align-strain-sequences"
               >
                 <img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img>
@@ -54,6 +56,7 @@ const StrainAlignment = React.createClass({
               Search for Sequence Alignment pages at SGD
               <a
                 target="_blank"
+                rel="noopener noreferrer"
                 href="https://sites.google.com/view/yeastgenome-help/sequence-help/align-strain-sequences"
               >
                 <img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img>
@@ -138,7 +141,7 @@ const StrainAlignment = React.createClass({
         <br />
         <input
           type="submit"
-          ref="submit"
+          ref={(submit) => (this.submit = submit)}
           name="submit"
           value="Submit"
           className="button secondary"
@@ -154,14 +157,14 @@ const StrainAlignment = React.createClass({
         <p>
           <input
             type="submit"
-            ref="submit"
+            ref={(submit) => (this.submit = submit)}
             name="submit"
             value="Submit Form"
             className="button secondary"
           ></input>{' '}
           <input
             type="reset"
-            ref="reset"
+            ref={(reset) => (this.reset = reset)}
             name="reset"
             value="Reset Form"
             className="button secondary"
@@ -184,7 +187,12 @@ const StrainAlignment = React.createClass({
     return (
       <div>
         <h3>Pick sequence type:</h3>
-        <select name="type" ref="type" value={type} onChange={this.onChange2}>
+        <select
+          name="type"
+          ref={(type) => (this.type = type)}
+          value={type}
+          onChange={this.onChange2}
+        >
           {_elements}
         </select>
       </div>
@@ -198,7 +206,7 @@ const StrainAlignment = React.createClass({
           <h3>Enter a gene name/systematic name/SGDID:</h3>
           <input
             type="text"
-            ref="locus"
+            ref={(locus) => (this.locus = locus)}
             name="locus"
             value={this.state.locus}
             onChange={this.onChange}
@@ -210,7 +218,12 @@ const StrainAlignment = React.createClass({
       return (
         <div>
           <h3>Enter a gene name/systematic name/SGDID:</h3>
-          <input type="text" ref="locus" name="locus" size="50"></input>
+          <input
+            type="text"
+            ref={(locus) => (this.locus = locus)}
+            name="locus"
+            size="50"
+          ></input>
         </div>
       );
     }

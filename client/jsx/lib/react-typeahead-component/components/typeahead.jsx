@@ -6,8 +6,10 @@ var React = require('react'),
   AriaStatus = require('./aria_status.jsx'),
   getTextDirection = require('../utils/get_text_direction'),
   noop = function () {};
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
-module.exports = React.createClass({
+module.exports = createReactClass({
   displayName: 'Typeahead',
 
   statics: {
@@ -24,31 +26,31 @@ module.exports = React.createClass({
     process.env.NODE_ENV === 'production'
       ? {}
       : {
-          inputId: React.PropTypes.string,
-          inputName: React.PropTypes.string,
-          className: React.PropTypes.string,
-          autoFocus: React.PropTypes.bool,
-          hoverSelect: React.PropTypes.bool,
-          inputValue: React.PropTypes.string,
-          options: React.PropTypes.array,
-          placeholder: React.PropTypes.string,
-          onChange: React.PropTypes.func,
-          onKeyDown: React.PropTypes.func,
-          onKeyPress: React.PropTypes.func,
-          onKeyUp: React.PropTypes.func,
-          onFocus: React.PropTypes.func,
-          onBlur: React.PropTypes.func,
-          onSelect: React.PropTypes.func,
-          onInputClick: React.PropTypes.func,
-          handleHint: React.PropTypes.func,
-          onComplete: React.PropTypes.func,
-          onOptionClick: React.PropTypes.func,
-          onOptionChange: React.PropTypes.func,
-          onDropdownOpen: React.PropTypes.func,
-          onDropdownClose: React.PropTypes.func,
-          optionTemplate: React.PropTypes.func.isRequired,
-          getMessageForOption: React.PropTypes.func,
-          getMessageForIncomingOptions: React.PropTypes.func,
+          inputId: PropTypes.string,
+          inputName: PropTypes.string,
+          className: PropTypes.string,
+          autoFocus: PropTypes.bool,
+          hoverSelect: PropTypes.bool,
+          inputValue: PropTypes.string,
+          options: PropTypes.array,
+          placeholder: PropTypes.string,
+          onChange: PropTypes.func,
+          onKeyDown: PropTypes.func,
+          onKeyPress: PropTypes.func,
+          onKeyUp: PropTypes.func,
+          onFocus: PropTypes.func,
+          onBlur: PropTypes.func,
+          onSelect: PropTypes.func,
+          onInputClick: PropTypes.func,
+          handleHint: PropTypes.func,
+          onComplete: PropTypes.func,
+          onOptionClick: PropTypes.func,
+          onOptionChange: PropTypes.func,
+          onDropdownOpen: PropTypes.func,
+          onDropdownClose: PropTypes.func,
+          optionTemplate: PropTypes.func.isRequired,
+          getMessageForOption: PropTypes.func,
+          getMessageForIncomingOptions: PropTypes.func,
         },
 
   getDefaultProps: function () {
@@ -186,7 +188,7 @@ module.exports = React.createClass({
           }
         />
         <Input
-          ref="input"
+          ref={(input) => (this.input = input)}
           role="combobox"
           aria-owns={_this.optionsId}
           aria-expanded={state.isDropdownVisible}
@@ -235,7 +237,7 @@ module.exports = React.createClass({
     return (
       <ul
         id={_this.optionsId}
-        ref="dropdown"
+        ref={(dropdown) => (this.dropdown = dropdown)}
         role="listbox"
         aria-hidden={!isDropdownVisible}
         style={{
@@ -368,7 +370,7 @@ module.exports = React.createClass({
   },
 
   focus: function () {
-    ReactDOM.findDOMNode(this.refs.input).focus();
+    this.input.focus();
   },
 
   handleFocus: function (event) {
@@ -478,7 +480,7 @@ module.exports = React.createClass({
 
                 optionData = props.options[selectedIndex];
                 // Make selected option always scroll to visible
-                dropdown = ReactDOM.findDOMNode(_this.refs.dropdown);
+                dropdown = _this.dropdown;
                 selectedOption = dropdown.children[selectedIndex];
                 optionOffsetTop = selectedOption.offsetTop;
                 if (

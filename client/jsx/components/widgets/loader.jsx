@@ -1,6 +1,7 @@
 import React from 'react';
+import createReactClass from 'create-react-class';
 
-const Layout = React.createClass({
+const Layout = createReactClass({
   render() {
     return (
       <div className="sgd-loader-container">

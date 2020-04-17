@@ -3,11 +3,25 @@
 var d3 = require('d3');
 var React = require('react');
 import ReactDOM from 'react-dom';
-
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var CalcWidthOnResize = require('../mixins/calc_width_on_resize.jsx');
 
-module.exports = React.createClass({
+module.exports = createReactClass({
   mixins: [CalcWidthOnResize],
+  displayName: 'StandAloneAxis',
+
+  propTypes: {
+    labelText: PropTypes.any,
+    left: PropTypes.any,
+    height: PropTypes.any,
+    gridTicks: PropTypes.any,
+    scaleType: PropTypes.any,
+    orientation: PropTypes.any,
+    ticks: PropTypes.any,
+    tickFormat: PropTypes.any,
+    transitionDuration: PropTypes.any,
+  },
 
   getDefaultProps: function () {
     return {
@@ -51,7 +65,10 @@ module.exports = React.createClass({
     return (
       <div className={_klass} style={{ position: 'relative' }}>
         {labelNode}
-        <svg ref="svg" style={{ width: '100%', height: _height }}></svg>
+        <svg
+          ref={(svg) => (this.svg = svg)}
+          style={{ width: '100%', height: _height }}
+        ></svg>
       </div>
     );
   },
@@ -109,7 +126,7 @@ module.exports = React.createClass({
       .tickSize(_tickSize)
       .scale(this.state.scale);
 
-    var svg = d3.select(ReactDOM.findDOMNode(this.refs['svg']));
+    var svg = d3.select(this.svg);
 
     // var _xTranslate = (this.getDOMNode().getBoundingClientRect().width * this.props.leftRatio)
 

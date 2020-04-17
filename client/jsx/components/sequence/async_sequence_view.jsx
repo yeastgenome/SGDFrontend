@@ -8,11 +8,39 @@ const SequenceComposite = require('./sequence_composite.jsx');
 const SequenceToggler = require('./sequence_toggler.jsx');
 const AsyncVariantViewer = require('../variant_viewer/async_variant_viewer.jsx');
 const VariantViewerStore = require('../../stores/variant_viewer_store.jsx');
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 /*
   Fetches data from model and renders locus diagram (or loader while fetching).
 */
-var AsyncSequenceView = React.createClass({
+var AsyncSequenceView = createReactClass({
+  displayName: 'AsyncSequenceView',
+
+  propTypes: {
+    detailsCallback: PropTypes.any, // (err, detailsModel)
+    geneticPosition: PropTypes.any,
+    isSimplified: PropTypes.any, // simplified is for LSP
+    locusDisplayName: PropTypes.any,
+    locusHistoryData: PropTypes.any,
+    locusFormatName: PropTypes.any,
+    showAltStrains: PropTypes.any,
+    showVariants: PropTypes.any,
+    showOtherStrains: PropTypes.any,
+    showHistory: PropTypes.any,
+    locusId: PropTypes.any,
+    locusSGDID: PropTypes.any,
+  },
+
+  componentDidMount() {
+    this._isMounted = true;
+    this._fetchData();
+  },
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  },
+
   getDefaultProps: function () {
     return {
       detailsCallback: null, // (err, detailsModel)
@@ -54,17 +82,13 @@ var AsyncSequenceView = React.createClass({
     );
   },
 
-  componentDidMount: function () {
-    this._fetchData();
-  },
-
   // from locusId, get data and update
   _fetchData: function () {
     var _neighborsModel = new SequenceNeighborsModel({
       id: this.props.locusId,
     });
     _neighborsModel.fetch((err, response) => {
-      if (this.isMounted()) {
+      if (this._isMounted) {
         this.setState({ neighborsModel: _neighborsModel });
         var _detailsModel = new SequenceDetailsModel({
           id: this.props.locusId,
@@ -73,7 +97,7 @@ var AsyncSequenceView = React.createClass({
           locusSGDID: this.props.locusSGDID,
         });
         _detailsModel.fetch((err, response) => {
-          if (this.isMounted()) this.setState({ detailsModel: _detailsModel });
+          if (this._isMounted) this.setState({ detailsModel: _detailsModel });
 
           // call details callback (if defined)
           if (this.props.detailsCallback) {

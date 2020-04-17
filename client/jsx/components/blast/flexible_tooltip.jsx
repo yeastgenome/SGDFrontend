@@ -2,8 +2,22 @@
 
 var React = require('react');
 var _ = require('underscore');
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
-module.exports = React.createClass({
+module.exports = createReactClass({
+  displayName: 'FlexibleTooltip',
+
+  propTypes: {
+    visible: PropTypes.any,
+    top: PropTypes.any,
+    left: PropTypes.any,
+    data: PropTypes.any,
+    title: PropTypes.any,
+    href: PropTypes.any,
+    text: PropTypes.any,
+  },
+
   getDefaultProps: function () {
     return {
       visible: false,

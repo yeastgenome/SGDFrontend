@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import createReactClass from 'create-react-class';
 
-const InteractionSearch = React.createClass({
+const InteractionSearch = createReactClass({
   render() {
     return (
       <div className="row">
@@ -21,7 +22,7 @@ const InteractionSearch = React.createClass({
                 <form onSubmit={this._onSearch}>
                   <input
                     type="text"
-                    ref="searchText"
+                    ref={(searchText) => (this.searchText = searchText)}
                     placeholder="gene name (e.g. DOG1)"
                     style={{ borderRadius: '3px 0 0 3px' }}
                   />
@@ -45,7 +46,7 @@ const InteractionSearch = React.createClass({
 
   _onSearch(e) {
     e.preventDefault();
-    let value = this.refs.searchText.value;
+    let value = this.searchText.value;
     // redirect to interaction page for search value
     let newHref = `/locus/${value}/interaction`;
     if (document) document.location = newHref;

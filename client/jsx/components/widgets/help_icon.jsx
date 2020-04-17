@@ -1,5 +1,6 @@
 'use strict';
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 var WIDTH = 400;
 
 class HelpIcon extends Component {
@@ -75,6 +76,12 @@ class HelpIcon extends Component {
     return textNode;
   }
 }
+
+HelpIcon.propTypes = {
+  isInfo: PropTypes.any,
+  orientation: PropTypes.any,
+  text: PropTypes.any,
+};
 
 HelpIcon.defaultProps = {
   text: '',

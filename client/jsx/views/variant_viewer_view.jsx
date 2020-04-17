@@ -4,6 +4,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var VariantViewer = require('../components/variant_viewer/variant_viewer.jsx');
 var Drawer = require('../components/variant_viewer/drawer.jsx');
+import createReactClass from 'create-react-class';
 
 // router stuff
 var { Router, Route, IndexRoute } = require('react-router');
@@ -11,13 +12,13 @@ var { Router, Route, IndexRoute } = require('react-router');
 var view = {};
 view.render = function () {
   // blank react component to make no drawer
-  var BlankComponent = React.createClass({
+  var BlankComponent = createReactClass({
     render: function () {
       return <span />;
     },
   });
 
-  var RouterComponent = React.createClass({
+  var RouterComponent = createReactClass({
     render: function () {
       return (
         <Router>

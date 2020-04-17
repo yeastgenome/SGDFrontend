@@ -1,19 +1,21 @@
 const React = require('react');
 import Radium from 'radium';
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
-const SearchDownloadAnalyze = React.createClass({
+const SearchDownloadAnalyze = createReactClass({
   propTypes: {
-    results: React.PropTypes.array,
-    url: React.PropTypes.string,
-    query: React.PropTypes.string,
+    results: PropTypes.array,
+    url: PropTypes.string,
+    query: PropTypes.string,
   },
 
   render() {
     const onDownloadClick = (e) => {
-      this.refs.downloadForm.submit();
+      this.downloadForm.submit();
     };
     const onAnalyzeClick = (e) => {
-      this.refs.analyzeForm.submit();
+      this.analyzeForm.submit();
     };
     return (
       <div className="button-bar" style={[style.container]}>
@@ -41,7 +43,7 @@ const SearchDownloadAnalyze = React.createClass({
     let stringResults = this._getStringResults(true);
     return (
       <form
-        ref="analyzeForm"
+        ref={(analyzeForm) => (this.analyzeForm = analyzeForm)}
         action="/analyze"
         method="post"
         style={[style.form]}
@@ -56,7 +58,7 @@ const SearchDownloadAnalyze = React.createClass({
     let stringResults = this._getStringResults(false);
     return (
       <form
-        ref="downloadForm"
+        ref={(downloadForm) => (this.downloadForm = downloadForm)}
         action="/download-list"
         method="post"
         style={[style.form]}
