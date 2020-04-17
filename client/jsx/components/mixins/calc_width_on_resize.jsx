@@ -9,8 +9,8 @@ module.exports = {
   },
 
   _handleResize: function () {
-    if (this.isMounted()) {
-      this._calculateWidth();
-    }
+    // if (this.isMounted()) {
+    this._calculateWidth();
+    // }
   },
 };

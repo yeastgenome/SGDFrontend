@@ -1,7 +1,6 @@
 'use strict';
 
 var React = require('react'),
-  ReactDOM = require('react-dom'),
   Input = require('./input.jsx'),
   AriaStatus = require('./aria_status.jsx'),
   getTextDirection = require('../utils/get_text_direction'),
@@ -142,6 +141,7 @@ module.exports = createReactClass({
 
     return (
       <div
+        ref={(node) => (this.node = node)}
         style={{
           position: 'relative',
         }}
@@ -538,8 +538,7 @@ module.exports = createReactClass({
   handleWindowClose: function (event) {
     var _this = this,
       target = event.target;
-
-    if (target !== window && !ReactDOM.findDOMNode(this).contains(target)) {
+    if (target !== window && !this.node.contains(target)) {
       _this.hideHint();
       _this.hideDropdown();
     }

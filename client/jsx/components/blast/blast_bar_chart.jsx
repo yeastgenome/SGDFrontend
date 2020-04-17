@@ -25,7 +25,6 @@ module.exports = createReactClass({
     maxY: PropTypes.any,
     filter: PropTypes.any,
     data: PropTypes.any,
-    filter: PropTypes.any,
     colorScale: PropTypes.any,
     colorValue: PropTypes.any,
     domainBounds: PropTypes.any,

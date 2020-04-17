@@ -63,7 +63,11 @@ module.exports = createReactClass({
     var _height = this.props.height || (this.props.gridTicks ? '95%' : 32);
     var _klass = `standalone-axis ${this.props.gridTicks ? 'grid-ticks' : ''}`;
     return (
-      <div className={_klass} style={{ position: 'relative' }}>
+      <div
+        className={_klass}
+        style={{ position: 'relative' }}
+        ref={(node) => (this.node = node)}
+      >
         {labelNode}
         <svg
           ref={(svg) => (this.svg = svg)}
@@ -103,7 +107,7 @@ module.exports = createReactClass({
       sqrt: d3.scale.sqrt(),
     };
     var _baseScale = scaleTypes[this.props.scaleType];
-    var _width = ReactDOM.findDOMNode(this).getBoundingClientRect().width - 1;
+    var _width = this.node.getBoundingClientRect().width - 1;
     var _xOffset = _width * props.leftRatio;
     var _scale = _baseScale.domain(props.domain).range([0, _width - _xOffset]);
 

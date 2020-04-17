@@ -30,10 +30,11 @@ var MultiSequenceDownload = createReactClass({
   },
 
   render: function () {
+    this.btn = [];
     var _hiddenFormNodes = _.map(this.props.sequences, (s, i) => {
       return (
         <form
-          ref={s.key}
+          ref={(ref) => (this.btn[i] = ref)}
           method="POST"
           action="/download_sequence"
           key={'hiddenNode' + i}
@@ -49,7 +50,7 @@ var MultiSequenceDownload = createReactClass({
       var _onClick = (e) => {
         e.preventDefault();
         e.nativeEvent.stopImmediatePropagation();
-        this._handleClick(s.key);
+        this._handleClick(i);
       };
       return (
         <li key={'seqButton' + i}>
@@ -105,7 +106,7 @@ var MultiSequenceDownload = createReactClass({
 
   // get the DOM node for the form; submit to download
   _handleClick: function (key) {
-    this.refs[key].submit();
+    this.btn[key].submit();
   },
 });
 

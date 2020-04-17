@@ -3,6 +3,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 require('bootstrap');
 import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 const SCROLL_OFFSET = 245; // how far (px) to scroll to trigger link
 

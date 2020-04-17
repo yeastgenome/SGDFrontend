@@ -73,7 +73,7 @@ const Primer3 = createReactClass({
   handleSubmit(e) {
     this.props.history.pushState(null, '/primer3', { results: 1 });
     e.preventDefault();
-    const value = this.refs.primerForm.getValue();
+    const value = this.primerForm.getValue();
     let strValue = JSON.stringify(value);
     $.ajax({
       url: PRIMER3URL,
