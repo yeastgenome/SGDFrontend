@@ -413,7 +413,7 @@ module.exports = createReactClass({
       index,
       optionData,
       dir;
-
+    event.persist();
     switch (key) {
       case 'End':
       case 'Tab':

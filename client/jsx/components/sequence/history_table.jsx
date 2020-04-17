@@ -37,7 +37,7 @@ module.exports = createReactClass({
         ) : null;
         var sepNode = i > 0 && i !== e.references.length - 1 ? ', ' : null;
         return (
-          <span>
+          <span key={i}>
             <a href={r.link}>{r.display_name}</a>
             {pubmedNode}
             {sepNode}
