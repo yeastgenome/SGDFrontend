@@ -2,8 +2,17 @@
 
 var React = require('react');
 var _ = require('underscore');
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
-module.exports = React.createClass({
+module.exports = createReactClass({
+  displayName: 'BlastLegend',
+
+  propTypes: {
+    leftRatio: PropTypes.any,
+    elements: PropTypes.any,
+  },
+
   getDefaultProps: function () {
     return {
       elements: [],

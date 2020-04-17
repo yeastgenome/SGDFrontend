@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import createReactClass from 'create-react-class';
 
-const ExampleContainer = React.createClass({
+const ExampleContainer = createReactClass({
   render() {
     return <h1>Example</h1>;
   },

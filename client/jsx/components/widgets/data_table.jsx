@@ -5,11 +5,22 @@ const $ = require('jquery');
 require('datatables');
 require('foundation');
 require('foundationDatatables');
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 /*
 	A react component that renders a table, then uses jQuery data tables to spice it up.
 */
-const DataTable = React.createClass({
+const DataTable = createReactClass({
+  displayName: 'DataTable',
+
+  propTypes: {
+    pluginOptions: PropTypes.any,
+    tableId: PropTypes.any,
+    usePlugin: PropTypes.any,
+    data: PropTypes.any,
+  },
+
   getDefaultProps: function () {
     return {
       data: null, // * { headers: [[]], rows: [[]]}
@@ -34,12 +45,12 @@ const DataTable = React.createClass({
 
     return (
       <div
-        ref="wrapper"
+        ref={(wrapper) => (this.wrapper = wrapper)}
         className="data-table table-scroll-container dataTables_wrapper"
       >
         <table
           id={this.props.tableId}
-          ref="table"
+          ref={(table) => (this.table = table)}
           className="table table-striped table-bordered table-condensed"
         >
           <thead key="table-header">{headerRows}</thead>
@@ -55,9 +66,9 @@ const DataTable = React.createClass({
       var options = this._getTableOptions();
       this._setupTableHighlight();
       this._setupPlugins();
-      var $table = $(this.refs.table).dataTable(options);
+      var $table = $(this.table).dataTable(options);
       $(document).foundation();
-      $(this.refs.wrapper).find('input').attr('placeholder', 'Filter table');
+      $(this.wrapper).find('input').attr('placeholder', 'Filter table');
       $table.fnSearchHighlighting();
     }
   },

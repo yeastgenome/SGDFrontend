@@ -5,6 +5,7 @@ import $ from 'jquery';
 const DataTable = require('../widgets/data_table.jsx');
 const Params = require('../mixins/parse_url_params.jsx');
 const RestBarChart = require('./restmap_bar_chart.jsx');
+import createReactClass from 'create-react-class';
 
 const style = {
   textFontRed: { fontSize: 18, color: 'red' },
@@ -15,7 +16,9 @@ const MAX_NUM_ENZYME = 15;
 
 const restUrl = '/run_restmapper';
 
-const RestrictionMapper = React.createClass({
+const RestrictionMapper = createReactClass({
+  displayName: 'RestrictionMapper',
+
   getInitialState() {
     var param = Params.getParams();
     if (param['seqname']) {
@@ -44,6 +47,7 @@ const RestrictionMapper = React.createClass({
             Restriction Site Mapper
             <a
               target="_blank"
+              rel="noopener noreferrer"
               href="https://sites.google.com/view/yeastgenome-help/analyze-help/restriction-mapper?authuser=0"
             >
               <img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img>
@@ -196,13 +200,13 @@ const RestrictionMapper = React.createClass({
     var searchSection = {
       headers: [
         [
-          <span style={style.textFont}>
+          <span style={style.textFont} key={0}>
             <strong>Step 1: Enter a Gene Name</strong>
           </span>,
-          <span style={style.textFontRed}>
+          <span style={style.textFontRed} key={1}>
             <strong>OR</strong>
           </span>,
-          <span style={style.textFont}>
+          <span style={style.textFont} key={2}>
             <strong>Type or Paste a DNA Sequence</strong>
           </span>,
         ],
@@ -262,7 +266,7 @@ const RestrictionMapper = React.createClass({
         <input
           type="text"
           name="gene"
-          ref="gene"
+          ref={(gene) => (this.gene = gene)}
           onChange={this._onChange}
           size="50"
         ></input>
@@ -292,7 +296,7 @@ const RestrictionMapper = React.createClass({
       return (
         <div>
           <textarea
-            ref="seq"
+            ref={(seq) => (this.seq = seq)}
             value={sequence}
             onChange={this.onChange}
             rows="5"
@@ -301,7 +305,7 @@ const RestrictionMapper = React.createClass({
           <input
             type="hidden"
             name="seq_id"
-            ref="seq_id"
+            ref={(seq_id) => (this.seq_id = seq_id)}
             value={localSeqID}
           ></input>
           Only DNA sequences containing A, G, C, and T are allowed. Any other
@@ -312,7 +316,7 @@ const RestrictionMapper = React.createClass({
       return (
         <div>
           <textarea
-            ref="seq"
+            ref={(seq) => (this.seq = seq)}
             onChange={this.onChange}
             rows="5"
             cols="75"
@@ -320,7 +324,7 @@ const RestrictionMapper = React.createClass({
           <input
             type="hidden"
             name="seq_id"
-            ref="seq_id"
+            ref={(seq_id) => (this.seq_id = seq_id)}
             value={localSeqID}
           ></input>
           <p>
@@ -355,7 +359,7 @@ const RestrictionMapper = React.createClass({
         </span>
         <p>
           <select
-            ref="type"
+            ref={(type) => (this.type = type)}
             name="type"
             value={this.state.type}
             onChange={this.onTypeChange}
@@ -436,8 +440,8 @@ const RestrictionMapper = React.createClass({
   },
 
   onSubmit(e) {
-    var seq_id = this.refs.seq_id.value.trim();
-    var seq = this.refs.seq.value.trim();
+    var seq_id = this.seq_id.value.trim();
+    var seq = this.seq.value.trim();
     seq = seq.replace(/%0D/g, '');
     seq = seq.replace(/%0A/g, '');
     seq = seq.toUpperCase().replace(/[^ATCG]/g, '');

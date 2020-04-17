@@ -2,14 +2,18 @@
 
 var React = require('react');
 var _ = require('underscore');
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
-module.exports = React.createClass({
+module.exports = createReactClass({
   // elements, i.e.[ { name: "Doggy Woggy", key: "dog" }, ...]
   // onSelect(activeElementKey)
+  displayName: 'RadioSelector',
+
   propTypes: {
-    elements: React.PropTypes.array.isRequired,
-    initialActiveElementKey: React.PropTypes.string,
-    onSelect: React.PropTypes.func,
+    elements: PropTypes.array.isRequired,
+    initialActiveElementKey: PropTypes.string,
+    onSelect: PropTypes.func,
   },
 
   getInitialState: function () {

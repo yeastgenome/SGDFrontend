@@ -1,10 +1,12 @@
 'use strict';
 
 var React = require('react');
-
+import createReactClass from 'create-react-class';
 var GoogleRecaptcha = require('../widgets/google_recaptcha.jsx');
 
-module.exports = React.createClass({
+module.exports = createReactClass({
+  displayName: 'SuggestionForm',
+
   getInitialState: function () {
     return {
       isComplete: false,
@@ -84,7 +86,7 @@ module.exports = React.createClass({
                 <input
                   type="text"
                   placeholder="Your name"
-                  ref="name"
+                  ref={(name) => (this.name = name)}
                   size="50"
                   required={true}
                 ></input>
@@ -96,7 +98,7 @@ module.exports = React.createClass({
                 <input
                   type="text"
                   placeholder="Your email address"
-                  ref="internet"
+                  ref={(internet) => (this.internet = internet)}
                   size="50"
                   required={true}
                 ></input>
@@ -106,17 +108,23 @@ module.exports = React.createClass({
                 <input
                   type="text"
                   placeholder="a subject"
-                  ref="subject"
+                  ref={(subject) => (this.subject = subject)}
                   size="50"
                 ></input>
                 <p></p>
                 <label>Please enter your message here:</label>
                 <br />
-                <textarea ref="text" rows="10" cols="50"></textarea>
+                <textarea
+                  ref={(text) => (this.text = text)}
+                  rows="10"
+                  cols="50"
+                ></textarea>
                 <p></p>
                 <input
                   type="checkbox"
-                  ref="send_user_copy"
+                  ref={(send_user_copy) =>
+                    (this.send_user_copy = send_user_copy)
+                  }
                   unchecked
                 ></input>{' '}
                 Send me a copy<p></p>
@@ -143,11 +151,11 @@ module.exports = React.createClass({
   _onSubmit: function (e) {
     e.preventDefault();
 
-    var name = this.refs.name.value.trim();
-    var email = this.refs.internet.value.trim();
-    var subject = this.refs.subject.value.trim();
-    var message = this.refs.text.value.trim();
-    var sendUserCopy = this.refs.send_user_copy.checked;
+    var name = this.name.value.trim();
+    var email = this.internet.value.trim();
+    var subject = this.subject.value.trim();
+    var message = this.text.value.trim();
+    var sendUserCopy = this.send_user_copy.checked;
     /* console.log(sendUserCopy) */
     /* return */
 

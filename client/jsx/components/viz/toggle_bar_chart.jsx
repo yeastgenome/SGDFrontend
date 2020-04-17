@@ -9,11 +9,18 @@ var BarChart = require('./bar_chart.jsx');
 
 // add a filter to bar chart if more than this number of nodes
 var FILTER_TRESHOLD = 26;
-
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 /*
 	From some sets of data, allow user to toggle between bar charts.
 */
-module.exports = React.createClass({
+module.exports = createReactClass({
+  propTypes: {
+    initialActiveDataKey: PropTypes.any,
+    data: PropTypes.any,
+    yValue: PropTypes.any,
+    labelValue: PropTypes.any,
+  },
   getDefaultProps: function () {
     var idFn = (d) => {
       return d;

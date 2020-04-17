@@ -1,6 +1,8 @@
 var React = require('react');
 var _ = require('underscore');
 var $ = require('jquery');
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 var RadioSelector = require('./radio_selector.jsx');
 var BlastBarChart = require('./blast_bar_chart.jsx');
@@ -8,7 +10,13 @@ var Params = require('../mixins/parse_url_params.jsx');
 
 var BLAST_URL = '/run_blast';
 
-var SearchForm = React.createClass({
+var SearchForm = createReactClass({
+  displayName: 'SearchForm',
+
+  propTypes: {
+    blastType: PropTypes.any,
+  },
+
   getDefaultProps: function () {
     return {
       blastType: '',
@@ -81,6 +89,7 @@ var SearchForm = React.createClass({
               <i>S. cerevisiae</i> NCBI-BLAST Search{' '}
               <a
                 target="_blank"
+                rel="noopener noreferrer"
                 href="https://sites.google.com/view/yeastgenome-help/sequence-help/blast"
               >
                 <img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img>
@@ -99,6 +108,7 @@ var SearchForm = React.createClass({
               Fungal Genomes Search using NCBI-BLAST{' '}
               <a
                 target="_blank"
+                rel="noopener noreferrer"
                 href="https://sites.google.com/view/yeastgenome-help/sequence-help/fungal-blast"
               >
                 <img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img>
@@ -311,7 +321,7 @@ BLAST Help at NCBI</a>.</p><hr>';
 
         <input
           type="text"
-          ref="queryComment"
+          ref={(queryComment) => (this.queryComment = queryComment)}
           onChange={this._onChange}
           value={this.state.queryComment}
           size="50"
@@ -361,7 +371,7 @@ BLAST Help at NCBI</a>.</p><hr>';
           Numbers are okay)
         </h3>
         <textarea
-          ref="sequence"
+          ref={(sequence) => (this.sequence = sequence)}
           onChange={this._onChange}
           value={seq}
           rows="5"
@@ -387,7 +397,7 @@ BLAST Help at NCBI</a>.</p><hr>';
 
         <p>
           <select
-            ref="program"
+            ref={(program) => (this.program = program)}
             name="program"
             value={this.state.program}
             onChange={this._onProgramChange}
@@ -458,7 +468,7 @@ BLAST Help at NCBI</a>.</p><hr>';
         datasets in that category.
         <p>
           <select
-            ref="database"
+            ref={(database) => (this.database = database)}
             id="database"
             onChange={this._onDatabaseChange}
             size={i}
@@ -569,7 +579,7 @@ BLAST Help at NCBI</a>.</p><hr>';
     return (
       <p>
         <select
-          ref="outFormat"
+          ref={(outFormat) => (this.outFormat = outFormat)}
           value={this.state.outFormat}
           onChange={this._onOutFormatChange}
         >
@@ -586,7 +596,7 @@ BLAST Help at NCBI</a>.</p><hr>';
     return (
       <p>
         <select
-          ref="matrix"
+          ref={(matrix) => (this.matrix = matrix)}
           value={this.state.matrix}
           onChange={this._onMatrixChange}
         >
@@ -602,7 +612,7 @@ BLAST Help at NCBI</a>.</p><hr>';
     return (
       <p>
         <select
-          ref="cutoffScore"
+          ref={(cutoffScore) => (this.cutoffScore = cutoffScore)}
           value={this.state.cutoffScore}
           onChange={this._onCutoffScoreChange}
         >
@@ -634,7 +644,7 @@ BLAST Help at NCBI</a>.</p><hr>';
     return (
       <p>
         <select
-          ref="wordLength"
+          ref={(wordLength) => (this.wordLength = wordLength)}
           value={this.state.wordLength}
           onChange={this._onWordLengthChange}
         >
@@ -650,7 +660,7 @@ BLAST Help at NCBI</a>.</p><hr>';
     return (
       <p>
         <select
-          ref="threshold"
+          ref={(threshold) => (this.threshold = threshold)}
           value={this.state.threshold}
           onChange={this._onThresholdChange}
         >
@@ -677,7 +687,7 @@ BLAST Help at NCBI</a>.</p><hr>';
     return (
       <p>
         <select
-          ref="alignToShow"
+          ref={(alignToShow) => (this.alignToShow = alignToShow)}
           value={this.state.alignToShow}
           onChange={this._onAlignToShowChange}
         >
@@ -786,11 +796,11 @@ BLAST Help at NCBI</a>.</p><hr>';
   },
 
   _onSubmit: function (e) {
-    var seq = this.refs.sequence.value.trim();
+    var seq = this.sequence.value.trim();
     if (seq == '') {
       seq = this.state.uploadedSeq;
     }
-    var program = this.refs.program.value.trim();
+    var program = this.program.value.trim();
     var dbs = document.getElementById('database');
     var database = '';
     for (var i = 0; i < dbs.options.length; i++) {
@@ -802,12 +812,12 @@ BLAST Help at NCBI</a>.</p><hr>';
         }
       }
     }
-    var outFormat = this.refs.outFormat.value;
-    var matrix = this.refs.matrix.value;
-    var cutoffScore = this.refs.cutoffScore.value;
-    var wordLength = this.refs.wordLength.value;
-    var threshold = this.refs.threshold.value;
-    var alignToShow = this.refs.alignToShow.value;
+    var outFormat = this.outFormat.value;
+    var matrix = this.matrix.value;
+    var cutoffScore = this.cutoffScore.value;
+    var wordLength = this.wordLength.value;
+    var threshold = this.threshold.value;
+    var alignToShow = this.alignToShow.value;
     var filter = 'on';
     if (document.getElementById('Off').checked) {
       filter = '';

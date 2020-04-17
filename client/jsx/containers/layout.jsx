@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Header from './layout/header.jsx';
 import Footer from './layout/footer.jsx';
+import PropTypes from 'prop-types';
 
 class Layout extends Component {
   render() {
@@ -17,5 +18,9 @@ class Layout extends Component {
     );
   }
 }
+
+Layout.propTypes = {
+  children: PropTypes.any,
+};
 
 module.exports = Layout;

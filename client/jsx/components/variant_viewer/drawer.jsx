@@ -3,11 +3,17 @@ var React = require('react');
 var VariantViewerStore = require('../../stores/variant_viewer_store.jsx');
 var AsyncVariantViewer = require('./async_variant_viewer.jsx');
 var MAX_HEIGHT = 800;
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
-var Drawer = React.createClass({
+var Drawer = createReactClass({
+  displayName: 'Drawer',
+
   propTypes: {
-    store: React.PropTypes.object.isRequired,
-    isProteinMode: React.PropTypes.bool,
+    store: PropTypes.object.isRequired,
+    isProteinMode: PropTypes.bool,
+    params: PropTypes.any,
+    history: PropTypes.any,
   },
 
   getDefaultProps() {

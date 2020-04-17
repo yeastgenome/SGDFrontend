@@ -10,8 +10,11 @@ const NavBar = require('../widgets/navbar.jsx');
 const SequenceToggler = require('../sequence/sequence_toggler.jsx');
 const Statics = require('../../statics.jsx');
 const TForm = require('../widgets/t_form.jsx');
+import createReactClass from 'create-react-class';
 
-const StyleGuide = React.createClass({
+const StyleGuide = createReactClass({
+  displayName: 'StyleGuide',
+
   render() {
     return (
       <div className="row">

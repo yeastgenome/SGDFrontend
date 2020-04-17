@@ -4,9 +4,23 @@ var d3 = require('d3');
 var React = require('react');
 
 var CalcWidthOnResize = require('../mixins/calc_width_on_resize.jsx');
-
-var StandaloneAxis = React.createClass({
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
+var StandaloneAxis = createReactClass({
   mixins: [CalcWidthOnResize],
+  displayName: 'StandaloneAxis',
+  propTypes: {
+    labelText: PropTypes.string,
+    leftRatio: PropTypes.any,
+    height: PropTypes.any,
+    gridTicks: PropTypes.any,
+    scaleTypes: PropTypes.any,
+    orientation: PropTypes.any,
+    tickFormat: PropTypes.any,
+    transitionDuration: PropTypes.any,
+    scaleType: PropTypes.any,
+    ticks: PropTypes.any,
+  },
 
   getDefaultProps: function () {
     return {
@@ -44,9 +58,16 @@ var StandaloneAxis = React.createClass({
     var _height = this.props.height || (this.props.gridTicks ? '100%' : 32);
     var _klass = `standalone-axis ${this.props.gridTicks ? 'grid-ticks' : ''}`;
     return (
-      <div ref="wrapper" className={_klass} style={{ position: 'relative' }}>
+      <div
+        ref={(wrapper) => (this.wrapper = wrapper)}
+        className={_klass}
+        style={{ position: 'relative' }}
+      >
         {labelNode}
-        <svg ref="svg" style={{ width: '100%', height: _height }}></svg>
+        <svg
+          ref={(svg) => (this.svg = svg)}
+          style={{ width: '100%', height: _height }}
+        ></svg>
       </div>
     );
   },
@@ -57,7 +78,7 @@ var StandaloneAxis = React.createClass({
     this._calculateScale();
   },
 
-  componentWillReceiveProps: function (nextProps) {
+  UNSAFE_componentWillReceiveProps: function (nextProps) {
     this._calculateScale(nextProps);
   },
 
@@ -82,7 +103,7 @@ var StandaloneAxis = React.createClass({
     };
     var _baseScale = scaleTypes[this.props.scaleType];
 
-    var _width = this.refs.wrapper.getBoundingClientRect().width - 1;
+    var _width = this.wrapper.getBoundingClientRect().width - 1;
     var _xOffset = _width * props.leftRatio;
     var _scale = _baseScale.domain(props.domain).range([0, _width - _xOffset]);
 
@@ -96,7 +117,7 @@ var StandaloneAxis = React.createClass({
     // must have scale calculated
     if (!this.state.scale) return;
 
-    var _tickSize = this.props.gridTicks ? -this.refs.wrapper.offsetHeight : 6;
+    var _tickSize = this.props.gridTicks ? -this.wrapper.offsetHeight : 6;
     var axisFn = d3.svg
       .axis()
       .orient(this.props.orientation)
@@ -105,13 +126,13 @@ var StandaloneAxis = React.createClass({
       .tickSize(_tickSize)
       .scale(this.state.scale);
 
-    var svg = d3.select(this.refs['svg']);
+    var svg = d3.select(this.svg);
 
     var _xTranslate =
-      this.refs.wrapper.getBoundingClientRect().width * this.props.leftRatio;
+      this.wrapper.getBoundingClientRect().width * this.props.leftRatio;
     var _yTranslate = this.props.orientation === 'top' ? 30 : 0;
     if (this.props.gridTicks && this.props.orientation === 'bottom') {
-      _yTranslate += this.refs.wrapper.getBoundingClientRect().height - 30;
+      _yTranslate += this.wrapper.getBoundingClientRect().height - 30;
     }
     var _translate = `translate(${_xTranslate}, ${_yTranslate})`;
     var axis = svg.selectAll('g.axis').data([null]);

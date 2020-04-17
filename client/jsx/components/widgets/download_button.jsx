@@ -1,7 +1,17 @@
 import React from 'react';
 import _ from 'underscore';
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
-const DownloadButton = React.createClass({
+const DownloadButton = createReactClass({
+  displayName: 'DownloadButton',
+  propTypes: {
+    url: PropTypes.any,
+    buttonId: PropTypes.any,
+    extension: PropTypes.any,
+    params: PropTypes.any,
+    text: PropTypes.any,
+  },
   getDefaultProps: function () {
     return {
       buttonId: null,

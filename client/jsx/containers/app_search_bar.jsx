@@ -11,8 +11,15 @@ import { getCategoryDisplayName } from '../lib/search_helpers';
 
 const AUTOCOMPLETE_URL = '/backend/autocomplete_results';
 const AUTOCOMPLETE_FETCH_DEBOUNCE_WAIT = 200;
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
-const SearchOption = React.createClass({
+const SearchOption = createReactClass({
+  propTypes: {
+    isSelected: PropTypes.bool,
+    data: PropTypes.object,
+  },
+
   render() {
     let extraClass = this.props.isSelected ? ' active' : '';
     let _className = `react-typeahead-option${extraClass}`;
@@ -43,11 +50,12 @@ const SearchOption = React.createClass({
   },
 });
 
-const AppSearchBar = React.createClass({
+const AppSearchBar = createReactClass({
   propTypes: {
-    resultsUrl: React.PropTypes.string.isRequired,
-    userInput: React.PropTypes.string,
-    redirectOnSearch: React.PropTypes.bool, // if true, hard HTTP redirect to /search?q=${query}, if false, uses REDUX
+    resultsUrl: PropTypes.string.isRequired,
+    userInput: PropTypes.string,
+    redirectOnSearch: PropTypes.bool, // if true, hard HTTP redirect to /search?q=${query}, if false, uses REDUX
+    dispatch: PropTypes.func,
   },
 
   getDefaultProps() {
@@ -64,8 +72,14 @@ const AppSearchBar = React.createClass({
     };
   },
 
+  componentDidMount() {
+    this._isMounted = true;
+  },
+  componentWillUnmount() {
+    this._isMounted = false;
+  },
+
   render() {
-    let debouncedOnChange = null;
     const _onSubmit = (e) => {
       e.preventDefault();
     };
@@ -132,9 +146,9 @@ const AppSearchBar = React.createClass({
         // add 'show all'
         results.unshift({ isShowAll: true, name: this.props.userInput });
         // save results to state
-        if (this.isMounted()) this.setState({ autocompleteResults: results });
+        if (this._isMounted) this.setState({ autocompleteResults: results });
       })
-      .catch(function (err) {
+      .catch(function () {
         console.warn('Unable to fetch autocomplete results.');
       });
   },

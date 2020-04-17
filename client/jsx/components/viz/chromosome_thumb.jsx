@@ -5,11 +5,15 @@ var d3 = require('d3');
 var _ = require('underscore');
 var CalcWidthOnResize = require('../mixins/calc_width_on_resize.jsx');
 var HEIGHT = 20;
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 /*
 	A small visualization of a chromosome and inset to show smaller location within. 
 */
-module.exports = React.createClass({
+module.exports = createReactClass({
+  displayName: 'ChromosomeThumb',
+
   mixins: [CalcWidthOnResize],
 
   getDefaultProps: function () {
@@ -19,6 +23,13 @@ module.exports = React.createClass({
       centromerePosition: null, // *
       isChromosome: true,
     };
+  },
+
+  propTypes: {
+    isChromosome: PropTypes.any,
+    centromerePosition: PropTypes.any,
+    domain: PropTypes.any,
+    totalLength: PropTypes.any,
   },
 
   getInitialState: function () {
@@ -88,7 +99,10 @@ module.exports = React.createClass({
     );
 
     return (
-      <div ref="wrapper" style={{ position: 'relative' }}>
+      <div
+        ref={(wrapper) => (this.wrapper = wrapper)}
+        style={{ position: 'relative' }}
+      >
         <svg
           className="chromosome-thumb"
           style={{ width: this.state.DOMWidth, height: HEIGHT }}
@@ -115,7 +129,7 @@ module.exports = React.createClass({
   },
 
   _calculateWidth: function () {
-    var _width = this.refs.wrapper.getBoundingClientRect().width;
+    var _width = this.wrapper.getBoundingClientRect().width;
     this.setState({ DOMWidth: _width });
   },
 });

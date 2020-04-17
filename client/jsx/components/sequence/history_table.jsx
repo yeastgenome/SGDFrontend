@@ -2,11 +2,19 @@
 
 var React = require('react');
 var _ = require('underscore');
-
+import createReactClass from 'create-react-class';
 var DataTable = require('../widgets/data_table.jsx');
 var HelpIcon = require('../widgets/help_icon.jsx');
+import PropTypes from 'prop-types';
 
-module.exports = React.createClass({
+module.exports = createReactClass({
+  displayName: 'HistoryTable',
+
+  propTypes: {
+    data: PropTypes.array,
+    dataType: PropTypes.string,
+  },
+
   getDefaultProps: function () {
     return {
       data: [], // * []
@@ -29,7 +37,7 @@ module.exports = React.createClass({
         ) : null;
         var sepNode = i > 0 && i !== e.references.length - 1 ? ', ' : null;
         return (
-          <span>
+          <span key={i}>
             <a href={r.link}>{r.display_name}</a>
             {pubmedNode}
             {sepNode}

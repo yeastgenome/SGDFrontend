@@ -2,11 +2,17 @@
 
 var React = require('react');
 var _ = require('underscore');
-
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 var DidClickOutside = require('../mixins/did_click_outside.jsx');
 
-var MultiSequenceDownload = React.createClass({
+var MultiSequenceDownload = createReactClass({
+  displayName: 'MultiSequenceDownload',
   mixins: [DidClickOutside],
+  propTypes: {
+    sequences: PropTypes.any,
+    locusFormatName: PropTypes.any, // *
+  },
 
   getDefaultProps: function () {
     return {
@@ -24,10 +30,11 @@ var MultiSequenceDownload = React.createClass({
   },
 
   render: function () {
+    this.btn = [];
     var _hiddenFormNodes = _.map(this.props.sequences, (s, i) => {
       return (
         <form
-          ref={s.key}
+          ref={(ref) => (this.btn[i] = ref)}
           method="POST"
           action="/download_sequence"
           key={'hiddenNode' + i}
@@ -43,7 +50,7 @@ var MultiSequenceDownload = React.createClass({
       var _onClick = (e) => {
         e.preventDefault();
         e.nativeEvent.stopImmediatePropagation();
-        this._handleClick(s.key);
+        this._handleClick(i);
       };
       return (
         <li key={'seqButton' + i}>
@@ -99,7 +106,7 @@ var MultiSequenceDownload = React.createClass({
 
   // get the DOM node for the form; submit to download
   _handleClick: function (key) {
-    this.refs[key].submit();
+    this.btn[key].submit();
   },
 });
 

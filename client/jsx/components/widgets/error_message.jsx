@@ -1,6 +1,13 @@
 import React from 'react';
 
-const ErrorMessage = React.createClass({
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
+const ErrorMessage = createReactClass({
+  displayName: 'ErrorMessage',
+  propTypes: {
+    heading: PropTypes.any,
+    message: PropTypes.any,
+  },
   getDefaultProps() {
     return {
       heading: 'Woops!',

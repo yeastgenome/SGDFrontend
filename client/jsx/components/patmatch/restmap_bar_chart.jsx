@@ -1,5 +1,7 @@
 import React from 'react';
 import d3 from 'd3';
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 const CalcWidthOnResize = require('../mixins/calc_width_on_resize.jsx');
 const FlexibleTooltip = require('../widgets/flexible_tooltip.jsx');
@@ -25,9 +27,14 @@ const enzyme_type_to_color = {
   'blunt end': ORANGE,
 };
 
-module.exports = React.createClass({
+module.exports = createReactClass({
+  displayName: 'RestMapBarChart',
   mixins: [CalcWidthOnResize],
-
+  propTypes: {
+    seqLength: PropTypes.any,
+    data: PropTypes.any,
+    left: PropTypes.any,
+  },
   getDefaultProps() {
     return { data: null, seqLength: null, left: 10, scaleType: 'linear' };
   },
@@ -52,7 +59,8 @@ module.exports = React.createClass({
     var props = this.props;
 
     // require widthScale to continue
-    if (!state.widthScale) return <div ref="wrapper"></div>;
+    if (!state.widthScale)
+      return <div ref={(wrapper) => (this.wrapper = wrapper)}></div>;
 
     // create y axis, if hasYaxis
     var data = this.props.data;
@@ -122,7 +130,7 @@ module.exports = React.createClass({
 
     return (
       <div
-        ref="wrapper"
+        ref={(wrapper) => (this.wrapper = wrapper)}
         className="blast-bar-graph"
         onMouseLeave={this._onMouseLeave}
       >
@@ -144,7 +152,7 @@ module.exports = React.createClass({
     this._calculateWidthScale();
   },
 
-  componentWillReceiveProps() {
+  UNSAFE_componentWillReceiveProps() {
     this._calculateWidthScale();
   },
 
@@ -157,7 +165,7 @@ module.exports = React.createClass({
     var baseScale = d3.scale.linear();
 
     var maxY = this.props.seqLength;
-    var width = this.refs.wrapper.getBoundingClientRect().width;
+    var width = this.wrapper.getBoundingClientRect().width;
     var labelRatio = 0.1;
     var scale = baseScale
       .domain([0, maxY])
@@ -360,7 +368,7 @@ module.exports = React.createClass({
           fontSize="14"
           fill="black"
         >
-          enzyme name = 3' overhang
+          enzyme name = 3&apos; overhang
         </text>
         <text x={341} y={HEIGHT - 5} fontSize="14" fill={MAGENTA}>
           Magenta
@@ -372,7 +380,7 @@ module.exports = React.createClass({
           fontSize="14"
           fill="black"
         >
-          enzyme name = 5' overhang
+          enzyme name = 5&apos; overhang
         </text>
         <text
           x={595}
@@ -443,7 +451,7 @@ module.exports = React.createClass({
           fontSize="14"
           fill="black"
         >
-          : Recognition sequence in Watson (5'->3') strand
+          : Recognition sequence in Watson (5&apos;-&gt;3&apos;) strand
         </text>
         <circle
           cx={488}
@@ -468,7 +476,7 @@ module.exports = React.createClass({
           fontSize="14"
           fill="black"
         >
-          : Recognition sequence in Crick (3'->5') strand
+          : Recognition sequence in Crick (3&apos;-&gt;5&apos;) strand
         </text>
       </g>
     );

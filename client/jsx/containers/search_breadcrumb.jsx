@@ -2,6 +2,8 @@ import Radium from 'radium';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 import {
   getHrefWithoutAgg,
@@ -11,7 +13,16 @@ import {
 const SEARCH_URL = '/search';
 const SKIPPED_PARAMS = ['page', 'geneMode', 'is_quick', 'page_size', 'sort_by'];
 
-const SearchBreadcrumb = React.createClass({
+const SearchBreadcrumb = createReactClass({
+  displayName: 'SearchBreadCrumb',
+  propTypes: {
+    query: PropTypes.any,
+    total: PropTypes.any,
+    isPending: PropTypes.any,
+    isPaginatePending: PropTypes.any,
+    queryParams: PropTypes.any,
+  },
+
   render() {
     return (
       <h2>

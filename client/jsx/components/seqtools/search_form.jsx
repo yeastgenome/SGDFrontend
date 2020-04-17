@@ -1,6 +1,7 @@
 import React from 'react';
 import _ from 'underscore';
 import $ from 'jquery';
+import createReactClass from 'create-react-class';
 
 const DataTable = require('../widgets/data_table.jsx');
 const Params = require('../mixins/parse_url_params.jsx');
@@ -22,7 +23,7 @@ const MAX_GENE_TO_SHOW = 4;
 const MAX_GENE = 50;
 const MAX_SEQ_LENGTH_FOR_TOOLS = 10000000;
 
-const GeneSequenceResources = React.createClass({
+const GeneSequenceResources = createReactClass({
   getInitialState() {
     var param = Params.getParams();
     return {
@@ -48,6 +49,7 @@ const GeneSequenceResources = React.createClass({
             Gene/Sequence Resources{' '}
             <a
               target="_blank"
+              rel="noopener noreferrer"
               href="https://sites.google.com/view/yeastgenome-help/sequence-help/genesequence-resources"
             >
               <img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img>
@@ -180,7 +182,7 @@ const GeneSequenceResources = React.createClass({
     var _nameSection = {
       headers: [
         [
-          <span style={style.textFont}>
+          <span style={style.textFont} key={0}>
             <a name="gene">1. Search a list of genes</a>
           </span>,
           '',
@@ -192,7 +194,7 @@ const GeneSequenceResources = React.createClass({
     var _chrSection = {
       headers: [
         [
-          <span style={style.textFont}>
+          <span style={style.textFont} key={0}>
             <strong style={{ color: 'red' }}>OR</strong>{' '}
             <a name="chr">
               2. Search a specified chromosomal region of S288C genome
@@ -207,7 +209,7 @@ const GeneSequenceResources = React.createClass({
     var _seqSection = {
       headers: [
         [
-          <span style={style.textFont}>
+          <span style={style.textFont} key={0}>
             <strong style={{ color: 'red' }}>OR</strong>{' '}
             <a name="seq">3. Analyze a raw DNA or Protein sequence</a>
           </span>,
@@ -269,7 +271,11 @@ const GeneSequenceResources = React.createClass({
 
     // sequence analysis row
 
-    var seqAnalRow = [<span style={style.textFont}>Sequence Analysis</span>];
+    var seqAnalRow = [
+      <span style={style.textFont} key={0}>
+        Sequence Analysis
+      </span>,
+    ];
     window.localStorage.setItem(seqID, seq);
     if (seqtype == 'DNA') {
       seqAnalRow.push(this.getToolsLinks4DNA(seqID, seq));
@@ -297,7 +303,9 @@ const GeneSequenceResources = React.createClass({
     // browser row
 
     var browserRow = [
-      <span style={style.textFont}>Genome Display (S288C)</span>,
+      <span style={style.textFont} key={0}>
+        Genome Display (S288C)
+      </span>,
     ];
 
     var url = 'https://browse.yeastgenome.org/?loc=chr' + chr;
@@ -316,7 +324,7 @@ const GeneSequenceResources = React.createClass({
     // sequence download row
 
     var seqDLRow = [
-      <span style={style.textFont}>
+      <span style={style.textFont} key={0}>
         <br />
         Sequence Downloads
         <br />* DNA of Region
@@ -359,7 +367,11 @@ const GeneSequenceResources = React.createClass({
 
     // sequence analysis row
 
-    var seqAnalRow = [<span style={style.textFont}>Sequence Analysis</span>];
+    var seqAnalRow = [
+      <span style={style.textFont} key={0}>
+        Sequence Analysis
+      </span>,
+    ];
     var seq = data['residue'];
     var seqID = chr + '_' + start + '_' + end + '_' + rev;
     window.localStorage.setItem(seqID, seq);
@@ -390,7 +402,11 @@ const GeneSequenceResources = React.createClass({
     }
     var geneList = '';
     var rows = [];
-    var geneRow = [<span style={style.textFont}>Gene Name</span>];
+    var geneRow = [
+      <span style={style.textFont} key={0}>
+        Gene Name
+      </span>,
+    ];
     _.map(genes, (gene) => {
       geneRow.push(
         <span style={style.textFont}>{displayName4gene[gene]}</span>
@@ -405,7 +421,9 @@ const GeneSequenceResources = React.createClass({
     // gene name row
 
     var locusRow = [
-      <span style={style.textFont}>Locus and Homolog Details</span>,
+      <span style={style.textFont} key={0}>
+        Locus and Homolog Details
+      </span>,
     ];
     _.map(genes, (gene) => {
       var sgdUrl = 'https://www.yeastgenome.org/locus/' + sgdid4gene[gene];
@@ -444,7 +462,9 @@ const GeneSequenceResources = React.createClass({
     // browser row
 
     var browserRow = [
-      <span style={style.textFont}>Genome Display (S288C)</span>,
+      <span style={style.textFont} key={0}>
+        Genome Display (S288C)
+      </span>,
     ];
     _.map(genes, (gene) => {
       var chrCoords = chrCoords4gene[gene];
@@ -474,7 +494,11 @@ const GeneSequenceResources = React.createClass({
 
     // alignment row
 
-    var alignRow = [<span style={style.textFont}>Alignment/Variation</span>];
+    var alignRow = [
+      <span style={style.textFont} key={0}>
+        Alignment/Variation
+      </span>,
+    ];
     var hasRow = 0;
     _.map(genes, (gene) => {
       var chrCoords = chrCoords4gene[gene];
@@ -511,7 +535,7 @@ const GeneSequenceResources = React.createClass({
     var seqDLRow = [];
     if (hasCoding > 0 && hasProtein > 0) {
       seqDLRow = [
-        <span style={style.textFont}>
+        <span style={style.textFont} key={0}>
           <br />
           Sequence Downloads
           <br />* DNA of Region
@@ -521,7 +545,7 @@ const GeneSequenceResources = React.createClass({
       ];
     } else if (hasCoding > 0) {
       seqDLRow = [
-        <span style={style.textFont}>
+        <span style={style.textFont} key={0}>
           <br />
           Sequence Downloads
           <br />* DNA of Region
@@ -530,7 +554,7 @@ const GeneSequenceResources = React.createClass({
       ];
     } else {
       seqDLRow = [
-        <span style={style.textFont}>
+        <span style={style.textFont} key={0}>
           <br />
           Sequence Downloads
           <br />* DNA of Region
@@ -705,7 +729,11 @@ const GeneSequenceResources = React.createClass({
     rows.push(seqDLRow);
 
     var ID = up + '_' + down + '_' + rev;
-    var seqAnalRow = [<span style={style.textFont}>Sequence Analysis</span>];
+    var seqAnalRow = [
+      <span style={style.textFont} key={0}>
+        Sequence Analysis
+      </span>,
+    ];
     _.map(genes, (gene) => {
       var s = seq4gene[gene];
       var seqInfo = s['genomic'];
@@ -1170,7 +1198,7 @@ const GeneSequenceResources = React.createClass({
   },
 
   onSubmit(e) {
-    var genes = this.refs.genes.value.trim();
+    var genes = this.genes.value.trim();
     // var email = this.refs.email.value.trim();
 
     var [displaySet, allGenes] = this.checkGenes(genes);
@@ -1195,8 +1223,8 @@ const GeneSequenceResources = React.createClass({
     //     }
     // }
 
-    var up = this.refs.up.value.trim();
-    var down = this.refs.down.value.trim();
+    var up = this.up.value.trim();
+    var down = this.down.value.trim();
     if (isNaN(up) || isNaN(down)) {
       alert('Please enter a number for up & downstream basepairs.');
       e.preventDefault();
@@ -1229,15 +1257,15 @@ const GeneSequenceResources = React.createClass({
   },
 
   onSubmit2(e) {
-    var chr = this.refs.chr.value.trim();
+    var chr = this.chr.value.trim();
     if (chr == 0) {
       alert('Please pick a chromosome.');
       e.preventDefault();
       return 1;
     }
 
-    var start = this.refs.start.value.trim();
-    var end = this.refs.end.value.trim();
+    var start = this.start.value.trim();
+    var end = this.end.value.trim();
     if (isNaN(start) || isNaN(end)) {
       alert('Please enter a number for chromosomal coordinates.');
       e.preventDefault();
@@ -1246,7 +1274,7 @@ const GeneSequenceResources = React.createClass({
   },
 
   onSubmit3(e) {
-    var seq = this.refs.seq.value.trim();
+    var seq = this.seq.value.trim();
 
     seq = seq.replace(/[^A-Za-z]/g, '');
     if (seq == '') {
@@ -1255,7 +1283,7 @@ const GeneSequenceResources = React.createClass({
       return 1;
     }
 
-    var seqtype = this.refs.seqtype.value.trim();
+    var seqtype = this.seqtype.value.trim();
 
     if (seqtype == 'DNA') {
       var re = /[^ATCGatcg]/;
@@ -1277,7 +1305,7 @@ const GeneSequenceResources = React.createClass({
       }
     }
 
-    var seq_id = this.refs.seq_id.value.trim();
+    var seq_id = this.seq_id.value.trim();
     if (seq) {
       window.localStorage.setItem(seq_id, seq);
     }
@@ -1299,7 +1327,7 @@ const GeneSequenceResources = React.createClass({
           search is {MAX_GENE}. It will take first {MAX_GENE} genes if more than{' '}
           {MAX_GENE} are provided.
           <textarea
-            ref="genes"
+            ref={(genes) => (this.genes = genes)}
             name="genes"
             value={seqname}
             onChange={this.onChange}
@@ -1314,7 +1342,7 @@ const GeneSequenceResources = React.createClass({
           Upstream:{' '}
           <input
             type="text"
-            ref="up"
+            ref={(up) => (this.up = up)}
             name="up"
             onChange={this.onChange}
             size="50"
@@ -1322,7 +1350,7 @@ const GeneSequenceResources = React.createClass({
           Downstream:{' '}
           <input
             type="text"
-            ref="down"
+            ref={(down) => (this.down = down)}
             name="down"
             onChange={this.onChange}
             size="50"
@@ -1344,14 +1372,14 @@ const GeneSequenceResources = React.createClass({
           <input type="hidden" name="more" value="1" />
           <input
             type="submit"
-            ref="submit"
+            ref={(submit) => (this.submit = submit)}
             name="submit"
             value="Submit Form"
             className="button secondary"
           />{' '}
           <input
             type="reset"
-            ref="reset"
+            ref={(reset) => (this.reset = reset)}
             name="reset"
             value="Reset Form"
             className="button secondary"
@@ -1394,7 +1422,7 @@ const GeneSequenceResources = React.createClass({
         <h3>Pick a chromosome: </h3>
         <p>
           <select
-            ref="chr"
+            ref={(chr) => (this.chr = chr)}
             name="chr"
             value={this.state.chr}
             onChange={this.onChrChange}
@@ -1406,7 +1434,7 @@ const GeneSequenceResources = React.createClass({
           Then enter coordinates (optional)
           <input
             type="text"
-            ref="start"
+            ref={(start) => (this.start = start)}
             name="start"
             onChange={this.onChange}
             size="105"
@@ -1414,7 +1442,7 @@ const GeneSequenceResources = React.createClass({
           to
           <input
             type="text"
-            ref="end"
+            ref={(end) => (this.end = end)}
             name="end"
             onChange={this.onChange}
             size="105"
@@ -1439,14 +1467,14 @@ const GeneSequenceResources = React.createClass({
         <p>
           <input
             type="submit"
-            ref="submit2"
+            ref={(submit2) => (this.submit2 = submit2)}
             name="submit2"
             value="Submit Form"
             className="button secondary"
           />{' '}
           <input
             type="reset"
-            ref="reset2"
+            ref={(reset2) => (this.reset2 = reset2)}
             name="reset2"
             value="Reset Form"
             className="button secondary"
@@ -1470,13 +1498,18 @@ const GeneSequenceResources = React.createClass({
         <p>
           Sequence:
           <textarea
-            ref="seq"
+            ref={(seq) => (this.seq = seq)}
             onChange={this.onChange}
             rows="3"
             cols="75"
           ></textarea>
         </p>
-        <input type="hidden" name="seq_id" ref="seq_id" value={localSeqID} />
+        <input
+          type="hidden"
+          name="seq_id"
+          ref={(seq_id) => (this.seq_id = seq_id)}
+          value={localSeqID}
+        />
       </div>
     );
   },
@@ -1494,14 +1527,14 @@ const GeneSequenceResources = React.createClass({
         <p>
           <input
             type="submit"
-            ref="submit3"
+            ref={(submit3) => (this.submit3 = submit3)}
             name="submit3"
             value="Submit Form"
             className="button secondary"
           />{' '}
           <input
             type="reset"
-            ref="reset3"
+            ref={(reset3) => (this.reset3 = reset3)}
             name="reset3"
             value="Reset Form"
             className="button secondary"
@@ -1519,7 +1552,11 @@ const GeneSequenceResources = React.createClass({
     return (
       <div>
         <p>
-          <select name="seqtype" ref="seqtype" onChange={this.onChange}>
+          <select
+            name="seqtype"
+            ref={(seqtype) => (this.seqtype = seqtype)}
+            onChange={this.onChange}
+          >
             {_elements}
           </select>
         </p>
@@ -1574,7 +1611,7 @@ const GeneSequenceResources = React.createClass({
       <div>
         <p>
           <select
-            ref="strain"
+            ref={(strain) => (this.strain = strain)}
             name="strain"
             id="strain"
             value={this.state.strain}
@@ -1613,7 +1650,7 @@ const GeneSequenceResources = React.createClass({
           (Select or unselect multiple strains by pressing the Control (PC) or
           Command (Mac) key while clicking.)
           <select
-            ref="strains"
+            ref={(strains) => (this.strains = strains)}
             name="strains"
             id="strains"
             size="11"

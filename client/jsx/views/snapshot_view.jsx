@@ -67,7 +67,7 @@ snapshotView.render = function () {
 
     // phenotype viz
     var _phenotypeData = nestedData.phenotypeData;
-    var _colorValue = (d) => {
+    var _colorValue = () => {
       return '#DF8B93';
     };
     var _phenoYValue = (d) => {

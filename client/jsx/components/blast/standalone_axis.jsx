@@ -2,12 +2,25 @@
 
 var d3 = require('d3');
 var React = require('react');
-import ReactDOM from 'react-dom';
-
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var CalcWidthOnResize = require('../mixins/calc_width_on_resize.jsx');
 
-module.exports = React.createClass({
+module.exports = createReactClass({
   mixins: [CalcWidthOnResize],
+  displayName: 'StandAloneAxis',
+
+  propTypes: {
+    labelText: PropTypes.any,
+    left: PropTypes.any,
+    height: PropTypes.any,
+    gridTicks: PropTypes.any,
+    scaleType: PropTypes.any,
+    orientation: PropTypes.any,
+    ticks: PropTypes.any,
+    tickFormat: PropTypes.any,
+    transitionDuration: PropTypes.any,
+  },
 
   getDefaultProps: function () {
     return {
@@ -49,9 +62,16 @@ module.exports = React.createClass({
     var _height = this.props.height || (this.props.gridTicks ? '95%' : 32);
     var _klass = `standalone-axis ${this.props.gridTicks ? 'grid-ticks' : ''}`;
     return (
-      <div className={_klass} style={{ position: 'relative' }}>
+      <div
+        className={_klass}
+        style={{ position: 'relative' }}
+        ref={(node) => (this.node = node)}
+      >
         {labelNode}
-        <svg ref="svg" style={{ width: '100%', height: _height }}></svg>
+        <svg
+          ref={(svg) => (this.svg = svg)}
+          style={{ width: '100%', height: _height }}
+        ></svg>
       </div>
     );
   },
@@ -62,7 +82,7 @@ module.exports = React.createClass({
     this._calculateScale();
   },
 
-  componentWillReceiveProps: function (nextProps) {
+  UNSAFE_componentWillReceiveProps: function (nextProps) {
     this._calculateScale(nextProps);
   },
 
@@ -86,7 +106,7 @@ module.exports = React.createClass({
       sqrt: d3.scale.sqrt(),
     };
     var _baseScale = scaleTypes[this.props.scaleType];
-    var _width = ReactDOM.findDOMNode(this).getBoundingClientRect().width - 1;
+    var _width = this.node.getBoundingClientRect().width - 1;
     var _xOffset = _width * props.leftRatio;
     var _scale = _baseScale.domain(props.domain).range([0, _width - _xOffset]);
 
@@ -109,7 +129,7 @@ module.exports = React.createClass({
       .tickSize(_tickSize)
       .scale(this.state.scale);
 
-    var svg = d3.select(ReactDOM.findDOMNode(this.refs['svg']));
+    var svg = d3.select(this.svg);
 
     // var _xTranslate = (this.getDOMNode().getBoundingClientRect().width * this.props.leftRatio)
 

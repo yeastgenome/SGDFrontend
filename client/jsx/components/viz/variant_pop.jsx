@@ -1,6 +1,8 @@
 'use strict';
 
 var React = require('react');
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 // fill colors
 var SYNONYMOUS_COLOR = '#4D9221'; // dark yellow-green
@@ -8,13 +10,15 @@ var NON_SYNONYMOUS_COLOR = '#C51B7D'; // dark pink
 var INTRON_COLOR = '#E6F5D0'; // pale yellow-green
 var UNTRANSLATEABLE_COLOR = 'gray';
 
-var VariantPop = React.createClass({
+var VariantPop = createReactClass({
+  displayName: 'VariantPop',
+
   propTypes: {
-    data: React.PropTypes.object.isRequired,
-    hasStem: React.PropTypes.bool,
-    onMouseOver: React.PropTypes.func,
-    scale: React.PropTypes.func,
-    y: React.PropTypes.number,
+    data: PropTypes.object.isRequired,
+    hasStem: PropTypes.bool,
+    onMouseOver: PropTypes.func,
+    scale: PropTypes.func,
+    y: PropTypes.number,
   },
 
   getDefaultProps: function () {

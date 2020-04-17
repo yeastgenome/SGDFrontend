@@ -6,7 +6,7 @@ module.exports = {
   // add event listener to document to dismiss when clicking
   componentDidMount: function () {
     document.addEventListener('click', () => {
-      if (this.isMounted() && this.didClickOutside) {
+      if (this.didClickOutside) {
         this.didClickOutside();
       }
     });

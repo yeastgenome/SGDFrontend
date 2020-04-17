@@ -1,10 +1,16 @@
 import React from 'react';
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
-const Footer = React.createClass({
+const Footer = createReactClass({
   getDefaultProps() {
     return {
       assetRoot: '/static',
     };
+  },
+
+  propTypes: {
+    assetRoot: PropTypes.any,
   },
 
   render() {
@@ -20,6 +26,7 @@ const Footer = React.createClass({
               <li>
                 <a
                   target="_blank"
+                  rel="noopener noreferrer"
                   className="hide-external-link-icon"
                   href="https://sites.google.com/view/yeastgenome-help/about"
                 >
@@ -34,6 +41,7 @@ const Footer = React.createClass({
               <li>
                 <a
                   target="_blank"
+                  rel="noopener noreferrer"
                   className="hide-external-link-icon"
                   href="https://sites.google.com/view/yeastgenome-help/sgd-general-help"
                 >
@@ -43,6 +51,7 @@ const Footer = React.createClass({
               <li>
                 <a
                   target="_blank"
+                  rel="noopener noreferrer"
                   className="hide-external-link-icon"
                   href="http://www.stanford.edu/site/privacy"
                 >
@@ -51,7 +60,7 @@ const Footer = React.createClass({
               </li>
               <li>
                 <a
-                  rel="license"
+                  rel="noopener noreferrer"
                   target="_blank"
                   className="hide-external-link-icon"
                   href="http://creativecommons.org/licenses/by/4.0/"
@@ -69,6 +78,7 @@ const Footer = React.createClass({
                     <a
                       href="/cgi-bin/suggestion"
                       target="_blank"
+                      rel="noopener noreferrer"
                       id="email-footer"
                       className="webicon mail small"
                     >
@@ -79,6 +89,7 @@ const Footer = React.createClass({
                     <a
                       href="http://twitter.com/#!/yeastgenome"
                       target="_blank"
+                      rel="noopener noreferrer"
                       id="twitter-footer"
                       className="webicon twitter small"
                     >
@@ -89,6 +100,7 @@ const Footer = React.createClass({
                     <a
                       href="https://www.facebook.com/pages/Saccharomyces-Genome-Database-SGD/139140876128200"
                       target="_blank"
+                      rel="noopener noreferrer"
                       className="webicon facebook small"
                       id="facebook-footer"
                     >
@@ -99,6 +111,7 @@ const Footer = React.createClass({
                     <a
                       href="https://www.linkedin.com/company/saccharomyces-genome-database"
                       target="_blank"
+                      rel="noopener noreferrer"
                       className="webicon linkedin small"
                       id="linkedin-footer"
                     >
@@ -109,6 +122,7 @@ const Footer = React.createClass({
                     <a
                       href="https://www.youtube.com/channel/UCnTiLvqP2aYeHEaJl7m9DUg"
                       target="_blank"
+                      rel="noopener noreferrer"
                       id="youtube-footer"
                       className="webicon youtube small"
                     >
@@ -119,6 +133,7 @@ const Footer = React.createClass({
                     <a
                       href="/feed"
                       target="_blank"
+                      rel="noopener noreferrer"
                       id="rss-footer"
                       className="webicon rss small"
                     >

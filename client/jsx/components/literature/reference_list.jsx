@@ -3,8 +3,14 @@
 var React = require('react');
 var _ = require('underscore');
 var HelpIcon = require('../widgets/help_icon.jsx');
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
-var ReferenceList = React.createClass({
+var ReferenceList = createReactClass({
+  displayName: 'ReferenceList',
+  propTypes: {
+    data: PropTypes.any,
+  },
   getDefaultProps: function () {
     return {
       data: [], // * []
