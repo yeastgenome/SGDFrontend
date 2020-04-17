@@ -1,7 +1,16 @@
 import React from 'react';
 import _ from 'underscore';
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
-const DropdownSelector = React.createClass({
+const DropdownSelector = createReactClass({
+  displayName: 'DropDownSelector',
+  propTypes: {
+    elements: PropTypes.any,
+    defaultActiveValue: PropTypes.any,
+    isDisabled: PropTypes.any,
+    onChange: PropTypes.any,
+  },
   getDefaultProps: function () {
     return {
       elements: null, // * [{ name: "Foo", value: "foo" }]

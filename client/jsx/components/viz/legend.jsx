@@ -1,8 +1,15 @@
 import React from 'react';
 import _ from 'underscore';
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
-const Legend = React.createClass({
+const Legend = createReactClass({
   // i.e. elements [{ text: "Audi", color: "#ccc" }]
+  displayName: 'Legend',
+  propTypes: {
+    labelText: PropTypes.any,
+    elements: PropTypes.any,
+  },
   getDefaultProps: function () {
     return {
       labelText: null,

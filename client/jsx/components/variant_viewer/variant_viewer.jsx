@@ -10,13 +10,18 @@ var SettingsDropdown = require('./settings_dropdown.jsx');
 var ScrollyHeatmap = require('./scrolly_heatmap.jsx');
 var StrainSelector = require('./strain_selector.jsx');
 var VariantViewerStore = require('../../stores/variant_viewer_store.jsx');
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
-var VariantViewer = React.createClass({
+var VariantViewer = createReactClass({
   // mixins: [Navigation, State],
+  displayName: 'VariantViewer',
 
   propTypes: {
-    store: React.PropTypes.object.isRequired,
-    visibleLocusId: React.PropTypes.string,
+    store: PropTypes.object.isRequired,
+    visibleLocusId: PropTypes.string,
+    children: PropTypes.any,
+    history: PropTypes.any,
   },
 
   getDefaultProps: function () {
@@ -54,9 +59,14 @@ var VariantViewer = React.createClass({
   },
 
   componentDidMount: function () {
+    this.__isMounted = true;
     this.props.store.fetchInitialData((err) => {
       this.setState({ isPending: false });
     });
+  },
+
+  componentWillUnmount() {
+    this.__isMounted = false;
   },
 
   _renderControls: function () {
@@ -222,7 +232,7 @@ var VariantViewer = React.createClass({
       this.setState({ isPending: true });
     }, MIN_PENDING_TIME);
     this.props.store.fetchSearchResults((err) => {
-      if (this.isMounted()) {
+      if (this.__isMounted) {
         this.props.store.clusterStrains((err) => {
           if (this._pendingTimer) clearTimeout(this._pendingTimer);
           this.setState({ isPending: false });

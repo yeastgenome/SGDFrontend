@@ -2,17 +2,19 @@
 var Radium = require('radium');
 var React = require('react');
 var _ = require('underscore');
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 var VariantViewerComponent = require('sgd_visualization')
   .VariantViewerComponent;
 var RadioSelector = require('../widgets/radio_selector.jsx');
 
-var AsyncVariantViewer = React.createClass({
+var AsyncVariantViewer = createReactClass({
   propTypes: {
-    hideTitle: React.PropTypes.bool,
-    sgdid: React.PropTypes.string.isRequired,
-    store: React.PropTypes.object.isRequired,
-    parentIsProtein: React.PropTypes.bool,
+    hideTitle: PropTypes.bool,
+    sgdid: PropTypes.string.isRequired,
+    store: PropTypes.object.isRequired,
+    parentIsProtein: PropTypes.bool,
   },
 
   getDefaultProps: function () {
@@ -35,9 +37,7 @@ var AsyncVariantViewer = React.createClass({
 
   componentDidMount: function () {
     this.props.store.fetchLocusData(this.props.sgdid, (err, _data) => {
-      if (this.isMounted()) {
-        this.setState({ data: _data });
-      }
+      this.setState({ data: _data });
     });
   },
 

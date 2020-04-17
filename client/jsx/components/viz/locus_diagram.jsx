@@ -9,6 +9,8 @@ const HelpIcon = require('../widgets/help_icon.jsx');
 const StandaloneAxis = require('./standalone_axis.jsx');
 const subFeatureColorScale = require('../../lib/locus_format_helper.jsx').subFeatureColorScale();
 const VariantPop = require('./variant_pop.jsx');
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 const AXIS_LABELING_HEIGHT = 24;
 const HEIGHT = 17;
@@ -17,8 +19,29 @@ const TRACK_SPACING = 10;
 const MIN_BP_WIDTH = 200; // show at least 200 BP
 // const MOUSE_CAPTURE_TIME = 500; // millis until scrollwhell events are captured
 
-const LocusDiagram = React.createClass({
+const LocusDiagram = createReactClass({
   mixins: [CalcWidthOnResize],
+
+  displayName: 'LocusDiagram',
+  propTypes: {
+    contigData: PropTypes.any, // {}
+    data: PropTypes.any, // { locci: [] }
+    domainBounds: PropTypes.any, // [0, 100]
+    hasControls: PropTypes.any,
+    hasChromosomeThumb: PropTypes.any,
+    highlightedRelativeCoordinates: PropTypes.any,
+    ignoreMouseover: PropTypes.any,
+    focusLocusDisplayName: PropTypes.any,
+    relativeCoordinateAxis: PropTypes.any,
+    proteinCoordinateAxis: PropTypes.any,
+    showSubFeatures: PropTypes.any,
+    showVariants: PropTypes.any,
+    variantData: PropTypes.any, // [{ coordinateDomain: [20045, 20046] }, ...]
+    crickTracks: PropTypes.any,
+    watsonTracks: PropTypes.any,
+    onSetScale: PropTypes.any,
+    onVariantMouseOver: PropTypes.any,
+  },
 
   getDefaultProps: function () {
     return {
@@ -82,7 +105,7 @@ const LocusDiagram = React.createClass({
 
     return (
       <div
-        ref="wrapper"
+        ref={(wrapper) => (this.wrapper = wrapper)}
         className="locus-diagram"
         onMouseLeave={this._clearMouseOver}
         onClick={this._clearMouseOver}
@@ -116,7 +139,7 @@ const LocusDiagram = React.createClass({
             />
           </div>
           <svg
-            ref="svg"
+            ref={(svg) => (this.svg = svg)}
             className="locus-svg"
             onMouseEnter={this._onSVGMouseEnter}
             onMouseLeave={this._onSVGMouseLeave}
@@ -144,12 +167,17 @@ const LocusDiagram = React.createClass({
   // Update width to that of real DOM.
   // If touch device, enable zoom
   componentDidMount: function () {
+    this._isMounted = true;
     this._calculateWidth();
     if (Modernizr) {
       if (Modernizr.touch) {
         this.setState({ zoomEnabled: true });
       }
     }
+  },
+
+  componentWillUnmount() {
+    this._isMounted = false;
   },
 
   componentDidUpdate: function (prevProps, prevState) {
@@ -164,7 +192,7 @@ const LocusDiagram = React.createClass({
     if (this.props.domainBounds !== prevProps.domainBounds) {
       this.setState({ domain: this.props.domainBounds }); // don't use _setDomain to force it
       setTimeout(() => {
-        if (this.isMounted()) this._setupZoomEvents();
+        if (this._isMounted) this._setupZoomEvents();
       }, 100);
     }
   },
@@ -172,7 +200,7 @@ const LocusDiagram = React.createClass({
   // enable zoom after 500 millis, unless it gets cancelled
   _onSVGMouseEnter: function () {
     this._timeout = setTimeout(() => {
-      if (this.isMounted()) this.setState({ zoomEnabled: true });
+      if (this._isMounted) this.setState({ zoomEnabled: true });
     }, 500);
   },
 
@@ -482,7 +510,7 @@ const LocusDiagram = React.createClass({
   },
 
   _calculateWidth: function () {
-    var _width = this.refs.wrapper.getBoundingClientRect().width;
+    var _width = this.wrapper.getBoundingClientRect().width;
     this.setState({ DOMWidth: _width });
     var _scale = d3.scale
       .linear()
@@ -643,7 +671,7 @@ const LocusDiagram = React.createClass({
       .on('zoom', () => {
         this._setDomain(scale.domain());
       });
-    var svg = d3.select(this.refs.svg);
+    var svg = d3.select(this.svg);
     // no zoom events if zoom enabled false
     if (!this.state.zoomEnabled) {
       zoom = () => {

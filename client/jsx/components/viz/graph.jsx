@@ -55,7 +55,7 @@ class Graph extends Component {
   }
 
   handleMaxSizeChange() {
-    let newValue = this.refs.slider.value;
+    let newValue = this.slider.value;
     this.setState({ currentMaxNodes: newValue });
     this.drawGraph();
   }
@@ -288,7 +288,7 @@ class Graph extends Component {
               max={MAX_MAX_VALUE.toString()}
               defaultValue={DEFAULT_MAX_VALUE.toString()}
               onChange={_onChange}
-              ref="slider"
+              ref={(slider) => (this.slider = slider)}
             />
           </div>
           <a
@@ -304,7 +304,7 @@ class Graph extends Component {
 
   render() {
     return (
-      <div ref="container">
+      <div ref={(container) => (this.container = container)}>
         {this.renderHeader()}
         <div id={TARGET_ID} style={{ height: this.getHeight() }} />
         {this.renderFooter()}
@@ -314,10 +314,10 @@ class Graph extends Component {
 }
 
 Graph.propTypes = {
-  data: React.PropTypes.object, // { nodes: [], edges: [] }
-  headerText: React.PropTypes.string, // optional
-  colorScale: React.PropTypes.func, // optional, default to d3.scale.category10(d.category)
-  stage: React.PropTypes.number, // optional to force animation
+  data: PropTypes.object, // { nodes: [], edges: [] }
+  headerText: PropTypes.string, // optional
+  colorScale: PropTypes.func, // optional, default to d3.scale.category10(d.category)
+  stage: PropTypes.number, // optional to force animation
 };
 module.exports = Graph;
 

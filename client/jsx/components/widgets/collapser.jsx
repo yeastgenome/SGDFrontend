@@ -1,8 +1,12 @@
 const React = require('react');
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
-const Collapser = React.createClass({
+const Collapser = createReactClass({
+  displayName: 'Collapser',
   propTypes: {
-    label: React.PropTypes.string,
+    label: PropTypes.string,
+    children: PropTypes.any,
   },
 
   getDefaultProps() {

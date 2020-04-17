@@ -3,6 +3,8 @@
 var d3 = require('d3');
 var React = require('react');
 var _ = require('underscore');
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 var CalcWidthOnResize = require('../mixins/calc_width_on_resize.jsx');
 var HelpIcon = require('../widgets/help_icon.jsx');
@@ -13,15 +15,17 @@ var SIDE_PADDING = 100;
 var TOP_PADDING = 20;
 var TRANSITION_DURATION = 1000;
 
-var ExpressionChart = React.createClass({
+var ExpressionChart = createReactClass({
+  displayName: 'ExpressionChart',
   mixins: [CalcWidthOnResize],
 
   propTypes: {
-    data: React.PropTypes.object.isRequired,
-    hasHelpIcon: React.PropTypes.bool,
-    hasScaleToggler: React.PropTypes.bool,
-    minValue: React.PropTypes.number.isRequired,
-    maxValue: React.PropTypes.number.isRequired,
+    data: PropTypes.object.isRequired,
+    hasHelpIcon: PropTypes.bool,
+    hasScaleToggler: PropTypes.bool,
+    minValue: PropTypes.number.isRequired,
+    maxValue: PropTypes.number.isRequired,
+    onClick: PropTypes.func,
   },
 
   getDefaultProps: function () {
@@ -54,7 +58,7 @@ var ExpressionChart = React.createClass({
     ) : null;
     return (
       <div
-        ref="wrapper"
+        ref={(wrapper) => (this.wrapper = wrapper)}
         className="expression-histogram"
         style={{ position: 'relative' }}
       >
@@ -63,7 +67,10 @@ var ExpressionChart = React.createClass({
         <span className="histogram-axis-text y">
           <i>Number of Conditions</i>
         </span>
-        <svg ref="svg" style={{ width: '100%', height: HEIGHT }}></svg>
+        <svg
+          ref={(svg) => (this.svg = svg)}
+          style={{ width: '100%', height: HEIGHT }}
+        ></svg>
         <span className="histogram-axis-text x">
           <i>log2 Ratio</i>
         </span>
@@ -80,7 +87,7 @@ var ExpressionChart = React.createClass({
   },
 
   _renderSVG: function () {
-    var svg = d3.select(this.refs.svg);
+    var svg = d3.select(this.svg);
     var xScale = this._getXScale();
     var yScale = this._getYScale();
     var reverseYScale = yScale.copy().range([HEIGHT - 2 * TOP_PADDING, 0]);
@@ -244,7 +251,7 @@ var ExpressionChart = React.createClass({
 
   _calculateWidth: function () {
     this.setState({
-      DOMWidth: this.refs.wrapper.getBoundingClientRect().width,
+      DOMWidth: this.wrapper.getBoundingClientRect().width,
     });
   },
 

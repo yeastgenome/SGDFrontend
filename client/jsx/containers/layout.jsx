@@ -18,4 +18,8 @@ class Layout extends Component {
   }
 }
 
+Layout.propTypes = {
+  children: PropTypes.any,
+};
+
 module.exports = Layout;

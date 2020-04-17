@@ -1,16 +1,19 @@
 'use strict';
-
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 var React = require('react');
 var _ = require('underscore');
 
-var RadioSelector = React.createClass({
+var RadioSelector = createReactClass({
   // elements, i.e.[ { name: "Doggy Woggy", key: "dog" }, ...]
   // onSelect(activeElementKey)
+  displayName: 'RadioSelector',
+
   propTypes: {
-    elements: React.PropTypes.array.isRequired,
-    initialActiveElementKey: React.PropTypes.string,
-    onSelect: React.PropTypes.func,
-    orientation: React.PropTypes.string, // "horizontal" or "vertical"
+    elements: PropTypes.array.isRequired,
+    initialActiveElementKey: PropTypes.string,
+    onSelect: PropTypes.func,
+    orientation: PropTypes.string, // "horizontal" or "vertical"
   },
 
   getDefaultProps: function () {
