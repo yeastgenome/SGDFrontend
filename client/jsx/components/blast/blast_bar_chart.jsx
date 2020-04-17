@@ -183,7 +183,7 @@ module.exports = createReactClass({
     this._calculateWidthScale();
   },
 
-  componentWillReceiveProps: function (nextProps) {
+  UNSAFE_componentWillReceiveProps: function (nextProps) {
     this._calculateWidthScale(nextProps);
   },
 

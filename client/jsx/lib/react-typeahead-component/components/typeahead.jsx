@@ -90,7 +90,7 @@ module.exports = createReactClass({
     };
   },
 
-  componentWillMount: function () {
+  UNSAFE_componentWillMount: function () {
     var _this = this,
       uniqueId = this.constructor.getInstanceCount();
 
@@ -120,7 +120,7 @@ module.exports = createReactClass({
     removeEvent('click', handleWindowClose, false);
   },
 
-  componentWillReceiveProps: function (nextProps) {
+  UNSAFE_componentWillReceiveProps: function (nextProps) {
     var nextValue = nextProps.inputValue,
       nextOptions = nextProps.options,
       valueLength = nextValue.length,
@@ -197,7 +197,7 @@ module.exports = createReactClass({
           value={inputValue}
           spellCheck={false}
           autoComplete={false}
-          autoCorrect={false}
+          autoCorrect={'false'}
           dir={inputDirection}
           onClick={_this.handleClick}
           onFocus={_this.handleFocus}

@@ -63,7 +63,7 @@ const Search = createReactClass({
   },
 
   // listen for history changes and fetch results when they change, also update google analytics
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this._unlisten = this.props.history.listen(() => {
       this._updateGoogleAnalytics();
       this._fetchSearchResults();

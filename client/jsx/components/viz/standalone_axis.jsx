@@ -78,7 +78,7 @@ var StandaloneAxis = createReactClass({
     this._calculateScale();
   },
 
-  componentWillReceiveProps: function (nextProps) {
+  UNSAFE_componentWillReceiveProps: function (nextProps) {
     this._calculateScale(nextProps);
   },
 
