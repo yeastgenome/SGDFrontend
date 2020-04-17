@@ -3,6 +3,8 @@
 var React = require('react');
 var d3 = require('d3');
 var _ = require('underscore');
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 var CalcWidthOnResize = require('../mixins/calc_width_on_resize.jsx');
 var FlexibleTooltip = require('../widgets/flexible_tooltip.jsx');
@@ -15,7 +17,8 @@ var BAR_HEIGHT = 15;
 
 	NOTE: Only supports left orientation and values >= 0
 */
-module.exports = React.createClass({
+module.exports = createReactClass({
+  displayName: 'BarChart',
   mixins: [CalcWidthOnResize],
 
   getDefaultProps: function () {
@@ -57,13 +60,30 @@ module.exports = React.createClass({
       filterIsApplied: true,
     };
   },
+  propTypes: {
+    hasYAxis: PropTypes.any,
+    maxY: PropTypes.any,
+    yValue: PropTypes.any,
+    scaleType: PropTypes.any,
+    labelRatio: PropTypes.any,
+    hasTooltip: PropTypes.any,
+    hasNonZeroWidth: PropTypes.any,
+    labelValue: PropTypes.any,
+    colorScale: PropTypes.any,
+    colorValue: PropTypes.any,
+    nodeOpacity: PropTypes.any,
+    data: PropTypes.any,
+    filter: PropTypes.any,
+    onMouseOver: PropTypes.any,
+  },
 
   render: function () {
     var state = this.state;
     var props = this.props;
 
     // require widthScale to continue
-    if (!state.widthScale) return <div ref="wrapper"></div>;
+    if (!state.widthScale)
+      return <div ref={(wrapper) => (this.wrapper = wrapper)}></div>;
 
     var bars = this._getBarNodes();
 
@@ -97,7 +117,10 @@ module.exports = React.createClass({
     var _height = (BAR_HEIGHT + 1) * data.length;
 
     return (
-      <div ref="wrapper" className="sgd-viz-bar-chart">
+      <div
+        ref={(wrapper) => (this.wrapper = wrapper)}
+        className="sgd-viz-bar-chart"
+      >
         {yAxis}
         <div
           className="bar-nodes-container clearfix"
@@ -116,7 +139,7 @@ module.exports = React.createClass({
     this._calculateWidthScale();
   },
 
-  componentWillReceiveProps: function (nextProps) {
+  UNSAFE_componentWillReceiveProps: function (nextProps) {
     this._calculateWidthScale(nextProps);
   },
 
@@ -249,7 +272,7 @@ module.exports = React.createClass({
       baseLeft = target.parentNode.offsetLeft;
     }
 
-    d3.select(this.refs.wrapper)
+    d3.select(this.wrapper)
       .selectAll('.bar-node.data-node')
       .style({ opacity: 0.6 });
     d3.select(barNode).style({ opacity: 1 });
@@ -274,7 +297,7 @@ module.exports = React.createClass({
   },
 
   _handleMouseExit: function () {
-    d3.select(this.refs.wrapper)
+    d3.select(this.wrapper)
       .selectAll('.bar-node.data-node')
       .style({ opacity: 0.6 });
     this.setState({
@@ -292,7 +315,7 @@ module.exports = React.createClass({
 
     var _props = props ? props : this.props;
     var _maxY = _props.maxY || d3.max(_props.data, _props.yValue); // defaults to maxY prop, if defined
-    var _width = this.refs.wrapper.getBoundingClientRect().width;
+    var _width = this.wrapper.getBoundingClientRect().width;
     var _scale = _baseScale
       .domain([0, _maxY])
       .range([0, _width * (1 - _props.labelRatio)]);

@@ -1,5 +1,7 @@
 import React from 'react';
 import _ from 'underscore';
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 const DownloadButton = require('../widgets/download_button.jsx');
 const DropdownSelector = require('../widgets/dropdown_selector.jsx');
@@ -8,7 +10,19 @@ const subFeatureColorScale = require('../../lib/locus_format_helper.jsx').subFea
 const LETTERS_PER_CHUNK = 10;
 const LETTERS_PER_LINE = 60;
 
-const SequenceToggler = React.createClass({
+const SequenceToggler = createReactClass({
+  displayName: 'SequenceToggler',
+
+  propTypes: {
+    sequences: PropTypes.any,
+    showSequence: PropTypes.any,
+    subFeatureData: PropTypes.any,
+    text: PropTypes.any,
+    showCustomRetrieval: PropTypes.any,
+    buttonId: PropTypes.any,
+    locusFormatName: PropTypes.any,
+  },
+
   getDefaultProps: function () {
     return {
       buttonId: null,

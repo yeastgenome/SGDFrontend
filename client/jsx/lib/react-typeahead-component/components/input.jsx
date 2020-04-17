@@ -1,17 +1,18 @@
 'use strict';
 
 var React = require('react');
-var ReactDOM = require('react-dom');
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
-module.exports = React.createClass({
+module.exports = createReactClass({
   displayName: 'Input',
 
   propTypes:
     process.env.NODE_ENV === 'production'
       ? {}
       : {
-          value: React.PropTypes.string,
-          onChange: React.PropTypes.func,
+          value: PropTypes.string,
+          onChange: PropTypes.func,
         },
 
   getDefaultProps: function () {
@@ -32,7 +33,7 @@ module.exports = React.createClass({
       // This is not desired because of a possible bug in Chrome.
       // If the page is RTL, and the input's `dir` attribute is set
       // to an empty string, Chrome assumes LTR, which isn't what we want.
-      ReactDOM.findDOMNode(_this).removeAttribute('dir');
+      this.input.removeAttribute('dir');
     }
   },
 
@@ -41,6 +42,7 @@ module.exports = React.createClass({
 
     return (
       <input
+        ref={(input) => (this.input = input)}
         {..._this.props}
         onChange={_this.handleChange}
         autoComplete="off"
@@ -61,13 +63,17 @@ module.exports = React.createClass({
     }
   },
 
+  focus: function () {
+    this.input.focus();
+  },
+
   blur: function () {
-    ReactDOM.findDOMNode(this).blur();
+    this.input.blur();
   },
 
   isCursorAtEnd: function () {
     var _this = this,
-      inputDOMNode = ReactDOM.findDOMNode(_this),
+      inputDOMNode = this.input,
       valueLength = _this.props.value.length;
 
     return (

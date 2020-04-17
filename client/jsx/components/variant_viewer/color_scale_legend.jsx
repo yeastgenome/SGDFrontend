@@ -2,6 +2,7 @@
 
 var d3 = require('d3');
 var React = require('react');
+import createReactClass from 'create-react-class';
 
 var HelpIcon = require('../widgets/help_icon.jsx');
 
@@ -9,7 +10,7 @@ var NUM_BOXES = 50;
 var NODE_WIDTH = 2;
 var NODE_HEIGHT = 17;
 
-var ColorScaleLegend = React.createClass({
+var ColorScaleLegend = createReactClass({
   render: function () {
     var colorScale = d3.scale
       .linear()

@@ -2,12 +2,15 @@
 
 var React = require('react');
 var _ = require('underscore');
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
-var Checklist = React.createClass({
+var Checklist = createReactClass({
+  displayName: 'CheckList',
   propTypes: {
-    elements: React.PropTypes.array.isRequired, // [ { name: "Doggy Woggy", key: "dog" }, ...]
-    initialActiveElementKeys: React.PropTypes.array,
-    onSelect: React.PropTypes.func, // (activeElementKeys) =>
+    elements: PropTypes.array.isRequired, // [ { name: "Doggy Woggy", key: "dog" }, ...]
+    initialActiveElementKeys: PropTypes.array,
+    onSelect: PropTypes.func, // (activeElementKeys) =>
   },
 
   getDefaultProps: function () {

@@ -2,12 +2,22 @@ import React from 'react';
 import Radium from 'radium';
 import { connect } from 'react-redux';
 import t from 'tcomb-form';
-
+import createReactClass from 'create-react-class';
 const DataTable = require('../widgets/data_table.jsx');
-
+import PropTypes from 'prop-types';
 const PRIMER3URL = '/backend/primer3';
 
-const Primer3 = React.createClass({
+const Primer3 = createReactClass({
+  displayName: 'Primer3',
+  propTypes: {
+    queryParams: PropTypes.any,
+    history: PropTypes.any,
+    // :PropTypes.any,
+    // :PropTypes.any,
+    // :PropTypes.any,
+    // :PropTypes.any,
+  },
+
   getInitialState() {
     return {
       result: null,
@@ -63,7 +73,7 @@ const Primer3 = React.createClass({
   handleSubmit(e) {
     this.props.history.pushState(null, '/primer3', { results: 1 });
     e.preventDefault();
-    const value = this.refs.primerForm.getValue();
+    const value = this.primerForm.getValue();
     let strValue = JSON.stringify(value);
     $.ajax({
       url: PRIMER3URL,
@@ -504,7 +514,7 @@ const Primer3 = React.createClass({
                   target="_new"
                 >
                   {' '}
-                  Max 3' Self Complementarity:
+                  Max 3&apos; Self Complementarity:
                 </a>
               </span>{' '}
               {locals.inputs.max_three_prime_self_complementarity}{' '}
@@ -530,7 +540,7 @@ const Primer3 = React.createClass({
                   target="_new"
                 >
                   {' '}
-                  Max 3' Pair Complementarity:
+                  Max 3&apos; Pair Complementarity:
                 </a>
               </span>{' '}
               {locals.inputs.max_three_prime_pair_complementarity}{' '}
@@ -576,7 +586,7 @@ const Primer3 = React.createClass({
     return (
       <form onSubmit={this.handleSubmit} style={{ marginBottom: '3rem' }}>
         <t.form.Form
-          ref="primerForm"
+          ref={(primerForm) => (this.primerForm = primerForm)}
           type={PrimerFormSchema}
           value={this.state.value}
           onChange={this.onChange}

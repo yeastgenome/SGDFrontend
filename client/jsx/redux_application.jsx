@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 
 // import routes
 import Routes from './routes.jsx';
+import PropTypes from 'prop-types';
 
 class ReduxApplication extends Component {
   constructor(props) {
@@ -20,8 +21,8 @@ class ReduxApplication extends Component {
 }
 
 ReduxApplication.propTypes = {
-  history: React.PropTypes.object.isRequired,
-  store: React.PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
+  store: PropTypes.object.isRequired,
 };
 
 module.exports = ReduxApplication;

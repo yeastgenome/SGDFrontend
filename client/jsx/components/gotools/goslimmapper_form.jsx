@@ -4,6 +4,7 @@ import $ from 'jquery';
 
 const DataTable = require('../widgets/data_table.jsx');
 const Params = require('../mixins/parse_url_params.jsx');
+import createReactClass from 'create-react-class';
 
 const style = {
   button: {
@@ -29,7 +30,7 @@ const goSet = [
   'Macromolecular complex terms: component',
 ];
 
-const GoSlimMapper = React.createClass({
+const GoSlimMapper = createReactClass({
   getInitialState() {
     var param = Params.getParams();
 
@@ -61,6 +62,7 @@ const GoSlimMapper = React.createClass({
             Gene Ontology Slim Term Mapper{' '}
             <a
               target="_blank"
+              rel="noopener noreferrer"
               href="https://sites.google.com/view/yeastgenome-help/analyze-help/go-slim-mapper?authuser=0"
             >
               <img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img>
@@ -151,11 +153,23 @@ const GoSlimMapper = React.createClass({
     var termBox = this.getTermBox();
 
     var _geneSection = {
-      headers: [[<span style={style.textFont}>Query Set (Your Input)</span>]],
+      headers: [
+        [
+          <span key={0} style={style.textFont}>
+            Query Set (Your Input)
+          </span>,
+        ],
+      ],
       rows: [[geneBox]],
     };
     var _goSection = {
-      headers: [[<span style={style.textFont}>Specify your Slim Terms</span>]],
+      headers: [
+        [
+          <span key={0} style={style.textFont}>
+            Specify your Slim Terms
+          </span>,
+        ],
+      ],
       rows: [[termBox]],
     };
 
@@ -185,14 +199,14 @@ const GoSlimMapper = React.createClass({
         <p>
           <input
             type="submit"
-            ref="submit"
+            ref={(submit) => (this.submit = submit)}
             name="submit"
             value="Submit Form"
             className="button secondary"
           />{' '}
           <input
             type="reset"
-            ref="reset"
+            ref={(reset) => (this.reset = reset)}
             name="reset"
             value="Reset Form"
             className="button secondary"
@@ -215,15 +229,15 @@ const GoSlimMapper = React.createClass({
           </h3>
           <h3>Enter Gene/ORF names (separated by a return or a space):</h3>
           <textarea
-            ref="genes"
+            ref={(genes) => (this.genes = genes)}
             id="genes"
             onChange={this._onChange}
             name="genes"
             rows="3"
             cols="200"
           ></textarea>
-          Note: If you have a big gene list (>100), save it as a file and upload
-          it below.
+          Note: If you have a big gene list (`{'>'}`100), save it as a file and
+          upload it below.
           <h3>
             <strong style={{ color: 'red' }}>OR</strong> Upload a file of
             Gene/ORF names (.txt or .tab format):
@@ -242,15 +256,15 @@ const GoSlimMapper = React.createClass({
         <div style={{ textAlign: 'top' }}>
           <h3>Enter Gene/ORF names (separated by a return or a space):</h3>
           <textarea
-            ref="genes"
+            ref={(genes) => (this.genes = genes)}
             id="genes"
             onChange={this._onChange}
             name="genes"
             rows="3"
             cols="200"
           ></textarea>
-          Note: If you have a big gene list (>100), save it as a file and upload
-          it below.
+          Note: If you have a big gene list (`{'>'}`100), save it as a file and
+          upload it below.
           <h3>
             <strong style={{ color: 'red' }}>OR</strong> Upload a file of
             Gene/ORF names (.txt or .tab format):
@@ -302,7 +316,7 @@ const GoSlimMapper = React.createClass({
         <h3>Choose a GO Set:</h3>
         <p>
           <select
-            ref="slim_type"
+            ref={(slim_type) => (this.slim_type = slim_type)}
             name="slim_type"
             onChange={this.onChange4slimtype}
           >
@@ -347,7 +361,7 @@ const GoSlimMapper = React.createClass({
         datasets in that category.
         <p>
           <select
-            ref="terms"
+            ref={(terms) => (this.terms = terms)}
             id="terms"
             onChange={this.onChange}
             size="5"
@@ -396,7 +410,7 @@ const GoSlimMapper = React.createClass({
   onSubmit(e) {
     // window.localStorage.clear();
 
-    var genes = this.refs.genes.value.trim();
+    var genes = this.genes.value.trim();
     var genesInBox = 0;
     if (genes == '') {
       genes = this.state.uploadedGenes;

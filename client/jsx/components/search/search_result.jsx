@@ -3,10 +3,12 @@ import Radium from 'radium';
 import Clipboard from 'clipboard';
 import $ from 'jquery';
 import 'foundation';
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
-const CopyToClipButton = React.createClass({
+const CopyToClipButton = createReactClass({
   propTypes: {
-    copiedText: React.PropTypes.string.isRequired,
+    copiedText: PropTypes.string.isRequired,
   },
 
   getInitialState() {
@@ -19,11 +21,14 @@ const CopyToClipButton = React.createClass({
     return (
       <span
         {...tooltipAttr}
-        ref="tooltip"
+        ref={(tooltip) => (this.tooltip = tooltip)}
         aria-haspopup="true"
         title={hoverText}
       >
-        <a ref="actionButton" data-clipboard-text={this.props.copiedText}>
+        <a
+          ref={(actionButton) => (this.actionButton = actionButton)}
+          data-clipboard-text={this.props.copiedText}
+        >
           <i className="fa fa-clipboard" /> Copy to Clipboard
         </a>
       </span>
@@ -31,11 +36,11 @@ const CopyToClipButton = React.createClass({
   },
 
   componentDidMount() {
-    this._clip = new Clipboard(this.refs.actionButton);
+    this._clip = new Clipboard(this.actionButton);
     this._clip.on('success', (e) => {
       this.setState({ isCopied: true }, () => {
         $(document).foundation('tooltip', 'reflow');
-        $(this.refs.tooltip).trigger('mouseenter');
+        $(this.tooltip).trigger('mouseenter');
       });
     });
   },
@@ -45,16 +50,19 @@ const CopyToClipButton = React.createClass({
   },
 });
 
-const SearchResult = React.createClass({
+const SearchResult = createReactClass({
+  displayName: 'SearchResult',
+
   propTypes: {
-    category: React.PropTypes.string.isRequired,
-    description: React.PropTypes.string,
-    highlights: React.PropTypes.object,
-    name: React.PropTypes.string.isRequired,
-    href: React.PropTypes.string,
-    loci: React.PropTypes.array, // i.e. ['rad54', ...]
-    readme_url: React.PropTypes.string,
-    file_size: React.PropTypes.string,
+    category: PropTypes.string.isRequired,
+    description: PropTypes.string,
+    highlights: PropTypes.object,
+    name: PropTypes.string.isRequired,
+    href: PropTypes.string,
+    loci: PropTypes.array, // i.e. ['rad54', ...]
+    readme_url: PropTypes.string,
+    file_size: PropTypes.string,
+    categoryName: PropTypes.any,
   },
 
   getInitialState() {

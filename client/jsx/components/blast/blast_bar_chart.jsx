@@ -3,7 +3,8 @@
 var React = require('react');
 var d3 = require('d3');
 var _ = require('underscore');
-
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 var CalcWidthOnResize = require('../mixins/calc_width_on_resize.jsx');
 var FlexibleTooltip = require('./flexible_tooltip.jsx');
 var StandaloneAxis = require('./standalone_axis.jsx');
@@ -12,8 +13,24 @@ var Legend = require('./blast_legend.jsx');
 var HEIGHT = 10;
 var POINT_WIDTH = 15;
 
-module.exports = React.createClass({
+module.exports = createReactClass({
   mixins: [CalcWidthOnResize],
+
+  propTypes: {
+    scaleType: PropTypes.any,
+    left: PropTypes.any,
+    labelRatio: PropTypes.any,
+    hasTooltip: PropTypes.any,
+    legendColor: PropTypes.any,
+    maxY: PropTypes.any,
+    filter: PropTypes.any,
+    data: PropTypes.any,
+    colorScale: PropTypes.any,
+    colorValue: PropTypes.any,
+    domainBounds: PropTypes.any,
+    onMouseOver: PropTypes.any,
+    labelValue: PropTypes.any,
+  },
 
   getDefaultProps: function () {
     var _identity = (d) => {
@@ -64,7 +81,8 @@ module.exports = React.createClass({
     var props = this.props;
 
     // require widthScale to continue
-    if (!state.widthScale) return <div ref="wrapper"></div>;
+    if (!state.widthScale)
+      return <div ref={(wrapper) => (this.wrapper = wrapper)}></div>;
 
     // create y axis, if hasYaxis
     var data = this._getData();
@@ -141,7 +159,7 @@ module.exports = React.createClass({
 
     return (
       <div
-        ref="wrapper"
+        ref={(wrapper) => (this.wrapper = wrapper)}
         className="blast-bar-graph"
         onMouseLeave={this._clearMouseOver}
         onClick={this._clearMouseOver}
@@ -165,7 +183,7 @@ module.exports = React.createClass({
     this._calculateWidthScale();
   },
 
-  componentWillReceiveProps: function (nextProps) {
+  UNSAFE_componentWillReceiveProps: function (nextProps) {
     this._calculateWidthScale(nextProps);
   },
 
@@ -183,7 +201,7 @@ module.exports = React.createClass({
 
     var _props = props ? props : this.props;
     var _maxY = _props.maxY || d3.max(_props.data, _props.yValue); // defaults to maxY prop, if defined
-    var _width = this.refs.wrapper.getBoundingClientRect().width;
+    var _width = this.wrapper.getBoundingClientRect().width;
     var _scale = _baseScale
       .domain([0, _maxY])
       .range([0, _width * (1 - _props.labelRatio)]);

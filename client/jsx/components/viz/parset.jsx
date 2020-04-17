@@ -1,18 +1,22 @@
 'use strict';
 var React = require('react');
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 // style static elements
 var HEIGHT = 100;
 var LINE_HEIGHT = 6;
 
-var Parset = React.createClass({
+var Parset = createReactClass({
+  displayName: 'Parset',
+
   propTypes: {
-    isVisible: React.PropTypes.bool,
-    x1Coordinates: React.PropTypes.array,
-    x2Coordinates: React.PropTypes.array,
-    text: React.PropTypes.string,
-    contigHref: React.PropTypes.string,
-    contigDisplayName: React.PropTypes.string,
+    isVisible: PropTypes.bool,
+    x1Coordinates: PropTypes.array,
+    x2Coordinates: PropTypes.array,
+    text: PropTypes.string,
+    contigHref: PropTypes.string,
+    contigDisplayName: PropTypes.string,
   },
 
   getDefaultProps: function () {

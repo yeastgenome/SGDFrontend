@@ -4,6 +4,8 @@
 */
 import React from 'react';
 import _ from 'underscore';
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 const DataTable = require('../widgets/data_table.jsx');
 const DownloadButton = require('../widgets/download_button.jsx');
@@ -13,7 +15,7 @@ const LocusDiagram = require('../viz/locus_diagram.jsx');
 const MultiSequenceDownload = require('./multi_sequence_download.jsx');
 const SequenceToggler = require('./sequence_toggler.jsx');
 
-const Loader = React.createClass({
+const Loader = createReactClass({
   render() {
     return (
       <div className="sgd-loader-container">
@@ -23,7 +25,22 @@ const Loader = React.createClass({
   },
 });
 
-const SequenceComposite = React.createClass({
+const SequenceComposite = createReactClass({
+  displayName: 'SequenceComposite',
+  propTypes: {
+    isSimplified: PropTypes.any, // simplified is for LSP
+    geneticPosition: PropTypes.any,
+    neighborsModel: PropTypes.any,
+    detailsModel: PropTypes.any,
+    focusLocusDisplayName: PropTypes.any,
+    showAltStrains: PropTypes.any,
+    showSequence: PropTypes.any,
+    showSubFeatures: PropTypes.any,
+    showSubFeaturesTable: PropTypes.any,
+    defaultAltStrainKey: PropTypes.any,
+    focusLocusFormatName: PropTypes.any,
+  },
+
   getDefaultProps: function () {
     return {
       isSimplified: false, // simplified is for LSP

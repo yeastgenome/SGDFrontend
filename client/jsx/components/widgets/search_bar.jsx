@@ -1,11 +1,13 @@
 'use strict';
-
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 var React = require('react');
 
-var SearchBar = React.createClass({
+var SearchBar = createReactClass({
+  displayName: 'SearchBar',
   propTypes: {
-    placeholderText: React.PropTypes.string,
-    onSubmit: React.PropTypes.func, // query =>
+    placeholderText: PropTypes.string,
+    onSubmit: PropTypes.func, // query =>
   },
 
   getDefaultProps: function () {
@@ -50,7 +52,7 @@ var SearchBar = React.createClass({
             <input
               onChange={this._onType}
               type="text"
-              ref="searchInput"
+              ref={(searchInput) => (this.searchInput = searchInput)}
               placeholder={this.props.placeholderText}
               value={this.state.query}
               style={{ borderRadius: '3px 0 0 3px' }}
@@ -70,7 +72,7 @@ var SearchBar = React.createClass({
   },
 
   _onType: function (e) {
-    this.setState({ query: this.refs.searchInput.value });
+    this.setState({ query: this.searchInput.value });
   },
 
   _onSubmit: function (e) {

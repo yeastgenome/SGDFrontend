@@ -70,6 +70,7 @@ class SearchForm extends Component {
               Yeast Genome Pattern Matching{' '}
               <a
                 target="_blank"
+                rel="noopener noreferrer"
                 href="https://sites.google.com/view/yeastgenome-help/analyze-help/pattern-matching?authuser=0"
               >
                 <img src="https://d1x6jdqbvd5dr.cloudfront.net/legacy_img/icon_help_circle_dark.png"></img>
@@ -313,7 +314,7 @@ class SearchForm extends Component {
         <h3>Choose a genome to search: </h3>
         <p>
           <select
-            ref="genome"
+            ref={(genome) => (this.genome = genome)}
             name="genome"
             onChange={this._onChangeGenome.bind(this)}
           >
@@ -344,7 +345,7 @@ class SearchForm extends Component {
         <p>
           <select
             name="seqtype"
-            ref="seqtype"
+            ref={(seqtype) => (this.seqtype = seqtype)}
             onChange={this._onChangeSeqtype.bind(this)}
           >
             {_elements}
@@ -364,7 +365,7 @@ class SearchForm extends Component {
           sequence or pattern (<a href="#examples">syntax</a>)
         </h3>
         <textarea
-          ref="pattern"
+          ref={(pattern) => (this.pattern = pattern)}
           value={pattern}
           name="pattern"
           onChange={(e) => this._onChange(e)}
@@ -403,7 +404,11 @@ class SearchForm extends Component {
       <div>
         <h3> Choose a Sequence Database (click and hold to see the list):</h3>
         <p>
-          <select ref="dataset" name="dataset" onChange={this._onChange}>
+          <select
+            ref={(dataset) => (this.dataset = dataset)}
+            name="dataset"
+            onChange={this._onChange}
+          >
             {_elements}
           </select>
         </p>
@@ -473,7 +478,7 @@ class SearchForm extends Component {
     return (
       <select
         name="max_hits"
-        ref="max_hits"
+        ref={(max_hits) => (this.max_hits = max_hits)}
         onChange={(e) => this._onChange(e, 'hitsNode')}
         value={this.state.hitsNode}
       >
@@ -490,7 +495,7 @@ class SearchForm extends Component {
     ];
     let _elements = this._getDropdownList(strands);
     return (
-      <select name="strand" ref="strand">
+      <select name="strand" ref={(strand) => (this.strand = strand)}>
         {_elements}
       </select>
     );
@@ -500,7 +505,7 @@ class SearchForm extends Component {
     var mismatch = ['0', '1', '2', '3'];
     let _elements = this._getDropdownList(mismatch);
     return (
-      <select name="mismatch" ref="mismatch">
+      <select name="mismatch" ref={(mismatch) => (this.mismatch = mismatch)}>
         {_elements}
       </select>
     );
@@ -598,8 +603,8 @@ class SearchForm extends Component {
   _onSubmit(e) {
     var genome = this.state.genome.trim();
     var seqtype = this.state.seqtype.trim();
-    var pattern = this.refs.pattern.value.trim();
-    var dataset = this.refs.dataset.value.trim();
+    var pattern = this.pattern.value.trim();
+    var dataset = this.dataset.value.trim();
     if (pattern) {
       window.localStorage.clear();
       window.localStorage.setItem('genome', genome);
@@ -777,7 +782,7 @@ class SearchForm extends Component {
           d.matchingPattern,
           d.beg,
           d.end,
-          <span>
+          <span key={0}>
             <a href={seqLink} target="infowin2">
               Sequence
             </a>
@@ -790,7 +795,7 @@ class SearchForm extends Component {
           d.matchingPattern,
           d.beg,
           d.end,
-          <span>
+          <span key={1}>
             <a href={seqLink} target="infowin2">
               Sequence
             </a>
@@ -805,7 +810,7 @@ class SearchForm extends Component {
         var lspLink = '/locus/' + d.seqname;
 
         _tableRows.push([
-          <span>
+          <span key={2}>
             <a href={lspLink} target="infowin2">
               {name}
             </a>
@@ -814,7 +819,7 @@ class SearchForm extends Component {
           d.matchingPattern,
           d.beg,
           d.end,
-          <span>
+          <span key={3}>
             <a href={seqLink} target="infowin2">
               Sequence
             </a>

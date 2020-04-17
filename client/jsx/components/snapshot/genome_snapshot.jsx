@@ -3,12 +3,19 @@
 var React = require('react');
 var _ = require('underscore');
 var d3 = require('d3');
-
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 var BarChart = require('../../components/viz/bar_chart.jsx');
 var Legend = require('../../components/viz/legend.jsx');
 var StandaloneAxis = require('../../components/viz/standalone_axis.jsx');
 
-module.exports = React.createClass({
+module.exports = createReactClass({
+  displayName: 'GenomeSnapShot',
+
+  propTypes: {
+    data: PropTypes.any,
+  },
+
   getInitialState: function () {
     return {
       showChromosomes: false,
@@ -19,7 +26,7 @@ module.exports = React.createClass({
     e.preventDefault();
 
     // if hiding chromosomes and at bottom, scroll to the top
-    var _clientTop = this.refs.wrapper.getBoundingClientRect().top;
+    var _clientTop = this.wrapper.getBoundingClientRect().top;
     if (this.state.showChromosomes && _clientTop < 0) {
       window.scrollTo(0, _clientTop);
     }
@@ -78,7 +85,10 @@ module.exports = React.createClass({
     }
 
     return (
-      <div ref="wrapper" className="genome-snapshot panel">
+      <div
+        ref={(wrapper) => (this.wrapper = wrapper)}
+        className="genome-snapshot panel"
+      >
         {this.state.showChromosomes ? buttonNode : null}
         {barNodes}
         {buttonNode}

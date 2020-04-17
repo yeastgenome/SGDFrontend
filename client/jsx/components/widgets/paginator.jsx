@@ -1,12 +1,16 @@
 'use strict';
 var React = require('react');
 var Radium = require('radium');
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
-var Paginator = React.createClass({
+var Paginator = createReactClass({
+  displayName: 'Paginator',
+
   propTypes: {
-    onPaginate: React.PropTypes.func, // (newPageNum) =>
-    currentPage: React.PropTypes.number,
-    totalPages: React.PropTypes.number.isRequired,
+    onPaginate: PropTypes.func, // (newPageNum) =>
+    currentPage: PropTypes.number,
+    totalPages: PropTypes.number.isRequired,
   },
 
   getDefaultProps: function () {

@@ -1,10 +1,14 @@
 import React from 'react';
 import Radium from 'radium';
 import { connect } from 'react-redux';
-
+import createReactClass from 'create-react-class';
 import ColleaguesFormShow from './colleagues_form_show.jsx';
+import PropTypes from 'prop-types';
 
-const ColleaguesShow = React.createClass({
+const ColleaguesShow = createReactClass({
+  propTypes: {
+    routeParams: PropTypes.any,
+  },
   render() {
     return (
       <div style={[style.container]}>

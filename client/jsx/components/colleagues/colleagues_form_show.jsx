@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import _ from 'underscore';
-
+import createReactClass from 'create-react-class';
 import apiRequest from '../../lib/api_request.jsx';
 import Captcha from '../widgets/google_recaptcha.jsx';
 import {
@@ -13,6 +13,7 @@ import {
   TextField,
   MultiSelectField,
 } from '../../components/widgets/form_helpers.jsx';
+import PropTypes from 'prop-types';
 
 const COLLEAGUES_AUTOCOMPLETE_URL =
   '/backend/autocomplete_results?category=colleague&q=';
@@ -27,13 +28,14 @@ const COLLEAGUE_GET_URL = '/colleagues';
 const USER_COLLEAGUE_UPDATE_URL = '/backend/colleagues';
 const CURATOR_COLLEAGUE_UPDATE_URL = TRIAGED_COLLEAGUE_URL;
 
-const ColleaguesFormShow = React.createClass({
+const ColleaguesFormShow = createReactClass({
   propTypes: {
-    isReadOnly: React.PropTypes.bool,
-    isCurator: React.PropTypes.bool,
-    isUpdate: React.PropTypes.bool,
-    colleagueDisplayName: React.PropTypes.string,
-    isTriage: React.PropTypes.bool,
+    isReadOnly: PropTypes.bool,
+    isCurator: PropTypes.bool,
+    isUpdate: PropTypes.bool,
+    colleagueDisplayName: PropTypes.string,
+    isTriage: PropTypes.bool,
+    dispatch: PropTypes.func,
   },
 
   getInitialState() {
@@ -318,7 +320,7 @@ const ColleaguesFormShow = React.createClass({
         {this._renderError()}
         {this._renderControls()}
         {this._renderCaptcha()}
-        <form ref="form" onSubmit={this._submitData}>
+        <form ref={(form) => (this.form = form)} onSubmit={this._submitData}>
           <div className="row">
             <div className="column small-12">
               {this._renderName()}
@@ -653,7 +655,7 @@ const ColleaguesFormShow = React.createClass({
   // saves form data to server, if new makes POST
   _submitData(e) {
     if (e) e.preventDefault();
-    let _data = new FormData(this.refs.form);
+    let _data = new FormData(this.form);
     let _method = this.props.isUpdate ? 'PUT' : 'POST';
     let url;
     if (this.props.isCurator) {

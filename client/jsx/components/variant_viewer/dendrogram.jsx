@@ -3,12 +3,15 @@
 var React = require('react');
 var d3 = require('d3');
 var _ = require('underscore');
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
-var Dendrogram = React.createClass({
+var Dendrogram = createReactClass({
+  displayName: 'Dendrogram',
   propTypes: {
-    width: React.PropTypes.number,
-    height: React.PropTypes.number,
-    data: React.PropTypes.object,
+    width: PropTypes.number,
+    height: PropTypes.number,
+    data: PropTypes.object,
   },
 
   getDefaultProps: function () {
@@ -21,7 +24,11 @@ var Dendrogram = React.createClass({
 
   render: function () {
     return (
-      <svg width={this.props.width} height={this.props.height} ref="svg"></svg>
+      <svg
+        width={this.props.width}
+        height={this.props.height}
+        ref={(svg) => (this.svg = svg)}
+      ></svg>
     );
   },
 
@@ -48,7 +55,7 @@ var Dendrogram = React.createClass({
     var linksData = dendoFn.links(nodesData);
 
     // traditional d3 rendering
-    var sel = d3.select(this.refs.svg);
+    var sel = d3.select(this.svg);
 
     var labelsData = _.where(nodesData, { isLeaf: true });
     var labels = sel.selectAll('.dendro-label').data(labelsData, function (d) {

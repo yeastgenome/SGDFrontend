@@ -1,16 +1,17 @@
 import React from 'react';
 import Select from 'react-select';
 import _ from 'underscore';
-
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 const DELIMITER = '@@';
 
-export const CheckField = React.createClass({
+export const CheckField = createReactClass({
   propTypes: {
-    displayName: React.PropTypes.string,
-    paramName: React.PropTypes.string,
-    defaultChecked: React.PropTypes.bool,
-    iconClass: React.PropTypes.string,
-    isReadOnly: React.PropTypes.bool,
+    displayName: PropTypes.string,
+    paramName: PropTypes.string,
+    defaultChecked: PropTypes.bool,
+    iconClass: PropTypes.string,
+    isReadOnly: PropTypes.bool,
   },
 
   render() {
@@ -45,14 +46,15 @@ export const CheckField = React.createClass({
   },
 });
 
-export const StringField = React.createClass({
+export const StringField = createReactClass({
   propTypes: {
-    displayName: React.PropTypes.string,
-    paramName: React.PropTypes.string,
+    displayName: PropTypes.string,
+    paramName: PropTypes.string,
     // defaultValue: string or nodes
-    iconClass: React.PropTypes.string,
-    placeholder: React.PropTypes.string,
-    isReadOnly: React.PropTypes.bool,
+    iconClass: PropTypes.string,
+    placeholder: PropTypes.string,
+    isReadOnly: PropTypes.bool,
+    defaultValue: PropTypes.any,
   },
 
   render() {
@@ -119,14 +121,14 @@ export const StringField = React.createClass({
   },
 });
 
-export const TextField = React.createClass({
+export const TextField = createReactClass({
   propTypes: {
-    displayName: React.PropTypes.string,
-    paramName: React.PropTypes.string,
-    defaultValue: React.PropTypes.string,
-    iconClass: React.PropTypes.string,
-    placeholder: React.PropTypes.string,
-    isReadOnly: React.PropTypes.bool,
+    displayName: PropTypes.string,
+    paramName: PropTypes.string,
+    defaultValue: PropTypes.string,
+    iconClass: PropTypes.string,
+    placeholder: PropTypes.string,
+    isReadOnly: PropTypes.bool,
   },
 
   render() {
@@ -173,25 +175,33 @@ export const TextField = React.createClass({
   },
 });
 
-export const MultiSelectField = React.createClass({
+export const MultiSelectField = createReactClass({
   propTypes: {
-    displayName: React.PropTypes.string,
-    optionsUrl: React.PropTypes.string,
-    paramName: React.PropTypes.string,
-    defaultValues: React.PropTypes.array,
-    iconClass: React.PropTypes.string,
-    defaultOptions: React.PropTypes.array,
-    isReadOnly: React.PropTypes.bool,
-    allowCreate: React.PropTypes.bool,
-    isMulti: React.PropTypes.bool,
-    isLinks: React.PropTypes.bool,
-    formatLink: React.PropTypes.func,
+    displayName: PropTypes.string,
+    optionsUrl: PropTypes.string,
+    paramName: PropTypes.string,
+    defaultValues: PropTypes.array,
+    iconClass: PropTypes.string,
+    defaultOptions: PropTypes.array,
+    isReadOnly: PropTypes.bool,
+    allowCreate: PropTypes.bool,
+    isMulti: PropTypes.bool,
+    isLinks: PropTypes.bool,
+    formatLink: PropTypes.func,
   },
 
   getDefaultProps() {
     return {
       isMulti: true,
     };
+  },
+
+  componentDidMount() {
+    this._isMounted = true;
+  },
+
+  componentWillUnmount() {
+    this._isMounted = false;
   },
 
   getInitialState() {
@@ -279,22 +289,22 @@ export const MultiSelectField = React.createClass({
           optionsObj.options = _.uniq(
             optionsObj.results.concat(defaultOptions)
           );
-          if (!this.isMounted()) return;
+          if (!this._isMounted) return;
           return cb(null, optionsObj);
         });
     };
   },
 });
 
-export const SelectField = React.createClass({
+export const SelectField = createReactClass({
   propTypes: {
-    displayName: React.PropTypes.string,
-    paramName: React.PropTypes.string,
-    defaultValue: React.PropTypes.string,
-    iconClass: React.PropTypes.string,
-    options: React.PropTypes.array,
-    isReadOnly: React.PropTypes.bool,
-    allowCreate: React.PropTypes.bool,
+    displayName: PropTypes.string,
+    paramName: PropTypes.string,
+    defaultValue: PropTypes.string,
+    iconClass: PropTypes.string,
+    options: PropTypes.array,
+    isReadOnly: PropTypes.bool,
+    allowCreate: PropTypes.bool,
   },
 
   getInitialState() {

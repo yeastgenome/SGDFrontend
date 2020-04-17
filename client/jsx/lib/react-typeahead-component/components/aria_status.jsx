@@ -1,16 +1,17 @@
 'use strict';
 
 var React = require('react');
-var ReactDOM = require('react-dom');
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
-module.exports = React.createClass({
+module.exports = createReactClass({
   displayName: 'Aria Status',
 
   propTypes:
     process.env.NODE_ENV === 'production'
       ? {}
       : {
-          message: React.PropTypes.string,
+          message: PropTypes.string,
         },
 
   componentDidMount: function () {
@@ -32,6 +33,7 @@ module.exports = React.createClass({
       <span
         role="status"
         aria-live="polite"
+        ref={(node) => (this.node = node)}
         style={{
           left: '-9999px',
           position: 'absolute',
@@ -45,6 +47,6 @@ module.exports = React.createClass({
   // which confuses screen readers and doesn't cause them to read changes.
   setTextContent: function (textContent) {
     // We could set `innerHTML`, but it's better to avoid it.
-    ReactDOM.findDOMNode(this).textContent = textContent || '';
+    this.node.textContent = textContent || '';
   },
 });

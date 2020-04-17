@@ -2,8 +2,9 @@ import React from 'react';
 import Radium from 'radium';
 import { connect } from 'react-redux';
 import SwaggerUi, { presets } from 'swagger-ui';
+import createReactClass from 'create-react-class';
 
-const SwaggerDoc = React.createClass({
+const SwaggerDoc = createReactClass({
   componentDidMount() {
     SwaggerUi({
       dom_id: '#swaggerContainer',

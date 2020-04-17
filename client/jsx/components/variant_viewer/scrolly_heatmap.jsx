@@ -3,6 +3,8 @@ var d3 = require('d3');
 var React = require('react');
 var _ = require('underscore');
 var Radium = require('radium');
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 var FlexibleTooltip = require('../widgets/flexible_tooltip.jsx');
 
@@ -16,13 +18,13 @@ var SCROLLBAR_HEIGHT = 15;
 var LARGE_DATA_SIZE = 6500;
 var DEFAULT_BORDER_COLOR = '#EBDD71';
 
-var ScrollyHeatmap = React.createClass({
+var ScrollyHeatmap = createReactClass({
   propTypes: {
-    data: React.PropTypes.array.isRequired, // [{ name: "some123", id: "123", data: [0.1, 0.5, ...]}, ...]
-    nodeSize: React.PropTypes.number,
-    originalNodeSize: React.PropTypes.number,
-    onClick: React.PropTypes.func,
-    strainData: React.PropTypes.array.isRequired, // [{ name: "foo", id: 1 }, ...]
+    data: PropTypes.array.isRequired, // [{ name: "some123", id: "123", data: [0.1, 0.5, ...]}, ...]
+    nodeSize: PropTypes.number,
+    originalNodeSize: PropTypes.number,
+    onClick: PropTypes.func,
+    strainData: PropTypes.array.isRequired, // [{ name: "foo", id: 1 }, ...]
   },
 
   getDefaultProps: function () {
@@ -55,7 +57,10 @@ var ScrollyHeatmap = React.createClass({
     var _canvasSize = this._getCanvasSize() * canvasRatio;
 
     return (
-      <div ref="wrapper" onMouseLeave={this._onMouseLeave}>
+      <div
+        ref={(wrapper) => (this.wrapper = wrapper)}
+        onMouseLeave={this._onMouseLeave}
+      >
         <div style={{ position: 'relative', zIndex: 1 }}>
           <div
             className="variant-heatmap"
@@ -63,7 +68,7 @@ var ScrollyHeatmap = React.createClass({
           >
             {this._getTooltipNode()}
             <div
-              ref="outerScroll"
+              ref={(outerScroll) => (this.outerScroll = outerScroll)}
               style={{
                 width: this.state.DOMWidth,
                 height: SCROLL_CONTAINER_HEIGHT,
@@ -73,7 +78,7 @@ var ScrollyHeatmap = React.createClass({
               }}
             >
               <canvas
-                ref="canvas"
+                ref={(canvas) => (this.canvas = canvas)}
                 width={_canvasWidth}
                 height={_canvasSize}
                 style={{
@@ -96,7 +101,7 @@ var ScrollyHeatmap = React.createClass({
 
   componentDidMount: function () {
     this._calculateDOMSize();
-    this.refs.outerScroll.onscroll = _.throttle(this._onScroll, 10);
+    this.outerScroll.onscroll = _.throttle(this._onScroll, 10);
     this._updateCanvasRatio(() => {
       this._drawCanvas();
     });
@@ -121,7 +126,7 @@ var ScrollyHeatmap = React.createClass({
   // cb passed to cb for this.setState
   _updateCanvasRatio: function (cb) {
     // query device pixel ratio
-    var ctx = this.refs.canvas.getContext('2d');
+    var ctx = this.canvas.getContext('2d');
     var devicePixelRatio = window.devicePixelRatio || 1;
     var backingStoreRatio =
       ctx.webkitBackingStorePixelRatio ||
@@ -136,7 +141,7 @@ var ScrollyHeatmap = React.createClass({
   },
 
   _resetScroll: function () {
-    this.refs.outerScroll.scrollTop = 0;
+    this.outerScroll.scrollTop = 0;
   },
 
   _onMouseLeave: function (e) {
@@ -147,7 +152,7 @@ var ScrollyHeatmap = React.createClass({
   },
 
   _onScroll: function (e) {
-    var scrollEl = this.refs.outerScroll;
+    var scrollEl = this.outerScroll;
     this.setState({
       scrollPosition: scrollEl.scrollTop,
       tooltipVisible: false,
@@ -211,7 +216,7 @@ var ScrollyHeatmap = React.createClass({
 
     return (
       <svg
-        ref="svg"
+        ref={(svg) => (this.svg = svg)}
         style={{
           position: 'absolute',
           top: this.state.scrollPosition,
@@ -240,7 +245,7 @@ var ScrollyHeatmap = React.createClass({
   _checkScroll: function () {
     var _scrollSize = this._getScrollSize();
     var _canvasSize = this._getCanvasSize();
-    var scrollLeft = Math.min(_scrollSize, this.refs.outerScroll.scrollLeft);
+    var scrollLeft = Math.min(_scrollSize, this.outerScroll.scrollLeft);
     var scrollDelta = Math.abs(scrollLeft - this.state.canvasScrollX);
     if (scrollDelta > _canvasSize / 4) {
       this.setState({ canvasScrollX: scrollLeft });
@@ -267,7 +272,7 @@ var ScrollyHeatmap = React.createClass({
   },
 
   _calculateDOMSize: function () {
-    var _clientRect = this.refs.wrapper.getBoundingClientRect();
+    var _clientRect = this.wrapper.getBoundingClientRect();
     this.setState({
       DOMWidth: _clientRect.width,
       DOMHeight: _clientRect.height,
@@ -331,7 +336,7 @@ var ScrollyHeatmap = React.createClass({
   _drawCanvas: function () {
     var canvasRatio = this.state.canvasRatio;
     // get canvas context and clear
-    var ctx = this.refs.canvas.getContext('2d');
+    var ctx = this.canvas.getContext('2d');
     ctx.clearRect(
       0,
       0,
