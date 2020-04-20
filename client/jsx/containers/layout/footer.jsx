@@ -17,7 +17,7 @@ const Footer = React.createClass({
               <li className="sgd-link"><a href="http://www.yeastgenome.org">SGD</a></li>
               <li><a target="_blank" className="hide-external-link-icon" href="https://sites.google.com/view/yeastgenome-help/about"><span>About</span></a></li>
               <li><a href="http://www.yeastgenome.org/blog"><span>Blog</span></a></li>
-              <li><a target="_blank" className="hide-external-link-icon" href="https://sites.google.com/view/yeastgenome-help/"><span>Help</span></a></li>
+              <li><a target="_blank" className="hide-external-link-icon" href="https://sites.google.com/view/yeastgenome-help/sgd-general-help"><span>Help</span></a></li>
               <li><a target="_blank" className="hide-external-link-icon" href="http://www.stanford.edu/site/privacy"><span>Privacy Policy</span></a></li>
               <li><a rel="license" target="_blank" className="hide-external-link-icon" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style={{ borderWidth: 0 }} src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a></li>
               <li id="social-footer">
