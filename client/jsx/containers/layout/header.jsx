@@ -18,7 +18,7 @@ const Header = React.createClass({
               <a href="/blog">Blog</a>
               <a href="http://sgd-archive.yeastgenome.org">Download</a>
 	      <a href="https://www.yeastgenome.org/search?q=&is_quick=true">Explore</a>
-              <a className="hide-external-link-icon" target="_blank" href="https://sites.google.com/view/yeastgenome-help/">Help</a>
+              <a className="hide-external-link-icon" target="_blank" href="https://sites.google.com/view/yeastgenome-help/sgd-general-help">Help</a>
               <a href="https://yeastmine.yeastgenome.org/yeastmine/begin.do">YeastMine</a>
               <div className="social-media-links">
                 <a href="mailto:sgd-helpdesk@lists.stanford.edu" id="email-header" className="webicon mail small">Email Us</a>
@@ -223,7 +223,7 @@ const Header = React.createClass({
                 <li><a className="disabled-header-a" href="/blog">Blog</a></li>
                 <li><a className="disabled-header-a" href="https://downloads.yeastgenome.org">Downloads</a></li>
                 <li><a className="disabled-header-a" href="/site-map">Site Map</a></li>
-                <li><a className="disabled-header-a" href="https://sites.google.com/view/yeastgenome-help/">Help</a></li>
+                <li><a className="disabled-header-a" href="https://sites.google.com/view/yeastgenome-help/sgd-general-help">Help</a></li>
               </ul>
             </li>
           </ul>
