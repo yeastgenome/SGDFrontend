@@ -308,7 +308,7 @@ const GoSlimMapper = React.createClass({
                 var fromTools = 0;
                 if (genes == '') {
                     genes = window.localStorage.getItem("geneList4slim");
-                    window.localStorage.setItem("geneList4slim", '');
+                    // window.localStorage.setItem("geneList4slim", '');
                     fromTools = 1;
                 }	    
 		genes = this.processGeneList(genes);
@@ -394,7 +394,8 @@ const GoSlimMapper = React.createClass({
 	},
 
 	onReset(e) {
-		window.localStorage.clear();
+	        // window.localStorage.clear();
+	        window.localStorage.setItem("geneList4slim", "");
 		this.setState({ slimType: goSet[0] } );
 	},
 
