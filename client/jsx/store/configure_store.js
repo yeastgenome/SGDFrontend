@@ -1,6 +1,6 @@
 import { createStore, compose, applyMiddleware, combineReducers } from "redux";
 import thunk from "redux-thunk";
-import { routeReducer, syncHistory } from "react-router-redux";
+import { routerReducer, syncHistory } from "react-router-redux";
 import reduxPromise from "redux-promise";
 import searchReducer from "../reducers/search_reducer.js";
 
@@ -11,14 +11,14 @@ const ConfigureStore = (initialState, history) => {
 
   const reducerObj = {
     searchResults: searchReducer,
-    routing: routeReducer
+    routing: routerReducer
   };
   const reducer = combineReducers(reducerObj);
 
   const store = compose(
     applyMiddleware(reduxPromise),
     applyMiddleware(thunk),
-    applyMiddleware(syncHistory(history))
+    // applyMiddleware(syncHistory(history))
   )(createStore)(reducer, initialState, addDevTools);
   return store;
 };
