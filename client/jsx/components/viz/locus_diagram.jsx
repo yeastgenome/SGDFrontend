@@ -39,6 +39,7 @@ const LocusDiagram = React.createClass({
       variantData: [], // [{ coordinateDomain: [20045, 20046] }, ...]
       crickTracks: 1,
       watsonTracks: 1,
+      mainStrain: null,
       onSetScale: function (start, end, xScale) {},
       onVariantMouseOver: function (start, end ) {}
     };
@@ -563,7 +564,7 @@ const LocusDiagram = React.createClass({
     } else if (this.props.showSubFeatures) {
       var _subN = this.props.data.locci[0].tags.length;
       var _labelText = (_subN > 1) ? 'subfeatures' : 'subfeature';
-      chromThumb = <h3 className='subfeature-label-text'>Subfeatures - S288C<span className='round secondary label'>{_subN} {_labelText}</span></h3>;
+      chromThumb = <h3 className='subfeature-label-text'>Subfeatures - {this.props.mainStrain}<span className='round secondary label'>{_subN} {_labelText}</span></h3>;
     }
 
     return chromThumb;

@@ -40,11 +40,16 @@ module.exports = class TabsModel {
 	_getSequenceTabs () {
 		var altElement = this.attributes.hasAltStrains ? { name: "Alternative Reference Strains", target: "alternative" } : null;
 		var otherElement = this.attributes.hasOtherStrains ? { name: "Other Strains", target: "other" } : null;
-		var vvElement = this.attributes.hasAltStrains ? { name: "Variants", target: "variants" } : null;
-
+	        var vvElement = this.attributes.hasAltStrains ? { name: "Variants", target: "variants" } : null;
+	    
+	        var strainText = "Reference Strain: S288C";
+	        if (this.attributes.mainStrain != 'S288C') {
+		  vvElement = null;
+		  strainText = "Strain: " + this.attributes.mainStrain;  
+		} 
 		return [
 			{ name: "Sequence Overview", target: "overview" },
-			{ name: "Reference Strain: S288C", target: "reference" },
+			{ name: strainText, target: "reference" },
 			altElement,
 			vvElement,
 			otherElement,

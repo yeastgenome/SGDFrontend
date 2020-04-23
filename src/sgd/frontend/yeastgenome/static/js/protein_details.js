@@ -31,7 +31,7 @@ $(document).ready(function() {
   $.getJSON("/backend/locus/" + locus["id"] + "/sequence_details", function(sequence_data) {
     var protein_data = sequence_data["protein"];
     var alt_strain_protein_data = [];
-    var length = null;
+    var length = 0;
     if (protein_data.length > 0) {
       var strain_selection = $("#strain_selection");
       for (var i = 0; i < protein_data.length; i++) {
@@ -45,8 +45,8 @@ $(document).ready(function() {
           );
           option.innerHTML = protein_data[i]["strain"]["display_name"];
           strain_selection.append(option);
-          if (protein_data[i]["strain"]["format_name"] == "S288C") {
-            length = protein_data[i]["residues"].length - 1;
+          if (length == 0) {
+              length = protein_data[i]["residues"].length - 1;
           }
         }
       }

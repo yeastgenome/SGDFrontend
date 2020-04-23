@@ -58,6 +58,7 @@ summaryView.render = function () {
     ReactDOM.render(
       <AsyncSequenceView
         locusId={bootstrappedData.locusId} locusDisplayName={bootstrappedData.displayName}
+	mainStrain={locusData.main_strain}
         locusFormatName={bootstrappedData.formatName} locusHistoryData={locusData.history}
         showAltStrains={false} showOtherStrains={false} showHistory={false} isSimplified={true}
         detailsCallback={fetchAndRenderHistory} geneticPosition={_geneticPosition} locusSGDID={bootstrappedData.locusData.sgdid}

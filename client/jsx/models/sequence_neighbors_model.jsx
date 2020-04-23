@@ -15,9 +15,15 @@ module.exports = class SequenceNeighborsModel extends BaseModel {
 		options.url = `/backend/locus/${options.id}/neighbor_sequence_details`;
 		super(options);
 		if (options.id) this.id = parseInt(options.id);
+		if (options.mainStrain) this.mainStrain = options.mainStrain;
 	}
 
 	parse (response) {
+
+	        if (this.mainStrain) {	      		 
+		   MAIN_STRAIN_NAME = this.mainStrain; 
+		}
+
 		var _altNames = _.filter(_.keys(response), n => { return n !== MAIN_STRAIN_NAME; });
 		var _altStrains = _.map(_altNames, n => {
 			return this._formatStrainName(n, response[n]);

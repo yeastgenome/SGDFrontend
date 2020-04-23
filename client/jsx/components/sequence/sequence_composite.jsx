@@ -31,6 +31,7 @@ const SequenceComposite = React.createClass({
       showSequence: true,
       showSubFeatures: true,
       showSubFeaturesTable: true,
+      mainStrain: null
     };
   },
 
@@ -94,17 +95,29 @@ const SequenceComposite = React.createClass({
     } else {
       var helpNode = <HelpIcon text={"<span>The <i>S. cerevisiae</i> reference genome sequence is derived from laboratory strain S288C.</span>"} isInfo={true} />;
       var _jbHref = "https://browse.yeastgenome.org/?loc=" + this.props.focusLocusFormatName;
-      node = (<div>
-        <div className="row title-right-text">
-          <div className="columns small-6">
-            {this.props.isSimplified ? this._getSimplifiedSequenceNode() : <h2>Reference Strain: S288C {helpNode}</h2>}
+      if (this.props.mainStrain != 'S288C') {
+      	node = (<div>
+          <div className="row title-right-text">
+            <div className="columns small-6">
+              {this.props.isSimplified ? this._getSimplifiedSequenceNode() : <h2>Strain: {this.props.mainStrain}</h2>}
+            </div>
           </div>
-          <div className="columns small-6">
-            <p className="text-right locus-external-links">View in: <a href={_jbHref}>JBrowse</a></p>
+          {this.props.isSimplified ? null : <hr />}
+        </div>);
+      }
+      else {
+        node = (<div>
+          <div className="row title-right-text">
+            <div className="columns small-6">
+              {this.props.isSimplified ? this._getSimplifiedSequenceNode() : <h2>Reference Strain: S288C {helpNode}</h2>}
+            </div>
+            <div className="columns small-6">
+              <p className="text-right locus-external-links">View in: <a href={_jbHref}>JBrowse</a></p>
+            </div>
           </div>
-        </div>
-        {this.props.isSimplified ? null : <hr />}
-      </div>);
+          {this.props.isSimplified ? null : <hr />}
+        </div>);
+      }
       
     }
 
@@ -123,6 +136,7 @@ const SequenceComposite = React.createClass({
         </h3>
         <LocusDiagram
           contigData={attr.contigData}
+	  mainStrain={this.props.mainStrain}
           data={attr.data}
           domainBounds={attr.domainBounds}
           focusLocusDisplayName={this.props.focusLocusDisplayName}
@@ -146,6 +160,7 @@ const SequenceComposite = React.createClass({
       var attr = this._getActiveStrainDetailsData();
       innerNode = (<LocusDiagram
         contigData={attr.contigData}
+	mainStrain={this.props.mainStrain}
         data={attr.data}
         domainBounds={attr.domainBounds}
         focusLocusDisplayName={this.props.focusLocusDisplayName}
@@ -172,7 +187,7 @@ const SequenceComposite = React.createClass({
     var innerNode = <Loader />;
     if (this._canRenderDetails()) {
       var _buttonId = this.props.showAltStrains ? "alternative_download" : "reference_download";
-      var _text = this.props.showAltStrains ? "Sequence" : "Sequence - S288C";
+      var _text = this.props.showAltStrains ? "Sequence" : "Sequence - " + this.props.mainStrain;
       var _detailsData = this._getActiveStrainDetailsData()
       var _sequences = _detailsData.sequences;
       var _contigName = _detailsData.contigData.formatName;

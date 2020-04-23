@@ -28,6 +28,7 @@ var AsyncSequenceView = React.createClass({
       showOtherStrains: true,
       showHistory: true,
       locusId: null,
+      mainStrain: null
     };
   },
 
@@ -44,14 +45,24 @@ var AsyncSequenceView = React.createClass({
     var variantNode = this._getVariantsNode();
     var otherStrainsNode = this._getOtherStrainsNode();
     var historyNode = this._getHistoryNode();
-
-    return (<div>
-      {mainStrainNode}
-      {altStrainsNode}
-      {variantNode}
-      {otherStrainsNode}
-      {historyNode}
-    </div>);
+    
+    if (this.props.mainStrain == 'S288C') {
+      return (<div>
+        {mainStrainNode}
+        {altStrainsNode}
+        {variantNode}
+        {otherStrainsNode}
+        {historyNode}
+      </div>);
+    }
+    else {
+      return (<div>
+        {mainStrainNode}
+        {altStrainsNode}
+        {otherStrainsNode}
+        {historyNode}
+      </div>);
+    }
   },
 
   componentDidMount: function () {
@@ -60,12 +71,14 @@ var AsyncSequenceView = React.createClass({
 
   // from locusId, get data and update
   _fetchData: function () {
-    var _neighborsModel = new SequenceNeighborsModel({ id: this.props.locusId });
+    var _neighborsModel = new SequenceNeighborsModel({ id: this.props.locusId, mainStrain: this.props.mainStrain});
+    
     _neighborsModel.fetch( (err, response) => {
       if (this.isMounted()) {
         this.setState({ neighborsModel: _neighborsModel });
         var _detailsModel = new SequenceDetailsModel({
           id: this.props.locusId,
+	  mainStrain: this.props.mainStrain,
           locusDiplayName: this.props.locusDisplayName,
           locusFormatName: this.props.locusFormatName,
           locusSGDID: this.props.locusSGDID
@@ -85,6 +98,7 @@ var AsyncSequenceView = React.createClass({
   _getMainStrainNode: function () {
     var innerNode = (<SequenceComposite
       isSimplified={this.props.isSimplified}
+      mainStrain={this.props.mainStrain}
       focusLocusDisplayName={this.props.locusDisplayName}
       focusLocusFormatName={this.props.locusFormatName}
       geneticPosition={this.props.geneticPosition}
