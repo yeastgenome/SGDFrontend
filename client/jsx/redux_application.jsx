@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { ConnectedRouter } from 'connected-react-router';
 import { Provider } from 'react-redux';
 
 // import routes
@@ -14,7 +14,7 @@ class ReduxApplication extends Component {
   render() {
     return (
       <Provider store={this.props.store}>
-        <Router history={this.props.history}>{Routes}</Router>
+        <ConnectedRouter history={this.props.history}>{Routes}</ConnectedRouter>
       </Provider>
     );
   }
