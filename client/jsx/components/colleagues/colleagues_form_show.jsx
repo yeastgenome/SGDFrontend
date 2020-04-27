@@ -1,8 +1,8 @@
 import React from 'react';
 import Radium from 'radium';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
+import { push } from 'connected-react-router';
 import _ from 'underscore';
 import createReactClass from 'create-react-class';
 import apiRequest from '../../lib/api_request.jsx';

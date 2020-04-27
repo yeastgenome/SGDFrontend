@@ -6,6 +6,7 @@ import createReactClass from 'create-react-class';
 const DataTable = require('../widgets/data_table.jsx');
 import PropTypes from 'prop-types';
 const PRIMER3URL = '/backend/primer3';
+const queryString = require('query-string');
 
 const Primer3 = createReactClass({
   displayName: 'Primer3',
@@ -643,7 +644,7 @@ function getCounter(c) {
 
 function mapStateToProps(_state) {
   return {
-    queryParams: _state.routing.location.query,
+    queryParams: queryString.parse(_state.router.location.search),
   };
 }
 
