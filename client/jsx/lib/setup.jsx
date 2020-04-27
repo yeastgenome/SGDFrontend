@@ -1,9 +1,9 @@
-import { matchPath } from 'react-router-dom';
+// import { matchPath } from 'react-router-dom';
 
 import $ from 'jquery';
 import attachFastClick from 'fastclick';
 import setupSearch from './setup_search.jsx';
-import routes from '../routes.jsx';
+// import routes from '../routes.jsx';
 
 require('foundation');
 
@@ -34,7 +34,8 @@ module.exports = function () {
     }
     // exec search setup script, don't do if on any redux page
     // necessary to prevent react re-rending twice on client
-    var path = window.location.pathname;
+
+    // var path = window.location.pathname;
 
     //TODO: Match function needs to be implemented
     //Write custom match to match routes in routes.jsx
