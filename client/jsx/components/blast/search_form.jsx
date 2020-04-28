@@ -150,7 +150,7 @@ BLAST Help at NCBI</a>.</p><hr>';
 
       var graph = this._getGraphNode(this.state.resultData.hits);
       var tableStyle = {
-        width: '900',
+        width: '900px',
         marginLeft: 'auto',
         marginRight: 'auto',
       };
@@ -181,9 +181,11 @@ BLAST Help at NCBI</a>.</p><hr>';
           </span>
           <div>
             <table style={tableStyle}>
-              <tr>
-                <td>{graph}</td>
-              </tr>
+              <tbody>
+                <tr>
+                  <td>{graph}</td>
+                </tr>
+              </tbody>
             </table>
           </div>
           <div dangerouslySetInnerHTML={{ __html: descText }} />

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createHistory, useQueries } from 'history';
+import { createBrowserHistory } from 'history';
 
 import ConfigureStore from './store/configure_store.js';
 import ReduxApplication from './redux_application.jsx';
@@ -10,8 +10,9 @@ import ReduxApplication from './redux_application.jsx';
 var reactRouterRender = {};
 reactRouterRender.render = function () {
   // configure redux store
-  let _history = useQueries(createHistory)();
+  let _history = createBrowserHistory();
   let _store = ConfigureStore(undefined, _history);
+
   ReactDOM.render(
     <ReduxApplication history={_history} store={_store} />,
     document.getElementById('j-application-target')

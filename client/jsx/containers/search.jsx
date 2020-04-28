@@ -1,9 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import Radium from 'radium';
 import { connect } from 'react-redux';
 import _ from 'underscore';
 import S from 'string';
+const queryString = require('query-string');
 
 import SearchResult from '../components/search/search_result.jsx';
 import SearchDownloadAnalyze from '../components/search/search_download_analyze.jsx';
@@ -63,7 +64,9 @@ const Search = createReactClass({
   },
 
   // listen for history changes and fetch results when they change, also update google analytics
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
+    this._updateGoogleAnalytics();
+    this._fetchSearchResults();
     this._unlisten = this.props.history.listen(() => {
       this._updateGoogleAnalytics();
       this._fetchSearchResults();
@@ -81,11 +84,11 @@ const Search = createReactClass({
     const isWrap = this.props.geneMode === 'wrap';
     const listPath = createPath({
       pathname: SEARCH_URL,
-      query: _.extend(qp, { page: 0, geneMode: 'list' }),
+      search: _.extend(qp, { page: 0, geneMode: 'list' }),
     });
     const wrapPath = createPath({
       pathname: SEARCH_URL,
-      query: _.extend(qp, { page: 0, geneMode: 'wrap' }),
+      search: _.extend(qp, { page: 0, geneMode: 'wrap' }),
     });
 
     return (
@@ -125,9 +128,10 @@ const Search = createReactClass({
     if (this._isWrappedResults()) return this._renderWrappedControls();
     if (this.props.total === 0) return null;
     const _onPaginate = (newPage) => {
-      let urlParams = this.props.location.query;
+      let urlParams = queryString.parse(this.props.location.search);
       urlParams.page = newPage;
-      this.props.history.pushState(null, SEARCH_URL, urlParams);
+      this.props.location.search = queryString.stringify(urlParams);
+      this.props.history.push(this.props.location);
       if (window) window.scrollTo(0, 0); // go to top
     };
     return (
@@ -202,10 +206,11 @@ const Search = createReactClass({
     });
     const _onChange = (e) => {
       let newValue = e.currentTarget.value;
-      let urlParams = this.props.location.query;
+      let urlParams = queryString.parse(this.props.location.search);
       urlParams.page_size = newValue;
       urlParams.page = 0; // go back to first page when changing page size
-      this.props.history.pushState(null, SEARCH_URL, urlParams);
+      this.props.location.search = queryString.stringify(urlParams);
+      this.props.history.push(this.props.location);
     };
     return (
       <div>
@@ -238,10 +243,11 @@ const Search = createReactClass({
     });
     const _onChange = (e) => {
       let newValue = e.currentTarget.value;
-      let urlParams = this.props.location.query;
+      let urlParams = queryString.parse(this.props.location.search);
       urlParams.sort_by = newValue;
       urlParams.page = 0; // go back to first page when changing sorting
-      this.props.history.pushState(null, SEARCH_URL, urlParams);
+      this.props.location.search = queryString.stringify(urlParams);
+      this.props.history.push(this.props.location);
     };
     return (
       <div>
@@ -309,10 +315,11 @@ const Search = createReactClass({
   _getdownloadStatus(str) {
     this.setState({ selectedRadioBtn: str });
     let tempQParams = this.props.queryParams;
-    if (tempQParams.hasOwnProperty('status')) {
+    if (Object.prototype.hasOwnProperty.call(tempQParams, 'status')) {
       tempQParams['status'] = S(str).capitalize().s;
     }
-    this.props.history.pushState(null, SEARCH_URL, tempQParams);
+    this.props.location.search = queryString.stringify(tempQParams);
+    this.props.history.push(this.props.location);
   },
 
   _isWrappedResults() {
@@ -396,8 +403,8 @@ function mapStateToProps(_state) {
     sortBy: state.sortBy,
     apiError: state.apiError,
     query: state.query,
-    url: `${_state.routing.location.pathname}${_state.routing.location.search}`,
-    queryParams: _state.routing.location.query,
+    url: `${_state.router.location.pathname}${_state.router.location.search}`,
+    queryParams: queryString.parse(_state.router.location.search),
     geneMode: state.geneMode,
     downloadStatusStr: state.downloadStatusStr,
     downloadStatus: state.downloadStatus,

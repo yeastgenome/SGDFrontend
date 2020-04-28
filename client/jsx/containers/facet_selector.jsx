@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import Radium from 'radium';
 import _ from 'underscore';
 import pluralize from 'pluralize';
@@ -13,6 +13,7 @@ import {
 import ClassNames from 'classnames';
 import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
+const queryString = require('query-string');
 
 const DEFAULT_FACET_LENGTH = 5;
 const MEDIUM_FACET_LENGTH = 20;
@@ -436,7 +437,7 @@ function mapStateToProps(_state) {
   return {
     aggregations: state.aggregations,
     query: state.query,
-    queryParams: _state.routing.location.query,
+    queryParams: queryString.parse(_state.router.location.search),
     activeCategory: state.activeCategory,
     isAggPending: state.isAggPending,
   };

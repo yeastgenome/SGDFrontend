@@ -1,9 +1,10 @@
 import Radium from 'radium';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
+const queryString = require('query-string');
 
 import {
   getHrefWithoutAgg,
@@ -117,7 +118,7 @@ function mapStateToProps(_state) {
   return {
     total: state.total,
     query: state.query,
-    queryParams: _state.routing.location.query,
+    queryParams: queryString.parse(_state.router.location.search),
     isPending: state.isPending,
     isPaginatePending: state.isPaginatePending,
   };

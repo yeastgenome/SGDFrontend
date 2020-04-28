@@ -1,5 +1,6 @@
 import _ from 'underscore';
 import { getCategoryDisplayName } from '../lib/search_helpers';
+const queryString = require('query-string');
 
 const FILTERED_FACET_VALUES = ['cellular component', 'biological process', 'molecular function'];
 const DEFAULT_RESULTS_PER_PAGE = 25;
@@ -34,13 +35,14 @@ const searchResultsReducer = function (_state, action) {
     return DEFAULT_STATE;
   }
   // let the URL change the query and other params
-  if (action.type === '@@router/UPDATE_LOCATION' && action.payload.pathname === '/search') {
-    let params = action.payload.query;
-    if (action.payload.query.category) {
-      if (action.payload.query.category === 'download' && action.payload.query.status === undefined && state.downloadsFlag) {
+  if (action.type === '@@router/LOCATION_CHANGE' && action.payload.location.pathname === '/search') {
+    // let params = action.payload.query;
+    let params = queryString.parse(action.payload.location.search);
+    if (params.category) {
+      if (params.category === 'download' && params.status === undefined && state.downloadsFlag) {
         state.downloadsFlag = false;
       }
-      else if (params.category === 'download' && params.hasOwnProperty('status')) {
+      else if (params.category === 'download' && Object.prototype.hasOwnProperty.call(params, 'status')) {
         state.downloadsFlag = true;
         state.downloadStatusStr = params['status'];
       }

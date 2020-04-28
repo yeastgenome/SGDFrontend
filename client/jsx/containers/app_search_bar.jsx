@@ -1,7 +1,7 @@
 import 'isomorphic-fetch';
 import React from 'react';
 import { connect } from 'react-redux';
-import { routeActions } from 'react-router-redux';
+import { push } from 'connected-react-router';
 import _ from 'underscore';
 // manually installed to fix react 14 warnings and problem installing from github
 import Typeahead from '../lib/react-typeahead-component';
@@ -185,9 +185,7 @@ const AppSearchBar = createReactClass({
 
   // update URL and HTML5 history with query param
   _updateUrl(query) {
-    this.props.dispatch(
-      routeActions.push({ pathname: '/search', query: { q: query } })
-    );
+    this.props.dispatch(push({ pathname: '/search', query: { q: query } }));
   },
 
   _hardRedirect(newUrl) {
