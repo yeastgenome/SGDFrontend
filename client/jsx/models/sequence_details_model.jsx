@@ -19,6 +19,12 @@ module.exports = class SequenceDetailsModel extends BaseModel {
     }
 
     parse (response) {
+    
+        var attr = this.baseAttributes;
+	if (attr.mainStrain) {
+	    MAIN_STRAIN_NAME = attr.mainStrain;
+	}
+
         // alt strain data
         var _altStrainTemp = _.filter(response.genomic_dna, s => {
             return (s.strain.status === "Alternative Reference");
@@ -215,10 +221,21 @@ module.exports = class SequenceDetailsModel extends BaseModel {
             "Seq. Version"
         ];
 
+	var contigName = contigString;
+	if (MAIN_STRAIN_NAME != 'S288C') {
+	    contigName = contigData.name;
+	}
+
         var _rows = _.map(subFeatures, d => {
             var _relativeCoord = `${d.relative_start}..${d.relative_end}`;
-            var _coordNode = { html: `<span><a href=${contigData.href}>${contigString}</a>:${d.chromosomal_start}..${d.chromosomal_end}</span>` };
-            return [d.format_name, _relativeCoord, _coordNode, d.coord_version, d.seq_version];
+	    var _coordNode = { html: `<span><a href=${contigData.href}>${contigName}</a>:${d.chromosomal_start}..${d.chromosomal_end}</span>` };
+	    var coord_version = d.coord_version;
+	    var seq_version = d.seq_version;
+	    if (MAIN_STRAIN_NAME != 'S288C') {
+	       coord_version = '-';
+	       seq_version = '-';
+	    }
+            return [d.format_name, _relativeCoord, _coordNode, coord_version, seq_version];
         });
 
         var tableData = {
