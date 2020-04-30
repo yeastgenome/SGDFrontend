@@ -150,7 +150,7 @@ const RestrictionMapper = createReactClass({
       var graphNode = <RestBarChart data={cuts} seqLength={seqLength} />;
 
       var graphStyle = {
-        width: '1000',
+        width: '1000px',
         marginLeft: 'auto',
         marginRight: 'auto',
       };
