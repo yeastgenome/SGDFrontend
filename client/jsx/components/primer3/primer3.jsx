@@ -72,7 +72,7 @@ const Primer3 = createReactClass({
   },
 
   handleSubmit(e) {
-    this.props.history.pushState(null, '/primer3', { results: 1 });
+    this.props.history.push('/primer3?result=1');
     e.preventDefault();
     const value = this.primerForm.getValue();
     let strValue = JSON.stringify(value);
