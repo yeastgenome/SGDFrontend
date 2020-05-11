@@ -13,6 +13,11 @@ $(document).ready(function() {
 		create_download_button("go_table_download", go_table, chemical['display_name'] + "_go_annotations");
 	});
 
+        $.getJSON('/backend/chemical/' + chemical['id']  + '/proteinabundance_details', function(data) {
+                var protein_abundance_table = create_protein_abundance_table(data);
+                create_download_button("protein_abundance_table_download", protein_abundance_table, chemical['display_name'] + "_protein_abundance");
+        });
+    
 	$.getJSON('/backend/chemical/' + chemical['id']  + '/network_graph', function(data) {
 
 		if (data != null && data["nodes"].length > 1) {
@@ -48,6 +53,52 @@ $(document).ready(function() {
 
 });
 
+function create_protein_abundance_table(data) {
+
+  var datatable = [];
+
+  for (var i = 0; i < data.length; i++) {
+    datatable.push(protein_abundance_data_to_table(data[i]));
+  }
+
+  set_up_header(
+    "protein_abundance_table",
+    datatable.length,
+    "entry",
+    "entries",
+    "abundance",
+    "abundances",
+  );
+
+
+  var options = {};
+  options["bPaginate"] = false;
+  options["aaSorting"] = [[11, "asc"]];
+  // options["bDestroy"] = true;                                                                                                    
+  options["aoColumns"] = [
+    { bSearchable: false, bVisible: false },
+    { bSearchable: false, bVisible: false },
+    { bSearchable: false, bVisible: true },
+    { bSearchable: false, bVisible: false },  
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ];
+  options["aaData"] = datatable;
+  options["bPaginate"] = true;
+  options["iDisplayLength"] = 5;
+  options["oLanguage"] = {
+    sEmptyTable: "No protein abundance data for this protein."
+  };
+
+  return create_table("protein_abundance_table", options);
+}
 
 function create_phenotype_table(data) {
   	var datatable = [];
