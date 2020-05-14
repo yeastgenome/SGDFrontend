@@ -8,7 +8,6 @@
 </script>
 {% endblock %}
 
-
 {% block body %}
 
 <!-- Navbar
@@ -19,12 +18,6 @@
     {% include "navbar.jinja2" %}
 
     <div class="small-12 medium-10 columns content-column">
-
-    	 <!--
-            {% if chemical.network_graph.edges|length > 0 %}
-                add_navbar_element('Shared Annotations', 'network');
-            {% endif %}
-         -->
 
         <script>
             add_navbar_title('Chemical: <span class="gene_name">{{ chemical.display_name }}</span>')
@@ -38,7 +31,15 @@
 	    {% if chemical.complexes|length > 0 %}
 	        add_navbar_element('Complexes', 'complex');
             {% endif %}
-
+	    {% if chemical.pathways|length > 0 %}
+                add_navbar_element('Pathways', 'pathway');
+            {% endif %}
+	    {% if chemical.protein_abundance|length > 0 %}
+                add_navbar_element('Protein Abundance', 'protein_abundance');
+            {% endif %}
+	    {% if chemical.network_graph.edges|length > 0 %}
+	        add_navbar_element('Shared Chemicals', 'network');
+	    {% endif %}
 	    add_navbar_element('Resources', 'resources');
         </script>
 
@@ -70,6 +71,14 @@
 			    <dt>Definition</dt>
 			    <dd>{{ chemical.definition }}</dd>
 			{% endif %}
+
+			{% if chemical.structure_image_url != '' %}
+                            <dt>Structure</dt>
+                            <dd>
+				<img src={{ chemical.structure_image_url }} id='strucImg' onClick="zoom()">
+			    </dd>
+                        {% endif %}
+
 			{% if chemical.synonyms|length > 0 %}
 			    <dt>Synonyms</dt>
 			    {% for synonym in chemical.synonyms %}
@@ -156,15 +165,48 @@
         </section>
         {% endif %}
 
+	<!-- Pathway
+        ================================================== -->
+	{% if chemical.pathways|length > 0 %}
+	<section id="pathway" data-magellan-destination="pathway">
+             <h2>Pathways</h2>
+             <hr />
+	     <div class="panel">
+                  <ul>
+                       {% for p in chemical.pathways %}
+                            <li><a href="{{ p.link_url }}">{{ p.display_name }}</a></li>
+                       {% endfor %}
+                  </ul>
+	     </div>
+	</section>
+        {% endif %}
+
+	<!-- Protein Abundance data
+        ================================================== -->
+	{% if chemical.protein_abundance|length > 0 %}
+	<section id="protein_abundance" data-magellan-destination="protein_abundance">
+            <div class="page-header">
+                <h2>Protein Abundance
+                    <a href="#" data-dropdown="protein_abundance_info"><i class="fa fa-info-circle"></i></a>
+                    <p id="protein_abundance_info" class="f-dropdown content medium" data-dropdown-content>
+                        This section contains protein abundance data for both untreated and treated cells obtained from over 20 studies. These data have been normalized and converted to a common unit of molecules per cell.
+                    </p>
+                    <span id="protein_abundance_table_header" class="round secondary label"></span>
+                </h2>
+                <hr />
+                <!-- Includes protein_abundance_table into template -->
+                {% set table_id = "protein_abundance_table" %}
+                {% include "protein_abundance_table.jinja2" %}
+            </div>
+        </section>
+        {% endif %}
+
 	<!-- Network diagram
 	================================================== -->
-
-	<!--
-
 	{% if chemical.network_graph.edges|length > 0 %}
     	<section id="network" data-magellan-destination="network">
         	 <div class="page-header">
-            	      <h2>Shared Annotations
+            	      <h2>Shared Chemicals
                       		 <a href="#" data-dropdown="network_help"><i class="fa fa-info-circle"></i></a>
                  		 <p id="network_help" class="f-dropdown content medium" data-dropdown-content>
                       		 This diagram displays Gene Ontology terms (green), phenotypes (blue), and 
@@ -180,9 +222,6 @@
         </section>
 	{% endif %}
 
-	-->
-
-
         <!-- Resources
         ================================================== -->
 	<section id="resources" data-magellan-destination="resources">
@@ -190,7 +229,10 @@
              <hr />
              <div class="panel">
                 <p>
-                    <a href="https://www.rhea-db.org/searchresults?q={{ chemical.chebi_id }}" target="_blank">RHEA</a> | <a href="https://pubchem.ncbi.nlm.nih.gov/compound/{{ chemical.chebi_id }}" target="_blank">PubChem</a> 
+                    <a href="https://www.rhea-db.org/searchresults?q={{ chemical.chebi_id }}" target="_blank">RHEA</a> | <a href="https://pubchem.ncbi.nlm.nih.gov/compound/{{ chemical.chebi_id }}" target="_blank">PubChem</a>
+		    {% if chemical.pharmGKB_link_url != '' %}
+		        | <a href={{ chemical.pharmGKB_link_url }} target="_blank">PharmGKB</a>
+		    {% endif %}
                 </p>
              </div>
         </section>
@@ -209,4 +251,23 @@
 <script src="/static/js/build/arbor.js"></script>
 <script src="{{asset_root}}/js/evidence.js"></script>
 <script src="{{asset_root}}/js/chemical.js"></script>
+<script type="text/javascript">
+    var clicked = 1;
+    function zoom() {
+        if (clicked == 3) {
+	    clicked = 1;
+	}
+	else {
+	    clicked = 3;
+	}
+	zoomOut(clicked)
+    }
+    
+    function zoomOut(count) {
+        var image = document.getElementById('strucImg');
+        var src = image.src;
+	image.src = src.substring(0, src.indexOf('dimensions=')) + 'dimensions=' + (200 * count);
+	image.style.display = "block";
+    }
+</script>
 {% endblock scripts %}
