@@ -13,31 +13,67 @@ $(document).ready(function() {
 		create_download_button("go_table_download", go_table, chemical['display_name'] + "_go_annotations");
 	});
 
+        $.getJSON('/backend/chemical/' + chemical['id']  + '/proteinabundance_details', function(data) {
+                var protein_abundance_table = create_protein_abundance_table(data);
+                create_download_button("protein_abundance_table_download", protein_abundance_table, chemical['display_name'] + "_protein_abundance");
+        });
+    
 	$.getJSON('/backend/chemical/' + chemical['id']  + '/network_graph', function(data) {
 
-		if (data != null && data["nodes"].length > 1) {
+	        if (data != null && data["nodes"].length > 1) {
+		
+		    has_go = 0
+		    has_complex = 0
+		    has_pheno = 0
+		    for (var i = 0; i < data["nodes"].length; i++) {
+			row = data["nodes"][i]
+			if (row["category"] == 'GO') {
+			    has_go++;
+			}
+			if (row["category"] == 'COMPLEX') {
+                            has_complex++;
+                        }
+			if (row["category"] == 'PHENOTYPE') {
+                            has_pheno++;
+                        }
+		    }
+		    
 		    var _categoryColors = {
-			'FOCUS': 'black',
-			'GO': '#2ca02c',
-			'PHENOTYPE': '#1f77b4',
-			'COMPLEX': '#E6AB03',
+                        'FOCUS': 'black',
 			'CHEMICAL': '#7d0df3'
 		    };
+		    
 		    var filters = {
-			' All': function(d) { return true; },
-			' GO Terms': function(d) {
-			    var acceptedCats = ['FOCUS', 'GO', 'CHEMICAL'];
-			    return acceptedCats.includes(d.category);
-			},
-			' Phenotypes': function(d) {
-			    var acceptedCats = ['FOCUS', 'PHENOTYPE', 'CHEMICAL'];
-			    return acceptedCats.includes(d.category);
-			},
-			' Complexes': function(d) {
+                        ' All': function(d) { return true; }
+		    };
+		    
+		    var categoryCount = 0;
+		    if (has_go > 0) {
+			_categoryColors['GO'] = '#2ca02c';
+			filters[' GO Terms'] = function(d) {
+                            var acceptedCats = ['FOCUS', 'GO', 'CHEMICAL'];
+                            return acceptedCats.includes(d.category);
+                        }
+			categoryCount++;
+		    }
+		    if (has_pheno > 0) {
+                        _categoryColors['PHENOTYPE'] = '#1f77b4';
+			filters[' Phenotypes'] = function(d) {
+                            var acceptedCats = ['FOCUS', 'PHENOTYPE', 'CHEMICAL'];
+                            return acceptedCats.includes(d.category);                                                               
+                        }
+			categoryCount++;
+		    }
+		    if (has_complex > 0) {
+                        _categoryColors['COMPLEX'] = '#E6AB03';
+			filters[' Complexes'] = function(d) {
                             var acceptedCats = ['FOCUS', 'COMPLEX', 'CHEMICAL'];
                             return acceptedCats.includes(d.category);
-                        },
-		       
+                        }
+			categoryCount++;
+                    }
+		    if (categoryCount < 2) {
+			filters = {}
 		    }
 		    views.network.render(data, _categoryColors, "j-chemical-network", filters, true);
 		} else {
@@ -48,6 +84,52 @@ $(document).ready(function() {
 
 });
 
+function create_protein_abundance_table(data) {
+
+  var datatable = [];
+
+  for (var i = 0; i < data.length; i++) {
+    datatable.push(protein_abundance_data_to_table(data[i]));
+  }
+
+  set_up_header(
+    "protein_abundance_table",
+    datatable.length,
+    "entry",
+    "entries",
+    "abundance",
+    "abundances",
+  );
+
+
+  var options = {};
+  options["bPaginate"] = false;
+  options["aaSorting"] = [[11, "asc"]];
+  // options["bDestroy"] = true;                                                                                                    
+  options["aoColumns"] = [
+    { bSearchable: false, bVisible: false },
+    { bSearchable: false, bVisible: false },
+    { bSearchable: true, bVisible: true },
+    { bSearchable: false, bVisible: false },  
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ];
+  options["aaData"] = datatable;
+  options["bPaginate"] = true;
+  options["iDisplayLength"] = 5;
+  options["oLanguage"] = {
+    sEmptyTable: "No protein abundance data for this protein."
+  };
+
+  return create_table("protein_abundance_table", options);
+}
 
 function create_phenotype_table(data) {
   	var datatable = [];
