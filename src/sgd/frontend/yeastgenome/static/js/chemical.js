@@ -26,7 +26,7 @@ $(document).ready(function() {
 		    has_complex = 0
 		    has_pheno = 0
 		    for (var i = 0; i < data["nodes"].length; i++) {
-			row = data["nodes"][i]
+			var row = data["nodes"][i]
 			if (row["category"] == 'GO') {
 			    has_go++;
 			}
