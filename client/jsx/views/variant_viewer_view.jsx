@@ -7,7 +7,7 @@ var Drawer = require('../components/variant_viewer/drawer.jsx');
 import createReactClass from 'create-react-class';
 
 // router stuff
-var { Router, Route, IndexRoute } = require('react-router');
+import { Route, Switch, HashRouter as Router } from 'react-router-dom';
 
 var view = {};
 view.render = function () {
@@ -22,10 +22,12 @@ view.render = function () {
     render: function () {
       return (
         <Router>
-          <Route path="/" component={VariantViewer}>
-            <IndexRoute component={BlankComponent} />
-            <Route path="/:locusId" component={Drawer} />
-          </Route>
+          <VariantViewer>
+            <Switch>
+              <Route path="/:locusId" component={Drawer} />
+              <Route path="/" component={BlankComponent} exact />
+            </Switch>
+          </VariantViewer>
         </Router>
       );
     },
