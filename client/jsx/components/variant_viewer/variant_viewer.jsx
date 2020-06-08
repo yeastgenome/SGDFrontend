@@ -176,7 +176,7 @@ var VariantViewer = createReactClass({
     var _strainData = this.props.store.getHeatmapStrainData();
     var _zoom = this.props.store.getHeatmapZoom();
     var _onClick = (d) => {
-      this.props.history.pushState(null, '/' + d.id);
+      this.props.history.push('/' + d.id);
     };
     return (
       <ScrollyHeatmap

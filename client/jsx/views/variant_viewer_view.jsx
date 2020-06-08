@@ -22,12 +22,16 @@ view.render = function () {
     render: function () {
       return (
         <Router>
-          <VariantViewer>
-            <Switch>
-              <Route path="/:locusId" component={Drawer} />
-              <Route path="/" component={BlankComponent} exact />
-            </Switch>
-          </VariantViewer>
+          <Route
+            render={(props) => (
+              <VariantViewer {...props}>
+                <Switch>
+                  <Route path="/:locusId" component={Drawer} />
+                  <Route path="/" component={BlankComponent} />
+                </Switch>
+              </VariantViewer>
+            )}
+          ></Route>
         </Router>
       );
     },
