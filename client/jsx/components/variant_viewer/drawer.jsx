@@ -12,7 +12,7 @@ var Drawer = createReactClass({
   propTypes: {
     store: PropTypes.object.isRequired,
     isProteinMode: PropTypes.bool,
-    params: PropTypes.any,
+    match: PropTypes.object,
     history: PropTypes.any,
   },
 
@@ -49,7 +49,7 @@ var Drawer = createReactClass({
   },
 
   _renderContentNode: function () {
-    var _sgdid = this.props.params.locusId;
+    var _sgdid = this.props.match.params.locusId;
     return (
       <AsyncVariantViewer
         sgdid={_sgdid}
@@ -60,7 +60,7 @@ var Drawer = createReactClass({
   },
 
   _exit: function () {
-    this.props.history.pushState(null, '/');
+    this.props.history.push('/');
   },
 });
 
