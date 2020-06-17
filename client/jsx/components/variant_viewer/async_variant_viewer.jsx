@@ -23,6 +23,9 @@ var AsyncVariantViewer = createReactClass({
       isUpstreamMode: false,
       isDownstreamMode: false,
       labelsVisible: true,
+      data: null,
+      childIsUpstream: this.props.parentIsUpstream,
+      childIsDownstream: this.props.parentIsDownstream,
     };
   },
 
@@ -31,14 +34,6 @@ var AsyncVariantViewer = createReactClass({
       hideTitle: false,
       parentIsUpstream: false,
       parentIsDownstream: false,
-    };
-  },
-
-  getInitialState: function () {
-    return {
-      data: null,
-      childIsUpstream: this.props.parentIsUpstream,
-      childIsDownstream: this.props.parentIsDownstream,
     };
   },
 
