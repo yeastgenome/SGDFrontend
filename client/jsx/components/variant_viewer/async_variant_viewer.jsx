@@ -14,7 +14,6 @@ var AsyncVariantViewer = createReactClass({
     hideTitle: PropTypes.bool,
     sgdid: PropTypes.string.isRequired,
     store: PropTypes.object.isRequired,
-    parentIsProtein: PropTypes.bool,
   },
 
   getInitialState: function () {
@@ -30,7 +29,6 @@ var AsyncVariantViewer = createReactClass({
   getDefaultProps: function () {
     return {
       hideTitle: false,
-      parentIsProtein: false,
       parentIsUpstream: false,
       parentIsDownstream: false,
     };
@@ -39,7 +37,6 @@ var AsyncVariantViewer = createReactClass({
   getInitialState: function () {
     return {
       data: null,
-      childIsProtein: this.props.parentIsProtein,
       childIsUpstream: this.props.parentIsUpstream,
       childIsDownstream: this.props.parentIsDownstream,
     };
