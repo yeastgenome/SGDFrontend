@@ -127,20 +127,19 @@ class SearchForm extends Component {
       var _resultTable = this._getResultTable(data, totalHits);
 
       return (
-        <div>
-          <p>
-            <center>{_summaryTable}</center>
-          </p>
-          <p>
-            <center>{_resultTable}</center>
-          </p>
-          <p>
-            <center>
-              <blockquote style={{ fontFamily: 'Monospace', fontSize: 14 }}>
-                <a href={downloadUrl}>Download Full Results</a>
-              </blockquote>
-            </center>
-          </p>
+        <div>  
+          <center>{_summaryTable}</center>
+          <p></p>
+          
+          <center>{_resultTable}</center>
+          <p></p>
+          
+          <center>
+            <blockquote style={{ fontFamily: 'Monospace', fontSize: 14 }}>
+              <a href={downloadUrl}>Download Full Results</a>
+            </blockquote>
+          </center>
+          <p></p>
         </div>
       );
     } else if (this.state.isPending) {
