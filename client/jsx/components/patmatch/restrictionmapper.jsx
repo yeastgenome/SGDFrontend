@@ -162,9 +162,11 @@ const RestrictionMapper = createReactClass({
             <p dangerouslySetInnerHTML={{ __html: downloadLink }} />
             <div>
               <table style={graphStyle}>
+		<tbody>
                 <tr>
                   <td>{graphNode}</td>
                 </tr>
+		</tbody>
               </table>
             </div>
             <p>{notCutEnzymeTable}</p>
