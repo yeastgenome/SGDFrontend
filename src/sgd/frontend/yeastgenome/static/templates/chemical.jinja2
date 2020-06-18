@@ -82,10 +82,8 @@
 			{% if chemical.synonyms|length > 0 %}
 			    <dt>Synonyms</dt>
 			    {% for synonym in chemical.synonyms %}
-			       {% if synonym.synonym_type != 'PharmGKB ID' and synonym.synonym_type != 'YeastPathway ID' %}
-			           {% if loop.first %}<dd>{% endif %}
-			           {{ synonym.display_name }}{% if not loop.last %}; {% else %}</dd>{% endif %}
-			       {% endif %}
+			        {% if loop.first %}<dd>{% endif %}
+			        {{ synonym.display_name }}{% if not loop.last %}; {% else %}</dd>{% endif %}
 			    {% endfor %}
 			{% endif %}			
                     </dl>
