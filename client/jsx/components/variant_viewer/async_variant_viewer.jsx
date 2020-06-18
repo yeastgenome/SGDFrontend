@@ -294,7 +294,7 @@ var AsyncVariantViewer = createReactClass({
         variantDataProtein={variantData}
         proteinLength={data.protein_length}
         strand={'+'}
-	orientation={data.strand}
+        orientation={data.strand}
         isProteinMode={true}
         isUpstreamMode={false}
         isDownstreamMode={false}
@@ -329,7 +329,7 @@ var AsyncVariantViewer = createReactClass({
           Location: {contigTextNode} {data.chrom_start}..{data.chrom_end}{' '}
           {intergenicDisplayName}
         </h3>
-        <p style={[style.emptyNode]}>{text}</p>;
+        <p style={[style.emptyNode]}>{text}</p>
       </div>
     );
   },
