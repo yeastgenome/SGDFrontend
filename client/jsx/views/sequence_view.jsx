@@ -12,11 +12,13 @@ sequenceView.render = function () {
 
   // define render nav bar function
   var renderNavBar = function (hasAltStrains, hasOtherStrains, mainStrain) {
+    var _showVariants = bootstrappedData.featureType === 'ORF';	
     var _tabModel = new TabsModel({
       tabType: 'sequence',
       hasAltStrains: hasAltStrains,
       hasOtherStrains: hasOtherStrains,
-      mainStrain: mainStrain,
+      hasVariants: _showVariants,	
+      mainStrain: mainStrain,	
     });
     var _navTitleText = _tabModel.getNavTitle(
       bootstrappedData.displayName,

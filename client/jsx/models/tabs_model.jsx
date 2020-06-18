@@ -42,7 +42,7 @@ module.exports = class TabsModel {
     var otherElement = this.attributes.hasOtherStrains
       ? { name: 'Other Strains', target: 'other' }
       : null;
-    var vvElement = this.attributes.hasAltStrains
+    var vvElement = this.attributes.hasVariants
       ? { name: 'Variants', target: 'variants' }
       : null;
 
