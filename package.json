@@ -1,6 +1,6 @@
 {
   "name": "SGDFrontend",
-  "version": "17.10.0",
+  "version": "20.6.0",
   "homepage": "http://www.yeastgenome.org",
   "license": "MIT",
   "repository": {
@@ -96,5 +96,9 @@
   "scripts": {
     "lint": "eslint ./**/*.jsx",
     "format": "prettier ./**/*.jsx --write"
+  },
+  "engines": {
+    "node": "13.7.0",
+    "npm": "6.13.0"
   }
 }

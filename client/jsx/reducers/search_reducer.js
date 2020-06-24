@@ -79,7 +79,7 @@ const searchResultsReducer = function (_state, action) {
       return state;
       break;
     case 'SEARCH_RESPONSE':
-      state.total = action.response.total;
+      state.total = action.response.total.value;
       state.results = action.response.results.map(d => {
         d.categoryName = getCategoryDisplayName(d.category);
         // make list of loci from 3 possible types

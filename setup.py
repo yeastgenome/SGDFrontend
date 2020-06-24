@@ -1,5 +1,6 @@
 import os
 
+import pip
 from setuptools import setup, find_packages
 # from pip.download import PipSession
 # from pip.req import parse_requirements
