@@ -127,13 +127,13 @@ class SearchForm extends Component {
       var _resultTable = this._getResultTable(data, totalHits);
 
       return (
-        <div>  
+        <div>
           <center>{_summaryTable}</center>
           <p></p>
-          
+
           <center>{_resultTable}</center>
           <p></p>
-          
+
           <center>
             <blockquote style={{ fontFamily: 'Monospace', fontSize: 14 }}>
               <a href={downloadUrl}>Download Full Results</a>
