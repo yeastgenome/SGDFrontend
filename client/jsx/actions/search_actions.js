@@ -69,7 +69,7 @@ export function startAsyncFetch() {
   return function (dispatch, getState) {
     dispatch({ type: 'START_ASYNC_FETCH' });
     const state = getState();
-    const qp = (state.routing.location.query);
+    const qp = queryString.parse(state.router.location.search);
     function onResponse(results) {
       dispatch(receiveAsyncResponse(results));
     };
@@ -116,6 +116,7 @@ export function fetchSearchResults() {
 };
 
 export function receiveSearchResponse(_response) {
+  console.log(_response);
   return {
     type: 'SEARCH_RESPONSE',
     response: _response
