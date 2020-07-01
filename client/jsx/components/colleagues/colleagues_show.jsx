@@ -6,9 +6,7 @@ import ColleaguesFormShow from './colleagues_form_show.jsx';
 import PropTypes from 'prop-types';
 
 const ColleaguesShow = createReactClass({
-  propTypes: {
-    routeParams: PropTypes.any,
-  },
+
   render() {
     return (
       <div style={[style.container]}>
