@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 
 const ColleaguesShow = createReactClass({
   propTypes: {
-    routeParams: PropTypes.any,
+    match: PropTypes.any,
   },
   render() {
     return (
@@ -15,7 +15,7 @@ const ColleaguesShow = createReactClass({
         <ColleaguesFormShow
           isReadOnly={true}
           isCurator={false}
-          colleagueDisplayName={this.props.routeParams.formatName}
+          colleagueDisplayName={this.props.match.params.formatName}
         />
         <a className="button secondary small" href="/colleague_update">
           Update Colleague

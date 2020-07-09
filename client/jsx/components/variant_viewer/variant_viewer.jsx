@@ -220,7 +220,8 @@ var VariantViewer = createReactClass({
       this.props.store.setQuery(query);
       this.submitSearch();
     };
-    var _text = 'Enter gene name, GO term, chromosome, or list of gene names';
+    // var _text = 'Enter gene name, GO term, chromosome, or list of gene names';
+    var _text = 'Enter Gene/ORF names (separated by a comma)';
     return <SearchBar placeholderText={_text} onSubmit={_onSubmit} />;
   },
 
@@ -243,7 +244,7 @@ var VariantViewer = createReactClass({
   },
 
   _renderEmptyNode: function () {
-    var text = `No results for "${this.props.store.getQuery()}."  Please modify your search and try again.`;
+    var text = `No results for "${this.props.store.getQuery()}."  Please enter valid gene/ORF names or SGDID (comma-separated) and try again.`;
     return <h3>{text}</h3>;
   },
 });

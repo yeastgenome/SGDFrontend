@@ -515,6 +515,14 @@ class Header extends Component {
                     Career Resources
                   </a>
                 </li>
+		<li>
+                  <a
+                    className="disabled-header-a"
+                    href="https://wiki.yeastgenome.org/index.php/Educational_Resources"
+                  >
+                    Education
+                  </a>
+                </li>
                 <li className="has-dropdown">
                   <a href="#">Meetings</a>
                   <ul className="dropdown">
