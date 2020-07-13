@@ -181,7 +181,7 @@ module.exports = class VariantViewerStore {
         return d.id;
       })
     );
-    var quickUrl = `${LOCI_SEARCH_BASE_URL}?limit=200`;
+    var quickUrl = `${LOCI_SEARCH_BASE_URL}?limit=250`;
     var longUrl = `${LOCI_SEARCH_BASE_URL}?limit=6500`;
     $.getJSON(quickUrl, (data) => {
       totalLoci = data.total;
