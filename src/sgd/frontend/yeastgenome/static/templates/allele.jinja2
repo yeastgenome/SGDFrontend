@@ -1,10 +1,10 @@
 {% extends "global_layout.jinja2" %}
 
-{% block title %}{{ complex.complex_name }}{% endblock %}
+{% block title %}{{ allele.display_name }}{% endblock %}
 
 {% block head %}
 <script>
-    var complex = {{ complex_js|safe }};
+    var allele = {{ allele_js|safe }};
 </script>
 
 {% endblock %}
@@ -21,29 +21,10 @@
     <div class="small-12 medium-10 columns content-column">
 
         <script>
-            add_navbar_title('Complex: <span class="gene_name">{{ complex.complex_name }}</span>')
+            add_navbar_title('Allele: <span class="gene_name">{{ allele.display_name }}</span>')
             add_navbar_element('Overview', 'overview');
-        add_navbar_element('Complex Diagram', 'diagram');
 
-        {% if complex.pdbs|length > 0 %}
-          add_navbar_element('PDB Structure', 'structure');
-        {% endif %}
 
-        add_navbar_element('Subunits', 'subunit');
-
-        {% if complex.process|length > 0 or complex.function|length > 0 or complex.component|length > 0%}
-              add_navbar_element('Gene Ontology', 'annotation');
-            {% endif %}
-        
-        add_navbar_element('Shared Annotations', 'network');
-
-        {% if complex.references|length > 0 %}
-              add_navbar_element('References', 'reference');
-        {% endif %}
-
-        {% if complex.cross_references|length > 0 %}
-              add_navbar_element('External Identifiers', 'cross_reference');
-        {% endif %}
         
         </script>
 
@@ -51,253 +32,40 @@
 ================================================== -->
         <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
-                <h1>Complex: {{ complex.complex_name }}
+                <h1>Allele: {{ allele.display_name }}
 		     <a href="#" data-dropdown="summary_help"><i class="fa fa-info-circle"></i></a>
                      <p id="summary_help" class="f-dropdown content medium" data-dropdown-content>
-		     	Macromolecular complex annotations are imported from the <a href='https://www.ebi.ac.uk/complexportal/home' target='infowin2'>Complex Portal</a>. These annotations have been derived from physical molecular interaction evidence extracted from the literature and cross-referenced in the entry, or by curator inference from information on homologs in closely related species or by inference from scientific background.
+		     	SOME TEXT HERE
                      </p>
 		</h1>
                 <hr />
 
         <div class="">
-                    <dl class="key-value">
-            {% set source_link = "" %}
-            {% if complex.source == 'SGD' %}
-                {% set source_link = 'https://www.yeastgenome.org' %}
-            {% elif complex.source == 'UniProt' %}
-                            {% set source_link = 'https://www.uniprot.org/' %}
-            {% elif complex.source == 'IntAct' %}
-                            {% set source_link = 'https://www.ebi.ac.uk/intact/' %}
-            {% elif complex.source == 'MINT' %}
-                            {% set source_link = 'https://mint.bio.uniroma2.it/' %}
-            {% elif complex.source == 'PRO' %}
-                            {% set source_link = 'http://www.obofoundry.org/ontology/pr.html' %}
-            {% endif %}
-            <dt>Curated by</dt>
-            {% if source_link %}
-                  <dd><a href={{ source_link }} target="_infowin">{{complex.source }}</a></dd>
-            {% else %}
-                  <dd>{{complex.source }}</dd>
-            {% endif %}
-                        <dt>ComplexAc</dt>
-                        <dd><a href=https://www.ebi.ac.uk/complexportal/complex/{{ complex.complex_accession }} target="_infowin">{{ complex.complex_accession }}</a></dd>
-            
-            <dt>Systematic Name</dt>
-            <dd>{{ complex.systematic_name }}</dd>
-
-                {% for alias in complex.aliases %}
-                              {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
-                              {{ alias }}
-                              {% if not loop.last %};{% else %}</dd>{% endif %}
-                    {% endfor %}
-             </dl>
-                </div>
-
-        <p id="summary_paragraph"></p>
-
-            </div>
-        </section>
-
-<!-- complex diagram
-================================================== -->
-    <section id="diagram" data-magellan-destination="diagram">
-        <div class="page-header">
-            <h2>Complex Diagram
-	    	<a href="#" data-dropdown="complex_diagram_help"><i class="fa fa-info-circle"></i></a>
-		<p id="complex_diagram_help" class="f-dropdown content medium" data-dropdown-content>
-		      This diagram displays the protein subunits (blue) of the complex and how they interact with each other. Interactions with other relevant participants such as small molecules (purple), sub-complexes (yellow), and other subunits (red) are also shown. If a participant appears in the diagram with no lines connected to it, then its specific interactions with other participants are currently unknown.
-                </p>
-	    </h2>
-            <hr />
-            <div id="j-complex"></div>
-        </div>
-    </section>
-
-<!-- PDB structure
-================================================== -->
-    {% if complex.pdbs|length > 0 %}
-        <section id="structure" data-magellan-destination="structure">
-         <div class="page-header">
-                 <h2>PDB Structure
-		 	<a href="#" data-dropdown="pdb_help"><i class="fa fa-info-circle"></i></a>
-                        <p id="pdb_help" class="f-dropdown content medium" data-dropdown-content>
-                            When available from the Protein Data Bank (PDB), the physical structure of the macromolecular complex is displayed. Click on the image or link for further information about the physical structure.
-                        </p>
-
-		 </h2>
-                 <hr />
-
-             <table border=0><tr>
-
-             {% set count = 0 %}
-
-             {% for pdb in complex.pdbs %}
-
-                  {% set count = count + 1 %}
-
-              {% if count <= 4 %} 
-
-                     <td><a href=https://www.rcsb.org/structure/{{ pdb.display_name }} target="_infowin">{{ pdb.display_name }}</td>
-                             <td><a href=https://www.rcsb.org/3d-view/{{ pdb.display_name }} target="_infowin"><img src=https://www.ncbi.nlm.nih.gov/Structure/mmdb/mmdbimage.fcgi?&uid={{ pdb.display_name }}&small=t alt={{pdb.display_name}} width=150 height=150></a></td>
-              {% endif %}
-
-                     {% endfor %}
-             
-             </tr></table>
-
-                </div>
-        </section>
-    {% endif %}
-
-
-<!-- table with subunits and headlines, stoichiometry
-================================================== -->
-
-         <section id="subunit" data-magellan-destination="subunit">
-                 <div class="page-header">
-                     <h2>Subunits
-
-			<a href="#" data-dropdown="subunit_help"><i class="fa fa-info-circle"></i></a>
-                        <p id="subunit_help" class="f-dropdown content medium" data-dropdown-content>
-			    This table lists all participants of the complex (proteins, small molecules, nucleic acids, etc.) and their respective stoichiometry. A brief description is also provided for each participant in the table.     
-                        </p>
-		     </h2>
-                     <hr />
-             
-             {% set table_id = "complex_table" %}
-                     {% include "complex_table.jinja2" %}           
-
-                </div>
-        </section>
-
-
-<!-- table with GO annotations for the complex
-================================================== -->
-    {% if complex.process|length > 0 or complex.function|length > 0 or complex.component|length > 0%}                      
-    <section id="annotation" data-magellan-destination="annotation">
-                 <div class="page-header">
-                     <h2>Gene Ontology
-		     	  <a href="#" data-dropdown="go_help"><i class="fa fa-info-circle"></i></a>
-                 	  <p id="go_help" class="f-dropdown content medium" data-dropdown-content>
-          		      Gene Ontology (GO) terms that describe the function of a complex, the biological process in which it participates, or its cellular location. Click on a term for its definition and other objects annotated to that term.
-			  </p>
-		     </h2>
-                     <hr />
-
-             <div class="">
-                        <dl class="key-value">
-                <ul>
-                {% for function in complex.function %}
-                                   {% if loop.first %}<dt>Molecular Function</dt><dd>{% endif %}
-                                   <li><a href={{ function.link }} target="_infowin">{{ function.display_name }}</a></li>
-                                   {% if loop.last %}</dd>{% endif %}
-                            {% endfor %}
-                </ul>
-                
-                <ul>
-                            {% for process in complex.process %}
-                                   {% if loop.first %}<dt>Biological Process</dt><dd>{% endif %}
-                                   <li><a href={{ process.link }} target="_infowin">{{ process.display_name }}</a></li>
-                                   {% if loop.last %}</dd>{% endif %}
-                            {% endfor %}
-                            </ul>
-
-                <ul>
-                            {% for component in complex.component %}
-                                   {% if loop.first %}<dt>Cellular Component</dt><dd>{% endif %}
-                                   <li><a href={{ component.link }} target="_infowin">{{ component.display_name }}</a></li>
-                                   {% if loop.last %}</dd>{% endif %}
-                            {% endfor %}
-                            </ul>
-
+	    <dl class="key-value">
+	       <dt>Allele Name</dt>
+	       <dd>{{ allele.display_name }}</dd>
+               <dt>SGDID</dt>
+               <dd>{{ allele.sgdid }}</dd>
+	       {% for alias in allele.aliases %}
+	          {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
+                     {{ alias }}
+                  {% if not loop.last %};{% else %}</dd>{% endif %}
+	       {% endfor %}
+	       {% if allele.affected_gene %}
+	          <dt>Affected Gene</dt>
+	          <dd>{{ allele.affected_gene }}</dd>
+	       {% endif %}
+	       <dt>Allele Type</dt>
+               <dd>{{ allele.allele_type }}</dd>
+	       {% if allele.description %}
+	           <dt>Description</dt>
+               	   <dd>{{ allele.description }}</dd>
+	       {% endif %}
             </dl>
-                     </div>
-                </div>
-        </section>
-    {% endif %}
-
-
-<!-- Network diagram
-================================================== -->
-    <section id="network" data-magellan-destination="network">
-        <div class="page-header">
-            <h2>Shared Annotations
-	         <a href="#" data-dropdown="network_help"><i class="fa fa-info-circle"></i></a>
-                 <p id="network_help" class="f-dropdown content medium" data-dropdown-content>
-		      This diagram displays Gene Ontology terms (green) and subunits (blue) that are shared between the given macromolecular complex (black) and other yeast complexes (yellow). The shared GO terms or subunits can be visualized separately using the radio button at the bottom of the graph. Note: No diagram is shown ("No shared annotations") if there are less than 2 shared annotations (either GO terms or subunits of other complexes) between this complex and any other complexes.
-                 </p>
-
-	    </h2>
-            <hr />
-	    {% if complex.network_graph.edges|length > 0 %}
-                <div id="j-complex-network"></div>
-	    {% else %}
-	        No shared annotations
-	    {% endif %}
         </div>
-    </section>
-
-
-<!-- References
-================================================== -->
-    {% if complex.references|length > 0 %}
-    <section id="reference" data-magellan-destination="reference">
-            <div class="page-header">
-                     <h2>References
-			   <a href="#" data-dropdown="reference_help"><i class="fa fa-info-circle"></i></a>
-                           <p id="reference_help" class="f-dropdown content medium" data-dropdown-content>
-			        List of references used specifically to curate the information on this page.
-                           </p>
-
-		     </h2>
-                     <hr />
-             <ul class="unstyled">
-              {% for ref in complex.references %}
-                   <li>
-                    <a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
-                                    <span>{{ ref.citation|e|replace(ref.display_name, '') }}</span> 
-                    {% if ref.pubmed_id != none %}
-                                       <small>PMID: {{ ref.pubmed_id|e }}</small>
-                                    {% endif %}
-                    <ul class="ref-links">
-                                        <li><a href="{{ ref.link|e }}">SGD Paper</a></li>
-                                        {% for url in ref.urls %}
-                                            <li><a target="_infowin" href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
-                                        {% endfor %}
-                    </ul>
-                   </li>
-              {% endfor %}
-             </ul>
-        </div>           
-    </section>
-    {% endif %}
-
-<!-- Cross-References
-================================================== -->
-    {% if complex.cross_references|length > 0 %}
-    <section id="cross_reference" data-magellan-destination="cross_reference">
-              <div class="page-header">
-                         <h2>External Identifiers</h2>
-                         <hr />
-    
-                 {% for alias in complex.cross_references %}
-                 {% if alias.alias_type == 'IntEnz' %}
-                                  {{alias.alias_type}}: <a href=https://www.ebi.ac.uk/intenz/query?cmd=Search&q={{ alias.display_name }} target="_infowin">{{ alias.display_name }}</a>
-                 {% endif %}
-
-                 {% if alias.alias_type == 'EMDB' %}
-                                  {{alias.alias_type}}: <a href=http://www.ebi.ac.uk/pdbe/entry/emdb/{{ alias.display_name }} target="_infowin">{{ alias.display_name }}</a>
-                 {% endif %}
-
-                 {% if not loop.last %} | {% else %} {% endif %}
-    
-                 {% endfor %}
-          </div>
         </section>
-    {% endif %}
-       
-    </div>
-</div>
+
+
 
 
 {% endblock body %}
@@ -309,5 +77,6 @@
 <script src="/static/js/build/arbor.js"></script>
 <script src="{{asset_root}}/js/cytoscape.js"></script>
 <script src="{{asset_root}}/js/evidence.js"></script>
-<script src="{{asset_root}}/js/complex.js"></script>
+<script src="{{asset_root}}/js/allele.js"></script>
 {% endblock scripts %}
+
