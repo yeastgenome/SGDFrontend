@@ -180,7 +180,7 @@ def complex(request):
 @view_config(route_name='allele')
 def allele(request):
     allele_name = request.matchdict['identifier']
-    allele_obj = get_obj(allele_name, 'complex')
+    allele_obj = get_obj(allele_name, 'allele')
     if allele_obj is None:
         return not_found(request)
     return render_to_response(TEMPLATE_ROOT + 'allele.jinja2', allele_obj, request=request)
