@@ -53,7 +53,7 @@
 	       {% endfor %}
 	       {% if allele.affected_gene %}
 	          <dt>Affected Gene</dt>
-	          <dd>{{ allele.affected_gene }}</dd>
+	          <dd><a href='/locus/{{allele.affected_gene}}' target='_blank'>{{ allele.affected_gene }}</a></dd>
 	       {% endif %}
 	       <dt>Allele Type</dt>
                <dd>{{ allele.allele_type }}</dd>
