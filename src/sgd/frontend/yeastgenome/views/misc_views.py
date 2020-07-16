@@ -13,7 +13,7 @@ import os
 
 SEARCH_URL = config.backend_url + '/get_search_results'
 TEMPLATE_ROOT = 'src:sgd/frontend/yeastgenome/static/templates/'
-ENV = os.getenv('ENV', 'dev')
+ENV = os.getenv('ENV')
 
 @view_config(route_name='healthcheck')
 def healthcheck(request):
@@ -118,6 +118,7 @@ def api_portal(request):
 
 @view_config(route_name='colleague_show')
 def colleague_show(request):
+    #import pdb ; pdb.set_trace()
     return render_to_response(TEMPLATE_ROOT + 'misc.jinja2', {}, request=request)
 
 
@@ -177,13 +178,6 @@ def complex(request):
         return not_found(request)
     return render_to_response(TEMPLATE_ROOT + 'complex.jinja2', complex_obj, request=request)
 
-@view_config(route_name='allele')
-def allele(request):
-    allele_name = request.matchdict['identifier']
-    allele_obj = get_obj(allele_name, 'allele')
-    if allele_obj is None:
-        return not_found(request)
-    return render_to_response(TEMPLATE_ROOT + 'allele.jinja2', allele_obj, request=request)
 
 # If is_quick, try to redirect to gene page.  If not, or no suitable response, then just show results in script tag and let client js do the rest.
 @view_config(route_name='search')
@@ -305,11 +299,7 @@ def get_redirect_url_from_results(results):
 
 # needed to force https redirects on reverse proxy LB
 def get_https_url(url, request):
-    host = ''
-    if ENV == 'dev':
-        host = request.host_url.replace(':8080', '')
-    else:
-        host = request.host_url.replace('http', 'https').replace(':8080', '')
+    host = request.host_url.replace('http', 'https').replace(':8080', '')
     return host + url
 
 
