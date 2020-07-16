@@ -46,21 +46,6 @@
 	       <dd>{{ allele.display_name }}</dd>
                <dt>SGDID</dt>
                <dd>{{ allele.sgdid }}</dd>
-	       {% for alias in allele.aliases %}
-	          {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
-                     {{ alias }}
-                  {% if not loop.last %};{% else %}</dd>{% endif %}
-	       {% endfor %}
-	       {% if allele.affected_gene %}
-	          <dt>Affected Gene</dt>
-	          <dd>{{ allele.affected_gene }}</dd>
-	       {% endif %}
-	       <dt>Allele Type</dt>
-               <dd>{{ allele.allele_type }}</dd>
-	       {% if allele.description %}
-	           <dt>Description</dt>
-               	   <dd>{{ allele.description }}</dd>
-	       {% endif %}
             </dl>
         </div>
         </section>
