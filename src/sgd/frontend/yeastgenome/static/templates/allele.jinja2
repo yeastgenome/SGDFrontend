@@ -1,6 +1,6 @@
 {% extends "global_layout.jinja2" %}
 
-{% block title %}{{ allele.display_name }}{% endblock %}
+{% block title %}ALLELE PAGE{% endblock %}
 
 {% block head %}
 <script>
@@ -21,7 +21,7 @@
     <div class="small-12 medium-10 columns content-column">
 
         <script>
-            add_navbar_title('Allele: <span class="gene_name">{{ allele.display_name }}</span>')
+            add_navbar_title('Allele: <span class="gene_name">allele display_name</span>')
             add_navbar_element('Overview', 'overview');
 
 
@@ -43,9 +43,9 @@
         <div class="">
 	    <dl class="key-value">
 	       <dt>Allele Name</dt>
-	       <dd>{{ allele.display_name }}</dd>
+	       <dd>allele display name</dd>
                <dt>SGDID</dt>
-               <dd>{{ allele.sgdid }}</dd>
+               <dd>sgdid here</dd>
             </dl>
         </div>
         </section>
