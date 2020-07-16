@@ -1,10 +1,11 @@
 {% extends "global_layout.jinja2" %}
 
-{% block title %}ALLELE PAGE{% endblock %}
+{% block title %}{{ allele.display_name }}{% endblock %}
 
 {% block head %}
-
-
+<script>
+    var allele = {{ allele_js|safe }};
+</script>
 
 {% endblock %}
 
@@ -20,7 +21,7 @@
     <div class="small-12 medium-10 columns content-column">
 
         <script>
-            add_navbar_title('Allele: <span class="gene_name">ALLELE DISPLAY NAME</span>')
+            add_navbar_title('Allele: <span class="gene_name">{{ allele.display_name }}</span>')
             add_navbar_element('Overview', 'overview');
 
 
@@ -42,9 +43,24 @@
         <div class="">
 	    <dl class="key-value">
 	       <dt>Allele Name</dt>
-	       <dd> allele.display_name </dd>
+	       <dd>{{ allele.display_name }}</dd>
                <dt>SGDID</dt>
-               <dd>allele.sgdid</dd>
+               <dd>{{ allele.sgdid }}</dd>
+	       {% for alias in allele.aliases %}
+	          {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
+                     {{ alias }}
+                  {% if not loop.last %};{% else %}</dd>{% endif %}
+	       {% endfor %}
+	       {% if allele.affected_gene %}
+	          <dt>Affected Gene</dt>
+	          <dd>{{ allele.affected_gene }}</dd>
+	       {% endif %}
+	       <dt>Allele Type</dt>
+               <dd>{{ allele.allele_type }}</dd>
+	       {% if allele.description %}
+	           <dt>Description</dt>
+               	   <dd>{{ allele.description }}</dd>
+	       {% endif %}
             </dl>
         </div>
         </section>
