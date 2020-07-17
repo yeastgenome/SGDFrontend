@@ -76,6 +76,7 @@
         <!-- Phenotype
         ================================================== -->
         {% if allele.phenotype|length > 0 %}
+	{% set data_type = 'allele_phenotype' %} 
         <section id="phenotype" data-magellan-destination="phenotype">
             <div class="page-header">
                 <h2>Phenotype Annotations
