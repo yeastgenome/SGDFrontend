@@ -29,7 +29,7 @@
 
 
 	    {% if allele.references|length > 0 %}
-                add_navbar_element('References', 'reference');
+                add_navbar_element('Reference', 'reference');
             {% endif %}
 
         
@@ -103,19 +103,40 @@
 <!-- References
 ================================================== -->
     {% if allele.references|length > 0 %}
-    <section id="reference">
-    <h2>References</h2>
-    {% for ref in allele.references %}
-        <ul>
-	<li>{{ref.citation}}
-        </ul>
-    {% endfor %}
-    </section>
+    <section id="reference" data-magellan-destination="reference">
+            <div class="page-header">
+                     <h2>References
+                           <a href="#" data-dropdown="reference_help"><i class="fa fa-info-circle"></i></a>
+                           <p id="reference_help" class="f-dropdown content medium" data-dropdown-content>
+                                List of references used specifically to curate the information in Overview section.
+                           </p>
 
+                     </h2>
+                     <hr />
+             <ul class="unstyled">
+                {% for ref in allele.references %}
+                   <li>
+                      <a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
+                                    <span>{{ ref.citation|e|replace(ref.display_name, '') }}</span>
+                      {% if ref.pubmed_id != none %}
+                                       <small>PMID: {{ ref.pubmed_id|e }}</small>
+                                    {% endif %}
+                      <ul class="ref-links">
+                         <li><a href="{{ ref.link|e }}">SGD Paper</a></li>
+                         {% for url in ref.urls %}
+                            <li><a target="_infowin" href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
+                         {% endfor %}
+                      </ul>
+                   </li>
+                {% endfor %}
+             </ul>
+	</div>     
+    </section>
     {% endif %}
+
+
     <!-- Resources
 ================================================== -->
-
 
 {% endblock body %}
 
