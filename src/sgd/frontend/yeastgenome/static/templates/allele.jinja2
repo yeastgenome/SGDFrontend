@@ -27,6 +27,11 @@
                 add_navbar_element('Phenotype Annotations', 'phenotype');
             {% endif %}	    
 
+
+	    {% if allele.references|length > 0 %}
+                add_navbar_element('Reference', 'reference');
+            {% endif %}
+
         
         </script>
 
@@ -93,6 +98,17 @@
         </section>
         {% endif %}
 
+
+
+<!-- References
+================================================== -->
+    {% set references = allele.references %}
+    {% include "biblio_references.jinja2" %}
+    <section id="reference">
+    </section>
+
+    <!-- Resources
+================================================== -->
 
 
 {% endblock body %}
