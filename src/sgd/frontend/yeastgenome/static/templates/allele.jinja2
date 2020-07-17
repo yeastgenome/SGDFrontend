@@ -23,9 +23,7 @@
         <script>
             add_navbar_title('Allele: <span class="gene_name">{{ allele.display_name }}</span>')
             add_navbar_element('Overview', 'overview');
-	    {% if chemical.phenotype|length > 0 %}
-                add_navbar_element('Phenotype Annotations', 'phenotype');
-            {% endif %}
+
 
         
         </script>
@@ -55,7 +53,7 @@
 	       {% endfor %}
 	       {% if allele.affected_gene %}
 	          <dt>Affected Gene</dt>
-	          <dd><a href='/locus/{{allele.affected_gene}}' target='_blank'>{{ allele.affected_gene }}</a></dd>
+	          <dd>{{ allele.affected_gene }}</dd>
 	       {% endif %}
 	       <dt>Allele Type</dt>
                <dd>{{ allele.allele_type }}</dd>
@@ -66,32 +64,6 @@
             </dl>
         </div>
         </section>
-
-	
-        <!-- Phenotype
-        ================================================== -->
-        {% if allele.phenotype|length > 0 %}
-        <section id="phenotype" data-magellan-destination="phenotype">
-            <div class="page-header">
-                <h2>Phenotype Annotations
-                    <a href="#" data-dropdown="phenotype_info"><i class="fa fa-info-circle"></i></a>
-                    <p id="phenotype_info" class="f-dropdown content medium" data-dropdown-content>
-                        Phenotype annotations for a gene are curated single mutant phenotypes that
-                        require an observable (e.g., "cell shape"), a qualifier (e.g., "abnormal"),
-                        a mutant type (e.g., null), strain background, and a reference. In addition,
-                        annotations are classified as classical genetics or high-throughput (e.g.,
-                        large scale survey, systematic mutation set). Whenever possible, allele
-                        information and additional details are provided.
-                    </p>
-                    <span id="phenotype_table_header" class="round secondary label"></span>
-                </h2>
-		<hr />
-                <!-- Includes phenotype_table into template -->
-                {% set table_id = "phenotype_table" %}
-                {% include "phenotype_table.jinja2" %}
-            </div>
-        </section>
-        {% endif %}
 
 
 
