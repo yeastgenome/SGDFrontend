@@ -3,7 +3,7 @@ $(document).ready(function() {
 
 	$.getJSON('/backend/allele/' + allele['sgdid']  + '/phenotype_details', function(data) {
 	  	var phenotype_table = create_phenotype_table(data);
-	  	create_analyze_button("phenotype_table_analyze", phenotype_table, "<a href='" + allele['link'] + "' class='gene_name'>" + allele['display_name'] + "</a> Genes", true);
+	  	// create_analyze_button("phenotype_table_analyze", phenotype_table, "<a href='" + allele['link'] + "' class='gene_name'>" + allele['display_name'] + "</a> Genes", true);
   	    create_download_button("phenotype_table_download", phenotype_table, allele['display_name'] + "_phenotype_annotations");
 	});
 
