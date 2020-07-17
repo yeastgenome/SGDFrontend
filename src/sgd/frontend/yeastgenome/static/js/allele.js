@@ -7,10 +7,40 @@ $(document).ready(function() {
   	    create_download_button("phenotype_table_download", phenotype_table, allele['display_name'] + "_phenotype_annotations");
 	});
 
+        var references = allele['references'];
+        create_reference_list(references);
 
+        
 });
 
+function create_reference_list(references) {
+    
+    var itemNodes = _.map(references, (r, i) => {
+      var _text = r.citation.replace(r.display_name, '');
+      var refNodes = _.map(r.urls, (url, _i) => {
+        return (
+          <li key={'refListInner' + _i}>
+            <a href={url.link}>{url.display_name}</a>
+          </li>
+        );
+      });
+      refNodes.unshift(
+        <li key={'sgdNode' + i}>
+          <a href={r.link}>SGD Paper</a>
+        </li>
+      );
+      var pubmedNode = r.pubmed_id ? <small>PMID: {r.pubmed_id}</small> : null;
+      return (
+        <li className="reference-list-item" key={'refListOuter' + i}>
+          <a href={r.link}>{r.display_name}</a> {_text} {pubmedNode}
+          <ul className="ref-links">{refNodes}</ul>
+        </li>
+      );
+    });
 
+    return <ol className="reference-list" id='reference'>{itemNodes}</ol>;
+
+}
 
 function create_phenotype_table(data) {
   	var datatable = [];
