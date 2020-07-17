@@ -102,11 +102,11 @@
 
 <!-- References
 ================================================== -->
-    {% set references = allele.references %}
-    {% include "biblio_references.jinja2" %}
+    {% if allele.references|length > 0 %}
     <section id="reference">
     </section>
 
+    {% endif %}
     <!-- Resources
 ================================================== -->
 
