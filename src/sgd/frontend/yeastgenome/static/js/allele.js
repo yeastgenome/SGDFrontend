@@ -26,7 +26,7 @@ function create_phenotype_table(data) {
 	options["bPaginate"] = true;
 	options["aaSorting"] = [[4, "asc"]];
     options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, {"bSearchable":false, "bVisible":false}, null, null, null, {"sWidth": "250px"}, null];
-    options["oLanguage"] = {"sEmptyTable": "No phenotype data for " + chemical['display_name']};
+    options["oLanguage"] = {"sEmptyTable": "No phenotype data for " + allele['display_name']};
 	options["aaData"] = datatable;
 
     return create_table("phenotype_table", options);
