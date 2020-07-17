@@ -23,7 +23,7 @@
         <script>
             add_navbar_title('Allele: <span class="gene_name">{{ allele.display_name }}</span>')
             add_navbar_element('Overview', 'overview');
-
+	    
 
         
         </script>
@@ -53,7 +53,7 @@
 	       {% endfor %}
 	       {% if allele.affected_gene %}
 	          <dt>Affected Gene</dt>
-	          <dd>{{ allele.affected_gene }}</dd>
+	          <dd><a href='/locus/{{allele.affected_gene}}' target='_blank'>{{ allele.affected_gene }}</a></dd>
 	       {% endif %}
 	       <dt>Allele Type</dt>
                <dd>{{ allele.allele_type }}</dd>
