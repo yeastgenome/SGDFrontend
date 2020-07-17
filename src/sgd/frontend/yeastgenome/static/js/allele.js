@@ -1,82 +1,32 @@
 
 $(document).ready(function() {
 
-    $.getJSON('/backend/complex/' + complex['complex_accession'], function(data) {
-
-	document.getElementById("summary_paragraph").innerHTML = data['description'] + "<p></p>" + data['properties']
-
-        var complex_table = create_complex_table(data);
-
-        if(data != null && data["graph"]["nodes"].length > 1) {
-            var _categoryColors = {
-                'protein': '#1f77b4',
-                'small molecule': '#1A9E77',
-                'subcomplex': '#E6AB03',
-                'small molecule': '#7d0df3',
-                'other subunit': '#d62728'
-            };
-            views.network.render(data["graph"], _categoryColors, "j-complex");
-        } else {                                                                                                   
-            hide_section("diagram");                                                                              
-        } 
-        
-        if (data != null && data["network_graph"]["nodes"].length > 1) {
-            var _categoryColors = {
-                'FOCUS': 'black',
-                'GO': '#2ca02c',
-                'subunit': '#1f77b4',
-                'complex': '#E6AB03'
-            };
-            var filters = {
-                ' All': function(d) { return true; },
-                ' GO Terms': function(d) {
-                    var acceptedCats = ['FOCUS', 'GO', 'complex'];
-                    return acceptedCats.includes(d.category);
-                },
-                ' Subunits': function(d) {
-                    var acceptedCats = ['FOCUS', 'subunit', 'complex'];
-                    return acceptedCats.includes(d.category);
-                },
-            }
-            views.network.render(data["network_graph"], _categoryColors, "j-complex-network", filters, true);            
-        } else {
-            hide_section("network");
-        }
-    });
+	$.getJSON('/backend/allele/' + allele['id']  + '/phenotype_details', function(data) {
+	  	var phenotype_table = create_phenotype_table(data);
+	  	create_analyze_button("phenotype_table_analyze", phenotype_table, "<a href='" + allele['link'] + "' class='gene_name'>" + allele['display_name'] + "</a> Genes", true);
+  	    create_download_button("phenotype_table_download", phenotype_table, allele['display_name'] + "_phenotype_annotations");
+	});
 
 });
 
-function create_complex_table(data) {
-    var evidence = data['subunit'];
-    var datatable = [];
-    var subunits = {};
-    for (var i = 0; i < evidence.length; i++) {
-        datatable.push(complex_subunit_data_to_table(evidence[i]));
-        subunits[evidence[i]["display_name"]] = true;
-    }
+function create_phenotype_table(data) {
+  	var datatable = [];
+	var phenotypes = {};
+	for (var i=0; i < data.length; i++) {
+        datatable.push(phenotype_data_to_table(data[i], i));
+		phenotypes[data[i]["phenotype"]["id"]] = true;
+	}
 
-    set_up_header(
-        "complex_table",
-        datatable.length,
-        "entry",
-        "entries",
-        Object.keys(subunits).length,
-        "subunit",
-        "subunits"
-    );
+    set_up_header('phenotype_table', datatable.length, 'entry', 'entries', Object.keys(phenotypes).length, 'phenotype', 'phenotypes');
 
-    var options = {};
-    options["bPaginate"] = false;
-    options["bDestroy"] = true;
-    options["aoColumns"] = [
-        null,
-        null,
-        null
-    ];
-    options["aaData"] = datatable;
-    options["oLanguage"] = {
-        sEmptyTable: "No subunits for this complex???."
-    };
+	var options = {};
+	options["bPaginate"] = true;
+	options["aaSorting"] = [[4, "asc"]];
+    options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, {"bSearchable":false, "bVisible":false}, null, null, null, {"sWidth": "250px"}, null];
+    options["oLanguage"] = {"sEmptyTable": "No phenotype data for " + chemical['display_name']};
+	options["aaData"] = datatable;
 
-  return create_table("complex_table", options);
+    return create_table("phenotype_table", options);
 }
+
+
