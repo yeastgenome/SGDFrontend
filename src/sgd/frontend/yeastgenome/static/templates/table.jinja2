@@ -11,16 +11,28 @@
 </table>
 <div class="sgd-loader-container" id='{{ table_id }}_loader'><div class="sgd-loader"></div></div>
 
-<div id="{{ table_id }}_buttons" class="button-bar">
-    <ul class="button-group radius">
-        <li><a id="{{ table_id }}_download" class="small button secondary" disabled="true"><i class='fa fa-download'></i> Download (.txt)</a>
-        </li>
-    </ul>
+{% if data_type == 'allele_phenotype' %}
 
-    <ul class="button-group radius">
-        <li><a id="{{ table_id }}_analyze" class="small button secondary" disabled="true"><i class='fa fa-briefcase'></i> Analyze</a>
-        </li>
-    </ul>
+   <div id="{{ table_id }}_buttons" class="button-bar">
+   	 <ul class="button-group radius">
+             <li><a id="{{ table_id }}_download" class="small button secondary" disabled="true"><i class='fa fa-download'></i> Download (.txt)</a>
+             </li>
+         </ul>
+	 {% block additional_buttons %}{% endblock %}
+    </div>
 
-    {% block additional_buttons %}{% endblock %}
-</div>
+{% else %}
+
+   <div id="{{ table_id }}_buttons" class="button-bar">
+         <ul class="button-group radius">
+             <li><a id="{{ table_id }}_download" class="small button secondary" disabled="true"><i class='fa fa-download'></i> Download (.txt)</a>
+             </li>
+         </ul>
+    	 <ul class="button-group radius">
+             <li><a id="{{ table_id }}_analyze" class="small button secondary" disabled="true"><i class='fa fa-briefcase'></i> Analyze</a>
+             </li>
+    	 </ul>
+    	 
+    	 {% block additional_buttons %}{% endblock %}
+   </div>
+{% endif %}
