@@ -23,7 +23,9 @@
         <script>
             add_navbar_title('Allele: <span class="gene_name">{{ allele.display_name }}</span>')
             add_navbar_element('Overview', 'overview');
-	    
+	    {% if allele.phenotype|length > 0 %}
+                add_navbar_element('Phenotype Annotations', 'phenotype');
+            {% endif %}	    
 
         
         </script>
