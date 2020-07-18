@@ -143,8 +143,11 @@
         <hr />
 	<div class="panel">
             <h3>Mutant Strains</h3>
-
-
+	        <p id="mutant_resources_list">
+                    {% for url in allele.urls if url.category == 'LOCUS_PHENOTYPE_RESOURCES_MUTANT_STRAINS'%}
+                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </p>
             <h3>Phenotype Resources</h3>
 
 
