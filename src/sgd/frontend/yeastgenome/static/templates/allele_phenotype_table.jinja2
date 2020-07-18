@@ -1,11 +1,13 @@
-{% block help %}
+<p id="{{ table_id }}_help" class="medium content f-dropdown" data-dropdown-content>
     Increase the total number of rows showing on this page using the pull-down located below the table, or use the page
     scroll at the table's top right to browse through the table's pages; use the arrows to the right of a column header
     to sort by that column; filter the table using the "Filter" box at the top of the table; click on the small "i"
     buttons located within a cell for an annotation to view further details.
-{% endblock %}
+</p>
 
-{% block columns %}
+<table class='table table-striped table-bordered table-condensed' id='{{ table_id }}'>
+    <thead>
+    <tr>
     <th hidden>Evidence ID</th>
     <th hidden>Analyze ID</th>
     <th>Gene</th>
@@ -18,17 +20,6 @@
     <th>Chemical</th>
     <th>Details</th>
     <th>Reference</th>
-{% endblock %}
-
-
-<p id="{{ table_id }}_help" class="medium content f-dropdown" data-dropdown-content>
-    {% block help %}{% endblock %}
-</p>
-
-<table class='table table-striped table-bordered table-condensed' id='{{ table_id }}'>
-    <thead>
-    <tr>
-        {% block columns %}{% endblock %}
     </tr>
     </thead>
 </table>
