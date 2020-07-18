@@ -29,9 +29,10 @@
 
 
 	    {% if allele.references|length > 0 %}
-                add_navbar_element('Reference', 'reference');
+                add_navbar_element('References', 'reference');
             {% endif %}
 
+	    add_navbar_element('Resources', 'resource');
         
         </script>
 
@@ -135,8 +136,33 @@
     {% endif %}
 
 
-    <!-- Resources
+<!-- Resources
 ================================================== -->
+    <section id="resources">
+        <h2>Resources</h2>
+        <hr />
+	<div class="panel">
+            <h3>Mutant Strains</h3>
+		<p id="mutant_resources_list">
+                    {% for url in allele.urls if url.category == 'LOCUS_PHENOTYPE_RESOURCES_MUTANT_STRAINS'%}
+                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </p>
+            <h3>Phenotype Resources</h3>
+                <p id="phenotype_resources_list">
+                    {% for url in allele.urls if url.category == 'LOCUS_PHENOTYPE_RESOURCES_PHENOTYPE_RESOURCES'%}
+                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </p>
+            <h3>Ontology</h3>
+                <p id="ontology_resources_list">
+                    {% for url in alleles.urls if url.category == 'LOCUS_PHENOTYPE_RESOURCES_ONTOLOGY'%}
+                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </p>
+	
+        </div>
+    </section>
 
 {% endblock body %}
 
