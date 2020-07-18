@@ -160,7 +160,12 @@
 			<a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                     {% endfor %}
                 </p>
-	
+	    <h3>Interactions Resources</h3>
+	        <p id="interaction_resources_list">
+	            {% for url in allele.urls if url.category == 'LOCUS_INTERACTION'%}
+                        <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+	       </p>
         </div>
     </section>
 
