@@ -18,7 +18,7 @@ function create_phenotype_table(data) {
 		phenotypes[data[i]["phenotype"]["id"]] = true;
 	}
 
-    set_up_header('phenotype_table', datatable.length, 'entry', 'entries', Object.keys(phenotypes).length, 'phenotype', 'phenotypes');
+    set_up_header('allele_phenotype_table', datatable.length, 'entry', 'entries', Object.keys(phenotypes).length, 'phenotype', 'phenotypes');
 
 	var options = {};
 	options["bPaginate"] = true;
