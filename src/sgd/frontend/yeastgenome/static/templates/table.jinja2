@@ -11,7 +11,7 @@
 </table>
 <div class="sgd-loader-container" id='{{ table_id }}_loader'><div class="sgd-loader"></div></div>
 
-{% if data_type == 'allele_phenotype' %}
+{% if table_id == 'allele_phenotype_table' %}
 
    <div id="{{ table_id }}_buttons" class="button-bar">
    	 <ul class="button-group radius">
@@ -19,7 +19,7 @@
              </li>
          </ul>
 	 {% block additional_buttons %}{% endblock %}
-    </div>
+   </div>
 
 {% else %}
 
