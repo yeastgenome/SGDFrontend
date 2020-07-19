@@ -11,10 +11,10 @@
 
 {% block body %}
 
-<div class="row">
-
 <!-- Navbar
 ================================================== -->
+<div class="row">
+
     <!-- Includes navbar.html into template -->
     {% include "navbar.jinja2" %}
 
@@ -36,8 +36,8 @@
         
         </script>
 
-<!-- Overview
-================================================== -->
+        <!-- Overview
+        ================================================== -->
         <section id="overview" data-magellan-destination="overview">
             <div class="page-header">
                 <h1>Allele: {{ allele.display_name }}
@@ -48,29 +48,30 @@
 		</h1>
                 <hr />
 
-        <div class="">
-	    <dl class="key-value">
-	       <dt>Allele Name</dt>
-	       <dd>{{ allele.display_name }}</dd>
-               <dt>SGDID</dt>
-               <dd>{{ allele.sgdid }}</dd>
-	       {% for alias in allele.aliases %}
-	          {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
-                     {{ alias }}
-                  {% if not loop.last %};{% else %}</dd>{% endif %}
-	       {% endfor %}
-	       {% if allele.affected_gene %}
-	          <dt>Affected Gene</dt>
-	          <dd><a href='/locus/{{allele.affected_gene}}' target='_blank'>{{ allele.affected_gene }}</a></dd>
-	       {% endif %}
-	       <dt>Allele Type</dt>
-               <dd>{{ allele.allele_type }}</dd>
-	       {% if allele.description %}
-	           <dt>Description</dt>
-               	   <dd>{{ allele.description }}</dd>
-	       {% endif %}
-            </dl>
-        </div>
+                <div class="">
+	            <dl class="key-value">
+	                <dt>Allele Name</dt>
+	                <dd>{{ allele.display_name }}</dd>
+                        <dt>SGDID</dt>
+                        <dd>{{ allele.sgdid }}</dd>
+	                {% for alias in allele.aliases %}
+	                    {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
+                                {{ alias }}
+                            {% if not loop.last %};{% else %}</dd>{% endif %}
+	                {% endfor % }
+	                {% if allele.affected_gene %}
+	                    <dt>Affected Gene</dt>
+	                    <dd><a href='/locus/{{allele.affected_gene}}' target='_blank'>{{ allele.affected_gene }}</a></dd>
+	                {% endif %}
+	                <dt>Allele Type</dt>
+                        <dd>{{ allele.allele_type }}</dd>
+	                {% if allele.description %}
+	                    <dt>Description</dt>
+               	            <dd>{{ allele.description }}</dd>
+	                {% endif %}
+                    </dl>
+                </div>
+	    </div>	
         </section>
 
 
@@ -105,23 +106,23 @@
 ================================================== -->
     {% if allele.references|length > 0 %}
     <section id="reference" data-magellan-destination="reference">
-            <div class="page-header">
-                     <h2>References
-                           <a href="#" data-dropdown="reference_help"><i class="fa fa-info-circle"></i></a>
-                           <p id="reference_help" class="f-dropdown content medium" data-dropdown-content>
-                                List of references used specifically to curate the information in Overview section.
-                           </p>
+        <div class="page-header">
+             <h2>References
+                  <a href="#" data-dropdown="reference_help"><i class="fa fa-info-circle"></i></a>
+                  <p id="reference_help" class="f-dropdown content medium" data-dropdown-content>
+                      List of references used specifically to curate the information in Overview section.
+                  </p>
 
-                     </h2>
-                     <hr />
+             </h2>
+             <hr />
              <ul class="unstyled">
                 {% for ref in allele.references %}
                    <li>
                       <a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
-                                    <span>{{ ref.citation|e|replace(ref.display_name, '') }}</span>
+                         <span>{{ ref.citation|e|replace(ref.display_name, '') }}</span>
                       {% if ref.pubmed_id != none %}
-                                       <small>PMID: {{ ref.pubmed_id|e }}</small>
-                                    {% endif %}
+                         <small>PMID: {{ ref.pubmed_id|e }}</small>
+                      {% endif %}
                       <ul class="ref-links">
                          <li><a href="{{ ref.link|e }}">SGD Paper</a></li>
                          {% for url in ref.urls %}
