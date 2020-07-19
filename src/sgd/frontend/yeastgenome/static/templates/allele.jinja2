@@ -48,29 +48,30 @@
 		</h1>
                 <hr />
 
-        <div class="">
-	    <dl class="key-value">
-	       <dt>Allele Name</dt>
-	       <dd>{{ allele.display_name }}</dd>
-               <dt>SGDID</dt>
-               <dd>{{ allele.sgdid }}</dd>
-	       {% for alias in allele.aliases %}
-	          {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
-                     {{ alias }}
-                  {% if not loop.last %};{% else %}</dd>{% endif %}
-	       {% endfor %}
-	       {% if allele.affected_gene %}
-	          <dt>Affected Gene</dt>
-	          <dd><a href='/locus/{{allele.affected_gene}}' target='_blank'>{{ allele.affected_gene }}</a></dd>
-	       {% endif %}
-	       <dt>Allele Type</dt>
-               <dd>{{ allele.allele_type }}</dd>
-	       {% if allele.description %}
-	           <dt>Description</dt>
-               	   <dd>{{ allele.description }}</dd>
-	       {% endif %}
-            </dl>
-        </div>
+        	<div class="">
+	    	  <dl class="key-value">
+	       	     <dt>Allele Name</dt>
+	       	     <dd>{{ allele.display_name }}</dd>
+               	     <dt>SGDID</dt>
+               	     <dd>{{ allele.sgdid }}</dd>
+	       	     {% for alias in allele.aliases %}
+	             	{% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
+                     	   {{ alias }}
+                     	{% if not loop.last %};{% else %}</dd>{% endif %}
+	       	     {% endfor %}
+	       	     {% if allele.affected_gene %}
+	             	<dt>Affected Gene</dt>
+	          	<dd><a href='/locus/{{allele.affected_gene}}' target='_blank'>{{ allele.affected_gene }}</a></dd>
+	       	     {% endif %}
+	       	     <dt>Allele Type</dt>
+               	     <dd>{{ allele.allele_type }}</dd>
+	       	     {% if allele.description %}
+	             	<dt>Description</dt>
+               	     	<dd>{{ allele.description }}</dd>
+	       	     {% endif %}
+                  </dl>
+                </div>
+            </div>
         </section>
 
 
