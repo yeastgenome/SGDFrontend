@@ -26,6 +26,9 @@
 	    {% if allele.phenotype|length > 0 %}
                 add_navbar_element('Phenotype Annotations', 'phenotype');
             {% endif %}	    
+	    {% if allele.interaction|length > 0 %}
+                add_navbar_element('Interaction Annotations', 'interaction');
+            {% endif %}
 
 
 	    {% if allele.references|length > 0 %}
@@ -100,6 +103,32 @@
         </section>
         {% endif %}
 
+
+	<!-- Interaction
+        ================================================== -->
+	{% if allele.phenotype|length > 0 %}
+        <section id="phenotype" data-magellan-destination="phenotype">
+            <div class="page-header">
+	    	<h2>Genetic Interaction Annotations
+		     <a href="#" data-dropdown="interaction_info"><i class="fa fa-info-circle"></i></a>
+		     <p id="interaction_info" class="f-dropdown content medium" data-dropdown-content>
+                         An interaction is defined as an experimentally observed physical or genetic interaction
+                         between two genes. There may be more than one row listed for the same interactor if the
+                         interaction between it and the given gene was observed in separate studies. All
+                         interactions listed in SGD are curated by
+			 <a href="http://thebiogrid.org/" target="_blank">BioGRID</a>.
+                     </p>
+		     <span id="interaction_table_header" class="round secondary label"></span>
+                </h2>
+		<hr />
+		<!-- Includes interaction_table into template -->
+        	{% set table_id = "interaction_table" %}
+        	{% include "interaction_table.jinja2" %}
+            </div>
+        </section>
+        {% endif %}        
+
+
         <!-- References
         ================================================== -->
         {% if allele.references|length > 0 %}
@@ -142,25 +171,25 @@
 	    <div class="panel">
                <h3>Mutant Strains</h3>
 	            <p id="mutant_resources_list">
-                        {% for url in allele.urls if url.category == 'LOCUS_PHENOTYPE_RESOURCES_MUTANT_STRAINS'%}
+                        {% for url in allele.urls if url.category == 'LOCUS_PHENOTYPE_RESOURCES_MUTANT_STRAINS' %}
                             <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                         {% endfor %}
                     </p>
                 <h3>Phenotype Resources</h3>
 	            <p id="phenotype_resources_list">
-                        {% for url in allele.urls if url.category == 'LOCUS_PHENOTYPE_RESOURCES_PHENOTYPE_RESOURCES'%}
+                        {% for url in allele.urls if url.category == 'LOCUS_PHENOTYPE_RESOURCES_PHENOTYPE_RESOURCES' %}
                             <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                         {% endfor %}
                     </p>
                 <h3>Ontology</h3>
 	            <p id="ontology_resources_list">
-                        {% for url in allele.urls if url.category == 'LOCUS_PHENOTYPE_RESOURCES_ONTOLOGY'%}
+                        {% for url in allele.urls if url.category == 'LOCUS_PHENOTYPE_RESOURCES_ONTOLOGY' %}
 			    <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
             		{% endfor %}
                     </p>
 	        <h3>Interactions Resources</h3>
 	            <p id="interaction_resources_list">
-	                {% for url in allele.urls if url.category == 'LOCUS_INTERACTION'%}
+	                {% for url in allele.urls if url.category == 'LOCUS_INTERACTION' %}
                             <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
                         {% endfor %}
 	            </p>
