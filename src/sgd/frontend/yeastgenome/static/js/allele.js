@@ -28,7 +28,7 @@ function create_interaction_table(data) {
         var genes = {};
         for (var i=0; i < data.length; i++) {
             datatable.push(interaction_data_to_table(data[i], i));
-            if(data[i]["locus1"]["id"] == locus['id']) {
+            if(data[i]["locus1"]["id"] == allele['sgdid']) {
                 genes[data[i]["locus2"]["id"]] = true;
             }
 	    else {
