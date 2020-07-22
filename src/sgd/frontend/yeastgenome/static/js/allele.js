@@ -46,7 +46,9 @@ function create_interaction_table(data) {
     }
 	    
     return create_table("interaction_table", options);
-    
+
+}
+
 
 function create_phenotype_table(data) {
   	var datatable = [];
