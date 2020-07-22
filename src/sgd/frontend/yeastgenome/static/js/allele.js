@@ -6,11 +6,11 @@ $(document).ready(function() {
   	    create_download_button("phenotype_table_download", phenotype_table, allele['display_name'] + "_phenotype_annotations");
 	});
 
-        $.getJSON('/backend/allele/' + allele['sgdid']  + '/interaction_details', function(data) {
-            var interaction_table = create_interaction_table(data);
-            create_download_button("interaction_table_download", interaction_table, allele['display_name'] + "_interaction_annotations");
-	    create_analyze_button("interaction_table_analyze", interaction_table, "<a href='""' class='gene_name'>" + allele['display_name'] + "</a> interactors", true);
-        });
+        // $.getJSON('/backend/allele/' + allele['sgdid']  + '/interaction_details', function(data) {
+        //    var interaction_table = create_interaction_table(data);
+        //    create_download_button("interaction_table_download", interaction_table, allele['display_name'] + "_interaction_annotations");
+	//    create_analyze_button("interaction_table_analyze", interaction_table, "<a href='""' class='gene_name'>" + allele['display_name'] + "</a> interactors", true);
+        // });
         
 });
 
