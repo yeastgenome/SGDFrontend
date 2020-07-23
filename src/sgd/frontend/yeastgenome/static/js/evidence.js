@@ -297,7 +297,7 @@ function regulation_data_to_table(evidence, is_regulator) {
   	
 }
 
-function interaction_data_to_table(evidence, index, show_note) {
+function interaction_data_to_table(evidence, index) {
 	var icon;
 	if(evidence['note'] != null) {
 		icon = create_note_icon(index, evidence['note']);
@@ -309,7 +309,7 @@ function interaction_data_to_table(evidence, index, show_note) {
 	var bioent1_key = 'locus1';
 	var bioent2_key = 'locus2';
 	var direction = evidence['bait_hit'];
-        var analyze_key;
+    var analyze_key;
 
 	if(typeof(locus) !== 'undefined') {
 	    if(locus['id'] == evidence['locus1']['id']) {
@@ -349,21 +349,15 @@ function interaction_data_to_table(evidence, index, show_note) {
 		modification = evidence['modification'];
   	}
 
-        bioent1 = create_link(evidence[bioent1_key]['display_name'], evidence[bioent1_key]['link']);
-        bioent2 = create_link(evidence[bioent2_key]['display_name'], evidence[bioent2_key]['link']);
+     bioent1 = create_link(evidence[bioent1_key]['display_name'], evidence[bioent1_key]['link']);
+	 bioent2 = create_link(evidence[bioent2_key]['display_name'], evidence[bioent2_key]['link']);
 
   	var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
     if(evidence['reference']['pubmed_id'] != null) {
         reference = reference + ' <small>PMID:' + evidence['reference']['pubmed_id'] + '</small>';
     }
 
-    if (show_note) {
-	return [evidence['id'], analyze_key, icon, bioent1, evidence[bioent1_key]['format_name'], bioent2, evidence[bioent2_key]['format_name'], evidence['interaction_type'], experiment, evidence['annotation_type'], direction, modification, phenotype, evidence['source']['display_name'], reference, evidence['note']]
-    }
-    else {
-	return [evidence['id'], analyze_key, icon, bioent1, evidence[bioent1_key]['format_name'], bioent2, evidence[bioent2_key]['format_name'], evidence['interaction_type'], experiment, evidence['annotation_type'], direction, modification, phenotype, evidence['source']['display_name'], evidence['note'], reference]
-    }
-	
+    return [evidence['id'], analyze_key, icon, bioent1, evidence[bioent1_key]['format_name'], bioent2, evidence[bioent2_key]['format_name'], evidence['interaction_type'], experiment, evidence['annotation_type'], direction, modification, phenotype, evidence['source']['display_name'], reference, evidence['note']]
 }
 
 function gene_data_to_table(bioent) {
