@@ -11,7 +11,7 @@ $(document).ready(function() {
 	    create_analyze_button("interaction_table_analyze", interaction_table, "<a href='' class='gene_name'>" + allele['display_name'] + "</a> interactors", true);
         });
 
-        $.getJSON('/backend/chemical/' + allele['sgdid']  + '/network_graph', function(data) {
+        $.getJSON('/backend/allele/' + allele['sgdid']  + '/network_graph', function(data) {
 
                 if (data != null && data["nodes"].length > 1) {
 

@@ -32,12 +32,9 @@
 	    {% if allele.network_graph.edges|length > 0 %}
                 add_navbar_element('Shared Alleles', 'network');
             {% endif %}
-
-
 	    {% if allele.references|length > 0 %}
                 add_navbar_element('References', 'reference');
             {% endif %}
-
 	    add_navbar_element('Resources', 'resource');
         
         </script>
