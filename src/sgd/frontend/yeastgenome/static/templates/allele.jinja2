@@ -29,6 +29,9 @@
 	    {% if allele.interaction|length > 0 %}
                 add_navbar_element('Interaction Annotations', 'interaction');
             {% endif %}
+	    {% if allele.network_graph.edges|length > 0 %}
+                add_navbar_element('Shared Alleles', 'network');
+            {% endif %}
 
 
 	    {% if allele.references|length > 0 %}
@@ -127,6 +130,29 @@
             </div>
         </section>
         {% endif %}        
+
+
+	<!-- network diagram
+        ================================================== -->
+	{% if allele.network_graph.edges|length > 0 %}
+	<section id="network" data-magellan-destination="network">
+	         <div class="page-header">
+                      <h2>Shared Alleles
+                                 <a href="#" data-dropdown="network_help"><i class="fa fa-info-circle"></i></a>
+                                 <p id="network_help" class="f-dropdown content medium" data-dropdown-content>
+                                 This diagram displays interactions (green) and phenotypes (blue) that are shared
+				 between the given allele (black) and other alleles (purple). The shared interactions
+				 or phenotypes can be visualized separately using the radio button at the bottom
+				 of the graph.
+                                 </p>
+
+                      </h2>
+                      <hr />
+                      <div id="j-allele-network"></div>
+                 </div>
+
+	</section>
+        {% endif %}
 
 
         <!-- References

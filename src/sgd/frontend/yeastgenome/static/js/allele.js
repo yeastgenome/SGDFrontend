@@ -10,7 +10,59 @@ $(document).ready(function() {
             create_download_button("interaction_table_download", interaction_table, allele['display_name'] + "_interaction_annotations");
 	    create_analyze_button("interaction_table_analyze", interaction_table, "<a href='' class='gene_name'>" + allele['display_name'] + "</a> interactors", true);
         });
-        
+
+        $.getJSON('/backend/chemical/' + allele['sgdid']  + '/network_graph', function(data) {
+
+                if (data != null && data["nodes"].length > 1) {
+
+                    has_interaction = 0
+                    has_pheno = 0
+                    for (var i = 0; i < data["nodes"].length; i++) {
+                        var row = data["nodes"][i]
+                        if (row["category"] == 'INTERACTION') {
+                            has_interaction++;
+                        }
+                        if (row["category"] == 'PHENOTYPE') {
+                            has_pheno++;
+                        }
+                    }
+
+                    var _categoryColors = {
+                        'FOCUS': 'black',
+                        'ALLELE': '#7d0df3'
+                    };
+
+                    var filters = {
+                        ' All': function(d) { return true; }
+                    };
+
+                    var categoryCount = 0;
+                    if (has_interaction > 0) {
+                        _categoryColors['INTERACTION'] = '#2ca02c';
+                        filters[' Interactions'] = function(d) {
+                            var acceptedCats = ['FOCUS', 'INTERACTION', 'ALLELE'];
+                            return acceptedCats.includes(d.category);
+                        }
+                        categoryCount++;
+                    }
+                    if (has_pheno > 0) {
+                        _categoryColors['PHENOTYPE'] = '#1f77b4';
+                        filters[' Phenotypes'] = function(d) {
+                            var acceptedCats = ['FOCUS', 'PHENOTYPE', 'ALLELE'];
+                            return acceptedCats.includes(d.category);
+                        }
+                        categoryCount++;
+                    }
+		    if (categoryCount < 2) {
+                        filters = {}
+                    }
+                    views.network.render(data, _categoryColors, "j-allele-network", filters, true);
+                } else {
+                    hide_section("network");
+                }
+
+        });
+    
 });
 
 
