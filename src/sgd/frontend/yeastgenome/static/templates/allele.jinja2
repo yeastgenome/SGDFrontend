@@ -57,7 +57,7 @@
 	       	     <dd>{{ allele.name.display_name }}
 		         {% if allele.name.references|length > 0 %}
 			    {% set references = allele.name.references %}
-                            {% include "allele_biblio_references.jinja2" %}
+                            {% include "biblio_references.jinja2" %}
 			 {% endif %}
 		     </dd>
 		     <dt>SGDID</dt>
@@ -67,7 +67,7 @@
                      	   {{ alias.display_name }}
 			   {% if alias.references|length > 0 %}
                                {% set references = alias.references %}
-                               {% include "allele_biblio_references.jinja2" %}
+                               {% include "biblio_references.jinja2" %}
                            {% endif %}
                      	{% if not loop.last %};{% else %}</dd>{% endif %}
 	       	     {% endfor %}
@@ -76,7 +76,7 @@
 	          	<dd><a href='/locus/{{allele.affected_gene.display_name}}' target='_blank'>{{ allele.affected_gene.display_name }}</a>
 			    {% if allele.affected_gene.references|length > 0 %}
 			        {% set references = allele.affected_gene.references %}
-                                {% include "allele_biblio_references.jinja2" %}
+                                {% include "biblio_references.jinja2" %}
 			    {% endif %}
 			</dd>
 	       	     {% endif %}
@@ -186,11 +186,11 @@
                 <hr />
                 <ul class="unstyled">
                     {% for ref in allele.references %}
-                       <li>
+                       <li> {{ allele.reference_mapping[ref.id|string] }}.
 			  <a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
                                     <span>{{ ref.citation|e|replace(ref.display_name, '') }}</span>
                           {% if ref.pubmed_id != none %}
-                                       <small>PMID: {{ ref.pubmed_id|e }}</small>
+                                    <small>PMID: {{ ref.pubmed_id|e }}</small>
                           {% endif %}
                           <ul class="ref-links">
                              <li><a href="{{ ref.link|e }}">SGD Paper</a></li>
