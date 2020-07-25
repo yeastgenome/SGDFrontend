@@ -74,7 +74,9 @@
 	       	     {% if allele.affected_gene %}
 	             	<dt>Affected Gene</dt>
 	          	<dd><a href='/locus/{{allele.affected_gene.display_name}}' target='_blank'>{{ allele.affected_gene.display_name }}</a>
-			    REF HERE
+			    {% if allele.affected_gene.references|length > 0 %}
+			        REF HELLO WORLD
+			    {% endif %}
 			</dd>
 	       	     {% endif %}
 	       	     <dt>Allele Type</dt>
