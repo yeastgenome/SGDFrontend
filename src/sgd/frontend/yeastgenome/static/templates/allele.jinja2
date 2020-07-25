@@ -55,7 +55,7 @@
 	    	  <dl class="key-value">
 	       	     <dt>Allele Name</dt>
 	       	     <dd>{{ allele.name.display_name }}
-		         {% if allele.name.references %}
+		         {% if allele.name.references|length > 0 %}
 			    {% set references = allele.name.references %}
                             {% include "biblio_references.jinja2" %}
 			 {% endif %}
