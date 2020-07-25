@@ -177,9 +177,9 @@
                      </p>
                 </h2>
                 <hr />
-                <ul class="unstyled">
+                <ol className="reference-list">
                     {% for ref in allele.references %}
-                       <li> {{ allele.reference_mapping[ref.id|string] }}.
+                       <li>
 			  <a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
                                     <span>{{ ref.citation|e|replace(ref.display_name, '') }}</span>
                           {% if ref.pubmed_id != none %}
@@ -193,7 +193,7 @@
                           </ul>
                        </li>
                     {% endfor %}
-             	</ul>
+             	</ol>
 	    </div>     
         </section>
         {% endif %}
