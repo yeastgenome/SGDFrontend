@@ -57,7 +57,7 @@
 	       	     <dd>{{ allele.name.display_name }}
 		         {% if allele.name.references|length > 0 %}
 			    {% set references = allele.name.references %}
-                            {% include "biblio_references.jinja2" %}
+                            {% include "allele_biblio_references.jinja2" %}
 			 {% endif %}
 		     </dd>
 		     <dt>SGDID</dt>
@@ -67,7 +67,7 @@
                      	   {{ alias.display_name }}
 			   {% if alias.references|length > 0 %}
                                {% set references = alias.references %}
-                               {% include "biblio_references.jinja2" %}
+                               {% include "allele_biblio_references.jinja2" %}
                            {% endif %}
                      	{% if not loop.last %};{% else %}</dd>{% endif %}
 	       	     {% endfor %}
@@ -76,7 +76,7 @@
 	          	<dd><a href='/locus/{{allele.affected_gene.display_name}}' target='_blank'>{{ allele.affected_gene.display_name }}</a>
 			    {% if allele.affected_gene.references|length > 0 %}
 			        {% set references = allele.affected_gene.references %}
-                                {% include "biblio_references.jinja2" %}
+                                {% include "allele_biblio_references.jinja2" %}
 			    {% endif %}
 			</dd>
 	       	     {% endif %}
