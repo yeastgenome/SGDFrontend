@@ -54,8 +54,13 @@
         	<div class="">
 	    	  <dl class="key-value">
 	       	     <dt>Allele Name</dt>
-	       	     <dd>{{ allele.name.display_name }}</dd>
-               	     <dt>SGDID</dt>
+	       	     <dd>{{ allele.name.display_name }}
+		         {% if allele.name.references %}
+			    {% set references = allele.name.references %}
+                            {% include "biblio_references.jinja2" %}
+			 {% endif %}
+		     </dd>
+		     <dt>SGDID</dt>
                	     <dd>{{ allele.sgdid }}</dd>
 	       	     {% for alias in allele.aliases %}
 	             	{% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
