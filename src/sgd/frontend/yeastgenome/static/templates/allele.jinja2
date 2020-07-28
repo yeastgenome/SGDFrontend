@@ -60,8 +60,8 @@
                             {% include "allele_biblio_references.jinja2" %}
 			 {% endif %}
 		     </dd>
-		     <dt>SGDID</dt>
-               	     <dd>{{ allele.sgdid }}</dd>
+		     <dt>SGD ID</dt>
+               	     <dd>SGD:{{ allele.sgdid }}</dd>
 	       	     {% for alias in allele.aliases %}
 	             	{% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
                      	   {{ alias.display_name }}
