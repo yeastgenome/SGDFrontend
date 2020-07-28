@@ -25,7 +25,9 @@
 
 <script>document.getElementById("literature_tab").className += " active";</script>
 
-<div class="small-12 medium-10 columns content-column">
+<div class="row">
+
+  <div class="small-12 medium-10 columns content-column">
 
      <center><h1> Allele {{ allele.name.display_name }} Literature </h1></center>
 
@@ -46,7 +48,9 @@
             </li>
          {% endfor %}
      </ul>
-
+     
+  </div>
+  
 </div>
 
 {% endblock body %}
