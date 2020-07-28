@@ -25,7 +25,9 @@
 
 <script>document.getElementById("literature_tab").className += " active";</script>
 
-<h1> Allele {{ allele.display_name }} Literature </h1>
+<center>
+
+<h1> Allele {{ allele.name.display_name }} Literature </h1>
 
 <ol className="reference-list">
     {% for ref in allele.references %}
@@ -44,6 +46,8 @@
         </li>
     {% endfor %}
 </ol>
+
+</center>
 
 {% endblock body %}
 
