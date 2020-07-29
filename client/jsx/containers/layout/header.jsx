@@ -515,7 +515,7 @@ class Header extends Component {
                     Career Resources
                   </a>
                 </li>
-		<li>
+                <li>
                   <a
                     className="disabled-header-a"
                     href="https://wiki.yeastgenome.org/index.php/Educational_Resources"
