@@ -55,7 +55,7 @@
     {% if locus['go_overview']['paragraph'] %}
         <dl class="key-value">
             <dt>Summary</dt>
-            <dd>{{ locus['go_overview']['paragraph'] }}</dd>
+            <dd>{{ locus['go_overview']['paragraph']|safe }}</dd>
         </dl>
     {% endif %}
     
