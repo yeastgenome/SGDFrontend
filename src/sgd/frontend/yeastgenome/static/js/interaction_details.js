@@ -103,15 +103,31 @@ function create_genetic_interaction_table(data) {
     else {
         var datatable = [];
         var genes = {};
+	var k = 0;
         for (var i=0; i < data.length; i++) {
 	    if (data[i]["interaction_type"] == "Genetic") {
-		datatable.push(genetic_interaction_data_to_table(data[i], i));
-		if(data[i]["locus1"]["id"] == locus['id']) {
-                    genes[data[i]["locus2"]["id"]] = true;
+		var alleles = data[i]["alleles"];
+		if (alleles.length > 0) {
+		    for (var j = 0; j < alleles.length; j++) {
+			var allele1_name = alleles["allele1_name"];
+			var allele2_name = alleles["allele1_name"];
+			var allele_pair = "<a href='/allele/'" + allele1_name.replace(' ', '_') + "' target='_new'>" + allele1_name + "</a>";
+			if (allele2_name != '') {
+			    allele_pair = allele_pair + " - " + "<a href='/allele/'" + allele2_name.replace(' ', '_') + "' target='_new'>" + allele2_name + "</a>";
+			}
+			var score = "SGA score = " + alleles["sga_score"] + ", P-value = " + alleles["pvalue"];
+			datatable.push(genetic_interaction_data_to_table(data[i], k++, allele_pair, score));
+		    }	
 		}
 		else {
-                    genes[data[i]["locus1"]["id"]] = true;
+		    datatable.push(genetic_interaction_data_to_table(data[i], k++, '', ''));
 		}
+		if(data[i]["locus1"]["id"] == locus['id']) {
+                    genes[data[i]["locus2"]["id"]] = true;
+                }
+                else {
+                    genes[data[i]["locus1"]["id"]] = true;
+                }
 	    }
         }
 
