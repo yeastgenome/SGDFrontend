@@ -81,7 +81,7 @@ function create_interaction_table(data) {
         var datatable = [];
         var genes = {};
         for (var i=0; i < data.length; i++) {
-            datatable.push(interaction_data_to_table(data[i], i, 1));
+            datatable.push(genetic_interaction_data_to_table(data[i], i, 1));
             genes[data[i]["locus2"]["id"]] = true;
             genes[data[i]["locus1"]["id"]] = true;
         }
