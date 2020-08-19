@@ -7,9 +7,8 @@ $(document).ready(function() {
 
         $.getJSON('/backend/allele/' + allele['sgdid']  + '/interaction_details', function(data) {
             var interaction_table = create_interaction_table(data, allele['name']['display_name']);
-	    console.log("allele=" + allele['name']['display_name']);
-            create_download_button("interaction_table_download", interaction_table, allele['display_name'] + "_interaction_annotations");
-	    create_analyze_button("interaction_table_analyze", interaction_table, "<a href='' class='gene_name'>" + allele['display_name'] + "</a> interactors", true);
+            create_download_button("interaction_table_download", interaction_table, allele['name']['display_name'] + "_interaction_annotations");
+	    create_analyze_button("interaction_table_analyze", interaction_table, "<a href='' class='gene_name'>" + allele['name']['display_name'] + "</a> interactors", true);
         });
     
         $.getJSON('/backend/allele/' + allele['sgdid']  + '/network_graph', function(data) {
@@ -67,7 +66,7 @@ $(document).ready(function() {
 });
 
 
-function create_interaction_table(data, allele) {
+function create_interaction_table(data, this_allele) {
     var options = {};
     if("Error" in data) {
         options["bPaginate"] = true;
@@ -89,7 +88,7 @@ function create_interaction_table(data, allele) {
                      var allele = alleles[j];
                      var allele1_name = allele["allele1_name"];
                      var allele2_name = allele["allele2_name"];
-		     if (allele1_name != allele && allele2_name != allele) {
+		     if (allele1_name != this_allele && allele2_name != this_allele) {
 			 continue
 		     }
                      var allele_pair = "<a href='/allele/'" + allele1_name + "' target='_new'>" + allele1_name + "</a>";
