@@ -359,7 +359,7 @@ function physical_interaction_data_to_table(evidence, index) {
 
 }
 	
-function genetic_interaction_data_to_table(evidence, index) {
+function genetic_interaction_data_to_table(evidence, index, allele_pair, score) {
 
         var icon;
 	if(evidence['note'] != null) {
@@ -416,10 +416,7 @@ function genetic_interaction_data_to_table(evidence, index) {
             reference = reference + ' <small>PMID:' + evidence['reference']['pubmed_id'] + '</small>';
 	}
 
-        var allele = "";
-        var sga_score = "";
-    
-        return [evidence['id'], analyze_key, icon, bioent1, evidence[bioent1_key]['format_name'], bioent2, evidence[bioent2_key]['format_name'], allele, experiment, evidence['annotation_type'], direction, phenotype, sga_score, evidence['source']['display_name'], reference, evidence['note']]
+        return [evidence['id'], analyze_key, icon, bioent1, evidence[bioent1_key]['format_name'], bioent2, evidence[bioent2_key]['format_name'], allele_pair, experiment, evidence['annotation_type'], direction, phenotype, score, evidence['source']['display_name'], reference, evidence['note']]
 
 }
 
