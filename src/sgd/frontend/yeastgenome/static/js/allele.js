@@ -80,8 +80,25 @@ function create_interaction_table(data) {
     else {
         var datatable = [];
         var genes = {};
+	var k = 0;
         for (var i=0; i < data.length; i++) {
-            datatable.push(genetic_interaction_data_to_table(data[i], i, 1));
+	    var alleles = data[i]["alleles"];
+            if (alleles.length > 0) {
+                 for (var j = 0; j < alleles.length; j++) {
+                     var allele = alleles[j];
+                     var allele1_name = allele["allele1_name"];
+                     var allele2_name = allele["allele2_name"];
+                     var allele_pair = "<a href='/allele/'" + allele1_name + "' target='_new'>" + allele1_name + "</a>";
+                     if (allele2_name != '') {
+                         allele_pair = allele_pair + ", " + "<a href='/allele/'" + allele2_name + "' target='_new'>" + allele2_name + "</a>";
+                     }
+                     var score = "SGA score = " + allele["sga_score"] + ", P-value = " + allele["pvalue"];
+                     datatable.push(genetic_interaction_data_to_table(data[i], k++, allele_pair, score));
+                 }
+            }
+            else {
+                 datatable.push(genetic_interaction_data_to_table(data[i], k++, '', ''));
+            }
             genes[data[i]["locus2"]["id"]] = true;
             genes[data[i]["locus1"]["id"]] = true;
         }
