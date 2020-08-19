@@ -111,7 +111,7 @@ function create_genetic_interaction_table(data) {
 		    for (var j = 0; j < alleles.length; j++) {
 			var allele = alleles[j];
 			var allele1_name = allele["allele1_name"];
-			var allele2_name = allele["allele1_name"];
+			var allele2_name = allele["allele2_name"];
 			var allele_pair = "<a href='/allele/'" + allele1_name + "' target='_new'>" + allele1_name + "</a>";
 			if (allele2_name != '') {
 			    allele_pair = allele_pair + " - " + "<a href='/allele/'" + allele2_name + "' target='_new'>" + allele2_name + "</a>";
