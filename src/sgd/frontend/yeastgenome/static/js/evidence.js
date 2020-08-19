@@ -483,7 +483,7 @@ function phenotype_data_to_table(evidence, index) {
         else if(evidence['properties'][j]['role'] == 'Allele') {
 	    var allele_name = evidence['properties'][j]['bioitem']['display_name'];
 	    var allele_format_name = allele_name.replace(' ', '_')
-            allele = '<br><strong>Allele: </strong>' + "<a href='/allete/" + allele_format_name + "' target='_new'>" + allele_name + "</a>"
+            allele = '<br><strong>Allele: </strong>' + "<a href='/allele/" + allele_format_name + "' target='_new'>" + allele_name + "</a>"
             var allele_icon = create_note_icon('allele_icon' + index, evidence['properties'][j]['note']);
             if(allele_icon != '') {
                 allele = allele + ' ' + allele_icon;
