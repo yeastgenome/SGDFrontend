@@ -109,13 +109,14 @@ function create_genetic_interaction_table(data) {
 		var alleles = data[i]["alleles"];
 		if (alleles.length > 0) {
 		    for (var j = 0; j < alleles.length; j++) {
-			var allele1_name = alleles["allele1_name"];
-			var allele2_name = alleles["allele1_name"];
+			var allele = alleles[j];
+			var allele1_name = allele["allele1_name"];
+			var allele2_name = allele["allele1_name"];
 			var allele_pair = "<a href='/allele/'" + allele1_name + "' target='_new'>" + allele1_name + "</a>";
 			if (allele2_name != '') {
 			    allele_pair = allele_pair + " - " + "<a href='/allele/'" + allele2_name + "' target='_new'>" + allele2_name + "</a>";
 			}
-			var score = "SGA score = " + alleles["sga_score"] + ", P-value = " + alleles["pvalue"];
+			var score = "SGA score = " + allele["sga_score"] + ", P-value = " + allele["pvalue"];
 			datatable.push(genetic_interaction_data_to_table(data[i], k++, allele_pair, score));
 		    }	
 		}
