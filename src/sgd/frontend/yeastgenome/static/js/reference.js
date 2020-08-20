@@ -168,7 +168,7 @@ function create_literature_list(list_id, data, topic) {
     }
 }
 
-function create_interaction_table(data) {
+function create_physical_interaction_table(data) {
     if("Error" in data) {
         var options = {};
         options["bPaginate"] = true;
