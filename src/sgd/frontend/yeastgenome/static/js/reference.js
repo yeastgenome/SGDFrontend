@@ -32,12 +32,12 @@ $(document).ready(function() {
         $.getJSON('/backend/reference/' + reference['sgdid'] + '/interaction_details', function(data) {
 
             var physical_interaction_table = create_physical_interaction_table(data);
-            create_download_button("physical_interaction_table_download", physical_interaction_table, locus['display_name'] + "_physical_interactions");
-            create_analyze_button("physical_interaction_table_analyze", physical_interaction_table, "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> interactors", true);
+            create_download_button("physical_interaction_table_download", physical_interaction_table, reference['sgdid'] + "_physical_interactions");
+            create_analyze_button("physical_interaction_table_analyze", physical_interaction_table, "<a href='" + reference['link'] + "' class='gene_name'>" + reference['sgdid'] + "</a> interactors", true);
 
             var genetic_interaction_table = create_genetic_interaction_table(data);
-            create_download_button("genetic_interaction_table_download", genetic_interaction_table, locus['display_name'] + "_genetic_interactions");
-            create_analyze_button("genetic_interaction_table_analyze", genetic_interaction_table, "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> interactors", true);	    
+            create_download_button("genetic_interaction_table_download", genetic_interaction_table, reference['sgdid'] + "_genetic_interactions");
+            create_analyze_button("genetic_interaction_table_analyze", genetic_interaction_table, "<a href='" + reference['link'] + "' class='gene_name'>" + reference['sgdid'] + "</a> interactors", true);	    
 	    
         });
     }
