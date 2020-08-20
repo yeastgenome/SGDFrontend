@@ -243,7 +243,7 @@ function create_genetic_interaction_table(data) {
         options["bPaginate"] = true;
         options["aaSorting"] = [[5, "asc"]];
         options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}];
-        options["oLanguage"] = {"sEmptyTable": "No genetic interaction data for " + locus['display_name']};
+        options["oLanguage"] = {"sEmptyTable": "No genetic interaction data for " + reference['display_name']};
         options["aaData"] = datatable;
     }
 
