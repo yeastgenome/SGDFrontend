@@ -91,9 +91,9 @@ function create_interaction_table(data, this_allele) {
 		     if (allele1_name != this_allele && allele2_name != this_allele) {
 			 continue
 		     }
-                     var allele_pair = "<a href='/allele/'" + allele1_name + "' target='_new'>" + allele1_name + "</a>";
+                     var allele_pair = "<a href='/allele/" + allele1_name + "' target='_new'>" + allele1_name + "</a>";
                      if (allele2_name != '') {
-                         allele_pair = allele_pair + ", " + "<a href='/allele/'" + allele2_name + "' target='_new'>" + allele2_name + "</a>";
+                         allele_pair = allele_pair + ", " + "<a href='/allele/" + allele2_name + "' target='_new'>" + allele2_name + "</a>";
                      }
                      var score = "SGA score = " + allele["sga_score"] + ", P-value = " + allele["pvalue"];
                      datatable.push(genetic_interaction_data_to_table(data[i], k++, allele_pair, score));
