@@ -35,7 +35,7 @@
     <div class="small-12 medium-10 columns content-column">
 
         <script>
-            add_navbar_title('<span class="gene_name">{{ allele.name.display_name }}</span>')
+            add_navbar_title({{ allele.name.display_name }})
             add_navbar_element('Literature Overview', 'overview');
             {% if allele.phenotype|length > 0 %}
                 add_navbar_element('Phenotype Literature', 'phenotype');
@@ -43,7 +43,6 @@
             {% if allele.interaction|length > 0 %}
                 add_navbar_element('Interaction Literature', 'interaction');
             {% endif %}
-            add_navbar_element('Resources', 'resource');
         </script>
 
         <!-- Overview -->
