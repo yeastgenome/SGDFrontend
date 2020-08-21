@@ -112,8 +112,8 @@
         <section id="interaction" data-magellan-destination="interaction">
         <div class="page-header">
             <h2>Interaction Literature
-                 <a href="#" data-dropdown="phenotype_info"><i class="fa fa-info-circle"></i></a>
-                 <p id="phenotype_info" class="f-dropdown content medium" data-dropdown-content>
+                 <a href="#" data-dropdown="interaction_info"><i class="fa fa-info-circle"></i></a>
+                 <p id="interaction_info" class="f-dropdown content medium" data-dropdown-content>
               	      Paper(s) associated with evidence supporting a genetic interaction between
 		      the specified allele and another gene or allele in SGD.
                  </p>
@@ -147,6 +147,9 @@
 
 {% block scripts %}
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script src="/static/js/build/arbor.js"></script>
+<script src="{{asset_root}}/js/cytoscape.js"></script>
+<script src="{{asset_root}}/js/evidence.js"></script>
 <script src="{{asset_root}}/js/allele.js"></script>
 {% endblock scripts %}
 
