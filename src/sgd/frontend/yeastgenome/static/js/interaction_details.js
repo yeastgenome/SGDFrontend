@@ -120,7 +120,7 @@ function create_genetic_interaction_table(data) {
 		    }	
 		}
 		else {
-		    datatable.push(genetic_interaction_data_to_table(data[i], k++, '', ''));
+		    datatable.push(genetic_interaction_data_to_table(data[i], k++, '', '', ''));
 		}
 		if(data[i]["locus1"]["id"] == locus['id']) {
                     genes[data[i]["locus2"]["id"]] = true;

@@ -99,7 +99,7 @@ function create_interaction_table(data, this_allele) {
                  }
             }
             else {
-                 datatable.push(genetic_interaction_data_to_table(data[i], k++, '', ''));
+                datatable.push(genetic_interaction_data_to_table(data[i], k++, '', '', ''));
             }
             genes[data[i]["locus2"]["id"]] = true;
             genes[data[i]["locus1"]["id"]] = true;
