@@ -72,7 +72,7 @@ function create_interaction_table(data, this_allele) {
         options["bPaginate"] = true;
         options["aaSorting"] = [[5, "asc"]];
 
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}];
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}];
 
         options["oLanguage"] = {"sEmptyTable": data["Error"]};
         options["aaData"] = [];
@@ -95,8 +95,7 @@ function create_interaction_table(data, this_allele) {
                      if (allele2_name != '') {
                          allele_pair = allele_pair + ", " + "<a href='/allele/" + allele2_name + "' target='_new'>" + allele2_name + "</a>";
                      }
-                     var score = "SGA score = " + allele["sga_score"] + ", P-value = " + allele["pvalue"];
-                     datatable.push(genetic_interaction_data_to_table(data[i], k++, allele_pair, score));
+                     datatable.push(genetic_interaction_data_to_table(data[i], k++, allele_pair, allele["sga_score"], allele["pvalue"]));
                  }
             }
             else {
@@ -110,7 +109,7 @@ function create_interaction_table(data, this_allele) {
 
         options["bPaginate"] = true;
         options["aaSorting"] = [[5, "asc"]];
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}];
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}];
         options["oLanguage"] = {"sEmptyTable": "No interaction data for " + allele['display_name']};
         options["aaData"] = datatable;
     }
