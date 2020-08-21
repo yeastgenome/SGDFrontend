@@ -37,6 +37,7 @@
         <script>
             add_navbar_title('{{ allele.name.display_name }}')
             add_navbar_element('Literature Overview', 'overview');
+	    add_navbar_element('Primary Literature', 'primary');
             {% if allele.phenotype|length > 0 %}
                 add_navbar_element('Phenotype Literature', 'phenotype');
             {% endif %}
@@ -68,6 +69,42 @@
                 </dl>
             </div>
         </section>
+
+	<!-- Primary Literature
+        ================================================== -->
+        {% if allele.references|length > 0 %}
+        <section id="primary" data-magellan-destination="primary">
+        <div class="page-header">
+            <h2>Primary Literature
+                 <a href="#" data-dropdown="primary_info"><i class="fa fa-info-circle"></i></a>
+                 <p id="primary_info" class="f-dropdown content medium" data-dropdown-content>
+                      Literature that either focuses on the allele or contains information about function,
+		      biological role, cellular location, phenotype, regulation, structure, or
+		      disease homologs in other species for the allele or gene product.”
+                 </p>
+            </h2>
+            <hr />
+
+	    <ul className="reference-list">
+                {% for ref in allele.references %}
+                   <li>
+                      <a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
+                          <span>{{ ref.citation|e|replace(ref.display_name, '') }}</span>
+                      {% if ref.pubmed_id != none %}
+                          <small>PMID: {{ ref.pubmed_id|e }}</small>
+                      {% endif %}
+                      <ul class="ref-links">
+                          <li><a href="{{ ref.link|e }}">SGD Paper</a></li>
+                          {% for url in ref.urls %}
+                             <li><a target="_infowin" href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
+                          {% endfor %}
+                      </ul>
+                   </li>
+                {% endfor %}
+            </ul>
+        </div>
+        </section>
+        {% endif %}
 
 	<!-- Phenotype
         ================================================== -->
