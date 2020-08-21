@@ -74,7 +74,7 @@
 
 	<!-- Phenotype
         ================================================== -->
-        {% if allele.phenotype_references|length > 0 %}
+        {% if allele.phenotype|length > 0 %}
         <section id="phenotype" data-magellan-destination="phenotype">
 	<div class="page-header">
             <h2>Phenotype Literature
@@ -108,7 +108,7 @@
 
         <!-- Interaction
         ================================================== -->
-        {% if allele.interaction_references|length > 0 %}
+        {% if allele.interaction|length > 0 %}
         <section id="interaction" data-magellan-destination="interaction">
         <div class="page-header">
             <h2>Interaction Literature
