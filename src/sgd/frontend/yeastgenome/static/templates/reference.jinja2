@@ -202,26 +202,29 @@
             <h2>Interaction Annotations <span id="interaction_table_header" class="round secondary label"></span></h2>
             <hr />
 
-        <div class="spaced-container">
-            <h3>Physical Interactions
-                <span id="physical_interaction_table_header" class="round secondary label"></span>
+	{% if reference.pubmed_id != 27708008 %}
+            <div class="spaced-container">
+            	 <h3>Physical Interactions
+                     <span id="physical_interaction_table_header" class="round secondary label"></span>
 
-            <!-- Includes physical_interaction_table into template -->
-            {% set table_id = "physical_interaction_table" %}
-            {% include "physical_interaction_table.jinja2" %}
-            </h3>
-        </div>
+                 <!-- Includes physical_interaction_table into template -->
+                 {% set table_id = "physical_interaction_table" %}
+                 {% include "physical_interaction_table.jinja2" %}
+                </h3>
+            </div>
 
-        <div class="spaced-container">
-            <h3>Genetic Interactions
-                <span id="genetic_interaction_table_header" class="round secondary label"></span>
+            <div class="spaced-container">
+                <h3>Genetic Interactions
+                    <span id="genetic_interaction_table_header" class="round secondary label"></span>
 
-            <!-- Includes genetic_interaction_table into template -->
-            {% set table_id = "genetic_interaction_table" %}
-            {% include "genetic_interaction_table.jinja2" %}
-            </h3>
-        </div>
-
+                <!-- Includes genetic_interaction_table into template -->
+                {% set table_id = "genetic_interaction_table" %}
+                {% include "genetic_interaction_table.jinja2" %}
+                </h3>
+            </div>
+	{% else %}
+	    <a href="https://yeastmine.yeastgenome.org/yeastmine/loadTemplate.do?name=Literature_Interaction&constraint1=Gene.interactions.details.experiment.publication&op1=LOOKUP&value1=27708008&scope=all&method=results&format=tab" target='_new'>Download Interaction Data</a>
+	{% endif %} 
         </section>
 <!-- Expression
 ================================================== -->
