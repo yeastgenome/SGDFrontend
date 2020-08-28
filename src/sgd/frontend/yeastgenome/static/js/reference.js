@@ -169,8 +169,8 @@ function create_literature_list(list_id, data, topic) {
 }
 
 function create_physical_interaction_table(data) {
+    var options = {};
     if("Error" in data) {
-        var options = {};
         options["bPaginate"] = true;
         options["aaSorting"] = [[3, "asc"]];
         options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}]
@@ -190,7 +190,6 @@ function create_physical_interaction_table(data) {
 
         set_up_header('physical_interaction_table', datatable.length, 'entry', 'entries', Object.keys(genes).length, 'gene', 'genes');
 
-        var options = {};
         options["bPaginate"] = true;
         options["aaSorting"] = [[3, "asc"]];
         options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}]
