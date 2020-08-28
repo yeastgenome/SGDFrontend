@@ -1,0 +1,257 @@
+{% extends "global_layout.jinja2" %}
+
+{% block title %}{{ allele.name.display_name }}{% endblock %}
+
+{% block head %}
+<script>
+    var allele = {{ allele_js|safe }};
+</script>
+
+{% endblock %}
+
+{% block body %}
+
+<!-- Tabs -->
+
+<div class="row hide-for-small">
+    <nav class="small-12 columns">
+        <ul class="tabs sgd-tabs">
+            <li id="summary_tab" class="tab-title"><a href="/allele/{{ allele.sgdid }}"><span>Summary</span></a></li>
+            <li id="literature_tab" class="tab-title"><a href="/allele/{{ allele.sgdid }}/literature"><span>Literature</span></a></li>
+        </ul>
+        <div class="sgd-tab-shadow"></div>
+    </nav>
+</div>
+
+<script>document.getElementById("summary_tab").className += " active";</script>
+
+<!-- Navbar
+================================================== -->
+<div class="row">
+
+    <!-- Includes navbar.html into template -->
+    {% include "navbar.jinja2" %}
+
+    <div class="small-12 medium-10 columns content-column">
+
+        <script>
+            add_navbar_title('Allele: <span class="gene_name">{{ allele.name.display_name }}</span>')
+            add_navbar_element('Overview', 'overview');
+	    {% if allele.phenotype|length > 0 %}
+                add_navbar_element('Phenotype Annotations', 'phenotype');
+            {% endif %}	    
+	    {% if allele.interaction|length > 0 %}
+                add_navbar_element('Interaction Annotations', 'interaction');
+            {% endif %}
+	    {% if allele.network_graph.edges|length > 0 %}
+                add_navbar_element('Shared Alleles', 'network');
+            {% endif %}
+	    {% if allele.references|length > 0 %}
+                add_navbar_element('References', 'reference');
+            {% endif %}
+	    add_navbar_element('Resources', 'resource');
+        
+        </script>
+
+        <!-- Overview
+        ================================================== -->
+        <section id="overview" data-magellan-destination="overview">
+            <div class="page-header">
+                <h1>Allele: {{ allele.name.display_name }}</h1>
+                <hr />
+
+        	<div class="">
+	    	  <dl class="key-value">
+	       	     <dt>Allele Name</dt>
+	       	     <dd>{{ allele.name.display_name }}
+		         {% if allele.name.references|length > 0 %}
+			    {% set references = allele.name.references %}
+                            {% include "allele_biblio_references.jinja2" %}
+			 {% endif %}
+		     </dd>
+		     <dt>SGD ID</dt>
+               	     <dd>SGD:{{ allele.sgdid }}</dd>
+	       	     {% for alias in allele.aliases %}
+	             	{% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
+                     	   {{ alias.display_name }}
+			   {% if alias.references|length > 0 %}
+                               {% set references = alias.references %}
+                               {% include "allele_biblio_references.jinja2" %}
+                           {% endif %}
+                     	{% if not loop.last %};{% else %}</dd>{% endif %}
+	       	     {% endfor %}
+	       	     {% if allele.affected_gene %}
+	             	<dt>Affected Gene</dt>
+	          	<dd><a href='/locus/{{allele.affected_gene.display_name}}' target='_blank'>{{ allele.affected_gene.display_name }}</a>
+			    {% if allele.affected_gene.references|length > 0 %}
+			        {% set references = allele.affected_gene.references %}
+                                {% include "allele_biblio_references.jinja2" %}
+			    {% endif %}
+			</dd>
+	       	     {% endif %}
+	       	     <dt>Allele Type</dt>
+               	     <dd>{{ allele.allele_type }}</dd>
+	       	     {% if allele.description %}
+	             	<dt>Description</dt>
+               	     	<dd>{{ allele.description }}</dd>
+	       	     {% endif %}
+                  </dl>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Phenotype
+        ================================================== -->
+        {% if allele.phenotype|length > 0 %}
+        <section id="phenotype" data-magellan-destination="phenotype">
+            <div class="page-header">
+                <h2>Phenotype Annotations
+                    <a href="#" data-dropdown="phenotype_info"><i class="fa fa-info-circle"></i></a>
+                    <p id="phenotype_info" class="f-dropdown content medium" data-dropdown-content>
+                        Phenotype annotations for a gene are curated single mutant phenotypes that
+                        require an observable (e.g., "cell shape"), a qualifier (e.g., "abnormal"),
+                        a mutant type (e.g., null), strain background, and a reference. In addition,
+                        annotations are classified as classical genetics or high-throughput (e.g.,
+                        large scale survey, systematic mutation set). Whenever possible, allele
+                        information and additional details are provided.
+                    </p>
+                    <span id="phenotype_table_header" class="round secondary label"></span>
+                </h2>
+                <hr />
+                <!-- Includes phenotype_table into template -->
+                {% set table_id = "phenotype_table" %}
+                {% include "allele_phenotype_table.jinja2" %}
+            </div>
+        </section>
+        {% endif %}
+
+
+	<!-- Interaction
+        ================================================== -->
+	{% if allele.interaction|length > 0 %}
+        <section id="interaction" data-magellan-destination="interaction">
+            <div class="page-header">
+	    	<h2>Genetic Interaction Annotations
+		     <a href="#" data-dropdown="interaction_info"><i class="fa fa-info-circle"></i></a>
+		     <p id="interaction_info" class="f-dropdown content medium" data-dropdown-content>
+                         An interaction is defined as an experimentally observed physical or genetic interaction
+                         between two genes. There may be more than one row listed for the same interactor if the
+                         interaction between it and the given gene was observed in separate studies. All
+                         interactions listed in SGD are curated by
+			 <a href="http://thebiogrid.org/" target="_blank">BioGRID</a>.
+                     </p>
+		     <span id="interaction_table_header" class="round secondary label"></span>
+                </h2>
+		<hr />
+		<!-- Includes interaction_table into template -->
+        	{% set table_id = "interaction_table" %}
+        	{% include "genetic_interaction_table.jinja2" %}
+            </div>
+        </section>
+        {% endif %}        
+
+
+	<!-- network diagram
+        ================================================== -->
+	{% if allele.network_graph.edges|length > 0 %}
+	<section id="network" data-magellan-destination="network">
+	         <div class="page-header">
+                      <h2>Shared Alleles
+                                 <a href="#" data-dropdown="network_help"><i class="fa fa-info-circle"></i></a>
+                                 <p id="network_help" class="f-dropdown content medium" data-dropdown-content>
+                                 This diagram displays interactions (green) and phenotypes (blue) that are shared
+				 between the given allele (black) and other alleles (purple). The shared interactions
+				 or phenotypes can be visualized separately using the radio button at the bottom
+				 of the graph.
+                                 </p>
+
+                      </h2>
+                      <hr />
+                      <div id="j-allele-network"></div>
+                 </div>
+
+	</section>
+        {% endif %}
+
+        <!-- References
+        ================================================== -->
+        {% if allele.references|length > 0 %}
+        <section id="reference" data-magellan-destination="reference">
+            <div class="page-header">
+                <h2>References
+                     <a href="#" data-dropdown="reference_help"><i class="fa fa-info-circle"></i></a>
+                     <p id="reference_help" class="f-dropdown content medium" data-dropdown-content>
+                         List of references used specifically to curate the information in Overview section.
+                     </p>
+                </h2>
+                <hr />
+                <ol className="reference-list">
+                    {% for ref in allele.references %}
+                       <li>
+			  <a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
+                                    <span>{{ ref.citation|e|replace(ref.display_name, '') }}</span>
+                          {% if ref.pubmed_id != none %}
+                                       <small>PMID: {{ ref.pubmed_id|e }}</small>
+                          {% endif %}
+                          <ul class="ref-links">
+                             <li><a href="{{ ref.link|e }}">SGD Paper</a></li>
+                             {% for url in ref.urls %}
+                                <li><a target="_infowin" href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
+                             {% endfor %}
+                          </ul>
+                       </li>
+                    {% endfor %}
+             	</ol>
+	    </div>     
+        </section>
+        {% endif %}
+
+
+        <!-- Resources
+        ================================================== -->
+    	<section id="resource">
+            <h2>Resources</h2>
+            <hr />
+	    <div class="panel">
+               <h3>Mutant Strains</h3>
+	            <p id="mutant_resources_list">
+                        {% for url in allele.urls if url.category == 'LOCUS_PHENOTYPE_RESOURCES_MUTANT_STRAINS' %}
+                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        {% endfor %}
+                    </p>
+                <h3>Phenotype Resources</h3>
+	            <p id="phenotype_resources_list">
+                        {% for url in allele.urls if url.category == 'LOCUS_PHENOTYPE_RESOURCES_PHENOTYPE_RESOURCES' %}
+                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        {% endfor %}
+                    </p>
+                <h3>Ontology</h3>
+	            <p id="ontology_resources_list">
+                        {% for url in allele.urls if url.category == 'LOCUS_PHENOTYPE_RESOURCES_ONTOLOGY' %}
+			    <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+            		{% endfor %}
+                    </p>
+	        <h3>Interactions Resources</h3>
+	            <p id="interaction_resources_list">
+	                {% for url in allele.urls if url.category == 'LOCUS_INTERACTION' %}
+                            <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                        {% endfor %}
+	            </p>
+            </div>
+        </section>
+    </div>
+</div>
+
+{% endblock body %}
+
+{% block scripts %}
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script src="{{asset_root}}/js/build/cytoscape.min.js"></script>
+{# don't host arbor.js on CDN because it makes webworker files that don't work on the cloud :( #}
+<script src="/static/js/build/arbor.js"></script>
+<script src="{{asset_root}}/js/cytoscape.js"></script>
+<script src="{{asset_root}}/js/evidence.js"></script>
+<script src="{{asset_root}}/js/allele.js"></script>
+{% endblock scripts %}
+

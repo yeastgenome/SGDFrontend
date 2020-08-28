@@ -94,12 +94,29 @@
                     interactions
                     listed in SGD are curated by <a href="http://thebiogrid.org/" target="_blank">BioGRID</a>.
                 </p>
-            <span id="interaction_table_header" class="round secondary label"></span>
-        </h2>
-        <hr />
-        <!-- Includes interaction_table into template -->
-        {% set table_id = "interaction_table" %}
-        {% include "interaction_table.jinja2" %}
+	</h2>
+	<hr />
+
+	<div class="spaced-container">
+	    <h3>Physical Interactions
+            	<span id="physical_interaction_table_header" class="round secondary label"></span>
+	
+	    <!-- Includes physical_interaction_table into template -->
+            {% set table_id = "physical_interaction_table" %}
+            {% include "physical_interaction_table.jinja2" %}
+	    </h3>
+	</div>
+
+	<div class="spaced-container">
+	    <h3>Genetic Interactions
+            	<span id="genetic_interaction_table_header" class="round secondary label"></span>
+
+            <!-- Includes genetic_interaction_table into template -->
+            {% set table_id = "genetic_interaction_table" %}
+            {% include "genetic_interaction_table.jinja2" %}
+            </h3>
+	</div>
+
     </section>
 
 <!-- Network Visualization

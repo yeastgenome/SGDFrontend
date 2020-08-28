@@ -2,10 +2,16 @@
 $(document).ready(function() {
 
     $.getJSON('/backend/locus/' + locus['id'] + '/interaction_details', function(data) {
-        var interaction_table = create_interaction_table(data);
-        create_download_button("interaction_table_download", interaction_table, locus['display_name'] + "_interactions");
-        create_analyze_button("interaction_table_analyze", interaction_table, "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> interactors", true);
-  	    create_analyze_button("phys_gen_union", interaction_table, "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> interactors", false);
+        var physical_interaction_table = create_physical_interaction_table(data);
+        create_download_button("physical_interaction_table_download", physical_interaction_table, locus['display_name'] + "_physical_interactions");
+        create_analyze_button("physical_interaction_table_analyze", physical_interaction_table, "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> interactors", true);
+
+        var genetic_interaction_table = create_genetic_interaction_table(data);
+        create_download_button("genetic_interaction_table_download", genetic_interaction_table, locus['display_name'] + "_genetic_interactions");
+        create_analyze_button("genetic_interaction_table_analyze", genetic_interaction_table, "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> interactors", true);
+
+
+	create_analyze_button("phys_gen_union", interaction_table, "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> interactors", false);
 
         if(B > 0) {
   	        create_analyze_button_with_list("phys", get_physical_interactors(data), "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> physical interactors");
@@ -20,6 +26,8 @@ $(document).ready(function() {
             $("#interaction_table_download").hide();
             $("#interaction_table_analyze").hide();
         }
+
+	
 	});
 
 	$.getJSON('/backend/locus/' + locus['id'] + '/interaction_graph', function(data) {
@@ -45,12 +53,12 @@ $(document).ready(function() {
 
 });
 
-function create_interaction_table(data) {
+function create_physical_interaction_table(data) {
     var options = {};
     if("Error" in data) {
         options["bPaginate"] = true;
         options["aaSorting"] = [[5, "asc"]];
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}];
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}];
         options["oLanguage"] = {"sEmptyTable": data["Error"]};
         options["aaData"] = [];
     }
@@ -58,26 +66,86 @@ function create_interaction_table(data) {
         var datatable = [];
         var genes = {};
         for (var i=0; i < data.length; i++) {
-            datatable.push(interaction_data_to_table(data[i], i));
-            if(data[i]["locus1"]["id"] == locus['id']) {
-                genes[data[i]["locus2"]["id"]] = true;
-            }
-            else {
-                genes[data[i]["locus1"]["id"]] = true;
+	    if (data[i]["interaction_type"] == "Physical") {
+		datatable.push(physical_interaction_data_to_table(data[i], i));
+		if(data[i]["locus1"]["id"] == locus['id']) {
+                    genes[data[i]["locus2"]["id"]] = true;
+		}
+		else {
+                    genes[data[i]["locus1"]["id"]] = true;
+		}
             }
         }
 
-        set_up_header('interaction_table', datatable.length, 'entry', 'entries', Object.keys(genes).length, 'gene', 'genes');
+        set_up_header('physical_interaction_table', datatable.length, 'entry', 'entries', Object.keys(genes).length, 'gene', 'genes');
 
         options["bPaginate"] = true;
         options["aaSorting"] = [[5, "asc"]];
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}];
-        options["oLanguage"] = {"sEmptyTable": "No interaction data for " + locus['display_name']};
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}];
+        options["oLanguage"] = {"sEmptyTable": "No physical interaction data for " + locus['display_name']};
         options["aaData"] = datatable;
     }
 
-    return create_table("interaction_table", options);
+    return create_table("physical_interaction_table", options);
+
 }
+
+
+function create_genetic_interaction_table(data) {
+    var options = {};
+    if("Error" in data) {
+        options["bPaginate"] = true;
+        options["aaSorting"] = [[5, "asc"]];
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}];
+        options["oLanguage"] = {"sEmptyTable": data["Error"]};
+        options["aaData"] = [];
+    }
+    else {
+        var datatable = [];
+        var genes = {};
+	var k = 0;
+        for (var i=0; i < data.length; i++) {
+	    if (data[i]["interaction_type"] == "Genetic") {
+		var alleles = data[i]["alleles"];
+		if (alleles.length > 0) {
+		    for (var j = 0; j < alleles.length; j++) {
+			var allele = alleles[j];
+			var allele1_name = allele["allele1_name"];
+			var allele2_name = allele["allele2_name"];
+			var allele_pair = ""
+			if (allele1_name != '') {
+			    allele_pair = "<a href='/allele/" + allele1_name + "' target='_new'>" + allele1_name + "</a>";
+			}
+			if (allele2_name != '') {
+			    allele_pair = allele_pair + ", " + "<a href='/allele/" + allele2_name + "' target='_new'>" + allele2_name + "</a>";
+			}
+			datatable.push(genetic_interaction_data_to_table(data[i], k++, allele_pair, allele["sga_score"], allele["pvalue"]));
+		    }	
+		}
+		else {
+		    datatable.push(genetic_interaction_data_to_table(data[i], k++, '', '', ''));
+		}
+		if(data[i]["locus1"]["id"] == locus['id']) {
+                    genes[data[i]["locus2"]["id"]] = true;
+                }
+                else {
+                    genes[data[i]["locus1"]["id"]] = true;
+                }
+	    }
+        }
+
+        set_up_header('genetic_interaction_table', datatable.length, 'entry', 'entries', Object.keys(genes).length, 'gene', 'genes');
+
+        options["bPaginate"] = true;
+        options["aaSorting"] = [[5, "asc"]];
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bSortable":false}, {"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, null, null, {"bSearchable":false, "bVisible":false}, null, {"bSearchable":false, "bVisible":false}];
+        options["oLanguage"] = {"sEmptyTable": "No genetic interaction data for " + locus['display_name']};
+        options["aaData"] = datatable;
+    }
+
+    return create_table("genetic_interaction_table", options);
+}
+
 
 function get_physical_interactors(data) {
     var bioent_ids = {};
