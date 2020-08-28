@@ -13,7 +13,7 @@ import os
 
 SEARCH_URL = config.backend_url + '/get_search_results'
 TEMPLATE_ROOT = 'src:sgd/frontend/yeastgenome/static/templates/'
-ENV = os.getenv('ENV')
+ENV = os.getenv('ENV', 'dev')
 
 @view_config(route_name='healthcheck')
 def healthcheck(request):
@@ -118,7 +118,6 @@ def api_portal(request):
 
 @view_config(route_name='colleague_show')
 def colleague_show(request):
-    #import pdb ; pdb.set_trace()
     return render_to_response(TEMPLATE_ROOT + 'misc.jinja2', {}, request=request)
 
 
@@ -314,7 +313,11 @@ def get_redirect_url_from_results(results):
 
 # needed to force https redirects on reverse proxy LB
 def get_https_url(url, request):
-    host = request.host_url.replace('http', 'https').replace(':8080', '')
+    host = ''
+    if ENV == 'dev':
+        host = request.host_url.replace(':8080', '')
+    else:
+        host = request.host_url.replace('http', 'https').replace(':8080', '')
     return host + url
 
 
