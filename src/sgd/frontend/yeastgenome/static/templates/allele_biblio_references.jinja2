@@ -1,0 +1,9 @@
+{% for reference in allele.references if reference.id in references|map(attribute='id') %}
+    <span data-tooltip aria-haspopup="true" class="has-tip" title="{{ reference.display_name }}">
+        {% if full_url %}
+            <a href="/allele/{{ allele.sgdid }}#reference"><sup>{{ allele.reference_mapping[reference.id|string] }}</sup></a>
+        {% else %}
+            <a href="#reference"><sup>{{ allele.reference_mapping[reference.id|string] }}</sup></a>
+        {% endif %}
+    </span>
+{% endfor %}
