@@ -83,10 +83,12 @@
 	       	     {% if allele.affected_gene %}
 	             	<dt>Affected Gene</dt>
 	          	<dd><a href='/locus/{{allele.affected_gene.display_name}}' target='_blank'>{{ allele.affected_gene.display_name }}</a>
+			 <!--
 			    {% if allele.affected_gene.references|length > 0 %}
 			        {% set references = allele.affected_gene.references %}
                                 {% include "allele_biblio_references.jinja2" %}
 			    {% endif %}
+			 -->
 			</dd>
 	       	     {% endif %}
 	       	     <dt>Allele Type</dt>
