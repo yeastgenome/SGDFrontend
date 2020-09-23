@@ -177,6 +177,21 @@ def complex(request):
         return not_found(request)
     return render_to_response(TEMPLATE_ROOT + 'complex.jinja2', complex_obj, request=request)
 
+@view_config(route_name='allele')
+def allele(request):
+    alleleName = request.matchdict['identifier']
+    allele_obj = get_obj(alleleName, 'allele')
+    if allele_obj is None:
+        return not_found(request)
+    return render_to_response(TEMPLATE_ROOT + 'allele.jinja2', allele_obj, request=request)
+
+@view_config(route_name='allele_literature_details')
+def allele_literature_details(request):
+    alleleName = request.matchdict['identifier']
+    allele_obj = get_obj(alleleName, 'allele')
+    if allele_obj is None:
+        return not_found(request)
+    return render_to_response(TEMPLATE_ROOT + 'allele_literature.jinja2', allele_obj, request=request)
 
 # If is_quick, try to redirect to gene page.  If not, or no suitable response, then just show results in script tag and let client js do the rest.
 @view_config(route_name='search')
