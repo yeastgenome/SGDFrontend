@@ -15,12 +15,16 @@ $(document).ready(function() {
 
                 if (data != null && data["nodes"].length > 1) {
 
-                    has_interaction = 0
+                    has_positive_interaction = 0
+		    has_negative_interaction = 0
                     has_pheno = 0
                     for (var i = 0; i < data["nodes"].length; i++) {
                         var row = data["nodes"][i]
-                        if (row["category"] == 'INTERACTION') {
-                            has_interaction++;
+                        if (row["category"] == 'POSITIVE INTERACTION') {
+                            has_positive_interaction++;
+                        }
+			if (row["category"] == 'NEGATIVE INTERACTION') {
+                            has_negative_interaction++;
                         }
                         if (row["category"] == 'PHENOTYPE') {
                             has_pheno++;
@@ -37,10 +41,18 @@ $(document).ready(function() {
                     };
 
                     var categoryCount = 0;
-                    if (has_interaction > 0) {
-                        _categoryColors['INTERACTION'] = '#2ca02c';
-                        filters[' Interactions'] = function(d) {
-                            var acceptedCats = ['FOCUS', 'INTERACTION', 'ALLELE'];
+                    if (has_positive_interaction > 0) {
+                        _categoryColors['POSITIVE INTERACTION'] = '#2ca02c';
+                        filters[' Positive Interactions'] = function(d) {
+                            var acceptedCats = ['FOCUS', 'POSITIVE INTERACTION', 'ALLELE'];
+                            return acceptedCats.includes(d.category);
+                        }
+                        categoryCount++;
+                    }
+		    if (has_negative_interaction > 0) {
+                        _categoryColors['NEGATIVE INTERACTION'] = '#ff5733';
+                        filters[' Negative Interactions'] = function(d) {
+                            var acceptedCats = ['FOCUS', 'NEGATIVE INTERACTION', 'ALLELE'];
                             return acceptedCats.includes(d.category);
                         }
                         categoryCount++;
