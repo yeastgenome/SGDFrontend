@@ -137,19 +137,19 @@
 		{% endif %}{% endfor %}
                 <dd>
 		    {% for url in locus.urls if url.category == 'LOCUS_ALLIANCE_ICONS' %}
-		       {% if url.display_name == 'FB' %}
+		       {% if url.display_name == 'E FB' %}
                            <a href="{{ url.link }}" target="_blank"><img src='{{asset_root}}/img/alliance_logo_flybase.png' width='50px' height='50px' ></a>
-		       {% elif url.display_name == 'SGD' %}
+		       {% elif url.display_name == 'G SGD' %}
 		           <a href="{{ url.link }}" target="_blank"><img src='{{asset_root}}/img/alliance_logo_sgd.png' width='50px' height='50px'></a>
-		       {% elif url.display_name == 'RGD' %}
+		       {% elif url.display_name == 'C RGD' %}
 			   <a href="{{ url.link }}" target="_blank"><img src='{{asset_root}}/img/alliance_logo_mgd.png' width='50px' height='50px'></a>
-		       {% elif url.display_name == 'MGI' %}
+		       {% elif url.display_name == 'B MGI' %}
 			   <a href="{{ url.link }}" target="_blank"><img src='{{asset_root}}/img/alliance_logo_rgd.png' width='50px' height='50px'></a>
-		       {% elif url.display_name == 'WB' %}
+		       {% elif url.display_name == 'F WB' %}
 			   <a href="{{ url.link }}" target="_blank"><img src='{{asset_root}}/img/alliance_logo_wormbase.png' width='50px' height='50px'></a>
-		       {% elif url.display_name == 'ZFIN' %}
+		       {% elif url.display_name == 'D ZFIN' %}
 			   <a href="{{ url.link }}" target="_blank"><img src='{{asset_root}}/img/alliance_logo_zfin.png' width='50px' height='50px'></a>
-		       {% elif url.display_name == 'HGNC' %}
+		       {% elif url.display_name == 'A HGNC' %}
                            <a href="{{ url.link }}" target="_blank"><img src='{{asset_root}}/img/alliance_logo_hgnc.png' width='50px' height='50px'></a>
                        {% endif %}
                     {% endfor %}
