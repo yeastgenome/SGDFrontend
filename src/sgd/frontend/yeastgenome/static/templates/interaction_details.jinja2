@@ -29,7 +29,8 @@
         //Set up navbar
             add_navbar_title('<span>{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span>');
             add_navbar_element('Interactions Overview', 'overview');
-            add_navbar_element('Annotations', 'annotations');
+            add_navbar_element('Genetic Interactions', 'genetic');
+	    add_navbar_element('Physical Interactions', 'physical');
             add_navbar_element('Interaction Network', 'network');
             add_navbar_element('Resources', 'resources');
         </script>
@@ -81,13 +82,40 @@
         </div>
     </section>
 
-<!-- Annotations
+<!-- Genetic Interactions
 ================================================== -->
-    <section id="annotations" data-magellan-destination="annotations">
-        <h2>Annotations
-            <a href="#" data-dropdown="annotations_info"><i class="fa fa-info-circle"></i></a>
+    <section id="genetic" data-magellan-destination="genetic">
+        <h2>Genetic Interactions
+            <a href="#" data-dropdown="genetic_interaction"><i class="fa fa-info-circle"></i></a>
 
-                <p id="annotations_info" class="f-dropdown content medium" data-dropdown-content>
+                <p id="genetic_interaction" class="f-dropdown content medium" data-dropdown-content>
+                    An interaction is defined as an experimentally observed physical or genetic interaction
+                    between two genes. There may be more than one row listed for the same interactor if the
+                    interaction between it and the given gene was observed in separate studies. All
+                    interactions
+                    listed in SGD are curated by <a href="http://thebiogrid.org/" target="_blank">BioGRID</a>.
+                </p>
+        </h2>
+        <hr />
+	
+        <div class="spaced-container">
+            <h3>Genetic Interactions
+                <span id="genetic_interaction_table_header" class="round secondary label"></span>
+            </h3>
+            <!-- Includes genetic_interaction_table into template -->
+            {% set table_id = "genetic_interaction_table" %}
+            {% include "genetic_interaction_table.jinja2" %}
+        </div>
+
+    </section>
+
+<!-- Physical Interactions
+================================================== -->
+    <section id="physical" data-magellan-destination="physical">
+        <h2>Physical Interactions
+            <a href="#" data-dropdown="physical_interaction"><i class="fa fa-info-circle"></i></a>
+
+                <p id="physical_interaction" class="f-dropdown content medium" data-dropdown-content>
                     An interaction is defined as an experimentally observed physical or genetic interaction
                     between two genes. There may be more than one row listed for the same interactor if the
                     interaction between it and the given gene was observed in separate studies. All
@@ -104,15 +132,6 @@
 	    <!-- Includes physical_interaction_table into template -->
             {% set table_id = "physical_interaction_table" %}
             {% include "physical_interaction_table.jinja2" %}
-	</div>
-
-	<div class="spaced-container">
-	    <h3>Genetic Interactions
-            	<span id="genetic_interaction_table_header" class="round secondary label"></span>
-            </h3>
-            <!-- Includes genetic_interaction_table into template -->
-            {% set table_id = "genetic_interaction_table" %}
-            {% include "genetic_interaction_table.jinja2" %}
 	</div>
 
     </section>
