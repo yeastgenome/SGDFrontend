@@ -37,7 +37,15 @@
         <script>
             add_navbar_title('{{ allele.name.display_name }}')
             add_navbar_element('Literature Overview', 'overview');
-	    add_navbar_element('Primary Literature', 'primary');
+	    {% if allele.primary_references|length > 0 %}
+	       add_navbar_element('Primary Literature', 'primary');
+	    {% endif %}
+	    {% if allele.additional_references|length > 0 %}
+               add_navbar_element('Additional Literature', 'additional');
+            {% endif %}
+	    {% if allele.review_references|length > 0 %}
+               add_navbar_element('Reviews', 'review');
+            {% endif %}
             {% if allele.phenotype|length > 0 %}
                 add_navbar_element('Phenotype Literature', 'phenotype');
             {% endif %}
@@ -72,7 +80,7 @@
 
 	<!-- Primary Literature
         ================================================== -->
-        {% if allele.references|length > 0 %}
+        {% if allele.primary_references|length > 0 %}
         <section id="primary" data-magellan-destination="primary">
         <div class="page-header">
             <h2>Primary Literature
@@ -86,7 +94,70 @@
             <hr />
 
 	    <ul className="reference-list">
-                {% for ref in allele.references %}
+                {% for ref in allele.primary_references %}
+                   <li>
+                      <a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
+                          <span>{{ ref.citation|e|replace(ref.display_name, '') }}</span>
+                      {% if ref.pubmed_id != none %}
+                          <small>PMID: {{ ref.pubmed_id|e }}</small>
+                      {% endif %}
+                      <ul class="ref-links">
+                          <li><a href="{{ ref.link|e }}">SGD Paper</a></li>
+                          {% for url in ref.urls %}
+                             <li><a target="_infowin" href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
+                          {% endfor %}
+                      </ul>
+                   </li>
+                {% endfor %}
+            </ul>
+        </div>
+        </section>
+        {% endif %}
+
+        <!-- Additional Literature
+        ================================================== -->
+        {% if allele.additional_literature|length > 0 %}
+        <section id="additional" data-magellan-destination="additional">
+        <div class="page-header">
+            <h2>Additional Literature
+                 <a href="#" data-dropdown="additional_info"><i class="fa fa-info-circle"></i></a>
+                 <p id="additional_info" class="f-dropdown content medium" data-dropdown-content>
+                      Papers that show experimental evidence for the alleles, but for which the allele is not the paper’s principal focus.
+                 </p>
+            </h2>
+            <hr />
+
+            <ul className="reference-list">
+                {% for ref in allele.additional_references %}
+                   <li>
+                      <a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
+                          <span>{{ ref.citation|e|replace(ref.display_name, '') }}</span>
+                      {% if ref.pubmed_id != none %}
+                          <small>PMID: {{ ref.pubmed_id|e }}</small>
+                      {% endif %}
+                      <ul class="ref-links">
+                          <li><a href="{{ ref.link|e }}">SGD Paper</a></li>
+                          {% for url in ref.urls %}
+                             <li><a target="_infowin" href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
+                          {% endfor %}
+                      </ul>
+                   </li>
+                {% endfor %}
+            </ul>
+        </div>
+        </section>
+        {% endif %}
+
+        <!-- Reviews Literature
+        ================================================== -->
+        {% if allele.review_references|length > 0 %}
+        <section id="review" data-magellan-destination="review">
+        <div class="page-header">
+            <h2>Reviews</h2>
+            <hr />
+
+            <ul className="reference-list">
+                {% for ref in allele.reviews_references %}
                    <li>
                       <a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
                           <span>{{ ref.citation|e|replace(ref.display_name, '') }}</span>
