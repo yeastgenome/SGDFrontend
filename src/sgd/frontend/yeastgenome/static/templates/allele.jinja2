@@ -97,7 +97,7 @@
                          {% set references = allele.allele_type.references %}
                          {% include "allele_biblio_references.jinja2" %}
                      {% endif %}
-	       	     {% if allele.description %}
+	       	     {% if allele.description.display_text %}
 	             	<dt>Description</dt>
                	     	<dd>{{ allele.description.display_text }}</dd>
 			{% if allele.description.references|length > 0 %}
