@@ -63,7 +63,7 @@
         	<div class="">
 	    	  <dl class="key-value">
 	       	     <dt>Allele Name</dt>
-	       	     <dd>{{ allele.name.display_name }}
+	       	     <dd>{{ allele.name.display_text }}
 		         {% if allele.name.references|length > 0 %}
 			    {% set references = allele.name.references %}
                             {% include "allele_biblio_references.jinja2" %}
@@ -92,10 +92,20 @@
 			</dd>
 	       	     {% endif %}
 	       	     <dt>Allele Type</dt>
-               	     <dd>{{ allele.allele_type }}</dd>
-	       	     {% if allele.description %}
+               	     <dd>{{ allele.allele_type.display_text}}
+		         {% if allele.allele_type.references|length > 0 %}
+                             {% set references = allele.allele_type.references %}
+                             {% include "allele_biblio_references.jinja2" %}
+                         {% endif %}
+		     </dd>
+	       	     {% if allele.description.display_text %}
 	             	<dt>Description</dt>
-               	     	<dd>{{ allele.description }}</dd>
+               	     	<dd>{{ allele.description.display_text }}
+			    {% if allele.description.references|length > 0 %}
+                                {% set references = allele.description.references %}
+                                {% include "allele_biblio_references.jinja2" %}
+                            {% endif %}
+			</dd>
 	       	     {% endif %}
                   </dl>
                 </div>
