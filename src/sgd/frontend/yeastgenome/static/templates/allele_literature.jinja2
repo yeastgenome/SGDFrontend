@@ -68,7 +68,7 @@
             <div class="">
                 <dl class="key-value">
     		    <dt>Unique References</dt>
-                    <dd>{{ allele.references|length }}</dd>
+                    <dd>{{ allele.unique_references|length }}</dd>
                     {% for alias in allele.aliases %}
                         {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
                         {{ alias.display_name }}
