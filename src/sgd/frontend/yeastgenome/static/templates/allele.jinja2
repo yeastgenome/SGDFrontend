@@ -82,10 +82,12 @@
 	       	     {% endfor %}
 	       	     {% if allele.affected_gene %}
 	             	<dt>Affected Gene</dt>
+			<dd>
 			{% for gene in allele.affected_gene %}
-                           <dd><a href='/locus/{{gene}}' target='_blank'>{{ gene }}</a>
-                           {% if not loop.last %}, {% else %}</dd>{% endif %}
+                           <a href='/locus/{{gene}}' target='_blank'>{{ gene }}</a>
+                           {% if not loop.last %}, {% endif %}
                         {% endfor %}
+			</dd>
 	       	     {% endif %}
 	       	     <dt>Allele Type</dt>
                	     <dd>{{ allele.allele_type.display_text}}
