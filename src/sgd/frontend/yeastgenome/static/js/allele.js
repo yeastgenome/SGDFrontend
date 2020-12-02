@@ -89,7 +89,7 @@ function create_interaction_table(data, this_allele) {
         options["oLanguage"] = {"sEmptyTable": data["Error"]};
         options["aaData"] = [];
     }
-    else {
+    else {	
         var datatable = [];
         var genes = {};
 	var k = 0;
