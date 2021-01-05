@@ -444,7 +444,7 @@ class Header extends Component {
                 <li>
                   <a
                     className="disabled-header-a"
-                    href="https://yeastmine.yeastgenome.org/yeastmine/loadTemplate.do?name=GenomeWide_Papers&scope=all&method=results&format=tab"
+                    href="https://yeastmine.yeastgenome.org/yeastmine/loadTemplate.do?name=GenomeWide_Papers&constraint1=Publication.literatureTopics.name&op1=eq&value1=Omics&scope=all&method=results&format=tab"
                   >
                     Genome-wide Analysis Papers
                   </a>
