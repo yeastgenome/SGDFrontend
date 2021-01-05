@@ -85,6 +85,9 @@
             <dt>Systematic Name</dt>
             <dd>{{ complex.systematic_name }}</dd>
 
+	    <dt>SGD ID</dt>
+            <dd>{{ complex.sgdid }}</dd>
+	    
                 {% for alias in complex.aliases %}
                               {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
                               {{ alias }}
