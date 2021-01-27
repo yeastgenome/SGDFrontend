@@ -417,7 +417,7 @@ BLAST Help at NCBI</a>.</p><hr>';
     var _databaseDef = data.databasedef;
     var param = this.state.param;
     if (param['type'] == 'protein') {
-      _databaseDef = ['YeastORF.fsa'];
+      _databaseDef = data.databasedef4protein;
     }
 
     var defaultDatabase = [];
@@ -438,6 +438,11 @@ BLAST Help at NCBI</a>.</p><hr>';
     var datagroup = data.datagroup;
     var _databaseDef = data.databasedef;
 
+    var param = this.state.param;
+    if (param['type'] == 'protein') {
+      _databaseDef = data.databasedef4protein;
+    }
+      
     var i = 0;
     const selectedValue = [];
     var _elements = _.map(database, (d, index) => {
