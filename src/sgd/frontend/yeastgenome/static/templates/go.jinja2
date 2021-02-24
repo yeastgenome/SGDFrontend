@@ -46,9 +46,10 @@
                         <dt>Aspect</dt>
                         <dd>{{ go_term.go_aspect|title }}</dd>
 
-                        <dt>Description</dt>
-                        <dd>{{ go_term.description }}</dd>
-
+                        {% if go_term.description %}
+                            <dt>Description</dt>
+                            <dd>{{ go_term.description }}</dd>
+                        {% endif %}
                         {% if go_term.aliases|length > 0 %}
                             <dt>Synonyms</dt>
                             <dd>

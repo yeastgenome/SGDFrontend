@@ -683,10 +683,10 @@ class SearchForm extends Component {
       data_type: 'json',
       type: 'POST',
       data: { seqname: param['seqname'], dataset: param['dataset'] },
-      success(data) {
+      success: (data) => {
         this.setState({ seqFetched: true, resultData: data });
       },
-      error(xhr, status, err) {
+      error: (xhr, status, err) => {
         this.setState({ isPending: true });
       },
     });
