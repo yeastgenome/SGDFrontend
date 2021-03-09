@@ -48,6 +48,10 @@ def sequence_details(request):
 def protein_details(request):
     return render_locus_page(request, 'protein_details')
 
+@view_config(route_name='homology_details')
+def homology_details(request):
+    return render_locus_page(request, 'homology_details')
+
 @view_config(route_name='go_details')
 def go_details(request):
     return render_locus_page(request, 'go_details')
