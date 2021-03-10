@@ -45,6 +45,7 @@
 		    <dt>Reserved Name</dt>
                     <dd>{{ locus.reserved_name.display_name }}
 		        {% set references = [locus.reserved_name.reference] %}
+			{% set full_url = True %}
 			{% include "biblio_references.jinja2" %}
 			<i>This name is reserved with SGD according to the
 			<a target="_blank" href="https://sites.google.com/view/yeastgenome-help/community-help/gene-registry">Gene Naming Guidelines</a>
@@ -55,6 +56,7 @@
 		    <dd>{{ locus.display_name }}
 		        {% if 'gene_name' in locus.qualities %}
 			   {% set references = locus.qualities.gene_name.references %}
+			   {% set full_url = True %}
 			   {% include "biblio_references.jinja2" %}
 			{% endif %}</dd>
                 {% endif %}
@@ -70,6 +72,7 @@
 
                     {{ alias.display_name }}
                     {% set references = alias.references %}
+		    {% set full_url = True %}
                     {%- include "biblio_references.jinja2" -%}
 
                     {% if not loop.last %},{% else %}</dd>{% endif %}
@@ -80,11 +83,13 @@
                     <dd>{{ locus.locus_type }}
                         {%- if 'feature_type' in locus.qualities -%}
                             {% set references = locus.qualities.feature_type.references %}
+			    {% set full_url = True %}
                             {% include "biblio_references.jinja2" %}
                         {% endif %}
                         {%- if locus.qualifier != None -%}, {{ locus.qualifier }}{% endif %}
                         {%- if 'qualifier' in locus.qualities -%}
                             {% set references = locus.qualities.qualifier.references %}
+			    {% set full_url = True %}
                             {% include "biblio_references.jinja2" %}
                         {% endif %}
                         {%- if locus.bioent_status != 'Active' -%}, {{ locus.bioent_status }}{% endif %}
@@ -96,6 +101,7 @@
                     {{ locus.description|safe }}
                     {% if 'description' in locus.qualities %}
                         {% set references = locus.qualities.description.references %}
+			{% set full_url = True %}
                         {% include "biblio_references.jinja2" %}
                     {% endif %}
                 </dd>
@@ -105,6 +111,7 @@
                     <dd>{{ locus.name_description }}
                         {% if 'name_description' in locus.qualities %}
                             {% set references = locus.qualities.name_description.references %}
+			    {% set full_url = True %}
                             {% include "biblio_references.jinja2" %}
                         {% endif %}
                     </dd>
@@ -117,6 +124,7 @@
 
                         {{ alias.display_name }}
                         {% set references = alias.references %}
+			{% set full_url = True %}
                         {% include "biblio_references.jinja2" %}
                     {% endif %}
                 {% endfor %}
@@ -129,6 +137,7 @@
                             <a href="{{ paralog.child.link }}">{{ paralog.child.display_name }}</a>
                         {% endif %}
                         {% set references = paralog.references %}
+			{% set full_url = True %}
                         {% include "biblio_references.jinja2" %}
 
                         {% if not loop.last %}, {% endif %}
