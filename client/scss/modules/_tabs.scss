@@ -2,9 +2,22 @@
 	margin-top: 0.5rem;
 }
 
+.sgd-tabs_small .tab-title > a {
+        position: relative;
+        padding: 4px 8px;
+        border-right: 1px solid #e1e1e1;
+        border-left: 1px solid #e1e1e1;
+
+        // shrink font on smaller screens (around iPad)                                             
+        @media only screen and (max-width: 64rem)  {
+                font-size: 14px;
+                padding: 4px 4px;
+        }
+}
+
 .sgd-tabs .tab-title > a {
 	position: relative;
-	padding: 4px 8px;
+	padding: 8px 16px;
 	border-right: 1px solid #e1e1e1;
 	border-left: 1px solid #e1e1e1;
 
