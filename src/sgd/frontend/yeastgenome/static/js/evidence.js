@@ -41,12 +41,12 @@ function fungal_homolog_data_to_table(evidence) {
 	}    
     }
 
-    let species = "<i>" + evidence['species'] + "</i>";
+    let gene_id = evidence['gene_id'];
     if (link != '') {
-	species = create_link(species, link);
+	gene_id = create_link(gene_id, link);
     }
     
-    return [evidence['gene_id'], species, evidence['gene_id'], evidence['gene_name'], evidence['description'], evidence['source']]
+    return [evidence['gene_id'], "<i>" + evidence['species'] + "</i>", gene_id, evidence['gene_name'], evidence['description'], evidence['source']]
 
 }
 
