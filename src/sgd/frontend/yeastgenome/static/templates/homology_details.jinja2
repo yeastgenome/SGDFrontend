@@ -1,0 +1,313 @@
+{% extends "global_layout.jinja2" %}
+
+{% block title %}{{ locus.display_name }} Homology{% endblock %}
+
+{% block head %}
+<script>
+    var locus = {{ locus_js|safe }};
+
+</script>
+{% endblock %}
+
+{% block body %}
+
+<!-- Tabs
+================================================== -->
+<!-- Includes tabs.html into template -->
+{% include "tabs.jinja2" %}
+<script>document.getElementById("homology_tab").className += " active";</script>
+
+<div class="row">
+
+     {% include "navbar.jinja2" %}
+     
+     <div class="small-12 medium-10 columns content-column">
+
+        <script>
+            add_navbar_title('<span>{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}</span>');
+            add_navbar_element("Homology Overview", "overview");
+            add_navbar_element("Homologs", "homologs");
+            add_navbar_element("Functional Complementation", "complements");
+            add_navbar_element("Fungal Homologs", "fungal_homologs");
+            add_navbar_element("External Identifiers", "external_ids");
+	    add_navbar_element("Resources", "resources");
+        </script>
+
+        <!-- Overview
+	================================================== -->
+	<section id="overview" data-magellan-destination="overview">	    	
+           <h1>{% if not locus.display_standard_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }} Homology{% endif %}</h1>
+           <hr />
+	
+	   <div class="">
+	     <dl class="key-value">
+	        {% if 'reserved_name' in locus %}
+		    <dt>Reserved Name</dt>
+                    <dd>{{ locus.reserved_name.display_name }}
+		        {% set references = [locus.reserved_name.reference] %}
+			{% set full_url = True %}
+			{% include "biblio_references.jinja2" %}
+			<i>This name is reserved with SGD according to the
+			<a target="_blank" href="https://sites.google.com/view/yeastgenome-help/community-help/gene-registry">Gene Naming Guidelines</a>
+			agreed upon by the yeast community.</i></dd>
+		{% endif %}
+		{% if locus.display_standard_name %}
+		    <dt>Standard Name</dt>
+		    <dd>{{ locus.display_name }}
+		        {% if 'gene_name' in locus.qualities %}
+			   {% set references = locus.qualities.gene_name.references %}
+			   {% set full_url = True %}
+			   {% include "biblio_references.jinja2" %}
+			{% endif %}</dd>
+                {% endif %}
+
+		<dt>Systematic Name</dt>
+                <dd>{{ locus.format_name }}</dd>
+
+		<dt>SGD ID</dt>
+                <dd>SGD:{{ locus.sgdid }}</dd>
+
+                {% for alias in locus.aliases if alias.category == 'Alias' %}
+                    {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
+
+                    {{ alias.display_name }}
+                    {% set references = alias.references %}
+		    {% set full_url = True %}
+                    {%- include "biblio_references.jinja2" -%}
+
+                    {% if not loop.last %},{% else %}</dd>{% endif %}
+                {% endfor %}
+
+                {%- if (locus.locus_type != "") -%}
+                    <dt>Feature Type</dt>
+                    <dd>{{ locus.locus_type }}
+                        {%- if 'feature_type' in locus.qualities -%}
+                            {% set references = locus.qualities.feature_type.references %}
+			    {% set full_url = True %}
+                            {% include "biblio_references.jinja2" %}
+                        {% endif %}
+                        {%- if locus.qualifier != None -%}, {{ locus.qualifier }}{% endif %}
+                        {%- if 'qualifier' in locus.qualities -%}
+                            {% set references = locus.qualities.qualifier.references %}
+			    {% set full_url = True %}
+                            {% include "biblio_references.jinja2" %}
+                        {% endif %}
+                        {%- if locus.bioent_status != 'Active' -%}, {{ locus.bioent_status }}{% endif %}
+                    </dd>
+                {% endif %}
+
+		<dt>Description</dt>
+                <dd>
+                    {{ locus.description|safe }}
+                    {% if 'description' in locus.qualities %}
+                        {% set references = locus.qualities.description.references %}
+			{% set full_url = True %}
+                        {% include "biblio_references.jinja2" %}
+                    {% endif %}
+                </dd>
+
+                {% if locus.name_description != None %}
+                    <dt>Name Description</dt>
+                    <dd>{{ locus.name_description }}
+                        {% if 'name_description' in locus.qualities %}
+                            {% set references = locus.qualities.name_description.references %}
+			    {% set full_url = True %}
+                            {% include "biblio_references.jinja2" %}
+                        {% endif %}
+                    </dd>
+                {% endif %}
+
+                {% for alias in locus.aliases if alias.category == 'Gene product' %}
+                    {% if loop.first %}
+                        <dt>Gene Product</dt>
+                        <dd>
+
+                        {{ alias.display_name }}
+                        {% set references = alias.references %}
+			{% set full_url = True %}
+                        {% include "biblio_references.jinja2" %}
+                    {% endif %}
+                {% endfor %}
+
+                {% if locus.paralogs|length > 0 %}
+                    <dt>Paralog</dt>
+                    <dd>
+                    {% for paralog in locus.paralogs %}
+                        {% if paralog.child %}
+                            <a href="{{ paralog.child.link }}">{{ paralog.child.display_name }}</a>
+                        {% endif %}
+                        {% set references = paralog.references %}
+			{% set full_url = True %}
+                        {% include "biblio_references.jinja2" %}
+
+                        {% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                    </dd>
+                {% endif %}
+
+                {% for url in locus.urls if url.category == 'LOCUS_ALLIANCE_ICONS' %}{% if loop.first %}
+                    <dt>Comparative Info</dt>
+                {% endif %}{% endfor %}
+
+		<dd>
+		    {% for url in locus.urls if url.category == 'LOCUS_ALLIANCE_ICONS' %}
+		       {% if url.display_name == 'E FB' %}
+		          <a href="{{ url.link }}" target="_blank"><img src='{{asset_root}}/img/alliance_logo_flybase.png' width='50px' height='50px' ></a>
+		       {% elif url.display_name == 'G SGD' %}
+		          <a href="{{ url.link }}" target="_blank"><img src='{{asset_root}}/img/alliance_logo_sgd.png' width='50px' height='50px'></a>
+		       {% elif url.display_name == 'C RGD' %}
+		          <a href="{{ url.link }}" target="_blank"><img src='{{asset_root}}/img/alliance_logo_mgd.png' width='50px' height='50px'></a>
+		       {% elif url.display_name == 'B MGI' %}
+		          <a href="{{ url.link }}" target="_blank"><img src='{{asset_root}}/img/alliance_logo_rgd.png' width='50px' height='50px'></a>
+		       {% elif url.display_name == 'F WB' %}
+		          <a href="{{ url.link }}" target="_blank"><img src='{{asset_root}}/img/alliance_logo_wormbase.png' width='50px' height='50px'></a>
+		       {% elif url.display_name == 'D ZFIN' %}
+		          <a href="{{ url.link }}" target="_blank"><img src='{{asset_root}}/img/alliance_logo_zfin.png' width='50px' height='50px'></a>
+		       {% elif url.display_name == 'A HGNC' %}
+		          <a href="{{ url.link }}" target="_blank"><img src='{{asset_root}}/img/alliance_logo_hgnc.png' width='50px' height='50px'></a>
+		       {% endif %}
+                    {% endfor %}
+		</dd>
+      	     </dl>
+	   </div>
+        </section>
+
+	<!-- Homologs
+        ============================================================ -->
+        <section id="homologs" data-magellan-destination="homologs">
+        <h2>Homologs
+            <a href="#" data-dropdown="homolog_info"><i class="fa fa-info-circle"></i></a>
+            <p id="homolog_info" class="f-dropdown content medium" data-dropdown-content>
+	       Homology calls are sourced from the <a href="https://www.alliancegenome.org">Alliance of Genome Resources</a>. Many aspects of data integration presented at the Alliance require a common set of orthology relationships among genes for the organisms represented, including human. The Alliance provides the results of all methods that have been benchmarked by the <a href="https://questfororthologs.org">Quest for Orthologs Consortium</a> (QfO). The homolog inferences from the different methods have been integrated using the <a href="https://www.flyrnai.org/cgi-bin/DRSC_orthologs.pl">DRSC Integrative Ortholog Prediction Tool</a> (DIOPT), which integrates a number of existing methods including those used by the Alliance: Ensembl Compara, HGNC, Hieranoid, InParanoid, OMA, OrthoFinder, OrthoInspector, PANTHER, PhylomeDB, Roundup, TreeFam, and ZFIN.
+            </p>
+            <span id="homolog_table_header" class="round secondary label"></span>
+	</h2>
+        <hr />
+	    <div class="">
+                <!-- Includes homolog_table into template -->
+                {% set table_id = "homolog_table" %}
+                {% include "homolog_table.jinja2" %}
+            </div>
+
+	</section>
+	
+	<!-- Functional Complementation
+        ============================================================ -->
+        <section id="complements" data-magellan-destination="complements">
+        <h2>Functional Complementation
+            <a href="#" data-dropdown="complement_info"><i class="fa fa-info-circle"></i></a>
+            <p id="complement_info" class="f-dropdown content medium" data-dropdown-content>
+	       Information about cross-species functional complementation between yeast and other species, curated by SGD and the <a href="http://ppod.princeton.edu">Princeton Protein Orthology Database</a> (P-POD).
+            </p>
+            <span id="complement_table_header" class="round secondary label"></span>
+
+	</h2>        
+        <hr />
+            <div class="">
+                <!-- Includes complement_table into template -->
+                {% set table_id = "complement_table" %}
+                {% include "complement_table.jinja2" %}
+            </div>
+
+	</section>
+
+
+	<!-- Fungal Homologs
+        ============================================================ -->
+        <section id="fungal_homologs" data-magellan-destination="fungal_homologs">
+        <h2>Fungal Homologs
+            <a href="#" data-dropdown="fungal_homolog_info"><i class="fa fa-info-circle"></i></a>
+            <p id="fungal_homolog_info" class="f-dropdown content medium" data-dropdown-content>
+               Fungal Homology calls are sourced from <a href="https://yeastmine.yeastgenome.org/yeastmine/template.do?name=Gene_FungalHomologs&scope=all">YeastMine</a>, which compiles fungal homology calls from FungiDB, CGD, Panther, PomBase, TreeFam, HomoloGene, and SGD.
+            </p>
+            <span id="fungal_homolog_table_header" class="round secondary label"></span>
+	</h2>
+        <hr />
+            <div class="">
+		<!-- Includes fungal_homolog_table into template -->
+		{% set table_id = "fungal_homolog_table" %}
+                {% include "fungal_homolog_table.jinja2" %}
+            </div>
+	    
+        </section>
+
+	<!-- External Identifiers
+        ============================================================ -->
+        <section id="external_ids" data-magellan-destination="external_ids">
+        <h2>External Identifiers
+            <a href="#" data-dropdown="external_id_info"><i class="fa fa-info-circle"></i></a>
+            <p id="external_id_info" class="f-dropdown content medium" data-dropdown-content>
+                List of external identifiers for the protein from various database sources.
+            </p>
+            <span id="alias_table_header" class="round secondary label"></span>
+	</h2>
+	<hr />
+            <div class="">
+                <!-- Includes alias_table into template -->
+                {% set table_id = "alias_table" %}
+                {% include "alias_table.jinja2" %}
+            </div>
+        </section>
+	
+        <!-- Resources
+        ============================================================ -->
+        <section id="resources" data-magellan-destination="resources">
+        <h2>Resources</h2>
+        <hr />
+
+        <div class="panel">
+          {% if locus.urls|length > 0 %}
+	      {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_HOMOLOGS'%}
+                 {% if loop.first %} <h3>Homologs</h3><p id='homolog_resources_list'> {% endif %}
+                 <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                 {% if loop.last %}</p>{% endif %}
+              {% endfor %}
+              {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_PROTEIN_DATABASES'%}
+                 {% if loop.first %} <h3>Protein Databases</h3><p id='protein_databases_resources_list'> {% endif %}
+                 <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                 {% if loop.last %}</p>{% endif %}
+              {% endfor %}
+
+              {% for url in locus.urls if url.category == 'LOCUS_PROEIN_LOCALIZATION'%}
+                 {% if loop.first %} <h3>Localization</h3> <p id="localization_resources_list"> {% endif %}
+                 <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                 {% if loop.last %}</p>{% endif %}
+              {% endfor %}
+
+              {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_MODIFICATIONS'%}
+                 {% if loop.first %} <h3>Post-translational Modifications</h3> <p id="modifications_resources_list"> {% endif %}
+                 <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+                 {% if loop.last %}</p>{% endif %}
+              {% endfor %}
+
+              {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_S288C'%}
+                 {% if loop.first %}<h3>S288C only</h3><p id="reference_only_resources_list">{% endif %}
+                 <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% else %} </p> {% endif %}
+              {% endfor %}
+
+              {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_OTHER_SPECIES'%}
+                 {% if loop.first %}<h3>S288C vs. other species</h3> <p id="other_species_resources_list">{% endif %}
+                 <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% else %} </p> {% endif %}
+              {% endfor %}
+
+              {% for url in locus.urls if url.category == 'LOCUS_SEQUENCE_OTHER_STRAINS'%}
+                 {% if loop.first %}<h3>S288C vs. other strains</h3><p id="other_strains_resources_list">{% endif %}
+		 <a href="{{ url.link }}">{{ url.display_name }}</a>{% if not loop.last %} | {% else %} </p> {% endif %}
+              {% endfor %}
+
+          {% endif %}
+        </div>	      
+        </section>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{asset_root}}/js/build/nouislider.min.js"></script>
+<script src="/static/js/build/arbor.js"></script>
+<script src="{{asset_root}}/js/local.js"></script>
+<script src="{{asset_root}}/js/evidence.js"></script>
+<script src="{{asset_root}}/js/homology_details.js"></script>
+{% endblock scripts %}
