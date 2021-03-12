@@ -21,7 +21,32 @@ function domain_data_to_table(evidence) {
 
 function fungal_homolog_data_to_table(evidence) {
 
-    return [evidence['gene_id'], "<i>" + evidence['species'] + "</i>", evidence['gene_id'], evidence['gene_name'], evidence['description'], evidence['source']]
+    let link = '';
+    let sgdSrc = ['SGD', 'HomoloGene', 'Panther', 'TreeFam'];
+    if (sgdSrc.indexOf(evidence['source']) !== -1) {
+        link = '/locus/' + evidence['gene_id'];
+    }
+    else if (evidence['source'] == 'PomBase') {
+	link = 'https://www.pombase.org/gene/' + evidence['gene_id'];
+    }
+    else if (evidence['source'] == 'CGD') {
+	link = 'http://www.candidagenome.org/cgi-bin/locus.pl?locus=' + evidence['gene_id'];
+    }
+    else if (evidence['source'] == 'FungiDB') {
+	if (evidence['species'] == 'A. niger ATCC 1015') {
+	    link = 'https://www.uniprot.org/uniprot/?query=' + evidence['gene_id'];
+	}
+	else {
+	    link = 'https://fungidb.org/fungidb/app/record/gene/' + evidence['gene_id'];
+	}    
+    }
+
+    let species = "<i>" + evidence['species'] + "</i>";
+    if (link != '') {
+	species = create_link(species, link);
+    }
+    
+    return [evidence['gene_id'], species, evidence['gene_id'], evidence['gene_name'], evidence['description'], evidence['source']]
 
 }
 
