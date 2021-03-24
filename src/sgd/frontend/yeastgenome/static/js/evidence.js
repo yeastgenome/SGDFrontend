@@ -19,6 +19,53 @@ function domain_data_to_table(evidence) {
 
 }
 
+function fungal_homolog_data_to_table(evidence) {
+
+    let link = '';
+    let sgdSrc = ['SGD', 'HomoloGene', 'Panther', 'TreeFam'];
+    if (sgdSrc.indexOf(evidence['source']) !== -1) {
+        link = '/locus/' + evidence['gene_id'];
+    }
+    else if (evidence['source'] == 'PomBase') {
+	link = 'https://www.pombase.org/gene/' + evidence['gene_id'];
+    }
+    else if (evidence['source'] == 'CGD') {
+	link = 'http://www.candidagenome.org/cgi-bin/locus.pl?locus=' + evidence['gene_id'];
+    }
+    else if (evidence['source'] == 'FungiDB') {
+	if (evidence['species'] == 'A. niger ATCC 1015') {
+	    link = 'https://www.uniprot.org/uniprot/?query=' + evidence['gene_id'];
+	}
+	else {
+	    link = 'https://fungidb.org/fungidb/app/record/gene/' + evidence['gene_id'];
+	}    
+    }
+
+    let gene_id = evidence['gene_id'];
+    if (link != '') {
+	gene_id = create_link(gene_id, link);
+    }
+    
+    return [evidence['gene_id'], "<i>" + evidence['species'] + "</i>", gene_id, evidence['gene_name'], evidence['description'], evidence['source']]
+
+}
+
+function homolog_data_to_table(evidence) {
+
+    let id = create_link(evidence['id'], 'https://www.alliancegenome.org/gene/' + evidence['id']);
+    return [evidence['id'], "<i>" + evidence['species']['name'] + "</i>", id, evidence['symbol'], 'Alliance']
+    
+}
+
+function complement_data_to_table(evidence) {
+    
+    let complement = create_link(evidence['dbxref_id'], evidence['obj_url']);
+    let paper = create_link(evidence['references'][0]['display_name'], evidence['references'][0]['link']) + "<br>PMID:" + evidence['references'][0]['pubmed_id'];
+	
+    return [evidence['id'], evidence['locus']['id'], "<i>" + evidence['species'] + "</i>", complement, evidence['strain_background'], evidence['direction'], evidence['curator_comment'], evidence['source']['display_name'], paper]
+	    
+}
+
 function dataset_datat_to_table(dataset) {
     var reference = '';
     if(dataset['reference'] != null) {

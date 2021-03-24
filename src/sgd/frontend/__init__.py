@@ -61,6 +61,7 @@ def prep_views(chosen_frontend, config):
     config.add_route('regulation_details', '/locus/{identifier}/regulation')
     config.add_route('expression_details', '/locus/{identifier}/expression')
     config.add_route('literature_details', '/locus/{identifier}/literature')
+    config.add_route('homology_details', '/locus/{identifier}/homology')
     config.add_route('curator_sequence', '/curator/locus/{identifier}/sequence')
     # references
     config.add_route('references_this_week', '/reference/recent')
