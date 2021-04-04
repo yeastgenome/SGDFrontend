@@ -128,7 +128,7 @@ function create_complement_table(data) {
         options["aaSorting"] = [[4, "asc"]];
     // options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, {"sWidth": "250px"},  null, null];
 
-        options["aoColumns"] = [{{"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"sWidth": "250px"},  null, {"bSearchable":false, "bVisible":false}];  
+        options["aoColumns"] = [{{"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"sWidth": "250px"}, null, {"bSearchable":false, "bVisible":false} }];  
         options["oLanguage"] = {"sEmptyTable": "No complement data for " + locus['display_name']};
         options["aaData"] = datatable;
 
