@@ -61,8 +61,8 @@ function complement_data_to_table(evidence) {
     
     let complement = create_link(evidence['dbxref_id'], evidence['obj_url']);
     let paper = create_link(evidence['references'][0]['display_name'], evidence['references'][0]['link']) + "<br>PMID:" + evidence['references'][0]['pubmed_id'];
-	
-    return [evidence['id'], evidence['locus']['display_name'], "<i>" + evidence['species'] + "</i>", complement, evidence['strain_background'], evidence['direction'], evidence['curator_comment'], evidence['source']['display_name'], paper]
+    	
+    return [evidence['id'], evidence['locus']['id'], evidence['locus']['display_name'], "<i>" + evidence['species'] + "</i>", complement, evidence['strain_background'], evidence['direction'], evidence['curator_comment'], evidence['source']['display_name'], paper]
 	    
 }
 
