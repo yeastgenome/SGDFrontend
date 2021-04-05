@@ -232,7 +232,7 @@ BLAST Help at NCBI</a>.</p><hr>';
       var optionNode = this._getOptionsNode(configData);
       // need to put the date in a config file
       descText =
-        "<p>Datasets updated: January 31, 2018</p><p>This form allows BLAST searches of S. cerevisiae sequence datasets. To search multiple fungal sequences, go to the <a href='/blast-fungal'>Fungal BLAST search form</a>.</p>";
+        "<p>Datasets updated: April 15, 2021</p><p>This form allows BLAST searches of S. cerevisiae sequence datasets. To search multiple fungal sequences, go to the <a href='/blast-fungal'>Fungal BLAST search form</a>.</p>";
 
       if (this.props.blastType == 'fungal') {
         descText =
@@ -442,7 +442,7 @@ BLAST Help at NCBI</a>.</p><hr>';
     if (param['type'] == 'protein') {
       _databaseDef = data.databasedef4protein;
     }
-      
+
     var i = 0;
     const selectedValue = [];
     var _elements = _.map(database, (d, index) => {
