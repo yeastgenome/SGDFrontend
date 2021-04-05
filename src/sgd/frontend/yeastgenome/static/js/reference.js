@@ -78,6 +78,18 @@ $(document).ready(function() {
         hide_section("disease");
     }
 
+    if(reference['counts']['complement'] > 0) {
+        $.getJSON('/backend/reference/' + reference['sgdid'] + '/functional_complement_details', function(data) {
+            var complement_table = create_complement_table(data);
+            create_download_button("complement_table_download", complement_table, reference['display_name'] + "_complements");
+            create_analyze_button("complement_table_analyze", complement_table, reference['display_name'] + " functional complementation genes", true);
+        });
+    }
+    else {
+        hide_section("complement");
+    }
+    
+    
     if(reference['counts']["regulation"] > 0) {
         $.getJSON('/backend/reference/' + reference['sgdid'] + '/regulation_details', function(data) {
             var regulation_table = create_regulation_table(data);
@@ -100,6 +112,30 @@ $(document).ready(function() {
     }
 
 });
+
+function create_complement_table(data) {
+        var datatable = [];
+        var complements = {};
+        for (var i=0; i < data.length; i++) {
+        datatable.push(complement_data_to_table(data[i], i));
+                complements[data[i]["id"]] = true;
+        }
+
+        set_up_header('complement_table', datatable.length, 'entry', 'entries', Object.keys(complements).length, 'complement', 'complements');
+
+        var options = {};
+        options["bPaginate"] = true;
+        options["aaSorting"] = [[4, "asc"]];
+
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, {"bSearchable":false, "bVisible":false}, null, null, null, null, null, {"sWidth": "250px"}, null, {"bSearchable":false, "bVisible":false}];
+
+    
+        options["oLanguage"] = {"sEmptyTable": "No complement data for this paper"};
+        options["aaData"] = datatable;
+
+        return create_table("complement_table", options);
+
+}
 
 function create_literature_list(list_id, data, topic) {
     var primary_list = $("#" + list_id + "_list");
