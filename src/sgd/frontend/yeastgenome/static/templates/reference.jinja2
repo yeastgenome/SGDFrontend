@@ -39,6 +39,7 @@
             add_navbar_element('Regulation Annotations', 'regulation');
             add_navbar_element('Post-translational Modifications', 'posttranslationannotation');
             add_navbar_element('Interaction Annotations', 'interaction');
+	    add_navbar_element('Functional Complementation Annotations', 'complement');
             add_navbar_element('Published Datasets', 'expression');
 	    {% if reference.downloadable_files|length > 0 %}
 	        add_navbar_element('Downloadable Files', 'file');
@@ -226,6 +227,19 @@
 	    <a href="https://yeastmine.yeastgenome.org/yeastmine/loadTemplate.do?name=Literature_Interaction&constraint1=Gene.interactions.details.experiment.publication&op1=LOOKUP&value1=27708008&scope=all&method=results&format=tab" target='_new'>Download Interaction Data</a>
 	{% endif %} 
         </section>
+
+<!-- Regulation
+================================================== -->
+        <section id="complement" data-magellan-destination="complement">
+            <h2>Functional Complementation Annotations <span id="complement_table_header" class="round secondary label"></span></h2>
+            <hr />
+            <div>
+                <!-- Includes complement_table into template -->
+                {% set table_id = "complement_table" %}
+                {% include "complement_table.jinja2" %}
+            </div>
+        </section>
+
 <!-- Expression
 ================================================== -->
         <section id="expression" data-magellan-destination="expression">
