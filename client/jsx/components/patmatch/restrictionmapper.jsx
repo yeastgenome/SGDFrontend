@@ -14,7 +14,8 @@ const style = {
 
 const MAX_NUM_ENZYME = 15;
 
-const restUrl = '/run_restmapper';
+// const restUrl = '/run_restmapper';
+const restUrl = 'https://patmatch.dev.yeastgenome.org/restrictionmapper';
 
 const RestrictionMapper = createReactClass({
   displayName: 'RestrictionMapper',
