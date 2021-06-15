@@ -17,7 +17,8 @@ const style = {
   textFont: { fontSize: 18 },
 };
 
-const GOtoolsUrl = '/run_gotools';
+// const GOtoolsUrl = '/run_gotools';
+const GOtoolsUrl = 'https://gotermfinder.dev.yeastgenome.org/gotermfinder';
 const GeneChkUrl = '/backend/ambiguous_names';
 
 const evidenceCode = [
