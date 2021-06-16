@@ -342,8 +342,8 @@ const RestrictionMapper = createReactClass({
   getEnzymeNode() {
     var enzymes = [
       'all',
-      "3'overhang",
-      "5'overhang",
+      "3' overhang",
+      "5' overhang",
       'blunt end',
       'cut once',
       'cut twice',
