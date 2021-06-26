@@ -20,7 +20,7 @@ six==1.16.0
 splinter==0.14.0
 translationstring==1.4
 venusian==3.0.0
-waitress==0.8.10
+waitress==2.0.0
 WebOb==1.6.1
 wheel==0.24.0
 zope.deprecation==4.1.2
