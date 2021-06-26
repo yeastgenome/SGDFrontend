@@ -924,8 +924,8 @@ BLAST Help at NCBI</a>.</p><hr>';
       return 0;
     }
 
-      // check to make sure sequence type matches the program
-      
+    // check to make sure sequence type matches the program
+
     let tmpseq = seq.replace(/[ATCGU]/gi, '');
 
     if (tmpseq == '') {
