@@ -19,7 +19,7 @@ simplejson==3.17.2
 six==1.16.0
 splinter==0.14.0
 translationstring==1.4
-venusian==1.0
+venusian==3.0.0
 waitress==0.8.10
 WebOb==1.6.1
 wheel==0.24.0
