@@ -9,7 +9,7 @@ PasteDeploy==2.1.1
 py==1.10.0
 pyramid==1.5
 pyramid-jinja2==2.1
-pytest==6.2.4
+pytest==6.1.2
 python-dateutil==2.6.0
 repoze.lru==0.6
 requests==2.3.0
