@@ -14,7 +14,7 @@ python-dateutil==2.6.0
 repoze.lru==0.7
 requests==2.25.1
 sauceclient==1.0.0
-selenium==2.47.1
+selenium==3.141.59
 simplejson==3.5.2
 six==1.16.0
 splinter==0.7.3
