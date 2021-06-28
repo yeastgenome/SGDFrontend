@@ -21,7 +21,7 @@ splinter==0.14.0
 translationstring==1.4
 venusian==3.0.0
 waitress==1.4.4
-WebOb==1.8.3
+WebOb==1.7.0
 wheel==0.26.0
 zope.deprecation==4.4.0
 zope.interface==5.4.0
