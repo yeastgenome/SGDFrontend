@@ -25,7 +25,7 @@ WebOb==1.6.4
 wheel==0.26.0
 zope.deprecation==4.4.0
 zope.interface==5.4.0
-python-dateutil==2.6.0
+python-dateutil==2.7.0
 Paste==3.5.0
-urllib3==1.27.0
+urllib3==1.26.5
 
