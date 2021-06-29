@@ -27,5 +27,5 @@ zope.deprecation==4.4.0
 zope.interface==5.4.0
 python-dateutil==2.6.0
 Paste==3.5.0
-urllib3==1.26.5
+urllib3==1.27.0
 
