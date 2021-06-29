@@ -10,7 +10,7 @@ py==1.10.0
 pyramid==1.5
 pyramid-jinja2==2.8
 pytest==6.1.2
-python-dateutil==2.6.0
+python-dateutil==2.7.0
 repoze.lru==0.7
 requests==2.25.1
 sauceclient==1.0.0
