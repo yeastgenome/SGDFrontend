@@ -10,7 +10,7 @@ var Params = require('../mixins/parse_url_params.jsx');
 
 // var BLAST_URL = 'https://blast.qa.yeastgenome.org/blast_search'
 // var BLAST_URL = 'https://blast.dev.yeastgenome.org/blast_search'
-var BLAST_URL = 'https://blast-new.yeastgenome.org/blast_search'
+var BLAST_URL = 'https://blast-new.yeastgenome.org/blast_search';
 
 var SearchForm = createReactClass({
   displayName: 'SearchForm',
@@ -926,8 +926,8 @@ BLAST Help at NCBI</a>.</p><hr>';
       return 0;
     }
 
-      // check to make sure sequence type matches the program
-      
+    // check to make sure sequence type matches the program
+
     let tmpseq = seq.replace(/[ATCGU]/gi, '');
 
     if (tmpseq == '') {

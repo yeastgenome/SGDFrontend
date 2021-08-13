@@ -72,8 +72,14 @@ export function getFacetName(key) {
       return 'Associated Genes';
     case 'reference_loci':
       return 'Associated Genes'
-    case 'phenotype_locus':
-      return 'Associated Genes';
+    case 'reference_loci':
+      return 'Associated Genes'
+    case 'reference_alleles':
+      return 'Associated Alleles'
+    case 'reference_complexes':
+      return 'Associated Complexes'
+    case 'phenotype_pathways':
+      return 'Associated Pathways';
       break;
     default:
       return key.replace(/_/g, ' ');
