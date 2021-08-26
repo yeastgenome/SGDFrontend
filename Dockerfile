@@ -52,4 +52,4 @@ RUN python setup.py develop
 
 RUN ruby --version
 
-CMD ["/bin/bash", "-c", "source dev_deploy_variables.sh && pserve sgdfrontend_development.ini --reload"]
+CMD ["/bin/bash", "-c", "source dev_deploy_variables.sh && pserve sgdfrontend_development.ini"]
