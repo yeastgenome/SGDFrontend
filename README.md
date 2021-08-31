@@ -89,6 +89,28 @@ Then, run
     $ make ghost-local
 
 
+## Docker
 
+In the top level directory there is the Dockerfile for making a docker image for the Frontend.
+
+The model, as of now, copies the contents of SGDFrontend into the image, rather than mounting a volume to the host. This can be easily done later if we want, for development purposes.
+
+The image is based on Ubuntu 20.04 and building the image installs python 3.8, pip, ruby, node, and npm. All dependencies for the front end are then installed and pserve can then be run.
+
+Build the image with (make sure you're in the top level repository directory):
 
 ```
+docker build --rm -t frontend --frontend plain .
+```
+
+This will copy the contents of the repo into the image *including the `dev_deploy_variables.sh` file*. This will be used to run the dev frontend.
+
+Running the image by default will start server by running `source dev_deploy_variables.sh && pserve sgdfrontend_development.ini` internally.
+
+To run:
+
+```
+docker run --rm -it -p 6545:6545 frontend
+```
+
+will serve the front end, and going to `localhost:6545` will show the locally running front end on docker.
