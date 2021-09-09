@@ -282,7 +282,7 @@
 	    <a id="allele_see_less_button" onclick="$('#allele_see_more').hide();$('#allele_see_more_button').show();$('#allele_see_less_button').hide();" hidden> <i class="fa fa-arrow-circle-left"></i> Show fewer</a>
         </div>
 	<div>
-	<strong>View all {{ locus.display_name }} alleles in </strong><a href='https://www.yeastgenome.org/search?allele_loci={{ locus.display_name }}&category=allele' target='new'>SGD search<a> | <a href='https://yeastmine.yeastgenome.org/yeastmine/service/template/results?name=Gene_Alleles&constraint1=Gene&op1=LOOKUP&value1={{ locus.display_name }}&extra1=&format=tab' target='new'>YeastMine</a>
+	  <p><strong>View all {{ locus.display_name }} alleles in </strong><a href='https://www.yeastgenome.org/search?allele_loci={{ locus.display_name }}&category=allele' target='new'>SGD search<a> | <a href='https://yeastmine.yeastgenome.org/yeastmine/service/template/results?name=Gene_Alleles&constraint1=Gene&op1=LOOKUP&value1={{ locus.display_name }}&extra1=&format=tab' target='new'>YeastMine</a>
   	</div>
     </section>
     {% endif %}
