@@ -281,6 +281,9 @@
             </span>
 	    <a id="allele_see_less_button" onclick="$('#allele_see_more').hide();$('#allele_see_more_button').show();$('#allele_see_less_button').hide();" hidden> <i class="fa fa-arrow-circle-left"></i> Show fewer</a>
         </div>
+	<div>
+	View all {{ locus.display_name }} alleles in <a href='https://www.yeastgenome.org/search?allele_loci={{ locus.display_name }}&category=allele'>SGD search<a> | <a href='https://yeastmine.yeastgenome.org/yeastmine/template.do?name=Gene_Alleles&scope=all'>YeastMine</a>
+  	</div>
     </section>
     {% endif %}
     
