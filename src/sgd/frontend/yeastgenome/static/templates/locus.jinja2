@@ -265,7 +265,9 @@
         <hr />
         <div class="panel">
             {% for a in locus.alleles %}
-                 <a href="{{ a.link_url }}">{{ a.display_name }}</a> | 
+                 <a href="{{ a.link_url }}">{{ a.display_name }}</a>
+		 {% if not loop.last %} | {% endif %}
+		     
             {% endfor %}
             
         </div>
