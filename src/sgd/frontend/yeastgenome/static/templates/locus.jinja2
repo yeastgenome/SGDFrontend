@@ -252,6 +252,26 @@
     </section>
     {% endif %}
 
+<!-- Allele
+================================================== -->
+   {% if locus.alelles|length > 0 %}
+    <section id="allele">
+        <h2>Allele
+                <a href="#" data-dropdown="summary_help"><i class="fa fa-info-circle"></i></a>
+                <p id="summary_help" class="f-dropdown content medium" data-dropdown-content>
+                     some text here
+                </p>
+        </h2>
+        <hr />
+        <div class="panel">
+            {% for a in locus.alleles %}
+                 <a href="{{ a.link_url }}">{{ a.display_name }}</a> | 
+            {% endfor %}
+            
+        </div>
+    </section>
+    {% endif %}
+    
 <!-- GO
 ================================================== -->
     {% if tabs['go_tab'] %}
@@ -426,7 +446,7 @@
 
 <!-- Complex
 ================================================== -->
-    {% if locus.complexes|length > 0 %}
+   {% if locus.complexes|length > 0 %}
     <section id="complex">
         <h2>Complex
 		<a href="#" data-dropdown="summary_help"><i class="fa fa-info-circle"></i></a>
