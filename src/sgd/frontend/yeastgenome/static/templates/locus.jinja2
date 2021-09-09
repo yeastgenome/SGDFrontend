@@ -263,7 +263,7 @@
                 </p>
         </h2>
         <hr />
-        <div class="panel">
+        <div>
             {% for a in locus.alleles %}
 	      {% if loop.index < 8 %}
 	         <span><a href="{{ a.link_url|e }}">{{ a.display_name|e }}</a></span>
