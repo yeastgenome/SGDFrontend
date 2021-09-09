@@ -77,6 +77,9 @@ module.exports = class TabsModel {
       this.attributes.hasComplexes
         ? { name: 'Complex', target: 'complex' }
         : null,
+      this.attributes.hasAlleles
+        ? { name: 'Allele', target: 'allele' }
+        : null,	
       this.attributes.hasPathways
         ? { name: 'Pathways', target: 'pathway' }
         : null,
