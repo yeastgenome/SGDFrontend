@@ -71,15 +71,15 @@ module.exports = class TabsModel {
       this.attributes.rawTabsData.protein_tab
         ? { name: 'Protein', target: 'protein' }
         : null,
+      this.attributes.hasAlleles
+        ? { name: 'Allele', target: 'allele' }
+        : null,
       this.attributes.rawTabsData.go_tab
         ? { name: 'Gene Ontology', target: 'go' }
         : null,
       this.attributes.hasComplexes
         ? { name: 'Complex', target: 'complex' }
         : null,
-      this.attributes.hasAlleles
-        ? { name: 'Allele', target: 'allele' }
-        : null,	
       this.attributes.hasPathways
         ? { name: 'Pathways', target: 'pathway' }
         : null,
