@@ -11,7 +11,8 @@ module.exports = class SequenceDetailsModel extends BaseModel {
   constructor(options) {
     options = options || {};
     // options.url = `/backend/locus/${options.id}/sequence_details`;
-    options.url = `http://backend.dev.yeastgenome.org:6543/locus/${options.id}/sequence_details`; 
+    // options.url = `http://backend.dev.yeastgenome.org:6543/locus/${options.id}/sequence_details`;
+    options.url = `https://www.yeastgenome.org/backend/locus/${options.id}/sequence_details`;  
     super(options);
     this.baseAttributes = options;
   }

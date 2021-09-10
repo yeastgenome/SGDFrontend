@@ -11,7 +11,8 @@ module.exports = class SequenceNeighborsModel extends BaseModel {
   constructor(options) {
     options = options || {};
     // options.url = `/backend/locus/${options.id}/neighbor_sequence_details`;
-    options.url = `http://backend.dev.yeastgenome.org:6543/locus/${options.id}/neighbor_sequence_details`;  
+    //options.url = `http://backend.dev.yeastgenome.org:6543/locus/${options.id}/neighbor_sequence_details`;
+    options.url = `https://www.yeastgenome.org/backend/locus/${options.id}/neighbor_sequence_details`;
     super(options);
     if (options.id) this.id = parseInt(options.id);
     if (options.mainStrain) this.mainStrain = options.mainStrain;
