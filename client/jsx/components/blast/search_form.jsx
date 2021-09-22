@@ -926,8 +926,9 @@ BLAST Help at NCBI</a>.</p><hr>';
 
       // check to make sure sequence type matches the program
       
-    let tmpseq = seq.replace(/[ATCGU]/gi, '');
-
+    // let tmpseq = seq.replace(/[ATCGU]/gi, '');
+    let tmpseq = seq.replace(/[ATCGUXN]/gi, '');
+      
     if (tmpseq == '') {
       if (program == 'blastp' || program == 'tblastn') {
         alert(
