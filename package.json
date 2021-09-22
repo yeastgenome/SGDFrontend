@@ -58,7 +58,7 @@
     "swagger-ui-dist": "^3.21.0",
     "tcomb-form": "^0.9.21",
     "tcomb-json-schema": "^0.2.3",
-    "underscore": "^1.10.2"
+    "underscore": "^1.12.1"
   },
   "devDependencies": {
     "babel": "^6.5.2",
