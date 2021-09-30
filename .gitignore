@@ -28,6 +28,10 @@ prod_deploy_variables.sh
 asset_version.json
 .vscode
 .vscode/
+.vagrant/
+.bundle
+vendor
+env
 .idea/
 *.rdb
 .vscode/settings.json

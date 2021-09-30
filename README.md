@@ -93,14 +93,14 @@ Then, run
 
 In the top level directory there is the Dockerfile for making a docker image for the Frontend.
 
-The model, as of now, copies the contents of SGDFrontend into the image, rather than mounting a volume to the host. This can be easily done later if we want, for development purposes.
+This Dockerfile uses multiple `FROM` for different stages. This allows us to build containers for different purposes, namely development and production. See https://docs.docker.com/develop/develop-images/multistage-build/
 
 The image is based on Ubuntu 20.04 and building the image installs python 3.8, pip, ruby, node, and npm. All dependencies for the front end are then installed and pserve can then be run.
 
-Build the image with (make sure you're in the top level repository directory):
+Build the image from exactly what's on the local host filesystem (make sure you're in the top level repository directory):
 
 ```
-docker build --rm -t frontend --frontend plain .
+docker build --rm --target base -t frontend .
 ```
 
 This will copy the contents of the repo into the image *including the `dev_deploy_variables.sh` file*. This will be used to run the dev frontend.
@@ -114,3 +114,59 @@ docker run --rm -it -p 6545:6545 frontend
 ```
 
 will serve the front end, and going to `localhost:6545` will show the locally running front end on docker.
+
+To build the image with the local host directory *mounted* into the container, run with:
+
+```
+docker build --rm -t frontend .
+```
+
+This implicitely builds the `vagrant` stage (explicit with `--target vagrant`). This creates a vagrant user and installs SSH for usage with Vagrant (see next section).
+
+## Vagrant
+
+Vagrant (https://www.vagrantup.com/) is a tool that lets you run run and operate inside a virtual machine, or, in our case, docker container. This allows a consistent development environment that will also look like production. This works because when developing with Vagrant on the docker container, we're using the container that defines the environment for the frontend.
+
+Using a mounted directory (through docker) we can run anything we need in the container, but operated on files on the host machine, which are version controlled. Vagrant simply makes this easy to do.
+
+### Using Vagrant with Docker
+
+* Install Vagrant at https://www.vagrantup.com/
+
+* Vagrant is configured with the [`Vagrantfile`](Vagrantfile) which defines how vagrant should run the docker container.
+
+* To start and build the container with vagrant:
+
+```
+$ vagrant up
+```
+
+This will build the docker image using the [`Dockerfile`](Dockerfile), link the SGDFrontend directory to `/frontend` in the container, and start the container.
+
+* Login with SSH into the container with:
+
+```
+$ vagrant ssh
+```
+
+### Developing in the container
+
+Once logged in, cd into the frontend directory:
+
+```
+vagrant@d66e7945ee02:~$ cd /frontend
+vagrant@d66e7945ee02:/frontend$ 
+```
+
+**Note:** Running an `ls` here will show your local files on your host machine, not the docker container because of the mount.
+
+To run the frontend server:
+```
+vagrant@d66e7945ee02:/frontend$ . dev_deploy_variables.sh && pserve sgdfrontend_development.ini 
+Starting server in PID 229.
+Serving on http://0.0.0.0:6545
+```
+
+This message is internal to the docker container, and we mapped port `6545` out to `6546`. So on your host machine browser, navigating to `localhost:6546` should show the frontend hosted on your docker image, from the running docker image.
+
+You can edit files and make changes on your host machine and see changes reflected since the docker image is mounting and then running your host files.
