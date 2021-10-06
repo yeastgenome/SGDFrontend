@@ -30,6 +30,13 @@ RUN cd /usr/bin && ln -s python3 python
 
 
 RUN npm install -g bower -g grunt-cli
+RUN npm install -g n
+
+# Set node to 14.18.0
+RUN n 14.18.0
+
+# Set NPM version
+RUN npm install -g npm@7.24.2
 
 COPY . /frontend
 WORKDIR /frontend
