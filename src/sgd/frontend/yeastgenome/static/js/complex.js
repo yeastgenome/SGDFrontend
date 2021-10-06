@@ -1,8 +1,8 @@
-let backend_url = 'https//www.yeastgenome.org'
+let backend_url = 'https//www.yeastgenome.org/backend/'
 
 $(document).ready(function() {
 
-    $.getJSON(backend_url + '/backend/complex/' + complex['complex_accession'], function(data) {
+    $.getJSON(backend_url + 'complex/' + complex['complex_accession'], function(data) {
 
 	document.getElementById("summary_paragraph").innerHTML = data['description'] + "<p></p>" + data['properties']
 
