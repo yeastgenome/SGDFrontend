@@ -1,7 +1,7 @@
 
 $(document).ready(function() {
 
-    $.getJSON('https//backend.dev.yeastgenome.org:/backend/complex/' + complex['complex_accession'], function(data) {
+    $.getJSON('https//backend.dev.yeastgenome.org:6543/backend/complex/' + complex['complex_accession'], function(data) {
     // $.getJSON('/backend/complex/' + complex['complex_accession'], function(data) {
 
 	document.getElementById("summary_paragraph").innerHTML = data['description'] + "<p></p>" + data['properties']
