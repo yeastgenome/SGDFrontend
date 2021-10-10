@@ -5,7 +5,7 @@ from urllib.error import URLError, HTTPError
 from src.sgd.frontend import config
 import os
 
-def redirect_backend(request):
+def do_redirect(request):
 
     p = dict(request.params)
     data = {'p': p}
