@@ -11,6 +11,7 @@ def direct_backend(request):
     data = {}
     if p.get('param'):
         url = config.backend_url + '/' + p.get('param')
+        return url
         try:
             req = Request(url=url)
             res = urlopen(req)
