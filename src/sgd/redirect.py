@@ -11,7 +11,8 @@ def direct_backend(request):
     data = {}
     if p.get('param'):
         url = config.backend_url + '/' + p.get('param')
-        return url
+        data = { 'url': url }
+        return Response(body=json.dumps(data), content_type='application/json')
         try:
             req = Request(url=url)
             res = urlopen(req)
