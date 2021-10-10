@@ -10,7 +10,13 @@ def do_redirect(request):
     p = dict(request.params)
     data = {}
     if p.get('param'):
-        url = config.backend_url + p.get('param')
+        url = config.backend_url
+        if url[-1] == '/':
+            url[0:-1]
+        if p.get('param').startswith('/'):
+            url = url + p.get('param')
+        else:
+            url = url + '/' + p.get('param')        
         try:
             req = Request(url=url)
             res = urlopen(req)
