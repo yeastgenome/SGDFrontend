@@ -6,7 +6,7 @@ from urllib.error import URLError
 
 patmatch_url = "https://patmatch.yeastgenome.org/"
                 
-def redirect_backend(request):
+def do_redirect(request):
 
     p = dict(request.params)
 
