@@ -8,9 +8,7 @@ import os
 def do_redirect(request):
 
     p = dict(request.params)
-    data = {'p': p}
-    return Response(body=json.dumps(data), content_type='application/json')
-
+    data = {}
     if p.get('param'):
         url = config.backend_url + '/' + p.get('param')
         data = { 'url': url }
