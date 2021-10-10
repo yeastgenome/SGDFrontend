@@ -10,9 +10,7 @@ def do_redirect(request):
     p = dict(request.params)
     data = {}
     if p.get('param'):
-        url = config.backend_url + '/' + p.get('param')
-        data = { 'url': url }
-        return Response(body=json.dumps(data), content_type='application/json')
+        url = config.backend_url + p.get('param')
         try:
             req = Request(url=url)
             res = urlopen(req)
