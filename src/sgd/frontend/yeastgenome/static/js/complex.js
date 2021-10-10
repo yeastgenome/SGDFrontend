@@ -1,7 +1,7 @@
 
 $(document).ready(function() {
 
-    $.getJSON('/redirct_backend?param=complex/' + complex['complex_accession'], function(data) { 
+    $.getJSON('/redirect_backend?param=complex/' + complex['complex_accession'], function(data) { 
     // $.getJSON('http://backend.dev.yeastgenome.org:6543/backend/complex/' + complex['complex_accession'], function(data) {
     // $.getJSON('/backend/complex/' + complex['complex_accession'], function(data) {
 
