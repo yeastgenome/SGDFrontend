@@ -10,7 +10,7 @@ def direct_backend(request):
     p = dict(request.params)
     data = {}
     if p.get('param'):
-        url = config.backend_url + p.get('param')
+        url = config.backend_url + '/' + p.get('param')
         try:
             req = Request(url=url)
             res = urlopen(req)
