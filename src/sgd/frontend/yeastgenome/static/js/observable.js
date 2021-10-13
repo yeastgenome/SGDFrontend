@@ -1,7 +1,7 @@
 
 $(document).ready(function() {
 
-	$.getJSON('/backend/observable/' + observable['id'] + '/locus_details', function(data) {
+	$.getJSON('/redirect_backend?param=observable/' + observable['id'] + '/locus_details', function(data) {
         var phenotype_table = create_phenotype_table(data);
         create_analyze_button("phenotype_table_analyze", phenotype_table, "<a href='" + observable['link'] + "' class='gene_name'>" + observable['display_name'] + "</a> genes", true);
         create_download_button("phenotype_table_download", phenotype_table, observable['display_name'] + "_annotations");
@@ -18,7 +18,7 @@ $(document).ready(function() {
         }
 	});
 
-	$.getJSON('/backend/observable/' + observable['id'] + '/ontology_graph', function(data) {
+	$.getJSON('/redirect_backend?param=observable/' + observable['id'] + '/ontology_graph', function(data) {
   		var cy = create_cytoscape_vis("cy", layout, graph_style, data, null, false, "observable");
         create_cy_download_button(cy, "cy_download", observable['display_name'] + '_ontology')
 

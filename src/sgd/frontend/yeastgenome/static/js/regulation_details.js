@@ -9,7 +9,7 @@ $(document).ready(function() {
 
     if(locus['regulation_overview']['target_count'] > 0) {
         $("#domain_table_analyze").hide();
-        $.getJSON('/backend/locus/' + locus['id'] + '/protein_domain_details', function(data) {
+        $.getJSON('/redirect_backend?param=locus/' + locus['id'] + '/protein_domain_details', function(data) {
             var domain_table = create_domain_table(data);
             if(domain_table != null) {
                 create_download_button("domain_table_download", domain_table, locus['display_name'] + "_domains");
@@ -18,7 +18,7 @@ $(document).ready(function() {
     }
 
     if(locus['regulation_overview']['target_count'] > 0) {
-        $.getJSON('/backend/locus/' + locus['id'] + '/binding_site_details', function(data) {
+        $.getJSON('/redirect_backend?param=locus/' + locus['id'] + '/binding_site_details', function(data) {
             // manually change binding site motif locations to s3 locations
             data.forEach( function (d) {
                 d.link = d.link.replace('/static/img/yetfasco', 'https://s3-us-west-2.amazonaws.com/sgd-prod-binding-site-motifs')
@@ -27,7 +27,7 @@ $(document).ready(function() {
         });
     }
 
-    $.getJSON('/backend/locus/' + locus['id'] + '/regulation_details', function(data) {
+    $.getJSON('/redirect_backend?param=locus/' + locus['id'] + '/regulation_details', function(data) {
         
         if(locus['regulation_overview']['target_count'] > 0) {
             var target_tables = create_target_table(data);
@@ -37,7 +37,7 @@ $(document).ready(function() {
             create_analyze_button("htp_target_table_analyze", target_tables.htp, "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> targets", true);
             create_download_button("htp_target_table_download", target_tables.htp, locus['display_name'] + "_targets");
 
-            $.getJSON('/backend/locus/' + locus['id'] + '/regulation_target_enrichment', function(enrichment_data) {
+            $.getJSON('/redirect_backend?param=locus/' + locus['id'] + '/regulation_target_enrichment', function(enrichment_data) {
                 var enrichment_table = create_enrichment_table("enrichment_table", target_tables.all, enrichment_data);
                 create_download_button("enrichment_table_download", enrichment_table, locus['display_name'] + "_targets_go_process_enrichment");
             });
@@ -63,7 +63,7 @@ $(document).ready(function() {
         }
     });
 
-    $.getJSON('/backend/locus/' + locus['id'] + '/regulation_graph', function(data) {
+    $.getJSON('/redirect_backend?param=locus/' + locus['id'] + '/regulation_graph', function(data) {
         if(data != null && data["nodes"].length > 1) {
             var _categoryColors = {
                 'REGULATOR': '#6CB665',
