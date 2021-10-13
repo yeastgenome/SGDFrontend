@@ -1,7 +1,7 @@
 
 $(document).ready(function() {
 
-    $.getJSON('/backend/locus/' + locus['id'] + '/interaction_details', function(data) {
+    $.getJSON('/redirect_backend?param=locus/' + locus['id'] + '/interaction_details', function(data) {
         var physical_interaction_table = create_physical_interaction_table(data);
         create_download_button("physical_interaction_table_download", physical_interaction_table, locus['display_name'] + "_physical_interactions");
         create_analyze_button("physical_interaction_table_analyze", physical_interaction_table, "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> interactors", true);
@@ -43,7 +43,7 @@ $(document).ready(function() {
 	
 	});
 
-	$.getJSON('/backend/locus/' + locus['id'] + '/interaction_graph', function(data) {
+	$.getJSON('/redirect_backend?param=locus/' + locus['id'] + '/interaction_graph', function(data) {
 	    if(data != null && data["nodes"].length > 1) {
             var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true, "interaction");
             var slider = create_slider("slider", graph, data["min_evidence_cutoff"], data["max_evidence_cutoff"], function slider_filter(new_cutoff) {return "node, edge[evidence >= " + new_cutoff + "]";});

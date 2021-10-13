@@ -1,9 +1,9 @@
 $(document).ready(function() {
-	$.getJSON('/backend/go/' + go_term['id'] + '/locus_details', function(data) {
+	$.getJSON('/redirect_backend?param=go/' + go_term['id'] + '/locus_details', function(data) {
 	  	create_go_table(data);
 	});
 
-	$.getJSON('/backend/go/' + go_term['id'] + '/ontology_graph', function(data) {
+	$.getJSON('/redirect_backend?param=go/' + go_term['id'] + '/ontology_graph', function(data) {
   		var cy = create_cytoscape_vis("cy", layout, graph_style, data, null, false, "goOntology");
         create_cy_download_button(cy, "cy_download", go_term['display_name'] + '_ontology')
 
