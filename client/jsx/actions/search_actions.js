@@ -2,7 +2,7 @@ require('isomorphic-fetch');
 import { createPath } from '../lib/search_helpers';
 import _ from 'underscore';
 const queryString = require('query-string');
-const RESULTS_URL = '/backend/get_search_results';
+const RESULTS_URL = '/redirect_backend?param=get_search_results';
 const WRAPPED_PAGE_SIZE = 250;
 
 // helper methods

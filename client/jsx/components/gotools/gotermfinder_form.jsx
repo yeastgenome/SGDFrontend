@@ -18,7 +18,7 @@ const style = {
 };
 
 const GOtoolsUrl = '/run_gotools';
-const GeneChkUrl = '/backend/ambiguous_names';
+const GeneChkUrl = '/redirect_backend?param=ambiguous_names';
 
 const evidenceCode = [
   'HDA',

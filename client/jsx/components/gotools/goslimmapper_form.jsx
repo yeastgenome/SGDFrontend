@@ -17,8 +17,8 @@ const style = {
 };
 
 const GOtoolsUrl = '/run_gotools';
-const GOslimUrl = '/backend/goslim';
-const GeneChkUrl = '/backend/ambiguous_names';
+const GOslimUrl = '/redirect_backend?param=goslim';
+const GeneChkUrl = '/redirect_backend?param=ambiguous_names';
 
 const goSet = [
   'Yeast GO-Slim: process',

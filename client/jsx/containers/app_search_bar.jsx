@@ -9,7 +9,7 @@ import Typeahead from '../lib/react-typeahead-component';
 import { setUserInput } from '../actions/search_actions';
 import { getCategoryDisplayName } from '../lib/search_helpers';
 
-const AUTOCOMPLETE_URL = '/backend/autocomplete_results';
+const AUTOCOMPLETE_URL = '/redirect_backend?param=autocomplete_results';
 const AUTOCOMPLETE_FETCH_DEBOUNCE_WAIT = 200;
 import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';

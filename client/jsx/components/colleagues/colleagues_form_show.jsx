@@ -16,16 +16,16 @@ import {
 import PropTypes from 'prop-types';
 
 const COLLEAGUES_AUTOCOMPLETE_URL =
-  '/backend/autocomplete_results?category=colleague&q=';
-const GENES_URL = '/backend/autocomplete_results?category=locus&q=';
+  '/redirect_backend?param=autocomplete_results?category=colleague&q=';
+const GENES_URL = '/redirect_backend?param=autocomplete_results?category=locus&q=';
 const KEYWORDS_AUTOCOMPLETE_URL =
-  '/backend/autocomplete_results?category=colleague&field=keywords&q=';
+  '/redirect_backend?param=autocomplete_results?category=colleague&field=keywords&q=';
 const INSTITUTION_URL =
-  '/backend/autocomplete_results?category=colleague&field=institution&q=';
+  '/redirect_backend?param=autocomplete_results?category=colleague&field=institution&q=';
 
 const TRIAGED_COLLEAGUE_URL = '/colleagues/triage';
 const COLLEAGUE_GET_URL = '/colleagues';
-const USER_COLLEAGUE_UPDATE_URL = '/backend/colleagues';
+const USER_COLLEAGUE_UPDATE_URL = '/redirect_backend?param=colleagues';
 const CURATOR_COLLEAGUE_UPDATE_URL = TRIAGED_COLLEAGUE_URL;
 
 const ColleaguesFormShow = createReactClass({

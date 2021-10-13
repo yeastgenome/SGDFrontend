@@ -1,7 +1,7 @@
 'use strict';
 var $ = require('jquery');
 
-var AUTOCOMPLETE_URL = '/backend/autocomplete_results';
+var AUTOCOMPLETE_URL = '/redirect_backend?param=autocomplete_results';
 
 var autocompleteQuery = '';
 var query = '';

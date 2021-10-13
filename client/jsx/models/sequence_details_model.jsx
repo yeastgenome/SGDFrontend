@@ -10,7 +10,7 @@ var MAIN_STRAIN_NAME = 'S288C';
 module.exports = class SequenceDetailsModel extends BaseModel {
   constructor(options) {
     options = options || {};
-    options.url = `/backend/locus/${options.id}/sequence_details`;
+    options.url = `/redirect_backend?param=locus/${options.id}/sequence_details`;
     super(options);
     this.baseAttributes = options;
   }
