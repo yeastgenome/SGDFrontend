@@ -7,7 +7,7 @@ $(document).ready(function() {
         create_download_button("phenotype_table_download", phenotype_table, observable['display_name'] + "_annotations");
 
         if(observable['descendant_locus_count'] > observable['locus_count']) {
-            create_show_child_button("phenotype_table_show_children", phenotype_table, data, '/backend/observable/' + observable['id'] + '/locus_details_all', phenotype_data_to_table, function(table_data) {
+            create_show_child_button("phenotype_table_show_children", phenotype_table, data, '/redirect_backend?param=observable/' + observable['id'] + '/locus_details_all', phenotype_data_to_table, function(table_data) {
 
                 var genes = {};
                 for (var i=0; i < table_data.length; i++) {

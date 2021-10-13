@@ -105,7 +105,7 @@ function create_or_hide_table(tableData, options, tableIdentifier, goName, goLin
         create_download_button(tableIdentifier + "_download", table, goName + "_annotations");
         
         if(go_term['descendant_locus_count'] > go_term['locus_count']) {
-            create_show_child_button(tableIdentifier + "_show_children", table, originalData, "/backend/go/" + goId + "/locus_details_all", go_data_to_table, function(table_data) {
+            create_show_child_button(tableIdentifier + "_show_children", table, originalData, "/redirect_backend?param=go/" + goId + "/locus_details_all", go_data_to_table, function(table_data) {
                 var genes = {};
                 for (var i=0; i < table_data.length; i++) {
                     genes[table_data[i][1]] = true;
