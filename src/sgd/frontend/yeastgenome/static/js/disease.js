@@ -1,9 +1,9 @@
 $(document).ready(function() {
-	$.getJSON('/backend/disease/' + disease['id'] + '/locus_details', function(data) {
+	$.getJSON('/redirect_backend?param=disease/' + disease['id'] + '/locus_details', function(data) {
 	  	create_disease_table(data);
 	});
 
-	$.getJSON('/backend/disease/' + disease['id'] + '/ontology_graph', function(data) {
+	$.getJSON('/redirect_backend?param=disease/' + disease['id'] + '/ontology_graph', function(data) {
   		var cy = create_cytoscape_vis("cy", layout, graph_style, data, null, false, "diseaseOntology");
         create_cy_download_button(cy, "cy_download", disease['display_name'] + '_ontology')
 

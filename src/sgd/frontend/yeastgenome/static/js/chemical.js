@@ -1,24 +1,24 @@
 
 $(document).ready(function() {
 
-	$.getJSON('/backend/chemical/' + chemical['id']  + '/phenotype_details', function(data) {
+	$.getJSON('/redirect_backend?param=chemical/' + chemical['id']  + '/phenotype_details', function(data) {
 	  	var phenotype_table = create_phenotype_table(data);
 	  	create_analyze_button("phenotype_table_analyze", phenotype_table, "<a href='" + chemical['link'] + "' class='gene_name'>" + chemical['display_name'] + "</a> Genes", true);
   	    create_download_button("phenotype_table_download", phenotype_table, chemical['display_name'] + "_phenotype_annotations");
 	});
 
-	$.getJSON('/backend/chemical/' + chemical['id']  + '/go_details', function(data) {
+	$.getJSON('/redirect_backend?param=chemical/' + chemical['id']  + '/go_details', function(data) {
                 var go_table = create_go_table(data);
                 create_analyze_button("go_table_analyze", go_table, "<a href='" + chemical['link'] + "' class='gene_name'>" + chemical['display_name'] + "</a> Genes", true);
 		create_download_button("go_table_download", go_table, chemical['display_name'] + "_go_annotations");
 	});
 
-        $.getJSON('/backend/chemical/' + chemical['id']  + '/proteinabundance_details', function(data) {
+        $.getJSON('/redirect_backend?param=chemical/' + chemical['id']  + '/proteinabundance_details', function(data) {
                 var protein_abundance_table = create_protein_abundance_table(data);
                 create_download_button("protein_abundance_table_download", protein_abundance_table, chemical['display_name'] + "_protein_abundance");
         });
     
-	$.getJSON('/backend/chemical/' + chemical['id']  + '/network_graph', function(data) {
+	$.getJSON('/redirect_backend?param=chemical/' + chemical['id']  + '/network_graph', function(data) {
 
 	        if (data != null && data["nodes"].length > 1) {
 		

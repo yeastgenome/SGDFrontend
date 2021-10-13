@@ -1,17 +1,17 @@
 $(document).ready(function() {
 
-	$.getJSON('/backend/allele/' + allele['sgdid']  + '/phenotype_details', function(data) {
+	$.getJSON('/redirect_backend?param=allele/' + allele['sgdid']  + '/phenotype_details', function(data) {
 	    var phenotype_table = create_phenotype_table(data);
   	    create_download_button("phenotype_table_download", phenotype_table, allele['display_name'] + "_phenotype_annotations");
 	});
 
-        $.getJSON('/backend/allele/' + allele['sgdid']  + '/interaction_details', function(data) {
+        $.getJSON('/redirect_backend?param=allele/' + allele['sgdid']  + '/interaction_details', function(data) {
             var interaction_table = create_interaction_table(data, allele['name']['display_text']);
             create_download_button("interaction_table_download", interaction_table, allele['name']['display_text'] + "_interaction_annotations");
 	    create_analyze_button("interaction_table_analyze", interaction_table, "<a href='' class='gene_name'>" + allele['name']['display_name'] + "</a> interactors", true);
         });
     
-        $.getJSON('/backend/allele/' + allele['sgdid']  + '/network_graph', function(data) {
+        $.getJSON('/redirect_backend?param=allele/' + allele['sgdid']  + '/network_graph', function(data) {
 
                 if (data != null && data["nodes"].length > 1) {
 
