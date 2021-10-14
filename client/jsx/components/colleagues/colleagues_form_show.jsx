@@ -17,7 +17,8 @@ import PropTypes from 'prop-types';
 
 const COLLEAGUES_AUTOCOMPLETE_URL =
   '/redirect_backend?param=autocomplete_results?category=colleague&q=';
-const GENES_URL = '/redirect_backend?param=autocomplete_results?category=locus&q=';
+const GENES_URL =
+  '/redirect_backend?param=autocomplete_results?category=locus&q=';
 const KEYWORDS_AUTOCOMPLETE_URL =
   '/redirect_backend?param=autocomplete_results?category=colleague&field=keywords&q=';
 const INSTITUTION_URL =
