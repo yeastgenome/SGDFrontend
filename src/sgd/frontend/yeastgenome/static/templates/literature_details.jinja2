@@ -143,6 +143,23 @@
             {% include "reference_list.jinja2" %}
         </section>
 
+        <!-- Disease
+        ================================================== -->
+        <section id="disease" data-magellan-destination="disease">
+            <h2>Disease Literature
+                <a href="#" data-dropdown="disease_info"><i class="fa fa-info-circle"></i></a>
+
+                <p id="disease_info" class="f-dropdown content medium" data-dropdown-content>
+                     Paper(s) associated with disease(s) for the specified gene.
+                </p>
+                <span id="disease_header" class="label secondary round"></span>
+            </h2>
+            <hr />
+            {% set reference_list_id = "disease_list" %}
+            {% set empty_message = "No disease literature curated." %}
+            {% include "reference_list.jinja2" %}
+        </section>
+
         <!-- Interaction
         ================================================== -->
         <section id="interaction" data-magellan-destination="interaction">
