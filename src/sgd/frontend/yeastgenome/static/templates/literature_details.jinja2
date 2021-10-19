@@ -32,16 +32,21 @@
 	    {% if locus.literature_overview.primary_count > 0 %}
                add_navbar_element('Primary Literature', 'primary');
 	    {% endif %}
+	    add_navbar_element('Related Literature', 'network');
 	    {% if locus.literature_overview.additional_count > 0 %}
                add_navbar_element('Additional Literature', 'additional');
 	    {% endif %}
             {% if locus.literature_overview.review_count > 0 %}
 	       add_navbar_element('Reviews', 'review');
 	    {% endif %}
-	    
+
+	       add_navbar_element('Gene Ontology Literature', 'go');
                add_navbar_element('Phenotype Literature', 'phenotype');
+	       add_navbar_element('Disease Literature', 'disease');
 	       add_navbar_element('Interaction Literature', 'interaction');
-            
+	       add_navbar_element('Regulation Literature', 'regulation');
+               add_navbar_element('High-Throughput Literature', 'htp');
+	       
         </script>
 
 
