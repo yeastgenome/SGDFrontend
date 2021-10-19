@@ -37,21 +37,27 @@
                add_navbar_element('Additional Literature', 'additional');
 	    {% endif %}
             {% if locus.literature_overview.review_count > 0 %}
-	       add_navbar_element('Reviews', 'review');
+	       add_navbar_element('Reviews', 'reviews');
 	    {% endif %}
-
+            {% if locus.literature_overview.go_count > 0 %}
 	       add_navbar_element('Gene Ontology Literature', 'go');
+	    {% endif %}
+	    {% if locus.literature_overview.phenotype_count > 0 %}
                add_navbar_element('Phenotype Literature', 'phenotype');
+            {% endif %}
+	    {% if locus.literature_overview.disease_count > 0 %}
 	       add_navbar_element('Disease Literature', 'disease');
+	    {% endif %}
+	    {% if locus.literature_overview.interaction_count > 0 %}
 	       add_navbar_element('Interaction Literature', 'interaction');
+	    {% endif %}
+            {% if locus.literature_overview.regulation_count > 0 %}
 	       add_navbar_element('Regulation Literature', 'regulation');
-               add_navbar_element('High-Throughput Literature', 'htp');
-	       
+	    {% endif %}
+            {% if locus.literature_overview.htp_count > 0 %}
+	       add_navbar_element('High-Throughput Literature', 'htp');
+	    {% endif %}
         </script>
-
-
-
-
 
         <!-- Overview -->
         <section id="overview" data-magellan-destination="overview">
@@ -75,7 +81,8 @@
 
         <!-- Primary
         ================================================== -->
-        <section id="primary" data-magellan-destination="primary">
+	{% if locus.literature_overview.primary_count > 0 %}
+          <section id="primary" data-magellan-destination="primary">
             <h2>Primary Literature
                 <a href="#" data-dropdown="primary_info"><i class="fa fa-info-circle"></i></a>
 
@@ -91,8 +98,9 @@
             {% set reference_list_id = "primary_list" %}
             {% set empty_message = "No primary literature curated." %}
             {% include "reference_list.jinja2" %}
-        </section>
-
+          </section>
+        {% endif %}
+	
         <!-- Related Literature / Network Visualization
         ================================================== -->
         <section id="network" data-magellan-destination="network">
@@ -112,7 +120,8 @@
 
         <!-- Additional
         ================================================== -->
-        <section id="additional" data-magellan-destination="additional">
+	{% if locus.literature_overview.additional_count > 0 %}
+          <section id="additional" data-magellan-destination="additional">
             <h2>Additional Literature
                 <a href="#" data-dropdown="additional_info"><i class="fa fa-info-circle"></i></a>
 
@@ -126,21 +135,25 @@
             {% set reference_list_id = "additional_list" %}
             {% set empty_message = "No additional literature curated." %}
             {% include "reference_list.jinja2" %}
-        </section>
-
+          </section>
+        {% endif %}
+	
         <!-- Review
         ================================================== -->
-        <section id="reviews" data-magellan-destination="reviews">
+	{% if locus.literature_overview.review_count > 0 %}
+          <section id="reviews" data-magellan-destination="reviews">
                 <h2>Reviews <span id="review_header" class="label secondary round"></span></h2>
                 <hr />
                 {% set reference_list_id = "review_list" %}
                 {% set empty_message = "No reviews curated." %}
                 {% include "reference_list.jinja2" %}
-        </section>
-
+          </section>
+        {% endif %}
+	
         <!-- GO
         ================================================== -->
-        <section id="go" data-magellan-destination="go">
+	{% if locus.literature_overview.go_count > 0 %}
+          <section id="go" data-magellan-destination="go">
             <h2>Gene Ontology Literature
                 <a href="#" data-dropdown="go_info"><i class="fa fa-info-circle"></i></a>
 
@@ -153,11 +166,13 @@
             {% set reference_list_id = "go_list" %}
             {% set empty_message = "No gene ontology literature curated." %}
             {% include "reference_list.jinja2" %}
-        </section>
-
+          </section>
+        {% endif %}
+	
         <!-- Phenotype
         ================================================== -->
-        <section id="phenotype" data-magellan-destination="phenotype">
+	{% if locus.literature_overview.phenotype_count > 0 %}
+          <section id="phenotype" data-magellan-destination="phenotype">
             <h2>Phenotype Literature
                 <a href="#" data-dropdown="phenotype_info"><i class="fa fa-info-circle"></i></a>
 
@@ -170,11 +185,13 @@
             {% set reference_list_id = "phenotype_list" %}
             {% set empty_message = "No phenotype literature curated." %}
             {% include "reference_list.jinja2" %}
-        </section>
-
+          </section>
+        {% endif %}
+	
         <!-- Disease
         ================================================== -->
-        <section id="disease" data-magellan-destination="disease">
+	{% if locus.literature_overview.disease_count > 0 %}
+	  <section id="disease" data-magellan-destination="disease">
             <h2>Disease Literature
                 <a href="#" data-dropdown="disease_info"><i class="fa fa-info-circle"></i></a>
 
@@ -187,11 +204,13 @@
             {% set reference_list_id = "disease_list" %}
             {% set empty_message = "No disease literature curated." %}
             {% include "reference_list.jinja2" %}
-        </section>
-
+          </section>
+        {% endif %}
+	
         <!-- Interaction
         ================================================== -->
-        <section id="interaction" data-magellan-destination="interaction">
+	{% if locus.literature_overview.interaction_count > 0 %}
+          <section id="interaction" data-magellan-destination="interaction">
             <h2>Interaction Literature
                 <a href="#" data-dropdown="interaction_info"><i class="fa fa-info-circle"></i></a>
 
@@ -206,11 +225,13 @@
             {% set reference_list_id = "interaction_list" %}
             {% set empty_message = "No interaction literature curated." %}
             {% include "reference_list.jinja2" %}
-        </section>
-
+          </section>
+        {% endif %}
+	
         <!-- Regulation
         ================================================== -->
-        <section id="regulation" data-magellan-destination="regulation">
+	{% if locus.literature_overview.regulation_count > 0 %}
+          <section id="regulation" data-magellan-destination="regulation">
             <h2>Regulation Literature
                 <a href="#" data-dropdown="regulation_info"><i class="fa fa-info-circle"></i></a>
 
@@ -224,10 +245,12 @@
             {% set reference_list_id = "regulation_list" %}
             {% set empty_message = "No regulation literature curated." %}
             {% include "reference_list.jinja2" %}
-        </section>
-
-        <!-- Regulation -->
-        <section id="htp" data-magellan-destination="htp">
+          </section>
+        {% endif %}
+	
+        <!-- HTP -->
+	{% if locus.literature_overview.htp_count > 0 %}
+          <section id="htp" data-magellan-destination="htp">
             <h2>High-Throughput Literature
                 <a href="#" data-dropdown="regulation_info"><i class="fa fa-info-circle"></i></a>
 
@@ -240,7 +263,9 @@
             {% set reference_list_id = "htp_list" %}
             {% set empty_message = "No high-throughput literature curated." %}
             {% include "reference_list.jinja2" %}
-        </section>
+          </section>
+	{% endif %}
+	
     </div>
 </div>
 {# end row #}
