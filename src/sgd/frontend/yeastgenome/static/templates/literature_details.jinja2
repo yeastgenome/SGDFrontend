@@ -20,10 +20,37 @@
 <!-- Navbar
 ================================================== -->
 <div class="row">
-    <!-- Navbar -->
-    <div id="navbar-container" class="large-2 columns hide-for-small-down">
-    </div>
+
+    <!-- Includes navbar.html into template -->
+    {% include "navbar.jinja2" %}
+
     <div class="small-12 medium-10 columns content-column">
+
+        <script>
+            add_navbar_title('{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %} ')
+            add_navbar_element('Literature Overview', 'overview');
+	    
+               add_navbar_element('Primary Literature', 'primary');
+               add_navbar_element('Additional Literature', 'additional');
+               add_navbar_element('Reviews', 'review');
+	       add_navbar_element('Phenotype Literature', 'phenotype');
+	       add_navbar_element('Interaction Literature', 'interaction');
+            
+        </script>
+
+    	    <!--
+            {% if allele.phenotype|length > 0 %}
+                add_navbar_element('Phenotype Literature', 'phenotype');
+            {% endif %}
+            {% if allele.interaction|length > 0 %}
+                add_navbar_element('Interaction Literature', 'interaction');
+            {% endif %}
+            -->
+
+
+
+
+
         <!-- Overview -->
         <section id="overview" data-magellan-destination="overview">
             <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/literature-help/literature-page" name="top" class="documentation-link">Literature Help <i class="fa fa-question-circle"></i></a>
