@@ -32,9 +32,14 @@
 	    {% if locus.literature_overview.primary_count > 0 %}
                add_navbar_element('Primary Literature', 'primary');
 	    {% endif %}
+	    {% if locus.literature_overview.additional_count > 0 %}
                add_navbar_element('Additional Literature', 'additional');
-               add_navbar_element('Reviews', 'review');
-	       add_navbar_element('Phenotype Literature', 'phenotype');
+	    {% endif %}
+            {% if locus.literature_overview.review_count > 0 %}
+	       add_navbar_element('Reviews', 'review');
+	    {% endif %}
+	    
+               add_navbar_element('Phenotype Literature', 'phenotype');
 	       add_navbar_element('Interaction Literature', 'interaction');
             
         </script>
