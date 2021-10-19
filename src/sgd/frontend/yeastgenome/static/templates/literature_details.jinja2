@@ -29,7 +29,7 @@
         <script>
 	    add_navbar_title('{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %}')
             add_navbar_element('Literature Overview', 'overview');
-	    {% if locus.literature_overview.primary > 0 %}
+	    {% if locus.literature_overview.primary_count > 0 %}
                add_navbar_element('Primary Literature', 'primary');
 	    {% endif %}
                add_navbar_element('Additional Literature', 'additional');
