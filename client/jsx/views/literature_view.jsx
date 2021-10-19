@@ -18,6 +18,7 @@ litView.render = function (hasNetwork) {
     { name: 'Reviews', target: 'reviews' },
     { name: 'Gene Ontology Literature', target: 'go' },
     { name: 'Phenotype Literature', target: 'phenotype' },
+    { name: 'Disease Literature', target: 'disease' },  
     { name: 'Interaction Literature', target: 'interaction' },
     { name: 'Regulation Literature', target: 'regulation' },
     { name: 'High-Throughput Literature', target: 'htp' },
