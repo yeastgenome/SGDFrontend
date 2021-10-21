@@ -64,8 +64,8 @@
 
 <!-- Overview
 ================================================== -->
-        <section id="overview" data-magellan-destination="overview">
-            <div class="page-header">
+    <section id="overview" data-magellan-destination="overview">
+       <div class="page-header">
                 <h1>Complex: {{ complex.complex_name }}
 		     <a href="#" data-dropdown="summary_help"><i class="fa fa-info-circle"></i></a>
                      <p id="summary_help" class="f-dropdown content medium" data-dropdown-content>
@@ -74,8 +74,8 @@
 		</h1>
                 <hr />
 
-        <div class="">
-                    <dl class="key-value">
+       <div class="">
+          <dl class="key-value">
             {% set source_link = "" %}
             {% if complex.source == 'SGD' %}
                 {% set source_link = 'https://www.yeastgenome.org' %}
@@ -103,22 +103,19 @@
 	    <dt>SGD ID</dt>
             <dd>SGD:{{ complex.sgdid }}</dd>
 	    
-                {% for alias in complex.aliases %}
-                              {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
-                              {{ alias }}
-                              {% if not loop.last %};{% else %}</dd>{% endif %}
-                    {% endfor %}
+            {% for alias in complex.aliases %}
+                {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
+                {{ alias }}
+                {% if not loop.last %};{% else %}</dd>{% endif %}
+            {% endfor %}
 
             <dt>Description</dt>
             <dd>{{ complex.description }}</dd>
 
-             </dl>
-                </div>
-
-
-
-            </div>
-        </section>
+          </dl>
+        </div>
+      </div>
+    </section>
 
 <!-- complex diagram
 ================================================== -->
