@@ -75,7 +75,7 @@
                 <hr />
 
         <div class="">
-                    <dl class="key-value">
+          <dl class="key-value">
             {% set source_link = "" %}
             {% if complex.source == 'SGD' %}
                 {% set source_link = 'https://www.yeastgenome.org' %}
@@ -103,18 +103,20 @@
 	    <dt>SGD ID</dt>
             <dd>SGD:{{ complex.sgdid }}</dd>
 	    
-                {% for alias in complex.aliases %}
-                              {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
-                              {{ alias }}
-                              {% if not loop.last %};{% else %}</dd>{% endif %}
-                    {% endfor %}
-             </dl>
-                </div>
+            {% for alias in complex.aliases %}
+                {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
+                {{ alias }}
+                {% if not loop.last %};{% else %}</dd>{% endif %}
+            {% endfor %}
 
-        <p id="summary_paragraph"></p>
+            <dt>Description</dt>
+            <dd>{{ complex.description }}</dd>
+	    
+          </dl>
+        </div>
 
-            </div>
-        </section>
+       </div>
+    </section>
 
 <!-- complex diagram
 ================================================== -->
