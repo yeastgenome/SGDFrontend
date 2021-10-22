@@ -63,7 +63,7 @@
                     <dd>{{ complex.unique_references|length }}</dd>
                     {% for alias in complex.aliases %}
                         {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
-                        {{ alias.display_name }}
+                        {{ alias }}
                         {% if not loop.last %},{% else %}</dd>{% endif %}
                     {% endfor %}
                 </dl>
