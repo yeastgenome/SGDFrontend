@@ -147,7 +147,7 @@
             <hr />
 
             <ul className="reference-list">
-                {% for ref in complex.reviews_references %}
+                {% for ref in complex.review_references %}
                    <li>
                       <a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
                           <span>{{ ref.citation|e|replace(ref.display_name, '') }}</span>
