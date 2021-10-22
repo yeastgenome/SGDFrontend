@@ -323,9 +323,25 @@
         <h2>Resources</h2>
         <hr />
         <div class="panel">
-	    <p>
-	         <a href="https://www.ebi.ac.uk/complexportal/complex/{{ complex.complex_accession }}" target="_blank">IntAct</a> 
-            </p>
+
+	    <a href="https://www.ebi.ac.uk/complexportal/complex/{{ complex.complex_accession }}" target="_blank">IntAct</a>
+
+            {% for pdb in complex.pdbs %}
+              {% if loop.index < 8 %}
+                 | <span>PDB:<a href="https://www.rcsb.org/structure/{{ pdb.display_name }}">{{ pdb.display_name }}</a></span>
+              {% endif %}
+            {% endfor %}
+            <a id="complex_see_more_button" onclick="$('#complex_see_more').show();$('#complex_see_more_button').hide();$('#complex_see_less_button').show();" {% if complex.pdbs|length <= 7 %}hidden{% endif %}> ... <i class="fa fa-arrow-circle-right"></i> Show all</a>
+            <span id="complex_see_more" hidden>
+               {% for pdb in complex.pdbs %}
+                 {% if loop.index >= 8 %}
+                    | <span>PDB:<a href="{{ pdb.display_name }}">{{ pdb.display_name }}</a></span>
+                    {% if not loop.last %} | {% endif %}
+                 {% endif %}
+               {% endfor %}
+            </span>
+            <a id="complex_see_less_button" onclick="$('#complex_see_more').hide();$('#complex_see_more_button').show();$('#complex_see_less_button').hide();" hidden> <i class="fa fa-arrow-circle-left"></i> Show fewer</a>
+        
 	</div>
     </section>
     
