@@ -336,7 +336,6 @@
                {% for pdb in complex.pdbs %}
                  {% if loop.index >= 10 %}
                     | <span>PDB:<a href="https://www.rcsb.org/structure/{{ pdb.display_name }}" target="_blank">{{ pdb.display_name }}</a></span>
-                    {% if not loop.last %} | {% endif %}
                  {% endif %}
                {% endfor %}
             </span>
