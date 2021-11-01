@@ -208,28 +208,34 @@
              <div class="">
                         <dl class="key-value">
                 <ul>
+		        {% if complex.function|length > 0 %}
                             {% for function in complex.function %}
                                    {% if loop.first %}<dt>Molecular Function</dt><dd>{% endif %}
                                    <li>{{function.qualifier}} <a href={{ function.go.link }} target="_infowin">{{ function.go.display_name }}</a> (<a href={{function.experiment.link}} target="_infowin">{{ function.experiment.display_name}}</a>)</li>
                                    {% if loop.last %}</dd>{% endif %}
                             {% endfor %}
+		        {% endif %}
                 </ul>
                 
                 <ul>
+			{% if complex.process|length > 0 %}
                             {% for process in complex.process %}
                                    {% if loop.first %}<dt>Biological Process</dt><dd>{% endif %}
                                    <li>{{process.qualifier}} <a href={{ process.go.link }} target="_infowin">{{ process.go.display_name }}</a> (<a href={{ process.experiment.link}} target="_infowin">{{ process.experiment.display_name}}</a>)</li>
                                    {% if loop.last %}</dd>{% endif %}
                             {% endfor %}
                             </ul>
+			{% endif %}
 
                 <ul>
+			{% if complex.component|length > 0 %}
                             {% for component in complex.component %}
                                    {% if loop.first %}<dt>Cellular Component</dt><dd>{% endif %}
 				    <li>{{component.qualifier}} <a href={{ component.go.link }} target="_infowin">{{ component.go.display_name }}</a> (<a href={{ component.experiment.link}} target="_infowin">{{ component.experiment.display_name}}</a>)</li>
                                    {% if loop.last %}</dd>{% endif %}
                             {% endfor %}
                             </ul>
+			{% endif %}
 
             </dl>
                      </div>
