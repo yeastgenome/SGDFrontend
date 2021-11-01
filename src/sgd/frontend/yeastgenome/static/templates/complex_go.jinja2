@@ -68,9 +68,9 @@
                </dl>
 	    {% endif %}
 
-	    HELLO WORLD
 	    <dl class="key-value">
 	        {% for slim in complex.go_overview.go_slim_grouped %}
+		   {{ slim.display_name }}
 		   {% if loop.first %}
 		      <dt>
 		         GO Slim Terms
