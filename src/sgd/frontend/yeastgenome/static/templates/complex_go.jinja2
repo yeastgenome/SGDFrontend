@@ -92,14 +92,14 @@
 	    </dl>
 
 	    <ul class="button-group radius">
-            	<li><a id="go_download_all" class="small button secondary"><i class="fa fa-download"></i> Download All Annotations (.txt)</a></li>
+            	<li><a id="complex_go_download_all" class="small button secondary"><i class="fa fa-download"></i> Download All Annotations (.txt)</a></li>
     	    </ul>
 
         </section>
 
-
+	<!--
 	 {{ complex.go_overview.date_last_reviewed }}
-
+	 -->
 
 
 	<!-- Biological Process
@@ -114,6 +114,10 @@
                  </p>
             </h2>
             <hr />
+
+	    <!-- Includes go_table into template -->
+            {% set table_id = "complex_bp_go_table" %}
+	    {% include "go_table.jinja2" %}
 
 
 

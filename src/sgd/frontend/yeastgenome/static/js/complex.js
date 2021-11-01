@@ -18,6 +18,8 @@ $(document).ready(function() {
             hide_section("diagram");                                                                              
         } 
 
+	console.log("Populating go tables..")
+	
 	if (data["process"].length > 1) {
 	    var complex_bp_go_table = create_go_table("complex_bp", "No manually curated biological process terms for " + complex['format_name'], data["process"]);
             create_download_button("complex_bp_go_table_download", complex_bp_go_table, complex['display_name'] + "_complex_bp_go");
