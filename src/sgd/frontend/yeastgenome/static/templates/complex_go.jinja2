@@ -23,7 +23,7 @@
     </nav>
 </div>
 
-<script>document.getElementById("literature_tab").className += " active";</script>
+<script>document.getElementById("go_tab").className += " active";</script>
 
 <!-- Navbar
 ================================================== -->
@@ -36,134 +36,63 @@
 
         <script>
             add_navbar_title('{{ complex.complex_name}}')
-            add_navbar_element('Literature Overview', 'overview');
-	    {% if complex.primary_references|length > 0 %}
-	       add_navbar_element('Primary Literature', 'primary');
+            add_navbar_element('Gene Ontology Overview', 'overview');
+	    {% if complex.process|length > 0 %}
+	       add_navbar_element('Biological Process', 'process');
 	    {% endif %}
-	    {% if complex.additional_references|length > 0 %}
-               add_navbar_element('Additional Literature', 'additional');
+	    {% if complex.function|length > 0 %}
+               add_navbar_element('Molecular Function', 'function');
             {% endif %}
-	    {% if complex.review_references|length > 0 %}
-               add_navbar_element('Reviews', 'review');
+	    {% if complex.component|length > 0 %}
+               add_navbar_element('Cellular Component', 'component');
             {% endif %}
+	    add_navbar_element('Shared Annotations', 'network');	    
         </script>
 
         <!-- Overview -->
         <section id="overview" data-magellan-destination="overview">
-            <h1>{{ complex.complex_name }} Literature
-                <a href="#" data-dropdown="summary_info"><i class="fa fa-info-circle"></i></a>
-                <p id="summary_info" class="f-dropdown content medium" data-dropdown-content>
-		  TEXT HERE
+	    <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/function-help/gene-ontology-go" name="top" class="documentation-link">Gene Ontology Help <i class="fa fa-question-circle"></i></a>
+	    <h1>{{ complex.complex_name }} Overview
+	        <a href="#" data-dropdown="summary_help"><i class="fa fa-info-circle"></i></a>
+                <p id="summary_help" class="f-dropdown content medium" data-dropdown-content>
+                    GO Annotations consist of four mandatory components: a gene product, a term from one of
+                    the three Gene Ontology (GO) controlled vocabularies (Molecular Function, Biological
+                    Process, and Cellular Component), a reference, and an evidence code.
                 </p>
             </h1>
             <hr />
-            <div class="">
-                <dl class="key-value">
-    		    <dt>Unique References</dt>
-                    <dd>{{ complex.unique_references|length }}</dd>
-                    {% for alias in complex.aliases %}
-                        {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
-                        {{ alias.display_name }}
-                        {% if not loop.last %},{% else %}</dd>{% endif %}
-                    {% endfor %}
-                </dl>
-            </div>
+	    {% if complex.description %}
+	       <dl class="key-value">
+                   <dt>Summary</dt>
+                   <dd>{{ complex.descrition|safe }}</dd>
+               </dl>
+	    {% endif %}
+
+	    <!-- Includes go_overview.html into template -->
+    	    {% include "go_overview.jinja2" %}
+
+	    <ul class="button-group radius">
+                <li><a id="go_download_all" class="small button secondary"><i class="fa fa-download"></i> Download All Annotations (.txt)</a></li>
+           </ul>
+
         </section>
 
-	<!-- Primary Literature
+	<!-- Biological Process
         ================================================== -->
-        {% if complex.primary_references|length > 0 %}
-        <section id="primary" data-magellan-destination="primary">
+        {% if complex.process|length > 0 %}
+        <section id="process" data-magellan-destination="process">
         <div class="page-header">
-            <h2>Primary Literature
-                 <a href="#" data-dropdown="primary_info"><i class="fa fa-info-circle"></i></a>
-                 <p id="primary_info" class="f-dropdown content medium" data-dropdown-content>
+            <h2>Biological Process
+                 <a href="#" data-dropdown="process"><i class="fa fa-info-circle"></i></a>
+                 <p id="process" class="f-dropdown content medium" data-dropdown-content>
                       TEXT HERE
                  </p>
             </h2>
             <hr />
 
-	    <ul className="reference-list">
-                {% for ref in complex.primary_references %}
-                   <li>
-                      <a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
-                          <span>{{ ref.citation|e|replace(ref.display_name, '') }}</span>
-                      {% if ref.pubmed_id != none %}
-                          <small>PMID: {{ ref.pubmed_id|e }}</small>
-                      {% endif %}
-                      <ul class="ref-links">
-                          <li><a href="{{ ref.link|e }}">SGD Paper</a></li>
-                          {% for url in ref.urls %}
-                             <li><a target="_infowin" href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
-                          {% endfor %}
-                      </ul>
-                   </li>
-                {% endfor %}
-            </ul>
-        </div>
-        </section>
-        {% endif %}
 
-        <!-- Additional Literature
-        ================================================== -->
-        {% if complex.additional_references|length > 0 %}
-        <section id="additional" data-magellan-destination="additional">
-        <div class="page-header">
-            <h2>Additional Literature
-                 <a href="#" data-dropdown="additional_info"><i class="fa fa-info-circle"></i></a>
-                 <p id="additional_info" class="f-dropdown content medium" data-dropdown-content>
-                     TEXT HERE
-                 </p>
-            </h2>
-            <hr />
 
-            <ul className="reference-list">
-                {% for ref in complex.additional_references %}
-                   <li>
-                      <a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
-                          <span>{{ ref.citation|e|replace(ref.display_name, '') }}</span>
-                      {% if ref.pubmed_id != none %}
-                          <small>PMID: {{ ref.pubmed_id|e }}</small>
-                      {% endif %}
-                      <ul class="ref-links">
-                          <li><a href="{{ ref.link|e }}">SGD Paper</a></li>
-                          {% for url in ref.urls %}
-                             <li><a target="_infowin" href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
-                          {% endfor %}
-                      </ul>
-                   </li>
-                {% endfor %}
-            </ul>
-        </div>
-        </section>
-        {% endif %}
-
-        <!-- Reviews Literature
-        ================================================== -->
-        {% if complex.review_references|length > 0 %}
-        <section id="review" data-magellan-destination="review">
-        <div class="page-header">
-            <h2>Reviews</h2>
-            <hr />
-
-            <ul className="reference-list">
-                {% for ref in complex.reviews_references %}
-                   <li>
-                      <a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
-                          <span>{{ ref.citation|e|replace(ref.display_name, '') }}</span>
-                      {% if ref.pubmed_id != none %}
-                          <small>PMID: {{ ref.pubmed_id|e }}</small>
-                      {% endif %}
-                      <ul class="ref-links">
-                          <li><a href="{{ ref.link|e }}">SGD Paper</a></li>
-                          {% for url in ref.urls %}
-                             <li><a target="_infowin" href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
-                          {% endfor %}
-                      </ul>
-                   </li>
-                {% endfor %}
-            </ul>
-        </div>
+	</div>
         </section>
         {% endif %}
 
