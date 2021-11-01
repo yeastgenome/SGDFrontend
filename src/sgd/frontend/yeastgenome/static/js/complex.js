@@ -18,15 +18,18 @@ $(document).ready(function() {
             hide_section("diagram");                                                                              
         } 
 
-	var complex_bp_go_table = create_go_table("complex_bp", "No manually curated biological process terms for " + complex['display_name'], data.process);
-        create_download_button("complex_bp_go_table_download", complex_bp_go_table, complex['display_name'] + "_complex_bp_go");
-
-	var complex_mf_go_table = create_go_table("complex_mf", "No manually curated molecular function termsfor " + complex['display_name'], data.function);
-        create_download_button("complex_mf_go_table_download", complex_mf_go_table, complex['display_name'] +"_complex_mf_go");
-
-	var complex_cc_go_table = create_go_table("complex_cc", "No manually curated cellular component termsfor " + complex['display_name'], data.component);
-        create_download_button("complex_cc_go_table_download", complex_cc_go_table, complex['display_name'] +"_complex_cc_go");
-
+	if (data["process"].length > 1) {
+	    var complex_bp_go_table = create_go_table("complex_bp", "No manually curated biological process terms for " + complex['format_name'], data["process"]);
+            create_download_button("complex_bp_go_table_download", complex_bp_go_table, complex['display_name'] + "_complex_bp_go");
+	}
+	if (data["function"].length > 1) {
+	    var complex_mf_go_table = create_go_table("complex_mf", "No manually curated molecular function termsfor " + complex['format_name'], data["function"]);
+            create_download_button("complex_mf_go_table_download", complex_mf_go_table, complex['display_name'] +"_complex_mf_go");
+	}
+	if (data["component"].length > 1) {
+	    var complex_cc_go_table = create_go_table("complex_cc", "No manually curated cellular component termsfor " + complex['format_name'], data["component"]);
+            create_download_button("complex_cc_go_table_download", complex_cc_go_table, complex['display_name'] +"_complex_cc_go");
+	}
 
         if (data != null && data["network_graph"]["nodes"].length > 1) {
             var _categoryColors = {
