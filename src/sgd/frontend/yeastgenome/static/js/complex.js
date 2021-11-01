@@ -87,6 +87,8 @@ function create_go_table(prefix, message, data) {
         for (var i=0; i < data.length; i++) {    
             datatable.push(go_data_to_table(data[i], i));
 	    gos[data[i]['go']['id']] = true;
+	    console.log(data[i]["locus"]["display_name"])
+	    console.log(data[i]["locus"]["format_name"])
         }
 	set_up_header(prefix + '_go_table', datatable.length, 'entry', 'entries', Object.keys(gos).length, 'Gene Ontology term', 'Gene Ontology terms');
 	
