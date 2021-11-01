@@ -57,7 +57,7 @@ $(document).ready(function() {
 
 });
 
-function create_go_table(prefix, message, filter, data) {
+function create_go_table(prefix, message, data) {
     var options = {};
     options["aoColumns"] = [
         {"bSearchable":false, "bVisible":false,"aTargets":[0],"mData":0}, //evidence_id
@@ -84,11 +84,9 @@ function create_go_table(prefix, message, filter, data) {
     else {
         var datatable = [];
         var gos = {};
-        for (var i=0; i < data.length; i++) {
-            if(filter(data[i])) {
-                datatable.push(go_data_to_table(data[i], i));
-                gos[data[i]['go']['id']] = true;
-            }
+        for (var i=0; i < data.length; i++) {    
+            datatable.push(go_data_to_table(data[i], i));
+	    gos[data[i]['go']['id']] = true;
         }
 	set_up_header(prefix + '_go_table', datatable.length, 'entry', 'entries', Object.keys(gos).length, 'Gene Ontology term', 'Gene Ontology terms');
 	
