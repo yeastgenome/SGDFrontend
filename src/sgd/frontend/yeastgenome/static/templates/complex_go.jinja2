@@ -86,11 +86,14 @@
 		     </dt>
 		    <dd>
 		    {% endif %}
-		    <span><a href="{{ slim.link|e }}">{{ slim.display_name|e }}</a></span>{% if not loop.last %}, {% else %}</dd>{% endif %}
+		    <span><a href="{{ slim.link|e }}" target='new'>{{ slim.display_name|e }}</a></span>{% if not loop.last %}, {% else %}</dd>{% endif %}
 
 		{% endfor %}
 	    </dl>
 
+	    <ul class="button-group radius">
+            	<li><a id="go_download_all" class="small button secondary"><i class="fa fa-download"></i> Download All Annotations (.txt)</a></li>
+    	    </ul>
 
         </section>
 
