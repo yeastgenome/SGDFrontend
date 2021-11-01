@@ -69,7 +69,7 @@
 	    {% endif %}
 
 	    <dl class="key-value">
-	        {% for slim in complex.go_overview.go_slim_grouped if slim.format_name != 'molecular_function' and slim.format_name != 'cellular_component' and slim.format_name != 'biological_process' %}
+	        {% for slim in complex.go_overview.go_slim_grouped %}
 		   {% if loop.first %}
 		      <dt>
 		         GO Slim Terms
