@@ -68,9 +68,9 @@
                </dl>
 	    {% endif %}
 
-	    {{ complex.go_overview.date_last_reviewed }}
+	    
 	    <dl class="key-value">
-	        {% for slim in complex.go_overview.go_slim_grouped %}
+	        {% for slim in complex.references %}
 		   {% if loop.first %}
 		      <dt>
 		         GO Slim Terms
@@ -93,6 +93,11 @@
 
 
         </section>
+
+
+	 {{ complex.go_overview.date_last_reviewed }}
+
+
 
 	<!-- Biological Process
         ================================================== -->
