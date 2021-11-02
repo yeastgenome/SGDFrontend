@@ -69,7 +69,6 @@ function create_go_table(prefix, message, data) {
         {"aTargets":[4],"mData":6}, //gene ontology term  ----> qualifier       
 	{"bSearchable":false, "bVisible":false,"aTargets":[5],"mData":5}, //gene ontology term id
         {"aTargets":[6],"mData":4}, //qualifier ----> gene ontology term
-        {"bSearchable":false, "bVisible":false,"aTargets":[7],"mData":7}, //aspect
         {"aTargets":[8],"mData":12}, //evidence ----> annotation_extension
         {"aTargets":[9],"mData":8}, //method  ----> evidence
 	{"bSearchable":false, "bVisible":false, "aTargets":[10],"mData":9}, //source  ----> method
