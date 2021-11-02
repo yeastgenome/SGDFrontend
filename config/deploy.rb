@@ -3,7 +3,7 @@ lock '3.4.0'
 set :application, 'SGDFrontend'
 set :ssh_options, {:forward_agent => true}
 
-set :repo_url, 'https://github.com/yeastgenome/SGDFrontend'
+set :repo_url, 'https://github.com/yeastgenome/SGDFrontend.git'
 set :branch, ENV['BRANCH'] || $1 if `git branch` =~ /\* (\S+)\s/m
 
 set :deploy_to, '/data/www/' + fetch(:application)
