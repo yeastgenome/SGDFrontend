@@ -19,17 +19,17 @@ $(document).ready(function() {
 	}
 
 	all_data = [];
-	var process = data["process"];
-	for (var i=0; i < process.length; i++) {
-	    all_data.push(go_data_to_table(process[i], i));
+	var p = data["process"];
+	for (var i=0; i < p.length; i++) {
+	    all_data.push(go_data_to_table(p[i], i));
 	}
-	var function = data["function"];
-        for (var i=0; i < function.length; i++) {
-            all_data.push(go_data_to_table(function[i], i));
+	var f = data["function"];
+        for (var i=0; i < f.length; i++) {
+            all_data.push(go_data_to_table(f[i], i));
 	}
-	var component = data["component"];
-        for (var i=0; i < component.length; i++) {
-            all_data.push(go_data_to_table(component[i], i));
+	var c = data["component"];
+        for (var i=0; i < c.length; i++) {
+            all_data.push(go_data_to_table(c[i], i));
 	}
 
 	var headers = ["Evidence ID", "Analyze ID", "",  "Gene Format Name", "Qualifier", "Gene Ontology Term ID", "Gene Ontology Term ", "Aspect", "Annotation Extension", "Evidence", "Method", "Source", "Assigned On", "Reference"]
