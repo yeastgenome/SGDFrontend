@@ -25,20 +25,20 @@ $(document).ready(function() {
 function create_go_table(prefix, data) {
     var options = {};
     options["aoColumns"] = [
-        {"bSearchable":false, "bVisible":false,"aTargets":[0],"mData":0}, //evidence_id
-        {"bSearchable":false, "bVisible":false,"aTargets":[1],"mData":1}, //analyze_id
+        {"bSearchable":false, "bVisible":false,"aTargets":[0],"mData":0}, // evidence_id
+        {"bSearchable":false, "bVisible":false,"aTargets":[1],"mData":1}, // analyze_id
         {"bSearchable":false, "bVisible":false,"aTargets":[2],"mData":2}, // complex name
         {"bSearchable":false, "bVisible":false,"aTargets":[3],"mData":3}, // complex accession
-        {"aTargets":[4],"mData":6}, //gene ontology term  ----> qualifier       
-	{"bSearchable":false, "bVisible":false,"aTargets":[5],"mData":5}, //gene ontology term id
-        {"aTargets":[6],"mData":4}, //qualifier ----> gene ontology term
-        {"bSearchable":false, "bVisible":false,"aTargets":[7],"mData":7}, //aspect
-        {"aTargets":[8],"mData":12}, //evidence ----> annotation_extension
-        {"aTargets":[9],"mData":8}, //method  ----> evidence
-	{"bSearchable":false, "bVisible":false, "aTargets":[10],"mData":9}, //source  ----> method
-        {"aTargets":[11],"mData":10}, //assigned on ----> source
-        {"aTargets":[12],"mData":11}, //annotation_extension ----> assigned on
-        {"aTargets":[13],"mData":13} // reference
+        {"aTargets":[4],"mData":6},                                       // qualifier       
+	{"bSearchable":false, "bVisible":false,"aTargets":[5],"mData":5}, // gene ontology term id
+        {"aTargets":[6],"mData":4},                                       // gene ontology term
+        {"bSearchable":false, "bVisible":false,"aTargets":[7],"mData":7}, // aspect
+        {"aTargets":[8],"mData":12},                                      // annotation_extension
+        {"aTargets":[9],"mData":8},                                       // evidence
+	{"bSearchable":false, "bVisible":false, "aTargets":[10],"mData":9}, // method
+        {"aTargets":[11],"mData":10},                                     // source
+        {"aTargets":[12],"mData":11},                                     // assigned on
+        {"aTargets":[13],"mData":13}                                      // reference
     ];
     options["bPaginate"] = true;
     options["aaSorting"] = [[5, "asc"]];
