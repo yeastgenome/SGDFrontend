@@ -18,6 +18,23 @@ $(document).ready(function() {
             create_download_button("complex_cc_go_table_download", complex_cc_go_table, complex['complex_accession'] +"_complex_cc_go");
 	}
 
+	all_data = [];
+	var process = data["process"];
+	for (var i=0; i < process.length; i++) {
+	    all_data.push(go_data_to_table(process[i], i));
+	}
+	var function = data["function"];
+        for (var i=0; i < function.length; i++) {
+            all_data.push(go_data_to_table(function[i], i));
+	}
+	var component = data["component"];
+        for (var i=0; i < component.length; i++) {
+            all_data.push(go_data_to_table(component[i], i));
+	}
+
+	var headers = ["Evidence ID", "Analyze ID", "",  "Gene Format Name", "Qualifier", "Gene Ontology Term ID", "Gene Ontology Term ", "Aspect", "Annotation Extension", "Evidence", "Method", "Source", "Assigned On", "Reference"]
+	create_download_button_no_table("complex_go_download_all", headers, all_data, complex['complex_accession'] + "_go_annotations")
+	
     });
 
 });
