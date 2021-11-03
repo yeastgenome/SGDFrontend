@@ -33,11 +33,11 @@ function create_go_table(prefix, data) {
 	{"bSearchable":false, "bVisible":false,"aTargets":[5],"mData":5}, // gene ontology term id
         {"aTargets":[6],"mData":6},                                       // gene ontology term
         {"bSearchable":false, "bVisible":false,"aTargets":[7],"mData":7}, // aspect
-        {"aTargets":[8],"mData":12},                                      // annotation_extension
-        {"aTargets":[9],"mData":8},                                       // evidence
-	{"bSearchable":false, "bVisible":false, "aTargets":[10],"mData":9}, // method
-        {"aTargets":[11],"mData":10},                                     // source
-        {"aTargets":[12],"mData":11},                                     // assigned on
+        {"aTargets":[8],"mData":8},                                      // annotation_extension
+        {"aTargets":[9],"mData":9},                                       // evidence
+	{"bSearchable":false, "bVisible":false, "aTargets":[10],"mData":10}, // annotation type
+        {"aTargets":[11],"mData":11},                                     // source
+        {"aTargets":[12],"mData":12},                                     // assigned on
         {"aTargets":[13],"mData":13}                                      // reference
     ];
     options["bPaginate"] = true;
