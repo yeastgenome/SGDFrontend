@@ -5,7 +5,7 @@ $(document).ready(function() {
         create_download_button("mc_bp_go_table_download", mc_bp_go_table, locus['display_name'] + "_manual_bp_go");
 
         var mc_mf_go_table = create_go_table("mc_mf", "No manually curated molecular function terms for " + locus['display_name'], function(x) {return x["annotation_type"] == "manually curated" && x["go"]["go_aspect"] == "molecular function"}, data);
-        create_download_button("mc_mf_go_table_download", mc_mf_go_table, locus['display_name'] + "manual_mf_go");
+        create_download_button("mc_mf_go_table_download", mc_mf_go_table, locus['display_name'] + "_manual_mf_go");
 
         var mc_cc_go_table = create_go_table("mc_cc", "No manually curated cellular component terms for " + locus['display_name'], function(x) {return x["annotation_type"] == "manually curated" && x["go"]["go_aspect"] == "cellular component"}, data);
         create_download_button("mc_cc_go_table_download", mc_cc_go_table, locus['display_name'] + "_manual_cc_go");
