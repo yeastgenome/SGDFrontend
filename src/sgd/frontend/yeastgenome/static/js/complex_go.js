@@ -29,9 +29,9 @@ function create_go_table(prefix, data) {
         {"bSearchable":false, "bVisible":false,"aTargets":[1],"mData":1}, // analyze_id
         {"bSearchable":false, "bVisible":false,"aTargets":[2],"mData":2}, // complex name
         {"bSearchable":false, "bVisible":false,"aTargets":[3],"mData":3}, // complex accession
-        {"aTargets":[6],"mData":6},                                       // qualifier       
+        {"aTargets":[4],"mData":6},                                       // qualifier       
 	{"bSearchable":false, "bVisible":false,"aTargets":[5],"mData":5}, // gene ontology term id
-        {"aTargets":[4],"mData":4},                                       // gene ontology term
+        {"aTargets":[6],"mData":4},                                       // gene ontology term
         {"bSearchable":false, "bVisible":false,"aTargets":[7],"mData":7}, // aspect
         {"aTargets":[8],"mData":12},                                      // annotation_extension
         {"aTargets":[9],"mData":8},                                       // evidence
