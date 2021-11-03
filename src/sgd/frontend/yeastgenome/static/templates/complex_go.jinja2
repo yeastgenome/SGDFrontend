@@ -115,6 +115,51 @@
         </section>
         {% endif %}
 
+        <!-- Molecular Function
+        ================================================== -->
+        {% if complex.function|length > 0 %}
+        <section id="function" data-magellan-destination="function">
+        <div class="page-header">
+            <h2>Molecular Function
+                 <a href="#" data-dropdown="function"><i class="fa fa-info-circle"></i></a>
+                 <p id="function" class="f-dropdown content medium" data-dropdown-content>
+                      TEXT HERE
+                 </p>
+            </h2>
+            <hr />
+
+            <!-- Includes go_table into template -->
+            {% set table_id = "complex_mf_go_table" %}
+            {% include "complex_go_table.jinja2" %}
+
+        </div>
+        </section>
+        {% endif %}
+
+
+	<! Cellular Component
+        ================================================== -->
+        {% if complex.component|length > 0 %}
+        <section id="component" data-magellan-destination="component">
+        <div class="page-header">
+            <h2>Cellular Component
+                 <a href="#" data-dropdown="component"><i class="fa fa-info-circle"></i></a>
+                 <p id="component" class="f-dropdown content medium" data-dropdown-content>
+                      TEXT HERE
+                 </p>
+            </h2>
+            <hr />
+
+            <!-- Includes go_table into template -->
+            {% set table_id = "complex_cc_go_table" %}
+            {% include "complex_go_table.jinja2" %}
+
+
+        </div>
+        </section>
+        {% endif %}
+
+
   </div>
 </div>
 
