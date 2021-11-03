@@ -29,13 +29,13 @@ function create_go_table(prefix, data) {
         {"bSearchable":false, "bVisible":false,"aTargets":[1],"mData":1}, // analyze_id
         {"bSearchable":false, "bVisible":false,"aTargets":[2],"mData":2}, // complex name
         {"bSearchable":false, "bVisible":false,"aTargets":[3],"mData":3}, // complex accession
-        {"aTargets":[4],"mData":4},                                       // qualifier       
+        {"aTargets":[4],"mData":6},                                       // qualifier       
 	{"bSearchable":false, "bVisible":false,"aTargets":[5],"mData":5}, // gene ontology term id
-        {"aTargets":[6],"mData":6},                                       // gene ontology term
+        {"aTargets":[6],"mData":4},                                       // gene ontology term
         {"bSearchable":false, "bVisible":false,"aTargets":[7],"mData":7}, // aspect
         {"aTargets":[8],"mData":12},                                      // annotation_extension
         {"aTargets":[9],"mData":8},                                       // evidence
-	{"bSearchable":false, "bVisible":false, "aTargets":[10],"mData":9}, // method
+	{"bSearchable":false, "bVisible":false, "aTargets":[10],"mData":9}, // annotation type
         {"aTargets":[11],"mData":10},                                     // source
         {"aTargets":[12],"mData":11},                                     // assigned on
         {"aTargets":[13],"mData":13}                                      // reference
