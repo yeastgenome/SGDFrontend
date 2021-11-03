@@ -2,8 +2,6 @@
 $(document).ready(function() {
 
     $.getJSON('/backend/complex/' + complex['complex_accession'], function(data) {
-
-	console.log("Populating go tables..")
 	
 	if (data["process"].length > 1) {
 	    var complex_bp_go_table = create_go_table("complex_bp", data["process"]);
