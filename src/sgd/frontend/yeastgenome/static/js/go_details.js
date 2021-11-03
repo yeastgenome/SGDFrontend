@@ -44,7 +44,8 @@ $(document).ready(function() {
                 comp_count = comp_count + 1;
             }
         }
-        var headers = ["Evidence ID", "Analyze ID", "", "Gene", "Gene Format Name", "Gene Ontology Term", "Gene Ontology Term ID", "Qualifier", "Aspect", "Method", "Evidence", "Source", "Assigned On", "Reference", "Relationships"];
+	var headers = ["Evidence ID", "Analyze ID", "",  "Gene Format Name", "Qualifier", "Gene Ontology Term ID", "Gene Ontology Term ", "Aspect", "Annotation Extension", "Evidence", "Method", "Source", "Assigned On", "Reference"]
+	// var headers = ["Evidence ID", "Analyze ID", "", "Gene", "Gene Format Name", "Gene Ontology Term", "Gene Ontology Term ID", "Qualifier", "Aspect", "Method", "Evidence", "Source", "Assigned On", "Reference", "Relationships"]     ;
         create_download_button_no_table("go_download_all", headers, transformed_data, locus['display_name'] + "_go_annotations")
 
         if(mc_count == 0) {
