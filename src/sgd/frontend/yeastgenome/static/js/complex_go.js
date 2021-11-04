@@ -19,6 +19,7 @@ $(document).ready(function() {
 	all_data = [];
 	var p = data["process"];
 	for (var i=0; i < p.length; i++) {
+	    console.log("process="+p[i]);
 	    all_data.push(go_data_to_table(p[i], i));
 	}
 	var f = data["function"];
