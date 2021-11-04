@@ -5,7 +5,7 @@ $(document).ready(function() {
         create_download_button("mc_bp_go_table_download", mc_bp_go_table, locus['display_name'] + "_manual_bp_go");
 
         var mc_mf_go_table = create_go_table("mc_mf", "No manually curated molecular function terms for " + locus['display_name'], function(x) {return x["annotation_type"] == "manually curated" && x["go"]["go_aspect"] == "molecular function"}, data);
-        create_download_button("mc_mf_go_table_download", mc_mf_go_table, locus['display_name'] + "manual_mf_go");
+        create_download_button("mc_mf_go_table_download", mc_mf_go_table, locus['display_name'] + "_manual_mf_go");
 
         var mc_cc_go_table = create_go_table("mc_cc", "No manually curated cellular component terms for " + locus['display_name'], function(x) {return x["annotation_type"] == "manually curated" && x["go"]["go_aspect"] == "cellular component"}, data);
         create_download_button("mc_cc_go_table_download", mc_cc_go_table, locus['display_name'] + "_manual_cc_go");
@@ -44,7 +44,8 @@ $(document).ready(function() {
                 comp_count = comp_count + 1;
             }
         }
-        var headers = ["Evidence ID", "Analyze ID", "", "Gene", "Gene Format Name", "Gene Ontology Term", "Gene Ontology Term ID", "Qualifier", "Aspect", "Method", "Evidence", "Source", "Assigned On", "Reference", "Relationships"];
+	var headers = ["Evidence ID", "Analyze ID", "",  "Gene Format Name", "Qualifier", "Gene Ontology Term ID", "Gene Ontology Term ", "Aspect", "Annotation Extension", "Evidence", "Method", "Source", "Assigned On", "Reference"]
+	// var headers = ["Evidence ID", "Analyze ID", "", "Gene", "Gene Format Name", "Gene Ontology Term", "Gene Ontology Term ID", "Qualifier", "Aspect", "Method", "Evidence", "Source", "Assigned On", "Reference", "Relationships"]     ;
         create_download_button_no_table("go_download_all", headers, transformed_data, locus['display_name'] + "_go_annotations")
 
         if(mc_count == 0) {
@@ -77,15 +78,15 @@ function create_go_table(prefix, message, filter, data) {
             {"bSearchable":false, "bVisible":false,"aTargets":[1],"mData":1}, //analyze_id
             {"bSearchable":false, "bVisible":false,"aTargets":[2],"mData":2}, //gene
             {"bSearchable":false, "bVisible":false,"aTargets":[3],"mData":3}, //gene systematic name
-            {"aTargets":[4],"mData":6}, //gene ontology term  ----> qualifier
+            {"aTargets":[4],"mData":4}, //gene ontology term  ----> qualifier
             {"bSearchable":false, "bVisible":false,"aTargets":[5],"mData":5}, //gene ontology term id
-            {"aTargets":[6],"mData":4}, //qualifier ----> gene ontology term
+            {"aTargets":[6],"mData":6}, //qualifier ----> gene ontology term
             {"bSearchable":false, "bVisible":false,"aTargets":[7],"mData":7}, //aspect
-            {"aTargets":[8],"mData":12}, //evidence ----> annotation_extension
-            {"aTargets":[9],"mData":8}, //method  ----> evidence
-            {"bSearchable":false, "bVisible":false, "aTargets":[10],"mData":9}, //source  ----> method
-            {"aTargets":[11],"mData":10}, //assigned on ----> source
-            {"aTargets":[12],"mData":11}, //annotation_extension ----> assigned on
+            {"aTargets":[8],"mData":8}, //evidence ----> annotation_extension
+            {"aTargets":[9],"mData":9}, //method  ----> evidence
+            {"bSearchable":false, "bVisible":false, "aTargets":[10],"mData":10}, //source  ----> method
+            {"aTargets":[11],"mData":11}, //assigned on ----> source
+            {"aTargets":[12],"mData":12}, //annotation_extension ----> assigned on
             {"aTargets":[13],"mData":13} // reference
             ];
     options["bPaginate"] = true;
