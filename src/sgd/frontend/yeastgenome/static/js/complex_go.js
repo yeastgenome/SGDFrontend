@@ -30,7 +30,7 @@ $(document).ready(function() {
             all_data.push(go_data_to_table(c[i], i));
 	}
 
-	var headers = ["Evidence ID", "Analyze ID", "",  "Complex Accession", "Qualifier", "Gene Ontology Term ID", "Gene Ontology Term ", "Aspect", "Annotation Extension", "Evidence", "Method", "Source", "Assigned On", "Reference"]
+	var headers = ["Evidence ID", "Analyze ID", "Complex Name",  "Complex Accession", "Qualifier", "Gene Ontology Term ID", "Gene Ontology Term ", "Aspect", "Annotation Extension", "Evidence", "Method", "Source", "Assigned On", "Reference"]
 	create_download_button_no_table("complex_go_download_all", headers, all_data, complex['complex_accession'] + "_go_annotations")
 	
     });
