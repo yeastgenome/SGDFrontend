@@ -39,12 +39,12 @@ $(document).ready(function() {
                 'GO': '#2ca02c',
                 'complex': '#E6AB03'
             };
-            //var filters = {
-            //    ' GO Terms': function(d) {
-            //        var acceptedCats = ['FOCUS', 'GO', 'complex'];
-            //        return acceptedCats.includes(d.category);
-            //    },
-            //}
+            var filters = {
+                ' GO Terms': function(d) {
+                    var acceptedCats = ['FOCUS', 'GO', 'complex'];
+                    return acceptedCats.includes(d.category);
+                },
+            }
             views.network.render(data["network_graph"], _categoryColors, "j-complex-network", filters, true);
         } else {
             hide_section("network");
