@@ -40,7 +40,6 @@ $(document).ready(function() {
                 'complex': '#E6AB03'
             };
             var filters = {
-                ' All': function(d) { return true; },
                 ' GO Terms': function(d) {
                     var acceptedCats = ['FOCUS', 'GO', 'complex'];
                     return acceptedCats.includes(d.category);
