@@ -32,6 +32,25 @@ $(document).ready(function() {
 
 	var headers = ["Evidence ID", "Analyze ID", "Complex Name",  "Complex Accession", "Qualifier", "Gene Ontology Term ID", "Gene Ontology Term ", "Aspect", "Annotation Extension", "Evidence", "Method", "Source", "Assigned On", "Reference"]
 	create_download_button_no_table("complex_go_download_all", headers, all_data, complex['complex_accession'] + "_go_annotations")
+
+	if (data != null && data["network_graph"]["nodes"].length > 1) {
+            var _categoryColors = {
+                'FOCUS': 'black',
+                'GO': '#2ca02c',
+                'complex': '#E6AB03'
+            };
+            var filters = {
+                ' All': function(d) { return true; },
+                ' GO Terms': function(d) {
+                    var acceptedCats = ['FOCUS', 'GO', 'complex'];
+                    return acceptedCats.includes(d.category);
+                },
+            }
+            views.network.render(data["network_graph"], _categoryColors, "j-complex-network", filters, true);
+        } else {
+            hide_section("network");
+        }
+
 	
     });
 
