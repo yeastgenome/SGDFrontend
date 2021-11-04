@@ -3,15 +3,15 @@ $(document).ready(function() {
 
     $.getJSON('/backend/complex/' + complex['complex_accession'], function(data) {
 	
-	if (data["process"].length > 1) {
+	if (data["process"].length => 1) {
 	    var complex_bp_go_table = create_go_table("complex_bp", data["process"]);
             create_download_button("complex_bp_go_table_download", complex_bp_go_table, complex['complex_accession'] + "_complex_bp_go");
 	}
-	if (data["function"].length > 1) {
+	if (data["function"].length => 1) {
 	    var complex_mf_go_table = create_go_table("complex_mf", data["function"]);
             create_download_button("complex_mf_go_table_download", complex_mf_go_table, complex['complex_accession'] +"_complex_mf_go");
 	}
-	if (data["component"].length > 1) {
+	if (data["component"].length => 1) {
 	    var complex_cc_go_table = create_go_table("complex_cc", data["component"]);
             create_download_button("complex_cc_go_table_download", complex_cc_go_table, complex['complex_accession'] +"_complex_cc_go");
 	}
