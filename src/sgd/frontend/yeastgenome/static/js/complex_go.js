@@ -19,7 +19,6 @@ $(document).ready(function() {
 	all_data = [];
 	var p = data["process"];
 	for (var i=0; i < p.length; i++) {
-	    console.log("process="+p[i]);
 	    all_data.push(go_data_to_table(p[i], i));
 	}
 	var f = data["function"];
@@ -80,8 +79,7 @@ function create_go_table(prefix, data) {
         for (var i=0; i < data.length; i++) {    
             datatable.push(go_data_to_table(data[i], i));
 	    gos[data[i]['go']['id']] = true;
-	    console.log(data[i]["locus"]["display_name"])
-	    console.log(data[i]["locus"]["format_name"])
+	    console.log(prefix + ": " + data[i]["go"]["display_name"])
         }
 	set_up_header(prefix + '_go_table', datatable.length, 'entry', 'entries', Object.keys(gos).length, 'Gene Ontology term', 'Gene Ontology terms');
 	
