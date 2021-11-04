@@ -39,7 +39,7 @@ $(document).ready(function() {
                 'GO': '#2ca02c',
                 'complex': '#E6AB03'
             };
-	    views.network.render(data["go_network_graph"], _categoryColors);
+	    views.network.render(data["go_network_graph"], _categoryColors, "j-complex-network");
         } else {
             hide_section("network");
         }
