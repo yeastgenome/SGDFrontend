@@ -1,0 +1,33 @@
+{% extends "table.jinja2" %}
+
+{% block help %}
+    Increase the total number of rows showing on this page using the pull-down located below the table, or use the page
+    scroll at the table's top right to browse through the table's pages; use the arrows to the right of a column header
+    to sort by that column; filter the table using the "Filter" box at the top of the table.
+{% endblock %}
+
+{% block columns %}
+    <th hidden>Evidence ID</th>
+    <th hidden>Analyze ID</th>
+    <th hidden>Complex Name</th>
+    <th hidden>Complex Accession</th>
+    <th>Qualifier</th>
+    <th hidden>Gene Ontology Term ID</th>
+    <th>Gene Ontology Term</th>
+    <th hidden>Aspect</th>
+    <th>Annotation Extension</th>
+    <th>Evidence</th>
+    <th hidden>Annotation Type</th>
+    <th>Source</th>
+    <th>Assigned On</th>
+    <th>Reference</th>
+{% endblock %}
+
+
+
+{% block additional_buttons %}
+    <ul class="button-group radius">
+        <li><a disabled="true" id="{{ table_id }}_show_children" class="small button secondary" style="display:none">Add
+            Annotations to Child Terms</a></li>
+    </ul>
+{% endblock %}

@@ -11,6 +11,21 @@
 
 {% block body %}
 
+<!-- Tabs -->
+
+<div class="row hide-for-small">
+    <nav class="small-12 columns">
+        <ul class="tabs sgd-tabs">
+            <li id="summary_tab" class="tab-title"><a href="/complex/{{ complex.sgdid }}"><span>Summary</span></a></li>
+	    <li id="go_tab" class="tab-title"><a href="/complex/{{ complex.sgdid }}/go"><span>Gene Ontology</span></a></li>
+	    <li id="literature_tab" class="tab-title"><a href="/complex/{{ complex.sgdid }}/literature"><span>Literature</span></a></li>
+        </ul>
+        <div class="sgd-tab-shadow"></div>
+    </nav>
+</div>
+
+<script>document.getElementById("summary_tab").className += " active";</script>
+
 <div class="row">
 
 <!-- Navbar
@@ -44,13 +59,15 @@
         {% if complex.cross_references|length > 0 %}
               add_navbar_element('External Identifiers', 'cross_reference');
         {% endif %}
-        
-        </script>
+
+	add_navbar_element('Resources', 'resources');        
+
+	</script>
 
 <!-- Overview
 ================================================== -->
-        <section id="overview" data-magellan-destination="overview">
-            <div class="page-header">
+    <section id="overview" data-magellan-destination="overview">
+       <div class="page-header">
                 <h1>Complex: {{ complex.complex_name }}
 		     <a href="#" data-dropdown="summary_help"><i class="fa fa-info-circle"></i></a>
                      <p id="summary_help" class="f-dropdown content medium" data-dropdown-content>
@@ -59,8 +76,8 @@
 		</h1>
                 <hr />
 
-        <div class="">
-                    <dl class="key-value">
+       <div class="">
+          <dl class="key-value">
             {% set source_link = "" %}
             {% if complex.source == 'SGD' %}
                 {% set source_link = 'https://www.yeastgenome.org' %}
@@ -88,18 +105,19 @@
 	    <dt>SGD ID</dt>
             <dd>SGD:{{ complex.sgdid }}</dd>
 	    
-                {% for alias in complex.aliases %}
-                              {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
-                              {{ alias }}
-                              {% if not loop.last %};{% else %}</dd>{% endif %}
-                    {% endfor %}
-             </dl>
-                </div>
+            {% for alias in complex.aliases %}
+                {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
+                {{ alias }}
+                {% if not loop.last %};{% else %}</dd>{% endif %}
+            {% endfor %}
 
-        <p id="summary_paragraph"></p>
+            <dt>Description</dt>
+            <dd>{{ complex.description }}</dd>
 
-            </div>
-        </section>
+          </dl>
+        </div>
+      </div>
+    </section>
 
 <!-- complex diagram
 ================================================== -->
@@ -190,30 +208,36 @@
              <div class="">
                         <dl class="key-value">
                 <ul>
-                {% for function in complex.function %}
+		        {% if complex.function|length > 0 %}
+                            {% for function in complex.function %}
                                    {% if loop.first %}<dt>Molecular Function</dt><dd>{% endif %}
-                                   <li><a href={{ function.link }} target="_infowin">{{ function.display_name }}</a></li>
+                                   <li>{{function.qualifier}} <a href={{ function.go.link }} target="_infowin">{{ function.go.display_name }}</a> (<a href={{function.experiment.link}} target="_infowin">{{ function.experiment.display_name}}</a>)</li>
                                    {% if loop.last %}</dd>{% endif %}
                             {% endfor %}
+		        {% endif %}
                 </ul>
                 
                 <ul>
+			{% if complex.process|length > 0 %}
                             {% for process in complex.process %}
                                    {% if loop.first %}<dt>Biological Process</dt><dd>{% endif %}
-                                   <li><a href={{ process.link }} target="_infowin">{{ process.display_name }}</a></li>
+                                   <li>{{process.qualifier}} <a href={{ process.go.link }} target="_infowin">{{ process.go.display_name }}</a> (<a href={{ process.experiment.link}} target="_infowin">{{ process.experiment.display_name}}</a>)</li>
                                    {% if loop.last %}</dd>{% endif %}
                             {% endfor %}
                             </ul>
+			{% endif %}
 
                 <ul>
+			{% if complex.component|length > 0 %}
                             {% for component in complex.component %}
                                    {% if loop.first %}<dt>Cellular Component</dt><dd>{% endif %}
-                                   <li><a href={{ component.link }} target="_infowin">{{ component.display_name }}</a></li>
+				    <li>{{component.qualifier}} <a href={{ component.go.link }} target="_infowin">{{ component.go.display_name }}</a> (<a href={{ component.experiment.link}} target="_infowin">{{ component.experiment.display_name}}</a>)</li>
                                    {% if loop.last %}</dd>{% endif %}
                             {% endfor %}
                             </ul>
+			{% endif %}
 
-            </dl>
+                    </dl>
                      </div>
                 </div>
         </section>
@@ -298,7 +322,34 @@
           </div>
         </section>
     {% endif %}
+
+<!-- Resources
+================================================== -->
+    <section id="resources">
+    	     <h2>Resources</h2>
+             <hr />
        
+
+	    <a href="https://www.ebi.ac.uk/complexportal/complex/{{ complex.complex_accession }}" target="_blank">IntAct</a>
+
+            {% for pdb in complex.pdbs %}
+              {% if loop.index < 10 %}
+                 | <span>PDB:<a href="https://www.rcsb.org/structure/{{ pdb.display_name }}"  target="_blank">{{ pdb.display_name }}</a></span>
+              {% endif %}
+            {% endfor %}
+            <a id="complex_see_more_button" onclick="$('#complex_see_more').show();$('#complex_see_more_button').hide();$('#complex_see_less_button').show();" {% if complex.pdbs|length <= 7 %}hidden{% endif %}> ... <i class="fa fa-arrow-circle-right"></i> Show all</a>
+            <span id="complex_see_more" hidden>
+               {% for pdb in complex.pdbs %}
+                 {% if loop.index >= 10 %}
+                    | <span>PDB:<a href="https://www.rcsb.org/structure/{{ pdb.display_name }}" target="_blank">{{ pdb.display_name }}</a></span>
+                 {% endif %}
+               {% endfor %}
+            </span>
+            <a id="complex_see_less_button" onclick="$('#complex_see_more').hide();$('#complex_see_more_button').show();$('#complex_see_less_button').hide();" hidden> <i class="fa fa-arrow-circle-left"></i> Show fewer</a>
+        
+	
+    </section>
+    
     </div>
 </div>
 
