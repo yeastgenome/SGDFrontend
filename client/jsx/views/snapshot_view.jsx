@@ -58,7 +58,7 @@ snapshotView.render = function () {
     ReactDOM.render(
       <ToggleBarChart
         data={_goData}
-        initialActiveDataKey="biological_process"
+        initialActiveDataKey="molecular_function"
         labelValue={_labelValue}
         yValue={_goYValue}
       />,
