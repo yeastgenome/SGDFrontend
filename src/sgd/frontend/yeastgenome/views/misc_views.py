@@ -177,6 +177,22 @@ def complex(request):
         return not_found(request)
     return render_to_response(TEMPLATE_ROOT + 'complex.jinja2', complex_obj, request=request)
 
+@view_config(route_name='complex_literature_details')
+def complex_literature_details(request):
+    complexAC = request.matchdict['identifier']
+    complex_obj = get_obj(complexAC, 'complex')
+    if complex_obj is None:
+        return not_found(request)
+    return render_to_response(TEMPLATE_ROOT + 'complex_literature.jinja2', complex_obj, request=request)
+
+@view_config(route_name='complex_go_details')
+def complex_go_details(request):
+    complexAC = request.matchdict['identifier']
+    complex_obj = get_obj(complexAC, 'complex')
+    if complex_obj is None:
+        return not_found(request)
+    return render_to_response(TEMPLATE_ROOT + 'complex_go.jinja2', complex_obj, request=request)
+
 @view_config(route_name='allele')
 def allele(request):
     alleleName = request.matchdict['identifier']
