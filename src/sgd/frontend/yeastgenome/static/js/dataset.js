@@ -1,6 +1,6 @@
 $(document).ready(function() {
-    if(dataset['geo_id'] != null) {
-        $.getJSON('/backend/dataset/' + dataset['geo_id'], function(data) {
+    if(dataset['format_name'] != null) {
+        $.getJSON('/backend/dataset/' + dataset['format_name'], function(data) {
             var dataset_table = create_dataset_conditions_table(data);
             $("#dataset_conditions_table_analyze").hide();
             $("#dataset_conditions_table_download").hide();
