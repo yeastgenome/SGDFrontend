@@ -12,10 +12,8 @@
 {% block body %}
 
 <!-- Tabs -->
-<!-- 
+
 <div class="row hide-for-small">
--->
-<div class="row show-for-small">
     <nav class="small-12 columns">
         <ul class="tabs sgd-tabs">
             <li id="summary_tab" class="tab-title"><a href="/complex/{{ complex.sgdid }}"><span>Summary</span></a></li>
@@ -25,6 +23,22 @@
         <div class="sgd-tab-shadow"></div>
     </nav>
 </div>
+
+<nav class="top-bar show-for-small mobile-tab-bar" data-topbar role="navigation">
+        <ul class="title-area">
+                <li class="name">
+                   <h1><a>{{locus.display_name}}</a></h1>
+                </li>
+                <li class="toggle-topbar"><a href="#"><span>&nbsp;<i class="fa fa-list-ul"></i></span></a></li>
+        </ul>
+        <section class="top-bar-section">
+          <ul class="right">
+            <li id="summary_tab" class="tab-title"><a href="/complex/{{ complex.sgdid }}"><span>Summary</span></a></li>
+            <li id="go_tab" class="tab-title"><a href="/complex/{{ complex.sgdid }}/go"><span>Gene Ontology</span></a></li>
+            <li id="literature_tab" class="tab-title"><a href="/complex/{{ complex.sgdid }}/literature"><span>Literature</span></a></li>
+	  </ul>  
+        </section>
+</nav>
 
 <script>document.getElementById("summary_tab").className += " active";</script>
 
