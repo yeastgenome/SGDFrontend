@@ -10,7 +10,8 @@ import json
 import requests
 
 TEMPLATE_ROOT = 'src:sgd/frontend/yeastgenome/static/templates/'
-backend_url = "http://backend.dev.yeastgenome.org:6543"
+# backend_url = "http://backend.dev.yeastgenome.org:6543"
+backend_url = "https://www.yeastgenome.org/backend/"
 
 def get_locus_obj(identifier):
     # backend_locus_url = config.backend_url + '/locus/' + identifier
