@@ -3,7 +3,6 @@ from pyramid.renderers import render, Response
 from src.sgd.frontend import config
 from pyramid.view import notfound_view_config
 from src.sgd.frontend.yeastgenome import send_message
-from src.sgd.redirect import direct_backend
 from src.sgd.tools.blast import do_blast
 from src.sgd.tools.patmatch import do_patmatch
 from src.sgd.tools.seqtools import do_seq_analysis
@@ -28,7 +27,6 @@ def prep_views(chosen_frontend, config):
     config.add_route('gotermfinder', '/goTermFinder')
     config.add_route('goslimmapper', '/goSlimMapper')
     config.add_route('strain_alignment', '/strainAlignment')
-    config.add_route('redirect_backend', '/redirect_backend')
     config.add_route('complex', '/complex/{identifier}')
     config.add_route('complex_literature_details', '/complex/{identifier}/literature')
     config.add_route('complex_go_details', '/complex/{identifier}/go')
