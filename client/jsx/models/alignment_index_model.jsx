@@ -7,13 +7,13 @@ var BaseModel = require('./base_model.jsx');
 module.exports = class AlignmentIndexModel extends BaseModel {
   constructor(options) {
     var options = options || {};
-    options.url = options.url || '/backend/alignments';
+    options.url = options.url || '/redirect_backend?param=alignments';
     super(options);
   }
 
   // cache from local storage, otherwise normal fetch
   fetch(callback) {
-    var storageKey = '/backend/alignments';
+    var storageKey = '/redirect_backend?param=alignments';
     var maybeCachedResponse = JSON.parse(localStorage.getItem(storageKey));
 
     // cached data available, use

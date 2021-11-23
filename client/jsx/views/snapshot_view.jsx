@@ -31,7 +31,7 @@ snapshotView.render = function () {
 
   // init the model and fetch data
   var genomeModel = new GenomeSnapshotModel({
-    url: '/backend/genomesnapshot',
+    url: '/redirect_backend?param=genomesnapshot',
   });
   genomeModel.fetch((err, nestedData) => {
     // features visualization and table alt

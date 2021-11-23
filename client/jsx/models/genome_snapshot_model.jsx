@@ -8,7 +8,7 @@ var QUALIFICATION_STATUSES = ['Verified', 'Uncharacterized', 'Dubious'];
 module.exports = class GenomeSnapshotModel extends BaseModel {
   constructor(options) {
     var options = options || {};
-    options.url = options.url || '/backend/snapshot';
+    options.url = options.url || '/redirect_backend?param=snapshot';
     super(options);
   }
 
