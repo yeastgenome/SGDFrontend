@@ -10,18 +10,14 @@ import json
 import requests
 
 TEMPLATE_ROOT = 'src:sgd/frontend/yeastgenome/static/templates/'
-# backend_url = "http://backend.dev.yeastgenome.org:6543"
-backend_url = "https://www.yeastgenome.org/backend/"
 
 def get_locus_obj(identifier):
-    # backend_locus_url = config.backend_url + '/locus/' + identifier
-    backend_locus_url = backend_url + '/locus/' + identifier
+    backend_locus_url = config.backend_url + '/locus/' + identifier
     locus_response = requests.get(backend_locus_url)
     if locus_response.status_code != 200:
         return None
     locus = json.loads(locus_response.text)
-    # tabs =  json.loads(requests.get(config.backend_url + '/locus/' + str(locus['id']) + '/tabs').text)
-    tabs =  json.loads(requests.get(backend_url + '/locus/' + str(locus['id']) + '/tabs').text)
+    tabs =  json.loads(requests.get(config.backend_url + '/locus/' + str(locus['id']) + '/tabs').text)
     return { 'locus': locus, 'locus_js': json.dumps(locus), 'tabs': tabs, 'tabs_js': json.dumps(tabs) }
 
 def render_locus_page(request, template_name):
