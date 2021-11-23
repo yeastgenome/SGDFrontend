@@ -1,11 +1,11 @@
 
 $(document).ready(function() {
-	$.getJSON('/backend/disease/' + ontology['id'] + '/ontology_graph', function(data) {
+	$.getJSON('/redirect_backend?param=disease/' + ontology['id'] + '/ontology_graph', function(data) {
   		var cy = create_cytoscape_vis("cy", layout, graph_style, data, null, false, "diseaseOntology");
         create_cy_download_button(cy, "cy_download", ontology['display_name'] + '_disease_ontology_graph')
 	});
 
-    $.getJSON('/backend/disease/' + ontology['id'] + '/locus_details', function(data) {
+    $.getJSON('/redirect_backend?param=disease/' + ontology['id'] + '/locus_details', function(data) {
 	  	var disease_table = create_disease_table(data);
 	  	create_analyze_button("disease_table_analyze", disease_table, "<a href='" + ontology['link'] + "' class='gene_name'>" + ontology['display_name'] + "</a> genes", true);
   	    create_download_button("disease_table_download", disease_table, ontology['display_name'] + "_annotations");

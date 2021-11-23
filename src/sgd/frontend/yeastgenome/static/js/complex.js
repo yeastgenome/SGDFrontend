@@ -1,7 +1,7 @@
 
 $(document).ready(function() {
 
-    $.getJSON('/backend/complex/' + complex['complex_accession'], function(data) {
+    $.getJSON('/redirect_backend?param=complex/' + complex['complex_accession'], function(data) {
 
 //	document.getElementById("summary_paragraph").innerHTML = data['description'] + "<p></p>" + data['properties']
 

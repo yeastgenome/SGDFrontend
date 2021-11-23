@@ -1,7 +1,7 @@
 
 $(document).ready(function() {
 
-    $.getJSON('/backend/complex/' + complex['complex_accession'], function(data) {
+    $.getJSON('/redirect_backend?param=complex/' + complex['complex_accession'], function(data) {
 	
 	if (data["process"].length > 0) {
 	    var complex_bp_go_table = create_go_table("complex_bp", data["process"]);

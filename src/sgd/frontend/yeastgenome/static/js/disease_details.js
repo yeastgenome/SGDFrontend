@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-  	$.getJSON('/backend/locus/' + locus['id'] + '/disease_details', function(data) {
+  	$.getJSON('/redirect_backend?param=locus/' + locus['id'] + '/disease_details', function(data) {
   	    var mc_disease_table = create_disease_table("mc", "No manually curated terms for " + locus['display_name'], function(x) {return x["annotation_type"] == "manually curated"}, data);
         create_download_button("mc_disease_table_download", mc_disease_table, locus['display_name'] + "_mc_disease");
 
@@ -41,7 +41,7 @@ $(document).ready(function() {
         }
   	});
 
-  	$.getJSON('/backend/locus/' + locus['id'] + '/disease_graph', function(data) {
+  	$.getJSON('/redirect_backend?param=locus/' + locus['id'] + '/disease_graph', function(data) {
         if(data['nodes'].length > 1) {
             var _categoryColors = {
                 'FOCUS': 'black',

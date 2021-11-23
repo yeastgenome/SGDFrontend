@@ -1,9 +1,9 @@
 $(document).ready(function() {
-	$.getJSON('/backend/disease/' + disease['id'] + '/locus_details', function(data) {
+	$.getJSON('/redirect_backend?param=disease/' + disease['id'] + '/locus_details', function(data) {
 	  	create_disease_table(data);
 	});
 
-	$.getJSON('/backend/disease/' + disease['id'] + '/ontology_graph', function(data) {
+	$.getJSON('/redirect_backend?param=disease/' + disease['id'] + '/ontology_graph', function(data) {
   		var cy = create_cytoscape_vis("cy", layout, graph_style, data, null, false, "diseaseOntology");
         create_cy_download_button(cy, "cy_download", disease['display_name'] + '_ontology')
 
@@ -102,7 +102,7 @@ function create_or_hide_table(tableData, options, tableIdentifier, doName, doLin
         create_download_button(tableIdentifier + "_download", table, doName + "_annotations");
 
         if(disease['descendant_locus_count'] > disease['locus_count']) {
-            create_show_child_button(tableIdentifier + "_show_children", table, originalData, "/backend/disease/" + doId + "/locus_details_all", disease_data_to_table, function(table_data) {
+            create_show_child_button(tableIdentifier + "_show_children", table, originalData, "/redirect_backend?param=disease/" + doId + "/locus_details_all", disease_data_to_table, function(table_data) {
                 var genes = {};
                 for (var i=0; i < table_data.length; i++) {
                     genes[table_data[i][1]] = true;

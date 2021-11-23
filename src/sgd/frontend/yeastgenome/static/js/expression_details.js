@@ -15,7 +15,7 @@ $(document).ready(function() {
         views.expression.render(data);
     });
 
-    $.getJSON('/backend/locus/' + locus['id'] + '/expression_graph', function(data) {
+    $.getJSON('/redirect_backend?param=locus/' + locus['id'] + '/expression_graph', function(data) {
         if(data != null && data['nodes'].length > 1) {
             var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true, "expression");
             var max_value = data["min_coeff"] + Math.min(data["max_coeff"] - data["min_coeff"], 10);

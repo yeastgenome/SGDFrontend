@@ -1,6 +1,6 @@
 $(document).ready(function() {
     if(dataset['format_name'] != null) {
-        $.getJSON('/backend/dataset/' + dataset['format_name'], function(data) {
+        $.getJSON('/redirect_backend?param=dataset/' + dataset['format_name'], function(data) {
             var dataset_table = create_dataset_conditions_table(data);
             $("#dataset_conditions_table_analyze").hide();
             $("#dataset_conditions_table_download").hide();

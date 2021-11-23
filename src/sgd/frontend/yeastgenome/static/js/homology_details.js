@@ -1,18 +1,18 @@
 $(document).ready(function() {
 
-	$.getJSON('/backend/locus/' + locus['sgdid']  + '/complement_details', function(data) {
+	$.getJSON('/redirect_backend?param=locus/' + locus['sgdid']  + '/complement_details', function(data) {
 	    var complement_table = create_complement_table(data);
   	    create_download_button("complement_table_download", complement_table, locus['display_name'] + "_complement_annotations");
 
 	});
 
-        $.getJSON('/backend/locus/' + locus['sgdid']  + '/homolog_details', function(data) {
+        $.getJSON('/redirect_backend?param=locus/' + locus['sgdid']  + '/homolog_details', function(data) {
             var homolog_table = create_homolog_table(data);
             create_download_button("homolog_table_download", homolog_table, locus['display_name'] + "_homolog_annotations");
 
         });
 
-        $.getJSON('/backend/locus/' + locus['sgdid']  + '/fungal_homolog_details', function(data) {
+        $.getJSON('/redirect_backend?param=locus/' + locus['sgdid']  + '/fungal_homolog_details', function(data) {
             var fungal_homolog_table = create_fungal_homolog_table(data);
             create_download_button("fungal_homolog_table_download", fungal_homolog_table, locus['display_name'] + "_fungal_homolog_annotations");
 

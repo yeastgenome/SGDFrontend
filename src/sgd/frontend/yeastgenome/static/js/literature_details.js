@@ -1,7 +1,7 @@
 
 $(document).ready(function() {
 
-  	$.getJSON('/backend/locus/' + locus['id'] + '/literature_details', function(data) {
+  	$.getJSON('/redirect_backend?param=locus/' + locus['id'] + '/literature_details', function(data) {
   	    set_up_reference_list("primary", "primary_list", "primary_list_empty_message", "primary_list_wrapper", "primary_list_download", locus['display_name'] + "_primary_citations", data['primary']);
             set_up_reference_list("additional", "additional_list", "additional_list_empty_message", "additional_list_wrapper", "additional_list_download", locus['display_name'] + "_additional_citations", data['additional']);
   	    set_up_reference_list("review", "review_list", "review_list_empty_message", "review_list_wrapper", "review_list_download", locus['display_name'] + "_review_citations", data['review']);
@@ -15,7 +15,7 @@ $(document).ready(function() {
   	    set_up_reference_list("htp", "htp_list", "htp_list_empty_message", "htp_list_wrapper", "htp_list_download", locus['display_name'] + "_htp_citations", data['htp']);
     });
 
-  	$.getJSON('/backend/locus/' + locus['id'] + '/literature_graph', function(data) {
+  	$.getJSON('/redirect_backend?param=locus/' + locus['id'] + '/literature_graph', function(data) {
   		var hasNetwork = false;
   		if(data['nodes'].length > 1) {
   			hasNetwork = true;
