@@ -3,7 +3,7 @@ from pyramid.renderers import render, Response
 from src.sgd.frontend import config
 from pyramid.view import notfound_view_config
 from src.sgd.frontend.yeastgenome import send_message
-from src.sgd.redirect import do_redirect
+from src.sgd.redirect import direct_backend
 from src.sgd.tools.blast import do_blast
 from src.sgd.tools.patmatch import do_patmatch
 from src.sgd.tools.seqtools import do_seq_analysis
@@ -28,6 +28,7 @@ def prep_views(chosen_frontend, config):
     config.add_route('gotermfinder', '/goTermFinder')
     config.add_route('goslimmapper', '/goSlimMapper')
     config.add_route('strain_alignment', '/strainAlignment')
+    config.add_route('redirect_backend', '/redirect_backend')
     config.add_route('complex', '/complex/{identifier}')
     config.add_route('allele', '/allele/{identifier}')
     config.add_route('allele_literature_details', '/allele/{identifier}/literature')
@@ -253,7 +254,7 @@ def prep_views(chosen_frontend, config):
         
     config.add_route('do_blast', '/run_blast')
     config.add_view(do_blast, route_name='do_blast')
-    
+
     config.add_route('do_patmatch', '/run_patmatch')
     config.add_view(do_patmatch, route_name='do_patmatch')
 
@@ -269,8 +270,6 @@ def prep_views(chosen_frontend, config):
     config.add_route('get_s3_data', '/get_alignment')
     config.add_view(get_s3_data, route_name='get_s3_data')
 
-    config.add_route('do_redirect', '/redirect_backend')
-    config.add_view(do_redirect, route_name='do_redirect')
 
 def prepare_frontend(frontend_type, **configs):
     if frontend_type == 'yeastgenome':
