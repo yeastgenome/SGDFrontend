@@ -28,6 +28,8 @@ def prep_views(chosen_frontend, config):
     config.add_route('goslimmapper', '/goSlimMapper')
     config.add_route('strain_alignment', '/strainAlignment')
     config.add_route('complex', '/complex/{identifier}')
+    config.add_route('complex_literature_details', '/complex/{identifier}/literature')
+    config.add_route('complex_go_details', '/complex/{identifier}/go')
     config.add_route('allele', '/allele/{identifier}')
     config.add_route('allele_literature_details', '/allele/{identifier}/literature')
     config.add_route('blog_post', '/blog/{slug}')
