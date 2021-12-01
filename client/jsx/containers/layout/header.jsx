@@ -322,6 +322,14 @@ class Header extends Component {
                         YGOB (Trinity College)
                       </a>
                     </li>
+		    <li>
+                      <a
+                        className="disabled-header-a"
+                        href="https://alphafold.ebi.ac.uk/"
+                      >
+                        AlphaFold
+                      </a>
+                    </li>
                   </ul>
                 </li>
               </ul>

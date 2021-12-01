@@ -1,0 +1,200 @@
+{% extends "global_layout.jinja2" %}
+
+{% block title %}{{ complex.complex_name }}{% endblock %}
+
+{% block head %}
+<script>
+    var complex = {{ complex_js|safe }};
+</script>
+
+{% endblock %}
+
+{% block body %}
+
+<!-- Tabs -->
+<div class="row hide-for-small">
+    <nav class="small-12 columns">
+        <ul class="tabs sgd-tabs">
+            <li id="summary_tab" class="tab-title"><a href="/complex/{{ complex.sgdid }}"><span>Summary</span></a></li>
+            <li id="go_tab" class="tab-title"><a href="/complex/{{ complex.sgdid }}/go"><span>Gene Ontology</span></a></li>
+            <li id="literature_tab" class="tab-title"><a href="/complex/{{ complex.sgdid }}/literature"><span>Literature</span></a></li>
+        </ul>
+        <div class="sgd-tab-shadow"></div>
+    </nav>
+</div>
+
+<nav class="top-bar show-for-small mobile-tab-bar" data-topbar role="navigation">
+        <ul class="title-area">
+                <li class="name">
+                   <h1><a>{{complex.complex_accession}}</a></h1>
+                </li>
+                <li class="toggle-topbar"><a href="#"><span>&nbsp;<i class="fa fa-list-ul"></i></span></a></li>
+        </ul>
+        <section class="top-bar-section">
+          <ul class="right">
+            <li id="summary_tab" class="tab-title"><a href="/complex/{{ complex.sgdid }}"><span>Summary</span></a></li>
+            <li id="go_tab" class="tab-title"><a href="/complex/{{ complex.sgdid }}/go"><span>Gene Ontology</span></a></li>
+            <li id="literature_tab" class="tab-title"><a href="/complex/{{ complex.sgdid }}/literature"><span>Literature</span></a></li>
+          </ul>
+        </section>
+</nav>
+
+<script>document.getElementById("literature_tab").className += " active";</script>
+
+<!-- Navbar
+================================================== -->
+<div class="row">
+
+    <!-- Includes navbar.html into template -->
+    {% include "navbar.jinja2" %}
+
+    <div class="small-12 medium-10 columns content-column">
+
+        <script>
+            add_navbar_title('{{ complex.complex_name}}')
+            add_navbar_element('Literature Overview', 'overview');
+	    {% if complex.primary_references|length > 0 %}
+	       add_navbar_element('Primary Literature', 'primary');
+	    {% endif %}
+	    {% if complex.additional_references|length > 0 %}
+               add_navbar_element('Additional Literature', 'additional');
+            {% endif %}
+	    {% if complex.review_references|length > 0 %}
+               add_navbar_element('Reviews', 'review');
+            {% endif %}
+        </script>
+
+        <!-- Overview -->
+        <section id="overview" data-magellan-destination="overview">
+            <h1>{{ complex.complex_name }} Literature
+                <a href="#" data-dropdown="summary_info"><i class="fa fa-info-circle"></i></a>
+                <p id="summary_info" class="f-dropdown content medium" data-dropdown-content>
+		  TEXT HERE
+                </p>
+            </h1>
+            <hr />
+            <div class="">
+                <dl class="key-value">
+    		    <dt>Unique References</dt>
+                    <dd>{{ complex.unique_references|length }}</dd>
+                    {% for alias in complex.aliases %}
+                        {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
+                        {{ alias }}
+                        {% if not loop.last %},{% else %}</dd>{% endif %}
+                    {% endfor %}
+                </dl>
+            </div>
+        </section>
+
+	<!-- Primary Literature
+        ================================================== -->
+        {% if complex.primary_references|length > 0 %}
+        <section id="primary" data-magellan-destination="primary">
+        <div class="page-header">
+            <h2>Primary Literature
+                 <a href="#" data-dropdown="primary_info"><i class="fa fa-info-circle"></i></a>
+                 <p id="primary_info" class="f-dropdown content medium" data-dropdown-content>
+                      TEXT HERE
+                 </p>
+            </h2>
+            <hr />
+
+	    <ul className="reference-list">
+                {% for ref in complex.primary_references %}
+                   <li>
+                      <a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
+                          <span>{{ ref.citation|e|replace(ref.display_name, '') }}</span>
+                      {% if ref.pubmed_id != none %}
+                          <small>PMID: {{ ref.pubmed_id|e }}</small>
+                      {% endif %}
+                      <ul class="ref-links">
+                          <li><a href="{{ ref.link|e }}">SGD Paper</a></li>
+                          {% for url in ref.urls %}
+                             <li><a target="_infowin" href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
+                          {% endfor %}
+                      </ul>
+                   </li>
+                {% endfor %}
+            </ul>
+        </div>
+        </section>
+        {% endif %}
+
+        <!-- Additional Literature
+        ================================================== -->
+        {% if complex.additional_references|length > 0 %}
+        <section id="additional" data-magellan-destination="additional">
+        <div class="page-header">
+            <h2>Additional Literature
+                 <a href="#" data-dropdown="additional_info"><i class="fa fa-info-circle"></i></a>
+                 <p id="additional_info" class="f-dropdown content medium" data-dropdown-content>
+                     TEXT HERE
+                 </p>
+            </h2>
+            <hr />
+
+            <ul className="reference-list">
+                {% for ref in complex.additional_references %}
+                   <li>
+                      <a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
+                          <span>{{ ref.citation|e|replace(ref.display_name, '') }}</span>
+                      {% if ref.pubmed_id != none %}
+                          <small>PMID: {{ ref.pubmed_id|e }}</small>
+                      {% endif %}
+                      <ul class="ref-links">
+                          <li><a href="{{ ref.link|e }}">SGD Paper</a></li>
+                          {% for url in ref.urls %}
+                             <li><a target="_infowin" href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
+                          {% endfor %}
+                      </ul>
+                   </li>
+                {% endfor %}
+            </ul>
+        </div>
+        </section>
+        {% endif %}
+
+        <!-- Reviews Literature
+        ================================================== -->
+        {% if complex.review_references|length > 0 %}
+        <section id="review" data-magellan-destination="review">
+        <div class="page-header">
+            <h2>Reviews</h2>
+            <hr />
+
+            <ul className="reference-list">
+                {% for ref in complex.review_references %}
+                   <li>
+                      <a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
+                          <span>{{ ref.citation|e|replace(ref.display_name, '') }}</span>
+                      {% if ref.pubmed_id != none %}
+                          <small>PMID: {{ ref.pubmed_id|e }}</small>
+                      {% endif %}
+                      <ul class="ref-links">
+                          <li><a href="{{ ref.link|e }}">SGD Paper</a></li>
+                          {% for url in ref.urls %}
+                             <li><a target="_infowin" href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
+                          {% endfor %}
+                      </ul>
+                   </li>
+                {% endfor %}
+            </ul>
+        </div>
+        </section>
+        {% endif %}
+
+  </div>
+</div>
+
+{% endblock body %}
+
+{% block scripts %}
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script src="{{asset_root}}/js/build/cytoscape.min.js"></script>
+{# don't host arbor.js on CDN because it makes webworker files that don't work on the cloud :( #}
+<script src="/static/js/build/arbor.js"></script>
+<script src="{{asset_root}}/js/cytoscape.js"></script>
+<script src="{{asset_root}}/js/evidence.js"></script>
+<script src="{{asset_root}}/js/complex.js"></script>
+{% endblock scripts %}
+

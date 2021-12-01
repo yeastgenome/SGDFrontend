@@ -1,0 +1,217 @@
+{% extends "global_layout.jinja2" %}
+
+{% block title %}{{ complex.complex_name }}{% endblock %}
+
+{% block head %}
+<script>
+    var complex = {{ complex_js|safe }};
+</script>
+
+{% endblock %}
+
+{% block body %}
+
+<!-- Tabs -->
+<div class="row hide-for-small">
+    <nav class="small-12 columns">
+        <ul class="tabs sgd-tabs">
+            <li id="summary_tab" class="tab-title"><a href="/complex/{{ complex.sgdid }}"><span>Summary</span></a></li>
+            <li id="go_tab" class="tab-title"><a href="/complex/{{ complex.sgdid }}/go"><span>Gene Ontology</span></a></li>
+            <li id="literature_tab" class="tab-title"><a href="/complex/{{ complex.sgdid }}/literature"><span>Literature</span></a></li>
+        </ul>
+        <div class="sgd-tab-shadow"></div>
+    </nav>
+</div>
+
+<nav class="top-bar show-for-small mobile-tab-bar" data-topbar role="navigation">
+        <ul class="title-area">
+                <li class="name">
+                   <h1><a>{{complex.complex_accession}}</a></h1>
+                </li>
+                <li class="toggle-topbar"><a href="#"><span>&nbsp;<i class="fa fa-list-ul"></i></span></a></li>
+        </ul>
+        <section class="top-bar-section">
+          <ul class="right">
+            <li id="summary_tab" class="tab-title"><a href="/complex/{{ complex.sgdid }}"><span>Summary</span></a></li>
+            <li id="go_tab" class="tab-title"><a href="/complex/{{ complex.sgdid }}/go"><span>Gene Ontology</span></a></li>
+            <li id="literature_tab" class="tab-title"><a href="/complex/{{ complex.sgdid }}/literature"><span>Literature</span></a></li>
+          </ul>
+        </section>
+</nav>
+
+<script>document.getElementById("go_tab").className += " active";</script>
+
+<!-- Navbar
+================================================== -->
+<div class="row">
+
+    <!-- Includes navbar.html into template -->
+    {% include "navbar.jinja2" %}
+
+    <div class="small-12 medium-10 columns content-column">
+
+        <script>
+            add_navbar_title('{{ complex.complex_name}}')
+            add_navbar_element('Gene Ontology Overview', 'overview');
+	    {% if complex.process|length > 0 %}
+	       add_navbar_element('Biological Process', 'process');
+	    {% endif %}
+	    {% if complex.function|length > 0 %}
+               add_navbar_element('Molecular Function', 'function');
+            {% endif %}
+	    {% if complex.component|length > 0 %}
+               add_navbar_element('Cellular Component', 'component');
+            {% endif %}
+	    add_navbar_element('Shared Annotations', 'network');	    
+        </script>
+
+        <!-- Overview -->
+        <section id="overview" data-magellan-destination="overview">
+	    <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/function-help/gene-ontology-go" name="top" class="documentation-link">Gene Ontology Help <i class="fa fa-question-circle"></i></a>
+	    <h1>{{ complex.complex_name }} Overview
+	        <a href="#" data-dropdown="summary_help"><i class="fa fa-info-circle"></i></a>
+                <p id="summary_help" class="f-dropdown content medium" data-dropdown-content>
+                    GO Annotations consist of four mandatory components: a gene product, a term from one of
+                    the three Gene Ontology (GO) controlled vocabularies (Molecular Function, Biological
+                    Process, and Cellular Component), a reference, and an evidence code.
+                </p>
+            </h1>
+            <hr />
+	    {% if complex.description %}
+	       <dl class="key-value">
+                   <dt>Summary</dt>
+                   <dd>{{ complex.description|safe }}</dd>
+               </dl>
+	    {% endif %}
+
+	    
+	    <dl class="key-value">
+	        {% for slim in complex.go_overview.go_slim_grouped %}
+		   {% if loop.first %}
+		      <dt>
+		         GO Slim Terms
+			   <a href="#" data-dropdown="go_slim_help"><i class="fa fa-info-circle"></i></a>
+			   <p id="go_slim_help" class="f-dropdown content medium" data-dropdown-content>
+			      The yeast GO Slim terms are higher level terms that best represent the
+			      major <i>S. cerevisiae</i> biological processes, functions, and cellular
+			      components. The GO Slim terms listed here are the broader parent
+                              terms for the specific terms to which this gene product is annotated,
+			      and thus represent the more general processes, functions, and components
+			      in which it is involved.
+			   </p>
+		     </dt>
+		    <dd>
+		    {% endif %}
+		    <span><a href="{{ slim.link|e }}" target='new'>{{ slim.display_name|e }}</a></span>{% if not loop.last %}, {% else %}</dd>{% endif %}
+
+		{% endfor %}
+	    </dl>
+
+	    <ul class="button-group radius">
+            	<li><a id="complex_go_download_all" class="small button secondary"><i class="fa fa-download"></i> Download All Annotations (.txt)</a></li>
+    	    </ul>
+
+        </section>
+
+	<!-- Biological Process
+        ================================================== -->
+        {% if complex.process|length > 0 %}
+        <section id="process" data-magellan-destination="process">
+        <div class="page-header">
+            <h2>Biological Process
+                 <a href="#" data-dropdown="process_help"><i class="fa fa-info-circle"></i></a>
+                 <p id="process_help" class="f-dropdown content medium" data-dropdown-content>
+                      Manually curated GO annotations reflect our best understanding of the basic biological process for this protein complex. Manually curated annotations are assigned by curators based on published papers when available, or by curatorial statements if necessary. Curators periodically review all manually curated GO annotations for accuracy and completeness.
+                 </p>
+            </h2>
+            <hr />
+
+	    <!-- Includes go_table into template -->
+            {% set table_id = "complex_bp_go_table" %}
+	    {% include "complex_go_table.jinja2" %}
+
+
+	</div>
+        </section>
+        {% endif %}
+
+        <!-- Molecular Function
+        ================================================== -->
+        {% if complex.function|length > 0 %}
+        <section id="function" data-magellan-destination="function">
+        <div class="page-header">
+            <h2>Molecular Function
+                 <a href="#" data-dropdown="function_help"><i class="fa fa-info-circle"></i></a>
+                 <p id="function_help" class="f-dropdown content medium" data-dropdown-content>
+                      Manually curated GO annotations reflect our best understanding of the basic molecular function for this protein complex. Manually curated annotations are assigned by curators based on published papers when available, or by curatorial statements if necessary. Curators periodically review all manually curated GO annotations for accuracy and completeness.
+                 </p>
+            </h2>
+            <hr />
+
+            <!-- Includes go_table into template -->
+            {% set table_id = "complex_mf_go_table" %}
+            {% include "complex_go_table.jinja2" %}
+
+        </div>
+        </section>
+        {% endif %}
+
+
+	<! Cellular Component
+        ================================================== -->
+        {% if complex.component|length > 0 %}
+        <section id="component" data-magellan-destination="component">
+        <div class="page-header">
+            <h2>Cellular Component
+                 <a href="#" data-dropdown="component_help"><i class="fa fa-info-circle"></i></a>
+                 <p id="component_help" class="f-dropdown content medium" data-dropdown-content>
+                      Manually curated GO annotations reflect our best understanding of the basic cellular component for this protein complex. Manually curated annotations are assigned by curators based on published papers when available, or by curatorial statements if necessary. Curators periodically review all manually curated GO annotations for accuracy and completeness.
+                 </p>
+            </h2>
+            <hr />
+
+            <!-- Includes go_table into template -->
+            {% set table_id = "complex_cc_go_table" %}
+            {% include "complex_go_table.jinja2" %}
+
+
+        </div>
+        </section>
+        {% endif %}
+
+        <!-- Network diagram
+	================================================== -->
+    	<section id="network" data-magellan-destination="network">
+        <div class="page-header">
+            <h2>Shared Annotations
+                 <a href="#" data-dropdown="network_help"><i class="fa fa-info-circle"></i></a>
+                 <p id="network_help" class="f-dropdown content medium" data-dropdown-content>
+                      This diagram displays Gene Ontology terms (green) that are shared between the given macromolecular complex (black) and other yeast complexes (yellow). Note: No diagram is shown ("No shared annotations") if there are less than 2 shared GO annotations between this complex and any other complexes.
+                 </p>
+
+            </h2>
+            <hr />
+            {% if complex.go_network_graph.edges|length > 0 %}
+                <div id="j-complex-network"></div>
+            {% else %}
+                No shared annotations
+            {% endif %}
+        </div>
+    	</section>
+
+
+  </div>
+</div>
+
+{% endblock body %}
+
+{% block scripts %}
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script src="{{asset_root}}/js/build/cytoscape.min.js"></script>
+{# don't host arbor.js on CDN because it makes webworker files that don't work on the cloud :( #}
+<script src="/static/js/build/arbor.js"></script>
+<script src="{{asset_root}}/js/cytoscape.js"></script>
+<script src="{{asset_root}}/js/evidence.js"></script>
+<script src="{{asset_root}}/js/complex_go.js"></script>
+{% endblock scripts %}
+

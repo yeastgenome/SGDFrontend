@@ -3,7 +3,7 @@ $(document).ready(function() {
 
     $.getJSON('/backend/complex/' + complex['complex_accession'], function(data) {
 
-	document.getElementById("summary_paragraph").innerHTML = data['description'] + "<p></p>" + data['properties']
+//	document.getElementById("summary_paragraph").innerHTML = data['description'] + "<p></p>" + data['properties']
 
         var complex_table = create_complex_table(data);
 
