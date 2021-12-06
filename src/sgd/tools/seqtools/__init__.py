@@ -336,11 +336,16 @@ def manipulate_sequence(p):
  
 def _get_sequence_from_contig(contig, start, end, strand):
 
+    if start < 1:
+        start = 1
     url = contig_url.replace("_REPLACE_CONTIG_NAME_HERE_", contig)
     res = _get_json_from_server(url)
     contig_name = res['display_name']
     contig_seq = res['residues']
+    if end > len(contig_seq):
+        end = len(contig_seq)
     seq = contig_seq[start-1:end]
+    
     if strand == '-':
         seq = _reverse_complement(seq)
     return seq
