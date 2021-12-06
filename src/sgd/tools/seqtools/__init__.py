@@ -165,6 +165,7 @@ def display_sequence_for_genes(p, data):
             for strain in allStrains:
                 locusInfo = strainInfo[strain]
                 content +=  ">" + gene + "_" + strain + " " + str(locusInfo.get('display_name')) + " " + str(locusInfo.get('sgdid')) + " " + str(locusInfo.get('locus_type')) + " " + str(locusInfo.get('headline')) + "\n"
+                warning = locusInfo.get('warning')
                 if warning:
                     content += "(" + warning + ")" + "\n"
                 if p.get('format') is not None and p['format'] == 'gcg':
