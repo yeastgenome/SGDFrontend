@@ -165,6 +165,9 @@ def display_sequence_for_genes(p, data):
             for strain in allStrains:
                 locusInfo = strainInfo[strain]
                 content +=  ">" + gene + "_" + strain + " " + str(locusInfo.get('display_name')) + " " + str(locusInfo.get('sgdid')) + " " + str(locusInfo.get('locus_type')) + " " + str(locusInfo.get('headline')) + "\n"
+                warning = locusInfo.get('warning')
+                if warning:
+                    content += "(" + warning + ")" + "\n"
                 if p.get('format') is not None and p['format'] == 'gcg':
                     content += format_gcg(locusInfo.get('residue')) + "\n"
                 else:
@@ -246,7 +249,6 @@ def format_gcg(sequence):
     
     return newseq
 
-
 def validate_names(p):
 
     # http://0.0.0.0:6545/run_seqtools?check=ACT1|XXX6
@@ -294,7 +296,7 @@ def get_sequence_for_chr(p):
         strand = '-'
 
     contig = _map_contig_name_for_chr(chr)
-    seq = _get_sequence_from_contig(contig, start, end, strand)
+    (seq, warning) = _get_sequence_from_contig(contig, start, end, strand)
 
     rev = p.get('rev')
     if rev is not None and rev == '1':
@@ -336,19 +338,30 @@ def manipulate_sequence(p):
  
 def _get_sequence_from_contig(contig, start, end, strand):
 
+    warning = ''
     if start < 1:
         start = 1
+        if strand == '+':
+            warning = "The required sequence start coordinate is out of range so the start is set to the beginning of the corresponding chromosome / contig." 
+        else:
+            warning = "The required sequence is on crick strand and its end coordinate is out of range so the end is set to the beginning of the corresponding chromosome / contig."
     url = contig_url.replace("_REPLACE_CONTIG_NAME_HERE_", contig)
     res = _get_json_from_server(url)
     contig_name = res['display_name']
     contig_seq = res['residues']
     if end > len(contig_seq):
         end = len(contig_seq)
+        if strand == '+':
+            warning = "The required sequence end coordinate is out of range so the end is set to the end of the corresponding chromosome / contig."
+        else:
+            warning = "The required sequence is on crick strand and its start coordinate is out of range so the start is set to the end of the corresponding chromosome / contig."
+
     seq = contig_seq[start-1:end]
     
     if strand == '-':
         seq = _reverse_complement(seq)
-    return seq
+        
+    return (seq, warning)
 
 
 def get_genomic_dna_for_gene(p):
@@ -524,7 +537,7 @@ def _extract_seq_with_up_down(strains, rows, up, down, rev):
             start = start - up_bp
             end = end + down_bp
 
-            seq = _get_sequence_from_contig(contig, start, end, strand)
+            (seq, warning) = _get_sequence_from_contig(contig, start, end, strand)
 
             if rev is not None and rev == 1:
                 seq = _reverse_complement(seq)
@@ -535,7 +548,8 @@ def _extract_seq_with_up_down(strains, rows, up, down, rev):
                          "sgdid": "SGD:" + locus['link'].replace("/locus/", ""),
                          "residue": seq,
                          "up": up,
-                         "down": down }
+                         "down": down,
+                         "warning": warning }
 
             if rev is not None and rev == 1:
                 thisData['rev'] = 1;
