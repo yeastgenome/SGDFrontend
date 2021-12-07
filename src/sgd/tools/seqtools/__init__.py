@@ -344,7 +344,7 @@ def _get_sequence_from_contig(contig, start, end, strand):
         if strand == '+':
             warning = "The required sequence start coordinate is out of range so the start is set to the beginning of the corresponding chromosome / contig." 
         else:
-            warning = "The required sequence is on crick strand and its end coordinate is out of range so the end is set to the beginning of the corresponding chromosome / contig."
+            warning = "The required sequence is on Crick strand and its end coordinate is out of range so the end is set to the beginning of the corresponding chromosome / contig."
     url = contig_url.replace("_REPLACE_CONTIG_NAME_HERE_", contig)
     res = _get_json_from_server(url)
     contig_name = res['display_name']
@@ -354,7 +354,7 @@ def _get_sequence_from_contig(contig, start, end, strand):
         if strand == '+':
             warning = "The required sequence end coordinate is out of range so the end is set to the end of the corresponding chromosome / contig."
         else:
-            warning = "The required sequence is on crick strand and its start coordinate is out of range so the start is set to the end of the corresponding chromosome / contig."
+            warning = "The required sequence is on Crick strand and its start coordinate is out of range so the start is set to the end of the corresponding chromosome / contig."
 
     seq = contig_seq[start-1:end]
     
