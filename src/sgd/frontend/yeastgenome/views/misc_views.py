@@ -31,7 +31,8 @@ def not_found(request):
     return render_to_response(TEMPLATE_ROOT + 'lost.jinja2', {}, request=request)
 
 @view_config(context=HTTPInternalServerError)
-def error(self, request):
+#def error(self, request):
+def error(request):
     request.response.status = 500
     return render_to_response(TEMPLATE_ROOT + 'error.jinja2', {}, request=request)
 
