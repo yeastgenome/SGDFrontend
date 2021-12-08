@@ -72,7 +72,8 @@ def blog_list(request):
     return render_to_response(TEMPLATE_ROOT + 'blog_list.jinja2', { 'posts': posts, 'categories': get_wp_categories(), 'next_url': next_url, 'years': get_archive_years() }, request=request)
 
 @view_config(route_name='blog_post')
-def blog_post(self, request):
+#def blog_post(self, request):
+def blog_post(request): 
     slug = request.matchdict['slug']
     wp_url = BLOG_BASE_URL + '/slug:' + slug
     response = requests.get(wp_url)
