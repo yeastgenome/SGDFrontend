@@ -1,5 +1,6 @@
 import json
-from pyramid.renderers import render, Response
+# from pyramid.renderers import render, Response
+from pyramid.renderers import render
 from src.sgd.frontend import config
 from pyramid.view import notfound_view_config
 from src.sgd.frontend.yeastgenome import send_message
