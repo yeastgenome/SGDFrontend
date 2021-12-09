@@ -19,11 +19,12 @@ def do_redirect(request):
         else:
             url = url + '/' + p.get('param')        
         try:
-            req = Request(url=url)
-            res = urlopen(req)
-            data = json.loads(res.read())
+            #req = Request(url=url)
+            #res = urlopen(req)
+            #data = json.loads(res.read())
             # res = requests.get(url)
             # data = json.loads(res.text)
+            data = json.loads('Hello world!!')
         except HTTPError:
             return 404
     return Response(body=json.dumps(data), content_type='application/json')
