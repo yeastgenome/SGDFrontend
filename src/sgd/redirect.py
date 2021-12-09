@@ -20,11 +20,11 @@ def do_redirect(request):
         try:
             req = Request(url=url)
             res = urlopen(req)
-            data = json.loads(res.read())
+            data = json.loads(res.read().decode('utf-8'))
             # res = requests.get(url)
             # data = json.loads(res.text)
         except HTTPError:
             return 404
-    return Response(body=json.dumps(data), content_type='application/json', charset=UTF-8)
+    return Response(body=json.dumps(data), content_type='application/json')
 
 
