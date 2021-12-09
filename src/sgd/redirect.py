@@ -9,7 +9,6 @@ def do_redirect(request):
 
     p = dict(request.params)
     data = {}
-    url = ""
     if p.get('param'):
         url = config.backend_url
         if url[-1] == '/':
@@ -17,7 +16,8 @@ def do_redirect(request):
         if p.get('param').startswith('/'):
             url = url + p.get('param')
         else:
-            url = url + '/' + p.get('param')
+            url = url + '/' + p.get('param')        
+        data = { 'url': url }
     return Response(body=json.dumps(data), content_type='application/json')
 
 
