@@ -1,5 +1,5 @@
 elasticsearch==7.0.0
-enum34==1.1.10
+enum-compat==0.0.2
 Jinja2==3.0.1
 MarkupSafe==2.0.1
 nose==1.3.7
