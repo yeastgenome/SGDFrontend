@@ -1,7 +1,7 @@
 import json
 from pyramid.response import Response
 # from urllib.request import Request, urlopen
-from urllib.request import Request, urlopen  
+#from urllib.request import Request, urlopen  
 from urllib.error import URLError, HTTPError
 from src.sgd.frontend import config
 #import requests
