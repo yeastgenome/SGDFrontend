@@ -273,13 +273,13 @@ var AsyncVariantViewer = createReactClass({
       };
     });
     // correct the fact that some ids are null for domains
-    var _id;
+    var _id;  
     var _domains = data.protein_domains.map((d, i) => {
       _id = d.id || i;
       return _.extend(d, { id: _id });
     });
     var variantData = data.variant_data_protein.map((d) => {
-      return _.extend(d, { snpType: 'nonsynonymous' });
+      return _.extend(d, { snpType: 'Nonsynonymous' });
     });
     if (variantData.length === 0) return this._renderEmptyNode();
     var caption = this._getDateStr();
