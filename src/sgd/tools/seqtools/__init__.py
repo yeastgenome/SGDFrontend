@@ -55,12 +55,12 @@ def run_emboss(p):
         data = get_genomic_dna_for_gene(p)
         seq = data['seq']
     
-    inSeqFile = "/tmp/seq." + str(os.getpid()) + ".in"
+    inSeqFile = "/data/www/tmp/seq." + str(os.getpid()) + ".in"
     fw = open(inSeqFile, "w")
     fw.write(seq + "\n")
     fw.close()
     
-    outSeqFile = "/tmp/seq." + emboss + "." + str(os.getpid()) + ".out"
+    outSeqFile = "/data/www/tmp/seq." + emboss + "." + str(os.getpid()) + ".out"
     
     program = "/usr/bin/" + emboss
     cmd = ""
