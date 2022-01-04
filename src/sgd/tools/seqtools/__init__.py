@@ -15,31 +15,31 @@ def do_seq_analysis(request):
 
     if p.get('check'):
         data = validate_names(p)
-        return Response(body=json.dumps(data), content_type='application/json')
+        return Response(body=json.dumps(data), content_type='application/json', charset='UTF-8')
 
     if p.get('emboss'):
         data = run_emboss(p)
-        return Response(body=json.dumps(data), content_type='application/json')
+        return Response(body=json.dumps(data), content_type='application/json', charset='UTF-8')
     
     if p.get('seqname'):
         data = get_genomic_dna_for_gene(p)
-        return Response(body=json.dumps(data), content_type='application/json')
+        return Response(body=json.dumps(data), content_type='application/json', charset='UTF-8')
 
     if p.get('chr'):
         data = get_sequence_for_chr(p)
         if p.get('format') is None:
-            return Response(body=json.dumps(data), content_type='application/json')
+            return Response(body=json.dumps(data), content_type='application/json', charset='UTF-8')
         else:
             response = display_sequence_for_chr(p, data)
             return response
            
     if p.get('seq'):
         data = manipulate_sequence(p)
-        return Response(body=json.dumps(data), content_type='application/json')
+        return Response(body=json.dumps(data), content_type='application/json', charset='UTF-8')
 
     data = get_sequence_for_genes(p)
     if p.get('format') is None:
-        return Response(body=json.dumps(data), content_type='application/json')
+        return Response(body=json.dumps(data), content_type='application/json', charset='UTF-8')
     else:
         response = display_sequence_for_genes(p, data)
         return response
