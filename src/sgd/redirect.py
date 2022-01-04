@@ -25,6 +25,6 @@ def do_redirect(request):
             data = json.loads(res.text)
         except HTTPError:
             return 404
-    return Response(body=json.dumps(data), content_type='application/json')
+    return Response(body=json.dumps(data), content_type='application/json', charset='UTF-8')
 
 
