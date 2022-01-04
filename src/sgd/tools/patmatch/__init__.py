@@ -12,14 +12,14 @@ def do_patmatch(request):
 
     if p.get('conf'):
         data = _get_config()
-        return Response(body=json.dumps(data), content_type='application/json')
+        return Response(body=json.dumps(data), content_type='application/json', charset='UTF-8')
 
     if p.get('seqname'):
         data = _get_seq(p)
-        return Response(body=json.dumps(data), content_type='application/json')
+        return Response(body=json.dumps(data), content_type='application/json', charset='UTF-8')
 
     data = _run_patmatch(p)
-    return Response(body=json.dumps(data), content_type='application/json')
+    return Response(body=json.dumps(data), content_type='application/json', charset='UTF-8')
 
 def _get_seq(p):
 
