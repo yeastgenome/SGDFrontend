@@ -21,7 +21,7 @@ def do_gosearch(request):
         data = run_goslimmapper(p)
     else:
         data = run_gotermfinder(p)
-    return Response(body=json.dumps(data), content_type='application/json')
+    return Response(body=json.dumps(data), content_type='application/json', charset='UTF-8')
  
 def run_goslimmapper(p):
 
