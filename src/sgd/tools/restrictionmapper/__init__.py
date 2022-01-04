@@ -12,7 +12,7 @@ def do_restmap(request):
     p = dict(request.params)
 
     data = _run_restrictionmap(p)
-    return Response(body=json.dumps(data), content_type='application/json')
+    return Response(body=json.dumps(data), content_type='application/json', charset='UTF-8')
 
 def _run_restrictionmap(p):
 
