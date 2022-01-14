@@ -113,7 +113,8 @@ def get_meetings():
             meeting['description'] = re.sub(URL_REGEX, '', meeting['description'])
             # format date as a string which is either a single day or range of dates
             start_date = datetime.strptime(meeting['start']['date'], '%Y-%m-%d')
-            end_date = datetime.strptime(meeting['end']['date'], '%Y-%m-%d') - timedelta(days=1)
+            # end_date = datetime.strptime(meeting['end']['date'], '%Y-%m-%d') - timedelta(days=1)
+            end_date = datetime.strptime(meeting['end']['date'], '%Y-%m-%d')
             meeting['start_date'] = start_date
             days_delta = (end_date - start_date).days
             if (days_delta >= 1):
