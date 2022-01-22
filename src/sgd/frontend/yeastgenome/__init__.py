@@ -361,7 +361,7 @@ def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):
 
 def get_json(url, data=None):
     if data is not None:
-        headers = {'Content-type': 'application/json; charset=utf-8"', 'processData': False}
+        headers = {'Content-type': 'application/json; charset="UTF-8"'}
         r = requests.post(url, data=json.dumps(data), headers=headers)
     else:
         r = requests.get(url)
