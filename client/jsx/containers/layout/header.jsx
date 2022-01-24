@@ -246,7 +246,7 @@ class Header extends Component {
                     <li>
                       <a
                         className="disabled-header-a"
-                        href="/cgi-bin/chromosomeHistory.pl"
+                        href="/https://wiki.yeastgenome.org/index.php/Summary_of_Chromosome_Sequence_and_Annotation_Updates"
                       >
                         Chromosome History
                       </a>
