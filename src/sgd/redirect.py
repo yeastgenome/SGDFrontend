@@ -8,6 +8,9 @@ import requests
 def do_redirect(request):
 
     p = dict(request.params)
+
+    return {"params": p }
+    
     data = {}
     if p.get('param'):
         url = config.backend_url
