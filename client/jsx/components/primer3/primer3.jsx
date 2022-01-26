@@ -5,7 +5,8 @@ import t from 'tcomb-form';
 import createReactClass from 'create-react-class';
 const DataTable = require('../widgets/data_table.jsx');
 import PropTypes from 'prop-types';
-const PRIMER3URL = '/redirect_backend?param=primer3';
+const PRIMER3URL = '/redirect_backend'
+// const PRIMER3URL = '/redirect_backend?param=primer3';
 // const PRIMER3URL = 'https://www.yeastgenome.org/backend/primer3'; 
 const queryString = require('query-string');
 
