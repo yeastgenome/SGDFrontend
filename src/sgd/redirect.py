@@ -17,7 +17,11 @@ def do_redirect(request):
         if p.get('param').startswith('/'):
             url = url + p.get('param')
         else:
-            url = url + '/' + p.get('param')        
+            url = url + '/' + p.get('param')
+        for key in p:
+            if key == 'param':
+                continue
+            url = url + "&" + key + "=" + p.get(key)
         try:
             #req = Request(url=url)
             #res = urlopen(req)
