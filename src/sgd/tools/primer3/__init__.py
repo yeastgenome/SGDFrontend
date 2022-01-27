@@ -9,10 +9,14 @@ url = config.backend_url + '/primer3'
 
 def do_primer3(request):
 
-    p = dict(request.params)
-
-    paramData = urlencode(p)
-
+    # p = dict(request.params)
+    # paramData = urlencode(p)
+    params = request.json_body
+    p_keys = list(params.keys())
+    paramData = {}
+    for key in p_keys:
+        paramData[key] = params.get(key)
+    
     req = Request(url=url, data=paramData.encode('utf-8'))
     res = urlopen(req)
     result = res.read().decode('utf-8')
