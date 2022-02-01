@@ -563,7 +563,7 @@ const Primer3 = createReactClass({
         sequence: {
           type: 'textarea',
           label:
-            'Enter the DNA Sequence (NOTE: Paste in DNA sequence only; all headers, comments, numbers and spaces should be removed)',
+            'Enter the DNA sequence (The sequence MUST be provided in RAW format, no comments, numbers are okay.)',
         },
         input_start: {
           label:
