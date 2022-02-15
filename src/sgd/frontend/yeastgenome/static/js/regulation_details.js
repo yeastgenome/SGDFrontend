@@ -17,15 +17,15 @@ $(document).ready(function() {
 	    hasBindingMotif = 1;
             create_binding_site_table(data);
         });
-	if (hasBindingMotif == 1) {
-	    $("#domain_table_analyze").hide();
-            $.getJSON('/backend/locus/' + locus['id'] + '/protein_domain_details', function(data) {
-		var domain_table = create_domain_table(data);
-		if(domain_table != null) {
-                    create_download_button("domain_table_download", domain_table, locus['display_name'] + "_domains");
-		}
-            });
-	}
+	//if (hasBindingMotif == 1) {
+	//    $("#domain_table_analyze").hide();
+        //    $.getJSON('/backend/locus/' + locus['id'] + '/protein_domain_details', function(data) {
+	//	var domain_table = create_domain_table(data);
+	//	if(domain_table != null) {
+        //            create_download_button("domain_table_download", domain_table, locus['display_name'] + "_domains");   
+	//	}
+        //    });
+	//}
     }
 
     $.getJSON('/backend/locus/' + locus['id'] + '/regulation_details', function(data) {
