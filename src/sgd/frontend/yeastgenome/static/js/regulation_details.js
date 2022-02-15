@@ -123,6 +123,7 @@ function create_binding_site_table(data) {
     }
     else {
         hide_section("binding");
+	hide_section("domain");
     }
 }
 
