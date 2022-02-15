@@ -8,24 +8,23 @@ $(document).ready(function() {
     }
 
     if(locus['regulation_overview']['target_count'] > 0) {
-	var hasBindingMotif = 0;
+        $("#domain_table_analyze").hide();
+        $.getJSON('/backend/locus/' + locus['id'] + '/protein_domain_details', function(data) {
+            var domain_table = create_domain_table(data);
+            if(domain_table != null) {
+                create_download_button("domain_table_download", domain_table, locus['display_name'] + "_domains");
+            }
+        });
+    }
+
+    if(locus['regulation_overview']['target_count'] > 0) {
         $.getJSON('/backend/locus/' + locus['id'] + '/binding_site_details', function(data) {
             // manually change binding site motif locations to s3 locations
             data.forEach( function (d) {
                 d.link = d.link.replace('/static/img/yetfasco', 'https://s3-us-west-2.amazonaws.com/sgd-prod-binding-site-motifs')
             });
-	    hasBindingMotif = 1;
             create_binding_site_table(data);
         });
-	//if (hasBindingMotif == 1) {
-	//    $("#domain_table_analyze").hide();
-        //    $.getJSON('/backend/locus/' + locus['id'] + '/protein_domain_details', function(data) {
-	//	var domain_table = create_domain_table(data);
-	//	if(domain_table != null) {
-        //            create_download_button("domain_table_download", domain_table, locus['display_name'] + "_domains");   
-	//	}
-        //    });
-	//}
     }
 
     $.getJSON('/backend/locus/' + locus['id'] + '/regulation_details', function(data) {
@@ -124,6 +123,7 @@ function create_binding_site_table(data) {
     }
     else {
         hide_section("binding");
+	hide_section("domain_table");
     }
 }
 
