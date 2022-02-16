@@ -553,7 +553,7 @@ const GoTermFinder = createReactClass({
         if (gene in ambiguousGeneDict) {
           var ambiguousGeneObj = ambiguousGeneDict[gene];
 	  if (warningMsg == '') {
-	     warningMsg = "The following gene(s) are associated with multiple gene entries in the database. Please pick the correct one for each gene.";
+	     warningMsg = "The following gene(s) are associated with multiple gene entries in the database. Please pick the correct one for each gene.<p>";
           }
           for (var j = 0; j < ambiguousGeneObj.length; j++) {
             var geneObj = ambiguousGeneObj[j];
@@ -562,24 +562,15 @@ const GoTermFinder = createReactClass({
             if (geneObj['gene_name']) {
               display_name = geneObj['gene_name'] + '/' + display_name;
             }
-            if (j > 0) {
-              warningMsg = warningMsg + ' and ';
-            }
+            
             if (geneObj['name_type'] == 'alias_name') {
-              warningMsg = warningMsg + 'an alias name for ' + display_name;
+              warningMsg = warningMsg + gene + ': an alias name for ' + display_name + "<br>";
             } else {
               warningMsg =
-                warningMsg + 'the standard gene name for ' + display_name;
+                warningMsg + gene = ': the standard gene name for ' + display_name + "<br>";
             }
+
           }
-          //alert(
-          //  warningMsg +
-          //    ". Please modify your input list by replacing the entry '" +
-          //    gene +
-          //    "' with either the systematic ORF name or SGDID for the intended gene."
-          //);
-          //e.preventDefault();
-          //return 1;
         }
       }
     }
