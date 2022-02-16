@@ -553,7 +553,7 @@ const GoTermFinder = createReactClass({
         if (gene in ambiguousGeneDict) {
           var ambiguousGeneObj = ambiguousGeneDict[gene];
 	  if (warningMsg == '') {
-	     warningMsg = "The following gene(s) are associated with multiple gene entries in the database. Please pick the correct one for each gene.<p>";
+	     warningMsg = "<html>The following gene(s) are associated with multiple gene entries in the database. Please pick the correct one for each gene.<p>";
           }
           for (var j = 0; j < ambiguousGeneObj.length; j++) {
             var geneObj = ambiguousGeneObj[j];
@@ -574,9 +574,9 @@ const GoTermFinder = createReactClass({
         }
       }
     }
-
+    
     if (warningMsg != '') {
-      alert(warningMsg);
+      alert(warningMsg + "</html>");
       e.preventDefault();
       return 1;
     }
