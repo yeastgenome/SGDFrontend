@@ -557,20 +557,20 @@ const GoTermFinder = createReactClass({
           }
           for (var j = 0; j < ambiguousGeneObj.length; j++) {
             var geneObj = ambiguousGeneObj[j];
-            var display_name =
-              geneObj['systematic_name'] + ' (SGDID: ' + geneObj['sgdid'] + ')';
+            var display_name = geneObj['systematic_name'] + ' (SGDID: ' + geneObj['sgdid'] + ')';
             if (geneObj['gene_name']) {
               display_name = geneObj['gene_name'] + '/' + display_name;
             }
             
             if (geneObj['name_type'] == 'alias_name') {
-              warningMsg = warningMsg + gene + ': an alias name for ' + display_name + "<br>";
-            } else {
-              warningMsg =
-                warningMsg + gene = ': the standard gene name for ' + display_name + "<br>";
+              warningMsg = warningMsg + gene + ': an alias name for ' + display_name + '<br>';
+            } 
+            else {
+              warningMsg = warningMsg + gene + ': the standard gene name for ' + display_name + '<br>';
             }
 
           }
+          warningMsg = warningMsg + "<p>";
         }
       }
     }
