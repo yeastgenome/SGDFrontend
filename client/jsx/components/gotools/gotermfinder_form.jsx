@@ -1,6 +1,7 @@
 import React from 'react';
 import $ from 'jquery';
 
+import Swal from "sweetalert2";
 const DataTable = require('../widgets/data_table.jsx');
 const Params = require('../mixins/parse_url_params.jsx');
 const RadioSelector = require('./radio_selector.jsx');
@@ -576,7 +577,6 @@ const GoTermFinder = createReactClass({
     }
     
     if (warningMsg != '') {
-      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
       //alert(warningMsg + "</html>");
       Swal.fire(warningMsg + "</html>"); 
       e.preventDefault();
