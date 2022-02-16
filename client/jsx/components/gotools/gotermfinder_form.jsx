@@ -589,9 +589,9 @@ const GoTermFinder = createReactClass({
               ". Please modify your input list by replacing the entry '" +
               gene +
               "' with either the systematic ORF name or SGDID for the intended gene."
-          );
-          e.preventDefault();
-          return 1;
+       );
+       e.preventDefault();
+       return 1;
     
     }
     
