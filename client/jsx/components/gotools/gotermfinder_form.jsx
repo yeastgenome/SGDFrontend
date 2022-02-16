@@ -577,7 +577,7 @@ const GoTermFinder = createReactClass({
     
     if (warningMsg != '') {
       //alert(warningMsg + "</html>");
-      swal(warningMsg + "</html>"); 
+      swal.fire(warningMsg + "</html>"); 
       e.preventDefault();
       return 1;
     }
