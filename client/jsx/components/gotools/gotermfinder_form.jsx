@@ -583,12 +583,11 @@ const GoTermFinder = createReactClass({
       }
     }
 
-    if (warningMsg != '') {
-      alert(warningMsg);
-      e.preventDefault();
-      return 1;
-    
-    }
+    //if (warningMsg != '') {
+    //  alert(warningMsg);
+    //  e.preventDefault();
+    //  return 1;
+    //}
     
     window.localStorage.setItem('genes', genes);
 
