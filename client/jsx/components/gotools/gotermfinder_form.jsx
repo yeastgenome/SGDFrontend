@@ -554,7 +554,7 @@ const GoTermFinder = createReactClass({
         if (gene in ambiguousGeneDict) {
           var ambiguousGeneObj = ambiguousGeneDict[gene];
 	  if (warningMsg == '') {
-	     warningMsg = "<html>The following gene(s) are associated with multiple gene entries in the database. Please pick the correct one for each gene.<p>";
+	     warningMsg = "<html>The following gene(s) are associated with multiple gene entries in the database. Please pick the correct one for each gene.\n\n";
           }
           for (var j = 0; j < ambiguousGeneObj.length; j++) {
             var geneObj = ambiguousGeneObj[j];
@@ -564,14 +564,14 @@ const GoTermFinder = createReactClass({
             }
             
             if (geneObj['name_type'] == 'alias_name') {
-              warningMsg = warningMsg + gene + ': an alias name for ' + display_name + '<br>';
+              warningMsg = warningMsg + gene + ': an alias name for ' + display_name + '\n';
             } 
             else {
-              warningMsg = warningMsg + gene + ': the standard gene name for ' + display_name + '<br>';
+              warningMsg = warningMsg + gene + ': the standard gene name for ' + display_name + '\n';
             }
 
           }
-          warningMsg = warningMsg + "<p>";
+          warningMsg = warningMsg + "\n";
         }
       }
     }
