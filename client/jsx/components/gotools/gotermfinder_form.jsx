@@ -1,7 +1,7 @@
 import React from 'react';
 import $ from 'jquery';
 
-import Swal from "sweetalert2";
+// import Swal from "sweetalert2";
 const DataTable = require('../widgets/data_table.jsx');
 const Params = require('../mixins/parse_url_params.jsx');
 const RadioSelector = require('./radio_selector.jsx');
