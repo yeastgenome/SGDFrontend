@@ -566,7 +566,7 @@ const GoTermFinder = createReactClass({
               warningMsg = warningMsg + "* an alias name for " + display_name + '\n';
             } 
             else {
-              warningMsg = warningMsg + "* the standard gene name for " + display_name + '\n';
+              warningMsg = warningMsg + "* a standard gene name for " + display_name + '\n';
             }
 
           }
