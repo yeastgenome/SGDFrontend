@@ -1,7 +1,5 @@
 import React from 'react';
 import $ from 'jquery';
-
-// import Swal from "sweetalert2";
 const DataTable = require('../widgets/data_table.jsx');
 const Params = require('../mixins/parse_url_params.jsx');
 const RadioSelector = require('./radio_selector.jsx');
@@ -554,8 +552,8 @@ const GoTermFinder = createReactClass({
         if (gene in ambiguousGeneDict) {
           var ambiguousGeneObj = ambiguousGeneDict[gene];
 	  if (warningMsg == '') {
-	    // warningMsg = "The following gene(s) are associated with multiple gene entries in the database. Please pick the correct one for each gene.\n\n";
-	    warningMsg = "The following gene(s) are associated with multiple gene entries in the database. Please correct your list by using the correct systematic name or SGDID for these gene names.\n\n"; 
+	    // warningMsg = "The following gene(s) are associated with multiple genes in the database. Please pick the correct one for each gene.\n\n";
+	    warningMsg = "The following gene(s) are associated with multiple genes in the database. Please modify your input list by replacing the entry with either the systematic ORF name or SGDID for the intended gene.\n\n"; 
           }
 	  warningMsg = warningMsg + gene + ":\n";
           for (var j = 0; j < ambiguousGeneObj.length; j++) {
