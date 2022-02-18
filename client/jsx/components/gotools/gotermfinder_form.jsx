@@ -554,7 +554,8 @@ const GoTermFinder = createReactClass({
         if (gene in ambiguousGeneDict) {
           var ambiguousGeneObj = ambiguousGeneDict[gene];
 	  if (warningMsg == '') {
-	     warningMsg = "The following gene(s) are associated with multiple gene entries in the database. Please pick the correct one for each gene.\n\n";
+	    // warningMsg = "The following gene(s) are associated with multiple gene entries in the database. Please pick the correct one for each gene.\n\n";
+	    warningMsg = "The following gene(s) are associated with multiple gene entries in the database. Please correct your list by using the correct systematic name or SGDID for these gene names.\n\n"; 
           }
 	  warningMsg = warningMsg + gene + ":\n";
           for (var j = 0; j < ambiguousGeneObj.length; j++) {
@@ -564,10 +565,10 @@ const GoTermFinder = createReactClass({
               display_name = geneObj['gene_name'] + '/' + display_name;
             }
             if (geneObj['name_type'] == 'alias_name') {
-              warningMsg = warningMsg + "\tan alias name for " + display_name + '\n';
+              warningMsg = warningMsg + "* an alias name for " + display_name + '\n';
             } 
             else {
-              warningMsg = warningMsg + "\tthe standard gene name for " + display_name + '\n';
+              warningMsg = warningMsg + "* the standard gene name for " + display_name + '\n';
             }
 
           }
@@ -577,7 +578,7 @@ const GoTermFinder = createReactClass({
     }
     
     if (warningMsg != '') {
-      alert(warningMsg + "</html>");
+      alert(warningMsg);
       // Swal.fire(warningMsg + "</html>");
       //window.confirm("Hello World!")
       e.preventDefault();
