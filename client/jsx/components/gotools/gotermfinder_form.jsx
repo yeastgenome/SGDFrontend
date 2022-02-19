@@ -552,7 +552,6 @@ const GoTermFinder = createReactClass({
         if (gene in ambiguousGeneDict) {
           var ambiguousGeneObj = ambiguousGeneDict[gene];
 	  if (warningMsg == '') {
-	    // warningMsg = "The following gene(s) are associated with multiple genes in the database. Please pick the correct one for each gene.\n\n";
 	    warningMsg = "The following gene(s) are associated with multiple genes in the database. Please modify your input list by replacing the entry with either the systematic ORF name or SGDID for the intended gene.\n\n"; 
           }
 	  warningMsg = warningMsg + gene + ":\n";
@@ -577,8 +576,9 @@ const GoTermFinder = createReactClass({
     
     if (warningMsg != '') {
       // alert(warningMsg);
-      // Swal.fire(warningMsg + "</html>");
-      window.confirm(warningMsg)
+      // Swal.fire(warningMsg);
+      // window.confirm(warningMsg);
+      window.open(warningMsg);
       e.preventDefault();
       return 1;
     }
