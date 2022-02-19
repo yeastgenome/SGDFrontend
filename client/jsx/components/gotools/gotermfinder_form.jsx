@@ -552,7 +552,7 @@ const GoTermFinder = createReactClass({
         if (gene in ambiguousGeneDict) {
           var ambiguousGeneObj = ambiguousGeneDict[gene];
 	  if (warningMsg == '') {
-	    warningMsg = "The following gene(s) are associated with multiple genes in the database. Please modify your input list by replacing the entry with either the systematic ORF name or SGDID for the intended gene.\n\n"; 
+	    warningMsg = "The following gene(s) are associated with multiple genes in the database. Please modify your input list by replacing the entry with either the systematic ORF name or SGDID for the intended gene.<p>"; 
           }
 	  warningMsg = warningMsg + gene + ":\n";
           for (var j = 0; j < ambiguousGeneObj.length; j++) {
@@ -562,14 +562,14 @@ const GoTermFinder = createReactClass({
               display_name = geneObj['gene_name'] + '/' + display_name;
             }
             if (geneObj['name_type'] == 'alias_name') {
-              warningMsg = warningMsg + "* an alias name for " + display_name + '\n';
+              warningMsg = warningMsg + "* an alias name for " + display_name + '<br>';
             } 
             else {
-              warningMsg = warningMsg + "* a standard gene name for " + display_name + '\n';
+              warningMsg = warningMsg + "* a standard gene name for " + display_name + "<br>";
             }
 
           }
-          warningMsg = warningMsg + "\n";
+          warningMsg = warningMsg + "<p>";
         }
       }
     }
@@ -580,7 +580,7 @@ const GoTermFinder = createReactClass({
       // window.confirm(warningMsg);
       // window.open('https://www.quackit.com/javascript/examples/sample_popup.cfm','popUpWindow','height=500,width=400,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');
       var win = window.open('', 'popUpWindow', "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=780,height=200,top="+(screen.height-400)+",left="+(screen.width-840));
-      win.document.body.innerHTML = warningMsg;
+      win.document.body.innerHTML = "<html>" + warningMsg + "</html>";
       e.preventDefault();
       return 1;
     }
