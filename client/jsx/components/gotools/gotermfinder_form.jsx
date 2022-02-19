@@ -554,7 +554,7 @@ const GoTermFinder = createReactClass({
 	  if (warningMsg == '') {
 	    warningMsg = "The following gene(s) are associated with multiple genes in the database. Please modify your input list by replacing the entry with either the systematic ORF name or SGDID for the intended gene.<p>"; 
           }
-	  warningMsg = warningMsg + gene + ":\n";
+	  warningMsg = warningMsg + gene + ":<br><ul>";
           for (var j = 0; j < ambiguousGeneObj.length; j++) {
             var geneObj = ambiguousGeneObj[j];
             var display_name = geneObj['systematic_name'] + ' (SGDID: ' + geneObj['sgdid'] + ')';
@@ -562,14 +562,14 @@ const GoTermFinder = createReactClass({
               display_name = geneObj['gene_name'] + '/' + display_name;
             }
             if (geneObj['name_type'] == 'alias_name') {
-              warningMsg = warningMsg + "* an alias name for " + display_name + '<br>';
+              warningMsg = warningMsg + "<li> an alias name for " + display_name + </li>'<br>';
             } 
             else {
-              warningMsg = warningMsg + "* a standard gene name for " + display_name + "<br>";
+              warningMsg = warningMsg + "<li> a standard gene name for " + display_name + "</li><br>";
             }
 
           }
-          warningMsg = warningMsg + "<p>";
+          warningMsg = warningMsg + "</ul><p>";
         }
       }
     }
