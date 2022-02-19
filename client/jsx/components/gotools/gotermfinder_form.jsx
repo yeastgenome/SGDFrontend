@@ -552,9 +552,9 @@ const GoTermFinder = createReactClass({
         if (gene in ambiguousGeneDict) {
           var ambiguousGeneObj = ambiguousGeneDict[gene];
 	  if (warningMsg == '') {
-	    warningMsg = "The following gene(s) are associated with multiple genes in the database. Please modify your input list by replacing the entry with either the systematic ORF name or SGDID for the intended gene.<p>"; 
+	    warningMsg = "<strong>The following gene(s) are associated with multiple genes in the database. Please modify your input list by replacing the entry with either the systematic ORF name or SGDID for the intended gene.</strong><p>"; 
           }
-	  warningMsg = warningMsg + gene + ":<ul>";
+	  warningMsg = warningMsg + "<strong>" + gene + "</strong>:<ul>";
           for (var j = 0; j < ambiguousGeneObj.length; j++) {
             var geneObj = ambiguousGeneObj[j];
             var display_name = geneObj['systematic_name'] + ' (SGDID: ' + geneObj['sgdid'] + ')';
@@ -576,10 +576,8 @@ const GoTermFinder = createReactClass({
     
     if (warningMsg != '') {
       // alert(warningMsg);
-      // Swal.fire(warningMsg);
       // window.confirm(warningMsg);
-      // window.open('https://www.quackit.com/javascript/examples/sample_popup.cfm','popUpWindow','height=500,width=400,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');
-      var win = window.open('', 'popUpWindow', "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=500,height=500,top="+(screen.height-600)+",left="+(screen.width-500));
+      var win = window.open('', 'popUpWindow', "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=650,height=500,top="+(screen.height-600)+",left="+(screen.width-500));
       win.document.body.innerHTML = "<html>" + warningMsg + "</html>";
       e.preventDefault();
       return 1;
