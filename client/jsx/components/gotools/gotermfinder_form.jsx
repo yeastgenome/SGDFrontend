@@ -578,7 +578,7 @@ const GoTermFinder = createReactClass({
       // alert(warningMsg);
       // Swal.fire(warningMsg);
       // window.confirm(warningMsg);
-      window.open(warningMsg);
+      window.open('https://www.quackit.com/javascript/examples/sample_popup.cfm','popUpWindow','height=500,width=400,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');
       e.preventDefault();
       return 1;
     }
