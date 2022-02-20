@@ -553,7 +553,7 @@ const GoTermFinder = createReactClass({
           ambiguousGeneCount = ambiguousGeneCount + 1;
           var ambiguousGeneObj = ambiguousGeneDict[gene];
 	  if (warningMsg == '') {
-	    warningMsg = "<strong>The following gene(s) are associated with multiple genes in the database. Please modify your input list by replacing the entry with either the systematic ORF name or SGDID for the intended gene.</strong><p>"; 
+	    warningMsg = "<strong>The following gene(s) are associated with multiple genes in the database. Please pick the intended gene for each entry and press Submit button.</strong><p>";
           }
 	  warningMsg = warningMsg + "<strong>" + gene + "</strong>:<ul>";
           for (var j = 0; j < ambiguousGeneObj.length; j++) {
@@ -578,7 +578,7 @@ const GoTermFinder = createReactClass({
     if (warningMsg != '') {
       var h = ambiguousGeneCount * 120 + 100;
       var win = window.open('', 'popUpWindow', "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=600,height="+ h + ",top="+(screen.height-600)+",left="+(screen.width-500));
-      win.document.body.innerHTML = "<html>" + warningMsg + "</html>";
+      win.document.body.innerHTML = "<html><form onSubmit={this.handleAmbiguousGenes} ref='form'>" + warningMsg + "<submit></form></html>";
       e.preventDefault();
       return 1;
     }
