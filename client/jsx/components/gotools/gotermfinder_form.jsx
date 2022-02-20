@@ -577,7 +577,7 @@ const GoTermFinder = createReactClass({
     
     if (warningMsg != '') {
       var h = ambiguousGeneCount * 100 + 100;
-      var win = window.open('', 'popUpWindow', "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=600,height=500,top="+(screen.height-600)+",left="+(screen.width-500));
+      var win = window.open('', 'popUpWindow', "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=600,height="+h+",top="+(screen.height-600)+",left="+(screen.width-500));
       win.document.body.innerHTML = "<html>" + warningMsg + "</html>";
       e.preventDefault();
       return 1;
