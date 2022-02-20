@@ -408,6 +408,17 @@ const GoSlimMapper = createReactClass({
     return all_terms.join('|');
   },
 
+  onAmbiguousGenes(e) {
+    var count = document.getElementById('count');
+      for (var i = 1; i <= count; i ++) {
+	var geneID = 'gene' + count;
+        var gene = document.getElementById(geneID);
+	window.localStorage.setItem(geneID, gene);
+        alert(geneID + ": " + gene);  
+      }  
+    }
+  },
+    
   onSubmit(e) {
     // window.localStorage.clear();
 
@@ -462,11 +473,13 @@ const GoSlimMapper = createReactClass({
             if (geneObj['gene_name']) {
               display_name = geneObj['gene_name'] + '/' + display_name;
             }
+	    var geneID = 'gene' + ambiguousGeneCount;
             if (geneObj['name_type'] == 'alias_name') {
-              warningMsg = warningMsg + "<li><input type='radio' id='" + geneObj['sgdid'] + "' name='gene"+ ambiguousGeneCount + "' value='" + geneObj['sgdid'] + "'>" + "<label for='"+ geneObj['sgdid'] + "'>an alias name for " + display_name + "</label></li>";
+              
+		warningMsg = warningMsg + "<li><input type='radio' id='" + geneID + "' name='" + geneID + "' value='" + geneObj['sgdid'] + "'><label for='"+ geneID + "'>an alias name for " + display_name + "</label></li>";
             }
 	    else {
-              warningMsg = warningMsg + "<li><input type='radio' id='" + geneObj['sgdid'] + "' name='gene"+ ambiguousGeneCount + "' value='" + geneObj['sgdid'] + "'>" + "<label for='"+ geneObj['sgdid'] + "'>a standard gene name for " + display_name + "</label></li>";
+              warningMsg = warningMsg + "<li><input type='radio' id='" + geneID + "' name='" + geneID + "' value='" + geneObj['sgdid'] + "'><label for='"+ geneID + "'>a standard gene name for " + display_name + "</label></li>";
             }
           }
           warningMsg = warningMsg + "</ul>";
@@ -477,11 +490,13 @@ const GoSlimMapper = createReactClass({
     if (warningMsg != '') {
       var h = ambiguousGeneCount * 120 + 100;
       var win = window.open('', 'popUpWindow', "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=600,height="+ h + ",top="+(screen.height-600)+",left="+(screen.width-500));
-
-      win.document.body.innerHTML = "<html><form onSubmit={this.handleAmbiguousGenes} ref='ambigForm'" + warningMsg + "<input type='submit' name='submit' value='Submit' className='button secondary'></input></form></html>";
+      win.document.body.innerHTML = "<html><form onSubmit={this.onAmbiguousGenes} ref='ambigForm'" + warningMsg + "<input type='submit' name='submit' value='Submit' className='button secondary'></input><input type='hidden' name='count' value='" + ambiguousGeneCount + "'></form></html>";
       e.preventDefault();
       return 1;
     }
+
+    
+    
 
     window.localStorage.setItem('genes', genes);
 
