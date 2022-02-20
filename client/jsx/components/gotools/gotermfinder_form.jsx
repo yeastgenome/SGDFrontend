@@ -553,7 +553,7 @@ const GoTermFinder = createReactClass({
           ambiguousGeneCount = ambiguousGeneCount + 1;
           var ambiguousGeneObj = ambiguousGeneDict[gene];
 	  if (warningMsg == '') {
-	    warningMsg = "<strong>The following gene(s) are associated with multiple genes in the database. Please pick the intended gene for each entry and press Submit button.</strong><p>";
+	    warningMsg = "<strong>The following gene(s) are associated with multiple genes in the database. Please modify your input list by replacing the entry with either the systematic ORF name or SGDID for the intended gene.</strong><p>"; 
           }
 	  warningMsg = warningMsg + "<strong>" + gene + "</strong>:<ul>";
           for (var j = 0; j < ambiguousGeneObj.length; j++) {
@@ -563,10 +563,10 @@ const GoTermFinder = createReactClass({
               display_name = geneObj['gene_name'] + '/' + display_name;
             }
             if (geneObj['name_type'] == 'alias_name') {
-              warningMsg = warningMsg + "<li><input type='radio' id='" + geneObj['sgdid'] + "' name='gene"+ ambiguousGeneCount + "' value='" + geneObj['sgdid'] + "'>" + "<label for='"+ geneObj['sgdid'] + "'>an alias name for " + display_name + "</label></li>";
+              warningMsg = warningMsg + "<li> an alias name for " + display_name + '</li>';
             } 
             else {
-              warningMsg = warningMsg + "<li><input type='radio' id='" + geneObj['sgdid'] + "' name='gene"+ ambiguousGeneCount + "' value='" + geneObj['sgdid'] + "'>" + "<label for='"+ geneObj['sgdid'] + "'>a standard gene name for " + display_name + "</label></li>"; 
+              warningMsg = warningMsg + "<li> a standard gene name for " + display_name + "</li>";
             }
 
           }
