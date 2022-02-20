@@ -478,7 +478,7 @@ const GoSlimMapper = createReactClass({
 		warningMsg = warningMsg + "<li><input type='radio' id='" + geneID + "' name='" + geneID + "' value='" + geneObj['sgdid'] + "' onclick=\"window.alert(" + geneObj['sgdid']+ ");\"/><label for='"+ geneID + "'>an alias name for " + display_name + "</label></li>";
             }
 	    else {
-              warningMsg = warningMsg + "<li><input type='radio' id='" + geneID + "' name='" + geneID + "' value='" + geneObj['sgdid'] + "' onclick=\"window.alert(" + geneObj['sgdid'] + ");\"/><<label for='"+ geneID + "'>a standard gene name for " + display_name + "</label></li>";
+              warningMsg = warningMsg + "<li><input type='radio' id='" + geneID + "' name='" + geneID + "' value='" + geneObj['sgdid'] + "' onclick=\"window.alert('hello');\"/><label for='"+ geneID + "'>a standard gene name for " + display_name + "</label></li>";
             }
           }
           warningMsg = warningMsg + "</ul>";
