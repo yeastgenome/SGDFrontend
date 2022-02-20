@@ -442,47 +442,46 @@ const GoSlimMapper = createReactClass({
     }
 
     // check for ambiguous genes
+
     var ambiguousGeneDict = this.state.ambiguousNames;
+    var warningMsg = '';
+    var ambiguousGeneCount = 0;
     if (fromTools == 0) {
       for (var i = 0; i < all_genes.length; i++) {
         var gene = all_genes[i];
         if (gene in ambiguousGeneDict) {
+          ambiguousGeneCount = ambiguousGeneCount + 1;
           var ambiguousGeneObj = ambiguousGeneDict[gene];
-          var warningMsg =
-            "The name '" +
-            gene +
-            "' is associated with multiple genes. " +
-            gene +
-            ' is ';
+          if (warningMsg == '') {
+	    warningMsg = "<strong>The following gene(s) are associated with multiple genes in the database. Please pick the intended gene for each entry and press Submit button.</strong><p>";
+          }
+	  warningMsg = warningMsg + "<strong>" + gene + "</strong>:<ul>";
           for (var j = 0; j < ambiguousGeneObj.length; j++) {
             var geneObj = ambiguousGeneObj[j];
-            var display_name =
-              geneObj['systematic_name'] + ' (SGDID: ' + geneObj['sgdid'] + ')';
+            var display_name = geneObj['systematic_name'] + ' (SGDID: ' + geneObj['sgdid'] + ')';
             if (geneObj['gene_name']) {
               display_name = geneObj['gene_name'] + '/' + display_name;
             }
-            if (j > 0) {
-              warningMsg = warningMsg + ' and ';
-            }
             if (geneObj['name_type'] == 'alias_name') {
-              warningMsg = warningMsg + 'an alias name for ' + display_name;
-            } else {
-              warningMsg =
-                warningMsg + 'the standard gene name for ' + display_name;
+              warningMsg = warningMsg + "<li><input type='radio' id='" + geneObj['sgdid'] + "' name='gene"+ ambiguousGeneCount + "' value='" + geneObj['sgdid'] + "'>" + "<label for='"+ geneObj['sgdid'] + "'>an alias name for " + display_name + "</label></li>";
+            }
+	    else {
+              warningMsg = warningMsg + "<li><input type='radio' id='" + geneObj['sgdid'] + "' name='gene"+ ambiguousGeneCount + "' value='" + geneObj['sgdid'] + "'>" + "<label for='"+ geneObj['sgdid'] + "'>a standard gene name for " + display_name + "</label></li>";
             }
           }
-          alert(
-            warningMsg +
-              ". Please modify your input list by replacing the entry '" +
-              gene +
-              "' with either the systematic ORF name or SGDID for the intended gene."
-          );
-          e.preventDefault();
-          return 1;
+          warningMsg = warningMsg + "</ul>";
         }
-      }
-    }
+      }	  
+    }	      
 
+    if (warningMsg != '') {
+      var h = ambiguousGeneCount * 120 + 100;
+      var win = window.open('', 'popUpWindow', "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=600,height="+ h + ",top="+(screen.height-600)+",left="+(screen.width-500));
+      win.document.body.innerHTML = "<html>" + warningMsg + "</html>";
+      e.preventDefault();
+      return 1;
+    }
+      
     window.localStorage.setItem('genes', genes);
 
     // var terms = [];
