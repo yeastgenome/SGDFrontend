@@ -475,10 +475,10 @@ const GoSlimMapper = createReactClass({
 	    var geneID = 'gene' + ambiguousGeneCount;
             if (geneObj['name_type'] == 'alias_name') {
               
-		warningMsg = warningMsg + "<li><input type='radio' id='" + geneID + "' name='" + geneID + "' value='" + geneObj['sgdid'] + "'><label for='"+ geneID + "'>an alias name for " + display_name + "</label></li>";
+		warningMsg = warningMsg + "<li><input type='radio' id='" + geneID + "' name='" + geneID + "' value='" + geneObj['sgdid'] + "' onclick=\"alert('Picked '" + geneObj['sgdid']+ ");\"/><label for='"+ geneID + "'>an alias name for " + display_name + "</label></li>";
             }
 	    else {
-              warningMsg = warningMsg + "<li><input type='radio' id='" + geneID + "' name='" + geneID + "' value='" + geneObj['sgdid'] + "'><label for='"+ geneID + "'>a standard gene name for " + display_name + "</label></li>";
+              warningMsg = warningMsg + "<li><input type='radio' id='" + geneID + "' name='" + geneID + "' value='" + geneObj['sgdid'] + "' onclick=\"alert('Picked '" + geneObj['sgdid'] + ");\"/><<label for='"+ geneID + "'>a standard gene name for " + display_name + "</label></li>";
             }
           }
           warningMsg = warningMsg + "</ul>";
@@ -490,6 +490,7 @@ const GoSlimMapper = createReactClass({
       var h = ambiguousGeneCount * 120 + 100;
       var win = window.open('', 'popUpWindow', "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=600,height="+ h + ",top="+(screen.height-600)+",left="+(screen.width-500));
       win.document.body.innerHTML = "<html><form onSubmit={this.onAmbiguousGenes} ref='ambigForm'" + warningMsg + "<input type='submit' name='submit' value='Submit' className='button secondary'></input><input type='hidden' name='count' value='" + ambiguousGeneCount + "'></form></html>";
+      win.close();
       e.preventDefault();
       return 1;
     }
