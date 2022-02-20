@@ -414,7 +414,7 @@ const GoSlimMapper = createReactClass({
       var geneID = 'gene' + count;
       var gene = document.getElementById(geneID);
       window.localStorage.setItem(geneID, gene);
-      alert(geneID + ": " + gene);  
+      console.log(geneID + ": " + gene);  
     }
   },
     
