@@ -563,10 +563,10 @@ const GoTermFinder = createReactClass({
               display_name = geneObj['gene_name'] + '/' + display_name;
             }
             if (geneObj['name_type'] == 'alias_name') {
-              warningMsg = warningMsg + "<li> an alias name for " + display_name + '</li>';
+              warningMsg = warningMsg + "<li><input type='radio' id='" + geneObj['sgdid'] + "' name='gene"+ ambiguousGeneCount + "' value='" + geneObj['sgdid'] + "'>" + "<label for='"+ geneObj['sgdid'] + "'>an alias name for " + display_name + "</label></li>";
             } 
             else {
-              warningMsg = warningMsg + "<li> a standard gene name for " + display_name + "</li>";
+              warningMsg = warningMsg + "<li><input type='radio' id='" + geneObj['sgdid'] + "' name='gene"+ ambiguousGeneCount + "' value='" + geneObj['sgdid'] + "'>" + "<label for='"+ geneObj['sgdid'] + "'>a standard gene name for " + display_name + "</label></li>"; 
             }
 
           }
