@@ -410,12 +410,11 @@ const GoSlimMapper = createReactClass({
 
   onAmbiguousGenes(e) {
     var count = document.getElementById('count');
-      for (var i = 1; i <= count; i ++) {
-	var geneID = 'gene' + count;
-        var gene = document.getElementById(geneID);
-	window.localStorage.setItem(geneID, gene);
-        alert(geneID + ": " + gene);  
-      }  
+    for (var i = 1; i <= count; i ++) {
+      var geneID = 'gene' + count;
+      var gene = document.getElementById(geneID);
+      window.localStorage.setItem(geneID, gene);
+      alert(geneID + ": " + gene);  
     }
   },
     
