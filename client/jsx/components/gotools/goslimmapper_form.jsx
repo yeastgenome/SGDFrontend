@@ -494,10 +494,10 @@ const GoSlimMapper = createReactClass({
       //return 1;
     }
 
-    var gene1 =  window.localStorage.getItem('gene1');                                                   
-    var gene2 = window.localStorage.getItem('gene2');                                                   
-    alert('gene1='+gene1);                                                                             
-    alert('gene2='+gene2);
+    //var gene1 =  window.localStorage.getItem('gene1');              
+    // var gene2 = window.localStorage.getItem('gene2');   
+    //alert('gene1='+gene1);                                                                             
+    //alert('gene2='+gene2);
 
       
     window.localStorage.setItem('genes', genes);
