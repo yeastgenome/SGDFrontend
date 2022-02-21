@@ -491,15 +491,13 @@ const GoSlimMapper = createReactClass({
       var win = window.open('', 'popUpWindow', "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=600,height="+ h + ",top="+(screen.height-600)+",left="+(screen.width-500));
       win.document.body.innerHTML = "<html><form onSubmit={this.onAmbiguousGenes} ref='ambigForm'" + warningMsg + "<input type='submit' name='submit' value='Submit' className='button secondary'></input><input type='hidden' name='count' value='" + ambiguousGeneCount + "'></form></html>";
       e.preventDefault();
-      // return 1;
+      var gene1 =  window.localStorage.getItem('gene1');
+      var gene2 = window.localStorage.getItem('gene2');
+      alert('gene1='+gene1);
+      alert('gene2='+gene2);
+	
+      //return 1;
     }
-
-
-      
-    var gene1 =  window.localStorage.getItem('gene1'); 
-    var gene2 = window.localStorage.getItem('gene2');
-    alert('gene1='+gene1);
-    alert('gene2='+gene2);
 
 
 
