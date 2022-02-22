@@ -553,7 +553,7 @@ const GoTermFinder = createReactClass({
           ambiguousGeneCount = ambiguousGeneCount + 1;
           var ambiguousGeneObj = ambiguousGeneDict[gene];
 	  if (warningMsg == '') {
-	    warningMsg = "<strong>The following gene(s) are associated with multiple genes in the database. Please modify your input list by replacing the entry with SGDID for the intended gene.</strong><p>"; 
+	    warningMsg = "<strong>The following identifier(s) are associated with multiple genes in the database. Please modify your input list by replacing the entry with the SGDID for the intended gene.</strong><p>"; 
           }
 	  warningMsg = warningMsg + "<strong>" + gene + "</strong>:<ul>";
           for (var j = 0; j < ambiguousGeneObj.length; j++) {
