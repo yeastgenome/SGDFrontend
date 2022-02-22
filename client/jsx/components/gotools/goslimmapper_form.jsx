@@ -408,16 +408,6 @@ const GoSlimMapper = createReactClass({
     return all_terms.join('|');
   },
 
-  onAmbiguousGenes(e) {
-    var count = document.getElementById('count');
-    for (var i = 1; i <= count; i ++) {
-      var geneID = 'gene' + count;
-      var gene = document.getElementById(geneID);
-      window.localStorage.setItem(geneID, gene);
-      console.log(geneID + ": " + gene);  
-    }
-  },
-    
   onSubmit(e) {
     // window.localStorage.clear();
 
@@ -452,55 +442,55 @@ const GoSlimMapper = createReactClass({
     }
 
     // check for ambiguous genes
-
     var ambiguousGeneDict = this.state.ambiguousNames;
-    var warningMsg = '';
-    var ambiguousGeneCount = 0;
     if (fromTools == 0) {
       for (var i = 0; i < all_genes.length; i++) {
         var gene = all_genes[i];
         if (gene in ambiguousGeneDict) {
-          ambiguousGeneCount = ambiguousGeneCount + 1;
           var ambiguousGeneObj = ambiguousGeneDict[gene];
-          if (warningMsg == '') {
-	    warningMsg = "<strong>The following gene(s) are associated with multiple genes in the database. Please pick the intended gene for each entry and press Submit button.</strong><p>";
-          }
-	  warningMsg = warningMsg + "<strong>" + gene + "</strong>:<ul>";
+          var warningMsg =
+            "The name '" +
+            gene +
+            "' is associated with multiple genes. " +
+            gene +
+            ' is ';
           for (var j = 0; j < ambiguousGeneObj.length; j++) {
             var geneObj = ambiguousGeneObj[j];
-            var display_name = geneObj['systematic_name'] + ' (SGDID: ' + geneObj['sgdid'] + ')';
+            var display_name =
+              geneObj['systematic_name'] + ' (SGDID: ' + geneObj['sgdid'] + ')';
             if (geneObj['gene_name']) {
               display_name = geneObj['gene_name'] + '/' + display_name;
             }
-	    var geneID = 'gene' + ambiguousGeneCount;
-            if (geneObj['name_type'] == 'alias_name') {
-              
-		warningMsg = warningMsg + "<li><input type='radio' id='" + geneID + "' name='" + geneID + "' value='" + geneObj['sgdid'] + "' onclick=\"window.localStorage.setItem(" + geneID + ", " + geneObj['sgdid'] + ");\"/><label for='"+ geneID + "'>an alias name for " + display_name + "</label></li>";
+            if (j > 0) {
+              warningMsg = warningMsg + ' and ';
             }
-	    else {
-              warningMsg = warningMsg + "<li><input type='radio' id='" + geneID + "' name='" + geneID + "' value='" + geneObj['sgdid'] + "' onclick=\"window.localStorage.setItem(" + geneID + ", " + geneObj['sgdid'] + ");\"/><label for='"+ geneID + "'>a standard gene name for " + display_name + "</label></li>";
+            if (geneObj['name_type'] == 'alias_name') {
+              warningMsg = warningMsg + 'an alias name for ' + display_name;
+            } else {
+              warningMsg =
+                warningMsg + 'the standard gene name for ' + display_name;
             }
           }
-          warningMsg = warningMsg + "</ul>";
+          alert(
+            warningMsg +
+              ". Please modify your input list by replacing the entry '" +
+              gene +
+              "' with either the systematic ORF name or SGDID for the intended gene."
+          );
+          e.preventDefault();
+          return 1;
         }
-      }	  
-    }	      
-
-    if (warningMsg != '') {
-      var h = ambiguousGeneCount * 120 + 100;
-      var win = window.open('', 'popUpWindow', "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=600,height="+ h + ",top="+(screen.height-600)+",left="+(screen.width-500));
-      win.document.body.innerHTML = "<html><form onSubmit={this.onAmbiguousGenes} ref='ambigForm'" + warningMsg + "<input type='submit' name='submit' value='Submit' className='button secondary'></input><input type='hidden' name='count' value='" + ambiguousGeneCount + "'></form></html>";
-      // e.preventDefault();	
-      //return 1;
+      }
     }
 
-    //var gene1 =  window.localStorage.getItem('gene1');              
-    // var gene2 = window.localStorage.getItem('gene2');   
-    //alert('gene1='+gene1);                                                                             
-    //alert('gene2='+gene2);
-
-      
     window.localStorage.setItem('genes', genes);
+
+    // var terms = [];
+    // _.map(slimData, g => {
+    //    if (g.slim_type == slimType) {
+    //       terms = g.terms;
+    //    }
+    // });
 
     var terms = this.processTermList();
 
@@ -522,10 +512,8 @@ const GoSlimMapper = createReactClass({
     } else if (slimType && slimType.includes(': function')) {
       aspect = 'F';
     }
+
     window.localStorage.setItem('aspect', aspect);
-
-
-
   },
 
   onReset(e) {
