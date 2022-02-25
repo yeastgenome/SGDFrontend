@@ -177,6 +177,16 @@
             </p>
         </h2>
         <hr />
+	
+        <div>
+            {% if locus['sequence_overview']['paragraph'] %}
+                <dl class="key-value">
+                    <dt>Summary</dt>
+                    <dd>{{ locus['sequence_overview']['paragraph']|safe }}</dd>
+                </dl>
+            {% endif %}
+        </div>
+
 
         <!-- client-rendered sequence -->
         <div class="sgd-viz">
@@ -226,6 +236,16 @@
             </p>
         </h2>
         <hr />
+
+        <div>
+            {% if locus['protein_overview']['paragraph'] %}
+                <dl class="key-value">
+                    <dt>Summary</dt>
+                    <dd>{{ locus['protein_overview']['paragraph']|safe }}</dd>
+                </dl>
+            {% endif %}
+        </div>
+	
         <div class="">
             <div class="">
                  <dl class="key-value">
