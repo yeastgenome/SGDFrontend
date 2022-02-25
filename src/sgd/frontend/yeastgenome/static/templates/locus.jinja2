@@ -179,10 +179,10 @@
         <hr />
 	
         <div>
-            {% if locus['sequence_overview']['paragraph'] %}
+            {% if locus.sequence_summary  %}
                 <dl class="key-value">
                     <dt>Summary</dt>
-                    <dd>{{ locus['sequence_overview']['paragraph']|safe }}</dd>
+                    <dd>{{ locus.sequence_summary|safe }}</dd>
                 </dl>
             {% endif %}
         </div>
@@ -237,15 +237,8 @@
         </h2>
         <hr />
 
-        <div>
-            {% if locus['protein_overview']['paragraph'] %}
-                <dl class="key-value">
-                    <dt>Summary</dt>
-                    <dd>{{ locus['protein_overview']['paragraph']|safe }}</dd>
-                </dl>
-            {% endif %}
-        </div>
-	
+
+
         <div class="">
             <div class="">
                  <dl class="key-value">
