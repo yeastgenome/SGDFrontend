@@ -237,7 +237,14 @@
         </h2>
         <hr />
 
-
+	<div>
+            {% if locus.protein_summary  %}
+                <dl class="key-value">
+                    <dt>Summary</dt>
+                    <dd>{{ locus.protein_summary|safe }}</dd>
+                </dl>
+            {% endif %}
+        </div>
 
         <div class="">
             <div class="">
