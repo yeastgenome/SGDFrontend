@@ -39,16 +39,6 @@
                     {% endif %}
                 </dd>
 
-                <dt>Description</dt>
-                <dd>
-                    {{ locus.description|safe  }}
-                    {% if 'description' in locus.qualities %}
-                        {% set references = locus.qualities.description.references %}
-                        {% set full_url = True %}
-                        {% include "biblio_references.jinja2" %}
-                    {% endif %}
-                </dd>
-
                 {% if locus.paralogs|length > 0 %}
                     <dt>Paralog</dt>
                     <dd>
@@ -78,5 +68,21 @@
                 {% if 'ecnumber' in locus and locus.ecnumber != None %}
                     <dt>EC Number</dt>
                     <dd><a href="{{ locus.ecnumber.link }}">{{ locus.ecnumber.display_name }}</a></dd>
+                {% endif %}
+
+		{% if is_protein %}
+		   {% if locus.protein_summary %}
+		      <dt>Summary</dt>
+		      <dd> 
+			 {{ locus.protein_summary|safe }}
+		      </dd>
+	           {% endif %}
+	        {% else %}
+		   {% if locus.sequence_summary %}
+                      <dt>Summary</dt>
+                      <dd>
+		         {{ locus.sequence_summary|safe }}
+		      </dd>
+                   {% endif %}
                 {% endif %}
 </dl>
