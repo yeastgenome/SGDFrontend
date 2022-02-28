@@ -74,24 +74,14 @@
 		   {% if locus.protein_summary %}
 		      <dt>Summary</dt>
 		      <dd> 
-			 {{ locus.protein_summary|safe  }}
-                    	 {% if 'protein_summary' in locus.qualities %}
-                            {% set references = locus.qualities.protein_summary.references %}
-                            {% set full_url = True %}
-                            {% include "biblio_references.jinja2" %}
-                    	 {% endif %}
+			 {{ locus.protein_summary|safe }}
 		      </dd>
 	           {% endif %}
 	        {% else %}
 		   {% if locus.sequence_summary %}
                       <dt>Summary</dt>
                       <dd>
-		         {{ locus.sequence_summary|safe  }}
-                         {% if 'sequence_summary' in locus.qualities %}
-                            {% set references = locus.qualities.sequence_summary.references %}
-                            {% set full_url = True %}
-                            {% include "biblio_references.jinja2" %}
-                         {% endif %}
+		         {{ locus.sequence_summary|safe }}
 		      </dd>
                    {% endif %}
                 {% endif %}
