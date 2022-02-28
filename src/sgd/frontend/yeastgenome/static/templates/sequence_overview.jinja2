@@ -70,7 +70,7 @@
                     <dd><a href="{{ locus.ecnumber.link }}">{{ locus.ecnumber.display_name }}</a></dd>
                 {% endif %}
 
-		{% if is_protein == 1 %}
+		{% if is_protein %}
 		   {% if locus.protein_summary %}
 		      <dt>Summary</dt>
 		      <dd> 
