@@ -6,6 +6,8 @@ const RadioSelector = require('./radio_selector.jsx');
 const Checklist = require('./checklist.jsx');
 import createReactClass from 'create-react-class';
 
+const TIMEOUT = 240000;
+      
 const style = {
   button: {
     fontSize: 18,
@@ -685,6 +687,7 @@ const GoTermFinder = createReactClass({
       data_type: 'json',
       type: 'POST',
       data: paramData,
+      timeout: TIMEOUT,
       success: function (data) {
         this.setState({ isComplete: true, resultData: data });
       }.bind(this),
