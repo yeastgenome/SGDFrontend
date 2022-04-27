@@ -11,7 +11,7 @@ import json
 import requests
 import os
 
-SEARCH_URL = os.environ['backend_url'] + '/get_search_results'
+SEARCH_URL = os.environ['BACKEND_URL'] + '/get_search_results'
 TEMPLATE_ROOT = 'src:sgd/frontend/yeastgenome/static/templates/'
 ENV = os.getenv('ENV', 'dev')
 
@@ -262,7 +262,7 @@ def variant_viewer(request):
 
 @view_config(route_name='new_gene_name_reservation')
 def new_gene_name_reservation(request):
-    ci_base = os.environ['curate_server']
+    ci_base = os.environ['CURATE_SERVER']
 
     return render_to_response(
         TEMPLATE_ROOT + 'iframe.jinja2', {
@@ -275,7 +275,7 @@ def new_gene_name_reservation(request):
 
 @view_config(route_name='new_colleague')
 def new_colleague(request):
-    ci_base = os.environ['curate_server']
+    ci_base = os.environ['CURATE_SERVER']
 
     return render_to_response(
         TEMPLATE_ROOT + 'iframe.jinja2', {
@@ -287,7 +287,7 @@ def new_colleague(request):
 
 @view_config(route_name='submit_data')
 def submit_data(request):
-    ci_base = os.environ['curate_server']
+    ci_base = os.environ['CURATE_SERVER']
 
     return render_to_response(
         TEMPLATE_ROOT + 'iframe_small.jinja2', {
@@ -312,7 +312,7 @@ def home(request):
 #     return render_to_response(TEMPLATE_ROOT + 'example.jinja2', {}, request=request)
 
 def get_obj(identifier, obj_type):
-    backend_url = os.environ['backend_url'] + '/' + obj_type + '/' + identifier
+    backend_url = os.environ['BACKEND_URL'] + '/' + obj_type + '/' + identifier
     backend_response = requests.get(backend_url)
     if backend_response.status_code != 200:
         return None
