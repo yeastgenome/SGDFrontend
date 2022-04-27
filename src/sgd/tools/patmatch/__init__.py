@@ -1,6 +1,6 @@
 import json
 from pyramid.response import Response
-from src.sgd.frontend import config
+# from src.sgd.frontend import config
 from urllib.request import Request, urlopen
 from urllib.error import URLError
 
