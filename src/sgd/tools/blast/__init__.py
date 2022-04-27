@@ -93,7 +93,7 @@ def _get_seq(name, type):
     if type == None or type == '' or type == 'undefined':
         type = 'dna'
 
-    url = os.environ['backend_url'] + "/locus/" + name + "/sequence_details"
+    url = os.environ['BACKEND_URL'] + "/locus/" + name + "/sequence_details"
     res = _get_json_from_server(url)
     
     rows = []
