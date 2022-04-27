@@ -12,7 +12,7 @@ def do_redirect(request):
     
     data = {}
     if p.get('param'):
-        url = os.environ['backend_url']
+        url = os.environ['BACKEND_URL']
         if url[-1] == '/':
             url[0:-1]
         if p.get('param').startswith('/'):
