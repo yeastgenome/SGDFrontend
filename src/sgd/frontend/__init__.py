@@ -1,7 +1,7 @@
 import json
 # from pyramid.renderers import render, Response
 from pyramid.renderers import render
-from src.sgd.frontend import config
+# from src.sgd.frontend import config
 from pyramid.view import notfound_view_config
 from src.sgd.frontend.yeastgenome import send_message
 from src.sgd.redirect import do_redirect
@@ -12,6 +12,7 @@ from src.sgd.tools.gotools import do_gosearch
 from src.sgd.tools.alignment import get_s3_data
 from src.sgd.tools.restrictionmapper import do_restmap
 from src.sgd.tools.primer3 import do_primer3
+import os
 
 def prep_views(chosen_frontend, config):
     # some logic (NOT all) has been moved to views to be more 'pyramid-y'
@@ -283,7 +284,7 @@ def prepare_frontend(frontend_type, **configs):
     if frontend_type == 'yeastgenome':
         from src.sgd.frontend.yeastgenome import yeastgenome_frontend
 
-        chosen_frontend, configuration = yeastgenome_frontend(config.backend_url, config.heritage_url, config.log_directory, **configs)
+        chosen_frontend, configuration = yeastgenome_frontend(os.environ['backend_url'], os.environ['heritage_url'], os.environ['log_directory'], **configs)
         
         prep_views(chosen_frontend, configuration)
         return configuration
