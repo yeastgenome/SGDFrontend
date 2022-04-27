@@ -2,8 +2,9 @@ import json
 from pyramid.response import Response
 # from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
-from src.sgd.frontend import config
+# from src.sgd.frontend import config
 import requests
+import os
 
 def do_redirect(request):
 
@@ -11,7 +12,7 @@ def do_redirect(request):
     
     data = {}
     if p.get('param'):
-        url = config.backend_url
+        url = os.environ['backend_url']
         if url[-1] == '/':
             url[0:-1]
         if p.get('param').startswith('/'):

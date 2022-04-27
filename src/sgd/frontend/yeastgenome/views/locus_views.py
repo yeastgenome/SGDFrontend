@@ -3,21 +3,22 @@ from pyramid.response import Response
 from pyramid.view import view_config
 from pyramid.renderers import render_to_response
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
-from src.sgd.frontend import config
+# from src.sgd.frontend import config
 from src.sgd.frontend.yeastgenome.views.misc_views import not_found
 import datetime
 import json
 import requests
+import os
 
 TEMPLATE_ROOT = 'src:sgd/frontend/yeastgenome/static/templates/'
 
 def get_locus_obj(identifier):
-    backend_locus_url = config.backend_url + '/locus/' + identifier
+    backend_locus_url = os.environ['backend_url'] + '/locus/' + identifier
     locus_response = requests.get(backend_locus_url)
     if locus_response.status_code != 200:
         return None
     locus = json.loads(locus_response.text)
-    tabs =  json.loads(requests.get(config.backend_url + '/locus/' + str(locus['id']) + '/tabs').text)
+    tabs =  json.loads(requests.get(os.environ['backend_url'] + '/locus/' + str(locus['id']) + '/tabs').text)
     return { 'locus': locus, 'locus_js': json.dumps(locus), 'tabs': tabs, 'tabs_js': json.dumps(tabs) }
 
 def render_locus_page(request, template_name):

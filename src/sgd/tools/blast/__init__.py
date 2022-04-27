@@ -1,9 +1,10 @@
 import json
 from pyramid.response import Response
-from src.sgd.frontend import config
+# from src.sgd.frontend import config
 from urllib.request import Request, urlopen
 from urllib.error import URLError
 from urllib.parse import urlencode
+import os
 
 compute_url = "https://blast.yeastgenome.org/"
 
@@ -92,7 +93,7 @@ def _get_seq(name, type):
     if type == None or type == '' or type == 'undefined':
         type = 'dna'
 
-    url = config.backend_url + "/locus/" + name + "/sequence_details"
+    url = os.environ['backend_url'] + "/locus/" + name + "/sequence_details"
     res = _get_json_from_server(url)
     
     rows = []

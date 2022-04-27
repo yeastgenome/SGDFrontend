@@ -4,7 +4,7 @@ import requests
 from datetime import datetime, timedelta
 import os
 from dateutil import parser
-from src.sgd.frontend import config
+# from src.sgd.frontend import config
 
 BLOG_BASE_URL = 'https://public-api.wordpress.com/rest/v1.1/sites/yeastgenomeblog.wordpress.com/posts'
 BLOG_PAGE_SIZE = 10
@@ -95,7 +95,7 @@ def get_recent_blog_posts():
 # fetch "SGD Public Events" google calendar data and format as needed for homepage
 def get_meetings():
     try:
-        calendar_url = config.google_calendar_api_url
+        calendar_url = os.os.environ['google_calendar_api_url']
         response = requests.get(calendar_url, timeout=HOMEPAGE_REQUEST_TIMEOUT)
         meetings = json.loads(response.text)['items']
         # only get "all day" events

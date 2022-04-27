@@ -1,12 +1,13 @@
 import json
 from pyramid.response import Response
-from src.sgd.frontend import config
+# from src.sgd.frontend import config
 from urllib.request import Request, urlopen
 from urllib.error import URLError
 from urllib.parse import urlencode
 import requests
+import os
 
-url = config.backend_url + '/primer3'
+url = os.environ['backend_url'] + '/primer3'
 
 def do_primer3(request):
     
