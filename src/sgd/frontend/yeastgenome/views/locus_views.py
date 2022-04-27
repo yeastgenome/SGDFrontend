@@ -13,12 +13,12 @@ import os
 TEMPLATE_ROOT = 'src:sgd/frontend/yeastgenome/static/templates/'
 
 def get_locus_obj(identifier):
-    backend_locus_url = os.environ['backend_url'] + '/locus/' + identifier
+    backend_locus_url = os.environ['BACKEND_URL'] + '/locus/' + identifier
     locus_response = requests.get(backend_locus_url)
     if locus_response.status_code != 200:
         return None
     locus = json.loads(locus_response.text)
-    tabs =  json.loads(requests.get(os.environ['backend_url'] + '/locus/' + str(locus['id']) + '/tabs').text)
+    tabs =  json.loads(requests.get(os.environ['BACKEND_URL'] + '/locus/' + str(locus['id']) + '/tabs').text)
     return { 'locus': locus, 'locus_js': json.dumps(locus), 'tabs': tabs, 'tabs_js': json.dumps(tabs) }
 
 def render_locus_page(request, template_name):
