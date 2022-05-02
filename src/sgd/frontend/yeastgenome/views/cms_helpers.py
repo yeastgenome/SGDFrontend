@@ -95,7 +95,7 @@ def get_recent_blog_posts():
 # fetch "SGD Public Events" google calendar data and format as needed for homepage
 def get_meetings():
     try:
-        calendar_url = os.os.environ['google_calendar_api_url']
+        calendar_url = os.os.environ['GOOGLE_CALENDAR_API_URL']
         response = requests.get(calendar_url, timeout=HOMEPAGE_REQUEST_TIMEOUT)
         meetings = json.loads(response.text)['items']
         # only get "all day" events

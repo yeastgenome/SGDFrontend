@@ -284,7 +284,7 @@ def prepare_frontend(frontend_type, **configs):
     if frontend_type == 'yeastgenome':
         from src.sgd.frontend.yeastgenome import yeastgenome_frontend
 
-        chosen_frontend, configuration = yeastgenome_frontend(os.environ['backend_url'], os.environ['heritage_url'], os.environ['log_directory'], **configs)
+        chosen_frontend, configuration = yeastgenome_frontend(os.environ['BACKEND_URL'], os.environ['HERITAGE_URL'], os.environ['LOG_DIRECTORY'], **configs)
         
         prep_views(chosen_frontend, configuration)
         return configuration

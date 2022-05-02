@@ -7,7 +7,7 @@ from urllib.parse import urlencode
 import requests
 import os
 
-url = os.environ['backend_url'] + '/primer3'
+url = os.environ['BACKEND_URL'] + '/primer3'
 
 def do_primer3(request):
     
