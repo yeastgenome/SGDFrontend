@@ -9,7 +9,7 @@ const DataTable = require('../widgets/data_table.jsx');
 const LETTERS_PER_LINE = 60;
 
 // const PatmatchUrl = '/run_patmatch';
-PatmatchUrl = 'http://54.69.69.139/patmatch';
+PatmatchUrl = 'https://patmatch.sgd.alliancegenome.org/patmatch'
 
 class SearchForm extends Component {
   constructor(props) {
