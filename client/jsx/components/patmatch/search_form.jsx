@@ -6,8 +6,10 @@ const Checklist = require('../widgets/checklist.jsx');
 const Params = require('../mixins/parse_url_params.jsx');
 const ExampleTable = require('./example_table.jsx');
 const DataTable = require('../widgets/data_table.jsx');
-const PatmatchUrl = '/run_patmatch';
 const LETTERS_PER_LINE = 60;
+
+// const PatmatchUrl = '/run_patmatch';
+const PatmatchUrl = 'https://patmatch.sgd.alliancegenome.org/patmatch';
 
 class SearchForm extends Component {
   constructor(props) {
