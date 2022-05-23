@@ -7,7 +7,7 @@ const Checklist = require('./checklist.jsx');
 import createReactClass from 'create-react-class';
 
 const TIMEOUT = 240000;
-      
+
 const style = {
   button: {
     fontSize: 18,
@@ -18,7 +18,8 @@ const style = {
   textFont: { fontSize: 18 },
 };
 
-const GOtoolsUrl = '/run_gotools';
+# const GOtoolsUrl = '/run_gotools';
+const GOtoolsUrl = 'https://gotermfinder.dev.yeastgenome.org/gotermfiner';
 const GeneChkUrl = '/backend/ambiguous_names';
 
 const evidenceCode = [
@@ -554,37 +555,51 @@ const GoTermFinder = createReactClass({
         if (gene in ambiguousGeneDict) {
           ambiguousGeneCount = ambiguousGeneCount + 1;
           var ambiguousGeneObj = ambiguousGeneDict[gene];
-	  if (warningMsg == '') {
-	    warningMsg = "<strong>The following identifier(s) are associated with multiple genes in the database. Please modify your input list by replacing the entry with the SGDID for the intended gene.</strong><p>"; 
+          if (warningMsg == '') {
+            warningMsg =
+              '<strong>The following identifier(s) are associated with multiple genes in the database. Please modify your input list by replacing the entry with the SGDID for the intended gene.</strong><p>';
           }
-	  warningMsg = warningMsg + "<strong>" + gene + "</strong>:<ul>";
+          warningMsg = warningMsg + '<strong>' + gene + '</strong>:<ul>';
           for (var j = 0; j < ambiguousGeneObj.length; j++) {
             var geneObj = ambiguousGeneObj[j];
-            var display_name = geneObj['systematic_name'] + ' (SGDID: ' + geneObj['sgdid'] + ')';
+            var display_name =
+              geneObj['systematic_name'] + ' (SGDID: ' + geneObj['sgdid'] + ')';
             if (geneObj['gene_name']) {
               display_name = geneObj['gene_name'] + '/' + display_name;
             }
             if (geneObj['name_type'] == 'alias_name') {
-              warningMsg = warningMsg + "<li> an alias name for " + display_name + '</li>';
-            } 
-            else {
-              warningMsg = warningMsg + "<li> a standard gene name for " + display_name + "</li>";
+              warningMsg =
+                warningMsg + '<li> an alias name for ' + display_name + '</li>';
+            } else {
+              warningMsg =
+                warningMsg +
+                '<li> a standard gene name for ' +
+                display_name +
+                '</li>';
             }
-
           }
-          warningMsg = warningMsg + "</ul>";
+          warningMsg = warningMsg + '</ul>';
         }
       }
     }
-    
+
     if (warningMsg != '') {
       var h = ambiguousGeneCount * 120 + 100;
-      var win = window.open('', 'popUpWindow', "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=600,height="+ h + ",top="+(screen.height-600)+",left="+(screen.width-500));
-      win.document.body.innerHTML = "<html>" + warningMsg + "</html>";
+      var win = window.open(
+        '',
+        'popUpWindow',
+        'toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=600,height=' +
+          h +
+          ',top=' +
+          (screen.height - 600) +
+          ',left=' +
+          (screen.width - 500)
+      );
+      win.document.body.innerHTML = '<html>' + warningMsg + '</html>';
       e.preventDefault();
       return 1;
     }
-    
+
     window.localStorage.setItem('genes', genes);
 
     var genes4bg = this.genes4bg.value.trim();
