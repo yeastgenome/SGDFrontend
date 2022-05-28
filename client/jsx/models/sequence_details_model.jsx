@@ -106,7 +106,7 @@ module.exports = class SequenceDetailsModel extends BaseModel {
       if (!header)
         header = this._formatDefaultHeader(
           key,
-          _response.contig.display_name.substr(11),
+          _response.contig.display_name,
           _response.start,
           _response.end
         );
@@ -303,7 +303,7 @@ module.exports = class SequenceDetailsModel extends BaseModel {
     if (!header)
       header = this._formatDefaultHeader(
         'genomic_dna',
-        strainData.contig.display_name.substr(11),
+        strainData.contig.display_name,
         strainData.start,
         strainData.end
       );
