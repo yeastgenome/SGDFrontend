@@ -106,7 +106,7 @@ module.exports = class SequenceDetailsModel extends BaseModel {
       if (!header)
         header = this._formatDefaultHeader(
           key,
-          _response.contig.display_name.substr(11),
+          _response.contig.display_name,
           _response.start,
           _response.end
         );
@@ -185,9 +185,9 @@ module.exports = class SequenceDetailsModel extends BaseModel {
   _formatDefaultHeader(key, contigDisplayName, start, end) {
     var attr = this.baseAttributes;
     var _possibleSuffixes = {
-      genomic_dna: `, chr${contigDisplayName}:${start}..${end}`,
+      genomic_dna: `, ${contigDisplayName}:${start}..${end}`,
       coding_dna: '',
-      '1kb': `, chr${contigDisplayName}:${start}..${end}+/- 1kb`,
+      '1kb': `, ${contigDisplayName}:${start}..${end}+/- 1kb`,
       protein: '',
     };
     var suffix = _possibleSuffixes[key];
@@ -303,7 +303,7 @@ module.exports = class SequenceDetailsModel extends BaseModel {
     if (!header)
       header = this._formatDefaultHeader(
         'genomic_dna',
-        strainData.contig.display_name.substr(11),
+        strainData.contig.display_name,
         strainData.start,
         strainData.end
       );
