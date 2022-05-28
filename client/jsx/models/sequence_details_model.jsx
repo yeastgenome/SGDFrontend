@@ -185,9 +185,9 @@ module.exports = class SequenceDetailsModel extends BaseModel {
   _formatDefaultHeader(key, contigDisplayName, start, end) {
     var attr = this.baseAttributes;
     var _possibleSuffixes = {
-      genomic_dna: `, chr${contigDisplayName}:${start}..${end}`,
+      genomic_dna: `, ${contigDisplayName}:${start}..${end}`,
       coding_dna: '',
-      '1kb': `, chr${contigDisplayName}:${start}..${end}+/- 1kb`,
+      '1kb': `, ${contigDisplayName}:${start}..${end}+/- 1kb`,
       protein: '',
     };
     var suffix = _possibleSuffixes[key];
