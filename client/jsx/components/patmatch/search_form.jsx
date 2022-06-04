@@ -11,7 +11,8 @@ const LETTERS_PER_LINE = 60;
 // const PatmatchUrl = '/run_patmatch';
 // const PatmatchUrl = 'https://patmatch.sgd.alliancegenome.org/patmatch';
 // const PatmatchUrl = 'https://patmatch.dev.yeastgenome.org/patmatch';
-const PatmatchUrl = 'https://patmatch-fargate.dev.yeastgenome.org/patmatch';
+// const PatmatchUrl = 'https://patmatch-fargate.dev.yeastgenome.org/patmatch';
+const PatmatchUrl = 'https://patmatch.staging.yeastgenome.org/patmatch';
 
 class SearchForm extends Component {
   constructor(props) {
