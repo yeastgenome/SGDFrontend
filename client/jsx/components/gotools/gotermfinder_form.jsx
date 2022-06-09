@@ -19,7 +19,9 @@ const style = {
 };
 
 // const GOtoolsUrl = '/run_gotools';
-const GOtoolsUrl = 'https://gotermfinder.dev.yeastgenome.org/gotermfinder';
+// const GOtoolsUrl = 'https://gotermfinder.dev.yeastgenome.org/gotermfinder';
+const GOtoolsUrl = 'https://goterm.sgd.alliancegenome.org/gotermfinder';
+
 const GeneChkUrl = '/backend/ambiguous_names';
 
 const evidenceCode = [

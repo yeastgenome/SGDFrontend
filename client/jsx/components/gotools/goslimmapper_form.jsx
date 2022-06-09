@@ -17,7 +17,9 @@ const style = {
 };
 
 // const GOtoolsUrl = '/run_gotools';
-const GOtoolsUrl = 'https://gotermfinder.dev.yeastgenome.org/goslimmapper'
+// const GOtoolsUrl = 'https://gotermfinder.dev.yeastgenome.org/goslimmapper';
+const GOtoolsUrl = 'https://goterm.sgd.alliancegenome.org/goslimmapper';
+
 const GOslimUrl = '/backend/goslim';
 const GeneChkUrl = '/backend/ambiguous_names';
 
