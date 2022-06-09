@@ -20,8 +20,10 @@ const style = {
 // const GOtoolsUrl = 'https://gotermfinder.dev.yeastgenome.org/goslimmapper';
 const GOtoolsUrl = 'https://goterm.sgd.alliancegenome.org/goslimmapper';
 
-const GOslimUrl = 'https://www.yeastgenome.org/backend/goslim';
-const GeneChkUrl = 'https://www.yeastgenome.org/backend/ambiguous_names';
+// const GOslimUrl = 'https://www.yeastgenome.org/backend/goslim';
+// const GeneChkUrl = 'https://www.yeastgenome.org/backend/ambiguous_names';
+const GOslimUrl = '/backend/goslim';
+const GeneChkUrl = '/backend/ambiguous_names';
 
 const goSet = [
   'Yeast GO-Slim: process',

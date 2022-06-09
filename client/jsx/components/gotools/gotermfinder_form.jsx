@@ -22,7 +22,8 @@ const style = {
 // const GOtoolsUrl = 'https://gotermfinder.dev.yeastgenome.org/gotermfinder';
 const GOtoolsUrl = 'https://goterm.sgd.alliancegenome.org/gotermfinder';
 
-const GeneChkUrl = 'https://www.yeastgenome.org/backend/ambiguous_names';
+//const GeneChkUrl = 'https://www.yeastgenome.org/backend/ambiguous_names';
+const GeneChkUrl = '/backend/ambiguous_names'; 
 
 const evidenceCode = [
   'HDA',
