@@ -34,7 +34,7 @@ build-deploy:
 	python setup.py develop
 
 grunt:
-	grunt
+	grunt --force
 
 dependencies:
 	npm install
