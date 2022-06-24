@@ -1,22 +1,25 @@
-FROM ubuntu:20.04
+FROM alpine:latest
 
-WORKDIR /data/www
-RUN DEBIAN_FRONTEND=noninteractive apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get upgrade -y \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-	git \
+#WORKDIR /data/www
+RUN apk add build-base \
+        git \
         make \
         nodejs \
 	npm \
-        python3-pip \
+        py3-pip \
         ruby \
         ruby-dev \
     && gem install bundler \
     && git clone https://github.com/yeastgenome/SGDFrontend.git
 
 WORKDIR /data/www/SGDFrontend
-RUN git checkout master_docker \
-    && npm install -g bower \
+RUN git checkout master_docker
+
+WORKDIR /data/www/SGDFrontend/src/sgd/frontend
+COPY config.py .
+
+WORKDIR /data/www/SGDFrontend
+RUN npm install -g bower \
     && bower install --force \
     && pip3 install virtualenv \
     && virtualenv /data/www/SGDFrontend/venv \
