@@ -29,7 +29,7 @@ $(document).ready(function() {
     $("#download_citation").click(function() {post_to_url(download_link, {"display_name":reference['display_name'].replace(' ', '_') + '_citation.nbib', "reference_ids": [reference['id']]});})
 
     if(reference['counts']['interaction'] > 0) {
-        $.getJSON('//redirect_backend?param=reference/' + reference['sgdid'] + '/interaction_details', function(data) {
+        $.getJSON('/redirect_backend?param=reference/' + reference['sgdid'] + '/interaction_details', function(data) {
 
             var physical_interaction_table = create_physical_interaction_table(data);
             create_download_button("physical_interaction_table_download", physical_interaction_table, reference['sgdid'] + "_physical_interactions");
