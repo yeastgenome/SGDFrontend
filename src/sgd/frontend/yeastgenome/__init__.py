@@ -6,6 +6,7 @@ import uuid
 import urllib.request, urllib.parse, urllib.error
 import base64
 import requests
+import os
 import os.path
 import sys
 import random
@@ -453,7 +454,7 @@ def send_message(request):
 
     from src.sgd.frontend import config
 
-    secret_key = config.secret_key
+    secret_key = os.environ.get('SECRET_KEY')
     
     url = "https://www.google.com/recaptcha/api/siteverify?secret=" + secret_key + "&response=" + googleResponse
 
@@ -469,7 +470,7 @@ def send_message(request):
         return
 
     server = "localhost"
-    sender = config.sender 
+    sender = os.environ.get('SENDER')
     
     s = smtplib.SMTP(server)
     
