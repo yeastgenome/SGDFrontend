@@ -132,6 +132,19 @@
                     {% endfor %}
                     </dd>
                 {% endif %}
+
+		{% if locus.URS_ID %}
+		    <dt>Secondary Structure</dt>
+		    <dd>
+			<r2dt-web search=‘{“urs”: “{{ locus.URS_ID }}"}’ />
+			<r2dt-web
+  			   search=‘{“urs”: “{{ locus.URS_ID }}”}’
+  			   customStyle=‘{“titleColor”: “black”}’
+			/>
+		    <dd>
+		{% endif %}
+		
+
 		{% for url in locus.urls if url.category == 'LOCUS_ALLIANCE_ICONS' %}{% if loop.first %}		
                     <dt>Comparative Info</dt>
 		{% endif %}{% endfor %}
@@ -889,6 +902,7 @@
 {% endblock body %}
 
 {% block scripts %}
+<script type=“text/javascript” src=“https://rnacentral.github.io/r2dt-web/dist/r2dt-web.js”></script>
 <script>
     views.summary.render();
 </script>
