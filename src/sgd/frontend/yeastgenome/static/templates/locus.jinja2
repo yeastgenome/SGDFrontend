@@ -136,11 +136,7 @@
 		{% if locus.URS_ID %}
 		    <dt>Secondary Structure</dt>
 		    <dd>
-			<r2dt-web search=‘{“urs”: “{{ locus.URS_ID }}"}’ />
-			<r2dt-web
-  			   search=‘{“urs”: “{{ locus.URS_ID }}”}’
-  			   customStyle=‘{“titleColor”: “black”}’
-			/>
+			<r2dt-web search='{"urs": "{{ locus.URS_ID }}"}' />
 		    <dd>
 		{% endif %}
 		
@@ -901,7 +897,7 @@
 </div>
 {% endblock body %}
 
-<script type=“text/javascript” src=“https://rnacentral.github.io/r2dt-web/dist/r2dt-web.js”></script>
+<script type="text/javascript" src="https://rnacentral.github.io/r2dt-web/dist/r2dt-web.js"></script>
 
 {% block scripts %}
 <script>
