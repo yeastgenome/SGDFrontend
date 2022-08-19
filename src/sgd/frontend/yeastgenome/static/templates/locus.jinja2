@@ -136,11 +136,15 @@
 		{% if locus.URS_ID %}
 		    <dt>Secondary Structure</dt>
 		    <dd>
-		    
+			<!--
 			<img src="https://rnacentral.org/api/v1/rna/{{ locus.URS_ID }}/2d/svg/" style="max-width:140px; max-height:120px; margin: 10px; cursor: pointer;" onclick='show_secondary_structure("{{ locus.URS_ID }}")'></img>
+			-->
+			<img src="https://rnacentral.org/api/v1/rna/{{ locus.URS_ID }}/2d/svg/" style="max-width:140px; max-height:120px; margin: 10px; cursor: pointer;" onclick="document.querySelector('#secondary-structures > a').click()" ></img>
 
-			<div><r2dt-web search="{&#34;urs&#34;:&#34;URS0000289310&#34;}"></r2dt-web></div>
+			<div id="secondary-structures"><r2dt-web search="{&#34;urs&#34;:&#34;URS0000289310&#34;}"></r2dt-web></div>
+			
 		    <dd>
+		    
 		{% endif %}
 		
 
