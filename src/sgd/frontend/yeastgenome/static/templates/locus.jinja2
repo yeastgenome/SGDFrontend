@@ -878,6 +878,19 @@
     <section id="reference">
     </section>
 
+    <!-- 2D Structure
+================================================== -->
+    {% if locus.URS_ID %}
+
+    <section id="2d_structure">
+        <h2>Secondary Structure</h2>
+        <hr />
+        <div class="panel">
+	     <r2dt-web search="{&#34;urs&#34;:&#34;{{ locus.URS_ID }}&#34;}"></r2dt-web>
+	</div>
+    </section>
+    {% endif %}
+    
     <!-- Resources
 ================================================== -->
     {% for url in locus.urls if url.category == 'LOCUS_LSP_RESOURCES' %}{% if loop.first %}
@@ -902,5 +915,4 @@
     views.summary.render();
 </script>
 <script type="text/javascript" src="https://rnacentral.github.io/r2dt-web/dist/r2dt-web.js"></script>
-<script src="{{asset_root}}/js/rna_secondary_structure.js"></script>
 {% endblock scripts %}
