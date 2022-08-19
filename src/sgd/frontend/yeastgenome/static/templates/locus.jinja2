@@ -137,19 +137,8 @@
 		    <dt>Secondary Structure</dt>
 		    <dd>
 		    
-			<img src="https://rnacentral.org/api/v1/rna/{{ locus.URS_ID }}/2d/svg/" style="max-width:140px; max-height:120px; margin: 10px; cursor: pointer;" onclick="document.querySelector('#secondary-structures > a').click()"></img>
+			<img src="https://rnacentral.org/api/v1/rna/{{ locus.URS_ID }}/2d/svg/" style="max-width:140px; max-height:120px; margin: 10px; cursor: pointer;" onclick="show_secondary_structure(URS_ID)"></img>
 
-			<uib-tab index="2" id="secondary-structures" deselect="checkTab($event, $selectedIndex)" ng-if="taxid">
-                <uib-tab-heading>
-                  2D structure
-                </uib-tab-heading>
-                <r2dt-web
-                        search='{"urs": "{{ locus.URS_ID }}"}'
-                        customStyle='{"fixCss": "true", "titleColor": "#BF8E3E"}'
-                />
-                <script type="text/javascript" src="https://rnacentral.github.io/r2dt-web/dist/r2dt-web.js"></script>
-            </uib-tab>
-	    
 		    <dd>
 		{% endif %}
 		
@@ -910,10 +899,10 @@
 </div>
 {% endblock body %}
 
-<script type="text/javascript" src="https://rnacentral.github.io/r2dt-web/dist/r2dt-web.js"></script>
-
 {% block scripts %}
 <script>
     views.summary.render();
 </script>
+<script type="text/javascript" src="https://rnacentral.github.io/r2dt-web/dist/r2dt-web.js"></script>
+<script src="{{asset_root}}/js/rna_secondary_structure.js"></script>
 {% endblock scripts %}
