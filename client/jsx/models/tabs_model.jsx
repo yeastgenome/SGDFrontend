@@ -110,6 +110,9 @@ module.exports = class TabsModel {
       this.attributes.hasReferences
         ? { name: 'References', target: 'reference' }
         : null,
+      this.attributes.has2dStructure
+	? { name: 'Secondary Structure', target: '2d_structure' }
+	: null,
       // always have resources on LSP
       { name: 'Resources', target: 'resources' },
     ];
