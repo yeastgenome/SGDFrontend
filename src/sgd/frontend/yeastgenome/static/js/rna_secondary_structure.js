@@ -1,7 +1,7 @@
 function show_secondary_structure(URS_ID) {
 
     var search = '{"urs": "' + URS_ID + '"}'
-    var html = '<r2dt-web ' + search + ' />'
+    var html = '<r2dt-web search=' + search + ' />'
 
     console.log(html)
     
