@@ -137,7 +137,10 @@
 		    <dt>Secondary Structure</dt>
 		    <dd>
 			<img src="https://rnacentral.org/api/v1/rna/{{ locus.URS_ID }}/2d/svg/"></img>
-		    <dd>
+			<div class="media-left media-middle">
+                           <img onclick="document.querySelector('#secondary-structures > a').click()" style="max-width:140px; max-height:120px; margin: 10px; cursor: pointer;" class="media-object img-thumbnail hvr-grow" src="/api/v1/rna/URS00000064B1/2d/svg/" alt="Saccharomyces cerevisiae S288C tRNA-Ser secondary structure diagram">
+                        </div
+		   <dd>
 		{% endif %}
 		
 
