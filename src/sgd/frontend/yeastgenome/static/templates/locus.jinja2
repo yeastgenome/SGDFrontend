@@ -138,7 +138,18 @@
 		    <dd>
 		    
 			<img src="https://rnacentral.org/api/v1/rna/{{ locus.URS_ID }}/2d/svg/" style="max-width:140px; max-height:120px; margin: 10px; cursor: pointer;" onclick="document.querySelector('#secondary-structures > a').click()"></img>
-			
+
+			<uib-tab index="2" id="secondary-structures" deselect="checkTab($event, $selectedIndex)" ng-if="taxid">
+                <uib-tab-heading>
+                  2D structure
+                </uib-tab-heading>
+                <r2dt-web
+                        search='{"urs": "{{ locus.URS_ID }}"}'
+                        customStyle='{"fixCss": "true", "titleColor": "#BF8E3E"}'
+                />
+                <script type="text/javascript" src="https://rnacentral.github.io/r2dt-web/dist/r2dt-web.js"></script>
+            </uib-tab>
+	    
 		    <dd>
 		{% endif %}
 		
