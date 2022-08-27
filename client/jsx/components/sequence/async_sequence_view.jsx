@@ -30,6 +30,7 @@ var AsyncSequenceView = createReactClass({
     showHistory: PropTypes.any,
     locusId: PropTypes.any,
     locusSGDID: PropTypes.any,
+    ursID: PropTypes.any
   },
 
   componentDidMount() {
@@ -134,6 +135,7 @@ var AsyncSequenceView = createReactClass({
         neighborsModel={this.state.neighborsModel}
         detailsModel={this.state.detailsModel}
         showAltStrains={false}
+	ursID={this.props.ursID}   
       />
     );
 

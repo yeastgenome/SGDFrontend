@@ -53,6 +53,7 @@ const SequenceComposite = createReactClass({
       showSubFeatures: true,
       showSubFeaturesTable: true,
       mainStrain: null,
+      ursID: null	
     };
   },
 
@@ -157,7 +158,7 @@ const SequenceComposite = createReactClass({
           </div>
         );
       } else {
-        node = (
+	node = (
           <div>
             <div className="row title-right-text">
               <div className="columns small-6">
@@ -171,6 +172,13 @@ const SequenceComposite = createReactClass({
                 <p className="text-right locus-external-links">
                   View in: <a href={_jbHref}>JBrowse</a>
                 </p>
+              </div>
+	      <div className="columns small-6"> 
+		{this.props.has2Dimage ? (
+		  this._get2DimageNode()
+		) : (
+		  <br>
+		)}	
               </div>
             </div>
             {this.props.isSimplified ? null : <hr />}
@@ -372,6 +380,15 @@ const SequenceComposite = createReactClass({
       );
     }
   },
+
+  _get2DimageNode: function () {
+
+      var URS_ID = this.props.ursID;
+      return (
+	<r2dt-web search="{&#34;urs&#34;:&#34;{{ locus.URS_ID }}&#34;}"></r2dt-web>
+      );
+  },
+      
 });
 
 module.exports = SequenceComposite;
