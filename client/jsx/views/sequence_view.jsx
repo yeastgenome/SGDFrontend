@@ -52,6 +52,7 @@ sequenceView.render = function () {
       detailsCallback={_detailsCallback}
       locusSGDID={bootstrappedData.sgdid}
       showVariants={_showVariants}
+      ursID={bootstrappedData.URS_ID}	
     />,
     document.getElementById('sequence-viz')
   );
