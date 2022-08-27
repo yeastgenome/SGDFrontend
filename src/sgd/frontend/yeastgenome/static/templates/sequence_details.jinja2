@@ -65,6 +65,17 @@
         </div>
     </div>
 
+     {% if locus.URS_ID %}
+ 
+     <section id="2d_structure">
+         <h2>Secondary Structure</h2>
+         <hr />
+         <div class="panel">
+ 	     <r2dt-web search="{&#34;urs&#34;:&#34;{{ locus.URS_ID }}&#34;}"></r2dt-web>
+ 	</div>
+     </section>
+     {% endif %}
+
         <!-- Resources
 ================================================== -->
     <section id="resources">
