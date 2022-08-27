@@ -118,7 +118,7 @@ const SequenceComposite = createReactClass({
       var selectNode = this._getStrainSelectorNode();
       let helpNode = (
         <HelpIcon
-          text="Alternative Reference strains are major laboratory yeast strains with a substantial history of use and experimental results. These strains include W303, Sigma1278b, SK1, SEY6210, CEN.PK, D273-10B, JK9-3d, FL100, RM11-1a, and Y55."
+          text="HELLO:Alternative Reference strains are major laboratory yeast strains with a substantial history of use and experimental results. These strains include W303, Sigma1278b, SK1, SEY6210, CEN.PK, D273-10B, JK9-3d, FL100, RM11-1a, and Y55."
           isInfo={true}
         />
       );
