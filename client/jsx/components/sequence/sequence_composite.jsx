@@ -14,7 +14,7 @@ const HelpIcon = require('../widgets/help_icon.jsx');
 const LocusDiagram = require('../viz/locus_diagram.jsx');
 const MultiSequenceDownload = require('./multi_sequence_download.jsx');
 const SequenceToggler = require('./sequence_toggler.jsx');
-###
+
 const Loader = createReactClass({
   render() {
     return (
