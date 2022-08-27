@@ -141,7 +141,6 @@ var AsyncSequenceView = createReactClass({
         neighborsModel={this.state.neighborsModel}
         detailsModel={this.state.detailsModel}
         showAltStrains={false}
-	ursID={this.props.ursID}   
       />
     );
 
@@ -161,7 +160,7 @@ var AsyncSequenceView = createReactClass({
         </div>
       );
     }
-    else { return <div></div>; }
+    else { return <div>HELLO WORLD!</div>; }
   },	
 	
   _getAltStrainsNode: function () {
