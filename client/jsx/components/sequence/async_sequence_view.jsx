@@ -125,6 +125,9 @@ var AsyncSequenceView = createReactClass({
   },
 
   _getMainStrainNode: function () {
+
+    console.log("async_sequence_view URS_ID="+this.props.ursID)
+
     var innerNode = (
       <SequenceComposite
         isSimplified={this.props.isSimplified}
