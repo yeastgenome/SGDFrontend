@@ -383,9 +383,11 @@ const SequenceComposite = createReactClass({
 
   _get2DimageNode: function () {
 
-      var URS_ID = this.props.ursID;
+      var searchNode = "{&#34;urs&#34;:&#34;" + this.props.ursID + "&#34;}"
       return (
-	<r2dt-web search="{&#34;urs&#34;:&#34;{{ locus.URS_ID }}&#34;}"></r2dt-web>
+	<div class="panel">
+	  <r2dt-web search={searchNode}></r2dt-web>
+	</div>
       );
   },
       
