@@ -56,6 +56,7 @@ var AsyncSequenceView = createReactClass({
       showHistory: true,
       locusId: null,
       mainStrain: null,
+      ursID: null
     };
   },
 
@@ -72,11 +73,13 @@ var AsyncSequenceView = createReactClass({
     var variantNode = this._getVariantsNode();
     var otherStrainsNode = this._getOtherStrainsNode();
     var historyNode = this._getHistoryNode();
-
+    var structureNode = this._getStructureNode()
+      
     if (this.props.mainStrain == 'S288C') {
       return (
         <div>
           {mainStrainNode}
+	  {structureNode}    
           {altStrainsNode}
           {variantNode}
           {otherStrainsNode}
@@ -149,6 +152,18 @@ var AsyncSequenceView = createReactClass({
     }
   },
 
+  _getStructureNode(): function () {
+    if (this.props.ursID) {
+      var searchNode = "{&#34;urs&#34;:&#34;" + this.props.ursID + "&#34;}"
+      return (
+        <div class="panel">                                                                                                     
+          <r2dt-web search={searchNode}></r2dt-web>
+        </div>
+      );
+    }
+    else { return <div></div>; }
+  },	
+	
   _getAltStrainsNode: function () {
     var node = null;
     if (!this.props.showAltStrains) return node;
