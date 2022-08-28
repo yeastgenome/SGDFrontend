@@ -73,14 +73,13 @@ var AsyncSequenceView = createReactClass({
     var variantNode = this._getVariantsNode();
     var otherStrainsNode = this._getOtherStrainsNode();
     var historyNode = this._getHistoryNode();
-    //var structureNode = this._getStructureNode()
-    var structureNode = this._getHistoryNode();  
-
+    var structureNode = this._getStructureNode()
+    
     if (this.props.mainStrain == 'S288C') {
       return (
         <div>
           {mainStrainNode}
-	  {historyNode}    
+	  {structureNode}    
           {altStrainsNode}
           {variantNode}
           {otherStrainsNode}
