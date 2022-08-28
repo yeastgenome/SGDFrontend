@@ -73,14 +73,14 @@ var AsyncSequenceView = createReactClass({
     var variantNode = this._getVariantsNode();
     var otherStrainsNode = this._getOtherStrainsNode();
     var historyNode = this._getHistoryNode();
-    var structureNode = this._getStructureNode()
+    var structure2dNode = this._get2dStructureNode()
     
     if (this.props.mainStrain == 'S288C') {
       return (
         <div>
           {mainStrainNode}
-	  {structureNode}    
-          {historyNode}
+	  {structure2dNode}
+	  {altStrainsNode}  
           {variantNode}
           {otherStrainsNode}
           {historyNode}
@@ -129,8 +129,6 @@ var AsyncSequenceView = createReactClass({
 
   _getMainStrainNode: function () {
 
-    console.log("async_sequence_view URS_ID="+this.props.ursID)
-
     var innerNode = (
       <SequenceComposite
         isSimplified={this.props.isSimplified}
@@ -151,9 +149,7 @@ var AsyncSequenceView = createReactClass({
     }
   },
 
-  _getStructureNode: function () {
-
-    // console.log("HELLO world!")
+  _get2dStructureNode: function () {
       
     if (this.props.ursID) {
       //var searchNode = "{&#34;urs&#34;:&#34;" + this.props.ursID + "&#34;}"
@@ -162,9 +158,9 @@ var AsyncSequenceView = createReactClass({
       //    <r2dt-web search={searchNode}></r2dt-web>
       //  </div>
       //);
-      return <div>HAS 2D structure</div>; 	
+      // return <div><h3>HAS 2D structure</h3></div>; 	
     } else {
-      return <div>NO 2D structure</div>;
+      return <div><h3>NO 2D structure</h3></div>;
     }
   },	
 	
