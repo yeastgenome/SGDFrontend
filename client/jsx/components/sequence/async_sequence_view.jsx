@@ -152,6 +152,9 @@ var AsyncSequenceView = createReactClass({
   },
 
   _getStructureNode: function () {
+
+    console.log("HELLO world!")
+      
     if (this.props.ursID) {
       //var searchNode = "{&#34;urs&#34;:&#34;" + this.props.ursID + "&#34;}"
       //return (
