@@ -80,7 +80,7 @@ var AsyncSequenceView = createReactClass({
         <div>
           {mainStrainNode}
 	  {structureNode}    
-          {altStrainsNode}
+          {historyNode}
           {variantNode}
           {otherStrainsNode}
           {historyNode}
@@ -153,7 +153,7 @@ var AsyncSequenceView = createReactClass({
 
   _getStructureNode: function () {
 
-    console.log("HELLO world!")
+    // console.log("HELLO world!")
       
     if (this.props.ursID) {
       //var searchNode = "{&#34;urs&#34;:&#34;" + this.props.ursID + "&#34;}"
