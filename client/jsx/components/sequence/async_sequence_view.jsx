@@ -152,13 +152,12 @@ var AsyncSequenceView = createReactClass({
   _get2dStructureNode: function () {
       
     if (this.props.ursID) {
-      //var searchNode = "{&#34;urs&#34;:&#34;" + this.props.ursID + "&#34;}"
-      //return (
-      //  <div class="panel">                                                                   
-      //    <r2dt-web search={searchNode}></r2dt-web>
-      //  </div>
-      //);
-      // return <div><h3>HAS 2D structure</h3></div>; 	
+      var searchNode = "{&#34;urs&#34;:&#34;" + this.props.ursID + "&#34;}"
+      return (
+        <div class="panel">                                                                   
+          <r2dt-web search={searchNode}></r2dt-web>
+        </div>
+      );
     } else {
       return <div><h3>NO 2D structure</h3></div>;
     }
