@@ -56,7 +56,7 @@ var AsyncSequenceView = createReactClass({
       showHistory: true,
       locusId: null,
       mainStrain: null,
-      ursID: null
+      ursID: null,
     };
   },
 
@@ -73,7 +73,7 @@ var AsyncSequenceView = createReactClass({
     var variantNode = this._getVariantsNode();
     var otherStrainsNode = this._getOtherStrainsNode();
     var historyNode = this._getHistoryNode();
-    var structure2dNode = this._get2dStructureNode()
+    var structure2dNode = this._get2dStructureNode();
       
     if (this.props.mainStrain == 'S288C') {
       return (
@@ -152,9 +152,10 @@ var AsyncSequenceView = createReactClass({
   _get2dStructureNode: function () {
 
     var node = null;
-    if (this.props.showHistory && this.props.locusHistoryData) {
+    // if (this.props.ursID) {  
+    if (this.props.showHistory) {
       node = (
-        <Rna2DstructureViewer data={this.props.locusHistoryData} dataType="SEQUENCE" />
+        <Rna2DstructureViewer ursID={this.props.ursID} />
       );
     }
     return node;
