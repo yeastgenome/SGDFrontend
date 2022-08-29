@@ -25,7 +25,7 @@ module.exports = createReactClass({
     let html = "<r2dt-web search=" + searchNode + "></r2dt-web>"  
             
     return (
-      <div dangerouslySetInnerHTML={{ __html: html }} />;
+      <div dangerouslySetInnerHTML={{ __html: html }} />
     );
   },
     
