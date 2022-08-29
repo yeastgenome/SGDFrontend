@@ -26,7 +26,7 @@ module.exports = createReactClass({
       
     return (
       <div class="panel">                                                                        
-        <r2dt-web search="{&#34;urs&#34;:&#34;" + URS_ID + "&#34;}"></r2dt-web>
+      <r2dt-web search="{&#34;urs&#34;:&#34;{ URS_ID }&#34;}"></r2dt-web>
       </div>
     );
   },
