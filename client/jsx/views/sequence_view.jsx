@@ -43,6 +43,9 @@ sequenceView.render = function () {
   // async sequence view, fetches data, renders main strain, alt strains, and other strains (if present)
   // once data is fetched, update the navbar
   var _showVariants = bootstrappedData.featureType === 'ORF';
+
+  console.log("bootstrappedData.URS_ID = " + bootstrappedData.URS_ID) 
+    
   ReactDOM.render(
     <AsyncSequenceView
       locusId={bootstrappedData.locusId}
