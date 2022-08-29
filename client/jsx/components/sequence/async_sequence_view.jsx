@@ -30,7 +30,6 @@ var AsyncSequenceView = createReactClass({
     showHistory: PropTypes.any,
     locusId: PropTypes.any,
     locusSGDID: PropTypes.any,
-    ursID: PropTypes.any
   },
 
   componentDidMount() {
