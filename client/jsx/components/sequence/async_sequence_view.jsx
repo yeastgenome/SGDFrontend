@@ -73,7 +73,9 @@ var AsyncSequenceView = createReactClass({
     var otherStrainsNode = this._getOtherStrainsNode();
     var historyNode = this._getHistoryNode();
     var structure2dNode = this._get2dStructureNode()
-    
+
+    console.log("ursID=" + this.props.ursID)
+      
     if (this.props.mainStrain == 'S288C') {
       return (
         <div>
