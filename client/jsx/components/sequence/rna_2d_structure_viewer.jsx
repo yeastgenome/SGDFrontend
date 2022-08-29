@@ -13,7 +13,7 @@ module.exports = createReactClass({
 
   getDefaultProps: function () {
     return {
-      data: 'URS000029384E', 
+      ursID: 'URS000029384E', 
     };
   },
 
