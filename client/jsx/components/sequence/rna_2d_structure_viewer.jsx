@@ -8,7 +8,7 @@ var HelpIcon = require('../widgets/help_icon.jsx');
 import PropTypes from 'prop-types';
 
 module.exports = createReactClass({
-  displayName: 'HistoryTable',
+  displayName: 'Rna2DstructureViewer',
 
   propTypes: {
     data: PropTypes.array,

@@ -2,6 +2,7 @@ import React from 'react';
 
 const HelpIcon = require('../widgets/help_icon.jsx');
 const HistoryTable = require('./history_table.jsx');
+const Rna2DstructureViewer = require('./rna_2d_structure_viewer.jsx');
 const SequenceDetailsModel = require('../../models/sequence_details_model.jsx');
 const SequenceNeighborsModel = require('../../models/sequence_neighbors_model.jsx');
 const SequenceComposite = require('./sequence_composite.jsx');
@@ -149,17 +150,15 @@ var AsyncSequenceView = createReactClass({
   },
 
   _get2dStructureNode: function () {
-      
-    if (this.props.ursID) {
-      var searchNode = "{&#34;urs&#34;:&#34;" + this.props.ursID + "&#34;}"
-      return (
-        <div class="panel">                                                                   
-          <r2dt-web search={searchNode}></r2dt-web>
-        </div>
+
+    var node = null;
+    if (this.props.showHistory && this.props.locusHistoryData) {
+      node = (
+        <Rna2DstructureViewer data={this.props.locusHistoryData} dataType="SEQUENCE" />
       );
-    } else {
-      return <div><h3>NO 2D structure</h3></div>;
     }
+    return node;
+      
   },	
 	
   _getAltStrainsNode: function () {
