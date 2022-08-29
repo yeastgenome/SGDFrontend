@@ -31,6 +31,7 @@ var AsyncSequenceView = createReactClass({
     showHistory: PropTypes.any,
     locusId: PropTypes.any,
     locusSGDID: PropTypes.any,
+    ursID: PropTypes.any,  
   },
 
   componentDidMount() {
@@ -152,8 +153,7 @@ var AsyncSequenceView = createReactClass({
   _get2dStructureNode: function () {
 
     var node = null;
-    // if (this.props.ursID) {  
-    if (this.props.showHistory) {
+    if (this.props.ursID) {  
       node = (
         <Rna2DstructureViewer ursID={this.props.ursID} />
       );
