@@ -11,7 +11,7 @@ sequenceView.render = function () {
   document.getElementById('sequence_tab').className += ' active';
 
   // define render nav bar function
-  var renderNavBar = function (hasAltStrains, hasOtherStrains, mainStrain) {
+  var renderNavBar = function (hasAltStrains, hasOtherStrains, mainStrain, ursID) {
     var _showVariants = bootstrappedData.featureType === 'ORF';
     var _tabModel = new TabsModel({
       tabType: 'sequence',
@@ -19,6 +19,7 @@ sequenceView.render = function () {
       hasOtherStrains: hasOtherStrains,
       hasVariants: _showVariants,
       mainStrain: mainStrain,
+      usrID: ursID
     });
     var _navTitleText = _tabModel.getNavTitle(
       bootstrappedData.displayName,
