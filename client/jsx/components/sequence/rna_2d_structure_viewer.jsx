@@ -1,7 +1,7 @@
 'use strict';
 var React = require('react');
 var _ = require('underscore');
-
+import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
 
 module.exports = createReactClass({
