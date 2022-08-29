@@ -19,19 +19,16 @@ module.exports = createReactClass({
 
   render: function () {
 
-    // {&#34;urs&#34;:&#34;URS000029384E&#34;}
-    // var searchNode = "{&#34;urs&#34;:&#34;" + this.props.ursID + "&#34;}"
-    // <r2dt-web search={searchNode}></r2dt-web>
     // <r2dt-web search="{&#34;urs&#34;:&#34;URS000029384E&#34;}"></r2dt-web>
-    // var URS_ID = "URS000029384E"  
+ 
     var searchNode = '"{&#34;urs&#34;:&#34;' + this.props.ursID + '&#34;}"'  
-
-    console.log("this.props.ursID=" + this.props.ursID)
+      
     console.log("searchNode=" + searchNode)
+    // searchNode="{&#34;urs&#34;:&#34;URS0000505673&#34;}"
       
     return (
       <div class="panel">                                                                        
-      <r2dt-web search={searchNode}></r2dt-web>
+        <r2dt-web search={searchNode}></r2dt-web>
       </div>
     );
   },
