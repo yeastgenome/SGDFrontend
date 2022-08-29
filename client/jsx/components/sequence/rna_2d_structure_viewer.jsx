@@ -24,9 +24,7 @@ module.exports = createReactClass({
     let searchNode = '"{&#34;urs&#34;:&#34;' + this.props.ursID + '&#34;}"'  
     let html = "<r2dt-web search=" + searchNode + "></r2dt-web>"  
             
-    return (
-      <div dangerouslySetInnerHTML={{ __html: html }} />,
-    );
+    return <div dangerouslySetInnerHTML={{ __html: html }} />;
   },
     
 });
