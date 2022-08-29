@@ -21,15 +21,11 @@ module.exports = createReactClass({
 
     // <r2dt-web search="{&#34;urs&#34;:&#34;URS000029384E&#34;}"></r2dt-web>
  
-    var searchNode = '"{&#34;urs&#34;:&#34;' + this.props.ursID + '&#34;}"'  
-      
-    console.log("searchNode=" + searchNode)
-    // searchNode="{&#34;urs&#34;:&#34;URS0000505673&#34;}"
-      
+    let searchNode = '"{&#34;urs&#34;:&#34;' + this.props.ursID + '&#34;}"'  
+    let html = "<r2dt-web search=" + searchNode + "></r2dt-web>"  
+            
     return (
-      <div class="panel">                                                                        
-        <r2dt-web search={searchNode}></r2dt-web>
-      </div>
+      <div dangerouslySetInnerHTML={{ __html: html }} />;
     );
   },
     
