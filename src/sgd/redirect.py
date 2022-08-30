@@ -16,13 +16,14 @@ def do_redirect(request):
         if url[-1] == '/':
             url[0:-1]
         if p.get('param').startswith('/'):
-            url = url + p.get('param').replace("locus_details_all&{}", "locus_details_all")
+            url = url + p.get('param')
         else:
-            url = url + '/' + p.get('param').replace("locus_details_all&{}", "locus_details_all")
-        for key in p:
-            if key == 'param':
-                continue
-            url = url + "&" + key + "=" + p.get(key)
+            url = url + '/' + p.get('param')
+        if not p.get('param').endswith('locus_details_all') and not p.get('param').startswith('go/'):
+            for key in p:
+                if key == 'param':
+                    continue
+                url = url + "&" + key + "=" + p.get(key)
         try:
             #req = Request(url=url)
             #res = urlopen(req)
