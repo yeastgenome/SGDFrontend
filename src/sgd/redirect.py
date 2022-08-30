@@ -16,9 +16,9 @@ def do_redirect(request):
         if url[-1] == '/':
             url[0:-1]
         if p.get('param').startswith('/'):
-            url = url + p.get('param')
+            url = url + p.get('param').replace("locus_details_all&{}", "locus_details_all")
         else:
-            url = url + '/' + p.get('param')
+            url = url + '/' + p.get('param').replace("locus_details_all&{}", "locus_details_all")
         for key in p:
             if key == 'param':
                 continue
