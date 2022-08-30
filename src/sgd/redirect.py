@@ -19,10 +19,11 @@ def do_redirect(request):
             url = url + p.get('param')
         else:
             url = url + '/' + p.get('param')
-        for key in p:
-            if key == 'param':
-                continue
-            url = url + "&" + key + "=" + p.get(key)
+        if not p.get('param').endswith('locus_details_all') and not p.get('param').startswith('go/'):
+            for key in p:
+                if key == 'param':
+                    continue
+                url = url + "&" + key + "=" + p.get(key)
         try:
             #req = Request(url=url)
             #res = urlopen(req)
