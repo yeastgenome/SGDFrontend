@@ -119,9 +119,13 @@
         zoomOut(clicked)
     }
     function zoomOut(count){
-        var src = image.src;
-        image.src = src.substring(0, src.indexOf('dimensions=')) + 'dimensions=' + (200 * count);
-        image.style.display = "block";
+        var myImg = document.getElementById("strucImg");
+        var currWidth = myImg.clientWidth;
+	if (count == 3) {
+	   myImg.style.width = (currWidth + 250) + "px"
+	} else {
+	   myImg.style.width = (currWidth - 250) + "px"
+	}
     }
 </script>
 {% endblock scripts %}
