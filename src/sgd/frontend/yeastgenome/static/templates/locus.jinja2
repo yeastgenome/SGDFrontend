@@ -142,8 +142,15 @@
 		    
  		    <dt>Secondary Structure</dt>
  		    <dd>
-		    
-		    <img src="https://rnacentral.org/api/v1/rna/{{ locus.URS_ID }}/2d/svg/" style="max-width:160px; max-height:150px; margin: 10px; cursor: pointer;" id='strucImg' onClick="zoom()">
+		    <--
+		    <button type="button" onclick="zoomin()"><img src="/examples/images/zoom-in.png"> Zoom In/button>
+        	    <button type="button" onclick="zoomout()"><img src="/examples/images/zoom-out.png"> Zoom Out</button>
+		    -->
+		    <button type="button" onclick="zoomin()">Zoom In</button>
+		    <button type="button" onclick="zoomout()">Zoom Out</button>
+    		    </p>
+    
+		    <img src="https://rnacentral.org/api/v1/rna/{{ locus.URS_ID }}/2d/svg/" width="250" id='strucImg>
 
 		    <!--
 		    <img src="https://rnacentral.org/api/v1/rna/{{ locus.URS_ID }}/2d/svg/" id='strucImg' onClick="zoom()">
@@ -914,22 +921,22 @@
     views.summary.render();
 </script>
 <script type="text/javascript">
-    var clicked = 1;
-    function zoom() {
-        if (clicked == 3) {
-            clicked = 1;
-        }
-        else {
-            clicked = 3;
-        }
-        zoomOut(clicked)
+var myImg = document.getElementById("strucImg");
+        var currWidth = myImg.clientWidth;
+        if(currWidth == 500){
+            alert("Maximum zoom-in level reached.");
+        } else{
+            myImg.style.width = (currWidth + 50) + "px";
+        } 
     }
-
-    function zoomOut(count) {
-        var image = document.getElementById('strucImg');
-        var src = image.src;
-        image.src = src.substring(0, src.indexOf('dimensions=')) + 'dimensions=' + (10 * count);
-        image.style.display = "block";
+    function zoomout(){
+        var myImg = document.getElementById("strucImg");
+        var currWidth = myImg.clientWidth;
+        if(currWidth == 50){
+            alert("Maximum zoom-out level reached.");
+        } else{
+            myImg.style.width = (currWidth - 50) + "px";
+        }
     }
 </script>
 {% endblock scripts %}
