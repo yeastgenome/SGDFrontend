@@ -55,10 +55,15 @@
                 {% endif %}
 
  		{% if locus.URS_ID %}
+		    <dt>URS ID</dt>
+                    <dd>
+                        <a href='https://rnacentral.org/rna/{{ locus.URS_ID }}/559292' target='2Dwin'>{{ locus.URS_ID }}</a>
+                    </dd>
+		    
  		    <dt>Secondary Structure</dt>
  		    <dd>
- 			<a href='https://rnacentral.org/rna/{{ locus.URS_ID }}/559292' target='2Dwin'><img src="https://rnacentral.org/api/v1/rna/{{ locus.URS_ID }}/2d/svg/" style="max-width:140px; max-height:120px; margin: 10px; cursor: pointer;"></img></a>			
- 		    <dd>
+			<img src="https://rnacentral.org/api/v1/rna/{{ locus.URS_ID }}/2d/svg/" width="250" id='strucImg'>
+                    </dd>
  		    
  		{% endif %}
 
@@ -94,3 +99,21 @@
                    {% endif %}
                 {% endif %}
 </dl>
+
+<script type="text/javascript">
+    var clicked = 1;
+    function zoom() {
+        if (clicked == 3) {
+            clicked = 1;
+        }
+        else {
+            clicked = 3;
+        }
+        zoomOut(clicked)
+    }
+    function zoomOut(count){
+        var myImg = document.getElementById("strucImg");
+        var currWidth = myImg.clientWidth;
+        myImg.style.width = (currWidth + 50 * count) + "px";
+    }
+</script>
