@@ -151,12 +151,16 @@ var AsyncSequenceView = createReactClass({
   },
 
   _get2dStructureNode: function () {
-
+      
     var node = null;
     if (this.props.ursID) {  
       node = (
-        <Rna2DstructureViewer ursID={this.props.ursID} />
-      );
+        <section id="secondary_structure">
+	  <h2>Secondary Structure</h2>
+	  <hr />
+          <Rna2DstructureViewer ursID={this.props.ursID} />
+	</section>
+      );	  
     }
     return node;
       
