@@ -36,7 +36,7 @@ module.exports = class TabsModel {
   }
 
   _getSequenceTabs() {
-    var ssElement = this.attributes.URS_ID
+    var ssElement = this.attributes.ursID
       ? { name: 'Secondary Structure', target: 'secondary_structure' }  
       : null;
     var altElement = this.attributes.hasAltStrains
