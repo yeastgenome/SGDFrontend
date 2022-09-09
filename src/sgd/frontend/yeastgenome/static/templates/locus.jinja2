@@ -913,7 +913,8 @@
     views.summary.render();
 </script>
 <script type="text/javascript">
-var myImg = document.getElementById("strucImg");
+    function zoomin(){
+        var myImg = document.getElementById("strucImg");
         var currWidth = myImg.clientWidth;
         if(currWidth == 500){
             alert("Maximum zoom-in level reached.");
