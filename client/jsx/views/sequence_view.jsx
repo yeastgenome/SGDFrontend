@@ -19,7 +19,7 @@ sequenceView.render = function () {
       hasOtherStrains: hasOtherStrains,
       hasVariants: _showVariants,
       mainStrain: mainStrain,
-      usrID: ursID,
+      ursID: ursID,
     });
     var _navTitleText = _tabModel.getNavTitle(
       bootstrappedData.displayName,
