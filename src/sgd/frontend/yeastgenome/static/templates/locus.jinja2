@@ -142,9 +142,13 @@
 		    
  		    <dt>Secondary Structure</dt>
  		    <dd>
+		    
+		    <img src="https://rnacentral.org/api/v1/rna/{{ locus.URS_ID }}/2d/svg/" style="max-width:160px; max-height:150px; margin: 10px; cursor: pointer;" id='strucImg' onClick="zoom()">
+
 		    <!--
-		    <img src="https://rnacentral.org/api/v1/rna/{{ locus.URS_ID }}/2d/svg/" style="max-width:140px; max-height:120px; margin: 10px; cursor: pointer;" id='strucImg' onClick="zoom()"></img>					-->
 		    <img src="https://rnacentral.org/api/v1/rna/{{ locus.URS_ID }}/2d/svg/" id='strucImg' onClick="zoom()">
+		    -->
+		    
  		    </dd>
  		    
  		{% endif %}
@@ -924,7 +928,7 @@
     function zoomOut(count) {
         var image = document.getElementById('strucImg');
         var src = image.src;
-        image.src = src.substring(0, src.indexOf('dimensions=')) + 'dimensions=' + (200 * count);
+        image.src = src.substring(0, src.indexOf('dimensions=')) + 'dimensions=' + (10 * count);
         image.style.display = "block";
     }
 </script>
