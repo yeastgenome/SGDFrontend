@@ -135,19 +135,14 @@
 
 
  		{% if locus.URS_ID %}
-		    <dt>URS ID</dt>
+		    <dt>RNAcentral ID</dt>
 		    <dd>
 			<a href='https://rnacentral.org/rna/{{ locus.URS_ID }}/559292' target='2Dwin'>{{ locus.URS_ID }}</a>
 		    </dd>
 		    
  		    <dt>Secondary Structure</dt>
  		    <dd>
-
-		    <button type="button" onclick="zoomin()">Zoom In</button>
-		    <button type="button" onclick="zoomout()">Zoom Out</button>
-    		    </p>
-    
-		    <img src="https://rnacentral.org/api/v1/rna/{{ locus.URS_ID }}/2d/svg/" width="250" id='strucImg'>
+		    <img src="https://rnacentral.org/api/v1/rna/{{ locus.URS_ID }}/2d/svg/" width="200" id='strucImg' onClick="zoom()>
  		    </dd>
  		    
  		{% endif %}
@@ -921,22 +916,23 @@
     }
 </style>
 <script type="text/javascript">
-    function zoomout(){
-        var myImg = document.getElementById("strucImg");
-        var currWidth = myImg.clientWidth;
-        if(currWidth == 600){
-            alert("Maximum zoom-in level reached.");
-        } else{
-            myImg.style.width = (currWidth + 50) + "px";
-        } 
+    var clicked = 1;
+    function zoom() {
+        if (clicked == 3) {
+            clicked = 1;
+        }
+        else {
+            clicked = 3;
+        }
+        zoomOut(clicked)
     }
-    function zoomin(){
+    function zoomOut(count){
         var myImg = document.getElementById("strucImg");
         var currWidth = myImg.clientWidth;
-        if(currWidth == 50){
-            alert("Maximum zoom-out level reached.");
-        } else{
-            myImg.style.width = (currWidth - 50) + "px";
+        if (count == 3) {
+           myImg.style.width = (currWidth + 300) + "px"
+        } else {
+           myImg.style.width = (currWidth - 300) + "px"
         }
     }
 </script>
