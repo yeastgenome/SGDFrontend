@@ -21,6 +21,11 @@
 	URS_ID: "{{locus.URS_ID}}",
         featureType: "{{locus.locus_type}}"
     };
+
+    if (locus.URS_ID == 'None') {
+        bootstrappedData['URS_ID'] = 0;
+    }
+    
 </script>
 {% endblock %}
 
