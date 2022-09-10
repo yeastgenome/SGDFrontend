@@ -153,7 +153,7 @@ var AsyncSequenceView = createReactClass({
   _get2dStructureNode: function () {
       
     var node = null;
-    if (this.props.ursID) {  
+      if (this.props.ursID and this.props.ursID.length > 10) {  
       node = (
         <section id="secondary_structure">
 	  <h2>Secondary Structure</h2>
