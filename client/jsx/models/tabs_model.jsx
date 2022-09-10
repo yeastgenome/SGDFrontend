@@ -57,7 +57,7 @@ module.exports = class TabsModel {
     return [
       { name: 'Sequence Overview', target: 'overview' },
       { name: strainText, target: 'reference' },
-      { name: 'Secondary Structure', target: 'secondary_structure' }, 
+      ssElement,	
       altElement,
       vvElement,
       otherElement,
