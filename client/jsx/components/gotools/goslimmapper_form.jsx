@@ -47,6 +47,7 @@ const GoSlimMapper = createReactClass({
       resultData: {},
       goslimData: [],
       ambiguousNames: {},
+      goVersion: '',
       slimType: '',
       notFound: null,
       param: param,
