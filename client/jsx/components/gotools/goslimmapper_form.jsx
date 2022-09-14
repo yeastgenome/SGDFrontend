@@ -119,6 +119,15 @@ const GoSlimMapper = createReactClass({
         "<h2 id='table'><center>Search Results</center></h2>" +
         tableSaveOptions;
 
+      var req = new XMLHttpRequest();
+
+      req.open('GET', 'proxy.php?url=http://current.geneontology.org/summary.txt', false);
+      req.send(null);
+
+      if(req.status == 200) {
+          alert(req.responseText);
+      }
+	
       return (
         <div>
           <p dangerouslySetInnerHTML={{ __html: resultText }} />
