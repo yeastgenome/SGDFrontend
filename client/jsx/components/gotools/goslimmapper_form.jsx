@@ -125,7 +125,10 @@ const GoSlimMapper = createReactClass({
       req.send(null);
 
       if(req.status == 200) {
-          alert(req.responseText);
+        alert(req.responseText);
+      }
+      else {
+	alert("HELLO")
       }
 	
       return (
