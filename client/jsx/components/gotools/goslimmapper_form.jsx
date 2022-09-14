@@ -36,7 +36,8 @@ const GoSlimMapper = createReactClass({
 
     this.getSlimData();
     this.getAmbiguousNames();
-
+    this.getGoVersion();
+      
     return {
       isComplete: false,
       isPending: false,
@@ -82,11 +83,19 @@ const GoSlimMapper = createReactClass({
     }
   },
 
-
-  fetch_demo() {
-    const resp = await fetch('https://www.reddit.com/r/programming.json');
-    console.log(await resp.json());
-  }
+  getGoVersion: function () {
+    var GoVersionUrl = "http://current.geneontology.org/summary.txt";
+    $.ajax({
+      url: GoVersionUrl,
+      dataType: 'html',        
+      success: function (data) {
+        this.setState({ goVersion: data });            
+      }.bind(this),
+      error: function (xhr, status, err) {
+        console.error(GoVersionUrl, status, err.toString());
+      }.bind(this),
+    });
+  },    
     
   getPage() {
     var param = this.state.param;
@@ -124,36 +133,6 @@ const GoSlimMapper = createReactClass({
       tableSaveOptions =
         "<h2 id='table'><center>Search Results</center></h2>" +
         tableSaveOptions;
-
-
-      // test from here
-	
-      var req = new XMLHttpRequest();
-
-      req.open('GET', 'proxy.php?url=http://current.geneontology.org/summary.txt', false);
-      req.send(null);
-
-      if(req.status == 200) {
-        alert(req.responseText);
-      }
-      else {
-	alert("HELLO")
-      }
-
-      const http = require('http');
-
-      const req = http.request('http://current.geneontology.org/summary.txt', res => {
-	const data = [];
-
-	res.on('data', _ => data.push(_))
-	res.on('end', () => console.log(data.join()))
-      });
-
-      req.end();
-
-
-      fetch_demo();
-
 	
       return (
         <div>
@@ -182,8 +161,9 @@ const GoSlimMapper = createReactClass({
   },
 
   getFrontPage() {
-    var descText = this.topDescription();
-
+    // var descText = this.topDescription();
+    var descText = this.state.goVersion;
+      
     var submitReset = this.submitReset();
     var geneBox = this.getGeneBox();
     var termBox = this.getTermBox();
