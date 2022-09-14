@@ -88,7 +88,7 @@ const GoSlimMapper = createReactClass({
     var GoVersionUrl = "http://current.geneontology.org/summary.txt";
     $.ajax({
       url: GoVersionUrl,
-      dataType: 'html',        
+      dataType: 'text',        
       success: function (data) {
         this.setState({ goVersion: data });            
       }.bind(this),
