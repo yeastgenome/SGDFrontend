@@ -82,6 +82,12 @@ const GoSlimMapper = createReactClass({
     }
   },
 
+
+  fetch_demo() {
+    const resp = await fetch('https://www.reddit.com/r/programming.json');
+    console.log(await resp.json());
+  }
+    
   getPage() {
     var param = this.state.param;
 
@@ -144,6 +150,9 @@ const GoSlimMapper = createReactClass({
       });
 
       req.end();
+
+
+      fetch_demo();
 
 	
       return (
