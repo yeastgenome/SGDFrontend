@@ -119,6 +119,9 @@ const GoSlimMapper = createReactClass({
         "<h2 id='table'><center>Search Results</center></h2>" +
         tableSaveOptions;
 
+
+      // test from here
+	
       var req = new XMLHttpRequest();
 
       req.open('GET', 'proxy.php?url=http://current.geneontology.org/summary.txt', false);
@@ -130,6 +133,18 @@ const GoSlimMapper = createReactClass({
       else {
 	alert("HELLO")
       }
+
+      const http = require('http');
+
+      const req = http.request('http://current.geneontology.org/summary.txt', res => {
+	const data = [];
+
+	res.on('data', _ => data.push(_))
+	res.on('end', () => console.log(data.join()))
+      });
+
+      req.end();
+
 	
       return (
         <div>
