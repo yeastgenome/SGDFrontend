@@ -1,4 +1,4 @@
-// import React from 'react';
+import React from 'react';
 import _ from 'underscore';
 import $ from 'jquery';
 const axios = require('axios');
