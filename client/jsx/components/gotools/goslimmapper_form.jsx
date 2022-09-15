@@ -1,7 +1,8 @@
 import React from 'react';
 import _ from 'underscore';
 import $ from 'jquery';
-const axios = require('axios');
+// const axios = require('axios');
+import axios from "axios";
 
 const DataTable = require('../widgets/data_table.jsx');
 const Params = require('../mixins/parse_url_params.jsx');
