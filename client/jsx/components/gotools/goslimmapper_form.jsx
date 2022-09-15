@@ -37,7 +37,7 @@ const GoSlimMapper = createReactClass({
 
     this.getSlimData();
     this.getAmbiguousNames();
-    this.getGoVersion();
+    //this.getGoVersion();
       
     return {
       isComplete: false,
