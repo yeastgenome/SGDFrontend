@@ -173,7 +173,7 @@ const GoSlimMapper = createReactClass({
   getFrontPage() {
     var descText = this.topDescription();
 
-    this.getGoVersion()
+    // this.getGoVersion()
       
     var submitReset = this.submitReset();
     var geneBox = this.getGeneBox();
