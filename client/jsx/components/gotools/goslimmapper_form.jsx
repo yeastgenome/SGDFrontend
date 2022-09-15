@@ -86,9 +86,10 @@ const GoSlimMapper = createReactClass({
   },
 
   getGoVersion: function () {
-    var GoVersionUrl = "http://current.geneontology.org/summary.txt"; 
+    var GoVersionUrl = "http://current.geneontology.org/summary.txt";
+    alert(GoVersionUrl);  
     axios.get(GoVersionUrl).then(resp => {
-      console.log(resp.data);
+      alert(resp.data);
     });
   },
     
