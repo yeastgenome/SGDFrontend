@@ -37,7 +37,7 @@ const GoSlimMapper = createReactClass({
 
     this.getSlimData();
     this.getAmbiguousNames();
-    //this.getGoVersion();
+    this.getGoVersion();
       
     return {
       isComplete: false,
@@ -173,7 +173,7 @@ const GoSlimMapper = createReactClass({
   getFrontPage() {
     var descText = this.topDescription();
 
-    // this.getGoVersion()
+    this.getGoVersion()
       
     var submitReset = this.submitReset();
     var geneBox = this.getGeneBox();
