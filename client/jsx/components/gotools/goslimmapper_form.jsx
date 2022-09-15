@@ -86,8 +86,9 @@ const GoSlimMapper = createReactClass({
     }
   },
 
-  getGoVersion2: function () {
-    var GoVersionUrl = "http://current.geneontology.org/summary.txt";
+  getGoVersion: function () {
+    //var GoVersionUrl = "http://current.geneontology.org/summary.txt";
+    var GoVersionUrl = "https://github.com/geneontology/go-site/tree/master/releases";  
     alert(GoVersionUrl);  
     axios.get(GoVersionUrl).then(resp => {
       alert(resp.data);
@@ -95,8 +96,9 @@ const GoSlimMapper = createReactClass({
   },
     
     
-  getGoVersion: function () {
-    var GoVersionUrl = "http://current.geneontology.org/summary.txt";
+  getGoVersion2: function () {
+    var	GoVersionUrl = "https://github.com/geneontology/go-site/tree/master/releases";
+    // var GoVersionUrl = "http://current.geneontology.org/summary.txt";
     $.ajax({
       url: GoVersionUrl,
       dataType: 'text',        
