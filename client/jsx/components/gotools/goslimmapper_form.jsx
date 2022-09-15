@@ -1,6 +1,9 @@
-import React from 'react';
+// import React from 'react';
 import _ from 'underscore';
 import $ from 'jquery';
+import axios from 'axios';
+
+const axios = require('axios');
 
 const DataTable = require('../widgets/data_table.jsx');
 const Params = require('../mixins/parse_url_params.jsx');
@@ -85,6 +88,14 @@ const GoSlimMapper = createReactClass({
   },
 
   getGoVersion: function () {
+    var GoVersionUrl = "http://current.geneontology.org/summary.txt"; 
+    axios.get(GoVersionUrl).then(resp => {
+      console.log(resp.data);
+    });
+  },
+    
+    
+  getGoVersion2: function () {
     var GoVersionUrl = "http://current.geneontology.org/summary.txt";
     $.ajax({
       url: GoVersionUrl,
@@ -162,8 +173,9 @@ const GoSlimMapper = createReactClass({
   },
 
   getFrontPage() {
-    // var descText = this.topDescription();
-    var descText = this.state.goVersion;
+    var descText = this.topDescription();
+
+    this.getGoVersion()
       
     var submitReset = this.submitReset();
     var geneBox = this.getGeneBox();
