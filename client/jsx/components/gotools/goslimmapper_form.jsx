@@ -86,7 +86,7 @@ const GoSlimMapper = createReactClass({
     }
   },
 
-  getGoVersion: function () {
+  getGoVersion2: function () {
     var GoVersionUrl = "http://current.geneontology.org/summary.txt";
     alert(GoVersionUrl);  
     axios.get(GoVersionUrl).then(resp => {
@@ -95,12 +95,13 @@ const GoSlimMapper = createReactClass({
   },
     
     
-  getGoVersion2: function () {
+  getGoVersion: function () {
     var GoVersionUrl = "http://current.geneontology.org/summary.txt";
     $.ajax({
       url: GoVersionUrl,
       dataType: 'text',        
       success: function (data) {
+	alert("data=" + data);
         this.setState({ goVersion: data });            
       }.bind(this),
       error: function (xhr, status, err) {
