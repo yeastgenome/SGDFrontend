@@ -1,8 +1,6 @@
 // import React from 'react';
 import _ from 'underscore';
 import $ from 'jquery';
-import axios from 'axios';
-
 const axios = require('axios');
 
 const DataTable = require('../widgets/data_table.jsx');
