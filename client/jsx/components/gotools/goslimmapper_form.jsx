@@ -150,8 +150,6 @@ const GoSlimMapper = createReactClass({
 
   getFrontPage() {
     var descText = this.topDescription();
-
-    
     var submitReset = this.submitReset();
     var geneBox = this.getGeneBox();
     var termBox = this.getTermBox();
@@ -180,7 +178,7 @@ const GoSlimMapper = createReactClass({
     return (
       <div>
         <div dangerouslySetInnerHTML={{ __html: descText }} />
-	<strong style={{ color: 'red' }}>{this.state.goRelease}</strong>
+	<strong style={{ font-size: 14; font-style: italic; }}>GO version {this.state.goRelease}</strong>
         <div className="row">
           <div className="large-12 columns">
             <form
