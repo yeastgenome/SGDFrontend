@@ -126,6 +126,7 @@ const GoSlimMapper = createReactClass({
         <div>
           <p dangerouslySetInnerHTML={{ __html: resultText }} />
           <p dangerouslySetInnerHTML={{ __html: tableSaveOptions }} />
+	  <h3>GO version {this.state.goRelease}</h3>
           <p dangerouslySetInnerHTML={{ __html: resultTable }} />
         </div>
       );
