@@ -178,7 +178,7 @@ const GoSlimMapper = createReactClass({
     return (
       <div>
         <div dangerouslySetInnerHTML={{ __html: descText }} />
-	<strong style={{ font-size: 14px; font-style: italic; }}>GO version {this.state.goRelease}</strong>
+	<h3 style={{ font-style: italic; }}>GO version {this.state.goRelease}</h3>
         <div className="row">
           <div className="large-12 columns">
             <form
@@ -606,8 +606,7 @@ const GoSlimMapper = createReactClass({
   },
 
   getResultText() {
-    return "<h3>This page displays genes from your query that are annotated directly or indirectly (via a parent:child relationship) to the <a href='https://sites.google.com/view/yeastgenom\
-e-help/analyze-help/go-slim-mapper?authuser=0' target='help_win'>GO Slim</a> terms of your choice.</h3>";
+    return "<h3>This page displays genes from your query that are annotated directly or indirectly (via a parent:child relationship) to the <a href='https://sites.google.com/view/yeastgenome-help/analyze-help/go-slim-mapper?authuser=0' target='help_win'>GO Slim</a> terms of your choice.</h3>";
   },
 
   tableSaveOptions(htmlUrl, termsUrl, tabUrl, inputUrl, slimTermUrl) {
