@@ -178,7 +178,7 @@ const GoSlimMapper = createReactClass({
     return (
       <div>
         <div dangerouslySetInnerHTML={{ __html: descText }} />
-	<h3 style={{ font-style: italic; }}>GO version {this.state.goRelease}</h3>
+	<h3>GO version {this.state.goRelease}</h3>
         <div className="row">
           <div className="large-12 columns">
             <form
