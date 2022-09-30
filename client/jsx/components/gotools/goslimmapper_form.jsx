@@ -19,6 +19,7 @@ const style = {
 const GOtoolsUrl = '/run_gotools';
 const GOslimUrl = '/redirect_backend?param=goslim';
 const GeneChkUrl = '/redirect_backend?param=ambiguous_names';
+const GoReleaseUrl = '/redirect_backend?param=go_release';
 
 const goSet = [
   'Yeast GO-Slim: process',
@@ -36,7 +37,8 @@ const GoSlimMapper = createReactClass({
 
     this.getSlimData();
     this.getAmbiguousNames();
-
+    this.getGoRelease();
+      
     return {
       isComplete: false,
       isPending: false,
@@ -46,6 +48,7 @@ const GoSlimMapper = createReactClass({
       resultData: {},
       goslimData: [],
       ambiguousNames: {},
+      goRelease: '',
       slimType: '',
       notFound: null,
       param: param,
@@ -148,6 +151,7 @@ const GoSlimMapper = createReactClass({
   getFrontPage() {
     var descText = this.topDescription();
 
+    
     var submitReset = this.submitReset();
     var geneBox = this.getGeneBox();
     var termBox = this.getTermBox();
@@ -176,6 +180,7 @@ const GoSlimMapper = createReactClass({
     return (
       <div>
         <div dangerouslySetInnerHTML={{ __html: descText }} />
+	<strong style={{ color: 'red' }}>{this.state.goRelease}</strong>
         <div className="row">
           <div className="large-12 columns">
             <form
@@ -585,6 +590,19 @@ const GoSlimMapper = createReactClass({
     });
   },
 
+  getGoRelease: function () {
+    $.ajax({
+      url: GoReleaseUrl,
+      dataType: 'json',
+      success: function (data) { 
+        this.setState({ goRelease: data['date'] });
+      }.bind(this),
+      error: function (xhr, status, err) { 
+        console.error(GoReleaseUrl, status, err.toString());
+      }.bind(this),
+    }); 
+  },
+  
   topDescription() {
     return "<p><h3>The GO Slim Mapper maps annotations of a group of genes to more general terms and/or bins them into broad categories, i.e. <a href='https://sites.google.com/view/yeastgenome-help/analyze-help/go-slim-mapper?authuser=0' target='help_win'>GO Slim</a> terms.<p></p> Three GO Slim sets are available at SGD:<p></p><ul><li>Yeast GO-Slim: broad, high level GO terms from the Biological Process, Molecular Function and Cellular Component ontologies selected and maintained by the Saccharomyces Genome Database (SGD)</li><li>Generic GO-Slim: broad, high level GO terms from the Biological Process, Molecular Function and Cellular Component ontologies selected and maintained by the Gene Ontology Consortium (GOC)</li><li>Macromolecular complex terms: protein complex terms from the Cellular Component ontology</li><ul></h3></p>";
   },
