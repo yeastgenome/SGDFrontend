@@ -133,6 +133,19 @@
                     </dd>
                 {% endif %}
 
+                {% if locus.URS_ID %}
+                    <dt>RNAcentral ID</dt>
+                    <dd>
+                        <a href='https://rnacentral.org/rna/{{ locus.URS_ID }}/559292' target='2Dwin'>{{ locus.URS_ID }}</a>
+                    </dd>
+
+                    <dt>Secondary Structure</dt>
+                    <dd>
+                        <img src="https://rnacentral.org/api/v1/rna/{{ locus.URS_ID }}/2d/svg/" width="200" id='strucImg' onClick="zoom()">
+                    </dd>
+
+                {% endif %}
+
 		{% for url in locus.urls if url.category == 'LOCUS_ALLIANCE_ICONS' %}{% if loop.first %}		
                     <dt>Comparative Info</dt>
 		{% endif %}{% endfor %}
@@ -892,5 +905,34 @@
 {% block scripts %}
 <script>
     views.summary.render();
+</script>
+<style>
+    button{
+        padding: 3px 6px;
+    }
+    button img{
+        vertical-align: middle;
+    }
+</style>
+<script type="text/javascript">
+    var clicked = 1;
+    function zoom() {
+        if (clicked == 3) {
+            clicked = 1;
+        }
+        else {
+            clicked = 3;
+        }
+        zoomOut(clicked)
+    }
+    function zoomOut(count){
+        var myImg = document.getElementById("strucImg");
+        var currWidth = myImg.clientWidth;
+        if (count == 3) {
+           myImg.style.width = (currWidth + 300) + "px"
+        } else {
+           myImg.style.width = (currWidth - 300) + "px"
+        }
+    }
 </script>
 {% endblock scripts %}

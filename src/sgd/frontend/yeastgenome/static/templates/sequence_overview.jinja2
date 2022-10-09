@@ -54,6 +54,19 @@
                     </dd>
                 {% endif %}
 
+ 		{% if locus.URS_ID %}
+		    <dt>RNAcentral ID</dt>
+                    <dd>
+                        <a href='https://rnacentral.org/rna/{{ locus.URS_ID }}/559292' target='2Dwin'>{{ locus.URS_ID }}</a>
+                    </dd>
+		    
+ 		    <dt>Secondary Structure</dt>
+ 		    <dd>
+			<img src="https://rnacentral.org/api/v1/rna/{{ locus.URS_ID }}/2d/svg/" width="200" id='strucImg' onClick="zoom()">
+                    </dd>
+ 		    
+ 		{% endif %}
+
                 {% if 'ecnumbers' in locus and locus.ecnumbers != None  %}
                     {% if locus.ecnumbers|length > 0 %}
                         <dt>EC Number</dt>
