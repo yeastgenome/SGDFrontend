@@ -18,8 +18,10 @@
         locusHistory: {{ history_js|safe }},
         sgdid: "{{locus.sgdid}}",
 	main_strain: "{{locus.main_strain}}",
+	URS_ID: "{{locus.URS_ID}}",
         featureType: "{{locus.locus_type}}"
     };
+ 
 </script>
 {% endblock %}
 
@@ -65,6 +67,7 @@
         </div>
     </div>
 
+   
         <!-- Resources
 ================================================== -->
     <section id="resources">
@@ -100,9 +103,30 @@
 </div>
 
 {% endblock body %}
-
 {% block scripts %}
 <script>
     views.sequence.render();
+</script>
+<script type="text/javascript" src="https://rnacentral.github.io/r2dt-web/dist/r2dt-web.js"></script>
+<script type="text/javascript">
+    var clicked = 1;
+    function zoom() {
+        if (clicked == 3) {
+            clicked = 1;
+        }
+        else {
+            clicked = 3;
+        }
+        zoomOut(clicked)
+    }
+    function zoomOut(count){
+        var myImg = document.getElementById("strucImg");
+        var currWidth = myImg.clientWidth;
+	if (count == 3) {
+	   myImg.style.width = (currWidth + 300) + "px"
+	} else {
+	   myImg.style.width = (currWidth - 300) + "px"
+	}
+    }
 </script>
 {% endblock scripts %}

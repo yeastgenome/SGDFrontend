@@ -11,7 +11,7 @@ sequenceView.render = function () {
   document.getElementById('sequence_tab').className += ' active';
 
   // define render nav bar function
-  var renderNavBar = function (hasAltStrains, hasOtherStrains, mainStrain) {
+  var renderNavBar = function (hasAltStrains, hasOtherStrains, mainStrain, ursID) {
     var _showVariants = bootstrappedData.featureType === 'ORF';
     var _tabModel = new TabsModel({
       tabType: 'sequence',
@@ -19,6 +19,7 @@ sequenceView.render = function () {
       hasOtherStrains: hasOtherStrains,
       hasVariants: _showVariants,
       mainStrain: mainStrain,
+      ursID: ursID,
     });
     var _navTitleText = _tabModel.getNavTitle(
       bootstrappedData.displayName,
@@ -35,13 +36,15 @@ sequenceView.render = function () {
     renderNavBar(
       detailsModel.attributes.altStrains.length,
       detailsModel.attributes.otherStrains.length,
-      bootstrappedData.main_strain
+      bootstrappedData.main_strain,
+      bootstrappedData.URS_ID,
     );
   };
 
   // async sequence view, fetches data, renders main strain, alt strains, and other strains (if present)
   // once data is fetched, update the navbar
   var _showVariants = bootstrappedData.featureType === 'ORF';
+  
   ReactDOM.render(
     <AsyncSequenceView
       locusId={bootstrappedData.locusId}
@@ -52,6 +55,7 @@ sequenceView.render = function () {
       detailsCallback={_detailsCallback}
       locusSGDID={bootstrappedData.sgdid}
       showVariants={_showVariants}
+      ursID={bootstrappedData.URS_ID}	
     />,
     document.getElementById('sequence-viz')
   );

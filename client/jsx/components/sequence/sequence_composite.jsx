@@ -179,6 +179,7 @@ const SequenceComposite = createReactClass({
       }
     }
 
+    
     return node;
   },
 

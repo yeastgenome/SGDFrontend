@@ -20,6 +20,7 @@ const style = {
 
 const GOtoolsUrl = '/run_gotools';
 const GeneChkUrl = '/redirect_backend?param=ambiguous_names';
+const GoReleaseUrl = '/redirect_backend?param=go_release';
 
 const evidenceCode = [
   'HDA',
@@ -50,7 +51,8 @@ const GoTermFinder = createReactClass({
     var param = Params.getParams();
 
     this.getAmbiguousNames();
-
+    this.getGoRelease();
+      
     return {
       isComplete: false,
       isPending: false,
@@ -59,6 +61,7 @@ const GoTermFinder = createReactClass({
       uploadedGenes: '',
       uploadedGenes4bg: '',
       ambiguousNames: {},
+      goRelease: '',
       resultData: {},
       notFound: null,
       pvalue: '0.01',
@@ -153,6 +156,7 @@ const GoTermFinder = createReactClass({
           <p dangerouslySetInnerHTML={{ __html: graphSaveOptions }} />
           <p dangerouslySetInnerHTML={{ __html: graph }} />
           <p dangerouslySetInnerHTML={{ __html: tableSaveOptions }} />
+	  <h3>GO version {this.state.goRelease}</h3> 
           <p dangerouslySetInnerHTML={{ __html: resultTable }} />
         </div>
       );
@@ -217,6 +221,7 @@ const GoTermFinder = createReactClass({
     return (
       <div>
         <div dangerouslySetInnerHTML={{ __html: descText }} />
+	<h3>GO version {this.state.goRelease}</h3> 
         <div className="row">
           <div className="large-12 columns">
             <form
@@ -675,6 +680,19 @@ const GoTermFinder = createReactClass({
     });
   },
 
+  getGoRelease: function () {
+    $.ajax({
+      url: GoReleaseUrl,
+      dataType: 'json',
+      success: function (data) {
+        this.setState({ goRelease: data['date'] });
+      }.bind(this),
+      error: function (xhr, status, err) {
+        console.error(GoReleaseUrl, status, err.toString());
+      }.bind(this),
+    });
+  },
+    
   sendRequest(paramData) {
     console.log('GOtoosUrl=' + GOtoolsUrl);
     console.log('genes=' + paramData['genes']);
