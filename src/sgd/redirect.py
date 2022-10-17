@@ -26,7 +26,7 @@ def do_redirect(request):
                 for key in p:
                     if key == 'param':
                         continue
-                    url = u + "&" + key + "=" + p.get(key)
+                    url = url + "&" + key + "=" + p.get(key)
         try:
             #req = Request(url=url)
             #res = urlopen(req)
