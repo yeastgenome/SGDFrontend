@@ -215,8 +215,9 @@
             <h2>Interaction Annotations </h2>
             <hr />
 
-	{% if reference.pubmed_id != 27708008 %}
-
+	{% if reference.pubmed_id == 27708008 or reference.pubmed_id == 20093466 %}
+	    <a href="https://yeastmine.yeastgenome.org/yeastmine/loadTemplate.do?name=Literature_Interaction&constraint1=Gene.interactions.details.experiment.publication&op1=LOOKUP&value1={{ reference.pubmed_id }}&scope=all&method=results&format=tab" target='_new'>Download Interaction Data</a>
+	{% else %}
             <div class="spaced-container">
                 <h3>Genetic Interactions
                     <span id="genetic_interaction_table_header" class="round secondary label"></span>
@@ -234,9 +235,6 @@
                  {% set table_id = "physical_interaction_table" %}
                  {% include "physical_interaction_table.jinja2" %}
             </div>
-
-	{% else %}
-	    <a href="https://yeastmine.yeastgenome.org/yeastmine/loadTemplate.do?name=Literature_Interaction&constraint1=Gene.interactions.details.experiment.publication&op1=LOOKUP&value1=27708008&scope=all&method=results&format=tab" target='_new'>Download Interaction Data</a>
 	{% endif %} 
         </section>
 
