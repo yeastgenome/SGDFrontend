@@ -151,8 +151,8 @@
             <h2>Gene Ontology Annotations <span id="go_table_header" class="round secondary label"></span></h2>
             <hr />
 
-	    {% if reference.pubmed_id == 21873635 %}
-                <a href="https://yeastmine.yeastgenome.org/yeastmine/loadTemplate.do?name=Literature_GO&constraint1=Gene.goAnnotation.evidence.publications&op1=LOOKUP&value1=21873635&scope=all&method=results&format=tab" target='_new'>Download Gene Ontology Data</a>
+	    {% if reference.pubmed_id == 21873635 or reference.pubmed_id == 14562095 %}
+                <a href="https://yeastmine.yeastgenome.org/yeastmine/loadTemplate.do?name=Literature_GO&constraint1=Gene.goAnnotation.evidence.publications&op1=LOOKUP&value1={{ reference.pubmed_id }}&scope=all&method=results&format=tab" target='_new'>Download Gene Ontology Data</a>
 	    {% elif reference.sgdid == 'S000069584' %}
 	        <a href="https://yeastmine.yeastgenome.org/yeastmine/loadTemplate.do?name=Literature_GO&constraint1=Gene.goAnnotation.evidence.publications&op1=LOOKUP&value1=GO_REF:0000015&scope=all&method=results&format=tab" target='_new'>Download Gene Ontology Data</a>
             {% else %}
