@@ -4,7 +4,7 @@ WORKDIR /data/www
 RUN DEBIAN_FRONTEND=noninteractive apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get upgrade -y \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-        emboss \
+	emboss \
 	git \
         make \
         nodejs \
@@ -27,8 +27,10 @@ RUN git checkout master_docker \
     && virtualenv /data/www/SGDFrontend/venv \
     && . /data/www/SGDFrontend/venv/bin/activate \
     && pip3 install -U setuptools==57.5.0 \
-    && make build \
-    && chmod 1777 /data/www/tmp
+    && make build
+
+WORKDIR /data/www/SGDFrontend/src/sgd/tools/seqtools/emboss
+RUN /usr/bin/rebaseextract -infile withrefm.809 -protofile proto.809
 
 WORKDIR /
 
