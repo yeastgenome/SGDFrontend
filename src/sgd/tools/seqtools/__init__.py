@@ -3,11 +3,15 @@ from pyramid.response import Response
 from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
 from src.sgd.frontend.yeastgenome import clean_cell
+import random
 import os
 
-seq_url = "https://www.yeastgenome.org/backend/locus/_REPLACE_NAME_HERE_/sequence_details"
-contig_url = "https://www.yeastgenome.org/backend/contig/_REPLACE_CONTIG_NAME_HERE_"
-validate_url = "https://www.yeastgenome.org/backend/locus/"
+seq_url = "https://backend.yeastgenome.org/locus/_REPLACE_NAME_HERE_/sequence_details"
+contig_url = "https://backend.yeastgenome.org/contig/_REPLACE_CONTIG_NAME_HERE_"
+validate_url = "https://backend.yeastgenome.org/locus/"
+
+random_max = 10000000
+
 
 def do_seq_analysis(request):
 
@@ -45,6 +49,11 @@ def do_seq_analysis(request):
         return response
         
 
+def get_id():
+
+    return str(random.randint(1, random_max))
+
+
 def run_emboss(p):
 
     emboss = p['emboss']
@@ -55,12 +64,12 @@ def run_emboss(p):
         data = get_genomic_dna_for_gene(p)
         seq = data['seq']
     
-    inSeqFile = "/data/www/tmp/seq." + str(os.getpid()) + ".in"
+    inSeqFile = "/data/www/tmp/seq." + str(get_id()) + ".in"
     fw = open(inSeqFile, "w")
     fw.write(seq + "\n")
     fw.close()
     
-    outSeqFile = "/data/www/tmp/seq." + emboss + "." + str(os.getpid()) + ".out"
+    outSeqFile = "/data/www/tmp/seq." + emboss + "." + str(get_id()) + ".out"
     
     program = "/usr/bin/" + emboss
     cmd = ""
@@ -176,10 +185,10 @@ def display_sequence_for_genes(p, data):
                     if geneCount == 1:
                         filename = gene
                     else:
-                        filename = gene + "_etc_" + str(os.getpid())
+                        filename = gene + "_etc_" + str(get_id())
     
     if filename == "":
-        filename = str(os.getpid())
+        filename = str(get_id())
 
     if p.get('format') is not None and p['format'] == 'gcg':
         filename += "_" + type + ".gcg"
