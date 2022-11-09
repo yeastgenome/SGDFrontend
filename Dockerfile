@@ -4,6 +4,7 @@ WORKDIR /data/www
 RUN DEBIAN_FRONTEND=noninteractive apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get upgrade -y \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+        emboss \
 	git \
         make \
         nodejs \
@@ -15,6 +16,9 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
     && gem install bundler \
     && git clone https://github.com/yeastgenome/SGDFrontend.git
 
+WORKDIR /data/www/logs
+WORKDIR /data/www/tmp
+
 WORKDIR /data/www/SGDFrontend
 RUN git checkout master_docker \
     && npm install -g bower \
@@ -23,9 +27,8 @@ RUN git checkout master_docker \
     && virtualenv /data/www/SGDFrontend/venv \
     && . /data/www/SGDFrontend/venv/bin/activate \
     && pip3 install -U setuptools==57.5.0 \
-    && make build 
-
-WORKDIR /data/www/logs
+    && make build \
+    && chmod 1777 /data/www/tmp
 
 WORKDIR /
 
