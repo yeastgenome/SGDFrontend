@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "axios": "^0.16.1",
-    "body-parser": "^1.13.2",
+    "body-parser": "^1.20.1",
     "bootstrap": "~3.3.1",
     "browserify-shim": "~3.8.3",
     "classnames": "~1.2.0",
@@ -83,7 +83,7 @@
     "grunt-contrib-compass": "~0.9.1",
     "grunt-contrib-concat": "^0.5.0",
     "grunt-contrib-uglify": "~0.5.1",
-    "grunt-contrib-watch": "~0.6.1",
+    "grunt-contrib-watch": "~1.1.0",
     "grunt-parallel": "^0.4.1",
     "grunt-text-replace": "~0.3.11",
     "htmltidy": "0.0.6",
