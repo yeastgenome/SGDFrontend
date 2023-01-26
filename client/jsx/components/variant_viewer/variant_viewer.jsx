@@ -221,7 +221,7 @@ var VariantViewer = createReactClass({
       this.submitSearch();
     };
     // var _text = 'Enter gene name, GO term, chromosome, or list of gene names';
-    var _text = 'Enter Gene/ORF names (separated by a comma)';
+    var _text = 'Enter gene names (comma-separated) or a GO term (eg “ascospore”)';
     return <SearchBar placeholderText={_text} onSubmit={_onSubmit} />;
   },
 
@@ -244,7 +244,7 @@ var VariantViewer = createReactClass({
   },
 
   _renderEmptyNode: function () {
-    var text = `No results for "${this.props.store.getQuery()}."  Please enter valid gene/ORF names or SGDID (comma-separated) and try again.`;
+    var text = `No results for "${this.props.store.getQuery()}."  Please enter valid gene/ORF names or SGDID (comma-separated) or double-quoted GO term (eg "actin binding") and try again.`;
     return <h3>{text}</h3>;
   },
 });
