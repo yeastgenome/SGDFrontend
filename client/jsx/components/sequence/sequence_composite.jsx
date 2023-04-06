@@ -156,6 +156,25 @@ const SequenceComposite = createReactClass({
             {this.props.isSimplified ? null : <hr />}
           </div>
         );
+      } else if (
+        ['FLP1', 'RAF1', 'REP1', 'REP2'].includes(
+          this.props.focusLocusDisplayName
+        )
+      ) {
+        node = (
+          <div>
+            <div className="row title-right-text">
+              <div className="columns small-12">
+                {this.props.isSimplified ? (
+                  this._getSimplifiedSequenceNode()
+                ) : (
+                  <h2>Reference Strain: S288C {helpNode}</h2>
+                )}
+              </div>
+            </div>
+            {this.props.isSimplified ? null : <hr />}
+          </div>
+        );
       } else {
         node = (
           <div>
@@ -179,7 +198,6 @@ const SequenceComposite = createReactClass({
       }
     }
 
-    
     return node;
   },
 
