@@ -460,7 +460,7 @@ const GeneSequenceResources = createReactClass({
     }
 
     // browser row
-
+    var geneCountWithBrowse = 0;
     var browserRow = [
       <span style={style.textFont} key={0}>
         Genome Display (S288C)
@@ -482,15 +482,22 @@ const GeneSequenceResources = createReactClass({
         '..' +
         end +
         '&tracks=All%20Annotated%20Sequence%20Features%2CProtein-Coding-Genes%2CDNA&highlight=';
-      browserRow.push(
-        <span style={style.textFont}>
-          <a href={url} target="infowin2">
-            JBrowse
-          </a>
-        </span>
-      );
+      if (chr === '2-micron plasmid') {
+        browserRow.push(<span style={style.textFont}> </span>);
+      } else {
+        geneCountWithBrowse = geneCountWithBrowse + 1;
+        browserRow.push(
+          <span style={style.textFont}>
+            <a href={url} target="infowin2">
+              JBrowse
+            </a>
+          </span>
+        );
+      }
     });
-    rows.push(browserRow);
+    if (geneCountWithBrowse > 0) {
+      rows.push(browserRow);
+    }
 
     // alignment row
 
