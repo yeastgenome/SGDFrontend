@@ -1,6 +1,7 @@
 var React = require('react');
 var _ = require('underscore');
 var $ = require('jquery');
+// require('dotenv').config();
 import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
 
@@ -8,7 +9,7 @@ var RadioSelector = require('./radio_selector.jsx');
 var BlastBarChart = require('./blast_bar_chart.jsx');
 var Params = require('../mixins/parse_url_params.jsx');
 
-var BLAST_URL = "https://blast.yeastgenome.org/blast_search";
+var BLAST_URL = '/run_blast';
 
 var SearchForm = createReactClass({
   displayName: 'SearchForm',
@@ -16,7 +17,6 @@ var SearchForm = createReactClass({
   propTypes: {
     blastType: PropTypes.any,
   },
-
   getDefaultProps: function () {
     return {
       blastType: '',
@@ -425,9 +425,11 @@ BLAST Help at NCBI</a>.</p><hr>';
       var dataset = d.dataset;
       if (dataset.match(/^label/)) {
         dataset = datagroup[dataset];
+        console.log('dataset=', dataset);
       }
       if ($.inArray(dataset, _databaseDef) > -1) {
         defaultDatabase.push(dataset);
+        console.log('defaultDatabase=', dataset);
       }
     });
     this.setState({ database: defaultDatabase });
@@ -831,6 +833,8 @@ BLAST Help at NCBI</a>.</p><hr>';
     }
     seq = this._cleanUpSeq(seq);
 
+    console.log('database=', database);
+
     var newDatabase = this._checkParameters(
       seq,
       program,
@@ -841,6 +845,7 @@ BLAST Help at NCBI</a>.</p><hr>';
 
     if (newDatabase) {
       database = newDatabase;
+      console.log('newDatabase=', newDatabase);
       // window.localStorage.clear();
       window.localStorage.setItem('seq', seq);
       window.localStorage.setItem('program', program);
@@ -924,13 +929,13 @@ BLAST Help at NCBI</a>.</p><hr>';
       return 0;
     }
 
-      // check to make sure sequence type matches the program
-      
+    // check to make sure sequence type matches the program
+
     // let tmpseq = seq.replace(/[ATCGU]/gi, '');
     // let tmpseq = seq.replace(/[ATCGUXN]/gi, '');
     // https://droog.gs.washington.edu/mdecode/images/iupac.html
     let tmpseq = seq.replace(/[ATCGUMRWSYKVHDBNX]/gi, '');
-      
+
     if (tmpseq == '') {
       if (program == 'blastp' || program == 'tblastn') {
         alert(
