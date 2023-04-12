@@ -22,17 +22,38 @@ def do_blast(request):
     
 def _get_seq(name, type):
 
-    url = blast_url + "?name=" + name
-    if type:
-        url = url + "&type=" + type
-    return _get_data_from_blast_server(url)
+    # url = blast_url + "?name=" + name
+    # if type:
+    #    url = url + "&type=" + type
+    # return _get_data_from_server(url)
 
+    data = {}
+    if type == None or type == '' or type == 'undefined':
+        type = 'dna'
+
+    url = os.environ['BACKEND_URL'] + "/locus/" + name + "/sequence_details"
+    res = _get_data_from_server(url)
+    
+    rows = []
+    if type in ('nuc', 'dna'):
+        rows = res['genomic_dna']
+    else:
+        rows = res['protein']
+        
+    for row in rows:
+        strain = row['strain']
+        if strain['display_name'] == 'S288C':
+            data['seq'] = row['residues']
+    
+    return data
+
+    
 def _get_config(conf):
     
     url = blast_url + "?conf=" + conf
-    return _get_data_from_blast_server(url)
+    return _get_data_from_server(url)
 
-def _get_data_from_blast_server(url):
+def _get_data_from_server(url):
 
     response = requests.get(url)
     data = json.loads(response.text)    
