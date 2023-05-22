@@ -18,6 +18,7 @@ export function getCategoryDisplayName(key) {
     contig: 'Contig',
     colleague: 'Colleague',
     complex: 'Complex',
+    pathway: 'Pathway',
     observable: 'Observable',
     reserved_name: 'Reserved Gene Names',
     chemical: 'Chemical',
