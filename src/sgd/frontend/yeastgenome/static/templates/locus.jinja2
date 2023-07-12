@@ -750,7 +750,17 @@
                 enrichment among regulation Targets, and a regulator/target diagram for the locus.
             </p>
         </h2>
-        <hr />
+	<hr />
+	
+        <div>
+            {% if locus.regulation_summary  %}
+                <dl class="key-value">
+                    <dt>Summary</dt>
+                    <dd>{{ locus.regulation_summary|safe }}</dd>
+                </dl>
+            {% endif %}
+        </div>
+	
         <div class="">
             <div class="">
                 {% if locus.regulation_overview.regulator_count + locus.regulation_overview.target_count == 0 %}
