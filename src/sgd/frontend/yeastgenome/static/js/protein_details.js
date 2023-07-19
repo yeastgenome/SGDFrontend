@@ -14,6 +14,7 @@ var source_to_color = {
   PRINTS: "#66aa00",
   ProDom: "#b82e2e",
   PROSITE: "#316395",
+  CDD: "#682E21",  
   "-": "#994499",
   SignalP: "#4c33cc",
   HAMAP: "#33cc99"
@@ -1036,6 +1037,10 @@ function prep_style() {
     .selector("node[type='DOMAIN'][source='PROSITE']")
     .css({
       "background-color": source_to_color["PROSITE"]
+    })
+    .selector("node[type='DOMAIN'][source='CDD']")
+    .css({
+      "background-color": source_to_color["CDD"]
     })
     .selector("node[type='DOMAIN'][source='-']")
     .css({
