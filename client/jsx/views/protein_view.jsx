@@ -15,10 +15,14 @@ proteinView.render = function (rawDomainData, locusLength, colorScale) {
     { name: 'Protein Overview', target: 'overview' },
     { name: 'Experimental Data', target: 'experiment' },
     { name: 'Domains and Classification', target: 'domain' },
-    { name: 'Sequence', target: 'sequence' },
-    { name: 'External Identifiers', target: 'external_ids' },
-    { name: 'Resources', target: 'resources' },
   ];
+  if (locus.alleles.length > 0) {
+    _elements.push({ name: 'Alleles', target: 'allele' });
+  }
+  _elements.push({ name: 'Sequence', target: 'sequence' });
+  _elements.push({ name: 'External Identifiers', target: 'external_ids' });
+  _elements.push({ name: 'Resources', target: 'resources' });
+
   var _navTitleText = _tabModel.getNavTitle(
     locus.display_name,
     locus.format_name
