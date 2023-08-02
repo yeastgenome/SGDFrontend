@@ -1,0 +1,22 @@
+<div>
+            {% for a in locus.alleles %}
+              {% if loop.index < 8 %}
+                 <span><a href="{{ a.link_url|e }}">{{ a.display_name|e }}</a></span>
+                 {% if not loop.last %} | {% endif %}
+              {% endif %}
+            {% endfor %}
+            <a id="allele_see_more_button" onclick="$('#allele_see_more').show();$('#allele_see_more_button').hide();$('#allele_see_less_button').show();" {% if locus.alleles|length <= 7 %}hidden{% endif %}> ... <i class="fa fa-arrow-circle-right"></i> Show all</a>
+            <span id="allele_see_more" hidden>
+               {% for a in locus.alleles %}
+                 {% if loop.index >= 8 %}
+                    <span><a href="{{ a.link_url|e }}">{{ a.display_name|e }}</a></span>
+                    {% if not loop.last %} | {% endif %}
+                 {% endif %}
+               {% endfor %}
+            </span>
+            <a id="allele_see_less_button" onclick="$('#allele_see_more').hide();$('#allele_see_more_button').show();$('#allele_see_less_button').hide();" hidden> <i class="fa fa-arrow-circle-left"></i> Show fewer</a>
+</div>
+<div>
+          <p><strong>View all {{ locus.display_name }} alleles in </strong><a href='https://www.yeastgenome.org/search?allele_loci={{ locus.display_name }}&category=allele' target='new'>SGD search</a> | <a href='https://yeastmine.yeastgenome.org/yeastmine/loadTemplate.do?name=Gene_Alleles&constraint1=Gene&op1=LOOKUP&value1={{ locus.display_name }}&scope=all&method=results&format=tab' target='new'>YeastMine</a>
+</div>
+
