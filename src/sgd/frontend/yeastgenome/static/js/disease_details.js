@@ -42,17 +42,30 @@ $(document).ready(function() {
   	});
 
   	$.getJSON('/redirect_backend?param=locus/' + locus['id'] + '/disease_graph', function(data) {
-        if(data['nodes'].length > 1) {
-            var _categoryColors = {
-                'FOCUS': 'black',
-                'Yeast Gene': '#1f77b4',
-                'Human Gene': '#17becf',
-                'Disease': '#D95F02'
-            };
-            views.network.render(data, _categoryColors);  		}
-		else {
-			hide_section("network");
+            if(data['nodes'].length > 1) {
+		var analyze_genes = [];
+                for (var i = 0; i < data["nodes"].length; i++) {
+                    if (data["nodes"][i]["category"] === 'Yeast Gene' || data["nodes"][i]["category"] === data["nodes"][i]["name"]) {
+                        analyze_genes.push(data["nodes"][i]["id"]);
+                    }
 		}
+		create_analyze_button_with_list(
+                    "cy_shared_disease_gene_analyze",
+                    analyze_genes,
+                    "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> Shared Disease Gene List",
+                    true
+                );
+                var _categoryColors = {
+                    'FOCUS': 'black',
+                    'Yeast Gene': '#1f77b4',
+                    'Human Gene': '#17becf',
+                    'Disease': '#D95F02'
+                };
+                views.network.render(data, _categoryColors);
+	    }
+	    else {
+		hide_section("network");
+	    }
 	});
 });
 

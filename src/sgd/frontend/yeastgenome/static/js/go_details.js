@@ -60,14 +60,30 @@ $(document).ready(function() {
   	});
 
   	$.getJSON('/redirect_backend?param=locus/' + locus['id'] + '/go_graph', function(data) {
-        if(data['nodes'].length > 1) {
-            var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, false, "go");
-            var slider = create_slider("slider", graph, data['min_cutoff'], data['max_cutoff'], slider_filter, data['max_cutoff']+1);
-            create_cy_download_button(graph, "cy_download", locus['display_name'] + '_go_graph')
-  		}
-		else {
-			hide_section("network");
-		}
+            if(data['nodes'].length > 1) {
+		var analyze_genes = [];
+                for (var i = 0; i < data["nodes"].length; i++) {
+                    if (data["nodes"][i]["data"]["type"] === 'BIOENTITY') {
+                        var bioent_id = data["nodes"][i]["data"]["dbentity_id"]
+                        analyze_genes.push(bioent_id.toString());
+                    }
+                }
+                create_analyze_button_with_list(
+                    "cy_shared_go_gene_analyze",
+                    analyze_genes,
+                    "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> Shared GO Annotations",
+                    true
+                );
+
+                var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, false, "go");
+                var slider = create_slider("slider", graph, data['min_cutoff'], data['max_cutoff'], slider_filter, data['max_cutoff']+1);
+
+		create_cy_download_button(graph, "cy_download", locus['display_name'] + '_go_graph')
+		
+  	    }
+	    else {
+		hide_section("network");
+	    }
 	});
 });
 

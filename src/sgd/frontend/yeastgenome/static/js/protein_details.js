@@ -109,6 +109,38 @@ $(document).ready(function () {
 
       $.getJSON("/redirect_backend?param=locus/" + locus["id"] + "/protein_domain_graph", function (protein_domain_graph_data) {
         if (protein_domain_graph_data["nodes"].length > 1) {
+
+          var download_headers = ["", "Gene", "Domain"];
+          var download_data = [];
+          var id_to_name = {};
+	  var analyze_genes = [];
+          for (var i = 0; i < protein_domain_graph_data["nodes"].length; i++) {
+            id_to_name[protein_domain_graph_data["nodes"][i]["data"]["id"]] = protein_domain_graph_data["nodes"][i]["data"]["name"];
+	    if (protein_domain_graph_data["nodes"][i]["data"]["type"] === 'BIOENTITY') {
+	      var bioent_id = protein_domain_graph_data["nodes"][i]["data"]["dbentity_id"]
+	      analyze_genes.push(bioent_id.toString());
+	    }
+          }
+	  create_analyze_button_with_list(
+            "cy_shared_domain_gene_analyze",
+            analyze_genes,
+            "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> Shared Domains",
+            true
+          );
+          for (var i = 0; i < protein_domain_graph_data["edges"].length; i++) {
+            download_data.push([
+              "",
+              id_to_name[protein_domain_graph_data["edges"][i]["data"]["target"]],
+              id_to_name[protein_domain_graph_data["edges"][i]["data"]["source"]]
+            ]);
+          }
+          create_download_button_no_table(
+            "cy_txt_download",
+            download_headers,
+            download_data,
+            locus["display_name"] + "_domain_network"
+          );
+
           var graph_style = prep_style();
           var graph = create_cytoscape_vis(
             "cy",
@@ -125,25 +157,8 @@ $(document).ready(function () {
             locus["display_name"] + "_protein_domain_graph"
           );
 
-          var download_headers = ["", "Gene", "Domain"];
-          var download_data = [];
-          var id_to_name = {};
-          for (var i = 0; i < protein_domain_graph_data["nodes"].length; i++) {
-            id_to_name[protein_domain_graph_data["nodes"][i]["data"]["id"]] = protein_domain_graph_data["nodes"][i]["data"]["name"];
-          }
-          for (var i = 0; i < protein_domain_graph_data["edges"].length; i++) {
-            download_data.push([
-              "",
-              id_to_name[protein_domain_graph_data["edges"][i]["data"]["target"]],
-              id_to_name[protein_domain_graph_data["edges"][i]["data"]["source"]]
-            ]);
-          }
-          create_download_button_no_table(
-            "cy_txt_download",
-            download_headers,
-            download_data,
-            locus["display_name"] + "_domain_network"
-          );
+	    
+	    
         }
         else {
           $("#shared_domains").hide();

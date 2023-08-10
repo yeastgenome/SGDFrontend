@@ -45,24 +45,53 @@ $(document).ready(function() {
 
 	$.getJSON('/redirect_backend?param=locus/' + locus['id'] + '/interaction_graph', function(data) {
 	    if(data != null && data["nodes"].length > 1) {
-            var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true, "interaction");
-            var slider = create_slider("slider", graph, data["min_evidence_cutoff"], data["max_evidence_cutoff"], function slider_filter(new_cutoff) {return "node, edge[evidence >= " + new_cutoff + "]";});
-            create_cy_download_button(graph, "cy_download", locus['display_name'] + '_interaction_graph')
+		var genetic_analyze_genes = [];
+		var phys_analyze_genes = [];
+		for (var i = 0; i < data["nodes"].length; i++) {
+		    if (data["nodes"][i]["data"].hasOwnProperty('physical')) {
+			phys_analyze_genes.push(data["nodes"][i]["data"]["id"]);
+		    }
+		    if (data["nodes"][i]["data"].hasOwnProperty('genetic')) {
+                        genetic_analyze_genes.push(data["nodes"][i]["data"]["id"]);
+		    }  
+		}
+		create_analyze_button_with_list(
+		    "cy_shared_phys_interaction_gene_analyze",
+		    phys_analyze_genes,
+		    "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> Physical Interaction",
+		    true
+		);
 
-            if(true) {
-                create_discrete_filter("union_radio", graph, slider, all_filter, data["max_evidence_cutoff"]);
-                create_discrete_filter("physical_radio", graph, slider, physical_filter, data["max_phys_cutoff"]);
-                create_discrete_filter("genetic_radio", graph, slider, gen_filter, data["max_gen_cutoff"]);
-                $("#discrete_filter").show();
+		create_analyze_button_with_list(
+                    "cy_shared_genetic_interaction_gene_analyze",
+                    genetic_analyze_genes,
+                    "<a href='" + locus['link'] + "' class='gene_name'>" + locus['display_name'] + "</a> Genetic Interaction",
+                    true
+                );
+
+                var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true, "interaction");
+                var slider = create_slider("slider", graph, data["min_evidence_cutoff"],
+                                           data["max_evidence_cutoff"],
+                                           function slider_filter(new_cutoff) {return "node, edge[evidence >= " + new_cutoff + "]";});
+
+                create_cy_download_button(graph, "cy_download",
+                                          locus['display_name'] + '_interaction_graph')
+		
+		if(true) {
+                    create_discrete_filter("union_radio", graph, slider, all_filter, data["max_evidence_cutoff"]);
+                    create_discrete_filter("physical_radio", graph, slider, physical_filter, data["max_phys_cutoff"]);
+                    create_discrete_filter("genetic_radio", graph, slider, gen_filter, data["max_gen_cutoff"]);
+                    $("#discrete_filter").show();
+		}
+		else {
+                    $("#discrete_filter").hide();
+		}
+		
             }
             else {
-                $("#discrete_filter").hide();
+		hide_section("network");
             }
-        }
-        else {
-            hide_section("network");
-        }
-    });
+	});
 
 });
 

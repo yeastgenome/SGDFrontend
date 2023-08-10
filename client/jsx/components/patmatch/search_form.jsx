@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import _ from 'underscore';
 import $ from 'jquery';
-
+import { download_analyze_buttons } from './create_analyze_button.jsx';
 const Checklist = require('../widgets/checklist.jsx');
 const Params = require('../mixins/parse_url_params.jsx');
 const ExampleTable = require('./example_table.jsx');
@@ -123,8 +123,13 @@ class SearchForm extends Component {
         );
       }
 
+      var analyze_genes = [];
       var _summaryTable = this._getSummaryTable(totalHits, uniqueHits);
-      var _resultTable = this._getResultTable(data, totalHits);
+      var _resultTable = this._getResultTable(data, totalHits, analyze_genes);
+      var _download_analyze_buttons = download_analyze_buttons(
+        downloadUrl,
+        analyze_genes
+      );
 
       return (
         <div>
@@ -133,12 +138,7 @@ class SearchForm extends Component {
 
           <center>{_resultTable}</center>
           <p></p>
-
-          <center>
-            <blockquote style={{ fontFamily: 'Monospace', fontSize: 14 }}>
-              <a href={downloadUrl}>Download Full Results</a>
-            </blockquote>
-          </center>
+          <center>{_download_analyze_buttons}</center>
           <p></p>
         </div>
       );
@@ -740,7 +740,7 @@ class SearchForm extends Component {
     return <DataTable data={_summaryData} />;
   }
 
-  _getResultTable(data, totalHits) {
+  _getResultTable(data, totalHits, analyze_genes) {
     var dataset = window.localStorage.getItem('dataset');
 
     var withDesc = 0;
@@ -803,6 +803,7 @@ class SearchForm extends Component {
       } else {
         var headline = d.desc.split(';')[0];
         var name = d.seqname;
+        analyze_genes.push(d.seqname);
         if (d.gene_name) {
           name = name + '/' + d.gene_name;
         }

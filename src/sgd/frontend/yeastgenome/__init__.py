@@ -294,10 +294,15 @@ class YeastgenomeFrontend(FrontendInterface):
         return response
     
     def analyze(self, list_name, bioent_ids):
-        bioent_ids = list(set([int(x) for x in bioent_ids if x is not None]))
-            
-        bioents = get_json(self.backend_url + '/bioentity_list', data={'bioent_ids': bioent_ids})
-    
+
+        is_name = False
+        if len(bioent_ids) > 0 and str(bioent_ids[0]).isdigit():
+            bioent_ids = list(set([int(x) for x in bioent_ids if x is not None]))
+        else:
+            bioent_ids = list(set([x for x in bioent_ids if x is not None]))
+            is_name = True
+        bioents = get_json(self.backend_url + '/bioentity_list', data={'bioent_ids': bioent_ids, 'is_name': is_name})
+        
         if bioents is None:
             return Response(status_int=500, body='Bioents could not be found.') 
         

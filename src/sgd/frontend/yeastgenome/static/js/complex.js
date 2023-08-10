@@ -5,8 +5,15 @@ $(document).ready(function() {
 
 //	document.getElementById("summary_paragraph").innerHTML = data['description'] + "<p></p>" + data['properties']
 
-        var complex_table = create_complex_table(data);
-
+	var analyze_genes = []
+        var complex_table = create_complex_table(data, analyze_genes);
+	create_analyze_button_with_list(
+            "complex_subunit_gene_analyze",
+            analyze_genes,
+	    "<a href='/complex/" + complex['complex_accession'] + "' class='gene_name'>" + complex['complex_accession'] + "</a> Complex Subunits",
+            true
+        );
+	
         if(data != null && data["graph"]["nodes"].length > 1) {
             var _categoryColors = {
                 'protein': '#1f77b4',
@@ -46,13 +53,16 @@ $(document).ready(function() {
 
 });
 
-function create_complex_table(data) {
+function create_complex_table(data, analyze_genes) {
     var evidence = data['subunit'];
     var datatable = [];
     var subunits = {};
     for (var i = 0; i < evidence.length; i++) {
         datatable.push(complex_subunit_data_to_table(evidence[i]));
         subunits[evidence[i]["display_name"]] = true;
+	if (evidence[i]["link"].includes("/locus/")) {
+	    analyze_genes.push(evidence[i]["dbentity_id"].toString());
+	}   
     }
 
     set_up_header(
