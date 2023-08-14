@@ -152,8 +152,16 @@ def download_list(request):
 
 @view_config(route_name='references_this_week')
 def references_this_week(request):
-    page = {}
-    return render_to_response(TEMPLATE_ROOT + 'references_this_week.jinja2', page, request=request)
+    backend_url = os.environ['BACKEND_URL'] + '/references/this_week'
+    backend_response = requests.get(backend_url)
+    if backend_response.status_code != 200:
+        return not_found(request)
+    obj = json.loads(backend_response.text)
+    ref_objs = { 
+        "references": obj['references'],
+        "references_js": json.dumps(obj['references'])
+    }
+    return render_to_response(TEMPLATE_ROOT + 'references_this_week.jinja2', ref_objs, request=request)
 
 @view_config(route_name='reference')
 def reference(request):
