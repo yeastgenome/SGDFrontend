@@ -1,0 +1,55 @@
+<p id="{{ reference_list_id }}_empty_message" hidden>{{ empty_message }}</p>
+<div id="{{ reference_list_id }}_wrapper">
+    <a id="{{ reference_list_id }}_download" class="small radius button secondary"><i class="fa fa-download"></i>
+        Download References (.nbib)</a>
+    <br>
+    <br>
+    <ul className="reference-list">
+    	{% for ref in references %}
+	   {% set i = loop.index %}
+       	   <li>
+		<a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
+                   <span>{{ ref.citation|e|replace(ref.display_name, '')}}</span>
+            	{% if ref.pubmed_id != none %}
+                   <small>PMID: {{ ref.pubmed_id|e }}</small>
+            	{% endif %}
+            	<ul class="ref-links">
+                    <li><a href="{{ ref.link|e }}">SGD Paper</a></li>
+                    {% for url in ref.urls %}
+                       <li><a target="_infowin" href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
+                    {% endfor %}
+            	</ul>
+		{% if ref.entity_list|length > 0 %}
+		   {% for a in ref.entity_list %}
+              	      {% if loop.index < 10 %}
+		         {% if loop.index == 1 %}
+			    {% if ref.entity_list|length == 1 %}1 Associated Entity:
+			    {% else %}{{ref.entity_list|length}} Associated Entities: {% endif %}
+			 {% endif %}
+                      	 <span><a href="{{ a.locus.link|e }}">{{ a.locus.display_name|e }}</a></span>
+                      	 {% if not loop.last %} | {% endif %}
+              	      {% endif %}
+                   {% endfor %}
+		   
+		   <a id="entity_see_more_button{{i}}" onclick="$('#entity_see_more{{i}}').show();$('#entity_see_more_button{{i}}').hide();$('#entity_see_less_button{{i}}').show();" {% if ref.entity_list|length <= 9 %}hidden{% endif %}> ... <i class="fa fa-arrow-circle-right"></i> Show all</a>
+
+
+            	   <span id="entity_see_more{{i}}" hidden>
+               	       {% for a in ref.entity_list %}
+                      	  {% if loop.index >= 10 %}
+                      	     <span><a href="{{ a.locus.link|e }}">{{ a.locus.display_name|e }}</a></span>
+                    	     {% if not loop.last %} | {% endif %}
+                      	  {% endif %}
+               	       {% endfor %}
+                   </span>
+		   
+		   <a id="entity_see_less_button{{i}}" onclick="$('#entity_see_more{{i}}').hide();$('#entity_see_more_button{{i}}').show();$('#entity_see_less_button{{i}}').hide();" hidden> <i class="fa fa-arrow-circle-left"></i> Show fewer</a>
+		   <p></p>
+		   
+		{% endif %}
+       	   </li>
+   	{% endfor %}
+    </ul>
+
+</div>
+
