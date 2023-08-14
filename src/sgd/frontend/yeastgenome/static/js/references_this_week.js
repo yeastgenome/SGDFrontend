@@ -10,12 +10,17 @@ $(document).ready(function() {
 
 function set_up_reference_list(header_id, list_id, message_id, wrapper_id, download_button_id, download_filename, data) {
 	set_up_header(header_id, data.length, 'reference', 'references');
-	set_up_references(data, list_id);
+        // set_up_references(data, list_id);
+        reference_ids = []
+        for (var i=0; i < data.length; i++) {
+            var reference = data[i];
+	    reference_ids.push(reference['id']);
+	}
 	if (data.length == 0) {
 		$("#" + message_id).show();
 		$("#" + wrapper_id).hide();
 	}
-	$("#" + download_button_id).click(function f() {
-		download_citations(list_id, download_filename);
-	});
+        $("#" + download_button_id).click(function f() {
+            post_to_url('/download_citations', {"display_name":download_filename, "reference_ids": reference_ids});
+        });
 }

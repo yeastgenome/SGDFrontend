@@ -3,6 +3,11 @@
 {% block title %}Literature Recently Added to SGD{% endblock %}
 
 {% block head %}
+
+<script>
+  var references = {{ references_js|safe }};
+</script>
+
 {% endblock %}
 
 {% block body %}
@@ -30,7 +35,7 @@
                 <hr />
                 {% set reference_list_id = "references_list" %}
                 {% set empty_message = "No literature added recently." %}
-                {% include "reference_list.jinja2" %}
+                {% include "reference_list_with_entities.jinja2" %}
             </div>
         </section>
     </div>
@@ -38,6 +43,6 @@
 {% endblock body %}
 
 {% block scripts %}
-<script src="{{asset_root}}/js/references_this_week.js"></script>
+<script src="{{asset_root}}/js/references_this_week.js">
 {% endblock scripts %}
 
