@@ -107,24 +107,9 @@
                  </p>
             </h2>
             <hr />
-
-	    <ul className="reference-list">
-                {% for ref in allele.primary_references %}
-                   <li>
-                      <a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
-                          <span>{{ ref.citation|e|replace(ref.display_name, '') }}</span>
-                      {% if ref.pubmed_id != none %}
-                          <small>PMID: {{ ref.pubmed_id|e }}</small>
-                      {% endif %}
-                      <ul class="ref-links">
-                          <li><a href="{{ ref.link|e }}">SGD Paper</a></li>
-                          {% for url in ref.urls %}
-                             <li><a target="_infowin" href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
-                          {% endfor %}
-                      </ul>
-                   </li>
-                {% endfor %}
-            </ul>
+            {% set reference_list_id = "allele_primary_list" %}
+            {% set empty_message = "No primary literature curated." %}
+            {% include "reference_list.jinja2" %}
         </div>
         </section>
         {% endif %}
@@ -141,23 +126,9 @@
                  </p>
             </h2>
             <hr />
-
-            <ul className="reference-list">
-                {% for ref in allele.additional_references %}
-                   <li>
-                      <a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
-                          <span>{{ ref.citation|e|replace(ref.display_name, '') }}</span>
-                      {% if ref.pubmed_id != none %}
-                          <small>PMID: {{ ref.pubmed_id|e }}</small>
-                      {% endif %}
-                      <ul class="ref-links">
-                          <li><a href="{{ ref.link|e }}">SGD Paper</a></li>
-                          {% for url in ref.urls %}
-                             <li><a target="_infowin" href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
-                          {% endfor %}
-                      </ul>
-                   </li>
-                {% endfor %}
+            {% set reference_list_id = "allele_additional_list" %}
+            {% set empty_message = "No primary literature curated." %}
+            {% include "reference_list.jinja2" %}
             </ul>
         </div>
         </section>
@@ -170,24 +141,9 @@
         <div class="page-header">
             <h2>Reviews</h2>
             <hr />
-
-            <ul className="reference-list">
-                {% for ref in allele.reviews_references %}
-                   <li>
-                      <a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
-                          <span>{{ ref.citation|e|replace(ref.display_name, '') }}</span>
-                      {% if ref.pubmed_id != none %}
-                          <small>PMID: {{ ref.pubmed_id|e }}</small>
-                      {% endif %}
-                      <ul class="ref-links">
-                          <li><a href="{{ ref.link|e }}">SGD Paper</a></li>
-                          {% for url in ref.urls %}
-                             <li><a target="_infowin" href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
-                          {% endfor %}
-                      </ul>
-                   </li>
-                {% endfor %}
-            </ul>
+	    {% set reference_list_id = "allele_review_list" %}
+            {% set empty_message = "No reviews curated." %}
+            {% include "reference_list.jinja2" %}
         </div>
         </section>
         {% endif %}
@@ -204,24 +160,9 @@
                  </p>
             </h2>
             <hr />
-
-     	    <ul className="reference-list">
-     	        {% for ref in allele.phenotype_references %}
-                   <li>
-		      <a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
-                          <span>{{ ref.citation|e|replace(ref.display_name, '') }}</span>
-             	      {% if ref.pubmed_id != none %}
-                          <small>PMID: {{ ref.pubmed_id|e }}</small>
-             	      {% endif %}
-             	      <ul class="ref-links">
-                          <li><a href="{{ ref.link|e }}">SGD Paper</a></li>
-                          {% for url in ref.urls %}
-                             <li><a target="_infowin" href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
-                          {% endfor %}
-                      </ul>
-                   </li>
-                {% endfor %}
-            </ul>
+	    {% set reference_list_id = "allele_phenotype_list" %}
+            {% set empty_message = "No phenotype literature curated." %}
+            {% include "reference_list.jinja2" %}
 	</div>
         </section>
         {% endif %}
@@ -239,23 +180,9 @@
                  </p>
             </h2>
             <hr />
-	    <ul className="reference-list">
-                {% for ref in allele.interaction_references %}
-                   <li>
-                      <a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
-                          <span>{{ ref.citation|e|replace(ref.display_name, '') }}</span>
-                      {% if ref.pubmed_id != none %}
-                          <small>PMID: {{ ref.pubmed_id|e }}</small>
-                      {% endif %}
-                      <ul class="ref-links">
-                          <li><a href="{{ ref.link|e }}">SGD Paper</a></li>
-                          {% for url in ref.urls %}
-                              <li><a target="_infowin" href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
-                          {% endfor %}
-                      </ul>
-                   </li>
-                {% endfor %}
-            </ul>
+	    {% set reference_list_id = "allele_interaction_list" %}
+            {% set empty_message = "No interaction literature curated." %}
+            {% include "reference_list.jinja2" %}
 	</div>
 	</section>
         {% endif %}
@@ -272,6 +199,6 @@
 <script src="/static/js/build/arbor.js"></script>
 <script src="{{asset_root}}/js/cytoscape.js"></script>
 <script src="{{asset_root}}/js/evidence.js"></script>
-<script src="{{asset_root}}/js/allele.js"></script>
+<script src="{{asset_root}}/js/allele_literature.js"></script>
 {% endblock scripts %}
 
