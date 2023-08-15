@@ -322,7 +322,7 @@ class Header extends Component {
                         YGOB (Trinity College)
                       </a>
                     </li>
-		    <li>
+                    <li>
                       <a
                         className="disabled-header-a"
                         href="https://alphafold.ebi.ac.uk/"
@@ -491,6 +491,15 @@ class Header extends Component {
             <li className="has-dropdown">
               <a href="#">Community</a>
               <ul className="dropdown">
+                <li>
+                  <a
+                    className="disabled-header-a"
+                    href="https://community.alliancegenome.org/categories"
+                  >
+                    Community Forum
+                  </a>
+                </li>
+
                 <li className="has-dropdown">
                   <a href="#">Colleague Information</a>
                   <ul className="dropdown">
