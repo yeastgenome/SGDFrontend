@@ -491,16 +491,15 @@ class Header extends Component {
             <li className="has-dropdown">
               <a href="#">Community</a>
               <ul className="dropdown">
-                <li>
-                  <a
-                    className="disabled-header-a"
-                    href="https://community.alliancegenome.org/categories"
-                  >
-                    Community Forum
-                  </a>
-                </li>
-
                 <li className="has-dropdown">
+                  <li>
+                    <a
+                      className="disabled-header-a"
+                      href=""
+                    >
+                      Community Forum
+                    </a>
+                  </li>
                   <a href="#">Colleague Information</a>
                   <ul className="dropdown">
                     <li>
