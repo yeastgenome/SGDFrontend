@@ -1,0 +1,223 @@
+{% extends "global_layout.jinja2" %}
+
+{% block title %}{{ strain.display_name }}{% endblock %}
+
+{% block head %}
+<script>
+    var strain = {{ strain_js|safe }};
+</script>
+
+{% endblock %}
+
+{% block body %}
+
+<!-- Tabs -->
+
+<div class="row hide-for-small">
+    <nav class="small-12 columns">
+	<ul class="tabs sgd-tabs">
+            <li id="summary_tab" class="tab-title"> <a href="/strain/{{ strain.display_name }}"><span>Summary</span></a></li>
+            <li id="literature_tab" class="tab-title"><a href="/strain/{{ strain.display_name }}/literature"><span>Literature</span></a></li>
+        </ul>
+	<div class="sgd-tab-shadow"></div>
+    </nav>
+</div>
+
+<nav class="top-bar show-for-small mobile-tab-bar" data-topbar role="navigation">
+        <ul class="title-area">
+                <li class="name">
+                   <h1><a>{{ strain.display_name }}</a></h1>
+                </li>
+                <li class="toggle-topbar"><a href="#"><span>&nbsp;<i class="fa fa-list-ul"></i></span></a></li>
+        </ul>
+        <section class="top-bar-section">
+          <ul class="right">
+            <li id="summary_tab" class="tab-title"><a href="/strain/{{ strain.display_name }}"><span>Summary</span></a></li>
+            <li id="literature_tab" class="tab-title"><a href="/strain/{{ strain.display_name }}/literature"><span>Literature</span></a></li>
+          </ul>
+        </section>
+</nav>
+
+<script>document.getElementById("literature_tab").className += " active";</script>
+
+<!-- Navbar
+================================================== -->
+<div class="row">
+
+    <!-- Includes navbar.html into template -->
+    {% include "navbar.jinja2" %}
+
+    <div class="small-12 medium-10 columns content-column">
+
+        <script>
+            add_navbar_title('{{ strain.display_name }}')
+            add_navbar_element('Literature Overview', 'overview');
+            {% if strain.literature_overview.phenotype_count > 0 %}
+                add_navbar_element('Phenotype Literature', 'phenotype');
+            {% endif %}
+	    {% if strain.literature_overview.disease_count > 0 %}
+                add_navbar_element('Disease Literature', 'disease');
+            {% endif %}
+	    {% if strain.literature_overview.regulation_count > 0 %}
+                add_navbar_element('Regulation Literature', 'regulation');
+            {% endif %}
+	    {% if strain.literature_overview.ptm_count > 0 %}
+                add_navbar_element('Post-translational Modifications Literature', 'ptm');
+            {% endif %}
+	    {% if strain.literature_overview.funComplement_count > 0 %}
+                add_navbar_element('Functional Complementation Annotations Literature', 'funComplement');
+            {% endif %}
+            {% if strain.literature_overview.htp_count > 0 %}
+                add_navbar_element('High-Throughput Literature', 'htp');
+            {% endif %}
+        </script>
+
+        <!-- Overview -->
+        <section id="overview" data-magellan-destination="overview">
+            <h1>{{ strain.display_name }} Literature
+                <a href="#" data-dropdown="summary_info"><i class="fa fa-info-circle"></i></a>
+                <p id="summary_info" class="f-dropdown content medium" data-dropdown-content>
+		    All manually curated literature for the specified strain. SGD gathers references via
+		    a PubMed search for papers whose titles or abstracts contain “yeast” or “cerevisiae;”
+		    these papers are reviewed manually and linked to relevant strains by SGD curators.
+                </p>
+            </h1>
+            <hr />
+	    
+            <div class="">
+                <dl class="key-value">
+    		    <dt>Unique References</dt>
+                    <dd>{{ strain.literature_overview.total_count }}</dd>
+                </dl>
+            </div>
+	    
+        </section>
+
+	<!-- Phenotype references -->
+        {% if strain.literature_overview.phenotype_count > 0 %}
+        <section id="phenotype" data-magellan-destination="phenotype">
+	<div class="page-header">
+            <h2>Phenotype Literature
+                 <a href="#" data-dropdown="phenotype_info"><i class="fa fa-info-circle"></i></a>
+                 <p id="phenotype_info" class="f-dropdown content medium" data-dropdown-content>
+                      Paper(s) associated with one or more pieces of phenotype evidence in SGD for the specified strain.
+                 </p>
+            </h2>
+            <hr />
+	    {% set reference_list_id = "strain_phenotype_list" %}
+            {% set empty_message = "No phenotype literature curated." %}
+            {% include "reference_list.jinja2" %}
+	</div>
+        </section>
+        {% endif %}
+
+	<!-- disease references
+	================================================== -->
+        {% if strain.literature_overview.disease_count > 0 %}
+        <section id="disease" data-magellan-destination="disease">
+        <div class="page-header">
+            <h2>Disease Literature
+                 <a href="#" data-dropdown="disease_info"><i class="fa fa-info-circle"></i></a>
+                 <p id="disease_info" class="f-dropdown content medium" data-dropdown-content>
+                      Paper(s) associated with one or more pieces of disease evidence in SGD for the specified strain.
+                 </p>
+            </h2>
+            <hr />
+            {% set reference_list_id = "strain_disease_list" %}
+            {% set empty_message = "No disease literature curated." %}
+            {% include "reference_list.jinja2" %}
+        </div>
+        </section>
+        {% endif %}
+	
+	<!-- regulation references
+	================================================== -->
+        {% if strain.literature_overview.regulation_count > 0 %}
+        <section id="regulation" data-magellan-destination="regulation">
+        <div class="page-header">
+            <h2>Regulation Literature
+                 <a href="#" data-dropdown="regulation_info"><i class="fa fa-info-circle"></i></a>
+                 <p id="regulation_info" class="f-dropdown content medium" data-dropdown-content>
+                      Paper(s) associated with one or more pieces of regulation evidence in SGD for the specified strain.
+                 </p>
+            </h2>
+            <hr />
+            {% set reference_list_id = "strain_regulation_list" %}
+            {% set empty_message = "No regulation literature curated." %}
+            {% include "reference_list.jinja2" %}
+        </div>
+        </section>
+        {% endif %}
+
+	<!-- ptm references
+	================================================== -->
+        {% if strain.literature_overview.ptm_count > 0 %}
+        <section id="ptm" data-magellan-destination="ptm">
+        <div class="page-header">
+            <h2>Post-translational Modifications Literature
+                 <a href="#" data-dropdown="ptm_info"><i class="fa fa-info-circle"></i></a>
+                 <p id="ptm_info" class="f-dropdown content medium" data-dropdown-content>
+                      Paper(s) associated with one or more pieces of post-translational modification evidence in SGD for the specified strain.
+                 </p>
+            </h2>
+            <hr />
+            {% set reference_list_id = "strain_ptm_list" %}
+            {% set empty_message = "No ptm literature curated." %}
+            {% include "reference_list.jinja2" %}
+        </div>
+        </section>
+        {% endif %}
+
+	<!-- functional complementation references
+	================================================== -->
+        {% if strain.literature_overview.funComplement_count > 0 %}
+        <section id="funComplement" data-magellan-destination="funComplement">
+        <div class="page-header">
+            <h2>Functional Complementation Literature
+                 <a href="#" data-dropdown="funComplement_info"><i class="fa fa-info-circle"></i></a>
+                 <p id="funComplement_info" class="f-dropdown content medium" data-dropdown-content>
+                      Paper(s) associated with one or more pieces of functional complementation evidence in SGD for the specified strain.
+                 </p>
+            </h2>
+            <hr />
+            {% set reference_list_id = "strain_funComplement_list" %}
+            {% set empty_message = "No functional complementation literature curated." %}
+            {% include "reference_list.jinja2" %}
+        </div>
+        </section>
+        {% endif %}
+
+	<!-- htp references
+	================================================== -->
+        {% if strain.literature_overview.htp_count > 0 %}
+        <section id="htp" data-magellan-destination="htp">
+        <div class="page-header">
+            <h2>High-Throughput Literature
+                 <a href="#" data-dropdown="htp_info"><i class="fa fa-info-circle"></i></a>
+                 <p id="htp_info" class="f-dropdown content medium" data-dropdown-content>
+                      Paper(s) associated with one or more pieces of high-throughput evidence in SGD for the specified strain.
+                 </p>
+            </h2>
+            <hr />
+            {% set reference_list_id = "strain_htp_list" %}
+            {% set empty_message = "No high-throughput literature curated." %}
+            {% include "reference_list.jinja2" %}
+        </div>
+        </section>
+        {% endif %}
+	
+  </div>
+</div>
+
+{% endblock body %}
+
+{% block scripts %}
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script src="{{asset_root}}/js/build/cytoscape.min.js"></script>
+{# don't host arbor.js on CDN because it makes webworker files that don't work on the cloud :( #}
+<script src="/static/js/build/arbor.js"></script>
+<script src="{{asset_root}}/js/cytoscape.js"></script>
+<script src="{{asset_root}}/js/evidence.js"></script>
+<script src="{{asset_root}}/js/strain_literature.js"></script>
+{% endblock scripts %}
+

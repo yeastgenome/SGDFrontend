@@ -219,6 +219,14 @@ def allele_literature_details(request):
         return not_found(request)
     return render_to_response(TEMPLATE_ROOT + 'allele_literature.jinja2', allele_obj, request=request)
 
+@view_config(route_name='strain_literature_details')
+def strain_literature_details(request):
+    strainName = request.matchdict['identifier']
+    strain_obj = get_obj(strainName, 'strain')
+    if strain_obj is None:
+        return not_found(request)
+    return render_to_response(TEMPLATE_ROOT + 'strain_literature.jinja2', strain_obj, request=request)
+
 # If is_quick, try to redirect to gene page.  If not, or no suitable response, then just show results in script tag and let client js do the rest.
 @view_config(route_name='search')
 def search(request):

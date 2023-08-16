@@ -89,6 +89,8 @@ def prep_views(chosen_frontend, config):
                     renderer=chosen_frontend.get_renderer('strain'),
                     route_name='strain')
 
+    config.add_route('strain_literature_details', '/strain/{identifier}/literature')
+    
     config.add_route('redirect', '/redirect/{page}')
     config.add_view(lambda request: getattr(chosen_frontend, 'redirect')(page=request.matchdict['page'], params=request.GET),
                     renderer=chosen_frontend.get_renderer('redirect'),
