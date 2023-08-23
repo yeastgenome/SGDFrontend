@@ -54,6 +54,12 @@
             {% if locus.literature_overview.regulation_count > 0 %}
 	       add_navbar_element('Regulation Literature', 'regulation');
 	    {% endif %}
+	    {% if locus.literature_overview.ptm_count > 0 %}
+               add_navbar_element('Post-translational Modifications Literature', 'ptm');
+            {% endif %}
+	    {% if locus.literature_overview.funComplement_count > 0 %}
+               add_navbar_element('Functional Complementation Annotations Literature', 'funComplement');
+            {% endif %}
             {% if locus.literature_overview.htp_count > 0 %}
 	       add_navbar_element('High-Throughput Literature', 'htp');
 	    {% endif %}
@@ -247,7 +253,45 @@
             {% include "reference_list.jinja2" %}
           </section>
         {% endif %}
-	
+
+	<!-- PTM
+        ================================================== -->
+        {% if locus.literature_overview.ptm_count > 0 %}
+          <section id="ptm" data-magellan-destination="ptm">
+            <h2>Post-translational Modifications Literature
+                <a href="#" data-dropdown="ptm_info"><i class="fa fa-info-circle"></i></a>
+
+                <p id="ptm_info" class="f-dropdown content medium" data-dropdown-content>
+                    Paper(s) associated with one or more pieces of post-translational modifications evidence in SGD.
+                </p>
+                <span id="ptm_header" class="label secondary round"></span>
+            </h2>
+            <hr />
+            {% set reference_list_id = "ptm_list" %}
+            {% set empty_message = "No post-translational modifications literature curated." %}
+            {% include "reference_list.jinja2" %}
+          </section>
+        {% endif %}
+
+	<!-- Functional complementations
+	================================================== -->
+        {% if locus.literature_overview.funComplement_count > 0 %}
+          <section id="funComplement" data-magellan-destination="funComplement">
+            <h2>Functional Complementation Annotations Literature
+                <a href="#" data-dropdown="funComplement_info"><i class="fa fa-info-circle"></i></a>
+
+		<p id="funComplement_info" class="f-dropdown content medium" data-dropdown-content>
+                    Paper(s) associated with one or more pieces of functional complementation annotations evidence in SGD.
+                </p>
+                <span id="funComplement_header" class="label secondary round"></span>
+            </h2>
+            <hr />
+            {% set reference_list_id = "funComplement_list" %}
+            {% set empty_message = "No functional complementation annotations literature curated." %}
+            {% include "reference_list.jinja2" %}
+          </section>
+        {% endif %}
+
         <!-- HTP -->
 	{% if locus.literature_overview.htp_count > 0 %}
           <section id="htp" data-magellan-destination="htp">

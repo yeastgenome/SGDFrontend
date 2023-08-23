@@ -280,6 +280,10 @@
 		     	      <dd>{{ locus.protein_overview.median_value }}</dd>
 	             	  {% endif %}
 		     {% endif %}
+		     {% if locus.protein_overview.half_life %}
+		        <dt style="width:300px">Half-life ({{locus.protein_overview.half_life.data_unit}})</dt>
+		     	<dd>{{ locus.protein_overview.half_life.data_value }}</dd>
+		     {% endif %}
                  </dl>
             </div>
         </div>
