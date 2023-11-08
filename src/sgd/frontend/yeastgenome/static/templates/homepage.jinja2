@@ -188,11 +188,13 @@ anti-Fpr3 antibody courtesy of Jeremy Thorner, Ph.D., UC Berkeley</span>
             {% endfor %}
             <p><a href="/blog">More Articles</a></p>
         </div>
-        <div class="columns medium-4">
-            <div class="homepage-twitter-entry">
-                <a class="twitter-timeline" href="https://twitter.com/yeastgenome?ref_src=twsrc%5Etfw" data-tweet-limit="3">@yeastgenome</a>
-                <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-            </div>
+        <div class="columns medium-4 white-background">
+	   <h1>Community Forum</h1>
+           {% for post in discourse_posts %}
+                <div class="community-forum-entry">
+		<span class="homepage-blog-title"><a href="{{post.link_url}}" target="_new">{{ post.title }}</a><br><div class="community-forum-category">{{ post.category }}</div></span>
+                </div>
+            {% endfor %}
         </div>
     </div>
 </div>
@@ -200,6 +202,38 @@ anti-Fpr3 antibody courtesy of Jeremy Thorner, Ph.D., UC Berkeley</span>
 {% endblock body %}
 
 {% block scripts %}
+<style>
+  .white-background {
+    background-color: white;
+    padding: 15px; /* Optional: for some spacing inside the box */
+    border-radius: 5px; /* Optional: if you want rounded corners */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: for a slight shadow to lift the box off the page */
+  }
+  
+  .community-forum-entry {
+    border-bottom: 1px solid lightgrey; /* Light grey line to separate posts */
+    padding-bottom: 10px; /* Space below the post title and category */
+    margin-bottom: 10px; /* Space below the grey line */
+  }
+
+  .community-forum-title {
+    color: blue; /* Grey color for title and category text */
+    display: block; /* Ensure that the title takes up the full width */
+    margin-bottom: 5px; /* Space between the title and category */
+  }
+
+  .community-forum-category {
+    color: #505050;  /* a grey that is darker than 'darkgray' but lighter than black */
+    font-size: smaller; /* Smaller font size for the category */
+    display: block; /* Ensure that the category takes up the full width */
+  }
+
+  /* Optional: Add this if you want the last item not to have a border */
+  .community-forum-entry:last-child {
+    border-bottom: none;
+  }
+  
+</style>
 <script>
     // wait a little bit to show the slideshow
     setTimeout(function () {

@@ -4,7 +4,9 @@ from pyramid.view import view_config
 from pyramid.renderers import render_to_response
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPInternalServerError, HTTPMovedPermanently
 # from src.sgd.frontend import config
-from src.sgd.frontend.yeastgenome.views.cms_helpers import BLOG_BASE_URL, BLOG_PAGE_SIZE, add_simple_date_to_post, get_wp_categories, get_archive_years, get_meetings, get_recent_blog_posts, wp_categories
+from src.sgd.frontend.yeastgenome.views.cms_helpers import BLOG_BASE_URL, BLOG_PAGE_SIZE, \
+    add_simple_date_to_post, get_wp_categories, get_archive_years, get_meetings, \
+    get_recent_blog_posts, get_recent_posts_from_discourse, wp_categories
 import urllib.request, urllib.parse, urllib.error
 import datetime
 import json
@@ -311,8 +313,9 @@ def primer3(request):
 @view_config(route_name='home')
 def home(request):
     blog_posts = get_recent_blog_posts()
+    discourse_posts = get_recent_posts_from_discourse()
     meetings = get_meetings()
-    return render_to_response(TEMPLATE_ROOT + 'homepage.jinja2', { 'meetings': meetings, 'blog_posts': blog_posts }, request=request)
+    return render_to_response(TEMPLATE_ROOT + 'homepage.jinja2', { 'meetings': meetings, 'blog_posts': blog_posts, 'discourse_posts': discourse_posts }, request=request)
 
 # # example
 # @view_config(route_name='example')

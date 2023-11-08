@@ -7,6 +7,9 @@ from dateutil import parser
 # from src.sgd.frontend import config
 
 BLOG_BASE_URL = 'https://public-api.wordpress.com/rest/v1.1/sites/yeastgenomeblog.wordpress.com/posts'
+
+DISCOURSE_BASE_URL = 'https://community.alliancegenome.org/'
+
 BLOG_PAGE_SIZE = 10
 HOMEPAGE_REQUEST_TIMEOUT = 2
 URL_REGEX = 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
@@ -91,6 +94,68 @@ def get_recent_blog_posts():
     except Exception as e:
         blog_posts = []
     return blog_posts
+
+
+def get_recent_posts_from_discourse():
+    try:
+        # response = requests.get(DISCOURSE_BASE_URL + "latest.json",
+        response = requests.get(DISCOURSE_BASE_URL + "c/model-organism-yeast/8/l/latest.json",
+                                timeout=HOMEPAGE_REQUEST_TIMEOUT)
+        json_data = json.loads(response.text)
+        sgd_posts = []
+        post_count = 0
+
+        """
+        num2mon = {"01": "January", "02": "February", "03": "March", "04": "April",
+                   "05": "May", "06": "June", "07": "July", "08": "August",
+                   "09": "September", "10": "October", "11": "November", "12": "December"
+         }
+        """
+
+        id_to_category = { 237: "Announcements",
+                           241: "Conferences",
+                           238: "News and Views",
+                           239: "Newsletter",
+                           240: "Tutorial"
+        }
+        
+        for post in json_data['topic_list']['topics']:
+            post_count += 1
+            if post_count > 20:
+                break
+            link_url = DISCOURSE_BASE_URL + 't/' + post['slug'] + '/' + str(post['id'])
+
+            """
+            res = requests.get(link_url)
+            content = res.text
+            content = content.split('meta name="twitter:description"')[1]
+            content = content.split('..." />')[0]
+            content = content.replace('content="', "")
+            words = content.split(' ')
+            if len(words) > 55:
+                content = ' '.join(words[0:56]) + ' '
+            short_content = None
+            if not content.endswith(' '):
+                words = content.split(' ')
+                words[-1] = '[...]'
+                short_content = ' '.join(words)
+            else:
+                short_content = content + "[...]"
+            short_content = short_content.strip()
+            date = post['last_posted_at'].split('T')[0].split('-')
+            last_posted_at = num2mon[date[1]] + " " + date[2] + ", " + date[0]
+            """
+            category = ''
+            if post['category_id'] in id_to_category:
+                category = id_to_category[post['category_id']]
+            
+            sgd_posts.append({ "title": post['title'],
+                               "link_url": link_url,
+                               "category": category })
+    except Exception as e:
+        sgd_posts = []
+    return sgd_posts
+
 
 # fetch "SGD Public Events" google calendar data and format as needed for homepage
 def get_meetings():
