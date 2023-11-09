@@ -188,13 +188,23 @@ anti-Fpr3 antibody courtesy of Jeremy Thorner, Ph.D., UC Berkeley</span>
             {% endfor %}
             <p><a href="/blog">More Articles</a></p>
         </div>
-        <div class="columns medium-4 white-background">
-	   <h1>Community Forum</h1>
+        <div class="columns medium-4 white-background" style="margin-top: -10px;">
+           <div style="display: flex; align-items: center; justify-content: flex-start; padding-top: 0;"> <!-- Reduced top padding -->
+             <h1 style="margin-right: 5px;">Community Forum</h1>
+             <a href="https://community.alliancegenome.org/c/model-organism-yeast/8" target="_new">
+                <div style="width: 40px; height: 40px; overflow: hidden; margin-left: 10px;">
+                   <img src="https://raw.githubusercontent.com/alliance-genome/agr_ui/stage/libs/shared-assets/src/lib/assets/alliance_logo.png" alt="alliance logo" style="width: auto; height: 100%; object-fit: cover; object-position: left;">
+                </div>
+             </a>
+           </div>
            {% for post in discourse_posts %}
                 <div class="community-forum-entry">
-		<span class="homepage-blog-title"><a href="{{post.link_url}}" target="_new">{{ post.title }}</a><br><div class="community-forum-category">{{ post.category }}</div></span>
+		   <span class="homepage-blog-title"><a href="{{post.link_url}}" target="_new">{{ post.title }}</a><br><div class="community-forum-category">{{ post.category }}</div></span>
                 </div>
             {% endfor %}
+	    <div class="community-forum-entry">
+               <span class="homepage-blog-title"><a href="https://community.alliancegenome.org/c/model-organism-yeast/8" target="_new">More...</a></span>
+            </div>
         </div>
     </div>
 </div>
