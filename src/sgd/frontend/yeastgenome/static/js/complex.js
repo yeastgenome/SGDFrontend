@@ -60,7 +60,7 @@ function create_complex_table(data, analyze_genes) {
     for (var i = 0; i < evidence.length; i++) {
         datatable.push(complex_subunit_data_to_table(evidence[i]));
         subunits[evidence[i]["display_name"]] = true;
-	if (evidence[i]["link"].includes("/locus/")) {
+	if (evidence[i]["link"].includes("/locus/") && evidence[i]["dbentity_id"] != null) {
 	    analyze_genes.push(evidence[i]["dbentity_id"].toString());
 	}   
     }
