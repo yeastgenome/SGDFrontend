@@ -116,7 +116,8 @@ def get_recent_posts_from_discourse():
                            241: "Conferences",
                            238: "News and Views",
                            239: "Newsletter",
-                           240: "Tutorial"
+                           240: "Tutorial",
+                           242: "Strain collections"
         }
         
         for post in json_data['topic_list']['topics']:
