@@ -431,7 +431,7 @@ class Header extends Component {
                 <li>
                   <a
                     className="disabled-header-a"
-                    href="https://sgd-textpresso.alliancegenome.org/tpc/search"
+                    href="https://www.alliancegenome.org/textpresso/sgd/tpc/search"
                   >
                     Full-text Search
                   </a>
