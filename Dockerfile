@@ -20,7 +20,7 @@ WORKDIR /data/www/logs
 WORKDIR /data/www/tmp
 
 WORKDIR /data/www/SGDFrontend
-RUN git checkout master_docker \
+RUN git checkout docker_graviton \
     && npm install -g bower \
     && bower install --force \
     && pip3 install virtualenv \
