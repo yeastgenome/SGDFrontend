@@ -39,7 +39,7 @@ grunt:
 dependencies:
 	npm install
 	npm install -g grunt-cli
-	bundle install
+	# bundle install
 	npm run format
 	# npm run lint
 
