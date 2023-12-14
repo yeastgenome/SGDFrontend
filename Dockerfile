@@ -10,10 +10,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
         nodejs \
 	npm \
         python3-pip \
-        ruby \
-        ruby-dev \
 	tzdata \
-    && gem install bundler \
     && git clone https://github.com/yeastgenome/SGDFrontend.git
 
 WORKDIR /data/www/logs
