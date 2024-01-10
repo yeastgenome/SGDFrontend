@@ -13,7 +13,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
         ruby \
         ruby-dev \
 	tzdata \
-    && gem install bundler \
+    && gem install bundler -v 2.4.22 \
     && git clone https://github.com/yeastgenome/SGDFrontend.git
 
 WORKDIR /data/www/logs
