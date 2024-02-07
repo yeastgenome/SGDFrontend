@@ -650,6 +650,9 @@ class SearchForm extends Component {
 
     pattern = pattern.replace('%3C', '<');
     pattern = pattern.replace('%3E', '>');
+    pattern = pattern.replace('%7B', '{');
+    pattern = pattern.replace('%7D', '}');
+    pattern = pattern.replace('%2C', ',');
 
     $.ajax({
       url: PatmatchUrl,
