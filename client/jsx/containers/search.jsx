@@ -18,6 +18,14 @@ import { createPath } from '../lib/search_helpers';
 import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
 
+const SEARCH_URL = '/search';
+const CATS_SORTED_BY_ANNOTATION = [
+  'phenotype',
+  'biological_process',
+  'cellular_component',
+  'molecular_function',
+];
+
 const Search = createReactClass({
   displayName: 'Search',
 
