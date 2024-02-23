@@ -1,10 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Radium from 'radium';
 import { connect } from 'react-redux';
 import _ from 'underscore';
-import S from 'string';
-const queryString = require('query-string');
+import queryString from 'query-string';
+import Radium from 'radium';
 
 import SearchResult from '../components/search/search_result.jsx';
 import SearchDownloadAnalyze from '../components/search/search_download_analyze.jsx';
@@ -19,14 +18,6 @@ import { createPath } from '../lib/search_helpers';
 import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
 
-const SEARCH_URL = '/search';
-const CATS_SORTED_BY_ANNOTATION = [
-  'phenotype',
-  'biological_process',
-  'cellular_component',
-  'molecular_function',
-];
-
 const Search = createReactClass({
   displayName: 'Search',
 
@@ -35,15 +26,24 @@ const Search = createReactClass({
       return <ErrorMessage />;
     }
     return (
-      <div className="row">
-        <div className="column medium-4 hide-for-small">
+      <div className="row" style={{ display: "flex" }}>
+        <div style={{
+          maxWidth: "32em",
+          flex: "1",
+          position: "sticky",
+          top: "0px",
+          alignSelf: "flex-start",
+          zIndex: 1000,
+          maxHeight: "100vh",
+          overflowY: "auto"
+        }}>
           <FacetSelector
             isMobile={false}
             downloadStatus={this._getdownloadStatus}
             downloadStatusStr={this.props.downloadStatusStr}
           />
         </div>
-        <div className="column small-12 medium-8">
+        <div style={{ flex: "3", marginLeft: "20px" }}>
           <div className="show-for-small-only">
             <Collapser label="Categories">
               <FacetSelector
@@ -53,7 +53,7 @@ const Search = createReactClass({
               />
             </Collapser>
           </div>
-          <div style={[style.resultsWraper]}>
+          <div>
             <SearchBreadcrumb />
             {this._renderControls()}
             {this._renderSearchContent()}
