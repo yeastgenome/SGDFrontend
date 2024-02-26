@@ -3,6 +3,21 @@ Module rules - SMACSS
 http://smacss.com/book/type-module
 *********************************************/
 
+#search_sidebar.sticky {
+  position: fixed;
+  top: 50px;
+  max-width: 390px;
+  min-width: 300px;
+  max-height: 80vh;
+  min-height: 300px; // 500px
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+#search_sidebar.sticky.safari {
+  top: 100px; /* Adjust the value as needed for Safari */
+}
+
 // Sticky Side navigation
 #side-nav-sticky {
 	max-width: 150px;
@@ -95,3 +110,7 @@ http://smacss.com/book/type-module
         display: none;
     }
 }
+
+
+
+

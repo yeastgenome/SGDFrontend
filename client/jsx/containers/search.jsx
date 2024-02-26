@@ -27,6 +27,42 @@ const CATS_SORTED_BY_ANNOTATION = [
   'molecular_function',
 ];
 
+document.addEventListener('DOMContentLoaded', function () {
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+  if (isSafari) {
+    document.getElementById('search_sidebar').classList.add('safari');
+  }
+});
+
+window.addEventListener(
+  'scroll',
+  debounce(function () {
+    const sidebar = document.getElementById('search_sidebar');
+    const stickyStart = sidebar.offsetTop;
+    const isScrollingUp = window.scrollY < prevScrollY; // Check scroll direction
+
+    if (isScrollingUp && window.scrollY < stickyStart) {
+      sidebar.classList.remove('sticky');
+    } else if (!isScrollingUp) {
+      // Add the class when scrolling down
+      sidebar.classList.add('sticky');
+    }
+
+    prevScrollY = window.scrollY; // Update previous scroll position
+  }, 10)
+); // Adjust the debounce time as needed
+
+function debounce(func, delay) {
+  let timerId;
+  return function () {
+    clearTimeout(timerId);
+    timerId = setTimeout(func, delay);
+  };
+}
+
+let prevScrollY = 0; // Store previous scroll position
+
 const Search = createReactClass({
   displayName: 'Search',
 
@@ -36,7 +72,7 @@ const Search = createReactClass({
     }
     return (
       <div className="row">
-        <div className="column medium-4 hide-for-small">
+        <div id="search_sidebar" className="column medium-4 hide-for-small">
           <FacetSelector
             isMobile={false}
             downloadStatus={this._getdownloadStatus}
