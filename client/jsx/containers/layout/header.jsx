@@ -652,6 +652,14 @@ class Header extends Component {
                     <li>
                       <a
                         className="disabled-header-a"
+                        href="https://wiki.yeastgenome.org/index.php/Genetic_Loci"
+                      >
+                        Genetic Loci
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        className="disabled-header-a"
                         href="http://wiki.yeastgenome.org/index.php/ORFmap_Images"
                       >
                         ORFMap Chromosomes
