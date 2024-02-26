@@ -352,8 +352,18 @@ def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):
         file_path = os.path.dirname(os.path.realpath(__file__)) + '/../../../../production_asset_url.json'
         asset_root = json.load(open(file_path, 'r'))['url']
     else:
+        ## new section added by SW for caching
+        from pyramid.events import NewResponse
+        def no_cache_listener(event):
+            event.response.headers.update({
+                'Cache-Control': 'no-store, must-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0'
+            })
+        configurator.add_subscriber(no_cache_listener, NewResponse)
+        ## end of caching section
         asset_root = '/static'
-
+         
     # put query string in global template variable
     def add_template_global(event):
         event['asset_root'] = asset_root
