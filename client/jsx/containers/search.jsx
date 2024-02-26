@@ -115,6 +115,7 @@ const Search = createReactClass({
 
   _renderViewAs() {
     if (this.props.activeCategory !== 'locus') return null;
+    if (this.props.results.length < 2) return null;
     const qp = _.clone(this.props.queryParams);
     const isList = this.props.geneMode === 'list';
     const isWrap = this.props.geneMode === 'wrap';
