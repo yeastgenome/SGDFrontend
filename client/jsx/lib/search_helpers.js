@@ -23,6 +23,7 @@ export function getCategoryDisplayName(key) {
     reserved_name: 'Reserved Gene Names',
     chemical: 'Chemical',
     disease: 'Disease',
+    dataset: 'Dataset',
     allele: 'Allele'  
   };
   return labels[key] || key.replace('_', ' ');
