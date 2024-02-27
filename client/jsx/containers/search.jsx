@@ -18,7 +18,7 @@ import { startSearchFetchMaybeAsycFetch } from '../actions/search_actions';
 import { createPath } from '../lib/search_helpers';
 import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
-
+const WRAPPED_PAGE_SIZE = 1500;
 const SEARCH_URL = '/search';
 const CATS_SORTED_BY_ANNOTATION = [
   'phenotype',
@@ -216,6 +216,12 @@ const Search = createReactClass({
           Genetic loci that are not mapped to the genome sequence will be
           excluded from the analysis list.
         </p>
+        {this.props.asyncResults.length >= WRAPPED_PAGE_SIZE && (
+          <p>
+            Please note, the maximum size of the wrapped table is set to{' '}
+            {WRAPPED_PAGE_SIZE} genes.
+          </p>
+        )}
       </div>
     );
   },
