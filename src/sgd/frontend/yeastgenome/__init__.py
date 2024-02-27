@@ -295,9 +295,6 @@ class YeastgenomeFrontend(FrontendInterface):
     
     def analyze(self, list_name, bioent_ids):
 
-        if (bioents) < 2:
-            return Response(status_int=500, body='Need at least two genes for analyzing')
-        
         is_name = False
         # if len(bioent_ids) > 0 and str(bioent_ids[0]).isdigit():
         #     bioent_ids = list(set([int(x) for x in bioent_ids if x is not None]))
