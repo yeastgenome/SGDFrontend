@@ -35,6 +35,18 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
+document.addEventListener('DOMContentLoaded', function () {
+  const sidebar = document.getElementById('search_sidebar');
+
+  sidebar.addEventListener('scroll', function() {
+    if (sidebar.scrollTop > 0) {
+      sidebar.classList.add('scrolled');
+    } else {
+      sidebar.classList.remove('scrolled');
+    }
+  });
+});
+
 window.addEventListener(
   'scroll',
   debounce(function () {
