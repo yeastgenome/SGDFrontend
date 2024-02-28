@@ -24,7 +24,6 @@ export function getCategoryDisplayName(key) {
     chemical: 'Chemical',
     disease: 'Disease',
     dataset: 'Dataset',
-    rnacentral_id: 'RNAcentral ID',  
     allele: 'Allele'  
   };
   return labels[key] || key.replace('_', ' ');
