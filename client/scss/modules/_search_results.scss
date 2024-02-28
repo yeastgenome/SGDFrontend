@@ -23,6 +23,12 @@ $hover-color: #e6e6e6;
 	&.molecular_function {
 		background: #8c564b;
 	}
+	&.allele {
+                background: #4eb7f5;
+        }
+	&.dataset {
+                background: #4ef5ca;
+        }
 	&.phenotype {
 		background: #e377c2;
 	}

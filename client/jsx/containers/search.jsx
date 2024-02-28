@@ -18,7 +18,7 @@ import { startSearchFetchMaybeAsycFetch } from '../actions/search_actions';
 import { createPath } from '../lib/search_helpers';
 import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
-
+const WRAPPED_PAGE_SIZE = 1500;
 const SEARCH_URL = '/search';
 const CATS_SORTED_BY_ANNOTATION = [
   'phenotype',
@@ -26,6 +26,54 @@ const CATS_SORTED_BY_ANNOTATION = [
   'cellular_component',
   'molecular_function',
 ];
+
+document.addEventListener('DOMContentLoaded', function () {
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+  if (isSafari) {
+    document.getElementById('search_sidebar').classList.add('safari');
+  }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+  const sidebar = document.getElementById('search_sidebar');
+
+  sidebar.addEventListener('scroll', function() {
+    if (sidebar.scrollTop > 0) {
+      sidebar.classList.add('scrolled');
+    } else {
+      sidebar.classList.remove('scrolled');
+    }
+  });
+});
+
+window.addEventListener(
+  'scroll',
+  debounce(function () {
+    const sidebar = document.getElementById('search_sidebar');
+    const stickyStart = sidebar.offsetTop;
+    const isScrollingUp = window.scrollY < prevScrollY; // Check scroll direction
+
+    if (isScrollingUp && window.scrollY < stickyStart) {
+      sidebar.classList.remove('sticky');
+    } else if (!isScrollingUp) {
+      // Add the class when scrolling down
+      sidebar.classList.add('sticky');
+    }
+
+    prevScrollY = window.scrollY; // Update previous scroll position
+  }, 10)
+); // Adjust the debounce time as needed
+
+function debounce(func, delay) {
+  let timerId;
+  return function () {
+    clearTimeout(timerId);
+    timerId = setTimeout(func, delay);
+  };
+}
+
+let prevScrollY = 0; // Store previous scroll position
 
 const Search = createReactClass({
   displayName: 'Search',
@@ -36,7 +84,7 @@ const Search = createReactClass({
     }
     return (
       <div className="row">
-        <div className="column medium-4 hide-for-small">
+        <div id="search_sidebar" className="column medium-4 hide-for-small">
           <FacetSelector
             isMobile={false}
             downloadStatus={this._getdownloadStatus}
@@ -79,6 +127,7 @@ const Search = createReactClass({
 
   _renderViewAs() {
     if (this.props.activeCategory !== 'locus') return null;
+    if (this.props.results.length < 2) return null;
     const qp = _.clone(this.props.queryParams);
     const isList = this.props.geneMode === 'list';
     const isWrap = this.props.geneMode === 'wrap';
@@ -179,6 +228,12 @@ const Search = createReactClass({
           Genetic loci that are not mapped to the genome sequence will be
           excluded from the analysis list.
         </p>
+        {this.props.asyncResults.length >= WRAPPED_PAGE_SIZE && (
+          <p>
+            Please note, the maximum size of the wrapped table is set to{' '}
+            {WRAPPED_PAGE_SIZE} genes.
+          </p>
+        )}
       </div>
     );
   },

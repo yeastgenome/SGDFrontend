@@ -47,6 +47,10 @@ const FacetSelector = createReactClass({
         : this.props.aggregations[0].values;
     let aggNodes = aggs.map((d, i) => {
       let name = pluralize(getCategoryDisplayName(d.key));
+      if (name.endsWith('S')) {
+        // Replace the last character with 's'
+        name = name.slice(0, -1) + 's';
+      }
       let href = '';
       if (d.key === 'download') {
         if (!location.search.toLocaleLowerCase().includes('status=active')) {
@@ -72,6 +76,10 @@ const FacetSelector = createReactClass({
       this.props.activeCategory === 'locus'
         ? 'Genes / Genomic Features'
         : pluralize(getCategoryDisplayName(this.props.activeCategory));
+    if (catName.endsWith('S')) {
+      // Replace the last character with 's'
+      catName = catName.slice(0, -1) + 's';
+    }
     return (
       <div>
         <p>
