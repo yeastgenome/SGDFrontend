@@ -11,7 +11,7 @@ $logo-height: 40px;
 $top-header-text-font-size: 14px;
 $header-text-font-size: 14px;
 $search-width: 224px;
-$large-search-width : 440px;
+$large-search-width : 500px;
 $top-header-font-color: #CCC;
 
 .top-header {
@@ -46,12 +46,21 @@ $top-header-font-color: #CCC;
 	justify-content: space-between;
 }
 
+/*
+.site-links {
+    width: $large-search-width;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px; 
+} 
+*/
+ 
 .site-links a {
 	color: $top-header-font-color;
 }
 
 .site-links .webicon {
-	margin: 2px 3px 0 0;
+	margin: 2px 5px 0 0;
 }
 
 // purple section
