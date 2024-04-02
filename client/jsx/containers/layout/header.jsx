@@ -42,9 +42,12 @@ class Header extends Component {
               >
                 Help
               </a>
-              <a href="https://yeastmine.yeastgenome.org/yeastmine/begin.do">
+              <a href="https://bluegenes.yeastgenome.org/yeastmine">
                 YeastMine
               </a>
+	      <a href="https://www.alliancegenome.org/bluegenes/alliancemine">
+		Get Data
+	      </a>
               <div className="social-media-links">
                 <a
                   href="mailto:sgd-helpdesk@lists.stanford.edu"
@@ -52,15 +55,6 @@ class Header extends Component {
                   className="webicon mail small"
                 >
                   Email Us
-                </a>
-                <a
-                  href="http://twitter.com/#!/yeastgenome"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  id="twitter"
-                  className="webicon twitter small"
-                >
-                  Twitter
                 </a>
                 <a
                   href="https://www.facebook.com/yeastgenome"
@@ -151,7 +145,7 @@ class Header extends Component {
                 <li>
                   <a
                     className="disabled-header-a"
-                    href="https://yeastmine.yeastgenome.org/yeastmine/bag.do"
+                    href="https://bluegenes.yeastgenome.org/yeastmine/lists"
                   >
                     Gene Lists
                   </a>
@@ -452,7 +446,7 @@ class Header extends Component {
                 <li>
                   <a
                     className="disabled-header-a"
-                    href="https://yeastmine.yeastgenome.org/yeastmine/loadTemplate.do?name=GenomeWide_Papers&constraint1=Publication.literatureTopics.name&op1=eq&value1=Omics&scope=all&method=results&format=tab"
+                    href="https://bluegenes.yeastgenome.org/yeastmine/templates/GenomeWide_Papers"
                   >
                     Genome-wide Analysis Papers
                   </a>
@@ -539,26 +533,8 @@ class Header extends Component {
                     Education
                   </a>
                 </li>
-                <li className="has-dropdown">
-                  <a href="#">Meetings</a>
-                  <ul className="dropdown">
-                    <li>
-                      <a
-                        className="disabled-header-a"
-                        href="http://wiki.yeastgenome.org/index.php/Meetings#Upcoming_Conferences_.26_Courses"
-                      >
-                        Future
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        className="disabled-header-a"
-                        href="http://wiki.yeastgenome.org/index.php/Meetings#Past_Yeast_Meetings"
-                      >
-                        Yeast Genetics
-                      </a>
-                    </li>
-                  </ul>
+		<li>
+		  <a class="disabled-header-a" href="https://community.alliancegenome.org/c/model-organism-yeast/conferences/241">Meetings</a>
                 </li>
                 <li className="has-dropdown">
                   <a href="#">Nomenclature</a>
