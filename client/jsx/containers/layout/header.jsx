@@ -201,7 +201,7 @@ class Header extends Component {
                 <li>
                   <a
                     className="disabled-header-a"
-                    href="https://browse.yeastgenome.org"
+                    href="https://jbrowse.yeastgenome.org"
                   >
                     Genome Browser
                   </a>

@@ -139,7 +139,7 @@ const SequenceComposite = createReactClass({
         />
       );
       var _jbHref =
-        'https://browse.yeastgenome.org/?loc=' +
+        'https://jbrowse.yeastgenome.org/?loc=' +
         this.props.focusLocusFormatName;
       if (this.props.mainStrain != 'S288C') {
         node = (

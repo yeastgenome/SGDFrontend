@@ -308,7 +308,7 @@ const GeneSequenceResources = createReactClass({
       </span>,
     ];
 
-    var url = 'https://browse.yeastgenome.org/?loc=chr' + chr;
+    var url = 'https://jbrowse.yeastgenome.org/?loc=chr' + chr;
     if (typeof start != 'undefined') {
       url += ':' + start + '..' + end;
     }
@@ -475,7 +475,7 @@ const GeneSequenceResources = createReactClass({
       var start = chrCoords['start'];
       var end = chrCoords['end'];
       var url =
-        'https://browse.yeastgenome.org/?loc=chr' +
+        'https://jbrowse.yeastgenome.org/?loc=chr' +
         chr +
         ':' +
         start +
