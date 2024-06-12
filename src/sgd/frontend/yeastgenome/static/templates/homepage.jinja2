@@ -164,7 +164,23 @@ anti-Fpr3 antibody courtesy of Jeremy Thorner, Ph.D., UC Berkeley</span>
 <div class="news-container">
     <div class="row">
         <div class="columns medium-4">
-            <h1>Meetings</h1>
+          <div class="gift-section">
+            <h2>
+                <span class="gift-icon">
+                    <i class="fa fa-gift"></i>
+                </span>
+                <span class="gift-heading">Give a Gift/Support SGD</span>
+            </h2>
+            <p><b>Your generous gift to SGD enables us to continue providing essential information for your research and teaching efforts.</b> Donations are now critical for our work to continue and are greatly appreciated.</p>
+            <p>To contribute, please make checks payable to Stanford University, and include a note stating that “these funds should be used to support the Saccharomyces Genome Database project, under the direction of Drs. Sherlock and Cherry in the Department of Genetics, Stanford University. Account : GHJKO, Genetics : WAZC."</p>
+            <p>Thank you for your support!</p>
+            <p><i>Kindly send by mail to:</i><br />
+               Development Services<br />
+               PO Box 20466<br />
+               Stanford, CA 94309</p>
+            <p><b>CONTACT US</b>: <br /><a href="mailto:sgd-helpdesk@lists.stanford.edu">sgd-helpdesk@lists.stanford.edu</a></p>
+	  </div>
+	    <h1>Meetings</h1>
             {% for meeting in meetings %}
                 <div class="homepage-blog-entry">
                     {% if meeting.url %}
@@ -213,6 +229,39 @@ anti-Fpr3 antibody courtesy of Jeremy Thorner, Ph.D., UC Berkeley</span>
 
 {% block scripts %}
 <style>
+    .gift-icon {
+        color: white;
+        background-color: #8B0000; /* Dark red color */
+        width: 40px; /* Set a fixed width */
+        height: 40px; /* Set a fixed height */
+        border-radius: 50%; /* Makes the shape a circle */
+        font-size: 24px; /* Adjust size as needed */
+        display: inline-flex; /* Use inline-flex for better alignment */
+        align-items: center; /* Center icon vertically */
+        justify-content: center; /* Center icon horizontally */
+        vertical-align: middle;
+    }
+
+    .gift-heading {
+        display: inline-block;
+        vertical-align: middle;
+        margin-left: 10px;
+        font-size: 20px; /* Match the size of the icon for better alignment */
+    }
+
+    .gift-section {
+        background-color: white;
+        padding: 10px; /* Add padding for better spacing */
+        border-radius: 5px; /* Optional: adds rounded corners */
+        margin-bottom: 10px; /* Space between sections */
+    }
+
+    .meetings-section {
+        background-color: #f0f0f0; /* Light gray background */
+        padding: 20px; /* Add padding for better spacing */
+        border-radius: 10px; /* Optional: adds rounded corners */
+    }
+
   .white-background {
     background-color: white;
     padding: 15px; /* Optional: for some spacing inside the box */
