@@ -48,13 +48,31 @@ class Header extends Component {
 	      <a href="https://www.alliancegenome.org/bluegenes/alliancemine">
 		Get Data
 	      </a>
-              <div className="social-media-links">
+	      <div className="social-media-links no-svg">
                 <a
                   href="mailto:sgd-helpdesk@lists.stanford.edu"
                   id="email-header"
                   className="webicon mail small"
                 >
                   Email Us
+                </a>
+		<a
+                  href="https://genomic.social/@yeastgenome"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="webicon mastodon small"
+                  id="mastodon"
+                >
+                  Mastodon
+                </a>
+		<a
+                  href="https://bsky.app/profile/yeastgenome.bsky.social"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="webicon bluesky small"
+                  id="bluesky"
+                >
+                  Bluesky
                 </a>
                 <a
                   href="https://www.facebook.com/yeastgenome"

@@ -1,20 +1,55 @@
-/* Webicons by Adam Fairhead at Fairhead Creative http://fairheadcreative.com */
-
-.webicon { display: inline-block; background-size: 100%; width: 30px; height: 30px; text-indent: -999em; text-align: left; -moz-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.5); -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.5); box-shadow: 0 1px 0 rgba(0, 0, 0, 0.5); -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; margin-bottom: 5px; }
-.webicon.small { width: 20px; height: 20px; -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; }
-.webicon.medium { width: 26px; height: 26px; -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; }
-.webicon.large { width: 48px; height: 48px; -moz-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; }
-
 // Include or remove the icons you want to use on your site from this list.
-$webicons-icons: facebook mail rss twitter youtube linkedin;
-
+$webicons-icons: facebook mail rss twitter youtube linkedin bluesky mastodon;
 
 // Specify the path to the webicons directory here. Include trailing slash.
 $webicons-url: "../img/webicons/" !default;
 
+.webicon {
+  display: inline-block;
+  background-size: cover; /* Ensure the background covers the entire element */
+  background-position: center center; /* Center the background image */
+  width: 30px;
+  height: 30px;
+  text-indent: -999em;
+  text-align: left;
+  -moz-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+
+.webicon.small {
+  width: 20px;
+  height: 20px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+}
+
+.webicon.medium {
+  width: 26px;
+  height: 26px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+}
+
+.webicon.large {
+  width: 48px;
+  height: 48px;
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+  border-radius: 6px;
+}
+
 @each $webicons-icon in $webicons-icons {
-  .no-svg .webicon.#{$webicons-icon}       { background: url("#{$webicons-url}webicon-#{$webicons-icon}-m.png"); }
-  .no-svg .webicon.#{$webicons-icon}.large { background: url("#{$webicons-url}webicon-#{$webicons-icon}.png"); }
-  .no-svg .webicon.#{$webicons-icon}.small { background: url("#{$webicons-url}webicon-#{$webicons-icon}-s.png"); }
-  .svg    .webicon.#{$webicons-icon}       { background: url("#{$webicons-url}webicon-#{$webicons-icon}.svg"); }
+  .webicon.#{$webicons-icon} {
+    background: url("#{$webicons-url}webicon-#{$webicons-icon}.svg");
+  }
+  .no-svg .webicon.#{$webicons-icon} {
+    background: url("#{$webicons-url}webicon-#{$webicons-icon}-s.png");
+  }
 }
