@@ -6,6 +6,7 @@ from src.sgd.frontend.yeastgenome import clean_cell
 import os
 
 alignment_url = "https://www.yeastgenome.org/backend/alignment/"
+all_strain_alignment_url = "https://www.yeastgenome.org/backend/all_strain_alignment/"
 
 gene_url = "https://www.yeastgenome.org/backend/locus/"
 
@@ -13,7 +14,7 @@ def get_s3_data(request):
 
     p = dict(request.params)
 
-    data = retrieve_data(p)
+    data = retrieve_data(p, alignment_url)
 
     if p.get('download'):
         return data
@@ -24,14 +25,14 @@ def get_all_s3_data(request):
 
     p = dict(request.params)
 
-    data = retrieve_data(p)
+    data = retrieve_data(p, all_strain_alignment_url)
 
     if p.get('download'):
         return data
 
     return Response(body=json.dumps(data), content_type='application/json', charset='UTF-8')
  
-def retrieve_data(p):
+def retrieve_data(p, align_url):
     
     type = p.get('type', 'protein')
     if type == 'undefined':
@@ -50,7 +51,7 @@ def retrieve_data(p):
     if geneName is not None and geneName.upper() != orfName.upper():
         displayName = geneName + "/" + displayName
 
-    data = _get_json_from_server(alignment_url+orfName)
+    data = _get_json_from_server(align_url+orfName)
 
     if data == '404' or data == 404:
         return { " ERROR": "orfName " + orfName + " doesn't have alignment data." }
