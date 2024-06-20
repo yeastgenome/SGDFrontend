@@ -19,6 +19,17 @@ def get_s3_data(request):
         return data
 
     return Response(body=json.dumps(data), content_type='application/json', charset='UTF-8')
+
+def get_all_s3_data(request):
+
+    p = dict(request.params)
+
+    data = retrieve_data(p)
+
+    if p.get('download'):
+        return data
+
+    return Response(body=json.dumps(data), content_type='application/json', charset='UTF-8')
  
 def retrieve_data(p):
     

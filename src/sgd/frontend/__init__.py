@@ -9,7 +9,7 @@ from src.sgd.tools.blast import do_blast
 from src.sgd.tools.patmatch import do_patmatch
 from src.sgd.tools.seqtools import do_seq_analysis
 from src.sgd.tools.gotools import do_gosearch
-from src.sgd.tools.alignment import get_s3_data
+from src.sgd.tools.alignment import get_s3_data, get_all_s3_data
 from src.sgd.tools.restrictionmapper import do_restmap
 from src.sgd.tools.primer3 import do_primer3
 import os
@@ -31,6 +31,7 @@ def prep_views(chosen_frontend, config):
     config.add_route('gotermfinder', '/goTermFinder')
     config.add_route('goslimmapper', '/goSlimMapper')
     config.add_route('strain_alignment', '/strainAlignment')
+    config.add_route('all_strain_alignment', '/allStrainAlignment')
     config.add_route('complex', '/complex/{identifier}')
     config.add_route('complex_literature_details', '/complex/{identifier}/literature')
     config.add_route('complex_go_details', '/complex/{identifier}/go')    
@@ -277,6 +278,9 @@ def prep_views(chosen_frontend, config):
     config.add_route('get_s3_data', '/get_alignment')
     config.add_view(get_s3_data, route_name='get_s3_data')
 
+    config.add_route('get_all_s3_data', '/get_all_alignment')
+    config.add_view(get_all_s3_data, route_name='get_all_s3_data')
+    
     config.add_route('do_redirect', '/redirect_backend')
     config.add_view(do_redirect, route_name='do_redirect')
 
