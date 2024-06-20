@@ -5,8 +5,8 @@ from urllib.error import URLError, HTTPError
 from src.sgd.frontend.yeastgenome import clean_cell
 import os
 
-alignment_url = os.environ['BACKEND_URL'] + "/backend/alignment/"
-all_strain_alignment_url =  os.environ['BACKEND_URL'] + "/backend/all_strain_alignment/"
+alignment_url = os.environ['BACKEND_URL'] + "/alignment/"
+all_strain_alignment_url =  os.environ['BACKEND_URL'] + "/all_strain_alignment/"
 
 gene_url = "https://www.yeastgenome.org/backend/locus/"
 
