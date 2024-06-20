@@ -4,10 +4,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 const SearchForm = require('../components/alignment/all_strain_alignment.jsx');
 
-var AllStrainAlignmentView = {};
+var allStrainAlignmentView = {};
 
-AllStrainAlignmentView.render = function () {
+allStrainAlignmentView.render = function () {
   ReactDOM.render(<SearchForm />, document.getElementById('j-main'));
 };
 
-module.exports = AllStrainAlignmentView;
+module.exports = allStrainAlignmentView;
