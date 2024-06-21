@@ -81,7 +81,7 @@ const StrainAlignment = createReactClass({
     if (this.state.isComplete) {
       var data = this.state.resultData;
       var images_url = data['dendrogram_url'];
-      var treeImage = '<center><img src=' + images_url + '></img></center>';
+      var treeImage = '<center><img src="' + images_url + '" style="width: 80%; display: block; margin: 0 auto;"></img></center>';
       var alignment = data['alignment'];
       var searchBox = this.getFrontPage();
       var seqSection = '<pre>' + data['seqs'] + '</pre>';
