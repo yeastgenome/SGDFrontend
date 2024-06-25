@@ -2,11 +2,11 @@ import React from 'react';
 import $ from 'jquery';
 const DataTable = require('../widgets/data_table.jsx');
 const Params = require('../mixins/parse_url_params.jsx');
-const alignUrl = '/get_alignment';
+const alignUrl = '/get_all_alignment';
 import createReactClass from 'create-react-class';
 
-const StrainAlignment = createReactClass({
-  displayName: 'StrainAlignment',
+const AllStrainAlignment = createReactClass({
+  displayName: 'AllStrainAlignment',
 
   getInitialState() {
     var param = Params.getParams();
@@ -81,7 +81,7 @@ const StrainAlignment = createReactClass({
     if (this.state.isComplete) {
       var data = this.state.resultData;
       var images_url = data['dendrogram_url'];
-      var treeImage = '<center><img src="' + images_url + '" style="width: 80%; display: block; margin: 0 auto;"></img></center>';
+      var treeImage = '<center><img src=' + images_url + '></img></center>';
       var alignment = data['alignment'];
       var searchBox = this.getFrontPage();
       var seqSection = '<pre>' + data['seqs'] + '</pre>';
@@ -283,4 +283,4 @@ const StrainAlignment = createReactClass({
   },
 });
 
-module.exports = StrainAlignment;
+module.exports = AllStrainAlignment;

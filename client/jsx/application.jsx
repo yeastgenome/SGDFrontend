@@ -25,6 +25,7 @@ var views = {
   goTermFinder: require('./views/gotermfinder_view.jsx'),
   goSlimMapper: require('./views/goslimmapper_view.jsx'),
   strainAlignment: require('./views/strain_alignment_view.jsx'),
+  allStrainAlignment: require('./views/all_strain_alignment_view.jsx'),  
   network: require('./views/network_view.jsx'),
   protein: require('./views/protein_view.jsx'),
   regulation: require('./views/regulation_view.jsx'),

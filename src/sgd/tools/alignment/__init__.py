@@ -5,7 +5,8 @@ from urllib.error import URLError, HTTPError
 from src.sgd.frontend.yeastgenome import clean_cell
 import os
 
-alignment_url = "https://www.yeastgenome.org/backend/alignment/"
+alignment_url = os.environ['BACKEND_URL'] + "/alignment/"
+all_strain_alignment_url =  os.environ['BACKEND_URL'] + "/all_strain_alignment/"
 
 gene_url = "https://www.yeastgenome.org/backend/locus/"
 
@@ -13,14 +14,25 @@ def get_s3_data(request):
 
     p = dict(request.params)
 
-    data = retrieve_data(p)
+    data = retrieve_data(p, alignment_url)
+
+    if p.get('download'):
+        return data
+
+    return Response(body=json.dumps(data), content_type='application/json', charset='UTF-8')
+
+def get_all_s3_data(request):
+
+    p = dict(request.params)
+
+    data = retrieve_data(p, all_strain_alignment_url)
 
     if p.get('download'):
         return data
 
     return Response(body=json.dumps(data), content_type='application/json', charset='UTF-8')
  
-def retrieve_data(p):
+def retrieve_data(p, align_url):
     
     type = p.get('type', 'protein')
     if type == 'undefined':
@@ -39,7 +51,7 @@ def retrieve_data(p):
     if geneName is not None and geneName.upper() != orfName.upper():
         displayName = geneName + "/" + displayName
 
-    data = _get_json_from_server(alignment_url+orfName)
+    data = _get_json_from_server(align_url+orfName)
 
     if data == '404' or data == 404:
         return { " ERROR": "orfName " + orfName + " doesn't have alignment data." }
@@ -59,8 +71,9 @@ def retrieve_data(p):
     
     if p.get('download'):
         return set_download_file(alignment, type)
-        
+    
     [alignTables, id2seq, strains] = format_alignment(orfName, type, alignment)
+    
     seqs = format_seqs(id2seq, strains, type)
 
     return { "dendrogram_url": imagesUrl,
@@ -207,6 +220,154 @@ def format_alignment(orfName, type, alignment):
         id = pieces[0]
         if id == '':
             continue
+        seq = pieces[1].rstrip('*')  # Remove stop codon
+        if 'S288C' in id:
+            ref_id = id
+            if ref_seq is None:
+                ref_seq = seq
+            else:
+                ref_seq = ref_seq + seq
+        else:
+            if id in id2seq:
+                id2seq[id] = id2seq[id] + seq
+            else:
+                id2seq[id] = seq
+
+    if ref_id is not None and ref_seq is not None:
+        id2seq[ref_id] = ref_seq
+
+    maxLen = len(ref_seq) if ref_seq is not None else 0
+    strains = [ref_id] if ref_id is not None else []
+    id2seqChar = {ref_id: list(ref_seq)} if ref_id is not None else {}
+
+    for id in sorted(id2seq.keys()):
+        if id.endswith('S288C'):
+            continue
+        seq = id2seq[id]
+        if seq is None:
+            continue
+        if len(seq) > maxLen:
+            maxLen = len(seq)
+        strains.append(id)
+        id2seqChar[id] = list(seq)
+
+    if ref_id is not None:
+        id2seqChar[ref_id] = list(ref_seq)
+
+    percentSimilar = []
+    for i in range(maxLen):
+        count = {}
+        for id in strains:
+            seqs = id2seqChar[id]
+            if len(seqs) > i:
+                base = seqs[i]
+                if base in ['*', '-']:
+                    continue
+                count[base] = count.get(base, 0) + 1
+        total = 0
+        maxBase = 0
+        for base in count:
+            if count[base] > maxBase:
+                maxBase = count[base]
+            total = total + count[base]
+
+        percent = maxBase * 100 / total if total > 0 else 0
+
+        if percent == 100:
+            percentSimilar.append("yellow")
+        elif percent >= 90:
+            percentSimilar.append("pink")
+        elif percent >= 75:
+            percentSimilar.append("lightgreen")
+        else:
+            percentSimilar.append("lightgrey")
+
+    legend = "<center><table border='0' cellpading='0' cellspacing='0'><tr><th>Color Keys: </th><td><br/></td><td bgcolor='yellow'><b> 100% identical </b></td><td><br/></td><td bgcolor='pink'><b> 90-99% identical </b></td><td><br/></td><td bgcolor='lightgreen'><b> 75-89% identical </b></td><td><br/></td><td bgcolor='lightgrey'><b> < 75% identical </b></td></tr></table></center><p/>"
+
+    tables = ""
+    id2lenSoFar = {}
+    while len(percentSimilar) > 50:
+        thisPercentLine = percentSimilar[0:50]
+        percentSimilar = percentSimilar[50:]
+        rows = ""
+        for id in strains:
+            row = "<tr><th align='left'><a href='#" + id + "'>" + id + "</a></th>"
+            row = row + "<td>&nbsp;</td>"
+            seq = id2seqChar[id]
+            thisSeqLine = seq[0:50]
+            seqStr = "".join(thisSeqLine).replace("-", "")
+            start = id2lenSoFar.get(id, 0) + 1
+            if len(seqStr) == 0:
+                start = ""
+                end = ""
+            else:
+                end = start - 1 + len(seqStr)
+            if len(seqStr) > 0:
+                id2lenSoFar[id] = end 
+            id2seqChar[id] = seq[50:]
+            row = row + "<td><font size='-1'>" + str(start) + "</font></td>"
+            row = row + "<td>&nbsp;</td>"
+            i = 0
+            cell = ""
+            for base in thisSeqLine:
+                bgcolor = thisPercentLine[i]
+                i = i + 1
+                cell = cell + "<div style='display:inline-block;text-align:center;background:" + bgcolor + ";width: 14px;'>" + base + "</div>"
+            row = row + "<td align='left'>" + cell + "</td>"
+            row = row + "<td>&nbsp;</td>"
+            row = row + "<td><font size='-1'>" + str(end) + "</font></td>"
+            row = row + "</tr>\n"
+            rows = rows + row
+        tables = tables + "<table>" + rows + "</table>\n\n"
+
+    rows = ""
+    for id in strains:
+
+        row = "<tr><th align='left'><a href='#" + id + "'>" + id + "</a></th>"
+        row = row + "<td>&nbsp;</td>"
+        seq = id2seqChar[id]
+        seqStr = "".join(seq).replace("-", "")
+        start = id2lenSoFar.get(id, 0) + 1
+        end = start - 1 + len(seqStr) if len(seqStr) > 0 else ""
+        row = row + "<td><font size='-1'>" + str(start) + "</font></td>"
+        row = row + "<td>&nbsp;</td>"
+
+        i = 0
+        cell = ""
+        for base in seq:
+            bgcolor = percentSimilar[i]
+            i = i + 1
+            cell = cell + "<div style='display:inline-block;text-align:center;background:" + bgcolor + ";width: 14px;'>" + base + "</div>"
+        row = row + "<td align='left'>" + cell + "</td>"
+        row = row + "<td>&nbsp;</td>"
+        row = row + "<td><font size='-1'>" + str(end) + "</font></td>"
+        row = row + "</tr>\n"
+        rows = rows + row
+    tables = tables + "<table>" + rows +"</table>\n"
+
+    return [legend + tables + legend, id2seq, strains]
+
+
+def format_alignment_old(orfName, type, alignment):
+    
+    lines = alignment.split("\n")
+    
+    ref_id = None
+    ref_seq = None
+    id2seq = {}
+
+    newLines = []
+    for line in lines:
+        if line == '' or "CLUSTAL" in line:
+            continue
+        while '  ' in line:
+            line = line.replace('  ', ' ')
+        pieces = line.split(" ")
+        if len(pieces) != 2:
+            continue
+        id = pieces[0]
+        if id == '':
+            continue
         seq = pieces[1]
         if 'S288C' in id:
             ref_id = id
@@ -222,9 +383,14 @@ def format_alignment(orfName, type, alignment):
 
     id2seq[ref_id] = ref_seq
 
+    ## work above here
+    
     maxLen = len(ref_seq)
     strains = [ref_id]
     id2seqChar = {ref_id : list(id2seq[ref_id])}
+
+    # return [alignment, id2seq, strain]
+
     for id in sorted(id2seq. keys()):
         if id.endswith('S288C'):
             continue
@@ -265,7 +431,7 @@ def format_alignment(orfName, type, alignment):
             percentSimilar.append("lightgrey")
 
     legend = "<center><table border='0' cellpading='0' cellspacing='0'><tr><th>Color Keys: </th><td><br/></td><td bgcolor='yellow'><b> 100% identical </b></td><td><br/></td><td bgcolor='pink'><b> 90-99% identical </b></td><td><br/></td><td bgcolor='lightgreen'><b> 75-89% identical </b></td><td><br/></td><td bgcolor='lightgrey'><b> < 75% identical </b></td></tr></table></center><p/>"
-
+    
     tables = ""
     id2lenSoFar = {}
     while len(percentSimilar) > 50:
