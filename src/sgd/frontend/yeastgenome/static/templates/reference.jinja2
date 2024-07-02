@@ -152,9 +152,9 @@
             <hr />
 
 	    {% if reference.pubmed_id == 21873635 or reference.pubmed_id == 14562095 %}
-                <a href="https://yeastmine.yeastgenome.org/yeastmine/loadTemplate.do?name=Literature_GO&constraint1=Gene.goAnnotation.evidence.publications&op1=LOOKUP&value1={{ reference.pubmed_id }}&scope=all&method=results&format=tab" target='_new'>Download Gene Ontology Data</a>
+                <a href="https://www.alliancegenome.org/alliancemine/loadTemplate.do?name=Literature_GO&constraint1=Gene.goAnnotation.evidence.publications&op1=LOOKUP&value1={{ reference.pubmed_id }}&scope=all&method=results&format=tab" target='_new'>Download Gene Ontology Data</a>
 	    {% elif reference.sgdid == 'S000069584' %}
-	        <a href="https://yeastmine.yeastgenome.org/yeastmine/loadTemplate.do?name=Literature_GO&constraint1=Gene.goAnnotation.evidence.publications&op1=LOOKUP&value1=GO_REF:0000015&scope=all&method=results&format=tab" target='_new'>Download Gene Ontology Data</a>
+	        <a href="https://www.alliancegenome.org/alliancemine/loadTemplate.do?name=Literature_GO&constraint1=Gene.goAnnotation.evidence.publications&op1=LOOKUP&value1=GO_REF:0000015&scope=all&method=results&format=tab" target='_new'>Download Gene Ontology Data</a>
             {% else %}
 	        <div>
                 <!-- Includes go_table into template -->
@@ -216,7 +216,7 @@
             <hr />
 
 	{% if reference.pubmed_id == 27708008 or reference.pubmed_id == 20093466 %}
-	    <a href="https://yeastmine.yeastgenome.org/yeastmine/loadTemplate.do?name=Literature_Interaction&constraint1=Gene.interactions.details.experiment.publication&op1=LOOKUP&value1={{ reference.pubmed_id }}&scope=all&method=results&format=tab" target='_new'>Download Interaction Data</a>
+	    <a href="https://www.alliancegenome.org/alliancemine/loadTemplate.do?name=Literature_Interaction&constraint1=Gene.interactions.details.experiment.publication&op1=LOOKUP&value1={{ reference.pubmed_id }}&scope=all&method=results&format=tab" target='_new'>Download Interaction Data</a>
 	{% else %}
             <div class="spaced-container">
                 <h3>Genetic Interactions
