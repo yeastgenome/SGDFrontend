@@ -42,9 +42,6 @@ class Header extends Component {
               >
                 Help
               </a>
-              <a href="https://bluegenes.yeastgenome.org/yeastmine">
-                YeastMine
-              </a>
 	      <a href="https://www.alliancegenome.org/bluegenes/alliancemine">
 		Get Data
 	      </a>
@@ -163,7 +160,7 @@ class Header extends Component {
                 <li>
                   <a
                     className="disabled-header-a"
-                    href="https://bluegenes.yeastgenome.org/yeastmine/lists"
+                    href="https://www.alliancegenome.org/bluegenes/alliancemine/upload/input"
                   >
                     Gene Lists
                   </a>
@@ -459,14 +456,6 @@ class Header extends Component {
                     href="http://www.genetics.org/content/yeastbook"
                   >
                     YeastBook
-                  </a>
-                </li>
-                <li>
-                  <a
-                    className="disabled-header-a"
-                    href="https://bluegenes.yeastgenome.org/yeastmine/templates/GenomeWide_Papers"
-                  >
-                    Genome-wide Analysis Papers
                   </a>
                 </li>
                 <li className="has-dropdown">
