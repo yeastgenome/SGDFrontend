@@ -215,8 +215,10 @@
             <h2>Interaction Annotations </h2>
             <hr />
 
-	{% if reference.pubmed_id == 27708008 or reference.pubmed_id == 20093466 %}
-	    <a href="https://www.alliancegenome.org/alliancemine/loadTemplate.do?name=Literature_Interaction&constraint1=Gene.interactions.details.experiment.publication&op1=LOOKUP&value1={{ reference.pubmed_id }}&scope=all&method=results&format=tab" target='_new'>Download Interaction Data</a>
+	{% if reference.pubmed_id == 27708008 %}
+	   Please go to <strong>http://sgd-archive.yeastgenome.org/curation/literature/</strong> to download the interaction data for this paper.
+	{% elif reference.pubmed_id == 20093466 %}
+	   Please go to	<strong>http://sgd-archive.yeastgenome.org/curation/literature/</strong> to download the interaction data for this paper.
 	{% else %}
             <div class="spaced-container">
                 <h3>Genetic Interactions
