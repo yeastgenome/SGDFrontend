@@ -4,7 +4,7 @@ $(document).ready(function() {
     var gene_table = create_gene_table(bioents);
     create_download_button("gene_list_table_download", gene_table, list_name);
     $("#gene_list_table_analyze").hide();
-    set_up_tools(gene_table, "go_term_finder", "go_slim_mapper", "spell", "yeastmine");
+    set_up_tools(gene_table, "go_term_finder", "go_slim_mapper", "spell", "alliancemine");
 
 });
 
@@ -30,12 +30,12 @@ function create_gene_table(data) {
 	return gene_table;
 }
 
-function post_to_yeastmine(bioent_ids) {
+function post_to_alliancemine(bioent_ids) {
     // The rest of this code assumes you are not using a library.
     // It can be made less wordy if you use one.
     var form = document.createElement("form");
     form.setAttribute("method", "post");
-    form.setAttribute("action", "https://yeastmine.yeastgenome.org/yeastmine/portal.do?goToListUpload=true");
+    form.setAttribute("action", "https://www.alliancegenome.org/alliancemine/portal.do?goToListUpload=true");
     
     var cinp = document.createElement("input");
     cinp.setAttribute("type", "hidden");
@@ -60,7 +60,7 @@ function post_to_yeastmine(bioent_ids) {
     form.submit();
 }
 
-function set_up_tools(table, go_term_finder_id, go_slim_mapper_id, spell_id, yeastmine_id) {
+function set_up_tools(table, go_term_finder_id, go_slim_mapper_id, spell_id, alliancemine_id) {
 	document.getElementById(go_term_finder_id).onclick = function f() {
 		var bioent_format_names = '';
 
@@ -105,13 +105,13 @@ function set_up_tools(table, go_term_finder_id, go_slim_mapper_id, spell_id, yea
 			"search_string" : bioent_format_names
 		});
 	};
-	document.getElementById(yeastmine_id).onclick = function f() {
+	document.getElementById(alliancemine_id).onclick = function f() {
 		var bioent_format_names = [];
 		var data = table._('tr', {"filter": "applied"});
 		for (var i=0,len=data.length; i<len; i++) { 
 			var sys_name = data[i][2];
 			bioent_format_names.push(sys_name);
 		}
-		post_to_yeastmine(bioent_format_names);
+		post_to_alliancemine(bioent_format_names);
 	};
 }
