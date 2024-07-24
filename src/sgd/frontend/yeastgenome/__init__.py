@@ -296,8 +296,7 @@ class YeastgenomeFrontend(FrontendInterface):
     def analyze(self, list_name, bioent_ids):
 
         is_name = False
-        # if len(bioent_ids) > 0 and str(bioent_ids[0]).isdigit():
-        #     bioent_ids = list(set([int(x) for x in bioent_ids if x is not None]))
+        """
         contains_integer = any(isinstance(item, int) for item in bioent_ids)
         if len(bioent_ids) > 0 and contains_integer:
             bioent_ids = [int(x) for x in bioent_ids if x is not None and isinstance(x, (int, str)) and str(x).isdigit()]
@@ -309,7 +308,25 @@ class YeastgenomeFrontend(FrontendInterface):
         
         if bioents is None:
             return Response(status_int=500, body='Bioents could not be found.')
-                
+        """
+        
+        # Normalize bioent_ids by stripping whitespace and filtering None values
+        bioent_ids = [str(x).strip() for x in bioent_ids if x is not None]
+
+        # Separate numeric and non-numeric ids
+        numeric_ids = [int(x) for x in bioent_ids if x.isdigit()]
+        non_numeric_ids = [x for x in bioent_ids if not x.isdigit()]
+
+        if numeric_ids and not non_numeric_ids:
+            # All IDs are numeric
+            bioent_ids = list(set(numeric_ids))
+        elif non_numeric_ids and not numeric_ids:
+            # All IDs are non-numeric (gene names)
+            bioent_ids = list(set(non_numeric_ids))
+            is_name = True
+        bioents = get_json(self.backend_url + '/bioentity_list', data={'bioent_ids': bioent_ids, 'is_name': is_name})
+        if bioents is None:            
+            return Response(status_int=500, body='Bioents could not be found.')   
         page = {    
                     #Basic Info
                     'list_name_html': list_name,
