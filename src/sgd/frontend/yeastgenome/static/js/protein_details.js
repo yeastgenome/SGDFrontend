@@ -14,7 +14,8 @@ var source_to_color = {
   PRINTS: "#66aa00",
   ProDom: "#b82e2e",
   PROSITE: "#316395",
-  CDD: "#682E21",  
+  CDD: "#682E21",
+  MobiDBLite: "#4c33cc",
   "-": "#994499",
   SignalP: "#4c33cc",
   HAMAP: "#33cc99"
@@ -1064,6 +1065,10 @@ function prep_style() {
     .selector("node[type='DOMAIN'][source='SignalP']")
     .css({
       "background-color": source_to_color["SignalP"]
+    })
+    .selector("node[type='DOMAIN'][source='MobiDBLite']")
+    .css({
+      "background-color": source_to_color["MobiDBLite"]
     })
     .selector("node[type='DOMAIN'][source='HAMAP']")
     .css({
