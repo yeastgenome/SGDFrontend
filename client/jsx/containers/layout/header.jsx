@@ -656,23 +656,7 @@ class Header extends Component {
                         Sequence
                       </a>
                     </li>
-                    <li>
-                      <a
-                        className="disabled-header-a"
-                        href="http://wiki.yeastgenome.org/index.php/Table_of_Gene_Summary_Paragraphs"
-                      >
-                        Gene Summary Paragraphs
-                      </a>
-                    </li>
                   </ul>
-                </li>
-                <li>
-                  <a
-                    className="disabled-header-a"
-                    href="http://wiki.yeastgenome.org/index.php/Main_Page"
-                  >
-                    Wiki
-                  </a>
                 </li>
                 <li>
                   <a className="disabled-header-a" href="/submitData">
