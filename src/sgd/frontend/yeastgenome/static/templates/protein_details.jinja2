@@ -3,6 +3,9 @@
 {% block title %}{{ locus.display_name }} Protein{% endblock %}
 
 {% block head %}
+{{ super() }}
+<link rel="stylesheet" type="text/css" href="https://www.ebi.ac.uk/pdbe/pdb-component-library/css/pdbe-molstar-light-3.1.0.css">
+<script type="text/javascript" src="https://www.ebi.ac.uk/pdbe/pdb-component-library/js/pdbe-molstar-plugin-3.1.0.js"></script>
 <script>
     var locus = {{ locus_js|safe }};
 
@@ -18,8 +21,55 @@
     var display_name = "{{ locus.display_name }}";
     var format_name = "{{ locus.format_name }}";
     var locus_id = "{{ locus.id }}";
-
+    function customize() {
+        if (window.viewerInstance && viewerInstance.canvas) {
+            viewerInstance.canvas.setBgColor({r:255, g:255, b:255});
+        }
+    }
 </script>
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  .viewerSection {
+    display: flex;
+    margin: 0;
+  }
+  #myViewer {
+    width: 650px;
+    height: 400px;
+    position: relative;
+    margin-right: 20px;
+  }
+  .alphaSidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 250px;
+  }
+  .legend {
+    margin-top: 20px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .legend-box {
+    width: 12px;
+    height: 12px;
+    margin-right: 8px;
+  }
+  .legend-dark-blue { background-color: #0074D9; }
+  .legend-light-blue { background-color: #16D8CF; }
+  .legend-light-yellow { background-color: #F9DE89; }
+  .legend-light-red { background-color: #FA9081; }
+</style>
+
+
 {% endblock %}
 
 {% block body %}
@@ -59,6 +109,58 @@
             {% include "sequence_overview.jinja2" %}
         </div>
     </section>
+
+
+
+<!-- alphafold structure
+================================================== -->
+{% if locus.uniprot_id != '' %}
+<div id="alphafold-wrapper">
+  <h2>AlphaFold Protein Structure
+            <a href="#" data-dropdown="alphafold_info"><i class="fa fa-info-circle"></i></a>
+            <p id="alphafold_info" class="f-dropdown content medium" data-dropdown-content>
+	    AlphaFold, developed by <a href="https://deepmind.google/technologies/alphafold/" target="_alpha_info">DeepMind</a>, is an AI program that accurately predicts protein structures from amino acid sequences, enabling visualization of protein conformations. The predicted structures can be accessed through the Protein Data Bank (<a href="https://www.rcsb.org" target="_alpha_info">PDB</a>) and <a href="https://alphafold.ebi.ac.uk" target="_alpha_info">AlphaFold Protein Structure Database</a>.
+            </p>
+  </h2>
+  <hr class="full-width-hr" />
+  <section id="alphafold" class="viewerSection" data-magellan-destination="alphafold" style="margin-bottom: 30px;">
+
+    <div id="myViewer"></div>
+
+    <!-- Sidebar for links and model confidence -->
+    <div class="alphaSidebar">
+      <div>
+        <h3>Resources</h3>
+        <ul>
+          <li><a href="https://alphafold.ebi.ac.uk/entry/{{ locus.uniprot_id }}" target="_alpha_info">View full AlphaFold page</a></li>
+          <li><a href="https://molstar.org/viewer-docs/#mouse-controls" target="_alpha_info">Viewer control documentation</a></li>
+        </ul>
+      </div>
+    
+      <!-- Model Confidence Legend -->
+       <div class="legend">
+      <h3>Model Confidence</h3>
+      <div class="legend-item">
+        <div class="legend-box legend-dark-blue"></div>
+        <span>Very high</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-box legend-light-blue"></div>
+        <span>Confident</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-box legend-light-yellow"></div>
+        <span>Low</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-box legend-light-red"></div>
+        <span>Very low</span>
+      </div>
+    </div>
+  </div>
+ </section>
+</div>
+{% endif %}
 
 <!-- Experimental Data
 ================================================== -->
@@ -374,10 +476,13 @@
         </section>
 
     </div>
+    
 </div>
+
 {% endblock body %}
 
 {% block scripts %}
+<script src="https://cdn.jsdelivr.net/gh/arose/ngl@latest/dist/ngl.js"></script>
 <script src="{{asset_root}}/js/build/nouislider.min.js"></script>
 <script src="{{asset_root}}/js/build/cytoscape.min.js"></script>
 {# don't host arbor.js on CDN because it makes webworker files that don't work on the cloud :( #}
@@ -386,4 +491,33 @@
 <script src="{{asset_root}}/js/cytoscape.js"></script>
 <script src="{{asset_root}}/js/evidence.js"></script>
 <script src="{{asset_root}}/js/protein_details.js"></script>
+
+{% if locus.uniprot_id != '' %}
+
+{{ super() }}
+<script>
+  // Set up the PDBeMolstarPlugin viewer
+  var viewerInstance = new PDBeMolstarPlugin();
+  var viewerContainer = document.getElementById('myViewer');
+
+  var options = {
+    customData: {
+      url: `https://alphafold.ebi.ac.uk/files/AF-{{ locus.uniprot_id }}-F1-model_v4.cif`,
+      format: 'cif',
+    },
+    alphafoldView: true,
+    bgColor: { r: 255, g: 255, b: 255 },
+    hideControls: true,
+    hideCanvasControls: ['expand', 'animation', 'controlToggle', 'controlInfo'],
+  };
+
+  // Render the viewer on page load
+  window.addEventListener("load", function() {
+    viewerInstance.render(viewerContainer, options);
+    customize();  // Apply background color customization
+  });
+</script>
+
+{% endif %}
+
 {% endblock scripts %}
