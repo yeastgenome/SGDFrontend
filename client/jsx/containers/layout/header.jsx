@@ -344,7 +344,7 @@ class Header extends Component {
               </ul>
             </li>
             <li className="has-dropdown">
-              <a href="">Function</a>
+              <a href="#">Function</a>
               <ul className="dropdown">
                 <li className="has-dropdown">
                   <a href="#">Gene Ontology</a>
@@ -435,7 +435,7 @@ class Header extends Component {
               </ul>
             </li>
             <li className="has-dropdown">
-              <a href="">Literature</a>
+              <a href="#">Literature</a>
               <ul className="dropdown">
                 <li>
                   <a
