@@ -1,68 +1,68 @@
-/***********************************************
-Layout rules - SMACSS 
-http://smacss.com/book/type-layout
-************************************************/
+#layout-document,
+#contentbody-responsive,
+#content {
+  overflow: hidden;
+  padding-bottom: 93px;
+  margin-top: 1rem;
 
-#layout-document, #contentbody-responsive, #content {
-	overflow: hidden;
-	padding-bottom: 93px;
-	margin-top: 1rem;
-	@media only screen and (max-width: 47.5em) {
-		padding-bottom: 250px;
-		margin-top: 0
-	}
+  @media only screen and (max-width: 47.5em) {
+    padding-bottom: 250px;
+    margin-top: 0;
+  }
 }
 
+// Ensures proper content visibility
 #content {
-	overflow: visible;
-}
-
-#content {
-	padding-bottom: 120px;
+  overflow: visible;
+  padding-bottom: 120px; // Consolidated padding
 }
 
 /* Main page header, with global navigation */
 #layout-page-header {
-	width: 100%;
-	// height: 135px;
+  width: 100%;
+  // Ensure proper height handling in Firefox
+  min-height: 135px;
 }
 
 #layout-page-header-content {
-	width: 100%;
-	height: 90px;
+  width: 100%;
+  height: 90px;
 }
 
 #layout-page-header-nav {
-	width: 100%;
-	//height: 45px;
+  width: 100%;
+  // Ensure proper layout handling for navigation
+  min-height: 45px;
 }
 
+/* Explore Button Styling */
 .explore-btn {
-	background: #D4001F;
-	&:hover {
-		background: #65000C;
-	}
+  background: #d4001f;
+  &:hover {
+    background: #65000c;
+  }
 }
 
+/* News Container */
 .news-container {
-	padding-top: 1rem;
-	min-height: 30rem;
-	background: #EBEBEB;
+  padding-top: 1rem;
+  min-height: 30rem;
+  background: #ebebeb;
 }
 
 /* PAGE FOOTER */
 #layout-document-footer {
-	padding: 22px 0 22px;
-	position: absolute;
-	bottom: 0;
-	width: 100%;
+  padding: 22px 0 22px;
+  position: fixed; // Use fixed to ensure the footer stays visible
+  bottom: 0;
+  width: 100%;
 }
 
+/* Content Column */
 .content-column section {
-	//border-bottom: 1px #ddd solid;
-	margin-bottom: 2rem;
-}
+  margin-bottom: 2rem;
 
-.content-column section:last-child {
-	border-bottom: none;
+  &:last-child {
+    border-bottom: none;
+  }
 }

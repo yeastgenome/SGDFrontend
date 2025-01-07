@@ -344,7 +344,7 @@ class Header extends Component {
               </ul>
             </li>
             <li className="has-dropdown">
-              <a href="">Function</a>
+              <a href="#">Function</a>
               <ul className="dropdown">
                 <li className="has-dropdown">
                   <a href="#">Gene Ontology</a>
@@ -435,7 +435,7 @@ class Header extends Component {
               </ul>
             </li>
             <li className="has-dropdown">
-              <a href="">Literature</a>
+              <a href="#">Literature</a>
               <ul className="dropdown">
                 <li>
                   <a
@@ -525,20 +525,8 @@ class Header extends Component {
                   </ul>
                 </li>
                 <li>
-                  <a
-                    className="disabled-header-a"
-                    href="http://wiki.yeastgenome.org/index.php/Career_Resources"
-                  >
-                    Career Resources
-                  </a>
-                </li>
-                <li>
-                  <a
-                    className="disabled-header-a"
-                    href="https://wiki.yeastgenome.org/index.php/Educational_Resources"
-                  >
-                    Education
-                  </a>
+                  <a class="disabled-header-a"
+                    href="https://sites.google.com/view/yeastgenome-help/general-science-resources/educational-resources">Education</a>
                 </li>
 		<li>
 		  <a class="disabled-header-a" href="https://community.alliancegenome.org/c/model-organism-yeast/conferences/241">Meetings</a>
@@ -590,25 +578,9 @@ class Header extends Component {
                     <li>
                       <a
                         className="disabled-header-a"
-                        href="http://wiki.yeastgenome.org/index.php/Strains"
+                        href="https://sites.google.com/view/yeastgenome-help/more-about-yeast/commonly-used-strains"
                       >
-                        Strains and Constructs
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        className="disabled-header-a"
-                        href="http://wiki.yeastgenome.org/index.php/Reagents"
-                      >
-                        Reagents
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        className="disabled-header-a"
-                        href="http://wiki.yeastgenome.org/index.php/Methods"
-                      >
-                        Protocols and Methods
+                        Strains
                       </a>
                     </li>
                   </ul>
@@ -619,7 +591,7 @@ class Header extends Component {
                     <li>
                       <a
                         className="disabled-header-a"
-                        href="http://wiki.yeastgenome.org/index.php/Combined_Physical_and_Genetic_Maps_of_S._cerevisiae"
+                        href="https://sites.google.com/view/yeastgenome-help/historical-data/physical-and-genetic-maps"
                       >
                         Physical &amp; Genetic Maps
                       </a>
@@ -627,7 +599,7 @@ class Header extends Component {
                     <li>
                       <a
                         className="disabled-header-a"
-                        href="http://wiki.yeastgenome.org/index.php/Yeast_Mortimer_Maps_-_Edition_12"
+                        href="https://sites.google.com/view/yeastgenome-help/historical-data/yeast-mortimer-maps"
                       >
                         Genetic Maps
                       </a>
@@ -635,7 +607,7 @@ class Header extends Component {
                     <li>
                       <a
                         className="disabled-header-a"
-                        href="https://wiki.yeastgenome.org/index.php/Genetic_Loci"
+                        href="https://sites.google.com/view/yeastgenome-help/historical-data/genetic-loci"
                       >
                         Genetic Loci
                       </a>
@@ -643,7 +615,7 @@ class Header extends Component {
                     <li>
                       <a
                         className="disabled-header-a"
-                        href="http://wiki.yeastgenome.org/index.php/ORFmap_Images"
+                        href="https://sites.google.com/view/yeastgenome-help/historical-data/orf-map-chromosomes"
                       >
                         ORFMap Chromosomes
                       </a>
@@ -651,7 +623,7 @@ class Header extends Component {
                     <li>
                       <a
                         className="disabled-header-a"
-                        href="http://wiki.yeastgenome.org/index.php/Historical_Systematic_Sequence_Information"
+                        href="https://sites.google.com/view/yeastgenome-help/historical-data"
                       >
                         Sequence
                       </a>
@@ -661,14 +633,6 @@ class Header extends Component {
                 <li>
                   <a className="disabled-header-a" href="/submitData">
                     Submit Data
-                  </a>
-                </li>
-                <li>
-                  <a
-                    className="disabled-header-a"
-                    href="http://wiki.yeastgenome.org/index.php/External_Links"
-                  >
-                    Resources
                   </a>
                 </li>
                 <li>
