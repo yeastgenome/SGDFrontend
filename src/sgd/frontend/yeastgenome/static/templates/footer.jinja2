@@ -1,43 +1,105 @@
 <footer id="layout-document-footer" class="page-footer">
-	<div class="row">
-		<div class="small-5 large-5 columns">
-			<ul id="footer-links">
-				<li class="sgd-link"><a href="http://www.yeastgenome.org">SGD</a></li>
-				<li><a class="hide-external-link-icon" target="_blank" href="https://sites.google.com/view/yeastgenome-help/about"><span>About</span></a></li>
-				<li><a href="http://www.yeastgenome.org/blog"><span>Blog</span></a></li>
-				<li><a class="hide-external-link-icon" target="_blank" href="https://sites.google.com/view/yeastgenome-help/sgd-general-help"><span>Help</span></a></li>
-				<li><a class="hide-external-link-icon" target="_blank" href="http://www.stanford.edu/site/privacy"><span>Privacy Policy</span></a></li>
-				<li><a rel="license" class="hide-external-link-icon" target="_blank" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a></li>
-				<li id="social-footer">
-					<ul class="social-links">
-						<li><a href="/cgi-bin/suggestion" target="_blank" id="email-footer" class="webicon mail small">Email Us</a></li>
-						<li><a href="http://twitter.com/#!/yeastgenome" target="_blank" id="twitter-footer" class="webicon twitter small">Twitter</a></li>
-						<li><a href="https://www.facebook.com/pages/Saccharomyces-Genome-Database-SGD/139140876128200" target="_blank" class="webicon facebook small" id="facebook-footer">Facebook</a></li>
-						<li><a href="https://www.linkedin.com/company/saccharomyces-genome-database" target="_blank" class="webicon linkedin small" id="linkedin-footer">LinkedIn</a></li>
-						<li><a href="https://www.youtube.com/SaccharomycesGenomeDatabase" target="_blank" id="youtube-footer" class="webicon youtube small">YouTube</a></li>
-					</ul>
-				</li>
-			</ul>
-			<div id="copyright">&copy; Stanford University, Stanford, CA 94305.</div>
-		</div>
-		<div class="small-7 large-7 columns">
-			<ul class="logo-list">
-				<li>
-					<a href="https://www.alliancegenome.org">
-					   <img height="55" width="110" src="{{asset_root}}/img/agr_logo.png" id="agr-logo">
-					</a>
-				</li>
-				<li><a href="https://globalbiodata.org/scientific-activities/global-core-biodata-resources/">
-                                        <img height="45" width="100" src="{{asset_root}}/img/GCBR-Logo-White.svg" id="gcbr-logo">
-                                </a></li>
-				<li><a href="https://med.stanford.edu/genetics.html">
-					<img height="45" width="80" src="{{asset_root}}/img/genetics-logo@2x.png" id="genetics-logo">
-				</a></li>
-				<li><a href="https://med.stanford.edu/">
-					<img height="45" width="39" src="{{asset_root}}/img/som-logo@2x.png" id="som-logo">
-				</a></li>
-				<li><a href="https://www.stanford.edu/"><img height="45" width="80" src="{{asset_root}}/img/footer-stanford-logo@2x.png" id="stanford-logo"></a></li>
-			</ul>
-		</div>
-	</div>
+    <style>
+        #layout-document-footer.page-footer {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;  /* allows wrapping on small screens */
+            gap: 0.5rem;
+            margin: 0;
+            padding: 0.5rem;
+            text-align: center;
+        }
+
+        ul, li {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #footer-links,
+        .logo-list {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .logo-list img {
+                width: 50px;
+                height: auto;
+            }
+        }
+    </style>
+
+    <!-- Primary links: SGD, About, Blog, etc. -->
+    <ul id="footer-links">
+        <li class="sgd-link"><a href="http://www.yeastgenome.org">SGD</a></li>
+        <li>
+            <a class="hide-external-link-icon" target="_blank"
+               href="https://sites.google.com/view/yeastgenome-help/about">
+               About
+            </a>
+        </li>
+        <li><a href="http://www.yeastgenome.org/blog">Blog</a></li>
+        <li>
+            <a class="hide-external-link-icon" target="_blank"
+               href="https://sites.google.com/view/yeastgenome-help/sgd-general-help">
+               Help
+            </a>
+        </li>
+        <li>
+            <a class="hide-external-link-icon" target="_blank"
+               href="http://www.stanford.edu/site/privacy">
+               Privacy Policy
+            </a>
+        </li>
+        <li>
+            <a rel="license" class="hide-external-link-icon" target="_blank"
+               href="http://creativecommons.org/licenses/by/4.0/">
+               <img alt="Creative Commons License" style="border-width:0"
+                    src="https://i.creativecommons.org/l/by/4.0/88x31.png" />
+            </a>
+        </li>
+    </ul>
+
+    <!-- Logos -->
+    <ul class="logo-list">
+        <li>
+            <a href="https://www.alliancegenome.org">
+                <img height="55" width="110"
+                     src="{{asset_root}}/img/agr_logo.png" id="agr-logo">
+            </a>
+        </li>
+        <li>
+            <a href="https://globalbiodata.org/scientific-activities/global-core-biodata-resources/">
+                <img height="45" width="100"
+                     src="{{asset_root}}/img/GCBR-Logo-White.svg" id="gcbr-logo">
+            </a>
+        </li>
+        <li>
+            <a href="https://med.stanford.edu/genetics.html">
+                <img height="45" width="80"
+                     src="{{asset_root}}/img/genetics-logo@2x.png" id="genetics-logo">
+            </a>
+        </li>
+        <li>
+            <a href="https://med.stanford.edu/">
+                <img height="45" width="39"
+                     src="{{asset_root}}/img/som-logo@2x.png" id="som-logo">
+            </a>
+        </li>
+        <li>
+            <a href="https://www.stanford.edu/">
+                <img height="45" width="80"
+                     src="{{asset_root}}/img/footer-stanford-logo@2x.png" id="stanford-logo">
+            </a>
+        </li>
+    </ul>
+
+    <div>
+        &copy; Stanford University, Stanford, CA 94305.
+    </div>
 </footer>
