@@ -1,63 +1,94 @@
 <!DOCTYPE html>
+<html>
 <head>
     {% block head %}{% endblock %}
-	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-	<meta name="description" content="The Saccharomyces Genome Database (SGD) provides comprehensive integrated biological information for the budding yeast Saccharomyces cerevisiae.">
-	<link rel="shortcut icon" type="image/x-icon" href="/img-domain/favicon.ico" />
-    <style type="text/css">
-        .locale { text-align: center; }
-        .locale-name { font-weight: bold; }
-    </style>
-    <meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% endblock %} | SGD</title>
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-	<link href="{{asset_root}}/css/normalize.css" rel="stylesheet">
-	<link href="{{asset_root}}/css/style.css" rel="stylesheet">
-	<script src="{{asset_root}}/js/build/modernizr.min.js"></script>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta name="description" content="The Saccharomyces Genome Database (SGD) provides comprehensive integrated biological information for the budding yeast Saccharomyces cerevisiae.">
+    <link rel="shortcut icon" type="image/x-icon" href="/img-domain/favicon.ico" />
 
+    <!-- Minimal overrides to remove extra space from header/body -->
+    <style>
+        /* Remove top/bottom margins from the header (assuming it has id="layout-page-header") */
+        #layout-page-header {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        /* Remove any top margin from the main container below the header */
+        #layout-document {
+            margin-top: 0 !important;
+            padding-top: 0 !important;
+        }
+        
+        /* Optional: If your new footer has #layout-document-footer, you can remove margin/padding there, 
+           but if the new flex footer controls spacing itself, you may not need it. 
+           Uncomment if you need to ensure no extra space around footer container:
+           
+           #layout-document-footer {
+               margin: 0 !important;
+               padding: 0 !important;
+           }
+        */
+    </style>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %}{% endblock %} | SGD
+    </title>
+    
+    <!-- Include any other styles you need (Normalize, main style, etc.) -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="{{asset_root}}/css/normalize.css" rel="stylesheet">
+    <link href="{{asset_root}}/css/style.css" rel="stylesheet">
+    
+    <script src="{{asset_root}}/js/build/modernizr.min.js"></script>
 </head>
 <body data-spy="scroll" data-target=".sgd-navbar">
-	<!-- j-application-target is target for rendering react-router application -->
-	<div id="j-application-target">
-		{% include "header.jinja2" %}
+    <!-- j-application-target is the container for your React or other dynamic application -->
+    <div id="j-application-target">
+        
+        {% include "header.jinja2" %}
+        
+        <div class="container" id="layout-document">
+            {% block body %}{% endblock %}
+            <!-- Footer pusher / spacer if needed -->
+            <div id="layout-document-footer-pusher"></div>
+        </div>
 
-		<div class="container" id="layout-document">
-	    	{% block body %}{% endblock %}
-	    	<div id="layout-document-footer-pusher"><!-- keep empty --></div>
-	    </div>
-	    
-		{% include "footer.jinja2" %}
-	</div>
+        {% include "footer.jinja2" %}
+        
+    </div>
 
-	<!-- Le javascript -->
-	<!-- Placed at the end of the document so the pages load faster -->
+    <!-- JavaScript at the end of the body for faster load -->
+    <!-- jQuery from Google with fallback -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script>
+        window.jQuery || document.write('<script src="{{asset_root}}/js/build/jquery.min.js"><\\/script>')
+    </script>
 
-	<!-- load jquery from google, with fallback to local copy -->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-	<script>window.jQuery || document.write('<script src="{{asset_root}}/js/build/jquery.min.js"><\/script>')</script>
-	<script>window.ASSET_ROOT = "{{asset_root}}";</script>
-	<script src="{{asset_root}}/js/application.js"></script>
+    <script>window.ASSET_ROOT = "{{asset_root}}";</script>
+    <script src="{{asset_root}}/js/application.js"></script>
 
-<!-- following is old -->
-<script>
- (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
- (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
- m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
- })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
- ga('create', 'UA-440742-1', 'yeastgenome.org');
- ga('send', 'pageview');
-</script>
+    <!-- Old analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-440742-1', 'yeastgenome.org');
+    ga('send', 'pageview');
+    </script>
 
-<!-- following is new -->
+    <!-- New Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BX4ZG9DC05"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-BX4ZG9DC05');
+    </script>
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-BX4ZG9DC05"></script>
-<script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date()); gtag('config', 'G-BX4ZG9DC05');
-</script>
-	
-{% block scripts %}{% endblock %}
-
+    {% block scripts %}{% endblock %}
 </body>
 </html>

@@ -2,8 +2,9 @@
 #contentbody-responsive,
 #content {
   overflow: hidden;
+  /* If you don't truly need margin on these containers, make it 0 */
+  margin-top: 0; 
   padding-bottom: 93px;
-  margin-top: 1rem;
 
   @media only screen and (max-width: 47.5em) {
     padding-bottom: 250px;
@@ -13,27 +14,32 @@
 
 // Ensures proper content visibility
 #content {
+  /* override overflow from above if needed */
   overflow: visible;
+  /* Adjust padding as needed; large padding can also cause extra space */
   padding-bottom: 120px; // Consolidated padding
 }
 
 /* Main page header, with global navigation */
 #layout-page-header {
   width: 100%;
-  // Ensure proper height handling in Firefox
-  min-height: 135px;
+  /* Remove or reduce forced min-height */
+  /* min-height: 135px;  <-- comment out or remove */
+  min-height: auto;      /* let content size naturally */
 }
 
+/*
 #layout-page-header-content {
   width: 100%;
-  height: 90px;
+  // If you don’t need a fixed height, remove or reduce this
+  // height: 90px;
 }
 
 #layout-page-header-nav {
   width: 100%;
-  // Ensure proper layout handling for navigation
-  min-height: 45px;
+  // min-height: 45px; 
 }
+*/
 
 /* Explore Button Styling */
 .explore-btn {
