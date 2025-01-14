@@ -54,6 +54,8 @@ var ReferenceList = createReactClass({
       var pubmedNode = r.pubmed_id ? <small>PMID: {r.pubmed_id}</small> : null;
       return (
         <li className="reference-list-item" key={'refListOuter' + i}>
+	  {/* Prepend the number based on index */}
+          <span className="ref-number">{i + 1}. </span>    
           <a href={r.link}>{r.display_name}</a> {_text} {pubmedNode}
           <ul className="ref-links">{refNodes}</ul>
         </li>
