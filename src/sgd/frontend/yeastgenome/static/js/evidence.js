@@ -569,7 +569,13 @@ function go_data_to_table(evidence, index) {
 	var biocon = create_link(evidence['go']['display_name'], evidence['go']['link']);
   	var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
     if(evidence['reference']['pubmed_id'] != null) {
-        reference = reference + ' <small>PMID:' + evidence['reference']['pubmed_id'] + '</small>';
+        // reference = reference + ' <small>PMID:' + evidence['reference']['pubmed_id'] + '</small>';
+	const pubmedId = evidence['reference']['pubmed_id'];
+	let prefix = '';
+	if (!pubmedId.startsWith('PMID:') && !pubmedId.startsWith('SGD_PWY:')) {
+            prefix = 'PMID:';
+	}
+	reference += ' <small>' + prefix + pubmedId + '</small>';
     }
 
     var evidence_code = null;
