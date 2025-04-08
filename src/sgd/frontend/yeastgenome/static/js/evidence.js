@@ -565,17 +565,23 @@ function phenotype_data_to_table(evidence, index) {
 }
 
 function go_data_to_table(evidence, index) {
-	var bioent = create_link(evidence['locus']['display_name'], evidence['locus']['link']);
-	var biocon = create_link(evidence['go']['display_name'], evidence['go']['link']);
-  	var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
-    if(evidence['reference']['pubmed_id'] != null) {
-        // reference = reference + ' <small>PMID:' + evidence['reference']['pubmed_id'] + '</small>';
-	const pubmedId = evidence['reference']['pubmed_id'];
-	let prefix = '';
-	if (!pubmedId.startsWith('PMID:') && !pubmedId.startsWith('SGD_PWY:')) {
-            prefix = 'PMID:';
+    var bioent = create_link(evidence['locus']['display_name'], evidence['locus']['link']);
+    var biocon = create_link(evidence['go']['display_name'], evidence['go']['link']);
+    var reference = create_link(evidence['reference']['display_name'], evidence['reference']['link']);
+
+    if (evidence['reference']['pubmed_id'] != null) {
+	const rawPubmedId = evidence['reference']['pubmed_id'];
+	if (rawPubmedId) {
+	    // Convert to string, trim spaces, and check for 'none'
+	    const pubmedId = String(rawPubmedId).trim();
+	    if (pubmedId !== 'PMID:None') {
+		let prefix = '';
+		if (!pubmedId.startsWith('PMID:') && !pubmedId.startsWith('SGD_PWY:')) {
+		    prefix = 'PMID:';
+		}
+		reference += ' <small>' + prefix + pubmedId + '</small>';
+	    }
 	}
-	reference += ' <small>' + prefix + pubmedId + '</small>';
     }
 
     var evidence_code = null;
