@@ -52,8 +52,8 @@ function fungal_homolog_data_to_table(evidence) {
 
 function homolog_data_to_table(evidence) {
 
-    let id = create_link(evidence['id'], 'https://www.alliancegenome.org/gene/' + evidence['id']);
-    return [evidence['id'], "<i>" + evidence['species']['name'] + "</i>", id, evidence['symbol'], 'Alliance']
+    let gene_id = create_link(evidence['gene_id'], 'https://www.alliancegenome.org/gene/' + evidence['gene_id']);
+    return [evidence['gene_id'], "<i>" + evidence['species'] + "</i>", gene_id, evidence['gene_name'], 'Alliance']
     
 }
 
