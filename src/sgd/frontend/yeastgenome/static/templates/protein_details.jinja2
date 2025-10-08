@@ -5,6 +5,11 @@
 {% block head %}
 {{ super() }}
 
+<link rel="preconnect" href="https://alphafold.ebi.ac.uk" crossorigin>
+<link rel="preconnect" href="https://www.ebi.ac.uk" crossorigin>
+<link rel="dns-prefetch" href="//alphafold.ebi.ac.uk">
+<link rel="dns-prefetch" href="//www.ebi.ac.uk">
+
 {# --- PDBe Mol* (current CDN) --- #}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@pdbe/molstar/build/pdbe-molstar-light.css">
 <script src="https://cdn.jsdelivr.net/npm/@pdbe/molstar/build/pdbe-molstar-plugin.js"></script>
@@ -384,6 +389,8 @@
 
 
 {% block scripts %}
+{{ super() }}
+
 <script src="https://cdn.jsdelivr.net/gh/arose/ngl@latest/dist/ngl.js"></script>
 <script src="{{asset_root}}/js/build/nouislider.min.js"></script>
 <script src="{{asset_root}}/js/build/cytoscape.min.js"></script>
@@ -395,7 +402,6 @@
 <script src="{{asset_root}}/js/protein_details.js"></script>
 
 {% if locus.uniprot_id != '' %}
-{# Load PDBe Mol* from EBI (often already allowed by CSP) #}
 <link rel="stylesheet" href="https://www.ebi.ac.uk/pdbe/pdb-component-library/css/pdbe-molstar-light-3.1.0.css">
 <script src="https://www.ebi.ac.uk/pdbe/pdb-component-library/js/pdbe-molstar-plugin-3.1.0.js"></script>
 
@@ -413,6 +419,24 @@
     } catch (_) {}
   }
 
+  // Cache the resolved AF file URL for 7 days to skip extra API calls
+  const CACHE_KEY = 'af_url_' + '{{ locus.uniprot_id }}';
+  const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+
+  function cacheGet() {
+    try {
+      const raw = localStorage.getItem(CACHE_KEY);
+      if (!raw) return null;
+      const { url, format, binary, ts } = JSON.parse(raw);
+      if (!url || !format || !ts) return null;
+      if (Date.now() - ts > CACHE_TTL_MS) return null;
+      return { url, format, binary };
+    } catch { return null; }
+  }
+  function cacheSet(entry) {
+    try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ...entry, ts: Date.now() })); } catch {}
+  }
+
   async function resolveAlphaFoldUrl(id) {
     // Try provided ID, uppercase, and stripped isoform (e.g., P12345-2 -> P12345)
     const tried = new Set();
@@ -428,20 +452,27 @@
           cache: 'no-store'
         });
         if (!res.ok) continue;
-
         const json = await res.json();
         if (Array.isArray(json) && json.length) {
           const p = json[0];
-          // Prefer bcif, then cif, then pdb
           if (p.bcifUrl) return { url: p.bcifUrl, format: 'bcif', binary: true };
           if (p.cifUrl)  return { url: p.cifUrl,  format: 'cif',  binary: false };
           if (p.pdbUrl)  return { url: p.pdbUrl,  format: 'pdb',  binary: false };
         }
-      } catch (_) {
-        // ignore and try next candidate
-      }
+      } catch { /* try next */ }
     }
     throw new Error('No AlphaFold prediction found for this UniProt ID (or isoform).');
+  }
+
+  // Prefetch the structure and serve it to Mol* via a Blob URL (faster & avoids refetch)
+  async function prefetchAsBlob(url, format) {
+    const res = await fetch(url, { mode: 'cors', cache: 'force-cache' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const ab = await res.arrayBuffer();
+    const mime = format === 'bcif' ? 'application/octet-stream'
+               : format === 'cif'  ? 'chemical/x-mmcif'
+               :                      'chemical/x-pdb';
+    return URL.createObjectURL(new Blob([ab], { type: mime }));
   }
 
   async function init() {
@@ -450,24 +481,46 @@
       return;
     }
 
+    // Resolve + cache URL (bcif preferred), then prefetch into a Blob URL
+    let picked = cacheGet();
     try {
-      const picked = await resolveAlphaFoldUrl('{{ locus.uniprot_id }}');
+      if (!picked) {
+        picked = await resolveAlphaFoldUrl('{{ locus.uniprot_id }}');
+        cacheSet(picked);
+      }
+    } catch (e) {
+      console.error(e);
+      inline('AlphaFold structure not available (API returned no file URLs).');
+      return;
+    }
 
+    let blobUrl = null;
+    try {
+      blobUrl = await prefetchAsBlob(picked.url, picked.format);
+    } catch (e) {
+      console.warn('Prefetch failed, falling back to direct URL:', e);
+      blobUrl = picked.url; // fallback: let Mol* fetch it
+    }
+
+    try {
       var instance = new PDBeMolstarPlugin();
-      window.viewerInstance = instance; // used by customize()
-
+      window.viewerInstance = instance; // for customize()
       instance.render(container, {
-        customData: { url: picked.url, format: picked.format, binary: picked.binary },
+        customData: { url: blobUrl, format: picked.format, binary: picked.format === 'bcif' },
         alphafoldView: true,
         bgColor: { r: 255, g: 255, b: 255 },
         hideControls: true,
         hideCanvasControls: ['expand', 'animation', 'controlToggle', 'controlInfo']
       });
-
       if (typeof customize === 'function') customize();
+
+      // Clean up Blob URL later to free memory
+      if (blobUrl && blobUrl.startsWith('blob:')) {
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 30000);
+      }
     } catch (e) {
-      console.error(e);
-      inline('AlphaFold structure not available (API returned no file URLs).');
+      console.error('Mol* render failed:', e);
+      inline('Mol* render error. See console for details.');
     }
   }
 
@@ -479,8 +532,8 @@
 })();
 </script>
 {% endif %}
-{% endblock scripts %}
 
+{% endblock scripts %}
 
 
 
