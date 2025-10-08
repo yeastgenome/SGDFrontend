@@ -4,482 +4,384 @@
 
 {% block head %}
 {{ super() }}
-<link rel="stylesheet" type="text/css" href="https://www.ebi.ac.uk/pdbe/pdb-component-library/css/pdbe-molstar-light-3.1.0.css">
-<script type="text/javascript" src="https://www.ebi.ac.uk/pdbe/pdb-component-library/js/pdbe-molstar-plugin-3.1.0.js"></script>
+
+{# --- PDBe Mol* (current CDN) --- #}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@pdbe/molstar/build/pdbe-molstar-light.css">
+<script src="https://cdn.jsdelivr.net/npm/@pdbe/molstar/build/pdbe-molstar-plugin.js"></script>
+
 <script>
-    var locus = {{ locus_js|safe }};
+  var locus = {{ locus_js|safe }};
 
+  var domains_table_filename = "{{ locus.display_name }}_domains";
+  var alias_table_filename = "{{ locus.display_name }}_external_ids";
+  var domain_network_filename = "{{ locus.display_name }}_domain_network";
+  var properties_table_filename = "{{ locus.display_name }}_protein_properties";
+  var protein_experiment_table_filename = "{{ locus.display_name }}_experimental_data";
+  var protein_abundance_table_filename = "{{ locus.display_name }}_abundance_data";
+  var phosphorylation_table_filename = "{{ locus.display_name }}_phosphorylation";
 
-    var domains_table_filename = "{{ locus.display_name }}_domains";
-    var alias_table_filename = "{{ locus.display_name }}_external_ids";
-    var domain_network_filename = "{{ locus.display_name }}_domain_network";
-    var properties_table_filename = "{{ locus.display_name }}_protein_properties";
-    var protein_experiment_table_filename = "{{ locus.display_name }}_experimental_data";
-    var protein_abundance_table_filename = "{{ locus.display_name }}_abundance_data";
-    var phosphorylation_table_filename = "{{ locus.display_name }}_phosphorylation";
+  var display_name = "{{ locus.display_name }}";
+  var format_name = "{{ locus.format_name }}";
+  var locus_id = "{{ locus.id }}";
 
-    var display_name = "{{ locus.display_name }}";
-    var format_name = "{{ locus.format_name }}";
-    var locus_id = "{{ locus.id }}";
-    function customize() {
-        if (window.viewerInstance && viewerInstance.canvas) {
-            viewerInstance.canvas.setBgColor({r:255, g:255, b:255});
-        }
+  function customize() {
+    if (window.viewerInstance && viewerInstance.canvas) {
+      viewerInstance.canvas.setBgColor({ r: 255, g: 255, b: 255 });
     }
+  }
 </script>
 
 <style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  .viewerSection {
-    display: flex;
-    margin: 0;
-  }
-  #myViewer {
-    width: 650px;
-    height: 400px;
-    position: relative;
-    margin-right: 20px;
-  }
-  .alphaSidebar {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 250px;
-  }
-  .legend {
-    margin-top: 20px;
-  }
-  .legend-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 8px;
-  }
-  .legend-box {
-    width: 12px;
-    height: 12px;
-    margin-right: 8px;
-  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  .viewerSection { display: flex; margin: 0; }
+  #myViewer { width: 650px; height: 400px; position: relative; margin-right: 20px; }
+  .alphaSidebar { display: flex; flex-direction: column; justify-content: space-between; width: 250px; }
+  .legend { margin-top: 20px; }
+  .legend-item { display: flex; align-items: center; margin-bottom: 8px; }
+  .legend-box { width: 12px; height: 12px; margin-right: 8px; }
   .legend-dark-blue { background-color: #0074D9; }
   .legend-light-blue { background-color: #16D8CF; }
   .legend-light-yellow { background-color: #F9DE89; }
   .legend-light-red { background-color: #FA9081; }
 </style>
-
-
 {% endblock %}
 
 {% block body %}
 
-<!-- Tabs
-================================================== -->
-<!-- Includes tabs.html into template -->
+<!-- Tabs -->
 {% include "tabs.jinja2" %}
 <script>document.getElementById("protein_tab").className += " active";</script>
 
-<!-- Navbar
-================================================== -->
 <div class="row">
-    <div id="navbar-container" class="large-2 columns hide-for-small-down">
-    </div>
+  <div id="navbar-container" class="large-2 columns hide-for-small-down"></div>
 
-    <div class="small-12 medium-10 columns content-column">
+  <div class="small-12 medium-10 columns content-column">
 
-<!-- Overview
-================================================== -->
+    <!-- Overview -->
     <section id="overview" data-magellan-destination="overview">
-        <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/function-help/protein-information" name="top" class="documentation-link">Protein Help <i class="fa fa-question-circle"></i></a>
-        <h1>{% if locus.display_name == locus.format_name %}{{ locus.display_name }}{% else %}{{ locus.display_name }} / {{ locus.format_name }}{% endif %} Protein
-            <a href="#" data-dropdown="summary_info"><i class="fa fa-info-circle"></i></a>
-
-            <div id="summary_info" class="f-dropdown content medium" data-dropdown-content>
-                <p>Protein abundance data, domains, shared domains with other proteins, protein sequence retrieval
-                    for
-                    various strains, sequence-based physico-chemical properties, protein modification sites, and external
-                    identifiers for the protein.</p>
-            </div>
-        </h1>
-        <hr />
-        <div class="">
-            <!-- Includes sequence_overview.html into template -->
-	    {% set is_protein = True %}
-            {% include "sequence_overview.jinja2" %}
+      <a target="_blank" href="https://sites.google.com/view/yeastgenome-help/function-help/protein-information" name="top" class="documentation-link">Protein Help <i class="fa fa-question-circle"></i></a>
+      <h1>
+        {% if locus.display_name == locus.format_name %}
+          {{ locus.display_name }}
+        {% else %}
+          {{ locus.display_name }} / {{ locus.format_name }}
+        {% endif %} Protein
+        <a href="#" data-dropdown="summary_info"><i class="fa fa-info-circle"></i></a>
+        <div id="summary_info" class="f-dropdown content medium" data-dropdown-content>
+          <p>
+            Protein abundance data, domains, shared domains with other proteins, protein sequence retrieval for
+            various strains, sequence-based physico-chemical properties, protein modification sites, and external
+            identifiers for the protein.
+          </p>
         </div>
+      </h1>
+      <hr />
+      <div class="">
+        {% set is_protein = True %}
+        {% include "sequence_overview.jinja2" %}
+      </div>
     </section>
 
+    <!-- AlphaFold structure -->
+    {% if locus.uniprot_id != '' %}
+    <div id="alphafold-wrapper">
+      <h2>
+        AlphaFold Protein Structure
+        <a href="#" data-dropdown="alphafold_info"><i class="fa fa-info-circle"></i></a>
+        <p id="alphafold_info" class="f-dropdown content medium" data-dropdown-content>
+          AlphaFold, developed by <a href="https://deepmind.google/technologies/alphafold/" target="_alpha_info">DeepMind</a>, is an AI program that accurately predicts protein structures from amino acid sequences, enabling visualization of protein conformations. The predicted structures can be accessed through the Protein Data Bank (<a href="https://www.rcsb.org" target="_alpha_info">PDB</a>) and <a href="https://alphafold.ebi.ac.uk" target="_alpha_info">AlphaFold Protein Structure Database</a>.
+        </p>
+      </h2>
+      <hr class="full-width-hr" />
+      <section id="alphafold" class="viewerSection" data-magellan-destination="alphafold" style="margin-bottom: 30px;">
+        <div id="myViewer"></div>
 
+        <!-- Sidebar for links and model confidence -->
+        <div class="alphaSidebar">
+          <div>
+            <h3>Resources</h3>
+            <ul>
+              <li><a href="https://alphafold.ebi.ac.uk/entry/{{ locus.uniprot_id }}" target="_alpha_info">View full AlphaFold page</a></li>
+              <li><a href="https://molstar.org/viewer-docs/#mouse-controls" target="_alpha_info">Viewer control documentation</a></li>
+            </ul>
+          </div>
 
-<!-- alphafold structure
-================================================== -->
-{% if locus.uniprot_id != '' %}
-<div id="alphafold-wrapper">
-  <h2>AlphaFold Protein Structure
-            <a href="#" data-dropdown="alphafold_info"><i class="fa fa-info-circle"></i></a>
-            <p id="alphafold_info" class="f-dropdown content medium" data-dropdown-content>
-	    AlphaFold, developed by <a href="https://deepmind.google/technologies/alphafold/" target="_alpha_info">DeepMind</a>, is an AI program that accurately predicts protein structures from amino acid sequences, enabling visualization of protein conformations. The predicted structures can be accessed through the Protein Data Bank (<a href="https://www.rcsb.org" target="_alpha_info">PDB</a>) and <a href="https://alphafold.ebi.ac.uk" target="_alpha_info">AlphaFold Protein Structure Database</a>.
-            </p>
-  </h2>
-  <hr class="full-width-hr" />
-  <section id="alphafold" class="viewerSection" data-magellan-destination="alphafold" style="margin-bottom: 30px;">
-
-    <div id="myViewer"></div>
-
-    <!-- Sidebar for links and model confidence -->
-    <div class="alphaSidebar">
-      <div>
-        <h3>Resources</h3>
-        <ul>
-          <li><a href="https://alphafold.ebi.ac.uk/entry/{{ locus.uniprot_id }}" target="_alpha_info">View full AlphaFold page</a></li>
-          <li><a href="https://molstar.org/viewer-docs/#mouse-controls" target="_alpha_info">Viewer control documentation</a></li>
-        </ul>
-      </div>
-    
-      <!-- Model Confidence Legend -->
-       <div class="legend">
-      <h3>Model Confidence</h3>
-      <div class="legend-item">
-        <div class="legend-box legend-dark-blue"></div>
-        <span>Very high</span>
-      </div>
-      <div class="legend-item">
-        <div class="legend-box legend-light-blue"></div>
-        <span>Confident</span>
-      </div>
-      <div class="legend-item">
-        <div class="legend-box legend-light-yellow"></div>
-        <span>Low</span>
-      </div>
-      <div class="legend-item">
-        <div class="legend-box legend-light-red"></div>
-        <span>Very low</span>
-      </div>
+          <!-- Model Confidence Legend -->
+          <div class="legend">
+            <h3>Model Confidence</h3>
+            <div class="legend-item">
+              <div class="legend-box legend-dark-blue"></div><span>Very high</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-box legend-light-blue"></div><span>Confident</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-box legend-light-yellow"></div><span>Low</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-box legend-light-red"></div><span>Very low</span>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
-  </div>
- </section>
-</div>
-{% endif %}
+    {% endif %}
 
-<!-- Experimental Data
-================================================== -->
+    <!-- Experimental Data -->
     <section id="experiment" data-magellan-destination="experiment">
-        <h2>Experimental Data
+      <h2>
+        Experimental Data
+        <a href="#" data-dropdown="expt_info"><i class="fa fa-info-circle"></i></a>
+        <p id="expt_info" class="f-dropdown content medium" data-dropdown-content>
+          Contains experimentally-derived protein half-life data obtained using stable isotope labeling by amino acids (SILAC) coupled with mass spectrometry. This section also contains protein abundance data for both untreated and treated cells obtained from over 20 studies. These data have been normalized and converted to a common unit of molecules per cell.
+        </p>
+      </h2>
+      <hr />
 
-	    <a href="#" data-dropdown="expt_info"><i class="fa fa-info-circle"></i></a>
-            <p id="expt_info" class="f-dropdown content medium" data-dropdown-content>
-                Contains experimentally-derived protein half-life data obtained using stable isotope labeling by amino acids (SILAC) coupled with mass spectrometry. This section also contains protein abundance data for both untreated and treated cells obtained from over 20 studies. These data have been normalized and converted to a common unit of molecules per cell.
-            </p>
-	</h2>
-        <hr />
+      <h3>Protein Half Life</h3>
+      <div class="">
+        {% set table_id = "protein_experiment_table" %}
+        {% include "protein_experiment_table.jinja2" %}
+      </div>
 
-	<h3>Protein Half Life</h3>
+      <p></p>
 
-        <div class="">
-            <!-- Includes experiment_table into template -->
-            {% set table_id = "protein_experiment_table" %}
-            {% include "protein_experiment_table.jinja2" %}
-        </div>
-	
-	<p></p>	
-
-	<h3>Protein Abundance</h3>
-	
-	<div class="">
-            <!-- Includes abundance_table into template -->
-            {% set table_id = "protein_abundance_table" %}
-            {% include "protein_abundance_table.jinja2" %}
-        </div>
-
+      <h3>Protein Abundance</h3>
+      <div class="">
+        {% set table_id = "protein_abundance_table" %}
+        {% include "protein_abundance_table.jinja2" %}
+      </div>
     </section>
 
-<!-- Domains
-================================================== -->
+    <!-- Domains -->
     <section id="domain" data-magellan-destination="domain">
-        <h2>Domains and Classification - {{ locus.main_strain }}
-            <a href="#" data-dropdown="domain_info"><i class="fa fa-info-circle"></i></a>
+      <h2>
+        Domains and Classification - {{ locus.main_strain }}
+        <a href="#" data-dropdown="domain_info"><i class="fa fa-info-circle"></i></a>
+        <p id="domain_info" class="f-dropdown content medium" data-dropdown-content>
+          Collection of computationally identified domains and motifs, as determined by InterProScan analysis;
+          includes protein coordinates for the domain, a domain Description, a Source and corresponding accession
+          ID, and the number of <i>S. cerevisiae</i> genes that share the same domain.
+        </p>
+        <span id="domain_table_header" class="round secondary label"></span>
+      </h2>
+      <hr />
 
-            <p id="domain_info" class="f-dropdown content medium" data-dropdown-content>
-                Collection of computationally identified domains and motifs, as determined by InterProScan analysis;
-                includes protein coordinates for the domain, a domain Description, a Source and corresponding accession
-                ID, and the number of <i>S. cerevisiae</i> genes that share the same domain.
-            </p>
-            <span id="domain_table_header" class="round secondary label"></span>
-        </h2>
-        <hr />
-        
-        <div class="spaced-container">
-            <!-- Includes domain_table into template -->
-            {% set table_id = "domain_table" %}
-            {% include "domain_table.jinja2" %}
+      <div class="spaced-container">
+        {% set table_id = "domain_table" %}
+        {% include "domain_table.jinja2" %}
+      </div>
+
+      <div id="domain_locations" class="panel sgd-viz">
+        <h3>
+          Domain Locations
+          <a href="#" data-dropdown="domain_location_info"><i class="fa fa-info-circle"></i></a>
+          <p id="domain_location_info" class="f-dropdown content medium" data-dropdown-content>
+            Visual representation of the locations of the domains within the protein, as listed in
+            the Domains and Classification table. Each row displays the domain(s) derived from a
+            different Source, with domains color-coded according to this Source.
+          </p>
+          <a href="#" data-dropdown="domain_location_help"><i class="fa fa-question-circle"></i></a>
+          <p id="domain_location_help" class="f-dropdown content medium" data-dropdown-content>
+            Scroll over a domain to view its exact coordinates and its Description.
+          </p>
+        </h3>
+        <div id="domain_chart">
+          <img class="loader" src="/static/img/dark-slow-wheel.gif" />
         </div>
-        
-        <div id="domain_locations" class="panel sgd-viz">
-            <h3>Domain Locations
-                <a href="#" data-dropdown="domain_location_info"><i class="fa fa-info-circle"></i></a>
+      </div>
 
-                <p id="domain_location_info" class="f-dropdown content medium" data-dropdown-content>
-                    Visual representation of the locations of the domains within the protein, as listed in
-                    the Domains and Classification table. Each row displays the domain(s) derived from a
-                    different Source, with domains color-coded according to this Source.
-                </p>
+      <div id="shared_domains" class="">
+        <h3 id="network">
+          Shared Domains
+          <a href="#" data-dropdown="network_help"><i class="fa fa-info-circle"></i></a>
+          <p id="network_help" class="f-dropdown content medium" data-dropdown-content>
+            This diagram displays domains (colored squares) shared between the given protein (yellow circle)
+            and other proteins (gray circles); the domains are color-coded according to their source, as
+            displayed in the Domain Locations table, above.
+          </p>
+        </h3>
 
-                <a href="#" data-dropdown="domain_location_help"><i class="fa fa-question-circle"></i></a>
-
-                <p id="domain_location_help" class="f-dropdown content medium" data-dropdown-content>
-                    Scroll over a domain to view its exact coordinates and its Description.
-                </p>
-            </h3>
-            <div id="domain_chart">
-                <img class="loader" src="/static/img/dark-slow-wheel.gif" />
-            </div>
-        </div>
-
-        <div id="shared_domains" class="">
-            <h3 id="network">Shared Domains
-                <a href="#" data-dropdown="network_help"><i class="fa fa-info-circle"></i></a>
-
-                <p id="network_help" class="f-dropdown content medium" data-dropdown-content>
-                    This diagram displays domains (colored squares) shared between the given protein (yellow circle)
-                    and other proteins (gray circles); the domains are color-coded according to their source, as
-                    displayed in the Domain Locations table, above.
-                </p>
-            </h3>
-
-            {% set network_id = "cy" %}
-            {% include "domain_network.jinja2" %}
-        </div>
+        {% set network_id = "cy" %}
+        {% include "domain_network.jinja2" %}
+      </div>
     </section>
 
-
-<!-- Alleles
-================================================== -->
-{% if locus.alleles|length > 0 %}
+    <!-- Alleles -->
+    {% if locus.alleles|length > 0 %}
     <section id="allele">
-        <h2>Alleles
-                <a href="#" data-dropdown="allele_info"><i class="fa fa-info-circle"></i></a>
-                <p id="allele_info" class="f-dropdown content medium" data-dropdown-content>
-                Curated mutant alleles for the specified gene, listed alphabetically. Click on the allele name to open the allele page. Click "SGD search" to view all alleles in search results.
-                </p>
-        </h2>
-        <hr />
-	{% include "allele_list.jinja2" %}
+      <h2>
+        Alleles
+        <a href="#" data-dropdown="allele_info"><i class="fa fa-info-circle"></i></a>
+        <p id="allele_info" class="f-dropdown content medium" data-dropdown-content>
+          Curated mutant alleles for the specified gene, listed alphabetically. Click on the allele name to open the allele page. Click "SGD search" to view all alleles in search results.
+        </p>
+      </h2>
+      <hr />
+      {% include "allele_list.jinja2" %}
     </section>
-{% endif %}
+    {% endif %}
 
-<!-- Sequence
-================================================== -->
-        <section id="sequence" data-magellan-destination="sequence">
-            <h2>Sequence
-                <a href="#" data-dropdown="sequence_info"><i class="fa fa-info-circle"></i></a>
+    <!-- Sequence -->
+    <section id="sequence" data-magellan-destination="sequence">
+      <h2>
+        Sequence
+        <a href="#" data-dropdown="sequence_info"><i class="fa fa-info-circle"></i></a>
+        <p id="sequence_info" class="f-dropdown content medium" data-dropdown-content>
+          Protein sequence for the given gene in S288C and other strains, when available. Use the pull-down menu under "Strain" to select the sequence for a specific strain. The displayed sequence can be downloaded in FASTA format as a .txt file. Amino acids displayed in blue represent modification sites. More detailed evidence for these modification sites is presented in the Post-translational Modifications table, located just below the protein sequence.
+        </p>
+      </h2>
+      <hr />
 
-                <p id="sequence_info" class="f-dropdown content medium" data-dropdown-content>                    
-                    Protein sequence for the given gene in S288C and other strains, when available. Use the pull-down menu under "Strain" to select the sequence for a specific strain. The displayed sequence can be downloaded in FASTA format as a .txt file. Amino acids displayed in blue represent modification sites. More detailed evidence for these modification sites is presented in the Post-translational Modifications table, located just below the protein sequence.
-                </p>
-            </h2>
-            <hr />
-            
-        <div class="">
-            <p id="sequence_section_message" hidden>This locus is not translated into a protein.</p>
-            <div id="sequence_section">
-            <label><h3>Strain</h3>
-                <select id="strain_selection" class="large-3"></select> - <span id="strain_description"></span>
-            </label>
+      <div class="">
+        <p id="sequence_section_message" hidden>This locus is not translated into a protein.</p>
+        <div id="sequence_section">
+          <label><h3>Strain</h3>
+            <select id="strain_selection" class="large-3"></select> - <span id="strain_description"></span>
+          </label>
 
-            <div class="panel">
-                <pre><blockquote id="sequence_residues"
-                                 style="font-family:Monospace; font-size:large"></blockquote></pre>
-                <p>* Blue amino acids indicate modification sites. More information below.</p>
+          <div class="panel">
+            <pre><blockquote id="sequence_residues" style="font-family:Monospace; font-size:large"></blockquote></pre>
+            <p>* Blue amino acids indicate modification sites. More information below.</p>
 
-                <div class="button-bar">
-                    <ul class="button-group radius">
-                        <li><a id="sequence_download" class="small button secondary"><i class="fa fa-download"></i>
-                            Download Sequence (.fsa)</a></li>
-                    </ul>
-                </div>
+            <div class="button-bar">
+              <ul class="button-group radius">
+                <li><a id="sequence_download" class="small button secondary"><i class="fa fa-download"></i> Download Sequence (.fsa)</a></li>
+              </ul>
             </div>
+          </div>
 
-            <div id="phosphorylation_sites_wrapper" class="spaced-container">
-                <h3>Post-translational Modifications - <span id="phosphorylation_strain"></span>
-                    <a href="#" data-dropdown="phosphorylation_info"><i class="fa fa-info-circle"></i></a>
+          <div id="phosphorylation_sites_wrapper" class="spaced-container">
+            <h3>
+              Post-translational Modifications - <span id="phosphorylation_strain"></span>
+              <a href="#" data-dropdown="phosphorylation_info"><i class="fa fa-info-circle"></i></a>
+              <p id="phosphorylation_info" class="f-dropdown content medium" data-dropdown-content>
+                Modification sites for the protein in the selected strain, based on the presence of a residue in the specific strain, as inferred from experimental evidence.
+              </p>
+              <span id="phosphorylation_table_header" class="round secondary label"></span>
+            </h3>
+            {% set table_id = 'phosphorylation_table' %}
+            {% include "phosphorylation_table.jinja2" %}
+          </div>
 
-                    <p id="phosphorylation_info" class="f-dropdown content medium" data-dropdown-content>
-                        Modification sites for the protein in the selected strain, based on the presence of a residue in the specific strain, as inferred from experimental evidence.
-                    </p>
-                    <span id="phosphorylation_table_header" class="round secondary label"></span>
-                </h3>
-                <!-- Includes phosphorylation_table into template -->
-                {% set table_id = 'phosphorylation_table' %}
-                {% include "phosphorylation_table.jinja2" %}
+          <div id="physicochemical_props" class="panel">
+            <h3>
+              Sequence-Based Physico-chemical Properties - <span id="properties_strain">S288C</span>
+              <a href="#" data-dropdown="properties_info"><i class="fa fa-info-circle"></i></a>
+              <p id="properties_info" class="f-dropdown content medium" data-dropdown-content>
+                Calculated protein properties, including amino acid composition, length, coding
+                region calculations, and atomic composition.
+              </p>
+            </h3>
+
+            <div class="row" id="physicochemical_props_panel">
+              <div class="small-12 large-6 columns content-column">
+                <h3>Amino Acid Composition</h3>
+                {% set table_id = "amino_acid_table" %}
+                {% include "amino_acid_table.jinja2" %}
+                <ul class="button-group radius">
+                  <li><a id="protein_properties_download" class="small button secondary"><i class="fa fa-download"></i> Download Properties (.txt)</a></li>
+                </ul>
+              </div>
+              <div class="small-12 large-6 columns content-column">
+                <h3>Physical Details</h3>
+                <table class="table table-striped table-bordered table-condensed" id="physical_details_table" width="100%">
+                  <tbody>
+                    <tr><td>Length (a.a):</td><td id="length"></td></tr>
+                    <tr><td>Molecular Weight (Da):</td><td id="molecular_weight"></td></tr>
+                    <tr><td>Isoelectric Point (pl):</td><td id="pi"></td></tr>
+                    <tr><td>Formula:</td><td id="formula"></td></tr>
+                    <tr><td>Aliphatic Index:</td><td id="aliphatic_index"></td></tr>
+                    <tr><td>Instability Index:</td><td id="instability_index"></td></tr>
+                  </tbody>
+                </table>
+
+                <h3>Coding Region Translation Calculations</h3>
+                <table class="table table-striped table-bordered table-condensed" id="coding_region_table" width="100%">
+                  <tbody>
+                    <tr><td>Codon Bias:</td><td id="codon_bias"></td></tr>
+                    <tr><td>Codon Adaptation Index:</td><td id="cai"></td></tr>
+                    <tr><td>Frequence of Optimal Codons:</td><td id="fop_score"></td></tr>
+                    <tr><td>Hydropathicity of Protein:</td><td id="gravy_score"></td></tr>
+                    <tr><td>Aromaticity Score:</td><td id="aromaticity_score"></td></tr>
+                  </tbody>
+                </table>
+
+                <h3>Extinction Coefficients at 280nm</h3>
+                <table class="table table-striped table-bordered table-condensed" id="extinction_coeff_table" width="100%">
+                  <tbody>
+                    <tr><td>ALL Cys residues appear as half cystines:</td><td id="all_cys_ext_coeff"></td></tr>
+                    <tr><td>NO Cys residues appear as half cystines:</td><td id="no_cys_ext_coeff"></td></tr>
+                  </tbody>
+                </table>
+
+                <h3>Atomic Composition</h3>
+                {% set table_id = "atomic_table" %}
+                {% include "atomic_table.jinja2" %}
+              </div>
             </div>
-
-            <div id="physicochemical_props" class="panel">
-                <h3>Sequence-Based Physico-chemical Properties - <span id="properties_strain">S288C</span>
-                    <a href="#" data-dropdown="properties_info"><i class="fa fa-info-circle"></i></a>
-
-                    <p id="properties_info" class="f-dropdown content medium" data-dropdown-content>
-                        Calculated protein properties, including amino acid composition, length, coding
-                        region calculations, and atomic composition.
-                    </p>
-                </h3>
-
-                <div class="row" id="physicochemical_props_panel">
-                    <div class="small-12 large-6 columns content-column">
-                        <h3>Amino Acid Composition</h3>
-                        {% set table_id = "amino_acid_table" %}
-                        {% include "amino_acid_table.jinja2" %}
-
-                        <ul class="button-group radius">
-                            <li><a id="protein_properties_download" class="small button secondary"><i
-                                    class="fa fa-download"></i> Download Properties (.txt)</a></li>
-                        </ul>
-                    </div>
-                    <div class="small-12 large-6 columns content-column">
-                        <h3>Physical Details</h3>
-                        <table class="table table-striped table-bordered table-condensed"
-                               id="physical_details_table" width="100%">
-                            <tbody>
-                            <tr>
-                                <td>Length (a.a):</td>
-                                <td id="length"></td>
-                            </tr>
-                            <tr>
-                                <td>Molecular Weight (Da):</td>
-                                <td id="molecular_weight"></td>
-                            </tr>
-                            <tr>
-                                <td>Isoelectric Point (pl):</td>
-                                <td id="pi"></td>
-                            </tr>
-                            <tr>
-                                <td>Formula:</td>
-                                <td id="formula"></td>
-                            </tr>
-                            <tr>
-                                <td>Aliphatic Index:</td>
-                                <td id="aliphatic_index"></td>
-                            </tr>
-                            <tr>
-                                <td>Instability Index:</td>
-                                <td id="instability_index"></td>
-                            </tr>
-                            </tbody>
-                        </table>
-
-                        <h3>Coding Region Translation Calculations</h3>
-                        <table class="table table-striped table-bordered table-condensed" id="coding_region_table"
-                               width="100%">
-                            <tbody>
-                            <tr>
-                                <td>Codon Bias:</td>
-                                <td id="codon_bias"></td>
-                            </tr>
-                            <tr>
-                                <td>Codon Adaptation Index:</td>
-                                <td id="cai"></td>
-                            </tr>
-                            <tr>
-                                <td>Frequence of Optimal Codons:</td>
-                                <td id="fop_score"></td>
-                            </tr>
-                            <tr>
-                                <td>Hydropathicity of Protein:</td>
-                                <td id="gravy_score"></td>
-                            </tr>
-                            <tr>
-                                <td>Aromaticity Score:</td>
-                                <td id="aromaticity_score"></td>
-                            </tr>
-                            </tbody>
-                        </table>
-
-                        <h3>Extinction Coefficients at 280nm</h3>
-                        <table class="table table-striped table-bordered table-condensed"
-                               id="extinction_coeff_table" width="100%">
-                            <tbody>
-                            <tr>
-                                <td>ALL Cys residues appear as half cystines:</td>
-                                <td id="all_cys_ext_coeff"></td>
-                            </tr>
-                            <tr>
-                                <td>NO Cys residues appear as half cystines:</td>
-                                <td id="no_cys_ext_coeff"></td>
-                            </tr>
-                            </tbody>
-                        </table>
-
-                        <h3>Atomic Composition</h3>
-                        {% set table_id = "atomic_table" %}
-                        {% include "atomic_table.jinja2" %}
-                    </div>
-                </div>
-                <p><span id="no_data">Data not found or not available for&nbsp; <span id="no_data_msg"></span></span></p>
-            </div>
-         </div>
+            <p><span id="no_data">Data not found or not available for&nbsp; <span id="no_data_msg"></span></span></p>
+          </div>
         </div>
+      </div>
     </section>
 
-<!-- External IDs
-================================================== -->
-   <section id="external_ids" data-magellan-destination="external_ids">
-        <h2>External Identifiers 
-            <a href="#" data-dropdown="external_id_info"><i class="fa fa-info-circle"></i></a>
-
-            <p id="external_id_info" class="f-dropdown content medium" data-dropdown-content>
-                List of external identifiers for the protein from various database sources.
-            </p>
-            <span id="alias_table_header" class="round secondary label"></span>
-        </h2>
-        <hr />
-            
-            <div class="">
-                <!-- Includes alias_table into template -->
-                {% set table_id = "alias_table" %}
-                {% include "alias_table.jinja2" %}
-            </div>
+    <!-- External IDs -->
+    <section id="external_ids" data-magellan-destination="external_ids">
+      <h2>
+        External Identifiers
+        <a href="#" data-dropdown="external_id_info"><i class="fa fa-info-circle"></i></a>
+        <p id="external_id_info" class="f-dropdown content medium" data-dropdown-content>
+          List of external identifiers for the protein from various database sources.
+        </p>
+        <span id="alias_table_header" class="round secondary label"></span>
+      </h2>
+      <hr />
+      <div class="">
+        {% set table_id = "alias_table" %}
+        {% include "alias_table.jinja2" %}
+      </div>
     </section>
 
-<!-- Resources
-================================================== -->  
-        <section id="resources" data-magellan-destination="resources">
-        <h2>Resources</h2>
-        <hr />
+    <!-- Resources -->
+    <section id="resources" data-magellan-destination="resources">
+      <h2>Resources</h2>
+      <hr />
 
-        <div class="panel">
-	  {% if locus.urls|length > 0 %}
-              {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_HOMOLOGS'%}
-		 {% if loop.first %} <h3>Homologs</h3><p id='homolog_resources_list'> {% endif %}
-                 <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-		 {% if loop.last %}</p>{% endif %}
-              {% endfor %}
+      <div class="panel">
+        {% if locus.urls|length > 0 %}
+          {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_HOMOLOGS' %}
+            {% if loop.first %}<h3>Homologs</h3><p id='homolog_resources_list'>{% endif %}
+            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+            {% if loop.last %}</p>{% endif %}
+          {% endfor %}
 
-              {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_PROTEIN_DATABASES'%}
-		 {% if loop.first %} <h3>Protein Databases</h3><p id='protein_databases_resources_list'> {% endif %}
-                 <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-		 {% if loop.last %}</p>{% endif %}	
-              {% endfor %}
-               
-              {% for url in locus.urls if url.category == 'LOCUS_PROEIN_LOCALIZATION'%}
-		 {% if loop.first %} <h3>Localization</h3> <p id="localization_resources_list"> {% endif %}
-                 <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-		 {% if loop.last %}</p>{% endif %}
-              {% endfor %}
-                
-              {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_MODIFICATIONS'%}
-	         {% if loop.first %} <h3>Post-translational Modifications</h3> <p id="modifications_resources_list"> {% endif %}
-                 <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
-		 {% if loop.last %}</p>{% endif %}
-              {% endfor %}
-          {% endif %}
-        </div>
-        </section>
+          {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_PROTEIN_DATABASES' %}
+            {% if loop.first %}<h3>Protein Databases</h3><p id='protein_databases_resources_list'>{% endif %}
+            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+            {% if loop.last %}</p>{% endif %}
+          {% endfor %}
 
-    </div>
-    
+          {% for url in locus.urls if url.category == 'LOCUS_PROEIN_LOCALIZATION' %}
+            {% if loop.first %}<h3>Localization</h3><p id="localization_resources_list">{% endif %}
+            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+            {% if loop.last %}</p>{% endif %}
+          {% endfor %}
+
+          {% for url in locus.urls if url.category == 'LOCUS_PROTEIN_MODIFICATIONS' %}
+            {% if loop.first %}<h3>Post-translational Modifications</h3><p id="modifications_resources_list">{% endif %}
+            <a href="{{ url.link }}" target="_blank">{{ url.display_name }}</a>{% if not loop.last %} | {% endif %}
+            {% if loop.last %}</p>{% endif %}
+          {% endfor %}
+        {% endif %}
+      </div>
+    </section>
+
+  </div>
 </div>
 
 {% endblock body %}
+
 
 {% block scripts %}
 <script src="https://cdn.jsdelivr.net/gh/arose/ngl@latest/dist/ngl.js"></script>
@@ -493,31 +395,93 @@
 <script src="{{asset_root}}/js/protein_details.js"></script>
 
 {% if locus.uniprot_id != '' %}
+{# Load PDBe Mol* from EBI (often already allowed by CSP) #}
+<link rel="stylesheet" href="https://www.ebi.ac.uk/pdbe/pdb-component-library/css/pdbe-molstar-light-3.1.0.css">
+<script src="https://www.ebi.ac.uk/pdbe/pdb-component-library/js/pdbe-molstar-plugin-3.1.0.js"></script>
 
-{{ super() }}
 <script>
-  // Set up the PDBeMolstarPlugin viewer
-  var viewerInstance = new PDBeMolstarPlugin();
-  var viewerContainer = document.getElementById('myViewer');
+(function () {
+  var container = document.getElementById('myViewer');
+  if (!container) return;
 
-  var options = {
-    customData: {
-      url: `https://alphafold.ebi.ac.uk/files/AF-{{ locus.uniprot_id }}-F1-model_v4.cif`,
-      format: 'cif',
-    },
-    alphafoldView: true,
-    bgColor: { r: 255, g: 255, b: 255 },
-    hideControls: true,
-    hideCanvasControls: ['expand', 'animation', 'controlToggle', 'controlInfo'],
-  };
+  function inline(msg) {
+    try {
+      var el = document.createElement('div');
+      el.style.cssText = 'position:absolute;top:8px;left:8px;z-index:10;padding:8px;font:12px/1.4 monospace;background:#fff;border:1px solid #eee;max-width:620px';
+      el.textContent = msg;
+      container.appendChild(el);
+    } catch (_) {}
+  }
 
-  // Render the viewer on page load
-  window.addEventListener("load", function() {
-    viewerInstance.render(viewerContainer, options);
-    customize();  // Apply background color customization
-  });
+  async function resolveAlphaFoldUrl(id) {
+    // Try provided ID, uppercase, and stripped isoform (e.g., P12345-2 -> P12345)
+    const tried = new Set();
+    const candidates = [id, id && id.toUpperCase()];
+    if (/-\d+$/.test(id)) candidates.push(id.split('-')[0]);
+
+    for (const cand of candidates) {
+      if (!cand || tried.has(cand)) continue;
+      tried.add(cand);
+      try {
+        const res = await fetch('https://alphafold.ebi.ac.uk/api/prediction/' + encodeURIComponent(cand), {
+          mode: 'cors',
+          cache: 'no-store'
+        });
+        if (!res.ok) continue;
+
+        const json = await res.json();
+        if (Array.isArray(json) && json.length) {
+          const p = json[0];
+          // Prefer bcif, then cif, then pdb
+          if (p.bcifUrl) return { url: p.bcifUrl, format: 'bcif', binary: true };
+          if (p.cifUrl)  return { url: p.cifUrl,  format: 'cif',  binary: false };
+          if (p.pdbUrl)  return { url: p.pdbUrl,  format: 'pdb',  binary: false };
+        }
+      } catch (_) {
+        // ignore and try next candidate
+      }
+    }
+    throw new Error('No AlphaFold prediction found for this UniProt ID (or isoform).');
+  }
+
+  async function init() {
+    if (!window.PDBeMolstarPlugin) {
+      inline('AlphaFold viewer unavailable: PDBe Mol* script not loaded.');
+      return;
+    }
+
+    try {
+      const picked = await resolveAlphaFoldUrl('{{ locus.uniprot_id }}');
+
+      var instance = new PDBeMolstarPlugin();
+      window.viewerInstance = instance; // used by customize()
+
+      instance.render(container, {
+        customData: { url: picked.url, format: picked.format, binary: picked.binary },
+        alphafoldView: true,
+        bgColor: { r: 255, g: 255, b: 255 },
+        hideControls: true,
+        hideCanvasControls: ['expand', 'animation', 'controlToggle', 'controlInfo']
+      });
+
+      if (typeof customize === 'function') customize();
+    } catch (e) {
+      console.error(e);
+      inline('AlphaFold structure not available (API returned no file URLs).');
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
 </script>
-
 {% endif %}
-
 {% endblock scripts %}
+
+
+
+
+
