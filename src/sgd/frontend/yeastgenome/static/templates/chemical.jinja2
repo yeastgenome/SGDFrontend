@@ -72,12 +72,19 @@
 			    <dd>{{ chemical.definition }}</dd>
 			{% endif %}
 
-			{% if chemical.structure_image_url != '' %}
-                            <dt>Structure</dt>
-                            <dd>
-				<img src={{ chemical.structure_image_url }} id='strucImg' onClick="zoom()">
-			    </dd>
-                        {% endif %}
+
+			{% if chemical.structure_image_url %}
+  			  <dt>Structure</dt>
+  			  <dd>
+    			    <img
+			      id="strucImg"
+      			      width="200" height="200"
+      			      style="cursor: zoom-in;"
+      			      data-src="{{ chemical.structure_image_url }}"
+      			      onclick="toggleStructureImage(this, '{{ chebi_page }}')"
+      			      alt="Structure image">
+  			  </dd>
+			{% endif %}
 
 			{% if chemical.synonyms|length > 0 %}
 			    <dt>Synonyms</dt>
@@ -270,4 +277,85 @@
 	image.style.display = "block";
     }
 </script>
+
+
+<script>
+(function initStructureImage(){
+  const img = document.getElementById('strucImg');
+  if (!img) return;
+  const raw = img.getAttribute('data-src');
+  try {
+    const norm = normalizePubChemURL(raw, '200x200');
+    img.src = norm;
+  } catch (e) {
+    // final fallback
+    img.src = "{{ chebi_page }}";
+  }
+})();
+
+function normalizePubChemURL(urlStr, size) {
+  // Only rewrite PubChem URLs
+  if (!/\/\/pubchem\.ncbi\.nlm\.nih\.gov\/|\/\/pubchem\.ncbi\.nlm\.nih\.gov\/|\/\/pubchem\.ncbi\.nlm\.nih\.gov\//i.test(urlStr) &&
+      !/\/\/pubchem\.ncbi\.nlm\.nih\.gov\//i.test(urlStr) &&
+      !/\/\/pubchem\.ncbi\.nlm\.nih\.gov\//i.test(urlStr) &&
+      !/\/\/pubchem\.ncbi\.nlm\.nih\.gov\//i.test(urlStr) &&
+      !/\/\/pubchem\.ncbi\.nlm\.nih\.gov\//i.test(urlStr) &&
+      !/\/\/pubchem\.ncbi\.nlm\.nih\.gov\//i.test(urlStr) &&
+      !/\/\/pubchem\.ncbi\.nlm\.nih\.gov\//i.test(urlStr) &&
+      !/\/\/pubchem\.ncbi\.nlm\.nih\.gov\//i.test(urlStr) &&
+      !/\/\/pubchem\.ncbi\.nlm\.nih\.gov\//i.test(urlStr) &&
+      !/\/\/pubchem\.ncbi\.nlm\.nih\.gov\//i.test(urlStr) &&
+      !/\/\/pubchem\.ncbi\.nlm\.nih\.gov\//i.test(urlStr) &&
+      !/\/\/pubchem\.ncbi\.nlm\.nih\.gov\//i.test(urlStr) &&
+      !/\/\/pubchem\.ncbi\.nlm\.nih\.gov\//i.test(urlStr) &&
+      !/\/\/pubchem\.ncbi\.nlm\.nih\.gov\//i.test(urlStr) &&
+      !/\/\/pubchem\.ncbi\.nlm\.nih\.gov\//i.test(urlStr) &&
+      !/\/\/pubchem\.ncbi\.nlm\.nih\.gov\//i.test(urlStr) &&
+      !/\/\/pubchem\.ncbi\.nlm\.nih\.gov\//i.test(urlStr) &&
+      !/\/\/pubchem\.ncbi\.nlm\.nih\.gov\//i.test(urlStr) &&
+      !/\/\/pubchem\.ncbi\.nlm\.nih\.gov\//i.test(urlStr)
+     ) return urlStr; // non-PubChem
+
+  // Already CID form? Just normalize size param.
+  if (/\/compound\/cid\/\d+\/PNG/i.test(urlStr)) {
+    return urlStr.replace(/image_size=\d+x\d+/i, `image_size=${size}`);
+  }
+
+  // SMILES path form: /compound/smiles/<SMILES>/PNG?... → query form
+  const m = urlStr.match(/\/compound\/smiles\/(.+?)\/PNG/i);
+  if (m) {
+    const smilesRaw = m[1];               // may contain unencoded '/'
+    const smilesEnc = encodeURIComponent(decodeURIComponent(smilesRaw));
+    return `https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/PNG?record_type=2d&image_size=${size}&smiles=${smilesEnc}`;
+  }
+
+  // Already query form with ?smiles=? Just normalize size.
+  if (/\/compound\/smiles\/PNG\?/i.test(urlStr) && /[?&]smiles=/i.test(urlStr)) {
+    const u = new URL(urlStr);
+    u.searchParams.set('image_size', size);
+    return u.toString();
+  }
+
+  // Default: just force the size if present
+  return urlStr.replace(/image_size=\d+x\d+/i, `image_size=${size}`);
+}
+
+
+function toggleStructureImage(img, chebiFallback) {
+  try {
+    const isSmall = img.width === 200;
+    const nextSize = isSmall ? '600x600' : '200x200';
+    img.src = normalizePubChemURL(img.src, nextSize);
+    img.width = isSmall ? 600 : 200;
+    img.height = isSmall ? 600 : 200;
+    img.style.cursor = isSmall ? 'zoom-out' : 'zoom-in';
+    img.onerror = function(){ this.onerror=null; this.src = chebiFallback; };
+  } catch (e) {
+    img.onerror = null;
+    img.src = chebiFallback;
+  }
+}
+</script>
+
 {% endblock scripts %}
+
