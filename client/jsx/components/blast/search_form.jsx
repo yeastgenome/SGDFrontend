@@ -17,6 +17,7 @@ var SearchForm = createReactClass({
   propTypes: {
     blastType: PropTypes.any,
   },
+
   getDefaultProps: function () {
     return {
       blastType: '',
@@ -36,8 +37,11 @@ var SearchForm = createReactClass({
       }
     }
 
+    var seqType = param['type'];
+    var isProteinType = seqType === 'protein' || seqType === 'pep';
+
     var defaultProgram = 'blastn';
-    if (param['type'] == 'protein') {
+    if (isProteinType) {
       defaultProgram = 'blastp';
     }
 
@@ -53,7 +57,7 @@ var SearchForm = createReactClass({
       isPending: false,
       userError: null,
       lastUpdate: lastUpdate,
-      seqType: param['type'],
+      seqType: seqType,
       queryComment: param['name'],
       seqData: {},
       configData: {},
@@ -134,8 +138,6 @@ var SearchForm = createReactClass({
     if (this.state.isComplete) {
       if (this.state.resultData.hits == '') {
         var errorReport = this.state.resultData.result;
-        // return (<div dangerouslySetInnerHTML={{ __html: this.state.resultData.result}} />);
-        // return (<div><p>{resultData.result}</p></div>);
         return <div dangerouslySetInnerHTML={{ __html: errorReport }} />;
       }
 
@@ -230,8 +232,8 @@ BLAST Help at NCBI</a>.</p><hr>';
       var blastProgramNode = this._getBlastProgramNode(configData);
       var databaseNode = this._getDatabaseNode(configData);
       var optionNode = this._getOptionsNode(configData);
-      // need to put the date in a config file
-      descText =
+
+      var descText =
         "<p>Datasets updated: April 21, 2021</p><p>This form allows BLAST searches of S. cerevisiae sequence datasets. To search multiple fungal sequences, go to the <a href='/blast-fungal'>Fungal BLAST search form</a>.</p>";
 
       if (this.props.blastType == 'fungal') {
@@ -385,6 +387,10 @@ BLAST Help at NCBI</a>.</p><hr>';
   },
 
   _getBlastProgramNode: function (data) {
+    if (!data || !data.program) {
+      return null;
+    }
+
     var _elements = _.map(data.program, (p, index) => {
       return (
         <option value={p.script} key={index}>
@@ -411,13 +417,28 @@ BLAST Help at NCBI</a>.</p><hr>';
     );
   },
 
+  //
+  // DEFAULT DATABASE SELECTION
+  //
   _setDefaultDatabase: function (data) {
+    if (!data || !data.database) {
+      return;
+    }
+
     var database = data.database;
-    var datagroup = data.datagroup;
-    var _databaseDef = data.databasedef;
-    var param = this.state.param;
-    if (param['type'] == 'protein') {
+    var datagroup = data.datagroup || {};
+    var param = this.state.param || {};
+    var seqType = param['type'];
+    var isProteinType = seqType === 'protein' || seqType === 'pep';
+
+    var _databaseDef = data.databasedef || [];
+    if (isProteinType) {
+      // Prefer explicit protein defaults if present
       _databaseDef = data.databasedef4protein;
+      // Fallback: hard-code YeastORF.fsa if not provided
+      if (!_databaseDef || !_databaseDef.length) {
+        _databaseDef = ['YeastORF.fsa'];
+      }
     }
 
     var defaultDatabase = [];
@@ -425,50 +446,67 @@ BLAST Help at NCBI</a>.</p><hr>';
       var dataset = d.dataset;
       if (dataset.match(/^label/)) {
         dataset = datagroup[dataset];
-        console.log('dataset=', dataset);
       }
       if ($.inArray(dataset, _databaseDef) > -1) {
         defaultDatabase.push(dataset);
-        console.log('defaultDatabase=', dataset);
       }
     });
+
+    // NOTE: original code only set `database`, not `selectedDatabase`
+    // We keep that behavior; the actual default selection happens in _getDatabaseNode
     this.setState({ database: defaultDatabase });
   },
 
   _getDatabaseNode: function (data) {
-    var database = data.database;
-    var datagroup = data.datagroup;
-    var _databaseDef = data.databasedef;
+    if (!data || !data.database) {
+      return null;
+    }
 
-    var param = this.state.param;
-    if (param['type'] == 'protein') {
+    var database = data.database;
+    var datagroup = data.datagroup || {};
+
+    var _databaseDef = data.databasedef || [];
+
+    var param = this.state.param || {};
+    var seqType = param['type'];
+    var isProteinType = seqType === 'protein' || seqType === 'pep';
+
+    if (isProteinType) {
       _databaseDef = data.databasedef4protein;
+      if (!_databaseDef || !_databaseDef.length) {
+        _databaseDef = ['YeastORF.fsa'];
+      }
     }
 
     var i = 0;
     const selectedValue = [];
-    var _elements = _.map(database, (d, index) => {
-      i += 1;
-      var dataset = d.dataset;
-      if (dataset.match(/^label/)) {
-        dataset = datagroup[dataset];
-      }
-
-      if (this.state.selectedDatabase.length == 0) {
-        if ($.inArray(dataset, _databaseDef) > -1) {
-          selectedValue.push(dataset);
+    var _elements = _.map(
+      database,
+      function (d, index) {
+        i += 1;
+        var dataset = d.dataset;
+        if (dataset.match(/^label/)) {
+          dataset = datagroup[dataset];
         }
-      } else {
-        selectedValue.push(...this.state.selectedDatabase);
-      }
 
-      return (
-        <option value={dataset} key={index} onClick={this.handleDatabaseSelect}>
-          {d.label}
-        </option>
-      );
-    });
-    // value={this.state.database}
+        if (this.state.selectedDatabase.length == 0) {
+          if ($.inArray(dataset, _databaseDef) > -1) {
+            selectedValue.push(dataset);
+          }
+        } else {
+          // If user has already interacted, use their choices
+          selectedValue.length = 0;
+          selectedValue.push.apply(selectedValue, this.state.selectedDatabase);
+        }
+
+        return (
+          <option value={dataset} key={index} onClick={this.handleDatabaseSelect}>
+            {d.label}
+          </option>
+        );
+      }.bind(this)
+    );
+
     return (
       <div>
         <h3>Choose one or more Sequence Datasets:</h3>
@@ -505,6 +543,9 @@ BLAST Help at NCBI</a>.</p><hr>';
     this.setState({ selectedDatabase: filteredArray });
   },
 
+  //
+  // OPTIONS BLOCK
+  //
   _getOptionsNode: function (data) {
     var outFormatMenu = this._getOutFormatMenu();
     var matrixMenu = this._getMatrixMenu(data);
@@ -599,7 +640,7 @@ BLAST Help at NCBI</a>.</p><hr>';
   },
 
   _getMatrixMenu: function (data) {
-    if (!data.matrix) return null;
+    if (!data || !data.matrix) return null;
     var matrix = data.matrix;
     var _elements = this._getDropdownList(matrix);
     return (
@@ -732,6 +773,9 @@ BLAST Help at NCBI</a>.</p><hr>';
     return _elements;
   },
 
+  //
+  // HANDLERS
+  //
   _onProgramChange: function (e) {
     this.setState({ program: e.target.value });
   },
@@ -768,6 +812,9 @@ BLAST Help at NCBI</a>.</p><hr>';
     this.setState({ text: e.target.value });
   },
 
+  //
+  // DATA FETCH
+  //
   _getSeq: function (name, type) {
     var jsonUrl = BLAST_URL + '?name=' + name;
     if (type == 'protein' || type == 'pep') {
@@ -796,7 +843,13 @@ BLAST Help at NCBI</a>.</p><hr>';
       url: jsonUrl,
       dataType: 'json',
       success: function (data) {
+        // Inject protein default list if backend doesn’t provide it
+        if (!data.databasedef4protein || !data.databasedef4protein.length) {
+          data.databasedef4protein = ['YeastORF.fsa'];
+        }
+
         this.setState({ configData: data });
+        this._setDefaultDatabase(data);
       }.bind(this),
       error: function (xhr, status, err) {
         console.error(jsonUrl, status, err.toString());
@@ -804,6 +857,9 @@ BLAST Help at NCBI</a>.</p><hr>';
     });
   },
 
+  //
+  // SUBMIT / BLAST
+  //
   _onSubmit: function (e) {
     var seq = this.sequence.value.trim();
     if (seq == '') {
@@ -828,12 +884,10 @@ BLAST Help at NCBI</a>.</p><hr>';
     var threshold = this.threshold.value;
     var alignToShow = this.alignToShow.value;
     var filter = 'on';
-    if (document.getElementById('Off').checked) {
+    if (document.getElementById('Off') && document.getElementById('Off').checked) {
       filter = '';
     }
     seq = this._cleanUpSeq(seq);
-
-    console.log('database=', database);
 
     var newDatabase = this._checkParameters(
       seq,
@@ -845,8 +899,6 @@ BLAST Help at NCBI</a>.</p><hr>';
 
     if (newDatabase) {
       database = newDatabase;
-      console.log('newDatabase=', newDatabase);
-      // window.localStorage.clear();
       window.localStorage.setItem('seq', seq);
       window.localStorage.setItem('program', program);
       window.localStorage.setItem('database', database);
@@ -905,10 +957,11 @@ BLAST Help at NCBI</a>.</p><hr>';
     });
   },
 
+  //
+  // UTILITIES
+  //
   _cleanUpSeq: function (seq) {
     seq = seq.replace(/^>.*$/m, '');
-
-    // get rid of anything that is no-alphabet characters
     if (seq) {
       seq = seq.replace(/[^a-zA-Z]/g, '');
     }
@@ -916,24 +969,16 @@ BLAST Help at NCBI</a>.</p><hr>';
   },
 
   _checkParameters: function (seq, program, database, wordLength, cutoffScore) {
-    // check sequence
-    // get seq from the box or from upload file and remove unwanted characters
     if (!seq) {
       alert('Please enter a sequence');
       return 0;
     }
 
-    // check database
     if (database == '-') {
       alert('Please select a database.');
       return 0;
     }
 
-    // check to make sure sequence type matches the program
-
-    // let tmpseq = seq.replace(/[ATCGU]/gi, '');
-    // let tmpseq = seq.replace(/[ATCGUXN]/gi, '');
-    // https://droog.gs.washington.edu/mdecode/images/iupac.html
     let tmpseq = seq.replace(/[ATCGUMRWSYKVHDBNX]/gi, '');
 
     if (tmpseq == '') {
@@ -954,13 +999,6 @@ BLAST Help at NCBI</a>.</p><hr>';
       }
     }
 
-    // check sequence length and cutoffScore (s) value
-    // if (cutoffScore != 'default' && cutoffScore < 60 && seq.length > 100) {
-    //     alert("The maximum sequence length for an S value less than 60 is 100. Please adjust either the S value or sequence");
-    //     return 0;
-    // }
-
-    // check sequence length and wordlength
     if (
       program == 'blastn' &&
       wordLength != 'default' &&
@@ -973,11 +1011,9 @@ BLAST Help at NCBI</a>.</p><hr>';
       return 0;
     }
 
-    // check database and program to make sure they match...
-
-    var configData = this.state.configData;
-    var programs = configData.program;
-    var datasets = configData.database;
+    var configData = this.state.configData || {};
+    var programs = configData.program || [];
+    var datasets = configData.database || [];
 
     var programType = '';
     _.map(programs, (p) => {
