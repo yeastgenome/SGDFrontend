@@ -6,6 +6,7 @@
 <script>
     var reference = {{ reference_js|safe }};
 </script>
+
 {% endblock %}
 
 {% block body %}
@@ -151,10 +152,18 @@
             <h2>Gene Ontology Annotations <span id="go_table_header" class="round secondary label"></span></h2>
             <hr />
 
-	    {% if reference.pubmed_id == 21873635 or reference.pubmed_id == 14562095 %}
-                <a href="https://www.alliancegenome.org/alliancemine/loadTemplate.do?name=Literature_GO&constraint1=Gene.goAnnotation.evidence.publications&op1=LOOKUP&value1={{ reference.pubmed_id }}&scope=all&method=results&format=tab" target='_new'>Download Gene Ontology Data</a>
-	    {% elif reference.sgdid == 'S000069584' %}
-	        <a href="https://www.alliancegenome.org/alliancemine/loadTemplate.do?name=Literature_GO&constraint1=Gene.goAnnotation.evidence.publications&op1=LOOKUP&value1=GO_REF:0000015&scope=all&method=results&format=tab" target='_new'>Download Gene Ontology Data</a>
+	    {% if reference.pubmed_id in [26928762, 14562095] %}
+  	       <a href="https://downloads.yeastgenome.org/curation/literature/go_annotation_data_PMID:{{ reference.pubmed_id }}.tab.gz">
+                  Download GO annotations
+               </a>
+	    {% elif reference.sgdid in (
+     	        'S000069584','S000124036','S000124037','S000150560',
+     		'S000185201','S000204515','S000250402','S000250403',
+     		'S000309092','S000315490'
+   	    ) %}
+	       <a href="https://downloads.yeastgenome.org/curation/literature/go_annotation_data_SGD:{{ reference.sgdid }}.tab.gz">
+                  Download GO annotations
+               </a>
             {% else %}
 	        <div>
                 <!-- Includes go_table into template -->
@@ -215,11 +224,11 @@
             <h2>Interaction Annotations </h2>
             <hr />
 
-	{% if reference.pubmed_id == 27708008 %}
-	   Please go to <strong>http://sgd-archive.yeastgenome.org/curation/literature/</strong> to download the interaction data for this paper.
-	{% elif reference.pubmed_id == 20093466 %}
-	   Please go to	<strong>http://sgd-archive.yeastgenome.org/curation/literature/</strong> to download the interaction data for this paper.
-	{% else %}
+	{% if reference.pubmed_id in [27708008, 20093466] %}
+           <a href="https://downloads.yeastgenome.org/curation/literature/interaction_data_PMID:{{ reference.pubmed_id }}.tab.gz">
+              Download interaction annotations
+           </a>	    
+        {% else %}
             <div class="spaced-container">
                 <h3>Genetic Interactions
                     <span id="genetic_interaction_table_header" class="round secondary label"></span>
