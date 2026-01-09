@@ -253,26 +253,17 @@ class Header extends Component {
                       </a>
                     </li>
                     <li>
-                      <a
-                        className="disabled-header-a"
-                        href="/https://wiki.yeastgenome.org/index.php/Summary_of_Chromosome_Sequence_and_Annotation_Updates"
-                      >
+                      <a className="disabled-header-a" href="https://sites.google.com/view/yeastgenome-help/historical-data/chromosome-history">
                         Chromosome History
                       </a>
                     </li>
                     <li>
-                      <a
-                        className="disabled-header-a"
-                        href="http://wiki.yeastgenome.org/index.php/Systematic_Sequencing_Table"
-                      >
+                      <a className="disabled-header-a" href="https://sites.google.com/view/yeastgenome-help/historical-data/systematic-sequencing-table">
                         Systematic Sequencing Table
                       </a>
                     </li>
                     <li>
-                      <a
-                        className="disabled-header-a"
-                        href="http://wiki.yeastgenome.org/index.php/Original_Sequence_Papers"
-                      >
+                      <a className="disabled-header-a" href="https://sites.google.com/view/yeastgenome-help/historical-data/original-sequence-papers">
                         Original Sequence Papers
                       </a>
                     </li>
