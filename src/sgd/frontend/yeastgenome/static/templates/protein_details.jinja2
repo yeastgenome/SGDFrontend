@@ -106,7 +106,7 @@
           <div>
             <h3>Resources</h3>
             <ul>
-              <li><a href="https://alphafold.ebi.ac.uk/entry/{{ locus.uniprot_id }}" target="_alpha_info">View full AlphaFold page</a></li>
+              <li><a href="https://alphafold.ebi.ac.uk/entry/AF-{{ locus.uniprot_id }}-F1" target="_alpha_info">View full AlphaFold page</a></li>
               <li><a href="https://molstar.org/viewer-docs/#mouse-controls" target="_alpha_info">Viewer control documentation</a></li>
             </ul>
           </div>
@@ -437,32 +437,74 @@
     try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ...entry, ts: Date.now() })); } catch {}
   }
 
+
   async function resolveAlphaFoldUrl(id) {
-    // Try provided ID, uppercase, and stripped isoform (e.g., P12345-2 -> P12345)
     const tried = new Set();
-    const candidates = [id, id && id.toUpperCase()];
-    if (/-\d+$/.test(id)) candidates.push(id.split('-')[0]);
+
+    const upper = (id || '').toUpperCase();
+    const base = upper.replace(/-\d+$/, ''); // P12345-2 -> P12345
+
+    // New AFDB v6 “model page” ids look like AF-<uniprot>-F1
+    // For isoform accessions, we try AF-<uniprot-isoform>-F1 as well.
+    const candidates = [
+      upper,
+      base,
+      `AF-${upper}-F1`,
+      `AF-${base}-F1`,
+    ];
+
+    function pickFromPayload(p) {
+      // Try the fields you already use (likely still present for now)
+      if (p?.bcifUrl) return { url: p.bcifUrl, format: 'bcif', binary: true };
+      if (p?.cifUrl)  return { url: p.cifUrl,  format: 'cif',  binary: false };
+      if (p?.pdbUrl)  return { url: p.pdbUrl,  format: 'pdb',  binary: false };
+
+      // Be tolerant of possible renamed fields / nested structures during the transition
+      // (we don’t know the exact new schema from your error alone)
+      const maybe =
+        p?.files?.bcif?.url || p?.files?.cif?.url || p?.files?.pdb?.url ||
+        p?.model?.bcifUrl   || p?.model?.cifUrl   || p?.model?.pdbUrl;
+      if (maybe) {
+        const fmt = maybe.includes('.bcif') ? 'bcif' : maybe.includes('.cif') ? 'cif' : 'pdb';
+        return { url: maybe, format: fmt, binary: fmt === 'bcif' };
+      }
+      return null;
+    }
+
+    function normalizePredictionResponse(json) {
+      if (Array.isArray(json)) return json;
+      if (json && Array.isArray(json.results)) return json.results;
+      if (json && Array.isArray(json.predictions)) return json.predictions;
+      if (json && typeof json === 'object') return [json]; // last-ditch
+      return [];
+    }
 
     for (const cand of candidates) {
       if (!cand || tried.has(cand)) continue;
       tried.add(cand);
+
       try {
-        const res = await fetch('https://alphafold.ebi.ac.uk/api/prediction/' + encodeURIComponent(cand), {
-          mode: 'cors',
-          cache: 'no-store'
-        });
+        const res = await fetch(
+          'https://alphafold.ebi.ac.uk/api/prediction/' + encodeURIComponent(cand),
+          { mode: 'cors', cache: 'no-store' }
+        );
         if (!res.ok) continue;
+
         const json = await res.json();
-        if (Array.isArray(json) && json.length) {
-          const p = json[0];
-          if (p.bcifUrl) return { url: p.bcifUrl, format: 'bcif', binary: true };
-          if (p.cifUrl)  return { url: p.cifUrl,  format: 'cif',  binary: false };
-          if (p.pdbUrl)  return { url: p.pdbUrl,  format: 'pdb',  binary: false };
-        }
-      } catch { /* try next */ }
+        const preds = normalizePredictionResponse(json);
+        if (!preds.length) continue;
+
+        // Prefer first model; you could also pick by modelEntityId if present.
+        const picked = pickFromPayload(preds[0]);
+        if (picked) return picked;
+      } catch {
+        // try next
+      }
     }
+
     throw new Error('No AlphaFold prediction found for this UniProt ID (or isoform).');
   }
+
 
   // Prefetch the structure and serve it to Mol* via a Blob URL (faster & avoids refetch)
   async function prefetchAsBlob(url, format) {
