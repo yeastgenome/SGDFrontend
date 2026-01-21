@@ -61,7 +61,13 @@
                 {% endif %}
 
                 <ul id="ref_links" class="ref-links">
-                    {%  if reference.pubmed_id != none %}<li>PMID: {{ reference.pubmed_id }}</li>{% endif %}
+                    {% if reference.pubmed_id is defined and reference.pubmed_id %}
+  		       <li>PMID: {{ reference.pubmed_id }}</li>
+                    {% endif %}
+		    {% if reference.go_ref_id is defined and reference.go_ref_id %}
+                       <li>{{ reference.go_ref_id }}</li>
+                    {% endif %}
+		    
                     {% for url in reference.urls %}
                         <li><a href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
                     {% endfor %}
@@ -130,6 +136,8 @@
                                 <span>{{ relref.citation|e|replace(relref.display_name, '') }}</span>
                                 {% if relref.pubmed_id != none %}
                                     <small>PMID: {{ relref.pubmed_id|e }}</small>
+				{% elif relref.go_ref_id != none %}
+				    <small>GO_REF: {{ relref.go_ref_id|e }}</small>
                                 {% endif %}
                                 <ul class="ref-links">
                                     <li><a href="{{ relref.link|e }}">SGD Paper</a></li>
