@@ -5,7 +5,8 @@ import { download_analyze_buttons } from './create_analyze_button.jsx';
 const Checklist = require('../widgets/checklist.jsx');
 const Params = require('../mixins/parse_url_params.jsx');
 const ExampleTable = require('./example_table.jsx');
-const DataTable = require('../widgets/data_table.jsx');
+// const DataTable = require('../widgets/data_table.jsx');
+const DataTable = require('./data_table.jsx');
 const PatmatchUrl = '/run_patmatch';
 const LETTERS_PER_LINE = 60;
 
@@ -94,7 +95,17 @@ class SearchForm extends Component {
   }
 
   _getFormNode() {
-    if (this.state.getSeq && !this.state.seqFetched) {
+    if (this.state.userError) {
+      return (
+        <div>
+          <div className="row">
+            <p style={{ color: 'red', fontWeight: 'bold' }}>
+              {this.state.userError}
+            </p>
+          </div>
+        </div>
+      );
+    } else if (this.state.getSeq && !this.state.seqFetched) {
       this._getSeq();
       return;
     } else if (this.state.getSeq && this.state.seqFetched) {
@@ -255,18 +266,6 @@ class SearchForm extends Component {
       }
       return `${spacesStr}${lineNum} ${line}`;
     });
-
-    // var seqNode = _.map(lineArr, (l, i) => {
-    //       return <span key={'seq' + i}>{l}<br /></span>;
-    // });
-    //
-    // return (<div>
-    //       <blockquote style={{ fontFamily: "Monospace", fontSize: 14 }}>
-    //       <pre>
-    //       {seqNode}
-    //       </pre>
-    //       </blockquote>
-    //       </div>);
 
     var seqlines = '';
     _.map(lineArr, (l, i) => {
@@ -670,6 +669,26 @@ class SearchForm extends Component {
         substitution: param['substitution'],
       },
       success: (data) => {
+        if (data && data.error) {
+          this.setState({
+            userError: data.error,
+            isComplete: false,
+            isPending: false,
+            resultData: {},
+          });
+          return;
+        }
+
+        if (data && data.error_message) {
+          this.setState({
+            userError: data.error_message,
+            isComplete: false,
+            isPending: false,
+            resultData: {},
+          });
+          return;
+        }
+
         this.setState({ isComplete: true, resultData: data });
       },
       error: (xhr, status, err) => {
