@@ -795,7 +795,7 @@
       description: 'Variant/SNP data access',
       endpoints: [
         { method: 'GET', path: '/search_sequence_objects', description: 'Search for sequence objects', params: 'query', example: '/search_sequence_objects?query=ACT1' },
-        { method: 'GET', path: '/get_sequence_object/{id}', description: 'Get a specific sequence object', example: '/get_sequence_object/ACT1' },
+        { method: 'GET', path: '/get_sequence_object/{id}', description: 'Get a specific sequence object by SGDID', example: '/get_sequence_object/S000001855' },
         { method: 'GET', path: '/get_all_variant_objects', description: 'Get all variant objects', example: '/get_all_variant_objects' }
       ]
     },
@@ -810,7 +810,7 @@
       name: 'Entity Validation',
       description: 'Validate entity identifiers',
       endpoints: [
-        { method: 'GET', path: '/entity/{entity_type}/{ids}', description: 'Validate entity identifiers', example: '/entity/locus/ACT1,TUB1,HIS3' }
+        { method: 'GET', path: '/entity/{entity_type}/{ids}', description: 'Validate entity identifiers (use | as separator)', example: '/entity/locus/ACT1|TUB1|HIS3' }
       ]
     },
     {
@@ -821,25 +821,10 @@
       ]
     },
     {
-      name: 'Colleague',
-      description: 'Colleague/researcher directory',
-      endpoints: [
-        { method: 'GET', path: '/colleagues/{id}', description: 'Get colleague information', example: '/colleagues/1' }
-      ]
-    },
-    {
-      name: 'Reserved Name',
-      description: 'Reserved gene names',
-      endpoints: [
-        { method: 'GET', path: '/reservedname/{id}', description: 'Get reserved name information', example: '/reservedname/1' }
-      ]
-    },
-    {
       name: 'Miscellaneous',
       description: 'Other utility endpoints',
       endpoints: [
-        { method: 'GET', path: '/ambiguous_names', description: 'Get list of ambiguous gene names', example: '/ambiguous_names' },
-        { method: 'GET', path: '/annotations', description: 'Get recent annotations', example: '/annotations' }
+        { method: 'GET', path: '/ambiguous_names', description: 'Get list of ambiguous gene names', example: '/ambiguous_names' }
       ]
     }
   ];
