@@ -1,35 +1,1134 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>SGD-API</title>
-        <meta charset="utf-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="icon" href="/img-domain/favicon.ico" type="image/x-icon">
-        <link href="{{asset_root}}/css/swagger.css" rel="stylesheet">
-    </head>
-    <body>
-        <div id="swagger-ui-container" class="swagger-ui-wrap"></div>
-        <script src="https://unpkg.com/swagger-ui-dist@3.12.1/swagger-ui-standalone-preset.js"></script>
-        <script src="https://unpkg.com/swagger-ui-dist@3.12.1/swagger-ui-bundle.js"></script>
+{% extends "lite_layout.jinja2" %}
 
-        <script>
-            window.onload = function() {
-                const ui = SwaggerUIBundle({
-                    url: "/backend/api",
-                    dom_id: '#swagger-ui-container',
-                    deepLinking: true,
-                    validatorUrl: null,
-                    presets: [
-                        SwaggerUIBundle.presets.apis,
-                        SwaggerUIStandalonePreset
-                    ],
-                    plugins: [
-                        SwaggerUIBundle.plugins.DownloadUrl
-                    ],
-                    layout: "StandaloneLayout",
-                })
-                window.ui = ui
-            }
-        </script>
-    </body>
-</html>
+{% block title %}API Documentation{% endblock %}
+
+{% block head %}
+<style>
+/* API Documentation Page Styles */
+.api-doc-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.api-doc-content {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 4px;
+}
+
+.api-doc-page h1 {
+  color: #16539E;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.api-doc-page hr {
+  border: none;
+  border-top: 2px solid #16539E;
+  margin-bottom: 25px;
+}
+
+.api-intro {
+  background-color: #f5f5f5;
+  padding: 20px;
+  border-radius: 4px;
+  margin-bottom: 30px;
+}
+
+.api-intro p {
+  margin: 0 0 10px 0;
+  line-height: 1.6;
+}
+
+.api-intro p:last-child {
+  margin-bottom: 0;
+}
+
+.api-intro code {
+  background-color: #e0e0e0;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'Consolas', 'Monaco', monospace;
+}
+
+/* API Groups */
+.api-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.api-group {
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.api-group-header {
+  background-color: #f8f9fa;
+  padding: 15px 20px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.api-group-header:hover {
+  background-color: #e8f4fc;
+}
+
+.group-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.group-title h2 {
+  margin: 0;
+  font-size: 1.2em;
+  color: #333;
+}
+
+.expand-icon {
+  color: #666;
+  font-size: 0.8em;
+  transition: transform 0.2s;
+}
+
+.endpoint-count {
+  color: #888;
+  font-size: 0.9em;
+}
+
+.group-description {
+  margin: 0;
+  color: #666;
+  font-size: 0.95em;
+  padding-left: 22px;
+}
+
+/* Endpoints */
+.api-endpoints {
+  border-top: 1px solid #e0e0e0;
+  display: none;
+}
+
+.api-endpoints.expanded {
+  display: block;
+}
+
+.api-endpoint {
+  padding: 15px 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.api-endpoint:last-child {
+  border-bottom: none;
+}
+
+.api-endpoint:hover {
+  background-color: #fafafa;
+}
+
+.endpoint-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.method-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-size: 0.75em;
+  font-weight: bold;
+  text-transform: uppercase;
+  min-width: 50px;
+  text-align: center;
+}
+
+.method-get {
+  background-color: #61affe;
+  color: white;
+}
+
+.method-post {
+  background-color: #49cc90;
+  color: white;
+}
+
+.method-put {
+  background-color: #fca130;
+  color: white;
+}
+
+.method-delete {
+  background-color: #f93e3e;
+  color: white;
+}
+
+.endpoint-path {
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 0.95em;
+  color: #333;
+  background-color: #f5f5f5;
+  padding: 4px 8px;
+  border-radius: 3px;
+}
+
+.endpoint-description {
+  margin: 0 0 8px 0;
+  color: #555;
+  font-size: 0.9em;
+  padding-left: 70px;
+}
+
+.endpoint-params {
+  padding-left: 70px;
+  font-size: 0.85em;
+  color: #666;
+}
+
+.endpoint-params code {
+  background-color: #fff3e0;
+  padding: 2px 6px;
+  border-radius: 3px;
+  color: #e65100;
+}
+
+.endpoint-example {
+  padding-left: 70px;
+  font-size: 0.85em;
+  color: #666;
+  margin-top: 5px;
+}
+
+.example-link {
+  font-family: 'Consolas', 'Monaco', monospace;
+  color: #16539E;
+  text-decoration: none;
+  word-break: break-all;
+}
+
+.example-link:hover {
+  text-decoration: underline;
+  color: #1565c0;
+}
+
+/* Notes Section */
+.api-note {
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #fff3e0;
+  border-left: 4px solid #ff9800;
+  border-radius: 0 4px 4px 0;
+}
+
+.api-note h3 {
+  margin: 0 0 10px 0;
+  color: #e65100;
+}
+
+.api-note ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.api-note li {
+  margin-bottom: 5px;
+  color: #555;
+}
+
+.api-note code {
+  background-color: #ffe0b2;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+/* Try It Button */
+.try-it-btn {
+  margin-left: auto;
+  padding: 4px 12px;
+  background-color: #16539E;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8em;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.try-it-btn:hover {
+  background-color: #1565c0;
+}
+
+/* API Playground */
+.api-playground {
+  margin-top: 15px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  display: none;
+}
+
+.api-playground.active {
+  display: block;
+}
+
+.playground-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.playground-header h4 {
+  margin: 0;
+  color: #16539E;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  color: #666;
+  cursor: pointer;
+  padding: 0 5px;
+}
+
+.close-btn:hover {
+  color: #333;
+}
+
+.param-section {
+  margin-bottom: 15px;
+}
+
+.param-section h5 {
+  margin: 0 0 10px 0;
+  color: #555;
+  font-size: 0.9em;
+}
+
+.param-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.param-input label {
+  min-width: 120px;
+  font-weight: 500;
+  color: #333;
+  font-size: 0.9em;
+}
+
+.param-input input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.param-input input:focus {
+  outline: none;
+  border-color: #16539E;
+  box-shadow: 0 0 0 2px rgba(22, 83, 158, 0.1);
+}
+
+.url-preview {
+  margin: 15px 0;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+.url-preview strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #555;
+  font-size: 0.85em;
+}
+
+.url-preview code {
+  display: block;
+  word-break: break-all;
+  color: #16539E;
+  font-size: 0.85em;
+}
+
+.execute-btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #49cc90;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.execute-btn:hover:not(:disabled) {
+  background-color: #3cb371;
+}
+
+.execute-btn:disabled {
+  background-color: #a0d8b8;
+  cursor: not-allowed;
+}
+
+.playground-tabs {
+  display: flex;
+  gap: 5px;
+  margin-top: 20px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.tab-btn {
+  padding: 8px 16px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  font-size: 0.9em;
+  color: #666;
+  transition: all 0.2s;
+}
+
+.tab-btn:hover {
+  color: #16539E;
+}
+
+.tab-btn.active {
+  color: #16539E;
+  border-bottom-color: #16539E;
+  font-weight: 500;
+}
+
+.tab-content {
+  margin-top: 15px;
+}
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
+.response-panel {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 15px;
+  min-height: 150px;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.status-badge.success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-badge.error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.json-response {
+  background-color: #f5f5f5;
+  padding: 15px;
+  border-radius: 4px;
+  overflow: auto;
+  max-height: 400px;
+  font-size: 0.85em;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  font-family: 'Consolas', 'Monaco', monospace;
+}
+
+.error-msg {
+  color: #721c24;
+  background-color: #f8d7da;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.placeholder {
+  color: #888;
+  text-align: center;
+  padding: 40px;
+}
+
+.code-panel {
+  position: relative;
+  background-color: #2d2d2d;
+  border-radius: 4px;
+  padding: 15px;
+}
+
+.code-panel pre {
+  margin: 0;
+  color: #f8f8f2;
+  font-size: 0.85em;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-all;
+  font-family: 'Consolas', 'Monaco', monospace;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 4px 10px;
+  background-color: #444;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8em;
+}
+
+.copy-btn:hover {
+  background-color: #555;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .api-doc-page {
+    padding: 10px;
+  }
+
+  .api-doc-content {
+    padding: 20px;
+  }
+
+  .endpoint-header {
+    flex-wrap: wrap;
+  }
+
+  .endpoint-path {
+    width: 100%;
+    margin-top: 5px;
+    word-break: break-all;
+  }
+
+  .endpoint-description,
+  .endpoint-params,
+  .endpoint-example {
+    padding-left: 0;
+  }
+
+  .try-it-btn {
+    margin-left: 0;
+    margin-top: 10px;
+  }
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="api-doc-page">
+  <div class="api-doc-content">
+    <h1>SGD API Documentation</h1>
+    <hr />
+
+    <div class="api-intro">
+      <p>
+        This page documents the SGD REST API endpoints. The API provides programmatic access
+        to gene, GO, phenotype, disease, reference, and other data in the Saccharomyces Genome Database.
+      </p>
+      <p>
+        <strong>Base URL:</strong> <code id="api-base-url">https://www.yeastgenome.org/backend</code>
+      </p>
+      <p>
+        <strong>Response Format:</strong> All endpoints return JSON unless otherwise noted.
+      </p>
+      <p>
+        <strong>Try it out:</strong> Click the "Try it" button on any GET endpoint to test it interactively.
+      </p>
+    </div>
+
+    <div class="api-groups" id="api-groups">
+      <!-- API groups will be rendered by JavaScript -->
+    </div>
+
+    <div class="api-note">
+      <h3>Notes</h3>
+      <ul>
+        <li>Path parameters are shown in curly braces, e.g., <code>{id}</code></li>
+        <li>Query parameters are passed as URL query strings</li>
+        <li>POST endpoints accept JSON request bodies</li>
+        <li>All endpoints are read-only and do not modify data</li>
+        <li>Click on example URLs to test them in your browser</li>
+        <li>For more detailed API documentation with Swagger UI, visit <a href="/api">/api</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock body %}
+
+{% block scripts %}
+<script>
+(function() {
+  // Get base URL from current location or use default
+  var API_BASE_URL = window.location.origin + '/backend';
+
+  // API endpoint groups
+  var apiGroups = [
+    {
+      name: 'Locus/Gene',
+      description: 'Gene/locus information and annotations',
+      endpoints: [
+        { method: 'GET', path: '/locus/{id}', description: 'Get basic locus info (aliases, description, links)', example: '/locus/ACT1' },
+        { method: 'GET', path: '/locus/{id}/tabs', description: 'Get available tabs for a locus page', example: '/locus/ACT1/tabs' },
+        { method: 'GET', path: '/locus/{id}/go_details', description: 'Get GO annotations for a locus', example: '/locus/ACT1/go_details' },
+        { method: 'GET', path: '/locus/{id}/phenotype_details', description: 'Get phenotype annotations', example: '/locus/ACT1/phenotype_details' },
+        { method: 'GET', path: '/locus/{id}/phenotype_graph', description: 'Get phenotype graph data', example: '/locus/ACT1/phenotype_graph' },
+        { method: 'GET', path: '/locus/{id}/interaction_details', description: 'Get interaction annotations', example: '/locus/ACT1/interaction_details' },
+        { method: 'GET', path: '/locus/{id}/interaction_graph', description: 'Get interaction network graph', example: '/locus/ACT1/interaction_graph' },
+        { method: 'GET', path: '/locus/{id}/regulation_details', description: 'Get regulation annotations', example: '/locus/ACT1/regulation_details' },
+        { method: 'GET', path: '/locus/{id}/regulation_graph', description: 'Get regulation network graph', example: '/locus/ACT1/regulation_graph' },
+        { method: 'GET', path: '/locus/{id}/literature_details', description: 'Get literature/references for a locus', example: '/locus/ACT1/literature_details' },
+        { method: 'GET', path: '/locus/{id}/literature_graph', description: 'Get literature graph data', example: '/locus/ACT1/literature_graph' },
+        { method: 'GET', path: '/locus/{id}/go_graph', description: 'Get GO graph data', example: '/locus/ACT1/go_graph' },
+        { method: 'GET', path: '/locus/{id}/disease_details', description: 'Get disease associations', example: '/locus/ACT1/disease_details' },
+        { method: 'GET', path: '/locus/{id}/disease_graph', description: 'Get disease graph data', example: '/locus/ACT1/disease_graph' },
+        { method: 'GET', path: '/locus/{id}/homolog_details', description: 'Get homolog/ortholog information', example: '/locus/ACT1/homolog_details' },
+        { method: 'GET', path: '/locus/{id}/fungal_homolog_details', description: 'Get fungal homolog details', example: '/locus/ACT1/fungal_homolog_details' },
+        { method: 'GET', path: '/locus/{id}/complement_details', description: 'Get functional complement details', example: '/locus/ACT1/complement_details' },
+        { method: 'GET', path: '/locus/{id}/sequence_details', description: 'Get sequence information', example: '/locus/ACT1/sequence_details' },
+        { method: 'GET', path: '/locus/{id}/neighbor_sequence_details', description: 'Get neighboring sequence details', example: '/locus/ACT1/neighbor_sequence_details' },
+        { method: 'GET', path: '/locus/{id}/protein_domain_details', description: 'Get protein domain information', example: '/locus/ACT1/protein_domain_details' },
+        { method: 'GET', path: '/locus/{id}/protein_domain_graph', description: 'Get protein domain graph', example: '/locus/ACT1/protein_domain_graph' },
+        { method: 'GET', path: '/locus/{id}/protein_experiment_details', description: 'Get protein experiment data', example: '/locus/ACT1/protein_experiment_details' },
+        { method: 'GET', path: '/locus/{id}/protein_abundance_details', description: 'Get protein abundance data', example: '/locus/ACT1/protein_abundance_details' },
+        { method: 'GET', path: '/locus/{id}/posttranslational_details', description: 'Get post-translational modification data', example: '/locus/ACT1/posttranslational_details' },
+        { method: 'GET', path: '/locus/{id}/ecnumber_details', description: 'Get EC number details', example: '/locus/ACT1/ecnumber_details' },
+        { method: 'GET', path: '/locus/{id}/binding_site_details', description: 'Get binding site details', example: '/locus/ACT1/binding_site_details' },
+        { method: 'GET', path: '/locus/{id}/expression_graph', description: 'Get expression graph data', example: '/locus/ACT1/expression_graph' },
+        { method: 'GET', path: '/locus/{id}/regulation_target_enrichment', description: 'Get regulation target enrichment', example: '/locus/ACT1/regulation_target_enrichment' }
+      ]
+    },
+    {
+      name: 'Gene Ontology (GO)',
+      description: 'GO terms, hierarchy, and annotations',
+      endpoints: [
+        { method: 'GET', path: '/go/{id}', description: 'Get GO term info by GO ID', example: '/go/GO:0005634' },
+        { method: 'GET', path: '/go/{id}/locus_details', description: 'Get genes annotated to a GO term', example: '/go/GO:0005634/locus_details' },
+        { method: 'GET', path: '/go/{id}/locus_details_all', description: 'Get all genes annotated (including child terms)', example: '/go/GO:0005634/locus_details_all' },
+        { method: 'GET', path: '/go/{id}/ontology_graph', description: 'Get GO term hierarchy graph', example: '/go/GO:0005634/ontology_graph' },
+        { method: 'GET', path: '/go/regulations', description: 'Get all GO terms used in regulations', example: '/go/regulations' },
+        { method: 'GET', path: '/goslim', description: 'Get GO Slim mapping data', example: '/goslim' }
+      ]
+    },
+    {
+      name: 'Phenotype',
+      description: 'Phenotype terms and annotations',
+      endpoints: [
+        { method: 'GET', path: '/phenotype/{id}', description: 'Get phenotype term information', example: '/phenotype/inviable' },
+        { method: 'GET', path: '/phenotype/{id}/locus_details', description: 'Get genes annotated to a phenotype', example: '/phenotype/inviable/locus_details' }
+      ]
+    },
+    {
+      name: 'Observable',
+      description: 'Observable terms (phenotype ontology)',
+      endpoints: [
+        { method: 'GET', path: '/observable/{id}', description: 'Get observable term information', example: '/observable/cell_morphology' },
+        { method: 'GET', path: '/observable/{id}/locus_details', description: 'Get genes annotated to an observable', example: '/observable/cell_morphology/locus_details' },
+        { method: 'GET', path: '/observable/{id}/locus_details_all', description: 'Get all genes (including child terms)', example: '/observable/cell_morphology/locus_details_all' },
+        { method: 'GET', path: '/observable/{id}/ontology_graph', description: 'Get observable hierarchy graph', example: '/observable/cell_morphology/ontology_graph' }
+      ]
+    },
+    {
+      name: 'Disease',
+      description: 'Human disease associations',
+      endpoints: [
+        { method: 'GET', path: '/disease/{id}', description: 'Get disease term information', example: '/disease/DOID:9351' },
+        { method: 'GET', path: '/disease/{id}/locus_details', description: 'Get genes associated with a disease', example: '/disease/DOID:9351/locus_details' },
+        { method: 'GET', path: '/disease/{id}/locus_details_all', description: 'Get all genes (including child terms)', example: '/disease/DOID:9351/locus_details_all' },
+        { method: 'GET', path: '/disease/{id}/ontology_graph', description: 'Get disease ontology graph', example: '/disease/DOID:9351/ontology_graph' }
+      ]
+    },
+    {
+      name: 'Reference',
+      description: 'Literature and publication information',
+      endpoints: [
+        { method: 'GET', path: '/reference/{id}', description: 'Get reference info by PubMed ID or SGD ID', example: '/reference/8849441' },
+        { method: 'GET', path: '/reference/{id}/literature_details', description: 'Get literature details for a reference', example: '/reference/8849441/literature_details' },
+        { method: 'GET', path: '/reference/{id}/go_details', description: 'Get GO annotations citing this reference', example: '/reference/8849441/go_details' },
+        { method: 'GET', path: '/reference/{id}/phenotype_details', description: 'Get phenotype annotations citing this reference', example: '/reference/8849441/phenotype_details' },
+        { method: 'GET', path: '/reference/{id}/interaction_details', description: 'Get interaction annotations citing this reference', example: '/reference/8849441/interaction_details' },
+        { method: 'GET', path: '/reference/{id}/regulation_details', description: 'Get regulation annotations citing this reference', example: '/reference/8849441/regulation_details' },
+        { method: 'GET', path: '/reference/{id}/disease_details', description: 'Get disease annotations citing this reference', example: '/reference/8849441/disease_details' },
+        { method: 'GET', path: '/reference/{id}/posttranslational_details', description: 'Get PTM annotations citing this reference', example: '/reference/8849441/posttranslational_details' },
+        { method: 'GET', path: '/reference/{id}/functional_complement_details', description: 'Get functional complement annotations', example: '/reference/8849441/functional_complement_details' },
+        { method: 'GET', path: '/references/this_week', description: 'Get references added this week', example: '/references/this_week' }
+      ]
+    },
+    {
+      name: 'Author',
+      description: 'Author/researcher information',
+      endpoints: [
+        { method: 'GET', path: '/author/{name}', description: 'Get author information and publications', example: '/author/Bhattacharyya_S' }
+      ]
+    },
+    {
+      name: 'Chemical',
+      description: 'Chemical compound information',
+      endpoints: [
+        { method: 'GET', path: '/chemical/{id}', description: 'Get chemical compound information', example: '/chemical/caffeine' },
+        { method: 'GET', path: '/chemical/{id}/phenotype_details', description: 'Get phenotype annotations for a chemical', example: '/chemical/caffeine/phenotype_details' },
+        { method: 'GET', path: '/chemical/{id}/go_details', description: 'Get GO annotations for a chemical', example: '/chemical/caffeine/go_details' },
+        { method: 'GET', path: '/chemical/{id}/proteinabundance_details', description: 'Get protein abundance data for a chemical', example: '/chemical/caffeine/proteinabundance_details' },
+        { method: 'GET', path: '/chemical/{id}/complex_details', description: 'Get complex details for a chemical', example: '/chemical/caffeine/complex_details' },
+        { method: 'GET', path: '/chemical/{id}/network_graph', description: 'Get chemical network graph', example: '/chemical/caffeine/network_graph' }
+      ]
+    },
+    {
+      name: 'Allele',
+      description: 'Allele information',
+      endpoints: [
+        { method: 'GET', path: '/allele/{id}', description: 'Get allele information', example: '/allele/act1-1' },
+        { method: 'GET', path: '/allele/{id}/phenotype_details', description: 'Get phenotype annotations for an allele', example: '/allele/act1-1/phenotype_details' },
+        { method: 'GET', path: '/allele/{id}/interaction_details', description: 'Get interaction annotations for an allele', example: '/allele/act1-1/interaction_details' },
+        { method: 'GET', path: '/allele/{id}/network_graph', description: 'Get allele network graph', example: '/allele/act1-1/network_graph' }
+      ]
+    },
+    {
+      name: 'Protein Domain',
+      description: 'Protein domain/motif information',
+      endpoints: [
+        { method: 'GET', path: '/domain/{id}', description: 'Get protein domain information', example: '/domain/PF00022' },
+        { method: 'GET', path: '/domain/{id}/locus_details', description: 'Get genes with this domain', example: '/domain/PF00022/locus_details' },
+        { method: 'GET', path: '/domain/{id}/enrichment', description: 'Get GO enrichment for domain', example: '/domain/PF00022/enrichment' }
+      ]
+    },
+    {
+      name: 'EC Number',
+      description: 'Enzyme Commission number information',
+      endpoints: [
+        { method: 'GET', path: '/ecnumber/{id}', description: 'Get EC number information', example: '/ecnumber/3.6.4.13' },
+        { method: 'GET', path: '/ecnumber/{id}/locus_details', description: 'Get genes with this EC number', example: '/ecnumber/3.6.4.13/locus_details' }
+      ]
+    },
+    {
+      name: 'Complex',
+      description: 'Protein complex information',
+      endpoints: [
+        { method: 'GET', path: '/complex/{id}', description: 'Get complex information', example: '/complex/CPX-761' }
+      ]
+    },
+    {
+      name: 'Strain',
+      description: 'Yeast strain information',
+      endpoints: [
+        { method: 'GET', path: '/strain/{id}', description: 'Get strain information', example: '/strain/S288C' }
+      ]
+    },
+    {
+      name: 'Contig/Chromosome',
+      description: 'Chromosome and contig information',
+      endpoints: [
+        { method: 'GET', path: '/contig/{id}', description: 'Get contig/chromosome information', example: '/contig/Chromosome_I' },
+        { method: 'GET', path: '/contig/{id}/sequence_details', description: 'Get sequence details for a contig', example: '/contig/Chromosome_I/sequence_details' }
+      ]
+    },
+    {
+      name: 'Dataset',
+      description: 'Dataset and experiment information',
+      endpoints: [
+        { method: 'GET', path: '/dataset/{id}', description: 'Get dataset information', example: '/dataset/202' },
+        { method: 'GET', path: '/keyword/{id}', description: 'Get keyword information', example: '/keyword/1500' },
+        { method: 'GET', path: '/keywords', description: 'Get all keywords', example: '/keywords' }
+      ]
+    },
+    {
+      name: 'Search',
+      description: 'Search functionality',
+      endpoints: [
+        { method: 'GET', path: '/get_search_results', description: 'Search across SGD', params: 'q, category, limit, offset', example: '/get_search_results?q=ACT1&limit=10' },
+        { method: 'GET', path: '/autocomplete_results', description: 'Get autocomplete suggestions', params: 'q', example: '/autocomplete_results?q=ACT' }
+      ]
+    },
+    {
+      name: 'Sequence Tools',
+      description: 'Sequence analysis tools',
+      endpoints: [
+        { method: 'GET', path: '/alignment/{id}', description: 'Get alignment for a gene', example: '/alignment/ACT1' },
+        { method: 'GET', path: '/all_strain_alignment/{id}', description: 'Get alignment across all strains', example: '/all_strain_alignment/ACT1' },
+        { method: 'GET', path: '/primer3', description: 'Primer3 primer design tool', params: 'gene, sequence', example: '/primer3?gene=ACT1' }
+      ]
+    },
+    {
+      name: 'BLAST',
+      description: 'BLAST search configuration',
+      endpoints: [
+        { method: 'GET', path: '/sgd_blast_metadata', description: 'Get SGD BLAST database metadata', example: '/sgd_blast_metadata' },
+        { method: 'GET', path: '/fungal_blast_metadata', description: 'Get fungal BLAST database metadata', example: '/fungal_blast_metadata' }
+      ]
+    },
+    {
+      name: 'Variant Viewer',
+      description: 'Variant/SNP data access',
+      endpoints: [
+        { method: 'GET', path: '/search_sequence_objects', description: 'Search for sequence objects', params: 'query', example: '/search_sequence_objects?query=ACT1' },
+        { method: 'GET', path: '/get_sequence_object/{id}', description: 'Get a specific sequence object', example: '/get_sequence_object/ACT1' },
+        { method: 'GET', path: '/get_all_variant_objects', description: 'Get all variant objects', example: '/get_all_variant_objects' }
+      ]
+    },
+    {
+      name: 'Genome Snapshot',
+      description: 'Genome-wide statistics',
+      endpoints: [
+        { method: 'GET', path: '/genomesnapshot', description: 'Get genome snapshot statistics', example: '/genomesnapshot' }
+      ]
+    },
+    {
+      name: 'Entity Validation',
+      description: 'Validate entity identifiers',
+      endpoints: [
+        { method: 'GET', path: '/entity/{entity_type}/{ids}', description: 'Validate entity identifiers', example: '/entity/locus/ACT1,TUB1,HIS3' }
+      ]
+    },
+    {
+      name: 'Bioentity List',
+      description: 'Batch bioentity operations',
+      endpoints: [
+        { method: 'POST', path: '/bioentity_list', description: 'Get information for a list of bioentities' }
+      ]
+    },
+    {
+      name: 'Colleague',
+      description: 'Colleague/researcher directory',
+      endpoints: [
+        { method: 'GET', path: '/colleagues/{id}', description: 'Get colleague information', example: '/colleagues/1' }
+      ]
+    },
+    {
+      name: 'Reserved Name',
+      description: 'Reserved gene names',
+      endpoints: [
+        { method: 'GET', path: '/reservedname/{id}', description: 'Get reserved name information', example: '/reservedname/1' }
+      ]
+    },
+    {
+      name: 'Miscellaneous',
+      description: 'Other utility endpoints',
+      endpoints: [
+        { method: 'GET', path: '/ambiguous_names', description: 'Get list of ambiguous gene names', example: '/ambiguous_names' },
+        { method: 'GET', path: '/annotations', description: 'Get recent annotations', example: '/annotations' }
+      ]
+    }
+  ];
+
+  // Update the base URL display
+  document.getElementById('api-base-url').textContent = API_BASE_URL;
+
+  // Render the API groups
+  var groupsContainer = document.getElementById('api-groups');
+  var groupStates = {};
+  var activePlayground = null;
+
+  function getMethodClass(method) {
+    switch (method) {
+      case 'GET': return 'method-get';
+      case 'POST': return 'method-post';
+      case 'PUT': return 'method-put';
+      case 'DELETE': return 'method-delete';
+      default: return '';
+    }
+  }
+
+  function extractPathParams(path) {
+    var matches = path.match(/\{([^}]+)\}/g) || [];
+    return matches.map(function(p) { return p.slice(1, -1); });
+  }
+
+  function extractQueryParams(paramsStr) {
+    if (!paramsStr) return [];
+    return paramsStr.split(',').map(function(p) { return p.trim(); });
+  }
+
+  function buildUrl(path, pathParams, queryParams, pathParamValues, queryParamValues) {
+    var url = path;
+    pathParams.forEach(function(param) {
+      url = url.replace('{' + param + '}', encodeURIComponent(pathParamValues[param] || ''));
+    });
+    var queryParts = queryParams.filter(function(param) {
+      return queryParamValues[param];
+    }).map(function(param) {
+      return param + '=' + encodeURIComponent(queryParamValues[param]);
+    });
+    if (queryParts.length > 0) {
+      url += '?' + queryParts.join('&');
+    }
+    return url;
+  }
+
+  function createPlayground(endpoint, container) {
+    var pathParams = extractPathParams(endpoint.path);
+    var queryParams = extractQueryParams(endpoint.params);
+    var pathParamValues = {};
+    var queryParamValues = {};
+
+    var playground = document.createElement('div');
+    playground.className = 'api-playground active';
+
+    var html = '<div class="playground-header">' +
+      '<h4>API Playground</h4>' +
+      '<button class="close-btn">&times;</button>' +
+      '</div>' +
+      '<div class="playground-content">';
+
+    // Path parameters
+    if (pathParams.length > 0) {
+      html += '<div class="param-section"><h5>Path Parameters</h5>';
+      pathParams.forEach(function(param) {
+        html += '<div class="param-input">' +
+          '<label>' + param + '</label>' +
+          '<input type="text" class="path-param" data-param="' + param + '" placeholder="Enter ' + param + '">' +
+          '</div>';
+      });
+      html += '</div>';
+    }
+
+    // Query parameters
+    if (queryParams.length > 0) {
+      html += '<div class="param-section"><h5>Query Parameters</h5>';
+      queryParams.forEach(function(param) {
+        html += '<div class="param-input">' +
+          '<label>' + param + '</label>' +
+          '<input type="text" class="query-param" data-param="' + param + '" placeholder="Enter ' + param + '">' +
+          '</div>';
+      });
+      html += '</div>';
+    }
+
+    html += '<div class="url-preview"><strong>Request URL:</strong><code class="preview-url">' + API_BASE_URL + endpoint.path + '</code></div>' +
+      '<button class="execute-btn">Execute</button>' +
+      '<div class="playground-tabs">' +
+      '<button class="tab-btn active" data-tab="response">Response</button>' +
+      '<button class="tab-btn" data-tab="curl">cURL</button>' +
+      '<button class="tab-btn" data-tab="python">Python</button>' +
+      '<button class="tab-btn" data-tab="r">R</button>' +
+      '</div>' +
+      '<div class="tab-content">' +
+      '<div class="tab-panel active" data-tab="response">' +
+      '<div class="response-panel"><div class="placeholder">Click "Execute" to send the request</div></div>' +
+      '</div>' +
+      '<div class="tab-panel" data-tab="curl"><div class="code-panel"><button class="copy-btn">Copy</button><pre></pre></div></div>' +
+      '<div class="tab-panel" data-tab="python"><div class="code-panel"><button class="copy-btn">Copy</button><pre></pre></div></div>' +
+      '<div class="tab-panel" data-tab="r"><div class="code-panel"><button class="copy-btn">Copy</button><pre></pre></div></div>' +
+      '</div></div>';
+
+    playground.innerHTML = html;
+
+    // Event: Close
+    playground.querySelector('.close-btn').onclick = function() {
+      playground.remove();
+      activePlayground = null;
+    };
+
+    // Event: Tab switching
+    var tabBtns = playground.querySelectorAll('.tab-btn');
+    var tabPanels = playground.querySelectorAll('.tab-panel');
+    tabBtns.forEach(function(btn) {
+      btn.onclick = function() {
+        tabBtns.forEach(function(b) { b.classList.remove('active'); });
+        tabPanels.forEach(function(p) { p.classList.remove('active'); });
+        btn.classList.add('active');
+        playground.querySelector('.tab-panel[data-tab="' + btn.dataset.tab + '"]').classList.add('active');
+      };
+    });
+
+    // Event: Parameter input
+    function updateUrl() {
+      playground.querySelectorAll('.path-param').forEach(function(input) {
+        pathParamValues[input.dataset.param] = input.value;
+      });
+      playground.querySelectorAll('.query-param').forEach(function(input) {
+        queryParamValues[input.dataset.param] = input.value;
+      });
+      var url = buildUrl(endpoint.path, pathParams, queryParams, pathParamValues, queryParamValues);
+      var fullUrl = API_BASE_URL + url;
+      playground.querySelector('.preview-url').textContent = fullUrl;
+      updateSnippets(fullUrl);
+    }
+
+    function updateSnippets(fullUrl) {
+      var curlSnippet = 'curl -X GET "' + fullUrl + '"';
+      var pythonSnippet = 'import requests\n\nurl = "' + fullUrl + '"\nresponse = requests.get(url)\ndata = response.json()\nprint(data)';
+      var rSnippet = 'library(httr)\nlibrary(jsonlite)\n\nurl <- "' + fullUrl + '"\nresponse <- GET(url)\ndata <- fromJSON(content(response, "text"))\nprint(data)';
+
+      playground.querySelector('.tab-panel[data-tab="curl"] pre').textContent = curlSnippet;
+      playground.querySelector('.tab-panel[data-tab="python"] pre').textContent = pythonSnippet;
+      playground.querySelector('.tab-panel[data-tab="r"] pre').textContent = rSnippet;
+    }
+
+    playground.querySelectorAll('.path-param, .query-param').forEach(function(input) {
+      input.oninput = updateUrl;
+    });
+
+    // Event: Execute
+    playground.querySelector('.execute-btn').onclick = function() {
+      var btn = this;
+      btn.disabled = true;
+      btn.textContent = 'Loading...';
+
+      var url = buildUrl(endpoint.path, pathParams, queryParams, pathParamValues, queryParamValues);
+      var fullUrl = API_BASE_URL + url;
+
+      fetch(fullUrl)
+        .then(function(res) {
+          return res.json().then(function(data) {
+            return { status: res.status, statusText: res.statusText, data: data };
+          });
+        })
+        .then(function(result) {
+          var responsePanel = playground.querySelector('.response-panel');
+          var statusClass = result.status < 400 ? 'success' : 'error';
+          responsePanel.innerHTML = '<div class="status-badge ' + statusClass + '">' + result.status + ' ' + result.statusText + '</div>' +
+            '<pre class="json-response">' + JSON.stringify(result.data, null, 2) + '</pre>';
+
+          // Switch to response tab
+          tabBtns.forEach(function(b) { b.classList.remove('active'); });
+          tabPanels.forEach(function(p) { p.classList.remove('active'); });
+          playground.querySelector('.tab-btn[data-tab="response"]').classList.add('active');
+          playground.querySelector('.tab-panel[data-tab="response"]').classList.add('active');
+        })
+        .catch(function(err) {
+          var responsePanel = playground.querySelector('.response-panel');
+          responsePanel.innerHTML = '<div class="error-msg">Error: ' + err.message + '</div>';
+        })
+        .finally(function() {
+          btn.disabled = false;
+          btn.textContent = 'Execute';
+        });
+    };
+
+    // Event: Copy buttons
+    playground.querySelectorAll('.copy-btn').forEach(function(btn) {
+      btn.onclick = function() {
+        var code = btn.parentElement.querySelector('pre').textContent;
+        navigator.clipboard.writeText(code).then(function() {
+          btn.textContent = 'Copied!';
+          setTimeout(function() { btn.textContent = 'Copy'; }, 2000);
+        });
+      };
+    });
+
+    // Initialize snippets
+    updateUrl();
+
+    container.appendChild(playground);
+    activePlayground = playground;
+  }
+
+  // Render groups
+  apiGroups.forEach(function(group, groupIndex) {
+    var groupDiv = document.createElement('div');
+    groupDiv.className = 'api-group';
+
+    var headerHtml = '<div class="api-group-header">' +
+      '<div class="group-title">' +
+      '<span class="expand-icon">&#9654;</span>' +
+      '<h2>' + group.name + '</h2>' +
+      '<span class="endpoint-count">(' + group.endpoints.length + ' endpoints)</span>' +
+      '</div>' +
+      '<p class="group-description">' + group.description + '</p>' +
+      '</div>';
+
+    var endpointsHtml = '<div class="api-endpoints">';
+    group.endpoints.forEach(function(endpoint, endpointIndex) {
+      endpointsHtml += '<div class="api-endpoint" data-group="' + groupIndex + '" data-endpoint="' + endpointIndex + '">' +
+        '<div class="endpoint-header">' +
+        '<span class="method-badge ' + getMethodClass(endpoint.method) + '">' + endpoint.method + '</span>' +
+        '<code class="endpoint-path">' + endpoint.path + '</code>';
+
+      if (endpoint.method === 'GET') {
+        endpointsHtml += '<button class="try-it-btn">Try it</button>';
+      }
+
+      endpointsHtml += '</div>' +
+        '<p class="endpoint-description">' + endpoint.description + '</p>';
+
+      if (endpoint.params) {
+        endpointsHtml += '<div class="endpoint-params"><strong>Parameters:</strong> <code>' + endpoint.params + '</code></div>';
+      }
+
+      if (endpoint.example) {
+        endpointsHtml += '<div class="endpoint-example"><strong>Example:</strong> ' +
+          '<a href="' + API_BASE_URL + endpoint.example + '" target="_blank" class="example-link">' +
+          API_BASE_URL + endpoint.example + '</a></div>';
+      }
+
+      endpointsHtml += '<div class="endpoint-playground-container"></div></div>';
+    });
+    endpointsHtml += '</div>';
+
+    groupDiv.innerHTML = headerHtml + endpointsHtml;
+
+    // Toggle group
+    var header = groupDiv.querySelector('.api-group-header');
+    var endpoints = groupDiv.querySelector('.api-endpoints');
+    var icon = groupDiv.querySelector('.expand-icon');
+
+    header.onclick = function() {
+      var isExpanded = endpoints.classList.contains('expanded');
+      if (isExpanded) {
+        endpoints.classList.remove('expanded');
+        icon.innerHTML = '&#9654;';
+      } else {
+        endpoints.classList.add('expanded');
+        icon.innerHTML = '&#9660;';
+      }
+    };
+
+    // Try it buttons
+    groupDiv.querySelectorAll('.try-it-btn').forEach(function(btn) {
+      btn.onclick = function(e) {
+        e.stopPropagation();
+        var endpointDiv = btn.closest('.api-endpoint');
+        var gIdx = parseInt(endpointDiv.dataset.group);
+        var eIdx = parseInt(endpointDiv.dataset.endpoint);
+        var endpoint = apiGroups[gIdx].endpoints[eIdx];
+        var container = endpointDiv.querySelector('.endpoint-playground-container');
+
+        // Close any existing playground
+        if (activePlayground) {
+          activePlayground.remove();
+          activePlayground = null;
+        }
+
+        createPlayground(endpoint, container);
+      };
+    });
+
+    groupsContainer.appendChild(groupDiv);
+  });
+})();
+</script>
+{% endblock scripts %}
