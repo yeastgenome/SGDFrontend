@@ -774,15 +774,6 @@
       ]
     },
     {
-      name: 'Sequence Tools',
-      description: 'Sequence analysis tools',
-      endpoints: [
-        { method: 'GET', path: '/alignment/{id}', description: 'Get alignment for a gene', example: '/alignment/ACT1' },
-        { method: 'GET', path: '/all_strain_alignment/{id}', description: 'Get alignment across all strains', example: '/all_strain_alignment/ACT1' },
-        { method: 'GET', path: '/primer3', description: 'Primer3 primer design tool', params: 'gene, sequence', example: '/primer3?gene=ACT1' }
-      ]
-    },
-    {
       name: 'BLAST',
       description: 'BLAST search configuration',
       endpoints: [
@@ -811,13 +802,6 @@
       description: 'Validate entity identifiers',
       endpoints: [
         { method: 'GET', path: '/entity/{entity_type}/{ids}', description: 'Validate entity identifiers (use | as separator)', example: '/entity/locus/ACT1|TUB1|HIS3' }
-      ]
-    },
-    {
-      name: 'Bioentity List',
-      description: 'Batch bioentity operations',
-      endpoints: [
-        { method: 'POST', path: '/bioentity_list', description: 'Get information for a list of bioentities' }
       ]
     },
     {
