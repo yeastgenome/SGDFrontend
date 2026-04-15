@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <head>
     {% block head %}{% endblock %}
+    {% if noindex %}
+    <meta name="robots" content="noindex, nofollow">
+    {% endif %}
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 	<meta name="description" content="The Saccharomyces Genome Database (SGD) provides comprehensive integrated biological information for the budding yeast Saccharomyces cerevisiae.">
 	<link rel="shortcut icon" type="image/x-icon" href="/img-domain/favicon.ico" />

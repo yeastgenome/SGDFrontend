@@ -386,8 +386,12 @@ def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):
         asset_root = '/static'
          
     # put query string in global template variable
+    # check if NOINDEX env var is set (for QA environments)
+    noindex = os.environ.get('NOINDEX', 'false').lower() == 'true'
+
     def add_template_global(event):
         event['asset_root'] = asset_root
+        event['noindex'] = noindex
     configurator.add_subscriber(add_template_global, 'pyramid.events.BeforeRender')
     # cache everything for 1 month on browser
     configurator.add_static_view('static', 'src:sgd/frontend/yeastgenome/static', cache_max_age=2629740)
