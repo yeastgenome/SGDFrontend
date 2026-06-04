@@ -30,7 +30,7 @@ function fungal_homolog_data_to_table(evidence) {
 	link = 'https://www.pombase.org/gene/' + evidence['gene_id'];
     }
     else if (evidence['source'] == 'CGD') {
-	link = 'http://www.candidagenome.org/cgi-bin/locus.pl?locus=' + evidence['gene_id'];
+	link = 'https://www.candidagenome.org/locus/' + evidence['gene_id'];
     }
     else if (evidence['source'] == 'FungiDB') {
 	if (evidence['species'] == 'A. niger ATCC 1015') {
