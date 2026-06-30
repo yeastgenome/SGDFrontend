@@ -978,12 +978,17 @@
         margin-bottom: 100px;
     }
     /*
-     * The Download (.png) / Analyze button bar sits directly beneath the
-     * "Filter Genes" slider; without clearance the noUiSlider handle overlaps
-     * the buttons. Push the bar down so the slider and buttons don't collide.
+     * The slider's tick-number labels (e.g. 5, 6, 7) are appended as
+     * position:absolute spans, so #slider_ticks collapses to zero height and
+     * the labels overflow down onto the Download/Analyze button bar. Reserve a
+     * row of height for them so the labels and buttons don't collide. A small
+     * button-bar margin keeps a gap even when a gene's slider has no ticks.
      */
+    #fn_shared_annotations #slider_ticks{
+        height: 28px;
+    }
     #fn_shared_annotations .button-bar{
-        margin-top: 20px;
+        margin-top: 10px;
     }
     /*
      * Give the GO-CAMs subsection a little breathing room from the Shared
