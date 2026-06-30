@@ -966,45 +966,15 @@
         vertical-align: middle;
     }
     /*
-     * The Shared Annotations graph paints its legend (Current Locus / Other
-     * Locus / GO Term) and the SGD date stamp onto an absolutely-positioned
-     * canvas in a fixed band ~82px below the #cy graph. That canvas is anchored
-     * independently of normal flow, so the slider that follows #cy would render
-     * on top of the legend. Reserve that band below #cy so the "Filter Genes"
-     * bar and slider sit cleanly beneath the legend, matching the GO tab.
-     * Scoped to this section so the GO details tab is untouched.
+     * No custom slider / tick / button-bar CSS here, by design. The Shared
+     * Annotations graph is built while the section is visible (see
+     * functional_networks.js), so create_cytoscape_vis() reserves the legend
+     * clearance below #cy itself -- exactly as on the GO details tab, which
+     * carries no such CSS and lays out correctly. Earlier overrides (a #cy
+     * margin-bottom, a fixed-height #slider_ticks row, pinned tick marks) fought
+     * that built-in clearance: they pushed the slider+ticks out of the .panel,
+     * landing the tick numbers on the Download/Analyze button row.
      */
-    #fn_shared_annotations #cy{
-        margin-bottom: 100px;
-    }
-    /*
-     * The slider's tick-number labels (e.g. 5, 6, 7) are appended as
-     * position:absolute spans, so #slider_ticks collapses to zero height and
-     * the labels overflow down onto the Download/Analyze button bar. Reserve a
-     * row of height for them so the labels and buttons don't collide. A small
-     * button-bar margin keeps a gap even when a gene's slider has no ticks.
-     */
-    /* Breathing room between the "Filter Genes by #..." label and the slider. */
-    #fn_shared_annotations #slider{
-        margin-top: 10px;
-    }
-    #fn_shared_annotations #slider_ticks{
-        /* position:relative makes this the containing block for the
-         * position:absolute tick spans, so they sit inside this reserved row
-         * just below the slider instead of escaping down onto the buttons. */
-        position: relative;
-        height: 28px;
-    }
-    #fn_shared_annotations #slider_ticks .ui-slider-tick-mark{
-        /* The tick labels are appended with position:absolute but no `top`, so
-         * they fall to their static position at the bottom of the reserved row
-         * (on the button line). Pin them to the top of the row so they sit
-         * directly under the slider, above the buttons. */
-        top: 0;
-    }
-    #fn_shared_annotations .button-bar{
-        margin-top: 10px;
-    }
     /*
      * Give the GO-CAMs subsection a little breathing room from the Shared
      * Annotations buttons above it.
