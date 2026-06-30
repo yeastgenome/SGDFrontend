@@ -959,6 +959,18 @@
     button img{
         vertical-align: middle;
     }
+    /*
+     * The Shared Annotations graph paints its legend (Current Locus / Other
+     * Locus / GO Term) and the SGD date stamp onto an absolutely-positioned
+     * canvas in a fixed band ~82px below the #cy graph. That canvas is anchored
+     * independently of normal flow, so the slider that follows #cy would render
+     * on top of the legend. Reserve that band below #cy so the "Filter Genes"
+     * bar and slider sit cleanly beneath the legend, matching the GO tab.
+     * Scoped to this section so the GO details tab is untouched.
+     */
+    #fn_shared_annotations #cy{
+        margin-bottom: 100px;
+    }
 </style>
 <script type="text/javascript">
     var clicked = 1;
