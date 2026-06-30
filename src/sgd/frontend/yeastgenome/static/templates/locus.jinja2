@@ -483,7 +483,7 @@
         <h2>Functional Networks
             <a href="#" data-dropdown="functional_networks_info"><i class="fa fa-info-circle"></i></a>
 
-            <p id="functional_networks_info" class="f-dropdown content large" data-dropdown-content>
+            <p id="functional_networks_info" class="f-dropdown content medium" data-dropdown-content>
                 Functional Networks display how gene products work together in biological systems. The Shared Annotations
                 network shows genes with similar GO annotations, suggesting functional relationships. GO-CAMs (Gene
                 Ontology Causal Activity Models) are manually curated pathway models that illustrate how molecular
@@ -548,7 +548,7 @@
         <h2>Metabolic Pathways
             <a href="#" data-dropdown="pathway_info"><i class="fa fa-info-circle"></i></a>
 
-            <p id="pathway_info" class="f-dropdown content large" data-dropdown-content>
+            <p id="pathway_info" class="f-dropdown content medium" data-dropdown-content>
                 Metabolic Pathways annotations describe <a href="https://pathway.yeastgenome.org/YEAST/class-instances?object=Pathways">biochemical pathways</a> involving this gene product in small molecule metabolism. These annotations connect gene products to specific metabolic reactions, substrates, and products within <a href="https://pathway.yeastgenome.org/overviewsWeb/celOv.shtml">larger metabolic networks</a>. Metabolic pathway data is curated from published scientific literature. Click the links to see detailed pathway diagrams on SGD's <a href="https://pathway.yeastgenome.org">YeastPathways</a> site for further exploration.
             </p>
         </h2>
@@ -976,6 +976,21 @@
      */
     #fn_shared_annotations #cy{
         margin-bottom: 100px;
+    }
+    /*
+     * The Download (.png) / Analyze button bar sits directly beneath the
+     * "Filter Genes" slider; without clearance the noUiSlider handle overlaps
+     * the buttons. Push the bar down so the slider and buttons don't collide.
+     */
+    #fn_shared_annotations .button-bar{
+        margin-top: 20px;
+    }
+    /*
+     * Give the GO-CAMs subsection a little breathing room from the Shared
+     * Annotations buttons above it.
+     */
+    #fn_gocams{
+        margin-top: 25px;
     }
 </style>
 <script type="text/javascript">
