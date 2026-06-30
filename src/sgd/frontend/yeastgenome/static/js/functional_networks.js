@@ -69,8 +69,21 @@ function fn_render_gocams(models) {
     var $link = $("#fn_gocam_link");
 
     var show_model = function(model) {
-        // Setting the observed attribute makes <go-gocam-viewer> fetch and redraw.
-        $viewer.attr("gocam-id", model.model_id);
+        // <go-gocam-viewer> zoom-to-fits the graph on its first render, but it
+        // does not re-fit when gocam-id changes in place -- so switching to a
+        // larger model via the dropdown leaves the viewport zoomed/panned for
+        // the previous (smaller) model. Replace the element with a fresh one
+        // carrying the new gocam-id so every model gets the same first-render
+        // fit (matching the AmiGO display).
+        var $fresh = $("<go-gocam-viewer>")
+            .attr({
+                "id": "fn_gocam_viewer",
+                "show-legend": "true",
+                "gocam-id": model.model_id
+            })
+            .css({ "display": "block", "width": "100%" });
+        $viewer.replaceWith($fresh);
+        $viewer = $fresh;
         $link.attr("href", model.gocam_url);
     };
 
@@ -156,8 +169,11 @@ $(document).ready(function() {
     $.getJSON('/redirect_backend?param=locus/' + locusId + '/go_cams', function(models) {
         if (models && models.length > 0) {
             has_gocam = true;
-            fn_render_gocams(models);
+            // Show the container before rendering so the viewer connects at its
+            // full width (same reason as the Shared Annotations graph above).
+            $("#functional_networks").show();
             $("#fn_gocams").show();
+            fn_render_gocams(models);
         }
         else {
             $("#fn_gocams").hide();
