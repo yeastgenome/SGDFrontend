@@ -51,7 +51,56 @@ $(document).ready(function() {
         }
     });
 
+    // GO-CAMs subsection in the Gene Ontology section. Reveal it only for the
+    // complexes that actually have GO-CAM models annotating them (the endpoint
+    // returns the models that annotate the complex; mirrors the Complex GO tab
+    // and the Locus Summary Page, redmine 6631).
+    $.getJSON('/redirect_backend?param=complex/' + complex['complex_accession'] + '/go_cams', function(models) {
+        if (models && models.length > 0) {
+            $("#gocams_subsection").show();
+            render_gocams(models);
+        }
+    });
+
 });
+
+// Render the GO-CAM viewer. Mirrors render_gocams() in complex_go.js: a pull-down
+// appears only when there is more than one model, and the <go-gocam-viewer> is
+// replaced (not mutated) on each switch so every model gets a clean first-render fit.
+function render_gocams(models) {
+    var $viewer = $("#gocam_viewer");
+    var $link = $("#gocam_link");
+    var $select = $("#gocam_select");
+
+    var show_model = function(model) {
+        var $fresh = $("<go-gocam-viewer>")
+            .attr({
+                "id": "gocam_viewer",
+                "show-legend": "true",
+                "gocam-id": model.model_id
+            })
+            .css({ "display": "block", "width": "100%" });
+        $viewer.replaceWith($fresh);
+        $viewer = $fresh;
+        $link.attr("href", model.gocam_url);
+    };
+
+    if (models.length > 1) {
+        $select.empty();
+        for (var i = 0; i < models.length; i++) {
+            $select.append($("<option>").val(i).text(models[i].title));
+        }
+        $select.off("change").on("change", function() {
+            show_model(models[parseInt($(this).val(), 10)]);
+        });
+        $("#gocam_select_wrap").show();
+    }
+    else {
+        $("#gocam_select_wrap").hide();
+    }
+
+    show_model(models[0]);
+}
 
 function create_complex_table(data, analyze_genes) {
     var evidence = data['subunit'];
