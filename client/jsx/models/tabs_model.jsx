@@ -91,7 +91,7 @@ module.exports = class TabsModel {
         ? { name: 'Complex', target: 'complex' }
         : null,
       this.attributes.hasPathways
-        ? { name: 'Pathways', target: 'pathway' }
+        ? { name: 'Metabolic Pathways', target: 'pathway' }
         : null,
       this.attributes.rawTabsData.phenotype_tab
         ? { name: 'Phenotype', target: 'phenotype' }

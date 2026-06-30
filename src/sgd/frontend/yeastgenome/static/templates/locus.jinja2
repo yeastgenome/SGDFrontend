@@ -545,7 +545,13 @@
 ================================================== -->
     {% if locus.pathways|length > 0 %}
     <section id="pathway">
-        <h2>Pathways</h2>
+        <h2>Metabolic Pathways
+            <a href="#" data-dropdown="pathway_info"><i class="fa fa-info-circle"></i></a>
+
+            <p id="pathway_info" class="f-dropdown content large" data-dropdown-content>
+                Metabolic Pathways annotations describe <a href="https://pathway.yeastgenome.org/YEAST/class-instances?object=Pathways">biochemical pathways</a> involving this gene product in small molecule metabolism. These annotations connect gene products to specific metabolic reactions, substrates, and products within <a href="https://pathway.yeastgenome.org/overviewsWeb/celOv.shtml">larger metabolic networks</a>. Metabolic pathway data is curated from published scientific literature. Click the links to see detailed pathway diagrams on SGD's <a href="https://pathway.yeastgenome.org">YeastPathways</a> site for further exploration.
+            </p>
+        </h2>
         <hr />
         <div class="panel">
             <ul>
