@@ -989,6 +989,10 @@
         margin-top: 10px;
     }
     #fn_shared_annotations #slider_ticks{
+        /* position:relative makes this the containing block for the
+         * position:absolute tick spans, so they sit inside this reserved row
+         * just below the slider instead of escaping down onto the buttons. */
+        position: relative;
         height: 28px;
     }
     #fn_shared_annotations .button-bar{
