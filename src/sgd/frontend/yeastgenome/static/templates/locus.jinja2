@@ -966,15 +966,23 @@
         vertical-align: middle;
     }
     /*
-     * No custom slider / tick / button-bar CSS here, by design. The Shared
-     * Annotations graph is built while the section is visible (see
-     * functional_networks.js), so create_cytoscape_vis() reserves the legend
-     * clearance below #cy itself -- exactly as on the GO details tab, which
-     * carries no such CSS and lays out correctly. Earlier overrides (a #cy
+     * The on-canvas graph legend (Current Locus / Other Locus / GO Term + date)
+     * is painted in a band at the bottom of #cy. The GO details tab keeps the
+     * "Filter Genes" label clear of it via `.network-label { margin-top: 50px }`
+     * in cms_style.css -- a stylesheet that tab loads but the LSP does not, so
+     * here the label/slider rode up into the legend. Re-apply the same 50px,
+     * scoped to this section, to mirror the GO tab exactly.
+     *
+     * No other slider / tick / button-bar overrides: create_cytoscape_vis()
+     * already reserves the rest of the clearance (the section is shown before
+     * the graph is built; see functional_networks.js). Earlier overrides (a #cy
      * margin-bottom, a fixed-height #slider_ticks row, pinned tick marks) fought
-     * that built-in clearance: they pushed the slider+ticks out of the .panel,
-     * landing the tick numbers on the Download/Analyze button row.
+     * that built-in clearance and pushed the slider out of the .panel, landing
+     * the tick numbers on the Download/Analyze button row.
      */
+    #fn_shared_annotations .network-label{
+        margin-top: 50px;
+    }
     /*
      * Give the GO-CAMs subsection a little breathing room from the Shared
      * Annotations buttons above it.
