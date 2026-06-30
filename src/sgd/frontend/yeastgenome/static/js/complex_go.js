@@ -73,6 +73,7 @@ function render_gocams(models) {
     var $viewer = $("#gocam_viewer");
     var $link = $("#gocam_link");
     var $select = $("#gocam_select");
+    var $title = $("#gocam_title");
 
     var show_model = function(model) {
         var $fresh = $("<go-gocam-viewer>")
@@ -84,6 +85,9 @@ function render_gocams(models) {
             .css({ "display": "block", "width": "100%" });
         $viewer.replaceWith($fresh);
         $viewer = $fresh;
+        // Always label the displayed model by title, so single-model complexes
+        // (no dropdown) still show which GO-CAM this is.
+        $title.text(model.title);
         $link.attr("href", model.gocam_url);
     };
 
