@@ -33,6 +33,7 @@
             add_navbar_element("High-throughput", "htp");
             add_navbar_element("Computational", "comp");
             add_navbar_element("Shared Annotations", "network");
+            add_navbar_element("GO-CAMs", "gocams");
         </script>
 
 <!-- Overview
@@ -225,6 +226,33 @@
         </div>
     </section>
 
+<!-- GO-CAMs
+================================================== -->
+    <section id="gocams" data-magellan-destination="gocams">
+        <h2>Gene Ontology Causal Activity Models (GO-CAMs)
+            <a href="#" data-dropdown="gocam_info"><i class="fa fa-info-circle"></i></a>
+
+            <p id="gocam_info" class="f-dropdown content medium" data-dropdown-content>
+                GO-CAMs (Gene Ontology Causal Activity Models) are manually curated pathway models that
+                illustrate how molecular activities of multiple gene products connect through causal
+                relationships to carry out biological processes. GO-CAMs integrate Molecular Function,
+                Biological Process, and Cellular Component information into unified pathway representations
+                based on published experimental evidence. Click "View GO-CAM at Gene Ontology" to explore
+                the interactive model at AmiGO.
+            </p>
+        </h2>
+        <hr />
+        <div id="gocam_select_wrap" style="display:none; margin-bottom:10px;">
+            <label class="network-label"><strong>Available GO-CAMs:</strong>
+                <select id="gocam_select" style="max-width:100%;"></select>
+            </label>
+        </div>
+        <div class="panel">
+            <go-gocam-viewer id="gocam_viewer" show-legend="true" style="display:block; width:100%;"></go-gocam-viewer>
+        </div>
+        <a id="gocam_link" href="#" target="_blank" rel="noopener">View GO-CAM at Gene Ontology <i class="fa fa-external-link"></i></a>
+    </section>
+
     </div>
 </div>
 {% endblock body %}
@@ -236,5 +264,7 @@
 <script src="{{asset_root}}/js/build/cytoscape.min.js"></script>
 <script src="{{asset_root}}/js/cytoscape.js"></script>
 <script src="{{asset_root}}/js/evidence.js"></script>
+{# GO Consortium web components -- registers <go-gocam-viewer>; pin major version per GO guidance #}
+<script type="module" src="https://unpkg.com/@geneontology/web-components@1"></script>
 <script src="{{asset_root}}/js/go_details.js"></script>
 {% endblock scripts %}
