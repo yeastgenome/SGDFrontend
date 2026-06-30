@@ -126,12 +126,22 @@ $(document).ready(function() {
     var has_shared = false;
     var has_gocam = false;
 
+    // The left-nav "Functional Networks" entry is rendered by the React NavBar
+    // (see tabs_model.jsx) but, like the section itself, must stay hidden until
+    // we confirm the gene actually has Shared Annotations and/or GO-CAM data.
+    // Hide it up front and reveal it alongside the section.
+    $("#navbar_functional_networks").hide();
+    var show_fn_section = function() {
+        $("#functional_networks").show();
+        $("#navbar_functional_networks").show();
+    };
+
     var finalize = function() {
         if (!shared_done || !gocam_done) {
             return;
         }
         if (has_shared || has_gocam) {
-            $("#functional_networks").show();
+            show_fn_section();
         }
     };
 
@@ -147,7 +157,7 @@ $(document).ready(function() {
             // overlapping the on-canvas legend. Those reads only work when the
             // container is visible -- if the graph is built while these divs are
             // still display:none, the slider ends up drawn on top of the legend.
-            $("#functional_networks").show();
+            show_fn_section();
             $("#fn_shared_annotations").show();
 
             var analyze_genes = [];
@@ -186,7 +196,7 @@ $(document).ready(function() {
             has_gocam = true;
             // Show the container before rendering so the viewer connects at its
             // full width (same reason as the Shared Annotations graph above).
-            $("#functional_networks").show();
+            show_fn_section();
             $("#fn_gocams").show();
             fn_render_gocams(models);
         }

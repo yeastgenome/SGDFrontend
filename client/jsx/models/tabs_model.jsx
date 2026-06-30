@@ -81,6 +81,12 @@ module.exports = class TabsModel {
       this.attributes.rawTabsData.go_tab
         ? { name: 'Gene Ontology', target: 'go' }
         : null,
+      // Functional Networks (Shared Annotations + GO-CAMs). Whether the gene
+      // has data is only known once the go_graph / go_cams endpoints return,
+      // so the nav entry is rendered here but kept hidden by
+      // functional_networks.js until that runtime check confirms data
+      // (mirroring the display:none on #functional_networks in locus.jinja2).
+      { name: 'Functional Networks', target: 'functional_networks' },
       this.attributes.hasComplexes
         ? { name: 'Complex', target: 'complex' }
         : null,
