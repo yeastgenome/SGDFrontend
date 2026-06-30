@@ -995,6 +995,13 @@
         position: relative;
         height: 28px;
     }
+    #fn_shared_annotations #slider_ticks .ui-slider-tick-mark{
+        /* The tick labels are appended with position:absolute but no `top`, so
+         * they fall to their static position at the bottom of the reserved row
+         * (on the button line). Pin them to the top of the row so they sit
+         * directly under the slider, above the buttons. */
+        top: 0;
+    }
     #fn_shared_annotations .button-bar{
         margin-top: 10px;
     }
