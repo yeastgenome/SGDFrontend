@@ -2,12 +2,12 @@
     {% block canvas_id %}
         {% if canvas_id %}
             <div class="sgd-cyto-canvas-container{{ canvas_id }}">
-	          <canvas id="j-sgd-visible-cyto-canvas{{ canvas_id }}" class="j-sgd-cyto-canvas{{ canvas_id }}" style="position: absolute; z-index: 0;"></canvas>
+	          <canvas id="j-sgd-visible-cyto-canvas{{ canvas_id }}" class="j-sgd-cyto-canvas{{ canvas_id }}" style="position: absolute; z-index: 0; pointer-events: none;"></canvas>
                   <canvas id="j-sgd-hidden-cyto-canvas{{ canvas_id }}" class="j-sgd-cyto-canvas{{ canvas_id}}" style="position: absolute; display: none;"></canvas>
     	    </div>
 	{% else %}
 	    <div class="sgd-cyto-canvas-container">
-                  <canvas id="j-sgd-visible-cyto-canvas" class="j-sgd-cyto-canvas" style="position: absolute; z-index: 0;"></canvas>
+                  <canvas id="j-sgd-visible-cyto-canvas" class="j-sgd-cyto-canvas" style="position: absolute; z-index: 0; pointer-events: none;"></canvas>
                   <canvas id="j-sgd-hidden-cyto-canvas" class="j-sgd-cyto-canvas" style="position: absolute; display: none;"></canvas>
             </div>
 	{% endif %}
