@@ -29,18 +29,27 @@ var fn_graph_style = cytoscape.stylesheet()
     })
     .selector('edge')
     .css({
-        'width': 2
+        'width': 1.5,
+        // Curved, light, semi-transparent edges so the dense web recedes
+        // behind the nodes/labels instead of reading as a hairball.
+        'curve-style': 'bezier',
+        'line-color': '#c8c8c8',
+        'opacity': 0.5
     })
     .selector("node[category='FOCUS']")
     .css({
         'background-color': "#fade71",
         'text-outline-color': '#fff',
+        'text-outline-width': 4,
         'color': '#888'
     })
     .selector("node[type='GO']")
     .css({
         'shape': 'rectangle',
         'text-outline-color': '#fff',
+        // Stronger white halo so the long GO term labels stay legible where
+        // they cross edges in the center of the graph.
+        'text-outline-width': 4,
         'color': '#888',
         'background-color': "#7FBF7B"
     });
@@ -49,6 +58,9 @@ var fn_layout = {
     "name": "arbor",
     "liveUpdate": true,
     "ungrabifyWhileSimulating": true,
+    // Stronger repulsion (arbor default is 400) spreads the nodes apart so the
+    // shared-annotation network is less of a clumped hairball.
+    "repulsion": 1200,
     "nodeMass": function(data) {
         if (data.sub_type == 'FOCUS') {
             return 10;
@@ -152,7 +164,10 @@ $(document).ready(function() {
             );
 
             var graph = create_cytoscape_vis("cy", fn_layout, fn_graph_style, data, null, false, "go");
-            create_slider("slider", graph, data['min_cutoff'], data['max_cutoff'], fn_slider_filter, data['max_cutoff'] + 1);
+            // Default the slider one notch above the usual floor so fewer edges
+            // show initially; users can drag it down to reveal the full network.
+            var fn_default_cutoff = Math.min(data['max_cutoff'], Math.max(3, data['min_cutoff']) + 1);
+            create_slider("slider", graph, data['min_cutoff'], data['max_cutoff'], fn_slider_filter, data['max_cutoff'] + 1, fn_default_cutoff);
             create_cy_download_button(graph, "cy_download", displayName + '_go_graph');
         }
         else {

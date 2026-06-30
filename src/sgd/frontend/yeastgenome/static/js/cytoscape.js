@@ -204,7 +204,7 @@ function create_cy_download_button(cy, button_id, file_name) {
     $("#" + button_id).attr('disabled', false);
 }
 
-function create_slider(slider_id, graph, min, max, slide_f, stop) {
+function create_slider(slider_id, graph, min, max, slide_f, stop, start_override) {
     var range;
     var start;
     if(max==min) {
@@ -216,6 +216,11 @@ function create_slider(slider_id, graph, min, max, slide_f, stop) {
 	range = {'min': [min],
 		 'max': [max]};
 	start = Math.max(3, min);
+    }
+    // Optional override of the initial handle position (clamped to range).
+    // Other callers omit it and keep the default behavior above.
+    if(start_override != null) {
+	start = Math.min(max, Math.max(min, start_override));
     }
     var slider = $("#" + slider_id).noUiSlider({
 	    range: range
