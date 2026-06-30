@@ -45,10 +45,64 @@ $(document).ready(function() {
             hide_section("network");
         }
 
-	
+
+    });
+
+    // GO-CAMs -- embed the GO Consortium <go-gocam-viewer>, driven by the GO-CAM
+    // model(s) of this complex's protein subunits. Mirrors the Locus Summary Page
+    // GO-CAM display (see functional_networks.js / go_details.js, redmine 6631).
+    // Hide the section if the complex has none.
+    $.getJSON('/redirect_backend?param=complex/' + complex['complex_accession'] + '/go_cams', function(models) {
+        if (models && models.length > 0) {
+            render_gocams(models);
+        }
+        else {
+            hide_section("gocams");
+        }
+    }).fail(function() {
+        hide_section("gocams");
     });
 
 });
+
+// Render the GO-CAM viewer for this complex. Mirrors render_gocams() in
+// go_details.js: a pull-down appears only when there is more than one model, and
+// the <go-gocam-viewer> is replaced (not mutated) on each switch so every model
+// gets a clean first-render fit.
+function render_gocams(models) {
+    var $viewer = $("#gocam_viewer");
+    var $link = $("#gocam_link");
+    var $select = $("#gocam_select");
+
+    var show_model = function(model) {
+        var $fresh = $("<go-gocam-viewer>")
+            .attr({
+                "id": "gocam_viewer",
+                "show-legend": "true",
+                "gocam-id": model.model_id
+            })
+            .css({ "display": "block", "width": "100%" });
+        $viewer.replaceWith($fresh);
+        $viewer = $fresh;
+        $link.attr("href", model.gocam_url);
+    };
+
+    if (models.length > 1) {
+        $select.empty();
+        for (var i = 0; i < models.length; i++) {
+            $select.append($("<option>").val(i).text(models[i].title));
+        }
+        $select.off("change").on("change", function() {
+            show_model(models[parseInt($(this).val(), 10)]);
+        });
+        $("#gocam_select_wrap").show();
+    }
+    else {
+        $("#gocam_select_wrap").hide();
+    }
+
+    show_model(models[0]);
+}
 
 function create_go_table(prefix, data) {
     var options = {};
