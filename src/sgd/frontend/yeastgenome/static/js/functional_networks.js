@@ -115,6 +115,16 @@ $(document).ready(function() {
         if (data && data['nodes'] && data['nodes'].length > 1) {
             has_shared = true;
 
+            // Show the section and the graph container BEFORE building the
+            // cytoscape vis. create_cytoscape_vis() measures #cy's width, sizes
+            // the legend canvas, and reserves the clearance below the graph
+            // (height + offset + legendOffset) that keeps the slider from
+            // overlapping the on-canvas legend. Those reads only work when the
+            // container is visible -- if the graph is built while these divs are
+            // still display:none, the slider ends up drawn on top of the legend.
+            $("#functional_networks").show();
+            $("#fn_shared_annotations").show();
+
             var analyze_genes = [];
             for (var i = 0; i < data["nodes"].length; i++) {
                 if (data["nodes"][i]["data"]["type"] === 'BIOENTITY') {
@@ -131,8 +141,6 @@ $(document).ready(function() {
             var graph = create_cytoscape_vis("cy", fn_layout, fn_graph_style, data, null, false, "go");
             create_slider("slider", graph, data['min_cutoff'], data['max_cutoff'], fn_slider_filter, data['max_cutoff'] + 1);
             create_cy_download_button(graph, "cy_download", displayName + '_go_graph');
-
-            $("#fn_shared_annotations").show();
         }
         else {
             $("#fn_shared_annotations").hide();
