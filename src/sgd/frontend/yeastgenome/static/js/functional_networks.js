@@ -79,6 +79,7 @@ function fn_render_gocams(models) {
     var $select = $("#fn_gocam_select");
     var $viewer = $("#fn_gocam_viewer");
     var $link = $("#fn_gocam_link");
+    var $title = $("#fn_gocam_title");
 
     var show_model = function(model) {
         // <go-gocam-viewer> zoom-to-fits the graph on its first render, but it
@@ -96,6 +97,9 @@ function fn_render_gocams(models) {
             .css({ "display": "block", "width": "100%" });
         $viewer.replaceWith($fresh);
         $viewer = $fresh;
+        // Always label the displayed model by title, so single-model loci
+        // (no dropdown) still show which GO-CAM this is.
+        $title.text(model.title);
         $link.attr("href", model.gocam_url);
     };
 
