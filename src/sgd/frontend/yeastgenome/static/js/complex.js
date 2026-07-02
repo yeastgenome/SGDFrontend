@@ -1,7 +1,9 @@
 
 $(document).ready(function() {
 
-    $.getJSON('/redirect_backend?param=complex/' + complex['complex_accession'], function(data) {
+    // The summary-tab payload is already embedded in the page as `complex` (complex_js),
+    // so read it directly instead of re-fetching the identical data over the network.
+    (function(data) {
 
 //	document.getElementById("summary_paragraph").innerHTML = data['description'] + "<p></p>" + data['properties']
 
@@ -45,11 +47,11 @@ $(document).ready(function() {
                     return acceptedCats.includes(d.category);
                 },
             }
-            views.network.render(data["network_graph"], _categoryColors, "j-complex-network", filters, true);            
+            views.network.render(data["network_graph"], _categoryColors, "j-complex-network", filters, true);
         } else {
             hide_section("network");
         }
-    });
+    })(complex);
 
     // GO-CAMs subsection in the Gene Ontology section. Reveal it only for the
     // complexes that actually have GO-CAM models annotating them (the endpoint

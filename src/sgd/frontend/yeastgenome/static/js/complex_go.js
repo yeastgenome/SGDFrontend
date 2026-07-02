@@ -1,8 +1,10 @@
 
 $(document).ready(function() {
 
-    $.getJSON('/redirect_backend?param=complex/' + complex['complex_accession'], function(data) {
-	
+    // The GO-tab payload is already embedded in the page as `complex` (complex_js),
+    // so read it directly instead of re-fetching the identical data over the network.
+    (function(data) {
+
 	if (data["process"].length > 0) {
 	    var complex_bp_go_table = create_go_table("complex_bp", data["process"]);
             create_download_button("complex_bp_go_table_download", complex_bp_go_table, complex['complex_accession'] + "_complex_bp_go");
@@ -45,8 +47,7 @@ $(document).ready(function() {
             hide_section("network");
         }
 
-
-    });
+    })(complex);
 
     // GO-CAMs -- embed the GO Consortium <go-gocam-viewer>, driven by the GO-CAM
     // model(s) of this complex's protein subunits. Mirrors the Locus Summary Page

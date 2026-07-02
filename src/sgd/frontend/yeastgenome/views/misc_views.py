@@ -188,7 +188,7 @@ def phenotype(request):
 @view_config(route_name='complex')
 def complex(request):
     complexAC = request.matchdict['identifier']
-    complex_obj = get_obj(complexAC, 'complex')
+    complex_obj = get_complex_obj(complexAC, 'summary')
     if complex_obj is None:
         return not_found(request)
     return render_to_response(TEMPLATE_ROOT + 'complex.jinja2', complex_obj, request=request)
@@ -196,7 +196,7 @@ def complex(request):
 @view_config(route_name='complex_literature_details')
 def complex_literature_details(request):
     complexAC = request.matchdict['identifier']
-    complex_obj = get_obj(complexAC, 'complex')
+    complex_obj = get_complex_obj(complexAC, 'literature')
     if complex_obj is None:
         return not_found(request)
     return render_to_response(TEMPLATE_ROOT + 'complex_literature.jinja2', complex_obj, request=request)
@@ -204,7 +204,7 @@ def complex_literature_details(request):
 @view_config(route_name='complex_go_details')
 def complex_go_details(request):
     complexAC = request.matchdict['identifier']
-    complex_obj = get_obj(complexAC, 'complex')
+    complex_obj = get_complex_obj(complexAC, 'go')
     if complex_obj is None:
         return not_found(request)
     return render_to_response(TEMPLATE_ROOT + 'complex_go.jinja2', complex_obj, request=request)
@@ -335,6 +335,21 @@ def get_obj(identifier, obj_type):
     return {
         obj_type: obj,
         obj_type + '_js': json.dumps(obj)
+    }
+
+def get_complex_obj(identifier, tab):
+    # Fetch only the data the given Complex page tab renders (backend routes
+    # /complex/{id}/{summary,go,literature}). The whole payload is embedded in
+    # the page as complex_js and consumed client-side, so each tab avoids
+    # computing (and shipping) the other tabs' data.
+    backend_url = os.environ['BACKEND_URL'] + '/complex/' + identifier + '/' + tab
+    backend_response = requests.get(backend_url)
+    if backend_response.status_code != 200:
+        return None
+    obj = json.loads(backend_response.text)
+    return {
+        'complex': obj,
+        'complex_js': json.dumps(obj)
     }
 
 # helper method that gogoes through responses, and returns a redirect URL if is_quick is true for just 1, otherwise returns false
