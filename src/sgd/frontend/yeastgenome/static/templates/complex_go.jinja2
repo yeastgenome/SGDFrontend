@@ -78,6 +78,17 @@
                 </p>
             </h1>
             <hr />
+	    <dl class="key-value">
+	        <dt>ComplexAc</dt>
+	        <dd><a href=https://www.ebi.ac.uk/complexportal/complex/{{ complex.complex_accession }} target="_infowin">{{ complex.complex_accession }}</a></dd>
+
+	        <dt>Systematic Name</dt>
+	        <dd>{{ complex.systematic_name }}</dd>
+
+	        <dt>SGD ID</dt>
+	        <dd>SGD:{{ complex.sgdid }}</dd>
+	    </dl>
+
 	    {% if complex.description %}
 	       <dl class="key-value">
                    <dt>Summary</dt>
