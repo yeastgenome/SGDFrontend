@@ -274,10 +274,12 @@ function render_shared_list(data) {
         '<th>Complex</th><th>Shared GO terms</th><th>Shared subunits</th></tr></thead></table>';
     $("#j-shared-list").html(html);
 
+    // Plain integer cells (no mRender) so numeric columns auto-detect and sort
+    // numerically -- matching the proven-working Subunits / GO-tab DataTables.
     create_table("shared_go_table", {
         "bPaginate": false,
         "aaSorting": [[2, "desc"]],
-        "aoColumns": [ null, null, { "sType": "num", "mRender": num_or_dash_render }, null ],
+        "aoColumns": [ null, null, null, null ],
         "aaData": goRows.map(function(r) {
             return [ make_link(r.href, r.name), escape_html(r.aspect), r.count, (r.ev ? escape_html(r.ev) : "") ];
         })
@@ -285,19 +287,13 @@ function render_shared_list(data) {
 
     create_table("shared_complex_table", {
         "bPaginate": true,
-        "iDisplayLength": 25,
+        "iDisplayLength": 10,
         "aaSorting": [[1, "desc"], [2, "desc"]],
-        "aoColumns": [ null, { "sType": "num", "mRender": num_or_dash_render }, { "sType": "num", "mRender": num_or_dash_render } ],
+        "aoColumns": [ null, null, null ],
         "aaData": cxRows.map(function(r) {
             return [ make_link(r.href, r.name), r.sharedGo, r.sharedSub ];
         })
     });
-}
-
-// Sort on the underlying number; display it, or a dash when zero.
-function num_or_dash_render(data, type) {
-    if (type === 'display') { return (data && data > 0) ? String(data) : '—'; }
-    return data;
 }
 
 function make_link(href, text) {
@@ -335,7 +331,8 @@ function create_complex_table(data, analyze_genes) {
     );
 
     var options = {};
-    options["bPaginate"] = false;
+    options["bPaginate"] = true;
+    options["iDisplayLength"] = 10;
     options["bDestroy"] = true;
     options["aoColumns"] = [
         null,
