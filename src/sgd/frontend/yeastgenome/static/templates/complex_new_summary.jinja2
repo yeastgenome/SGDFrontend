@@ -6,7 +6,36 @@
 <script>
     var complex = {{ complex_js|safe }};
 </script>
-
+<style>
+    /* --- New Summary experimental styles (redmine 6635) --- */
+    .composition-grid { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 4px; }
+    .composition-chip {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 6px 10px; border: 1px solid #e2e2e2; border-left-width: 5px;
+        border-radius: 4px; background: #fafafa; cursor: pointer; font-size: 13px;
+        transition: background .12s ease, box-shadow .12s ease;
+    }
+    .composition-chip:hover { background: #eef3fb; box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+    .composition-chip.chip-selected { background: #e6effc; box-shadow: 0 0 0 2px #1f77b4 inset; }
+    .composition-chip a { font-weight: 600; }
+    .composition-chip .stoich {
+        font-size: 11px; font-weight: 700; color: #fff; background: #555;
+        padding: 1px 6px; border-radius: 10px;
+    }
+    .composition-caption { color: #666; font-size: 13px; margin: 2px 0 10px; }
+    .composition-legend { font-size: 12px; color: #555; margin-bottom: 8px; }
+    .composition-legend .dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin:0 4px 0 12px; vertical-align:middle; }
+    .view-toggle { margin-bottom: 12px; font-size: 13px; }
+    .view-toggle label { margin-right: 16px; cursor: pointer; }
+    tr.row-highlight > td { background: #fff6d6 !important; transition: background .2s ease; }
+    table.shared-rank { width: 100%; border-collapse: collapse; margin-bottom: 18px; }
+    table.shared-rank th, table.shared-rank td { text-align: left; padding: 6px 10px; border-bottom: 1px solid #eee; font-size: 13px; }
+    table.shared-rank th { border-bottom: 2px solid #ddd; color: #333; }
+    table.shared-rank tbody tr:hover { background: #f7f9fc; }
+    .rank-count { font-weight: 700; }
+    .rank-empty { color: #888; font-style: italic; }
+    .shared-subhead { margin: 6px 0 6px; font-size: 15px; }
+</style>
 {% endblock %}
 
 {% block body %}
@@ -38,11 +67,11 @@
             <li id="new_summary_tab" class="tab-title"><a href="/complex/{{ complex.sgdid }}/new_summary"><span>New Summary</span></a></li>
             <li id="go_tab" class="tab-title"><a href="/complex/{{ complex.sgdid }}/go"><span>Gene Ontology</span></a></li>
             <li id="literature_tab" class="tab-title"><a href="/complex/{{ complex.sgdid }}/literature"><span>Literature</span></a></li>
-	  </ul>  
+	  </ul>
         </section>
 </nav>
 
-<script>document.getElementById("summary_tab").className += " active";</script>
+<script>document.getElementById("new_summary_tab").className += " active";</script>
 
 <div class="row">
 
@@ -56,7 +85,7 @@
         <script>
             add_navbar_title('Complex: <span class="gene_name">{{ complex.complex_name }}</span>')
             add_navbar_element('Overview', 'overview');
-        add_navbar_element('Complex Diagram', 'diagram');
+        add_navbar_element('Composition', 'diagram');
 
         {% if complex.pdbs|length > 0 %}
           add_navbar_element('PDB Structure', 'structure');
@@ -67,8 +96,8 @@
         {% if complex.process|length > 0 or complex.function|length > 0 or complex.component|length > 0%}
               add_navbar_element('Gene Ontology', 'annotation');
             {% endif %}
-        
-        add_navbar_element('Shared Annotations', 'network');
+
+        add_navbar_element('Shared Biology', 'network');
 
         {% if complex.references|length > 0 %}
               add_navbar_element('References', 'reference');
@@ -78,7 +107,7 @@
               add_navbar_element('External Identifiers', 'cross_reference');
         {% endif %}
 
-	add_navbar_element('Resources', 'resources');        
+	add_navbar_element('Resources', 'resources');
 
 	</script>
 
@@ -116,13 +145,13 @@
             {% endif %}
                         <dt>ComplexAc</dt>
                         <dd><a href=https://www.ebi.ac.uk/complexportal/complex/{{ complex.complex_accession }} target="_infowin">{{ complex.complex_accession }}</a></dd>
-            
+
             <dt>Systematic Name</dt>
             <dd>{{ complex.systematic_name }}</dd>
 
 	    <dt>SGD ID</dt>
             <dd>SGD:{{ complex.sgdid }}</dd>
-	    
+
             {% for alias in complex.aliases %}
                 {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
                 {{ alias }}
@@ -137,18 +166,23 @@
       </div>
     </section>
 
-<!-- complex diagram
+<!-- complex diagram (New Summary: grouped composition + optional expanded network)
 ================================================== -->
     <section id="diagram" data-magellan-destination="diagram">
         <div class="page-header">
-            <h2>Complex Diagram
+            <h2>Composition
 	    	<a href="#" data-dropdown="complex_diagram_help"><i class="fa fa-info-circle"></i></a>
 		<p id="complex_diagram_help" class="f-dropdown content medium" data-dropdown-content>
-		      This diagram displays the protein subunits (blue) of the complex and how they interact with each other. Interactions with other relevant participants such as small molecules (purple), sub-complexes (yellow), and other subunits (red) are also shown. If a participant appears in the diagram with no lines connected to it, then its specific interactions with other participants are currently unknown.
+		      Composition view: one node per subunit type, with a &times;N badge showing its stoichiometry (stated copies). Click a subunit to highlight its row in the Subunits table below. Switch to "Expanded copies" to see the original interaction diagram with every copy and its binding partners.
                 </p>
 	    </h2>
             <hr />
-            <div id="j-complex"></div>
+            <div class="view-toggle">
+                <label><input type="radio" name="composition_view" value="grouped" checked> Grouped view</label>
+                <label><input type="radio" name="composition_view" value="expanded"> Expanded copies</label>
+            </div>
+            <div id="j-complex-composition"></div>
+            <div id="j-complex" style="display:none;"></div>
         </div>
     </section>
 
@@ -174,14 +208,14 @@
 
                   {% set count = count + 1 %}
 
-              {% if count <= 4 %} 
+              {% if count <= 4 %}
 
                      <td><a href=https://www.rcsb.org/structure/{{ pdb.display_name }} target="_infowin">{{ pdb.display_name }}</td>
                              <td><a href=https://www.rcsb.org/3d-view/{{ pdb.display_name }} target="_infowin"><img src=https://www.ncbi.nlm.nih.gov/Structure/mmdb/mmdbimage.fcgi?&uid={{ pdb.display_name }}&small=t alt={{pdb.display_name}} width=150 height=150></a></td>
               {% endif %}
 
                      {% endfor %}
-             
+
              </tr></table>
 
                 </div>
@@ -198,23 +232,23 @@
 
 			<a href="#" data-dropdown="subunit_help"><i class="fa fa-info-circle"></i></a>
                         <p id="subunit_help" class="f-dropdown content medium" data-dropdown-content>
-			    This table lists all participants of the complex (proteins, small molecules, nucleic acids, etc.) and their respective stoichiometry. A brief description is also provided for each participant in the table.     
+			    This table lists all participants of the complex (proteins, small molecules, nucleic acids, etc.) and their respective stoichiometry. A brief description is also provided for each participant in the table.
                         </p>
 		     </h2>
                      <hr />
-             
+
                      {% set table_id = "complex_table" %}
-                     {% include "complex_table.jinja2" %}           
+                     {% include "complex_table.jinja2" %}
 		     <ul class="button-group radius">
         	     	 <li><a id="complex_subunit_gene_analyze" class="small button secondary" disabled="true"><i class='fa fa-briefcase'></i> Analyze</a>
     	             </ul>
                 </div>
         </section>
-	
+
 
 <!-- table with GO annotations for the complex
 ================================================== -->
-    {% if complex.process|length > 0 or complex.function|length > 0 or complex.component|length > 0%}                      
+    {% if complex.process|length > 0 or complex.function|length > 0 or complex.component|length > 0%}
     <section id="annotation" data-magellan-destination="annotation">
                  <div class="page-header">
                      <h2>Gene Ontology
@@ -236,7 +270,7 @@
                             {% endfor %}
 		        {% endif %}
                 </ul>
-                
+
                 <ul>
 			{% if complex.process|length > 0 %}
                             {% for process in complex.process %}
@@ -289,20 +323,27 @@
     {% endif %}
 
 
-<!-- Network diagram
+<!-- Shared Annotations (New Summary: ranked relationship list + optional network)
 ================================================== -->
     <section id="network" data-magellan-destination="network">
         <div class="page-header">
-            <h2>Shared Annotations
+            <h2>Shared Biology
 	         <a href="#" data-dropdown="network_help"><i class="fa fa-info-circle"></i></a>
                  <p id="network_help" class="f-dropdown content medium" data-dropdown-content>
-		      This diagram displays Gene Ontology terms (green) and subunits (blue) that are shared between the given macromolecular complex (black) and other yeast complexes (yellow). The shared GO terms or subunits can be visualized separately using the radio button at the bottom of the graph. Note: No diagram is shown ("No shared annotations") if there are less than 2 shared annotations (either GO terms or subunits of other complexes) between this complex and any other complexes.
+		      Relationships this complex shares with other yeast complexes, ranked. "Shared GO terms" lists the Gene Ontology terms this complex is annotated to and how many other complexes share each term. "Related complexes" ranks other complexes by how much biology (GO terms and subunits) they share with this one. Switch to "Explore network" for the full interactive graph.
                  </p>
 
 	    </h2>
             <hr />
 	    {% if complex.network_graph.edges|length > 0 %}
-                <div id="j-complex-network"></div>
+                <div class="view-toggle">
+                    <label><input type="radio" name="shared_view" value="list" checked> Ranked list</label>
+                    <label><input type="radio" name="shared_view" value="network"> Explore network</label>
+                </div>
+                <div id="j-shared-list"></div>
+                <div id="j-complex-network-wrap" style="display:none;">
+                    <div id="j-complex-network"></div>
+                </div>
 	    {% else %}
 	        No shared annotations
 	    {% endif %}
@@ -327,7 +368,7 @@
               {% for ref in complex.references %}
                    <li>
                     <a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
-                                    <span>{{ ref.citation|e|replace(ref.display_name, '') }}</span> 
+                                    <span>{{ ref.citation|e|replace(ref.display_name, '') }}</span>
                     {% if ref.pubmed_id != none %}
                                        <small>PMID: {{ ref.pubmed_id|e }}</small>
                                     {% endif %}
@@ -340,7 +381,7 @@
                    </li>
               {% endfor %}
              </ul>
-        </div>           
+        </div>
     </section>
     {% endif %}
 
@@ -351,7 +392,7 @@
               <div class="page-header">
                          <h2>External Identifiers</h2>
                          <hr />
-    
+
                  {% for alias in complex.cross_references %}
                  {% if alias.alias_type == 'IntEnz' %}
                                   {{alias.alias_type}}: <a href=https://www.ebi.ac.uk/intenz/query?cmd=Search&q={{ alias.display_name }} target="_infowin">{{ alias.display_name }}</a>
@@ -362,7 +403,7 @@
                  {% endif %}
 
                  {% if not loop.last %} | {% else %} {% endif %}
-    
+
                  {% endfor %}
           </div>
         </section>
@@ -373,11 +414,11 @@
     <section id="resources">
     	     <h2>Resources</h2>
              <hr />
-       
+
 
 	    <a href="https://www.ebi.ac.uk/complexportal/complex/{{ complex.complex_accession }}" target="_blank">IntAct</a> | <a href="https://www.modelarchive.org/" target="_blank">ModelArchive</a>
 
-	    
+
             {% for pdb in complex.pdbs %}
               {% if loop.index < 10 %}
                  | <span>PDB:<a href="https://www.rcsb.org/structure/{{ pdb.display_name }}"  target="_blank">{{ pdb.display_name }}</a></span>
@@ -392,10 +433,10 @@
                {% endfor %}
             </span>
             <a id="complex_see_less_button" onclick="$('#complex_see_more').hide();$('#complex_see_more_button').show();$('#complex_see_less_button').hide();" hidden> <i class="fa fa-arrow-circle-left"></i> Show fewer</a>
-        
-	
+
+
     </section>
-    
+
     </div>
 </div>
 
@@ -411,5 +452,5 @@
 <script src="{{asset_root}}/js/evidence.js"></script>
 {# GO Consortium web components -- registers <go-gocam-viewer>; pin major version per GO guidance #}
 <script type="module" src="https://unpkg.com/@geneontology/web-components@1"></script>
-<script src="{{asset_root}}/js/complex.js"></script>
+<script src="{{asset_root}}/js/complex_new_summary.js"></script>
 {% endblock scripts %}

@@ -209,6 +209,16 @@ def complex_go_details(request):
         return not_found(request)
     return render_to_response(TEMPLATE_ROOT + 'complex_go.jinja2', complex_obj, request=request)
 
+@view_config(route_name='complex_new_summary_details')
+def complex_new_summary_details(request):
+    # Experimental "New Summary" tab (redmine 6635); reuses the summary backend
+    # endpoint and reworks the two diagrams client-side.
+    complexAC = request.matchdict['identifier']
+    complex_obj = get_complex_obj(complexAC, 'summary')
+    if complex_obj is None:
+        return not_found(request)
+    return render_to_response(TEMPLATE_ROOT + 'complex_new_summary.jinja2', complex_obj, request=request)
+
 @view_config(route_name='allele')
 def allele(request):
     alleleName = request.matchdict['identifier']
