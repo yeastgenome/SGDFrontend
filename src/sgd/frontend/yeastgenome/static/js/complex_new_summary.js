@@ -262,43 +262,42 @@ function render_shared_list(data) {
     });
     cxRows.sort(function(a, b) { return (b.total - a.total) || (b.sharedGo - a.sharedGo); });
 
-    var html = "";
+    // Render both as DataTables (sortable/searchable/paginated), consistent with
+    // the Subunits table. Numeric columns sort on the raw number and display a
+    // dash for zero via mRender.
+    var html = '';
     html += '<h3 class="shared-subhead">Shared GO terms <small>(' + goRows.length + ')</small></h3>';
-    html += build_rank_table(["GO term", "Aspect", "Shared with", "Evidence"], goRows.map(function(r) {
-        return [
-            make_link(r.href, r.name),
-            escape_html(r.aspect),
-            '<span class="rank-count">' + r.count + '</span> complex' + (r.count === 1 ? '' : 'es'),
-            r.ev ? escape_html(r.ev) : '&mdash;'
-        ];
-    }));
-
+    html += '<table class="table table-striped table-bordered table-condensed" id="shared_go_table"><thead><tr>' +
+        '<th>GO term</th><th>Aspect</th><th>Shared with (complexes)</th><th>Evidence</th></tr></thead></table>';
     html += '<h3 class="shared-subhead">Related complexes <small>(' + cxRows.length + ')</small></h3>';
-    html += build_rank_table(["Complex", "Shared GO terms", "Shared subunits"], cxRows.map(function(r) {
-        return [
-            make_link(r.href, r.name),
-            '<span class="rank-count">' + r.sharedGo + '</span>',
-            r.sharedSub > 0 ? '<span class="rank-count">' + r.sharedSub + '</span>' : '&mdash;'
-        ];
-    }));
-
+    html += '<table class="table table-striped table-bordered table-condensed" id="shared_complex_table"><thead><tr>' +
+        '<th>Complex</th><th>Shared GO terms</th><th>Shared subunits</th></tr></thead></table>';
     $("#j-shared-list").html(html);
+
+    create_table("shared_go_table", {
+        "bPaginate": false,
+        "aaSorting": [[2, "desc"]],
+        "aoColumns": [ null, null, { "sType": "num", "mRender": num_or_dash_render }, null ],
+        "aaData": goRows.map(function(r) {
+            return [ make_link(r.href, r.name), escape_html(r.aspect), r.count, (r.ev ? escape_html(r.ev) : "") ];
+        })
+    });
+
+    create_table("shared_complex_table", {
+        "bPaginate": true,
+        "iDisplayLength": 25,
+        "aaSorting": [[1, "desc"], [2, "desc"]],
+        "aoColumns": [ null, { "sType": "num", "mRender": num_or_dash_render }, { "sType": "num", "mRender": num_or_dash_render } ],
+        "aaData": cxRows.map(function(r) {
+            return [ make_link(r.href, r.name), r.sharedGo, r.sharedSub ];
+        })
+    });
 }
 
-function build_rank_table(headers, rows) {
-    var h = '<table class="shared-rank"><thead><tr>';
-    headers.forEach(function(x) { h += '<th>' + x + '</th>'; });
-    h += '</tr></thead><tbody>';
-    if (rows.length === 0) {
-        h += '<tr><td class="rank-empty" colspan="' + headers.length + '">None</td></tr>';
-    }
-    rows.forEach(function(cells) {
-        h += '<tr>';
-        cells.forEach(function(c) { h += '<td>' + c + '</td>'; });
-        h += '</tr>';
-    });
-    h += '</tbody></table>';
-    return h;
+// Sort on the underlying number; display it, or a dash when zero.
+function num_or_dash_render(data, type) {
+    if (type === 'display') { return (data && data > 0) ? String(data) : '—'; }
+    return data;
 }
 
 function make_link(href, text) {
