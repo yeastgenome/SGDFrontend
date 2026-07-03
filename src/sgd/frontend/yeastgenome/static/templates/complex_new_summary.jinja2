@@ -30,6 +30,8 @@
     .view-toggle input[type="radio"] { margin: 0 5px 0 0; vertical-align: middle; }
     tr.row-highlight > td { background: #fff6d6 !important; transition: background .2s ease; }
     .shared-subhead { margin: 18px 0 6px; font-size: 16px; }
+    .composition-subhead { margin: 26px 0 8px; font-size: 18px; font-weight: 600; padding-top: 12px; border-top: 1px solid #eee; }
+    .composition-notes { font-size: 14px; line-height: 1.5; color: #333; margin-bottom: 6px; }
     #shared_go_table td:nth-child(3), #shared_complex_table td:nth-child(2), #shared_complex_table td:nth-child(3) { text-align: right; }
 </style>
 {% endblock %}
@@ -81,13 +83,7 @@
         <script>
             add_navbar_title('Complex: <span class="gene_name">{{ complex.complex_name }}</span>')
             add_navbar_element('Overview', 'overview');
-        add_navbar_element('Composition', 'diagram');
-
-        {% if complex.pdbs|length > 0 %}
-          add_navbar_element('PDB Structure', 'structure');
-        {% endif %}
-
-        add_navbar_element('Subunits', 'subunit');
+        add_navbar_element('Composition', 'composition');
 
         {% if complex.process|length > 0 or complex.function|length > 0 or complex.component|length > 0%}
               add_navbar_element('Gene Ontology', 'annotation');
@@ -162,9 +158,9 @@
       </div>
     </section>
 
-<!-- complex diagram (New Summary: grouped composition + optional expanded network)
+<!-- Composition (New Summary: grouped diagram + notes + PDB + subunits subsections)
 ================================================== -->
-    <section id="diagram" data-magellan-destination="diagram">
+    <section id="composition" data-magellan-destination="composition">
         <div class="page-header">
             <h2>Composition
 	    	<a href="#" data-dropdown="complex_diagram_help"><i class="fa fa-info-circle"></i></a>
@@ -179,67 +175,47 @@
             </div>
             <div id="j-complex-composition"></div>
             <div id="j-complex" style="display:none;"></div>
+
+            {% if complex.properties %}
+            <!-- Properties / structural notes -->
+            <h3 class="composition-subhead">Notes</h3>
+            <div class="composition-notes">{{ complex.properties }}</div>
+            {% endif %}
+
+            {% if complex.pdbs|length > 0 %}
+            <!-- PDB Structure subsection -->
+            <h3 class="composition-subhead">PDB Structure
+                <a href="#" data-dropdown="pdb_help"><i class="fa fa-info-circle"></i></a>
+                <p id="pdb_help" class="f-dropdown content medium" data-dropdown-content>
+                    When available from the Protein Data Bank (PDB), the physical structure of the macromolecular complex is displayed. Click on the image or link for further information about the physical structure.
+                </p>
+            </h3>
+            <table border=0><tr>
+             {% set count = 0 %}
+             {% for pdb in complex.pdbs %}
+                  {% set count = count + 1 %}
+              {% if count <= 4 %}
+                     <td><a href=https://www.rcsb.org/structure/{{ pdb.display_name }} target="_infowin">{{ pdb.display_name }}</td>
+                     <td><a href=https://www.rcsb.org/3d-view/{{ pdb.display_name }} target="_infowin"><img src=https://www.ncbi.nlm.nih.gov/Structure/mmdb/mmdbimage.fcgi?&uid={{ pdb.display_name }}&small=t alt={{pdb.display_name}} width=150 height=150></a></td>
+              {% endif %}
+             {% endfor %}
+            </tr></table>
+            {% endif %}
+
+            <!-- Subunits subsection -->
+            <h3 class="composition-subhead">Subunits
+                <a href="#" data-dropdown="subunit_help"><i class="fa fa-info-circle"></i></a>
+                <p id="subunit_help" class="f-dropdown content medium" data-dropdown-content>
+                    This table lists all participants of the complex (proteins, small molecules, nucleic acids, etc.) and their respective stoichiometry. A brief description is also provided for each participant in the table.
+                </p>
+            </h3>
+            {% set table_id = "complex_table" %}
+            {% include "complex_table.jinja2" %}
+            <ul class="button-group radius">
+                <li><a id="complex_subunit_gene_analyze" class="small button secondary" disabled="true"><i class='fa fa-briefcase'></i> Analyze</a>
+            </ul>
         </div>
     </section>
-
-<!-- PDB structure
-================================================== -->
-    {% if complex.pdbs|length > 0 %}
-        <section id="structure" data-magellan-destination="structure">
-         <div class="page-header">
-                 <h2>PDB Structure
-		 	<a href="#" data-dropdown="pdb_help"><i class="fa fa-info-circle"></i></a>
-                        <p id="pdb_help" class="f-dropdown content medium" data-dropdown-content>
-                            When available from the Protein Data Bank (PDB), the physical structure of the macromolecular complex is displayed. Click on the image or link for further information about the physical structure.
-                        </p>
-
-		 </h2>
-                 <hr />
-
-             <table border=0><tr>
-
-             {% set count = 0 %}
-
-             {% for pdb in complex.pdbs %}
-
-                  {% set count = count + 1 %}
-
-              {% if count <= 4 %}
-
-                     <td><a href=https://www.rcsb.org/structure/{{ pdb.display_name }} target="_infowin">{{ pdb.display_name }}</td>
-                             <td><a href=https://www.rcsb.org/3d-view/{{ pdb.display_name }} target="_infowin"><img src=https://www.ncbi.nlm.nih.gov/Structure/mmdb/mmdbimage.fcgi?&uid={{ pdb.display_name }}&small=t alt={{pdb.display_name}} width=150 height=150></a></td>
-              {% endif %}
-
-                     {% endfor %}
-
-             </tr></table>
-
-                </div>
-        </section>
-    {% endif %}
-
-
-<!-- table with subunits and headlines, stoichiometry
-================================================== -->
-
-         <section id="subunit" data-magellan-destination="subunit">
-                 <div class="page-header">
-                     <h2>Subunits
-
-			<a href="#" data-dropdown="subunit_help"><i class="fa fa-info-circle"></i></a>
-                        <p id="subunit_help" class="f-dropdown content medium" data-dropdown-content>
-			    This table lists all participants of the complex (proteins, small molecules, nucleic acids, etc.) and their respective stoichiometry. A brief description is also provided for each participant in the table.
-                        </p>
-		     </h2>
-                     <hr />
-
-                     {% set table_id = "complex_table" %}
-                     {% include "complex_table.jinja2" %}
-		     <ul class="button-group radius">
-        	     	 <li><a id="complex_subunit_gene_analyze" class="small button secondary" disabled="true"><i class='fa fa-briefcase'></i> Analyze</a>
-    	             </ul>
-                </div>
-        </section>
 
 
 <!-- table with GO annotations for the complex
@@ -326,20 +302,17 @@
             <h2>Shared Biology
 	         <a href="#" data-dropdown="network_help"><i class="fa fa-info-circle"></i></a>
                  <p id="network_help" class="f-dropdown content medium" data-dropdown-content>
-		      Relationships this complex shares with other yeast complexes, ranked. "Shared GO terms" lists the Gene Ontology terms this complex is annotated to and how many other complexes share each term. "Related complexes" ranks other complexes by how much biology (GO terms and subunits) they share with this one. Switch to "Explore network" for the full interactive graph.
+		      Relationships this complex shares with other yeast complexes. The "Network" shows Gene Ontology terms and subunits shared between this complex and other complexes as an interactive graph. The "Ranked list" summarizes the same relationships: the Gene Ontology terms this complex is annotated to and how many other complexes share each, plus other complexes ranked by how much biology they share with this one.
                  </p>
 
 	    </h2>
             <hr />
 	    {% if complex.network_graph.edges|length > 0 %}
-                <div class="view-toggle">
-                    <label><input type="radio" name="shared_view" value="list" checked> Ranked list</label>
-                    <label><input type="radio" name="shared_view" value="network"> Explore network</label>
-                </div>
+                <h3 class="composition-subhead">Network</h3>
+                <div id="j-complex-network"></div>
+
+                <h3 class="composition-subhead">Ranked list</h3>
                 <div id="j-shared-list"></div>
-                <div id="j-complex-network-wrap" style="display:none;">
-                    <div id="j-complex-network"></div>
-                </div>
 	    {% else %}
 	        No shared annotations
 	    {% endif %}

@@ -56,39 +56,28 @@ $(document).ready(function() {
         }
     });
 
-    // --- Shared Annotations: ranked list (default) + network on demand ---
+    // --- Shared Biology: two subsections, both shown (Network, then Ranked list) ---
     if (data["network_graph"] && data["network_graph"]["edges"].length > 0) {
-        render_shared_list(data);
-
-        var networkRendered = false;
-        $("input[name='shared_view']").change(function() {
-            if ($(this).val() === "network") {
-                $("#j-shared-list").hide();
-                $("#j-complex-network-wrap").show();
-                if (!networkRendered) {
-                    networkRendered = true;
-                    var colors = {
-                        'FOCUS': 'black',
-                        'GO': '#2ca02c',
-                        'subunit': '#1f77b4',
-                        'complex': '#E6AB03'
-                    };
-                    var filters = {
-                        ' All': function(d) { return true; },
-                        ' GO Terms': function(d) {
-                            return ['FOCUS', 'GO', 'complex'].includes(d.category);
-                        },
-                        ' Subunits': function(d) {
-                            return ['FOCUS', 'subunit', 'complex'].includes(d.category);
-                        }
-                    };
-                    views.network.render(data["network_graph"], colors, "j-complex-network", filters, true);
-                }
-            } else {
-                $("#j-complex-network-wrap").hide();
-                $("#j-shared-list").show();
+        // Network subsection
+        var colors = {
+            'FOCUS': 'black',
+            'GO': '#2ca02c',
+            'subunit': '#1f77b4',
+            'complex': '#E6AB03'
+        };
+        var filters = {
+            ' All': function(d) { return true; },
+            ' GO Terms': function(d) {
+                return ['FOCUS', 'GO', 'complex'].includes(d.category);
+            },
+            ' Subunits': function(d) {
+                return ['FOCUS', 'subunit', 'complex'].includes(d.category);
             }
-        });
+        };
+        views.network.render(data["network_graph"], colors, "j-complex-network", filters, true);
+
+        // Ranked list subsection
+        render_shared_list(data);
     } else {
         hide_section("network");
     }
