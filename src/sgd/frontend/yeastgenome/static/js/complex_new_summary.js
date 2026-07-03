@@ -65,13 +65,15 @@ $(document).ready(function() {
             'subunit': '#1f77b4',
             'complex': '#E6AB03'
         };
+        // The Graph component defaults to Object.keys(filters)[0], so list
+        // Subunits first to make the cleaner, physical view the default.
         var filters = {
+            ' Subunits': function(d) {
+                return ['FOCUS', 'subunit', 'complex'].includes(d.category);
+            },
             ' All': function(d) { return true; },
             ' GO Terms': function(d) {
                 return ['FOCUS', 'GO', 'complex'].includes(d.category);
-            },
-            ' Subunits': function(d) {
-                return ['FOCUS', 'subunit', 'complex'].includes(d.category);
             }
         };
         views.network.render(data["network_graph"], colors, "j-complex-network", filters, true);
