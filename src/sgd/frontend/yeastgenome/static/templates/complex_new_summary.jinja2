@@ -32,6 +32,8 @@
     .shared-subhead { margin: 18px 0 6px; font-size: 16px; }
     .composition-subhead { margin: 26px 0 8px; font-size: 18px; font-weight: 600; padding-top: 12px; border-top: 1px solid #eee; }
     .composition-notes { font-size: 14px; line-height: 1.5; color: #333; margin-bottom: 6px; }
+    #binding_regions_table { font-size: 13px; }
+    #binding_regions_table td.region { white-space: nowrap; font-variant-numeric: tabular-nums; }
     #shared_go_table td:nth-child(3), #shared_complex_table td:nth-child(2), #shared_complex_table td:nth-child(3) { text-align: right; }
 </style>
 {% endblock %}
@@ -214,6 +216,35 @@
             <ul class="button-group radius">
                 <li><a id="complex_subunit_gene_analyze" class="small button secondary" disabled="true"><i class='fa fa-briefcase'></i> Analyze</a>
             </ul>
+
+            {% if complex.binding_regions and complex.binding_regions|length > 0 %}
+            <!-- Binding regions subsection: residue ranges on one subunit that
+                 contact another subunit (range_start/range_end, redmine 6635) -->
+            <h3 class="composition-subhead">Binding Regions
+                <a href="#" data-dropdown="binding_regions_help"><i class="fa fa-info-circle"></i></a>
+                <p id="binding_regions_help" class="f-dropdown content medium" data-dropdown-content>
+                    Residue-level binding regions reported for this complex. Each row gives the range of residues on the first subunit that mediates binding to the partner subunit. Regions are directional, so a pair of subunits may appear twice (once for each partner's contact region).
+                </p>
+            </h3>
+            <table id="binding_regions_table" class="sortable">
+                <thead>
+                    <tr>
+                        <th>Subunit</th>
+                        <th>Binding partner</th>
+                        <th>Region (residues)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for region in complex.binding_regions %}
+                    <tr>
+                        <td>{% if region.subunit_link %}<a href="{{ region.subunit_link }}" target="_infowin">{{ region.subunit }}</a>{% else %}{{ region.subunit }}{% endif %}</td>
+                        <td>{% if region.partner_link %}<a href="{{ region.partner_link }}" target="_infowin">{{ region.partner }}</a>{% else %}{{ region.partner }}{% endif %}</td>
+                        <td class="region">{{ region.range_start }}&ndash;{{ region.range_end }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
         </div>
     </section>
 
