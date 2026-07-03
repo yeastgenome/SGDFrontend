@@ -65,16 +65,17 @@ $(document).ready(function() {
             'subunit': '#1f77b4',
             'complex': '#E6AB03'
         };
-        // The Graph component defaults to Object.keys(filters)[0], so list
-        // Subunits first to make the cleaner, physical view the default.
+        // The Graph component defaults to Object.keys(filters)[0] and renders the
+        // radios in this order, so: Subunits first (default + cleanest view),
+        // then GO Terms, then the dense "All" hairball last.
         var filters = {
             ' Subunits': function(d) {
                 return ['FOCUS', 'subunit', 'complex'].includes(d.category);
             },
-            ' All': function(d) { return true; },
             ' GO Terms': function(d) {
                 return ['FOCUS', 'GO', 'complex'].includes(d.category);
-            }
+            },
+            ' All': function(d) { return true; }
         };
         views.network.render(data["network_graph"], colors, "j-complex-network", filters, true);
 
