@@ -66,16 +66,29 @@ $(document).ready(function() {
             'complex': '#E6AB03'
         };
         // The Graph component defaults to Object.keys(filters)[0] and renders the
-        // radios in this order, so: Subunits first (default + cleanest view),
-        // then GO Terms, then the dense "All" hairball last.
-        var filters = {
-            ' Subunits': function(d) {
-                return ['FOCUS', 'subunit', 'complex'].includes(d.category);
-            },
-            ' GO Terms': function(d) {
-                return ['FOCUS', 'GO', 'complex'].includes(d.category);
-            },
-            ' All': function(d) { return true; }
+        // radios in this order, so Subunits is the preferred default (cleanest
+        // view), then GO Terms, then the dense "All" hairball last. Some complexes
+        // share no subunits with any other complex (all sharing is via GO terms);
+        // for those the Subunits view is empty, so lead with GO Terms to avoid
+        // landing on a blank graph. Complexes with shared subunits are unchanged.
+        var subunitsFilter = function(d) {
+            return ['FOCUS', 'subunit', 'complex'].includes(d.category);
+        };
+        var goTermsFilter = function(d) {
+            return ['FOCUS', 'GO', 'complex'].includes(d.category);
+        };
+        var allFilter = function(d) { return true; };
+        var hasSharedSubunits = data["network_graph"]["nodes"].some(function(n) {
+            return n.category === 'subunit';
+        });
+        var filters = hasSharedSubunits ? {
+            ' Subunits': subunitsFilter,
+            ' GO Terms': goTermsFilter,
+            ' All': allFilter
+        } : {
+            ' GO Terms': goTermsFilter,
+            ' Subunits': subunitsFilter,
+            ' All': allFilter
         };
         views.network.render(data["network_graph"], colors, "j-complex-network", filters, true);
 
