@@ -223,7 +223,7 @@
             <h3 class="composition-subhead">Binding Regions
                 <a href="#" data-dropdown="binding_regions_help"><i class="fa fa-info-circle"></i></a>
                 <p id="binding_regions_help" class="f-dropdown content medium" data-dropdown-content>
-                    Residue-level binding regions reported for this complex. Each row gives the range of residues on the first subunit that mediates binding to the partner subunit. Regions are directional, so a pair of subunits may appear twice (once for each partner's contact region).
+                    Residue-level binding regions reported for this complex. Each row gives the range of residues on the subunit that mediates binding to the partner subunit, with the region label from IntAct where available. Regions are directional, so a pair of subunits may appear twice (once for each partner's contact region).
                 </p>
             </h3>
             <table id="binding_regions_table" class="sortable">
@@ -232,6 +232,7 @@
                         <th>Subunit</th>
                         <th>Binding partner</th>
                         <th>Region (residues)</th>
+                        <th>Region name</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -240,6 +241,7 @@
                         <td>{% if region.subunit_link %}<a href="{{ region.subunit_link }}" target="_infowin">{{ region.subunit }}</a>{% else %}{{ region.subunit }}{% endif %}</td>
                         <td>{% if region.partner_link %}<a href="{{ region.partner_link }}" target="_infowin">{{ region.partner }}</a>{% else %}{{ region.partner }}{% endif %}</td>
                         <td class="region">{{ region.range_start }}&ndash;{{ region.range_end }}</td>
+                        <td>{{ region.region_name or '' }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
