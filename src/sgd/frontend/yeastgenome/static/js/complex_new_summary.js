@@ -84,8 +84,9 @@ $(document).ready(function() {
         // radios in this order, so Subunits is the preferred default (cleanest
         // view), then GO Terms, then the dense "All" hairball last. Some complexes
         // share no subunits with any other complex (all sharing is via GO terms);
-        // for those the Subunits view is empty, so lead with GO Terms to avoid
-        // landing on a blank graph. Complexes with shared subunits are unchanged.
+        // for those the Subunits view would be empty and "All" is identical to
+        // GO Terms, so drop both options and offer only GO Terms. Complexes with
+        // shared subunits keep all three.
         var subunitsFilter = function(d) {
             return ['FOCUS', 'subunit', 'complex'].includes(d.category);
         };
@@ -101,9 +102,7 @@ $(document).ready(function() {
             ' GO Terms': goTermsFilter,
             ' All': allFilter
         } : {
-            ' GO Terms': goTermsFilter,
-            ' Subunits': subunitsFilter,
-            ' All': allFilter
+            ' GO Terms': goTermsFilter
         };
         views.network.render(data["network_graph"], colors, "j-complex-network", filters, true);
 
