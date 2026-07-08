@@ -237,16 +237,12 @@ function render_shared_list(data) {
         return out;
     }
 
-    // Evidence code(s) + aspect per GO term, from this complex's own annotations.
-    var evByGo = {}, aspectByGo = {};
+    // Aspect per GO term, from this complex's own annotations.
+    var aspectByGo = {};
     function collect_go(list, aspect) {
         (list || []).forEach(function(it) {
             if (it.go && it.go.display_name) {
-                var nm = it.go.display_name;
-                aspectByGo[nm] = aspect;
-                if (it.experiment && it.experiment.display_name) {
-                    (evByGo[nm] = evByGo[nm] || {})[it.experiment.display_name] = true;
-                }
+                aspectByGo[it.go.display_name] = aspect;
             }
         });
     }
@@ -260,8 +256,7 @@ function render_shared_list(data) {
     focusGo.forEach(function(goId) {
         var node = byId[goId];
         var complexes = neighbors_of_cat(goId, "complex");
-        var ev = Object.keys(evByGo[node.name] || {}).join(", ");
-        goRows.push({ name: node.name, href: node.href, aspect: aspectByGo[node.name] || "", count: complexes.length, ev: ev });
+        goRows.push({ name: node.name, href: node.href, aspect: aspectByGo[node.name] || "", count: complexes.length });
     });
     goRows.sort(function(a, b) { return b.count - a.count; });
 
@@ -287,7 +282,7 @@ function render_shared_list(data) {
     var html = '';
     html += '<h3 class="shared-subhead">Shared GO terms <small>(' + goRows.length + ')</small></h3>';
     html += '<table class="table table-striped table-bordered table-condensed" id="shared_go_table"><thead><tr>' +
-        '<th>GO term</th><th>Aspect</th><th>Shared with (complexes)</th><th>Evidence</th></tr></thead></table>';
+        '<th>GO term</th><th>Aspect</th><th>Shared with (complexes)</th></tr></thead></table>';
     html += '<h3 class="shared-subhead">Related complexes <small>(' + cxRows.length + ')</small></h3>';
     html += '<table class="table table-striped table-bordered table-condensed" id="shared_complex_table"><thead><tr>' +
         '<th>Complex</th><th>Shared GO terms</th><th>Shared subunits</th></tr></thead></table>';
@@ -298,9 +293,9 @@ function render_shared_list(data) {
     create_table("shared_go_table", {
         "bPaginate": false,
         "aaSorting": [[2, "desc"]],
-        "aoColumns": [ null, null, null, null ],
+        "aoColumns": [ null, null, null ],
         "aaData": goRows.map(function(r) {
-            return [ make_link(r.href, r.name), escape_html(r.aspect), r.count, (r.ev ? escape_html(r.ev) : "") ];
+            return [ make_link(r.href, r.name), escape_html(r.aspect), r.count ];
         })
     });
 
