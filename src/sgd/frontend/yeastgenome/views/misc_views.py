@@ -187,11 +187,13 @@ def phenotype(request):
 
 @view_config(route_name='complex')
 def complex(request):
+    # The Summary tab now serves the New Summary page (redmine 6635); the
+    # standalone /complex/{id}/new_summary route still renders the same template.
     complexAC = request.matchdict['identifier']
     complex_obj = get_complex_obj(complexAC, 'summary')
     if complex_obj is None:
         return not_found(request)
-    return render_to_response(TEMPLATE_ROOT + 'complex.jinja2', complex_obj, request=request)
+    return render_to_response(TEMPLATE_ROOT + 'complex_new_summary.jinja2', complex_obj, request=request)
 
 @view_config(route_name='complex_literature_details')
 def complex_literature_details(request):
