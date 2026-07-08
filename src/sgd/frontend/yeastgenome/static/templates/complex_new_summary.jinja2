@@ -404,17 +404,17 @@
                          <h2>External Identifiers</h2>
                          <hr />
 
+                 {# Only IntEnz/EMDB aliases are displayed here; emit the " | "
+                    separator only between rendered entries (not once per
+                    cross_reference), otherwise unshown alias types leave stray
+                    leading pipes. #}
+                 {% set ns = namespace(first=true) %}
                  {% for alias in complex.cross_references %}
                  {% if alias.alias_type == 'IntEnz' %}
-                                  {{alias.alias_type}}: <a href=https://www.ebi.ac.uk/intenz/query?cmd=Search&q={{ alias.display_name }} target="_infowin">{{ alias.display_name }}</a>
+                                  {% if not ns.first %} | {% endif %}{{alias.alias_type}}: <a href=https://www.ebi.ac.uk/intenz/query?cmd=Search&q={{ alias.display_name }} target="_infowin">{{ alias.display_name }}</a>{% set ns.first = false %}
+                 {% elif alias.alias_type == 'EMDB' %}
+                                  {% if not ns.first %} | {% endif %}{{alias.alias_type}}: <a href=http://www.ebi.ac.uk/pdbe/entry/emdb/{{ alias.display_name }} target="_infowin">{{ alias.display_name }}</a>{% set ns.first = false %}
                  {% endif %}
-
-                 {% if alias.alias_type == 'EMDB' %}
-                                  {{alias.alias_type}}: <a href=http://www.ebi.ac.uk/pdbe/entry/emdb/{{ alias.display_name }} target="_infowin">{{ alias.display_name }}</a>
-                 {% endif %}
-
-                 {% if not loop.last %} | {% else %} {% endif %}
-
                  {% endfor %}
           </div>
         </section>
