@@ -115,7 +115,7 @@ const SearchLanding = createReactClass({
     return {
       recentData: null,
       recentError: false,
-      showSecondary: false,
+      showSecondary: true,
     };
   },
 
