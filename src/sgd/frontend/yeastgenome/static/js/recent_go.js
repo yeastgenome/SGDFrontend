@@ -45,4 +45,21 @@ $(document).ready(function() {
 
     create_table("recent_go_table", options);
     $("#recent_go_table_buttons").hide();
+
+    // The visible Gene/Complex column makes this table wider than the content
+    // column, so it can extend past the page's normal content width. Let the
+    // .table-responsive box shrink-wrap the table (instead of the content
+    // column) so the Filter row and footer span the table's full width and
+    // stay aligned with its right edge. Scoped to this page's table wrapper.
+    $("<style>").text(
+        "#recent_go_table_wrapper .table-responsive {" +
+        " width: -moz-fit-content; width: fit-content; min-width: 100%; }"
+    ).appendTo("head");
+
+    // The <hr> lives outside the DataTables wrapper in the template, so it is
+    // stuck at the content-column width. Move it inside .table-responsive
+    // (above the Filter row) where it inherits the table's full width and
+    // scrolls with it, rather than forcing a fixed width that would push the
+    // page wider on narrow screens.
+    $("#annotations > hr").prependTo("#recent_go_table_wrapper .table-responsive");
 });
