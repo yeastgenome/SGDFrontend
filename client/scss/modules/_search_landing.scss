@@ -89,12 +89,11 @@ $landing-radius: 10px;
   &.small {
     font-size: 0.75rem;
     padding: 0.1rem 0.55rem;
-    color: $landing-muted;
-    cursor: default;
+    color: $landing-accent;
 
     &:hover {
-      background: #fff;
-      border-color: $landing-border;
+      background: #f0f4fa;
+      border-color: $landing-accent;
     }
   }
 }
@@ -184,6 +183,10 @@ $landing-radius: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  &:hover {
+    text-decoration: none;
+  }
 }
 
 .search-landing-card-name {
@@ -334,21 +337,50 @@ $landing-radius: 10px;
   border-top: 1px solid $landing-border;
   padding-top: 0.5rem;
 
-  ul {
+  .reference-list {
     list-style: none;
     margin: 0;
-  }
 
-  li {
-    padding: 0.3rem 0;
-    font-size: 0.82rem;
-    line-height: 1.3;
-    border-bottom: 1px dotted $landing-border;
+    > li {
+      padding: 0.4rem 0;
+      font-size: 0.82rem;
+      line-height: 1.35;
+      border-bottom: 1px dotted $landing-border;
 
-    &:last-child {
-      border-bottom: none;
+      &:last-child {
+        border-bottom: none;
+      }
     }
   }
+
+  // Render the SGD Paper / DOI / PMC / PubMed links inline and compact.
+  .ref-links {
+    list-style: none;
+    margin: 0.15rem 0 0;
+    padding: 0;
+
+    li {
+      display: inline;
+      padding: 0;
+      border: none;
+      font-size: 0.78rem;
+
+      &:not(:last-child)::after {
+        content: '\00b7';
+        margin: 0 0.35rem;
+        color: $landing-muted;
+      }
+    }
+  }
+
+  small {
+    color: $landing-muted;
+  }
+}
+
+.search-landing-whatsnew-more {
+  margin: 0.5rem 0 0;
+  font-size: 0.82rem;
 }
 
 // ---- Common tasks --------------------------------------------------------

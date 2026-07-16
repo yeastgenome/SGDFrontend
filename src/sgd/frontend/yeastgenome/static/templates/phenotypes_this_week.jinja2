@@ -1,0 +1,42 @@
+{% extends "global_layout.jinja2" %}
+
+{% block title %}Phenotypes Recently Added to SGD{% endblock %}
+
+{% block head %}
+<script>
+  var recent_phenotype_data = {{ phenotypes_js|safe }};
+  var recent_phenotype_dates = { start: "{{ start }}", end: "{{ end }}" };
+</script>
+{% endblock %}
+
+{% block body %}
+
+<div class="row">
+
+    {% include "navbar.jinja2" %}
+
+    <div class="small-12 medium-10 columns content-column">
+
+        <script>
+            add_navbar_title("Phenotypes Recently Added to SGD");
+            add_navbar_element('Annotations', 'annotations');
+        </script>
+
+        <section id="annotations" data-magellan-destination="annotations">
+            <h1>Phenotypes Recently Added to SGD</h1>
+            <h2 class="subheader" id="recent_phenotype_dates"></h2>
+            <span id="recent_phenotype_table_header" class="round secondary label"></span>
+            <hr />
+            <div>
+                {% set table_id = "recent_phenotype_table" %}
+                {% include "phenotype_table.jinja2" %}
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock body %}
+
+{% block scripts %}
+<script src="{{asset_root}}/js/evidence.js"></script>
+<script src="{{asset_root}}/js/recent_phenotypes.js"></script>
+{% endblock scripts %}

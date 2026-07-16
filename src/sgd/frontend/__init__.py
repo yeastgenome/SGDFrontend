@@ -36,6 +36,8 @@ def prep_views(chosen_frontend, config):
     config.add_route('complex_literature_details', '/complex/{identifier}/literature')
     config.add_route('complex_go_details', '/complex/{identifier}/go')
     config.add_route('complex_new_summary_details', '/complex/{identifier}/new_summary')
+    # recently added alleles page ('recent' must precede {identifier})
+    config.add_route('alleles_this_week', '/allele/recent')
     config.add_route('allele', '/allele/{identifier}')
     config.add_route('allele_literature_details', '/allele/{identifier}/literature')
     config.add_route('blog_post', '/blog/{slug}')
@@ -74,6 +76,8 @@ def prep_views(chosen_frontend, config):
     # references
     config.add_route('references_this_week', '/reference/recent')
     config.add_route('reference', '/reference/{identifier}')
+    # recently added phenotypes / alleles pages ('recent' must precede {identifier})
+    config.add_route('phenotypes_this_week', '/phenotype/recent')
     config.add_route('phenotype', '/phenotype/{identifier}')
 
     # public CI
@@ -180,6 +184,8 @@ def prep_views(chosen_frontend, config):
                     renderer=chosen_frontend.get_renderer('ecnumber'),
                     route_name='ecnumber')
     
+    # recently added GO annotations page ('recent' must precede {identifier})
+    config.add_route('gos_this_week', '/go/recent')
     config.add_route('go', '/go/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('go', request)(getattr(chosen_frontend, 'go')(biocon_repr=request.matchdict['identifier'].lower())),
                     renderer=chosen_frontend.get_renderer('go'),

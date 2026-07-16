@@ -169,6 +169,63 @@ def references_this_week(request):
     }
     return render_to_response(TEMPLATE_ROOT + 'references_this_week.jinja2', ref_objs, request=request)
 
+def _recent_days_param(request):
+    # Sanitize ?days to a plain int string before forwarding to the backend.
+    try:
+        return str(int(request.params.get('days', 30)))
+    except (TypeError, ValueError):
+        return '30'
+
+@view_config(route_name='phenotypes_this_week')
+def phenotypes_this_week(request):
+    days = _recent_days_param(request)
+    backend_url = os.environ['BACKEND_URL'] + '/phenotypes/this_week?days=' + days
+    backend_response = requests.get(backend_url)
+    if backend_response.status_code != 200:
+        return not_found(request)
+    obj = json.loads(backend_response.text)
+    return render_to_response(
+        TEMPLATE_ROOT + 'phenotypes_this_week.jinja2',
+        {
+            'start': obj.get('start'),
+            'end': obj.get('end'),
+            'phenotypes_js': json.dumps(obj.get('phenotypes', []))
+        },
+        request=request)
+
+@view_config(route_name='gos_this_week')
+def gos_this_week(request):
+    days = _recent_days_param(request)
+    backend_url = os.environ['BACKEND_URL'] + '/go/this_week?days=' + days
+    backend_response = requests.get(backend_url)
+    if backend_response.status_code != 200:
+        return not_found(request)
+    obj = json.loads(backend_response.text)
+    return render_to_response(
+        TEMPLATE_ROOT + 'gos_this_week.jinja2',
+        {
+            'start': obj.get('start'),
+            'end': obj.get('end'),
+            'go_annotations_js': json.dumps(obj.get('go_annotations', []))
+        },
+        request=request)
+
+@view_config(route_name='alleles_this_week')
+def alleles_this_week(request):
+    backend_url = os.environ['BACKEND_URL'] + '/alleles/this_week'
+    backend_response = requests.get(backend_url)
+    if backend_response.status_code != 200:
+        return not_found(request)
+    obj = json.loads(backend_response.text)
+    return render_to_response(
+        TEMPLATE_ROOT + 'alleles_this_week.jinja2',
+        {
+            'start': obj.get('start'),
+            'end': obj.get('end'),
+            'alleles': obj.get('alleles', [])
+        },
+        request=request)
+
 @view_config(route_name='reference')
 def reference(request):
     ref_id = request.matchdict['identifier']

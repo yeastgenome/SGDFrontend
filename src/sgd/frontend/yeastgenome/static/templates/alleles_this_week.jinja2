@@ -1,0 +1,51 @@
+{% extends "global_layout.jinja2" %}
+
+{% block title %}Alleles Recently Added to SGD{% endblock %}
+
+{% block body %}
+
+<!-- Navbar
+================================================== -->
+<div class="row">
+
+    <!-- Includes navbar.html into template -->
+    {% include "navbar.jinja2" %}
+
+    <div class="small-12 medium-10 columns content-column">
+
+        <script>
+            add_navbar_title("Alleles Recently Added to SGD");
+            add_navbar_element('Alleles', 'alleles');
+        </script>
+
+<!-- Alleles
+================================================== -->
+        <section id="alleles" data-magellan-destination="alleles">
+            <div class="page-header">
+                <h1>Alleles Recently Added to SGD</h1>
+                <h2 class="subheader" id="dates">{{ start }} to {{ end }}</h2>
+                <span class="label secondary round">{{ alleles|length }}</span>
+                <hr />
+
+                {% if alleles|length == 0 %}
+                    <p>No alleles added recently.</p>
+                {% else %}
+                    <ul class="reference-list">
+                        {% for a in alleles %}
+                            <li class="reference-list-item">
+                                <a href="{{ a.link|e }}">{{ a.display_name|e }}</a>
+                                {% if a.allele_type %}
+                                    <small>{{ a.allele_type|e }}</small>
+                                {% endif %}
+                                {% if a.description %}
+                                    <span>{{ a.description|e }}</span>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock body %}

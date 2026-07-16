@@ -139,7 +139,9 @@ const SearchLanding = createReactClass({
           </div>
           <div className="columns medium-4 small-12">
             {this._renderWhatsNew()}
-            {this._renderCommonTasks()}
+            {/* Common Tasks hidden for now; the space is given to What's New.
+                Re-enable by restoring {this._renderCommonTasks()} below. */}
+            {/* {this._renderCommonTasks()} */}
           </div>
         </div>
       </div>
@@ -169,23 +171,6 @@ const SearchLanding = createReactClass({
         <div className="search-landing-hero-search">
           <AppSearchBar />
         </div>
-        <p className="search-landing-popular">
-          <span className="search-landing-popular-label">Popular:</span>
-          {POPULAR_SEARCHES.map((term, i) => (
-            <a
-              key={`pop${i}`}
-              className="search-landing-chip"
-              href={this._getQueryHref(term)}
-            >
-              {term}
-            </a>
-          ))}
-        </p>
-        <p className="search-landing-tips">
-          <i className="fa fa-book" /> Search tips: use quotes for an exact
-          phrase (<em>&quot;nuclear pore&quot;</em>), and gene aliases work
-          (<em>SOR1</em> = <em>YJR159W</em>).
-        </p>
       </div>
     );
   },
@@ -224,12 +209,11 @@ const SearchLanding = createReactClass({
   _renderCard(cat, countMap) {
     const count = countMap[cat.key];
     return (
-      <Link
-        to={this._getCategoryHref(cat.key)}
-        className="search-landing-card"
-        key={`card${cat.key}`}
-      >
-        <div className="search-landing-card-head">
+      <div className="search-landing-card" key={`card${cat.key}`}>
+        <Link
+          to={this._getCategoryHref(cat.key)}
+          className="search-landing-card-head"
+        >
           <span className="search-landing-card-name">
             <span className={`search-cat ${cat.key}`} />
             {cat.name}
@@ -239,21 +223,28 @@ const SearchLanding = createReactClass({
               {count.toLocaleString()}
             </span>
           )}
-        </div>
+        </Link>
         <p className="search-landing-card-blurb">{cat.blurb}</p>
         {cat.examples && cat.examples.length > 0 && (
           <div className="search-landing-card-examples">
             {cat.examples.map((ex, i) => (
-              <span className="search-landing-chip small" key={`ex${cat.key}${i}`}>
+              <Link
+                className="search-landing-chip small"
+                key={`ex${cat.key}${i}`}
+                to={this._getExampleHref(cat.key, ex)}
+              >
                 {ex}
-              </span>
+              </Link>
             ))}
           </div>
         )}
-        <span className="search-landing-card-browse">
+        <Link
+          to={this._getCategoryHref(cat.key)}
+          className="search-landing-card-browse"
+        >
           Browse all <i className="fa fa-arrow-right" />
-        </span>
-      </Link>
+        </Link>
+      </div>
     );
   },
 
@@ -355,13 +346,35 @@ const SearchLanding = createReactClass({
     return (
       <div className="search-landing-whatsnew-refs">
         <p className="search-landing-whatsnew-window">Recently added references</p>
-        <ul>
-          {refs.map((ref, i) => (
-            <li key={`rr${i}`}>
-              <a href={ref.link}>{ref.citation || ref.display_name}</a>
-            </li>
-          ))}
-        </ul>
+        <ol className="reference-list">
+          {refs.map((ref, i) => {
+            const remainder = ref.citation
+              ? ref.citation.replace(ref.display_name, '')
+              : '';
+            return (
+              <li className="reference-list-item" key={`rr${i}`}>
+                <a href={ref.link}>{ref.display_name}</a>
+                {remainder}
+                {ref.pubmed_id ? <small> PMID: {ref.pubmed_id}</small> : null}
+                <ul className="ref-links">
+                  <li>
+                    <a href={ref.link}>SGD Paper</a>
+                  </li>
+                  {(ref.urls || []).map((url, j) => (
+                    <li key={`rru${i}_${j}`}>
+                      <a href={url.link} target="_infowin">
+                        {url.display_name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            );
+          })}
+        </ol>
+        <p className="search-landing-whatsnew-more">
+          <a href="/reference/recent">View all recently added references →</a>
+        </p>
       </div>
     );
   },
@@ -477,6 +490,12 @@ const SearchLanding = createReactClass({
       return `${SEARCH_URL}?q=&category=download&status=Active`;
     }
     return `${SEARCH_URL}?q=&category=${key}`;
+  },
+
+  // Each example chip runs that specific term within the category
+  // (e.g. /search?q=CDC28&category=locus).
+  _getExampleHref(key, term) {
+    return `${SEARCH_URL}?q=${encodeURIComponent(term)}&category=${key}`;
   },
 
   _getQueryHref(term) {
