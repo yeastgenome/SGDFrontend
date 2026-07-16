@@ -38,15 +38,27 @@ $landing-radius: 10px;
 }
 
 .search-landing-hero-search {
-  max-width: 640px;
+  max-width: 720px;
   margin: 0 auto;
   position: relative;
+
+  // The typeahead wrapper chain is not full-width by default, so the input
+  // fell back to its intrinsic (~20-char) size and sat left-aligned inside
+  // this centered box — making it look small and off-center. Force the whole
+  // chain to fill the box so it spans the full width and stays centered.
+  .sgd-search-container,
+  form,
+  .react-typeahead-container,
+  .react-typeahead-input-container {
+    width: 100%;
+  }
 
   .sgd-search-container {
     position: relative;
   }
 
   .react-typeahead-input {
+    width: 100%;
     font-size: 20px;
     padding: 0.85rem 1rem 0.85rem 2.5rem;
     border-radius: 30px;
@@ -56,6 +68,12 @@ $landing-radius: 10px;
   .search-icon {
     top: 1.15rem;
     left: 1rem;
+  }
+
+  // Scale the box up on wide viewports so it does not look small on a large
+  // browser window.
+  @media only screen and (min-width: 90em) {
+    max-width: 860px;
   }
 }
 
