@@ -169,12 +169,12 @@ def references_this_week(request):
     }
     return render_to_response(TEMPLATE_ROOT + 'references_this_week.jinja2', ref_objs, request=request)
 
-def _recent_days_param(request):
+def _recent_days_param(request, default=30):
     # Sanitize ?days to a plain int string before forwarding to the backend.
     try:
-        return str(int(request.params.get('days', 30)))
+        return str(int(request.params.get('days', default)))
     except (TypeError, ValueError):
-        return '30'
+        return str(default)
 
 @view_config(route_name='phenotypes_this_week')
 def phenotypes_this_week(request):
@@ -195,7 +195,7 @@ def phenotypes_this_week(request):
 
 @view_config(route_name='gos_this_week')
 def gos_this_week(request):
-    days = _recent_days_param(request)
+    days = _recent_days_param(request, 40)
     backend_url = os.environ['BACKEND_URL'] + '/go/this_week?days=' + days
     backend_response = requests.get(backend_url)
     if backend_response.status_code != 200:
