@@ -42,7 +42,6 @@ $(document).ready(function() {
     ];
     options["oLanguage"] = {"sEmptyTable": "No GO annotations added recently."};
     options["aaData"] = datatable;
-    options["scrollX"] = true;
 
     create_table("recent_go_table", options);
     $("#recent_go_table_buttons").hide();
