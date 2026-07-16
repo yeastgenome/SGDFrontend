@@ -2,13 +2,17 @@
 
 {% block title %}Alleles Recently Added to SGD{% endblock %}
 
+{% block head %}
+<script>
+  var recent_allele_data = {{ alleles_js|safe }};
+  var recent_allele_dates = { start: "{{ start }}", end: "{{ end }}" };
+</script>
+{% endblock %}
+
 {% block body %}
 
-<!-- Navbar
-================================================== -->
 <div class="row">
 
-    <!-- Includes navbar.html into template -->
     {% include "navbar.jinja2" %}
 
     <div class="small-12 medium-10 columns content-column">
@@ -18,34 +22,20 @@
             add_navbar_element('Alleles', 'alleles');
         </script>
 
-<!-- Alleles
-================================================== -->
         <section id="alleles" data-magellan-destination="alleles">
-            <div class="page-header">
-                <h1>Alleles Recently Added to SGD</h1>
-                <h2 class="subheader" id="dates">{{ start }} to {{ end }}</h2>
-                <span class="label secondary round">{{ alleles|length }}</span>
-                <hr />
-
-                {% if alleles|length == 0 %}
-                    <p>No alleles added recently.</p>
-                {% else %}
-                    <ul class="reference-list">
-                        {% for a in alleles %}
-                            <li class="reference-list-item">
-                                <a href="{{ a.link|e }}">{{ a.display_name|e }}</a>
-                                {% if a.allele_type %}
-                                    <small>{{ a.allele_type|e }}</small>
-                                {% endif %}
-                                {% if a.description %}
-                                    <span>{{ a.description|e }}</span>
-                                {% endif %}
-                            </li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
+            <h1>Alleles Recently Added to SGD</h1>
+            <h2 class="subheader" id="recent_allele_dates"></h2>
+            <span id="recent_allele_table_header" class="round secondary label"></span>
+            <hr />
+            <div>
+                {% set table_id = "recent_allele_table" %}
+                {% include "allele_table.jinja2" %}
             </div>
         </section>
     </div>
 </div>
 {% endblock body %}
+
+{% block scripts %}
+<script src="{{asset_root}}/js/recent_alleles.js"></script>
+{% endblock scripts %}

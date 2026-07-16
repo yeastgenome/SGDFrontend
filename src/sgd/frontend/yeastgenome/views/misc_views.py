@@ -222,7 +222,7 @@ def alleles_this_week(request):
         {
             'start': obj.get('start'),
             'end': obj.get('end'),
-            'alleles': obj.get('alleles', [])
+            'alleles_js': json.dumps(obj.get('alleles', []))
         },
         request=request)
 
