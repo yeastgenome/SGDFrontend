@@ -7,6 +7,7 @@ import S from 'string';
 const queryString = require('query-string');
 
 import SearchResult from '../components/search/search_result.jsx';
+import SearchLanding from '../components/search/search_landing.jsx';
 import SearchDownloadAnalyze from '../components/search/search_download_analyze.jsx';
 import SearchBreadcrumb from './search_breadcrumb.jsx';
 import FacetSelector from './facet_selector.jsx';
@@ -29,14 +30,16 @@ const CATS_SORTED_BY_ANNOTATION = [
 
 document.addEventListener('DOMContentLoaded', function () {
   const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-
-  if (isSafari) {
-    document.getElementById('search_sidebar').classList.add('safari');
+  const sidebar = document.getElementById('search_sidebar');
+  // sidebar is absent on the browse landing (empty query)
+  if (isSafari && sidebar) {
+    sidebar.classList.add('safari');
   }
 });
 
 document.addEventListener('DOMContentLoaded', function () {
   const sidebar = document.getElementById('search_sidebar');
+  if (!sidebar) return;
 
   sidebar.addEventListener('scroll', function() {
     if (sidebar.scrollTop > 0) {
@@ -51,6 +54,7 @@ window.addEventListener(
   'scroll',
   debounce(function () {
     const sidebar = document.getElementById('search_sidebar');
+    if (!sidebar) return;
     const stickyStart = sidebar.offsetTop;
     const isScrollingUp = window.scrollY < prevScrollY; // Check scroll direction
 
@@ -81,6 +85,11 @@ const Search = createReactClass({
   render() {
     if (this.props.apiError) {
       return <ErrorMessage />;
+    }
+    // With no query and no category selected, show the curated browse landing
+    // instead of the full "all results" list.
+    if (this._isLanding()) {
+      return <SearchLanding />;
     }
     return (
       <div className="row">
@@ -380,6 +389,14 @@ const Search = createReactClass({
   _isWrappedResults() {
     return (
       this.props.activeCategory === 'locus' && this.props.geneMode !== 'list'
+    );
+  },
+
+  // true when there is no query and no category selected -> show browse landing
+  _isLanding() {
+    return (
+      (this.props.query === '' || this.props.query == null) &&
+      !this.props.activeCategory
     );
   },
 
