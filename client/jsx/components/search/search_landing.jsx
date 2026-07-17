@@ -9,6 +9,7 @@ import AppSearchBar from '../../containers/app_search_bar.jsx';
 
 const SEARCH_URL = '/search';
 const RECENT_UPDATES_URL = '/recent_updates';
+const GENE_OF_DAY_URL = '/redirect_backend?param=gene_of_the_day';
 
 // Categories surfaced as large "Browse by Category" cards. Keys match the
 // ElasticSearch category keys returned in the search aggregations. Example
@@ -72,6 +73,20 @@ const SECONDARY_CATEGORIES = [
   'download',
 ];
 
+// Downloads/Datasets are grouped separately under a muted "Files & Datasets"
+// header, kept out of the main count-sorted "Other categories" list.
+const FILES_CATEGORIES = ['download', 'dataset'];
+
+// Rotating search-box placeholder suggestions for the landing hero.
+const ROTATING_PLACEHOLDERS = [
+  'Try HOG1',
+  'Try autophagy',
+  'Try sorbitol',
+  'Try CDC28',
+  'Try nuclear pore',
+  'Try GAL4',
+];
+
 const POPULAR_SEARCHES = ['HOG1', 'CDC28', 'autophagy', 'nuclear pore', 'histone'];
 
 const COMMON_TASKS = [
@@ -118,16 +133,50 @@ const SearchLanding = createReactClass({
       recentData: null,
       recentError: false,
       showSecondary: true,
+      placeholderIdx: 0,
+      geneOfDay: null,
     };
   },
 
   componentDidMount() {
     this._isMounted = true;
     this._fetchRecentUpdates();
+    this._fetchGeneOfDay();
+    // Rotate the search placeholder suggestions.
+    this._placeholderTimer = setInterval(() => {
+      if (this._isMounted) {
+        this.setState((s) => ({
+          placeholderIdx: (s.placeholderIdx + 1) % ROTATING_PLACEHOLDERS.length,
+        }));
+      }
+    }, 3000);
+    // "/" focuses the search box (unless the user is already typing in a field).
+    this._onGlobalKey = (e) => {
+      if (e.key !== '/' || e.metaKey || e.ctrlKey || e.altKey) return;
+      const tag = (e.target && e.target.tagName) || '';
+      if (
+        /^(input|textarea|select)$/i.test(tag) ||
+        (e.target && e.target.isContentEditable)
+      ) {
+        return;
+      }
+      const input = document.querySelector(
+        '.search-landing-hero-search input.react-typeahead-usertext'
+      );
+      if (input) {
+        e.preventDefault();
+        input.focus();
+      }
+    };
+    document.addEventListener('keydown', this._onGlobalKey);
   },
 
   componentWillUnmount() {
     this._isMounted = false;
+    if (this._placeholderTimer) clearInterval(this._placeholderTimer);
+    if (this._onGlobalKey) {
+      document.removeEventListener('keydown', this._onGlobalKey);
+    }
   },
 
   render() {
@@ -171,25 +220,43 @@ const SearchLanding = createReactClass({
           )}
         </p>
         <div className="search-landing-hero-search">
-          <AppSearchBar />
+          <AppSearchBar
+            placeholder={ROTATING_PLACEHOLDERS[this.state.placeholderIdx]}
+          />
         </div>
+        {this._renderGeneOfDay()}
       </div>
     );
   },
 
+  _renderGeneOfDay() {
+    const gene = this.state.geneOfDay;
+    if (!gene || !gene.display_name) return null;
+    return (
+      <p className="search-landing-gotd">
+        <span className="search-landing-gotd-label">Gene of the day:</span>{' '}
+        <a href={gene.link || `/locus/${gene.display_name}`}>
+          {gene.display_name}
+        </a>
+        {gene.headline ? ` — ${gene.headline}` : ''}
+      </p>
+    );
+  },
+
   _renderStatsBar() {
-    const total = this.props.total ? this.props.total.toLocaleString() : null;
-    const numCats = this._getNumCategories();
-    if (!total) return null;
+    const today = new Date().toLocaleDateString(undefined, {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
     return (
       <div className="search-landing-statsbar">
         <span className="search-landing-live">
           <span className="search-landing-dot" /> Live index
         </span>
         <span>
-          <strong>{total}</strong> total entries across{' '}
-          <strong>{numCats}</strong> categories — start typing to search or
-          browse below
+          SGD is up to date as of {today} — start typing to search or browse
+          below
         </span>
       </div>
     );
@@ -250,12 +317,34 @@ const SearchLanding = createReactClass({
     );
   },
 
+  _renderSecondaryItem(key, countMap) {
+    return (
+      <Link
+        to={this._getCategoryHref(key)}
+        className="search-landing-secondary-item"
+        key={`sec${key}`}
+      >
+        <span>
+          <span className={`search-cat ${key}`} />
+          {this._getCategoryName(key)}
+        </span>
+        <span>{countMap[key].toLocaleString()}</span>
+      </Link>
+    );
+  },
+
   _renderSecondary(countMap) {
     const primaryKeys = PRIMARY_CATEGORIES.map((c) => c.key);
+    const hasCount = (key) =>
+      primaryKeys.indexOf(key) < 0 && typeof countMap[key] === 'number';
+    const byCountDesc = (a, b) => countMap[b] - countMap[a];
+    // Main "Other categories", most to least, excluding Files & Datasets.
     const items = SECONDARY_CATEGORIES.filter(
-      (key) => primaryKeys.indexOf(key) < 0 && typeof countMap[key] === 'number'
-    ).sort((a, b) => countMap[b] - countMap[a]);
-    if (items.length === 0) return null;
+      (key) => hasCount(key) && FILES_CATEGORIES.indexOf(key) < 0
+    ).sort(byCountDesc);
+    // Downloads/Datasets shown separately under a muted header.
+    const fileItems = FILES_CATEGORIES.filter(hasCount).sort(byCountDesc);
+    if (items.length === 0 && fileItems.length === 0) return null;
     const _toggle = (e) => {
       e.preventDefault();
       this.setState({ showSecondary: !this.state.showSecondary });
@@ -270,24 +359,24 @@ const SearchLanding = createReactClass({
           />{' '}
           Other categories
           <span className="search-landing-secondary-note">
-            {items.length} more data types
+            {items.length + fileItems.length} more data types
           </span>
         </a>
         {this.state.showSecondary && (
-          <div className="search-landing-secondary-list">
-            {items.map((key) => (
-              <Link
-                to={this._getCategoryHref(key)}
-                className="search-landing-secondary-item"
-                key={`sec${key}`}
-              >
-                <span>
-                  <span className={`search-cat ${key}`} />
-                  {this._getCategoryName(key)}
-                </span>
-                <span>{countMap[key].toLocaleString()}</span>
-              </Link>
-            ))}
+          <div>
+            <div className="search-landing-secondary-list">
+              {items.map((key) => this._renderSecondaryItem(key, countMap))}
+            </div>
+            {fileItems.length > 0 && (
+              <div className="search-landing-files">
+                <h4 className="search-landing-files-header">Files &amp; Datasets</h4>
+                <div className="search-landing-secondary-list search-landing-files-list">
+                  {fileItems.map((key) =>
+                    this._renderSecondaryItem(key, countMap)
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -439,6 +528,25 @@ const SearchLanding = createReactClass({
       })
       .catch(() => {
         if (this._isMounted) this.setState({ recentError: true });
+      });
+  },
+
+  _fetchGeneOfDay() {
+    fetch(GENE_OF_DAY_URL)
+      .then((response) => {
+        if (response.status >= 400) {
+          throw new Error('API error.');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        // Endpoint returns {} on error/empty; only render when we got a gene.
+        if (this._isMounted && data && data.display_name) {
+          this.setState({ geneOfDay: data });
+        }
+      })
+      .catch(() => {
+        // Leave geneOfDay null -> the line simply isn't rendered.
       });
   },
 

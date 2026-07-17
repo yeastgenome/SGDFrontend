@@ -201,6 +201,9 @@ $landing-radius: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  // Reserve two lines so titles that wrap (e.g. "Biological Processes") don't
+  // make the card grid look uneven against single-line titles.
+  min-height: 2.6rem;
 
   &:hover {
     text-decoration: none;
@@ -286,6 +289,49 @@ $landing-radius: 10px;
 
   &:hover {
     background: #f0f4fa;
+  }
+}
+
+// ---- Files & Datasets (muted) --------------------------------------------
+.search-landing-files {
+  margin-top: 1.1rem;
+}
+
+.search-landing-files-header {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: $landing-muted;
+  margin-bottom: 0.35rem;
+}
+
+.search-landing-files-list {
+  .search-landing-secondary-item {
+    color: $landing-muted !important;
+  }
+  // Mute the category dots (e.g. the large red Downloads dot).
+  .search-cat {
+    filter: grayscale(1);
+    opacity: 0.55;
+  }
+}
+
+// ---- Gene of the day -----------------------------------------------------
+.search-landing-gotd {
+  text-align: center;
+  margin: 0.9rem 0 0;
+  color: $landing-muted;
+  font-size: 0.9rem;
+
+  .search-landing-gotd-label {
+    font-weight: 600;
+    color: #555;
+  }
+
+  a {
+    color: $landing-accent;
+    font-weight: 600;
   }
 }
 
