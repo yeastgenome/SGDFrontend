@@ -36,6 +36,59 @@
     }
   }
 
+  // ---- Key properties table ----
+  .chem2-properties {
+    margin-top: 1rem;
+  }
+  .chem2-properties-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #6b6b6b;
+    margin-bottom: 0.4rem;
+  }
+  .chem2-properties-table {
+    width: 100%;
+    max-width: 40rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+
+    th {
+      text-align: left;
+      font-weight: 600;
+      color: #555;
+      padding: 0.2rem 0.75rem 0.2rem 0;
+      white-space: nowrap;
+      vertical-align: top;
+      width: 1%;
+    }
+    td {
+      padding: 0.2rem 0;
+      word-break: break-all;
+    }
+  }
+  .chem2-mono {
+    font-family: Menlo, Consolas, monospace;
+    font-size: 0.82rem;
+  }
+  .chem2-copy {
+    font-size: 0.72rem;
+    padding: 0.05rem 0.4rem;
+    margin-left: 0.35rem;
+    border: 1px solid #cfcfcf;
+    border-radius: 4px;
+    background: #f5f5f7;
+    cursor: pointer;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+  .chem2-properties-note {
+    font-size: 0.75rem;
+    color: #999;
+    margin: 0.25rem 0 0;
+  }
+
   // ---- Phenotype summary bar ----
   .chem2-summary {
     background: #f7f7f9;

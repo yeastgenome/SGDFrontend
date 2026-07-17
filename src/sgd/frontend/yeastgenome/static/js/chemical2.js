@@ -10,6 +10,7 @@ var _chem2_facet_state = {};
 $(document).ready(function () {
     fillSynonyms();
     fillResources();
+    fetchProperties();
 
     $.getJSON('/redirect_backend?param=chemical/' + chemical['id'] + '/phenotype_details', function (data) {
         buildFacetRows(data);
@@ -73,6 +74,76 @@ function fillSynonyms() {
         names.push(name);
     }
     el.innerHTML = names.map(escapeHtml).join('; ');
+}
+
+// ---- Key properties (from backend /properties, which pulls PubChem/ChEBI) --
+function fetchProperties() {
+    var el = document.getElementById('chem2-properties');
+    if (!el) return;
+    $.getJSON('/redirect_backend?param=chemical/' + chemical['id'] + '/properties', function (p) {
+        renderProperties(p);
+    }).fail(function () {
+        el.innerHTML = '';
+    });
+}
+
+function propRow(label, valueHtml) {
+    return '<tr><th>' + label + '</th><td>' + valueHtml + '</td></tr>';
+}
+
+function copyableValue(text) {
+    return '<span class="chem2-mono">' + escapeHtml(text) + '</span>' +
+        ' <button type="button" class="chem2-copy" data-copy="' + escapeAttr(text) + '">Copy</button>';
+}
+
+function renderProperties(p) {
+    var el = document.getElementById('chem2-properties');
+    if (!el || !p) { if (el) el.innerHTML = ''; return; }
+    var rows = '';
+    if (p.formula) rows += propRow('Formula', escapeHtml(p.formula));
+    if (p.molecular_weight) rows += propRow('Molecular weight', escapeHtml(p.molecular_weight) + ' g/mol');
+    if (p.pubchem_cid) {
+        rows += propRow('PubChem CID',
+            '<a href="https://pubchem.ncbi.nlm.nih.gov/compound/' + encodeURIComponent(p.pubchem_cid) + '" target="_blank">' + escapeHtml(p.pubchem_cid) + '</a>');
+    }
+    if (p.inchikey) rows += propRow('InChIKey', copyableValue(p.inchikey));
+    if (p.smiles) rows += propRow('SMILES', copyableValue(p.smiles));
+    if (p.inchi) rows += propRow('InChI', copyableValue(p.inchi));
+
+    if (!rows) { el.innerHTML = ''; return; }
+
+    var html = '<h4 class="chem2-properties-title">Key properties</h4>';
+    html += '<table class="chem2-properties-table">' + rows + '</table>';
+    if (p.sdf_url) {
+        html += '<div class="chem2-properties-actions">' +
+            '<a class="small button secondary" href="' + p.sdf_url + '" target="_blank"><i class="fa fa-download"></i> Download (.sdf)</a>' +
+            '</div>';
+    }
+    html += '<p class="chem2-properties-note">Properties from PubChem / ChEBI.</p>';
+    el.innerHTML = html;
+
+    $(el).off('click', '.chem2-copy').on('click', '.chem2-copy', function () {
+        var text = this.getAttribute('data-copy');
+        var btn = this;
+        var done = function () { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy'; }, 1200); };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(done, function () { fallbackCopy(text); done(); });
+        } else {
+            fallbackCopy(text);
+            done();
+        }
+    });
+}
+
+function fallbackCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) { /* ignore */ }
+    document.body.removeChild(ta);
 }
 
 function fillResources() {
