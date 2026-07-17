@@ -8,6 +8,7 @@ var _chem2_facet_rows = [];
 var _chem2_facet_state = {};
 
 $(document).ready(function () {
+    fillDefinition();
     fillSynonyms();
     fillResources();
     fetchProperties();
@@ -61,6 +62,37 @@ function topN(counts, n) {
 }
 
 // ---- Overview ------------------------------------------------------------
+// ChEBI definitions contain simple inline markup (e.g. <em>, <sub>). Render
+// only a whitelist of inline tags and drop everything else (incl. attributes),
+// so the markup shows correctly without an HTML-injection risk.
+function sanitizeInlineHtml(html) {
+    var allowed = /^(EM|I|B|STRONG|SMALL|SUB|SUP|BR)$/;
+    var root = document.createElement('div');
+    root.innerHTML = html;
+    (function clean(node) {
+        var kids = Array.prototype.slice.call(node.childNodes);
+        kids.forEach(function (child) {
+            if (child.nodeType === 1) {
+                if (!allowed.test(child.tagName)) {
+                    node.replaceChild(document.createTextNode(child.textContent), child);
+                } else {
+                    while (child.attributes.length) {
+                        child.removeAttribute(child.attributes[0].name);
+                    }
+                    clean(child);
+                }
+            }
+        });
+    })(root);
+    return root.innerHTML;
+}
+
+function fillDefinition() {
+    var el = document.getElementById('chem2-definition');
+    if (!el || !chemical['definition']) return;
+    el.innerHTML = sanitizeInlineHtml(chemical['definition']);
+}
+
 function fillSynonyms() {
     var el = document.getElementById('chem2-synonyms');
     if (!el || !chemical['synonyms']) return;
@@ -94,7 +126,8 @@ function propRow(label, valueHtml) {
 
 function copyableValue(text) {
     return '<span class="chem2-mono">' + escapeHtml(text) + '</span>' +
-        ' <button type="button" class="chem2-copy" data-copy="' + escapeAttr(text) + '">Copy</button>';
+        ' <button type="button" class="chem2-copy" data-copy="' + escapeAttr(text) + '">' +
+        '<i class="fa fa-clipboard"></i> Copy</button>';
 }
 
 function renderProperties(p) {
@@ -126,7 +159,10 @@ function renderProperties(p) {
     $(el).off('click', '.chem2-copy').on('click', '.chem2-copy', function () {
         var text = this.getAttribute('data-copy');
         var btn = this;
-        var done = function () { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy'; }, 1200); };
+        var done = function () {
+            btn.innerHTML = '<i class="fa fa-check"></i> Copied';
+            setTimeout(function () { btn.innerHTML = '<i class="fa fa-clipboard"></i> Copy'; }, 1200);
+        };
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(text).then(done, function () { fallbackCopy(text); done(); });
         } else {
