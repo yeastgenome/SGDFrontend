@@ -195,18 +195,25 @@ def phenotypes_this_week(request):
 
 @view_config(route_name='gos_this_week')
 def gos_this_week(request):
-    days = _recent_days_param(request, 40)
+    days = _recent_days_param(request, 50)
     backend_url = os.environ['BACKEND_URL'] + '/go/this_week?days=' + days
     backend_response = requests.get(backend_url)
     if backend_response.status_code != 200:
         return not_found(request)
     obj = json.loads(backend_response.text)
+    # Show only manually curated GO annotations. Computational (and any
+    # high-throughput) annotations are excluded here to keep the payload small;
+    # they may be surfaced in a separate table later.
+    go_annotations = [
+        a for a in obj.get('go_annotations', [])
+        if a.get('annotation_type') == 'manually curated'
+    ]
     return render_to_response(
         TEMPLATE_ROOT + 'gos_this_week.jinja2',
         {
             'start': obj.get('start'),
             'end': obj.get('end'),
-            'go_annotations_js': json.dumps(obj.get('go_annotations', []))
+            'go_annotations_js': json.dumps(go_annotations)
         },
         request=request)
 
