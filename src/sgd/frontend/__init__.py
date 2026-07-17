@@ -186,6 +186,10 @@ def prep_views(chosen_frontend, config):
     
     # recently added GO annotations page ('recent' must precede {identifier})
     config.add_route('gos_this_week', '/go/recent')
+
+    # landing "What's New" summary: proxies backend recent_updates but overrides
+    # the GO count to manually curated only (see misc_views.recent_updates)
+    config.add_route('recent_updates', '/recent_updates')
     config.add_route('go', '/go/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('go', request)(getattr(chosen_frontend, 'go')(biocon_repr=request.matchdict['identifier'].lower())),
                     renderer=chosen_frontend.get_renderer('go'),

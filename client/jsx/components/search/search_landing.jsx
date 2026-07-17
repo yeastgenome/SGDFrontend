@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import AppSearchBar from '../../containers/app_search_bar.jsx';
 
 const SEARCH_URL = '/search';
-const RECENT_UPDATES_URL = '/redirect_backend?param=recent_updates';
+const RECENT_UPDATES_URL = '/recent_updates';
 
 // Categories surfaced as large "Browse by Category" cards. Keys match the
 // ElasticSearch category keys returned in the search aggregations. Example

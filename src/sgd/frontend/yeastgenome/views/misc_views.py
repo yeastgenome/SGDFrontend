@@ -12,6 +12,7 @@ import datetime
 import json
 import requests
 import os
+import time
 
 SEARCH_URL = os.environ['BACKEND_URL'] + '/get_search_results'
 TEMPLATE_ROOT = 'src:sgd/frontend/yeastgenome/static/templates/'
@@ -193,9 +194,37 @@ def phenotypes_this_week(request):
         },
         request=request)
 
+# GO "recently added" surfaces (the /go/recent page and the landing page's
+# "What's New" count) show only manually curated annotations over this window.
+MANUAL_CURATED = 'manually curated'
+RECENT_GO_DAYS = 50
+
+# Cache the landing page's manually-curated GO count so the heavy go/this_week
+# fetch runs at most once per hour instead of on every landing-page load.
+_recent_go_count_cache = {'count': None, 'ts': 0.0}
+_RECENT_GO_COUNT_TTL = 3600  # seconds
+
+
+def _manually_curated_go_count():
+    now = time.time()
+    cache = _recent_go_count_cache
+    if cache['count'] is not None and (now - cache['ts']) < _RECENT_GO_COUNT_TTL:
+        return cache['count']
+    try:
+        url = os.environ['BACKEND_URL'] + '/go/this_week?days=' + str(RECENT_GO_DAYS)
+        annos = json.loads(requests.get(url).text).get('go_annotations', [])
+        count = sum(1 for a in annos if a.get('annotation_type') == MANUAL_CURATED)
+    except Exception:
+        # On failure, keep serving the last known count (if any).
+        return cache['count']
+    cache['count'] = count
+    cache['ts'] = now
+    return count
+
+
 @view_config(route_name='gos_this_week')
 def gos_this_week(request):
-    days = _recent_days_param(request, 50)
+    days = _recent_days_param(request, RECENT_GO_DAYS)
     backend_url = os.environ['BACKEND_URL'] + '/go/this_week?days=' + days
     backend_response = requests.get(backend_url)
     if backend_response.status_code != 200:
@@ -206,7 +235,7 @@ def gos_this_week(request):
     # they may be surfaced in a separate table later.
     go_annotations = [
         a for a in obj.get('go_annotations', [])
-        if a.get('annotation_type') == 'manually curated'
+        if a.get('annotation_type') == MANUAL_CURATED
     ]
     return render_to_response(
         TEMPLATE_ROOT + 'gos_this_week.jinja2',
@@ -216,6 +245,24 @@ def gos_this_week(request):
             'go_annotations_js': json.dumps(go_annotations)
         },
         request=request)
+
+
+@view_config(route_name='recent_updates')
+def recent_updates(request):
+    # Proxy the backend recent-updates summary, but override the GO count so the
+    # landing "What's New" panel matches /go/recent (manually curated only, over
+    # RECENT_GO_DAYS). The backend count includes all annotation types.
+    backend_response = requests.get(os.environ['BACKEND_URL'] + '/recent_updates')
+    if backend_response.status_code != 200:
+        return not_found(request)
+    obj = json.loads(backend_response.text)
+    mc_count = _manually_curated_go_count()
+    if mc_count is not None:
+        for c in obj.get('counts', []):
+            if c.get('category') == 'go':
+                c['count'] = mc_count
+                c['label'] = 'new GO annotations (last %d days)' % RECENT_GO_DAYS
+    return Response(body=json.dumps(obj), content_type='application/json', charset='UTF-8')
 
 @view_config(route_name='alleles_this_week')
 def alleles_this_week(request):
