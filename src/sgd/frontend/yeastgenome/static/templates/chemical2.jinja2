@@ -21,6 +21,7 @@
             add_navbar_element('Overview', 'overview');
             {% if chemical.phenotype|length > 0 %}
                 add_navbar_element('Phenotype Annotations', 'phenotype');
+                add_navbar_element('GO Process Enrichment', 'enrichment');
             {% endif %}
             {% if chemical.go|length > 0 %}
                 add_navbar_element('Gene Ontology Annotations', 'go');
@@ -115,6 +116,24 @@
                 <!-- Includes phenotype_table2 (adds a numeric Conc. column) -->
                 {% set table_id = "phenotype_table" %}
                 {% include "phenotype_table2.jinja2" %}
+            </div>
+        </section>
+
+        <!-- GO Process Enrichment (of the phenotype genes)
+        ================================================== -->
+        <section id="enrichment" data-magellan-destination="enrichment">
+            <div class="page-header">
+                <h2>GO Process Enrichment
+                    <a href="#" data-dropdown="enrichment_info"><i class="fa fa-info-circle"></i></a>
+                    <p id="enrichment_info" class="f-dropdown content medium" data-dropdown-content>
+                        Enriched GO biological process terms among the genes that have a phenotype annotation with this
+                        chemical, with the number of matching genes and a p-value.
+                    </p>
+                    <span id="enrichment_table_header" class="round secondary label"></span>
+                </h2>
+                <hr />
+                {% set table_id = "enrichment_table" %}
+                {% include "enrichment_table.jinja2" %}
             </div>
         </section>
         {% endif %}

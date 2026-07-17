@@ -22,6 +22,7 @@ $(document).ready(function () {
             "<a href='" + chemical['link'] + "' class='gene_name'>" + chemical['display_name'] + "</a> Genes", true);
         create_download_button('phenotype_table_download', table, chemical['display_name'] + '_phenotype_annotations');
         setupExtraDownloads(data);
+        loadGoEnrichment(data);
     });
 
     $.getJSON('/redirect_backend?param=chemical/' + chemical['id'] + '/go_details', function (data) {
@@ -374,6 +375,21 @@ function setupExtraDownloads(data) {
     document.getElementById('phenotype_download_tsv').onclick = function () { triggerDownload(toTSV(rows), 'text/tab-separated-values', base + '.tsv'); };
     document.getElementById('phenotype_download_json').onclick = function () { triggerDownload(JSON.stringify(rows, null, 2), 'application/json', base + '.json'); };
     document.getElementById('phenotype_api_link').href = '/redirect_backend?param=chemical/' + chemical['id'] + '/phenotype_details';
+}
+
+// ---- GO process enrichment of the phenotype genes ------------------------
+function loadGoEnrichment(phenoData) {
+    var uniqGenes = {};
+    for (var i = 0; i < phenoData.length; i++) {
+        uniqGenes[phenoData[i]['locus']['display_name']] = true;
+    }
+    var geneCount = Object.keys(uniqGenes).length;
+    $.getJSON('/redirect_backend?param=chemical/' + chemical['id'] + '/go_enrichment', function (data) {
+        var t = set_up_enrichment_table(data || [], geneCount);
+        create_download_button('enrichment_table_download', t, chemical['display_name'] + '_go_process_enrichment');
+    }).fail(function () {
+        set_up_enrichment_table([], geneCount);
+    });
 }
 
 // ---- Shared Chemicals network (Cytoscape) --------------------------------
