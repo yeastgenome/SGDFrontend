@@ -62,4 +62,8 @@ $(document).ready(function() {
     // scrolls with it, rather than forcing a fixed width that would push the
     // page wider on narrow screens.
     $("#annotations > hr").prependTo("#recent_go_table_wrapper .table-responsive");
+
+    // Summary bar: totals, top genes, top GO terms, and aspect breakdown
+    // (shared helper in local.js).
+    build_go_summary("recent_go_summary", data);
 });
