@@ -289,76 +289,66 @@ function triggerDownload(text, mime, filename) {
 function setupExtraDownloads(data) {
     var base = chemical['display_name'] + '_phenotype_annotations';
     var rows = phenoExportRows(data);
-    var tsvBtn = document.getElementById('phenotype_download_tsv');
-    var jsonBtn = document.getElementById('phenotype_download_json');
-    var apiBtn = document.getElementById('phenotype_api_link');
-    if (tsvBtn) tsvBtn.onclick = function () { triggerDownload(toTSV(rows), 'text/tab-separated-values', base + '.tsv'); };
-    if (jsonBtn) jsonBtn.onclick = function () { triggerDownload(JSON.stringify(rows, null, 2), 'application/json', base + '.json'); };
-    if (apiBtn) apiBtn.href = '/redirect_backend?param=chemical/' + chemical['id'] + '/phenotype_details';
+    // Append the extra download/API buttons into the existing Download/Analyze
+    // button bar so they all sit on one row.
+    var bar = document.getElementById('phenotype_table_buttons');
+    if (!bar) return;
+    var ul = document.createElement('ul');
+    ul.className = 'button-group radius';
+    ul.innerHTML =
+        '<li><a id="phenotype_download_tsv" class="small button secondary"><i class="fa fa-download"></i> Download (.tsv)</a></li>' +
+        '<li><a id="phenotype_download_json" class="small button secondary"><i class="fa fa-download"></i> Download (.json)</a></li>' +
+        '<li><a id="phenotype_api_link" class="small button secondary" target="_blank"><i class="fa fa-code"></i> API (JSON)</a></li>';
+    bar.appendChild(ul);
+    document.getElementById('phenotype_download_tsv').onclick = function () { triggerDownload(toTSV(rows), 'text/tab-separated-values', base + '.tsv'); };
+    document.getElementById('phenotype_download_json').onclick = function () { triggerDownload(JSON.stringify(rows, null, 2), 'application/json', base + '.json'); };
+    document.getElementById('phenotype_api_link').href = '/redirect_backend?param=chemical/' + chemical['id'] + '/phenotype_details';
 }
 
 // ---- Shared Chemicals network (Cytoscape) --------------------------------
 function buildNetwork(data) {
-    var colors = { FOCUS: '#000000', CHEMICAL: '#7d0df3', PHENOTYPE: '#1f77b4', GO: '#2ca02c', COMPLEX: '#E6AB03' };
-    var nodeById = {};
-    var elements = [];
-    data.nodes.forEach(function (n) {
-        nodeById[n.id] = n;
-        elements.push({ data: { id: n.id, label: n.name, category: n.category, href: n.href, color: colors[n.category] || '#888888' } });
-    });
+    // Render the graph with the shared views.network renderer (Cytoscape 2.3.4,
+    // exposed globally by application.js) — the same path the original chemical
+    // page uses, so click-to-navigate and category filters work as expected.
+    var has_go = 0, has_complex = 0, has_pheno = 0;
+    for (var i = 0; i < data['nodes'].length; i++) {
+        var cat = data['nodes'][i]['category'];
+        if (cat === 'GO') has_go++;
+        else if (cat === 'COMPLEX') has_complex++;
+        else if (cat === 'PHENOTYPE') has_pheno++;
+    }
+    var colors = { 'FOCUS': 'black', 'CHEMICAL': '#7d0df3' };
+    var filters = { ' All': function (d) { return true; } };
+    var categoryCount = 0;
+    if (has_go > 0) {
+        colors['GO'] = '#2ca02c';
+        filters[' GO Terms'] = function (d) { return ['FOCUS', 'GO', 'CHEMICAL'].includes(d.category); };
+        categoryCount++;
+    }
+    if (has_pheno > 0) {
+        colors['PHENOTYPE'] = '#1f77b4';
+        filters[' Phenotypes'] = function (d) { return ['FOCUS', 'PHENOTYPE', 'CHEMICAL'].includes(d.category); };
+        categoryCount++;
+    }
+    if (has_complex > 0) {
+        colors['COMPLEX'] = '#E6AB03';
+        filters[' Complexes'] = function (d) { return ['FOCUS', 'COMPLEX', 'CHEMICAL'].includes(d.category); };
+        categoryCount++;
+    }
+    if (categoryCount < 2) filters = {};
+    views.network.render(data, colors, 'j-chemical-network2', filters, true);
 
-    // adjacency for shared-phenotype counts
+    // Build the shared-phenotype table + toggle from the same data.
     var focusId = null;
-    data.nodes.forEach(function (n) { if (n.category === 'FOCUS') focusId = n.id; });
+    data['nodes'].forEach(function (n) { if (n.category === 'FOCUS') focusId = n.id; });
     var neighbors = {};
-    data.edges.forEach(function (e) {
+    data['edges'].forEach(function (e) {
         (neighbors[e.source] = neighbors[e.source] || {})[e.target] = true;
         (neighbors[e.target] = neighbors[e.target] || {})[e.source] = true;
-        elements.push({ data: { id: e.source + '__' + e.target, source: e.source, target: e.target } });
     });
     var focusNbrs = neighbors[focusId] || {};
-
-    var cy = cytoscape({
-        container: document.getElementById('j-chemical-network2'),
-        elements: elements,
-        style: [
-            { selector: 'node', style: { 'background-color': 'data(color)', 'label': 'data(label)', 'font-size': 10, 'width': 14, 'height': 14, 'text-wrap': 'wrap', 'text-max-width': 130, 'color': '#222', 'text-valign': 'center', 'text-halign': 'right', 'text-margin-x': 3 } },
-            { selector: 'node[category = "FOCUS"]', style: { 'width': 20, 'height': 20, 'font-weight': 'bold' } },
-            { selector: 'edge', style: { 'width': 1.5, 'line-color': '#bbbbbb', 'curve-style': 'bezier' } },
-            { selector: '.chem2-hover', style: { 'line-color': '#7d0df3', 'width': 3 } }
-        ],
-        layout: { name: 'cose', animate: false, padding: 30, nodeRepulsion: 400000, idealEdgeLength: 90 }
-    });
-
-    var hint = document.createElement('div');
-    hint.className = 'chem2-network-hint';
-    hint.innerHTML = '&nbsp;';
-    document.getElementById('j-chemical-network2').appendChild(hint);
-
-    cy.on('mouseover', 'node[category = "CHEMICAL"]', function (evt) {
-        var id = evt.target.id();
-        var shared = sharedCount(neighbors[id] || {}, focusNbrs);
-        hint.textContent = evt.target.data('label') + ' shares ' + shared + ' phenotype' + (shared === 1 ? '' : 's') + ' with ' + chemical['display_name'];
-        evt.target.connectedEdges().addClass('chem2-hover');
-    });
-    cy.on('mouseout', 'node', function (evt) {
-        hint.innerHTML = '&nbsp;';
-        evt.target.connectedEdges().removeClass('chem2-hover');
-    });
-    cy.on('tap', 'node', function (evt) {
-        var href = evt.target.data('href');
-        if (href) window.location.href = href;
-    });
-
     buildNetworkTable(data, neighbors, focusNbrs);
     setupNetworkToggle();
-    window._chem2_cy = cy;
-}
-
-function sharedCount(aNbrs, bNbrs) {
-    var c = 0;
-    for (var k in aNbrs) { if (bNbrs[k]) c++; }
-    return c;
 }
 
 function buildNetworkTable(data, neighbors, focusNbrs) {
