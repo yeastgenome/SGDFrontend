@@ -215,6 +215,12 @@ def prep_views(chosen_frontend, config):
                     renderer=chosen_frontend.get_renderer('chemical'),
                     route_name='chemical')
 
+    # Redesigned chemical page (Tier 1), reuses the same backend chemical data.
+    config.add_route('chemical2', '/chemical2/{identifier}')
+    config.add_view(lambda request: chosen_frontend.response_wrapper('chemical2', request)(getattr(chosen_frontend, 'chemical2')(chemical_repr=request.matchdict['identifier'].lower())),
+                    renderer=chosen_frontend.get_renderer('chemical2'),
+                    route_name='chemical2')
+
     config.add_route('domain', '/domain/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('domain', request)(getattr(chosen_frontend, 'domain')(domain_repr=request.matchdict['identifier'].lower())),
                     renderer=chosen_frontend.get_renderer('domain'),

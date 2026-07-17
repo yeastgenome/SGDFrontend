@@ -1,0 +1,136 @@
+// Redesigned chemical page (/chemical2). Scoped under .chemical2-page.
+
+.chemical2-page {
+  // Sticky left-nav tabs so Shared Chemicals / Resources stay reachable.
+  .magellan-target {
+    position: sticky;
+    top: 0.5rem;
+  }
+
+  .chem2-definition {
+    font-size: 1.05rem;
+    line-height: 1.5;
+    color: #333;
+    margin: 0.75rem 0 1rem;
+    max-width: 60rem;
+  }
+
+  .chem2-overview-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: flex-start;
+  }
+  .chem2-overview-facts {
+    flex: 1 1 320px;
+    min-width: 260px;
+  }
+  .chem2-overview-structure {
+    flex: 0 0 auto;
+
+    img {
+      border: 1px solid #e6e3df;
+      border-radius: 6px;
+      background: #fff;
+      padding: 4px;
+    }
+  }
+
+  // ---- Phenotype summary bar ----
+  .chem2-summary {
+    background: #f7f7f9;
+    border: 1px solid #e6e3df;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.85rem;
+  }
+  .chem2-summary-stats {
+    margin-bottom: 0.4rem;
+
+    .chem2-summary-stat {
+      margin-right: 1.25rem;
+      font-size: 0.95rem;
+      b { font-size: 1.1rem; color: #7a5ea8; }
+    }
+  }
+  .chem2-summary-block {
+    margin-top: 0.3rem;
+    font-size: 0.9rem;
+  }
+  .chem2-summary-label {
+    font-weight: 600;
+    margin-right: 0.35rem;
+    color: #555;
+  }
+  .chem2-chip {
+    display: inline-block;
+    background: #eef0f5;
+    border-radius: 12px;
+    padding: 0.1rem 0.55rem;
+    margin: 0.1rem 0.15rem;
+    font-size: 0.85rem;
+  }
+
+  // ---- Facet filters ----
+  .chem2-facets {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.75rem;
+    margin-bottom: 0.85rem;
+  }
+  .chem2-facet {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.8rem;
+    color: #555;
+    margin: 0;
+
+    span { margin-bottom: 0.15rem; font-weight: 600; }
+    select { margin: 0; max-width: 15rem; }
+  }
+  .chem2-facet-clear {
+    font-size: 0.85rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .chem2-downloads {
+    margin-top: 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  // ---- Network ----
+  .chem2-network-toolbar {
+    margin-bottom: 0.5rem;
+  }
+  .chem2-network {
+    position: relative;
+    width: 100%;
+    height: 520px;
+    border: 1px solid #e6e3df;
+    border-radius: 8px;
+  }
+  .chem2-network-hint {
+    position: absolute;
+    left: 0.5rem;
+    bottom: 0.5rem;
+    font-size: 0.85rem;
+    color: #555;
+    background: rgba(255, 255, 255, 0.85);
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    pointer-events: none;
+  }
+  .chem2-network-table {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  // Mobile: let wide tables scroll instead of breaking the layout.
+  @media screen and (max-width: 40em) {
+    .chem2-overview-grid { flex-direction: column; }
+    .dataTables_wrapper { overflow-x: auto; }
+  }
+}
