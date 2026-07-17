@@ -1,0 +1,37 @@
+// Shared phenotype/annotation summary bar (used by the chemical2 page and the
+// "Phenotypes Recently Added to SGD" page). Rendered by build_phenotype_summary
+// in local.js. Global (not page-scoped) so any annotation table can reuse it.
+
+.chem2-summary {
+  background: #f7f7f9;
+  border: 1px solid #e6e3df;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.85rem;
+}
+.chem2-summary-stats {
+  margin-bottom: 0.4rem;
+
+  .chem2-summary-stat {
+    margin-right: 1.25rem;
+    font-size: 0.95rem;
+    b { font-size: 1.1rem; color: #7a5ea8; }
+  }
+}
+.chem2-summary-block {
+  margin-top: 0.3rem;
+  font-size: 0.9rem;
+}
+.chem2-summary-label {
+  font-weight: 600;
+  margin-right: 0.35rem;
+  color: #555;
+}
+.chem2-chip {
+  display: inline-block;
+  background: #eef0f5;
+  border-radius: 12px;
+  padding: 0.1rem 0.55rem;
+  margin: 0.1rem 0.15rem;
+  font-size: 0.85rem;
+}

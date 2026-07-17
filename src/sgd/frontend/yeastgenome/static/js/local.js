@@ -628,6 +628,60 @@ function create_enrichment_table(table_id, target_table, init_data) {
     return enrichment_table;
 }
 
+// Render a summary bar for a set of phenotype annotations into container_id:
+// totals (annotations / phenotypes / genes), top genes, top phenotypes, and
+// optionally an experiment-type breakdown. Shared by the chemical2 page and the
+// "Phenotypes Recently Added to SGD" page (styles in _annotation_summary.scss).
+function build_phenotype_summary(container_id, data, show_experiment_type) {
+    var el = document.getElementById(container_id);
+    if (!el || !data) return;
+
+    var esc = function(s) {
+        return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    };
+    var top_n = function(counts, n) {
+        return Object.keys(counts)
+            .map(function(k) { return [k, counts[k]]; })
+            .sort(function(a, b) { return b[1] - a[1] || a[0].localeCompare(b[0]); })
+            .slice(0, n);
+    };
+    var chip = function(label) { return '<span class="chem2-chip">' + label + '</span>'; };
+
+    var geneCounts = {}, phenoCounts = {}, phenoIds = {}, expCounts = {};
+    for (var i = 0; i < data.length; i++) {
+        var g = data[i]['locus'] ? data[i]['locus']['display_name'] : null;
+        var p = data[i]['phenotype'] ? data[i]['phenotype']['display_name'] : null;
+        if (g) geneCounts[g] = (geneCounts[g] || 0) + 1;
+        if (p) phenoCounts[p] = (phenoCounts[p] || 0) + 1;
+        if (data[i]['phenotype']) phenoIds[data[i]['phenotype']['id']] = true;
+        if (show_experiment_type && data[i]['experiment']) {
+            var cat = data[i]['experiment']['category'] || 'unspecified';
+            expCounts[cat] = (expCounts[cat] || 0) + 1;
+        }
+    }
+    var total = data.length;
+    if (total === 0) { el.innerHTML = ''; return; }
+
+    var html = '';
+    html += '<div class="chem2-summary-stats">';
+    html += '<span class="chem2-summary-stat"><b>' + total + '</b> annotations</span>';
+    html += '<span class="chem2-summary-stat"><b>' + Object.keys(phenoIds).length + '</b> phenotypes</span>';
+    html += '<span class="chem2-summary-stat"><b>' + Object.keys(geneCounts).length + '</b> genes</span>';
+    html += '</div>';
+    html += '<div class="chem2-summary-block"><span class="chem2-summary-label">Top genes:</span> ' +
+        top_n(geneCounts, 5).map(function(x) { return chip(esc(x[0]) + ' (' + x[1] + ')'); }).join(' ') + '</div>';
+    html += '<div class="chem2-summary-block"><span class="chem2-summary-label">Top phenotypes:</span> ' +
+        top_n(phenoCounts, 3).map(function(x) { return chip(esc(x[0]) + ' (' + Math.round(100 * x[1] / total) + '%)'); }).join(' ') + '</div>';
+    if (show_experiment_type) {
+        var exps = top_n(expCounts, 10);
+        if (exps.length) {
+            html += '<div class="chem2-summary-block"><span class="chem2-summary-label">Experiment type:</span> ' +
+                exps.map(function(x) { return chip(esc(x[0]) + ' (' + x[1] + ')'); }).join(' ') + '</div>';
+        }
+    }
+    el.innerHTML = html;
+}
+
 function set_up_header(table_id, header_count, header_singular, header_plural, subheader_count, subheader_singular, subheader_plural) {
     var header_label = header_plural;
     if(header_count == 1) {

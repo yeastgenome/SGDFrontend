@@ -54,13 +54,6 @@ function escapeHtml(s) {
 function escapeAttr(s) {
     return escapeHtml(s).replace(/"/g, '&quot;');
 }
-function topN(counts, n) {
-    return Object.keys(counts)
-        .map(function (k) { return [k, counts[k]]; })
-        .sort(function (a, b) { return b[1] - a[1] || a[0].localeCompare(b[0]); })
-        .slice(0, n);
-}
-
 // ---- Overview ------------------------------------------------------------
 // ChEBI definitions contain simple inline markup (e.g. <em>, <sub>). Render
 // only a whitelist of inline tags and drop everything else (incl. attributes),
@@ -258,33 +251,9 @@ function create_phenotype_table(data) {
     return create_table('phenotype_table', options);
 }
 
-// ---- Summary bar ---------------------------------------------------------
+// ---- Summary bar (shared helper in local.js) -----------------------------
 function buildSummary(data) {
-    var el = document.getElementById('phenotype_summary');
-    if (!el) return;
-    var geneCounts = {}, phenoCounts = {}, phenoIds = {};
-    for (var i = 0; i < data.length; i++) {
-        var g = data[i]['locus']['display_name'];
-        var p = data[i]['phenotype']['display_name'];
-        geneCounts[g] = (geneCounts[g] || 0) + 1;
-        phenoCounts[p] = (phenoCounts[p] || 0) + 1;
-        phenoIds[data[i]['phenotype']['id']] = true;
-    }
-    var total = data.length;
-    var topGenes = topN(geneCounts, 5);
-    var topPhenos = topN(phenoCounts, 3);
-
-    var html = '';
-    html += '<div class="chem2-summary-stats">';
-    html += '<span class="chem2-summary-stat"><b>' + total + '</b> annotations</span>';
-    html += '<span class="chem2-summary-stat"><b>' + Object.keys(phenoIds).length + '</b> phenotypes</span>';
-    html += '<span class="chem2-summary-stat"><b>' + Object.keys(geneCounts).length + '</b> genes</span>';
-    html += '</div>';
-    html += '<div class="chem2-summary-block"><span class="chem2-summary-label">Top genes:</span> ' +
-        topGenes.map(function (x) { return '<span class="chem2-chip">' + escapeHtml(x[0]) + ' (' + x[1] + ')</span>'; }).join(' ') + '</div>';
-    html += '<div class="chem2-summary-block"><span class="chem2-summary-label">Top phenotypes:</span> ' +
-        topPhenos.map(function (x) { return '<span class="chem2-chip">' + escapeHtml(x[0]) + ' (' + Math.round(100 * x[1] / total) + '%)</span>'; }).join(' ') + '</div>';
-    el.innerHTML = html;
+    build_phenotype_summary('phenotype_summary', data, false);
 }
 
 // ---- Facet filters -------------------------------------------------------

@@ -44,4 +44,8 @@ $(document).ready(function() {
 
     create_table("recent_phenotype_table", options);
     $("#recent_phenotype_table_buttons").hide();
+
+    // Summary bar: totals, top genes, top phenotypes, and experiment-type
+    // breakdown (shared helper in local.js).
+    build_phenotype_summary("recent_phenotype_summary", data, true);
 });
