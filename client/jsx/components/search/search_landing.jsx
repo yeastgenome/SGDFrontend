@@ -52,7 +52,9 @@ const PRIMARY_CATEGORIES = [
   },
 ];
 
-// Everything else, revealed under "Other categories". Order is by expected size.
+// Everything else, revealed under "Other categories". This list only controls
+// which keys appear (and their labels via _getCategoryName); the display order
+// is sorted by live count, most to least, in _renderSecondary.
 const SECONDARY_CATEGORIES = [
   'biological_process',
   'molecular_function',
@@ -252,7 +254,7 @@ const SearchLanding = createReactClass({
     const primaryKeys = PRIMARY_CATEGORIES.map((c) => c.key);
     const items = SECONDARY_CATEGORIES.filter(
       (key) => primaryKeys.indexOf(key) < 0 && typeof countMap[key] === 'number'
-    );
+    ).sort((a, b) => countMap[b] - countMap[a]);
     if (items.length === 0) return null;
     const _toggle = (e) => {
       e.preventDefault();
