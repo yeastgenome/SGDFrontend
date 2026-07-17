@@ -6,6 +6,7 @@
 
 var _chem2_facet_rows = [];
 var _chem2_facet_state = {};
+var _chem2_refs = {}; // dedup key -> { year }
 
 $(document).ready(function () {
     fillDefinition();
@@ -24,6 +25,8 @@ $(document).ready(function () {
         create_download_button('phenotype_table_download', table, chemical['display_name'] + '_phenotype_annotations');
         setupExtraDownloads(data);
         loadGoEnrichment(data);
+        collectRefs(data);
+        renderRefTrend();
     });
 
     $.getJSON('/redirect_backend?param=chemical/' + chemical['id'] + '/go_details', function (data) {
@@ -31,6 +34,7 @@ $(document).ready(function () {
         create_analyze_button('go_table_analyze', go_table,
             "<a href='" + chemical['link'] + "' class='gene_name'>" + chemical['display_name'] + "</a> Genes", true);
         create_download_button('go_table_download', go_table, chemical['display_name'] + '_go_annotations');
+        if (data && data.length) { collectRefs(data); renderRefTrend(); }
     });
 
     $.getJSON('/redirect_backend?param=chemical/' + chemical['id'] + '/proteinabundance_details', function (data) {
@@ -395,6 +399,55 @@ function loadGoEnrichment(phenoData) {
     }).fail(function () {
         set_up_enrichment_table([], geneCount);
     });
+}
+
+// ---- Reference usage trend -----------------------------------------------
+// Accumulate distinct references (deduped across phenotype + GO annotations)
+// with their publication year parsed from the display name, e.g. "... (2002)".
+function collectRefs(data) {
+    for (var i = 0; i < data.length; i++) {
+        var r = data[i]['reference'];
+        if (!r) continue;
+        var key = r['pubmed_id'] || r['link'] || r['display_name'];
+        if (!key || _chem2_refs[key]) continue;
+        var m = /\((\d{4})\)/.exec(r['display_name'] || '');
+        _chem2_refs[key] = { year: m ? parseInt(m[1], 10) : null };
+    }
+}
+
+function renderRefTrend() {
+    var el = document.getElementById('chem2-reftrend');
+    if (!el) return;
+    var total = 0, byYear = {};
+    for (var k in _chem2_refs) {
+        total++;
+        var y = _chem2_refs[k].year;
+        if (y) byYear[y] = (byYear[y] || 0) + 1;
+    }
+    if (total === 0) { hide_section('reference_usage'); return; }
+
+    var years = Object.keys(byYear).map(Number).sort(function (a, b) { return a - b; });
+    if (years.length === 0) {
+        el.innerHTML = '<div class="chem2-reftrend-summary"><b>' + total + '</b> reference' + (total === 1 ? '' : 's') + '</div>';
+        return;
+    }
+    var minY = years[0], maxY = years[years.length - 1];
+    var maxCount = 0;
+    for (var y2 in byYear) { if (byYear[y2] > maxCount) maxCount = byYear[y2]; }
+
+    var cols = '';
+    for (var yr = minY; yr <= maxY; yr++) {
+        var c = byYear[yr] || 0;
+        var h = maxCount ? Math.round(100 * c / maxCount) : 0;
+        cols += '<div class="chem2-reftrend-col" title="' + yr + ': ' + c + ' reference' + (c === 1 ? '' : 's') + '">' +
+            '<div class="chem2-reftrend-num">' + (c || '') + '</div>' +
+            '<div class="chem2-reftrend-barwrap"><div class="chem2-reftrend-bar" style="height:' + h + '%"></div></div>' +
+            '<div class="chem2-reftrend-year">&rsquo;' + String(yr).slice(2) + '</div>' +
+            '</div>';
+    }
+    el.innerHTML = '<div class="chem2-reftrend-summary"><b>' + total + '</b> reference' + (total === 1 ? '' : 's') +
+        ', ' + minY + '&ndash;' + maxY + '</div>' +
+        '<div class="chem2-reftrend-chart">' + cols + '</div>';
 }
 
 // ---- Shared Chemicals network (Cytoscape) --------------------------------

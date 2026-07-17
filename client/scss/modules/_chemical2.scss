@@ -131,6 +131,48 @@
     gap: 0.5rem;
   }
 
+  // ---- Reference usage trend ----
+  .chem2-reftrend-summary {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    b { color: #7a5ea8; }
+  }
+  .chem2-reftrend-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+  }
+  .chem2-reftrend-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 15px;
+    font-size: 0.62rem;
+    color: #999;
+  }
+  .chem2-reftrend-num {
+    height: 0.85rem;
+    line-height: 0.85rem;
+    color: #555;
+  }
+  .chem2-reftrend-barwrap {
+    height: 90px;
+    width: 12px;
+    display: flex;
+    align-items: flex-end;
+  }
+  .chem2-reftrend-bar {
+    width: 100%;
+    min-height: 1px;
+    background: #7a5ea8;
+    border-radius: 2px 2px 0 0;
+  }
+  .chem2-reftrend-year {
+    margin-top: 2px;
+  }
+
   // ---- Network ----
   .chem2-network-toolbar {
     margin-bottom: 0.5rem;

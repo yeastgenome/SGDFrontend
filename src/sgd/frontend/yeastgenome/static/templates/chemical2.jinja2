@@ -23,6 +23,9 @@
                 add_navbar_element('Phenotype Annotations', 'phenotype');
                 add_navbar_element('GO Process Enrichment', 'enrichment');
             {% endif %}
+            {% if chemical.phenotype|length > 0 or chemical.go|length > 0 %}
+                add_navbar_element('Reference Usage', 'reference_usage');
+            {% endif %}
             {% if chemical.go|length > 0 %}
                 add_navbar_element('Gene Ontology Annotations', 'go');
             {% endif %}
@@ -137,6 +140,22 @@
             </div>
         </section>
         {% endif %}
+
+        <!-- Reference usage trend (filled by chemical2.js; hidden if no refs)
+        ================================================== -->
+        <section id="reference_usage" data-magellan-destination="reference_usage">
+            <div class="page-header">
+                <h2>Reference Usage
+                    <a href="#" data-dropdown="reference_usage_info"><i class="fa fa-info-circle"></i></a>
+                    <p id="reference_usage_info" class="f-dropdown content medium" data-dropdown-content>
+                        Distinct references that use this chemical in a phenotype or GO annotation, by year of
+                        publication.
+                    </p>
+                </h2>
+                <hr />
+                <div id="chem2-reftrend" class="chem2-reftrend"></div>
+            </div>
+        </section>
 
         <!-- GO
         ================================================== -->
