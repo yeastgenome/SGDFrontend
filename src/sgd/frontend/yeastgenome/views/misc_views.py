@@ -199,8 +199,16 @@ def phenotypes_this_week(request):
 MANUAL_CURATED = 'manually curated'
 RECENT_GO_DAYS = 50
 
-# Cache the landing page's manually-curated GO count so the heavy go/this_week
-# fetch runs at most once per hour instead of on every landing-page load.
+def _go_this_week_url(days):
+    # Ask the backend for manually curated GO annotations only, so we never
+    # transfer the much larger computational set (see the go/this_week
+    # annotation_type filter in SGDBackend-Nex2).
+    return (os.environ['BACKEND_URL'] + '/go/this_week?days=' + str(days) +
+            '&annotation_type=' + urllib.parse.quote(MANUAL_CURATED))
+
+
+# Cache the landing page's manually-curated GO count so we hit the backend at
+# most once per hour instead of on every landing-page load.
 _recent_go_count_cache = {'count': None, 'ts': 0.0}
 _RECENT_GO_COUNT_TTL = 3600  # seconds
 
@@ -211,9 +219,8 @@ def _manually_curated_go_count():
     if cache['count'] is not None and (now - cache['ts']) < _RECENT_GO_COUNT_TTL:
         return cache['count']
     try:
-        url = os.environ['BACKEND_URL'] + '/go/this_week?days=' + str(RECENT_GO_DAYS)
-        annos = json.loads(requests.get(url).text).get('go_annotations', [])
-        count = sum(1 for a in annos if a.get('annotation_type') == MANUAL_CURATED)
+        annos = json.loads(requests.get(_go_this_week_url(RECENT_GO_DAYS)).text).get('go_annotations', [])
+        count = len(annos)
     except Exception:
         # On failure, keep serving the last known count (if any).
         return cache['count']
@@ -225,24 +232,18 @@ def _manually_curated_go_count():
 @view_config(route_name='gos_this_week')
 def gos_this_week(request):
     days = _recent_days_param(request, RECENT_GO_DAYS)
-    backend_url = os.environ['BACKEND_URL'] + '/go/this_week?days=' + days
-    backend_response = requests.get(backend_url)
+    backend_response = requests.get(_go_this_week_url(days))
     if backend_response.status_code != 200:
         return not_found(request)
     obj = json.loads(backend_response.text)
-    # Show only manually curated GO annotations. Computational (and any
-    # high-throughput) annotations are excluded here to keep the payload small;
-    # they may be surfaced in a separate table later.
-    go_annotations = [
-        a for a in obj.get('go_annotations', [])
-        if a.get('annotation_type') == MANUAL_CURATED
-    ]
+    # Backend already filtered to manually curated; computational (and any
+    # high-throughput) annotations may be surfaced in a separate table later.
     return render_to_response(
         TEMPLATE_ROOT + 'gos_this_week.jinja2',
         {
             'start': obj.get('start'),
             'end': obj.get('end'),
-            'go_annotations_js': json.dumps(go_annotations)
+            'go_annotations_js': json.dumps(obj.get('go_annotations', []))
         },
         request=request)
 
