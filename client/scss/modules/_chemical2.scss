@@ -161,20 +161,9 @@
   .chem2-network {
     position: relative;
     width: 100%;
-    height: 520px;
-    border: 1px solid #e6e3df;
-    border-radius: 8px;
-  }
-  .chem2-network-hint {
-    position: absolute;
-    left: 0.5rem;
-    bottom: 0.5rem;
-    font-size: 0.85rem;
-    color: #555;
-    background: rgba(255, 255, 255, 0.85);
-    padding: 0.15rem 0.4rem;
-    border-radius: 4px;
-    pointer-events: none;
+    // The Cytoscape wrapper sets its own height inline; clip any canvas spill
+    // so it can't overlay (and steal clicks from) the section below.
+    overflow: hidden;
   }
   .chem2-network-table {
     margin-top: 0.5rem;
