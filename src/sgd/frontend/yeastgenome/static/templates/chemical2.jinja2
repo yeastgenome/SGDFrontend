@@ -26,6 +26,7 @@
             {% if chemical.phenotype|length > 0 or chemical.go|length > 0 %}
                 add_navbar_element('Reference Usage', 'reference_usage');
             {% endif %}
+            add_navbar_element('Related Genes', 'related_genes');
             {% if chemical.go|length > 0 %}
                 add_navbar_element('Gene Ontology Annotations', 'go');
             {% endif %}
@@ -154,6 +155,24 @@
                 </h2>
                 <hr />
                 <div id="chem2-reftrend" class="chem2-reftrend"></div>
+            </div>
+        </section>
+
+        <!-- Related genes (filled by chemical2.js; hidden if none)
+        ================================================== -->
+        <section id="related_genes" data-magellan-destination="related_genes">
+            <div class="page-header">
+                <h2>Related Genes
+                    <a href="#" data-dropdown="related_genes_info"><i class="fa fa-info-circle"></i></a>
+                    <p id="related_genes_info" class="f-dropdown content medium" data-dropdown-content>
+                        Genes whose SGD description mentions this chemical (by name or synonym) &mdash; often the
+                        enzymes and transporters that act on it. Based on description text, so review the snippet for
+                        relevance.
+                    </p>
+                    <span id="related_genes_header" class="round secondary label"></span>
+                </h2>
+                <hr />
+                <div id="chem2-related-genes"></div>
             </div>
         </section>
 

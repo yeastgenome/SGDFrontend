@@ -13,6 +13,7 @@ $(document).ready(function () {
     fillSynonyms();
     fillResources();
     fetchProperties();
+    fetchRelatedGenes();
 
     $.getJSON('/redirect_backend?param=chemical/' + chemical['id'] + '/phenotype_details', function (data) {
         buildFacetRows(data);
@@ -399,6 +400,36 @@ function loadGoEnrichment(phenoData) {
     }).fail(function () {
         set_up_enrichment_table([], geneCount);
     });
+}
+
+// ---- Related genes (description text-match) -------------------------------
+function fetchRelatedGenes() {
+    if (!document.getElementById('chem2-related-genes')) return;
+    $.getJSON('/redirect_backend?param=chemical/' + chemical['id'] + '/related_genes', function (data) {
+        renderRelatedGenes(data || []);
+    }).fail(function () {
+        hide_section('related_genes');
+    });
+}
+
+function renderRelatedGenes(genes) {
+    var el = document.getElementById('chem2-related-genes');
+    if (!el) return;
+    if (!genes.length) { hide_section('related_genes'); return; }
+
+    set_up_header('related_genes', genes.length, 'gene', 'genes');
+    var html = '<p class="chem2-related-note">Genes whose description mentions ' +
+        escapeHtml(chemical['display_name']) + ' or a synonym &mdash; review the snippet for relevance.</p>';
+    html += '<table class="table table-striped table-bordered table-condensed chem2-related-table">';
+    html += '<thead><tr><th>Gene</th><th>Description</th></tr></thead><tbody>';
+    genes.forEach(function (g) {
+        var name = g['display_name'] || g['systematic_name'] || '';
+        var link = g['link'] ? '<a href="' + g['link'] + '">' + escapeHtml(name) + '</a>' : escapeHtml(name);
+        html += '<tr><td class="chem2-related-gene">' + link + '</td>' +
+            '<td>' + escapeHtml(g['description'] || '') + '</td></tr>';
+    });
+    html += '</tbody></table>';
+    el.innerHTML = html;
 }
 
 // ---- Reference usage trend -----------------------------------------------
