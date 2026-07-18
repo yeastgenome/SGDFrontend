@@ -97,6 +97,28 @@
     color: #999;
     margin: 0.25rem 0 0;
   }
+  .chem2-tech-ids {
+    max-width: 40rem;
+    margin: 0.25rem 0 0.5rem;
+
+    summary {
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #6b6b6b;
+      padding: 0.2rem 0;
+      outline: none;
+
+      &:hover {
+        color: #33608c;
+      }
+    }
+    .chem2-properties-table {
+      margin-top: 0.4rem;
+    }
+  }
 
   // Summary-bar styles live in modules/_annotation_summary.scss (shared with
   // the recently-added phenotypes page).

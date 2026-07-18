@@ -132,6 +132,7 @@ function copyableValue(text) {
 function renderProperties(p) {
     var el = document.getElementById('chem2-properties');
     if (!el || !p) { if (el) el.innerHTML = ''; return; }
+    // Key properties: shown by default (human-useful facts + identifiers).
     var rows = '';
     if (p.formula) rows += propRow('Formula', escapeHtml(p.formula));
     if (p.molecular_weight) rows += propRow('Molecular weight', escapeHtml(p.molecular_weight) + ' g/mol');
@@ -139,18 +140,33 @@ function renderProperties(p) {
         rows += propRow('PubChem CID',
             '<a href="https://pubchem.ncbi.nlm.nih.gov/compound/' + encodeURIComponent(p.pubchem_cid) + '" target="_blank">' + escapeHtml(p.pubchem_cid) + '</a>');
     }
-    if (p.inchikey) rows += propRow('InChIKey', copyableValue(p.inchikey));
-    if (p.smiles) rows += propRow('SMILES', copyableValue(p.smiles));
-    if (p.inchi) rows += propRow('InChI', copyableValue(p.inchi));
+    var chebi = p.chebi_id || chemical['chebi_id'];
+    if (chebi) {
+        rows += propRow('ChEBI ID',
+            '<a href="https://www.ebi.ac.uk/chebi/searchId.do?chebiId=' + encodeURIComponent(chebi) + '" target="_blank">' + escapeHtml(chebi) + '</a>');
+    }
 
-    if (!rows) { el.innerHTML = ''; return; }
+    // Technical identifiers: structure strings only ~1% of users need; collapsed
+    // by default to keep the overview clean, expandable for cheminformatics use.
+    var techRows = '';
+    if (p.inchikey) techRows += propRow('InChIKey', copyableValue(p.inchikey));
+    if (p.smiles) techRows += propRow('SMILES', copyableValue(p.smiles));
+    if (p.inchi) techRows += propRow('InChI', copyableValue(p.inchi));
+
+    if (!rows && !techRows) { el.innerHTML = ''; return; }
 
     var html = '<h4 class="chem2-properties-title">Key properties</h4>';
-    html += '<table class="chem2-properties-table">' + rows + '</table>';
+    if (rows) html += '<table class="chem2-properties-table">' + rows + '</table>';
     if (p.sdf_url) {
         html += '<div class="chem2-properties-actions">' +
             '<a class="small button secondary" href="' + p.sdf_url + '" target="_blank"><i class="fa fa-download"></i> Download (.sdf)</a>' +
             '</div>';
+    }
+    if (techRows) {
+        html += '<details class="chem2-tech-ids">' +
+            '<summary>Technical identifiers</summary>' +
+            '<table class="chem2-properties-table">' + techRows + '</table>' +
+            '</details>';
     }
     html += '<p class="chem2-properties-note">Properties from PubChem / ChEBI.</p>';
     el.innerHTML = html;

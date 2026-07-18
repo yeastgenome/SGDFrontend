@@ -553,7 +553,13 @@ function set_up_enrichment_table(data, gene_count) {
         set_up_scientific_notation_sorting();
 
         options["aaSorting"] = [[3, "asc"]];
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, null, {'sWidth': '100px'}, { "sType": "scinote", 'sWidth': '100px'}]
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, null, {'sWidth': '100px'}, { "sType": "scinote", 'sWidth': '100px', "mRender": function (data, type) {
+            // Show the P-value with 2 decimal places in scientific notation for
+            // display only; keep the raw value for sorting/filtering/download.
+            if (type !== 'display') { return data; }
+            var n = parseFloat(data);
+            return isNaN(n) ? data : n.toExponential(2);
+        }}]
         options["aaData"] = datatable;
         options["oLanguage"] = {'sEmptyTable': 'No significant shared GO processes found.'}
     }
