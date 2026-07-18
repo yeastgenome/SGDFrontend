@@ -26,16 +26,20 @@
             {% if chemical.phenotype|length > 0 or chemical.go|length > 0 %}
                 add_navbar_element('Reference Usage', 'reference_usage');
             {% endif %}
+            {# Related Genes section temporarily disabled
             add_navbar_element('Related Genes', 'related_genes');
+            #}
             {% if chemical.go|length > 0 %}
                 add_navbar_element('Gene Ontology Annotations', 'go');
             {% endif %}
             {% if chemical.complexes|length > 0 %}
                 add_navbar_element('Complexes', 'complex');
             {% endif %}
+            {# Pathways section temporarily disabled
             {% if chemical.pathways|length > 0 %}
                 add_navbar_element('Pathways', 'pathway');
             {% endif %}
+            #}
             {% if chemical.protein_abundance|length > 0 %}
                 add_navbar_element('Protein Abundance', 'protein_abundance');
             {% endif %}
@@ -160,6 +164,7 @@
 
         <!-- Related genes (filled by chemical2.js; hidden if none)
         ================================================== -->
+        {# Related Genes section temporarily disabled
         <section id="related_genes" data-magellan-destination="related_genes">
             <div class="page-header">
                 <h2>Related Genes
@@ -184,6 +189,7 @@
                 </table>
             </div>
         </section>
+        #}
 
         <!-- GO
         ================================================== -->
@@ -223,6 +229,7 @@
 
         <!-- Pathway
         ================================================== -->
+        {# Pathways section temporarily disabled
         {% if chemical.pathways|length > 0 %}
         <section id="pathway" data-magellan-destination="pathway">
             <h2>Pathways</h2>
@@ -236,6 +243,7 @@
             </div>
         </section>
         {% endif %}
+        #}
 
         <!-- Protein Abundance
         ================================================== -->
