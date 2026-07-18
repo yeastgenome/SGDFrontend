@@ -252,7 +252,9 @@ def gos_this_week(request):
 def recent_updates(request):
     # Proxy the backend recent-updates summary, but override the GO count so the
     # landing "What's New" panel matches /go/recent (manually curated only, over
-    # RECENT_GO_DAYS). The backend count includes all annotation types.
+    # RECENT_GO_DAYS). The backend count includes all annotation types. The
+    # longer GO window is explained by the panel footnote, so the label itself
+    # stays clean (no per-line "(last N days)" suffix).
     backend_response = requests.get(os.environ['BACKEND_URL'] + '/recent_updates')
     if backend_response.status_code != 200:
         return not_found(request)
@@ -262,7 +264,7 @@ def recent_updates(request):
         for c in obj.get('counts', []):
             if c.get('category') == 'go':
                 c['count'] = mc_count
-                c['label'] = 'new GO annotations (last %d days)' % RECENT_GO_DAYS
+                c['label'] = 'new GO annotations'
     return Response(body=json.dumps(obj), content_type='application/json', charset='UTF-8')
 
 @view_config(route_name='alleles_this_week')

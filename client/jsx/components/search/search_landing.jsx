@@ -408,16 +408,11 @@ const SearchLanding = createReactClass({
     const counts = (data.counts || []).filter((c) => c.count > 0);
     if (counts.length === 0) {
       return (
-        <p className="search-landing-panel-empty">
-          No new entries in the last {data.since_days} days.
-        </p>
+        <p className="search-landing-panel-empty">No recent additions.</p>
       );
     }
     return (
       <div className="search-landing-whatsnew-summary">
-        <p className="search-landing-whatsnew-window">
-          Last {data.since_days} days:
-        </p>
         <ul className="search-landing-whatsnew-counts">
           {counts.map((c, i) => (
             <li key={`rc${i}`}>
@@ -427,6 +422,10 @@ const SearchLanding = createReactClass({
             </li>
           ))}
         </ul>
+        <p className="search-landing-whatsnew-note">
+          Counts are based on recent additions. GO annotation updates use a
+          longer reporting window to account for the annotation import pipeline.
+        </p>
       </div>
     );
   },
