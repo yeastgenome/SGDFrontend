@@ -23,9 +23,6 @@
                 add_navbar_element('Phenotype Annotations', 'phenotype');
                 add_navbar_element('GO Process Enrichment', 'enrichment');
             {% endif %}
-            {% if chemical.phenotype|length > 0 or chemical.go|length > 0 %}
-                add_navbar_element('Reference Usage', 'reference_usage');
-            {% endif %}
             {# Related Genes section temporarily disabled
             add_navbar_element('Related Genes', 'related_genes');
             #}
@@ -42,6 +39,9 @@
             #}
             {% if chemical.protein_abundance|length > 0 %}
                 add_navbar_element('Protein Abundance', 'protein_abundance');
+            {% endif %}
+            {% if chemical.phenotype|length > 0 or chemical.go|length > 0 %}
+                add_navbar_element('Reference Usage', 'reference_usage');
             {% endif %}
             {% if chemical.network_graph.edges|length > 0 %}
                 add_navbar_element('Shared Chemicals', 'network');
@@ -146,22 +146,6 @@
         </section>
         {% endif %}
 
-        <!-- Reference usage trend (filled by chemical2.js; hidden if no refs)
-        ================================================== -->
-        <section id="reference_usage" data-magellan-destination="reference_usage">
-            <div class="page-header">
-                <h2>Reference Usage
-                    <a href="#" data-dropdown="reference_usage_info"><i class="fa fa-info-circle"></i></a>
-                    <p id="reference_usage_info" class="f-dropdown content medium" data-dropdown-content>
-                        Distinct references that use this chemical in a phenotype or GO annotation, by year of
-                        publication.
-                    </p>
-                </h2>
-                <hr />
-                <div id="chem2-reftrend" class="chem2-reftrend"></div>
-            </div>
-        </section>
-
         <!-- Related genes (filled by chemical2.js; hidden if none)
         ================================================== -->
         {# Related Genes section temporarily disabled
@@ -259,6 +243,22 @@
             </div>
         </section>
         {% endif %}
+
+        <!-- Reference usage trend (filled by chemical2.js; hidden if no refs)
+        ================================================== -->
+        <section id="reference_usage" data-magellan-destination="reference_usage">
+            <div class="page-header">
+                <h2>Reference Usage
+                    <a href="#" data-dropdown="reference_usage_info"><i class="fa fa-info-circle"></i></a>
+                    <p id="reference_usage_info" class="f-dropdown content medium" data-dropdown-content>
+                        Distinct references that use this chemical in a phenotype or GO annotation, by year of
+                        publication.
+                    </p>
+                </h2>
+                <hr />
+                <div id="chem2-reftrend" class="chem2-reftrend"></div>
+            </div>
+        </section>
 
         <!-- Shared Chemicals network
         ================================================== -->

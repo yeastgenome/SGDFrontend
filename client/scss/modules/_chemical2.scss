@@ -194,6 +194,23 @@
   .chem2-reftrend-year {
     margin-top: 2px;
   }
+  .chem2-reftrend-details {
+    summary {
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #7a5ea8;
+      padding: 0.1rem 0;
+      outline: none;
+
+      &:hover {
+        color: #5f4788;
+      }
+    }
+    .chem2-reftrend-chart {
+      margin-top: 0.5rem;
+    }
+  }
 
   // ---- Network ----
   .chem2-network-toolbar {

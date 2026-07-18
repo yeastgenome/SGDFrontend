@@ -678,14 +678,18 @@ function build_annotation_summary(container_id, data, opts) {
 
     var html = '';
     html += '<div class="chem2-summary-stats">';
-    html += '<span class="chem2-summary-stat"><b>' + total + '</b> annotations</span>';
+    html += '<span class="chem2-summary-stat"><b>' + total + '</b> ' + esc(opts.total_label || 'annotations') + '</span>';
     html += '<span class="chem2-summary-stat"><b>' + Object.keys(itemIds).length + '</b> ' + esc(opts.item_plural || 'phenotypes') + '</span>';
-    html += '<span class="chem2-summary-stat"><b>' + Object.keys(geneCounts).length + '</b> genes</span>';
+    html += '<span class="chem2-summary-stat"><b>' + Object.keys(geneCounts).length + '</b> ' + esc(opts.genes_label || 'genes') + '</span>';
     html += '</div>';
     html += '<div class="chem2-summary-block"><span class="chem2-summary-label">Top genes:</span> ' +
         top_n(geneCounts, 5).map(function(x) { return chip(esc(x[0]) + ' (' + x[1] + ')'); }).join(' ') + '</div>';
     html += '<div class="chem2-summary-block"><span class="chem2-summary-label">' + esc(opts.top_items_label || 'Top phenotypes') + ':</span> ' +
-        top_n(itemCounts, 3).map(function(x) { return chip(esc(x[0]) + ' (' + Math.round(100 * x[1] / total) + '%)'); }).join(' ') + '</div>';
+        top_n(itemCounts, 3).map(function(x) {
+            var pct = Math.round(100 * x[1] / total);
+            var val = opts.top_items_show_count ? (x[1] + ', ' + pct + '%') : (pct + '%');
+            return chip(esc(x[0]) + ' (' + val + ')');
+        }).join(' ') + '</div>';
     if (breakdown) {
         var bs = top_n(breakdownCounts, 10);
         if (bs.length) {
@@ -702,7 +706,10 @@ function build_phenotype_summary(container_id, data, show_experiment_type) {
         item_name: function(d) { return d['phenotype'] ? d['phenotype']['display_name'] : null; },
         item_id: function(d) { return d['phenotype'] ? d['phenotype']['id'] : null; },
         item_plural: 'phenotypes',
+        total_label: 'phenotype annotations',
+        genes_label: 'associated genes',
         top_items_label: 'Top phenotypes',
+        top_items_show_count: true,
         breakdown: show_experiment_type ? {
             label: 'Experiment type',
             get: function(d) { return d['experiment'] ? (d['experiment']['category'] || 'unspecified') : null; }

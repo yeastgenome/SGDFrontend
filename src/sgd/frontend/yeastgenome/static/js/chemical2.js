@@ -484,6 +484,10 @@ function renderRefTrend() {
     var maxCount = 0;
     for (var y2 in byYear) { if (byYear[y2] > maxCount) maxCount = byYear[y2]; }
 
+    // Compact line: total, span, and (only when there's a real concentration) the
+    // busiest ~3-year window, e.g. "most active around 2006-2007".
+    var peak = peakWindowLabel(byYear, minY, maxY, total);
+
     var cols = '';
     for (var yr = minY; yr <= maxY; yr++) {
         var c = byYear[yr] || 0;
@@ -494,9 +498,30 @@ function renderRefTrend() {
             '<div class="chem2-reftrend-year">&rsquo;' + String(yr).slice(2) + '</div>' +
             '</div>';
     }
+    // Histogram is CSS bars (percentage heights), so it lays out correctly even
+    // when collapsed inside <details> — no redraw-on-expand needed.
     el.innerHTML = '<div class="chem2-reftrend-summary"><b>' + total + '</b> reference' + (total === 1 ? '' : 's') +
-        ', ' + minY + '&ndash;' + maxY + '</div>' +
-        '<div class="chem2-reftrend-chart">' + cols + '</div>';
+        ', ' + minY + '&ndash;' + maxY + peak + '</div>' +
+        '<details class="chem2-reftrend-details"><summary>Show timeline</summary>' +
+        '<div class="chem2-reftrend-chart">' + cols + '</div></details>';
+}
+
+// Busiest 3-year window, returned as ", most active around YYYY-YYYY" (or "" when
+// the distribution is too small or flat to call a peak honestly).
+function peakWindowLabel(byYear, minY, maxY, total) {
+    if (total < 6 || (maxY - minY) < 2) return '';
+    var bestStart = null, bestSum = 0;
+    for (var s = minY; s <= maxY; s++) {
+        var sum = (byYear[s] || 0) + (byYear[s + 1] || 0) + (byYear[s + 2] || 0);
+        if (sum > bestSum) { bestSum = sum; bestStart = s; }
+    }
+    if (bestStart === null || bestSum < Math.max(3, Math.ceil(total * 0.25))) return '';
+    var lo = null, hi = null;
+    for (var yy = bestStart; yy <= bestStart + 2; yy++) {
+        if (byYear[yy]) { if (lo === null) { lo = yy; } hi = yy; }
+    }
+    if (lo === null) return '';
+    return ', most active ' + (lo === hi ? ('in ' + lo) : ('around ' + lo + '&ndash;' + hi));
 }
 
 // ---- Shared Chemicals network (Cytoscape) --------------------------------
