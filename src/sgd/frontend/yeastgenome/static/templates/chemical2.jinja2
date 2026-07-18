@@ -172,7 +172,16 @@
                     <span id="related_genes_header" class="round secondary label"></span>
                 </h2>
                 <hr />
-                <div id="chem2-related-genes"></div>
+                <p class="chem2-related-note">Genes whose description mentions {{ chemical.display_name }}
+                    or a synonym &mdash; review the snippet for relevance.</p>
+                <table class="table table-striped table-bordered table-condensed" id="related_genes_table">
+                    <thead>
+                        <tr>
+                            <th>Gene</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
         </section>
 

@@ -7,6 +7,7 @@
 var _chem2_facet_rows = [];
 var _chem2_facet_state = {};
 var _chem2_refs = {}; // dedup key -> { year }
+var _chem2_network_dt = null; // Shared Chemicals DataTable (built hidden; resized on show)
 
 $(document).ready(function () {
     fillDefinition();
@@ -404,7 +405,7 @@ function loadGoEnrichment(phenoData) {
 
 // ---- Related genes (description text-match) -------------------------------
 function fetchRelatedGenes() {
-    if (!document.getElementById('chem2-related-genes')) return;
+    if (!document.getElementById('related_genes_table')) return;
     $.getJSON('/redirect_backend?param=chemical/' + chemical['id'] + '/related_genes', function (data) {
         renderRelatedGenes(data || []);
     }).fail(function () {
@@ -413,23 +414,24 @@ function fetchRelatedGenes() {
 }
 
 function renderRelatedGenes(genes) {
-    var el = document.getElementById('chem2-related-genes');
-    if (!el) return;
+    if (!document.getElementById('related_genes_table')) return;
     if (!genes.length) { hide_section('related_genes'); return; }
 
     set_up_header('related_genes', genes.length, 'gene', 'genes');
-    var html = '<p class="chem2-related-note">Genes whose description mentions ' +
-        escapeHtml(chemical['display_name']) + ' or a synonym &mdash; review the snippet for relevance.</p>';
-    html += '<table class="table table-striped table-bordered table-condensed chem2-related-table">';
-    html += '<thead><tr><th>Gene</th><th>Description</th></tr></thead><tbody>';
-    genes.forEach(function (g) {
+    var datatable = genes.map(function (g) {
         var name = g['display_name'] || g['systematic_name'] || '';
         var link = g['link'] ? '<a href="' + g['link'] + '">' + escapeHtml(name) + '</a>' : escapeHtml(name);
-        html += '<tr><td class="chem2-related-gene">' + link + '</td>' +
-            '<td>' + escapeHtml(g['description'] || '') + '</td></tr>';
+        return [link, escapeHtml(g['description'] || '')];
     });
-    html += '</tbody></table>';
-    el.innerHTML = html;
+
+    var options = {};
+    options['bPaginate'] = true;
+    options['iDisplayLength'] = 10;
+    options['aaSorting'] = [[0, 'asc']];
+    options['aoColumns'] = [{ 'sWidth': '120px' }, null];
+    options['oLanguage'] = { 'sEmptyTable': 'No related genes for ' + chemical['display_name'] };
+    options['aaData'] = datatable;
+    create_table('related_genes_table', options);
 }
 
 // ---- Reference usage trend -----------------------------------------------
@@ -538,17 +540,27 @@ function buildNetworkTable(data, neighbors, focusNbrs) {
         var sharedPhenos = [];
         for (var k in nbrs) { if (focusNbrs[k] && (k in nameById)) sharedPhenos.push(nameById[k]); }
         return { name: n.name, href: n.href, count: sharedPhenos.length, phenos: sharedPhenos };
-    }).sort(function (a, b) { return b.count - a.count || a.name.localeCompare(b.name); });
-
-    var html = '<table class="table table-striped table-bordered table-condensed chem2-network-table">';
-    html += '<thead><tr><th>Chemical</th><th>Shared</th><th>Shared phenotypes</th></tr></thead><tbody>';
-    rows.forEach(function (r) {
-        html += '<tr><td><a href="' + r.href + '">' + escapeHtml(r.name) + '</a></td>' +
-            '<td>' + r.count + '</td>' +
-            '<td>' + r.phenos.map(escapeHtml).join('; ') + '</td></tr>';
     });
-    html += '</tbody></table>';
-    container.innerHTML = html;
+
+    var datatable = rows.map(function (r) {
+        return [
+            '<a href="' + r.href + '">' + escapeHtml(r.name) + '</a>',
+            r.count,
+            r.phenos.map(escapeHtml).join('; ')
+        ];
+    });
+
+    container.innerHTML = '<table class="table table-striped table-bordered table-condensed chem2-network-table" ' +
+        'id="network_table"><thead><tr><th>Chemical</th><th>Shared</th><th>Shared phenotypes</th></tr></thead></table>';
+
+    var options = {};
+    options['bPaginate'] = true;
+    options['iDisplayLength'] = 10;
+    options['aaSorting'] = [[1, 'desc']];
+    options['aoColumns'] = [null, { 'sType': 'numeric' }, null];
+    options['oLanguage'] = { 'sEmptyTable': 'No shared chemicals for ' + chemical['display_name'] };
+    options['aaData'] = datatable;
+    _chem2_network_dt = create_table('network_table', options);
 }
 
 function setupNetworkToggle() {
@@ -568,6 +580,10 @@ function setupNetworkToggle() {
         table.style.display = '';
         tableBtn.className = 'small button';
         graphBtn.className = 'small button secondary';
+        // DataTable was initialized while hidden; fix column widths now that it is visible.
+        if (_chem2_network_dt && _chem2_network_dt.fnAdjustColumnSizing) {
+            _chem2_network_dt.fnAdjustColumnSizing();
+        }
     };
 }
 
@@ -631,7 +647,7 @@ function create_protein_abundance_table(data) {
     ];
     options['aaData'] = datatable;
     options['bPaginate'] = true;
-    options['iDisplayLength'] = 5;
+    options['iDisplayLength'] = 10;
     options['oLanguage'] = { sEmptyTable: 'No protein abundance data for this protein.' };
     return create_table('protein_abundance_table', options);
 }
