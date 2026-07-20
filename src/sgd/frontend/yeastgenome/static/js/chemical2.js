@@ -692,11 +692,26 @@ function peakWindowLabel(byYear, minY, maxY, total) {
     return ', most active ' + (lo === hi ? ('in ' + lo) : ('around ' + lo + '&ndash;' + hi));
 }
 
-// ---- Shared Chemicals network (Cytoscape) --------------------------------
+// ---- Shared Chemicals network --------------------------------------------
+// The diagram defaults to shared PHENOTYPES only — including GO annotations
+// makes it too busy. When the chemical has GO annotations, a toolbar toggle
+// re-renders the graph with shared GO terms added. The Table view lists both.
+var _chem2_net_show_go = false;
+
+// Drop nodes of a given category (and any edge touching them). Combined with the
+// renderer's ignoreFloaters, this also hides chemicals left unconnected.
+function dropCategory(data, cat) {
+    var keep = {};
+    var nodes = data.nodes.filter(function (n) {
+        if (n.category === cat) return false;
+        keep[n.id] = true;
+        return true;
+    });
+    var edges = data.edges.filter(function (e) { return keep[e.source] && keep[e.target]; });
+    return { nodes: nodes, edges: edges };
+}
+
 function buildNetwork(data) {
-    // Render the graph with the shared views.network renderer (Cytoscape 2.3.4,
-    // exposed globally by application.js) — the same path the original chemical
-    // page uses, so click-to-navigate and category filters work as expected.
     var has_go = 0, has_complex = 0, has_pheno = 0;
     for (var i = 0; i < data['nodes'].length; i++) {
         var cat = data['nodes'][i]['category'];
@@ -704,28 +719,24 @@ function buildNetwork(data) {
         else if (cat === 'COMPLEX') has_complex++;
         else if (cat === 'PHENOTYPE') has_pheno++;
     }
-    var colors = { 'FOCUS': 'black', 'CHEMICAL': '#7d0df3' };
-    var filters = { ' All': function (d) { return true; } };
-    var categoryCount = 0;
-    if (has_go > 0) {
-        colors['GO'] = '#2ca02c';
-        filters[' GO Terms'] = function (d) { return ['FOCUS', 'GO', 'CHEMICAL'].includes(d.category); };
-        categoryCount++;
-    }
-    if (has_pheno > 0) {
-        colors['PHENOTYPE'] = '#1f77b4';
-        filters[' Phenotypes'] = function (d) { return ['FOCUS', 'PHENOTYPE', 'CHEMICAL'].includes(d.category); };
-        categoryCount++;
-    }
-    if (has_complex > 0) {
-        colors['COMPLEX'] = '#E6AB03';
-        filters[' Complexes'] = function (d) { return ['FOCUS', 'COMPLEX', 'CHEMICAL'].includes(d.category); };
-        categoryCount++;
-    }
-    if (categoryCount < 2) filters = {};
-    views.network.render(data, colors, 'j-chemical-network2', filters, true);
 
-    // Build the shared-phenotype table + toggle from the same data.
+    // Render the graph via the shared views.network renderer. No in-graph category
+    // filters: GO visibility is driven by the toolbar toggle, and the legend only
+    // lists categories actually shown.
+    function draw(includeGo) {
+        var colors = { 'FOCUS': 'black', 'CHEMICAL': '#7d0df3' };
+        if (has_pheno) colors['PHENOTYPE'] = '#1f77b4';
+        if (has_complex) colors['COMPLEX'] = '#E6AB03';
+        if (includeGo && has_go) colors['GO'] = '#2ca02c';
+        var d = includeGo ? data : dropCategory(data, 'GO');
+        views.network.render(d, colors, 'j-chemical-network2', {}, true);
+    }
+
+    _chem2_net_show_go = false;
+    draw(false);
+    setupNetworkGoToggle(has_go > 0, draw);
+
+    // Build the shared phenotype/GO table + toggle from the full data.
     var focusId = null;
     data['nodes'].forEach(function (n) { if (n.category === 'FOCUS') focusId = n.id; });
     var neighbors = {};
@@ -784,6 +795,26 @@ function buildNetworkTable(data, neighbors, focusNbrs) {
     options['oLanguage'] = { 'sEmptyTable': 'No shared chemicals for ' + chemical['display_name'] };
     options['aaData'] = datatable;
     _chem2_network_dt = create_table('network_table', options);
+}
+
+// Add a "Show shared GO" toggle to the network toolbar, only when the chemical
+// has GO annotations. Toggling re-renders the graph via the supplied draw fn.
+function setupNetworkGoToggle(hasGo, draw) {
+    var existing = document.getElementById('network_go_toggle_group');
+    if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
+    var toolbar = document.querySelector('.chem2-network-toolbar');
+    if (!hasGo || !toolbar) return;
+    var grp = document.createElement('div');
+    grp.id = 'network_go_toggle_group';
+    grp.className = 'button-group radius chem2-network-go-toggle';
+    grp.innerHTML = '<a id="network_toggle_go" class="small button secondary">Show shared GO</a>';
+    toolbar.appendChild(grp);
+    document.getElementById('network_toggle_go').onclick = function () {
+        _chem2_net_show_go = !_chem2_net_show_go;
+        this.textContent = _chem2_net_show_go ? 'Hide shared GO' : 'Show shared GO';
+        this.className = _chem2_net_show_go ? 'small button' : 'small button secondary';
+        draw(_chem2_net_show_go);
+    };
 }
 
 function setupNetworkToggle() {
