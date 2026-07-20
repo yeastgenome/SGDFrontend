@@ -589,7 +589,7 @@ function collectRefs(data) {
     }
 }
 
-var REFTREND_HINT = 'Hover a bar for the yearly count; click to search PubMed for that year';
+var REFTREND_HINT = 'Hover a bar for the yearly count; click to search SGD references for that year';
 
 function renderRefTrend() {
     var el = document.getElementById('chem2-reftrend');
@@ -628,7 +628,7 @@ function renderRefTrend() {
             '" data-year="' + yr + '" data-count="' + c + '"' +
             (clickable ? ' role="link" tabindex="0"' : '') +
             ' title="' + yr + ': ' + c + ' reference' + (c === 1 ? '' : 's') +
-            (clickable ? ' — click to search PubMed' : '') + '">' +
+            (clickable ? ' — click to search SGD references' : '') + '">' +
             '<div class="chem2-reftrend-barwrap"><div class="chem2-reftrend-bar" style="height:' + h + '%"></div></div>' +
             '<div class="chem2-reftrend-year' + (showLabel ? '' : ' is-blank') + '">' +
             (showLabel ? yr : '&nbsp;') + '</div>' +
@@ -649,19 +649,19 @@ function renderRefTrend() {
             var c = this.getAttribute('data-count');
             $(el).find('.chem2-reftrend-readout')
                 .text(y + ': ' + c + ' reference' + (c === '1' ? '' : 's') +
-                    (c !== '0' ? ' — click to search PubMed' : ''));
+                    (c !== '0' ? ' — click to search SGD references' : ''));
         })
         .on('mouseleave.reftrend focusout.reftrend', '.chem2-reftrend-chart', function () {
             $(el).find('.chem2-reftrend-readout').text(REFTREND_HINT);
         })
-        // Clicking a year's bar opens a PubMed search for this chemical in that
-        // year (date-of-publication filter). Keyboard-accessible via Enter/Space.
+        // Clicking a year's bar opens an SGD reference search for this chemical
+        // and that year. Keyboard-accessible via Enter/Space.
         .on('click.reftrend keydown.reftrend', '.chem2-reftrend-col.is-clickable', function (ev) {
             if (ev.type === 'keydown' && ev.which !== 13 && ev.which !== 32) return;
             ev.preventDefault();
             var y = this.getAttribute('data-year');
-            var term = chemical['display_name'] + ' AND ' + y + '[dp]';
-            window.open('https://pubmed.ncbi.nlm.nih.gov/?term=' + encodeURIComponent(term),
+            var term = chemical['display_name'] + ' ' + y;
+            window.open('/search?category=reference&q=' + encodeURIComponent(term),
                 '_blank', 'noopener');
         });
 }
@@ -733,32 +733,46 @@ function buildNetwork(data) {
 function buildNetworkTable(data, neighbors, focusNbrs) {
     var container = document.getElementById('chemical-network-table');
     if (!container) return;
-    var nameById = {};
-    data.nodes.forEach(function (n) { nameById[n.id] = n.name; });
+    var nameById = {}, catById = {};
+    data.nodes.forEach(function (n) { nameById[n.id] = n.name; catById[n.id] = n.category; });
     var chems = data.nodes.filter(function (n) { return n.category === 'CHEMICAL'; });
+    // Each shared bridge node is either a phenotype or a GO term; split them so
+    // GO sharing is visible in the table, not lumped under "phenotypes".
+    var anyGo = false;
     var rows = chems.map(function (n) {
         var nbrs = neighbors[n.id] || {};
-        var sharedPhenos = [];
-        for (var k in nbrs) { if (focusNbrs[k] && (k in nameById)) sharedPhenos.push(nameById[k]); }
-        return { name: n.name, href: n.href, count: sharedPhenos.length, phenos: sharedPhenos };
+        var phenos = [], gos = [];
+        for (var k in nbrs) {
+            if (!focusNbrs[k] || !(k in nameById)) continue;
+            if (catById[k] === 'GO') gos.push(nameById[k]);
+            else if (catById[k] === 'PHENOTYPE') phenos.push(nameById[k]);
+        }
+        if (gos.length) anyGo = true;
+        return { name: n.name, href: n.href, count: phenos.length + gos.length, phenos: phenos, gos: gos };
     });
 
+    var headers = '<th>Chemical</th><th>Shared</th><th>Shared phenotypes</th>' +
+        (anyGo ? '<th>Shared GO terms</th>' : '');
     var datatable = rows.map(function (r) {
-        return [
+        var row = [
             '<a href="' + r.href + '">' + escapeHtml(r.name) + '</a>',
             r.count,
             r.phenos.map(escapeHtml).join('; ')
         ];
+        if (anyGo) row.push(r.gos.map(escapeHtml).join('; '));
+        return row;
     });
 
     container.innerHTML = '<table class="table table-striped table-bordered table-condensed chem2-network-table" ' +
-        'id="network_table"><thead><tr><th>Chemical</th><th>Shared</th><th>Shared phenotypes</th></tr></thead></table>';
+        'id="network_table"><thead><tr>' + headers + '</tr></thead></table>';
 
     var options = {};
     options['bPaginate'] = true;
     options['iDisplayLength'] = 10;
     options['aaSorting'] = [[1, 'desc']];
-    options['aoColumns'] = [null, { 'sType': 'numeric' }, null];
+    options['aoColumns'] = anyGo
+        ? [null, { 'sType': 'numeric' }, null, null]
+        : [null, { 'sType': 'numeric' }, null];
     options['oLanguage'] = { 'sEmptyTable': 'No shared chemicals for ' + chemical['display_name'] };
     options['aaData'] = datatable;
     _chem2_network_dt = create_table('network_table', options);
