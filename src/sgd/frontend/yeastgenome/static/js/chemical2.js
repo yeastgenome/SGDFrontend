@@ -484,6 +484,12 @@ function setupExtraDownloads(data) {
 }
 
 // ---- GO process enrichment of the phenotype genes ------------------------
+// Enrichment can return dozens of terms. Show only the most significant ones by
+// default (a cleaner, less overwhelming table) with a toggle to reveal the rest.
+// The header count and the download always reflect the full set of terms.
+var CHEM2_ENRICH_TOP = 10;
+var _chem2_enrichment = { data: [], geneCount: 0, showAll: false };
+
 function loadGoEnrichment(phenoData) {
     var uniqGenes = {};
     for (var i = 0; i < phenoData.length; i++) {
@@ -491,12 +497,67 @@ function loadGoEnrichment(phenoData) {
     }
     var geneCount = Object.keys(uniqGenes).length;
     $.getJSON('/redirect_backend?param=chemical/' + chemical['id'] + '/go_enrichment', function (data) {
-        var t = set_up_enrichment_table(data || [], geneCount);
-        create_download_button('enrichment_table_download', t, chemical['display_name'] + '_go_process_enrichment');
+        // Sort most-significant first so "top 10" is the 10 smallest p-values.
+        _chem2_enrichment.data = (data || []).slice().sort(function (a, b) {
+            return parseFloat(a['pvalue']) - parseFloat(b['pvalue']);
+        });
+        _chem2_enrichment.geneCount = geneCount;
+        _chem2_enrichment.showAll = false;
+        drawGoEnrichment();
     }).fail(function () {
         set_up_enrichment_table([], geneCount);
     });
 }
+
+function drawGoEnrichment() {
+    var all = _chem2_enrichment.data;
+    var geneCount = _chem2_enrichment.geneCount;
+    var capped = all.length > CHEM2_ENRICH_TOP && !_chem2_enrichment.showAll;
+    var shown = capped ? all.slice(0, CHEM2_ENRICH_TOP) : all;
+
+    set_up_enrichment_table(shown, geneCount);
+    // set_up_enrichment_table headers the count off the rows it was given; restate
+    // it against the true total so the label isn't misleading when capped.
+    set_up_header('enrichment_table', all.length, 'entry', 'entries', geneCount, 'gene', 'genes');
+    setupEnrichmentDownload(all);
+    renderEnrichmentToggle(all.length, capped);
+}
+
+// Download every enriched term (plain text, raw p-value) regardless of how many
+// are currently shown. Rebinds cleanly on each redraw.
+function setupEnrichmentDownload(all) {
+    $('#enrichment_table_download').off('click');
+    var headers = ['GO Term', 'Number of genes', 'P-Value'];
+    var rows = all.map(function (e) {
+        return [(e['go'] && e['go']['display_name']) || '', e['match_count'], e['pvalue']];
+    });
+    create_download_button_no_table('enrichment_table_download', headers, rows,
+        chemical['display_name'] + '_go_process_enrichment');
+}
+
+function renderEnrichmentToggle(total, capped) {
+    $('#chem2-enrichment-toggle').remove();
+    if (total <= CHEM2_ENRICH_TOP) return;
+    var wrap = $('#enrichment_table').closest('.dataTables_wrapper');
+    if (!wrap.length) return;
+    var msg, link;
+    if (capped) {
+        msg = 'Showing the top ' + CHEM2_ENRICH_TOP + ' of ' + total + ' most significant terms.';
+        link = 'Show all ' + total + ' terms';
+    } else {
+        msg = 'Showing all ' + total + ' terms.';
+        link = 'Show top ' + CHEM2_ENRICH_TOP;
+    }
+    $('<div id="chem2-enrichment-toggle" class="chem2-enrichment-toggle"></div>')
+        .html('<span>' + msg + '</span> <a href="#" class="chem2-enrichment-toggle-link">' + link + '</a>')
+        .insertBefore(wrap);
+}
+
+$(document).on('click', '.chem2-enrichment-toggle-link', function (e) {
+    e.preventDefault();
+    _chem2_enrichment.showAll = !_chem2_enrichment.showAll;
+    drawGoEnrichment();
+});
 
 // ---- Related genes (description text-match) -------------------------------
 function fetchRelatedGenes() {

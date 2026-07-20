@@ -242,6 +242,19 @@
     font-size: 0.9rem;
   }
 
+  // ---- GO enrichment top-N toggle ----
+  .chem2-enrichment-toggle {
+    font-size: 0.85rem;
+    color: #6b6b6b;
+    margin-bottom: 0.5rem;
+
+    a.chem2-enrichment-toggle-link {
+      font-weight: 600;
+      margin-left: 0.4rem;
+      cursor: pointer;
+    }
+  }
+
   // ---- Collapsible phenotype Details ----
   .chem2-details-toggle {
     display: inline-block;
