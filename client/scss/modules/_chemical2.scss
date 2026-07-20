@@ -183,10 +183,12 @@
     min-width: 15px;
     font-size: 0.62rem;
     color: #999;
-    cursor: pointer;
 
-    &:hover .chem2-reftrend-bar,
-    &:focus .chem2-reftrend-bar {
+    &.is-clickable {
+      cursor: pointer;
+    }
+    &.is-clickable:hover .chem2-reftrend-bar,
+    &.is-clickable:focus .chem2-reftrend-bar {
       background: #4b2d80;
     }
   }

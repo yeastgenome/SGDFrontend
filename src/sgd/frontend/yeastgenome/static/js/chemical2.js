@@ -589,6 +589,8 @@ function collectRefs(data) {
     }
 }
 
+var REFTREND_HINT = 'Hover a bar for the yearly count; click to search PubMed for that year';
+
 function renderRefTrend() {
     var el = document.getElementById('chem2-reftrend');
     if (!el) return;
@@ -621,8 +623,12 @@ function renderRefTrend() {
         var c = byYear[yr] || 0;
         var h = maxCount ? Math.round(100 * c / maxCount) : 0;
         var showLabel = (yr === minY || yr === maxY || yr % 5 === 0);
-        cols += '<div class="chem2-reftrend-col" data-year="' + yr + '" data-count="' + c +
-            '" title="' + yr + ': ' + c + ' reference' + (c === 1 ? '' : 's') + '">' +
+        var clickable = c > 0;
+        cols += '<div class="chem2-reftrend-col' + (clickable ? ' is-clickable' : '') +
+            '" data-year="' + yr + '" data-count="' + c + '"' +
+            (clickable ? ' role="link" tabindex="0"' : '') +
+            ' title="' + yr + ': ' + c + ' reference' + (c === 1 ? '' : 's') +
+            (clickable ? ' — click to search PubMed' : '') + '">' +
             '<div class="chem2-reftrend-barwrap"><div class="chem2-reftrend-bar" style="height:' + h + '%"></div></div>' +
             '<div class="chem2-reftrend-year' + (showLabel ? '' : ' is-blank') + '">' +
             (showLabel ? yr : '&nbsp;') + '</div>' +
@@ -633,7 +639,7 @@ function renderRefTrend() {
     el.innerHTML = '<div class="chem2-reftrend-summary"><b>' + total + '</b> reference' + (total === 1 ? '' : 's') +
         ', ' + minY + '&ndash;' + maxY + peak + '</div>' +
         '<details class="chem2-reftrend-details"><summary>Show timeline</summary>' +
-        '<div class="chem2-reftrend-readout" aria-live="polite">Hover a bar for the yearly count</div>' +
+        '<div class="chem2-reftrend-readout" aria-live="polite">' + REFTREND_HINT + '</div>' +
         '<div class="chem2-reftrend-chart">' + cols + '</div></details>';
 
     // Live readout: hovering a bar shows e.g. "1994: 4 references" above the chart.
@@ -642,10 +648,21 @@ function renderRefTrend() {
             var y = this.getAttribute('data-year');
             var c = this.getAttribute('data-count');
             $(el).find('.chem2-reftrend-readout')
-                .text(y + ': ' + c + ' reference' + (c === '1' ? '' : 's'));
+                .text(y + ': ' + c + ' reference' + (c === '1' ? '' : 's') +
+                    (c !== '0' ? ' — click to search PubMed' : ''));
         })
         .on('mouseleave.reftrend focusout.reftrend', '.chem2-reftrend-chart', function () {
-            $(el).find('.chem2-reftrend-readout').text('Hover a bar for the yearly count');
+            $(el).find('.chem2-reftrend-readout').text(REFTREND_HINT);
+        })
+        // Clicking a year's bar opens a PubMed search for this chemical in that
+        // year (date-of-publication filter). Keyboard-accessible via Enter/Space.
+        .on('click.reftrend keydown.reftrend', '.chem2-reftrend-col.is-clickable', function (ev) {
+            if (ev.type === 'keydown' && ev.which !== 13 && ev.which !== 32) return;
+            ev.preventDefault();
+            var y = this.getAttribute('data-year');
+            var term = chemical['display_name'] + ' AND ' + y + '[dp]';
+            window.open('https://pubmed.ncbi.nlm.nih.gov/?term=' + encodeURIComponent(term),
+                '_blank', 'noopener');
         });
 }
 
