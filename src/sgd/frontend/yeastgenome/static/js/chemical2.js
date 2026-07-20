@@ -703,16 +703,20 @@ function peakWindowLabel(byYear, minY, maxY, total) {
 // re-renders the graph with shared GO terms added. The Table view lists both.
 var _chem2_net_show_go = false;
 
-// Drop nodes of a given category (and any edge touching them). Combined with the
-// renderer's ignoreFloaters, this also hides chemicals left unconnected.
-function dropCategory(data, cat) {
+// Build the graph to render: optionally drop GO nodes, then drop any node left
+// with no edges (except FOCUS). We remove floaters ourselves rather than leaning
+// on the renderer's ignoreFloaters — passing dozens of orphaned nodes (chemicals
+// that were only GO-connected) made the renderer draw nothing.
+function filterNetwork(data, includeGo) {
     var keep = {};
     var nodes = data.nodes.filter(function (n) {
-        if (n.category === cat) return false;
-        keep[n.id] = true;
-        return true;
+        return includeGo || n.category !== 'GO';
     });
+    nodes.forEach(function (n) { keep[n.id] = true; });
     var edges = data.edges.filter(function (e) { return keep[e.source] && keep[e.target]; });
+    var deg = {};
+    edges.forEach(function (e) { deg[e.source] = (deg[e.source] || 0) + 1; deg[e.target] = (deg[e.target] || 0) + 1; });
+    nodes = nodes.filter(function (n) { return n.category === 'FOCUS' || deg[n.id] > 0; });
     return { nodes: nodes, edges: edges };
 }
 
@@ -733,8 +737,7 @@ function buildNetwork(data) {
         if (has_pheno) colors['PHENOTYPE'] = '#1f77b4';
         if (has_complex) colors['COMPLEX'] = '#E6AB03';
         if (includeGo && has_go) colors['GO'] = '#2ca02c';
-        var d = includeGo ? data : dropCategory(data, 'GO');
-        views.network.render(d, colors, 'j-chemical-network2', {}, true);
+        views.network.render(filterNetwork(data, includeGo), colors, 'j-chemical-network2', {}, true);
     }
 
     _chem2_net_show_go = false;
