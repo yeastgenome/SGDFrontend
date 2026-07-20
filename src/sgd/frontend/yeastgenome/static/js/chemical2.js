@@ -40,6 +40,10 @@ $(document).ready(function () {
     });
 
     $.getJSON('/redirect_backend?param=chemical/' + chemical['id'] + '/proteinabundance_details', function (data) {
+        // The Protein Abundance section is only rendered when the chemical has
+        // abundance data at page load. If the element is absent, building a
+        // DataTable on it throws in fnSearchHighlighting, so skip.
+        if (!document.getElementById('protein_abundance_table')) return;
         var t = create_protein_abundance_table(data);
         create_download_button('protein_abundance_table_download', t, chemical['display_name'] + '_protein_abundance');
     });
@@ -589,7 +593,7 @@ function collectRefs(data) {
     }
 }
 
-var REFTREND_HINT = 'Hover a bar for the yearly count; click to search SGD references for this chemical';
+var REFTREND_HINT = 'Hover a bar for the yearly count; click to search SGD references for that year';
 
 // Strip a trailing charge / IUPAC qualifier in parentheses from a ChEBI display
 // name, e.g. "2-oxoglutarate(2-)" -> "2-oxoglutarate", so it matches in the
@@ -661,16 +665,17 @@ function renderRefTrend() {
         .on('mouseleave.reftrend focusout.reftrend', '.chem2-reftrend-chart', function () {
             $(el).find('.chem2-reftrend-readout').text(REFTREND_HINT);
         })
-        // Clicking a bar opens an SGD reference search for this chemical. SGD
-        // search is full-text with no URL year filter, so we search the cleaned
-        // chemical name (charge/IUPAC suffix like "(2-)" stripped, which would
-        // otherwise match nothing) rather than a year-specific query.
+        // Clicking a bar opens an SGD reference search for this chemical in that
+        // year (SGD search honors a year= facet). The chemical name has its
+        // charge/IUPAC suffix like "(2-)" stripped, which would otherwise match
+        // nothing in the full-text search.
         .on('click.reftrend keydown.reftrend', '.chem2-reftrend-col.is-clickable', function (ev) {
             if (ev.type === 'keydown' && ev.which !== 13 && ev.which !== 32) return;
             ev.preventDefault();
+            var y = this.getAttribute('data-year');
             var term = cleanChemName(chemical['display_name']);
-            window.open('/search?category=reference&q=' + encodeURIComponent(term),
-                '_blank', 'noopener');
+            window.open('/search?category=reference&page=0&q=' + encodeURIComponent(term) +
+                '&year=' + encodeURIComponent(y), '_blank', 'noopener');
         });
 }
 
@@ -770,6 +775,15 @@ function buildNetworkTable(data, neighbors, focusNbrs) {
         return { name: n.name, href: n.href, count: phenos.length + gos.length, phenos: phenos, gos: gos };
     });
 
+    // Order chemicals that share phenotypes first (then by GO sharing), matching
+    // the phenotype-first emphasis of the diagram.
+    rows.sort(function (a, b) {
+        return b.phenos.length - a.phenos.length ||
+            b.gos.length - a.gos.length ||
+            b.count - a.count ||
+            a.name.localeCompare(b.name);
+    });
+
     var headers = '<th>Chemical</th><th>Shared</th><th>Shared phenotypes</th>' +
         (anyGo ? '<th>Shared GO terms</th>' : '');
     var datatable = rows.map(function (r) {
@@ -788,7 +802,7 @@ function buildNetworkTable(data, neighbors, focusNbrs) {
     var options = {};
     options['bPaginate'] = true;
     options['iDisplayLength'] = 10;
-    options['aaSorting'] = [[1, 'desc']];
+    options['aaSorting'] = []; // preserve the phenotype-first row order above
     options['aoColumns'] = anyGo
         ? [null, { 'sType': 'numeric' }, null, null]
         : [null, { 'sType': 'numeric' }, null];
