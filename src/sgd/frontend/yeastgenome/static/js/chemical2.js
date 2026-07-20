@@ -123,6 +123,12 @@ function propRow(label, valueHtml) {
     return '<tr><th>' + label + '</th><td>' + valueHtml + '</td></tr>';
 }
 
+// Render a molecular formula with subscripted digits, e.g. C6H14O6 -> C<sub>6</sub>...
+// Escapes first, so it is injection-safe.
+function formatFormula(formula) {
+    return escapeHtml(formula).replace(/(\d+)/g, '<sub>$1</sub>');
+}
+
 function copyableValue(text) {
     return '<span class="chem2-mono">' + escapeHtml(text) + '</span>' +
         ' <button type="button" class="chem2-copy" data-copy="' + escapeAttr(text) + '">' +
@@ -134,17 +140,14 @@ function renderProperties(p) {
     if (!el || !p) { if (el) el.innerHTML = ''; return; }
     // Key properties: shown by default (human-useful facts + identifiers).
     var rows = '';
-    if (p.formula) rows += propRow('Formula', escapeHtml(p.formula));
+    if (p.formula) rows += propRow('Formula', formatFormula(p.formula));
     if (p.molecular_weight) rows += propRow('Molecular weight', escapeHtml(p.molecular_weight) + ' g/mol');
     if (p.pubchem_cid) {
         rows += propRow('PubChem CID',
             '<a href="https://pubchem.ncbi.nlm.nih.gov/compound/' + encodeURIComponent(p.pubchem_cid) + '" target="_blank">' + escapeHtml(p.pubchem_cid) + '</a>');
     }
-    var chebi = p.chebi_id || chemical['chebi_id'];
-    if (chebi) {
-        rows += propRow('ChEBI ID',
-            '<a href="https://www.ebi.ac.uk/chebi/searchId.do?chebiId=' + encodeURIComponent(chebi) + '" target="_blank">' + escapeHtml(chebi) + '</a>');
-    }
+    // ChEBI ID is already shown in the overview facts list at the top of the page,
+    // so it is intentionally omitted here to avoid duplicating the identifier.
 
     // Technical identifiers: structure strings only ~1% of users need; collapsed
     // by default to keep the overview clean, expandable for cheminformatics use.
@@ -236,12 +239,51 @@ function extractConc(ev) {
     return (c !== null && c !== undefined) ? c : '';
 }
 
+// The Details column is dominated by the free-text "Details:" paragraph. Keep the
+// short property notes (Media, Allele, ...) visible but collapse the long paragraph
+// behind a toggle so most users can scan Gene/Phenotype without the wall of text.
+// Only rewrites chemical2's own rows; the shared phenotype_data_to_table is untouched.
+function makeExpandableDetails(noteHtml, index) {
+    if (!noteHtml) return '';
+    var marker = '<strong>Details: </strong>';
+    var idx = noteHtml.indexOf(marker);
+    if (idx === -1) return noteHtml;
+    var prefix = noteHtml.slice(0, idx);
+    var detail = noteHtml.slice(idx + marker.length).replace(/<br>\s*$/, '');
+    // Short details aren't worth a toggle.
+    if (detail.replace(/<[^>]+>/g, '').length < 80) return noteHtml;
+    var id = 'phenodetail' + index;
+    return prefix +
+        '<div class="chem2-details" id="' + id + '">' +
+        '<a href="#" class="chem2-details-toggle" role="button" aria-expanded="false">' +
+        'Show details <i class="fa fa-caret-down"></i></a>' +
+        '<div class="chem2-details-body" style="display:none;">' +
+        '<strong>Details: </strong>' + detail + '</div>' +
+        '</div>';
+}
+
+function setupDetailsToggle() {
+    if (window._chem2_details_registered) return;
+    window._chem2_details_registered = true;
+    $(document).on('click', '.chem2-details-toggle', function (e) {
+        e.preventDefault();
+        var body = $(this).siblings('.chem2-details-body');
+        var shown = body.is(':visible');
+        body.toggle();
+        this.setAttribute('aria-expanded', shown ? 'false' : 'true');
+        this.innerHTML = (shown ? 'Show details ' : 'Hide details ') +
+            '<i class="fa fa-caret-' + (shown ? 'down' : 'up') + '"></i>';
+    });
+}
+
 function create_phenotype_table(data) {
+    setupDetailsToggle();
     var datatable = [];
     var phenotypes = {};
     for (var i = 0; i < data.length; i++) {
         var row = phenotype_data_to_table(data[i], i);
         row.splice(10, 0, extractConc(data[i])); // insert Conc. after Chemical
+        row[11] = makeExpandableDetails(row[11], i); // collapse long Details paragraph
         datatable.push(row);
         phenotypes[data[i]['phenotype']['id']] = true;
     }
@@ -488,22 +530,40 @@ function renderRefTrend() {
     // busiest ~3-year window, e.g. "most active around 2006-2007".
     var peak = peakWindowLabel(byYear, minY, maxY, total);
 
+    // Only label the first/last year and multiples of 5, so 4-digit labels stay
+    // readable across a multi-decade span; every bar still reports its exact year
+    // and count on hover (title + the live readout above the chart).
     var cols = '';
     for (var yr = minY; yr <= maxY; yr++) {
         var c = byYear[yr] || 0;
         var h = maxCount ? Math.round(100 * c / maxCount) : 0;
-        cols += '<div class="chem2-reftrend-col" title="' + yr + ': ' + c + ' reference' + (c === 1 ? '' : 's') + '">' +
-            '<div class="chem2-reftrend-num">' + (c || '') + '</div>' +
+        var showLabel = (yr === minY || yr === maxY || yr % 5 === 0);
+        cols += '<div class="chem2-reftrend-col" data-year="' + yr + '" data-count="' + c +
+            '" title="' + yr + ': ' + c + ' reference' + (c === 1 ? '' : 's') + '">' +
             '<div class="chem2-reftrend-barwrap"><div class="chem2-reftrend-bar" style="height:' + h + '%"></div></div>' +
-            '<div class="chem2-reftrend-year">&rsquo;' + String(yr).slice(2) + '</div>' +
+            '<div class="chem2-reftrend-year' + (showLabel ? '' : ' is-blank') + '">' +
+            (showLabel ? yr : '&nbsp;') + '</div>' +
             '</div>';
     }
     // Histogram is CSS bars (percentage heights), so it lays out correctly even
     // when collapsed inside <details> — no redraw-on-expand needed.
     el.innerHTML = '<div class="chem2-reftrend-summary"><b>' + total + '</b> reference' + (total === 1 ? '' : 's') +
         ', ' + minY + '&ndash;' + maxY + peak + '</div>' +
-        '<details class="chem2-reftrend-details"><summary>Show timeline</summary>' +
+        '<details class="chem2-reftrend-details" open><summary>Show timeline</summary>' +
+        '<div class="chem2-reftrend-readout" aria-live="polite">Hover a bar for the yearly count</div>' +
         '<div class="chem2-reftrend-chart">' + cols + '</div></details>';
+
+    // Live readout: hovering a bar shows e.g. "1994: 4 references" above the chart.
+    $(el).off('.reftrend')
+        .on('mouseenter.reftrend focusin.reftrend', '.chem2-reftrend-col', function () {
+            var y = this.getAttribute('data-year');
+            var c = this.getAttribute('data-count');
+            $(el).find('.chem2-reftrend-readout')
+                .text(y + ': ' + c + ' reference' + (c === '1' ? '' : 's'));
+        })
+        .on('mouseleave.reftrend focusout.reftrend', '.chem2-reftrend-chart', function () {
+            $(el).find('.chem2-reftrend-readout').text('Hover a bar for the yearly count');
+        });
 }
 
 // Busiest 3-year window, returned as ", most active around YYYY-YYYY" (or "" when

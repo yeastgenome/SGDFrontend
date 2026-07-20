@@ -166,6 +166,13 @@
     overflow-x: auto;
     padding-bottom: 0.25rem;
   }
+  .chem2-reftrend-readout {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #5f4788;
+    min-height: 1.1rem;
+    margin-bottom: 0.35rem;
+  }
   .chem2-reftrend-col {
     display: flex;
     flex-direction: column;
@@ -173,11 +180,12 @@
     min-width: 15px;
     font-size: 0.62rem;
     color: #999;
-  }
-  .chem2-reftrend-num {
-    height: 0.85rem;
-    line-height: 0.85rem;
-    color: #555;
+    cursor: pointer;
+
+    &:hover .chem2-reftrend-bar,
+    &:focus .chem2-reftrend-bar {
+      background: #4b2d80;
+    }
   }
   .chem2-reftrend-barwrap {
     height: 90px;
@@ -190,9 +198,15 @@
     min-height: 1px;
     background: #7a5ea8;
     border-radius: 2px 2px 0 0;
+    transition: background 0.12s ease;
   }
   .chem2-reftrend-year {
     margin-top: 2px;
+    white-space: nowrap;
+
+    &.is-blank {
+      visibility: hidden;
+    }
   }
   .chem2-reftrend-details {
     summary {
@@ -226,6 +240,27 @@
   .chem2-network-table {
     margin-top: 0.5rem;
     font-size: 0.9rem;
+  }
+
+  // ---- Collapsible phenotype Details ----
+  .chem2-details-toggle {
+    display: inline-block;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #33608c;
+    cursor: pointer;
+    white-space: nowrap;
+
+    i {
+      margin-left: 0.2rem;
+    }
+    &:hover {
+      color: #21456b;
+    }
+  }
+  .chem2-details-body {
+    margin-top: 0.35rem;
+    line-height: 1.4;
   }
 
   // Mobile: let wide tables scroll instead of breaking the layout.
