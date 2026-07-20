@@ -549,7 +549,7 @@ function renderRefTrend() {
     // when collapsed inside <details> — no redraw-on-expand needed.
     el.innerHTML = '<div class="chem2-reftrend-summary"><b>' + total + '</b> reference' + (total === 1 ? '' : 's') +
         ', ' + minY + '&ndash;' + maxY + peak + '</div>' +
-        '<details class="chem2-reftrend-details" open><summary>Show timeline</summary>' +
+        '<details class="chem2-reftrend-details"><summary>Show timeline</summary>' +
         '<div class="chem2-reftrend-readout" aria-live="polite">Hover a bar for the yearly count</div>' +
         '<div class="chem2-reftrend-chart">' + cols + '</div></details>';
 
