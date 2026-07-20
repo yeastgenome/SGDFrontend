@@ -164,11 +164,26 @@ def references_this_week(request):
     if backend_response.status_code != 200:
         return not_found(request)
     obj = json.loads(backend_response.text)
-    ref_objs = { 
+    ref_objs = {
         "references": obj['references'],
         "references_js": json.dumps(obj['references'])
     }
     return render_to_response(TEMPLATE_ROOT + 'references_this_week.jinja2', ref_objs, request=request)
+
+@view_config(route_name='get_references')
+def get_references(request):
+    # References for a list of PubMed IDs, e.g. /reference/getReferences?id=123,456
+    pmids = request.params.get('id', '') or ''
+    backend_url = os.environ['BACKEND_URL'] + '/references/by_pmids?pmids=' + urllib.parse.quote(pmids)
+    backend_response = requests.get(backend_url)
+    if backend_response.status_code != 200:
+        return not_found(request)
+    obj = json.loads(backend_response.text)
+    ref_objs = {
+        "references": obj['references'],
+        "references_js": json.dumps(obj['references'])
+    }
+    return render_to_response(TEMPLATE_ROOT + 'reference_get_references.jinja2', ref_objs, request=request)
 
 def _recent_days_param(request, default=30):
     # Sanitize ?days to a plain int string before forwarding to the backend.

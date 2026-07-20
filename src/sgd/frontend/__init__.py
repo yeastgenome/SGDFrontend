@@ -75,6 +75,7 @@ def prep_views(chosen_frontend, config):
     config.add_route('curator_sequence', '/curator/locus/{identifier}/sequence')
     # references
     config.add_route('references_this_week', '/reference/recent')
+    config.add_route('get_references', '/reference/getReferences')
     config.add_route('reference', '/reference/{identifier}')
     # recently added phenotypes / alleles pages ('recent' must precede {identifier})
     config.add_route('phenotypes_this_week', '/phenotype/recent')
