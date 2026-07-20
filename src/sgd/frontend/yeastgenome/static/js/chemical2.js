@@ -496,6 +496,7 @@ function loadGoEnrichment(phenoData) {
         uniqGenes[phenoData[i]['locus']['display_name']] = true;
     }
     var geneCount = Object.keys(uniqGenes).length;
+    showEnrichmentLoading();
     $.getJSON('/redirect_backend?param=chemical/' + chemical['id'] + '/go_enrichment', function (data) {
         // Sort most-significant first so "top 10" is the 10 smallest p-values.
         _chem2_enrichment.data = (data || []).slice().sort(function (a, b) {
@@ -507,6 +508,17 @@ function loadGoEnrichment(phenoData) {
     }).fail(function () {
         set_up_enrichment_table([], geneCount);
     });
+}
+
+// The GO Term Finder call can take a while; label the existing table loader so
+// the wait reads as intentional work. create_table removes #enrichment_table_loader
+// by id once the table is built, so no explicit teardown is needed here.
+function showEnrichmentLoading() {
+    var loader = document.getElementById('enrichment_table_loader');
+    if (!loader) return;
+    loader.className = 'sgd-loader-container chem2-enrichment-loader';
+    loader.innerHTML = '<div class="sgd-loader"></div>' +
+        '<div class="chem2-enrichment-loading-text">Calculating GO process enrichment&hellip;</div>';
 }
 
 function drawGoEnrichment() {

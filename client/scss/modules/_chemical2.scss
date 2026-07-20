@@ -242,6 +242,16 @@
     font-size: 0.9rem;
   }
 
+  // ---- GO enrichment loading state ----
+  .chem2-enrichment-loader {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .chem2-enrichment-loading-text {
+    color: #6b6b6b;
+    font-size: 0.9rem;
+  }
+
   // ---- GO enrichment top-N toggle ----
   .chem2-enrichment-toggle {
     font-size: 0.85rem;
