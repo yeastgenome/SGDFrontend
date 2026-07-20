@@ -239,51 +239,12 @@ function extractConc(ev) {
     return (c !== null && c !== undefined) ? c : '';
 }
 
-// The Details column is dominated by the free-text "Details:" paragraph. Keep the
-// short property notes (Media, Allele, ...) visible but collapse the long paragraph
-// behind a toggle so most users can scan Gene/Phenotype without the wall of text.
-// Only rewrites chemical2's own rows; the shared phenotype_data_to_table is untouched.
-function makeExpandableDetails(noteHtml, index) {
-    if (!noteHtml) return '';
-    var marker = '<strong>Details: </strong>';
-    var idx = noteHtml.indexOf(marker);
-    if (idx === -1) return noteHtml;
-    var prefix = noteHtml.slice(0, idx);
-    var detail = noteHtml.slice(idx + marker.length).replace(/<br>\s*$/, '');
-    // Short details aren't worth a toggle.
-    if (detail.replace(/<[^>]+>/g, '').length < 80) return noteHtml;
-    var id = 'phenodetail' + index;
-    return prefix +
-        '<div class="chem2-details" id="' + id + '">' +
-        '<a href="#" class="chem2-details-toggle" role="button" aria-expanded="false">' +
-        'Show details <i class="fa fa-caret-down"></i></a>' +
-        '<div class="chem2-details-body" style="display:none;">' +
-        '<strong>Details: </strong>' + detail + '</div>' +
-        '</div>';
-}
-
-function setupDetailsToggle() {
-    if (window._chem2_details_registered) return;
-    window._chem2_details_registered = true;
-    $(document).on('click', '.chem2-details-toggle', function (e) {
-        e.preventDefault();
-        var body = $(this).siblings('.chem2-details-body');
-        var shown = body.is(':visible');
-        body.toggle();
-        this.setAttribute('aria-expanded', shown ? 'false' : 'true');
-        this.innerHTML = (shown ? 'Show details ' : 'Hide details ') +
-            '<i class="fa fa-caret-' + (shown ? 'down' : 'up') + '"></i>';
-    });
-}
-
 function create_phenotype_table(data) {
-    setupDetailsToggle();
     var datatable = [];
     var phenotypes = {};
     for (var i = 0; i < data.length; i++) {
         var row = phenotype_data_to_table(data[i], i);
         row.splice(10, 0, extractConc(data[i])); // insert Conc. after Chemical
-        row[11] = makeExpandableDetails(row[11], i); // collapse long Details paragraph
         datatable.push(row);
         phenotypes[data[i]['phenotype']['id']] = true;
     }
