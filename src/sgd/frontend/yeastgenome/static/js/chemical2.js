@@ -589,11 +589,12 @@ function collectRefs(data) {
         var key = r['pubmed_id'] || r['link'] || r['display_name'];
         if (!key || _chem2_refs[key]) continue;
         var m = /\((\d{4})\)/.exec(r['display_name'] || '');
-        _chem2_refs[key] = { year: m ? parseInt(m[1], 10) : null };
+        _chem2_refs[key] = { year: m ? parseInt(m[1], 10) : null, pmid: r['pubmed_id'] || null };
     }
 }
 
 var REFTREND_HINT = 'Hover a bar for the yearly count; click to search SGD references for that year';
+var _chem2_year_pmids = {}; // year -> [pubmed_id, ...] for the click-through search
 
 // Strip a trailing charge / IUPAC qualifier in parentheses from a ChEBI display
 // name, e.g. "2-oxoglutarate(2-)" -> "2-oxoglutarate", so it matches in the
@@ -606,10 +607,16 @@ function renderRefTrend() {
     var el = document.getElementById('chem2-reftrend');
     if (!el) return;
     var total = 0, byYear = {};
+    _chem2_year_pmids = {};
     for (var k in _chem2_refs) {
         total++;
         var y = _chem2_refs[k].year;
-        if (y) byYear[y] = (byYear[y] || 0) + 1;
+        if (y) {
+            byYear[y] = (byYear[y] || 0) + 1;
+            if (_chem2_refs[k].pmid) {
+                (_chem2_year_pmids[y] = _chem2_year_pmids[y] || []).push(_chem2_refs[k].pmid);
+            }
+        }
     }
     if (total === 0) { hide_section('reference_usage'); return; }
 
@@ -665,17 +672,20 @@ function renderRefTrend() {
         .on('mouseleave.reftrend focusout.reftrend', '.chem2-reftrend-chart', function () {
             $(el).find('.chem2-reftrend-readout').text(REFTREND_HINT);
         })
-        // Clicking a bar opens an SGD reference search for this chemical in that
-        // year (SGD search honors a year= facet). The chemical name has its
-        // charge/IUPAC suffix like "(2-)" stripped, which would otherwise match
-        // nothing in the full-text search.
+        // Clicking a bar opens an SGD reference search for that year's actual
+        // curated references, by PMID (space-separated PMIDs are OR'd by SGD
+        // search). This matches the timeline exactly — a name search would miss
+        // curated refs that don't mention the chemical by name. Fall back to a
+        // name + year search only when a year has no PMIDs.
         .on('click.reftrend keydown.reftrend', '.chem2-reftrend-col.is-clickable', function (ev) {
             if (ev.type === 'keydown' && ev.which !== 13 && ev.which !== 32) return;
             ev.preventDefault();
             var y = this.getAttribute('data-year');
-            var term = cleanChemName(chemical['display_name']);
-            window.open('/search?category=reference&page=0&q=' + encodeURIComponent(term) +
-                '&year=' + encodeURIComponent(y), '_blank', 'noopener');
+            var pmids = _chem2_year_pmids[y] || [];
+            var q = pmids.length ? pmids.join(' ') : cleanChemName(chemical['display_name']);
+            var url = '/search?category=reference&page=0&q=' + encodeURIComponent(q);
+            if (!pmids.length) url += '&year=' + encodeURIComponent(y);
+            window.open(url, '_blank', 'noopener');
         });
 }
 
