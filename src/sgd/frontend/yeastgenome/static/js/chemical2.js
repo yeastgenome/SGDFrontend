@@ -525,7 +525,19 @@ function drawGoEnrichment() {
     var all = _chem2_enrichment.data;
     var geneCount = _chem2_enrichment.geneCount;
     var capped = all.length > CHEM2_ENRICH_TOP && !_chem2_enrichment.showAll;
-    var shown = capped ? all.slice(0, CHEM2_ENRICH_TOP) : all;
+    var shownRaw = capped ? all.slice(0, CHEM2_ENRICH_TOP) : all;
+    // Format the displayed p-value to 2 significant figures. The shared table's
+    // own mRender doesn't take effect in the bundled DataTables build, so format
+    // the value we hand it; sci-notation sorting still parses it, and the
+    // download below keeps the full-precision raw p-values.
+    var shown = shownRaw.map(function (e) {
+        var n = parseFloat(e['pvalue']);
+        return {
+            go: e['go'],
+            match_count: e['match_count'],
+            pvalue: isNaN(n) ? e['pvalue'] : n.toExponential(2)
+        };
+    });
 
     set_up_enrichment_table(shown, geneCount);
     // set_up_enrichment_table headers the count off the rows it was given; restate
