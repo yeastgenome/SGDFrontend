@@ -346,43 +346,80 @@ function registerFacetFilter() {
     });
 }
 
+var _chem2_facet_dims = [
+    { key: 'gene', label: 'Gene' },
+    { key: 'phenotype', label: 'Phenotype' },
+    { key: 'category', label: 'Experiment Type' },
+    { key: 'strain', label: 'Strain' }
+];
+
+// Count values of dimension `dimKey` over rows matching every ACTIVE filter
+// EXCEPT dimKey's own — so the counts reflect the current filter intersection
+// (they add up to the visible rows), but you can still switch within a
+// dimension. Standard faceted-search behavior.
+function facetCounts(dimKey) {
+    var counts = {};
+    for (var i = 0; i < _chem2_facet_rows.length; i++) {
+        var r = _chem2_facet_rows[i];
+        var match = true;
+        for (var k in _chem2_facet_state) {
+            if (k === dimKey) continue;
+            if (_chem2_facet_state[k] && r[k] !== _chem2_facet_state[k]) { match = false; break; }
+        }
+        if (!match) continue;
+        var v = r[dimKey] || '';
+        if (v === '') continue;
+        counts[v] = (counts[v] || 0) + 1;
+    }
+    return counts;
+}
+
+// (Re)populate one dropdown's <option>s from the current filter state, keeping
+// its selection (and showing the selected value even if the intersection now
+// zeroes it, so the user can still see and clear it).
+function renderFacetOptions(select) {
+    var dimKey = select.getAttribute('data-facet');
+    var selected = _chem2_facet_state[dimKey] || '';
+    var counts = facetCounts(dimKey);
+    var opts = Object.keys(counts).sort(function (a, b) {
+        return counts[b] - counts[a] || a.localeCompare(b);
+    });
+    if (selected && counts[selected] === undefined) { opts.unshift(selected); counts[selected] = 0; }
+    var html = '<option value="">All</option>';
+    opts.forEach(function (o) {
+        html += '<option value="' + escapeAttr(o) + '">' + escapeHtml(o) + ' (' + counts[o] + ')</option>';
+    });
+    select.innerHTML = html;
+    select.value = selected;
+}
+
+function refreshFacetCounts(container) {
+    var selects = container.querySelectorAll('select[data-facet]');
+    for (var i = 0; i < selects.length; i++) renderFacetOptions(selects[i]);
+}
+
 function buildFacets(data, table) {
     var container = document.getElementById('phenotype_facets');
     if (!container) return;
-    var dims = [
-        { key: 'gene', label: 'Gene' },
-        { key: 'phenotype', label: 'Phenotype' },
-        { key: 'category', label: 'Experiment Type' },
-        { key: 'strain', label: 'Strain' }
-    ];
     var html = '';
-    dims.forEach(function (d) {
-        var counts = {};
-        for (var i = 0; i < _chem2_facet_rows.length; i++) {
-            var v = _chem2_facet_rows[i][d.key] || '';
-            if (v === '') continue;
-            counts[v] = (counts[v] || 0) + 1;
-        }
-        var opts = Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a] || a.localeCompare(b); });
-        html += '<label class="chem2-facet"><span>' + d.label + '</span><select data-facet="' + d.key + '">';
-        html += '<option value="">All</option>';
-        opts.forEach(function (o) {
-            html += '<option value="' + escapeAttr(o) + '">' + escapeHtml(o) + ' (' + counts[o] + ')</option>';
-        });
-        html += '</select></label>';
+    _chem2_facet_dims.forEach(function (d) {
+        html += '<label class="chem2-facet"><span>' + d.label + '</span>' +
+            '<select data-facet="' + d.key + '"></select></label>';
     });
     html += '<a class="chem2-facet-clear" href="#">Clear filters</a>';
     container.innerHTML = html;
+    refreshFacetCounts(container);
 
     $(container).on('change', 'select', function () {
         _chem2_facet_state[this.getAttribute('data-facet')] = this.value;
         table.fnDraw();
+        refreshFacetCounts(container); // recount the other facets for the new filter set
     });
     $(container).on('click', '.chem2-facet-clear', function (e) {
         e.preventDefault();
         _chem2_facet_state = {};
-        $(container).find('select').val('');
         table.fnDraw();
+        refreshFacetCounts(container);
     });
 }
 
