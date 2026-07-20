@@ -589,7 +589,14 @@ function collectRefs(data) {
     }
 }
 
-var REFTREND_HINT = 'Hover a bar for the yearly count; click to search SGD references for that year';
+var REFTREND_HINT = 'Hover a bar for the yearly count; click to search SGD references for this chemical';
+
+// Strip a trailing charge / IUPAC qualifier in parentheses from a ChEBI display
+// name, e.g. "2-oxoglutarate(2-)" -> "2-oxoglutarate", so it matches in the
+// full-text reference search.
+function cleanChemName(name) {
+    return String(name || '').replace(/\s*\([^)]*\)\s*$/, '').trim() || String(name || '');
+}
 
 function renderRefTrend() {
     var el = document.getElementById('chem2-reftrend');
@@ -654,13 +661,14 @@ function renderRefTrend() {
         .on('mouseleave.reftrend focusout.reftrend', '.chem2-reftrend-chart', function () {
             $(el).find('.chem2-reftrend-readout').text(REFTREND_HINT);
         })
-        // Clicking a year's bar opens an SGD reference search for this chemical
-        // and that year. Keyboard-accessible via Enter/Space.
+        // Clicking a bar opens an SGD reference search for this chemical. SGD
+        // search is full-text with no URL year filter, so we search the cleaned
+        // chemical name (charge/IUPAC suffix like "(2-)" stripped, which would
+        // otherwise match nothing) rather than a year-specific query.
         .on('click.reftrend keydown.reftrend', '.chem2-reftrend-col.is-clickable', function (ev) {
             if (ev.type === 'keydown' && ev.which !== 13 && ev.which !== 32) return;
             ev.preventDefault();
-            var y = this.getAttribute('data-year');
-            var term = chemical['display_name'] + ' ' + y;
+            var term = cleanChemName(chemical['display_name']);
             window.open('/search?category=reference&q=' + encodeURIComponent(term),
                 '_blank', 'noopener');
         });
