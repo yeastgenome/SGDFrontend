@@ -40,13 +40,13 @@
             {% if chemical.protein_abundance|length > 0 %}
                 add_navbar_element('Protein Abundance', 'protein_abundance');
             {% endif %}
-            {% if chemical.phenotype|length > 0 or chemical.go|length > 0 %}
-                add_navbar_element('Reference Usage', 'reference_usage');
-            {% endif %}
             {% if chemical.network_graph.edges|length > 0 %}
                 add_navbar_element('Shared Chemicals', 'network');
             {% endif %}
             add_navbar_element('Resources', 'resources');
+            {% if chemical.phenotype|length > 0 or chemical.go|length > 0 %}
+                add_navbar_element('Reference Usage', 'reference_usage');
+            {% endif %}
         </script>
 
         <!-- Overview
@@ -244,22 +244,6 @@
         </section>
         {% endif %}
 
-        <!-- Reference usage trend (filled by chemical2.js; hidden if no refs)
-        ================================================== -->
-        <section id="reference_usage" data-magellan-destination="reference_usage">
-            <div class="page-header">
-                <h2>Reference Usage
-                    <a href="#" data-dropdown="reference_usage_info"><i class="fa fa-info-circle"></i></a>
-                    <p id="reference_usage_info" class="f-dropdown content medium" data-dropdown-content>
-                        Distinct references that use this chemical in a phenotype or GO annotation, by year of
-                        publication.
-                    </p>
-                </h2>
-                <hr />
-                <div id="chem2-reftrend" class="chem2-reftrend"></div>
-            </div>
-        </section>
-
         <!-- Shared Chemicals network
         ================================================== -->
         {% if chemical.network_graph.edges|length > 0 %}
@@ -269,9 +253,9 @@
                     <a href="#" data-dropdown="network_help"><i class="fa fa-info-circle"></i></a>
                     <p id="network_help" class="f-dropdown content medium" data-dropdown-content>
                         Chemicals (purple) that share at least one phenotype (blue) with this chemical (black).
-                        The diagram shows shared phenotypes by default; when this chemical has GO annotations,
-                        use &ldquo;Show shared GO&rdquo; to add the shared GO terms (green). Click a chemical to
-                        open its page, or switch to Table for the full list of shared phenotypes and GO terms.
+                        Use the radio buttons to switch between shared phenotypes (the default), shared GO terms
+                        (green, when available), and All. Click a chemical to open its page, or switch to Table
+                        for the full list of shared phenotypes and GO terms.
                     </p>
                 </h2>
                 <hr />
@@ -294,6 +278,22 @@
             <hr />
             <div class="panel">
                 <p id="chem2-resources"></p>
+            </div>
+        </section>
+
+        <!-- Reference usage + related references (filled by chemical2.js; hidden if no refs)
+        ================================================== -->
+        <section id="reference_usage" data-magellan-destination="reference_usage">
+            <div class="page-header">
+                <h2>Reference Usage
+                    <a href="#" data-dropdown="reference_usage_info"><i class="fa fa-info-circle"></i></a>
+                    <p id="reference_usage_info" class="f-dropdown content medium" data-dropdown-content>
+                        Distinct references that use this chemical in a phenotype or GO annotation, by year of
+                        publication, followed by the full list of related papers (newest first).
+                    </p>
+                </h2>
+                <hr />
+                <div id="chem2-reftrend" class="chem2-reftrend"></div>
             </div>
         </section>
     </div>

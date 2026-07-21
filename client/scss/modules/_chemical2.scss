@@ -231,6 +231,32 @@
     }
   }
 
+  // ---- Related references list (below the timeline) ----
+  .chem2-ref-list {
+    margin-top: 1.25rem;
+  }
+  .chem2-ref-list-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #6b6b6b;
+    margin-bottom: 0.5rem;
+  }
+  .chem2-ref-list-ol {
+    margin-left: 1.25rem;
+    max-width: 60rem;
+  }
+  .chem2-ref-item {
+    margin-bottom: 0.5rem;
+    line-height: 1.45;
+  }
+  .chem2-ref-pmid {
+    font-size: 0.8rem;
+    color: #888;
+    white-space: nowrap;
+  }
+
   // ---- Network ----
   .chem2-network-toolbar {
     margin-bottom: 0.5rem;

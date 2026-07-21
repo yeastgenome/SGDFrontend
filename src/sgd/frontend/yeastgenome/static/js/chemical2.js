@@ -589,104 +589,118 @@ function collectRefs(data) {
         var key = r['pubmed_id'] || r['link'] || r['display_name'];
         if (!key || _chem2_refs[key]) continue;
         var m = /\((\d{4})\)/.exec(r['display_name'] || '');
-        _chem2_refs[key] = { year: m ? parseInt(m[1], 10) : null, pmid: r['pubmed_id'] || null };
+        _chem2_refs[key] = {
+            year: m ? parseInt(m[1], 10) : null,
+            pmid: r['pubmed_id'] || null,
+            display_name: r['display_name'] || '',
+            link: r['link'] || null
+        };
     }
 }
 
-var REFTREND_HINT = 'Hover a bar for the yearly count; click to search SGD references for that year';
-var _chem2_year_pmids = {}; // year -> [pubmed_id, ...] for the click-through search
-
-// Strip a trailing charge / IUPAC qualifier in parentheses from a ChEBI display
-// name, e.g. "2-oxoglutarate(2-)" -> "2-oxoglutarate", so it matches in the
-// full-text reference search.
-function cleanChemName(name) {
-    return String(name || '').replace(/\s*\([^)]*\)\s*$/, '').trim() || String(name || '');
-}
+var REFTREND_HINT = 'Hover a bar for the yearly count';
+var _chem2_citations = {}; // pmid -> full citation object from /references/by_pmids
 
 function renderRefTrend() {
     var el = document.getElementById('chem2-reftrend');
     if (!el) return;
     var total = 0, byYear = {};
-    _chem2_year_pmids = {};
     for (var k in _chem2_refs) {
         total++;
         var y = _chem2_refs[k].year;
-        if (y) {
-            byYear[y] = (byYear[y] || 0) + 1;
-            if (_chem2_refs[k].pmid) {
-                (_chem2_year_pmids[y] = _chem2_year_pmids[y] || []).push(_chem2_refs[k].pmid);
-            }
-        }
+        if (y) byYear[y] = (byYear[y] || 0) + 1;
     }
     if (total === 0) { hide_section('reference_usage'); return; }
 
     var years = Object.keys(byYear).map(Number).sort(function (a, b) { return a - b; });
-    if (years.length === 0) {
-        el.innerHTML = '<div class="chem2-reftrend-summary"><b>' + total + '</b> reference' + (total === 1 ? '' : 's') + '</div>';
-        return;
+    var head = '';
+    if (years.length) {
+        var minY = years[0], maxY = years[years.length - 1];
+        var maxCount = 0;
+        for (var y2 in byYear) { if (byYear[y2] > maxCount) maxCount = byYear[y2]; }
+        var peak = peakWindowLabel(byYear, minY, maxY, total);
+
+        // Only label the first/last year and multiples of 5 so 4-digit labels stay
+        // readable across a multi-decade span; every bar reports its year/count on hover.
+        var cols = '';
+        for (var yr = minY; yr <= maxY; yr++) {
+            var c = byYear[yr] || 0;
+            var h = maxCount ? Math.round(100 * c / maxCount) : 0;
+            var showLabel = (yr === minY || yr === maxY || yr % 5 === 0);
+            cols += '<div class="chem2-reftrend-col" data-year="' + yr + '" data-count="' + c +
+                '" title="' + yr + ': ' + c + ' reference' + (c === 1 ? '' : 's') + '">' +
+                '<div class="chem2-reftrend-barwrap"><div class="chem2-reftrend-bar" style="height:' + h + '%"></div></div>' +
+                '<div class="chem2-reftrend-year' + (showLabel ? '' : ' is-blank') + '">' +
+                (showLabel ? yr : '&nbsp;') + '</div>' +
+                '</div>';
+        }
+        head = '<div class="chem2-reftrend-summary"><b>' + total + '</b> reference' + (total === 1 ? '' : 's') +
+            ', ' + minY + '&ndash;' + maxY + peak + '</div>' +
+            '<div class="chem2-reftrend-readout" aria-live="polite">' + REFTREND_HINT + '</div>' +
+            '<div class="chem2-reftrend-chart">' + cols + '</div>';
+    } else {
+        head = '<div class="chem2-reftrend-summary"><b>' + total + '</b> reference' + (total === 1 ? '' : 's') + '</div>';
     }
-    var minY = years[0], maxY = years[years.length - 1];
-    var maxCount = 0;
-    for (var y2 in byYear) { if (byYear[y2] > maxCount) maxCount = byYear[y2]; }
 
-    // Compact line: total, span, and (only when there's a real concentration) the
-    // busiest ~3-year window, e.g. "most active around 2006-2007".
-    var peak = peakWindowLabel(byYear, minY, maxY, total);
+    // Timeline stays open; the full paper list (newest first) renders below it.
+    el.innerHTML = head + '<div id="chem2-ref-list" class="chem2-ref-list"></div>';
 
-    // Only label the first/last year and multiples of 5, so 4-digit labels stay
-    // readable across a multi-decade span; every bar still reports its exact year
-    // and count on hover (title + the live readout above the chart).
-    var cols = '';
-    for (var yr = minY; yr <= maxY; yr++) {
-        var c = byYear[yr] || 0;
-        var h = maxCount ? Math.round(100 * c / maxCount) : 0;
-        var showLabel = (yr === minY || yr === maxY || yr % 5 === 0);
-        var clickable = c > 0;
-        cols += '<div class="chem2-reftrend-col' + (clickable ? ' is-clickable' : '') +
-            '" data-year="' + yr + '" data-count="' + c + '"' +
-            (clickable ? ' role="link" tabindex="0"' : '') +
-            ' title="' + yr + ': ' + c + ' reference' + (c === 1 ? '' : 's') +
-            (clickable ? ' — click to search SGD references' : '') + '">' +
-            '<div class="chem2-reftrend-barwrap"><div class="chem2-reftrend-bar" style="height:' + h + '%"></div></div>' +
-            '<div class="chem2-reftrend-year' + (showLabel ? '' : ' is-blank') + '">' +
-            (showLabel ? yr : '&nbsp;') + '</div>' +
-            '</div>';
-    }
-    // Histogram is CSS bars (percentage heights), so it lays out correctly even
-    // when collapsed inside <details> — no redraw-on-expand needed.
-    el.innerHTML = '<div class="chem2-reftrend-summary"><b>' + total + '</b> reference' + (total === 1 ? '' : 's') +
-        ', ' + minY + '&ndash;' + maxY + peak + '</div>' +
-        '<details class="chem2-reftrend-details"><summary>Show timeline</summary>' +
-        '<div class="chem2-reftrend-readout" aria-live="polite">' + REFTREND_HINT + '</div>' +
-        '<div class="chem2-reftrend-chart">' + cols + '</div></details>';
-
-    // Live readout: hovering a bar shows e.g. "1994: 4 references" above the chart.
     $(el).off('.reftrend')
         .on('mouseenter.reftrend focusin.reftrend', '.chem2-reftrend-col', function () {
             var y = this.getAttribute('data-year');
             var c = this.getAttribute('data-count');
             $(el).find('.chem2-reftrend-readout')
-                .text(y + ': ' + c + ' reference' + (c === '1' ? '' : 's') +
-                    (c !== '0' ? ' — click to search SGD references' : ''));
+                .text(y + ': ' + c + ' reference' + (c === '1' ? '' : 's'));
         })
         .on('mouseleave.reftrend focusout.reftrend', '.chem2-reftrend-chart', function () {
             $(el).find('.chem2-reftrend-readout').text(REFTREND_HINT);
-        })
-        // Clicking a bar opens an SGD reference search for that year's actual
-        // curated references, by PMID (space-separated PMIDs are OR'd by SGD
-        // search). This matches the timeline exactly — a name search would miss
-        // curated refs that don't mention the chemical by name. Fall back to a
-        // name + year search only when a year has no PMIDs.
-        .on('click.reftrend keydown.reftrend', '.chem2-reftrend-col.is-clickable', function (ev) {
-            if (ev.type === 'keydown' && ev.which !== 13 && ev.which !== 32) return;
-            ev.preventDefault();
-            var y = this.getAttribute('data-year');
-            var pmids = _chem2_year_pmids[y] || [];
-            var q = pmids.length ? pmids.join(' ') : cleanChemName(chemical['display_name']);
-            var url = '/search?category=reference&page=0&q=' + encodeURIComponent(q);
-            if (!pmids.length) url += '&year=' + encodeURIComponent(y);
-            window.open(url, '_blank', 'noopener');
         });
+
+    renderReferenceList();
+}
+
+// List every related reference below the timeline, newest first. Full citations
+// are pulled from /references/by_pmids (fetched incrementally as PMIDs arrive);
+// the list paints immediately from display names and upgrades when they load.
+function renderReferenceList() {
+    var listEl = document.getElementById('chem2-ref-list');
+    if (!listEl) return;
+    var refs = [];
+    for (var k in _chem2_refs) refs.push(_chem2_refs[k]);
+    refs.sort(function (a, b) {
+        return (b.year || 0) - (a.year || 0) ||
+            (a.display_name || '').localeCompare(b.display_name || '');
+    });
+
+    var need = refs.map(function (r) { return r.pmid; })
+        .filter(function (p) { return p && !(p in _chem2_citations); });
+    if (need.length) {
+        var param = 'references/by_pmids?pmids=' + need.join(',');
+        $.getJSON('/redirect_backend?param=' + encodeURIComponent(param), function (data) {
+            ((data && data.references) || []).forEach(function (c) { _chem2_citations[c.pubmed_id] = c; });
+            paintReferenceList(refs);
+        }).fail(function () { paintReferenceList(refs); });
+    }
+    paintReferenceList(refs);
+}
+
+function paintReferenceList(refs) {
+    var listEl = document.getElementById('chem2-ref-list');
+    if (!listEl) return;
+    var items = refs.map(function (r) {
+        var cit = r.pmid ? _chem2_citations[r.pmid] : null;
+        var text = (cit && cit.citation) ? cit.citation : r.display_name;
+        var link = r.link || (cit && cit.link);
+        var label = link ? '<a href="' + escapeAttr(link) + '">' + escapeHtml(text) + '</a>' : escapeHtml(text);
+        var pmid = '';
+        if (r.pmid) {
+            pmid = ' <span class="chem2-ref-pmid">PMID: <a href="https://pubmed.ncbi.nlm.nih.gov/' +
+                encodeURIComponent(r.pmid) + '" target="_blank">' + escapeHtml(String(r.pmid)) + '</a></span>';
+        }
+        return '<li class="chem2-ref-item">' + label + pmid + '</li>';
+    });
+    listEl.innerHTML = '<h3 class="chem2-ref-list-title">Related References</h3>' +
+        '<ol class="chem2-ref-list-ol">' + items.join('') + '</ol>';
 }
 
 // Busiest 3-year window, returned as ", most active around YYYY-YYYY" (or "" when
