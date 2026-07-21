@@ -211,9 +211,11 @@ def prep_views(chosen_frontend, config):
                     renderer=chosen_frontend.get_renderer('disease_ontology'),
                     route_name='disease_ontology')
 
+    # /chemical serves the redesigned page (chemical2.jinja2); same backend data,
+    # new template. /chemical2 remains as an alias.
     config.add_route('chemical', '/chemical/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('chemical', request)(getattr(chosen_frontend, 'chemical')(chemical_repr=request.matchdict['identifier'].lower())),
-                    renderer=chosen_frontend.get_renderer('chemical'),
+                    renderer=chosen_frontend.get_renderer('chemical2'),
                     route_name='chemical')
 
     # Redesigned chemical page (Tier 1), reuses the same backend chemical data.
