@@ -659,9 +659,14 @@ function renderRefTrend() {
     renderReferenceList();
 }
 
-// List every related reference below the timeline, newest first. Full citations
-// are pulled from /references/by_pmids (fetched incrementally as PMIDs arrive);
-// the list paints immediately from display names and upgrades when they load.
+// List related references below the timeline, newest first. Shows the 10 most
+// recent by default with a "Show all" toggle. Full citations are pulled from
+// /references/by_pmids (fetched incrementally as PMIDs arrive); the list paints
+// immediately from display names and upgrades when they load.
+var CHEM2_REF_TOP = 10;
+var _chem2_ref_show_all = false;
+var _chem2_ref_sorted = [];
+
 function renderReferenceList() {
     var listEl = document.getElementById('chem2-ref-list');
     if (!listEl) return;
@@ -671,6 +676,7 @@ function renderReferenceList() {
         return (b.year || 0) - (a.year || 0) ||
             (a.display_name || '').localeCompare(b.display_name || '');
     });
+    _chem2_ref_sorted = refs;
 
     var need = refs.map(function (r) { return r.pmid; })
         .filter(function (p) { return p && !(p in _chem2_citations); });
@@ -678,16 +684,19 @@ function renderReferenceList() {
         var param = 'references/by_pmids?pmids=' + need.join(',');
         $.getJSON('/redirect_backend?param=' + encodeURIComponent(param), function (data) {
             ((data && data.references) || []).forEach(function (c) { _chem2_citations[c.pubmed_id] = c; });
-            paintReferenceList(refs);
-        }).fail(function () { paintReferenceList(refs); });
+            paintReferenceList();
+        }).fail(function () { paintReferenceList(); });
     }
-    paintReferenceList(refs);
+    paintReferenceList();
 }
 
-function paintReferenceList(refs) {
+function paintReferenceList() {
     var listEl = document.getElementById('chem2-ref-list');
     if (!listEl) return;
-    var items = refs.map(function (r) {
+    var refs = _chem2_ref_sorted;
+    var capped = refs.length > CHEM2_REF_TOP && !_chem2_ref_show_all;
+    var shown = capped ? refs.slice(0, CHEM2_REF_TOP) : refs;
+    var items = shown.map(function (r) {
         var cit = r.pmid ? _chem2_citations[r.pmid] : null;
         var text = (cit && cit.citation) ? cit.citation : r.display_name;
         var link = r.link || (cit && cit.link);
@@ -699,9 +708,23 @@ function paintReferenceList(refs) {
         }
         return '<li class="chem2-ref-item">' + label + pmid + '</li>';
     });
-    listEl.innerHTML = '<h3 class="chem2-ref-list-title">Related References</h3>' +
-        '<ol class="chem2-ref-list-ol">' + items.join('') + '</ol>';
+    var titleCount = refs.length ? ' (' + refs.length + ')' : '';
+    var note = '';
+    if (refs.length > CHEM2_REF_TOP) {
+        note = '<p class="chem2-ref-note">' +
+            (capped ? ('Showing the ' + CHEM2_REF_TOP + ' most recent of ' + refs.length + ' references. ') : '') +
+            '<a href="#" class="chem2-ref-toggle">' +
+            (capped ? ('Show all ' + refs.length) : ('Show ' + CHEM2_REF_TOP + ' most recent')) + '</a></p>';
+    }
+    listEl.innerHTML = '<h3 class="chem2-ref-list-title">Related References' + titleCount + '</h3>' +
+        note + '<ol class="chem2-ref-list-ol">' + items.join('') + '</ol>';
 }
+
+$(document).on('click', '.chem2-ref-toggle', function (e) {
+    e.preventDefault();
+    _chem2_ref_show_all = !_chem2_ref_show_all;
+    paintReferenceList();
+});
 
 // Busiest 3-year window, returned as ", most active around YYYY-YYYY" (or "" when
 // the distribution is too small or flat to call a peak honestly).

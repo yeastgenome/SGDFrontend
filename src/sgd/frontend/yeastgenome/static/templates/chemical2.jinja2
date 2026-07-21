@@ -43,10 +43,10 @@
             {% if chemical.network_graph.edges|length > 0 %}
                 add_navbar_element('Shared Chemicals', 'network');
             {% endif %}
-            add_navbar_element('Resources', 'resources');
             {% if chemical.phenotype|length > 0 or chemical.go|length > 0 %}
                 add_navbar_element('Reference Usage', 'reference_usage');
             {% endif %}
+            add_navbar_element('Resources', 'resources');
         </script>
 
         <!-- Overview
@@ -271,16 +271,6 @@
         </section>
         {% endif %}
 
-        <!-- Resources
-        ================================================== -->
-        <section id="resources" data-magellan-destination="resources">
-            <h2>Resources</h2>
-            <hr />
-            <div class="panel">
-                <p id="chem2-resources"></p>
-            </div>
-        </section>
-
         <!-- Reference usage + related references (filled by chemical2.js; hidden if no refs)
         ================================================== -->
         <section id="reference_usage" data-magellan-destination="reference_usage">
@@ -294,6 +284,16 @@
                 </h2>
                 <hr />
                 <div id="chem2-reftrend" class="chem2-reftrend"></div>
+            </div>
+        </section>
+
+        <!-- Resources
+        ================================================== -->
+        <section id="resources" data-magellan-destination="resources">
+            <h2>Resources</h2>
+            <hr />
+            <div class="panel">
+                <p id="chem2-resources"></p>
             </div>
         </section>
     </div>

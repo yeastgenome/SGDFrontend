@@ -256,6 +256,16 @@
     color: #888;
     white-space: nowrap;
   }
+  .chem2-ref-note {
+    font-size: 0.85rem;
+    color: #6b6b6b;
+    margin-bottom: 0.5rem;
+
+    a.chem2-ref-toggle {
+      font-weight: 600;
+      cursor: pointer;
+    }
+  }
 
   // ---- Network ----
   .chem2-network-toolbar {
