@@ -606,6 +606,7 @@ function collectRefs(data) {
         _chem2_refs[key] = {
             year: m ? parseInt(m[1], 10) : null,
             pmid: pmid,
+            citation: r['citation'] || null,
             display_name: r['display_name'] || '',
             link: r['link'] || null
         };
@@ -712,7 +713,9 @@ function paintReferenceList() {
     var shown = capped ? refs.slice(0, CHEM2_REF_TOP) : refs;
     var items = shown.map(function (r) {
         var cit = r.pmid ? _chem2_citations[r.pmid] : null;
-        var text = (cit && cit.citation) ? cit.citation : r.display_name;
+        // Prefer the full citation: from by_pmids for PubMed refs, otherwise the
+        // citation the annotation carries (SGD internal refs), then the bare name.
+        var text = (cit && cit.citation) ? cit.citation : (r.citation || r.display_name);
         var link = r.link || (cit && cit.link);
         var label = link ? '<a href="' + escapeAttr(link) + '">' + escapeHtml(text) + '</a>' : escapeHtml(text);
         var pmid = '';
