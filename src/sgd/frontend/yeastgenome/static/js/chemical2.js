@@ -580,18 +580,32 @@ function renderRelatedGenes(genes) {
 }
 
 // ---- Reference usage trend -----------------------------------------------
+// Backend hands us pubmed_id in mixed shapes: a bare integer (phenotype path),
+// "PMID:12345" (GO path), or the sentinel "PMID:None" for SGD references with no
+// PubMed ID. Reduce to a bare numeric string, or null when there is no real PMID
+// so we never build a dead pubmed.ncbi.nlm.nih.gov link.
+function normalizePmid(v) {
+    if (v === null || v === undefined) return null;
+    var digits = String(v).replace(/^PMID:/i, '').trim();
+    return /^\d+$/.test(digits) ? digits : null;
+}
+
 // Accumulate distinct references (deduped across phenotype + GO annotations)
 // with their publication year parsed from the display name, e.g. "... (2002)".
 function collectRefs(data) {
     for (var i = 0; i < data.length; i++) {
         var r = data[i]['reference'];
         if (!r) continue;
-        var key = r['pubmed_id'] || r['link'] || r['display_name'];
+        // Dedup on the real PMID when there is one; otherwise fall back to
+        // link/display_name so distinct non-PubMed refs (all "PMID:None") don't
+        // collapse into a single entry.
+        var pmid = normalizePmid(r['pubmed_id']);
+        var key = pmid || r['link'] || r['display_name'];
         if (!key || _chem2_refs[key]) continue;
         var m = /\((\d{4})\)/.exec(r['display_name'] || '');
         _chem2_refs[key] = {
             year: m ? parseInt(m[1], 10) : null,
-            pmid: r['pubmed_id'] || null,
+            pmid: pmid,
             display_name: r['display_name'] || '',
             link: r['link'] || null
         };

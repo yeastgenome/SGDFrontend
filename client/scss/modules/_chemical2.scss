@@ -110,10 +110,25 @@
       color: #6b6b6b;
       padding: 0.2rem 0;
       outline: none;
+      list-style: none; // hide the default marker (Firefox) in favor of our caret
 
+      &::-webkit-details-marker {
+        display: none; // hide the default marker (WebKit/Blink)
+      }
+      // Explicit caret so it's obvious the row expands; rotates when open.
+      &::before {
+        content: "\25B8";
+        display: inline-block;
+        margin-right: 0.4em;
+        font-size: 0.85em;
+        transition: transform 0.15s ease;
+      }
       &:hover {
         color: #33608c;
       }
+    }
+    &[open] > summary::before {
+      transform: rotate(90deg);
     }
     .chem2-properties-table {
       margin-top: 0.4rem;
