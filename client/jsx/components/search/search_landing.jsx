@@ -1,0 +1,623 @@
+import 'isomorphic-fetch';
+import React from 'react';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
+
+import AppSearchBar from '../../containers/app_search_bar.jsx';
+
+const SEARCH_URL = '/search';
+const RECENT_UPDATES_URL = '/recent_updates';
+const GENE_OF_DAY_URL = '/redirect_backend?param=gene_of_the_day';
+
+// Categories surfaced as large "Browse by Category" cards. Keys match the
+// ElasticSearch category keys returned in the search aggregations. Example
+// chips are real, navigable search terms shown as suggested entry points.
+const PRIMARY_CATEGORIES = [
+  {
+    key: 'locus',
+    name: 'Genes',
+    blurb: 'Protein-coding genes and ncRNAs',
+    examples: ['HOG1', 'CDC28'],
+  },
+  {
+    key: 'reference',
+    name: 'References',
+    blurb: 'Literature and curation sources',
+    examples: ['autophagy', 'nuclear pore'],
+  },
+  {
+    key: 'allele',
+    name: 'Alleles',
+    blurb: 'Mutants and variants',
+    examples: ['hog1', 'cdc28-1'],
+  },
+  {
+    key: 'biological_process',
+    name: 'Biological Processes',
+    blurb: 'GO terms and pathway activities',
+    examples: ['autophagy', 'osmotic stress'],
+  },
+  {
+    key: 'chemical',
+    name: 'Chemicals',
+    blurb: 'Compounds and metabolites',
+    examples: ['sorbitol', 'glucose'],
+  },
+  {
+    key: 'phenotype',
+    name: 'Phenotypes',
+    blurb: 'Observable traits and screens',
+    examples: ['heat sensitivity'],
+  },
+];
+
+// Everything else, revealed under "Other categories". This list only controls
+// which keys appear (and their labels via _getCategoryName); the display order
+// is sorted by live count, most to least, in _renderSecondary.
+const SECONDARY_CATEGORIES = [
+  'biological_process',
+  'molecular_function',
+  'cellular_component',
+  'disease',
+  'complex',
+  'pathway',
+  'strain',
+  'dataset',
+  'observable',
+  'reserved_name',
+  'colleague',
+  'resource',
+  'contig',
+  'download',
+];
+
+// Downloads/Datasets are grouped separately under a muted "Files & Datasets"
+// header, kept out of the main count-sorted "Other categories" list.
+const FILES_CATEGORIES = ['download', 'dataset'];
+
+// Rotating search-box placeholder suggestions for the landing hero.
+const ROTATING_PLACEHOLDERS = [
+  'Try HOG1',
+  'Try autophagy',
+  'Try sorbitol',
+  'Try CDC28',
+  'Try nuclear pore',
+  'Try GAL4',
+];
+
+const POPULAR_SEARCHES = ['HOG1', 'CDC28', 'autophagy', 'nuclear pore', 'histone'];
+
+const COMMON_TASKS = [
+  {
+    icon: 'fa-eye',
+    label: 'Find genes by phenotype',
+    detail: 'e.g. heat sensitivity, osmotic stress resistance',
+    href: `${SEARCH_URL}?q=&category=phenotype`,
+    external: false,
+  },
+  {
+    icon: 'fa-download',
+    label: 'Download sequences',
+    detail: 'FASTA, GFF, and annotation files',
+    href: 'http://sgd-archive.yeastgenome.org/',
+    external: true,
+  },
+  {
+    icon: 'fa-list',
+    label: 'Analyze a gene list',
+    detail: 'GO enrichment and queries in YeastMine',
+    href: 'https://yeastmine.yeastgenome.org/',
+    external: true,
+  },
+  {
+    icon: 'fa-sitemap',
+    label: 'Explore pathways',
+    detail: 'Biochemical pathways and metabolism',
+    href: `${SEARCH_URL}?q=&category=pathway`,
+    external: false,
+  },
+];
+
+const SearchLanding = createReactClass({
+  displayName: 'SearchLanding',
+
+  propTypes: {
+    aggregations: PropTypes.array,
+    total: PropTypes.number,
+  },
+
+  getInitialState() {
+    return {
+      recentData: null,
+      recentError: false,
+      showSecondary: true,
+      placeholderIdx: 0,
+      geneOfDay: null,
+    };
+  },
+
+  componentDidMount() {
+    this._isMounted = true;
+    this._fetchRecentUpdates();
+    this._fetchGeneOfDay();
+    // Rotate the search placeholder suggestions.
+    this._placeholderTimer = setInterval(() => {
+      if (this._isMounted) {
+        this.setState((s) => ({
+          placeholderIdx: (s.placeholderIdx + 1) % ROTATING_PLACEHOLDERS.length,
+        }));
+      }
+    }, 3000);
+    // "/" focuses the search box (unless the user is already typing in a field).
+    this._onGlobalKey = (e) => {
+      if (e.key !== '/' || e.metaKey || e.ctrlKey || e.altKey) return;
+      const tag = (e.target && e.target.tagName) || '';
+      if (
+        /^(input|textarea|select)$/i.test(tag) ||
+        (e.target && e.target.isContentEditable)
+      ) {
+        return;
+      }
+      const input = document.querySelector(
+        '.search-landing-hero-search input.react-typeahead-usertext'
+      );
+      if (input) {
+        e.preventDefault();
+        input.focus();
+      }
+    };
+    document.addEventListener('keydown', this._onGlobalKey);
+  },
+
+  componentWillUnmount() {
+    this._isMounted = false;
+    if (this._placeholderTimer) clearInterval(this._placeholderTimer);
+    if (this._onGlobalKey) {
+      document.removeEventListener('keydown', this._onGlobalKey);
+    }
+  },
+
+  render() {
+    return (
+      <div className="search-landing">
+        {this._renderHero()}
+        {this._renderStatsBar()}
+        <div className="row search-landing-body">
+          <div className="columns medium-8 small-12">
+            {this._renderBrowseByCategory()}
+          </div>
+          <div className="columns medium-4 small-12">
+            {this._renderWhatsNew()}
+            {/* Common Tasks hidden for now; the space is given to What's New.
+                Re-enable by restoring {this._renderCommonTasks()} below. */}
+            {/* {this._renderCommonTasks()} */}
+          </div>
+        </div>
+      </div>
+    );
+  },
+
+  _renderHero() {
+    const countMap = this._getCountMap();
+    const geneCount = countMap['locus'];
+    const refCount = countMap['reference'];
+    return (
+      <div className="search-landing-hero">
+        <h1 className="search-landing-title">
+          Search <span className="highlight">Saccharomyces</span> Genome
+          Database
+        </h1>
+        <p className="search-landing-subtitle">
+          {geneCount && refCount ? (
+            <span>
+              Explore <strong>{geneCount.toLocaleString()}</strong> genes,{' '}
+              <strong>{refCount.toLocaleString()}</strong> references, and more
+            </span>
+          ) : (
+            <span>Explore genes, references, phenotypes, and more</span>
+          )}
+        </p>
+        <div className="search-landing-hero-search">
+          <AppSearchBar
+            placeholder={ROTATING_PLACEHOLDERS[this.state.placeholderIdx]}
+          />
+        </div>
+        {this._renderGeneOfDay()}
+      </div>
+    );
+  },
+
+  _renderGeneOfDay() {
+    const gene = this.state.geneOfDay;
+    if (!gene || !gene.display_name) return null;
+    return (
+      <p className="search-landing-gotd">
+        <span className="search-landing-gotd-label">Gene of the day:</span>{' '}
+        <a href={gene.link || `/locus/${gene.display_name}`}>
+          {gene.display_name}
+        </a>
+        {gene.headline ? ` — ${gene.headline}` : ''}
+      </p>
+    );
+  },
+
+  _renderStatsBar() {
+    const today = new Date().toLocaleDateString(undefined, {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+    return (
+      <div className="search-landing-statsbar">
+        <span className="search-landing-live">
+          <span className="search-landing-dot" /> Live index
+        </span>
+        <span>
+          SGD is up to date as of {today} — start typing to search or browse
+          below
+        </span>
+      </div>
+    );
+  },
+
+  _renderBrowseByCategory() {
+    const countMap = this._getCountMap();
+    return (
+      <div className="search-landing-browse">
+        <h2 className="search-landing-section-title">Browse by Category</h2>
+        <div className="search-landing-cards">
+          {PRIMARY_CATEGORIES.map((cat) => this._renderCard(cat, countMap))}
+        </div>
+        {this._renderSecondary(countMap)}
+      </div>
+    );
+  },
+
+  _renderCard(cat, countMap) {
+    const count = countMap[cat.key];
+    return (
+      <div className="search-landing-card" key={`card${cat.key}`}>
+        <Link
+          to={this._getCategoryHref(cat.key)}
+          className="search-landing-card-head"
+        >
+          <span className="search-landing-card-name">
+            <span className={`search-cat ${cat.key}`} />
+            {cat.name}
+          </span>
+          {typeof count === 'number' && (
+            <span className="search-landing-card-count">
+              {count.toLocaleString()}
+            </span>
+          )}
+        </Link>
+        <p className="search-landing-card-blurb">{cat.blurb}</p>
+        {cat.examples && cat.examples.length > 0 && (
+          <div className="search-landing-card-examples">
+            {cat.examples.map((ex, i) => (
+              <Link
+                className="search-landing-chip small"
+                key={`ex${cat.key}${i}`}
+                to={this._getExampleHref(cat.key, ex)}
+              >
+                {ex}
+              </Link>
+            ))}
+          </div>
+        )}
+        <Link
+          to={this._getCategoryHref(cat.key)}
+          className="search-landing-card-browse"
+        >
+          Browse all <i className="fa fa-arrow-right" />
+        </Link>
+      </div>
+    );
+  },
+
+  _renderSecondaryItem(key, countMap) {
+    return (
+      <Link
+        to={this._getCategoryHref(key)}
+        className="search-landing-secondary-item"
+        key={`sec${key}`}
+      >
+        <span>
+          <span className={`search-cat ${key}`} />
+          {this._getCategoryName(key)}
+        </span>
+        <span>{countMap[key].toLocaleString()}</span>
+      </Link>
+    );
+  },
+
+  _renderSecondary(countMap) {
+    const primaryKeys = PRIMARY_CATEGORIES.map((c) => c.key);
+    const hasCount = (key) =>
+      primaryKeys.indexOf(key) < 0 && typeof countMap[key] === 'number';
+    const byCountDesc = (a, b) => countMap[b] - countMap[a];
+    // Main "Other categories", most to least, excluding Files & Datasets.
+    const items = SECONDARY_CATEGORIES.filter(
+      (key) => hasCount(key) && FILES_CATEGORIES.indexOf(key) < 0
+    ).sort(byCountDesc);
+    // Downloads/Datasets shown separately under a muted header.
+    const fileItems = FILES_CATEGORIES.filter(hasCount).sort(byCountDesc);
+    if (items.length === 0 && fileItems.length === 0) return null;
+    const _toggle = (e) => {
+      e.preventDefault();
+      this.setState({ showSecondary: !this.state.showSecondary });
+    };
+    return (
+      <div className="search-landing-secondary">
+        <a className="search-landing-secondary-toggle" onClick={_toggle}>
+          <i
+            className={`fa fa-angle-${
+              this.state.showSecondary ? 'down' : 'right'
+            }`}
+          />{' '}
+          Other categories
+          <span className="search-landing-secondary-note">
+            {items.length + fileItems.length} more data types
+          </span>
+        </a>
+        {this.state.showSecondary && (
+          <div>
+            <div className="search-landing-secondary-list">
+              {items.map((key) => this._renderSecondaryItem(key, countMap))}
+            </div>
+            {fileItems.length > 0 && (
+              <div className="search-landing-files">
+                <h4 className="search-landing-files-header">Files &amp; Datasets</h4>
+                <div className="search-landing-secondary-list search-landing-files-list">
+                  {fileItems.map((key) =>
+                    this._renderSecondaryItem(key, countMap)
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  },
+
+  _renderWhatsNew() {
+    const data = this.state.recentData;
+    return (
+      <div className="search-landing-panel search-landing-whatsnew">
+        <h3 className="search-landing-panel-title">
+          <i className="fa fa-star" /> What&apos;s New in SGD
+        </h3>
+        {this.state.recentError && (
+          <p className="search-landing-panel-empty">
+            Recent updates are unavailable right now.
+          </p>
+        )}
+        {!this.state.recentError && !data && (
+          <p className="search-landing-panel-empty">Loading recent updates…</p>
+        )}
+        {data && this._renderRecentCounts(data)}
+        {data && this._renderRecentReferences(data)}
+      </div>
+    );
+  },
+
+  _renderRecentCounts(data) {
+    const counts = (data.counts || []).filter((c) => c.count > 0);
+    if (counts.length === 0) {
+      return (
+        <p className="search-landing-panel-empty">No recent additions.</p>
+      );
+    }
+    return (
+      <div className="search-landing-whatsnew-summary">
+        <ul className="search-landing-whatsnew-counts">
+          {counts.map((c, i) => (
+            <li key={`rc${i}`}>
+              <a href={c.href}>
+                <strong>{c.count.toLocaleString()}</strong> {c.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+        <p className="search-landing-whatsnew-note">
+          Counts are based on recent additions. GO annotation updates use a
+          longer reporting window to account for the annotation import pipeline.
+        </p>
+      </div>
+    );
+  },
+
+  _renderRecentReferences(data) {
+    const refs = data.references || [];
+    if (refs.length === 0) return null;
+    return (
+      <div className="search-landing-whatsnew-refs">
+        <p className="search-landing-whatsnew-window">Recently added references</p>
+        <ol className="reference-list">
+          {refs.map((ref, i) => {
+            const remainder = ref.citation
+              ? ref.citation.replace(ref.display_name, '')
+              : '';
+            return (
+              <li className="reference-list-item" key={`rr${i}`}>
+                <a href={ref.link}>{ref.display_name}</a>
+                {remainder}
+                {ref.pubmed_id ? <small> PMID: {ref.pubmed_id}</small> : null}
+                <ul className="ref-links">
+                  <li>
+                    <a href={ref.link}>SGD Paper</a>
+                  </li>
+                  {(ref.urls || []).map((url, j) => (
+                    <li key={`rru${i}_${j}`}>
+                      <a href={url.link} target="_infowin">
+                        {url.display_name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            );
+          })}
+        </ol>
+        <p className="search-landing-whatsnew-more">
+          <a href="/reference/recent">View all recently added references →</a>
+        </p>
+      </div>
+    );
+  },
+
+  _renderCommonTasks() {
+    return (
+      <div className="search-landing-panel search-landing-tasks">
+        <h3 className="search-landing-panel-title">Common Tasks</h3>
+        <p className="search-landing-panel-sub">
+          Quick entry points for frequent workflows
+        </p>
+        <ul>
+          {COMMON_TASKS.map((task, i) => {
+            const inner = (
+              <span className="search-landing-task-inner">
+                <span className="search-landing-task-icon">
+                  <i className={`fa ${task.icon}`} />
+                </span>
+                <span className="search-landing-task-text">
+                  <span className="search-landing-task-label">
+                    {task.label}
+                  </span>
+                  <span className="search-landing-task-detail">
+                    {task.detail}
+                  </span>
+                </span>
+                <i className="fa fa-angle-right search-landing-task-chevron" />
+              </span>
+            );
+            if (task.external) {
+              return (
+                <li key={`task${i}`}>
+                  <a href={task.href} target="_blank" rel="noopener noreferrer">
+                    {inner}
+                  </a>
+                </li>
+              );
+            }
+            return (
+              <li key={`task${i}`}>
+                <Link to={task.href}>{inner}</Link>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    );
+  },
+
+  _fetchRecentUpdates() {
+    fetch(RECENT_UPDATES_URL)
+      .then((response) => {
+        if (response.status >= 400) {
+          throw new Error('API error.');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (this._isMounted) this.setState({ recentData: data });
+      })
+      .catch(() => {
+        if (this._isMounted) this.setState({ recentError: true });
+      });
+  },
+
+  _fetchGeneOfDay() {
+    fetch(GENE_OF_DAY_URL)
+      .then((response) => {
+        if (response.status >= 400) {
+          throw new Error('API error.');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        // Endpoint returns {} on error/empty; only render when we got a gene.
+        if (this._isMounted && data && data.display_name) {
+          this.setState({ geneOfDay: data });
+        }
+      })
+      .catch(() => {
+        // Leave geneOfDay null -> the line simply isn't rendered.
+      });
+  },
+
+  // Build a { categoryKey: total } map from the search aggregations already in
+  // the store, so category counts require no extra request.
+  _getCountMap() {
+    const aggs = this.props.aggregations;
+    if (!aggs || aggs.length === 0 || !aggs[0].values) return {};
+    const map = {};
+    aggs[0].values.forEach((v) => {
+      map[v.key] = v.total;
+    });
+    return map;
+  },
+
+  _getNumCategories() {
+    const aggs = this.props.aggregations;
+    if (!aggs || aggs.length === 0 || !aggs[0].values) return 0;
+    return aggs[0].values.length;
+  },
+
+  _getCategoryName(key) {
+    const found = PRIMARY_CATEGORIES.find((c) => c.key === key);
+    if (found) return found.name;
+    const labels = {
+      locus: 'Genes',
+      molecular_function: 'Molecular Functions',
+      cellular_component: 'Cellular Components',
+      biological_process: 'Biological Processes',
+      disease: 'Diseases',
+      complex: 'Complexes',
+      pathway: 'Biochemical Pathways',
+      strain: 'Strains',
+      dataset: 'Datasets',
+      observable: 'Observables',
+      reserved_name: 'Reserved Gene Names',
+      colleague: 'Colleagues',
+      resource: 'Resources',
+      contig: 'Contigs',
+      download: 'Downloads',
+      reference: 'References',
+      phenotype: 'Phenotypes',
+      chemical: 'Chemicals',
+      allele: 'Alleles',
+    };
+    return labels[key] || key.replace(/_/g, ' ');
+  },
+
+  _getCategoryHref(key) {
+    if (key === 'download') {
+      return `${SEARCH_URL}?q=&category=download&status=Active`;
+    }
+    return `${SEARCH_URL}?q=&category=${key}`;
+  },
+
+  // Each example chip runs that specific term within the category
+  // (e.g. /search?q=CDC28&category=locus).
+  _getExampleHref(key, term) {
+    return `${SEARCH_URL}?q=${encodeURIComponent(term)}&category=${key}`;
+  },
+
+  _getQueryHref(term) {
+    return `${SEARCH_URL}?q=${encodeURIComponent(term)}&is_quick=false`;
+  },
+});
+
+function mapStateToProps(_state) {
+  const state = _state.searchResults;
+  return {
+    aggregations: state.aggregations,
+    total: state.total,
+  };
+}
+
+export default connect(mapStateToProps)(SearchLanding);

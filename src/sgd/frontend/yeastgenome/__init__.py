@@ -122,6 +122,11 @@ class YeastgenomeFrontend(FrontendInterface):
     def chemical(self, chemical_repr):
         return self.get_obj('chemical', chemical_repr)
 
+    def chemical2(self, chemical_repr):
+        # Redesigned chemical page (Tier 1); reuses the same backend
+        # /chemical/{id} data, rendered by chemical2.jinja2.
+        return self.get_obj('chemical', chemical_repr)
+
     def domain(self, domain_repr):
         return self.get_obj('domain', domain_repr)
 

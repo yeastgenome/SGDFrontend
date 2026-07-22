@@ -1,0 +1,330 @@
+// Redesigned chemical page (/chemical2). Scoped under .chemical2-page.
+
+.chemical2-page {
+  // Sticky left-nav tabs so Shared Chemicals / Resources stay reachable.
+  .magellan-target {
+    position: sticky;
+    top: 0.5rem;
+  }
+
+  .chem2-definition {
+    font-size: 1.05rem;
+    line-height: 1.5;
+    color: #333;
+    margin: 0.75rem 0 1rem;
+    max-width: 60rem;
+  }
+
+  .chem2-overview-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: flex-start;
+  }
+  .chem2-overview-facts {
+    flex: 1 1 320px;
+    min-width: 260px;
+  }
+  .chem2-overview-structure {
+    flex: 0 0 auto;
+
+    img {
+      border: 1px solid #e6e3df;
+      border-radius: 6px;
+      background: #fff;
+      padding: 4px;
+    }
+  }
+
+  // ---- Key properties table ----
+  .chem2-properties {
+    margin-top: 1rem;
+  }
+  .chem2-properties-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #6b6b6b;
+    margin-bottom: 0.4rem;
+  }
+  .chem2-properties-table {
+    width: 100%;
+    max-width: 40rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+
+    th {
+      text-align: left;
+      font-weight: 600;
+      color: #555;
+      padding: 0.2rem 0.75rem 0.2rem 0;
+      white-space: nowrap;
+      vertical-align: top;
+      width: 1%;
+    }
+    td {
+      padding: 0.2rem 0;
+      word-break: break-all;
+    }
+  }
+  .chem2-mono {
+    font-family: Menlo, Consolas, monospace;
+    font-size: 0.82rem;
+  }
+  .chem2-copy {
+    font-size: 0.72rem;
+    padding: 0.1rem 0.5rem;
+    margin-left: 0.4rem;
+    border: 1px solid #b9c2d0;
+    border-radius: 4px;
+    background: #eef2f8;
+    color: #33608c;
+    cursor: pointer;
+    vertical-align: middle;
+    white-space: nowrap;
+
+    i {
+      margin-right: 0.2rem;
+    }
+    &:hover {
+      background: #dde7f3;
+      color: #21456b;
+    }
+  }
+  .chem2-properties-note {
+    font-size: 0.75rem;
+    color: #999;
+    margin: 0.25rem 0 0;
+  }
+  .chem2-tech-ids {
+    max-width: 40rem;
+    margin: 0.25rem 0 0.5rem;
+
+    summary {
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #6b6b6b;
+      padding: 0.2rem 0;
+      outline: none;
+      list-style: none; // hide the default marker (Firefox) in favor of our caret
+
+      &::-webkit-details-marker {
+        display: none; // hide the default marker (WebKit/Blink)
+      }
+      // Explicit caret so it's obvious the row expands; rotates when open.
+      &::before {
+        content: "\25B8";
+        display: inline-block;
+        margin-right: 0.4em;
+        font-size: 0.85em;
+        transition: transform 0.15s ease;
+      }
+      &:hover {
+        color: #33608c;
+      }
+    }
+    &[open] > summary::before {
+      transform: rotate(90deg);
+    }
+    .chem2-properties-table {
+      margin-top: 0.4rem;
+    }
+  }
+
+  // Summary-bar styles live in modules/_annotation_summary.scss (shared with
+  // the recently-added phenotypes page).
+
+  // ---- Facet filters ----
+  .chem2-facets {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.75rem;
+    margin-bottom: 0.85rem;
+  }
+  .chem2-facet {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.8rem;
+    color: #555;
+    margin: 0;
+
+    span { margin-bottom: 0.15rem; font-weight: 600; }
+    select { margin: 0; max-width: 15rem; }
+    // Phenotype names run long ("cell cycle progression through the G2/M phase
+    // transition: increased duration"), so give that dropdown more room.
+    select[data-facet="phenotype"] { max-width: 26rem; }
+  }
+  .chem2-facet-clear {
+    font-size: 0.85rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .chem2-downloads {
+    margin-top: 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  // ---- Reference usage trend ----
+  .chem2-reftrend-summary {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    b { color: #7a5ea8; }
+  }
+  .chem2-reftrend-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+  }
+  .chem2-reftrend-readout {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #5f4788;
+    min-height: 1.1rem;
+    margin-bottom: 0.35rem;
+  }
+  .chem2-reftrend-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 15px;
+    font-size: 0.62rem;
+    color: #999;
+
+    &.is-clickable {
+      cursor: pointer;
+    }
+    &.is-clickable:hover .chem2-reftrend-bar,
+    &.is-clickable:focus .chem2-reftrend-bar {
+      background: #4b2d80;
+    }
+  }
+  .chem2-reftrend-barwrap {
+    height: 90px;
+    width: 12px;
+    display: flex;
+    align-items: flex-end;
+  }
+  .chem2-reftrend-bar {
+    width: 100%;
+    min-height: 1px;
+    background: #7a5ea8;
+    border-radius: 2px 2px 0 0;
+    transition: background 0.12s ease;
+  }
+  .chem2-reftrend-year {
+    margin-top: 2px;
+    white-space: nowrap;
+
+    &.is-blank {
+      visibility: hidden;
+    }
+  }
+  .chem2-reftrend-details {
+    summary {
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #7a5ea8;
+      padding: 0.1rem 0;
+      outline: none;
+
+      &:hover {
+        color: #5f4788;
+      }
+    }
+    .chem2-reftrend-chart {
+      margin-top: 0.5rem;
+    }
+  }
+
+  // ---- Related references list (below the timeline) ----
+  .chem2-ref-list {
+    margin-top: 1.25rem;
+  }
+  .chem2-ref-list-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #6b6b6b;
+    margin-bottom: 0.5rem;
+  }
+  .chem2-ref-list-ol {
+    margin-left: 1.25rem;
+    max-width: 60rem;
+  }
+  .chem2-ref-item {
+    margin-bottom: 0.5rem;
+    line-height: 1.45;
+  }
+  .chem2-ref-pmid {
+    font-size: 0.8rem;
+    color: #888;
+    white-space: nowrap;
+  }
+  .chem2-ref-note {
+    font-size: 0.85rem;
+    color: #6b6b6b;
+    margin-bottom: 0.5rem;
+
+    a.chem2-ref-toggle {
+      font-weight: 600;
+      cursor: pointer;
+    }
+  }
+
+  // ---- Network ----
+  .chem2-network-toolbar {
+    margin-bottom: 0.5rem;
+  }
+  .chem2-network {
+    position: relative;
+    width: 100%;
+    // The Cytoscape wrapper sets its own height inline; clip any canvas spill
+    // so it can't overlay (and steal clicks from) the section below.
+    overflow: hidden;
+  }
+  .chem2-network-table {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  // ---- GO enrichment loading state ----
+  .chem2-enrichment-loader {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .chem2-enrichment-loading-text {
+    color: #6b6b6b;
+    font-size: 0.9rem;
+  }
+
+  // ---- GO enrichment top-N toggle ----
+  .chem2-enrichment-toggle {
+    font-size: 0.85rem;
+    color: #6b6b6b;
+    margin-bottom: 0.5rem;
+
+    a.chem2-enrichment-toggle-link {
+      font-weight: 600;
+      margin-left: 0.4rem;
+      cursor: pointer;
+    }
+  }
+
+
+  // Mobile: let wide tables scroll instead of breaking the layout.
+  @media screen and (max-width: 40em) {
+    .chem2-overview-grid { flex-direction: column; }
+    .dataTables_wrapper { overflow-x: auto; }
+  }
+}

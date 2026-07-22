@@ -1,0 +1,348 @@
+{% extends "global_layout.jinja2" %}
+
+{% block title %}{{ chemical.display_name }}{% endblock %}
+
+{% block head %}
+<script>
+    var chemical = {{ chemical_js|safe }}
+</script>
+{% endblock %}
+
+{% block body %}
+
+<div class="row chemical2-page">
+
+    {% include "navbar.jinja2" %}
+
+    <div class="small-12 medium-10 columns content-column">
+
+        <script>
+            add_navbar_title('Chemical: <span class="gene_name">{{ chemical.display_name }}</span>')
+            add_navbar_element('Overview', 'overview');
+            {% if chemical.phenotype|length > 0 %}
+                add_navbar_element('Phenotype Annotations', 'phenotype');
+                add_navbar_element('GO Process Enrichment', 'enrichment');
+            {% endif %}
+            {# Related Genes section temporarily disabled
+            add_navbar_element('Related Genes', 'related_genes');
+            #}
+            {% if chemical.go|length > 0 %}
+                add_navbar_element('Gene Ontology Annotations', 'go');
+            {% endif %}
+            {% if chemical.complexes|length > 0 %}
+                add_navbar_element('Complexes', 'complex');
+            {% endif %}
+            {# Pathways section temporarily disabled
+            {% if chemical.pathways|length > 0 %}
+                add_navbar_element('Pathways', 'pathway');
+            {% endif %}
+            #}
+            {% if chemical.protein_abundance|length > 0 %}
+                add_navbar_element('Protein Abundance', 'protein_abundance');
+            {% endif %}
+            {% if chemical.network_graph.edges|length > 0 %}
+                add_navbar_element('Shared Chemicals', 'network');
+            {% endif %}
+            {% if chemical.phenotype|length > 0 or chemical.go|length > 0 %}
+                add_navbar_element('Reference Usage', 'reference_usage');
+            {% endif %}
+            add_navbar_element('Resources', 'resources');
+        </script>
+
+        <!-- Overview
+        ================================================== -->
+        <section id="overview" data-magellan-destination="overview">
+            <div class="page-header">
+                <h1>Chemical: {{ chemical.display_name }}</h1>
+                <hr />
+
+                {% if chemical.definition != None %}
+                <p id="chem2-definition" class="chem2-definition"></p>
+                {% endif %}
+
+                <div class="chem2-overview-grid">
+                    <div class="chem2-overview-facts">
+                        <dl class="key-value">
+                            <dt>Chemical Name</dt>
+                            <dd>{{ chemical.display_name }}</dd>
+
+                            {% if chemical.is_ntr != 1 %}
+                            <dt>ChEBI ID</dt>
+                            <dd>
+                                {% if chemical.urls|length > 0 %}
+                                <a href="{{ chemical.urls[0].link }}" target="_blank">{{ chemical.chebi_id }}</a>
+                                {% else %}
+                                {{ chemical.chebi_id }}
+                                {% endif %}
+                            </dd>
+                            {% endif %}
+
+                            {% if chemical.synonyms|length > 0 %}
+                            <dt>Synonyms</dt>
+                            <dd id="chem2-synonyms"></dd>
+                            {% endif %}
+                        </dl>
+
+                        <div id="chem2-properties" class="chem2-properties"></div>
+                    </div>
+
+                    {% if chemical.structure_image_url %}
+                    <div class="chem2-overview-structure">
+                        <img
+                            id="strucImg"
+                            width="240" height="240"
+                            style="cursor: zoom-in;"
+                            data-src="{{ chemical.structure_image_url }}"
+                            onclick="toggleStructureImage(this, '{{ chebi_page }}')"
+                            alt="Structure image of {{ chemical.display_name }}">
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+
+        <!-- Phenotype
+        ================================================== -->
+        {% if chemical.phenotype|length > 0 %}
+        <section id="phenotype" data-magellan-destination="phenotype">
+            <div class="page-header">
+                <h2>Phenotype Annotations
+                    <a href="#" data-dropdown="phenotype_info"><i class="fa fa-info-circle"></i></a>
+                    <p id="phenotype_info" class="f-dropdown content medium" data-dropdown-content>
+                        Phenotype annotations are curated single mutant phenotypes that require an observable, a
+                        qualifier, a mutant type, strain background, and a reference, and are classified as classical
+                        genetics or high-throughput.
+                    </p>
+                    <span id="phenotype_table_header" class="round secondary label"></span>
+                </h2>
+                <hr />
+
+                <!-- Summary bar + facet filters (filled by chemical2.js) -->
+                <div id="phenotype_summary" class="chem2-summary"></div>
+                <div id="phenotype_facets" class="chem2-facets"></div>
+
+                <!-- Includes phenotype_table2 (adds a numeric Conc. column) -->
+                {% set table_id = "phenotype_table" %}
+                {% include "phenotype_table2.jinja2" %}
+            </div>
+        </section>
+
+        <!-- GO Process Enrichment (of the phenotype genes)
+        ================================================== -->
+        <section id="enrichment" data-magellan-destination="enrichment">
+            <div class="page-header">
+                <h2>GO Process Enrichment
+                    <a href="#" data-dropdown="enrichment_info"><i class="fa fa-info-circle"></i></a>
+                    <p id="enrichment_info" class="f-dropdown content medium" data-dropdown-content>
+                        Enriched GO biological process terms among the genes that have a phenotype annotation with this
+                        chemical, with the number of matching genes and a p-value.
+                    </p>
+                    <span id="enrichment_table_header" class="round secondary label"></span>
+                </h2>
+                <hr />
+                {% set table_id = "enrichment_table" %}
+                {% include "enrichment_table.jinja2" %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Related genes (filled by chemical2.js; hidden if none)
+        ================================================== -->
+        {# Related Genes section temporarily disabled
+        <section id="related_genes" data-magellan-destination="related_genes">
+            <div class="page-header">
+                <h2>Related Genes
+                    <a href="#" data-dropdown="related_genes_info"><i class="fa fa-info-circle"></i></a>
+                    <p id="related_genes_info" class="f-dropdown content medium" data-dropdown-content>
+                        Genes whose SGD description mentions this chemical (by name or synonym) &mdash; often the
+                        enzymes and transporters that act on it. Based on description text, so review the snippet for
+                        relevance.
+                    </p>
+                    <span id="related_genes_header" class="round secondary label"></span>
+                </h2>
+                <hr />
+                <p class="chem2-related-note">Genes whose description mentions {{ chemical.display_name }}
+                    or a synonym &mdash; review the snippet for relevance.</p>
+                <table class="table table-striped table-bordered table-condensed" id="related_genes_table">
+                    <thead>
+                        <tr>
+                            <th>Gene</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </section>
+        #}
+
+        <!-- GO
+        ================================================== -->
+        {% if chemical.go|length > 0 %}
+        <section id="go" data-magellan-destination="go">
+            <div class="page-header">
+                <h2>Gene Ontology Annotations
+                    <a href="#" data-dropdown="go_info"><i class="fa fa-info-circle"></i></a>
+                    <p id="go_info" class="f-dropdown content medium" data-dropdown-content>
+                        GO Annotations consist of a gene product, a term from one of the three Gene Ontology
+                        vocabularies, a reference, and an evidence code.
+                    </p>
+                    <span id="go_table_header" class="round secondary label"></span>
+                </h2>
+                <hr />
+                {% set table_id = "go_table" %}
+                {% include "go_table.jinja2" %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Complex
+        ================================================== -->
+        {% if chemical.complexes|length > 0 %}
+        <section id="complex" data-magellan-destination="complex">
+            <h2>Complexes</h2>
+            <hr />
+            <div class="panel">
+                <ul>
+                    {% for c in chemical.complexes %}
+                    <li><a href="/complex/{{ c.format_name }}">{{ c.display_name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Pathway
+        ================================================== -->
+        {# Pathways section temporarily disabled
+        {% if chemical.pathways|length > 0 %}
+        <section id="pathway" data-magellan-destination="pathway">
+            <h2>Pathways</h2>
+            <hr />
+            <div class="panel">
+                <ul>
+                    {% for p in chemical.pathways %}
+                    <li><a href="{{ p.link_url }}">{{ p.display_name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </section>
+        {% endif %}
+        #}
+
+        <!-- Protein Abundance
+        ================================================== -->
+        {% if chemical.protein_abundance|length > 0 %}
+        <section id="protein_abundance" data-magellan-destination="protein_abundance">
+            <div class="page-header">
+                <h2>Protein Abundance
+                    <span id="protein_abundance_table_header" class="round secondary label"></span>
+                </h2>
+                <hr />
+                {% set table_id = "protein_abundance_table" %}
+                {% include "protein_abundance_table.jinja2" %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Shared Chemicals network
+        ================================================== -->
+        {% if chemical.network_graph.edges|length > 0 %}
+        <section id="network" data-magellan-destination="network">
+            <div class="page-header">
+                <h2>Shared Chemicals
+                    <a href="#" data-dropdown="network_help"><i class="fa fa-info-circle"></i></a>
+                    <p id="network_help" class="f-dropdown content medium" data-dropdown-content>
+                        Chemicals (purple) that share at least one phenotype (blue) with this chemical (black).
+                        Use the radio buttons to switch between shared phenotypes (the default), shared GO terms
+                        (green, when available), and All. Click a chemical to open its page, or switch to Table
+                        for the full list of shared phenotypes and GO terms.
+                    </p>
+                </h2>
+                <hr />
+                <div class="chem2-network-toolbar">
+                    <div class="button-group radius">
+                        <a id="network_view_graph" class="small button">Network</a>
+                        <a id="network_view_table" class="small button secondary">Table</a>
+                    </div>
+                </div>
+                <div id="j-chemical-network2" class="chem2-network"></div>
+                <div id="chemical-network-table" style="display:none;"></div>
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Reference usage + related references (filled by chemical2.js; hidden if no refs)
+        ================================================== -->
+        <section id="reference_usage" data-magellan-destination="reference_usage">
+            <div class="page-header">
+                <h2>Reference Usage
+                    <a href="#" data-dropdown="reference_usage_info"><i class="fa fa-info-circle"></i></a>
+                    <p id="reference_usage_info" class="f-dropdown content medium" data-dropdown-content>
+                        Distinct references that use this chemical in a phenotype or GO annotation, by year of
+                        publication, followed by the full list of related papers (newest first).
+                    </p>
+                </h2>
+                <hr />
+                <div id="chem2-reftrend" class="chem2-reftrend"></div>
+            </div>
+        </section>
+
+        <!-- Resources
+        ================================================== -->
+        <section id="resources" data-magellan-destination="resources">
+            <h2>Resources</h2>
+            <hr />
+            <div class="panel">
+                <p id="chem2-resources"></p>
+            </div>
+        </section>
+    </div>
+</div>
+
+{% endblock body %}
+
+{% block scripts %}
+<script src="{{asset_root}}/js/build/cytoscape.min.js"></script>
+<script src="{{asset_root}}/js/evidence.js"></script>
+<script src="{{asset_root}}/js/chemical2.js"></script>
+<script>
+function normalizePubChemURL(urlStr, size) {
+  if (!/pubchem\.ncbi\.nlm\.nih\.gov/i.test(urlStr)) return urlStr;
+  if (/\/compound\/cid\/\d+\/PNG/i.test(urlStr)) {
+    return urlStr.replace(/image_size=\d+x\d+/i, 'image_size=' + size);
+  }
+  var m = urlStr.match(/\/compound\/smiles\/(.+?)\/PNG/i);
+  if (m) {
+    var smilesEnc = encodeURIComponent(decodeURIComponent(m[1]));
+    return 'https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/PNG?record_type=2d&image_size=' + size + '&smiles=' + smilesEnc;
+  }
+  return urlStr.replace(/image_size=\d+x\d+/i, 'image_size=' + size);
+}
+
+(function initStructureImage(){
+  var img = document.getElementById('strucImg');
+  if (!img) return;
+  var raw = img.getAttribute('data-src');
+  try {
+    img.src = normalizePubChemURL(raw, '240x240');
+  } catch (e) {
+    img.src = "{{ chebi_page }}";
+  }
+})();
+
+function toggleStructureImage(img, chebiFallback) {
+  try {
+    var isSmall = img.width <= 240;
+    var nextSize = isSmall ? '600x600' : '240x240';
+    img.src = normalizePubChemURL(img.src, nextSize);
+    img.width = isSmall ? 600 : 240;
+    img.height = isSmall ? 600 : 240;
+    img.style.cursor = isSmall ? 'zoom-out' : 'zoom-in';
+    img.onerror = function(){ this.onerror = null; this.src = chebiFallback; };
+  } catch (e) {
+    img.onerror = null;
+    img.src = chebiFallback;
+  }
+}
+</script>
+{% endblock scripts %}

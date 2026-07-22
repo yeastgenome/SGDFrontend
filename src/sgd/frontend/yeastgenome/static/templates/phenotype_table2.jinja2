@@ -1,0 +1,30 @@
+{% extends "table.jinja2" %}
+
+{% block help %}
+    Use the column headers to sort (including the numeric Conc. column to sort by dose), the facet dropdowns above the
+    table to filter by Gene, Phenotype, Experiment Type or Strain, and the "Filter table" box for free-text search.
+    Click the small "i" buttons within a cell to view further details.
+{% endblock %}
+
+{% block columns %}
+    <th hidden>Evidence ID</th>
+    <th hidden>Analyze ID</th>
+    <th>Gene</th>
+    <th hidden>Gene Systematic Name</th>
+    <th>Phenotype</th>
+    <th>Experiment Type</th>
+    <th hidden>Experiment Type Category</th>
+    <th>Mutant Information</th>
+    <th>Strain Background</th>
+    <th>Chemical</th>
+    <th>Conc. (M)</th>
+    <th>Details</th>
+    <th>Reference</th>
+{% endblock %}
+
+{% block additional_buttons %}
+    <ul class="button-group radius">
+        <li><a disabled="true" id="{{ table_id }}_show_children" class="small button secondary" style="display:none">Add
+            Annotations to Child Terms</a></li>
+    </ul>
+{% endblock %}

@@ -1,0 +1,512 @@
+// Landing / browse view shown on the search page when there is no query.
+$landing-accent: #6582A6;
+$landing-purple: #7a5ea8;
+$landing-border: #e6e3df;
+$landing-bg: #faf9f7;
+$landing-muted: #6b6b6b;
+$landing-radius: 10px;
+
+.search-landing {
+  margin-bottom: 3rem;
+
+  a {
+    text-decoration: none;
+  }
+}
+
+// ---- Hero ----------------------------------------------------------------
+.search-landing-hero {
+  text-align: center;
+  padding: 2.5rem 1rem 1.5rem 1rem;
+}
+
+.search-landing-title {
+  font-size: 2.1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+
+  .highlight {
+    color: $landing-purple;
+    font-style: italic;
+  }
+}
+
+.search-landing-subtitle {
+  color: $landing-muted;
+  font-size: 1.05rem;
+  margin-bottom: 1.5rem;
+}
+
+.search-landing-hero-search {
+  max-width: 720px;
+  margin: 0 auto;
+  position: relative;
+
+  // The typeahead wrapper chain is not full-width by default, so the input
+  // fell back to its intrinsic (~20-char) size and sat left-aligned inside
+  // this centered box — making it look small and off-center. Force the whole
+  // chain to fill the box so it spans the full width and stays centered.
+  .sgd-search-container,
+  form,
+  .react-typeahead-container,
+  .react-typeahead-input-container {
+    width: 100%;
+  }
+
+  .sgd-search-container {
+    position: relative;
+  }
+
+  .react-typeahead-input {
+    width: 100%;
+    font-size: 20px;
+    padding: 0.85rem 1rem 0.85rem 2.5rem;
+    border-radius: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  }
+
+  .search-icon {
+    top: 1.15rem;
+    left: 1rem;
+  }
+
+  // Scale the box up on wide viewports so it does not look small on a large
+  // browser window.
+  @media only screen and (min-width: 90em) {
+    max-width: 860px;
+  }
+}
+
+.search-landing-popular {
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.search-landing-popular-label {
+  color: $landing-muted;
+  margin-right: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.search-landing-chip {
+  display: inline-block;
+  padding: 0.2rem 0.7rem;
+  margin: 0.15rem 0.25rem;
+  border: 1px solid $landing-border;
+  border-radius: 20px;
+  background: #fff;
+  color: $landing-accent;
+  font-size: 0.85rem;
+  transition: background-color 150ms ease, border-color 150ms ease;
+
+  &:hover {
+    background: #f0f4fa;
+    border-color: $landing-accent;
+  }
+
+  &.small {
+    font-size: 0.75rem;
+    padding: 0.1rem 0.55rem;
+    color: $landing-accent;
+
+    &:hover {
+      background: #f0f4fa;
+      border-color: $landing-accent;
+    }
+  }
+}
+
+.search-landing-tips {
+  color: $landing-muted;
+  font-size: 0.85rem;
+  margin-top: 0.75rem;
+
+  em {
+    font-style: italic;
+    color: #444;
+  }
+}
+
+// ---- Stats bar -----------------------------------------------------------
+.search-landing-statsbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  background: $landing-bg;
+  border-top: 1px solid $landing-border;
+  border-bottom: 1px solid $landing-border;
+  padding: 0.6rem 1.25rem;
+  margin-bottom: 2rem;
+  font-size: 0.85rem;
+  color: $landing-muted;
+}
+
+.search-landing-live {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 700;
+  color: #444;
+  margin-right: 0.25rem;
+}
+
+.search-landing-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: #2ca02c;
+  display: inline-block;
+  margin-right: 0.4rem;
+}
+
+// ---- Browse by category --------------------------------------------------
+.search-landing-body {
+  padding: 0 0.5rem;
+}
+
+.search-landing-section-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.search-landing-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+
+  @media screen and (max-width: 40em) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.search-landing-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid $landing-border;
+  border-radius: $landing-radius;
+  padding: 1rem;
+  background: #fff;
+  transition: box-shadow 150ms ease, transform 150ms ease,
+    border-color 150ms ease;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+    border-color: $landing-accent;
+  }
+}
+
+.search-landing-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  // Reserve two lines so titles that wrap (e.g. "Biological Processes") don't
+  // make the card grid look uneven against single-line titles.
+  min-height: 2.6rem;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.search-landing-card-name {
+  font-weight: 700;
+  color: #333;
+  display: inline-flex;
+  align-items: center;
+}
+
+.search-landing-card-count {
+  background: #2b2b2b;
+  color: #fff;
+  font-size: 0.75rem;
+  border-radius: 12px;
+  padding: 0.1rem 0.55rem;
+}
+
+.search-landing-card-blurb {
+  color: $landing-muted;
+  font-size: 0.85rem;
+  margin: 0.5rem 0;
+}
+
+.search-landing-card-examples {
+  margin-bottom: 0.75rem;
+}
+
+.search-landing-card-browse {
+  margin-top: auto;
+  color: $landing-accent;
+  font-size: 0.85rem;
+  font-weight: 600;
+
+  i {
+    margin-left: 0.25rem;
+    transition: transform 150ms ease;
+  }
+}
+
+.search-landing-card:hover .search-landing-card-browse i {
+  transform: translateX(3px);
+}
+
+// ---- Secondary (other) categories ----------------------------------------
+.search-landing-secondary {
+  margin-top: 1.5rem;
+}
+
+.search-landing-secondary-toggle {
+  cursor: pointer;
+  font-weight: 600;
+  color: #444 !important;
+
+  .search-landing-secondary-note {
+    color: $landing-muted;
+    font-weight: 400;
+    font-size: 0.8rem;
+    margin-left: 0.5rem;
+  }
+}
+
+.search-landing-secondary-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.35rem 1rem;
+  margin-top: 0.75rem;
+
+  @media screen and (max-width: 40em) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.search-landing-secondary-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.35rem 0.5rem;
+  border-radius: 6px;
+  color: $landing-accent !important;
+
+  &:hover {
+    background: #f0f4fa;
+  }
+}
+
+// ---- Files & Datasets (muted) --------------------------------------------
+.search-landing-files {
+  margin-top: 1.1rem;
+}
+
+.search-landing-files-header {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: $landing-muted;
+  margin-bottom: 0.35rem;
+}
+
+.search-landing-files-list {
+  .search-landing-secondary-item {
+    color: $landing-muted !important;
+  }
+  // Mute the category dots (e.g. the large red Downloads dot).
+  .search-cat {
+    filter: grayscale(1);
+    opacity: 0.55;
+  }
+}
+
+// ---- Gene of the day -----------------------------------------------------
+.search-landing-gotd {
+  text-align: center;
+  margin: 0.9rem 0 0;
+  color: $landing-muted;
+  font-size: 0.9rem;
+
+  .search-landing-gotd-label {
+    font-weight: 600;
+    color: #555;
+  }
+
+  a {
+    color: $landing-accent;
+    font-weight: 600;
+  }
+}
+
+// ---- Side panels (What's new / Common tasks) -----------------------------
+.search-landing-panel {
+  border: 1px solid $landing-border;
+  border-radius: $landing-radius;
+  padding: 1.1rem 1.25rem;
+  background: #fff;
+  margin-bottom: 1.25rem;
+}
+
+.search-landing-panel-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+
+  i {
+    color: $landing-purple;
+    margin-right: 0.4rem;
+  }
+}
+
+.search-landing-panel-sub {
+  color: $landing-muted;
+  font-size: 0.8rem;
+  margin-bottom: 0.75rem;
+}
+
+.search-landing-panel-empty {
+  color: $landing-muted;
+  font-size: 0.85rem;
+}
+
+.search-landing-whatsnew-window {
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: $landing-muted;
+  margin: 0.5rem 0 0.35rem 0;
+}
+
+.search-landing-whatsnew-note {
+  color: $landing-muted;
+  font-size: 0.72rem;
+  line-height: 1.3;
+  margin: 0.25rem 0 0 0;
+}
+
+.search-landing-whatsnew-counts {
+  list-style: none;
+  margin: 0 0 0.5rem 0;
+
+  li {
+    padding: 0.15rem 0;
+    font-size: 0.9rem;
+  }
+
+  a {
+    color: #333;
+
+    strong {
+      color: $landing-purple;
+    }
+
+    &:hover {
+      color: $landing-accent;
+    }
+  }
+}
+
+.search-landing-whatsnew-refs {
+  border-top: 1px solid $landing-border;
+  padding-top: 0.5rem;
+
+  .reference-list {
+    list-style: none;
+    margin: 0;
+
+    > li {
+      padding: 0.4rem 0;
+      font-size: 0.82rem;
+      line-height: 1.35;
+      border-bottom: 1px dotted $landing-border;
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+
+  // Render the SGD Paper / DOI / PMC / PubMed links inline and compact.
+  .ref-links {
+    list-style: none;
+    margin: 0.15rem 0 0;
+    padding: 0;
+
+    li {
+      display: inline;
+      padding: 0;
+      border: none;
+      font-size: 0.78rem;
+
+      &:not(:last-child)::after {
+        content: '\00b7';
+        margin: 0 0.35rem;
+        color: $landing-muted;
+      }
+    }
+  }
+
+  small {
+    color: $landing-muted;
+  }
+}
+
+.search-landing-whatsnew-more {
+  margin: 0.5rem 0 0;
+  font-size: 0.82rem;
+}
+
+// ---- Common tasks --------------------------------------------------------
+.search-landing-tasks {
+  ul {
+    list-style: none;
+    margin: 0;
+  }
+
+  li {
+    border-top: 1px solid $landing-border;
+
+    &:first-child {
+      border-top: none;
+    }
+  }
+}
+
+.search-landing-task-inner {
+  display: flex;
+  align-items: center;
+  padding: 0.6rem 0;
+}
+
+.search-landing-task-icon {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  background: #f0f4fa;
+  color: $landing-accent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.75rem;
+  flex-shrink: 0;
+}
+
+.search-landing-task-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.search-landing-task-label {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.search-landing-task-detail {
+  color: $landing-muted;
+  font-size: 0.78rem;
+}
+
+.search-landing-task-chevron {
+  color: #bbb;
+  margin-left: 0.5rem;
+}

@@ -36,6 +36,8 @@ def prep_views(chosen_frontend, config):
     config.add_route('complex_literature_details', '/complex/{identifier}/literature')
     config.add_route('complex_go_details', '/complex/{identifier}/go')
     config.add_route('complex_new_summary_details', '/complex/{identifier}/new_summary')
+    # recently added alleles page ('recent' must precede {identifier})
+    config.add_route('alleles_this_week', '/allele/recent')
     config.add_route('allele', '/allele/{identifier}')
     config.add_route('allele_literature_details', '/allele/{identifier}/literature')
     config.add_route('blog_post', '/blog/{slug}')
@@ -73,7 +75,10 @@ def prep_views(chosen_frontend, config):
     config.add_route('curator_sequence', '/curator/locus/{identifier}/sequence')
     # references
     config.add_route('references_this_week', '/reference/recent')
+    config.add_route('get_references', '/reference/getReferences')
     config.add_route('reference', '/reference/{identifier}')
+    # recently added phenotypes / alleles pages ('recent' must precede {identifier})
+    config.add_route('phenotypes_this_week', '/phenotype/recent')
     config.add_route('phenotype', '/phenotype/{identifier}')
 
     # public CI
@@ -180,6 +185,12 @@ def prep_views(chosen_frontend, config):
                     renderer=chosen_frontend.get_renderer('ecnumber'),
                     route_name='ecnumber')
     
+    # recently added GO annotations page ('recent' must precede {identifier})
+    config.add_route('gos_this_week', '/go/recent')
+
+    # landing "What's New" summary: proxies backend recent_updates but overrides
+    # the GO count to manually curated only (see misc_views.recent_updates)
+    config.add_route('recent_updates', '/recent_updates')
     config.add_route('go', '/go/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('go', request)(getattr(chosen_frontend, 'go')(biocon_repr=request.matchdict['identifier'].lower())),
                     renderer=chosen_frontend.get_renderer('go'),
@@ -200,10 +211,18 @@ def prep_views(chosen_frontend, config):
                     renderer=chosen_frontend.get_renderer('disease_ontology'),
                     route_name='disease_ontology')
 
+    # /chemical serves the redesigned page (chemical2.jinja2); same backend data,
+    # new template. /chemical2 remains as an alias.
     config.add_route('chemical', '/chemical/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('chemical', request)(getattr(chosen_frontend, 'chemical')(chemical_repr=request.matchdict['identifier'].lower())),
-                    renderer=chosen_frontend.get_renderer('chemical'),
+                    renderer=chosen_frontend.get_renderer('chemical2'),
                     route_name='chemical')
+
+    # Redesigned chemical page (Tier 1), reuses the same backend chemical data.
+    config.add_route('chemical2', '/chemical2/{identifier}')
+    config.add_view(lambda request: chosen_frontend.response_wrapper('chemical2', request)(getattr(chosen_frontend, 'chemical2')(chemical_repr=request.matchdict['identifier'].lower())),
+                    renderer=chosen_frontend.get_renderer('chemical2'),
+                    route_name='chemical2')
 
     config.add_route('domain', '/domain/{identifier}')
     config.add_view(lambda request: chosen_frontend.response_wrapper('domain', request)(getattr(chosen_frontend, 'domain')(domain_repr=request.matchdict['identifier'].lower())),

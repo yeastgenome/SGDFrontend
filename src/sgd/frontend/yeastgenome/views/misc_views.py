@@ -12,6 +12,7 @@ import datetime
 import json
 import requests
 import os
+import time
 
 SEARCH_URL = os.environ['BACKEND_URL'] + '/get_search_results'
 TEMPLATE_ROOT = 'src:sgd/frontend/yeastgenome/static/templates/'
@@ -163,11 +164,139 @@ def references_this_week(request):
     if backend_response.status_code != 200:
         return not_found(request)
     obj = json.loads(backend_response.text)
-    ref_objs = { 
+    ref_objs = {
         "references": obj['references'],
         "references_js": json.dumps(obj['references'])
     }
     return render_to_response(TEMPLATE_ROOT + 'references_this_week.jinja2', ref_objs, request=request)
+
+@view_config(route_name='get_references')
+def get_references(request):
+    # References for a list of PubMed IDs, e.g. /reference/getReferences?id=123,456
+    pmids = request.params.get('id', '') or ''
+    backend_url = os.environ['BACKEND_URL'] + '/references/by_pmids?pmids=' + urllib.parse.quote(pmids)
+    backend_response = requests.get(backend_url)
+    if backend_response.status_code != 200:
+        return not_found(request)
+    obj = json.loads(backend_response.text)
+    ref_objs = {
+        "references": obj['references'],
+        "references_js": json.dumps(obj['references'])
+    }
+    return render_to_response(TEMPLATE_ROOT + 'reference_get_references.jinja2', ref_objs, request=request)
+
+def _recent_days_param(request, default=30):
+    # Sanitize ?days to a plain int string before forwarding to the backend.
+    try:
+        return str(int(request.params.get('days', default)))
+    except (TypeError, ValueError):
+        return str(default)
+
+@view_config(route_name='phenotypes_this_week')
+def phenotypes_this_week(request):
+    days = _recent_days_param(request)
+    backend_url = os.environ['BACKEND_URL'] + '/phenotypes/this_week?days=' + days
+    backend_response = requests.get(backend_url)
+    if backend_response.status_code != 200:
+        return not_found(request)
+    obj = json.loads(backend_response.text)
+    return render_to_response(
+        TEMPLATE_ROOT + 'phenotypes_this_week.jinja2',
+        {
+            'start': obj.get('start'),
+            'end': obj.get('end'),
+            'phenotypes_js': json.dumps(obj.get('phenotypes', []))
+        },
+        request=request)
+
+# GO "recently added" surfaces (the /go/recent page and the landing page's
+# "What's New" count) show only manually curated annotations over this window.
+MANUAL_CURATED = 'manually curated'
+RECENT_GO_DAYS = 50
+
+def _go_this_week_url(days):
+    # Ask the backend for manually curated GO annotations only, so we never
+    # transfer the much larger computational set (see the go/this_week
+    # annotation_type filter in SGDBackend-Nex2).
+    return (os.environ['BACKEND_URL'] + '/go/this_week?days=' + str(days) +
+            '&annotation_type=' + urllib.parse.quote(MANUAL_CURATED))
+
+
+# Cache the landing page's manually-curated GO count so we hit the backend at
+# most once per hour instead of on every landing-page load.
+_recent_go_count_cache = {'count': None, 'ts': 0.0}
+_RECENT_GO_COUNT_TTL = 3600  # seconds
+
+
+def _manually_curated_go_count():
+    now = time.time()
+    cache = _recent_go_count_cache
+    if cache['count'] is not None and (now - cache['ts']) < _RECENT_GO_COUNT_TTL:
+        return cache['count']
+    try:
+        annos = json.loads(requests.get(_go_this_week_url(RECENT_GO_DAYS)).text).get('go_annotations', [])
+        count = len(annos)
+    except Exception:
+        # On failure, keep serving the last known count (if any).
+        return cache['count']
+    cache['count'] = count
+    cache['ts'] = now
+    return count
+
+
+@view_config(route_name='gos_this_week')
+def gos_this_week(request):
+    days = _recent_days_param(request, RECENT_GO_DAYS)
+    backend_response = requests.get(_go_this_week_url(days))
+    if backend_response.status_code != 200:
+        return not_found(request)
+    obj = json.loads(backend_response.text)
+    # Backend already filtered to manually curated; computational (and any
+    # high-throughput) annotations may be surfaced in a separate table later.
+    return render_to_response(
+        TEMPLATE_ROOT + 'gos_this_week.jinja2',
+        {
+            'start': obj.get('start'),
+            'end': obj.get('end'),
+            'go_annotations_js': json.dumps(obj.get('go_annotations', []))
+        },
+        request=request)
+
+
+@view_config(route_name='recent_updates')
+def recent_updates(request):
+    # Proxy the backend recent-updates summary, but override the GO count so the
+    # landing "What's New" panel matches /go/recent (manually curated only, over
+    # RECENT_GO_DAYS). The backend count includes all annotation types. The
+    # longer GO window is explained by the panel footnote, so the label itself
+    # stays clean (no per-line "(last N days)" suffix).
+    backend_response = requests.get(os.environ['BACKEND_URL'] + '/recent_updates')
+    if backend_response.status_code != 200:
+        return not_found(request)
+    obj = json.loads(backend_response.text)
+    mc_count = _manually_curated_go_count()
+    if mc_count is not None:
+        for c in obj.get('counts', []):
+            if c.get('category') == 'go':
+                c['count'] = mc_count
+                c['label'] = 'new GO annotations'
+    return Response(body=json.dumps(obj), content_type='application/json', charset='UTF-8')
+
+@view_config(route_name='alleles_this_week')
+def alleles_this_week(request):
+    backend_url = os.environ['BACKEND_URL'] + '/alleles/this_week'
+    backend_response = requests.get(backend_url)
+    if backend_response.status_code != 200:
+        return not_found(request)
+    obj = json.loads(backend_response.text)
+    return render_to_response(
+        TEMPLATE_ROOT + 'alleles_this_week.jinja2',
+        {
+            'start': obj.get('start'),
+            'end': obj.get('end'),
+            'alleles_js': json.dumps(obj.get('alleles', []))
+        },
+        request=request)
 
 @view_config(route_name='reference')
 def reference(request):

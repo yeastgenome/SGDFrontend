@@ -55,12 +55,14 @@ const AppSearchBar = createReactClass({
     resultsUrl: PropTypes.string.isRequired,
     userInput: PropTypes.string,
     redirectOnSearch: PropTypes.bool, // if true, hard HTTP redirect to /search?q=${query}, if false, uses REDUX
+    placeholder: PropTypes.string,
     dispatch: PropTypes.func,
   },
 
   getDefaultProps() {
     return {
       redirectOnSearch: true,
+      placeholder: 'actin, kinase, glucose',
     };
   },
 
@@ -69,6 +71,7 @@ const AppSearchBar = createReactClass({
       redirectHref: null,
       isShowAll: false,
       autocompleteResults: [],
+      minCharsHint: false,
     };
   },
 
@@ -88,7 +91,7 @@ const AppSearchBar = createReactClass({
         <form action="/search" onSubmit={_onSubmit} autoComplete="off">
           <Typeahead
             inputValue={this.props.userInput}
-            placeholder="search: actin, kinase, glucose"
+            placeholder={this.props.placeholder}
             optionTemplate={SearchOption}
             options={this.state.autocompleteResults}
             onChange={this._onChange}
@@ -103,6 +106,9 @@ const AppSearchBar = createReactClass({
         <span className="search-icon">
           <i className="fa fa-search" />
         </span>
+        {this.state.minCharsHint && (
+          <p className="search-min-chars-hint">Type at least 2 characters</p>
+        )}
       </div>
     );
   },
@@ -117,6 +123,9 @@ const AppSearchBar = createReactClass({
   // save user input to redux and fetch results, save them to state
   _onChange(e) {
     let newValue = e.target.value;
+    if (this.state.minCharsHint && newValue.trim().length >= 2) {
+      this.setState({ minCharsHint: false });
+    }
     this._setUserInput(newValue);
     // debounce autocomplete fetching for fast typers, save to instance variable
     if (!this._debouncedFetch) {
@@ -171,6 +180,14 @@ const AppSearchBar = createReactClass({
   _submit() {
     if (typeof this.state.redirectHref === 'string') {
       return this._hardRedirect(this.state.redirectHref);
+    }
+    // A single-character query returns a near-wildcard flood, so block it with
+    // a hint. An empty query is allowed through: it navigates to /search with
+    // no query, which renders the browse dashboard (see search.jsx _isLanding).
+    const trimmed = (this.props.userInput || '').trim();
+    if (trimmed.length === 1) {
+      this.setState({ minCharsHint: true });
+      return;
     }
     let newQuery = encodeURIComponent(this.props.userInput);
     if (this.props.redirectOnSearch) {

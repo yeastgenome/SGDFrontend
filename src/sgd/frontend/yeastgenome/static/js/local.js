@@ -553,7 +553,13 @@ function set_up_enrichment_table(data, gene_count) {
         set_up_scientific_notation_sorting();
 
         options["aaSorting"] = [[3, "asc"]];
-        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, null, {'sWidth': '100px'}, { "sType": "scinote", 'sWidth': '100px'}]
+        options["aoColumns"] = [{"bSearchable":false, "bVisible":false}, null, {'sWidth': '100px'}, { "sType": "scinote", 'sWidth': '100px', "mRender": function (data, type) {
+            // Show the P-value with 2 decimal places in scientific notation for
+            // display only; keep the raw value for sorting/filtering/download.
+            if (type !== 'display') { return data; }
+            var n = parseFloat(data);
+            return isNaN(n) ? data : n.toExponential(2);
+        }}]
         options["aaData"] = datatable;
         options["oLanguage"] = {'sEmptyTable': 'No significant shared GO processes found.'}
     }
@@ -626,6 +632,103 @@ function create_enrichment_table(table_id, target_table, init_data) {
 
     $("#enrichment").show();
     return enrichment_table;
+}
+
+// Render a summary bar for a set of annotations into container_id: totals
+// (annotations / items / genes), top genes, top items, and an optional
+// breakdown row. Shared by the chemical2 page, the recently-added phenotypes
+// page, and the recently-added GO page (styles in _annotation_summary.scss).
+// opts: { item_name(d), item_id(d), item_plural, top_items_label,
+//         breakdown: { label, get(d) } | null }
+function build_annotation_summary(container_id, data, opts) {
+    var el = document.getElementById(container_id);
+    if (!el || !data) return;
+    opts = opts || {};
+
+    var esc = function(s) {
+        return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    };
+    var top_n = function(counts, n) {
+        return Object.keys(counts)
+            .map(function(k) { return [k, counts[k]]; })
+            .sort(function(a, b) { return b[1] - a[1] || a[0].localeCompare(b[0]); })
+            .slice(0, n);
+    };
+    var chip = function(label) { return '<span class="chem2-chip">' + label + '</span>'; };
+
+    var item_name = opts.item_name || function(d) { return d['phenotype'] ? d['phenotype']['display_name'] : null; };
+    var item_id = opts.item_id || function(d) { return d['phenotype'] ? d['phenotype']['id'] : null; };
+    var breakdown = opts.breakdown || null;
+
+    var geneCounts = {}, itemCounts = {}, itemIds = {}, breakdownCounts = {};
+    for (var i = 0; i < data.length; i++) {
+        var g = data[i]['locus'] ? data[i]['locus']['display_name'] : null;
+        if (g) geneCounts[g] = (geneCounts[g] || 0) + 1;
+        var it = item_name(data[i]);
+        if (it) itemCounts[it] = (itemCounts[it] || 0) + 1;
+        var iid = item_id(data[i]);
+        if (iid != null) itemIds[iid] = true;
+        if (breakdown) {
+            var b = breakdown.get(data[i]);
+            if (b) breakdownCounts[b] = (breakdownCounts[b] || 0) + 1;
+        }
+    }
+    var total = data.length;
+    if (total === 0) { el.innerHTML = ''; return; }
+
+    var html = '';
+    html += '<div class="chem2-summary-stats">';
+    html += '<span class="chem2-summary-stat"><b>' + total + '</b> ' + esc(opts.total_label || 'annotations') + '</span>';
+    html += '<span class="chem2-summary-stat"><b>' + Object.keys(itemIds).length + '</b> ' + esc(opts.item_plural || 'phenotypes') + '</span>';
+    html += '<span class="chem2-summary-stat"><b>' + Object.keys(geneCounts).length + '</b> ' + esc(opts.genes_label || 'genes') + '</span>';
+    html += '</div>';
+    html += '<div class="chem2-summary-block"><span class="chem2-summary-label">Top genes:</span> ' +
+        top_n(geneCounts, 5).map(function(x) { return chip(esc(x[0]) + ' (' + x[1] + ')'); }).join(' ') + '</div>';
+    html += '<div class="chem2-summary-block"><span class="chem2-summary-label">' + esc(opts.top_items_label || 'Top phenotypes') + ':</span> ' +
+        top_n(itemCounts, 3).map(function(x) {
+            var pct = Math.round(100 * x[1] / total);
+            var val = opts.top_items_show_count ? (x[1] + ', ' + pct + '%') : (pct + '%');
+            return chip(esc(x[0]) + ' (' + val + ')');
+        }).join(' ') + '</div>';
+    if (breakdown) {
+        var bs = top_n(breakdownCounts, 10);
+        if (bs.length) {
+            html += '<div class="chem2-summary-block"><span class="chem2-summary-label">' + esc(breakdown.label) + ':</span> ' +
+                bs.map(function(x) { return chip(esc(x[0]) + ' (' + x[1] + ')'); }).join(' ') + '</div>';
+        }
+    }
+    el.innerHTML = html;
+}
+
+// Phenotype-annotation summary (chemical2 + recently-added phenotypes pages).
+function build_phenotype_summary(container_id, data, show_experiment_type) {
+    build_annotation_summary(container_id, data, {
+        item_name: function(d) { return d['phenotype'] ? d['phenotype']['display_name'] : null; },
+        item_id: function(d) { return d['phenotype'] ? d['phenotype']['id'] : null; },
+        item_plural: 'phenotypes',
+        total_label: 'phenotype annotations',
+        genes_label: 'associated genes',
+        top_items_label: 'Top phenotypes',
+        top_items_show_count: true,
+        breakdown: show_experiment_type ? {
+            label: 'Experiment type',
+            get: function(d) { return d['experiment'] ? (d['experiment']['category'] || 'unspecified') : null; }
+        } : null
+    });
+}
+
+// GO-annotation summary (recently-added GO page).
+function build_go_summary(container_id, data) {
+    build_annotation_summary(container_id, data, {
+        item_name: function(d) { return d['go'] ? d['go']['display_name'] : null; },
+        item_id: function(d) { return d['go'] ? d['go']['go_id'] : null; },
+        item_plural: 'GO terms',
+        top_items_label: 'Top GO terms',
+        breakdown: {
+            label: 'Aspect',
+            get: function(d) { return d['go'] ? (d['go']['go_aspect'] || 'unspecified') : null; }
+        }
+    });
 }
 
 function set_up_header(table_id, header_count, header_singular, header_plural, subheader_count, subheader_singular, subheader_plural) {
