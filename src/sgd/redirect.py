@@ -1,15 +1,14 @@
 import json
-from pyramid.response import Response
-# from urllib.request import Request, urlopen
-from urllib.error import URLError, HTTPError
-# from src.sgd.frontend import config
-import requests
 import os
+
+import requests
+from pyramid.response import Response
+
 
 def do_redirect(request):
 
     p = dict(request.params)
-    
+
     data = {}
     if p.get('param'):
         if p.get('param') == 'go_release':
@@ -28,13 +27,11 @@ def do_redirect(request):
                         continue
                     url = url + "&" + key + "=" + p.get(key)
         try:
-            #req = Request(url=url)
-            #res = urlopen(req)
-            #data = json.loads(res.read())
             res = requests.get(url)
-            data = json.loads(res.text)
-        except HTTPError:
-            return 404
+            if res.status_code == 200:
+                data = json.loads(res.text)
+        except (requests.exceptions.RequestException, ValueError):
+            data = {}
     return Response(body=json.dumps(data), content_type='application/json', charset='UTF-8')
 
 
