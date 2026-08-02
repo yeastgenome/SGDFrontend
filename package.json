@@ -61,6 +61,9 @@
     "lint": "eslint ./**/*.jsx",
     "format": "prettier ./**/*.jsx --write"
   },
+  "overrides": {
+    "minimist": "^1.2.8"
+  },
   "engines": {
     "node": ">=16",
     "npm": ">=8"
