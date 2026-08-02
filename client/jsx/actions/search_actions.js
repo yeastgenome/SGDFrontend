@@ -1,4 +1,3 @@
-require('isomorphic-fetch');
 import { createPath } from '../lib/search_helpers';
 import _ from 'underscore';
 const queryString = require('query-string');

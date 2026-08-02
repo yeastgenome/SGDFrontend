@@ -24,6 +24,9 @@ try {
       // browser APIs jsdom lacks that page/vendor scripts poke at
       window.matchMedia = () => ({ matches: false, media: '', addListener() {}, removeListener() {}, addEventListener() {}, removeEventListener() {} });
       window.scrollTo = () => {};
+      // jsdom has no native fetch (the app now relies on the browser's; the old
+      // bundle polyfilled it via isomorphic-fetch). Stub it so search pages render.
+      window.fetch = window.fetch || (() => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({}), text: () => Promise.resolve('') }));
       // Web Workers aren't implemented by jsdom; the variant viewer only spins one
       // up on user interaction, but stub it so a stray load-time call won't crash.
       window.Worker = function () { this.postMessage = () => {}; this.addEventListener = () => {}; this.terminate = () => {}; };

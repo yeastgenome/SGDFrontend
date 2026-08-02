@@ -4,9 +4,12 @@
  * purpose: render radio button for status e.g downloads_page
  */
 import React, { Component } from 'react';
-import S from 'string';
 import ClassNames from 'classnames';
 import PropTypes from 'prop-types';
+
+// uppercase first char, lowercase the rest (was string.js S(x).capitalize())
+const capitalize = (str) =>
+  str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : '';
 
 class StatusBtns extends Component {
   constructor(props) {
@@ -35,7 +38,7 @@ class StatusBtns extends Component {
             onChange={this.props.btnClick}
             key={key}
           />
-          <span style={cStyle}>{S(this.props.name).capitalize().s}</span>
+          <span style={cStyle}>{capitalize(this.props.name)}</span>
         </label>
       </div>
     );

@@ -3,8 +3,11 @@ import { Link } from 'react-router-dom';
 import Radium from 'radium';
 import { connect } from 'react-redux';
 import _ from 'underscore';
-import S from 'string';
 const queryString = require('query-string');
+
+// uppercase first char, lowercase the rest (was string.js S(x).capitalize())
+const capitalize = (str) =>
+  str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : '';
 
 import SearchResult from '../components/search/search_result.jsx';
 import SearchLanding from '../components/search/search_landing.jsx';
@@ -380,7 +383,7 @@ const Search = createReactClass({
     this.setState({ selectedRadioBtn: str });
     let tempQParams = this.props.queryParams;
     if (Object.prototype.hasOwnProperty.call(tempQParams, 'status')) {
-      tempQParams['status'] = S(str).capitalize().s;
+      tempQParams['status'] = capitalize(str);
     }
     this.props.location.search = queryString.stringify(tempQParams);
     this.props.history.push(this.props.location);
