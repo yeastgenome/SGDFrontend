@@ -46,9 +46,11 @@ and then commit changes to git.
 
 In the production buildout, asset preparation tasks run from start to finish.  In development, however, there is an option to compile these assets, and then recompile them automatically when changes have been made.  To use this task, run:
 
-    $ grunt dev
+    $ npm run dev
 
-This will compile the JSX files and the SASS files in the client directory.  If you make any changes to these files while this task is running, they will automatically recompile.  Optionally, if you are using Chrome, you can install the [live reload plugin](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei?hl=en), which will reload the browser once the changed files have finished compiling.  Another difference between the development and production compile is that the bundled application.js file will be unminified with source maps, to help debug.  To stop this task, type `ctrl + c`.
+This will compile the JSX files (esbuild) and the SASS files (dart-sass) in the client directory.  If you make any changes to these files while this task is running, they will automatically recompile.  In development the bundled application.js is unminified with an inline source map, to help debug.  To stop this task, type `ctrl + c`.
+
+For a one-off production build of the assets, run `npm run build` (static vendor assets + JS bundle + CSS). To publish the built assets to S3/CloudFront (production), run `npm run upload` with AWS credentials in the environment.
 
 ## Browserify
 

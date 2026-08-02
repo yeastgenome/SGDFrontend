@@ -47,7 +47,7 @@ ENV PATH="${NODE_HOME}/bin:${PATH}" \
     npm_config_fund=false \
     npm_config_audit=false \
     npm_config_unsafe_perm=true
-RUN node -v && npm -v && npm install -g bower@1.8.14 grunt-cli
+RUN node -v && npm -v && npm install -g bower@1.8.14
 
 # --- Ruby toolchain (bundler for legacy Capistrano deploy tasks) -----------------------
 # SCSS now compiles with dart-sass (npm), so Compass and its Ruby 3.2 File.exists?
@@ -99,7 +99,7 @@ RUN set -eux; \
   sed -i -E 's|^([[:space:]]*)bower[[:space:]]+install\b.*|\1@true # skipped: handled in Dockerfile|g' Makefile || true; \
   sed -i -E 's|^([[:space:]]*)python([0-9\.]*)?[[:space:]]+setup\.py[[:space:]]+develop.*|\1@true # skipped: handled in Dockerfile|g' Makefile || true
 
-# --- Build (runs grunt/compass via your Makefile) -------------------------------------
+# --- Build (npm run build: static assets + esbuild JS + dart-sass CSS) ----------------
 RUN make build
 
 # --- Emboss step (unchanged) ----------------------------------------------------------

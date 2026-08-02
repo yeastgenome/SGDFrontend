@@ -1,23 +1,23 @@
 deploy-assets:
-	. dev_deploy_variables.sh && grunt deployAssets
+	. dev_deploy_variables.sh && npm run build && npm run upload
 
 dev-deploy:
-	. dev_deploy_variables.sh && grunt deployAssets && cap dev deploy
+	. dev_deploy_variables.sh && npm run build && npm run upload && cap dev deploy
 
 qa-deploy:
-	. dev_deploy_variables.sh && grunt deployAssets && cap qa deploy
+	. dev_deploy_variables.sh && npm run build && npm run upload && cap qa deploy
 
 qa-deploy-test:
-	. dev_deploy_variables.sh && grunt deployAssetsTest && cap qa deploy
+	. dev_deploy_variables.sh && npm run build && npm run upload && cap qa deploy
 
 staging-deploy:
-	. prod_deploy_variables.sh && grunt deployAssets && cap staging deploy
+	. prod_deploy_variables.sh && npm run build && npm run upload && cap staging deploy
 
 prod-deploy:
-	. prod_deploy_variables.sh && grunt deployAssets && cap prod deploy
+	. prod_deploy_variables.sh && npm run build && npm run upload && cap prod deploy
 
 preview-deploy:
-	. dev_deploy_variables.sh && grunt deployAssets && cap preview deploy
+	. dev_deploy_variables.sh && npm run build && npm run upload && cap preview deploy
 
 run-prod:
 	pserve sgdfrontend_production.ini --daemon --pid-file=/var/run/pyramid/frontend.pid
@@ -25,7 +25,7 @@ run-prod:
 stop-prod:
 	-pserve sgdfrontend_production.ini --stop-daemon --pid-file=/var/run/pyramid/frontend.pid
 
-build: dependencies grunt
+build: dependencies build-assets
 	pip install -r requirements.txt
 	python setup.py develop
 
@@ -33,12 +33,11 @@ build-deploy:
 	pip install -r requirements.txt
 	python setup.py develop
 
-grunt:
-	grunt
+build-assets:
+	npm run build
 
 dependencies:
 	npm install
-	npm install -g grunt-cli
 	bundle install
 	npm run format
 	# npm run lint
