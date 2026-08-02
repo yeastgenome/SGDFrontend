@@ -67,14 +67,6 @@ module.exports = function (grunt) {
             },
         },
 
-        uglify: {
-            dynamicJs: {
-                files: {
-                    "src/sgd/frontend/yeastgenome/static/js/application.js": ["src/sgd/frontend/yeastgenome/static/js/application.js"],
-                }
-            }
-        },
-
         bowercopy: {
             refresh: {
                 js: {
@@ -123,43 +115,13 @@ module.exports = function (grunt) {
             }
         },
 
-        browserify: {
-            dev: {
-                dest: BUILD_PATH + "js/application.js",
-                src: "client/jsx/application.jsx",
-                options: {
-                    browserifyOptions: {
-                        debug: true
-                    },
-                    transform: [
-                        "babelify",
-                        ["envify", { global: true, NODE_ENV: "development" }]
-                    ]
-                }
-            },
-            production: {
-                dest: BUILD_PATH + "js/application.js",
-                src: "client/jsx/application.jsx",
-                options: {
-                    browserifyOptions: {
-                        debug: false
-                    },
-                    transform: [
-                        "babelify",
-                        ["uglifyify", { global: true }],
-                        ["envify", { global: true, NODE_ENV: "production" }]
-                    ]
-                }
-            }
-        },
-
         watch: {
             options: {
                 livereload: true
             },
             jsx: {
                 files: ["client/**/*.jsx", "client/**/*.js"],
-                tasks: ["browserify:dev"]
+                tasks: ["dynamicJs:dev"]
             },
             scss: {
                 files: ["client/**/*.scss"],
@@ -170,7 +132,7 @@ module.exports = function (grunt) {
         // define some parallel tasks to speed up compilation
         concurrent: {
             dev: {
-                tasks: ["browserify:dev", "compass:dev"]
+                tasks: ["dynamicJs:dev", "compass:dev"]
             },
             production: {
                 tasks: ["dynamicJs:production", "compass:dev"]
@@ -200,16 +162,27 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-aws");
     grunt.loadNpmTasks("grunt-text-replace");
     grunt.loadNpmTasks("grunt-contrib-concat");
-    grunt.loadNpmTasks("grunt-contrib-uglify");
     grunt.loadNpmTasks("grunt-contrib-compass");
     grunt.loadNpmTasks("grunt-contrib-watch");
     grunt.loadNpmTasks("grunt-bowercopy");
-    grunt.loadNpmTasks("grunt-browserify");
     grunt.loadNpmTasks("grunt-concurrent");
 
+    // Bundle the JSX application with esbuild (replaces browserify + babel 6 +
+    // uglifyify + envify). See build/esbuild.mjs.
+    function runEsbuild(mode) {
+        return function () {
+            var done = this.async();
+            var child = require("child_process").spawn(
+                process.execPath,
+                [require("path").join(__dirname, "build/esbuild.mjs"), mode],
+                { cwd: __dirname, stdio: "inherit" }
+            );
+            child.on("exit", function (code) { done(code === 0); });
+        };
+    }
+    grunt.registerTask("dynamicJs:production", "Bundle JSX with esbuild (production)", runEsbuild("production"));
+    grunt.registerTask("dynamicJs:dev", "Bundle JSX with esbuild (development)", runEsbuild("development"));
 
-    // production helper tasks
-    grunt.registerTask("dynamicJs:production", ["browserify:production"]);
     grunt.registerTask("static", ["replace", "concat", "bowercopy:build"]);
 
     // dev helper task
@@ -219,7 +192,7 @@ module.exports = function (grunt) {
     grunt.registerTask("dev", ["compileDev", "watch"]);
 
     grunt.registerTask("default", ["static", "concurrent:production"]);
-    grunt.registerTask("deployAssets", ["static", "concurrent:production", "uglify", "uploadToS3"]);
+    grunt.registerTask("deployAssets", ["static", "concurrent:production", "uploadToS3"]);
     grunt.registerTask("deployAssetsTest", ["static", "concurrent:dev", "uploadToS3"]);
 
 };

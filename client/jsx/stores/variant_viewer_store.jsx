@@ -2,9 +2,10 @@
 var _ = require('underscore');
 var $ = require('jquery');
 
-var ClusterStrainsWorker = require('./cluster_strains.jsx');
 var staticStrainMetadata = require('./strain_metadata.jsx');
-var work = require('webworkify');
+// Bundled worker source (self-contained IIFE), inlined as a string by the
+// worker-inline esbuild plugin so it can run as a same-origin Blob worker.
+var clusterStrainsWorkerSource = require('worker:./cluster_strains.worker.js');
 
 var LOCI_SEARCH_BASE_URL = '/redirect_backend?param=search_sequence_objects';
 var LOCUS_SHOW_BASE_URL = '/redirect_backend?param=get_sequence_object';
@@ -237,8 +238,11 @@ module.exports = class VariantViewerStore {
         return _.findWhere(strainMetaData, { id: d });
       });
 
-      // web worker setup
-      var clusterWorker = work(ClusterStrainsWorker);
+      // web worker setup (same-origin Blob worker; see cluster_strains.worker.js)
+      var clusterWorkerBlob = new Blob([clusterStrainsWorkerSource], {
+        type: 'application/javascript',
+      });
+      var clusterWorker = new Worker(URL.createObjectURL(clusterWorkerBlob));
       // attach results to cb
       clusterWorker.addEventListener('message', (ev) => {
         var _clusteredStrainData = JSON.parse(ev.data);
