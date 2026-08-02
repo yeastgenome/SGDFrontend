@@ -49,16 +49,10 @@ ENV PATH="${NODE_HOME}/bin:${PATH}" \
     npm_config_unsafe_perm=true
 RUN node -v && npm -v && npm install -g bower@1.8.14 grunt-cli
 
-# --- Ruby toolchain (Compass on Ruby 3.2 needs tiny shim) ------------------------------
-RUN gem install --no-document bundler -v 2.4.22 \
- && gem install --no-document compass sass \
- && mkdir -p /usr/local/lib/ruby/compat \
- && printf '%s\n' \
-    'class << File; alias exists? exist? unless respond_to?(:exists?); end' \
-    'class << Dir;  alias exists? exist? unless respond_to?(:exists?); end' \
-    > /usr/local/lib/ruby/compat/file_exists_patch.rb
-ENV RUBYLIB=/usr/local/lib/ruby/compat \
-    RUBYOPT=-rfile_exists_patch
+# --- Ruby toolchain (bundler for legacy Capistrano deploy tasks) -----------------------
+# SCSS now compiles with dart-sass (npm), so Compass and its Ruby 3.2 File.exists?
+# shim are no longer needed.
+RUN gem install --no-document bundler -v 2.4.22
 
 # --- App checkout + runtime dirs ------------------------------------------------------
 RUN git clone https://github.com/yeastgenome/SGDFrontend.git \

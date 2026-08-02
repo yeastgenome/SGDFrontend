@@ -51,19 +51,20 @@
     "grunt-bowercopy": "~1.0.0",
     "grunt-cli": "^0.1.13",
     "grunt-concurrent": "~0.5.0",
-    "grunt-contrib-compass": "~0.9.1",
     "grunt-contrib-concat": "^0.5.0",
     "grunt-contrib-watch": "~0.6.1",
     "grunt-parallel": "^0.4.1",
     "grunt-text-replace": "~0.3.11",
     "htmltidy": "0.0.6",
     "mocha": "^2.3.4",
-    "prettier": "^2.0.4"
+    "prettier": "^2.0.4",
+    "sass": "~1.77.0"
   },
   "scripts": {
     "build:js": "node build/esbuild.mjs production",
     "build:js:dev": "node build/esbuild.mjs development",
     "watch:js": "node build/esbuild.mjs watch",
+    "build:css": "node build/sass.mjs",
     "lint": "eslint ./**/*.jsx",
     "format": "prettier ./**/*.jsx --write"
   },

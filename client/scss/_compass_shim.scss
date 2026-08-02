@@ -1,0 +1,48 @@
+// Minimal replacements for the handful of Compass mixins SGD's SCSS used, so the
+// stylesheet builds on dart-sass instead of Ruby Compass (which needed a whole
+// Ruby toolchain + shim). Compass emitted legacy vendor prefixes -- -moz-, -o-,
+// -webkit-gradient, and IE9 SVG-data-URI gradients -- for browsers that are long
+// dead. These emit only standard CSS: border-radius, transitions and
+// linear-gradient have been unprefixed in every browser since ~2013, so the
+// rendered result is unchanged on anything SGD supports.
+
+// --- border-radius (compass/css3/border-radius) -----------------------------
+@mixin border-radius($radius: 4px) {
+  border-radius: $radius;
+}
+@mixin border-top-radius($radius: 4px) {
+  border-top-left-radius: $radius;
+  border-top-right-radius: $radius;
+}
+@mixin border-bottom-radius($radius: 4px) {
+  border-bottom-left-radius: $radius;
+  border-bottom-right-radius: $radius;
+}
+@mixin border-left-radius($radius: 4px) {
+  border-top-left-radius: $radius;
+  border-bottom-left-radius: $radius;
+}
+@mixin border-right-radius($radius: 4px) {
+  border-top-right-radius: $radius;
+  border-bottom-right-radius: $radius;
+}
+@mixin border-top-left-radius($radius: 4px) {
+  border-top-left-radius: $radius;
+}
+@mixin border-top-right-radius($radius: 4px) {
+  border-top-right-radius: $radius;
+}
+@mixin border-bottom-left-radius($radius: 4px) {
+  border-bottom-left-radius: $radius;
+}
+@mixin border-bottom-right-radius($radius: 4px) {
+  border-bottom-right-radius: $radius;
+}
+
+// --- transitions (compass/css3/transition) ----------------------------------
+@mixin transition-property($property: all) {
+  transition-property: $property;
+}
+@mixin transition-duration($duration: 1s) {
+  transition-duration: $duration;
+}

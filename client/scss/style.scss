@@ -44,13 +44,8 @@
      //"../../bower_components/foundation/scss/foundation/components/pricing-tables",
      //"../../bower_components/foundation/scss/foundation/components/offcanvas",
 
-// Compass mixins
-@import
-    "compass/support",
-    "compass/layout/sticky-footer",
-    "compass/css3/images",
-    "compass/css3/border-radius",
-    "compass/css3/transition";
+// Compass mixin replacements (dart-sass; see _compass_shim.scss)
+@import "compass_shim";
 
 // other vendor styles
 @import

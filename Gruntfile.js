@@ -101,20 +101,6 @@ module.exports = function (grunt) {
             }
         },
 
-        compass: {
-            dev: {
-                options: {
-                    cssDir: BUILD_PATH + "css",
-                    fontsPath: "src/sgd/frontend/yeastgenome/static/fonts",
-                    httpPath: "/",
-                    imagesPath: "src/sgd/frontend/yeastgenome/static/img",
-                    importPath: ["bower_components/foundation/scss", "bower_components/font-awesome/scss"],
-                    outputStyle: "compressed",
-                    sassDir: "client/scss"
-                }
-            }
-        },
-
         watch: {
             options: {
                 livereload: true
@@ -162,26 +148,30 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-aws");
     grunt.loadNpmTasks("grunt-text-replace");
     grunt.loadNpmTasks("grunt-contrib-concat");
-    grunt.loadNpmTasks("grunt-contrib-compass");
     grunt.loadNpmTasks("grunt-contrib-watch");
     grunt.loadNpmTasks("grunt-bowercopy");
     grunt.loadNpmTasks("grunt-concurrent");
 
-    // Bundle the JSX application with esbuild (replaces browserify + babel 6 +
-    // uglifyify + envify). See build/esbuild.mjs.
-    function runEsbuild(mode) {
+    // Run a node build script as a grunt task (used for the esbuild + dart-sass
+    // pipelines that replaced browserify and Ruby Compass).
+    function runNode(script, args) {
         return function () {
             var done = this.async();
             var child = require("child_process").spawn(
                 process.execPath,
-                [require("path").join(__dirname, "build/esbuild.mjs"), mode],
+                [require("path").join(__dirname, script)].concat(args || []),
                 { cwd: __dirname, stdio: "inherit" }
             );
             child.on("exit", function (code) { done(code === 0); });
         };
     }
-    grunt.registerTask("dynamicJs:production", "Bundle JSX with esbuild (production)", runEsbuild("production"));
-    grunt.registerTask("dynamicJs:dev", "Bundle JSX with esbuild (development)", runEsbuild("development"));
+    // Bundle the JSX application with esbuild (replaces browserify + babel 6 +
+    // uglifyify + envify). See build/esbuild.mjs.
+    grunt.registerTask("dynamicJs:production", "Bundle JSX with esbuild (production)", runNode("build/esbuild.mjs", ["production"]));
+    grunt.registerTask("dynamicJs:dev", "Bundle JSX with esbuild (development)", runNode("build/esbuild.mjs", ["development"]));
+    // Compile SCSS with dart-sass (replaces Ruby Compass). Named "compass" so the
+    // existing `grunt compass:dev` deploy step keeps working (the :dev arg is ignored).
+    grunt.registerTask("compass", "Compile SCSS with dart-sass", runNode("build/sass.mjs", []));
 
     grunt.registerTask("static", ["replace", "concat", "bowercopy:build"]);
 
