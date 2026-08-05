@@ -1,7 +1,7 @@
 <div>
             {% for a in locus.alleles %}
               {% if loop.index < 8 %}
-                 <span><a href="{{ a.link_url|e }}">{{ a.display_name|e }}</a></span>
+                 <span><a href="{{ a.link_url|replace('/allele/', '/allele/SGD:')|e }}">{{ a.display_name|e }}</a></span>
                  {% if not loop.last %} | {% endif %}
               {% endif %}
             {% endfor %}
@@ -9,7 +9,7 @@
             <span id="allele_see_more" hidden>
                {% for a in locus.alleles %}
                  {% if loop.index >= 8 %}
-                    <span><a href="{{ a.link_url|e }}">{{ a.display_name|e }}</a></span>
+                    <span><a href="{{ a.link_url|replace('/allele/', '/allele/SGD:')|e }}">{{ a.display_name|e }}</a></span>
                     {% if not loop.last %} | {% endif %}
                  {% endif %}
                {% endfor %}
