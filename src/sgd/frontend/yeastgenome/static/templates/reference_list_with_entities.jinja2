@@ -7,7 +7,7 @@
     <ul className="reference-list">
     	{% for ref in references %}
 	   {% set i = loop.index %}
-       	   <li>
+       	   <li data-ref-index="{{ loop.index0 }}">
 		<a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
                    <span>{{ ref.citation|e|replace(ref.display_name, '')}}</span>
             	{% if ref.pubmed_id != none %}
