@@ -7,8 +7,8 @@
     var pathway = {{ pathway_js|safe }};
 </script>
 <style>
-    .pathway-diagram-wrap { overflow-x: auto; border: 1px solid #eee; padding: 10px; background: #fff; }
-    .pathway-diagram-wrap img { max-width: 100%; height: auto; }
+    .pathway-diagram-wrap { border: 1px solid #eee; background: #fff; }
+    .pathway-diagram-wrap iframe { display: block; width: 100%; height: 650px; border: 0; }
     .pathway-entity-list span { white-space: nowrap; }
 </style>
 {% endblock %}
@@ -133,9 +133,7 @@
             <hr />
             {% if pathway.diagram_url %}
             <div class="pathway-diagram-wrap">
-                <a href="{{ pathway.yeastpathways_url }}" target="_blank" rel="noopener">
-                    <img src="{{ pathway.diagram_url }}" alt="{{ pathway.display_name|e }} pathway diagram">
-                </a>
+                <iframe src="{{ pathway.diagram_url }}" title="{{ pathway.display_name|e }} pathway diagram" loading="lazy"></iframe>
             </div>
             <p style="margin-top:10px;">
                 <a href="{{ pathway.yeastpathways_url }}" class="small radius button" target="_blank" rel="noopener">
