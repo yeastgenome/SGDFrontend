@@ -36,6 +36,8 @@ def prep_views(chosen_frontend, config):
     config.add_route('complex_literature_details', '/complex/{identifier}/literature')
     config.add_route('complex_go_details', '/complex/{identifier}/go')
     config.add_route('complex_new_summary_details', '/complex/{identifier}/new_summary')
+    config.add_route('pathway', '/pathway/{identifier}')
+    config.add_route('pathway_literature_details', '/pathway/{identifier}/literature')
     # recently added alleles page ('recent' must precede {identifier})
     config.add_route('alleles_this_week', '/allele/recent')
     config.add_route('allele', '/allele/{identifier}')

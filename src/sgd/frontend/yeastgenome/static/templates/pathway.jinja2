@@ -1,0 +1,209 @@
+{% extends "global_layout.jinja2" %}
+
+{% block title %}{{ pathway.display_name }}{% endblock %}
+
+{% block head %}
+<script>
+    var pathway = {{ pathway_js|safe }};
+</script>
+<style>
+    .pathway-diagram-wrap { overflow-x: auto; border: 1px solid #eee; padding: 10px; background: #fff; }
+    .pathway-diagram-wrap img { max-width: 100%; height: auto; }
+    .pathway-entity-list span { white-space: nowrap; }
+</style>
+{% endblock %}
+
+{% block body %}
+
+<!-- Tabs -->
+<div class="row hide-for-small">
+    <nav class="small-12 columns">
+        <ul class="tabs sgd-tabs">
+            <li id="summary_tab" class="tab-title"><a href="/pathway/{{ pathway.biocyc_id }}"><span>Summary</span></a></li>
+            <li id="literature_tab" class="tab-title"><a href="/pathway/{{ pathway.biocyc_id }}/literature"><span>Literature</span></a></li>
+        </ul>
+        <div class="sgd-tab-shadow"></div>
+    </nav>
+</div>
+
+<nav class="top-bar show-for-small mobile-tab-bar" data-topbar role="navigation">
+        <ul class="title-area">
+                <li class="name">
+                   <h1><a>{{ pathway.biocyc_id }}</a></h1>
+                </li>
+                <li class="toggle-topbar"><a href="#"><span>&nbsp;<i class="fa fa-list-ul"></i></span></a></li>
+        </ul>
+        <section class="top-bar-section">
+          <ul class="right">
+            <li id="summary_tab" class="tab-title"><a href="/pathway/{{ pathway.biocyc_id }}"><span>Summary</span></a></li>
+            <li id="literature_tab" class="tab-title"><a href="/pathway/{{ pathway.biocyc_id }}/literature"><span>Literature</span></a></li>
+          </ul>
+        </section>
+</nav>
+
+<script>document.getElementById("summary_tab").className += " active";</script>
+
+<div class="row">
+
+    <!-- Includes navbar.html into template -->
+    {% include "navbar.jinja2" %}
+
+    <div class="small-12 medium-10 columns content-column">
+
+        <script>
+            add_navbar_title('Pathway: <span class="gene_name">{{ pathway.display_name }}</span>')
+            add_navbar_element('Overview', 'overview');
+            add_navbar_element('Pathway Diagram', 'diagram');
+            {% if pathway.pathway_summary and pathway.pathway_summary.html %}
+              add_navbar_element('Pathway Summary', 'pathway_summary');
+            {% endif %}
+            {% if pathway.references|length > 0 %}
+              add_navbar_element('References', 'reference');
+            {% endif %}
+            add_navbar_element('Resources', 'resources');
+        </script>
+
+<!-- Overview
+================================================== -->
+    <section id="overview" data-magellan-destination="overview">
+       <div class="page-header">
+            <h1>Pathway: {{ pathway.display_name }}
+                <a href="#" data-dropdown="summary_help"><i class="fa fa-info-circle"></i></a>
+                <p id="summary_help" class="f-dropdown content medium" data-dropdown-content>
+                    Biochemical pathways in <i>S. cerevisiae</i> are manually curated and maintained in the YeastPathways database. This page summarizes the genes, enzymes, and metabolites involved in the pathway, along with the curated literature.
+                </p>
+            </h1>
+            <hr />
+            <dl class="key-value">
+                <dt>Pathway Name</dt>
+                <dd>{{ pathway.display_name }}</dd>
+
+                <dt>Pathway ID</dt>
+                <dd>{{ pathway.biocyc_id }}</dd>
+
+                <dt>SGD ID</dt>
+                <dd>SGD:{{ pathway.sgdid }}</dd>
+
+                {% for alias in pathway.aliases %}
+                    {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
+                    {{ alias.display_name|e }}
+                    {% if not loop.last %}; {% else %}</dd>{% endif %}
+                {% endfor %}
+
+                {% if pathway.genes|length > 0 %}
+                <dt>Genes</dt>
+                <dd class="pathway-entity-list">
+                    {% for g in pathway.genes %}
+                        <span><a href="{{ g.link|e }}">{{ g.display_name|e }}</a></span>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </dd>
+                {% endif %}
+
+                {% if pathway.ec_numbers|length > 0 %}
+                <dt>EC Numbers</dt>
+                <dd class="pathway-entity-list">
+                    {% for ec in pathway.ec_numbers %}
+                        <span><a href="{{ ec.link|e }}">{{ ec.display_name|e }}</a></span>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </dd>
+                {% endif %}
+
+                {% if pathway.chemicals|length > 0 %}
+                <dt>Chemical Compounds</dt>
+                <dd class="pathway-entity-list">
+                    {% for c in pathway.chemicals %}
+                        <span><a href="{{ c.link|e }}">{{ c.display_name|e }}</a></span>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </dd>
+                {% endif %}
+            </dl>
+        </div>
+    </section>
+
+<!-- Pathway Diagram
+================================================== -->
+    <section id="diagram" data-magellan-destination="diagram">
+        <div class="page-header">
+            <h2>Pathway Diagram
+                <a href="#" data-dropdown="diagram_help"><i class="fa fa-info-circle"></i></a>
+                <p id="diagram_help" class="f-dropdown content medium" data-dropdown-content>
+                    Diagram of the pathway from YeastPathways. Click "View interactive diagram at YeastPathways" for the zoomable, clickable version.
+                </p>
+            </h2>
+            <hr />
+            {% if pathway.diagram_url %}
+            <div class="pathway-diagram-wrap">
+                <a href="{{ pathway.yeastpathways_url }}" target="_blank" rel="noopener">
+                    <img src="{{ pathway.diagram_url }}" alt="{{ pathway.display_name|e }} pathway diagram">
+                </a>
+            </div>
+            <p style="margin-top:10px;">
+                <a href="{{ pathway.yeastpathways_url }}" class="small radius button" target="_blank" rel="noopener">
+                    <i class="fa fa-external-link"></i> View interactive diagram at YeastPathways
+                </a>
+            </p>
+            {% else %}
+            <p>No diagram available.</p>
+            {% endif %}
+        </div>
+    </section>
+
+<!-- Pathway Summary
+================================================== -->
+    {% if pathway.pathway_summary and pathway.pathway_summary.html %}
+    <section id="pathway_summary" data-magellan-destination="pathway_summary">
+        <div class="page-header">
+            <h2>Pathway Summary</h2>
+            <hr />
+            <div>{{ pathway.pathway_summary.html|safe }}</div>
+        </div>
+    </section>
+    {% endif %}
+
+<!-- References
+================================================== -->
+    {% if pathway.references|length > 0 %}
+    <section id="reference" data-magellan-destination="reference">
+        <div class="page-header">
+            <h2>References
+                <a href="#" data-dropdown="reference_help"><i class="fa fa-info-circle"></i></a>
+                <p id="reference_help" class="f-dropdown content medium" data-dropdown-content>
+                    List of references used specifically to curate the information on this page.
+                </p>
+            </h2>
+            <hr />
+            <ul class="unstyled">
+                {% for ref in pathway.references %}
+                    <li>
+                        <a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
+                        <span>{{ ref.citation|e|replace(ref.display_name, '') }}</span>
+                        {% if ref.pubmed_id != none %}
+                            <small>PMID: {{ ref.pubmed_id|e }}</small>
+                        {% endif %}
+                        <ul class="ref-links">
+                            <li><a href="{{ ref.link|e }}">SGD Paper</a></li>
+                            {% for url in ref.urls %}
+                                <li><a target="_infowin" href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+    {% endif %}
+
+<!-- Resources
+================================================== -->
+    <section id="resources">
+        <h2>Resources</h2>
+        <hr />
+        {% if pathway.yeastpathways_url %}
+        <a href="{{ pathway.yeastpathways_url }}" target="_blank" rel="noopener">YeastPathways</a>
+        {% endif %}
+    </section>
+
+    </div>
+</div>
+
+{% endblock body %}

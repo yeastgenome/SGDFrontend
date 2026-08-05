@@ -366,6 +366,37 @@ def allele_literature_details(request):
         return not_found(request)
     return render_to_response(TEMPLATE_ROOT + 'allele_literature.jinja2', allele_obj, request=request)
 
+def get_pathway_obj(identifier, tab):
+    # Per-tab fetch from the backend (/pathway/{id}/{summary,literature}); the
+    # whole payload is embedded as pathway_js and consumed client-side.
+    backend_url = os.environ['BACKEND_URL'] + '/pathway/' + identifier + '/' + tab
+    backend_response = requests.get(backend_url)
+    if backend_response.status_code != 200:
+        return None
+    obj = json.loads(backend_response.text)
+    if not obj:
+        return None
+    return {
+        'pathway': obj,
+        'pathway_js': json.dumps(obj)
+    }
+
+@view_config(route_name='pathway')
+def pathway(request):
+    identifier = request.matchdict['identifier']
+    pathway_obj = get_pathway_obj(identifier, 'summary')
+    if pathway_obj is None:
+        return not_found(request)
+    return render_to_response(TEMPLATE_ROOT + 'pathway.jinja2', pathway_obj, request=request)
+
+@view_config(route_name='pathway_literature_details')
+def pathway_literature_details(request):
+    identifier = request.matchdict['identifier']
+    pathway_obj = get_pathway_obj(identifier, 'literature')
+    if pathway_obj is None:
+        return not_found(request)
+    return render_to_response(TEMPLATE_ROOT + 'pathway_literature.jinja2', pathway_obj, request=request)
+
 # If is_quick, try to redirect to gene page.  If not, or no suitable response, then just show results in script tag and let client js do the rest.
 @view_config(route_name='search')
 def search(request):
