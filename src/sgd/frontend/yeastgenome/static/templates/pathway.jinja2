@@ -60,14 +60,12 @@
         <script>
             add_navbar_title('Pathway: <span class="gene_name">{{ pathway.display_name }}</span>')
             add_navbar_element('Overview', 'overview');
-            {% if pathway.genes|length > 0 %}
-              add_navbar_element('Genes', 'genes');
-            {% endif %}
             add_navbar_element('Pathway Diagram', 'diagram');
             {% if pathway.pathway_summary and pathway.pathway_summary.html %}
               add_navbar_element('Pathway Summary', 'pathway_summary');
             {% endif %}
             {% if pathway.genes|length > 0 %}
+              add_navbar_element('Genes Involved', 'genes');
               add_navbar_element('GO Enrichment', 'go_enrichment');
             {% endif %}
             {% if pathway.references|length > 0 %}
@@ -115,36 +113,6 @@
         </div>
     </section>
 
-<!-- Genes
-================================================== -->
-    {% if pathway.genes|length > 0 %}
-    <section id="genes" data-magellan-destination="genes">
-        <div class="page-header">
-            <h2>Genes
-                <a href="#" data-dropdown="genes_help"><i class="fa fa-info-circle"></i></a>
-                <p id="genes_help" class="f-dropdown content medium" data-dropdown-content>
-                    Genes whose products participate in this pathway, with their systematic names and EC numbers (where the gene product is an enzyme with an assigned EC number).
-                </p>
-            </h2>
-            <hr />
-            <table class="pathway-genes-table">
-                <thead>
-                    <tr><th>Gene</th><th>Systematic Name</th><th>EC Number</th></tr>
-                </thead>
-                <tbody>
-                {% for g in pathway.genes %}
-                    <tr>
-                        <td><a href="{{ g.link|e }}" class="gene_name">{{ g.display_name|e }}</a></td>
-                        <td>{{ g.format_name|e }}</td>
-                        <td>{{ g.ec_numbers|join(', ')|e }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </section>
-    {% endif %}
-
 <!-- Pathway Diagram
 ================================================== -->
     <section id="diagram" data-magellan-destination="diagram">
@@ -182,6 +150,37 @@
             <h2>Pathway Summary</h2>
             <hr />
             <div>{{ pathway.pathway_summary.html|safe }}</div>
+        </div>
+    </section>
+    {% endif %}
+
+<!-- Genes Involved
+================================================== -->
+    {% if pathway.genes|length > 0 %}
+    <section id="genes" data-magellan-destination="genes">
+        <div class="page-header">
+            <h2>Genes Involved
+                <a href="#" data-dropdown="genes_help"><i class="fa fa-info-circle"></i></a>
+                <p id="genes_help" class="f-dropdown content medium" data-dropdown-content>
+                    Genes whose products participate in this pathway, with their systematic names, EC numbers (where the gene product is an enzyme with an assigned EC number), and the gene's SGD description.
+                </p>
+            </h2>
+            <hr />
+            <table class="pathway-genes-table">
+                <thead>
+                    <tr><th>Gene</th><th>Systematic Name</th><th>EC Number</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                {% for g in pathway.genes %}
+                    <tr>
+                        <td><a href="{{ g.link|e }}" class="gene_name">{{ g.display_name|e }}</a></td>
+                        <td>{{ g.format_name|e }}</td>
+                        <td>{{ g.ec_numbers|join(', ')|e }}</td>
+                        <td>{{ g.headline|e }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
         </div>
     </section>
     {% endif %}
