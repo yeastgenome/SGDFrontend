@@ -24,7 +24,7 @@
     /* Hide the shared cytoscape helper's overlay legend/watermark: its labels
        ("Current Locus/Other Locus/GO Term") are hardcoded for gene pages and
        don't match this graph. The accurate legend is .pw-network-legend above. */
-    #network #j-sgd-visible-cyto-canvas { display: none; }
+    #functional_networks #j-sgd-visible-cyto-canvas { display: none; }
 </style>
 {% endblock %}
 
@@ -74,9 +74,8 @@
             {% endif %}
             {% if pathway.genes|length > 0 %}
               add_navbar_element('Genes Involved', 'genes');
-              add_navbar_element('Network', 'network');
+              add_navbar_element('Functional Networks', 'functional_networks');
               add_navbar_element('GO Enrichment', 'go_enrichment');
-              add_navbar_element('GO-CAMs', 'gocams');
             {% endif %}
             {% if pathway.references|length > 0 %}
               add_navbar_element('References', 'reference');
@@ -199,18 +198,21 @@
     </section>
     {% endif %}
 
-<!-- Network (pathway -> genes -> GO -> phenotype; rendered client-side with cytoscape)
+<!-- Functional Networks: pathway network + GO-CAMs (mirrors the LSP Functional Networks section)
 ================================================== -->
     {% if pathway.genes|length > 0 %}
-    <section id="network" data-magellan-destination="network">
+    <section id="functional_networks" data-magellan-destination="functional_networks">
         <div class="page-header">
-            <h2>Network
-                <a href="#" data-dropdown="network_help"><i class="fa fa-info-circle"></i></a>
-                <p id="network_help" class="f-dropdown content medium" data-dropdown-content>
-                    A network linking this pathway to the genes involved, and those genes to their manually-curated GO biological-process terms and phenotype observables. Click a node to open its page; drag nodes to rearrange; use the slider to filter GO terms and observables by how many of the pathway's genes share them.
+            <h2>Functional Networks
+                <a href="#" data-dropdown="functional_networks_help"><i class="fa fa-info-circle"></i></a>
+                <p id="functional_networks_help" class="f-dropdown content medium" data-dropdown-content>
+                    Functional Networks show how the genes in this pathway work together: a graph linking the pathway to its genes and their shared GO biological-process terms and phenotype observables, and the GO-CAM causal activity models that involve these genes.
                 </p>
             </h2>
             <hr />
+
+            <h3>Network</h3>
+            <p style="color:#777; margin-bottom:8px;">Click a node to open its page; drag nodes to rearrange; use the slider to filter GO terms and observables by how many of the pathway's genes share them.</p>
             <div id="pw_network_loading"><i class="fa fa-spinner fa-spin"></i> Loading network&hellip;</div>
             <div id="pw_network_wrap" style="display:none;">
                 <div class="pw-network-legend">
@@ -231,6 +233,22 @@
                     <div id="slider_ticks"></div>
                 </div>
             </div>
+
+            <h3 style="margin-top:2rem;">GO-CAMs</h3>
+            <p style="color:#777; margin-bottom:8px;">GO-CAM (Gene Ontology Causal Activity Model) pathway models that involve the genes in this pathway. A gene can participate in more than one model, so use the dropdown to switch between them; the model for this pathway is shown by default.</p>
+            <div id="pw_gocam_loading"><i class="fa fa-spinner fa-spin"></i> Loading GO-CAMs&hellip;</div>
+            <div id="pw_gocams" style="display:none;">
+                <div id="pw_gocam_select_wrap" style="display:none; margin-bottom:10px;">
+                    <label class="network-label"><strong>Available GO-CAMs:</strong>
+                        <select id="pw_gocam_select" style="max-width:100%;"></select>
+                    </label>
+                </div>
+                <h4 id="pw_gocam_title" style="margin-bottom:10px;"></h4>
+                <div class="panel">
+                    <go-gocam-viewer id="pw_gocam_viewer" show-legend="true" style="display:block; width:100%;"></go-gocam-viewer>
+                </div>
+                <a id="pw_gocam_link" href="#" target="_blank" rel="noopener">View GO-CAM at Gene Ontology <i class="fa fa-external-link"></i></a>
+            </div>
         </div>
     </section>
     {% endif %}
@@ -248,35 +266,6 @@
             </h2>
             <hr />
             <div id="go_enrichment_target"><p id="go_enrichment_loading"><i class="fa fa-spinner fa-spin"></i> Loading GO enrichment&hellip;</p></div>
-        </div>
-    </section>
-    {% endif %}
-
-<!-- GO-CAMs (models involving the pathway's genes; rendered client-side by the GO go-gocam-viewer)
-================================================== -->
-    {% if pathway.genes|length > 0 %}
-    <section id="gocams" data-magellan-destination="gocams">
-        <div class="page-header">
-            <h2>GO-CAMs
-                <a href="#" data-dropdown="gocams_help"><i class="fa fa-info-circle"></i></a>
-                <p id="gocams_help" class="f-dropdown content medium" data-dropdown-content>
-                    GO-CAM (Gene Ontology Causal Activity Model) pathway models that involve the genes in this pathway. A gene can participate in more than one model, so use the dropdown to switch between them; the model for this pathway is shown by default.
-                </p>
-            </h2>
-            <hr />
-            <div id="pw_gocam_loading"><i class="fa fa-spinner fa-spin"></i> Loading GO-CAMs&hellip;</div>
-            <div id="pw_gocams" style="display:none;">
-                <div id="pw_gocam_select_wrap" style="display:none; margin-bottom:10px;">
-                    <label class="network-label"><strong>Available GO-CAMs:</strong>
-                        <select id="pw_gocam_select" style="max-width:100%;"></select>
-                    </label>
-                </div>
-                <h4 id="pw_gocam_title" style="margin-bottom:10px;"></h4>
-                <div class="panel">
-                    <go-gocam-viewer id="pw_gocam_viewer" show-legend="true" style="display:block; width:100%;"></go-gocam-viewer>
-                </div>
-                <a id="pw_gocam_link" href="#" target="_blank" rel="noopener">View GO-CAM at Gene Ontology <i class="fa fa-external-link"></i></a>
-            </div>
         </div>
     </section>
     {% endif %}
