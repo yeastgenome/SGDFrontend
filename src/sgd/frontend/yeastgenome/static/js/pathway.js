@@ -8,6 +8,13 @@ $(document).ready(function () {
 
     function escapeHtml(s) { return $('<div>').text(s == null ? '' : s).html(); }
 
+    // p-values span many orders of magnitude (e.g. 4.8e-16 to 8e-3), so show
+    // them in scientific notation with a 2-decimal mantissa.
+    function formatPvalue(v) {
+        var n = Number(v);
+        return isNaN(n) ? String(v) : n.toExponential(2);
+    }
+
     $.getJSON('/redirect_backend?param=pathway/' + encodeURIComponent(pathway.biocyc_id) + '/go_enrichment', function (data) {
         if (!data || !data.length) {
             $(target).html('<p>No significant GO enrichment found for the genes in this pathway.</p>');
@@ -21,7 +28,7 @@ $(document).ready(function () {
             html += '<tr>' +
                 '<td><a href="' + escapeHtml(go.link) + '">' + escapeHtml(go.display_name) + '</a></td>' +
                 '<td>' + escapeHtml(String(row.match_count)) + '</td>' +
-                '<td class="go-pvalue">' + escapeHtml(String(row.pvalue)) + '</td>' +
+                '<td class="go-pvalue">' + escapeHtml(formatPvalue(row.pvalue)) + '</td>' +
                 '</tr>';
         });
         html += '</tbody></table>';
