@@ -21,6 +21,10 @@
     .pw-network-legend span { margin-right: 16px; white-space: nowrap; font-size: 13px; }
     .pw-swatch { display: inline-block; width: 12px; height: 12px; border-radius: 50%; vertical-align: middle; margin-right: 4px; }
     .pw-swatch-sq { border-radius: 2px; }
+    /* Hide the shared cytoscape helper's overlay legend/watermark: its labels
+       ("Current Locus/Other Locus/GO Term") are hardcoded for gene pages and
+       don't match this graph. The accurate legend is .pw-network-legend above. */
+    #network #j-sgd-visible-cyto-canvas { display: none; }
 </style>
 {% endblock %}
 
