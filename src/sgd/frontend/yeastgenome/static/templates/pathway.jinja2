@@ -110,6 +110,15 @@
                 <dt>SGD ID</dt>
                 <dd>SGD:{{ pathway.sgdid }}</dd>
 
+                {% if pathway.genes|length > 0 %}
+                <dt>Genes</dt>
+                <dd class="pathway-entity-list">
+                    {% for g in pathway.genes %}
+                        <span><a href="{{ g.link|e }}">{{ g.display_name|e }}</a></span>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </dd>
+                {% endif %}
+
                 {% for alias in pathway.aliases %}
                     {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
                     {{ alias.display_name|e }}
