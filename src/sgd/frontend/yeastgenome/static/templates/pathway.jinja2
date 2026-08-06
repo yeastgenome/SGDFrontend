@@ -173,7 +173,7 @@
                 <tbody>
                 {% for g in pathway.genes %}
                     <tr>
-                        <td><a href="{{ g.link|e }}" class="gene_name">{{ g.display_name|e }}</a></td>
+                        <td><a href="{{ g.link|e }}">{{ g.display_name|e }}</a></td>
                         <td>{{ g.format_name|e }}</td>
                         <td>{{ g.ec_numbers|join(', ')|e }}</td>
                         <td>{{ g.headline|e }}</td>
