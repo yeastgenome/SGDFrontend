@@ -105,7 +105,7 @@
                 <dt>Chemical Compounds</dt>
                 <dd class="pathway-entity-list">
                     {% for c in pathway.chemicals %}
-                        <span><a href="{{ c.link|e }}">{{ c.display_name|e }}</a></span>{% if not loop.last %} | {% endif %}
+                        <span><a href="{{ c.link|e }}" target="_blank" rel="noopener">{{ c.display_name|e }}</a></span>{% if not loop.last %} | {% endif %}
                     {% endfor %}
                 </dd>
                 {% endif %}
@@ -175,7 +175,11 @@
                     <tr>
                         <td><a href="{{ g.link|e }}">{{ g.display_name|e }}</a></td>
                         <td>{{ g.format_name|e }}</td>
-                        <td>{{ g.ec_numbers|join(', ')|e }}</td>
+                        <td>
+                            {% for ec in g.ec_numbers -%}
+                                {% if ec.link %}<a href="{{ ec.link|e }}">{{ ec.display_name|e }}</a>{% else %}{{ ec.display_name|e }}{% endif %}{% if not loop.last %}, {% endif %}
+                            {%- endfor %}
+                        </td>
                         <td>{{ g.headline|e }}</td>
                     </tr>
                 {% endfor %}
