@@ -7,15 +7,11 @@
     var pathway = {{ pathway_js|safe }};
 </script>
 <style>
-    /* Lock the embed to just the pathway diagram: clip the container to the
-       diagram band and shift the iframe up so the YeastPathways banner/nav is
-       off the top. The iframe is non-interactive and non-scrolling (a static
-       diagram display) since the Summary/References are their own native
-       sections and the button below opens the full interactive version.
-       Offsets are approximate (the source page isn't responsive); large
-       diagrams are clipped — the interactive linkout is the full view. */
-    .pathway-diagram-wrap { position: relative; overflow: hidden; height: 340px; border: 1px solid #eee; background: #fff; }
-    .pathway-diagram-wrap iframe { position: absolute; top: -185px; left: 0; width: 100%; height: 900px; border: 0; pointer-events: none; }
+    /* Pre-captured pathway diagram image (from YeastPathways). Captured at 2x
+       for retina; displayed at its logical (half-pixel) width via onload, and
+       shrunk to fit narrow screens. */
+    .pathway-diagram-wrap { border: 1px solid #eee; background: #fff; padding: 10px; overflow-x: auto; }
+    .pathway-diagram-wrap img { max-width: 100%; height: auto; }
     .pathway-entity-list span { white-space: nowrap; }
 </style>
 {% endblock %}
@@ -138,9 +134,12 @@
                 </p>
             </h2>
             <hr />
-            {% if pathway.diagram_url %}
+            {% if pathway.biocyc_id %}
             <div class="pathway-diagram-wrap">
-                <iframe src="{{ pathway.diagram_url }}" title="{{ pathway.display_name|e }} pathway diagram" scrolling="no" loading="lazy"></iframe>
+                <img src="{{ asset_root }}/img/pathway/{{ pathway.biocyc_id }}.png"
+                     alt="{{ pathway.display_name|e }} pathway diagram"
+                     onload="this.style.width=(this.naturalWidth/2)+'px'"
+                     onerror="this.closest('.pathway-diagram-wrap').style.display='none'">
             </div>
             <p style="margin-top:10px;">
                 <a href="{{ pathway.yeastpathways_url }}" class="small radius button" target="_blank" rel="noopener">
