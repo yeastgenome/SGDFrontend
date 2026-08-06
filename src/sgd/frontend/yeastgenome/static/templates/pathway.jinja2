@@ -114,7 +114,7 @@
                 <dt>Genes</dt>
                 <dd class="pathway-entity-list">
                     {% for g in pathway.genes %}
-                        <span><a href="{{ g.link|e }}">{{ g.display_name|e }}</a></span>{% if not loop.last %} | {% endif %}
+                        <span><a href="{{ g.link|e }}" target="_blank" rel="noopener">{{ g.display_name|e }}</a></span>{% if not loop.last %} | {% endif %}
                     {% endfor %}
                 </dd>
                 {% endif %}
