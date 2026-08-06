@@ -29,9 +29,22 @@ $(document).ready(function() {
     $("#recent_allele_table_buttons").hide();
 });
 
+// Allele pages resolve by SGDID with the 'SGD:' prefix (e.g.
+// /allele/SGD:S000382563); the backend's raw link (/allele/S000382563) 404s,
+// so build the link from the sgdid and add the prefix.
+function allele_link(allele) {
+    var sgdid = allele['sgdid'];
+    if (sgdid) {
+        var id = sgdid.indexOf('SGD:') === 0 ? sgdid : 'SGD:' + sgdid;
+        return '/allele/' + id;
+    }
+    return allele['link'] || '';
+}
+
 function allele_data_to_table(allele) {
     var name = allele['display_name'] || '';
-    var name_cell = allele['link'] ? '<a href="' + allele['link'] + '">' + name + '</a>' : name;
+    var link = allele_link(allele);
+    var name_cell = link ? '<a href="' + link + '">' + name + '</a>' : name;
     var type_cell = allele['allele_type'] || '';
     var desc_cell = allele['description'] || '';
     return [name_cell, type_cell, desc_cell];
