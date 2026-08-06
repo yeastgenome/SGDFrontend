@@ -13,6 +13,10 @@
     .pathway-diagram-wrap { border: 1px solid #eee; background: #fff; padding: 10px; overflow-x: auto; }
     .pathway-diagram-wrap img { max-width: 100%; height: auto; }
     .pathway-entity-list span { white-space: nowrap; }
+    .pathway-genes-table, #go_enrichment_target table { width: 100%; }
+    .pathway-genes-table td, .pathway-genes-table th,
+    #go_enrichment_target td, #go_enrichment_target th { padding: 4px 10px; }
+    #go_enrichment_target td.go-pvalue { white-space: nowrap; font-variant-numeric: tabular-nums; }
 </style>
 {% endblock %}
 
@@ -56,9 +60,15 @@
         <script>
             add_navbar_title('Pathway: <span class="gene_name">{{ pathway.display_name }}</span>')
             add_navbar_element('Overview', 'overview');
+            {% if pathway.genes|length > 0 %}
+              add_navbar_element('Genes', 'genes');
+            {% endif %}
             add_navbar_element('Pathway Diagram', 'diagram');
             {% if pathway.pathway_summary and pathway.pathway_summary.html %}
               add_navbar_element('Pathway Summary', 'pathway_summary');
+            {% endif %}
+            {% if pathway.genes|length > 0 %}
+              add_navbar_element('GO Enrichment', 'go_enrichment');
             {% endif %}
             {% if pathway.references|length > 0 %}
               add_navbar_element('References', 'reference');
@@ -93,24 +103,6 @@
                     {% if not loop.last %}; {% else %}</dd>{% endif %}
                 {% endfor %}
 
-                {% if pathway.genes|length > 0 %}
-                <dt>Genes</dt>
-                <dd class="pathway-entity-list">
-                    {% for g in pathway.genes %}
-                        <span><a href="{{ g.link|e }}">{{ g.display_name|e }}</a></span>{% if not loop.last %} | {% endif %}
-                    {% endfor %}
-                </dd>
-                {% endif %}
-
-                {% if pathway.ec_numbers|length > 0 %}
-                <dt>EC Numbers</dt>
-                <dd class="pathway-entity-list">
-                    {% for ec in pathway.ec_numbers %}
-                        <span><a href="{{ ec.link|e }}">{{ ec.display_name|e }}</a></span>{% if not loop.last %} | {% endif %}
-                    {% endfor %}
-                </dd>
-                {% endif %}
-
                 {% if pathway.chemicals|length > 0 %}
                 <dt>Chemical Compounds</dt>
                 <dd class="pathway-entity-list">
@@ -122,6 +114,36 @@
             </dl>
         </div>
     </section>
+
+<!-- Genes
+================================================== -->
+    {% if pathway.genes|length > 0 %}
+    <section id="genes" data-magellan-destination="genes">
+        <div class="page-header">
+            <h2>Genes
+                <a href="#" data-dropdown="genes_help"><i class="fa fa-info-circle"></i></a>
+                <p id="genes_help" class="f-dropdown content medium" data-dropdown-content>
+                    Genes whose products participate in this pathway, with their systematic names and EC numbers (where the gene product is an enzyme with an assigned EC number).
+                </p>
+            </h2>
+            <hr />
+            <table class="pathway-genes-table">
+                <thead>
+                    <tr><th>Gene</th><th>Systematic Name</th><th>EC Number</th></tr>
+                </thead>
+                <tbody>
+                {% for g in pathway.genes %}
+                    <tr>
+                        <td><a href="{{ g.link|e }}" class="gene_name">{{ g.display_name|e }}</a></td>
+                        <td>{{ g.format_name|e }}</td>
+                        <td>{{ g.ec_numbers|join(', ')|e }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+    {% endif %}
 
 <!-- Pathway Diagram
 ================================================== -->
@@ -160,6 +182,23 @@
             <h2>Pathway Summary</h2>
             <hr />
             <div>{{ pathway.pathway_summary.html|safe }}</div>
+        </div>
+    </section>
+    {% endif %}
+
+<!-- GO Enrichment (populated client-side; GO Term Finder is a slow external call)
+================================================== -->
+    {% if pathway.genes|length > 0 %}
+    <section id="go_enrichment" data-magellan-destination="go_enrichment">
+        <div class="page-header">
+            <h2>GO Enrichment
+                <a href="#" data-dropdown="go_enrichment_help"><i class="fa fa-info-circle"></i></a>
+                <p id="go_enrichment_help" class="f-dropdown content medium" data-dropdown-content>
+                    Gene Ontology biological-process terms enriched among the genes in this pathway, computed with GO Term Finder. Terms are shown with the number of pathway genes annotated to them and the corrected p-value.
+                </p>
+            </h2>
+            <hr />
+            <div id="go_enrichment_target"><p id="go_enrichment_loading"><i class="fa fa-spinner fa-spin"></i> Loading GO enrichment&hellip;</p></div>
         </div>
     </section>
     {% endif %}
@@ -211,3 +250,7 @@
 </div>
 
 {% endblock body %}
+
+{% block scripts %}
+<script src="{{asset_root}}/js/pathway.js"></script>
+{% endblock scripts %}
