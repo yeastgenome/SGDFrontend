@@ -17,14 +17,20 @@
     .pathway-genes-table td, .pathway-genes-table th,
     #go_enrichment_target td, #go_enrichment_target th { padding: 4px 10px; }
     #go_enrichment_target td.go-pvalue { white-space: nowrap; font-variant-numeric: tabular-nums; }
-    .pw-network-legend { margin-bottom: 8px; }
+    .pw-network-legend { margin: 10px 0 8px; }
     .pw-network-legend span { margin-right: 16px; white-space: nowrap; font-size: 13px; }
     .pw-swatch { display: inline-block; width: 12px; height: 12px; border-radius: 50%; vertical-align: middle; margin-right: 4px; }
     .pw-swatch-sq { border-radius: 2px; }
     /* Hide the shared cytoscape helper's overlay legend/watermark: its labels
        ("Current Locus/Other Locus/GO Term") are hardcoded for gene pages and
-       don't match this graph. The accurate legend is .pw-network-legend above. */
+       don't match this graph. The accurate legend is .pw-network-legend, which
+       sits inside the panel above the slider. */
     #functional_networks #j-sgd-visible-cyto-canvas { display: none; }
+    /* The helper reserves ~150px below the graph for its (now hidden) canvas
+       legend; let the panel fit its content so there is no dead space under
+       the slider. */
+    #functional_networks .panel { height: auto !important; padding-bottom: 10px; }
+    #functional_networks #slider_ticks { margin-bottom: 0; }
 </style>
 {% endblock %}
 
@@ -211,23 +217,26 @@
             </h2>
             <hr />
 
-            <h3>Network</h3>
-            <p style="color:#777; margin-bottom:8px;">Click a node to open its page; drag nodes to rearrange; use the slider to filter GO terms and observables by how many of the pathway's genes share them.</p>
+            <h3>Shared Annotations</h3>
             <div id="pw_network_loading"><i class="fa fa-spinner fa-spin"></i> Loading network&hellip;</div>
             <div id="pw_network_wrap" style="display:none;">
-                <div class="pw-network-legend">
-                    <span><i class="pw-swatch" style="background:#fade71;"></i> Pathway</span>
-                    <span><i class="pw-swatch" style="background:#9aa0a6;"></i> Gene</span>
-                    <span><i class="pw-swatch pw-swatch-sq" style="background:#7FBF7B;"></i> GO term</span>
-                    <span><i class="pw-swatch pw-swatch-sq" style="background:#C591F5;"></i> Observable</span>
-                </div>
                 <div class="panel">
                     <div class="sgd-cyto-canvas-container">
                         <canvas id="j-sgd-visible-cyto-canvas" class="j-sgd-cyto-canvas" style="position:absolute; z-index:0; pointer-events:none;"></canvas>
                         <canvas id="j-sgd-hidden-cyto-canvas" class="j-sgd-cyto-canvas" style="position:absolute; display:none;"></canvas>
                     </div>
                     <a id="pw_network_cy_recenter" class="small button secondary radius">Reset</a>
+                    <a href="#" data-options="align:left" data-dropdown="pw_network_help" class="right"><i class="fa fa-question-circle"></i></a>
+                    <p id="pw_network_help" class="f-dropdown content medium" data-dropdown-content>
+                        Click a node to open its page; drag nodes to rearrange; use the slider to filter GO terms and observables by how many of the pathway's genes share them.
+                    </p>
                     <div id="pw_network_cy" name="cy" style="width:100%; height:600px;"></div>
+                    <div class="pw-network-legend">
+                        <span><i class="pw-swatch" style="background:#fade71;"></i> Pathway</span>
+                        <span><i class="pw-swatch" style="background:#9aa0a6;"></i> Gene</span>
+                        <span><i class="pw-swatch pw-swatch-sq" style="background:#7FBF7B;"></i> GO term</span>
+                        <span><i class="pw-swatch pw-swatch-sq" style="background:#C591F5;"></i> Observable</span>
+                    </div>
                     <label class="network-label"><strong>Filter GO terms &amp; observables by number of pathway genes shared:</strong></label>
                     <div id="pw_network_slider" class="noUiSlider" style="width:100%;"></div>
                     <div id="slider_ticks"></div>
