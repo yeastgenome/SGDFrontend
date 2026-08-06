@@ -21,7 +21,7 @@ $(document).ready(function () {
         var genes = row.genes;
         if (!genes || !genes.length) { return escapeHtml(String(row.match_count)); }
         return genes.map(function (g) {
-            return '<a href="' + escapeHtml(g.link) + '" class="gene_name">' +
+            return '<a href="' + escapeHtml(g.link) + '">' +
                 escapeHtml(g.display_name) + '</a>';
         }).join(', ');
     }
