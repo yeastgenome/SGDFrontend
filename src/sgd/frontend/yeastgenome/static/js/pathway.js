@@ -106,4 +106,61 @@ $(document).ready(function () {
             $('#pw_gocam_loading').html('GO-CAMs are temporarily unavailable.');
         });
     }
+
+    // Pathway network: pathway -> genes -> GO -> phenotype, drawn with the
+    // shared cytoscape helper. GO/phenotype nodes carry a gene_count so the
+    // slider can thin them; the genes and pathway node always stay visible.
+    function pwNetworkStyle() {
+        return cytoscape.stylesheet()
+            .selector('node').css({
+                'content': 'data(name)', 'font-family': 'helvetica', 'font-size': 14,
+                'text-outline-width': 3, 'text-outline-color': '#888', 'text-valign': 'center',
+                'color': '#fff', 'width': 30, 'height': 30,
+                'background-color': '#9aa0a6', 'border-color': '#fff'
+            })
+            .selector('edge').css({
+                'width': 1.5, 'curve-style': 'bezier', 'line-color': '#c8c8c8', 'opacity': 0.5
+            })
+            .selector("node[category='FOCUS']").css({
+                'background-color': '#fade71', 'shape': 'roundrectangle',
+                'text-outline-color': '#fff', 'text-outline-width': 4, 'color': '#888'
+            })
+            .selector("node[type='GO']").css({
+                'shape': 'rectangle', 'background-color': '#7FBF7B',
+                'text-outline-color': '#fff', 'text-outline-width': 4, 'color': '#888'
+            })
+            .selector("node[type='PHENOTYPE']").css({
+                'shape': 'rectangle', 'background-color': '#C591F5',
+                'text-outline-color': '#fff', 'text-outline-width': 4, 'color': '#888'
+            });
+    }
+
+    var pwNetworkLayout = {
+        'name': 'arbor', 'liveUpdate': true, 'ungrabifyWhileSimulating': true,
+        'repulsion': 1200,
+        'nodeMass': function (data) { return data.category === 'FOCUS' ? 10 : 1; }
+    };
+
+    // Keep genes + the pathway node always; filter GO/phenotype by gene_count.
+    function pwNetworkSliderFilter(cutoff) {
+        return "node[type='GENE'], node[category='FOCUS'], node[gene_count >= " + cutoff + "], edge";
+    }
+
+    if (document.getElementById('pw_network_cy')) {
+        $.getJSON('/redirect_backend?param=pathway/' + encodeURIComponent(pathway.biocyc_id) + '/network_graph', function (data) {
+            if (data && data.nodes && data.nodes.length > 1) {
+                $('#pw_network_loading').hide();
+                $('#pw_network_wrap').show();
+                var graph = create_cytoscape_vis('pw_network_cy', pwNetworkLayout, pwNetworkStyle(), data, null, false, 'go');
+                // Start the slider so only GO/phenotype terms shared by >= 2 genes
+                // show initially (cleaner); users can drag to 1 for the full set.
+                var defaultCutoff = Math.min(data.max_cutoff, Math.max(data.min_cutoff, 2));
+                create_slider('pw_network_slider', graph, data.min_cutoff, data.max_cutoff, pwNetworkSliderFilter, data.max_cutoff + 1, defaultCutoff);
+            } else {
+                $('#pw_network_loading').html('No network data available for this pathway.');
+            }
+        }).fail(function () {
+            $('#pw_network_loading').html('Network is temporarily unavailable.');
+        });
+    }
 });
