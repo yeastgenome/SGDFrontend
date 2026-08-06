@@ -129,7 +129,7 @@ $(document).ready(function () {
                 'shape': 'rectangle', 'background-color': '#7FBF7B',
                 'text-outline-color': '#fff', 'text-outline-width': 4, 'color': '#888'
             })
-            .selector("node[type='PHENOTYPE']").css({
+            .selector("node[type='OBSERVABLE']").css({
                 'shape': 'rectangle', 'background-color': '#C591F5',
                 'text-outline-color': '#fff', 'text-outline-width': 4, 'color': '#888'
             });
