@@ -47,4 +47,63 @@ $(document).ready(function () {
     }).fail(function () {
         $(target).html('<p>GO enrichment is temporarily unavailable.</p>');
     });
+
+    // GO-CAMs: pathway models involving the genes in this pathway. A gene can
+    // appear in more than one model, so the backend aggregates + dedupes across
+    // the pathway's genes and flags this pathway's own model as the default.
+    function renderGocams(models) {
+        var $select = $('#pw_gocam_select');
+        var $viewer = $('#pw_gocam_viewer');
+        var $link = $('#pw_gocam_link');
+        var $title = $('#pw_gocam_title');
+
+        var showModel = function (model) {
+            // <go-gocam-viewer> zoom-to-fits only on first render and won't
+            // re-fit when gocam-id changes in place, so replace the element with
+            // a fresh one per selection (matches the gene/complex pages).
+            var $fresh = $('<go-gocam-viewer>')
+                .attr({ 'id': 'pw_gocam_viewer', 'show-legend': 'true', 'gocam-id': model.model_id })
+                .css({ 'display': 'block', 'width': '100%' });
+            $viewer.replaceWith($fresh);
+            $viewer = $fresh;
+            $title.text(model.title);
+            $link.attr('href', model.gocam_url);
+        };
+
+        // Default to this pathway's own model (flagged by the backend), else the first.
+        var defaultIndex = 0;
+        for (var i = 0; i < models.length; i++) {
+            if (models[i].default) { defaultIndex = i; break; }
+        }
+
+        if (models.length > 1) {
+            $select.empty();
+            for (var j = 0; j < models.length; j++) {
+                $select.append($('<option>').val(j).text(models[j].title));
+            }
+            $select.off('change').on('change', function () {
+                showModel(models[parseInt($(this).val(), 10)]);
+            });
+            $select.val(defaultIndex);
+            $('#pw_gocam_select_wrap').show();
+        } else {
+            $('#pw_gocam_select_wrap').hide();
+        }
+
+        showModel(models[defaultIndex]);
+    }
+
+    if (document.getElementById('pw_gocams')) {
+        $.getJSON('/redirect_backend?param=pathway/' + encodeURIComponent(pathway.biocyc_id) + '/go_cams', function (models) {
+            if (models && models.length) {
+                $('#pw_gocam_loading').hide();
+                $('#pw_gocams').show();
+                renderGocams(models);
+            } else {
+                $('#pw_gocam_loading').html('No GO-CAMs found for the genes in this pathway.');
+            }
+        }).fail(function () {
+            $('#pw_gocam_loading').html('GO-CAMs are temporarily unavailable.');
+        });
+    }
 });

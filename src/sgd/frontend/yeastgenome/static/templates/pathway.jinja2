@@ -67,6 +67,7 @@
             {% if pathway.genes|length > 0 %}
               add_navbar_element('Genes Involved', 'genes');
               add_navbar_element('GO Enrichment', 'go_enrichment');
+              add_navbar_element('GO-CAMs', 'gocams');
             {% endif %}
             {% if pathway.references|length > 0 %}
               add_navbar_element('References', 'reference');
@@ -206,6 +207,35 @@
     </section>
     {% endif %}
 
+<!-- GO-CAMs (models involving the pathway's genes; rendered client-side by the GO go-gocam-viewer)
+================================================== -->
+    {% if pathway.genes|length > 0 %}
+    <section id="gocams" data-magellan-destination="gocams">
+        <div class="page-header">
+            <h2>GO-CAMs
+                <a href="#" data-dropdown="gocams_help"><i class="fa fa-info-circle"></i></a>
+                <p id="gocams_help" class="f-dropdown content medium" data-dropdown-content>
+                    GO-CAM (Gene Ontology Causal Activity Model) pathway models that involve the genes in this pathway. A gene can participate in more than one model, so use the dropdown to switch between them; the model for this pathway is shown by default.
+                </p>
+            </h2>
+            <hr />
+            <div id="pw_gocam_loading"><i class="fa fa-spinner fa-spin"></i> Loading GO-CAMs&hellip;</div>
+            <div id="pw_gocams" style="display:none;">
+                <div id="pw_gocam_select_wrap" style="display:none; margin-bottom:10px;">
+                    <label class="network-label"><strong>Available GO-CAMs:</strong>
+                        <select id="pw_gocam_select" style="max-width:100%;"></select>
+                    </label>
+                </div>
+                <h4 id="pw_gocam_title" style="margin-bottom:10px;"></h4>
+                <div class="panel">
+                    <go-gocam-viewer id="pw_gocam_viewer" show-legend="true" style="display:block; width:100%;"></go-gocam-viewer>
+                </div>
+                <a id="pw_gocam_link" href="#" target="_blank" rel="noopener">View GO-CAM at Gene Ontology <i class="fa fa-external-link"></i></a>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
 <!-- References
 ================================================== -->
     {% if pathway.references|length > 0 %}
@@ -255,5 +285,6 @@
 {% endblock body %}
 
 {% block scripts %}
+<script type="module" src="https://unpkg.com/@geneontology/web-components@1"></script>
 <script src="{{asset_root}}/js/pathway.js"></script>
 {% endblock scripts %}
