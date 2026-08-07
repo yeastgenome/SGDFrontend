@@ -1,0 +1,347 @@
+{% extends "global_layout.jinja2" %}
+
+{% block title %}{{ pathway.display_name }}{% endblock %}
+
+{% block head %}
+<script>
+    var pathway = {{ pathway_js|safe }};
+</script>
+<style>
+    /* Pre-captured pathway diagram image (from YeastPathways). Captured at 2x
+       for retina; displayed at its logical (half-pixel) width via onload, and
+       shrunk to fit narrow screens. */
+    .pathway-diagram-wrap { border: 1px solid #eee; background: #fff; padding: 10px; overflow-x: auto; }
+    .pathway-diagram-wrap img { max-width: 100%; height: auto; }
+    .pathway-entity-list span { white-space: nowrap; }
+    .pathway-genes-table, #go_enrichment_target table { width: 100%; }
+    .pathway-genes-table td, .pathway-genes-table th,
+    #go_enrichment_target td, #go_enrichment_target th { padding: 4px 10px; }
+    #go_enrichment_target td.go-pvalue { white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .pw-network-legend { margin: 10px 0 8px; }
+    .pw-network-legend span { margin-right: 16px; white-space: nowrap; font-size: 13px; }
+    .pw-swatch { display: inline-block; width: 12px; height: 12px; border-radius: 50%; vertical-align: middle; margin-right: 4px; }
+    .pw-swatch-sq { border-radius: 2px; }
+    /* Hide the shared cytoscape helper's overlay legend/watermark: its labels
+       ("Current Locus/Other Locus/GO Term") are hardcoded for gene pages and
+       don't match this graph. The accurate legend is .pw-network-legend, which
+       sits inside the panel above the slider. */
+    #functional_networks #j-sgd-visible-cyto-canvas { display: none; }
+    /* The helper reserves ~150px below the graph for its (now hidden) canvas
+       legend; let the panel fit its content so there is no dead space under
+       the slider. */
+    #functional_networks .panel { height: auto !important; padding-bottom: 10px; }
+    #functional_networks #slider_ticks { margin-bottom: 0; }
+</style>
+{% endblock %}
+
+{% block body %}
+
+<!-- Tabs -->
+<div class="row hide-for-small">
+    <nav class="small-12 columns">
+        <ul class="tabs sgd-tabs">
+            <li id="summary_tab" class="tab-title"><a href="/pathway/{{ pathway.biocyc_id }}"><span>Summary</span></a></li>
+            <li id="literature_tab" class="tab-title"><a href="/pathway/{{ pathway.biocyc_id }}/literature"><span>Literature</span></a></li>
+        </ul>
+        <div class="sgd-tab-shadow"></div>
+    </nav>
+</div>
+
+<nav class="top-bar show-for-small mobile-tab-bar" data-topbar role="navigation">
+        <ul class="title-area">
+                <li class="name">
+                   <h1><a>{{ pathway.biocyc_id }}</a></h1>
+                </li>
+                <li class="toggle-topbar"><a href="#"><span>&nbsp;<i class="fa fa-list-ul"></i></span></a></li>
+        </ul>
+        <section class="top-bar-section">
+          <ul class="right">
+            <li id="summary_tab" class="tab-title"><a href="/pathway/{{ pathway.biocyc_id }}"><span>Summary</span></a></li>
+            <li id="literature_tab" class="tab-title"><a href="/pathway/{{ pathway.biocyc_id }}/literature"><span>Literature</span></a></li>
+          </ul>
+        </section>
+</nav>
+
+<script>document.getElementById("summary_tab").className += " active";</script>
+
+<div class="row">
+
+    <!-- Includes navbar.html into template -->
+    {% include "navbar.jinja2" %}
+
+    <div class="small-12 medium-10 columns content-column">
+
+        <script>
+            add_navbar_title('Pathway: <span class="gene_name">{{ pathway.display_name }}</span>')
+            add_navbar_element('Overview', 'overview');
+            add_navbar_element('Pathway Diagram', 'diagram');
+            {% if pathway.pathway_summary and pathway.pathway_summary.html %}
+              add_navbar_element('Pathway Summary', 'pathway_summary');
+            {% endif %}
+            {% if pathway.genes|length > 0 %}
+              add_navbar_element('Genes Involved', 'genes');
+              add_navbar_element('Functional Networks', 'functional_networks');
+              add_navbar_element('GO Enrichment', 'go_enrichment');
+            {% endif %}
+            {% if pathway.references|length > 0 %}
+              add_navbar_element('References', 'reference');
+            {% endif %}
+            add_navbar_element('Resources', 'resources');
+        </script>
+
+<!-- Overview
+================================================== -->
+    <section id="overview" data-magellan-destination="overview">
+       <div class="page-header">
+            <h1>Pathway: {{ pathway.display_name }}
+                <a href="#" data-dropdown="summary_help"><i class="fa fa-info-circle"></i></a>
+                <p id="summary_help" class="f-dropdown content medium" data-dropdown-content>
+                    Biochemical pathways in <i>S. cerevisiae</i> are manually curated and maintained in the YeastPathways database. This page summarizes the genes, enzymes, and metabolites involved in the pathway, along with the curated literature.
+                </p>
+            </h1>
+            <hr />
+            <dl class="key-value">
+                <dt>Pathway Name</dt>
+                <dd>{{ pathway.display_name }}</dd>
+
+                <dt>Pathway ID</dt>
+                <dd>{{ pathway.biocyc_id }}</dd>
+
+                <dt>SGD ID</dt>
+                <dd>SGD:{{ pathway.sgdid }}</dd>
+
+                {% if pathway.genes|length > 0 %}
+                <dt>Genes</dt>
+                <dd class="pathway-entity-list">
+                    {% for g in pathway.genes %}
+                        <span><a href="{{ g.link|e }}" target="_blank" rel="noopener">{{ g.display_name|e }}</a></span>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </dd>
+                {% endif %}
+
+                {% for alias in pathway.aliases %}
+                    {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
+                    {{ alias.display_name|e }}
+                    {% if not loop.last %}; {% else %}</dd>{% endif %}
+                {% endfor %}
+
+                {% if pathway.chemicals|length > 0 %}
+                <dt>Chemical Compounds</dt>
+                <dd class="pathway-entity-list">
+                    {% for c in pathway.chemicals %}
+                        <span><a href="{{ c.link|e }}" target="_blank" rel="noopener">{{ c.display_name|e }}</a></span>{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </dd>
+                {% endif %}
+            </dl>
+        </div>
+    </section>
+
+<!-- Pathway Diagram
+================================================== -->
+    <section id="diagram" data-magellan-destination="diagram">
+        <div class="page-header">
+            <h2>Pathway Diagram
+                <a href="#" data-dropdown="diagram_help"><i class="fa fa-info-circle"></i></a>
+                <p id="diagram_help" class="f-dropdown content medium" data-dropdown-content>
+                    Diagram of the pathway from YeastPathways. Click "View interactive diagram at YeastPathways" for the zoomable, clickable version.
+                </p>
+            </h2>
+            <hr />
+            {% if pathway.biocyc_id %}
+            <div class="pathway-diagram-wrap">
+                <img src="{{ asset_root }}/img/pathway/{{ pathway.biocyc_id }}.png"
+                     alt="{{ pathway.display_name|e }} pathway diagram"
+                     onload="this.style.width=(this.naturalWidth/2)+'px'"
+                     onerror="this.closest('.pathway-diagram-wrap').style.display='none'">
+            </div>
+            <p style="margin-top:10px;">
+                <a href="{{ pathway.yeastpathways_url }}" class="small radius button" target="_blank" rel="noopener">
+                    <i class="fa fa-external-link"></i> View interactive diagram at YeastPathways
+                </a>
+            </p>
+            {% else %}
+            <p>No diagram available.</p>
+            {% endif %}
+        </div>
+    </section>
+
+<!-- Pathway Summary
+================================================== -->
+    {% if pathway.pathway_summary and pathway.pathway_summary.html %}
+    <section id="pathway_summary" data-magellan-destination="pathway_summary">
+        <div class="page-header">
+            <h2>Pathway Summary</h2>
+            <hr />
+            <div>{{ pathway.pathway_summary.html|safe }}</div>
+        </div>
+    </section>
+    {% endif %}
+
+<!-- Genes Involved
+================================================== -->
+    {% if pathway.genes|length > 0 %}
+    <section id="genes" data-magellan-destination="genes">
+        <div class="page-header">
+            <h2>Genes Involved
+                <a href="#" data-dropdown="genes_help"><i class="fa fa-info-circle"></i></a>
+                <p id="genes_help" class="f-dropdown content medium" data-dropdown-content>
+                    Genes whose products participate in this pathway, with their systematic names, EC numbers (where the gene product is an enzyme with an assigned EC number), and the gene's SGD description.
+                </p>
+            </h2>
+            <hr />
+            <table class="pathway-genes-table">
+                <thead>
+                    <tr><th>Gene</th><th>Systematic Name</th><th>EC Number</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                {% for g in pathway.genes %}
+                    <tr>
+                        <td><a href="{{ g.link|e }}">{{ g.display_name|e }}</a></td>
+                        <td>{{ g.format_name|e }}</td>
+                        <td>
+                            {% for ec in g.ec_numbers -%}
+                                {% if ec.link %}<a href="{{ ec.link|e }}">{{ ec.display_name|e }}</a>{% else %}{{ ec.display_name|e }}{% endif %}{% if not loop.last %}, {% endif %}
+                            {%- endfor %}
+                        </td>
+                        <td>{{ g.headline|e }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+    {% endif %}
+
+<!-- Functional Networks: pathway network + GO-CAMs (mirrors the LSP Functional Networks section)
+================================================== -->
+    {% if pathway.genes|length > 0 %}
+    <section id="functional_networks" data-magellan-destination="functional_networks">
+        <div class="page-header">
+            <h2>Functional Networks
+                <a href="#" data-dropdown="functional_networks_help"><i class="fa fa-info-circle"></i></a>
+                <p id="functional_networks_help" class="f-dropdown content medium" data-dropdown-content>
+                    Functional Networks show how the genes in this pathway work together: a graph linking the pathway to its genes and their shared GO biological-process terms and phenotype observables, and the GO-CAM causal activity models that involve these genes.
+                </p>
+            </h2>
+            <hr />
+
+            <h3>Shared Annotations</h3>
+            <div id="pw_network_loading"><i class="fa fa-spinner fa-spin"></i> Loading network&hellip;</div>
+            <div id="pw_network_wrap" style="display:none;">
+                <div class="panel">
+                    <div class="sgd-cyto-canvas-container">
+                        <canvas id="j-sgd-visible-cyto-canvas" class="j-sgd-cyto-canvas" style="position:absolute; z-index:0; pointer-events:none;"></canvas>
+                        <canvas id="j-sgd-hidden-cyto-canvas" class="j-sgd-cyto-canvas" style="position:absolute; display:none;"></canvas>
+                    </div>
+                    <a id="pw_network_cy_recenter" class="small button secondary radius">Reset</a>
+                    <a href="#" data-options="align:left" data-dropdown="pw_network_help" class="right"><i class="fa fa-question-circle"></i></a>
+                    <p id="pw_network_help" class="f-dropdown content medium" data-dropdown-content>
+                        Click a node to open its page; drag nodes to rearrange; use the slider to filter GO terms and observables by how many of the pathway's genes share them.
+                    </p>
+                    <div id="pw_network_cy" name="cy" style="width:100%; height:600px;"></div>
+                    <div class="pw-network-legend">
+                        <span><i class="pw-swatch" style="background:#fade71;"></i> Pathway</span>
+                        <span><i class="pw-swatch" style="background:#9aa0a6;"></i> Gene</span>
+                        <span><i class="pw-swatch pw-swatch-sq" style="background:#7FBF7B;"></i> GO term</span>
+                        <span><i class="pw-swatch pw-swatch-sq" style="background:#C591F5;"></i> Observable</span>
+                    </div>
+                    <label class="network-label"><strong>Filter GO terms &amp; observables by number of pathway genes shared:</strong></label>
+                    <div id="pw_network_slider" class="noUiSlider" style="width:100%;"></div>
+                    <div id="slider_ticks"></div>
+                </div>
+            </div>
+
+            <h3 style="margin-top:2rem;">GO-CAMs</h3>
+            <p style="color:#777; margin-bottom:8px;">GO-CAM (Gene Ontology Causal Activity Model) pathway models that involve the genes in this pathway. A gene can participate in more than one model, so use the dropdown to switch between them; the model for this pathway is shown by default.</p>
+            <div id="pw_gocam_loading"><i class="fa fa-spinner fa-spin"></i> Loading GO-CAMs&hellip;</div>
+            <div id="pw_gocams" style="display:none;">
+                <div id="pw_gocam_select_wrap" style="display:none; margin-bottom:10px;">
+                    <label class="network-label"><strong>Available GO-CAMs:</strong>
+                        <select id="pw_gocam_select" style="max-width:100%;"></select>
+                    </label>
+                </div>
+                <h4 id="pw_gocam_title" style="margin-bottom:10px;"></h4>
+                <div class="panel">
+                    <go-gocam-viewer id="pw_gocam_viewer" show-legend="true" style="display:block; width:100%;"></go-gocam-viewer>
+                </div>
+                <a id="pw_gocam_link" href="#" target="_blank" rel="noopener">View GO-CAM at Gene Ontology <i class="fa fa-external-link"></i></a>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+<!-- GO Enrichment (populated client-side; GO Term Finder is a slow external call)
+================================================== -->
+    {% if pathway.genes|length > 0 %}
+    <section id="go_enrichment" data-magellan-destination="go_enrichment">
+        <div class="page-header">
+            <h2>GO Enrichment
+                <a href="#" data-dropdown="go_enrichment_help"><i class="fa fa-info-circle"></i></a>
+                <p id="go_enrichment_help" class="f-dropdown content medium" data-dropdown-content>
+                    Gene Ontology biological-process terms enriched among the genes in this pathway, computed with GO Term Finder. Terms are shown with the number of pathway genes annotated to them and the corrected p-value.
+                </p>
+            </h2>
+            <hr />
+            <div id="go_enrichment_target"><p id="go_enrichment_loading"><i class="fa fa-spinner fa-spin"></i> Loading GO enrichment&hellip;</p></div>
+        </div>
+    </section>
+    {% endif %}
+
+<!-- References
+================================================== -->
+    {% if pathway.references|length > 0 %}
+    <section id="reference" data-magellan-destination="reference">
+        <div class="page-header">
+            <h2>References
+                <a href="#" data-dropdown="reference_help"><i class="fa fa-info-circle"></i></a>
+                <p id="reference_help" class="f-dropdown content medium" data-dropdown-content>
+                    List of references used specifically to curate the information on this page.
+                </p>
+            </h2>
+            <hr />
+            <ul class="unstyled">
+                {% for ref in pathway.references %}
+                    <li>
+                        <a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
+                        <span>{{ ref.citation|e|replace(ref.display_name, '') }}</span>
+                        {% if ref.pubmed_id != none %}
+                            <small>PMID: {{ ref.pubmed_id|e }}</small>
+                        {% endif %}
+                        <ul class="ref-links">
+                            <li><a href="{{ ref.link|e }}">SGD Paper</a></li>
+                            {% for url in ref.urls %}
+                                <li><a target="_infowin" href="{{ url.link|e }}">{{ url.display_name|e }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+    {% endif %}
+
+<!-- Resources
+================================================== -->
+    <section id="resources">
+        <h2>Resources</h2>
+        <hr />
+        {% if pathway.yeastpathways_url %}
+        <a href="{{ pathway.yeastpathways_url }}" target="_blank" rel="noopener">YeastPathways</a>
+        {% endif %}
+    </section>
+
+    </div>
+</div>
+
+{% endblock body %}
+
+{% block scripts %}
+<script type="module" src="https://unpkg.com/@geneontology/web-components@1"></script>
+<script src="{{asset_root}}/js/build/nouislider.min.js"></script>
+{# arbor.js served locally (not CDN): its webworker files break on the cloud #}
+<script src="/static/js/build/arbor.js"></script>
+<script src="{{asset_root}}/js/build/cytoscape.min.js"></script>
+<script src="{{asset_root}}/js/cytoscape.js"></script>
+<script src="{{asset_root}}/js/pathway.js"></script>
+{% endblock scripts %}
