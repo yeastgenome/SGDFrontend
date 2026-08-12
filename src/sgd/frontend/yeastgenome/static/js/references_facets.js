@@ -104,8 +104,11 @@
       else { $(this).hide(); }
     });
     var anySelected = FACETS.some(function (f) { return Object.keys(selected[f.key]).length > 0; });
-    $('#ref-result-count').text(
-      anySelected ? ('Showing ' + shown + ' of ' + total + ' references') : (total + ' references')
+    // The count badge next to the page header (filled by set_up_header) is the
+    // only count on the page; reuse it for filter feedback.
+    $('#references_header').text(
+      anySelected ? ('Showing ' + shown + ' of ' + total + ' references')
+                  : (total + ' ' + (total == 1 ? 'reference' : 'references'))
     );
     renderFacets();
   }
