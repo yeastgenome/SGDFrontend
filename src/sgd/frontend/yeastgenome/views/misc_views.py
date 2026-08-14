@@ -10,6 +10,7 @@ from src.sgd.frontend.yeastgenome.views.cms_helpers import BLOG_BASE_URL, BLOG_P
 import urllib.request, urllib.parse, urllib.error
 import datetime
 import json
+import re
 import requests
 import os
 import time
@@ -214,6 +215,27 @@ def phenotypes_this_week(request):
 MANUAL_CURATED = 'manually curated'
 RECENT_GO_DAYS = 50
 
+# Backend annotation-extension links for pathways still point at the legacy
+# YeastPathways site (pathway.yeastgenome.org/YEAST/new-image?...&object=<ID>).
+# Rewrite them to SGD's own /pathway/<ID> pages.
+_LEGACY_PATHWAY_LINK = re.compile(
+    r'^https?://pathway\.yeastgenome\.org/YEAST/new-image\?.*?[?&]?object=([^&]+)')
+
+
+def _rewrite_legacy_pathway_links(obj):
+    if isinstance(obj, dict):
+        link = obj.get('link')
+        if isinstance(link, str):
+            match = _LEGACY_PATHWAY_LINK.match(link)
+            if match:
+                obj['link'] = '/pathway/' + match.group(1)
+        for value in obj.values():
+            _rewrite_legacy_pathway_links(value)
+    elif isinstance(obj, list):
+        for value in obj:
+            _rewrite_legacy_pathway_links(value)
+
+
 def _go_this_week_url(days):
     # Ask the backend for manually curated GO annotations only, so we never
     # transfer the much larger computational set (see the go/this_week
@@ -253,12 +275,14 @@ def gos_this_week(request):
     obj = json.loads(backend_response.text)
     # Backend already filtered to manually curated; computational (and any
     # high-throughput) annotations may be surfaced in a separate table later.
+    go_annotations = obj.get('go_annotations', [])
+    _rewrite_legacy_pathway_links(go_annotations)
     return render_to_response(
         TEMPLATE_ROOT + 'gos_this_week.jinja2',
         {
             'start': obj.get('start'),
             'end': obj.get('end'),
-            'go_annotations_js': json.dumps(obj.get('go_annotations', []))
+            'go_annotations_js': json.dumps(go_annotations)
         },
         request=request)
 
