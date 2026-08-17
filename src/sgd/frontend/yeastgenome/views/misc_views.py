@@ -393,12 +393,10 @@ def allele_literature_details(request):
 def get_pathway_obj(identifier, tab):
     # Per-tab fetch from the backend (/pathway/{id}/{summary,literature}); the
     # whole payload is embedded as pathway_js and consumed client-side.
-    backend_url = os.environ['BACKEND_URL'] + '/pathway/' + identifier + '/' + tab
-    backend_response = requests.get(backend_url)
-    if backend_response.status_code != 200:
-        return None
-    obj = json.loads(backend_response.text)
-    if not obj:
+    obj = fetch_backend_obj(
+        lambda candidate: os.environ['BACKEND_URL'] + '/pathway/' + candidate + '/' + tab,
+        identifier)
+    if obj is None:
         return None
     return {
         'pathway': obj,
@@ -522,12 +520,37 @@ def home(request):
 # def example(request):
 #     return render_to_response(TEMPLATE_ROOT + 'example.jinja2', {}, request=request)
 
+def identifier_candidates(identifier):
+    # Backend endpoints disagree on the 'SGD:' prefix (e.g. /allele resolves
+    # 'SGD:S000342632' but not the bare SGDID, while /locus and /reference are
+    # the opposite), so page URLs accept both spellings and the fetch helpers
+    # retry with the alternate one when the first lookup misses.
+    candidates = [identifier]
+    if identifier.upper().startswith('SGD:'):
+        candidates.append(identifier[len('SGD:'):])
+    elif re.match(r'^S[0-9]{9}$', identifier, re.IGNORECASE):
+        candidates.append('SGD:' + identifier)
+    return candidates
+
+def fetch_backend_obj(url_for_candidate, identifier):
+    # Some backend endpoints (complex, pathway) return 200 with an empty body
+    # for unknown identifiers, so an empty payload counts as a miss too.
+    for candidate in identifier_candidates(identifier):
+        backend_response = requests.get(url_for_candidate(candidate))
+        if backend_response.status_code != 200:
+            continue
+        obj = json.loads(backend_response.text)
+        if not obj:
+            continue
+        return obj
+    return None
+
 def get_obj(identifier, obj_type):
-    backend_url = os.environ['BACKEND_URL'] + '/' + obj_type + '/' + identifier
-    backend_response = requests.get(backend_url)
-    if backend_response.status_code != 200:
+    obj = fetch_backend_obj(
+        lambda candidate: os.environ['BACKEND_URL'] + '/' + obj_type + '/' + candidate,
+        identifier)
+    if obj is None:
         return None
-    obj = json.loads(backend_response.text)
     return {
         obj_type: obj,
         obj_type + '_js': json.dumps(obj)
@@ -538,11 +561,11 @@ def get_complex_obj(identifier, tab):
     # /complex/{id}/{summary,go,literature}). The whole payload is embedded in
     # the page as complex_js and consumed client-side, so each tab avoids
     # computing (and shipping) the other tabs' data.
-    backend_url = os.environ['BACKEND_URL'] + '/complex/' + identifier + '/' + tab
-    backend_response = requests.get(backend_url)
-    if backend_response.status_code != 200:
+    obj = fetch_backend_obj(
+        lambda candidate: os.environ['BACKEND_URL'] + '/complex/' + candidate + '/' + tab,
+        identifier)
+    if obj is None:
         return None
-    obj = json.loads(backend_response.text)
     return {
         'complex': obj,
         'complex_js': json.dumps(obj)

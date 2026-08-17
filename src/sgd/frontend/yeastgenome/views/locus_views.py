@@ -4,7 +4,7 @@ from pyramid.view import view_config
 from pyramid.renderers import render_to_response
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 # from src.sgd.frontend import config
-from src.sgd.frontend.yeastgenome.views.misc_views import not_found
+from src.sgd.frontend.yeastgenome.views.misc_views import not_found, fetch_backend_obj
 import datetime
 import json
 import requests
@@ -13,11 +13,11 @@ import os
 TEMPLATE_ROOT = 'src:sgd/frontend/yeastgenome/static/templates/'
 
 def get_locus_obj(identifier):
-    backend_locus_url = os.environ['BACKEND_URL'] + '/locus/' + identifier
-    locus_response = requests.get(backend_locus_url)
-    if locus_response.status_code != 200:
+    locus = fetch_backend_obj(
+        lambda candidate: os.environ['BACKEND_URL'] + '/locus/' + candidate,
+        identifier)
+    if locus is None:
         return None
-    locus = json.loads(locus_response.text)
     tabs =  json.loads(requests.get(os.environ['BACKEND_URL'] + '/locus/' + str(locus['id']) + '/tabs').text)
     return { 'locus': locus, 'locus_js': json.dumps(locus), 'tabs': tabs, 'tabs_js': json.dumps(tabs) }
 
@@ -31,9 +31,6 @@ def render_locus_page(request, template_name):
 
 @view_config(route_name='locus')
 def locus(request):
-    # Remove the 'SGD:' prefix in the request URL if it exists
-    if 'SGD:' in request.matchdict['identifier']:
-        request.matchdict['identifier'] = request.matchdict['identifier'].replace('SGD:', '')
     return render_locus_page(request, 'locus')
 
 @view_config(route_name='sequence_details')
