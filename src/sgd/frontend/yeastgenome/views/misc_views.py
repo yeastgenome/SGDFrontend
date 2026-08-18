@@ -521,14 +521,20 @@ def home(request):
 #     return render_to_response(TEMPLATE_ROOT + 'example.jinja2', {}, request=request)
 
 def identifier_candidates(identifier):
-    # Backend endpoints disagree on the 'SGD:' prefix (e.g. /allele resolves
-    # 'SGD:S000342632' but not the bare SGDID, while /locus and /reference are
-    # the opposite), so page URLs accept both spellings and the fetch helpers
-    # retry with the alternate one when the first lookup misses.
+    # SGDIDs (S000XXXXXX) may appear in page URLs with or without the 'SGD:'
+    # prefix, and backend endpoints disagree on which spelling they resolve
+    # (e.g. /allele resolves 'SGD:S000342632' but not the bare SGDID, while
+    # /locus and /reference are the opposite), so the fetch helpers retry an
+    # SGDID with the alternate spelling when the first lookup misses. This
+    # applies ONLY to SGDIDs — other identifiers (gene names, CPX complex
+    # accessions, BioCyc pathway ids) are passed through untouched.
+    sgdid_pattern = r'^S[0-9]{9}$'
     candidates = [identifier]
     if identifier.upper().startswith('SGD:'):
-        candidates.append(identifier[len('SGD:'):])
-    elif re.match(r'^S[0-9]{9}$', identifier, re.IGNORECASE):
+        bare_id = identifier[len('SGD:'):]
+        if re.match(sgdid_pattern, bare_id, re.IGNORECASE):
+            candidates.append(bare_id)
+    elif re.match(sgdid_pattern, identifier, re.IGNORECASE):
         candidates.append('SGD:' + identifier)
     return candidates
 
