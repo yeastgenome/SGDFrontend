@@ -327,7 +327,7 @@
               {% for ref in complex.references %}
                    <li>
                     <a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
-                                    <span>{{ ref.citation|e|replace(ref.display_name, '') }}</span> 
+                                    <span>{{ ref.citation|replace(ref.display_name, '')|safe }}</span> 
                     {% if ref.pubmed_id != none %}
                                        <small>PMID: {{ ref.pubmed_id|e }}</small>
                                     {% endif %}
