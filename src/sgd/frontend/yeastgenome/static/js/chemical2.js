@@ -717,7 +717,9 @@ function paintReferenceList() {
         // citation the annotation carries (SGD internal refs), then the bare name.
         var text = (cit && cit.citation) ? cit.citation : (r.citation || r.display_name);
         var link = r.link || (cit && cit.link);
-        var label = link ? '<a href="' + escapeAttr(link) + '">' + escapeHtml(text) + '</a>' : escapeHtml(text);
+        // Citation may carry formatting tags in the title (e.g. <i>gene</i>);
+        // render it as HTML like the other reference lists.
+        var label = link ? '<a href="' + escapeAttr(link) + '">' + text + '</a>' : text;
         var pmid = '';
         if (r.pmid) {
             pmid = ' <span class="chem2-ref-pmid">PMID: <a href="https://pubmed.ncbi.nlm.nih.gov/' +
