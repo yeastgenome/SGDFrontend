@@ -44,25 +44,28 @@
 
     <div class="small-12 medium-10 columns content-column">
 
+        {# Topic lists are absent from older backend payloads; default to empty. #}
+        {% set primary = pathway.get('primary') or [] %}
+        {% set additional = pathway.get('additional') or [] %}
+        {% set review = pathway.get('review') or [] %}
+
         <script>
             add_navbar_title('Pathway: <span class="gene_name">{{ pathway.display_name }}</span>')
             add_navbar_element('Literature', 'reference');
+            {% if primary|length > 0 %}
+            add_navbar_element('Primary Literature', 'primary');
+            {% endif %}
+            {% if additional|length > 0 %}
+            add_navbar_element('Additional Literature', 'additional');
+            {% endif %}
+            {% if review|length > 0 %}
+            add_navbar_element('Reviews', 'reviews');
+            {% endif %}
         </script>
 
-<!-- References
-================================================== -->
-    <section id="reference" data-magellan-destination="reference">
-        <div class="page-header">
-            <h1>Literature
-                <a href="#" data-dropdown="reference_help"><i class="fa fa-info-circle"></i></a>
-                <p id="reference_help" class="f-dropdown content medium" data-dropdown-content>
-                    Literature curated for this pathway.
-                </p>
-            </h1>
-            <hr />
-            {% if pathway.references|length > 0 %}
+{% macro reference_list(refs) %}
             <ul class="unstyled">
-                {% for ref in pathway.references %}
+                {% for ref in refs %}
                     <li>
                         <a href="{{ ref.link|e }}">{{ ref.display_name|e }}</a>
                         <span>{{ ref.citation|replace(ref.display_name, '')|safe }}</span>
@@ -78,11 +81,72 @@
                     </li>
                 {% endfor %}
             </ul>
-            {% else %}
+{% endmacro %}
+
+<!-- References
+================================================== -->
+    <section id="reference" data-magellan-destination="reference">
+        <div class="page-header">
+            <h1>Literature
+                <a href="#" data-dropdown="reference_help"><i class="fa fa-info-circle"></i></a>
+                <p id="reference_help" class="f-dropdown content medium" data-dropdown-content>
+                    Literature curated for this pathway, organized by relevance to the pathway.
+                </p>
+            </h1>
+            <hr />
+            {% if pathway.references|length == 0 %}
             <p>No literature curated for this pathway.</p>
+            {% elif primary|length + additional|length + review|length == 0 %}
+            {# References exist but none fall under the sectioned topics
+               (or the backend payload predates topic grouping): flat list. #}
+            {{ reference_list(pathway.references) }}
             {% endif %}
         </div>
     </section>
+
+<!-- Primary
+================================================== -->
+    {% if primary|length > 0 %}
+    <section id="primary" data-magellan-destination="primary">
+        <h2>Primary Literature
+            <a href="#" data-dropdown="primary_info"><i class="fa fa-info-circle"></i></a>
+            <p id="primary_info" class="f-dropdown content medium" data-dropdown-content>
+                Literature that either focuses on the pathway or contains information about
+                function, regulation, or biological role of the pathway.
+            </p>
+            <span class="label secondary round">{{ primary|length }}</span>
+        </h2>
+        <hr />
+        {{ reference_list(primary) }}
+    </section>
+    {% endif %}
+
+<!-- Additional
+================================================== -->
+    {% if additional|length > 0 %}
+    <section id="additional" data-magellan-destination="additional">
+        <h2>Additional Literature
+            <a href="#" data-dropdown="additional_info"><i class="fa fa-info-circle"></i></a>
+            <p id="additional_info" class="f-dropdown content medium" data-dropdown-content>
+                Papers that show experimental evidence for the pathway, but for which the
+                pathway is not the paper&rsquo;s principal focus.
+            </p>
+            <span class="label secondary round">{{ additional|length }}</span>
+        </h2>
+        <hr />
+        {{ reference_list(additional) }}
+    </section>
+    {% endif %}
+
+<!-- Reviews
+================================================== -->
+    {% if review|length > 0 %}
+    <section id="reviews" data-magellan-destination="reviews">
+        <h2>Reviews <span class="label secondary round">{{ review|length }}</span></h2>
+        <hr />
+        {{ reference_list(review) }}
+    </section>
+    {% endif %}
 
     </div>
 </div>
