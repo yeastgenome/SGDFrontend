@@ -68,7 +68,10 @@ const SearchBreadcrumb = createReactClass({
         }
         let currentValues = [thisValue];
         let newHref = getHrefWithoutAgg(qp, key, thisValue, currentValues);
-        nodes.push(this._renderCrumb(qp[key], newHref, hasQuotes));
+        // is_obsolete=false is the Hide radio in the sidebar; render a
+        // readable chip instead of the raw param value ("false")
+        let label = key === 'is_obsolete' ? 'Obsolete Terms Hidden' : qp[key];
+        nodes.push(this._renderCrumb(label, newHref, hasQuotes));
         // if multiple, map them
       } else {
         let currentValues = qp[key];

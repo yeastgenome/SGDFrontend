@@ -128,6 +128,15 @@ const FacetSelector = createReactClass({
           break;
       }
       if (d.key === 'is_obsolete') {
+        // No obsolete terms in the current result set -> the radio is
+        // pointless; hide it. Keep it while the Hide filter is active,
+        // though (the filtered aggregation has no obsolete bucket then,
+        // and the user needs the radio to switch back to Show).
+        const isHiding = qp.is_obsolete === 'false';
+        const hasObsolete = d.values.some(
+          (v) => [1, '1', true, 'true'].indexOf(v.key) > -1 && v.total > 0
+        );
+        if (!hasObsolete && !isHiding) return null;
         return this._renderObsoleteFacet(qp);
       }
       if (d.key === 'status' && qp.category === 'download') {
