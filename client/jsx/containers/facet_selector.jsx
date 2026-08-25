@@ -9,6 +9,7 @@ import {
   getHrefWithoutAgg,
   getCategoryDisplayName,
   getFacetName,
+  createPath,
 } from '../lib/search_helpers';
 import ClassNames from 'classnames';
 import createReactClass from 'create-react-class';
@@ -126,6 +127,9 @@ const FacetSelector = createReactClass({
           currentAgg.values = [];
           break;
       }
+      if (d.key === 'is_obsolete') {
+        return this._renderObsoleteFacet(qp);
+      }
       if (d.key === 'status' && qp.category === 'download') {
         return (
           <FacetList
@@ -160,6 +164,51 @@ const FacetSelector = createReactClass({
     });
 
     return <div>{catNodes}</div>;
+  },
+
+  // Show/Hide radio for obsolete GO terms. The URL carries is_obsolete=false
+  // when hiding (the backend adds a term filter on the is_obsolete ES field);
+  // no param means obsolete terms are shown (sorted to the bottom).
+  _renderObsoleteFacet(qp) {
+    const isHiding = qp.is_obsolete === 'false';
+    const options = [
+      { label: 'Show', hide: false },
+      { label: 'Hide', hide: true },
+    ];
+    const optionNodes = options.map((opt) => {
+      const isActive = opt.hide === isHiding;
+      let newQp = _.omit(_.clone(qp), 'is_obsolete');
+      if (opt.hide) newQp.is_obsolete = 'false';
+      newQp.page = 0;
+      const href = createPath({ pathname: SEARCH_URL, search: newQp });
+      const klass = isActive
+        ? 'search-agg active active-agg'
+        : 'search-agg inactive-agg';
+      const labelStyle = isActive
+        ? { color: 'white', marginLeft: '0.2rem' }
+        : { marginLeft: '0.2rem' };
+      return (
+        <Link to={href} key={`obsolete${opt.label}`}>
+          <div className={ClassNames(klass, 'agg', 'status-btn')}>
+            <label
+              className={'status-btn-label'}
+              style={{ pointerEvents: 'none' }}
+            >
+              <input type="radio" checked={isActive} readOnly />
+              <span style={labelStyle}>{opt.label}</span>
+            </label>
+          </div>
+        </Link>
+      );
+    });
+    return (
+      <div key="is_obsolete">
+        <p className={'agg-label'}>
+          <span>Obsolete Terms</span>
+        </p>
+        {optionNodes}
+      </div>
+    );
   },
 
   _renderAgg(name, total, _key, href, isActive, isCategory) {
