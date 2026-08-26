@@ -12,6 +12,9 @@
         locusData: {{locus_js|safe}},
         tabs: {{tabs_js|safe}}
     };
+    // the legacy overview renderers (regulation_overview.js,
+    // interaction_overview.js) read a `locus` global, as on the tab pages
+    var locus = bootstrappedData.locusData;
 </script>
 {% endblock %}
 
@@ -741,27 +744,16 @@
             {% else %}
                 <p><a href="/locus/{{ locus.sgdid }}/interaction#annotations">{{ locus.interaction_overview.total_interactions }}</a> total interactions for {{ locus.interaction_overview.total_interactors }} unique genes</p>
 
-                {% if locus.interaction_overview.num_phys_interactors  > 0 %}
-                <div class="panel">
-                    <h3>Physical Interactions</h3>
-                    <ul>
-                        {% for experiment in locus.interaction_overview.physical_experiments.keys()|sort %}
-                            <li>{{ experiment }}: {{ locus.interaction_overview.physical_experiments[experiment] }}</li>
-                        {% endfor %}
-                    </ul>
+                {# physical/genetic Venn diagram, as on the Interaction tab's
+                   Overview; interaction_overview.js reads the `locus` global
+                   and falls back to #summary_message when both counts are 0 #}
+                <p id="summary_message" style="display:none">0 Genetic and 0 Physical Interactors curated.</p>
+                <div class="panel" id="summary_wrapper">
+                    <div id="venn_diagram"></div>
                 </div>
-                {% endif %}
-
-                {% if locus.interaction_overview.num_gen_interactors  > 0 %}
-                <div class="panel">
-                    <h3>Genetic Interactions</h3>
-                    <ul>
-                        {% for experiment in locus.interaction_overview.genetic_experiments.keys()|sort %}
-                            <li>{{ experiment }}: {{ locus.interaction_overview.genetic_experiments[experiment] }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                {% endif %}
+                <script src="{{asset_root}}/js/build/kinetic.min.js"></script>
+                <script src="{{asset_root}}/js/venn.js"></script>
+                <script src="{{asset_root}}/js/interaction_overview.js"></script>
             {% endif %}
         </div>
     </section>
@@ -798,25 +790,15 @@
                 {% if locus.regulation_overview.regulator_count + locus.regulation_overview.target_count == 0 %}
                     <p>No regulation data available.</p>
                 {% else %}
-                    <dl class="key-value">
-                         <dt>Regulators</dt>
-                         <dd>
-                             {% if locus.regulation_overview.regulator_count > 0 %}
-                                <a href="/locus/{{ locus.sgdid }}/regulation#regulators">{{ locus.regulation_overview.regulator_count }}</a>
-                             {% else %}
-                                 {{ locus.regulation_overview.regulator_count }}
-                             {% endif %}
-                         </dd>
-
-                         <dt>Targets</dt>
-                         <dd>
-                            {% if locus.regulation_overview.target_count > 0 %}
-                                <a href="/locus/{{ locus.sgdid }}/regulation#targets">{{ locus.regulation_overview.target_count }}</a>
-                            {% else %}
-                                {{ locus.regulation_overview.target_count }}
-                            {% endif %}
-                         </dd>
-                    </dl>
+                    {# targets/regulators bar chart, as on the Regulation tab's
+                       Overview; regulation_overview.js reads the `locus`
+                       global (scripts loaded only when counts > 0, so its
+                       zero-count branch never runs here) #}
+                    <div class="panel">
+                        <div id="summary_diagram"></div>
+                    </div>
+                    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+                    <script src="{{asset_root}}/js/regulation_overview.js"></script>
                 {% endif %}
             </div>
         </div>
