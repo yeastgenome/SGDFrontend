@@ -30,7 +30,7 @@ const PRIMARY_CATEGORIES = [
     key: 'allele',
     name: 'Alleles',
     blurb: 'Mutants and variants',
-    examples: ['hog1', 'cdc28-1'],
+    examples: ['hog1', 'cdc28'],
   },
   {
     key: 'biological_process',
@@ -42,7 +42,7 @@ const PRIMARY_CATEGORIES = [
     key: 'chemical',
     name: 'Chemicals',
     blurb: 'Compounds and metabolites',
-    examples: ['sorbitol', 'glucose'],
+    examples: ['glycerol', 'glucose'],
   },
   {
     key: 'phenotype',
@@ -80,7 +80,7 @@ const FILES_CATEGORIES = ['download', 'dataset'];
 const ROTATING_PLACEHOLDERS = [
   'Try HOG1',
   'Try autophagy',
-  'Try sorbitol',
+  'Try glycerol',
   'Try CDC28',
   'Try nuclear pore',
   'Try GAL4',
