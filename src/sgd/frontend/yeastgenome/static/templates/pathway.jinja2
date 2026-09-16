@@ -119,7 +119,9 @@
                 </dd>
                 {% endif %}
 
-                {% for alias in pathway.aliases %}
+                {# skip blank alias rows (empty display_name) so the label
+                   only renders when there is something to show #}
+                {% for alias in pathway.aliases if alias.display_name %}
                     {% if loop.first %}<dt>Aliases</dt><dd>{% endif %}
                     {{ alias.display_name|e }}
                     {% if not loop.last %}; {% else %}</dd>{% endif %}
