@@ -18,7 +18,9 @@ var source_to_color = {
   MobiDBLite: "#4c33cc",
   "-": "#994499",
   SignalP: "#4c33cc",
-  HAMAP: "#33cc99"
+  HAMAP: "#33cc99",
+  Phobius: "#22aa99",
+  TMHMM: "#651067"
 };
 
 $(document).ready(function () {
@@ -100,7 +102,9 @@ $(document).ready(function () {
       if (protein_domain_data.length > 0) {
         // call react view from external file
         var colorScale = function (sourceName) {
-          return source_to_color[sourceName];
+          // fall back to gray so sources missing from the map still draw
+          // visible lines (an undefined SVG stroke renders nothing)
+          return source_to_color[sourceName] || "#777777";
         };
       }
       else {
