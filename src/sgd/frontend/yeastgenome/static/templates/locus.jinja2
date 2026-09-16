@@ -91,6 +91,12 @@
                     </dd>
                 {% endif %}
 
+                {% for alias in locus.aliases if alias.category == 'EC number' %}
+                    {% if loop.first %}<dt>EC Number</dt><dd>{% endif %}
+                    <a href="{{ alias.link }}" target="_blank">{{ alias.display_name }}</a>
+                    {%- if not loop.last %}, {% else %}</dd>{% endif %}
+                {% endfor %}
+
                 <dt>Description</dt>
                 <dd>
                     {{ locus.description|safe }}
@@ -265,7 +271,22 @@
 
         <div class="">
             <div class="">
+                 {% if locus.uniprot_id %}
+                 <a href="/locus/{{ locus.sgdid }}/protein" title="View protein structure and details"
+                    style="float:right; margin:0 0 0.5rem 1rem;">
+                     <img src="https://d1x6jdqbvd5dr.cloudfront.net/alphafold-thumbnails/{{ locus.uniprot_id }}.png"
+                          alt="AlphaFold predicted structure of {{ locus.display_name }}"
+                          style="width:280px; max-width:100%; border:1px solid #ddd;"
+                          onerror="this.parentNode.style.display='none'" />
+                 </a>
+                 {% endif %}
                  <dl class="key-value">
+                     {% for alias in locus.aliases if alias.category == 'EC number' %}
+                         {% if loop.first %}<dt style="width:300px">EC Number</dt><dd>{% endif %}
+                         <a href="{{ alias.link }}" target="_blank">{{ alias.display_name }}</a>
+                         {%- if not loop.last %}, {% else %}</dd>{% endif %}
+                     {% endfor %}
+
                      <dt style="width:300px">Length (a.a.)</dt>
                      <dd>{{ locus.protein_overview.length }}</dd>
 
