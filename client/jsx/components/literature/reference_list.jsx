@@ -25,7 +25,7 @@ var ReferenceList = createReactClass({
     return (
       <div>
         <h2>
-          References <HelpIcon text={_infoText} isInfo={true} />{' '}
+          References Cited on this Page <HelpIcon text={_infoText} isInfo={true} />{' '}
           <span className="label secondary round">
             {this.props.data.length}
           </span>
