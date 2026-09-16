@@ -901,13 +901,14 @@
     {% if tabs['literature_tab'] %}
     <section id="literature">
         <a href="/locus/{{ locus.sgdid }}/literature" class="details-link">Literature Details <i class="fa fa-chevron-circle-right"></i></a>
-        <h2>Literature
+        <h2>All Curated Literature
             <a href="#" data-dropdown="literature_info"><i class="fa fa-info-circle"></i></a>
 
             <p id="literature_info" class="f-dropdown content medium" data-dropdown-content>
-                All manually curated literature for the specified gene, organized into topics according to their
-                relevance to the gene (Primary Literature, Additional Literature, or Review). Click "Literature Details"
-                to view all literature information for this locus, including shared literature between genes.
+                All manually curated literature for the specified gene, shown as a count of references by year of
+                publication followed by the most recent papers. Click "Literature Details" or "See all"
+                to view all literature information for this locus, organized into topics according to their
+                relevance to the gene (Primary Literature, Additional Literature, or Review).
             </p>
         </h2>
         <hr />
@@ -916,28 +917,9 @@
                 {% if locus.literature_overview.primary_count + locus.literature_overview.additional_count + locus.literature_overview.review_count == 0 %}
                     <p>No literature data available.</p>
                 {% else %}
-                    <dl class="key-value">
-                        <dt>Primary</dt>
-                        {% if locus.literature_overview.primary_count > 0 %}
-                            <dd><a href="/locus/{{ locus.sgdid }}/literature#primary">{{locus.literature_overview.primary_count}}</a></dd>
-                        {% else %}
-                            <dd>{{locus.literature_overview.primary_count}}</dd>
-                        {% endif %}
-
-                        <dt>Additional</dt>
-                        {% if locus.literature_overview.additional_count > 0 %}
-                            <dd><a href="/locus/{{ locus.sgdid }}/literature#additional">{{locus.literature_overview.additional_count}}</a></dd>
-                        {% else %}
-                            <dd>{{locus.literature_overview.additional_count}}</dd>
-                        {% endif %}
-
-                        <dt>Reviews</dt>
-                        {% if locus.literature_overview.review_count > 0 %}
-                            <dd><a href="/locus/{{ locus.sgdid }}/literature#reviews">{{locus.literature_overview.review_count}}</a></dd>
-                        {% else %}
-                            <dd>{{locus.literature_overview.review_count}}</dd>
-                        {% endif %}
-                    </dl>
+                    {# yearly chart + 10 most recent references, rendered lazily
+                       by locus_literature.js when scrolled into view #}
+                    <div id="lsp-reftrend"><p>Loading literature&hellip;</p></div>
                 {% endif %}
             </div>
         </div>
@@ -987,10 +969,28 @@
 <script src="{{asset_root}}/js/local.js"></script>
 {# Analyze buttons in the Regulation and Interaction summary sections (needs post_to_url from local.js) #}
 <script src="{{asset_root}}/js/locus_summary_analyze.js"></script>
+{# All Curated Literature section: yearly chart + 10 most recent refs, lazy-loaded #}
+<script src="{{asset_root}}/js/locus_literature.js"></script>
 {# GO Consortium web components -- registers <go-gocam-viewer>; pin major version per GO guidance #}
 <script type="module" src="https://unpkg.com/@geneontology/web-components@1"></script>
 <script src="{{asset_root}}/js/functional_networks.js"></script>
 <style>
+    /* All Curated Literature: yearly reference chart + recent list, adapted
+       from the chemical page's Reference Usage styles (_chemical2.scss) */
+    .lsp-reftrend-summary { font-size: 0.9rem; margin-bottom: 0.5rem; }
+    .lsp-reftrend-summary b { color: #7a5ea8; }
+    .lsp-reftrend-chart { display: flex; align-items: flex-end; gap: 3px; overflow-x: auto; padding-bottom: 2px; }
+    .lsp-reftrend-readout { font-size: 0.8rem; font-weight: 600; color: #5f4788; margin-bottom: 0.25rem; min-height: 1rem; }
+    .lsp-reftrend-col { display: flex; flex-direction: column; align-items: center; }
+    .lsp-reftrend-barwrap { height: 90px; width: 12px; display: flex; align-items: flex-end; }
+    .lsp-reftrend-bar { width: 100%; min-height: 1px; background: #7a5ea8; }
+    .lsp-reftrend-year { margin-top: 2px; white-space: nowrap; font-size: 0.65rem; color: #666; }
+    .lsp-reftrend-year.is-blank { visibility: hidden; }
+    .lsp-ref-note { font-size: 0.9rem; margin: 0.75rem 0 0.25rem; }
+    .lsp-ref-list-ol { margin-top: 0.5rem; }
+    .lsp-ref-item { margin-bottom: 0.35rem; }
+    .lsp-ref-pmid { font-size: 0.8rem; color: #666; }
+
     button{
         padding: 3px 6px;
     }
