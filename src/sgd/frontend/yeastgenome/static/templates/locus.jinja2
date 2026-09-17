@@ -270,7 +270,10 @@
         </div>
 
         <div class="">
-            <div class="">
+            {# overflow:hidden contains the floated AlphaFold thumbnail, so a
+               short protein list (e.g. no abundance/half-life) can't let the
+               image bleed into the Alleles section below #}
+            <div class="" style="overflow:hidden">
                  {% if locus.uniprot_id %}
                  <a href="/locus/{{ locus.sgdid }}/protein" title="View protein structure and details"
                     style="float:right; margin:0 0 0.5rem 1rem;">
