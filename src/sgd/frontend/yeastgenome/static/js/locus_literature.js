@@ -50,6 +50,7 @@
                 var m = /\((\d{4})\)/.exec(r['display_name'] || '');
                 refs.push({
                     year: r['year'] || (m ? parseInt(m[1], 10) : null),
+                    display_name: r['display_name'] || '',
                     citation: r['citation'] || r['display_name'] || '',
                     link: r['link'] || null,
                     pmid: r['pubmed_id'] || null
@@ -101,10 +102,15 @@
         });
         var shown = refs.slice(0, TOP);
         var items = shown.map(function (r) {
-            // citations carry formatting tags in titles (e.g. <i>gene</i>);
-            // render as HTML like the other reference lists
-            var label = r.link ?
-                '<a href="' + escapeAttr(r.link) + '">' + r.citation + '</a>' : r.citation;
+            // hyperlink only the author/year part (display_name, e.g.
+            // "Hartwell LH, et al. (1973)"); the title/journal remainder is
+            // plain text and may carry formatting tags (e.g. <i>gene</i>),
+            // so render as HTML like the other reference lists
+            var rest = r.display_name && r.citation.indexOf(r.display_name) === 0 ?
+                r.citation.slice(r.display_name.length) : r.citation;
+            var label = (r.link && r.display_name) ?
+                '<a href="' + escapeAttr(r.link) + '">' + escapeHtml(r.display_name) + '</a>' + rest :
+                (r.link ? '<a href="' + escapeAttr(r.link) + '">' + r.citation + '</a>' : r.citation);
             var pmid = r.pmid ?
                 ' <span class="lsp-ref-pmid">PMID: <a href="https://pubmed.ncbi.nlm.nih.gov/' +
                 encodeURIComponent(r.pmid) + '" target="_blank">' + escapeHtml(String(r.pmid)) +
