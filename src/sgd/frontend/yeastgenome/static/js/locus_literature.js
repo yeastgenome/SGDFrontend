@@ -38,12 +38,13 @@
     }
 
     function render(data) {
-        // distinct curated references across the topic lists the old
-        // Primary/Additional/Reviews counts covered
+        // distinct curated references across every literature_details
+        // category, so the total matches the Literature tab's
+        // literature_overview total_count
         var seen = {};
         var refs = [];
-        ['primary', 'additional', 'review'].forEach(function (topic) {
-            (data[topic] || []).forEach(function (r) {
+        Object.keys(data).forEach(function (topic) {
+            (Array.isArray(data[topic]) ? data[topic] : []).forEach(function (r) {
                 var key = r['pubmed_id'] || r['link'] || r['display_name'];
                 if (!key || seen[key]) return;
                 seen[key] = true;
