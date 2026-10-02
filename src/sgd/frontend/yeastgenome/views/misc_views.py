@@ -616,7 +616,7 @@ def rnacentral_2d_svg(request):
     # blocked (the LSP thumbnail still works because <img> does not need CORS).
     urs = (request.matchdict.get('urs') or '').upper()
     if not RNACENTRAL_URS_RE.match(urs):
-        return not_found(request)
+        return HTTPNotFound()
     now = time.time()
     cached = _rnacentral_2d_cache.get(urs)
     if cached and now - cached[0] < (RNACENTRAL_2D_HIT_TTL if cached[1] else RNACENTRAL_2D_MISS_TTL):
@@ -633,7 +633,7 @@ def rnacentral_2d_svg(request):
             svg = None
         _rnacentral_2d_cache[urs] = (now, svg)
     if not svg:
-        return not_found(request)
+        return HTTPNotFound()
     response = Response(body=svg, content_type='image/svg+xml', charset='utf-8')
     response.cache_control.public = True
     response.cache_control.max_age = RNACENTRAL_2D_HIT_TTL
