@@ -10,8 +10,9 @@ import PropTypes from 'prop-types';
 // browser. We point the widget's {"url": ...} mode at our same-origin proxy
 // (misc_views.rnacentral_2d_svg) instead, which returns the same R2DT SVG.
 //
-// RNAcentral has no R2DT layout for some RNAs (its 2D API answers 404/500 even
-// though the LSP thumbnail, a separate backbone-outline endpoint, works). The
+// RNAcentral serves the full R2DT layout and the LSP thumbnail from different
+// endpoints; for some RNAs the layout endpoint fails (404/500, e.g. SNR8) while
+// the backbone-outline thumbnail still works. The
 // proxy answers 404 then, and the widget would show a confusing "The provided
 // URL does not return an SVG." error, so check the proxy first and only mount
 // the widget when a structure exists.
@@ -71,8 +72,9 @@ module.exports = createReactClass({
         '/559292';
       return (
         <p>
-          RNAcentral has not generated an R2DT secondary structure layout for{' '}
-          {this.props.ursID} yet. See the entry at{' '}
+          RNAcentral is not currently serving the full R2DT secondary structure
+          layout for {this.props.ursID}; the thumbnail above is RNAcentral&apos;s
+          outline of the same structure. See the entry at{' '}
           <a href={rnacentralUrl} target="_blank" rel="noopener noreferrer">
             RNAcentral
           </a>
