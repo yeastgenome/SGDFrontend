@@ -598,3 +598,43 @@ def get_https_url(url, request):
 def api_doc(request):
 
     return render_to_response(TEMPLATE_ROOT + 'sgd_redoc.jinja2', {}, request=request)
+
+
+RNACENTRAL_2D_URL = 'https://rnacentral.org/api/v1/rna/{urs}/2d/'
+RNACENTRAL_URS_RE = re.compile(r'^URS[0-9A-F]{10}$')
+RNACENTRAL_2D_HIT_TTL = 24 * 60 * 60
+RNACENTRAL_2D_MISS_TTL = 10 * 60
+_rnacentral_2d_cache = {}
+
+
+@view_config(route_name='rnacentral_2d_svg')
+def rnacentral_2d_svg(request):
+    # Same-origin proxy for the R2DT secondary-structure SVG that RNAcentral
+    # serves for a URS id. The r2dt-web widget on the locus sequence tab loads
+    # the structure with fetch(), and rnacentral.org only sends CORS headers to
+    # its own origins, so a direct browser request from yeastgenome.org is
+    # blocked (the LSP thumbnail still works because <img> does not need CORS).
+    urs = (request.matchdict.get('urs') or '').upper()
+    if not RNACENTRAL_URS_RE.match(urs):
+        return not_found(request)
+    now = time.time()
+    cached = _rnacentral_2d_cache.get(urs)
+    if cached and now - cached[0] < (RNACENTRAL_2D_HIT_TTL if cached[1] else RNACENTRAL_2D_MISS_TTL):
+        svg = cached[1]
+    else:
+        svg = None
+        try:
+            r = requests.get(RNACENTRAL_2D_URL.format(urs=urs), timeout=15)
+            if r.status_code == 200:
+                svg = (r.json().get('data') or {}).get('layout')
+        except (requests.RequestException, ValueError):
+            svg = None
+        if not svg or not svg.lstrip().startswith('<svg'):
+            svg = None
+        _rnacentral_2d_cache[urs] = (now, svg)
+    if not svg:
+        return not_found(request)
+    response = Response(body=svg, content_type='image/svg+xml', charset='utf-8')
+    response.cache_control.public = True
+    response.cache_control.max_age = RNACENTRAL_2D_HIT_TTL
+    return response
