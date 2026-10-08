@@ -147,8 +147,11 @@
 {% block scripts %}
 <script src="{{asset_root}}/js/build/nouislider.min.js"></script>
 <script src="{{asset_root}}/js/build/cytoscape.min.js"></script>
-{# don't host arbor.js on CDN because it makes webworker files that don't work on the cloud :( #}
-<script src="/static/js/build/arbor.js"></script>
+{# arbor.js (the network graph's "arbor" layout) is not loaded: the backend's
+   expression_graph endpoint is disabled and always returns an empty graph, so
+   the network section is hidden and arbor.js only slowed the page. If the
+   graph is re-enabled, add back <script src="/static/js/build/arbor.js"></script>
+   here (not from the CDN: arbor's web workers don't work from there). #}
 <script src="{{asset_root}}/js/cytoscape.js"></script>
 <script src="{{asset_root}}/js/local.js"></script>
 <script src="{{asset_root}}/js/evidence.js"></script>
