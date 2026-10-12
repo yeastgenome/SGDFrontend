@@ -16,6 +16,10 @@ import os
 import time
 
 SEARCH_URL = os.environ['BACKEND_URL'] + '/get_search_results'
+# (connect, read) seconds for server-side backend fetches on object pages.
+# Without a timeout a wedged backend holds a frontend thread indefinitely, and
+# with only a few dozen threads the whole site stalls behind it.
+BACKEND_TIMEOUT = (5, float(os.getenv('BACKEND_READ_TIMEOUT', '30')))
 TEMPLATE_ROOT = 'src:sgd/frontend/yeastgenome/static/templates/'
 ENV = os.getenv('ENV', 'dev')
 
@@ -39,6 +43,21 @@ def not_found(request):
 def error(request):
     request.response.status = 500
     return render_to_response(TEMPLATE_ROOT + 'error.jinja2', {}, request=request)
+
+class BackendUnavailable(Exception):
+    pass
+
+@view_config(context=BackendUnavailable)
+def backend_unavailable(exc, request):
+    # A backend outage is not a missing page: answer 503 with the generic error
+    # page instead of 404 "Page Not Found", so users retry and crawlers don't
+    # drop the URL.
+    # (render_to_response builds a new response, so set the status on it, not
+    # on request.response beforehand.)
+    response = render_to_response(TEMPLATE_ROOT + 'error.jinja2', {}, request=request)
+    response.status = 503
+    response.headers['Retry-After'] = '60'
+    return response
 
 @view_config(route_name='blast_fungal')
 def blast_fungal(request):
@@ -538,14 +557,40 @@ def identifier_candidates(identifier):
         candidates.append('SGD:' + identifier)
     return candidates
 
+def backend_get(url):
+    # GET a backend URL with a timeout; a timeout, connection error or 5xx
+    # raises BackendUnavailable (rendered as a 503 error page).
+    try:
+        response = requests.get(url, timeout=BACKEND_TIMEOUT)
+    except requests.exceptions.RequestException as e:
+        raise BackendUnavailable(str(e))
+    if response.status_code >= 500:
+        raise BackendUnavailable('%s returned %s' % (url, response.status_code))
+    return response
+
+def backend_get_json(url):
+    # A 200 with a non-JSON body (e.g. an empty reply from a dying node) is a
+    # backend failure too.
+    try:
+        return json.loads(backend_get(url).text)
+    except ValueError as e:
+        raise BackendUnavailable('%s returned invalid JSON: %s' % (url, e))
+
 def fetch_backend_obj(url_for_candidate, identifier):
     # Some backend endpoints (complex, pathway) return 200 with an empty body
     # for unknown identifiers, so an empty payload counts as a miss too.
+    # Only a 4xx miss tries the next candidate; a backend failure raises
+    # BackendUnavailable straight away rather than retrying the alternate
+    # spelling (which doubles the load on an already overloaded backend).
     for candidate in identifier_candidates(identifier):
-        backend_response = requests.get(url_for_candidate(candidate))
+        url = url_for_candidate(candidate)
+        backend_response = backend_get(url)
         if backend_response.status_code != 200:
             continue
-        obj = json.loads(backend_response.text)
+        try:
+            obj = json.loads(backend_response.text)
+        except ValueError as e:
+            raise BackendUnavailable('%s returned invalid JSON: %s' % (url, e))
         if not obj:
             continue
         return obj
