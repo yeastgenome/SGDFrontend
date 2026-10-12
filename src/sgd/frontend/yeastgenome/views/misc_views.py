@@ -33,16 +33,21 @@ def redirect_no_overview(request):
     new_url = request.path.replace('/overview', '')
     return HTTPMovedPermanently(get_https_url(new_url, request))
 
+# render_to_response builds a new response (Pyramid >= 1.6), so the status has
+# to be set on the returned response; setting request.response.status first is
+# silently ignored and the page goes out as a 200.
 @view_config(context=HTTPNotFound)
 def not_found(request):
-    request.response.status = 404
-    return render_to_response(TEMPLATE_ROOT + 'lost.jinja2', {}, request=request)
+    response = render_to_response(TEMPLATE_ROOT + 'lost.jinja2', {}, request=request)
+    response.status = 404
+    return response
 
 @view_config(context=HTTPInternalServerError)
 #def error(self, request):
 def error(request):
-    request.response.status = 500
-    return render_to_response(TEMPLATE_ROOT + 'error.jinja2', {}, request=request)
+    response = render_to_response(TEMPLATE_ROOT + 'error.jinja2', {}, request=request)
+    response.status = 500
+    return response
 
 class BackendUnavailable(Exception):
     pass
@@ -52,8 +57,6 @@ def backend_unavailable(exc, request):
     # A backend outage is not a missing page: answer 503 with the generic error
     # page instead of 404 "Page Not Found", so users retry and crawlers don't
     # drop the URL.
-    # (render_to_response builds a new response, so set the status on it, not
-    # on request.response beforehand.)
     response = render_to_response(TEMPLATE_ROOT + 'error.jinja2', {}, request=request)
     response.status = 503
     response.headers['Retry-After'] = '60'
@@ -180,7 +183,7 @@ def download_list(request):
 @view_config(route_name='references_this_week')
 def references_this_week(request):
     backend_url = os.environ['BACKEND_URL'] + '/references/this_week'
-    backend_response = requests.get(backend_url)
+    backend_response = backend_get(backend_url)
     if backend_response.status_code != 200:
         return not_found(request)
     obj = json.loads(backend_response.text)
@@ -195,7 +198,7 @@ def get_references(request):
     # References for a list of PubMed IDs, e.g. /reference/getReferences?id=123,456
     pmids = request.params.get('id', '') or ''
     backend_url = os.environ['BACKEND_URL'] + '/references/by_pmids?pmids=' + urllib.parse.quote(pmids)
-    backend_response = requests.get(backend_url)
+    backend_response = backend_get(backend_url)
     if backend_response.status_code != 200:
         return not_found(request)
     obj = json.loads(backend_response.text)
@@ -216,7 +219,7 @@ def _recent_days_param(request, default=30):
 def phenotypes_this_week(request):
     days = _recent_days_param(request)
     backend_url = os.environ['BACKEND_URL'] + '/phenotypes/this_week?days=' + days
-    backend_response = requests.get(backend_url)
+    backend_response = backend_get(backend_url)
     if backend_response.status_code != 200:
         return not_found(request)
     obj = json.loads(backend_response.text)
@@ -275,7 +278,7 @@ def _manually_curated_go_count():
     if cache['count'] is not None and (now - cache['ts']) < _RECENT_GO_COUNT_TTL:
         return cache['count']
     try:
-        annos = json.loads(requests.get(_go_this_week_url(RECENT_GO_DAYS)).text).get('go_annotations', [])
+        annos = backend_get_json(_go_this_week_url(RECENT_GO_DAYS)).get('go_annotations', [])
         count = len(annos)
     except Exception:
         # On failure, keep serving the last known count (if any).
@@ -288,7 +291,7 @@ def _manually_curated_go_count():
 @view_config(route_name='gos_this_week')
 def gos_this_week(request):
     days = _recent_days_param(request, RECENT_GO_DAYS)
-    backend_response = requests.get(_go_this_week_url(days))
+    backend_response = backend_get(_go_this_week_url(days))
     if backend_response.status_code != 200:
         return not_found(request)
     obj = json.loads(backend_response.text)
@@ -313,7 +316,7 @@ def recent_updates(request):
     # RECENT_GO_DAYS). The backend count includes all annotation types. The
     # longer GO window is explained by the panel footnote, so the label itself
     # stays clean (no per-line "(last N days)" suffix).
-    backend_response = requests.get(os.environ['BACKEND_URL'] + '/recent_updates')
+    backend_response = backend_get(os.environ['BACKEND_URL'] + '/recent_updates')
     if backend_response.status_code != 200:
         return not_found(request)
     obj = json.loads(backend_response.text)
@@ -328,7 +331,7 @@ def recent_updates(request):
 @view_config(route_name='alleles_this_week')
 def alleles_this_week(request):
     backend_url = os.environ['BACKEND_URL'] + '/alleles/this_week'
-    backend_response = requests.get(backend_url)
+    backend_response = backend_get(backend_url)
     if backend_response.status_code != 200:
         return not_found(request)
     obj = json.loads(backend_response.text)
@@ -445,7 +448,7 @@ def search(request):
     limit = '25' if request.params.get('page_size') is None else request.params.get('page_size')
     # get search results
     search_url = SEARCH_URL + '?' + request.query_string + '&limit=' + limit
-    json_results = requests.get(search_url).text
+    json_results = backend_get(search_url).text
     # if param is_quick = true, try to do some redirecting
     if request.params.get('is_quick') == 'true':
         query = request.params.get('q', '').lower()
@@ -454,7 +457,7 @@ def search(request):
         if query.endswith('p'):
             temp_query = query[:-1]
             temp_query_url = SEARCH_URL + '?q=' + temp_query
-            temp_json_results = requests.get(temp_query_url).text
+            temp_json_results = backend_get(temp_query_url).text
             temp_parsed_results = json.loads(temp_json_results)['results']
             redirect_url = get_redirect_url_from_results(temp_parsed_results)
             if redirect_url:

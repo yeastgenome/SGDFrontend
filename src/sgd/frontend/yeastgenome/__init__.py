@@ -16,7 +16,7 @@ from pyramid.renderers import JSONP, render
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
-from src.sgd.frontend.yeastgenome.views.misc_views import not_found
+from src.sgd.frontend.yeastgenome.views.misc_views import not_found, BACKEND_TIMEOUT
 from src.sgd.frontend.frontend_interface import FrontendInterface
 
 class YeastgenomeFrontend(FrontendInterface):
@@ -405,12 +405,16 @@ def yeastgenome_frontend(backend_url, heritage_url, log_directory, **configs):
 
     return chosen_frontend, configurator
 
+# POSTs are bulk list operations (bioentity/reference lists, GO enrichment) that
+# can legitimately run longer than a single-object GET.
+BACKEND_BULK_TIMEOUT = (BACKEND_TIMEOUT[0], 120)
+
 def get_json(url, data=None):
     if data is not None:
         headers = {'Content-type': 'application/json; charset="UTF-8"'}
-        r = requests.post(url, data=json.dumps(data), headers=headers)
+        r = requests.post(url, data=json.dumps(data), headers=headers, timeout=BACKEND_BULK_TIMEOUT)
     else:
-        r = requests.get(url)
+        r = requests.get(url, timeout=BACKEND_TIMEOUT)
 
     if r.status_code == 404:
         raise ValueError('404')

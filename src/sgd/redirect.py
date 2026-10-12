@@ -4,6 +4,8 @@ import os
 import requests
 from pyramid.response import Response
 
+from src.sgd.frontend.yeastgenome.views.misc_views import BACKEND_TIMEOUT
+
 
 def do_redirect(request):
 
@@ -27,7 +29,7 @@ def do_redirect(request):
                         continue
                     url = url + "&" + key + "=" + p.get(key)
         try:
-            res = requests.get(url)
+            res = requests.get(url, timeout=BACKEND_TIMEOUT)
             if res.status_code == 200:
                 data = json.loads(res.text)
         except (requests.exceptions.RequestException, ValueError):
