@@ -5,6 +5,7 @@ $(document).ready(function() {
     create_download_button("gene_list_table_download", gene_table, list_name);
     $("#gene_list_table_analyze").hide();
     set_up_tools(gene_table, "go_term_finder", "go_slim_mapper", "spell", "alliancemine");
+    set_up_gene_list_analysis(gene_table, "gene_list_analysis");
 
 });
 
@@ -113,5 +114,16 @@ function set_up_tools(table, go_term_finder_id, go_slim_mapper_id, spell_id, all
 			bioent_format_names.push(sys_name);
 		}
 		post_to_alliancemine(bioent_format_names);
+	};
+}
+
+function set_up_gene_list_analysis(table, gene_list_analysis_id) {
+	document.getElementById(gene_list_analysis_id).onclick = function f() {
+		var data = table._("tr", {"filter": "applied"});
+		var localStorageGeneList = data.reduce(function(acc, d) {
+			return acc + d[2] + " ";
+		}, "");
+		window.localStorage.setItem("geneListAnalysis", localStorageGeneList);
+		location.assign('/gene-list-analysis');
 	};
 }

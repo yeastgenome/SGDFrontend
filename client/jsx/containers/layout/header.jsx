@@ -166,6 +166,11 @@ class Header extends Component {
                   </a>
                 </li>
                 <li>
+                  <a className="disabled-header-a" href="/gene-list-analysis">
+                    Gene List Analysis
+                  </a>
+                </li>
+                <li>
                   <a className="disabled-header-a" href="/blast-sgd">
                     BLAST
                   </a>

@@ -7,6 +7,7 @@ import ColleaguesShow from './components/colleagues/colleagues_show.jsx';
 import Search from './containers/search.jsx';
 import StyleGuide from './components/style_guide/style_guide.jsx';
 import Primer3 from './components/primer3/primer3.jsx';
+import GeneListAnalysis from './components/gene_list/gene_list_analysis.jsx';
 
 module.exports = (
   <Route
@@ -17,6 +18,7 @@ module.exports = (
           <Route path="/search" component={Search} />
           <Route path="/style-guide" component={StyleGuide} />
           <Route path="/primer3" component={Primer3} />
+          <Route path="/gene-list-analysis" component={GeneListAnalysis} />
         </Switch>
       </Layout>
     )}

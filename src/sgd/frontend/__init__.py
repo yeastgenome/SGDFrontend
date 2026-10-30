@@ -62,6 +62,7 @@ def prep_views(chosen_frontend, config):
     config.add_route('search', '/search')
     config.add_route('rnacentral_2d_svg', '/rnacentral/2d/{urs}.svg')
     config.add_route('primer3', '/primer3')
+    config.add_route('gene_list_analysis', '/gene-list-analysis')
     # config.add_route('example', '/example')
     # locus pages from locus_views
     config.add_route('locus', '/locus/{identifier}')
