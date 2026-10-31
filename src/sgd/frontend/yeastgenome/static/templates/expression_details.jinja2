@@ -106,22 +106,25 @@
                     <a href="#" data-dropdown="similar_help"><i class="fa fa-info-circle"></i></a>
 
                     <p id="similar_help" class="f-dropdown content medium" data-dropdown-content>
-                        This diagram displays a gene network based on correlated expression profiles (purple lines)
-                        between the given gene (yellow circle) and genes that share expression profiles (gray circles).
-                        The correlation coefficient is calculated between every pair of genes in every dataset, then
-                        the number of datasets in which the pair of genes has a significant correlation with one another
-                        is determined. The network displays the genes whose expression is correlated with the given gene
-                        in the largest number of datasets. Please note that SPELL use a different algorithm to make a
-                        global calculation taking into account all the datasets at once, and may therefore display a
-                        different set of correlated genes.
+                        Genes with expression profiles most similar to {{ locus.display_name }}'s across the SGD
+                        expression datasets (the data behind SPELL). For each dataset, the Pearson correlation of every
+                        pair of genes is Fisher z-transformed and standardized within the dataset; a pair's
+                        co-expression score is the mean of these values over all datasets that measure both genes
+                        (after SPELL, Hibbs et al. 2007, without query-specific dataset weighting). The diagram shows
+                        {{ locus.display_name }} (yellow) and its 20 most co-expressed genes, with lines between genes
+                        that are at least as strongly co-expressed; the table lists the top 100.
                     </p>
                 </h2>
                 <hr />
+                <p id="coexpression_summary"></p>
                 <div class="">
                     <!-- Includes expression_table into template -->
                     {% set network_id = "cy" %}
                     {% include "expression_network.jinja2" %}
                 </div>
+                <h3>Top co-expressed genes</h3>
+                {% set table_id = "coexpression_table" %}
+                {% include "coexpression_table.jinja2" %}
             </div>
         </section>
 
@@ -147,11 +150,7 @@
 {% block scripts %}
 <script src="{{asset_root}}/js/build/nouislider.min.js"></script>
 <script src="{{asset_root}}/js/build/cytoscape.min.js"></script>
-{# arbor.js (the network graph's "arbor" layout) is not loaded: the backend's
-   expression_graph endpoint is disabled and always returns an empty graph, so
-   the network section is hidden and arbor.js only slowed the page. If the
-   graph is re-enabled, add back <script src="/static/js/build/arbor.js"></script>
-   here (not from the CDN: arbor's web workers don't work from there). #}
+<script src="{{asset_root}}/js/build/arbor.js"></script>
 <script src="{{asset_root}}/js/cytoscape.js"></script>
 <script src="{{asset_root}}/js/local.js"></script>
 <script src="{{asset_root}}/js/evidence.js"></script>

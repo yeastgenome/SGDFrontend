@@ -1,6 +1,7 @@
 import React from 'react';
 import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
+import ExpressionHeatmap from './expression_heatmap.jsx';
 
 const RESOLVE_URL = '/backend/gene_list/resolve';
 const ENRICHMENT_URL = '/backend/gene_list/enrichment';
@@ -130,6 +131,7 @@ const GeneListAnalysis = createReactClass({
       homologFilter: 'all',
       annotations: {},
       previewType: null,
+      showExpression: false,
     };
   },
 
@@ -174,6 +176,7 @@ const GeneListAnalysis = createReactClass({
       expanded: {},
       annotations: {},
       previewType: null,
+      showExpression: false,
     });
     postJson(RESOLVE_URL, { identifiers: this.state.genes })
       .then((resolution) => {
@@ -482,6 +485,26 @@ const GeneListAnalysis = createReactClass({
     );
   },
 
+  renderExpressionPanel() {
+    const ids = this.resolvedIds();
+    if (!this.state.resolution || !ids.length) return null;
+    if (!this.state.showExpression) {
+      return (
+        <div className="panel">
+          <h3>Expression</h3>
+          <p>
+            Heatmap of log2 expression ratios for the list across the SGD expression datasets (the data behind SPELL),
+            clustered, with the datasets where these genes respond most shown first.
+          </p>
+          <button className="button small" onClick={() => this.setState({ showExpression: true })}>
+            Show expression heatmap
+          </button>
+        </div>
+      );
+    }
+    return <ExpressionHeatmap geneIds={ids} />;
+  },
+
   renderForm() {
     return (
       <form onSubmit={this.handleSubmit}>
@@ -761,14 +784,15 @@ const GeneListAnalysis = createReactClass({
         <hr />
         <p>
           Map a list of yeast gene identifiers to current SGD genes, find transcriptional regulators, phenotypes,
-          complexes, pathways, protein domains and diseases that are over-represented in the list, and download SGD
-          annotations for the genes.
+          complexes, pathways, protein domains and diseases that are over-represented in the list, view the genes'
+          expression across SGD expression datasets, and download SGD annotations for the genes.
         </p>
         {this.renderForm()}
         {this.state.error ? <div className="alert-box alert">{this.state.error}</div> : null}
         {this.state.isPending ? <div className="sgd-loader" /> : null}
         {this.renderResolution()}
         {this.renderAnnotationPanel()}
+        {this.renderExpressionPanel()}
         {this.renderEnrichment()}
       </div>
     );

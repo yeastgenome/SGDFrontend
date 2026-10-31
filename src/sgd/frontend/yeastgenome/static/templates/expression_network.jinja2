@@ -1,10 +1,8 @@
 {% extends "network.jinja2" %}
 
 {% block help %}
-    Click on a gene to go to its specific page within SGD; drag any of the gene objects around within the visualization
-    for easier viewing. Filter similar genes by adjusting the number of datasets in which their expression profiles are
-    highly correlated with the gene of interest by clicking anywhere on the slider bar or dragging the tab to the
-    desired filter number. Click “Reset” to automatically redraw the diagram.
+    Click on a gene to go to its page within SGD; drag genes around within the visualization for easier viewing.
+    Thicker lines mean stronger co-expression. Click “Reset” to automatically redraw the diagram.
 {% endblock %}
 
 {# remove slider because of data["min_coeff"] issues #}

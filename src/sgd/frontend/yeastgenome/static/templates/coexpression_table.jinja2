@@ -1,0 +1,24 @@
+{% extends "table.jinja2" %}
+
+{% block help %}
+    Genes whose expression profiles are most similar to this gene's across the SGD expression datasets, ranked by
+    co-expression score. The score is the mean standardized correlation (Fisher z) over all datasets that measure both
+    genes; "Datasets" is the number of those datasets. Use the Analyze buttons to explore the co-expressed genes as a
+    gene list, e.g. to find shared regulators, phenotypes, pathways or GO terms.
+{% endblock %}
+
+{% block columns %}
+    <th>Rank</th>
+    <th>Gene</th>
+    <th>Systematic Name</th>
+    <th>Co-expression Score</th>
+    <th>Datasets</th>
+    <th>Description</th>
+{% endblock %}
+
+{% block additional_buttons %}
+    <ul class="button-group radius">
+        <li><a id="{{ table_id }}_gene_list_analysis" class="small button secondary"><i class='fa fa-sitemap'></i> Gene List Analysis</a>
+        </li>
+    </ul>
+{% endblock %}

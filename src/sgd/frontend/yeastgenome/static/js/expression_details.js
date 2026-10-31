@@ -15,17 +15,31 @@ $(document).ready(function() {
         views.expression.render(data);
     });
 
-    $.getJSON('/redirect_backend?param=locus/' + locus['id'] + '/expression_graph', function(data) {
-        if(data != null && data['nodes'].length > 1) {
-            var graph = create_cytoscape_vis("cy", layout, graph_style, data, null, true, "expression");
-            var max_value = data["min_coeff"] + Math.min(data["max_coeff"] - data["min_coeff"], 10);
-            // remove slider because of data["min_coeff"] issues
-            // var slider = create_slider("slider", graph, data["min_coeff"], max_value, function slider_filter(new_cutoff) {return "node, edge[score >= " + (new_cutoff/10) + "]";}, max_value+1);
-            create_cy_download_button(graph, "cy_download", locus['display_name'] + '_expression_graph')
-        }
-        else {
+    // Co-expressed genes, precomputed from the expression datasets by
+    // SGDBackend scripts/loading/dataset/compute_coexpression.py
+    var coexpUrl = 'https://s3-us-west-2.amazonaws.com/sgd-prod-expression-details/coexpression/' + sgdid + '.json';
+    $.getJSON(coexpUrl, function(data) {
+        if(data == null || data['partners'].length == 0) {
             hide_section("network");
+            return;
         }
+        $("#coexpression_summary").html(coexpression_summary(data));
+        var graph_data = coexpression_graph(data['network']);
+        if(graph_data['nodes'].length > 1) {
+            var graph = create_cytoscape_vis("cy", layout, graph_style, graph_data, null, true, "expression");
+            create_cy_download_button(graph, "cy_download", locus['display_name'] + '_coexpression_graph');
+        }
+        var coexpression_table = create_coexpression_table(data['partners']);
+        create_download_button("coexpression_table_download", coexpression_table, locus['display_name'] + "_coexpressed_genes");
+        var names = $.map(data['partners'], function(p) { return p['systematic_name']; });
+        create_analyze_button_with_list("coexpression_table_analyze", names, 'Genes co-expressed with ' + locus['display_name']);
+        $("#coexpression_table_gene_list_analysis").click(function() {
+            // hand the list to the Gene List Analysis tool (read once from localStorage)
+            window.localStorage.setItem("geneListAnalysis", [locus['format_name']].concat(names).join(" "));
+            location.assign('/gene-list-analysis');
+        });
+    }).fail(function() {
+        hide_section("network");
     });
 });
 
@@ -66,6 +80,46 @@ function create_expression_table(data) {
     }
 
     return create_table("expression_table", options);
+}
+
+function coexpression_summary(data) {
+    var method = data['method'];
+    return 'Top ' + data['partners'].length + ' genes co-expressed with ' + locus['display_name'] +
+        ' across ' + data['locus']['dataset_count'] + ' expression datasets (of ' + method['datasets'] +
+        ' analyzed; computed ' + method['computed'] + ').';
+}
+
+function coexpression_graph(network) {
+    // nodes/edges in the format create_cytoscape_vis expects; edge width scales with the score
+    var scores = $.map(network['edges'], function(e) { return e['score']; });
+    var min_score = Math.min.apply(null, scores);
+    var max_score = Math.max.apply(null, scores);
+    var nodes = $.map(network['nodes'], function(n) {
+        return {'data': {'id': n['sgdid'], 'name': n['display_name'], 'link': n['link'], 'type': 'BIOENTITY',
+                         'sub_type': n['focus'] ? 'FOCUS' : null}};
+    });
+    var edges = $.map(network['edges'], function(e) {
+        var width = max_score > min_score ? 1 + 5 * (e['score'] - min_score) / (max_score - min_score) : 3;
+        return {'data': {'source': e['source'], 'target': e['target'], 'score': width,
+                         'class_type': 'EXPRESSION', 'direction': 'positive'}};
+    });
+    return {'nodes': nodes, 'edges': edges};
+}
+
+function create_coexpression_table(partners) {
+    var datatable = $.map(partners, function(p) {
+        return [[p['rank'], create_link(p['display_name'], p['link']), p['systematic_name'], p['score'].toFixed(2),
+                 p['dataset_count'], p['description'] || '']];
+    });
+    set_up_header('coexpression_table', datatable.length, 'gene', 'genes');
+    var options = {
+        'bPaginate': true,
+        'aaSorting': [[0, "asc"]],
+        'aoColumns': [null, null, null, null, null, null],
+        'oLanguage': {'sEmptyTable': 'No co-expressed genes for ' + locus['display_name']},
+        'aaData': datatable
+    };
+    return create_table("coexpression_table", options);
 }
 
 var graph_style = cytoscape.stylesheet()
