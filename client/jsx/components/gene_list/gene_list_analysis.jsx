@@ -30,16 +30,8 @@ const CATEGORIES = [
 
 const FDR_OPTIONS = ['0.01', '0.05', '0.1', '0.25'];
 
-// where the gene list comes from
+// where the gene list comes from, one tab each
 const LIST_SOURCES = [
-  { key: 'paste', label: 'Paste genes' },
-  { key: 'go', label: 'From a GO term' },
-  { key: 'phenotype', label: 'From a phenotype' },
-  { key: 'disease', label: 'From a human disease' },
-  { key: 'category', label: 'From a regulator, complex, pathway or domain' },
-];
-// /gene-list-analysis2 (allSources): every source on its own tab
-const ALL_LIST_SOURCES = [
   { key: 'paste', label: 'Paste genes' },
   { key: 'go', label: 'GO term' },
   { key: 'goslim', label: 'GO slim' },
@@ -54,8 +46,7 @@ const ALL_LIST_SOURCES = [
   { key: 'coexpression', label: 'Co-expressed genes' },
 ];
 
-// the other annotation categories a list can be built from (the "disease"
-// source, and the "category" source with a choice of the rest)
+// the list sources that pick a term of an annotation category
 const TERM_CATEGORIES = {
   disease: {
     label: 'Human disease',
@@ -87,7 +78,6 @@ const TERM_CATEGORIES = {
     placeholder: 'e.g. Leucine-rich repeat or IPR001611',
     relation: 'with the protein domain',
   },
-  // the rest are only on /gene-list-analysis2
   goslim: {
     label: 'GO slim term (Yeast GO-Slim)',
     help: 'broad GO categories; number of genes in parentheses',
@@ -114,7 +104,6 @@ const TERM_CATEGORIES = {
 };
 const LITERATURE_TOPICS = ['Primary Literature', 'Additional Literature', 'Reviews', 'Omics'];
 const COEXPRESSION_TOP = ['10', '25', '50', '100'];
-const OTHER_CATEGORIES = ['regulator', 'complex', 'pathway', 'domain'];
 // the backend's limit on list size (MAX_INPUT_IDENTIFIERS)
 const MAX_LIST_GENES = 5000;
 
@@ -243,8 +232,6 @@ const GeneListAnalysis = createReactClass({
 
   propTypes: {
     history: PropTypes.any,
-    // /gene-list-analysis2: a tab for every list source
-    allSources: PropTypes.bool,
   },
 
   getInitialState() {
@@ -286,7 +273,6 @@ const GeneListAnalysis = createReactClass({
       phenotypeTerm: '',
       phenotypeDescendants: true,
       phenotypeQualifier: '',
-      termCategory: 'regulator',
       termQuery: '',
       termChoice: null,
       termSuggestions: [],
@@ -336,16 +322,13 @@ const GeneListAnalysis = createReactClass({
         }
       );
     } else {
-      // ?disease=DOID:699, ?regulator=GCN4, ?complex=..., ?pathway=..., ?domain=IPR001611
-      const ownTab = (key) => this.props.allSources || key === 'disease';
-      const category = Object.keys(TERM_CATEGORIES).find(
-        (key) => params.get(key) && (ownTab(key) || OTHER_CATEGORIES.indexOf(key) >= 0)
-      );
+      // ?disease=DOID:699, ?regulator=GCN4, ?chemical=rapamycin, ?paper=12140549&topic=...,
+      // ?coexpression=HSP12&top=10, ?goslim=GO:0007005, ...
+      const category = Object.keys(TERM_CATEGORIES).find((key) => params.get(key));
       if (category) {
         this.setState(
           {
-            listSource: ownTab(category) ? category : 'category',
-            termCategory: ownTab(category) ? 'regulator' : category,
+            listSource: category,
             termQuery: params.get(category),
             termDescendants: descendants,
             termTopic: params.get('topic') || '',
@@ -453,13 +436,9 @@ const GeneListAnalysis = createReactClass({
     if (key === 'goslim') this.loadGoslimTerms();
   },
 
-  listSources() {
-    return this.props.allSources ? ALL_LIST_SOURCES : LIST_SOURCES;
-  },
-
   // sources that pick a term of an annotation category (TERM_CATEGORIES)
   isTermSource(key) {
-    return key === 'category' || !!TERM_CATEGORIES[key];
+    return !!TERM_CATEGORIES[key];
   },
 
   loadGoslimTerms() {
@@ -597,11 +576,7 @@ const GeneListAnalysis = createReactClass({
   },
 
   termCategoryKey() {
-    return this.state.listSource === 'category' ? this.state.termCategory : this.state.listSource;
-  },
-
-  setTermCategory(key) {
-    this.setState({ termCategory: key, termQuery: '', termChoice: null, termSuggestions: [], error: null });
+    return this.state.listSource;
   },
 
   termLabel(term) {
@@ -1063,17 +1038,15 @@ const GeneListAnalysis = createReactClass({
   renderSourceTabs() {
     return (
       <div style={{ marginBottom: '0.75rem' }}>
-        {this.props.allSources ? (
-          <div>
-            <b>Make the list from</b>
-          </div>
-        ) : null}
-        {this.listSources().map((source) => (
+        <div>
+          <b>Make the list from</b>
+        </div>
+        {LIST_SOURCES.map((source) => (
           <button
             key={source.key}
             type="button"
             className={'button tiny' + (this.state.listSource === source.key ? '' : ' secondary')}
-            style={{ marginRight: '0.25rem', marginBottom: this.props.allSources ? '0.25rem' : 0 }}
+            style={{ marginRight: '0.25rem', marginBottom: '0.25rem' }}
             onClick={() => this.setListSource(source.key)}
           >
             {source.label}
@@ -1375,18 +1348,6 @@ const GeneListAnalysis = createReactClass({
     const info = TERM_CATEGORIES[category];
     return (
       <div>
-        {this.state.listSource !== 'category' ? null : (
-          <label>
-            <b>Annotation</b>
-            <select value={category} onChange={(e) => this.setTermCategory(e.target.value)}>
-              {OTHER_CATEGORIES.map((key) => (
-                <option key={key} value={key}>
-                  {TERM_CATEGORIES[key].label}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
         {category === 'goslim' ? (
           this.renderGoslimSelect(info)
         ) : (

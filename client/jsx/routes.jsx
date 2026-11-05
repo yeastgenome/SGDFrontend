@@ -18,7 +18,6 @@ module.exports = (
           <Route path="/search" component={Search} />
           <Route path="/style-guide" component={StyleGuide} />
           <Route path="/primer3" component={Primer3} />
-          <Route path="/gene-list-analysis2" render={(props) => <GeneListAnalysis {...props} allSources />} />
           <Route path="/gene-list-analysis" component={GeneListAnalysis} />
         </Switch>
       </Layout>
