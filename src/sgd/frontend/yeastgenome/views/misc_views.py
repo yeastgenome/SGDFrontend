@@ -534,13 +534,6 @@ def primer3(request):
 def gene_list_analysis(request):
     return render_to_response(TEMPLATE_ROOT + 'gene_list_analysis.jinja2', {}, request=request)
 
-@view_config(route_name='gene_list_analysis2')
-def gene_list_analysis2(request):
-    # the trial page for the separate list-source tabs, now /gene-list-analysis;
-    # keep its links (and their ?go=, ?chemical=... options) working
-    url = '/gene-list-analysis' + ('?' + request.query_string if request.query_string else '')
-    return HTTPMovedPermanently(get_https_url(url, request))
-
 @view_config(route_name='home')
 def home(request):
     blog_posts = get_recent_blog_posts()
