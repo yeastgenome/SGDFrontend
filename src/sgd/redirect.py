@@ -6,6 +6,12 @@ from pyramid.response import Response
 
 from src.sgd.frontend.yeastgenome.views.misc_views import BACKEND_TIMEOUT
 
+# Annotation tables (e.g. /go/{id}/locus_details for GO:0005634 nucleus or
+# /disease/{id}/locus_details_all for DOID:162 cancer) take 30-80 s to build,
+# so these table loads get a longer read timeout than page renders (still
+# under the ALB idle timeout of 300 s).
+TABLE_TIMEOUT = (BACKEND_TIMEOUT[0], float(os.getenv('BACKEND_TABLE_READ_TIMEOUT', '180')))
+
 
 def do_redirect(request):
 
@@ -29,11 +35,9 @@ def do_redirect(request):
                         continue
                     url = url + "&" + key + "=" + p.get(key)
         try:
-            res = requests.get(url, timeout=BACKEND_TIMEOUT)
+            res = requests.get(url, timeout=TABLE_TIMEOUT)
             if res.status_code == 200:
                 data = json.loads(res.text)
         except (requests.exceptions.RequestException, ValueError):
             data = {}
     return Response(body=json.dumps(data), content_type='application/json', charset='UTF-8')
-
-
