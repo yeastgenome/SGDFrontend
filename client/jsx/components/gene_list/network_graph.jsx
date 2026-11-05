@@ -63,6 +63,8 @@ const LAYOUTS = [
 const LIST_COLOR = '#6787ab';
 const NEIGHBOR_COLOR = '#c7c7c7';
 const HIGHLIGHT_COLOR = '#f2b705';
+// largest zoom when fitting a network into the frame
+const MAX_FIT_ZOOM = 1.5;
 
 let cytoscapeLoading = null;
 
@@ -265,11 +267,22 @@ const NetworkGraph = createReactClass({
       container: this.container,
       elements: elements,
       style: style,
-      layout: layout,
-      minZoom: 0.1,
+      minZoom: 0.02,
       maxZoom: 4,
       wheelSensitivity: 0.3,
     });
+    // the layout's own fit leaves out the labels under the nodes, so fit
+    // again afterwards with labels, and don't blow small networks up
+    const cy = this.cy;
+    const run = cy.layout(layout);
+    run.one('layoutstop', () => {
+      cy.fit(cy.elements(), 30);
+      if (cy.zoom() > MAX_FIT_ZOOM) {
+        cy.zoom(MAX_FIT_ZOOM);
+        cy.center();
+      }
+    });
+    run.run();
     this.cy.on('mouseover', 'node', (e) => this.showNode(e.target));
     this.cy.on('mouseover', 'edge', (e) => this.showEdge(e.target));
     this.cy.on('tap', 'node', (e) => this.selectNode(e.target));
