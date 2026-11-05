@@ -38,6 +38,21 @@ const LIST_SOURCES = [
   { key: 'disease', label: 'From a human disease' },
   { key: 'category', label: 'From a regulator, complex, pathway or domain' },
 ];
+// /gene-list-analysis2 (allSources): every source on its own tab
+const ALL_LIST_SOURCES = [
+  { key: 'paste', label: 'Paste genes' },
+  { key: 'go', label: 'GO term' },
+  { key: 'goslim', label: 'GO slim' },
+  { key: 'phenotype', label: 'Phenotype' },
+  { key: 'chemical', label: 'Chemical' },
+  { key: 'disease', label: 'Human disease' },
+  { key: 'pathway', label: 'Pathway' },
+  { key: 'complex', label: 'Complex' },
+  { key: 'regulator', label: 'Regulator targets' },
+  { key: 'domain', label: 'Protein domain' },
+  { key: 'paper', label: 'Paper' },
+  { key: 'coexpression', label: 'Co-expressed genes' },
+];
 
 // the other annotation categories a list can be built from (the "disease"
 // source, and the "category" source with a choice of the rest)
@@ -72,7 +87,33 @@ const TERM_CATEGORIES = {
     placeholder: 'e.g. Leucine-rich repeat or IPR001611',
     relation: 'with the protein domain',
   },
+  // the rest are only on /gene-list-analysis2
+  goslim: {
+    label: 'GO slim term (Yeast GO-Slim)',
+    help: 'broad GO categories; number of genes in parentheses',
+    relation: 'annotated to the GO slim term',
+  },
+  chemical: {
+    label: 'Chemical',
+    help: 'name, synonym or ChEBI ID',
+    placeholder: 'e.g. rapamycin, caffeine or CHEBI:9168',
+    relation: 'with a mutant phenotype observed under',
+  },
+  paper: {
+    label: 'Paper',
+    help: 'PMID, SGDID, or author / words from the citation',
+    placeholder: 'e.g. 12140549 or Giaever',
+    relation: 'linked by the Literature Guide to',
+  },
+  coexpression: {
+    label: 'Gene',
+    help: 'gene or systematic name',
+    placeholder: 'e.g. HSP12',
+    relation: 'co-expressed with',
+  },
 };
+const LITERATURE_TOPICS = ['Primary Literature', 'Additional Literature', 'Reviews', 'Omics'];
+const COEXPRESSION_TOP = ['10', '25', '50', '100'];
 const OTHER_CATEGORIES = ['regulator', 'complex', 'pathway', 'domain'];
 // the backend's limit on list size (MAX_INPUT_IDENTIFIERS)
 const MAX_LIST_GENES = 5000;
@@ -189,6 +230,10 @@ function formatP(value) {
   return value < 0.001 ? value.toExponential(2) : value.toFixed(4);
 }
 
+function shorten(text, n) {
+  return text.length > n ? text.slice(0, n) + '…' : text;
+}
+
 function locusName(locus) {
   return locus.gene_name ? locus.gene_name + ' (' + locus.systematic_name + ')' : locus.systematic_name;
 }
@@ -198,6 +243,8 @@ const GeneListAnalysis = createReactClass({
 
   propTypes: {
     history: PropTypes.any,
+    // /gene-list-analysis2: a tab for every list source
+    allSources: PropTypes.bool,
   },
 
   getInitialState() {
@@ -244,6 +291,9 @@ const GeneListAnalysis = createReactClass({
       termChoice: null,
       termSuggestions: [],
       termDescendants: true,
+      termTopic: '',
+      termTop: '25',
+      goslimTerms: null,
     };
   },
 
@@ -287,16 +337,24 @@ const GeneListAnalysis = createReactClass({
       );
     } else {
       // ?disease=DOID:699, ?regulator=GCN4, ?complex=..., ?pathway=..., ?domain=IPR001611
-      const category = Object.keys(TERM_CATEGORIES).find((key) => params.get(key));
+      const ownTab = (key) => this.props.allSources || key === 'disease';
+      const category = Object.keys(TERM_CATEGORIES).find(
+        (key) => params.get(key) && (ownTab(key) || OTHER_CATEGORIES.indexOf(key) >= 0)
+      );
       if (category) {
         this.setState(
           {
-            listSource: category === 'disease' ? 'disease' : 'category',
-            termCategory: category === 'disease' ? 'regulator' : category,
+            listSource: ownTab(category) ? category : 'category',
+            termCategory: ownTab(category) ? 'regulator' : category,
             termQuery: params.get(category),
             termDescendants: descendants,
+            termTopic: params.get('topic') || '',
+            termTop: params.get('top') || '25',
           },
-          () => this.loadCategoryTermGenes()
+          () => {
+            if (category === 'goslim') this.loadGoslimTerms();
+            this.loadCategoryTermGenes();
+          }
         );
       }
     }
@@ -321,7 +379,7 @@ const GeneListAnalysis = createReactClass({
       this.loadGoTermGenes();
     } else if (this.state.listSource === 'phenotype') {
       this.loadPhenotypeGenes();
-    } else if (this.state.listSource === 'disease' || this.state.listSource === 'category') {
+    } else if (this.isTermSource(this.state.listSource)) {
       this.loadCategoryTermGenes();
     } else {
       this.analyze();
@@ -392,6 +450,27 @@ const GeneListAnalysis = createReactClass({
   setListSource(key) {
     this.setState({ listSource: key, error: null, termQuery: '', termChoice: null, termSuggestions: [] });
     if (key === 'phenotype') this.loadPhenotypeTerms();
+    if (key === 'goslim') this.loadGoslimTerms();
+  },
+
+  listSources() {
+    return this.props.allSources ? ALL_LIST_SOURCES : LIST_SOURCES;
+  },
+
+  // sources that pick a term of an annotation category (TERM_CATEGORIES)
+  isTermSource(key) {
+    return key === 'category' || !!TERM_CATEGORIES[key];
+  },
+
+  loadGoslimTerms() {
+    if (this.state.goslimTerms || this.goslimTermsRequested) return;
+    this.goslimTermsRequested = true;
+    getJson(CATEGORY_TERMS_URL, { category: 'goslim', q: '' })
+      .then((data) => this.setState({ goslimTerms: data.terms }))
+      .catch((err) => {
+        this.goslimTermsRequested = false;
+        this.setState({ error: 'Loading GO slim terms failed: ' + err.message });
+      });
   },
 
   // Put the term's genes in the gene list box (so the list can be edited and
@@ -518,7 +597,7 @@ const GeneListAnalysis = createReactClass({
   },
 
   termCategoryKey() {
-    return this.state.listSource === 'disease' ? 'disease' : this.state.termCategory;
+    return this.state.listSource === 'category' ? this.state.termCategory : this.state.listSource;
   },
 
   setTermCategory(key) {
@@ -561,20 +640,22 @@ const GeneListAnalysis = createReactClass({
       this.setState({ error: 'Please choose a ' + TERM_CATEGORIES[category].label.toLowerCase() + '.' });
       return;
     }
+    let params = { category: category, term: term, include_descendants: this.state.termDescendants ? 1 : 0 };
+    if (category === 'paper' && this.state.termTopic) params.topic = this.state.termTopic;
+    if (category === 'coexpression') params.top = this.state.termTop;
     this.setState({ termPending: true, error: null, termSuggestions: [] });
-    getJson(CATEGORY_TERM_GENES_URL, {
-      category: category,
-      term: term,
-      include_descendants: this.state.termDescendants ? 1 : 0,
-    })
+    getJson(CATEGORY_TERM_GENES_URL, params)
       .then((data) => {
         this.setState({ termChoice: data.term, termQuery: this.termLabel(data.term) });
+        let detail = null;
+        if (data.topic) detail = data.topic + ' only';
+        if (data.top) detail = 'the gene and its top ' + data.top + ' co-expressed genes';
         this.useTermGenes(data, {
           label: this.termLabel(data.term),
           link: data.term.link,
           relation: TERM_CATEGORIES[category].relation,
           scope: data.include_descendants ? ' or its descendant terms' : '',
-          detail: null,
+          detail: detail,
         });
       })
       .catch((err) => this.setState({ termPending: false, error: err.message }));
@@ -982,12 +1063,17 @@ const GeneListAnalysis = createReactClass({
   renderSourceTabs() {
     return (
       <div style={{ marginBottom: '0.75rem' }}>
-        {LIST_SOURCES.map((source) => (
+        {this.props.allSources ? (
+          <div>
+            <b>Make the list from</b>
+          </div>
+        ) : null}
+        {this.listSources().map((source) => (
           <button
             key={source.key}
             type="button"
             className={'button tiny' + (this.state.listSource === source.key ? '' : ' secondary')}
-            style={{ marginRight: '0.25rem', marginBottom: 0 }}
+            style={{ marginRight: '0.25rem', marginBottom: this.props.allSources ? '0.25rem' : 0 }}
             onClick={() => this.setListSource(source.key)}
           >
             {source.label}
@@ -1142,7 +1228,7 @@ const GeneListAnalysis = createReactClass({
             {this.renderSourceTabs()}
             {source === 'go' ? this.renderGoInput() : null}
             {source === 'phenotype' ? this.renderPhenotypeInput() : null}
-            {source === 'disease' || source === 'category' ? this.renderCategoryTermInput() : null}
+            {this.isTermSource(source) ? this.renderCategoryTermInput() : null}
             {source === 'paste' ? this.renderPasteInput() : null}
             {source === 'paste' ? (
               <a onClick={() => this.setState({ genes: EXAMPLE_LIST, sourceNote: null })}>Use example list</a>
@@ -1289,7 +1375,7 @@ const GeneListAnalysis = createReactClass({
     const info = TERM_CATEGORIES[category];
     return (
       <div>
-        {category === 'disease' ? null : (
+        {this.state.listSource !== 'category' ? null : (
           <label>
             <b>Annotation</b>
             <select value={category} onChange={(e) => this.setTermCategory(e.target.value)}>
@@ -1301,17 +1387,21 @@ const GeneListAnalysis = createReactClass({
             </select>
           </label>
         )}
-        <label>
-          <b>{info.label}</b> ({info.help})
-          <input
-            type="text"
-            value={this.state.termQuery}
-            onChange={(e) => this.handleTermQueryChange(e.target.value)}
-            placeholder={info.placeholder}
-            autoComplete="off"
-            style={{ marginBottom: 0 }}
-          />
-        </label>
+        {category === 'goslim' ? (
+          this.renderGoslimSelect(info)
+        ) : (
+          <label>
+            <b>{info.label}</b> ({info.help})
+            <input
+              type="text"
+              value={this.state.termQuery}
+              onChange={(e) => this.handleTermQueryChange(e.target.value)}
+              placeholder={info.placeholder}
+              autoComplete="off"
+              style={{ marginBottom: 0 }}
+            />
+          </label>
+        )}
         {this.state.termSuggestions.length ? (
           <ul
             className="no-bullet"
@@ -1319,10 +1409,16 @@ const GeneListAnalysis = createReactClass({
           >
             {this.state.termSuggestions.map((term) => (
               <li key={term.key} style={{ borderBottom: '1px solid #eee', padding: '0.25rem 0.5rem' }}>
-                <a onClick={() => this.selectTerm(term)}>{term.display_name}</a>{' '}
+                <a onClick={() => this.selectTerm(term)}>{term.display_name}</a>
+                {term.synonym ? ' (' + term.synonym + ')' : ''}{' '}
                 <small>
-                  {term.accession ? term.accession + ' · ' : ''}
-                  {term.gene_count} gene{term.gene_count === 1 ? '' : 's'}
+                  {term.accession ? term.accession : ''}
+                  {term.accession && term.gene_count !== null && term.gene_count !== undefined ? ' · ' : ''}
+                  {term.gene_count !== null && term.gene_count !== undefined
+                    ? term.gene_count + ' gene' + (term.gene_count === 1 ? '' : 's')
+                    : ''}
+                  {term.citation ? ' · ' + shorten(term.citation.replace(term.display_name, '').trim(), 110) : ''}
+                  {term.description ? ' · ' + shorten(term.description, 110) : ''}
                 </small>
               </li>
             ))}
@@ -1339,14 +1435,73 @@ const GeneListAnalysis = createReactClass({
             <label htmlFor="gla_term_descendants">Include genes annotated to descendant (more specific) terms</label>
           </div>
         ) : null}
+        {category === 'paper' ? (
+          <label style={{ marginTop: '0.75rem' }}>
+            Literature topic
+            <select value={this.state.termTopic} onChange={(e) => this.setState({ termTopic: e.target.value })}>
+              <option value="">Any topic</option>
+              {LITERATURE_TOPICS.map((topic) => (
+                <option key={topic} value={topic}>
+                  {topic}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : null}
+        {category === 'coexpression' ? (
+          <label style={{ marginTop: '0.75rem' }}>
+            Co-expressed genes to include
+            <select value={this.state.termTop} onChange={(e) => this.setState({ termTop: e.target.value })}>
+              {COEXPRESSION_TOP.map((top) => (
+                <option key={top} value={top}>
+                  Top {top}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : null}
         <p style={{ marginTop: '0.75rem' }}>
           <small>
             {category === 'disease' ? 'NOT annotations are left out. ' : ''}
             {category === 'regulator' ? 'Targets of transcriptional regulation. ' : ''}
+            {category === 'chemical'
+              ? 'Genes with a mutant phenotype observed with the chemical in the conditions ("normal" results left out). '
+              : ''}
+            {category === 'paper' ? 'Genes the Literature Guide links to the paper. ' : ''}
+            {category === 'coexpression'
+              ? 'Co-expression across SGD expression datasets (as on the gene Expression pages). '
+              : ''}
             The genes are put in the gene list box, so you can edit the list and re-run it from the Paste genes tab.
           </small>
         </p>
       </div>
+    );
+  },
+
+  renderGoslimSelect(info) {
+    const terms = this.state.goslimTerms;
+    const choice = this.state.termChoice;
+    return (
+      <label>
+        <b>{info.label}</b> ({info.help})
+        <select
+          value={choice ? choice.key : ''}
+          disabled={!terms}
+          onChange={(e) => {
+            const term = (terms || []).find((t) => t.key === e.target.value);
+            this.setState({ termChoice: term || null, termQuery: term ? this.termLabel(term) : '' });
+          }}
+        >
+          <option value="">{terms ? 'Choose a GO slim term…' : 'Loading GO slim terms…'}</option>
+          {/* keep a linked term selectable while the list loads */}
+          {!terms && choice ? <option value={choice.key}>{choice.display_name}</option> : null}
+          {(terms || []).map((term) => (
+            <option key={term.key} value={term.key}>
+              {term.display_name} ({term.gene_count})
+            </option>
+          ))}
+        </select>
+      </label>
     );
   },
 
