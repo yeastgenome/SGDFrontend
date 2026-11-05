@@ -2,6 +2,7 @@ import React from 'react';
 import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
 import ExpressionHeatmap from './expression_heatmap.jsx';
+import NetworkGraph from './network_graph.jsx';
 
 const RESOLVE_URL = '/backend/gene_list/resolve';
 const ENRICHMENT_URL = '/backend/gene_list/enrichment';
@@ -44,7 +45,7 @@ const TERM_CATEGORIES = {
   disease: {
     label: 'Human disease',
     help: 'Disease Ontology term name or DOID',
-    placeholder: 'e.g. cancer or DOID:162',
+    placeholder: 'e.g. mitochondrial myopathy or DOID:699',
     relation: 'associated with',
   },
   regulator: {
@@ -223,6 +224,8 @@ const GeneListAnalysis = createReactClass({
       annotations: {},
       previewType: null,
       showExpression: false,
+      showNetwork: false,
+      networkHighlight: null,
       listSource: 'paste',
       sourceNote: null,
       termPending: false,
@@ -283,7 +286,7 @@ const GeneListAnalysis = createReactClass({
         }
       );
     } else {
-      // ?disease=DOID:162, ?regulator=GCN4, ?complex=..., ?pathway=..., ?domain=IPR001611
+      // ?disease=DOID:699, ?regulator=GCN4, ?complex=..., ?pathway=..., ?domain=IPR001611
       const category = Object.keys(TERM_CATEGORIES).find((key) => params.get(key));
       if (category) {
         this.setState(
@@ -340,6 +343,8 @@ const GeneListAnalysis = createReactClass({
       annotations: {},
       previewType: null,
       showExpression: false,
+      showNetwork: false,
+      networkHighlight: null,
     });
     postJson(RESOLVE_URL, { identifiers: this.state.genes })
       .then((resolution) => {
@@ -594,19 +599,32 @@ const GeneListAnalysis = createReactClass({
   },
 
   analyzeTableGenes(result) {
-    const genes = this.tableGenes(result);
+    this.analyzeGenes(this.tableGenes(result), result.label + ' table of the previous list');
+  },
+
+  // Replace the list with these genes (from a table or the network) and analyze them
+  analyzeGenes(genes, label) {
     if (!genes.length) return;
     this.setState(
       {
         listSource: 'paste',
         genes: genes.join('\n'),
-        sourceNote: { count: genes.length, relation: 'in the', label: result.label + ' table of the previous list' },
+        sourceNote: { count: genes.length, relation: 'in the', label: label },
       },
       () => {
         window.scrollTo(0, 0);
         this.analyze();
       }
     );
+  },
+
+  highlightInNetwork(category, result) {
+    this.setState({
+      networkHighlight: {
+        label: result.term.display_name + ' (' + category.label.toLowerCase() + ')',
+        ids: result.genes.map((g) => g.id),
+      },
+    });
   },
 
   toggleCategory(key) {
@@ -932,6 +950,33 @@ const GeneListAnalysis = createReactClass({
       );
     }
     return <ExpressionHeatmap geneIds={ids} />;
+  },
+
+  renderNetworkPanel() {
+    const ids = this.resolvedIds();
+    if (!this.state.resolution || !ids.length) return null;
+    if (!this.state.showNetwork) {
+      return (
+        <div className="panel">
+          <h3>Network</h3>
+          <p>
+            Network of the list genes connected by physical and genetic interactions, transcriptional regulation,
+            co-expression and shared GO annotations, optionally with the genes that connect them.
+          </p>
+          <button className="button small radius" onClick={() => this.setState({ showNetwork: true })}>
+            Show network
+          </button>
+        </div>
+      );
+    }
+    return (
+      <NetworkGraph
+        geneIds={ids}
+        highlight={this.state.networkHighlight}
+        onClearHighlight={() => this.setState({ networkHighlight: null })}
+        onAnalyzeGenes={this.analyzeGenes}
+      />
+    );
   },
 
   renderSourceTabs() {
@@ -1404,7 +1449,20 @@ const GeneListAnalysis = createReactClass({
             <tbody>
               {results.map((r) => (
                 <tr key={r.term.id}>
-                  <td>{r.term.link ? <a href={r.term.link}>{r.term.display_name}</a> : r.term.display_name}</td>
+                  <td>
+                    {r.term.link ? <a href={r.term.link}>{r.term.display_name}</a> : r.term.display_name}
+                    {this.state.showNetwork && !isGo && r.genes.length ? (
+                      <small>
+                        {' '}
+                        <a
+                          title="Highlight these genes in the network"
+                          onClick={() => this.highlightInNetwork(category, r)}
+                        >
+                          (show in network)
+                        </a>
+                      </small>
+                    ) : null}
+                  </td>
                   <td>{isGo ? r.list_count : r.list_count + ' / ' + r.list_total}</td>
                   {isGo ? null : <td>{r.background_count + ' / ' + r.background_total}</td>}
                   {isGo ? null : <td>{r.fold_enrichment}</td>}
@@ -1463,6 +1521,7 @@ const GeneListAnalysis = createReactClass({
         {this.renderResolution()}
         {this.renderAnnotationPanel()}
         {this.renderExpressionPanel()}
+        {this.renderNetworkPanel()}
         {this.renderEnrichment()}
       </div>
     );
