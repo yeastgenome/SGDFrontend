@@ -6,6 +6,10 @@ import ExpressionHeatmap from './expression_heatmap.jsx';
 const RESOLVE_URL = '/backend/gene_list/resolve';
 const ENRICHMENT_URL = '/backend/gene_list/enrichment';
 const ANNOTATIONS_URL = '/backend/gene_list/annotations';
+const GO_TERMS_URL = '/backend/gene_list/go_terms';
+const GO_TERM_GENES_URL = '/backend/gene_list/go_term_genes';
+const PHENOTYPE_TERMS_URL = '/backend/gene_list/phenotype_terms';
+const PHENOTYPE_GENES_URL = '/backend/gene_list/phenotype_genes';
 // set by the "Analyze" gene list page before navigating here
 const LOCAL_STORAGE_KEY = 'geneListAnalysis';
 
@@ -22,6 +26,19 @@ const CATEGORIES = [
 ];
 
 const FDR_OPTIONS = ['0.01', '0.05', '0.1', '0.25'];
+
+// where the gene list comes from
+const LIST_SOURCES = [
+  { key: 'paste', label: 'Paste genes' },
+  { key: 'go', label: 'From a GO term' },
+  { key: 'phenotype', label: 'From a phenotype' },
+];
+
+const GO_ANNOTATION_TYPES = ['manually curated', 'high-throughput', 'computational'];
+const GOID_PATTERN = /^GO:?\d{7}$/i;
+
+// phenotype qualifier choices: '' = any except "normal" (no phenotype observed)
+const ANY_QUALIFIER = '__any__';
 
 const ANNOTATION_TYPES = [
   { key: 'gene_info', label: 'Gene information', help: 'names, feature type, coordinates, description' },
@@ -80,6 +97,25 @@ function postJson(url, body) {
   });
 }
 
+function getJson(url, params) {
+  const query = Object.keys(params || {})
+    .map((key) => {
+      const values = Array.isArray(params[key]) ? params[key] : [params[key]];
+      return values.map((v) => encodeURIComponent(key) + '=' + encodeURIComponent(v)).join('&');
+    })
+    .filter((part) => part)
+    .join('&');
+  return fetch(query ? url + '?' + query : url).then((response) => {
+    if (!response.ok) {
+      throw new Error('Server returned ' + response.status);
+    }
+    return response.json().then((data) => {
+      if (data && data.error) throw new Error(data.error);
+      return data;
+    });
+  });
+}
+
 function downloadTsv(filename, header, rows) {
   const clean = (v) => (v === null || v === undefined ? '' : String(v).replace(/[\t\n]/g, ' '));
   const text = [header].concat(rows).map((r) => r.map(clean).join('\t')).join('\n') + '\n';
@@ -132,7 +168,24 @@ const GeneListAnalysis = createReactClass({
       annotations: {},
       previewType: null,
       showExpression: false,
+      listSource: 'paste',
+      sourceNote: null,
+      termPending: false,
+      goQuery: '',
+      goTerm: null,
+      goSuggestions: [],
+      goDescendants: true,
+      goTypes: { 'manually curated': true, 'high-throughput': true, computational: true },
+      phenotypeTerms: null,
+      phenotypeQualifiers: [],
+      phenotypeTerm: '',
+      phenotypeDescendants: true,
+      phenotypeQualifier: '',
     };
+  },
+
+  componentWillUnmount() {
+    clearTimeout(this.goSuggestTimer);
   },
 
   componentDidMount() {
@@ -145,6 +198,29 @@ const GeneListAnalysis = createReactClass({
     }
     if (stored) {
       this.setState({ genes: stored.trim().split(/\s+/).join('\n') });
+      return;
+    }
+    // Links such as /gene-list-analysis?go=GO:0005991 or ?phenotype=APO:0000199
+    // (optional &descendants=0, &qualifier=decreased) build and analyze the list
+    const params = new URLSearchParams(window.location.search);
+    const descendants = params.get('descendants') !== '0';
+    if (params.get('go')) {
+      this.setState({ listSource: 'go', goQuery: params.get('go'), goDescendants: descendants }, () =>
+        this.loadGoTermGenes()
+      );
+    } else if (params.get('phenotype')) {
+      this.setState(
+        {
+          listSource: 'phenotype',
+          phenotypeTerm: params.get('phenotype'),
+          phenotypeDescendants: descendants,
+          phenotypeQualifier: params.get('qualifier') || '',
+        },
+        () => {
+          this.loadPhenotypeTerms();
+          this.loadPhenotypeGenes();
+        }
+      );
     }
   },
 
@@ -163,6 +239,16 @@ const GeneListAnalysis = createReactClass({
 
   handleSubmit(e) {
     e.preventDefault();
+    if (this.state.listSource === 'go') {
+      this.loadGoTermGenes();
+    } else if (this.state.listSource === 'phenotype') {
+      this.loadPhenotypeGenes();
+    } else {
+      this.analyze();
+    }
+  },
+
+  analyze() {
     if (!this.state.genes.trim()) {
       this.setState({ error: 'Please enter at least one gene.' });
       return;
@@ -216,7 +302,137 @@ const GeneListAnalysis = createReactClass({
 
   handleReset(e) {
     e.preventDefault();
-    this.setState(this.getInitialState());
+    const phenotypeTerms = this.state.phenotypeTerms;
+    const phenotypeQualifiers = this.state.phenotypeQualifiers;
+    this.setState(Object.assign(this.getInitialState(), { phenotypeTerms, phenotypeQualifiers }));
+  },
+
+  setListSource(key) {
+    this.setState({ listSource: key, error: null });
+    if (key === 'phenotype') this.loadPhenotypeTerms();
+  },
+
+  // Put the term's genes in the gene list box (so the list can be edited and
+  // re-run from the "Paste genes" tab) and analyze them
+  useTermGenes(data, note) {
+    if (!data.genes.length) {
+      this.setState({ termPending: false, error: 'No genes are annotated to ' + note.label + note.scope + '.' });
+      return;
+    }
+    this.setState(
+      {
+        termPending: false,
+        genes: data.genes.map((g) => g.systematic_name).join('\n'),
+        sourceNote: Object.assign({ count: data.genes.length, termCount: data.term_count }, note),
+      },
+      () => this.analyze()
+    );
+  },
+
+  loadGoTermGenes() {
+    const term = this.state.goTerm ? this.state.goTerm.id : this.state.goQuery.trim();
+    const types = GO_ANNOTATION_TYPES.filter((t) => this.state.goTypes[t]);
+    if (!term) {
+      this.setState({ error: 'Please choose a GO term.' });
+      return;
+    }
+    if (!types.length) {
+      this.setState({ error: 'Please select at least one annotation type.' });
+      return;
+    }
+    this.setState({ termPending: true, error: null, goSuggestions: [] });
+    getJson(GO_TERM_GENES_URL, {
+      term: term,
+      include_descendants: this.state.goDescendants ? 1 : 0,
+      annotation_type: types,
+    })
+      .then((data) => {
+        this.setState({ goTerm: data.term, goQuery: data.term.display_name + ' (' + data.term.id + ')' });
+        this.useTermGenes(data, {
+          label: data.term.display_name + ' (' + data.term.id + ')',
+          link: data.term.link,
+          relation: 'annotated to',
+          scope: data.include_descendants ? ' or its descendant terms' : '',
+          detail:
+            data.annotation_types.length < GO_ANNOTATION_TYPES.length
+              ? data.annotation_types.join(', ') + ' annotations'
+              : null,
+        });
+      })
+      .catch((err) => this.setState({ termPending: false, error: err.message }));
+  },
+
+  handleGoQueryChange(value) {
+    this.setState({ goQuery: value, goTerm: null });
+    clearTimeout(this.goSuggestTimer);
+    const query = value.trim();
+    if (query.length < 3 || GOID_PATTERN.test(query)) {
+      this.setState({ goSuggestions: [] });
+      return;
+    }
+    this.goSuggestTimer = setTimeout(() => {
+      getJson(GO_TERMS_URL, { q: query })
+        .then((data) => {
+          // ignore answers to an older query
+          if (this.state.goQuery.trim() === query && !this.state.goTerm) {
+            this.setState({ goSuggestions: data.terms });
+          }
+        })
+        .catch(() => this.setState({ goSuggestions: [] }));
+    }, 300);
+  },
+
+  selectGoTerm(term) {
+    this.setState({ goTerm: term, goQuery: term.display_name + ' (' + term.id + ')', goSuggestions: [] });
+  },
+
+  toggleGoType(type) {
+    let types = Object.assign({}, this.state.goTypes);
+    types[type] = !types[type];
+    this.setState({ goTypes: types });
+  },
+
+  loadPhenotypeTerms() {
+    if (this.state.phenotypeTerms || this.phenotypeTermsRequested) return;
+    this.phenotypeTermsRequested = true;
+    getJson(PHENOTYPE_TERMS_URL)
+      .then((data) => this.setState({ phenotypeTerms: data.terms, phenotypeQualifiers: data.qualifiers }))
+      .catch((err) => {
+        this.phenotypeTermsRequested = false;
+        this.setState({ error: 'Loading phenotype terms failed: ' + err.message });
+      });
+  },
+
+  loadPhenotypeGenes() {
+    const term = this.state.phenotypeTerm;
+    if (!term) {
+      this.setState({ error: 'Please choose a phenotype.' });
+      return;
+    }
+    const qualifier = this.state.phenotypeQualifier;
+    let params = { term: term, include_descendants: this.state.phenotypeDescendants ? 1 : 0 };
+    if (qualifier === ANY_QUALIFIER) {
+      params.include_normal = 1;
+    } else if (qualifier) {
+      params.qualifier = qualifier;
+    }
+    this.setState({ termPending: true, error: null });
+    getJson(PHENOTYPE_GENES_URL, params)
+      .then((data) => {
+        this.setState({ phenotypeTerm: data.term.id });
+        this.useTermGenes(data, {
+          label: data.term.display_name + ' (' + data.term.id + ')',
+          link: data.term.link,
+          relation: 'with the phenotype',
+          scope: data.include_descendants ? ' or its descendant terms' : '',
+          detail: data.qualifier
+            ? 'qualifier "' + data.qualifier + '"'
+            : data.include_normal
+            ? 'including "normal" results'
+            : 'excluding "normal" results',
+        });
+      })
+      .catch((err) => this.setState({ termPending: false, error: err.message }));
   },
 
   toggleCategory(key) {
@@ -505,23 +721,174 @@ const GeneListAnalysis = createReactClass({
     return <ExpressionHeatmap geneIds={ids} />;
   },
 
+  renderSourceTabs() {
+    return (
+      <div style={{ marginBottom: '0.75rem' }}>
+        {LIST_SOURCES.map((source) => (
+          <button
+            key={source.key}
+            type="button"
+            className={'button tiny' + (this.state.listSource === source.key ? '' : ' secondary')}
+            style={{ marginRight: '0.25rem', marginBottom: 0 }}
+            onClick={() => this.setListSource(source.key)}
+          >
+            {source.label}
+          </button>
+        ))}
+      </div>
+    );
+  },
+
+  renderPasteInput() {
+    return (
+      <label>
+        <b>Gene list</b> (one per line, or separated by spaces/commas). Accepts gene and systematic names, aliases,
+        SGDIDs, UniProtKB, NCBI Gene and RefSeq IDs.
+        <textarea
+          rows="12"
+          value={this.state.genes}
+          onChange={(e) => this.setState({ genes: e.target.value, sourceNote: null })}
+          placeholder="e.g. ACT1, YFL039C, S000001855, P60010"
+        />
+      </label>
+    );
+  },
+
+  renderGoInput() {
+    return (
+      <div>
+        <label>
+          <b>GO term</b> (term name or GO ID)
+          <input
+            type="text"
+            value={this.state.goQuery}
+            onChange={(e) => this.handleGoQueryChange(e.target.value)}
+            placeholder="e.g. trehalose metabolic process or GO:0005991"
+            autoComplete="off"
+            style={{ marginBottom: 0 }}
+          />
+        </label>
+        {this.state.goSuggestions.length ? (
+          <ul
+            className="no-bullet"
+            style={{ border: '1px solid #ccc', margin: 0, maxHeight: '18rem', overflowY: 'auto', background: '#fff' }}
+          >
+            {this.state.goSuggestions.map((term) => (
+              <li key={term.id} style={{ borderBottom: '1px solid #eee', padding: '0.25rem 0.5rem' }}>
+                <a onClick={() => this.selectGoTerm(term)}>{term.display_name}</a>{' '}
+                <small>
+                  {term.id} · {term.namespace}
+                </small>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+        <div style={{ marginTop: '0.75rem' }}>
+          <input
+            type="checkbox"
+            id="gla_go_descendants"
+            checked={this.state.goDescendants}
+            onChange={() => this.setState({ goDescendants: !this.state.goDescendants })}
+          />
+          <label htmlFor="gla_go_descendants">Include genes annotated to descendant (more specific) terms</label>
+        </div>
+        <div>
+          Annotation types:{' '}
+          {GO_ANNOTATION_TYPES.map((type) => (
+            <span key={type}>
+              <input
+                type="checkbox"
+                id={'gla_go_' + type}
+                checked={this.state.goTypes[type]}
+                onChange={() => this.toggleGoType(type)}
+              />
+              <label htmlFor={'gla_go_' + type}>{type}</label>
+            </span>
+          ))}
+        </div>
+        <p>
+          <small>
+            NOT annotations are left out. The genes are put in the gene list box, so you can edit the list and re-run it
+            from the Paste genes tab.
+          </small>
+        </p>
+      </div>
+    );
+  },
+
+  renderPhenotypeInput() {
+    const terms = this.state.phenotypeTerms;
+    return (
+      <div>
+        <label>
+          <b>Phenotype</b> (observable; number of genes in parentheses, including more specific terms)
+          <select
+            value={this.state.phenotypeTerm}
+            onChange={(e) => this.setState({ phenotypeTerm: e.target.value })}
+            disabled={!terms}
+          >
+            <option value="">{terms ? 'Choose a phenotype…' : 'Loading phenotype terms…'}</option>
+            {/* keep a linked term selectable while the list loads */}
+            {!terms && this.state.phenotypeTerm ? (
+              <option value={this.state.phenotypeTerm}>{this.state.phenotypeTerm}</option>
+            ) : null}
+            {/* a term with two parents is listed under both */}
+            {(terms || []).map((term, i) => (
+              <option key={term.id + '_' + i} value={term.id}>
+                {'\u00a0\u00a0\u00a0'.repeat(term.depth)}
+                {term.display_name} ({term.gene_count})
+              </option>
+            ))}
+          </select>
+        </label>
+        <div>
+          <input
+            type="checkbox"
+            id="gla_pheno_descendants"
+            checked={this.state.phenotypeDescendants}
+            onChange={() => this.setState({ phenotypeDescendants: !this.state.phenotypeDescendants })}
+          />
+          <label htmlFor="gla_pheno_descendants">Include genes annotated to descendant (more specific) terms</label>
+        </div>
+        <label>
+          Qualifier
+          <select
+            value={this.state.phenotypeQualifier}
+            onChange={(e) => this.setState({ phenotypeQualifier: e.target.value })}
+          >
+            <option value="">Any except normal (no phenotype observed)</option>
+            <option value={ANY_QUALIFIER}>Any, including normal</option>
+            {this.state.phenotypeQualifiers.map((q) => (
+              <option key={q} value={q}>
+                {q}
+              </option>
+            ))}
+          </select>
+        </label>
+        <p>
+          <small>
+            The genes are put in the gene list box, so you can edit the list and re-run it from the Paste genes tab.
+          </small>
+        </p>
+      </div>
+    );
+  },
+
   renderForm() {
+    const source = this.state.listSource;
+    const pending = this.state.isPending || this.state.termPending;
     return (
       <form onSubmit={this.handleSubmit}>
         <div className="row">
           <div className="large-6 columns">
-            <label>
-              <b>Gene list</b> (one per line, or separated by spaces/commas). Accepts gene and systematic names,
-              aliases, SGDIDs, UniProtKB, NCBI Gene and RefSeq IDs.
-              <textarea
-                rows="12"
-                value={this.state.genes}
-                onChange={(e) => this.setState({ genes: e.target.value })}
-                placeholder="e.g. ACT1, YFL039C, S000001855, P60010"
-              />
-            </label>
-            <a onClick={() => this.setState({ genes: EXAMPLE_LIST })}>Use example list</a>
-            {' | '}
+            {this.renderSourceTabs()}
+            {source === 'go' ? this.renderGoInput() : null}
+            {source === 'phenotype' ? this.renderPhenotypeInput() : null}
+            {source === 'paste' ? this.renderPasteInput() : null}
+            {source === 'paste' ? (
+              <a onClick={() => this.setState({ genes: EXAMPLE_LIST, sourceNote: null })}>Use example list</a>
+            ) : null}
+            {source === 'paste' ? ' | ' : null}
             <a onClick={() => this.setState({ showBackground: !this.state.showBackground })}>
               {this.state.showBackground ? 'Use default background' : 'Use a custom background list'}
             </a>
@@ -569,8 +936,8 @@ const GeneListAnalysis = createReactClass({
         </div>
         <div className="row">
           <div className="large-12 columns">
-            <button type="submit" className="button small" disabled={this.state.isPending}>
-              {this.state.isPending ? 'Running…' : 'Analyze'}
+            <button type="submit" className="button small" disabled={pending}>
+              {pending ? 'Running…' : source === 'paste' ? 'Analyze' : 'Get genes and analyze'}
             </button>{' '}
             <button type="button" className="button small secondary" onClick={this.handleReset}>
               Reset
@@ -595,6 +962,7 @@ const GeneListAnalysis = createReactClass({
     return (
       <div className="panel">
         <h3>Gene identifiers</h3>
+        {this.renderSourceNote()}
         <p>
           {s.total} entered: <span className="label success">{s.matched} matched</span>{' '}
           <span className="label warning">{s.ambiguous} ambiguous</span>{' '}
@@ -641,6 +1009,18 @@ const GeneListAnalysis = createReactClass({
           </p>
         ) : null}
       </div>
+    );
+  },
+
+  renderSourceNote() {
+    const note = this.state.sourceNote;
+    if (!note) return null;
+    return (
+      <p>
+        List built from the {note.count} genes {note.relation} <a href={note.link}>{note.label}</a>
+        {note.termCount > 1 ? ' or its ' + (note.termCount - 1) + ' descendant terms' : ''}
+        {note.detail ? ' (' + note.detail + ')' : ''}.
+      </p>
     );
   },
 
@@ -789,7 +1169,7 @@ const GeneListAnalysis = createReactClass({
         </p>
         {this.renderForm()}
         {this.state.error ? <div className="alert-box alert">{this.state.error}</div> : null}
-        {this.state.isPending ? <div className="sgd-loader" /> : null}
+        {this.state.isPending || this.state.termPending ? <div className="sgd-loader" /> : null}
         {this.renderResolution()}
         {this.renderAnnotationPanel()}
         {this.renderExpressionPanel()}
