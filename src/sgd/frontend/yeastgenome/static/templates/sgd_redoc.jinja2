@@ -810,7 +810,9 @@
         { method: 'GET', path: '/gene_list/go_terms', description: 'GO term suggestions for building a gene list: term names containing q (at least 3 characters) or a GO ID; only terms with annotations', example: '/gene_list/go_terms?q=trehalose' },
         { method: 'GET', path: '/gene_list/go_term_genes', description: 'Genes annotated to a GO term (GO ID or exact name) and, by default, its descendant terms; NOT annotations left out. Options: include_descendants=0, annotation_type (repeat: manually curated, high-throughput, computational)', example: '/gene_list/go_term_genes?term=GO:0005991' },
         { method: 'GET', path: '/gene_list/phenotype_terms', description: 'Phenotype (observable) tree with the number of genes per term, and the qualifiers in use', example: '/gene_list/phenotype_terms' },
-        { method: 'GET', path: '/gene_list/phenotype_genes', description: 'Genes with a phenotype (APO ID or exact observable name) and, by default, its descendants; "normal" results left out. Options: include_descendants=0, qualifier, include_normal=1', example: '/gene_list/phenotype_genes?term=APO:0000199&qualifier=decreased' }
+        { method: 'GET', path: '/gene_list/phenotype_genes', description: 'Genes with a phenotype (APO ID or exact observable name) and, by default, its descendants; "normal" results left out. Options: include_descendants=0, qualifier, include_normal=1', example: '/gene_list/phenotype_genes?term=APO:0000199&qualifier=decreased' },
+        { method: 'GET', path: '/gene_list/category_terms', description: 'Term suggestions for a list category (category=disease, regulator, complex, pathway or domain) with gene counts', example: '/gene_list/category_terms?category=disease&q=cancer' },
+        { method: 'GET', path: '/gene_list/category_term_genes', description: 'Genes of one disease (by default with descendants; include_descendants=0), regulator (targets), complex (subunits), pathway or InterPro domain', example: '/gene_list/category_term_genes?category=regulator&term=GCN4' }
       ]
     },
     {

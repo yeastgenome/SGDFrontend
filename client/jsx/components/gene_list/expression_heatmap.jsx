@@ -8,10 +8,10 @@ const MIN_CELL_WIDTH = 10;
 const MAX_CELL_WIDTH = 28;
 const CELL_HEIGHT = 16;
 const MIN_GENE_COLUMN_WIDTH = 50;
-const LABEL_HEIGHT = 150;
+const LABEL_HEIGHT = 185;
 const LABEL_LENGTH = 34;
-const DATASET_HEADER_HEIGHT = 18;
-const CATEGORY_HEIGHT = 12;
+const DATASET_HEADER_HEIGHT = 22;
+const CATEGORY_HEIGHT = 14;
 const CLAMP = 2; // log2 ratio at which colors saturate (4-fold)
 
 const UP = [215, 48, 39];
@@ -317,7 +317,7 @@ const ExpressionHeatmap = createReactClass({
       overflow: 'hidden',
       whiteSpace: 'nowrap',
       textOverflow: 'ellipsis',
-      fontSize: '0.8rem',
+      fontSize: '0.85rem',
       lineHeight: CELL_HEIGHT + 'px',
       paddingRight: 4,
       boxSizing: 'border-box',
@@ -332,7 +332,7 @@ const ExpressionHeatmap = createReactClass({
       <div style={{ overflow: 'auto', maxHeight: '75vh', border: '1px solid #ddd' }} onMouseLeave={() => this.setState({ hover: null })}>
         <div style={{ display: 'inline-block' }}>
           <div style={{ display: 'flex', height: DATASET_HEADER_HEIGHT }}>
-            <div style={Object.assign({}, stickyName, { height: DATASET_HEADER_HEIGHT, fontSize: '0.7rem', color: '#666', textAlign: 'right' })}>
+            <div style={Object.assign({}, stickyName, { height: DATASET_HEADER_HEIGHT, fontSize: '0.8rem', color: '#666', textAlign: 'right' })}>
               Dataset
             </div>
             {blocks.map((b, k) => {
@@ -342,10 +342,10 @@ const ExpressionHeatmap = createReactClass({
                 <div key={k}
                   onMouseEnter={() => this.setState({ hover: { dataset: b.dataset, number: b.number } })}
                   style={{ width: width, flex: '0 0 ' + width + 'px', height: DATASET_HEADER_HEIGHT, boxSizing: 'border-box',
-                    borderLeft: k ? SEPARATOR : 'none', background: '#eef2f7', fontSize: '0.7rem', lineHeight: DATASET_HEADER_HEIGHT + 'px',
+                    borderLeft: k ? SEPARATOR : 'none', background: '#eef2f7', fontSize: '0.8rem', lineHeight: DATASET_HEADER_HEIGHT + 'px',
                     padding: '0 2px', overflow: 'hidden', whiteSpace: 'nowrap', fontWeight: 'bold' }}>
                   {b.number}
-                  <span style={{ fontWeight: 'normal' }}>{' ' + truncate(name, Math.floor((width - 16) / 5.5))}</span>
+                  <span style={{ fontWeight: 'normal' }}>{' ' + truncate(name, Math.floor((width - 18) / 6.5))}</span>
                 </div>
               );
             })}
@@ -359,14 +359,14 @@ const ExpressionHeatmap = createReactClass({
                     header always reports the column underneath (full label in the info bar) */}
                 <span
                   style={{ position: 'absolute', left: Math.max(0, size.cell / 2 - 5), bottom: 2, transform: 'rotate(-60deg)',
-                    transformOrigin: 'left bottom', whiteSpace: 'nowrap', fontSize: '0.65rem', pointerEvents: 'none' }}>
+                    transformOrigin: 'left bottom', whiteSpace: 'nowrap', fontSize: '0.75rem', pointerEvents: 'none' }}>
                   {truncate(data.columns[j].short_label, LABEL_LENGTH)}
                 </span>
               </div>
             ))}
           </div>
           <div style={{ display: 'flex' }}>
-            <div style={Object.assign({}, stickyName, { fontSize: '0.65rem', color: '#666', textAlign: 'right',
+            <div style={Object.assign({}, stickyName, { fontSize: '0.75rem', color: '#666', textAlign: 'right',
               height: CATEGORY_HEIGHT, lineHeight: CATEGORY_HEIGHT + 'px' })}>
               Category
             </div>

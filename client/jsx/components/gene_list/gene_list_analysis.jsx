@@ -10,6 +10,8 @@ const GO_TERMS_URL = '/backend/gene_list/go_terms';
 const GO_TERM_GENES_URL = '/backend/gene_list/go_term_genes';
 const PHENOTYPE_TERMS_URL = '/backend/gene_list/phenotype_terms';
 const PHENOTYPE_GENES_URL = '/backend/gene_list/phenotype_genes';
+const CATEGORY_TERMS_URL = '/backend/gene_list/category_terms';
+const CATEGORY_TERM_GENES_URL = '/backend/gene_list/category_term_genes';
 // set by the "Analyze" gene list page before navigating here
 const LOCAL_STORAGE_KEY = 'geneListAnalysis';
 
@@ -32,6 +34,59 @@ const LIST_SOURCES = [
   { key: 'paste', label: 'Paste genes' },
   { key: 'go', label: 'From a GO term' },
   { key: 'phenotype', label: 'From a phenotype' },
+  { key: 'disease', label: 'From a human disease' },
+  { key: 'category', label: 'From a regulator, complex, pathway or domain' },
+];
+
+// the other annotation categories a list can be built from (the "disease"
+// source, and the "category" source with a choice of the rest)
+const TERM_CATEGORIES = {
+  disease: {
+    label: 'Human disease',
+    help: 'Disease Ontology term name or DOID',
+    placeholder: 'e.g. cancer or DOID:162',
+    relation: 'associated with',
+  },
+  regulator: {
+    label: 'Transcriptional regulator (its targets)',
+    help: 'regulator gene name',
+    placeholder: 'e.g. GCN4',
+    relation: 'regulated by',
+  },
+  complex: {
+    label: 'Macromolecular complex (its subunits)',
+    help: 'complex name',
+    placeholder: 'e.g. 26S proteasome',
+    relation: 'in the complex',
+  },
+  pathway: {
+    label: 'Pathway (YeastPathways)',
+    help: 'pathway name',
+    placeholder: 'e.g. trehalose biosynthesis',
+    relation: 'in the pathway',
+  },
+  domain: {
+    label: 'Protein domain (InterPro)',
+    help: 'InterPro entry name or ID',
+    placeholder: 'e.g. Leucine-rich repeat or IPR001611',
+    relation: 'with the protein domain',
+  },
+};
+const OTHER_CATEGORIES = ['regulator', 'complex', 'pathway', 'domain'];
+// the backend's limit on list size (MAX_INPUT_IDENTIFIERS)
+const MAX_LIST_GENES = 5000;
+
+// columns of the annotation tables that hold yeast genes (the genes the
+// "Analyze" button of a preview uses)
+const GENE_COLUMNS = [
+  'Systematic Name',
+  'Feature Name',
+  'Feature Name (Bait)',
+  'Feature Name (Hit)',
+  'Regulator Systematic Name',
+  'Target Systematic Name',
+  'ORF',
+  'Feature',
 ];
 
 const GO_ANNOTATION_TYPES = ['manually curated', 'high-throughput', 'computational'];
@@ -181,11 +236,17 @@ const GeneListAnalysis = createReactClass({
       phenotypeTerm: '',
       phenotypeDescendants: true,
       phenotypeQualifier: '',
+      termCategory: 'regulator',
+      termQuery: '',
+      termChoice: null,
+      termSuggestions: [],
+      termDescendants: true,
     };
   },
 
   componentWillUnmount() {
     clearTimeout(this.goSuggestTimer);
+    clearTimeout(this.termSuggestTimer);
   },
 
   componentDidMount() {
@@ -221,6 +282,20 @@ const GeneListAnalysis = createReactClass({
           this.loadPhenotypeGenes();
         }
       );
+    } else {
+      // ?disease=DOID:162, ?regulator=GCN4, ?complex=..., ?pathway=..., ?domain=IPR001611
+      const category = Object.keys(TERM_CATEGORIES).find((key) => params.get(key));
+      if (category) {
+        this.setState(
+          {
+            listSource: category === 'disease' ? 'disease' : 'category',
+            termCategory: category === 'disease' ? 'regulator' : category,
+            termQuery: params.get(category),
+            termDescendants: descendants,
+          },
+          () => this.loadCategoryTermGenes()
+        );
+      }
     }
   },
 
@@ -243,6 +318,8 @@ const GeneListAnalysis = createReactClass({
       this.loadGoTermGenes();
     } else if (this.state.listSource === 'phenotype') {
       this.loadPhenotypeGenes();
+    } else if (this.state.listSource === 'disease' || this.state.listSource === 'category') {
+      this.loadCategoryTermGenes();
     } else {
       this.analyze();
     }
@@ -308,7 +385,7 @@ const GeneListAnalysis = createReactClass({
   },
 
   setListSource(key) {
-    this.setState({ listSource: key, error: null });
+    this.setState({ listSource: key, error: null, termQuery: '', termChoice: null, termSuggestions: [] });
     if (key === 'phenotype') this.loadPhenotypeTerms();
   },
 
@@ -433,6 +510,103 @@ const GeneListAnalysis = createReactClass({
         });
       })
       .catch((err) => this.setState({ termPending: false, error: err.message }));
+  },
+
+  termCategoryKey() {
+    return this.state.listSource === 'disease' ? 'disease' : this.state.termCategory;
+  },
+
+  setTermCategory(key) {
+    this.setState({ termCategory: key, termQuery: '', termChoice: null, termSuggestions: [], error: null });
+  },
+
+  termLabel(term) {
+    return term.display_name + (term.accession ? ' (' + term.accession + ')' : '');
+  },
+
+  handleTermQueryChange(value) {
+    this.setState({ termQuery: value, termChoice: null });
+    clearTimeout(this.termSuggestTimer);
+    const query = value.trim();
+    if (query.length < 2) {
+      this.setState({ termSuggestions: [] });
+      return;
+    }
+    const category = this.termCategoryKey();
+    this.termSuggestTimer = setTimeout(() => {
+      getJson(CATEGORY_TERMS_URL, { category: category, q: query })
+        .then((data) => {
+          // ignore answers to an older query or category
+          if (this.state.termQuery.trim() === query && !this.state.termChoice && this.termCategoryKey() === category) {
+            this.setState({ termSuggestions: data.terms });
+          }
+        })
+        .catch(() => this.setState({ termSuggestions: [] }));
+    }, 300);
+  },
+
+  selectTerm(term) {
+    this.setState({ termChoice: term, termQuery: this.termLabel(term), termSuggestions: [] });
+  },
+
+  loadCategoryTermGenes() {
+    const category = this.termCategoryKey();
+    const term = this.state.termChoice ? this.state.termChoice.key : this.state.termQuery.trim();
+    if (!term) {
+      this.setState({ error: 'Please choose a ' + TERM_CATEGORIES[category].label.toLowerCase() + '.' });
+      return;
+    }
+    this.setState({ termPending: true, error: null, termSuggestions: [] });
+    getJson(CATEGORY_TERM_GENES_URL, {
+      category: category,
+      term: term,
+      include_descendants: this.state.termDescendants ? 1 : 0,
+    })
+      .then((data) => {
+        this.setState({ termChoice: data.term, termQuery: this.termLabel(data.term) });
+        this.useTermGenes(data, {
+          label: this.termLabel(data.term),
+          link: data.term.link,
+          relation: TERM_CATEGORIES[category].relation,
+          scope: data.include_descendants ? ' or its descendant terms' : '',
+          detail: null,
+        });
+      })
+      .catch((err) => this.setState({ termPending: false, error: err.message }));
+  },
+
+  // Analyze the yeast genes in an annotation table (e.g. the interaction
+  // partners or the regulators/targets of the list genes) as a new list
+  tableGenes(result) {
+    const columns = result.columns.map((c, i) => (GENE_COLUMNS.indexOf(c) >= 0 ? i : -1)).filter((i) => i >= 0);
+    let genes = [];
+    let seen = {};
+    result.rows.forEach((row) => {
+      columns.forEach((i) => {
+        const gene = row[i] ? String(row[i]).trim() : '';
+        if (gene && !seen[gene]) {
+          seen[gene] = true;
+          genes.push(gene);
+        }
+      });
+    });
+    return genes;
+  },
+
+  analyzeTableGenes(result) {
+    const genes = this.tableGenes(result);
+    if (!genes.length) return;
+    this.setState(
+      {
+        listSource: 'paste',
+        genes: genes.join('\n'),
+        sourceNote: { count: genes.length, relation: 'in the', label: result.label + ' table of the previous list' },
+      },
+      () => {
+        window.scrollTo(0, 0);
+        this.analyze();
+      }
+    );
   },
 
   toggleCategory(key) {
@@ -610,14 +784,25 @@ const GeneListAnalysis = createReactClass({
             </label>
           </div>
         </div>
-        <button className="button small" onClick={this.fetchAnnotations} disabled={anyPending}>
-          {anyPending ? 'Retrieving…' : 'Get annotations'}
-        </button>{' '}
-        {anyReady ? (
-          <button className="button small secondary" onClick={this.downloadAllAnnotations}>
-            Download all (TSV)
+        <div style={{ marginBottom: '1rem' }}>
+          <button
+            className="button small radius"
+            style={{ marginBottom: 0, marginRight: '0.5rem' }}
+            onClick={this.fetchAnnotations}
+            disabled={anyPending}
+          >
+            {anyPending ? 'Retrieving…' : 'Get annotations'}
           </button>
-        ) : null}
+          {anyReady ? (
+            <button
+              className="button small radius secondary"
+              style={{ marginBottom: 0, border: '1px solid #bbb' }}
+              onClick={this.downloadAllAnnotations}
+            >
+              Download all (TSV)
+            </button>
+          ) : null}
+        </div>
         {requested.length ? (
           <table className="table" style={{ width: '100%' }}>
             <thead>
@@ -674,11 +859,39 @@ const GeneListAnalysis = createReactClass({
     const result = this.state.previewType && this.state.annotations[this.state.previewType];
     if (!result || !result.rows) return null;
     const rows = result.rows.slice(0, 20);
+    const genes = this.tableGenes(result);
     return (
       <div style={{ overflowX: 'auto' }}>
         <h4>
           {result.label} <small>first {rows.length} of {result.row_count.toLocaleString()} rows</small>
         </h4>
+        <div style={{ marginBottom: '0.75rem' }}>
+          <button
+            className="button tiny radius"
+            style={{ marginBottom: 0, marginRight: '0.5rem' }}
+            onClick={() => this.downloadAnnotation(result)}
+          >
+            Download all {result.row_count.toLocaleString()} rows (TSV)
+          </button>
+          {genes.length ? (
+            <button
+              className="button tiny radius secondary"
+              style={{ marginBottom: 0, border: '1px solid #bbb' }}
+              title={
+                genes.length > MAX_LIST_GENES
+                  ? 'The gene list tools take at most ' + MAX_LIST_GENES.toLocaleString() + ' genes'
+                  : 'Replace the gene list with the yeast genes in this table and analyze them'
+              }
+              disabled={genes.length > MAX_LIST_GENES}
+              onClick={() => this.analyzeTableGenes(result)}
+            >
+              Analyze the {genes.length.toLocaleString()} gene{genes.length === 1 ? '' : 's'} in this table
+            </button>
+          ) : null}
+          {genes.length > MAX_LIST_GENES ? (
+            <small> (too many to analyze; at most {MAX_LIST_GENES.toLocaleString()} genes)</small>
+          ) : null}
+        </div>
         <table className="table">
           <thead>
             <tr>
@@ -884,6 +1097,7 @@ const GeneListAnalysis = createReactClass({
             {this.renderSourceTabs()}
             {source === 'go' ? this.renderGoInput() : null}
             {source === 'phenotype' ? this.renderPhenotypeInput() : null}
+            {source === 'disease' || source === 'category' ? this.renderCategoryTermInput() : null}
             {source === 'paste' ? this.renderPasteInput() : null}
             {source === 'paste' ? (
               <a onClick={() => this.setState({ genes: EXAMPLE_LIST, sourceNote: null })}>Use example list</a>
@@ -935,11 +1149,24 @@ const GeneListAnalysis = createReactClass({
           </div>
         </div>
         <div className="row">
-          <div className="large-12 columns">
-            <button type="submit" className="button small" disabled={pending}>
+          <div
+            className="large-12 columns"
+            style={{ margin: '1rem 0 2rem', paddingBottom: '1.5rem', borderBottom: '1px solid #ddd' }}
+          >
+            <button
+              type="submit"
+              className="button radius"
+              style={{ marginBottom: 0, marginRight: '0.75rem' }}
+              disabled={pending}
+            >
               {pending ? 'Running…' : source === 'paste' ? 'Analyze' : 'Get genes and analyze'}
-            </button>{' '}
-            <button type="button" className="button small secondary" onClick={this.handleReset}>
+            </button>
+            <button
+              type="button"
+              className="button radius secondary"
+              style={{ marginBottom: 0, border: '1px solid #bbb' }}
+              onClick={this.handleReset}
+            >
               Reset
             </button>
           </div>
@@ -1012,12 +1239,79 @@ const GeneListAnalysis = createReactClass({
     );
   },
 
+  renderCategoryTermInput() {
+    const category = this.termCategoryKey();
+    const info = TERM_CATEGORIES[category];
+    return (
+      <div>
+        {category === 'disease' ? null : (
+          <label>
+            <b>Annotation</b>
+            <select value={category} onChange={(e) => this.setTermCategory(e.target.value)}>
+              {OTHER_CATEGORIES.map((key) => (
+                <option key={key} value={key}>
+                  {TERM_CATEGORIES[key].label}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
+        <label>
+          <b>{info.label}</b> ({info.help})
+          <input
+            type="text"
+            value={this.state.termQuery}
+            onChange={(e) => this.handleTermQueryChange(e.target.value)}
+            placeholder={info.placeholder}
+            autoComplete="off"
+            style={{ marginBottom: 0 }}
+          />
+        </label>
+        {this.state.termSuggestions.length ? (
+          <ul
+            className="no-bullet"
+            style={{ border: '1px solid #ccc', margin: 0, maxHeight: '18rem', overflowY: 'auto', background: '#fff' }}
+          >
+            {this.state.termSuggestions.map((term) => (
+              <li key={term.key} style={{ borderBottom: '1px solid #eee', padding: '0.25rem 0.5rem' }}>
+                <a onClick={() => this.selectTerm(term)}>{term.display_name}</a>{' '}
+                <small>
+                  {term.accession ? term.accession + ' · ' : ''}
+                  {term.gene_count} gene{term.gene_count === 1 ? '' : 's'}
+                </small>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+        {category === 'disease' ? (
+          <div style={{ marginTop: '0.75rem' }}>
+            <input
+              type="checkbox"
+              id="gla_term_descendants"
+              checked={this.state.termDescendants}
+              onChange={() => this.setState({ termDescendants: !this.state.termDescendants })}
+            />
+            <label htmlFor="gla_term_descendants">Include genes annotated to descendant (more specific) terms</label>
+          </div>
+        ) : null}
+        <p style={{ marginTop: '0.75rem' }}>
+          <small>
+            {category === 'disease' ? 'NOT annotations are left out. ' : ''}
+            {category === 'regulator' ? 'Targets of transcriptional regulation. ' : ''}
+            The genes are put in the gene list box, so you can edit the list and re-run it from the Paste genes tab.
+          </small>
+        </p>
+      </div>
+    );
+  },
+
   renderSourceNote() {
     const note = this.state.sourceNote;
     if (!note) return null;
     return (
       <p>
-        List built from the {note.count} genes {note.relation} <a href={note.link}>{note.label}</a>
+        List built from the {note.count} genes {note.relation}{' '}
+        {note.link ? <a href={note.link}>{note.label}</a> : note.label}
         {note.termCount > 1 ? ' or its ' + (note.termCount - 1) + ' descendant terms' : ''}
         {note.detail ? ' (' + note.detail + ')' : ''}.
       </p>
@@ -1080,9 +1374,9 @@ const GeneListAnalysis = createReactClass({
     const isGo = category.category.indexOf('go_') === 0;
     return (
       <div key={category.category} className="panel">
-        <h4>
+        <h4 style={{ fontSize: '1.4rem' }}>
           {category.label}{' '}
-          <small>
+          <small style={{ fontSize: '0.95rem', color: '#555', display: 'inline-block' }}>
             {category.results.length} significant term{category.results.length === 1 ? '' : 's'}
             {isGo
               ? ''
@@ -1093,11 +1387,7 @@ const GeneListAnalysis = createReactClass({
                 ' terms tested'}
           </small>
         </h4>
-        {category.note ? (
-          <p>
-            <small>{category.note}</small>
-          </p>
-        ) : null}
+        {category.note ? <p style={{ fontSize: '0.95rem', color: '#555' }}>{category.note}</p> : null}
         {results.length ? (
           <table className="table" style={{ width: '100%' }}>
             <thead>
