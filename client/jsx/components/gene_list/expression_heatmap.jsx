@@ -3,6 +3,8 @@ import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
 
 const EXPRESSION_URL = '/backend/gene_list/expression';
+// Links from the results open in one shared tab so the analysis on this page is kept
+const LINK_TARGET = 'sgd_gene_list_link';
 
 const MIN_CELL_WIDTH = 10;
 const MAX_CELL_WIDTH = 28;
@@ -378,7 +380,9 @@ const ExpressionHeatmap = createReactClass({
           {genes.map((i) => (
             <div key={i} style={{ display: 'flex' }}>
               <div style={stickyName} onMouseEnter={() => this.setState({ hover: { gene: i } })}>
-                <a href={data.genes[i].link}>{data.genes[i].display_name}</a>
+                <a href={data.genes[i].link} target={LINK_TARGET}>
+                  {data.genes[i].display_name}
+                </a>
               </div>
               {columns.map((j, k) => (
                 <div key={j} style={Object.assign(cellStyle(k), { background: cellColor(data.values[i][j]) })}
@@ -432,7 +436,9 @@ const ExpressionHeatmap = createReactClass({
               {byReason[reason].map((g, i) => (
                 <span key={g.id}>
                   {i ? ', ' : ''}
-                  <a href={g.link}>{g.display_name}</a>
+                  <a href={g.link} target={LINK_TARGET}>
+                    {g.display_name}
+                  </a>
                 </span>
               ))}
             </span>
@@ -476,7 +482,10 @@ const ExpressionHeatmap = createReactClass({
                 {data.shown_datasets.map((d, i) => (
                   <span key={d.id}>
                     {i ? '; ' : ''}
-                    <b>{i + 1}.</b> <a href={d.link}>{d.name}</a>
+                    <b>{i + 1}.</b>{' '}
+                    <a href={d.link} target={LINK_TARGET}>
+                      {d.name}
+                    </a>
                   </span>
                 ))}
               </small>

@@ -15,6 +15,8 @@ const CATEGORY_TERMS_URL = '/backend/gene_list/category_terms';
 const CATEGORY_TERM_GENES_URL = '/backend/gene_list/category_term_genes';
 // set by the "Analyze" gene list page before navigating here
 const LOCAL_STORAGE_KEY = 'geneListAnalysis';
+// Links from the results open in one shared tab so the analysis on this page is kept
+const LINK_TARGET = 'sgd_gene_list_link';
 
 const CATEGORIES = [
   { key: 'regulator', label: 'Transcriptional regulators', checked: true },
@@ -260,6 +262,7 @@ const GeneListAnalysis = createReactClass({
       showExpression: false,
       showNetwork: false,
       networkHighlight: null,
+      networkGeneIds: null,
       listSource: 'paste',
       sourceNote: null,
       termPending: false,
@@ -386,6 +389,7 @@ const GeneListAnalysis = createReactClass({
       showExpression: false,
       showNetwork: false,
       networkHighlight: null,
+      networkGeneIds: null,
     });
     postJson(RESOLVE_URL, { identifiers: this.state.genes })
       .then((resolution) => {
@@ -672,6 +676,12 @@ const GeneListAnalysis = createReactClass({
         this.analyze();
       }
     );
+  },
+
+  // whether any of the term's genes are drawn in the network (unconnected genes may be hidden)
+  inNetwork(result) {
+    const ids = this.state.networkGeneIds;
+    return !!ids && result.genes.some((g) => ids.indexOf(g.id) !== -1);
   },
 
   highlightInNetwork(category, result) {
@@ -1030,6 +1040,7 @@ const GeneListAnalysis = createReactClass({
         geneIds={ids}
         highlight={this.state.networkHighlight}
         onClearHighlight={() => this.setState({ networkHighlight: null })}
+        onVisibleGenesChange={(ids) => this.setState({ networkGeneIds: ids })}
         onAnalyzeGenes={this.analyzeGenes}
       />
     );
@@ -1472,7 +1483,13 @@ const GeneListAnalysis = createReactClass({
     return (
       <p>
         List built from the {note.count} genes {note.relation}{' '}
-        {note.link ? <a href={note.link}>{note.label}</a> : note.label}
+        {note.link ? (
+          <a href={note.link} target={LINK_TARGET}>
+            {note.label}
+          </a>
+        ) : (
+          note.label
+        )}
         {note.termCount > 1 ? ' or its ' + (note.termCount - 1) + ' descendant terms' : ''}
         {note.detail ? ' (' + note.detail + ')' : ''}.
       </p>
@@ -1496,7 +1513,7 @@ const GeneListAnalysis = createReactClass({
       );
     }
     return r.loci.map((l) => (
-      <a key={l.id} href={l.link}>
+      <a key={l.id} href={l.link} target={LINK_TARGET}>
         {locusName(l)}
       </a>
     ));
@@ -1566,8 +1583,14 @@ const GeneListAnalysis = createReactClass({
               {results.map((r) => (
                 <tr key={r.term.id}>
                   <td>
-                    {r.term.link ? <a href={r.term.link}>{r.term.display_name}</a> : r.term.display_name}
-                    {this.state.showNetwork && !isGo && r.genes.length ? (
+                    {r.term.link ? (
+                      <a href={r.term.link} target={LINK_TARGET}>
+                        {r.term.display_name}
+                      </a>
+                    ) : (
+                      r.term.display_name
+                    )}
+                    {this.state.showNetwork && !isGo && this.inNetwork(r) ? (
                       <small>
                         {' '}
                         <a
@@ -1589,7 +1612,9 @@ const GeneListAnalysis = createReactClass({
                       {r.genes.map((g, i) => (
                         <span key={g.id}>
                           {i ? ', ' : ''}
-                          <a href={g.link}>{g.display_name}</a>
+                          <a href={g.link} target={LINK_TARGET}>
+                            {g.display_name}
+                          </a>
                         </span>
                       ))}
                     </td>

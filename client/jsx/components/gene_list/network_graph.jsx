@@ -3,6 +3,8 @@ import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
 
 const NETWORK_URL = '/backend/gene_list/network';
+// Links from the results open in one shared tab so the analysis on this page is kept
+const LINK_TARGET = 'sgd_gene_list_link';
 // Cytoscape.js 3.x (static/js/build/cytoscape3.min.js), loaded the first
 // time a network is shown; other pages use the old 2.x build
 const CYTOSCAPE_URL = '/static/js/build/cytoscape3.min.js';
@@ -125,6 +127,7 @@ const NetworkGraph = createReactClass({
     highlight: PropTypes.object,
     onClearHighlight: PropTypes.func,
     onAnalyzeGenes: PropTypes.func,
+    onVisibleGenesChange: PropTypes.func,
   },
 
   getInitialState() {
@@ -201,6 +204,7 @@ const NetworkGraph = createReactClass({
     if (!data || !this.container || !this.cytoscape) return;
     if (this.cy) this.cy.destroy();
     const nodes = this.visibleNodes();
+    if (this.props.onVisibleGenesChange) this.props.onVisibleGenesChange(nodes.map((n) => n.id));
     const maxDegree = Math.max(1, ...nodes.map((n) => n.degree));
     // line width by strength within each kind of edge
     let maxWeight = {};
@@ -497,7 +501,10 @@ const NetworkGraph = createReactClass({
       const g = info.gene;
       text = (
         <span>
-          <a href={g.link}>{g.name}</a> {g.name !== g.systematic_name ? '(' + g.systematic_name + ')' : ''} ·{' '}
+          <a href={g.link} target={LINK_TARGET}>
+            {g.name}
+          </a>{' '}
+          {g.name !== g.systematic_name ? '(' + g.systematic_name + ')' : ''} ·{' '}
           {g.in_list ? 'in the list' : 'connecting gene'} · {g.degree} connection{g.degree === 1 ? '' : 's'}
           {g.description ? ' · ' + g.description : ''}
         </span>
