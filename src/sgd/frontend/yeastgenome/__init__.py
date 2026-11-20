@@ -120,12 +120,32 @@ class YeastgenomeFrontend(FrontendInterface):
         return self.get_obj('ontology', None, obj_url=self.backend_url + '/disease/' + biocon_repr)
     
     def chemical(self, chemical_repr):
-        return self.get_obj('chemical', chemical_repr)
+        return self._chemical_page(chemical_repr)
 
     def chemical2(self, chemical_repr):
-        # Redesigned chemical page (Tier 1); reuses the same backend
-        # /chemical/{id} data, rendered by chemical2.jinja2.
-        return self.get_obj('chemical', chemical_repr)
+        # Redesigned chemical page (Tier 1), rendered by chemical2.jinja2.
+        return self._chemical_page(chemical_repr)
+
+    def _chemical_page(self, chemical_repr):
+        # The full /chemical/{id} payload embeds every phenotype/GO annotation
+        # and the network graph; for heavily annotated chemicals (hydroxyurea,
+        # ethanol, MMS) it exceeds BACKEND_TIMEOUT and the page 404s. The page
+        # fetches those lists itself via AJAX, so ask for the lightweight
+        # /overview (basic info + annotation counts) instead.
+        obj = self.get_obj('chemical', chemical_repr,
+                           obj_url=self.backend_url + '/chemical/' + chemical_repr + '/overview')
+        if isinstance(obj, dict):
+            return obj
+
+        # Backend without /overview yet: fall back to the full payload and
+        # derive the counts the template uses.
+        obj = self.get_obj('chemical', chemical_repr)
+        if isinstance(obj, dict):
+            chem = obj['chemical']
+            chem.setdefault('phenotype_count', len(chem.get('phenotype') or []))
+            chem.setdefault('go_count', len(chem.get('go') or []))
+            chem.setdefault('protein_abundance_count', len(chem.get('protein_abundance') or []))
+        return obj
 
     def domain(self, domain_repr):
         return self.get_obj('domain', domain_repr)
